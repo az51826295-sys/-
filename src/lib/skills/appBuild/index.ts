@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { ExecutionError, setStep } from "@/lib/execution/shared";
 import type { EmployeeSkill, SkillRunContext } from "@/lib/skills/types";
+import { checkFiles, repairBrief, summarise } from "@/lib/skills/appBuild/verify";
 
 /**
  * 앱을 만드는 일.
@@ -138,7 +139,52 @@ export const appBuildSkill: EmployeeSkill = {
       tier: "judgment",
     });
 
-    // ── 3. 기준과 함께 넘긴다 ───────────────────────────────────────
+    // ── 3. 문법이 깨졌으면 고친다 ───────────────────────────────────
+    //
+    // 돌려 보지는 않는다(그 이유는 verify.ts 에 있다). 다만 **파싱조차 안 되는
+    // 코드**는 확실히 잡을 수 있고, 그건 가장 흔하면서 사람이 붙여 넣기 전까지
+    // 아무도 모르는 실패다. 한 번은 고쳐 보고, 그래도 깨져 있으면 깨진 채로
+    // 넘기되 **깨졌다고 적는다** — 고친 척하는 것이 더 나쁘다.
+    await setStep(ctx.supabase, ctx.executionId, "verifying");
+
+    let files = made.files;
+    let checks = checkFiles(files);
+    let repaired = false;
+
+    if (checks.some((c) => c.checked && !c.ok)) {
+      const { output: fixed } = await ctx.providers.ai.generateStructuredOutput({
+        systemInstructions: [
+          "아래 파일들이 문법 오류로 파싱되지 않는다. **고쳐서 전체를 다시 낸다.**",
+          "",
+          "- 오류가 난 파일만이 아니라 **전부** 다시 낸다. 일부만 오면 받는 쪽이 어느 것이 새 것인지 모른다.",
+          "- 기능을 바꾸지 마라. 고치는 것은 문법뿐이다.",
+          "- `coverage` 는 고친 뒤 기준으로 다시 판단해서 낸다.",
+        ].join("\n"),
+        input: [
+          "오류:",
+          repairBrief(checks),
+          "",
+          "기준:",
+          spec.criteria.map((c) => `- [${c.id}] ${c.when} → ${c.then}`).join("\n"),
+          "",
+          "지금 파일:",
+          files.map((f) => `--- ${f.path} (${f.language})\n${f.contents}`).join("\n\n"),
+        ].join("\n"),
+        schema: build,
+        schemaName: "app_repair",
+        maxTokens: 32000,
+        tier: "judgment",
+      });
+      files = fixed.files;
+      made.coverage = fixed.coverage;
+      made.howToRun = fixed.howToRun;
+      checks = checkFiles(files);
+      repaired = true;
+    }
+
+    const verify = summarise(checks);
+
+    // ── 4. 기준과 함께 넘긴다 ───────────────────────────────────────
     const met = made.coverage.filter((c) => c.met).length;
 
     const { data: deliverable } = await ctx.supabase
@@ -152,14 +198,21 @@ export const appBuildSkill: EmployeeSkill = {
         content: {
           criteria: spec.criteria,
           humanGate: spec.humanGate,
-          files: made.files,
+          files,
           howToRun: made.howToRun,
           coverage: made.coverage,
+          // 파싱 결과를 그대로 싣는다. **미검사를 통과에 섞지 않는다** —
+          // 파서가 없는 언어를 "괜찮다"로 세면 검사가 있으나 마나가 된다.
+          verify: { ...verify, repaired, files: checks },
           summary: { criteria: spec.criteria.length, met },
           note:
-            "**돌려 보지 않았습니다.** 이 회사에는 코드를 실행할 자리가 아직 " +
-            "없고, 실행 없이 '된다'고 말하는 것은 거짓입니다. 위 기준으로 " +
-            "확인해 주십시오 — 기준은 코드보다 먼저 쓰였습니다.",
+            `문법 검사: ${verify.parsed}개 파싱됨 · ${verify.broken}개 깨짐 · ` +
+            `${verify.unchecked}개는 파서가 없어 **미검사**` +
+            (repaired ? " (한 번 고쳤습니다)" : "") +
+            ". **돌려 보지는 않았습니다** — 생성된 코드를 서버에서 실행하면 " +
+            "그건 임의 코드 실행이고, 그 문을 열면 이 회사의 모든 열쇠가 그 " +
+            "코드 안에 있습니다. 파싱 통과는 작동을 뜻하지 않습니다. " +
+            "위 기준으로 확인해 주십시오 — 기준은 코드보다 먼저 쓰였습니다.",
         },
       })
       .select("id")
