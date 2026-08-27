@@ -439,8 +439,31 @@ export default async function DashboardPage() {
     <div className="flex flex-1 flex-col">
       <NavBar />
       <main className="mx-auto w-full max-w-2xl flex-1 px-6 py-12">
-        <p className="text-sm text-zinc-500">My Company</p>
+        <p className="text-sm text-zinc-500">내 회사</p>
         <h1 className="text-2xl font-semibold text-zinc-900">{company.name}</h1>
+
+        {/*
+          일을 시키는 자리를 맨 위에 둔다.
+
+          이 화면은 **이미 시킨 일을 다시 찾는** 곳이지 시키는 곳이 아니다.
+          그런데 지금까지 여기가 첫 화면이라, 무언가 시키려면 아래로 스크롤해
+          직원 목록에서 사람을 고르고 "Assign Work" 를 눌러야 했다 — 누구에게
+          맡길지 매니저가 먼저 정해야 하는 구조다. 대화는 그걸 묻지 않는다.
+        */}
+        <Link
+          href="/ask"
+          className="mt-4 flex items-center justify-between rounded-xl border border-zinc-200 bg-white px-5 py-4 hover:border-zinc-400"
+        >
+          <span>
+            <span className="block font-medium text-zinc-900">
+              말로 시키기
+            </span>
+            <span className="block text-sm text-zinc-500">
+              필요한 것을 말하면 누가 할지는 회사가 정합니다
+            </span>
+          </span>
+          <span className="text-zinc-400">→</span>
+        </Link>
 
         {/*
           How the company is doing, in the first thing anybody reads.
@@ -1035,11 +1058,12 @@ export default async function DashboardPage() {
               let href = `/dashboard/employees/${hire.id}/assign`;
 
               if (!isOnboarded) {
-                cta =
-                  onboardingCta[
-                    hire.onboarding_status as keyof typeof onboardingCta
-                  ];
-                href = `/dashboard/employees/${hire.id}`;
+                // 교육은 대화로 한다. 서식으로 보내면 매니저 입장에서 일을
+                // 맡기려다 숙제를 받은 것이고, 폰에서는 특히 거기서 멈춘다.
+                // 회사 모드 대화가 교육이 안 끝난 직원을 먼저 붙잡아 한 번에
+                // 하나씩 묻는다.
+                cta = "대화로 교육하기";
+                href = "/ask";
               } else if (deliverable) {
                 cta = "Review Deliverable";
                 href = `/dashboard/deliverables/${deliverable.id}`;

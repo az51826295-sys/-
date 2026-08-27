@@ -21,13 +21,19 @@ import { logout } from "@/app/login/actions";
  * place it belongs to.
  */
 const LINKS = [
-  { href: "/dashboard", label: "Home" },
+  // 대화가 맨 앞이다.
+  //
+  // 이 제품의 정문이 대화로 옮겨졌는데 내비에는 없었다 — 매니저가 말을 걸려면
+  // 주소를 외우거나 뒤로 가기를 눌러야 했고, 찾아갈 길이 없는 정문은 정문이
+  // 아니다. 나머지는 그 대화가 만들어 낸 것을 **다시 찾는** 자리다.
+  { href: "/ask", label: "대화" },
+  { href: "/dashboard", label: "홈" },
   // Added back after the cut to three. The home screen turns a sentence into a
   // project, and a product that creates things the person cannot then find has
   // not simplified anything — it has hidden their work.
-  { href: "/dashboard/projects", label: "Projects" },
-  { href: "/employees", label: "Employees" },
-  { href: "/dashboard/company", label: "Company" },
+  { href: "/dashboard/projects", label: "프로젝트" },
+  { href: "/employees", label: "직원" },
+  { href: "/dashboard/company", label: "회사" },
 ];
 
 export function NavBar() {
