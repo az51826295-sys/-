@@ -54,10 +54,30 @@ namespace Rookery
             {
                 if (GUILayout.Button("가져오기", GUILayout.Height(30)))
                 {
-                    EditorPrefs.SetString(UrlKey, _url);
-                    EditorPrefs.SetString(KeyKey, _key);
-                    EditorPrefs.SetString(FolderKey, _folder);
+                    Remember();
                     Fetch();
+                }
+
+                EditorGUILayout.Space(4);
+
+                // 유니티에도 생성기가 있다. 거기서 뽑은 것을 그대로 게임에 넣으면
+                // 로키를 거쳐 온 자산과 **다른 자로 잰 것**이 한 화면에 섞인다.
+                // 그래서 어디서 만들었든 판정은 한 곳에서 받는다.
+                var picked = Selection.objects;
+                var count = 0;
+                foreach (var o in picked) if (o is Texture2D) count++;
+
+                using (new EditorGUI.DisabledScope(count == 0))
+                {
+                    if (GUILayout.Button(
+                            count == 0
+                                ? "판정할 스프라이트를 고르세요"
+                                : $"고른 {count}장 판정하기",
+                            GUILayout.Height(26)))
+                    {
+                        Remember();
+                        JudgeSelection();
+                    }
                 }
             }
 
@@ -68,6 +88,73 @@ namespace Rookery
                 EditorGUILayout.HelpBox(_status, MessageType.None);
                 EditorGUILayout.EndScrollView();
             }
+        }
+
+        void Remember()
+        {
+            EditorPrefs.SetString(UrlKey, _url);
+            EditorPrefs.SetString(KeyKey, _key);
+            EditorPrefs.SetString(FolderKey, _folder);
+        }
+
+        /// <summary>
+        /// 프로젝트에서 고른 스프라이트를 로키 판정기로 보낸다.
+        ///
+        /// 유니티 생성기로 뽑았든 손으로 그렸든 상관없다 — 같은 자로 재야 화면이
+        /// 한 세계가 된다.
+        /// </summary>
+        void JudgeSelection()
+        {
+            var images = new List<string>();
+            foreach (var obj in Selection.objects)
+            {
+                if (obj is not Texture2D tex) continue;
+                var path = AssetDatabase.GetAssetPath(tex);
+                if (string.IsNullOrEmpty(path)) continue;
+                // 원본 파일을 그대로 보낸다. 유니티가 임포트하며 압축·필터를
+                // 걸어 둔 사본을 보내면, 재는 것이 원본이 아니라 임포트 설정이 된다.
+                images.Add(Convert.ToBase64String(File.ReadAllBytes(path)));
+            }
+
+            if (images.Count == 0)
+            {
+                _status = "고른 것 중에 읽을 수 있는 텍스처가 없습니다.";
+                return;
+            }
+
+            var payload = "{\"images\":[" +
+                          string.Join(",", images.ConvertAll(b => "\"" + b + "\"")) +
+                          "]}";
+            var request = new UnityWebRequest(
+                $"{_url.TrimEnd('/')}/api/unity/judge", "POST")
+            {
+                uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(payload)),
+                downloadHandler = new DownloadHandlerBuffer(),
+            };
+            request.SetRequestHeader("Content-Type", "application/json");
+            request.SetRequestHeader("x-rookery-key", _key);
+
+            _status = $"{images.Count}장 판정 중…";
+            Repaint();
+
+            var op = request.SendWebRequest();
+            op.completed += _ =>
+            {
+                if (request.result != UnityWebRequest.Result.Success)
+                {
+                    // 판정기에 못 닿은 것을 통과로 읽지 않는다. 미측정은 실패도
+                    // 성공도 아니고, 그 구분이 사라지면 판정이 있으나 마나다.
+                    _status = $"판정하지 못했습니다: {request.responseCode} {request.error}
+" +
+                              request.downloadHandler.text;
+                    Repaint();
+                    return;
+                }
+                _status = "판정 결과
+
+" + request.downloadHandler.text;
+                Repaint();
+            };
         }
 
         void Fetch()
