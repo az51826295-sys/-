@@ -108,7 +108,14 @@ export default function AskClient() {
 
   return (
     <div className="mx-auto flex h-[calc(100vh-4rem)] max-w-2xl flex-col px-4">
-      <div className="flex gap-1 pt-4">
+      {/*
+        모드 전환은 가운데다.
+
+        왼쪽 위에는 설정(점 세 개)이 떠 있어서, 여기를 왼쪽에 두면 폰에서 둘이
+        붙어 잘못 눌린다. 가운데는 엄지에서 가장 먼 대신 오누름이 없다 —
+        모드는 자주 바꾸는 것이 아니므로 그쪽이 맞다.
+      */}
+      <div className="flex justify-center gap-1 pt-3">
         {(
           [
             ["everyday", "일상", "묻고 답합니다. 필요하면 찾아봅니다."],
@@ -132,7 +139,7 @@ export default function AskClient() {
       </div>
 
       {turnsLeft !== null && (
-        <p className="pt-2 text-xs text-neutral-500">
+        <p className="pt-2 text-center text-xs text-neutral-500">
           로그인 없이 {turnsLeft}번 더 쓸 수 있습니다 ·{" "}
           <a className="underline" href="/login">
             로그인
