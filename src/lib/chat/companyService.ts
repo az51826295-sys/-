@@ -7,6 +7,7 @@ import { meterProviders } from "@/lib/costs/meter";
 import { defaultProviders } from "@/lib/execution/shared";
 import { runChatTurn, type ChatOption } from "@/lib/chat/service";
 import { speakerFor, speakerNote } from "@/lib/chat/persona";
+import { onboardingTurn } from "@/lib/chat/onboardingChat";
 
 /**
  * 회사와의 대화 한 턴.
@@ -117,6 +118,45 @@ export async function runCompanyChatTurn(
   }
 
   const speaker = await speakerFor(supabase, user.id);
+
+  // 교육이 안 끝난 직원이 있으면 **그 대화를 먼저 이어 간다.**
+  //
+  // 전에는 여기서 "서식을 채우세요" 하고 링크를 줬다. 매니저 입장에서 그건
+  // 일을 맡기려다 숙제를 받은 것이고, 폰에서는 특히 거기서 멈춘다. 질문들은
+  // 원래 대화에 어울리는 것들이라("회사가 뭘 하나요") 한 번에 하나씩 물으면
+  // 서식이 아니라 그냥 이야기가 된다.
+  const { data: training } = await supabase
+    .from("company_employees")
+    .select("id, onboarding_status, employees(name)")
+    .eq("company_id", companyId)
+    .neq("onboarding_status", "completed")
+    .limit(1)
+    .maybeSingle();
+
+  if (training) {
+    const last =
+      [...input.messages].reverse().find((m) => m.role === "user")?.content ?? "";
+    const turn = await onboardingTurn(training.id as string, last);
+    if ("error" in turn) {
+      return { ok: false, error: turn.error, status: turn.status };
+    }
+    const name =
+      (training as unknown as { employees: { name: string } | null }).employees
+        ?.name ?? "새 직원";
+    return {
+      ok: true,
+      reply: turn.reply,
+      hired: null,
+      routedTo: { id: training.id as string, name },
+      assignment: null,
+      options: null,
+      // 다 끝났으면 더 이상 교육이 아니다 — 다음 턴부터 평소대로 돈다.
+      needsOnboarding: turn.done
+        ? null
+        : { id: training.id as string, name },
+    };
+  }
+
   const catalogue = capabilityCatalogue();
   // 계량은 세 인자다: 제공자 · DB · 범위. 대화 한 턴도 장부에 남아야
   // 지출 한도가 실제로 한도가 된다.
