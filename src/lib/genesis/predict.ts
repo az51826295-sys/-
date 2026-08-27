@@ -1,4 +1,5 @@
 import type { Supabase } from "@/lib/execution/shared";
+import { BASE_GENOME, type PredictionGenome } from "@/lib/genesis/genome";
 
 /**
  * 실행 전 예측.
@@ -13,16 +14,32 @@ import type { Supabase } from "@/lib/execution/shared";
  * 채점 방식은 그대로다.
  */
 
-/** 근거가 없을 때의 사전 확률과 그 무게. 시뮬레이터와 같은 값. */
-const PRIOR = 0.7;
-const PRIOR_WEIGHT = 5;
-
-/** 확률의 양 끝은 잘라낸다. 절대 확신은 캘리브레이션을 망친다. */
-const FLOOR = 0.03;
-const CEILING = 0.97;
-
 /** 이 회사의 최근 판정만 본다. 오래된 기준은 지금 기준이 아니다. */
 const LOOKBACK = 400;
+
+/**
+ * 이 회사가 쓰는 예측 유전자.
+ *
+ * 상수였던 값들이 이제 여기서 온다. 회사마다 다를 수 있고, 진화가 채택한 것이
+ * 있으면 그것을, 없으면 출발점을 쓴다 — **처음 쓰는 회사의 동작은 예전과 똑같다.**
+ * 진화는 판정이 쌓인 뒤에야 무언가를 바꾼다.
+ */
+async function genomeFor(
+  db: Supabase,
+  companyId: string,
+): Promise<PredictionGenome> {
+  const { data } = await db
+    .from("prediction_genomes")
+    .select("genome")
+    .eq("company_id", companyId)
+    .order("adopted_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  const stored = (data as { genome?: Partial<PredictionGenome> } | null)?.genome;
+  // 저장된 것이 일부만 있어도 나머지는 출발점으로 채운다. 스키마가 늘어난 뒤에
+  // 옛 행을 읽어도 터지지 않게.
+  return { ...BASE_GENOME, ...(stored ?? {}) };
+}
 
 /**
  * 한 건 거슬러 올라갈 때마다 곱해지는 무게.
@@ -79,6 +96,7 @@ export async function estimateApproval(
   companyId: string,
   features: PredictionFeatures,
 ): Promise<{ pApproved: number; weakest: string; support: number }> {
+  const g = await genomeFor(db, companyId);
   const cells = new Map<string, Cell>();
 
   const { data } = await db
@@ -104,7 +122,7 @@ export async function estimateApproval(
     //
     // 지우지 않고 무게만 줄이는 것도 시뮬레이터에서 온 결론이다.
     // 통째로 버리면 낡은 확신과 함께 맞는 지식도 사라진다.
-    const weight = Math.pow(RECENCY, index);
+    const weight = Math.pow(g.recency, index);
     for (const key of row.basis?.features ?? []) {
       const c = cells.get(key) ?? { ok: 0, n: 0 };
       c.n += weight;
@@ -120,7 +138,7 @@ export async function estimateApproval(
   for (const key of featureKeys(features)) {
     const c = cells.get(key);
     const n = c?.n ?? 0;
-    const estimate = ((c?.ok ?? 0) + PRIOR * PRIOR_WEIGHT) / (n + PRIOR_WEIGHT);
+    const estimate = ((c?.ok ?? 0) + g.prior * g.priorWeight) / (n + g.priorWeight);
     if (estimate < p) {
       p = estimate;
       weakest = key;
@@ -130,7 +148,7 @@ export async function estimateApproval(
   }
 
   return {
-    pApproved: Math.min(CEILING, Math.max(FLOOR, p)),
+    pApproved: Math.min(g.ceiling, Math.max(g.floor, p)),
     weakest,
     support,
   };

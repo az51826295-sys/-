@@ -6,6 +6,7 @@ import { blockedBySpendLimit } from "@/lib/costs/allowance";
 import { meterProviders } from "@/lib/costs/meter";
 import { defaultProviders } from "@/lib/execution/shared";
 import { runChatTurn, type ChatOption } from "@/lib/chat/service";
+import { speakerFor, speakerNote } from "@/lib/chat/persona";
 
 /**
  * 회사와의 대화 한 턴.
@@ -115,6 +116,7 @@ export async function runCompanyChatTurn(
     };
   }
 
+  const speaker = await speakerFor(supabase, user.id);
   const catalogue = capabilityCatalogue();
   // 계량은 세 인자다: 제공자 · DB · 범위. 대화 한 턴도 장부에 남아야
   // 지출 한도가 실제로 한도가 된다.

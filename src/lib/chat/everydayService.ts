@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { blockedBySpendLimit } from "@/lib/costs/allowance";
 import { meterProviders } from "@/lib/costs/meter";
 import { defaultProviders } from "@/lib/execution/shared";
+import { speakerFor, speakerNote } from "@/lib/chat/persona";
 
 /**
  * 일상 모드 — 회사 밖의 대화.
@@ -83,6 +84,8 @@ export async function runEverydayTurn(
     ? meterProviders(defaultProviders(), supabase, { companyId })
     : defaultProviders();
 
+  const speaker = await speakerFor(supabase, user.id);
+
   const transcript = input.messages
     .map((m) => `${m.role}: ${m.content}`)
     .join("\n");
@@ -95,7 +98,8 @@ export async function runEverydayTurn(
       "짧게 자르지 말고 물은 만큼 답한다.\n" +
       "- 최신 사실·가격·뉴스·특정 문서처럼 **찾아봐야 정확한 것**이면 " +
       "`reply` 를 비우고 `searches` 에 검색어를 최대 3개 쓴다.\n\n" +
-      "확실하지 않은데 아는 척하지 마라. 그럴 때가 검색할 때다.",
+      "확실하지 않은데 아는 척하지 마라. 그럴 때가 검색할 때다." +
+      speakerNote(speaker),
     input: transcript,
     schema: firstPass,
     schemaName: "everyday_plan",
