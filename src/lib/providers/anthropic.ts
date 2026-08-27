@@ -54,6 +54,7 @@ export function createAnthropicProvider(): AIProvider {
     async generateStructuredOutput({
       systemInstructions,
       input,
+      images,
       schema,
       // Thinking is on by default on this model and counts against max_tokens
       // alongside the response, so budgets here are deliberately generous.
@@ -74,7 +75,25 @@ export function createAnthropicProvider(): AIProvider {
         model,
         max_tokens: maxTokens,
         system: systemInstructions,
-        messages: [{ role: "user", content: input }],
+        messages: [
+          {
+            role: "user",
+            content:
+              images && images.length > 0
+                ? [
+                    ...images.map((b64) => ({
+                      type: "image" as const,
+                      source: {
+                        type: "base64" as const,
+                        media_type: "image/png" as const,
+                        data: b64,
+                      },
+                    })),
+                    { type: "text" as const, text: input },
+                  ]
+                : input,
+          },
+        ],
         output_config: { format: zodOutputFormat(schema) },
       });
 

@@ -48,7 +48,15 @@ export function createRoutedProvider(vendors: VendorSet): AIProvider {
 
     async generateStructuredOutput(params) {
       const tier: WorkTier = params.tier ?? "judgment";
-      const pick = economy && ECONOMY_TIERS.has(tier) ? economy : primary;
+
+      // 그림이 딸린 호출은 싼 자리로 보내지 않는다.
+      //
+      // 값싼 벤더 중에는 그림을 아예 못 보는 것이 있고, 그러면 조용히 글만 읽고
+      // 답한다. 사용자는 자기 사진을 보고 한 말인 줄 알고, 그 오해는 답 안에
+      // 아무 표시도 남기지 않는다 — 조용한 고장 중에 가장 나쁜 종류다.
+      const hasImages = (params.images?.length ?? 0) > 0;
+      const pick =
+        economy && !hasImages && ECONOMY_TIERS.has(tier) ? economy : primary;
 
       try {
         return await pick.generateStructuredOutput(params);

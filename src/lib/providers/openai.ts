@@ -38,6 +38,7 @@ export function createOpenAIProvider(): AIProvider {
     async generateStructuredOutput({
       systemInstructions,
       input,
+      images,
       schema,
       schemaName,
       maxTokens = 32000,
@@ -52,7 +53,22 @@ export function createOpenAIProvider(): AIProvider {
       const response = await client.responses.parse({
         model,
         instructions: systemInstructions,
-        input,
+        input:
+          images && images.length > 0
+            ? [
+                {
+                  role: "user" as const,
+                  content: [
+                    ...images.map((b64) => ({
+                      type: "input_image" as const,
+                      image_url: `data:image/png;base64,${b64}`,
+                      detail: "auto" as const,
+                    })),
+                    { type: "input_text" as const, text: input },
+                  ],
+                },
+              ]
+            : input,
         max_output_tokens: maxTokens,
         text: { format: zodTextFormat(schema, schemaName) },
       });

@@ -61,17 +61,57 @@ export default function AskClient({
   const [conversationId, setConversationId] = useState<string | null>(
     initial?.id ?? null,
   );
+  /** 이번 턴에 붙일 사진. 보내면 비운다. */
+  const [attached, setAttached] = useState<{ name: string; b64: string }[]>([]);
   const [turns, setTurns] = useState<Turn[]>(initial?.turns ?? []);
   const [text, setText] = useState("");
   const [busy, setBusy] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
 
+  /**
+   * 파일을 base64 로. 데이터 URL 접두사는 떼고 보낸다 — 서버가 순수 base64 를 받는다.
+   */
+  function readFile(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const r = new FileReader();
+      r.onload = () => {
+        const s = String(r.result);
+        resolve(s.slice(s.indexOf(",") + 1));
+      };
+      r.onerror = () => reject(r.error);
+      r.readAsDataURL(file);
+    });
+  }
+
+  async function attach(files: FileList | null) {
+    if (!files) return;
+    const next: { name: string; b64: string }[] = [];
+    // 한 턴에 넉 장까지. 비전 호출은 장수에 비례해 비싸진다.
+    for (const f of Array.from(files).slice(0, 4)) {
+      if (!f.type.startsWith("image/")) continue;
+      next.push({ name: f.name, b64: await readFile(f) });
+    }
+    setAttached((prev) => [...prev, ...next].slice(0, 4));
+  }
+
   async function send(message: string) {
     if (!message.trim() || busy) return;
     setBusy(true);
-    const history = [...turns, { role: "user" as const, content: message }];
+    const history = [
+      ...turns,
+      {
+        role: "user" as const,
+        content: message,
+        // 보낸 사진을 그 말풍선에 남긴다. 보내자마자 사라지면 안 간 것처럼 보인다.
+        images: attached.map((a) => ({
+          dataUrl: `data:image/png;base64,${a.b64}`,
+          prompt: a.name,
+        })),
+      },
+    ];
     setTurns(history);
     setText("");
+    setAttached([]);
 
     try {
       const res = await fetch(
@@ -83,6 +123,7 @@ export default function AskClient({
             messages: history.map((t) => ({ role: t.role, content: t.content })),
             visitor: visitorId(),
             conversationId,
+            images: attached.map((a) => a.b64),
           }),
         },
       );
@@ -252,6 +293,30 @@ export default function AskClient({
         </div>
       )}
 
+      {attached.length > 0 && (
+        <div className="flex flex-wrap gap-2 pb-2">
+          {attached.map((a, i) => (
+            <div key={i} className="relative">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={`data:image/png;base64,${a.b64}`}
+                alt={a.name}
+                className="h-16 w-16 rounded-lg border border-neutral-200 object-cover dark:border-neutral-800"
+              />
+              <button
+                onClick={() =>
+                  setAttached((prev) => prev.filter((_, k) => k !== i))
+                }
+                aria-label="빼기"
+                className="absolute -right-1.5 -top-1.5 h-5 w-5 rounded-full bg-neutral-900 text-xs text-white dark:bg-neutral-100 dark:text-neutral-900"
+              >
+                ×
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -259,6 +324,19 @@ export default function AskClient({
         }}
         className="flex gap-2 border-t border-neutral-200 py-3 dark:border-neutral-800"
       >
+        <label className="flex cursor-pointer items-center rounded-xl border border-neutral-300 px-3 text-lg text-neutral-500 hover:bg-neutral-100 dark:border-neutral-700 dark:hover:bg-neutral-900">
+          +
+          <input
+            type="file"
+            accept="image/*"
+            multiple
+            className="hidden"
+            onChange={(e) => {
+              void attach(e.target.files);
+              e.target.value = "";
+            }}
+          />
+        </label>
         <input
           value={text}
           onChange={(e) => setText(e.target.value)}

@@ -28,6 +28,8 @@ export type EverydayInput = {
   visitor?: string;
   /** 이어서 저장할 대화. 없으면 새로 만든다. 익명이면 무시된다. */
   conversationId?: string | null;
+  /** 이번 턴에 올린 사진. base64(데이터 URL 접두사 없이). */
+  images?: string[];
 };
 
 export type EverydaySource = { title: string; url: string };
@@ -138,6 +140,10 @@ export async function runEverydayTurn(
     .map((m) => `${m.role}: ${m.content}`)
     .join("\n");
 
+  // 사진은 로그인한 사람만 올릴 수 있다. 비전 호출은 글보다 비싸고, 익명 하루
+  // 상한이 사진 몇 장에 다 쓰이면 그날 나머지 사람이 대화를 못 한다.
+  const seen = user ? (input.images ?? []).slice(0, 4) : [];
+
   const { output: plan } = await providers.ai.generateStructuredOutput({
     systemInstructions:
       "너는 유능한 조수다. 한국어로 답한다.\n\n" +
@@ -146,6 +152,11 @@ export async function runEverydayTurn(
       "짧게 자르지 말고 물은 만큼 답한다.\n" +
       "- 최신 사실·가격·뉴스·특정 문서처럼 **찾아봐야 정확한 것**이면 " +
       "`reply` 를 비우고 `searches` 에 검색어를 최대 3개 쓴다.\n\n" +
+      (seen.length > 0
+        ? "사용자가 사진을 같이 올렸다. **보이는 것만 말하라** — 안 보이는 것을 " +
+          "있는 것처럼 말하면 사용자는 자기 사진을 잘못 읽었다는 사실조차 모른다. " +
+          "흐리거나 잘려서 못 읽는 부분은 못 읽겠다고 말한다.\n\n"
+        : "") +
       "확실하지 않은데 아는 척하지 마라. 그럴 때가 검색할 때다.\n\n" +
       "**그림**: 사용자가 그려 달라고 하면 `drawings` 에 묘사를 쓴다(최대 2개). " +
       "묘사는 영어로, 무엇을 어떤 구도·색·분위기로 그릴지 구체적으로. " +
@@ -153,6 +164,7 @@ export async function runEverydayTurn(
       "느리기만 하다." +
       speakerNote(speaker),
     input: transcript,
+    images: seen,
     schema: firstPass,
     schemaName: "everyday_plan",
     maxTokens: 8000,
@@ -262,6 +274,9 @@ export async function runEverydayTurn(
       "- 사실마다 어디서 왔는지 알 수 있게 쓰고, 실제로 쓴 출처만 `usedUrls` 에 담는다.\n" +
       "- 검색이 실패했다고 적힌 항목이 있으면 그 사실을 답에 밝힌다.",
     input: `대화:\n${transcript}\n\n검색 결과:\n${notes.join("\n\n")}`,
+    // 답을 쓸 때도 사진을 다시 보여 준다. 검색 결과만 주고 사진을 빼면,
+    // 사진에 대해 물은 것을 검색 결과로만 답하게 된다.
+    images: seen,
     schema: answerPass,
     schemaName: "everyday_answer",
     maxTokens: 12000,

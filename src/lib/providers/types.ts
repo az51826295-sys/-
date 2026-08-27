@@ -51,6 +51,18 @@ export interface AIProvider {
   generateStructuredOutput<T>(params: {
     systemInstructions: string;
     input: string;
+    /**
+     * 같이 보는 그림. base64(PNG/JPEG), 데이터 URL 접두사 없이.
+     *
+     * 글과 따로 받는 이유는 벤더마다 싣는 모양이 다르기 때문이다 — 호출하는
+     * 쪽이 그 차이를 알 필요는 없다.
+     *
+     * **모든 등급이 그림을 볼 수 있는 것은 아니다.** 값싼 벤더 중에는 아예
+     * 못 보는 것이 있고, 그 경우 조용히 글만 읽고 답하면 사용자는 자기 사진을
+     * 보고 한 말인 줄 안다. 라우터가 그림이 있는 호출을 볼 수 있는 쪽으로
+     * 올려 보낸다.
+     */
+    images?: string[];
     schema: z.ZodType<T>;
     /** Names the schema for logs and provider APIs that require one. */
     schemaName: string;

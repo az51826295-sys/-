@@ -25,6 +25,11 @@ export async function POST(request: Request) {
     messages: messages.slice(-20) as { role: "user" | "assistant"; content: string }[],
     visitor: typeof visitor === "string" ? visitor : undefined,
     conversationId: typeof conversationId === "string" ? conversationId : null,
+    images: Array.isArray((body as { images?: unknown })?.images)
+      ? ((body as { images: unknown[] }).images.filter(
+          (v) => typeof v === "string",
+        ) as string[])
+      : undefined,
   });
   if (!result.ok) {
     return NextResponse.json({ error: result.error }, { status: result.status });
