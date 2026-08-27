@@ -31,8 +31,28 @@ type Rate =
 /** A backend not listed here cannot be used. See `rateFor`. */
 const RATES: Record<string, Rate> = {
   "claude-opus-5": { unit: "tokens", input: 5, output: 25 },
-  "claude-sonnet-5": { unit: "tokens", input: 3, output: 15 },
+  // Corrected 2026-08-27. This had been 3/15, which is the Sonnet **4.6** rate.
+  // The same mistake in a sister project overstated a day of spend by 50%, and
+  // the reason it went unnoticed for so long is that a wrong rate is invisible:
+  // the ledger keeps adding up and every total it produces is wrong by the same
+  // factor. A rate is the one number in a ledger that cannot be checked by
+  // looking at the ledger.
+  "claude-sonnet-5": { unit: "tokens", input: 2, output: 10 },
+  "claude-sonnet-4-6": { unit: "tokens", input: 3, output: 15 },
   "claude-haiku-4-5": { unit: "tokens", input: 1, output: 5 },
+
+  // OpenAI. Published list prices, **not yet reconciled against an invoice** —
+  // recorded here so that when the first bill arrives there is something
+  // specific to check them against. If they are wrong the error is silent, so
+  // the reconciliation is worth doing rather than assuming.
+  "gpt-5": { unit: "tokens", input: 1.25, output: 10 },
+  "gpt-5-mini": { unit: "tokens", input: 0.25, output: 2 },
+
+  // DeepSeek. Published list prices, not yet reconciled against an invoice.
+  // An order of magnitude under the others, which is the entire reason the
+  // cheap tiers exist — and also the reason to keep it out of `judgment`,
+  // because a saving that costs the company a deliverable is not a saving.
+  "deepseek-chat": { unit: "tokens", input: 0.27, output: 1.1 },
 };
 
 /**

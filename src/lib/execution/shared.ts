@@ -1,5 +1,8 @@
 import { createClient } from "@/lib/supabase/server";
 import { createAnthropicProvider } from "@/lib/providers/anthropic";
+import { createOpenAIProvider } from "@/lib/providers/openai";
+import { createDeepSeekProvider } from "@/lib/providers/deepseek";
+import { createRoutedProvider } from "@/lib/providers/router";
 import { createMockAIProvider } from "@/lib/providers/mock";
 import { createTavilySearchProvider } from "@/lib/providers/tavily";
 import { createHttpContentFetcher } from "@/lib/providers/fetcher";
@@ -17,13 +20,48 @@ export interface Providers {
   fetcher: ContentFetcher;
 }
 
+/**
+ * Which vendor runs the work.
+ *
+ * Named in one place because the choice is a fact about today — which vendor is
+ * cheaper this quarter, which one is up — and every call site names the *work*
+ * instead. `AI_PROVIDER=mock` swaps in a deterministic stand-in so the pipeline
+ * can be exercised without model spend; the mock refuses to construct in
+ * production.
+ *
+ * Falling back rather than failing when the named vendor has no key: a company
+ * whose work stops because a second, optional vendor was misconfigured is worse
+ * off than one that quietly keeps using the first.
+ */
+function selectAI(): AIProvider {
+  const named = process.env.AI_PROVIDER;
+  if (named === "mock") return createMockAIProvider();
+
+  // Which vendor writes the deliverables. Said out loud when the configured one
+  // has no key: silently running on a different vendor than the one named makes
+  // every later cost question wrong.
+  let primary: AIProvider;
+  if (named === "openai") {
+    if (process.env.OPENAI_API_KEY) {
+      primary = createOpenAIProvider();
+    } else {
+      console.warn("AI_PROVIDER=openai but OPENAI_API_KEY is unset — using anthropic.");
+      primary = createAnthropicProvider();
+    }
+  } else {
+    primary = createAnthropicProvider();
+  }
+
+  // The cheap seat, used only where a worse answer cannot become a result.
+  // Absent by default: a company that has not configured it keeps the exact
+  // behaviour it had before, on one vendor.
+  const economy = process.env.DEEPSEEK_API_KEY ? createDeepSeekProvider() : undefined;
+
+  return economy ? createRoutedProvider({ primary, economy }) : primary;
+}
+
 export function defaultProviders(): Providers {
-  // AI_PROVIDER=mock swaps in a deterministic stand-in so the pipeline can be
-  // exercised without model spend. The mock refuses to construct in production.
-  const ai =
-    process.env.AI_PROVIDER === "mock"
-      ? createMockAIProvider()
-      : createAnthropicProvider();
+  const ai = selectAI();
 
   return {
     ai,

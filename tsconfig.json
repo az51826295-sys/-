@@ -30,5 +30,8 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts"
   ],
-  "exclude": ["node_modules"]
+  // genesis/ 는 Next 앱이 아니라 node 가 직접 실행하는 독립 시뮬레이터다.
+  // 상대 임포트에 .ts 확장자를 쓰는 것이 그쪽의 요구사항이라 앱 설정과
+  // 맞지 않는다. 검사는 `node --experimental-strip-types` 실행이 대신한다.
+  "exclude": ["node_modules", "genesis"]
 }

@@ -22,6 +22,8 @@ import { ensureAssignmentPolicySnapshot } from "@/lib/policies/resolve";
 import { ensureAssignmentPlaybookSnapshot } from "@/lib/playbooks/resolve";
 import { getEmployeeDefinition } from "@/lib/employees/definitions";
 import { recordPolicyFindings } from "@/lib/policies/validation";
+import { commitPrediction } from "@/lib/genesis/predict";
+import { judgeSelection, selectionNote } from "@/lib/execution/selection";
 
 export { defaultProviders };
 export type { Providers };
@@ -148,6 +150,28 @@ export async function executeEmployeeAssignment(
       ? await loadRecurringHistory(recurringId, execution.assignment_id, supabase)
       : undefined;
 
+    // ── 예측 잠금 ────────────────────────────────────────────────
+    //
+    // 일을 시작하기 전에, 이 일이 매니저의 수정 요청 없이 승인될
+    // 확률을 적어 둔다. 여기가 유일하게 가능한 자리다 — 산출물을
+    // 본 뒤에 적은 예측은 예측이 아니고, 그런 오차는 아무것도 재지
+    // 못한다.
+    //
+    // 실패해도 일은 계속한다. 기억 회상과 같은 규칙이다: 예측을
+    // 남기지 못하는 것은 할 수 있는 일을 거부할 이유가 아니다.
+    await commitPrediction(supabase, {
+      companyId: execution.company_id,
+      assignmentId: execution.assignment_id,
+      workExecutionId: executionId,
+      companyEmployeeId: execution.company_employee_id,
+      features: {
+        skillId: context.skillId,
+        assignmentType,
+        recurring: Boolean(recurringId),
+        memoryCount: memories.length,
+      },
+    });
+
     const result = await skill.run({
       supabase,
       executionId,
@@ -165,9 +189,23 @@ export async function executeEmployeeAssignment(
         runChildAssignment(supabase, providers, childId),
     });
 
+    // How the answer was chosen travels with the numbers it was chosen from.
+    // Recorded rather than enforced: work that selected from too few is still
+    // work the manager should see, and refusing it would leave them with
+    // nothing instead of with something they can judge.
+    const selection = judgeSelection(skill, result.metrics);
+
     await supabase
       .from("work_executions")
-      .update({ metrics_json: result.metrics })
+      .update({
+        metrics_json: {
+          ...result.metrics,
+          selection: {
+            kind: selection.kind,
+            note: selectionNote(selection),
+          },
+        },
+      })
       .eq("id", executionId);
 
     // After the deliverable exists, never instead of it. Work that misses the

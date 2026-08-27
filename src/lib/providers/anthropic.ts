@@ -16,8 +16,16 @@ import { isPriced, UnpricedBackendError } from "@/lib/costs/pricing";
  * takes effect. A worse extraction wastes the manager's attention. It cannot
  * quietly become company knowledge.
  */
-const MODELS: Record<"judgment" | "routine", string> = {
+const MODELS: Record<
+  "judgment" | "verification" | "conversation" | "routine",
+  string
+> = {
   judgment: "claude-opus-5",
+  // Checking a claim against evidence that is already in front of it. The
+  // middle model, because a verification that is wrong is caught by the person
+  // who opens the link, but one that is *lazy* quietly passes bad citations.
+  verification: "claude-sonnet-5",
+  conversation: "claude-haiku-4-5",
   routine: "claude-haiku-4-5",
 };
 

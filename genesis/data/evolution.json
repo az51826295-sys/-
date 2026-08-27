@@ -1,0 +1,437 @@
+[
+  {
+    "generation": 1,
+    "parent": "decay=0.997 prior=0.7 pw=5 eFloor=0.05 eHalf=250 budget=0.2 pairs=off",
+    "gene": "decay",
+    "value": 0.98,
+    "delta": 0.16549999999999987,
+    "decision": "adopted",
+    "reason": "최고 개선",
+    "evaluation": {
+      "approval": 0.8805,
+      "brier": 0.09776994302877327,
+      "recovery": 0.7015,
+      "explorationCost": 0.11200000000000002
+    }
+  },
+  {
+    "generation": 1,
+    "parent": "decay=0.997 prior=0.7 pw=5 eFloor=0.05 eHalf=250 budget=0.2 pairs=off",
+    "gene": "decay",
+    "value": 0.99,
+    "delta": 0.1379999999999999,
+    "decision": "rejected",
+    "reason": "개선 부족 또는 차점",
+    "evaluation": {
+      "approval": 0.853,
+      "brier": 0.15653896090967462,
+      "recovery": 0.599,
+      "explorationCost": 0.11200000000000002
+    }
+  },
+  {
+    "generation": 1,
+    "parent": "decay=0.997 prior=0.7 pw=5 eFloor=0.05 eHalf=250 budget=0.2 pairs=off",
+    "gene": "explorationFloor",
+    "value": 0.2,
+    "delta": 0.0844999999999998,
+    "decision": "rejected",
+    "reason": "적응력 악화 0.0330",
+    "evaluation": {
+      "approval": 0.7994999999999999,
+      "brier": 0.1768482487893222,
+      "recovery": 0.5645,
+      "explorationCost": 0.2
+    }
+  },
+  {
+    "generation": 1,
+    "parent": "decay=0.997 prior=0.7 pw=5 eFloor=0.05 eHalf=250 budget=0.2 pairs=off",
+    "gene": "priorWeight",
+    "value": 10,
+    "delta": 0.07999999999999985,
+    "decision": "rejected",
+    "reason": "개선 부족 또는 차점",
+    "evaluation": {
+      "approval": 0.7949999999999999,
+      "brier": 0.16643525204871723,
+      "recovery": 0.595,
+      "explorationCost": 0.11200000000000002
+    }
+  },
+  {
+    "generation": 1,
+    "parent": "decay=0.997 prior=0.7 pw=5 eFloor=0.05 eHalf=250 budget=0.2 pairs=off",
+    "gene": "explorationHalfLife",
+    "value": 100,
+    "delta": 0.06999999999999984,
+    "decision": "rejected",
+    "reason": "개선 부족 또는 차점",
+    "evaluation": {
+      "approval": 0.7849999999999999,
+      "brier": 0.17001326470776165,
+      "recovery": 0.6024999999999999,
+      "explorationCost": 0.074
+    }
+  },
+  {
+    "generation": 1,
+    "parent": "decay=0.997 prior=0.7 pw=5 eFloor=0.05 eHalf=250 budget=0.2 pairs=off",
+    "gene": "explorationFloor",
+    "value": 0.1,
+    "delta": 0.06199999999999983,
+    "decision": "rejected",
+    "reason": "개선 부족 또는 차점",
+    "evaluation": {
+      "approval": 0.7769999999999999,
+      "brier": 0.18129346631561805,
+      "recovery": 0.589,
+      "explorationCost": 0.147
+    }
+  },
+  {
+    "generation": 1,
+    "parent": "decay=0.997 prior=0.7 pw=5 eFloor=0.05 eHalf=250 budget=0.2 pairs=off",
+    "gene": "prior",
+    "value": 0.85,
+    "delta": 0.027000000000000024,
+    "decision": "rejected",
+    "reason": "개선 부족 또는 차점",
+    "evaluation": {
+      "approval": 0.7420000000000001,
+      "brier": 0.16766626276737212,
+      "recovery": 0.6020000000000001,
+      "explorationCost": 0.11200000000000002
+    }
+  },
+  {
+    "generation": 1,
+    "parent": "decay=0.997 prior=0.7 pw=5 eFloor=0.05 eHalf=250 budget=0.2 pairs=off",
+    "gene": "pairContexts",
+    "value": true,
+    "delta": 0.019999999999999907,
+    "decision": "rejected",
+    "reason": "개선 부족 또는 차점",
+    "evaluation": {
+      "approval": 0.735,
+      "brier": 0.17290446510325813,
+      "recovery": 0.6,
+      "explorationCost": 0.11200000000000002
+    }
+  },
+  {
+    "generation": 1,
+    "parent": "decay=0.997 prior=0.7 pw=5 eFloor=0.05 eHalf=250 budget=0.2 pairs=off",
+    "gene": "budgetFraction",
+    "value": 0.35,
+    "delta": 0,
+    "decision": "rejected",
+    "reason": "개선 부족 또는 차점",
+    "evaluation": {
+      "approval": 0.7150000000000001,
+      "brier": 0.17266435023579169,
+      "recovery": 0.5975,
+      "explorationCost": 0.11200000000000002
+    }
+  },
+  {
+    "generation": 1,
+    "parent": "decay=0.997 prior=0.7 pw=5 eFloor=0.05 eHalf=250 budget=0.2 pairs=off",
+    "gene": "explorationHalfLife",
+    "value": 600,
+    "delta": -0.05400000000000005,
+    "decision": "rejected",
+    "reason": "개선 부족 또는 차점",
+    "evaluation": {
+      "approval": 0.661,
+      "brier": 0.16250097846062106,
+      "recovery": 0.5970000000000001,
+      "explorationCost": 0.189
+    }
+  },
+  {
+    "generation": 1,
+    "parent": "decay=0.997 prior=0.7 pw=5 eFloor=0.05 eHalf=250 budget=0.2 pairs=off",
+    "gene": "explorationFloor",
+    "value": 0.02,
+    "delta": -0.06750000000000012,
+    "decision": "rejected",
+    "reason": "개선 부족 또는 차점",
+    "evaluation": {
+      "approval": 0.6475,
+      "brier": 0.1491187697083315,
+      "recovery": 0.6104999999999999,
+      "explorationCost": 0.091
+    }
+  },
+  {
+    "generation": 1,
+    "parent": "decay=0.997 prior=0.7 pw=5 eFloor=0.05 eHalf=250 budget=0.2 pairs=off",
+    "gene": "prior",
+    "value": 0.5,
+    "delta": -0.07150000000000001,
+    "decision": "rejected",
+    "reason": "개선 부족 또는 차점",
+    "evaluation": {
+      "approval": 0.6435000000000001,
+      "brier": 0.15227464774179605,
+      "recovery": 0.601,
+      "explorationCost": 0.11200000000000002
+    }
+  },
+  {
+    "generation": 1,
+    "parent": "decay=0.997 prior=0.7 pw=5 eFloor=0.05 eHalf=250 budget=0.2 pairs=off",
+    "gene": "budgetFraction",
+    "value": 0.1,
+    "delta": -0.08600000000000008,
+    "decision": "rejected",
+    "reason": "개선 부족 또는 차점",
+    "evaluation": {
+      "approval": 0.629,
+      "brier": 0.14217975774148434,
+      "recovery": 0.5975,
+      "explorationCost": 0.1
+    }
+  },
+  {
+    "generation": 1,
+    "parent": "decay=0.997 prior=0.7 pw=5 eFloor=0.05 eHalf=250 budget=0.2 pairs=off",
+    "gene": "priorWeight",
+    "value": 2,
+    "delta": -0.10450000000000015,
+    "decision": "rejected",
+    "reason": "개선 부족 또는 차점",
+    "evaluation": {
+      "approval": 0.6104999999999999,
+      "brier": 0.14453814404534343,
+      "recovery": 0.6005,
+      "explorationCost": 0.11200000000000002
+    }
+  },
+  {
+    "generation": 1,
+    "parent": "decay=0.997 prior=0.7 pw=5 eFloor=0.05 eHalf=250 budget=0.2 pairs=off",
+    "gene": "decay",
+    "value": 0.9995,
+    "delta": -0.1250000000000001,
+    "decision": "rejected",
+    "reason": "개선 부족 또는 차점",
+    "evaluation": {
+      "approval": 0.59,
+      "brier": 0.1516363015947731,
+      "recovery": 0.6014999999999999,
+      "explorationCost": 0.11200000000000002
+    }
+  },
+  {
+    "generation": 2,
+    "parent": "decay=0.98 prior=0.7 pw=5 eFloor=0.05 eHalf=250 budget=0.2 pairs=off",
+    "gene": "budgetFraction",
+    "value": 0.1,
+    "delta": 0.028999999999999915,
+    "decision": "adopted",
+    "reason": "최고 개선",
+    "evaluation": {
+      "approval": 0.9094999999999999,
+      "brier": 0.09071227276931385,
+      "recovery": 0.7015,
+      "explorationCost": 0.1
+    }
+  },
+  {
+    "generation": 2,
+    "parent": "decay=0.98 prior=0.7 pw=5 eFloor=0.05 eHalf=250 budget=0.2 pairs=off",
+    "gene": "explorationFloor",
+    "value": 0.2,
+    "delta": 0.027000000000000024,
+    "decision": "rejected",
+    "reason": "적응력 악화 0.0545",
+    "evaluation": {
+      "approval": 0.9075,
+      "brier": 0.09444204101397444,
+      "recovery": 0.6469999999999999,
+      "explorationCost": 0.2
+    }
+  },
+  {
+    "generation": 2,
+    "parent": "decay=0.98 prior=0.7 pw=5 eFloor=0.05 eHalf=250 budget=0.2 pairs=off",
+    "gene": "pairContexts",
+    "value": true,
+    "delta": 0.008500000000000063,
+    "decision": "rejected",
+    "reason": "개선 부족 또는 차점",
+    "evaluation": {
+      "approval": 0.889,
+      "brier": 0.10858582905331544,
+      "recovery": 0.6984999999999999,
+      "explorationCost": 0.11200000000000002
+    }
+  },
+  {
+    "generation": 2,
+    "parent": "decay=0.98 prior=0.7 pw=5 eFloor=0.05 eHalf=250 budget=0.2 pairs=off",
+    "gene": "prior",
+    "value": 0.5,
+    "delta": 0.0030000000000001137,
+    "decision": "rejected",
+    "reason": "적응력 악화 0.0335",
+    "evaluation": {
+      "approval": 0.8835000000000001,
+      "brier": 0.1089185380751215,
+      "recovery": 0.6679999999999999,
+      "explorationCost": 0.11200000000000002
+    }
+  },
+  {
+    "generation": 2,
+    "parent": "decay=0.98 prior=0.7 pw=5 eFloor=0.05 eHalf=250 budget=0.2 pairs=off",
+    "gene": "priorWeight",
+    "value": 2,
+    "delta": 0.0010000000000000009,
+    "decision": "rejected",
+    "reason": "적응력 악화 0.0265",
+    "evaluation": {
+      "approval": 0.8815,
+      "brier": 0.10248558974100626,
+      "recovery": 0.675,
+      "explorationCost": 0.11200000000000002
+    }
+  },
+  {
+    "generation": 2,
+    "parent": "decay=0.98 prior=0.7 pw=5 eFloor=0.05 eHalf=250 budget=0.2 pairs=off",
+    "gene": "budgetFraction",
+    "value": 0.35,
+    "delta": 0,
+    "decision": "rejected",
+    "reason": "개선 부족 또는 차점",
+    "evaluation": {
+      "approval": 0.8805,
+      "brier": 0.09776994302877327,
+      "recovery": 0.7015,
+      "explorationCost": 0.11200000000000002
+    }
+  },
+  {
+    "generation": 2,
+    "parent": "decay=0.98 prior=0.7 pw=5 eFloor=0.05 eHalf=250 budget=0.2 pairs=off",
+    "gene": "explorationFloor",
+    "value": 0.02,
+    "delta": -0.0015000000000000568,
+    "decision": "rejected",
+    "reason": "개선 부족 또는 차점",
+    "evaluation": {
+      "approval": 0.8789999999999999,
+      "brier": 0.10541137681071089,
+      "recovery": 0.7055,
+      "explorationCost": 0.091
+    }
+  },
+  {
+    "generation": 2,
+    "parent": "decay=0.98 prior=0.7 pw=5 eFloor=0.05 eHalf=250 budget=0.2 pairs=off",
+    "gene": "explorationHalfLife",
+    "value": 600,
+    "delta": -0.004999999999999893,
+    "decision": "rejected",
+    "reason": "적응력 악화 0.0290",
+    "evaluation": {
+      "approval": 0.8755000000000001,
+      "brier": 0.10296103156588879,
+      "recovery": 0.6725,
+      "explorationCost": 0.189
+    }
+  },
+  {
+    "generation": 2,
+    "parent": "decay=0.98 prior=0.7 pw=5 eFloor=0.05 eHalf=250 budget=0.2 pairs=off",
+    "gene": "priorWeight",
+    "value": 10,
+    "delta": -0.010999999999999899,
+    "decision": "rejected",
+    "reason": "개선 부족 또는 차점",
+    "evaluation": {
+      "approval": 0.8695,
+      "brier": 0.10624183181637772,
+      "recovery": 0.732,
+      "explorationCost": 0.11200000000000002
+    }
+  },
+  {
+    "generation": 2,
+    "parent": "decay=0.98 prior=0.7 pw=5 eFloor=0.05 eHalf=250 budget=0.2 pairs=off",
+    "gene": "prior",
+    "value": 0.85,
+    "delta": -0.0129999999999999,
+    "decision": "rejected",
+    "reason": "적응력 악화 0.0260",
+    "evaluation": {
+      "approval": 0.8675,
+      "brier": 0.10510695795989548,
+      "recovery": 0.6755,
+      "explorationCost": 0.11200000000000002
+    }
+  },
+  {
+    "generation": 2,
+    "parent": "decay=0.98 prior=0.7 pw=5 eFloor=0.05 eHalf=250 budget=0.2 pairs=off",
+    "gene": "explorationHalfLife",
+    "value": 100,
+    "delta": -0.016499999999999848,
+    "decision": "rejected",
+    "reason": "개선 부족 또는 차점",
+    "evaluation": {
+      "approval": 0.8640000000000001,
+      "brier": 0.10615430187378316,
+      "recovery": 0.7055,
+      "explorationCost": 0.074
+    }
+  },
+  {
+    "generation": 2,
+    "parent": "decay=0.98 prior=0.7 pw=5 eFloor=0.05 eHalf=250 budget=0.2 pairs=off",
+    "gene": "decay",
+    "value": 0.99,
+    "delta": -0.02749999999999997,
+    "decision": "rejected",
+    "reason": "Brier 악화 0.0588",
+    "evaluation": {
+      "approval": 0.853,
+      "brier": 0.15653896090967462,
+      "recovery": 0.599,
+      "explorationCost": 0.11200000000000002
+    }
+  },
+  {
+    "generation": 2,
+    "parent": "decay=0.98 prior=0.7 pw=5 eFloor=0.05 eHalf=250 budget=0.2 pairs=off",
+    "gene": "explorationFloor",
+    "value": 0.1,
+    "delta": -0.028999999999999915,
+    "decision": "rejected",
+    "reason": "개선 부족 또는 차점",
+    "evaluation": {
+      "approval": 0.8515,
+      "brier": 0.1038643879414628,
+      "recovery": 0.6990000000000001,
+      "explorationCost": 0.147
+    }
+  },
+  {
+    "generation": 2,
+    "parent": "decay=0.98 prior=0.7 pw=5 eFloor=0.05 eHalf=250 budget=0.2 pairs=off",
+    "gene": "decay",
+    "value": 0.9995,
+    "delta": -0.2905,
+    "decision": "rejected",
+    "reason": "Brier 악화 0.0539",
+    "evaluation": {
+      "approval": 0.59,
+      "brier": 0.1516363015947731,
+      "recovery": 0.6014999999999999,
+      "explorationCost": 0.11200000000000002
+    }
+  }
+]

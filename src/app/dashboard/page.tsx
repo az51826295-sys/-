@@ -68,18 +68,72 @@ export default async function DashboardPage() {
     redirect("/company/new");
   }
 
-  const { data: hireRows } = await supabase
-    .from("company_employees")
-    .select("*, employees(*)")
-    .eq("company_id", company.id);
+  // 서로 독립적인 조회들. 순서대로 기다릴 이유가 없다.
+  const [
+    { data: hireRows },
+    { data: activeRows },
+    { data: pendingRows },
+    { data: recentRows },
+    { data: unstartedRows },
+    { data: recurringRows },
+    { data: waitingRows },
+  ] = await Promise.all([
+    supabase
+      .from("company_employees")
+      .select("*, employees(*)")
+      .eq("company_id", company.id),
+    supabase
+      .from("assignments")
+      .select("*")
+      .eq("company_id", company.id)
+      .in("status", [...ACTIVE_ASSIGNMENT_STATUSES]),
+    supabase
+      .from("deliverables")
+      .select(
+        "*, assignments!inner(id, title, assignment_type), company_employees!deliverables_company_employee_id_fkey(id, employees(name, role))",
+      )
+      .eq("company_id", company.id)
+      .eq("status", "submitted")
+      // Nothing done for a colleague ever waits on the manager's review.
+      .eq("assignments.assignment_type", "manager")
+      .order("submitted_at", { ascending: false }),
+    // The last few things that came back, whatever happened to them afterwards.
+    //
+    // Work and Results left the menu bar, and they had to: neither is a place
+    // anybody goes. What a person actually wants is "what has this company
+    // produced lately", which is a short list, not a filterable table. The
+    // tables still exist and are one click from here.
+    supabase
+      .from("deliverables")
+      .select(
+        "id, title, status, submitted_at, assignments!inner(assignment_type), company_employees!deliverables_company_employee_id_fkey(employees(name))",
+      )
+      .eq("company_id", company.id)
+      .eq("assignments.assignment_type", "manager")
+      .not("submitted_at", "is", null)
+      .order("submitted_at", { ascending: false })
+      .limit(4),
+    supabase
+      .from("projects")
+      .select("id, title")
+      .eq("company_id", company.id)
+      .eq("status", "plan_ready")
+      .order("planned_at", { ascending: false }),
+    supabase
+      .from("recurring_assignments")
+      .select("*, company_employees(id, employees(name))")
+      .eq("company_id", company.id)
+      .in("status", ["active", "paused"]),
+    supabase
+      .from("recurring_assignment_occurrences")
+      .select("id, recurring_assignment_id, company_employee_id, scheduled_for")
+      .eq("company_id", company.id)
+      .eq("status", "waiting")
+      .order("scheduled_for", { ascending: true })
+      .limit(5),
+  ]);
 
   const hires = (hireRows ?? []) as (CompanyEmployee & { employees: Employee })[];
-
-  const { data: activeRows } = await supabase
-    .from("assignments")
-    .select("*")
-    .eq("company_id", company.id)
-    .in("status", [...ACTIVE_ASSIGNMENT_STATUSES]);
 
   const active = (activeRows ?? []) as Assignment[];
 
@@ -97,47 +151,12 @@ export default async function DashboardPage() {
     }
   }
 
-  const { data: pendingRows } = await supabase
-    .from("deliverables")
-    .select(
-      "*, assignments!inner(id, title, assignment_type), company_employees!deliverables_company_employee_id_fkey(id, employees(name, role))",
-    )
-    .eq("company_id", company.id)
-    .eq("status", "submitted")
-    // Nothing done for a colleague ever waits on the manager's review.
-    .eq("assignments.assignment_type", "manager")
-    .order("submitted_at", { ascending: false });
-
   const pending = (pendingRows ?? []) as (Deliverable & {
     assignments: Pick<Assignment, "id" | "title">;
     company_employees: { id: string; employees: Pick<Employee, "name" | "role"> };
   })[];
 
   const pendingByEmployee = new Map(pending.map((d) => [d.company_employee_id, d]));
-
-  // The last few things that came back, whatever happened to them afterwards.
-  //
-  // Work and Results left the menu bar, and they had to: neither is a place
-  // anybody goes. What a person actually wants is "what has this company
-  // produced lately", which is a short list, not a filterable table. The
-  // tables still exist and are one click from here.
-  const { data: recentRows } = await supabase
-    .from("deliverables")
-    .select(
-      "id, title, status, submitted_at, assignments!inner(assignment_type), company_employees!deliverables_company_employee_id_fkey(employees(name))",
-    )
-    .eq("company_id", company.id)
-    .eq("assignments.assignment_type", "manager")
-    .not("submitted_at", "is", null)
-    .order("submitted_at", { ascending: false })
-    .limit(4);
-
-  const { data: unstartedRows } = await supabase
-    .from("projects")
-    .select("id, title")
-    .eq("company_id", company.id)
-    .eq("status", "plan_ready")
-    .order("planned_at", { ascending: false });
 
   const unstartedProjects = (unstartedRows ?? []) as {
     id: string;
@@ -183,12 +202,6 @@ export default async function DashboardPage() {
   const countOf = (...states: AttentionState[]) =>
     cards.filter((card) => states.includes(card.state)).length;
 
-  const { data: recurringRows } = await supabase
-    .from("recurring_assignments")
-    .select("*, company_employees(id, employees(name))")
-    .eq("company_id", company.id)
-    .in("status", ["active", "paused"]);
-
   const recurring = (recurringRows ?? []) as (RecurringAssignmentRow & {
     company_employees: { id: string; employees: { name: string } };
   })[];
@@ -207,14 +220,6 @@ export default async function DashboardPage() {
     (row) => row.status === "paused" && row.pause_reason,
   );
 
-  const { data: waitingRows } = await supabase
-    .from("recurring_assignment_occurrences")
-    .select("id, recurring_assignment_id, company_employee_id, scheduled_for")
-    .eq("company_id", company.id)
-    .eq("status", "waiting")
-    .order("scheduled_for", { ascending: true })
-    .limit(5);
-
   const waiting = (waitingRows ?? []) as {
     id: string;
     recurring_assignment_id: string;
@@ -226,31 +231,55 @@ export default async function DashboardPage() {
 
   // What is left rather than what has gone: the allowance is the number that
   // decides whether the next click will work.
-  const allowance = await checkAllowance(supabase, company.id);
+  // ── 한 번에 다녀온다 ────────────────────────────────────────────
+  //
+  // 아래 것들은 서로를 필요로 하지 않는다. 그런데 예전에는 한 줄씩
+  // 차례로 await 해서, 원격 DB 왕복 300~400ms가 그대로 줄을 섰다.
+  // 대시보드 하나 여는 데 7~10초가 걸린 이유가 이것이었다.
+  //
+  // 순서가 필요한 두 쌍만 안에서 이어 붙인다:
+  //   ensureOrganization → loadOrganization  (조직을 맞춘 뒤 읽어야 한다)
+  //   getCurrentCycle    → loadCycleDetail   (사이클을 알아야 상세를 읽는다)
+  const [
+    allowance,
+    organization,
+    standards,
+    playbooks,
+    learning,
+    health,
+    planning,
+    evolution,
+    operation,
+    projectResult,
+  ] = await Promise.all([
+    checkAllowance(supabase, company.id),
+    // Reconciled here too, because the dashboard is where most people land
+    // first and an employee with no department would make every routing
+    // decision below quietly wrong.
+    ensureOrganization(supabase, company.id).then(() =>
+      loadOrganization(supabase, company.id),
+    ),
+    loadPolicySummary(supabase, company.id),
+    loadPlaybookSummary(supabase, company.id),
+    loadLearningSummary(supabase, company.id),
+    loadHealthSummary(supabase, company.id),
+    loadPlanningSummary(supabase, company.id),
+    loadEvolutionSummary(supabase, company.id),
+    getCurrentCycle().then(async (current) => ({
+      current,
+      detail: current ? await loadCycleDetail(current.id) : null,
+    })),
+    supabase
+      .from("projects")
+      .select("id, title, goal, status")
+      .eq("company_id", company.id)
+      .in("status", ["planning", "working", "merging", "reviewing"])
+      .order("created_at", { ascending: false }),
+  ]);
 
-  // Reconciled here too, because the dashboard is where most people land first
-  // and an employee with no department would make every routing decision below
-  // quietly wrong.
-  await ensureOrganization(supabase, company.id);
-  const organization = await loadOrganization(supabase, company.id);
-  const standards = await loadPolicySummary(supabase, company.id);
-  const playbooks = await loadPlaybookSummary(supabase, company.id);
-  const learning = await loadLearningSummary(supabase, company.id);
-  const health = await loadHealthSummary(supabase, company.id);
-  const planning = await loadPlanningSummary(supabase, company.id);
-  const evolution = await loadEvolutionSummary(supabase, company.id);
-
-  const currentOperation = await getCurrentCycle();
-  const operationDetail = currentOperation
-    ? await loadCycleDetail(currentOperation.id)
-    : null;
-
-  const { data: projectRows } = await supabase
-    .from("projects")
-    .select("id, title, goal, status")
-    .eq("company_id", company.id)
-    .in("status", ["planning", "working", "merging", "reviewing"])
-    .order("created_at", { ascending: false });
+  const currentOperation = operation.current;
+  const operationDetail = operation.detail;
+  const projectRows = projectResult.data;
 
   const activeProjects = (projectRows ?? []) as {
     id: string;
@@ -263,14 +292,23 @@ export default async function DashboardPage() {
     (project) => project.status === "reviewing",
   );
 
-  const { data: collaborationRows } = await supabase
-    .from("internal_requests")
-    .select(
-      "id, title, requester:company_employees!internal_requests_requester_company_employee_id_fkey(employees(name)), assignee:company_employees!internal_requests_assignee_company_employee_id_fkey(employees(name))",
-    )
-    .eq("company_id", company.id)
-    .in("status", ["pending", "working"])
-    .limit(5);
+  const [{ data: collaborationRows }, { data: initiativeRows }] = await Promise.all([
+    supabase
+      .from("internal_requests")
+      .select(
+        "id, title, requester:company_employees!internal_requests_requester_company_employee_id_fkey(employees(name)), assignee:company_employees!internal_requests_assignee_company_employee_id_fkey(employees(name))",
+      )
+      .eq("company_id", company.id)
+      .in("status", ["pending", "working"])
+      .limit(5),
+    supabase
+      .from("initiatives")
+      .select("id, title, recommendation, confidence, company_employees(employees(name))")
+      .eq("company_id", company.id)
+      .eq("status", "new")
+      .order("confidence_score", { ascending: false })
+      .limit(5),
+  ]);
 
   const collaborating = ((collaborationRows ?? []) as unknown as {
     id: string;
@@ -283,14 +321,6 @@ export default async function DashboardPage() {
     requesterName: row.requester?.employees?.name ?? "An employee",
     assigneeName: row.assignee?.employees?.name ?? "a colleague",
   }));
-
-  const { data: initiativeRows } = await supabase
-    .from("initiatives")
-    .select("id, title, recommendation, confidence, company_employees(employees(name))")
-    .eq("company_id", company.id)
-    .eq("status", "new")
-    .order("confidence_score", { ascending: false })
-    .limit(5);
 
   const initiatives = (initiativeRows ?? []) as unknown as {
     id: string;

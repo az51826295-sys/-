@@ -18,9 +18,28 @@ import type { z } from "zod";
  * money, and getting it wrong the other way costs the product.
  */
 export type WorkTier =
-  /** The answer is the product: research, deliverables, plans, decisions the
-   *  manager will act on. Never cheapened. */
+  /** The answer is the product: reports, deliverables, plans, decisions the
+   *  manager will act on. Never cheapened — this is what the company sells. */
   | "judgment"
+  /**
+   * Checking a claim against something that already exists — does this app do
+   * what the listing says, does this page still say what we cited, does this
+   * number match the source.
+   *
+   * Separated from `judgment` because the answer is bounded: there is a right
+   * answer sitting in the evidence, and being wrong shows up immediately when
+   * someone opens the link. It does not need the model that writes the report.
+   */
+  | "verification"
+  /**
+   * Talking. Answering a question, acknowledging, asking what someone meant.
+   *
+   * The cheapest tier, and safe to be cheap for a reason that is structural
+   * rather than optimistic: nothing here is written down as a result. A worse
+   * reply is a worse sentence in a conversation the person is already in, and
+   * they will say so in the next message.
+   */
+  | "conversation"
   /** Restating what already happened — summarising, extracting, labelling —
    *  where the evidence is in the input and the call is not deciding anything
    *  a person will not see before it matters. */

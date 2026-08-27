@@ -42,7 +42,9 @@ export interface SkillRunContext {
 export interface SkillMetrics {
   searchCount?: number;
   sourceCount?: number;
+  /** How many were considered. Required when the skill declares `selects`. */
   candidateCount?: number;
+  /** How many were kept. Required when the skill declares `selects`. */
   selectedCount?: number;
 }
 
@@ -95,6 +97,18 @@ export interface EmployeeSkill {
   capabilities: SkillCapability[];
   /** Whether this employee accepts work from colleagues at all. */
   acceptsInternalRequests: boolean;
+  /**
+   * Whether the answer is chosen from several, rather than being the only one
+   * there was.
+   *
+   * Set this and the engine will check the candidate counts and tell the
+   * manager what the choice was made from. Leaving it false says the work
+   * produces its result directly, which is a claim the engine takes at face
+   * value — so it is worth being honest about, because a skill that quietly
+   * generates once and calls it a selection is exactly what this exists to
+   * surface.
+   */
+  selects?: boolean;
   run(ctx: SkillRunContext): Promise<SkillExecutionResult>;
 }
 
