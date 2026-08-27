@@ -25,7 +25,6 @@ import {
   attentionStateFor,
   compareByAttention,
   labelForDeliverableType,
-  onboardingCta,
   type AttentionState,
 } from "@/lib/assignments/workforce";
 import { formatInZone } from "@/lib/schedule/time";
