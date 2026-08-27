@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import Link from "next/link";
+import Icon from "@/components/Icon";
 
 /**
  * 회사에게 말을 거는 화면.
@@ -324,8 +325,8 @@ export default function AskClient({
         }}
         className="flex gap-2 border-t border-neutral-200 py-3 dark:border-neutral-800"
       >
-        <label className="flex cursor-pointer items-center rounded-xl border border-neutral-300 px-3 text-lg text-neutral-500 hover:bg-neutral-100 dark:border-neutral-700 dark:hover:bg-neutral-900">
-          +
+        <label className="flex cursor-pointer items-center rounded-xl border border-neutral-300 px-3 text-neutral-500 hover:bg-neutral-100 dark:border-neutral-700 dark:hover:bg-neutral-900">
+          <Icon name="attach" size={20} />
           <input
             type="file"
             accept="image/*"

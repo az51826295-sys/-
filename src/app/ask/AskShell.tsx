@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Icon from "@/components/Icon";
 
 type Saved = { id: string; title: string | null; mode: string; updated_at: string };
 
@@ -58,11 +59,7 @@ export default function AskShell({
           aria-label="설정"
           className="flex h-9 w-9 items-center justify-center rounded-full text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-900"
         >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-            <circle cx="12" cy="5" r="1.8" />
-            <circle cx="12" cy="12" r="1.8" />
-            <circle cx="12" cy="19" r="1.8" />
-          </svg>
+          <Icon name="settings" size={18} />
         </button>
 
         {open && (
@@ -77,14 +74,16 @@ export default function AskShell({
                   선으로 갈라 놓고, 되돌릴 수 없는 것(로그아웃)은 맨 아래 따로 둔다.
                 */}
                 <section>
-                  <p className="px-3 py-1.5 text-[11px] uppercase tracking-wide text-neutral-400">
-                    대화
+                  <p className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] uppercase tracking-wide text-neutral-400">
+                    <Icon name="history" size={12} />대화
                   </p>
                   <a
                     className="block rounded-lg px-3 py-2 text-sm hover:bg-neutral-100 dark:hover:bg-neutral-900"
                     href="/ask"
                   >
-                    새 대화
+                    <span className="flex items-center gap-2">
+                      <Icon name="chat" size={16} />새 대화
+                    </span>
                   </a>
                   {saved.length > 0 && (
                     <ul className="max-h-56 overflow-y-auto">
@@ -110,7 +109,9 @@ export default function AskShell({
                     className="block rounded-lg px-3 py-2 text-sm hover:bg-neutral-100 dark:hover:bg-neutral-900"
                     href="/dashboard"
                   >
-                    직원과 업무
+                    <span className="flex items-center gap-2">
+                      <Icon name="company" size={16} />직원과 업무
+                    </span>
                   </a>
                 </section>
 
@@ -123,7 +124,9 @@ export default function AskShell({
                       type="submit"
                       className="w-full rounded-lg px-3 py-2 text-left text-sm text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-900"
                     >
-                      로그아웃
+                      <span className="flex items-center gap-2">
+                        <Icon name="signout" size={16} />로그아웃
+                      </span>
                     </button>
                   </form>
                 </section>
