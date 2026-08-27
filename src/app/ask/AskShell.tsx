@@ -69,47 +69,64 @@ export default function AskShell({
           <div className="mt-1 w-60 rounded-xl border border-neutral-200 bg-white p-1.5 shadow-lg dark:border-neutral-800 dark:bg-neutral-950">
             {me?.email ? (
               <>
-                <p className="truncate px-3 py-2 text-xs text-neutral-500">
-                  {me.email}
-                </p>
-                <a
-                  className="block rounded-lg px-3 py-2 text-sm hover:bg-neutral-100 dark:hover:bg-neutral-900"
-                  href="/ask"
-                >
-                  새 대화
-                </a>
-                <a
-                  className="block rounded-lg px-3 py-2 text-sm hover:bg-neutral-100 dark:hover:bg-neutral-900"
-                  href="/dashboard"
-                >
-                  회사 관리
-                </a>
+                {/*
+                  섹션을 나눈다.
 
-                {saved.length > 0 && (
-                  <div className="mt-1 border-t border-neutral-200 pt-1 dark:border-neutral-800">
-                    <p className="px-3 py-1 text-xs text-neutral-500">지난 대화</p>
-                    <ul className="max-h-64 overflow-y-auto">
+                  로그아웃과 지난 대화가 한 덩어리에 붙어 있으면, 대화를 고르려다
+                  로그아웃을 누르는 일이 생긴다 — 특히 폰에서. 성격이 다른 것은
+                  선으로 갈라 놓고, 되돌릴 수 없는 것(로그아웃)은 맨 아래 따로 둔다.
+                */}
+                <section>
+                  <p className="px-3 py-1.5 text-[11px] uppercase tracking-wide text-neutral-400">
+                    대화
+                  </p>
+                  <a
+                    className="block rounded-lg px-3 py-2 text-sm hover:bg-neutral-100 dark:hover:bg-neutral-900"
+                    href="/ask"
+                  >
+                    새 대화
+                  </a>
+                  {saved.length > 0 && (
+                    <ul className="max-h-56 overflow-y-auto">
                       {saved.map((c) => (
                         <li key={c.id}>
                           <a
                             href={`/ask?c=${c.id}`}
-                            className="block truncate rounded-lg px-3 py-1.5 text-sm hover:bg-neutral-100 dark:hover:bg-neutral-900"
+                            className="block truncate rounded-lg px-3 py-1.5 text-sm text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-900"
                           >
                             {c.title || "(제목 없음)"}
                           </a>
                         </li>
                       ))}
                     </ul>
-                  </div>
-                )}
-                <form action="/api/auth/signout" method="post">
-                  <button
-                    type="submit"
-                    className="w-full rounded-lg px-3 py-2 text-left text-sm text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-900"
+                  )}
+                </section>
+
+                <section className="mt-1 border-t border-neutral-200 pt-1 dark:border-neutral-800">
+                  <p className="px-3 py-1.5 text-[11px] uppercase tracking-wide text-neutral-400">
+                    회사
+                  </p>
+                  <a
+                    className="block rounded-lg px-3 py-2 text-sm hover:bg-neutral-100 dark:hover:bg-neutral-900"
+                    href="/dashboard"
                   >
-                    로그아웃
-                  </button>
-                </form>
+                    직원과 업무
+                  </a>
+                </section>
+
+                <section className="mt-1 border-t border-neutral-200 pt-1 dark:border-neutral-800">
+                  <p className="truncate px-3 py-1.5 text-[11px] text-neutral-400">
+                    {me.email}
+                  </p>
+                  <form action="/api/auth/signout" method="post">
+                    <button
+                      type="submit"
+                      className="w-full rounded-lg px-3 py-2 text-left text-sm text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-900"
+                    >
+                      로그아웃
+                    </button>
+                  </form>
+                </section>
               </>
             ) : (
               <>
