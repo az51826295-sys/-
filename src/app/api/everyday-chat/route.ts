@@ -20,9 +20,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "No messages." }, { status: 400 });
   }
   const visitor = (body as { visitor?: unknown })?.visitor;
+  const conversationId = (body as { conversationId?: unknown })?.conversationId;
   const result = await runEverydayTurn({
     messages: messages.slice(-20) as { role: "user" | "assistant"; content: string }[],
     visitor: typeof visitor === "string" ? visitor : undefined,
+    conversationId: typeof conversationId === "string" ? conversationId : null,
   });
   if (!result.ok) {
     return NextResponse.json({ error: result.error }, { status: result.status });

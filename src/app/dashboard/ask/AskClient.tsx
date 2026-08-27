@@ -48,11 +48,20 @@ type Turn = {
   images?: { dataUrl: string; prompt: string }[] | null;
 };
 
-export default function AskClient() {
+export default function AskClient({
+  initial,
+}: {
+  /** 저장된 대화를 열고 들어올 때. 없으면 새 대화다. */
+  initial?: { id: string; turns: Turn[] } | null;
+} = {}) {
   const [mode, setMode] = useState<Mode>("everyday");
   /** 익명일 때 남은 횟수. 로그인 상태면 null 이라 아무것도 안 보인다. */
   const [turnsLeft, setTurnsLeft] = useState<number | null>(null);
-  const [turns, setTurns] = useState<Turn[]>([]);
+  /** 이어서 저장할 대화. 새 대화면 null 이고 첫 턴 뒤에 서버가 채워 준다. */
+  const [conversationId, setConversationId] = useState<string | null>(
+    initial?.id ?? null,
+  );
+  const [turns, setTurns] = useState<Turn[]>(initial?.turns ?? []);
   const [text, setText] = useState("");
   const [busy, setBusy] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
@@ -73,6 +82,7 @@ export default function AskClient() {
           body: JSON.stringify({
             messages: history.map((t) => ({ role: t.role, content: t.content })),
             visitor: visitorId(),
+            conversationId,
           }),
         },
       );
@@ -95,6 +105,8 @@ export default function AskClient() {
           },
         ]);
         if (typeof data.turnsLeft === "number") setTurnsLeft(data.turnsLeft);
+        if (typeof data.conversationId === "string")
+          setConversationId(data.conversationId);
       }
     } catch {
       setTurns([...history, { role: "assistant", content: "연결이 끊겼습니다." }]);

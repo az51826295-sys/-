@@ -6,6 +6,7 @@ import { defaultProviders } from "@/lib/execution/shared";
 import { speakerFor, speakerNote } from "@/lib/chat/persona";
 import { createImageProvider } from "@/lib/providers/images";
 import { checkAnonymous, recordAnonymous } from "@/lib/chat/anonymous";
+import { saveTurn } from "@/lib/chat/conversations";
 
 /**
  * 일상 모드 — 회사 밖의 대화.
@@ -25,6 +26,8 @@ export type EverydayInput = {
   messages: { role: "user" | "assistant"; content: string }[];
   /** 로그인 안 한 사람이 브라우저에 들고 다니는 값. 사람을 식별하지 않는다. */
   visitor?: string;
+  /** 이어서 저장할 대화. 없으면 새로 만든다. 익명이면 무시된다. */
+  conversationId?: string | null;
 };
 
 export type EverydaySource = { title: string; url: string };
@@ -39,6 +42,8 @@ export type EverydayResult =
       images: EverydayImage[];
       /** 익명일 때 남은 횟수. 로그인 상태면 null. */
       turnsLeft: number | null;
+      /** 저장된 대화 id. 익명이거나 저장에 실패하면 null. */
+      conversationId: string | null;
     }
   | { ok: false; error: string; status: number };
 
@@ -119,6 +124,7 @@ export async function runEverydayTurn(
       searched: [],
       images: [],
       turnsLeft,
+      conversationId: null,
     };
   }
 
@@ -199,15 +205,30 @@ export async function runEverydayTurn(
     }
   }
 
+  const lastUser =
+    [...input.messages].reverse().find((m) => m.role === "user")?.content ?? "";
+
   if (queries.length === 0) {
     const note = drawFailures.length ? "\n\n" + drawFailures.join("\n") : "";
+    const reply =
+      (plan.reply ?? (images.length ? "그렸습니다." : "무엇을 도와드릴까요?")) + note;
+    // 저장 실패가 답을 삼키지 않는다. 기록 한 줄이 빠지는 편이 낫다.
+    const conversationId = user
+      ? await saveTurn(supabase, user.id, {
+          conversationId: input.conversationId ?? null,
+          mode: "everyday",
+          user: { role: "user", content: lastUser },
+          assistant: { role: "assistant", content: reply, attachments: { images } },
+        })
+      : null;
     return {
       ok: true,
-      reply: (plan.reply ?? (images.length ? "그렸습니다." : "무엇을 도와드릴까요?")) + note,
+      reply,
       sources: [],
       searched: [],
       images,
       turnsLeft,
+      conversationId,
     };
   }
 
@@ -248,14 +269,30 @@ export async function runEverydayTurn(
   });
 
   const used = new Set(answer.usedUrls);
+  const sources = found.filter((s) => used.has(s.url));
+  const reply =
+    answer.reply + (drawFailures.length ? "\n\n" + drawFailures.join("\n") : "");
+  const conversationId = user
+    ? await saveTurn(supabase, user.id, {
+        conversationId: input.conversationId ?? null,
+        mode: "everyday",
+        user: { role: "user", content: lastUser },
+        assistant: {
+          role: "assistant",
+          content: reply,
+          // 출처와 그린 그림도 같이 남긴다. 대화를 다시 열었을 때 답만 있고
+          // 근거가 없으면, 그때 무엇을 보고 그렇게 답했는지 알 수 없다.
+          attachments: { images, sources, searched: queries },
+        },
+      })
+    : null;
   return {
     ok: true,
-    reply:
-      answer.reply +
-      (drawFailures.length ? "\n\n" + drawFailures.join("\n") : ""),
-    sources: found.filter((s) => used.has(s.url)),
+    reply,
+    sources,
     searched: queries,
     images,
+    conversationId,
     turnsLeft,
   };
 }
