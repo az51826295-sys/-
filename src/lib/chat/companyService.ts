@@ -46,7 +46,17 @@ export type CompanyChatResult =
   | { ok: false; error: string; status: number };
 
 const routeSchema = z.object({
-  /** 매니저에게 하는 답. 회사의 목소리로, 두세 문장. */
+  /**
+   * 매니저에게 하는 답. **그 자리에서 쓸 만해야 한다.**
+   *
+   * 처음 만들 때 이 자리는 "누구에게 맡길지 정했습니다" 같은 접수 확인이었다.
+   * 그러면 첫 턴에 사용자가 받는 것이 절차뿐이고, 같은 질문을 ChatGPT에
+   * 쳤을 때보다 **나쁘다** — 거기서는 즉시 답이 나온다.
+   *
+   * 우리 장점(회사를 안다, 검증한다, 없을 때도 일한다)은 전부 두 번째 요청부터
+   * 나타난다. 그러니 첫 턴에서 지면 두 번째 턴을 볼 사람이 없다. 답을 먼저
+   * 주고, 뽑고 배정하는 것은 그 뒤에 조용히 붙인다.
+   */
   reply: z.string(),
   /**
    * 이 일을 할 수 있는 능력 id. 잡담·질문이면 null.
@@ -126,8 +136,10 @@ export async function runCompanyChatTurn(
     input: input.messages.map((m) => `${m.role}: ${m.content}`).join("\n"),
     schema: routeSchema,
     schemaName: "company_chat_route",
-    maxTokens: 2000,
-    tier: "verification",
+    // 답이 곧 사용자가 받는 물건이므로 깎지 않는다. 이 호출은 라우팅만 하는
+    // 것이 아니라 **첫 답을 쓰는** 호출이다.
+    maxTokens: 8000,
+    tier: "judgment",
   });
 
   // 모델이 지어낸 id를 그대로 믿지 않는다. 목록에 없으면 잡담으로 떨어뜨린다.
@@ -208,9 +220,12 @@ export async function runCompanyChatTurn(
     return {
       ok: true,
       reply:
-        `${hireName} 을(를) 뽑았습니다 — ${output.why ?? matched.label}. ` +
-        `다만 회사에 대해 아직 아무것도 모르는 상태라, 짧은 교육을 마쳐야 ` +
-        `일을 받을 수 있습니다.`,
+        `${output.reply}
+
+` +
+        `이어서 깊게 파려고 ${hireName} 을(를) 붙였습니다 — ` +
+        `${output.why ?? matched.label}. 회사에 대해 몇 가지만 알려주면 ` +
+        `바로 착수합니다.`,
       hired,
       routedTo: null,
       assignment: null,
@@ -227,9 +242,14 @@ export async function runCompanyChatTurn(
   });
   if (!turn.ok) return turn;
 
+  // 접수 담당의 답이 먼저다. 담당자가 덧붙인 말은 그 뒤에 잇는다 — 순서를
+  // 뒤집으면 사용자가 처음 읽는 문장이 절차가 된다.
+  const tail = turn.reply?.trim();
   return {
     ok: true,
-    reply: hired ? `${hired.name} 에게 맡겼습니다. ${turn.reply}` : turn.reply,
+    reply: tail && tail !== output.reply ? `${output.reply}
+
+${tail}` : output.reply,
     hired,
     routedTo: { id: hireId, name: hireName },
     assignment: turn.assignment,
