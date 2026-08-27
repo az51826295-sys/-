@@ -17,10 +17,21 @@ interface TavilyResult {
  * the ContentFetcher.
  */
 export function createTavilySearchProvider(): SearchProvider {
-  const apiKey = process.env.TAVILY_API_KEY;
-  if (!apiKey) {
-    throw new Error("TAVILY_API_KEY is not set.");
-  }
+  /**
+   * The key is read when a search actually happens, not when the provider is
+   * built.
+   *
+   * Every caller gets the whole provider set from one place, so building this
+   * eagerly meant a missing search key killed features that never search — a
+   * chat turn died with "TAVILY_API_KEY is not set", which is true and also
+   * completely beside the point for someone who just typed a message. Deferring
+   * the check moves the error to the moment it is the real problem.
+   */
+  const keyOrThrow = () => {
+    const apiKey = process.env.TAVILY_API_KEY;
+    if (!apiKey) throw new Error("TAVILY_API_KEY is not set.");
+    return apiKey;
+  };
 
   return {
     name: "tavily",
@@ -30,7 +41,7 @@ export function createTavilySearchProvider(): SearchProvider {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${apiKey}`,
+          Authorization: `Bearer ${keyOrThrow()}`,
         },
         body: JSON.stringify({
           query,
