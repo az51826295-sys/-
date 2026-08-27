@@ -48,6 +48,11 @@ const RATES: Record<string, Rate> = {
   "gpt-5": { unit: "tokens", input: 1.25, output: 10 },
   "gpt-5-mini": { unit: "tokens", input: 0.25, output: 2 },
 
+  // 이미지. 이 모델은 **이미지 토큰**으로 값을 매기므로 단위가 토큰인 것이 맞다 —
+  // 장당 정액이 아니다. 저품질 1024×1024 한 장이 출력 196토큰으로 실측됐다.
+  // 공표가이고 아직 청구서와 대조되지 않았다.
+  "gpt-image-2": { unit: "tokens", input: 5, output: 40 },
+
   // DeepSeek. Published list prices, not yet reconciled against an invoice.
   // An order of magnitude under the others, which is the entire reason the
   // cheap tiers exist — and also the reason to keep it out of `judgment`,

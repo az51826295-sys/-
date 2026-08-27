@@ -4,6 +4,8 @@ import { blockedBySpendLimit } from "@/lib/costs/allowance";
 import { meterProviders } from "@/lib/costs/meter";
 import { defaultProviders } from "@/lib/execution/shared";
 import { speakerFor, speakerNote } from "@/lib/chat/persona";
+import { createImageProvider } from "@/lib/providers/images";
+import { checkAnonymous, recordAnonymous } from "@/lib/chat/anonymous";
 
 /**
  * 일상 모드 — 회사 밖의 대화.
@@ -21,12 +23,23 @@ import { speakerFor, speakerNote } from "@/lib/chat/persona";
 
 export type EverydayInput = {
   messages: { role: "user" | "assistant"; content: string }[];
+  /** 로그인 안 한 사람이 브라우저에 들고 다니는 값. 사람을 식별하지 않는다. */
+  visitor?: string;
 };
 
 export type EverydaySource = { title: string; url: string };
+export type EverydayImage = { dataUrl: string; prompt: string };
 
 export type EverydayResult =
-  | { ok: true; reply: string; sources: EverydaySource[]; searched: string[] }
+  | {
+      ok: true;
+      reply: string;
+      sources: EverydaySource[];
+      searched: string[];
+      images: EverydayImage[];
+      /** 익명일 때 남은 횟수. 로그인 상태면 null. */
+      turnsLeft: number | null;
+    }
   | { ok: false; error: string; status: number };
 
 const firstPass = z.object({
@@ -42,6 +55,13 @@ const firstPass = z.object({
    * 답을 낫게 하지 않고 느리게만 한다.
    */
   searches: z.array(z.string()),
+  /**
+   * 그릴 그림의 묘사. **그려 달라고 했을 때만** 채운다.
+   *
+   * 설명으로 될 것을 그림으로 내면 느리고 비싸기만 하다. 반대로 "이거 그려줘"
+   * 에 글로 답하는 것은 못 들은 것이다. 그 경계는 사용자가 정한다.
+   */
+  drawings: z.array(z.string()),
 });
 
 const answerPass = z.object({
@@ -51,6 +71,8 @@ const answerPass = z.object({
 });
 
 const MAX_SEARCHES = 3;
+/** 한 턴에 그리는 그림 수. 넘게 그리면 느리고 비싸다. */
+const MAX_DRAWINGS = 2;
 const RESULTS_PER_SEARCH = 5;
 
 export async function runEverydayTurn(
@@ -60,15 +82,33 @@ export async function runEverydayTurn(
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { ok: false, error: "Not signed in.", status: 401 };
+  // 로그인 없이도 대화는 된다. 값어치를 보기 전에 가입을 요구하면 대부분 닫는다 —
+  // 로그인을 묻는 자리는 벽이 아니라 "이어서 하시려면" 이어야 한다.
+  //
+  // 다만 익명도 돈을 쓰므로 문지기를 먼저 지난다. `anonymous.ts` 에 왜 세 겹인지
+  // 적어 뒀다.
+  let turnsLeft: number | null = null;
+  if (!user) {
+    const visitor = (input.visitor ?? "").trim();
+    if (!visitor) {
+      return { ok: false, error: "방문자 표시가 없습니다.", status: 400 };
+    }
+    const gate = await checkAnonymous(visitor);
+    if (!gate.allowed) {
+      return { ok: false, error: gate.why, status: 429 };
+    }
+    turnsLeft = gate.turnsLeft;
+  }
 
   // 회사가 없어도 일상 모드는 돈다. 다만 회사가 있으면 그 한도 안에서 쓴다 —
   // 개인 대화가 회사 한도를 우회하는 구멍이 되면 안 된다.
-  const { data: company } = await supabase
-    .from("companies")
-    .select("id")
-    .eq("owner_id", user.id)
-    .maybeSingle();
+  const { data: company } = user
+    ? await supabase
+        .from("companies")
+        .select("id")
+        .eq("owner_id", user.id)
+        .maybeSingle()
+    : { data: null };
   const companyId = (company?.id as string | undefined) ?? null;
 
   if (companyId && (await blockedBySpendLimit(supabase, companyId))) {
@@ -77,6 +117,8 @@ export async function runEverydayTurn(
       reply: "이번 기간 지출 한도에 걸려 있습니다. 한도가 리셋되면 이어서 하겠습니다.",
       sources: [],
       searched: [],
+      images: [],
+      turnsLeft,
     };
   }
 
@@ -84,7 +126,7 @@ export async function runEverydayTurn(
     ? meterProviders(defaultProviders(), supabase, { companyId })
     : defaultProviders();
 
-  const speaker = await speakerFor(supabase, user.id);
+  const speaker = user ? await speakerFor(supabase, user.id) : null;
 
   const transcript = input.messages
     .map((m) => `${m.role}: ${m.content}`)
@@ -98,23 +140,74 @@ export async function runEverydayTurn(
       "짧게 자르지 말고 물은 만큼 답한다.\n" +
       "- 최신 사실·가격·뉴스·특정 문서처럼 **찾아봐야 정확한 것**이면 " +
       "`reply` 를 비우고 `searches` 에 검색어를 최대 3개 쓴다.\n\n" +
-      "확실하지 않은데 아는 척하지 마라. 그럴 때가 검색할 때다." +
+      "확실하지 않은데 아는 척하지 마라. 그럴 때가 검색할 때다.\n\n" +
+      "**그림**: 사용자가 그려 달라고 하면 `drawings` 에 묘사를 쓴다(최대 2개). " +
+      "묘사는 영어로, 무엇을 어떤 구도·색·분위기로 그릴지 구체적으로. " +
+      "그려 달라고 하지 않았으면 비워 둔다 — 설명으로 될 것을 그림으로 내면 " +
+      "느리기만 하다." +
       speakerNote(speaker),
     input: transcript,
     schema: firstPass,
     schemaName: "everyday_plan",
     maxTokens: 8000,
-    tier: "judgment",
+    // 익명은 대화 등급까지만. 보고서를 익명으로 뽑아 가는 길을 열지 않는다.
+    tier: user ? "judgment" : "conversation",
   });
 
+  if (!user) {
+    await recordAnonymous(input.visitor as string, {
+      model: providers.ai.model,
+      inputTokens: 0,
+      outputTokens: 0,
+    });
+  }
+
   const queries = plan.searches.slice(0, MAX_SEARCHES).filter((q) => q.trim());
+  // 익명에게 그림은 안 그려 준다. 한 장이 대화 수십 턴 값이라, 무료로 열어 두면
+  // 하루 상한이 그림 몇 장에 다 쓰인다.
+  const wanted = user
+    ? plan.drawings.slice(0, MAX_DRAWINGS).filter((d) => d.trim())
+    : [];
+
+  // 그림은 검색과 독립이다. 그려 달라고 했으면 그리고, 검색까지 필요하면 둘 다 한다.
+  const images: EverydayImage[] = [];
+  const drawFailures: string[] = [];
+  if (wanted.length > 0) {
+    const drawer = createImageProvider();
+    for (const prompt of wanted) {
+      try {
+        const made = await drawer.draw(prompt);
+        images.push({ dataUrl: made.dataUrl, prompt });
+        if (companyId) {
+          // 그림도 장부에 남는다. 대화가 한도 밖에서 돈을 쓰는 구멍이 되면 안 된다.
+          await supabase.from("model_usage").insert({
+            company_id: companyId,
+            model: made.model,
+            purpose: "everyday_image",
+            input_tokens: made.inputTokens,
+            output_tokens: made.outputTokens,
+            unit: "tokens",
+          });
+        }
+      } catch (error) {
+        drawFailures.push(
+          `("${prompt}" 그리기 실패: ${
+            error instanceof Error ? error.message : String(error)
+          })`,
+        );
+      }
+    }
+  }
 
   if (queries.length === 0) {
+    const note = drawFailures.length ? "\n\n" + drawFailures.join("\n") : "";
     return {
       ok: true,
-      reply: plan.reply ?? "무엇을 도와드릴까요?",
+      reply: (plan.reply ?? (images.length ? "그렸습니다." : "무엇을 도와드릴까요?")) + note,
       sources: [],
       searched: [],
+      images,
+      turnsLeft,
     };
   }
 
@@ -157,8 +250,12 @@ export async function runEverydayTurn(
   const used = new Set(answer.usedUrls);
   return {
     ok: true,
-    reply: answer.reply,
+    reply:
+      answer.reply +
+      (drawFailures.length ? "\n\n" + drawFailures.join("\n") : ""),
     sources: found.filter((s) => used.has(s.url)),
     searched: queries,
+    images,
+    turnsLeft,
   };
 }

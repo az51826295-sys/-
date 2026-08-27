@@ -19,19 +19,32 @@ export type Speaker = {
 };
 
 /** 소유자를 부르는 이름. 회사 이름과 별개로 사람을 가리킨다. */
-const OWNER_NAME = "멍크라이온";
+const OWNER_NAME = process.env.OWNER_NAME ?? "멍크라이온";
+
+/**
+ * 소유자를 가리키는 이메일. 쉼표로 여러 개.
+ *
+ * 처음에는 "회사를 가진 사람"으로 판별했는데 그건 약한 대리 지표였다 —
+ * 회사를 아직 안 만들었거나 다른 계정으로 들어오면 못 알아본다. 사람은
+ * 계정으로 알아보는 것이 맞다.
+ */
+const OWNER_EMAILS = (process.env.OWNER_EMAIL ?? "")
+  .split(",")
+  .map((e) => e.trim().toLowerCase())
+  .filter(Boolean);
 
 export async function speakerFor(
   db: Supabase,
   userId: string,
 ): Promise<Speaker | null> {
-  const { data } = await db
-    .from("companies")
-    .select("id, name, owner_id")
-    .eq("owner_id", userId)
-    .maybeSingle();
-  if (!data) return null;
-  return { name: OWNER_NAME, isOwner: true };
+  const { data } = await db.auth.getUser();
+  const email = data.user?.email?.toLowerCase();
+  if (!email) return null;
+  if (OWNER_EMAILS.length > 0 && OWNER_EMAILS.includes(email)) {
+    return { name: OWNER_NAME, isOwner: true };
+  }
+  // 소유자가 아니면 이름만. 아는 척하지 않는다.
+  return null;
 }
 
 /** 시스템 지시에 붙이는 한 문단. 상대를 모를 때는 아무것도 붙이지 않는다. */

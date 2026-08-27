@@ -13,6 +13,27 @@ import Link from "next/link";
  */
 
 type Mode = "everyday" | "company";
+
+/**
+ * 브라우저가 들고 다니는 방문자 표시.
+ *
+ * 로그인 없이 쓰는 사람을 대충 세기 위한 값이다. 사람을 식별하지 않고, 지우면
+ * 초기화된다 — 그래서 이것은 편의이지 방어가 아니며, 진짜 벽은 서버의 일일
+ * 총액이다.
+ */
+function visitorId(): string {
+  const KEY = "rookery.visitor";
+  try {
+    const found = localStorage.getItem(KEY);
+    if (found) return found;
+    const made = crypto.randomUUID();
+    localStorage.setItem(KEY, made);
+    return made;
+  } catch {
+    // 저장이 막힌 브라우저(사생활 모드 등)에서도 대화는 되어야 한다.
+    return "no-storage";
+  }
+}
 type Source = { title: string; url: string };
 type Option = { label: string; description: string | null };
 type Turn = {
@@ -24,10 +45,13 @@ type Turn = {
   options?: Option[] | null;
   sources?: Source[] | null;
   searched?: string[] | null;
+  images?: { dataUrl: string; prompt: string }[] | null;
 };
 
 export default function AskClient() {
   const [mode, setMode] = useState<Mode>("everyday");
+  /** 익명일 때 남은 횟수. 로그인 상태면 null 이라 아무것도 안 보인다. */
+  const [turnsLeft, setTurnsLeft] = useState<number | null>(null);
   const [turns, setTurns] = useState<Turn[]>([]);
   const [text, setText] = useState("");
   const [busy, setBusy] = useState(false);
@@ -48,6 +72,7 @@ export default function AskClient() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             messages: history.map((t) => ({ role: t.role, content: t.content })),
+            visitor: visitorId(),
           }),
         },
       );
@@ -66,8 +91,10 @@ export default function AskClient() {
             options: data.options,
             sources: data.sources,
             searched: data.searched,
+            images: data.images,
           },
         ]);
+        if (typeof data.turnsLeft === "number") setTurnsLeft(data.turnsLeft);
       }
     } catch {
       setTurns([...history, { role: "assistant", content: "연결이 끊겼습니다." }]);
@@ -104,6 +131,16 @@ export default function AskClient() {
         ))}
       </div>
 
+      {turnsLeft !== null && (
+        <p className="pt-2 text-xs text-neutral-500">
+          로그인 없이 {turnsLeft}번 더 쓸 수 있습니다 ·{" "}
+          <a className="underline" href="/login">
+            로그인
+          </a>
+          하면 제한 없이, 대화도 저장됩니다.
+        </p>
+      )}
+
       <div className="flex-1 space-y-4 overflow-y-auto py-6">
         {turns.length === 0 && (
           <p className="text-sm text-neutral-500">
@@ -137,6 +174,19 @@ export default function AskClient() {
                   보기
                 </Link>
               </p>
+            )}
+            {t.images && t.images.length > 0 && (
+              <div className="mt-2 flex flex-wrap gap-2">
+                {t.images.map((img, k) => (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    key={k}
+                    src={img.dataUrl}
+                    alt={img.prompt}
+                    className="max-h-72 rounded-xl border border-neutral-200 dark:border-neutral-800"
+                  />
+                ))}
+              </div>
             )}
             {t.searched && t.searched.length > 0 && (
               <p className="mt-1.5 text-xs text-neutral-500">

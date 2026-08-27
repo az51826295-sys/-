@@ -1,0 +1,7 @@
+node_modules
+.next
+.git
+audition
+data
+*.log
+.env.local.bak.*
