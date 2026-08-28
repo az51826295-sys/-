@@ -72,7 +72,7 @@ const routeSchema = z.object({
 });
 
 /** 지금 회사가 부릴 수 있는 능력 전부. 레지스트리에서 그때그때 읽는다. */
-function capabilityCatalogue() {
+export function capabilityCatalogue() {
   return Object.values(employeeSkillRegistry).flatMap((skill) =>
     skill.capabilities.map((c) => ({
       capabilityId: c.id,

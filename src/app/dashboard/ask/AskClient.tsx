@@ -13,7 +13,6 @@ import Icon from "@/components/Icon";
  * — 사람이 다음에 무엇을 눌러야 하는지 알 수 있을 만큼만.
  */
 
-type Mode = "everyday" | "company";
 
 /**
  * 브라우저가 들고 다니는 방문자 표시.
@@ -55,7 +54,6 @@ export default function AskClient({
   /** 저장된 대화를 열고 들어올 때. 없으면 새 대화다. */
   initial?: { id: string; turns: Turn[] } | null;
 } = {}) {
-  const [mode, setMode] = useState<Mode>("everyday");
   /** 익명일 때 남은 횟수. 로그인 상태면 null 이라 아무것도 안 보인다. */
   const [turnsLeft, setTurnsLeft] = useState<number | null>(null);
   /** 이어서 저장할 대화. 새 대화면 null 이고 첫 턴 뒤에 서버가 채워 준다. */
@@ -115,19 +113,18 @@ export default function AskClient({
     setAttached([]);
 
     try {
-      const res = await fetch(
-        mode === "company" ? "/api/company-chat" : "/api/everyday-chat",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            messages: history.map((t) => ({ role: t.role, content: t.content })),
-            visitor: visitorId(),
-            conversationId,
-            images: attached.map((a) => a.b64),
-          }),
-        },
-      );
+      // 경로가 하나다. 무엇을 할지는 **말한 내용으로** 정해지지, 사용자가
+      // 미리 고른 모드로 정해지지 않는다.
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messages: history.map((t) => ({ role: t.role, content: t.content })),
+          visitor: visitorId(),
+          conversationId,
+          images: attached.map((a) => a.b64),
+        }),
+      });
       const data = await res.json();
       if (!res.ok) {
         setTurns([...history, { role: "assistant", content: data.error ?? "문제가 생겼습니다." }]);
@@ -162,36 +159,6 @@ export default function AskClient({
 
   return (
     <div className="mx-auto flex h-[calc(100vh-4rem)] max-w-2xl flex-col px-4">
-      {/*
-        모드 전환은 가운데다.
-
-        왼쪽 위에는 설정(점 세 개)이 떠 있어서, 여기를 왼쪽에 두면 폰에서 둘이
-        붙어 잘못 눌린다. 가운데는 엄지에서 가장 먼 대신 오누름이 없다 —
-        모드는 자주 바꾸는 것이 아니므로 그쪽이 맞다.
-      */}
-      <div className="flex justify-center gap-1 pt-3">
-        {(
-          [
-            ["everyday", "일상", "묻고 답합니다. 필요하면 찾아봅니다."],
-            ["company", "회사", "사람을 붙이고 업무로 만듭니다."],
-          ] as const
-        ).map(([key, label, hint]) => (
-          <button
-            key={key}
-            onClick={() => setMode(key)}
-            title={hint}
-            className={
-              "rounded-full px-3.5 py-1.5 text-sm " +
-              (mode === key
-                ? "bg-neutral-900 text-white dark:bg-neutral-100 dark:text-neutral-900"
-                : "text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-900")
-            }
-          >
-            {label}
-          </button>
-        ))}
-      </div>
-
       {turnsLeft !== null && (
         <p className="pt-2 text-center text-xs text-neutral-500">
           로그인 없이 {turnsLeft}번 더 쓸 수 있습니다 ·{" "}
@@ -205,9 +172,8 @@ export default function AskClient({
       <div className="flex-1 space-y-4 overflow-y-auto py-6">
         {turns.length === 0 && (
           <p className="text-sm text-neutral-500">
-            {mode === "everyday"
-              ? "무엇이든 물어보세요. 최신 사실이 필요하면 찾아본 뒤 출처와 함께 답합니다."
-              : "필요한 것을 말씀하세요. 누가 할지는 회사가 정합니다."}
+            무엇이든 물어보세요. 찾아봐야 할 것은 찾아보고, 시간이 드는 일은
+            사람을 붙여 업무로 만듭니다.
           </p>
         )}
         {turns.map((t, i) => (
@@ -341,7 +307,7 @@ export default function AskClient({
         <input
           value={text}
           onChange={(e) => setText(e.target.value)}
-          placeholder={mode === "everyday" ? "무엇이든 물어보세요" : "무슨 일을 맡길까요?"}
+          placeholder="무엇이든 물어보세요"
           className="flex-1 rounded-xl border border-neutral-300 px-4 py-3 text-sm dark:border-neutral-700 dark:bg-neutral-950"
         />
         <button

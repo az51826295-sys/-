@@ -7,19 +7,26 @@ import { selfNote, speakerFor, speakerNote } from "@/lib/chat/persona";
 import { createImageProvider } from "@/lib/providers/images";
 import { checkAnonymous, recordAnonymous } from "@/lib/chat/anonymous";
 import { saveTurn } from "@/lib/chat/conversations";
+import { capabilityCatalogue } from "@/lib/chat/companyService";
+import { delegate } from "@/lib/chat/delegate";
+import { learnFromChat } from "@/lib/chat/learnFromChat";
 
 /**
- * 일상 모드 — 회사 밖의 대화.
+ * 대화 한 턴. **모드가 없다.**
  *
- * 회사 모드는 사람을 뽑고 업무를 만들고 산출물을 검토받는다. 그건 일이 클 때
- * 값어치를 하지만, "이거 뭐야" 한 마디에는 절차만 얹는 셈이다. 그래서 두 모드를
- * 가른다: **일상은 설정 없이 그 자리에서 쓸모가 있어야 하고, 회사는 두 번째
- * 요청부터 이긴다.**
+ * 전에는 "일상"과 "회사"가 갈려 있었다. 그런데 그러면 사용자가 말을 걸기 전에
+ * **자기 요청을 먼저 분류**해야 한다 — 이건 잡담인가 일인가. 이 제품은 다른
+ * 곳에서 계속 그 부담을 없애 왔다("누구에게 맡길지 묻지 않는다"). 그러면서
+ * 어느 모드인지는 묻고 있었다.
  *
- * 일상 모드가 그냥 모델 호출과 다른 점은 하나뿐이다: **필요하면 먼저 찾아본다.**
- * 모델이 스스로 "이건 최신 사실이 필요하다"고 말하면 검색을 돌리고, 찾은 것을
- * 근거로 답하고, **출처를 같이 준다.** 필요 없으면 한 번만 부르고 끝낸다 —
- * 잡담에 검색을 붙이는 것은 느리기만 하고 나아지지 않는다.
+ * 이제 한 번의 호출이 네 가지를 같이 정한다:
+ *
+ *   지금 답할 수 있나        → 답한다
+ *   찾아봐야 정확한가        → 검색하고 출처를 붙인다
+ *   그려 달라고 했나         → 그린다
+ *   시간이 드는 일인가       → 사람을 붙이고 업무로 만든다
+ *
+ * 사용자는 그 경계를 몰라도 된다. 그게 요점이다.
  */
 
 export type EverydayInput = {
@@ -46,6 +53,9 @@ export type EverydayResult =
       turnsLeft: number | null;
       /** 저장된 대화 id. 익명이거나 저장에 실패하면 null. */
       conversationId: string | null;
+      /** 이번 턴에 사람을 붙였으면. 아니면 null. */
+      hired: { name: string; why: string } | null;
+      assignment: { id: string; title: string; queued: boolean } | null;
     }
   | { ok: false; error: string; status: number };
 
@@ -69,6 +79,15 @@ const firstPass = z.object({
    * 에 글로 답하는 것은 못 들은 것이다. 그 경계는 사용자가 정한다.
    */
   drawings: z.array(z.string()),
+  /**
+   * 시간이 드는 일이면 그 능력 id. 한 번 답하고 끝날 것이면 null.
+   *
+   * 여기 값이 있으면 사람을 붙이고 업무를 만든다 — 사용자는 그걸 요청한 적이
+   * 없고, 그래서 **답이 먼저 나간 뒤에** 조용히 붙는다.
+   */
+  capabilityId: z.string().nullable(),
+  /** 왜 그 능력인지 한 줄. 매니저가 읽고 틀렸다고 말할 수 있어야 한다. */
+  capabilityWhy: z.string().nullable(),
 });
 
 const answerPass = z.object({
@@ -127,6 +146,8 @@ export async function runEverydayTurn(
       images: [],
       turnsLeft,
       conversationId: null,
+      hired: null,
+      assignment: null,
     };
   }
 
@@ -158,6 +179,13 @@ export async function runEverydayTurn(
           "흐리거나 잘려서 못 읽는 부분은 못 읽겠다고 말한다.\n\n"
         : "") +
       "확실하지 않은데 아는 척하지 마라. 그럴 때가 검색할 때다.\n\n" +
+      "**일 맡기기**: 조사·검증·문서·그림 제작처럼 **시간이 드는 일**이면 " +
+      "`capabilityId` 에 아래 목록의 id 를 쓴다. 한 번 답하고 끝날 질문이면 " +
+      "비운다 — 잡담에 사람을 붙이면 매니저가 안 시킨 일이 쌓인다.\n" +
+      capabilityCatalogue()
+        .map((c) => `  - ${c.capabilityId}: ${c.label} → ${c.produces}`)
+        .join("\n") +
+      "\n**목록에 있는 id 만 쓴다.** 없는 것을 지어내면 조용히 빗나간다.\n\n" +
       "**그림**: 사용자가 그려 달라고 하면 `drawings` 에 묘사를 쓴다(최대 2개). " +
       "묘사는 영어로, 무엇을 어떤 구도·색·분위기로 그릴지 구체적으로. " +
       "그려 달라고 하지 않았으면 비워 둔다 — 설명으로 될 것을 그림으로 내면 " +
@@ -221,73 +249,107 @@ export async function runEverydayTurn(
   const lastUser =
     [...input.messages].reverse().find((m) => m.role === "user")?.content ?? "";
 
-  if (queries.length === 0) {
-    const note = drawFailures.length ? "\n\n" + drawFailures.join("\n") : "";
-    const reply =
-      (plan.reply ?? (images.length ? "그렸습니다." : "무엇을 도와드릴까요?")) + note;
-    // 저장 실패가 답을 삼키지 않는다. 기록 한 줄이 빠지는 편이 낫다.
-    const conversationId = user
-      ? await saveTurn(supabase, user.id, {
-          conversationId: input.conversationId ?? null,
-          mode: "everyday",
-          user: { role: "user", content: lastUser },
-          assistant: { role: "assistant", content: reply, attachments: { images } },
-        })
-      : null;
-    return {
-      ok: true,
-      reply,
-      sources: [],
-      searched: [],
-      images,
-      turnsLeft,
-      conversationId,
-    };
-  }
+  // ── 답을 만든다 ────────────────────────────────────────────────
+  //
+  // 검색이 필요했으면 찾은 것을 근거로 다시 쓰고, 아니면 첫 호출의 답을 쓴다.
+  // 어느 쪽이든 **여기서 하나로 모인다** — 두 갈래로 두면 그 아래 붙는 것(위임,
+  // 학습, 저장)을 두 번 적게 되고, 한쪽만 고치는 날이 온다.
+  let reply: string;
+  let sources: EverydaySource[] = [];
 
-  // 검색이 실패해도 대화는 계속된다. 찾아보려던 것이 안 됐다는 사실만 남긴다 —
-  // 조용히 모델의 기억으로 답하면 사용자는 그것이 검색 결과인 줄 안다.
-  const found: EverydaySource[] = [];
-  const notes: string[] = [];
-  for (const q of queries) {
-    try {
-      const results = await providers.search.search(q, RESULTS_PER_SEARCH);
-      for (const r of results) {
-        found.push({ title: r.title, url: r.url });
+  if (queries.length === 0) {
+    reply = plan.reply ?? (images.length ? "그렸습니다." : "무엇을 도와드릴까요?");
+  } else {
+    // 검색이 실패해도 대화는 계속된다. 찾아보려던 것이 안 됐다는 사실만 남긴다 —
+    // 조용히 모델의 기억으로 답하면 사용자는 그것이 검색 결과인 줄 안다.
+    const found: EverydaySource[] = [];
+    const notes: string[] = [];
+    for (const q of queries) {
+      try {
+        const results = await providers.search.search(q, RESULTS_PER_SEARCH);
+        for (const r of results) {
+          found.push({ title: r.title, url: r.url });
+          notes.push(
+            `[${r.url}] ${r.title}\n${(r.rawContent ?? r.snippet ?? "").slice(0, 1200)}`,
+          );
+        }
+      } catch (error) {
         notes.push(
-          `[${r.url}] ${r.title}\n${(r.rawContent ?? r.snippet ?? "").slice(0, 1200)}`,
+          `("${q}" 검색이 실패했습니다: ${
+            error instanceof Error ? error.message : String(error)
+          })`,
         );
       }
-    } catch (error) {
-      notes.push(
-        `("${q}" 검색이 실패했습니다: ${
-          error instanceof Error ? error.message : String(error)
-        })`,
+    }
+
+    const { output: answer } = await providers.ai.generateStructuredOutput({
+      systemInstructions: [
+        "아래 검색 결과를 근거로 답한다. 한국어로.",
+        "",
+        "- 결과에 없는 것을 결과에 있는 것처럼 쓰지 마라. 모르면 모른다고 하고,",
+        "  무엇을 더 찾아보면 되는지 말한다.",
+        "- 사실마다 어디서 왔는지 알 수 있게 쓰고, 실제로 쓴 출처만 `usedUrls` 에 담는다.",
+        "- 검색이 실패했다고 적힌 항목이 있으면 그 사실을 답에 밝힌다.",
+      ].join("\n"),
+      input: `대화:\n${transcript}\n\n검색 결과:\n${notes.join("\n\n")}`,
+      // 답을 쓸 때도 사진을 다시 보여 준다. 검색 결과만 주고 사진을 빼면,
+      // 사진에 대해 물은 것을 검색 결과로만 답하게 된다.
+      images: seen,
+      schema: answerPass,
+      schemaName: "everyday_answer",
+      maxTokens: 12000,
+      tier: "judgment",
+    });
+
+    const used = new Set(answer.usedUrls);
+    sources = found.filter((s) => used.has(s.url));
+    reply = answer.reply;
+  }
+
+  if (drawFailures.length) reply += "\n\n" + drawFailures.join("\n");
+
+  // ── 시간이 드는 일이면 사람을 붙인다 ──────────────────────────
+  //
+  // **답이 나온 뒤에** 한다. 사용자는 사람을 붙여 달라고 한 적이 없고, 절차가
+  // 먼저 나오면 첫 문장이 답이 아니라 접수 확인이 된다.
+  //
+  // 로그인하지 않았거나 회사가 없으면 여기는 건너뛴다 — 일을 맡기면 그것이
+  // **누구 회사에 쌓이는지**가 있어야 하고, 그게 로그인의 진짜 이유다.
+  let hired: { name: string; why: string } | null = null;
+  let assignment: { id: string; title: string; queued: boolean } | null = null;
+
+  if (plan.capabilityId && companyId) {
+    try {
+      const d = await delegate(
+        supabase,
+        companyId,
+        plan.capabilityId,
+        plan.capabilityWhy,
+        input.messages,
       );
+      hired = d.hired;
+      assignment = d.assignment;
+      if (d.tail && d.tail !== reply) reply += `\n\n${d.tail}`;
+      if (d.why) reply += `\n\n(맡기지 못했습니다: ${d.why})`;
+    } catch {
+      // 위임이 터져도 답은 나간다. 사용자가 물은 것에 대한 답은 이미 있다.
+    }
+  } else if (plan.capabilityId && !companyId) {
+    reply +=
+      "\n\n(이건 시간이 드는 일이라 사람을 붙여야 합니다 — " +
+      "로그인하시면 이어서 맡길 수 있습니다.)";
+  }
+
+  // ── 대화에서 회사 사실·규칙을 줍는다 ──────────────────────────
+  if (companyId) {
+    try {
+      await learnFromChat(supabase, providers, companyId, lastUser);
+    } catch {
+      // 못 배운 것은 다음 턴에 다시 기회가 온다. 답을 삼킬 이유가 없다.
     }
   }
 
-  const { output: answer } = await providers.ai.generateStructuredOutput({
-    systemInstructions:
-      "아래 검색 결과를 근거로 답한다. 한국어로.\n\n" +
-      "- 결과에 없는 것을 결과에 있는 것처럼 쓰지 마라. " +
-      "모르면 모른다고 하고, 무엇을 더 찾아보면 되는지 말한다.\n" +
-      "- 사실마다 어디서 왔는지 알 수 있게 쓰고, 실제로 쓴 출처만 `usedUrls` 에 담는다.\n" +
-      "- 검색이 실패했다고 적힌 항목이 있으면 그 사실을 답에 밝힌다.",
-    input: `대화:\n${transcript}\n\n검색 결과:\n${notes.join("\n\n")}`,
-    // 답을 쓸 때도 사진을 다시 보여 준다. 검색 결과만 주고 사진을 빼면,
-    // 사진에 대해 물은 것을 검색 결과로만 답하게 된다.
-    images: seen,
-    schema: answerPass,
-    schemaName: "everyday_answer",
-    maxTokens: 12000,
-    tier: "judgment",
-  });
-
-  const used = new Set(answer.usedUrls);
-  const sources = found.filter((s) => used.has(s.url));
-  const reply =
-    answer.reply + (drawFailures.length ? "\n\n" + drawFailures.join("\n") : "");
+  // 저장 실패가 답을 삼키지 않는다. 기록 한 줄이 빠지는 편이 낫다.
   const conversationId = user
     ? await saveTurn(supabase, user.id, {
         conversationId: input.conversationId ?? null,
@@ -296,19 +358,20 @@ export async function runEverydayTurn(
         assistant: {
           role: "assistant",
           content: reply,
-          // 출처와 그린 그림도 같이 남긴다. 대화를 다시 열었을 때 답만 있고
-          // 근거가 없으면, 그때 무엇을 보고 그렇게 답했는지 알 수 없다.
           attachments: { images, sources, searched: queries },
         },
       })
     : null;
+
   return {
     ok: true,
     reply,
     sources,
     searched: queries,
     images,
-    conversationId,
     turnsLeft,
+    conversationId,
+    hired,
+    assignment,
   };
 }
