@@ -49,3 +49,7 @@ create index if not exists unity_rounds_session_idx
 -- 없으므로 정책을 열지 않는다 — 열어 둘 이유가 없는 문은 닫아 둔다.
 alter table unity_sessions enable row level security;
 alter table unity_rounds enable row level security;
+
+-- 씬을 짓는 정적 메서드의 이름. 스크립트만 컴파일되면 게임이 되지 않는다 —
+-- 씬에 물체가 없으면 켜도 검은 화면이라, 씬도 코드가 지어야 한다.
+alter table unity_sessions add column if not exists scene_method text;

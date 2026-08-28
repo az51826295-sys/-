@@ -144,15 +144,12 @@ namespace Rookery
                 {
                     // 판정기에 못 닿은 것을 통과로 읽지 않는다. 미측정은 실패도
                     // 성공도 아니고, 그 구분이 사라지면 판정이 있으나 마나다.
-                    _status = $"판정하지 못했습니다: {request.responseCode} {request.error}
-" +
+                    _status = $"판정하지 못했습니다: {request.responseCode} {request.error}\n" +
                               request.downloadHandler.text;
                     Repaint();
                     return;
                 }
-                _status = "판정 결과
-
-" + request.downloadHandler.text;
+                _status = "판정 결과\n\n" + request.downloadHandler.text;
                 Repaint();
             };
         }

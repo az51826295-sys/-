@@ -44,8 +44,25 @@ const roundSchema = z.object({
   note: z.string(),
 });
 
+/**
+ * 씬을 짓는 정적 메서드의 온전한 이름.
+ *
+ * 스크립트만 컴파일되면 게임이 되지 않는다. 씬에 물체가 없으면 켜도 검은
+ * 화면이다. 그런데 씬은 사람이 에디터에서 끌어다 놓는 것이라, 손을 안 대려면
+ * **씬도 코드가 지어야** 한다.
+ *
+ * 이 이름이 있으면 심부름꾼이 컴파일 통과 뒤 그 메서드를 한 번 부른다. 거기서
+ * 터지는 것도 오류로 돌아온다 — 그래서 이 고리가 재는 것이 "문법이 맞다"에서
+ * "씬이 실제로 만들어졌다"까지 넓어진다.
+ */
+const sceneMethod = z
+  .string()
+  .nullable()
+  .describe("씬을 만들어 저장하는 에디터 정적 메서드. 예: Rookery.Generated.SceneSetup.Build");
+
 const firstSchema = roundSchema.extend({
   title: z.string(),
+  sceneMethod,
   /** 코드보다 먼저 쓴다. 컴파일 여부는 유니티가 알려 주니 여기 넣지 않는다. */
   criteria: z.array(
     z.object({ id: z.string(), when: z.string(), then: z.string() }),
@@ -65,6 +82,17 @@ const RULES = [
   "- 바꿀 필요가 없는 파일은 **내지 마라.** 그대로 다시 내면 받는 쪽이 무엇이",
   "  바뀌었는지 모른다.",
   "- 잴 수 없는 것(재미, 손맛)은 기준인 척하지 마라.",
+  "",
+  "**사람은 에디터를 열지 않는다.** 씬에 물체를 끌어다 놓아 줄 사람이 없으니,",
+  "씬도 코드가 지어야 한다. 씬을 만들어 저장하는 에디터 정적 메서드를 하나 쓰고",
+  "(에디터 전용이라 Editor/ 폴더 아래에 둔다) 그 온전한 이름을 sceneMethod 에",
+  "적어라. 그 메서드는:",
+  "- 씬을 새로 만들고 필요한 GameObject 와 컴포넌트를 코드로 붙인다,",
+  "- 그림 파일이 없으면 코드로 만든 Texture2D 로 때운다 — 없는 파일을 참조하면",
+  "  씬은 만들어져도 화면이 비어 있고, 그건 컴파일로는 안 잡힌다,",
+  "- 씬을 저장하고 빌드 설정에 넣는다,",
+  "- **두 번 불려도 같은 결과**여야 한다. 부를 때마다 물체가 쌓이면, 두 번째",
+  "  판부터 씬이 조용히 망가진다.",
 ].join("\n");
 
 export async function POST(request: Request) {
@@ -178,6 +206,7 @@ export async function POST(request: Request) {
         want,
         scope,
         criteria: output.criteria,
+        scene_method: output.sceneMethod,
         round: 1,
         status: "running",
       })
@@ -206,6 +235,7 @@ export async function POST(request: Request) {
       criteria: output.criteria,
       setup: output.setup,
       humanGate: output.humanGate,
+      sceneMethod: output.sceneMethod,
       files: kept,
       // 울타리 밖으로 나가려 한 것을 조용히 버리지 않는다. 버린 줄 모르면
       // 왜 안 되는지도 모른다.
@@ -217,7 +247,7 @@ export async function POST(request: Request) {
   // ── 다음 판: 오류를 받아 고친다 ──────────────────────────────
   const { data: session } = await db
     .from("unity_sessions")
-    .select("id, want, scope, criteria, round, status")
+    .select("id, want, scope, criteria, scene_method, round, status")
     .eq("id", b.sessionId)
     .eq("company_id", companyId)
     .maybeSingle();
@@ -286,6 +316,7 @@ export async function POST(request: Request) {
       why: verdict.why,
       files: [],
       criteria: session.criteria,
+      sceneMethod: session.scene_method,
       remaining: errors,
     });
   }
@@ -361,5 +392,6 @@ export async function POST(request: Request) {
     refused: refused.map((f) => f.path),
     note: output.note,
     criteria: session.criteria,
+    sceneMethod: session.scene_method,
   });
 }
