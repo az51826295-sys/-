@@ -63,20 +63,64 @@ export async function onboardingTurn(
 
   const questions = getOnboardingQuestions(employee);
 
-  // 이미 답한 것은 다시 묻지 않는다.
+  // 이미 답한 것은 다시 묻지 않는다 — **회사 전체에서**.
+  //
+  // 답은 고용 건에 묶여 저장된다. 그래서 처음에는 이 직원의 답만 봤는데,
+  // 그러면 "회사가 뭘 하나요"를 사람 뽑을 때마다 다시 묻는다. 직원이 셋이면
+  // 같은 질문을 세 번 하는 셈이고, 매니저 입장에서 그건 회사가 자기 회사를
+  // 기억 못 하는 것으로 보인다.
+  //
+  // 역할 질문(`category: "role"`)은 사람마다 다르므로 그대로 각자 묻는다.
+  // 회사 질문은 회사에 한 번이면 된다.
+  const { data: hires } = await supabase
+    .from("company_employees")
+    .select("id")
+    .eq("company_id", companyEmployee.company_id);
+  const hireIds = ((hires ?? []) as { id: string }[]).map((h) => h.id);
+
   const { data: answered } = await supabase
-    .from("onboarding_answers")
-    .select("question_id")
-    .eq("company_employee_id", companyEmployeeId);
-  const done = new Set(
-    ((answered ?? []) as { question_id: string }[]).map((a) => a.question_id),
+    .from("employee_onboarding_answers")
+    .select("question_id, question_category, company_employee_id")
+    .in("company_employee_id", hireIds.length ? hireIds : [companyEmployeeId]);
+
+  type Answer = {
+    question_id: string;
+    question_category: string;
+    company_employee_id: string;
+  };
+  const rows = (answered ?? []) as Answer[];
+
+  const answeredByCompany = new Set(
+    rows.filter((a) => a.question_category === "company").map((a) => a.question_id),
   );
-  const pending = questions.filter((q) => !done.has(q.id));
+  const answeredByThisHire = new Set(
+    rows
+      .filter((a) => a.company_employee_id === companyEmployeeId)
+      .map((a) => a.question_id),
+  );
+
+  const unanswered = questions.filter((q) =>
+    q.category === "company"
+      ? !answeredByCompany.has(q.id)
+      : !answeredByThisHire.has(q.id),
+  );
+
+  // **필수만 묻는다.**
+  //
+  // 선택 질문까지 다 채워야 일을 받을 수 있게 해 두면, 매니저는 일을 맡기려다
+  // 설문을 끝까지 하게 된다. 선택이라고 적어 놓고 필수처럼 굴면 그건 선택이
+  // 아니다. 나중에 알려 주시면 그때 반영되고, 모르는 채로도 일은 시작된다.
+  const pending = unanswered.filter((q) => q.required);
 
   if (pending.length === 0) {
     await completeOnboarding(owned);
+    const later = unanswered.length;
     return {
-      reply: `다 됐습니다. ${employee.name} 이(가) 이제 일을 받을 수 있습니다.`,
+      reply:
+        `다 됐습니다. ${employee.name} 이(가) 이제 일을 받을 수 있습니다.` +
+        (later > 0
+          ? ` (나중에 알려 주시면 좋은 것이 ${later}가지 더 있지만, 없어도 일합니다.)`
+          : ""),
       saved: null,
       remaining: 0,
       done: true,
