@@ -235,7 +235,7 @@ export default function AskShell({
         </button>
 
         {tasksOpen && (
-          <div className="mt-1 w-64 rounded-xl border border-neutral-200 bg-white p-1.5 shadow-lg dark:border-neutral-800 dark:bg-neutral-950">
+          <div className="absolute right-0 mt-1 w-64 rounded-xl border border-neutral-200 bg-white p-1.5 shadow-lg dark:border-neutral-800 dark:bg-neutral-950">
             {me?.email ? (
               <>
                 {activeTask && (

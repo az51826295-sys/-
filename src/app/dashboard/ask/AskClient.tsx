@@ -162,7 +162,9 @@ export default function AskClient({
   const last = turns[turns.length - 1];
 
   return (
-    <div className="mx-auto flex h-[calc(100vh-4rem)] max-w-2xl flex-col px-4">
+    // 위쪽 여백은 장식이 아니다. 좌우 모서리에 설정과 과제 버튼이 떠 있어서,
+    // 이만큼 내리지 않으면 첫 줄이 버튼 밑에 깔린다.
+    <div className="mx-auto flex h-[calc(100vh-4rem)] max-w-2xl flex-col px-4 pt-9">
       {task && (
         <p className="pt-2 text-center text-xs text-neutral-500">
           과제 · {task.title}
