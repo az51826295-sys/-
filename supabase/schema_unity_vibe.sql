@@ -53,3 +53,10 @@ alter table unity_rounds enable row level security;
 -- 씬을 짓는 정적 메서드의 이름. 스크립트만 컴파일되면 게임이 되지 않는다 —
 -- 씬에 물체가 없으면 켜도 검은 화면이라, 씬도 코드가 지어야 한다.
 alter table unity_sessions add column if not exists scene_method text;
+
+-- 설계도: 어떤 파일을 만들 것인지의 목록. 내용은 아직 없다.
+--
+-- 한 번의 요청에 게임 전체를 내라고 하면 시간이 넘쳐 끊긴다. 그래서 먼저
+-- 목록만 짧게 받고, 내용은 몇 개씩 나눠 받는다. 목록이 남아 있으면 아직
+-- 컴파일할 때가 아니라는 뜻이기도 하다.
+alter table unity_sessions add column if not exists plan jsonb not null default '[]'::jsonb;

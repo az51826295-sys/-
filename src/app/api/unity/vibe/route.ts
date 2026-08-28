@@ -13,10 +13,14 @@ import { decide, fingerprint, insideScope, type CompileError } from "@/lib/unity
  * `/api/unity/build` 는 한 번 만들어 주고 끝났다. 오류가 나면 사람이 다른 창에
  * 옮겨 붙여야 했고, 그건 협업이 아니라 창구 두 개였다.
  *
- * 여기서는 판이 이어진다: 낸다 → 유니티가 붙이고 컴파일한다 → 오류가 돌아온다
- * → 고쳐 낸다. 우리는 여전히 **아무 코드도 실행하지 않는다.** 컴파일은 유니티가
- * 하고, 우리는 그 결과만 읽는다. 위험은 원래 있던 자리에 그대로 있고, 고치는
- * 일만 이쪽으로 온다.
+ * 여기서는 판이 이어진다: 설계한다 → 몇 개씩 낸다 → 유니티가 컴파일한다 →
+ * 오류가 돌아온다 → 고쳐 낸다. 우리는 여전히 **아무 코드도 실행하지 않는다.**
+ * 컴파일은 유니티가 하고, 우리는 그 결과만 읽는다.
+ *
+ * **왜 나눠 내는가.** 처음에는 한 번의 요청에 게임 전체를 내라고 했는데,
+ * 게임만 해지면 그 한 번이 몇 분을 넘겨 중간의 프록시가 먼저 끊는다. 답이
+ * 다 만들어졌는데도 받지 못하고, 돈은 이미 나갔다. 그래서 설계(목록)는 짧게
+ * 한 번, 내용은 두 개씩 나눠 받는다.
  *
  * 자동으로 도는 물건이니 두 가지를 반드시 지킨다:
  * - **울타리.** 세션이 정한 폴더 밖에는 못 쓴다.
@@ -29,58 +33,61 @@ import { decide, fingerprint, insideScope, type CompileError } from "@/lib/unity
 export const dynamic = "force-dynamic";
 export const maxDuration = 300;
 
-/** 판을 무한히 돌리지 않는다. 여기서 멈추고 사람에게 넘긴다. */
+/** 고치는 판을 무한히 돌리지 않는다. 여기서 멈추고 사람에게 넘긴다. */
 const MAX_ROUNDS = 6;
 
-const roundSchema = z.object({
+/**
+ * 한 번에 내용까지 받아 오는 파일 수.
+ *
+ * 크게 잡으면 요청 하나가 길어져 끊기고, 작게 잡으면 왕복이 늘어 느려진다.
+ * 둘 중 끊기는 쪽이 더 나쁘다 — 끊기면 만든 것을 통째로 버리기 때문이다.
+ */
+const FILES_PER_CALL = 2;
+
+/** 설계도가 아무리 커도 여기까지. 파일 스무 개짜리 첫 판은 설계가 아니라 폭주다. */
+const MAX_PLANNED_FILES = 12;
+
+const planSchema = z.object({
+  title: z.string(),
+  /** 코드보다 먼저 쓴다. 컴파일 여부는 유니티가 알려 주니 여기 넣지 않는다. */
+  criteria: z.array(
+    z.object({ id: z.string(), when: z.string(), then: z.string() }),
+  ),
+  /**
+   * 만들 파일의 목록. **내용은 아직 쓰지 않는다.**
+   *
+   * 여기서 내용까지 쓰게 하면 이 요청 하나가 길어져 끊긴다. 목록만 받으면
+   * 짧게 끝나고, 무엇을 만들 셈인지도 먼저 보인다.
+   */
+  files: z.array(z.object({ path: z.string(), purpose: z.string() })),
+  /**
+   * 씬을 만들어 저장하는 에디터 정적 메서드의 온전한 이름.
+   *
+   * 스크립트만 컴파일되면 게임이 되지 않는다. 씬에 물체가 없으면 켜도 검은
+   * 화면이다. 씬을 끌어다 놓아 줄 사람이 없으니 씬도 코드가 지어야 한다.
+   */
+  sceneMethod: z.string().nullable(),
+  setup: z.string(),
+  /** 잴 수 없어 사람 눈에 남기는 것. 기준인 척하지 않는다. */
+  humanGate: z.array(z.string()),
+  note: z.string(),
+});
+
+const filesSchema = z.object({
   files: z.array(
-    z.object({
-      path: z.string(),
-      contents: z.string(),
-      purpose: z.string(),
-    }),
+    z.object({ path: z.string(), contents: z.string(), purpose: z.string() }),
   ),
   /** 이 판에 무엇을 왜 했는지 한 줄. 사람이 읽고 틀렸다고 말할 수 있어야 한다. */
   note: z.string(),
 });
 
-/**
- * 씬을 짓는 정적 메서드의 온전한 이름.
- *
- * 스크립트만 컴파일되면 게임이 되지 않는다. 씬에 물체가 없으면 켜도 검은
- * 화면이다. 그런데 씬은 사람이 에디터에서 끌어다 놓는 것이라, 손을 안 대려면
- * **씬도 코드가 지어야** 한다.
- *
- * 이 이름이 있으면 심부름꾼이 컴파일 통과 뒤 그 메서드를 한 번 부른다. 거기서
- * 터지는 것도 오류로 돌아온다 — 그래서 이 고리가 재는 것이 "문법이 맞다"에서
- * "씬이 실제로 만들어졌다"까지 넓어진다.
- */
-const sceneMethod = z
-  .string()
-  .nullable()
-  .describe("씬을 만들어 저장하는 에디터 정적 메서드. 예: Rookery.Generated.SceneSetup.Build");
-
-const firstSchema = roundSchema.extend({
-  title: z.string(),
-  sceneMethod,
-  /** 코드보다 먼저 쓴다. 컴파일 여부는 유니티가 알려 주니 여기 넣지 않는다. */
-  criteria: z.array(
-    z.object({ id: z.string(), when: z.string(), then: z.string() }),
-  ),
-  setup: z.string(),
-  /** 잴 수 없어 사람 눈에 남기는 것. 기준인 척하지 않는다. */
-  humanGate: z.array(z.string()),
-});
-
 const RULES = [
-  "너는 유니티 C# 스크립트를 쓴다. 사람이 옆에서 보고 있고, 유니티가 네 코드를",
-  "몇 초 뒤에 컴파일한다. 오류는 그대로 너에게 돌아온다.",
+  "너는 유니티 C# 스크립트를 쓴다. 유니티가 네 코드를 몇 초 뒤에 컴파일하고,",
+  "오류는 그대로 너에게 돌아온다.",
   "",
   "- 파일은 **전체를 낸다.** 생략 표시로 줄이면 붙일 수가 없다.",
   "- 클래스 이름과 파일 이름을 맞춘다 — 어긋나면 컴포넌트를 못 붙인다.",
   "- 없는 패키지에 의존하지 마라. 기본 유니티로 되는 범위에서 쓴다.",
-  "- 바꿀 필요가 없는 파일은 **내지 마라.** 그대로 다시 내면 받는 쪽이 무엇이",
-  "  바뀌었는지 모른다.",
   "- 잴 수 없는 것(재미, 손맛)은 기준인 척하지 마라.",
   "",
   "**사람은 에디터를 열지 않는다.** 씬에 물체를 끌어다 놓아 줄 사람이 없으니,",
@@ -90,10 +97,13 @@ const RULES = [
   "- 씬을 새로 만들고 필요한 GameObject 와 컴포넌트를 코드로 붙인다,",
   "- 그림 파일이 없으면 코드로 만든 Texture2D 로 때운다 — 없는 파일을 참조하면",
   "  씬은 만들어져도 화면이 비어 있고, 그건 컴파일로는 안 잡힌다,",
-  "- 씬을 저장하고 빌드 설정에 넣는다,",
+  "- 카메라와 조명도 직접 만든다. 빈 씬에는 아무것도 없다,",
+  "- 씬을 저장하고 EditorBuildSettings.scenes 에 넣는다,",
   "- **두 번 불려도 같은 결과**여야 한다. 부를 때마다 물체가 쌓이면, 두 번째",
   "  판부터 씬이 조용히 망가진다.",
 ].join("\n");
+
+type Planned = { path: string; purpose: string; written: boolean };
 
 export async function POST(request: Request) {
   const key = request.headers.get("x-rookery-key");
@@ -142,7 +152,7 @@ export async function POST(request: Request) {
         .filter(
           (e) => e && typeof e.message === "string" && typeof e.file === "string",
         )
-        // 오류가 백 개 나도 원인은 대개 몇 개다. 다 실으면 창이 오류로만 찬다.
+        // 오류가 백 개 나도 원인은 대개 몇 개다. 다 실으면 요청이 오류로만 찬다.
         .slice(0, 40)
     : [];
 
@@ -154,8 +164,14 @@ export async function POST(request: Request) {
     typeof b.unityVersion === "string" && b.unityVersion
       ? "\n대상 유니티 버전: " + b.unityVersion
       : "";
+  const projectNote = Array.isArray(b.project) && b.project.length
+    ? "\n지금 프로젝트에 있는 파일:\n" +
+      (b.project as { path: string; contents: string }[])
+        .map((f) => "--- " + f.path + "\n" + f.contents)
+        .join("\n\n")
+    : "";
 
-  // ── 첫 판: 세션을 연다 ───────────────────────────────────────
+  // ── 설계: 무엇을 만들 것인지 목록만 ──────────────────────────
   if (typeof b.sessionId !== "string" || !b.sessionId) {
     const want = typeof b.want === "string" ? b.want.trim() : "";
     if (want.length < 5) {
@@ -175,29 +191,38 @@ export async function POST(request: Request) {
       systemInstructions: [
         RULES,
         "",
+        "지금은 **설계하는 판**이다. 코드는 아직 쓰지 마라 — 어떤 파일을 만들",
+        "것인지 경로와 한 줄 설명만 낸다. 내용은 다음 판에 나눠 받는다.",
+        "",
         "**먼저 합격 기준을 쓴다.** 씬에서 무엇을 하면 무엇이 되어야 하는지,",
         "사람이 눌러 보고 확인할 수 있는 문장으로. 컴파일 여부는 기준이 아니다.",
-        "\n파일은 반드시 " + scope + " 아래에만 만든다.",
+        "",
+        `파일은 ${MAX_PLANNED_FILES}개를 넘지 않게, 반드시 ${scope} 아래에 둔다.`,
         versionNote,
         knowledge ? "\n이 회사가 아는 것:\n" + knowledge : "",
       ].join("\n"),
-      input: [
-        "만들 것: " + want,
-        Array.isArray(b.project) && b.project.length
-          ? "\n프로젝트에 이미 있는 관련 파일:\n" +
-            (b.project as { path: string; contents: string }[])
-              .map((f) => "--- " + f.path + "\n" + f.contents)
-              .join("\n\n")
-          : "",
-      ].join("\n"),
-      schema: firstSchema,
-      schemaName: "unity_vibe_first",
-      maxTokens: 32000,
+      input: "만들 것: " + want + projectNote,
+      schema: planSchema,
+      schemaName: "unity_vibe_plan",
+      // 목록만 받으므로 짧다. 여기서 크게 잡으면 끊기는 위험만 늘어난다.
+      maxTokens: 6000,
       tier: "judgment",
     });
 
-    const kept = output.files.filter((f) => insideScope(f.path, scope));
-    const refused = output.files.filter((f) => !insideScope(f.path, scope));
+    const planned: Planned[] = output.files
+      .filter((f) => insideScope(f.path, scope))
+      .slice(0, MAX_PLANNED_FILES)
+      .map((f) => ({ path: f.path, purpose: f.purpose, written: false }));
+    const refused = output.files
+      .filter((f) => !insideScope(f.path, scope))
+      .map((f) => f.path);
+
+    if (planned.length === 0) {
+      return NextResponse.json(
+        { error: "울타리 안에 만들 파일이 하나도 설계되지 않았습니다." },
+        { status: 422 },
+      );
+    }
 
     const { data: session } = await db
       .from("unity_sessions")
@@ -207,6 +232,7 @@ export async function POST(request: Request) {
         scope,
         criteria: output.criteria,
         scene_method: output.sceneMethod,
+        plan: planned,
         round: 1,
         status: "running",
       })
@@ -222,7 +248,7 @@ export async function POST(request: Request) {
     await db.from("unity_rounds").insert({
       session_id: sessionId,
       round: 1,
-      files: kept.map((f) => ({ path: f.path, purpose: f.purpose })),
+      files: planned.map((f) => ({ path: f.path, purpose: f.purpose })),
       note: output.note,
     });
 
@@ -230,24 +256,26 @@ export async function POST(request: Request) {
       sessionId,
       round: 1,
       status: "running",
+      // 아직 컴파일할 때가 아니다. 목록만 있고 내용이 없다.
+      action: "write_more",
       scope,
       title: output.title,
       criteria: output.criteria,
       setup: output.setup,
       humanGate: output.humanGate,
       sceneMethod: output.sceneMethod,
-      files: kept,
-      // 울타리 밖으로 나가려 한 것을 조용히 버리지 않는다. 버린 줄 모르면
-      // 왜 안 되는지도 모른다.
-      refused: refused.map((f) => f.path),
+      plan: planned.map((f) => f.path),
+      files: [],
+      // 울타리 밖으로 나가려 한 것을 조용히 버리지 않는다.
+      refused,
       note: output.note,
     });
   }
 
-  // ── 다음 판: 오류를 받아 고친다 ──────────────────────────────
+  // ── 이어지는 판 ──────────────────────────────────────────────
   const { data: session } = await db
     .from("unity_sessions")
-    .select("id, want, scope, criteria, scene_method, round, status")
+    .select("id, want, scope, criteria, scene_method, plan, round, status")
     .eq("id", b.sessionId)
     .eq("company_id", companyId)
     .maybeSingle();
@@ -263,8 +291,100 @@ export async function POST(request: Request) {
 
   const scope = session.scope as string;
   const round = session.round as number;
+  const plan = (session.plan ?? []) as Planned[];
+  const remainingPlan = plan.filter((f) => !f.written);
 
-  // 지난 판의 오류. 같은 것이 또 왔는지 보려면 이게 있어야 한다.
+  // ── 내용을 몇 개씩 낸다 ─────────────────────────────────────
+  //
+  // 설계도에 아직 안 쓴 파일이 남아 있으면 컴파일할 때가 아니다. 여기서
+  // `decide()` 를 부르면 오류가 없다는 이유로 "통과"가 나오는데, 정작 파일은
+  // 반밖에 없다 — 아무것도 안 만들고 성공했다고 말하는 셈이다.
+  if (remainingPlan.length > 0 && errors.length === 0) {
+    const batch = remainingPlan.slice(0, FILES_PER_CALL);
+    const { output } = await providers.ai.generateStructuredOutput({
+      systemInstructions: [
+        RULES,
+        "",
+        "지금은 **쓰는 판**이다. 아래에 적힌 파일만 내라. 다른 파일은 내지 마라 —",
+        "나머지는 다음 판에 받는다.",
+        "",
+        "설계도 전체(무엇이 어디에 있을지)를 보고 쓰되, 아직 안 쓴 파일의 내용을",
+        "가정하지 말고 **설계도에 적힌 역할대로** 부르면 된다.",
+        `\n파일은 반드시 ${scope} 아래에 둔다.`,
+        versionNote,
+        session.scene_method
+          ? `\n씬을 짓는 메서드는 ${session.scene_method} 다.`
+          : "",
+        knowledge ? "\n이 회사가 아는 것:\n" + knowledge : "",
+      ].join("\n"),
+      input: [
+        "만들려는 것: " + session.want,
+        "\n설계도 전체:",
+        ...plan.map(
+          (f) => `- ${f.path} — ${f.purpose}${f.written ? " (이미 씀)" : ""}`,
+        ),
+        "\n이번에 낼 파일:",
+        ...batch.map((f) => `- ${f.path} — ${f.purpose}`),
+        projectNote,
+      ].join("\n"),
+      schema: filesSchema,
+      schemaName: "unity_vibe_files",
+      maxTokens: 16000,
+      tier: "judgment",
+    });
+
+    const wanted = new Set(batch.map((f) => f.path));
+    const kept = output.files.filter(
+      (f) => insideScope(f.path, scope) && wanted.has(f.path),
+    );
+    const extra = output.files
+      .filter((f) => !wanted.has(f.path))
+      .map((f) => f.path);
+
+    // 낸 것만 "썼다"로 표시한다. 안 내고 넘어간 파일을 표시해 버리면 그 파일은
+    // 영영 안 만들어지고, 컴파일에서 "그런 클래스 없다"로만 나타난다.
+    const done = new Set(kept.map((f) => f.path));
+    const nextPlan = plan.map((f) =>
+      done.has(f.path) ? { ...f, written: true } : f,
+    );
+    const stillLeft = nextPlan.filter((f) => !f.written).length;
+
+    if (kept.length === 0) {
+      return NextResponse.json({
+        sessionId: session.id,
+        round,
+        status: "running",
+        action: "write_more",
+        scope,
+        files: [],
+        note: "이번 판에 쓸 수 있는 파일이 나오지 않았습니다. 다시 청합니다.",
+        left: stillLeft,
+      });
+    }
+
+    await db
+      .from("unity_sessions")
+      .update({ plan: nextPlan, updated_at: new Date().toISOString() })
+      .eq("id", session.id);
+
+    return NextResponse.json({
+      sessionId: session.id,
+      round,
+      status: "running",
+      // 남은 것이 없으면 이제 컴파일할 때다.
+      action: stillLeft > 0 ? "write_more" : "compile",
+      scope,
+      files: kept,
+      // 시키지 않은 파일을 낸 것은 버리되, 버린 사실을 말한다.
+      refused: extra,
+      note: output.note,
+      criteria: session.criteria,
+      sceneMethod: session.scene_method,
+      left: stillLeft,
+    });
+  }
+
+  // ── 고치는 판: 오류를 받는다 ────────────────────────────────
   const { data: prevRows } = await db
     .from("unity_rounds")
     .select("errors, files, note, round")
@@ -313,6 +433,7 @@ export async function POST(request: Request) {
       sessionId: session.id,
       round,
       status: verdict.status,
+      action: "done",
       why: verdict.why,
       files: [],
       criteria: session.criteria,
@@ -327,16 +448,18 @@ export async function POST(request: Request) {
       "",
       "지금은 **고치는 판**이다. 유니티가 컴파일해서 아래 오류를 돌려보냈다.",
       "오류를 하나씩 원인까지 읽고, 고쳐야 하는 파일만 전체로 다시 내라.",
+      "바꿀 필요가 없는 파일은 내지 마라 — 그대로 다시 내면 받는 쪽이 무엇이",
+      "바뀌었는지 모른다.",
       "",
       "고치지 못하겠으면 억지로 지어내지 말고, 무엇이 막혔는지 note 에 적어라.",
       "지어낸 수정은 다음 판에 같은 오류로 돌아오고, 그러면 세션이 멈춘다.",
-      "\n파일은 반드시 " + scope + " 아래에만 쓴다.",
+      `\n파일은 반드시 ${scope} 아래에만 쓴다.`,
       versionNote,
       knowledge ? "\n이 회사가 아는 것:\n" + knowledge : "",
     ].join("\n"),
     input: [
       "만들려는 것: " + session.want,
-      "\n지금까지 " + round + "판 돌았다.",
+      `\n지금까지 ${round}판 돌았다.`,
       prev.length
         ? "\n지난 판들:\n" +
           prev
@@ -344,32 +467,26 @@ export async function POST(request: Request) {
             .reverse()
             .map(
               (r) =>
-                r.round +
-                "판: " +
-                (r.note ?? "") +
-                " (낸 파일: " +
-                (r.files ?? []).map((f) => f.path).join(", ") +
-                ")",
+                `${r.round}판: ${r.note ?? ""} (낸 파일: ${(r.files ?? [])
+                  .map((f) => f.path)
+                  .join(", ")})`,
             )
             .join("\n")
         : "",
-      "\n이번에 돌아온 컴파일 오류:\n" +
-        errors.map((e) => e.file + "(" + e.line + "): " + e.message).join("\n"),
-      Array.isArray(b.project) && b.project.length
-        ? "\n지금 프로젝트에 있는 파일:\n" +
-          (b.project as { path: string; contents: string }[])
-            .map((f) => "--- " + f.path + "\n" + f.contents)
-            .join("\n\n")
-        : "",
+      "\n이번에 돌아온 오류:\n" +
+        errors.map((e) => `${e.file}(${e.line}): ${e.message}`).join("\n"),
+      projectNote,
     ].join("\n"),
-    schema: roundSchema,
-    schemaName: "unity_vibe_round",
-    maxTokens: 32000,
+    schema: filesSchema,
+    schemaName: "unity_vibe_fix",
+    maxTokens: 16000,
     tier: "judgment",
   });
 
   const kept = output.files.filter((f) => insideScope(f.path, scope));
-  const refused = output.files.filter((f) => !insideScope(f.path, scope));
+  const refused = output.files
+    .filter((f) => !insideScope(f.path, scope))
+    .map((f) => f.path);
   const next = round + 1;
 
   await db
@@ -387,9 +504,10 @@ export async function POST(request: Request) {
     sessionId: session.id,
     round: next,
     status: "running",
+    action: "compile",
     scope,
     files: kept,
-    refused: refused.map((f) => f.path),
+    refused,
     note: output.note,
     criteria: session.criteria,
     sceneMethod: session.scene_method,

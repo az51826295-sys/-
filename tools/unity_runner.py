@@ -254,8 +254,16 @@ def main() -> int:
     scene_method: str | None = None
     errors: list[dict] = []
     started = time.time()
+    compiles = 0
+    calls = 0
 
-    for round_no in range(1, args.rounds + 1):
+    # 호출 수에도 뚜껑을 씌운다. 판(컴파일)과 달리 "더 써라"는 유니티를 켜지
+    # 않으므로 서버의 판 세기에 안 걸린다 — 여기서 세지 않으면 설계도가
+    # 이상할 때 조용히 계속 돈다.
+    max_calls = args.rounds * 12
+
+    while compiles < args.rounds and calls < max_calls:
+        calls += 1
         payload: dict = {
             "scope": scope,
             "unityVersion": read_version(project),
@@ -267,30 +275,41 @@ def main() -> int:
         else:
             payload["want"] = args.want
 
-        say(f"[{round_no}판] 로키에게 보냅니다"
+        say(f"[{compiles + 1}판] 로키에게 보냅니다"
             + (f" (오류 {len(errors)}개)" if errors else "") + "…")
         reply = post(args.url, args.key, payload, timeout=600)
 
         session = reply.get("sessionId") or session
+        scene_method = reply.get("sceneMethod") or scene_method
+        if reply.get("plan"):
+            say("  설계도:")
+            for path in reply["plan"]:
+                say(f"    {path}")
         if reply.get("note"):
             say(f"  로키: {reply['note']}")
         if reply.get("refused"):
-            say(f"  울타리 밖이라 로키가 거절당한 파일: {', '.join(reply['refused'])}")
+            say(f"  버린 파일: {', '.join(reply['refused'])}")
 
-        if reply.get("status") != "running":
+        action = reply.get("action")
+        if reply.get("status") != "running" or action == "done":
             return finish(reply, time.time() - started)
 
         files = reply.get("files") or []
-        if not files:
-            say("  낼 파일이 없다고 합니다. 멈춥니다.")
-            return 1
-        if write_files(project, files, scope) == 0:
-            say("  쓸 수 있는 파일이 하나도 없었습니다. 멈춥니다.")
-            return 1
+        if files:
+            write_files(project, files, scope)
 
-        # 씬 메서드가 있으면 **같은 실행에서** 부른다. 두 번 켜면 두 배 걸리고,
-        # 컴파일이 깨졌을 땐 어차피 메서드가 안 불리므로 한 번이면 충분하다.
-        scene_method = reply.get("sceneMethod") or scene_method
+        if action == "write_more":
+            # 아직 설계도가 남았다. 유니티를 켜 봐야 반쪽만 있는 상태라
+            # 오류만 잔뜩 나온다 — 다 쓰고 나서 한 번에 잰다.
+            left = reply.get("left")
+            if left is not None:
+                say(f"  남은 파일 {left}개")
+            errors = []
+            continue
+
+        # 컴파일할 때. 씬 메서드가 있으면 **같은 실행에서** 부른다 — 두 번
+        # 켜면 두 배 걸리고, 컴파일이 깨졌을 땐 어차피 메서드가 안 불린다.
+        compiles += 1
         say("  유니티를 켭니다…"
             + (f" (씬: {scene_method})" if scene_method else ""))
         code, text = run_unity(unity, project, log, scene_method,
@@ -306,13 +325,18 @@ def main() -> int:
             # 만들어졌다"까지 넓어진다.
             errors = parse_runtime(text, scene_method)
         say(f"  유니티 종료코드 {code}, 오류 {len(errors)}개")
-        if errors:
-            for e in errors[:5]:
-                say(f"    {e['file']}({e['line']}): {e['message']}")
-            if len(errors) > 5:
-                say(f"    … 그 외 {len(errors) - 5}개")
+        for e in errors[:5]:
+            say(f"    {e['file']}({e['line']}): {e['message']}")
+        if len(errors) > 5:
+            say(f"    … 그 외 {len(errors) - 5}개")
 
-    say(f"{args.rounds}판을 채웠습니다. 여기서 멈추고 사람에게 넘깁니다.")
+    # 왜 나왔는지 구분해서 말한다. "판을 다 썼다"와 "왕복만 하다 끝났다"는
+    # 다음에 할 일이 다르다 — 앞은 고치기가 어려웠던 것이고, 뒤는 설계도가
+    # 이상해서 같은 자리를 맴돈 것이다.
+    if compiles >= args.rounds:
+        say(f"{args.rounds}판을 채웠습니다. 여기서 멈추고 사람에게 넘깁니다.")
+    else:
+        say(f"컴파일까지 못 가고 왕복만 {calls}번 했습니다. 설계도를 보십시오.")
     return 1
 
 
