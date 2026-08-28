@@ -30,7 +30,9 @@ namespace Rookery
     /// 멈추라고 하고, 여기서도 세지 않고 무한히 돌지 않는다.
     /// </summary>
     [InitializeOnLoad]
-    static class RookeryVibeLoop
+    // 창이 public 이고 그 안의 필드가 여기 있는 Reply 를 들고 있어서, 이 클래스도
+    // public 이어야 한다. 아니면 "덜 열린 타입"이라고 컴파일러가 거절한다.
+    public static class RookeryVibeLoop
     {
         // 세션 상태는 도메인 리로드를 넘어 살아남고, 에디터를 끄면 지워진다.
         // 고리의 수명이 딱 그만큼이라 이 저장소가 맞다.

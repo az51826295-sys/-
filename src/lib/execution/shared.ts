@@ -57,7 +57,23 @@ function selectAI(): AIProvider {
   // behaviour it had before, on one vendor.
   const economy = process.env.DEEPSEEK_API_KEY ? createDeepSeekProvider() : undefined;
 
-  return economy ? createRoutedProvider({ primary, economy }) : primary;
+  // 같은 등급의 옆자리.
+  //
+  // 벤더 하나가 잔액이 떨어지면 판단 등급 일이 통째로 멈춘다 — 답의 품질과
+  // 아무 상관 없는 이유로. 실제로 그렇게 멈춰 봤다. 옆자리는 값을 깎는 자리가
+  // 아니라 같은 등급의 다른 회사라, 여기로 넘어가도 답이 나빠지지 않는다.
+  const standby =
+    primary.name === "anthropic" && process.env.OPENAI_API_KEY
+      ? createOpenAIProvider()
+      : primary.name === "openai" && process.env.ANTHROPIC_API_KEY
+        ? createAnthropicProvider()
+        : undefined;
+
+  // 옆자리만 있어도 라우터를 쓴다. 예전에는 싼 자리가 있을 때만 라우터를
+  // 거쳤는데, 그러면 옆자리를 붙여 놓고도 아무 데도 안 쓰이게 된다.
+  return economy || standby
+    ? createRoutedProvider({ primary, economy, standby })
+    : primary;
 }
 
 export function defaultProviders(): Providers {
