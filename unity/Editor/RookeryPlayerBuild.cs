@@ -22,18 +22,30 @@ namespace Rookery
     {
         public static void Build()
         {
-            var scenes = EditorBuildSettings.scenes
-                .Where(s => s.enabled)
-                .Select(s => s.path)
-                .ToArray();
+            // 이 세션이 만든 씬만 넣을 수 있게 한다.
+            //
+            // 빌드 설정에는 프로젝트가 원래 쓰던 씬이 먼저 들어 있을 수 있고,
+            // 그러면 켰을 때 로키가 만든 게임이 아니라 그 씬이 뜬다. 만든 것을
+            // 보여 주려고 뽑는 것인데 다른 게 뜨면 뽑은 의미가 없다.
+            var only = Environment.GetEnvironmentVariable("ROOKERY_SCENE");
+            var scenes = string.IsNullOrEmpty(only)
+                ? EditorBuildSettings.scenes
+                    .Where(s => s.enabled)
+                    .Select(s => s.path)
+                    .ToArray()
+                : only.Split(';')
+                    .Select(s => s.Trim().Replace((char)92, '/'))
+                    .Where(s => s.Length > 0)
+                    .ToArray();
 
             if (scenes.Length == 0)
             {
                 // 씬이 없으면 켜도 검은 화면이다. 빈 것을 빌드해 주고 "됐다"고
                 // 하면, 실패를 성공으로 포장하는 셈이다.
                 throw new Exception(
-                    "RookeryPlayerBuild: 빌드 설정에 켜진 씬이 없습니다. " +
-                    "씬을 짓는 메서드가 EditorBuildSettings.scenes 에 넣었는지 보십시오.");
+                    "RookeryPlayerBuild: 넣을 씬이 없습니다. 씬을 짓는 메서드가 " +
+                    "EditorBuildSettings.scenes 에 넣었는지, 또는 ROOKERY_SCENE 이 " +
+                    "가리키는 경로가 맞는지 보십시오.");
             }
 
             var dir = Path.Combine(Directory.GetCurrentDirectory(), "Build");
