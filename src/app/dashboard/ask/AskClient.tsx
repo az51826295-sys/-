@@ -50,9 +50,12 @@ type Turn = {
 
 export default function AskClient({
   initial,
+  task,
 }: {
   /** 저장된 대화를 열고 들어올 때. 없으면 새 대화다. */
   initial?: { id: string; turns: Turn[] } | null;
+  /** 과제 안에서 열었을 때. 여기서 시작한 대화는 그 과제에 들어간다. */
+  task?: { id: string; title: string } | null;
 } = {}) {
   /** 익명일 때 남은 횟수. 로그인 상태면 null 이라 아무것도 안 보인다. */
   const [turnsLeft, setTurnsLeft] = useState<number | null>(null);
@@ -122,6 +125,7 @@ export default function AskClient({
           messages: history.map((t) => ({ role: t.role, content: t.content })),
           visitor: visitorId(),
           conversationId,
+          taskId: task?.id ?? null,
           images: attached.map((a) => a.b64),
         }),
       });
@@ -159,6 +163,11 @@ export default function AskClient({
 
   return (
     <div className="mx-auto flex h-[calc(100vh-4rem)] max-w-2xl flex-col px-4">
+      {task && (
+        <p className="pt-2 text-center text-xs text-neutral-500">
+          과제 · {task.title}
+        </p>
+      )}
       {turnsLeft !== null && (
         <p className="pt-2 text-center text-xs text-neutral-500">
           로그인 없이 {turnsLeft}번 더 쓸 수 있습니다 ·{" "}
@@ -172,8 +181,9 @@ export default function AskClient({
       <div className="flex-1 space-y-4 overflow-y-auto py-6">
         {turns.length === 0 && (
           <p className="text-sm text-neutral-500">
-            무엇이든 물어보세요. 찾아봐야 할 것은 찾아보고, 시간이 드는 일은
-            사람을 붙여 업무로 만듭니다.
+            {task
+              ? `"${task.title}" 안에서 나눈 이야기만 여기 모입니다.`
+              : "무엇이든 물어보세요. 찾아봐야 할 것은 찾아보고, 시간이 드는 일은 사람을 붙여 업무로 만듭니다."}
           </p>
         )}
         {turns.map((t, i) => (

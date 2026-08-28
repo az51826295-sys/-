@@ -35,6 +35,8 @@ export type EverydayInput = {
   visitor?: string;
   /** 이어서 저장할 대화. 없으면 새로 만든다. 익명이면 무시된다. */
   conversationId?: string | null;
+  /** 새 대화라면 이 과제 안에 만든다. */
+  taskId?: string | null;
   /** 이번 턴에 올린 사진. base64(데이터 URL 접두사 없이). */
   images?: string[];
 };
@@ -353,6 +355,7 @@ export async function runEverydayTurn(
   const conversationId = user
     ? await saveTurn(supabase, user.id, {
         conversationId: input.conversationId ?? null,
+        taskId: input.taskId ?? null,
         mode: "everyday",
         user: { role: "user", content: lastUser },
         assistant: {

@@ -26,11 +26,13 @@ export async function POST(request: Request) {
   const visitor = (body as { visitor?: unknown })?.visitor;
   const conversationId = (body as { conversationId?: unknown })?.conversationId;
   const images = (body as { images?: unknown })?.images;
+  const taskId = (body as { taskId?: unknown })?.taskId;
 
   const result = await runEverydayTurn({
     messages: messages.slice(-20) as { role: "user" | "assistant"; content: string }[],
     visitor: typeof visitor === "string" ? visitor : undefined,
     conversationId: typeof conversationId === "string" ? conversationId : null,
+    taskId: typeof taskId === "string" ? taskId : null,
     images: Array.isArray(images)
       ? (images.filter((v) => typeof v === "string") as string[])
       : undefined,

@@ -14,7 +14,7 @@ export const metadata = { title: "물어보기" };
 export default async function PublicAskPage({
   searchParams,
 }: {
-  searchParams: Promise<{ c?: string }>;
+  searchParams: Promise<{ c?: string; task?: string }>;
 }) {
   const supabase = await createClient();
   const {
@@ -23,7 +23,7 @@ export default async function PublicAskPage({
 
   // 저장된 대화를 열고 들어올 수 있다. 남의 대화 id 를 넣어도 loadConversation
   // 이 소유자로 걸러 null 을 주므로, 그때는 그냥 새 대화가 된다.
-  const { c } = await searchParams;
+  const { c, task: taskParam } = await searchParams;
   let initial: { id: string; turns: { role: "user" | "assistant"; content: string }[] } | null =
     null;
   if (c && user) {
@@ -39,9 +39,25 @@ export default async function PublicAskPage({
     }
   }
 
+  // 과제를 열고 들어왔을 때. 남의 과제 id 를 넣으면 소유자 조건에서 걸려
+  // null 이 되고, 그러면 그냥 과제 없는 대화가 된다.
+  let task: { id: string; title: string } | null = null;
+  if (taskParam && user) {
+    const { data } = await supabase
+      .from("tasks")
+      .select("id, title")
+      .eq("id", taskParam)
+      .eq("owner_id", user.id)
+      .maybeSingle();
+    if (data) task = { id: data.id as string, title: data.title as string };
+  }
+
   return (
-    <AskShell me={user ? { email: user.email ?? null } : null}>
-      <AskClient initial={initial} />
+    <AskShell
+      me={user ? { email: user.email ?? null } : null}
+      activeTask={task}
+    >
+      <AskClient initial={initial} task={task} />
     </AskShell>
   );
 }

@@ -39,6 +39,9 @@ export async function saveTurn(
     mode: "everyday" | "company";
     user: SavedMessage;
     assistant: SavedMessage;
+    /** 이 대화가 속한 과제. 새 대화에만 붙는다 — 이미 있는 대화를 다른 과제로
+     *  끌어가면, 그 과제를 열었을 때 없던 대화가 끼어 있게 된다. */
+    taskId?: string | null;
   },
 ): Promise<string | null> {
   try {
@@ -51,6 +54,7 @@ export async function saveTurn(
           owner_id: ownerId,
           mode: args.mode,
           title: titleFrom(args.user.content),
+          task_id: args.taskId ?? null,
         })
         .select("id")
         .single();
