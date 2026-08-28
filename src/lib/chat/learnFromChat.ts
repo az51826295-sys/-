@@ -40,6 +40,14 @@ const factsSchema = z.object({
       title: z.string(),
       /** 한두 문장. 나중에 다른 직원이 읽고 바로 쓸 수 있게. */
       description: z.string(),
+      /**
+       * 사실인가 규칙인가.
+       *
+       * "우린 유니티로 만든다" 는 **사실**이고, "보고서는 표부터 시작해라" 는
+       * **규칙**이다. 둘 다 오래 가지만 성격이 다르고, 목록에서 구분되지 않으면
+       * 매니저가 자기가 정한 규칙을 나중에 못 찾는다.
+       */
+      kind: z.enum(["fact", "rule"]),
     }),
   ),
 });
@@ -68,8 +76,12 @@ export async function learnFromChat(
     systemInstructions: [
       "매니저가 방금 한 말에서 **회사에 대한 오래 가는 사실**만 골라 담는다.",
       "",
-      "담을 것: 무엇을 만드는 회사인지, 고객이 누구인지, 어떤 도구·기술을 쓰는지,",
-      "지켜야 하는 규칙, 정해진 취향.",
+      "담을 것:",
+      "- **사실**(kind: fact) — 무엇을 만드는 회사인지, 고객이 누구인지,",
+      "  어떤 도구·기술을 쓰는지.",
+      "- **규칙**(kind: rule) — 매니저가 \"앞으로 이렇게 해\", \"항상 ~해\",",
+      "  \"~하지 마\" 처럼 **앞으로 계속 지키라고** 말한 것. 이건 사실이 아니지만",
+      "  오래 가고, 놓치면 매니저가 같은 말을 반복하게 된다.",
       "",
       "담지 **않을** 것:",
       "- 지금 이 일에 대한 지시 (\"이건 파란색으로\") — 그건 사실이 아니라 요청이고,",
@@ -98,11 +110,11 @@ export async function learnFromChat(
     facts.map((f) => ({
       company_id: companyId,
       // 출처를 제목에 남긴다. 대화에서 왔다는 것이 보이면 틀렸을 때 지울 수 있다.
-      title: `${f.title} (대화에서)`,
+      title: `${f.title} (${f.kind === "rule" ? "규칙" : "대화에서"})`,
       description: f.description,
       // 있는 분류 중 맞는 것을 쓴다. 새 분류를 만들면 이걸 읽는 화면들이
       // 모르는 값을 만나 조용히 빈칸을 낸다.
-      category: "process_improvement",
+      category: f.kind === "rule" ? "best_practice" : "process_improvement",
       status: "active",
     })),
   );

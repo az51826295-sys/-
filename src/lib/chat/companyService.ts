@@ -6,7 +6,7 @@ import { blockedBySpendLimit } from "@/lib/costs/allowance";
 import { meterProviders } from "@/lib/costs/meter";
 import { defaultProviders } from "@/lib/execution/shared";
 import { runChatTurn, type ChatOption } from "@/lib/chat/service";
-import { speakerFor, speakerNote } from "@/lib/chat/persona";
+import { selfNote, speakerFor, speakerNote } from "@/lib/chat/persona";
 import { learnFromChat } from "@/lib/chat/learnFromChat";
 
 /**
@@ -157,6 +157,7 @@ export async function runCompanyChatTurn(
       "2. 조사·검증·문서·그림처럼 시간이 드는 것일 때만 고른다.",
       "3. 한국어로 답한다. 길어야 하는 질문이면 길게 답해도 된다 —",
       "   짧게 자르는 것이 친절이 아니다.",
+      selfNote(),
       speakerNote(speaker),
     ].join("\n"),
     input: input.messages.map((m) => `${m.role}: ${m.content}`).join("\n"),

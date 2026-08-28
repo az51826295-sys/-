@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { blockedBySpendLimit } from "@/lib/costs/allowance";
 import { meterProviders } from "@/lib/costs/meter";
 import { defaultProviders } from "@/lib/execution/shared";
-import { speakerFor, speakerNote } from "@/lib/chat/persona";
+import { selfNote, speakerFor, speakerNote } from "@/lib/chat/persona";
 import { createImageProvider } from "@/lib/providers/images";
 import { checkAnonymous, recordAnonymous } from "@/lib/chat/anonymous";
 import { saveTurn } from "@/lib/chat/conversations";
@@ -162,6 +162,7 @@ export async function runEverydayTurn(
       "묘사는 영어로, 무엇을 어떤 구도·색·분위기로 그릴지 구체적으로. " +
       "그려 달라고 하지 않았으면 비워 둔다 — 설명으로 될 것을 그림으로 내면 " +
       "느리기만 하다." +
+      selfNote() +
       speakerNote(speaker),
     input: transcript,
     images: seen,
