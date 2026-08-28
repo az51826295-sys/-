@@ -33,10 +33,14 @@ const OWNER_EMAILS = (process.env.OWNER_EMAIL ?? "")
   .map((e) => e.trim().toLowerCase())
   .filter(Boolean);
 
-export async function speakerFor(
-  db: Supabase,
-  userId: string,
-): Promise<Speaker | null> {
+/**
+ * `userId` 를 받지 않는다.
+ *
+ * 예전에는 그것으로 회사를 찾아 소유자를 판별했는데, 지금은 계정의 **이메일**로
+ * 본다 — 회사를 아직 안 만들었거나 다른 계정으로 들어와도 알아봐야 하기
+ * 때문이다. 인자를 남겨 두면 다음 사람이 그게 쓰이는 줄 알고 신경 쓴다.
+ */
+export async function speakerFor(db: Supabase): Promise<Speaker | null> {
   const { data } = await db.auth.getUser();
   const email = data.user?.email?.toLowerCase();
   if (!email) return null;

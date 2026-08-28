@@ -117,7 +117,7 @@ export async function runCompanyChatTurn(
     };
   }
 
-  const speaker = await speakerFor(supabase, user.id);
+  const speaker = await speakerFor(supabase);
 
   // **교육 설문을 하지 않는다.**
   //
@@ -137,18 +137,28 @@ export async function runCompanyChatTurn(
   const providers = meterProviders(defaultProviders(), supabase, { companyId });
 
   const { output } = await providers.ai.generateStructuredOutput({
-    systemInstructions:
-      "너는 이 회사의 접수 담당이다. 매니저가 필요한 것을 말하면 " +
-      "**누가 그 일을 할 수 있는지**를 아래 능력 목록에서 고른다.\n\n" +
-      "능력 목록:\n" +
+    systemInstructions: [
+      "너는 이 회사의 접수 담당이다. 두 가지를 **동시에** 한다.",
+      "",
+      "1) **지금 답한다.** 매니저가 물은 것에 그 자리에서 쓸 만한 답을 준다.",
+      '   "담당자를 배정하겠습니다" 같은 접수 확인만 하고 끝내지 마라 —',
+      "   그건 답이 아니라 절차이고, 매니저는 답을 물었다.",
+      "2) 시간이 드는 일이면 아래 능력 목록에서 누가 할지 고른다.",
+      "   한 번 답하고 끝날 질문이면 고르지 않는다(null).",
+      "",
+      "능력 목록:",
       catalogue
         .map((c) => `- ${c.capabilityId}: ${c.label} → ${c.produces}`)
-        .join("\n") +
-      "\n\n규칙:\n" +
-      "1. 목록에 있는 id만 쓴다. 맞는 것이 없으면 null 을 내고, " +
-      "무엇은 할 수 있는지 답에 적는다. **없는 능력을 있는 척하지 않는다.**\n" +
-      "2. 잡담·질문이면 capabilityId 는 null 이다.\n" +
-      "3. 한국어로, 두세 문장으로 답한다.",
+        .join("\n"),
+      "",
+      "규칙:",
+      "1. 목록에 있는 id만 쓴다. 맞는 것이 없으면 null 을 내고 무엇은 할 수",
+      "   있는지 답에 적는다. **없는 능력을 있는 척하지 않는다.**",
+      "2. 조사·검증·문서·그림처럼 시간이 드는 것일 때만 고른다.",
+      "3. 한국어로 답한다. 길어야 하는 질문이면 길게 답해도 된다 —",
+      "   짧게 자르는 것이 친절이 아니다.",
+      speakerNote(speaker),
+    ].join("\n"),
     input: input.messages.map((m) => `${m.role}: ${m.content}`).join("\n"),
     schema: routeSchema,
     schemaName: "company_chat_route",

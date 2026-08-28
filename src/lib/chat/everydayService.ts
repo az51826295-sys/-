@@ -134,7 +134,7 @@ export async function runEverydayTurn(
     ? meterProviders(defaultProviders(), supabase, { companyId })
     : defaultProviders();
 
-  const speaker = user ? await speakerFor(supabase, user.id) : null;
+  const speaker = user ? await speakerFor(supabase) : null;
 
   const transcript = input.messages
     .map((m) => `${m.role}: ${m.content}`)
