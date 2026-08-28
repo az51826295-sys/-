@@ -7,7 +7,7 @@ import { meterProviders } from "@/lib/costs/meter";
 import { defaultProviders } from "@/lib/execution/shared";
 import { runChatTurn, type ChatOption } from "@/lib/chat/service";
 import { speakerFor, speakerNote } from "@/lib/chat/persona";
-import { onboardingTurn } from "@/lib/chat/onboardingChat";
+import { learnFromChat } from "@/lib/chat/learnFromChat";
 
 /**
  * 회사와의 대화 한 턴.
@@ -119,44 +119,18 @@ export async function runCompanyChatTurn(
 
   const speaker = await speakerFor(supabase, user.id);
 
-  // 교육이 안 끝난 직원이 있으면 **그 대화를 먼저 이어 간다.**
+  // **교육 설문을 하지 않는다.**
   //
-  // 전에는 여기서 "서식을 채우세요" 하고 링크를 줬다. 매니저 입장에서 그건
-  // 일을 맡기려다 숙제를 받은 것이고, 폰에서는 특히 거기서 멈춘다. 질문들은
-  // 원래 대화에 어울리는 것들이라("회사가 뭘 하나요") 한 번에 하나씩 물으면
-  // 서식이 아니라 그냥 이야기가 된다.
-  const { data: training } = await supabase
-    .from("company_employees")
-    .select("id, onboarding_status, employees(name)")
-    .eq("company_id", companyId)
-    .neq("onboarding_status", "completed")
-    .limit(1)
-    .maybeSingle();
+  // 전에는 교육이 안 끝난 직원이 있으면 "회사가 뭘 하나요"부터 물었다. 매니저
+  // 입장에서 그건 일을 맡기려다 숙제를 받은 것이고, 이미 여러 번 대답한
+  // 이야기다. 그 답은 **대화 안에 이미 나온다** — 그래서 묻는 대신 줍는다
+  // (`learnFromChat`).
+  //
+  // 새로 뽑은 사람은 회사 지식을 그대로 물려받으므로, 아무것도 안 물어도
+  // 아는 상태로 시작한다.
 
-  if (training) {
-    const last =
-      [...input.messages].reverse().find((m) => m.role === "user")?.content ?? "";
-    const turn = await onboardingTurn(training.id as string, last);
-    if ("error" in turn) {
-      return { ok: false, error: turn.error, status: turn.status };
-    }
-    const name =
-      (training as unknown as { employees: { name: string } | null }).employees
-        ?.name ?? "새 직원";
-    return {
-      ok: true,
-      reply: turn.reply,
-      hired: null,
-      routedTo: { id: training.id as string, name },
-      assignment: null,
-      options: null,
-      // 다 끝났으면 더 이상 교육이 아니다 — 다음 턴부터 평소대로 돈다.
-      needsOnboarding: turn.done
-        ? null
-        : { id: training.id as string, name },
-    };
-  }
-
+  const lastUserSaid =
+    [...input.messages].reverse().find((m) => m.role === "user")?.content ?? "";
   const catalogue = capabilityCatalogue();
   // 계량은 세 인자다: 제공자 · DB · 범위. 대화 한 턴도 장부에 남아야
   // 지출 한도가 실제로 한도가 된다.
@@ -256,24 +230,20 @@ export async function runCompanyChatTurn(
     hired = { name: candidate.name, why: output.why ?? matched.label };
   }
 
-  // 방금 뽑은 사람은 회사에 대해 아무것도 모른다. 그 상태로 일을 넘기면
-  // 실패하고, 실패를 매니저 탓처럼 보이게 한다. 솔직히 말하고 멈춘다.
+  // 새로 뽑은 사람에게 설문을 시키지 않는다.
+  //
+  // 전에는 여기서 멈추고 "회사에 대해 몇 가지만 알려주세요" 했다. 그런데 회사
+  // 지식은 **고용과 무관하게 회사 전체가 공유**하는 것이라, 오늘 아침 뽑은
+  // 사람도 회사가 지금까지 배운 것을 그대로 물려받는다. 그 사람 개인에게 다시
+  // 물을 이유가 없다.
+  //
+  // 회사가 아직 아무것도 모르는 상태라면 그건 이 사람의 문제가 아니라 회사가
+  // 처음이라는 뜻이고, 대화가 이어지면서 채워진다.
   if (!onboardingDone) {
-    return {
-      ok: true,
-      reply:
-        `${output.reply}
-
-` +
-        `이어서 깊게 파려고 ${hireName} 을(를) 붙였습니다 — ` +
-        `${output.why ?? matched.label}. 회사에 대해 몇 가지만 알려주면 ` +
-        `바로 착수합니다.`,
-      hired,
-      routedTo: null,
-      assignment: null,
-      options: null,
-      needsOnboarding: { id: hireId, name: hireName },
-    };
+    await supabase
+      .from("company_employees")
+      .update({ onboarding_status: "completed" })
+      .eq("id", hireId);
   }
 
   // 여기서부터는 기존 1:1 채팅이 그대로 한다 — 업무 접수, 배정 생성, 큐잉까지
@@ -283,6 +253,14 @@ export async function runCompanyChatTurn(
     messages: input.messages,
   });
   if (!turn.ok) return turn;
+
+  // 대화에서 회사 사실을 줍는다. **답을 낸 뒤에** 한다 — 이게 실패해도
+  // 사용자는 답을 받아야 하고, 배우는 것은 그다음이다.
+  try {
+    await learnFromChat(supabase, providers, companyId, lastUserSaid);
+  } catch {
+    // 배우지 못한 것은 다음 턴에 다시 기회가 온다. 답을 삼킬 이유가 없다.
+  }
 
   // 접수 담당의 답이 먼저다. 담당자가 덧붙인 말은 그 뒤에 잇는다 — 순서를
   // 뒤집으면 사용자가 처음 읽는 문장이 절차가 된다.

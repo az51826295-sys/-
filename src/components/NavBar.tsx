@@ -26,14 +26,18 @@ const LINKS = [
   // 이 제품의 정문이 대화로 옮겨졌는데 내비에는 없었다 — 매니저가 말을 걸려면
   // 주소를 외우거나 뒤로 가기를 눌러야 했고, 찾아갈 길이 없는 정문은 정문이
   // 아니다. 나머지는 그 대화가 만들어 낸 것을 **다시 찾는** 자리다.
+  // 대화 하나만 남긴다.
+  //
+  // 나머지 화면들은 **지우지 않았다** — 20개가 도는 코드이고, 지우는 것은
+  // 되돌릴 수 없다. 다만 정문에서 치웠다: 매니저가 일을 시키러 왔는데 문이
+  // 다섯 개면 그중 어느 것이 "시키는 문"인지부터 골라야 하고, 그 고르기가
+  // 이 제품을 어렵게 만들던 것이다.
+  //
+  // 필요한 사람은 주소로 갈 수 있고, 설정(왼쪽 위)에 "회사 관리"가 남아 있다.
   { href: "/ask", label: "대화" },
-  { href: "/dashboard", label: "홈" },
   // Added back after the cut to three. The home screen turns a sentence into a
   // project, and a product that creates things the person cannot then find has
   // not simplified anything — it has hidden their work.
-  { href: "/dashboard/projects", label: "프로젝트" },
-  { href: "/employees", label: "직원" },
-  { href: "/dashboard/company", label: "회사" },
 ];
 
 export function NavBar() {
