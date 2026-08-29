@@ -119,6 +119,7 @@ export async function POST(request: Request) {
     unityVersion?: unknown;
     errors?: unknown;
     project?: unknown;
+    packages?: unknown;
   };
 
   const errors: CompileError[] = Array.isArray(b.errors)
@@ -138,6 +139,21 @@ export async function POST(request: Request) {
     typeof b.unityVersion === "string" && b.unityVersion
       ? "\n대상 유니티 버전: " + b.unityVersion
       : "";
+  /**
+   * 이 프로젝트에 **실제로 깔린 것**.
+   *
+   * 로키가 `UnityEngine.UI` 를 쓴 코드를 냈는데 그 패키지가 없어서 오류 16개가
+   * 났고, 로키는 패키지를 못 깔아서 코드만 고치다 멈췄다 — 고칠 수 없는 것을
+   * 고치려 한 것이다. 무엇이 있는지 먼저 알려 주면 없는 것을 쓰지 않는다.
+   */
+  const packageNote = Array.isArray(b.packages) && b.packages.length
+    ? "\n\n이 프로젝트에 깔린 패키지(**여기 없는 것은 쓸 수 없다**):\n" +
+      (b.packages as string[]).map((p) => "- " + p).join("\n") +
+      "\n없는 패키지가 필요하면 그걸 쓰는 코드를 내지 말고, 사람이 깔아야 " +
+      "한다고 setup 에 적어라. 네가 못 까는 것을 쓴 코드는 고칠 수 없는 오류로 " +
+      "돌아오고, 판만 돌다 멈춘다."
+    : "";
+
   const projectNote = Array.isArray(b.project) && b.project.length
     ? "\n지금 프로젝트에 있는 파일:\n" +
       (b.project as { path: string; contents: string }[])
@@ -270,6 +286,7 @@ export async function POST(request: Request) {
         "가정하지 말고 **설계도에 적힌 역할대로** 부르면 된다.",
         `\n파일은 반드시 ${scope} 아래에 둔다.`,
         versionNote,
+        packageNote,
         session.scene_method
           ? `\n씬을 짓는 메서드는 ${session.scene_method} 다.`
           : "",

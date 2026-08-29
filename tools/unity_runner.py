@@ -140,6 +140,32 @@ def read_scope(project: Path, scope: str, max_files: int = 24,
     return out
 
 
+def read_packages(project: Path) -> list[str]:
+    """이 프로젝트에 실제로 깔린 패키지.
+
+    로키가 `UnityEngine.UI` 를 쓴 코드를 냈는데 그 패키지가 프로젝트에 없어서
+    16개 오류가 났고, 로키는 패키지를 못 깔아서 코드만 고치다 멈췄다. 고칠 수
+    없는 것을 고치려 한 것이다.
+
+    무엇이 있는지 **먼저 알려 주면** 없는 것을 쓰지 않는다. 이것이 오류를
+    고치는 것보다 싸다 — 오류는 판을 한 번 더 돌게 하고, 판마다 값이 나간다.
+    """
+    manifest = project / "Packages" / "manifest.json"
+    if not manifest.exists():
+        return []
+    try:
+        data = json.loads(manifest.read_text(encoding="utf-8"))
+    except (ValueError, OSError):
+        return []
+    deps = data.get("dependencies") or {}
+    # 엔진 기본 모듈은 뺀다. 그건 늘 있어서 알려 줘 봐야 자리만 찬다.
+    return sorted(
+        f"{name}@{version}"
+        for name, version in deps.items()
+        if not name.startswith("com.unity.modules.")
+    )
+
+
 def run_unity(unity: Path, project: Path, log: Path,
               execute_method: str | None, timeout: int) -> tuple[int, str]:
     """유니티를 켠다. 돌아오는 것은 종료 코드와 로그 전문."""
@@ -303,6 +329,7 @@ def drive(args, project: Path, unity: Path, scope: str, log: Path,
             "unityVersion": read_version(project),
             "errors": errors,
             "project": read_scope(project, scope),
+            "packages": read_packages(project),
         }
         if session:
             payload["sessionId"] = session
