@@ -249,8 +249,17 @@ export async function POST(request: Request) {
   // `decide()` 를 부르면 오류가 없다는 이유로 "통과"가 나오는데, 정작 파일은
   // 반밖에 없다 — 아무것도 안 만들고 성공했다고 말하는 셈이다.
   if (remainingPlan.length > 0 && errors.length === 0) {
-    const batch = remainingPlan.slice(0, FILES_PER_CALL);
-    const { output } = await providers.ai.generateStructuredOutput({
+    /**
+     * 한 판에 파일 몇 개를 낼지는 **해 보고 줄인다.**
+     *
+     * 두 개를 청했다가 출력 한도에 잘려 500 이 났다. 씬 빌더처럼 큰 파일이
+     * 끼면 둘이 안 들어간다. 그런데 파일 크기는 내 보기 전에는 모른다 —
+     * 그래서 미리 하나씩만 청하면 작은 파일들에서 왕복만 두 배가 된다.
+     *
+     * 잘렸다는 것은 "이 묶음이 너무 컸다"는 **측정값**이다. 그때만 줄인다.
+     */
+    const ask = (files: Planned[], maxTokens: number) =>
+      providers.ai.generateStructuredOutput({
       systemInstructions: [
         RULES,
         "",
@@ -273,14 +282,27 @@ export async function POST(request: Request) {
           (f) => `- ${f.path} — ${f.purpose}${f.written ? " (이미 씀)" : ""}`,
         ),
         "\n이번에 낼 파일:",
-        ...batch.map((f) => `- ${f.path} — ${f.purpose}`),
+        ...files.map((f) => `- ${f.path} — ${f.purpose}`),
         projectNote,
       ].join("\n"),
       schema: filesSchema,
       schemaName: "unity_vibe_files",
-      maxTokens: 16000,
+      maxTokens,
       tier: "judgment",
     });
+
+    let batch = remainingPlan.slice(0, FILES_PER_CALL);
+    let output;
+    try {
+      ({ output } = await ask(batch, 16000));
+    } catch (error) {
+      const truncated =
+        error instanceof Error && error.message === "MODEL_OUTPUT_TRUNCATED";
+      if (!truncated || batch.length === 1) throw error;
+      // 잘렸다는 것은 "이 묶음이 너무 컸다"는 측정값이다. 그때만 줄인다.
+      batch = batch.slice(0, 1);
+      ({ output } = await ask(batch, 24000));
+    }
 
     const wanted = new Set(batch.map((f) => f.path));
     const kept = output.files.filter(

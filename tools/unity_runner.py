@@ -41,6 +41,10 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 
+# 서버가 몇 번 연속 거절하면 그 일이 안 되는 것으로 본다. 지나가는 일과
+# 안 되는 일을 가르는 자리다 — 없으면 20초마다 같은 일을 다시 집는다.
+MAX_REFUSALS = 3
+
 DEFAULT_URL = "https://rookery-web-production.up.railway.app"
 
 # 유니티가 로그에 오류를 적는 모양. 파일(줄,칸): error CSxxxx: 메시지
@@ -53,6 +57,14 @@ EXCEPTION_LINE = re.compile(r"^(?P<kind>\w*Exception|Error):\s*(?P<msg>.+)$")
 
 # 프로젝트가 이미 열려 있으면 배치모드가 붙지 못한다. 흔한 막힘이라 따로 잡는다.
 LOCKED = "Multiple Unity instances cannot open the same project"
+
+
+class ServerRefused(Exception):
+    """서버가 이번 요청을 거절했다.
+
+    프로세스를 끝내지 않는다. 지나가는 일일 수도 있고, 그때 대기 모드가 통째로
+    꺼지면 켜 둔 의미가 없다. 몇 번 다시 해 보고도 안 되면 그때 포기한다.
+    """
 
 
 def say(text: str) -> None:
@@ -72,9 +84,9 @@ def post(url: str, key: str, payload: dict, timeout: int) -> dict:
             return json.loads(response.read().decode("utf-8"))
     except urllib.error.HTTPError as error:
         detail = error.read().decode("utf-8", "replace")[:400]
-        raise SystemExit(f"로키가 거절했습니다 ({error.code}): {detail}")
+        raise ServerRefused(f"로키가 거절했습니다 ({error.code}): {detail}")
     except urllib.error.URLError as error:
-        raise SystemExit(f"로키에 닿지 못했습니다: {error.reason}")
+        raise ServerRefused(f"로키에 닿지 못했습니다: {error.reason}")
 
 
 def inside_scope(path: str, scope: str) -> bool:
@@ -277,6 +289,7 @@ def drive(args, project: Path, unity: Path, scope: str, log: Path,
     started = time.time()
     compiles = 0
     calls = 0
+    refusals = 0
 
     # 호출 수에도 뚜껑을 씌운다. 판(컴파일)과 달리 "더 써라"는 유니티를 켜지
     # 않으므로 서버의 판 세기에 안 걸린다 — 여기서 세지 않으면 설계도가
@@ -298,7 +311,20 @@ def drive(args, project: Path, unity: Path, scope: str, log: Path,
 
         say(f"[{compiles + 1}판] 로키에게 보냅니다"
             + (f" (오류 {len(errors)}개)" if errors else "") + "…")
-        reply = post(args.url, args.key, payload, timeout=600)
+        try:
+            reply = post(args.url, args.key, payload, timeout=600)
+            refusals = 0
+        except ServerRefused as error:
+            refusals += 1
+            say(f"  {error}")
+            if refusals >= MAX_REFUSALS:
+                why = f"서버가 {MAX_REFUSALS}번 연속 거절했습니다: {error}"
+                say(why)
+                give_up(args, session, why)
+                return 1
+            # 잠깐 쉬었다 같은 자리에서 다시. 서버가 숨을 돌릴 시간을 준다.
+            time.sleep(10 * refusals)
+            continue
 
         session = reply.get("sessionId") or session
         scene_method = reply.get("sceneMethod") or scene_method
@@ -409,8 +435,13 @@ def watch(args, project: Path, unity: Path, scope: str, log: Path) -> int:
         if found:
             say("")
             say(f"일이 왔습니다: {found['want'][:80]}")
-            drive(args, project, unity, found.get("scope") or scope, log,
-                  resume=found["id"])
+            try:
+                drive(args, project, unity, found.get("scope") or scope, log,
+                      resume=found["id"])
+            except Exception as error:
+                # 한 세션이 터져도 기다리기는 계속한다. 여기서 끝나면 켜 둔
+                # 것과 꺼 둔 것이 같아지고, 사람은 켜 둔 줄 안다.
+                say(f"  이 일에서 터졌습니다: {error}")
         time.sleep(args.every)
 
 
