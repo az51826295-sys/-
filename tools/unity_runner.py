@@ -317,10 +317,34 @@ def drive(args, project: Path, unity: Path, scope: str, log: Path,
     calls = 0
     refusals = 0
 
+    # **아직 아무것도 재지 않았다.**
+    #
+    # 서버는 "오류 0개" 를 통과로 읽는다. 그런데 이어받은 세션은 시작할 때
+    # 오류 목록이 비어 있고, 그건 "오류가 없다" 가 아니라 "아직 안 봤다" 다.
+    # 그대로 보냈더니 유니티를 한 번도 안 켜고 0.1분 만에 "통과" 가 나왔다 —
+    # 씬은 만들어지지도 않았는데.
+    #
+    # 미측정을 통과로 읽지 않는다. 이어받았으면 **먼저 재고** 시작한다.
+    measured = False
+
     # 호출 수에도 뚜껑을 씌운다. 판(컴파일)과 달리 "더 써라"는 유니티를 켜지
     # 않으므로 서버의 판 세기에 안 걸린다 — 여기서 세지 않으면 설계도가
     # 이상할 때 조용히 계속 돈다.
     max_calls = args.rounds * 12
+
+    if resume:
+        # 이어받은 자리에서는 지금 프로젝트가 어떤 상태인지 우리도 모른다.
+        # 한 번 켜서 재고 시작한다. 이게 없으면 첫 요청이 "오류 없음" 을
+        # 들고 가고, 서버는 그걸 통과로 읽는다.
+        say("이어받았습니다. 먼저 지금 상태를 재 봅니다…")
+        compiles += 1
+        code, text = run_unity(unity, project, log, None, args.unity_timeout)
+        if LOCKED in text:
+            say("  유니티가 이미 이 프로젝트를 열고 있습니다. 에디터를 닫고 다시 시작해 주십시오.")
+            return 1
+        errors = parse_errors(text, project)
+        measured = True
+        say(f"  유니티 종료코드 {code}, 오류 {len(errors)}개")
 
     while compiles < args.rounds and calls < max_calls:
         calls += 1
@@ -366,7 +390,7 @@ def drive(args, project: Path, unity: Path, scope: str, log: Path,
 
         action = reply.get("action")
         if reply.get("status") != "running" or action == "done":
-            return finish(reply, time.time() - started)
+            return finish(reply, time.time() - started, measured)
 
         files = reply.get("files") or []
         if files:
@@ -394,6 +418,7 @@ def drive(args, project: Path, unity: Path, scope: str, log: Path,
             return 1
 
         errors = parse_errors(text, project)
+        measured = True
         if not errors and scene_method:
             # 컴파일은 됐는데 씬을 짓다 터진 것. 이것도 오류로 돌려보낸다 —
             # 그래야 이 고리가 재는 것이 "문법이 맞다"에서 "씬이 실제로
@@ -472,7 +497,7 @@ def watch(args, project: Path, unity: Path, scope: str, log: Path) -> int:
         time.sleep(args.every)
 
 
-def finish(reply: dict, seconds: float) -> int:
+def finish(reply: dict, seconds: float, measured: bool = True) -> int:
     """끝났을 때 무엇을 말할 것인가.
 
     컴파일이 통과해도 "됐다"고 말하지 않는다. 문법이 맞다는 뜻이지 원하던 것이
@@ -480,6 +505,15 @@ def finish(reply: dict, seconds: float) -> int:
     """
     status = reply.get("status")
     say("")
+
+    if status == "compiled" and not measured:
+        # 재지 않고 통과를 받은 것이다. 서버는 "오류 0개" 를 통과로 읽는데,
+        # 우리가 이번에 유니티를 켜지 않았으면 그 0 은 "없다" 가 아니라
+        # "안 봤다" 다. 그 둘을 같게 읽는 순간 판정이 있으나 마나가 된다.
+        say("끝: 통과라고 왔지만 **이번에 아무것도 재지 않았습니다.**")
+        say("유니티를 한 번도 켜지 않았으므로 통과로 읽지 않습니다.")
+        return 1
+
     say(f"끝: {status} ({seconds / 60:.1f}분)")
     if reply.get("why"):
         say(reply["why"])
