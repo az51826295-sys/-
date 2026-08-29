@@ -34,6 +34,10 @@ function visitorId(): string {
     return "no-storage";
   }
 }
+/** 스트림을 줄로 자르는 기준. 코드값으로 둔다 — 이 파일을 쓰는 길에서
+ *  역슬래시가 먹혀 문자열이 끊긴 적이 있다. */
+const NEWLINE = String.fromCharCode(10);
+
 type Source = { title: string; url: string };
 type Option = { label: string; description: string | null };
 type Turn = {
@@ -68,6 +72,8 @@ export default function AskClient({
   const [turns, setTurns] = useState<Turn[]>(initial?.turns ?? []);
   const [text, setText] = useState("");
   const [busy, setBusy] = useState(false);
+  /** 지금 뒤에서 무엇을 하는 중인지. 답이 오면 비운다. */
+  const [doing, setDoing] = useState<string | null>(null);
   const endRef = useRef<HTMLDivElement>(null);
 
   /**
@@ -129,32 +135,97 @@ export default function AskClient({
           images: attached.map((a) => a.b64),
         }),
       });
-      const data = await res.json();
-      if (!res.ok) {
-        setTurns([...history, { role: "assistant", content: data.error ?? "문제가 생겼습니다." }]);
-      } else {
+
+      if (!res.body) {
+        setTurns([...history, { role: "assistant", content: "답이 오지 않았습니다." }]);
+        return;
+      }
+
+      // 줄 단위로 읽는다. 조각은 줄 중간에서 끊겨 오므로, 마지막 조각은
+      // 다음 덩어리가 올 때까지 들고 있는다 — 안 그러면 반쪽짜리 JSON 을
+      // 파싱하려다 멀쩡한 답을 버린다.
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let rest = "";
+      let landed = false;
+
+      for (;;) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        rest += decoder.decode(value, { stream: true });
+        const lines = rest.split(NEWLINE);
+        rest = lines.pop() ?? "";
+
+        for (const line of lines) {
+          if (!line.trim()) continue;
+          let event: {
+            type?: string;
+            text?: string;
+            error?: string;
+            [k: string]: unknown;
+          };
+          try {
+            event = JSON.parse(line);
+          } catch {
+            continue;
+          }
+
+          if (event.type === "status") {
+            setDoing(String(event.text ?? ""));
+          } else if (event.type === "error") {
+            landed = true;
+            setTurns([
+              ...history,
+              { role: "assistant", content: String(event.error ?? "문제가 생겼습니다.") },
+            ]);
+          } else if (event.type === "done") {
+            landed = true;
+            const data = event as unknown as {
+              reply: string;
+              hired?: Turn["hired"];
+              assignment?: Turn["assignment"];
+              needsOnboarding?: Turn["needsOnboarding"];
+              options?: Option[] | null;
+              sources?: Source[] | null;
+              searched?: string[] | null;
+              images?: { dataUrl: string; prompt: string }[] | null;
+              turnsLeft?: number;
+              conversationId?: string;
+            };
+            setTurns([
+              ...history,
+              {
+                role: "assistant",
+                content: data.reply,
+                hired: data.hired,
+                assignment: data.assignment,
+                needsOnboarding: data.needsOnboarding,
+                options: data.options,
+                sources: data.sources,
+                searched: data.searched,
+                images: data.images,
+              },
+            ]);
+            if (typeof data.turnsLeft === "number") setTurnsLeft(data.turnsLeft);
+            if (typeof data.conversationId === "string")
+              setConversationId(data.conversationId);
+          }
+        }
+      }
+
+      // 스트림이 아무 답도 없이 닫힌 경우. 조용히 두면 화면에 사용자 말만 남고
+      // 아무 일도 없었던 것처럼 보인다.
+      if (!landed) {
         setTurns([
           ...history,
-          {
-            role: "assistant",
-            content: data.reply,
-            hired: data.hired,
-            assignment: data.assignment,
-            needsOnboarding: data.needsOnboarding,
-            options: data.options,
-            sources: data.sources,
-            searched: data.searched,
-            images: data.images,
-          },
+          { role: "assistant", content: "답이 끊겼습니다. 다시 보내 주십시오." },
         ]);
-        if (typeof data.turnsLeft === "number") setTurnsLeft(data.turnsLeft);
-        if (typeof data.conversationId === "string")
-          setConversationId(data.conversationId);
       }
     } catch {
       setTurns([...history, { role: "assistant", content: "연결이 끊겼습니다." }]);
     } finally {
       setBusy(false);
+      setDoing(null);
       requestAnimationFrame(() => endRef.current?.scrollIntoView({ block: "end" }));
     }
   }
@@ -253,7 +324,16 @@ export default function AskClient({
             )}
           </div>
         ))}
-        {busy && <p className="text-sm text-neutral-500">…</p>}
+        {busy && (
+          <p className="text-sm text-neutral-500">
+            {/*
+              점 세 개만 있으면 멈춘 건지 도는 건지 알 수 없다. 지금 무엇을
+              하는 중인지 그대로 적는다 — 뒤에서 여러 곳에 붙는 것이 이 제품의
+              값어치인데, 안 보이면 지연으로만 느껴진다.
+            */}
+            {doing ?? "…"}
+          </p>
+        )}
         <div ref={endRef} />
       </div>
 

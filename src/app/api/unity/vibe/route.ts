@@ -6,6 +6,7 @@ import { meterProviders } from "@/lib/costs/meter";
 import { defaultProviders } from "@/lib/execution/shared";
 import { retrieveCompanyKnowledge, renderCompanyKnowledge } from "@/lib/knowledge/retrieval";
 import { decide, fingerprint, insideScope, type CompileError } from "@/lib/unity/progress";
+import { planUnitySession } from "@/lib/unity/plan";
 
 /**
  * 유니티와 **돌면서** 만든다.
@@ -43,35 +44,6 @@ const MAX_ROUNDS = 6;
  * 둘 중 끊기는 쪽이 더 나쁘다 — 끊기면 만든 것을 통째로 버리기 때문이다.
  */
 const FILES_PER_CALL = 2;
-
-/** 설계도가 아무리 커도 여기까지. 파일 스무 개짜리 첫 판은 설계가 아니라 폭주다. */
-const MAX_PLANNED_FILES = 12;
-
-const planSchema = z.object({
-  title: z.string(),
-  /** 코드보다 먼저 쓴다. 컴파일 여부는 유니티가 알려 주니 여기 넣지 않는다. */
-  criteria: z.array(
-    z.object({ id: z.string(), when: z.string(), then: z.string() }),
-  ),
-  /**
-   * 만들 파일의 목록. **내용은 아직 쓰지 않는다.**
-   *
-   * 여기서 내용까지 쓰게 하면 이 요청 하나가 길어져 끊긴다. 목록만 받으면
-   * 짧게 끝나고, 무엇을 만들 셈인지도 먼저 보인다.
-   */
-  files: z.array(z.object({ path: z.string(), purpose: z.string() })),
-  /**
-   * 씬을 만들어 저장하는 에디터 정적 메서드의 온전한 이름.
-   *
-   * 스크립트만 컴파일되면 게임이 되지 않는다. 씬에 물체가 없으면 켜도 검은
-   * 화면이다. 씬을 끌어다 놓아 줄 사람이 없으니 씬도 코드가 지어야 한다.
-   */
-  sceneMethod: z.string().nullable(),
-  setup: z.string(),
-  /** 잴 수 없어 사람 눈에 남기는 것. 기준인 척하지 않는다. */
-  humanGate: z.array(z.string()),
-  note: z.string(),
-});
 
 const filesSchema = z.object({
   files: z.array(
@@ -172,6 +144,9 @@ export async function POST(request: Request) {
     : "";
 
   // ── 설계: 무엇을 만들 것인지 목록만 ──────────────────────────
+  //
+  // 설계는 대화창에서도 시작될 수 있어서 `lib/unity/plan.ts` 에 있다. 두 곳에
+  // 같은 코드를 두면 한쪽만 고치는 날이 오고, 그러면 창구마다 다른 회사가 된다.
   if (typeof b.sessionId !== "string" || !b.sessionId) {
     const want = typeof b.want === "string" ? b.want.trim() : "";
     if (want.length < 5) {
@@ -180,95 +155,39 @@ export async function POST(request: Request) {
         { status: 400 },
       );
     }
-    const scope =
-      typeof b.scope === "string" && b.scope.startsWith("Assets/")
-        ? b.scope.endsWith("/")
-          ? b.scope
-          : b.scope + "/"
-        : "Assets/Rookery/";
 
-    const { output } = await providers.ai.generateStructuredOutput({
-      systemInstructions: [
-        RULES,
-        "",
-        "지금은 **설계하는 판**이다. 코드는 아직 쓰지 마라 — 어떤 파일을 만들",
-        "것인지 경로와 한 줄 설명만 낸다. 내용은 다음 판에 나눠 받는다.",
-        "",
-        "**먼저 합격 기준을 쓴다.** 씬에서 무엇을 하면 무엇이 되어야 하는지,",
-        "사람이 눌러 보고 확인할 수 있는 문장으로. 컴파일 여부는 기준이 아니다.",
-        "",
-        `파일은 ${MAX_PLANNED_FILES}개를 넘지 않게, 반드시 ${scope} 아래에 둔다.`,
-        versionNote,
-        knowledge ? "\n이 회사가 아는 것:\n" + knowledge : "",
-      ].join("\n"),
-      input: "만들 것: " + want + projectNote,
-      schema: planSchema,
-      schemaName: "unity_vibe_plan",
-      // 목록만 받으므로 짧다. 여기서 크게 잡으면 끊기는 위험만 늘어난다.
-      maxTokens: 6000,
-      tier: "judgment",
+    const made = await planUnitySession({
+      db,
+      providers,
+      companyId,
+      want,
+      scope: typeof b.scope === "string" ? b.scope : undefined,
+      unityVersion:
+        typeof b.unityVersion === "string" ? b.unityVersion : undefined,
+      project: Array.isArray(b.project)
+        ? (b.project as { path: string; contents: string }[])
+        : undefined,
     });
-
-    const planned: Planned[] = output.files
-      .filter((f) => insideScope(f.path, scope))
-      .slice(0, MAX_PLANNED_FILES)
-      .map((f) => ({ path: f.path, purpose: f.purpose, written: false }));
-    const refused = output.files
-      .filter((f) => !insideScope(f.path, scope))
-      .map((f) => f.path);
-
-    if (planned.length === 0) {
-      return NextResponse.json(
-        { error: "울타리 안에 만들 파일이 하나도 설계되지 않았습니다." },
-        { status: 422 },
-      );
+    if ("error" in made) {
+      return NextResponse.json({ error: made.error }, { status: 422 });
     }
-
-    const { data: session } = await db
-      .from("unity_sessions")
-      .insert({
-        company_id: companyId,
-        want,
-        scope,
-        criteria: output.criteria,
-        scene_method: output.sceneMethod,
-        plan: planned,
-        round: 1,
-        status: "running",
-      })
-      .select("id")
-      .single();
-    const sessionId = session?.id as string | undefined;
-    if (!sessionId) {
-      return NextResponse.json(
-        { error: "세션을 열지 못했습니다." },
-        { status: 500 },
-      );
-    }
-    await db.from("unity_rounds").insert({
-      session_id: sessionId,
-      round: 1,
-      files: planned.map((f) => ({ path: f.path, purpose: f.purpose })),
-      note: output.note,
-    });
 
     return NextResponse.json({
-      sessionId,
+      sessionId: made.sessionId,
       round: 1,
       status: "running",
       // 아직 컴파일할 때가 아니다. 목록만 있고 내용이 없다.
       action: "write_more",
-      scope,
-      title: output.title,
-      criteria: output.criteria,
-      setup: output.setup,
-      humanGate: output.humanGate,
-      sceneMethod: output.sceneMethod,
-      plan: planned.map((f) => f.path),
+      scope: made.scope,
+      title: made.title,
+      criteria: made.criteria,
+      setup: made.setup,
+      humanGate: made.humanGate,
+      sceneMethod: made.sceneMethod,
+      plan: made.planned.map((f) => f.path),
       files: [],
-      // 울타리 밖으로 나가려 한 것을 조용히 버리지 않는다.
-      refused,
-      note: output.note,
+      refused: made.refused,
+      note: made.note,
     });
   }
 

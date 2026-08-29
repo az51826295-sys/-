@@ -223,6 +223,12 @@ def main() -> int:
     parser.add_argument("--rounds", type=int, default=6,
                         help="여기까지만 돈다. 서버에도 같은 뚜껑이 있다.")
     parser.add_argument("--unity-timeout", type=int, default=1200)
+    parser.add_argument(
+        "--watch", action="store_true",
+        help="대화창에서 연 일을 기다렸다가 알아서 집어 간다.")
+    parser.add_argument(
+        "--every", type=int, default=20,
+        help="대기 모드에서 몇 초마다 물어볼지.")
     args = parser.parse_args()
 
     if not args.key:
@@ -250,7 +256,20 @@ def main() -> int:
     say(f"쓸 폴더: {scope}  (이 밖에는 쓰지 않습니다)")
     say("")
 
-    session: str | None = None
+    if args.watch:
+        return watch(args, project, unity, scope, log)
+    return drive(args, project, unity, scope, log)
+
+
+def drive(args, project: Path, unity: Path, scope: str, log: Path,
+          resume: str | None = None) -> int:
+    """세션 하나를 끝까지 돈다.
+
+    `resume` 이 있으면 대화창에서 이미 설계된 일을 이어받는다 — 그때는
+    무엇을 만들지 다시 말하지 않는다. 서버가 설계도를 들고 있고, 여기서
+    또 말하면 같은 일을 두 번 설계하게 된다.
+    """
+    session: str | None = resume
     scene_method: str | None = None
     errors: list[dict] = []
     started = time.time()
@@ -338,6 +357,38 @@ def main() -> int:
     else:
         say(f"컴파일까지 못 가고 왕복만 {calls}번 했습니다. 설계도를 보십시오.")
     return 1
+
+
+def pending(url: str, key: str) -> dict | None:
+    """서버에 내 일이 있는지 묻는다. 없으면 None."""
+    request = urllib.request.Request(
+        url.rstrip("/") + "/api/unity/pending",
+        headers={"x-rookery-key": key},
+    )
+    try:
+        with urllib.request.urlopen(request, timeout=30) as response:
+            return json.loads(response.read().decode("utf-8")).get("session")
+    except Exception as error:
+        # 잠깐 못 닿는 것으로 대기를 끝내지 않는다. 다음 차례에 또 묻는다.
+        say(f"(서버에 못 닿았습니다: {error})")
+        return None
+
+
+def watch(args, project: Path, unity: Path, scope: str, log: Path) -> int:
+    """대화창에서 연 일을 기다렸다가 집어 간다.
+
+    이것이 없으면 대화창에서 연 일을 사람이 터미널에 다시 옮겨 적어야 하고,
+    그러면 연결한 것이 아니라 창구가 둘이 된다.
+    """
+    say(f"기다립니다. {args.every}초마다 로키에게 물어봅니다. (Ctrl+C 로 멈춤)")
+    while True:
+        found = pending(args.url, args.key)
+        if found:
+            say("")
+            say(f"일이 왔습니다: {found['want'][:80]}")
+            drive(args, project, unity, found.get("scope") or scope, log,
+                  resume=found["id"])
+        time.sleep(args.every)
 
 
 def finish(reply: dict, seconds: float) -> int:

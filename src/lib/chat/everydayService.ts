@@ -10,6 +10,7 @@ import { saveTurn } from "@/lib/chat/conversations";
 import { capabilityCatalogue } from "@/lib/chat/companyService";
 import { delegate } from "@/lib/chat/delegate";
 import { learnFromChat } from "@/lib/chat/learnFromChat";
+import { planUnitySession } from "@/lib/unity/plan";
 
 /**
  * 대화 한 턴. **모드가 없다.**
@@ -39,6 +40,17 @@ export type EverydayInput = {
   taskId?: string | null;
   /** 이번 턴에 올린 사진. base64(데이터 URL 접두사 없이). */
   images?: string[];
+  /**
+   * 지금 무엇을 하는 중인지 알린다.
+   *
+   * 한 턴이 검색·그림·위임까지 하면 십수 초가 걸린다. 그동안 화면에 점 세 개만
+   * 있으면 사람은 **멈춘 건지 도는 건지** 알 수 없고, 대개 멈춘 쪽으로 읽는다.
+   * 뒤에서 여러 곳에 붙는 것이 이 제품의 값어치인데, 그게 안 보이면 값어치가
+   * 아니라 지연으로만 느껴진다.
+   *
+   * 없으면 아무 일도 안 일어난다 — 스트리밍을 안 쓰는 호출자도 그대로 쓴다.
+   */
+  onStatus?: (text: string) => void;
 };
 
 export type EverydaySource = { title: string; url: string };
@@ -90,6 +102,17 @@ const firstPass = z.object({
   capabilityId: z.string().nullable(),
   /** 왜 그 능력인지 한 줄. 매니저가 읽고 틀렸다고 말할 수 있어야 한다. */
   capabilityWhy: z.string().nullable(),
+  /**
+   * 유니티에서 만들거나 고쳐 달라는 것. 아니면 null.
+   *
+   * 이것이 채워지면 대화창이 유니티 세션을 연다 — 설계도와 합격 기준이 먼저
+   * 나오고, 사장님 PC에서 도는 심부름꾼이 그것을 집어 유니티를 켠다.
+   *
+   * **게임 이야기라고 아무 때나 채우지 않는다.** "유니티 어떻게 써?" 같은
+   * 물음은 답할 것이지 만들 것이 아니다. 만들어 달라거나 고쳐 달라고 했을
+   * 때만 채운다 — 안 그러면 물어본 적 없는 일이 사장님 프로젝트에 쌓인다.
+   */
+  unityWant: z.string().nullable(),
 });
 
 const answerPass = z.object({
@@ -167,6 +190,9 @@ export async function runEverydayTurn(
   // 상한이 사진 몇 장에 다 쓰이면 그날 나머지 사람이 대화를 못 한다.
   const seen = user ? (input.images ?? []).slice(0, 4) : [];
 
+  const say = input.onStatus ?? (() => {});
+  say("생각하는 중");
+
   const { output: plan } = await providers.ai.generateStructuredOutput({
     systemInstructions:
       "너는 유능한 조수다. 한국어로 답한다.\n\n" +
@@ -188,6 +214,11 @@ export async function runEverydayTurn(
         .map((c) => `  - ${c.capabilityId}: ${c.label} → ${c.produces}`)
         .join("\n") +
       "\n**목록에 있는 id 만 쓴다.** 없는 것을 지어내면 조용히 빗나간다.\n\n" +
+      "**유니티**: 유니티 프로젝트에서 무언가를 **만들거나 고쳐 달라**고 하면 " +
+      "`unityWant` 에 무엇을 만들지 한 문단으로 쓴다. 그러면 설계도와 합격 " +
+      "기준이 만들어지고, 사장님 PC의 심부름꾼이 유니티를 켜서 진행한다. " +
+      "유니티에 대해 **묻기만** 한 것이면 비워 둔다 — 물음에는 답을 하는 것이지 " +
+      "프로젝트에 파일을 쓰는 것이 아니다.\n\n" +
       "**그림**: 사용자가 그려 달라고 하면 `drawings` 에 묘사를 쓴다(최대 2개). " +
       "묘사는 영어로, 무엇을 어떤 구도·색·분위기로 그릴지 구체적으로. " +
       "그려 달라고 하지 않았으면 비워 둔다 — 설명으로 될 것을 그림으로 내면 " +
@@ -224,6 +255,9 @@ export async function runEverydayTurn(
   if (wanted.length > 0) {
     const drawer = createImageProvider();
     for (const prompt of wanted) {
+      // 무엇을 그리는 중인지까지 말한다. "그림 그리는 중"만 있으면 여러 장일 때
+      // 몇 번째인지 몰라 또 멈춘 것처럼 보인다.
+      say(`그리는 중: ${prompt.slice(0, 40)}`);
       try {
         const made = await drawer.draw(prompt);
         images.push({ dataUrl: made.dataUrl, prompt });
@@ -267,6 +301,7 @@ export async function runEverydayTurn(
     const found: EverydaySource[] = [];
     const notes: string[] = [];
     for (const q of queries) {
+      say(`찾아보는 중: ${q}`);
       try {
         const results = await providers.search.search(q, RESULTS_PER_SEARCH);
         for (const r of results) {
@@ -284,6 +319,7 @@ export async function runEverydayTurn(
       }
     }
 
+    say("찾은 것으로 답 쓰는 중");
     const { output: answer } = await providers.ai.generateStructuredOutput({
       systemInstructions: [
         "아래 검색 결과를 근거로 답한다. 한국어로.",
@@ -310,6 +346,53 @@ export async function runEverydayTurn(
 
   if (drawFailures.length) reply += "\n\n" + drawFailures.join("\n");
 
+  // ── 유니티에서 만들어 달라고 했으면 세션을 연다 ────────────────
+  //
+  // 여기서 하는 것은 **설계까지**다. 코드를 쓰고 유니티를 켜는 것은 사장님
+  // PC의 심부름꾼이 한다 — 서버가 남의 기계를 여는 통로를 만드는 것은 이
+  // 제품이 하지 않는 일이라, 그 경계가 여기다.
+  if (plan.unityWant && companyId) {
+    say("유니티 일 설계하는 중");
+    try {
+      const made = await planUnitySession({
+        db: supabase,
+        providers,
+        companyId,
+        want: plan.unityWant,
+      });
+      if ("error" in made) {
+        reply += `
+
+(유니티 일을 열지 못했습니다: ${made.error})`;
+      } else {
+        reply +=
+          `
+
+──
+**유니티: ${made.title}**
+` +
+          `설계했습니다 — 파일 ${made.planned.length}개, 합격 기준 ${made.criteria.length}개.
+` +
+          made.planned.map((f) => `- ${f.path}`).join("\n") +
+          "\n\n사장님 PC에서 심부름꾼이 돌고 있으면 알아서 집어 갑니다. " +
+          "없으면 이 줄을 터미널에 넣으십시오:\n" +
+          "`python tools/unity_runner.py --watch`\n\n" +
+          "**합격 기준은 아직 확인되지 않았습니다.** 컴파일과 씬 생성은 기계가 " +
+          "재고, 원하던 것이 됐는지는 켜 보셔야 압니다.";
+      }
+    } catch (error) {
+      // 유니티가 터져도 답은 나간다. 물어본 것에 대한 답은 이미 있다.
+      reply += `
+
+(유니티 일을 열다 막혔습니다: ${
+        error instanceof Error ? error.message : String(error)
+      })`;
+    }
+  } else if (plan.unityWant && !companyId) {
+    reply +=
+      "\n\n(유니티 일은 회사에 쌓입니다 — 로그인하시면 이어서 맡길 수 있습니다.)";
+  }
+
   // ── 시간이 드는 일이면 사람을 붙인다 ──────────────────────────
   //
   // **답이 나온 뒤에** 한다. 사용자는 사람을 붙여 달라고 한 적이 없고, 절차가
@@ -322,6 +405,7 @@ export async function runEverydayTurn(
 
   if (plan.capabilityId && companyId) {
     try {
+      say("사람 붙이는 중");
       const d = await delegate(
         supabase,
         companyId,
@@ -345,6 +429,7 @@ export async function runEverydayTurn(
   // ── 대화에서 회사 사실·규칙을 줍는다 ──────────────────────────
   if (companyId) {
     try {
+      say("배운 것 정리하는 중");
       await learnFromChat(supabase, providers, companyId, lastUser);
     } catch {
       // 못 배운 것은 다음 턴에 다시 기회가 온다. 답을 삼킬 이유가 없다.
