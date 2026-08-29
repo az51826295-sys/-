@@ -210,6 +210,7 @@ export async function POST(request: Request) {
       scope: made.scope,
       title: made.title,
       criteria: made.criteria,
+      droppedCriteria: made.droppedCriteria,
       setup: made.setup,
       humanGate: made.humanGate,
       sceneMethod: made.sceneMethod,

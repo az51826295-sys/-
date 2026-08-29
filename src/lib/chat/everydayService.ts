@@ -371,7 +371,10 @@ export async function runEverydayTurn(
 ──
 **유니티: ${made.title}**
 ` +
-          `설계했습니다 — 파일 ${made.planned.length}개, 합격 기준 ${made.criteria.length}개.
+          `설계했습니다 — 파일 ${made.planned.length}개, 합격 기준 ${made.criteria.length}개` +
+          (made.droppedCriteria > 0
+            ? ` (반쪽만 쓰인 ${made.droppedCriteria}개는 뺐습니다).`
+            : ".") + `
 ` +
           made.planned.map((f) => `- ${f.path}`).join("\n") +
           "\n\n사장님 PC에서 심부름꾼이 돌고 있으면 알아서 집어 갑니다. " +

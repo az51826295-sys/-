@@ -22,7 +22,9 @@ export type UnityPlan = {
   /** 이 세션이 쓴 울타리. 부른 쪽이 되짚어 추측하지 않게 그대로 돌려준다. */
   scope: string;
   title: string;
-  criteria: { id: string; when: string; then: string }[];
+  criteria: { when: string; then: string }[];
+  /** 반쪽만 쓰여 버린 기준의 수. 조용히 버리지 않는다. */
+  droppedCriteria: number;
   setup: string;
   humanGate: string[];
   sceneMethod: string | null;
@@ -34,8 +36,19 @@ export type UnityPlan = {
 
 const planSchema = z.object({
   title: z.string(),
+  /**
+   * 합격 기준. **칸이 둘뿐이다.**
+   *
+   * 전에는 `id` 칸이 있었는데, 모델이 거기에 기준의 내용을 통째로 적고 `then`
+   * 을 빈 채로 두었다 — 여덟 개 전부. 그러면 "무엇을 하면"만 있고 "무엇이
+   * 되어야 하는가"가 없어서, 사람이 볼 것이 없는 기준이 된다. 쓸 자리가 있으면
+   * 쓰게 되므로, 그 자리를 없앴다.
+   */
   criteria: z.array(
-    z.object({ id: z.string(), when: z.string(), then: z.string() }),
+    z.object({
+      when: z.string().describe("사람이 하는 행동. 예: 스페이스를 6번 누른다"),
+      then: z.string().describe("그때 무엇이 되어야 하는가. 비우지 마라"),
+    }),
   ),
   files: z.array(z.object({ path: z.string(), purpose: z.string() })),
   sceneMethod: z.string().nullable(),
@@ -117,6 +130,14 @@ export async function planUnitySession(args: {
     tier: "judgment",
   });
 
+  // 반쪽짜리 기준은 버린다. "무엇이 되어야 하는가"가 없으면 사람이 볼 것이
+  // 없고, 그런 줄이 목록에 있으면 **확인한 척하기가 쉬워진다** — 눈으로
+  // 훑으면 기준이 여덟 개 있는 것처럼 보이기 때문이다.
+  const criteria = output.criteria.filter(
+    (c) => c.when.trim().length > 0 && c.then.trim().length > 0,
+  );
+  const droppedCriteria = output.criteria.length - criteria.length;
+
   const planned: Planned[] = output.files
     .filter((f) => insideScope(f.path, scope))
     .slice(0, MAX_PLANNED_FILES)
@@ -135,7 +156,7 @@ export async function planUnitySession(args: {
       company_id: args.companyId,
       want: args.want,
       scope,
-      criteria: output.criteria,
+      criteria,
       scene_method: output.sceneMethod,
       plan: planned,
       round: 1,
@@ -157,7 +178,8 @@ export async function planUnitySession(args: {
     sessionId,
     scope,
     title: output.title,
-    criteria: output.criteria,
+    criteria,
+    droppedCriteria,
     setup: output.setup,
     humanGate: output.humanGate,
     sceneMethod: output.sceneMethod,
