@@ -150,7 +150,7 @@ export async function planUnitySession(args: {
     return { error: "울타리 안에 만들 파일이 하나도 설계되지 않았습니다." };
   }
 
-  const { data: session } = await args.db
+  const { data: session, error: insertError } = await args.db
     .from("unity_sessions")
     .insert({
       company_id: args.companyId,
@@ -165,7 +165,15 @@ export async function planUnitySession(args: {
     .select("id")
     .single();
   const sessionId = session?.id as string | undefined;
-  if (!sessionId) return { error: "세션을 열지 못했습니다." };
+  if (!sessionId) {
+    // 무엇에 막혔는지 그대로 싣는다. "열지 못했습니다"만 남으면 다음 사람이
+    // 같은 자리에서 다시 처음부터 짚어야 한다 — 실제로 그렇게 한 번 잃었다.
+    return {
+      error:
+        "세션을 열지 못했습니다" +
+        (insertError?.message ? `: ${insertError.message}` : "."),
+    };
+  }
 
   await args.db.from("unity_rounds").insert({
     session_id: sessionId,

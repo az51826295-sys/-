@@ -11,6 +11,7 @@ import { capabilityCatalogue } from "@/lib/chat/companyService";
 import { delegate } from "@/lib/chat/delegate";
 import { learnFromChat } from "@/lib/chat/learnFromChat";
 import { planUnitySession } from "@/lib/unity/plan";
+import { createServiceClient } from "@/lib/supabase/service";
 
 /**
  * 대화 한 턴. **모드가 없다.**
@@ -362,7 +363,11 @@ export async function runEverydayTurn(
     say("유니티 일 설계하는 중");
     try {
       const made = await planUnitySession({
-        db: supabase,
+        // **사용자 클라이언트가 아니다.** unity_sessions 는 RLS 를 켜고 정책을
+        // 열지 않은 표다 — 유니티 열쇠(서비스 롤)로만 닿게 만들었기 때문이다.
+        // 여기서 사용자 권한으로 넣으면 조용히 막히고, 화면에는 "세션을 열지
+        // 못했습니다" 만 남는다. 회사 소유는 위에서 이미 확인했다.
+        db: createServiceClient(),
         providers,
         companyId,
         want: plan.unityWant,
