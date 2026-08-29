@@ -234,8 +234,10 @@ def main() -> int:
     if not args.key:
         say("회사 유니티 열쇠가 필요합니다 (ROOKERY_KEY 또는 --key).")
         return 2
-    if not args.want:
-        say("무엇을 만들지 한 줄 적어 주십시오.")
+    # 대기 모드는 무엇을 만들지 여기서 듣지 않는다. 대화창에서 이미 들었고,
+    # 서버가 설계도를 들고 있다.
+    if not args.want and not args.watch:
+        say("무엇을 만들지 한 줄 적어 주십시오. (또는 --watch 로 기다리십시오.)")
         return 2
 
     project = Path(args.project)
