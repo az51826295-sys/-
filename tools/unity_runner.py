@@ -335,6 +335,7 @@ def drive(args, project: Path, unity: Path, scope: str, log: Path,
                                args.unity_timeout)
         if LOCKED in text:
             say("  유니티가 이미 이 프로젝트를 열고 있습니다. 에디터를 닫고 다시 시작해 주십시오.")
+            # 이건 사람이 유니티를 닫으면 풀리는 것이라, 세션은 살려 둔다.
             return 1
 
         errors = parse_errors(text, project)
@@ -353,10 +354,30 @@ def drive(args, project: Path, unity: Path, scope: str, log: Path,
     # 다음에 할 일이 다르다 — 앞은 고치기가 어려웠던 것이고, 뒤는 설계도가
     # 이상해서 같은 자리를 맴돈 것이다.
     if compiles >= args.rounds:
-        say(f"{args.rounds}판을 채웠습니다. 여기서 멈추고 사람에게 넘깁니다.")
+        why = f"{args.rounds}판을 채웠습니다. 여기서 멈추고 사람에게 넘깁니다."
     else:
-        say(f"컴파일까지 못 가고 왕복만 {calls}번 했습니다. 설계도를 보십시오.")
+        why = f"컴파일까지 못 가고 왕복만 {calls}번 했습니다. 설계도를 보십시오."
+    say(why)
+    give_up(args, session, why)
     return 1
+
+
+def give_up(args, session: str | None, why: str) -> None:
+    """더 못 간다고 서버에 알린다.
+
+    말하지 않으면 세션이 계속 '진행 중' 으로 남고, 대기 중인 러너가 그것을
+    다시 집어 간다. 못 하는 일을 되풀이하면서 판마다 값을 치르게 된다.
+    """
+    if not session:
+        return
+    try:
+        post(args.url, args.key,
+             {"sessionId": session, "giveUp": True, "why": why}, timeout=60)
+        say("  (로키에게 멈춘다고 알렸습니다.)")
+    except SystemExit as error:
+        # 알리지 못한 것으로 멈추기를 멈추지 않는다. 다만 조용히 넘어가지도
+        # 않는다 — 이 세션은 다음에 또 집혀 갈 수 있다.
+        say(f"  (멈춘다고 알리지 못했습니다: {error})")
 
 
 def pending(url: str, key: str) -> dict | None:

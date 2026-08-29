@@ -112,6 +112,8 @@ export async function POST(request: Request) {
   }
   const b = body as {
     sessionId?: unknown;
+    giveUp?: unknown;
+    why?: unknown;
     want?: unknown;
     scope?: unknown;
     unityVersion?: unknown;
@@ -142,6 +144,27 @@ export async function POST(request: Request) {
         .map((f) => "--- " + f.path + "\n" + f.contents)
         .join("\n\n")
     : "";
+
+  // ── 심부름꾼이 포기했다고 알려 온다 ─────────────────────────
+  //
+  // 이게 없으면 **돈이 새는 구멍**이 하나 열린다. 심부름꾼이 중간에 막혀
+  // 나가도 세션은 'running' 으로 남고, 대기 중인 러너가 20초 뒤에 그것을 또
+  // 집어 간다. 못 하는 일을 영원히 다시 시도하면서 판마다 값을 치른다.
+  //
+  // 서버의 멈추는 규칙(같은 오류 두 판)은 **컴파일까지 갔을 때만** 걸린다.
+  // 쓰는 판에서 막히면 거기에 안 걸리므로, 포기했다는 말은 이쪽에서 와야 한다.
+  if (typeof b.sessionId === "string" && b.sessionId && b.giveUp === true) {
+    const why =
+      typeof b.why === "string" && b.why.trim()
+        ? b.why.trim()
+        : "심부름꾼이 더 못 가고 멈췄습니다.";
+    await db
+      .from("unity_sessions")
+      .update({ status: "stopped", ended_why: why, updated_at: new Date().toISOString() })
+      .eq("id", b.sessionId)
+      .eq("company_id", companyId);
+    return NextResponse.json({ sessionId: b.sessionId, status: "stopped", why });
+  }
 
   // ── 설계: 무엇을 만들 것인지 목록만 ──────────────────────────
   //
