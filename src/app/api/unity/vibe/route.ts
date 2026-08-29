@@ -158,11 +158,17 @@ export async function POST(request: Request) {
       typeof b.why === "string" && b.why.trim()
         ? b.why.trim()
         : "심부름꾼이 더 못 가고 멈췄습니다.";
-    await db
+    // 없는 세션에도 "멈췄다"고 답하지 않는다. 아무것도 안 멈췄는데 멈췄다고
+    // 하면, 심부름꾼은 치웠다고 믿고 나가고 그 일은 계속 대기열에 남는다.
+    const { data: stopped } = await db
       .from("unity_sessions")
       .update({ status: "stopped", ended_why: why, updated_at: new Date().toISOString() })
       .eq("id", b.sessionId)
-      .eq("company_id", companyId);
+      .eq("company_id", companyId)
+      .select("id");
+    if (!stopped?.length) {
+      return NextResponse.json({ error: "그런 세션이 없습니다." }, { status: 404 });
+    }
     return NextResponse.json({ sessionId: b.sessionId, status: "stopped", why });
   }
 
