@@ -6,6 +6,11 @@ import { meterProviders } from "@/lib/costs/meter";
 import { defaultProviders } from "@/lib/execution/shared";
 import { retrieveCompanyKnowledge, renderCompanyKnowledge } from "@/lib/knowledge/retrieval";
 import { decide, fingerprint, insideScope, type CompileError } from "@/lib/unity/progress";
+import {
+  harvestUnityLessons,
+  renderUnityLessons,
+  retrieveUnityLessons,
+} from "@/lib/unity/lessons";
 import { planUnitySession } from "@/lib/unity/plan";
 
 /**
@@ -135,6 +140,12 @@ export async function POST(request: Request) {
   const providers = meterProviders(defaultProviders(), db, { companyId });
   const knowledge = renderCompanyKnowledge(
     await retrieveCompanyKnowledge(db, companyId),
+  );
+  // 이 회사가 유니티에서 이미 데인 것. 회사 지식과 따로 싣는다 — 저쪽은 회사가
+  // 정한 것이고 이쪽은 컴파일러가 가르쳐 준 것이라, 틀렸을 때 지우는 자리도
+  // 다르다. 지금 돌아온 오류와 지문이 맞는 것이 먼저 실린다.
+  const lessons = renderUnityLessons(
+    await retrieveUnityLessons(db, companyId, errors),
   );
   const versionNote =
     typeof b.unityVersion === "string" && b.unityVersion
@@ -292,6 +303,7 @@ export async function POST(request: Request) {
           ? `\n씬을 짓는 메서드는 ${session.scene_method} 다.`
           : "",
         knowledge ? "\n이 회사가 아는 것:\n" + knowledge : "",
+        lessons,
       ].join("\n"),
       input: [
         "만들려는 것: " + session.want,
@@ -436,6 +448,27 @@ export async function POST(request: Request) {
   });
 
   if (!verdict.go) {
+    // ── 통과한 판에서만 배운다 ───────────────────────────────
+    //
+    // 여기까지 왔다는 것은 요청이 `measured` 였고 컴파일러가 오류 0 을 돌려줬다는
+    // 뜻이다. 그 둘이 다 있을 때만 "지난 판 오류가 정말 사라졌다"고 말할 수 있다 —
+    // 안 잰 0 과 없는 0 을 구분하지 않으면, 안 볼수록 잘 배우게 된다.
+    if (verdict.status === "compiled" && beforeThis?.errors?.length) {
+      const thisRound = prev.find((r) => r.round === round);
+      await harvestUnityLessons({
+        db,
+        providers,
+        companyId,
+        sessionId: session.id,
+        round,
+        fixed: beforeThis.errors,
+        files: thisRound?.files ?? [],
+        note: thisRound?.note ?? null,
+        unityVersion:
+          typeof b.unityVersion === "string" ? b.unityVersion : null,
+      });
+    }
+
     await db
       .from("unity_sessions")
       .update({
@@ -471,6 +504,7 @@ export async function POST(request: Request) {
       `\n파일은 반드시 ${scope} 아래에만 쓴다.`,
       versionNote,
       knowledge ? "\n이 회사가 아는 것:\n" + knowledge : "",
+      lessons,
     ].join("\n"),
     input: [
       "만들려는 것: " + session.want,
