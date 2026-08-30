@@ -105,18 +105,45 @@ function stepsOf(s: NonNullable<Live["session"]>): StepState[] {
   return [design, write, compile, judge];
 }
 
+/**
+ * 각 칸에 **누가 붙어 있는가.**
+ *
+ * 전에는 "도는 중" 처럼 일의 상태를 적었는데, 그건 기계가 무엇을 하는지를
+ * 말할 뿐 **누구 차례인지**를 말하지 않는다. 사람이 화면에서 알고 싶은 것은
+ * 뒤쪽이다 — 지금 내가 기다리는 것인지, 내가 할 차례인지.
+ *
+ * 직함은 회사 등록부(`employeeDefinitions`)의 것을 쓴다. 지금 유니티 고리는
+ * 전부 개발 쪽 일이고, 그림은 이 고리가 아니라 **승인된 자산 경로**로 들어와서
+ * 아직 아티스트 칸이 없다. 그림을 이 고리 안에서 만들게 되면 그때 칸이 늘고,
+ * 그 전에 아티스트를 적어 두면 **하지도 않은 일을 한 것처럼 보인다.**
+ *
+ * 세 번째 칸은 사람이 아니다. 컴파일과 씬은 사장님 PC의 유니티가 재고, 우리는
+ * 그 결과만 읽는다 — 그래서 직함 대신 유니티라고 적는다. 마지막 칸도 사람이다:
+ * 재미와 손맛은 기계가 못 재고, 그건 처음부터 사장님 몫으로 두었다.
+ */
 const STEPS = [
-  { no: "01", label: "설계도와 합격 기준" },
-  { no: "02", label: "C# 스크립트 나눠 쓰기" },
-  { no: "03", label: "유니티 컴파일과 씬" },
-  { no: "04", label: "사람이 켜서 보기" },
+  { no: "01", label: "설계도와 합격 기준", who: "개발자" },
+  { no: "02", label: "C# 스크립트 나눠 쓰기", who: "개발자" },
+  { no: "03", label: "컴파일과 씬", who: "유니티" },
+  { no: "04", label: "켜서 보기", who: "사장님" },
 ] as const;
 
-const STEP_CHIP: Record<StepState, { text: string; className: string }> = {
-  done: { text: "통과", className: "bg-[#30D158]/15 text-[#30D158]" },
-  now: { text: "도는 중", className: "bg-[#0A84FF]/20 text-[#64D2FF]" },
-  wait: { text: "대기", className: "bg-white/5 text-white/30" },
-  fail: { text: "멈춤", className: "bg-[#FF453A]/15 text-[#FF453A]" },
+/**
+ * 칸의 색. 문구는 여기서 정하지 않는다 — **지금 붙어 있는 칸에는 직함이,
+ * 끝났거나 아직인 칸에는 상태가** 들어가기 때문이다. 끝난 일에 담당을 적으면
+ * 아직 그 사람이 붙어 있는 것처럼 읽힌다.
+ */
+const STEP_CHIP: Record<StepState, string> = {
+  done: "bg-[#30D158]/15 text-[#30D158]",
+  now: "bg-[#0A84FF]/20 text-[#64D2FF]",
+  wait: "bg-white/5 text-white/30",
+  fail: "bg-[#FF453A]/15 text-[#FF453A]",
+};
+
+const STEP_TEXT: Record<Exclude<StepState, "now">, string> = {
+  done: "끝",
+  wait: "대기",
+  fail: "멈춤",
 };
 
 /** 묻는 쪽. 도는 동안만 자주 묻고, 안 보는 탭에서는 아예 안 묻는다. */
@@ -212,6 +239,9 @@ export function UnityStripView({
   const expanded = panel || open;
   const running = s.status === "running";
   const steps = stepsOf(s);
+  // 접힌 줄에서 제일 먼저 읽혀야 하는 것: **지금 누구 차례인가.** 끝난 세션은
+  // 아무도 안 붙어 있으므로 비운다 — 끝났는데 담당이 떠 있으면 아직 도는 줄 안다.
+  const onIt = running ? STEPS[steps.indexOf("now")]?.who ?? null : null;
   const errors = s.rounds[0]?.errors ?? [];
 
   const runner = !live?.runnerMeasurable
@@ -280,6 +310,10 @@ export function UnityStripView({
 
             <div className="text-[13px] leading-snug text-[#F5F5F7]">{s.want}</div>
 
+            {onIt && (
+              <div className="text-[11px] text-[#64D2FF]">{onIt}가 붙어 있습니다</div>
+            )}
+
             <div className="flex flex-wrap items-center gap-1.5">
               <span className="rounded-full bg-white/[0.06] px-2 py-0.5 text-[11px] tabular-nums text-white/60">
                 {s.round}판
@@ -316,6 +350,12 @@ export function UnityStripView({
               {s.want}
             </span>
 
+            {onIt && (
+              <span className="shrink-0 rounded-full bg-[#0A84FF]/20 px-2 py-0.5 text-[11px] font-medium text-[#64D2FF]">
+                {onIt}
+              </span>
+            )}
+
             {verdict && (
               <span
                 className={`shrink-0 rounded-full px-2 py-0.5 text-[11px] font-semibold ring-1 ${verdict.className}`}
@@ -351,7 +391,6 @@ export function UnityStripView({
               <ul className="space-y-1.5">
                 {STEPS.map((step, i) => {
                   const state = steps[i];
-                  const chip = STEP_CHIP[state];
                   return (
                     <li key={step.no} className="flex items-center gap-2.5">
                       <span
@@ -383,9 +422,9 @@ export function UnityStripView({
                         )}
                       </span>
                       <span
-                        className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold ${chip.className}`}
+                        className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold ${STEP_CHIP[state]}`}
                       >
-                        {i === 3 && state === "now" ? "사람 몫" : chip.text}
+                        {state === "now" ? step.who : STEP_TEXT[state]}
                       </span>
                     </li>
                   );
