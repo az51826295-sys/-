@@ -38,7 +38,10 @@ if (error) {
   } else {
     console.error(error.message);
   }
-  process.exit(1);
+  // `process.exit` 을 쓰지 않는다. 붙어 있는 연결이 닫히기 전에 프로세스를
+  // 끊으면 윈도우에서 libuv 가 어서션으로 죽고, 종료 코드가 127 로 나온다 —
+  // 보고서는 제대로 나왔는데 부른 쪽에서는 실패로 보인다.
+  process.exitCode = 1;
 }
 
 const usd = (n) => "$" + n.toFixed(4);
@@ -54,10 +57,11 @@ if (unlabelled.length) {
     `  이 중 ${unlabelled.length}건은 등급이 안 적힌 옛 줄입니다 — 아래 판정에서 뺍니다.`,
   );
 }
-if (!labelled.length) {
+if (!error && !labelled.length) {
   console.log("\n등급이 적힌 줄이 아직 없습니다. 한 바퀴 돌고 다시 보십시오.");
-  process.exit(0);
 }
+
+if (!error && labelled.length) {
 
 const byTier = new Map();
 for (const r of labelled) {
@@ -117,4 +121,6 @@ if (leaked.length === 0) {
   for (const [purpose, n] of [...byPurpose].sort((x, y) => y[1] - x[1]).slice(0, 8)) {
     console.log(`    ${purpose} — ${n}건`);
   }
+}
+
 }
