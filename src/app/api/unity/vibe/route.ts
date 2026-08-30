@@ -120,6 +120,7 @@ export async function POST(request: Request) {
     errors?: unknown;
     project?: unknown;
     packages?: unknown;
+    measured?: unknown;
   };
 
   const errors: CompileError[] = Array.isArray(b.errors)
@@ -369,6 +370,32 @@ export async function POST(request: Request) {
       criteria: session.criteria,
       sceneMethod: session.scene_method,
       left: stillLeft,
+    });
+  }
+
+  // ── 잰 적 없는 요청은 판정하지 않는다 ───────────────────────
+  //
+  // 여기서 "오류 0개" 는 통과로 읽힌다. 그런데 심부름꾼이 이어받은 직후에는
+  // 오류 목록이 그냥 비어 있고, 그 0 은 **"없다" 가 아니라 "아직 안 봤다"** 다.
+  // 그대로 판정했더니 유니티를 켜지도 않고 두 번이나 "통과" 가 나왔다 — 씬은
+  // 만들어지지도 않았는데.
+  //
+  // 그래서 증거가 실려 있는지를 요청이 말하게 한다. 안 잰 요청에는 판정 대신
+  // **가서 재 오라**고 답한다. 클라이언트가 스스로 "쟀다" 고 기억하게 하면,
+  // 엉뚱한 것을 재고도 쟀다고 하게 된다 — 실제로 그렇게 한 번 더 속았다.
+  if (b.measured !== true) {
+    return NextResponse.json({
+      sessionId: session.id,
+      round,
+      status: "running",
+      action: "compile",
+      scope,
+      files: [],
+      note:
+        "아직 잰 것이 없습니다. 유니티를 켜서 컴파일하고 씬을 지어 본 뒤 " +
+        "그 결과를 보내 주십시오.",
+      criteria: session.criteria,
+      sceneMethod: session.scene_method,
     });
   }
 

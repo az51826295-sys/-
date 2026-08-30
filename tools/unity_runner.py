@@ -387,20 +387,6 @@ def drive(args, project: Path, unity: Path, scope: str, log: Path,
     # 이상할 때 조용히 계속 돈다.
     max_calls = args.rounds * 12
 
-    if resume:
-        # 이어받은 자리에서는 지금 프로젝트가 어떤 상태인지 우리도 모른다.
-        # 한 번 켜서 재고 시작한다. 이게 없으면 첫 요청이 "오류 없음" 을
-        # 들고 가고, 서버는 그걸 통과로 읽는다.
-        say("이어받았습니다. 먼저 지금 상태를 재 봅니다…")
-        compiles += 1
-        code, text = run_unity(unity, project, log, None, args.unity_timeout)
-        if LOCKED in text:
-            say("  유니티가 이미 이 프로젝트를 열고 있습니다. 에디터를 닫고 다시 시작해 주십시오.")
-            return 1
-        errors = parse_errors(text, project)
-        measured = True
-        say(f"  유니티 종료코드 {code}, 오류 {len(errors)}개")
-
     while compiles < args.rounds and calls < max_calls:
         calls += 1
         if lock is not None:
@@ -411,6 +397,11 @@ def drive(args, project: Path, unity: Path, scope: str, log: Path,
             "errors": errors,
             "project": read_scope(project, scope),
             "packages": read_packages(project),
+            # 이번 요청에 실린 오류가 **실제로 재 본 결과**인가.
+            #
+            # 빈 목록은 "오류가 없다" 와 "아직 안 봤다" 둘 다로 읽힐 수 있고,
+            # 서버는 그 둘을 구분할 방법이 없다. 그래서 여기서 말해 준다.
+            "measured": measured,
         }
         if session:
             payload["sessionId"] = session
@@ -452,6 +443,10 @@ def drive(args, project: Path, unity: Path, scope: str, log: Path,
         files = reply.get("files") or []
         if files:
             write_files(project, files, scope)
+
+        if action == "compile" and not files and not measured:
+            # 서버가 판정을 미루고 재 오라고 했다. 파일이 없어도 켠다.
+            say("  아직 잰 것이 없다고 합니다. 지금 상태를 재 봅니다…")
 
         if action == "write_more":
             # 아직 설계도가 남았다. 유니티를 켜 봐야 반쪽만 있는 상태라
