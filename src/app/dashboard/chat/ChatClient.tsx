@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import UnityStrip from "./UnityStrip";
 import Link from "next/link";
 
 /**
@@ -385,6 +386,20 @@ export default function ChatClient({
           </div>
         </div>
       </main>
+
+      {/* ── 작업 칸 ─────────────────────────────────────────── */}
+      {/*
+        유니티 일은 **회사의 것**이라 어느 대화를 보고 있든 같은 자리에 있다.
+        대화 흐름에 섞지 않은 이유는 두 가지다: 말풍선에 넣으면 브라우저에 사는
+        대화와 서버에 사는 세션이 새로고침 한 번에 어긋나고, 십 분짜리 일이
+        스크롤 위로 흘러가 버린다.
+
+        좁은 화면에서는 접는다. 폰에서 이 칸이 대화를 반으로 자르면, 정작 말을
+        거는 일이 불편해진다.
+      */}
+      <aside className="hidden w-[360px] shrink-0 border-l border-neutral-200 bg-[#08080c] lg:block">
+        <UnityStrip panel />
+      </aside>
     </div>
   );
 }

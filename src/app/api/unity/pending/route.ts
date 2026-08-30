@@ -34,6 +34,15 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "열쇠가 맞지 않습니다." }, { status: 403 });
   }
 
+  // 다녀갔다는 것만 남긴다. 이 한 줄이 화면의 "12초 전 다녀감" 이 된다 —
+  // 없으면 심부름꾼이 도는지 안 도는지 화면에서 알 길이 없고, 그럴 때 사람은
+  // 서버를 의심하며 앉아 있게 된다. 실패해도 답은 그대로 나간다: 일을 물으러
+  // 온 심부름꾼을 기록이 안 됐다는 이유로 돌려보낼 이유가 없다.
+  await db
+    .from("companies")
+    .update({ unity_runner_seen_at: new Date().toISOString() })
+    .eq("id", company.id);
+
   // 가장 오래된 것부터. 새로 온 일이 먼저 끼어들면 처음 시킨 일이 영영 안 된다.
   const { data } = await db
     .from("unity_sessions")
