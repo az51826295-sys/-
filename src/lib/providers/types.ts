@@ -45,6 +45,17 @@ export type WorkTier =
    *  a person will not see before it matters. */
   | "routine";
 
+/**
+ * 호출이 어느 자리에서 돌았는지와, 그렇게 된 이유.
+ *
+ * - `planned`    — 등급이 가리킨 자리에서 그대로 돌았다.
+ * - `no_economy` — 싼 자리를 써도 되는 등급인데 싼 벤더가 설정되지 않았다.
+ * - `images`     — 그림이 껴서 볼 수 있는 쪽으로 일부러 올렸다. 새는 것이 아니다.
+ * - `up`         — 싼 자리가 실패해서 비싼 자리가 대신 했다. **이것이 새는 자리다.**
+ * - `sideways`   — 같은 등급의 옆 벤더가 대신 했다.
+ */
+export type Routing = "planned" | "no_economy" | "images" | "up" | "sideways";
+
 export interface AIProvider {
   readonly name: string;
   readonly model: string;
@@ -78,6 +89,19 @@ export interface AIProvider {
      *  records the wrong model prices every run wrongly, which is worse than
      *  not recording it at all. */
     model: string;
+    /**
+     * 이 호출이 **왜 그 자리에서 돌았는가.**
+     *
+     * 모델 이름만 남기면 "싼 등급인데 비싼 모델로 돌았다"까지는 보이지만, 그게
+     * 새는 것인지(싼 벤더가 죽어서 올라갔다) 원래 그런 것인지(그림이 껴서
+     * 일부러 올려 보냈다)는 안 보인다. 둘을 구분하지 못하면 원장을 봐도 손을
+     * 쓸 데를 모른다 — DeepSeek 이 `json_schema` 를 안 받아서 싼 자리가 통째로
+     * 비싼 자리로 새고 있었을 때, 화면에서는 아무 이상이 없었고 로그를 봐야
+     * 알았다. 그 로그는 아무도 안 본다.
+     *
+     * 라우터를 거치지 않은 호출에는 없다.
+     */
+    routing?: Routing;
   }>;
 }
 

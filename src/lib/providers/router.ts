@@ -1,4 +1,4 @@
-import type { AIProvider, WorkTier } from "./types";
+import type { AIProvider, Routing, WorkTier } from "./types";
 
 /**
  * One provider on the outside, several vendors on the inside.
@@ -85,6 +85,15 @@ function hasRetryableStatus(message: string): boolean {
   return numbers.some((n) => RETRYABLE_STATUS.has(Number(n)));
 }
 
+/**
+ * 어느 자리에서 왜 돌았는지를 결과에 붙인다.
+ *
+ * 값은 그대로 두고 칸 하나만 더한다. 원장을 쓰는 쪽은 라우터 사정을 모르고,
+ * 알 필요도 없다 — 대신 이 한 칸을 받아 적는다.
+ */
+function tag<R extends { routing?: Routing }>(result: R, routing: Routing): R {
+  return { ...result, routing };
+}
 export function createRoutedProvider(vendors: VendorSet): AIProvider {
   const { primary, economy, standby } = vendors;
 
@@ -103,11 +112,27 @@ export function createRoutedProvider(vendors: VendorSet): AIProvider {
       // 답한다. 사용자는 자기 사진을 보고 한 말인 줄 알고, 그 오해는 답 안에
       // 아무 표시도 남기지 않는다 — 조용한 고장 중에 가장 나쁜 종류다.
       const hasImages = (params.images?.length ?? 0) > 0;
-      const pick =
-        economy && !hasImages && ECONOMY_TIERS.has(tier) ? economy : primary;
+      const cheapEnough = ECONOMY_TIERS.has(tier);
+      const pick = economy && !hasImages && cheapEnough ? economy : primary;
+
+      /**
+       * 왜 이 자리에서 돌았는지. **원장에 남는 것은 이 한 칸이다.**
+       *
+       * 모델 이름만으로는 "싼 등급이 비싼 모델로 돌았다"까지만 보이고, 그게
+       * 새는 것인지 원래 그런 것인지가 안 보인다. 그 구분이 없으면 원장을 봐도
+       * 손쓸 데를 모른다 — 싼 자리가 통째로 새고 있었을 때 화면은 멀쩡했고
+       * 로그에만 남았는데, 그 로그는 아무도 안 본다.
+       */
+      const why: Routing = !cheapEnough
+        ? "planned"
+        : !economy
+          ? "no_economy"
+          : hasImages
+            ? "images"
+            : "planned";
 
       try {
-        return await pick.generateStructuredOutput(params);
+        return tag(await pick.generateStructuredOutput(params), why);
       } catch (error) {
         // A cheap vendor being down must not stop the company. Falling back
         // upward is always safe: it costs more and answers better. Falling back
@@ -118,15 +143,21 @@ export function createRoutedProvider(vendors: VendorSet): AIProvider {
             error instanceof Error ? error.message : error,
           );
           try {
-            return await primary.generateStructuredOutput(params);
+            return tag(await primary.generateStructuredOutput(params), "up");
           } catch (upward) {
-            return await sideways(upward, tier, (v) =>
-              v.generateStructuredOutput(params),
+            return tag(
+              await sideways(upward, tier, (v) =>
+                v.generateStructuredOutput(params),
+              ),
+              "sideways",
             );
           }
         }
-        return await sideways(error, tier, (v) =>
-          v.generateStructuredOutput(params),
+        return tag(
+          await sideways(error, tier, (v) =>
+            v.generateStructuredOutput(params),
+          ),
+          "sideways",
         );
       }
     },
