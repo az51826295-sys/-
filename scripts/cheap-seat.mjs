@@ -28,7 +28,16 @@ const { data, error } = await db
   .gte("created_at", since);
 
 if (error) {
-  console.error(error.message);
+  // 칸이 아직 없으면 그렇게 말한다. 원장 자체가 없는 것과 이 눈이 아직 안
+  // 달린 것은 다른 이야기이고, 여기서 원래 오류만 흘리면 둘이 같아 보인다.
+  if (/tier|routing/.test(error.message)) {
+    console.error(
+      "원장에 tier/routing 칸이 아직 없습니다.\n" +
+        "  supabase/schema_usage_routing.sql 을 적용한 뒤 다시 보십시오.",
+    );
+  } else {
+    console.error(error.message);
+  }
   process.exit(1);
 }
 
