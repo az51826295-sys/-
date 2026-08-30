@@ -59,6 +59,51 @@ EXCEPTION_LINE = re.compile(r"^(?P<kind>\w*Exception|Error):\s*(?P<msg>.+)$")
 LOCKED = "Multiple Unity instances cannot open the same project"
 
 
+# 자물쇠를 이만큼 안 만졌으면 주인이 죽은 것으로 본다. 한 판(유니티 한 번
+# 켜기)이 몇 분 걸리므로 그보다 넉넉해야 멀쩡한 심부름꾼을 쫓아내지 않는다.
+STALE_LOCK_SECONDS = 30 * 60
+
+
+class AlreadyRunning(Exception):
+    """이 프로젝트에 심부름꾼이 이미 있다."""
+
+
+class Lock:
+    """한 프로젝트에 하나만.
+
+    도는 동안 계속 만져 두고(`touch`), 나갈 때 지운다. 죽어서 못 지운 자물쇠는
+    한참 뒤에 다음 사람이 가져간다.
+    """
+
+    def __init__(self, project: Path):
+        self.path = project / "rookery-runner.lock"
+
+    def take(self) -> None:
+        if self.path.exists():
+            age = time.time() - self.path.stat().st_mtime
+            if age < STALE_LOCK_SECONDS:
+                raise AlreadyRunning(
+                    f"이 프로젝트에 심부름꾼이 이미 돌고 있습니다 "
+                    f"({int(age)}초 전에 살아 있었습니다).\n"
+                    f"그것을 먼저 멈추십시오. 정말 죽은 것이라면 "
+                    f"{self.path} 를 지우고 다시 시작하십시오."
+                )
+            say(f"(자물쇠가 {int(age / 60)}분째 안 만져져 가져갑니다.)")
+        self.path.write_text(str(os.getpid()), encoding="utf-8")
+
+    def touch(self) -> None:
+        try:
+            self.path.write_text(str(os.getpid()), encoding="utf-8")
+        except OSError:
+            pass
+
+    def release(self) -> None:
+        try:
+            self.path.unlink()
+        except OSError:
+            pass
+
+
 class ServerRefused(Exception):
     """서버가 이번 요청을 거절했다.
 
@@ -296,13 +341,23 @@ def main() -> int:
     say(f"쓸 폴더: {scope}  (이 밖에는 쓰지 않습니다)")
     say("")
 
-    if args.watch:
-        return watch(args, project, unity, scope, log)
-    return drive(args, project, unity, scope, log)
+    lock = Lock(project)
+    try:
+        lock.take()
+    except AlreadyRunning as error:
+        say(str(error))
+        return 2
+
+    try:
+        if args.watch:
+            return watch(args, project, unity, scope, log, lock)
+        return drive(args, project, unity, scope, log, lock=lock)
+    finally:
+        lock.release()
 
 
 def drive(args, project: Path, unity: Path, scope: str, log: Path,
-          resume: str | None = None) -> int:
+          resume: str | None = None, lock: 'Lock | None' = None) -> int:
     """세션 하나를 끝까지 돈다.
 
     `resume` 이 있으면 대화창에서 이미 설계된 일을 이어받는다 — 그때는
@@ -348,6 +403,8 @@ def drive(args, project: Path, unity: Path, scope: str, log: Path,
 
     while compiles < args.rounds and calls < max_calls:
         calls += 1
+        if lock is not None:
+            lock.touch()
         payload: dict = {
             "scope": scope,
             "unityVersion": read_version(project),
@@ -475,7 +532,8 @@ def pending(url: str, key: str) -> dict | None:
         return None
 
 
-def watch(args, project: Path, unity: Path, scope: str, log: Path) -> int:
+def watch(args, project: Path, unity: Path, scope: str, log: Path,
+          lock: 'Lock | None' = None) -> int:
     """대화창에서 연 일을 기다렸다가 집어 간다.
 
     이것이 없으면 대화창에서 연 일을 사람이 터미널에 다시 옮겨 적어야 하고,
@@ -483,13 +541,17 @@ def watch(args, project: Path, unity: Path, scope: str, log: Path) -> int:
     """
     say(f"기다립니다. {args.every}초마다 로키에게 물어봅니다. (Ctrl+C 로 멈춤)")
     while True:
+        if lock is not None:
+            # 기다리는 동안에도 살아 있다고 알린다. 안 그러면 조용히 기다리는
+            # 심부름꾼의 자물쇠가 낡은 것으로 보여 남이 가져간다.
+            lock.touch()
         found = pending(args.url, args.key)
         if found:
             say("")
             say(f"일이 왔습니다: {found['want'][:80]}")
             try:
                 drive(args, project, unity, found.get("scope") or scope, log,
-                      resume=found["id"])
+                      resume=found["id"], lock=lock)
             except Exception as error:
                 # 한 세션이 터져도 기다리기는 계속한다. 여기서 끝나면 켜 둔
                 # 것과 꺼 둔 것이 같아지고, 사람은 켜 둔 줄 안다.
