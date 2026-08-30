@@ -487,6 +487,27 @@ def drive(args, project: Path, unity: Path, scope: str, log: Path,
 
         errors = parse_errors(text, project)
         measured = True
+
+        # **종료코드를 버리지 않는다.**
+        #
+        # 유니티가 0이 아닌 코드로 죽었는데 로그에서 읽어낸 오류가 하나도 없다면,
+        # 그건 "오류가 없다" 가 아니라 **"실패했는데 이유를 우리가 못 읽었다"** 다.
+        # 실제로 라이선스가 풀려 컴파일조차 못 한 판을 통과로 보고했다.
+        #
+        # 못 읽은 것을 통과로 만들지 않는다. 로그 끝을 그대로 실어 사람이 볼 수
+        # 있게 하고, 이 판은 실패로 둔다.
+        if code != 0 and not errors:
+            tail = [ln.strip() for ln in text.splitlines() if ln.strip()][-12:]
+            errors = [{
+                "file": "(유니티)",
+                "line": 0,
+                "message": (f"유니티가 종료코드 {code} 로 끝났는데 컴파일 오류를 "
+                            f"찾지 못했습니다. 로그 끝: " + " | ".join(tail))[:1200],
+            }]
+            say(f"  유니티가 {code} 로 죽었는데 오류를 못 읽었습니다. 로그 끝:")
+            for ln in tail[-4:]:
+                say(f"    {ln[:140]}")
+
         if not errors and scene_method:
             # 컴파일은 됐는데 씬을 짓다 터진 것. 이것도 오류로 돌려보낸다 —
             # 그래야 이 고리가 재는 것이 "문법이 맞다"에서 "씬이 실제로
