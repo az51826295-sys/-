@@ -144,7 +144,37 @@ def inside_scope(path: str, scope: str) -> bool:
     return p.startswith(scope) and p.startswith("Assets/") and ".." not in p
 
 
-def write_files(project: Path, files: list[dict], scope: str) -> int:
+UNDO_FILE = ".rookery-undo.json"
+
+
+def undo_ledger(project: Path) -> dict:
+    """무엇을 손댔는지 적어 두는 곳.
+
+    `Assets/` **밖에** 둔다. 안에 두면 유니티가 이것까지 가져다 임포트하고,
+    되돌리기 기록이 프로젝트 자산이 되어 버린다.
+    """
+    f = project / UNDO_FILE
+    if not f.exists():
+        return {}
+    try:
+        return json.loads(f.read_text(encoding="utf-8"))
+    except Exception:
+        # 기록이 깨졌다고 일을 세우지 않는다. 대신 새로 쌓는다.
+        return {}
+
+
+def remember(project: Path, session: str, path: str, existed: bool) -> None:
+    led = undo_ledger(project)
+    row = led.setdefault(session or "unknown", {"overwritten": [], "created": []})
+    key = "overwritten" if existed else "created"
+    if path not in row[key]:
+        row[key].append(path)
+    (project / UNDO_FILE).write_text(
+        json.dumps(led, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+def write_files(project: Path, files: list[dict], scope: str,
+                session: str = "") -> int:
     written = 0
     for f in files:
         path = (f.get("path") or "").replace("\\", "/")
@@ -153,16 +183,71 @@ def write_files(project: Path, files: list[dict], scope: str) -> int:
             continue
         target = project / path
         target.parent.mkdir(parents=True, exist_ok=True)
-        if target.exists():
+        existed = target.exists()
+        if existed:
             # 백업은 **처음 한 번만.** 판마다 덮으면 몇 판 뒤엔 백업이 로키가
             # 지난 판에 쓴 것이 되어, 진짜 원본이 사라진다.
             backup = target.with_suffix(target.suffix + ".before-rookery")
             if not backup.exists():
                 shutil.copy2(target, backup)
+        # 덮어쓴 것은 백업이 있었지만 **새로 만든 것은 아무 데도 안 적혔다.**
+        # 그래서 지금까지 되돌리기가 반쪽이었다: 원본은 살릴 수 있어도 로키가
+        # 새로 만든 파일은 사람이 하나씩 찾아 지워야 했다.
+        remember(project, session, path, existed)
         target.write_text(f.get("contents") or "", encoding="utf-8")
         say(f"  썼습니다: {path}")
         written += 1
     return written
+
+
+def undo(project: Path, which: str) -> int:
+    """로키가 손댄 것을 되돌린다.
+
+    **어디로 되돌아가는지 분명히 해 둔다.** 판 단위가 아니라 *로키가 이 파일을
+    처음 건드리기 전*으로 돌아간다 — 백업을 처음 한 번만 뜨기 때문이다. 세 판째
+    수정만 무르고 두 판째를 남기는 일은 여기서 안 된다. 할 수 있는 척하는 것보다
+    못한다고 적어 두는 편이 낫다.
+    """
+    led = undo_ledger(project)
+    if not led:
+        say("되돌릴 기록이 없습니다.")
+        return 0
+
+    if which in ("last", ""):
+        which = list(led.keys())[-1]
+    row = led.get(which)
+    if not row:
+        say(f"그런 세션이 기록에 없습니다: {which}")
+        say("  있는 것: " + ", ".join(led.keys()))
+        return 1
+
+    restored = removed = missing = 0
+    for path in row.get("overwritten", []):
+        target = project / path
+        backup = target.with_suffix(target.suffix + ".before-rookery")
+        if backup.exists():
+            shutil.copy2(backup, target)
+            say(f"  되돌렸습니다: {path}")
+            restored += 1
+        else:
+            # 백업이 없어졌으면 그냥 둔다. 못 되돌린 것을 되돌렸다고 말하지 않는다.
+            say(f"  백업이 없어 그대로 둡니다: {path}")
+            missing += 1
+    for path in row.get("created", []):
+        target = project / path
+        if target.exists():
+            target.unlink()
+            say(f"  지웠습니다: {path}")
+            removed += 1
+
+    del led[which]
+    (project / UNDO_FILE).write_text(
+        json.dumps(led, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    say(f"되돌림 {restored}개 · 지움 {removed}개"
+        + (f" · 못 되돌림 {missing}개" if missing else ""))
+    say("유니티가 켜져 있으면 창을 눌러 다시 컴파일하게 하십시오.")
+    return 0
 
 
 def read_scope(project: Path, scope: str, max_files: int = 24,
@@ -328,7 +413,29 @@ def main() -> int:
     parser.add_argument(
         "--every", type=int, default=20,
         help="대기 모드에서 몇 초마다 물어볼지.")
+    parser.add_argument(
+        "--undo", nargs="?", const="last", metavar="세션",
+        help="로키가 손댄 것을 되돌린다. 세션 id 를 주거나 비우면 마지막 것.")
+    parser.add_argument(
+        "--undo-list", action="store_true",
+        help="되돌릴 수 있는 것이 무엇인지 보여만 준다.")
     args = parser.parse_args()
+
+    # 되돌리기는 서버도 유니티도 부르지 않는다 — 이미 이 기계에 있는 것을
+    # 제자리에 놓는 일이다. 열쇠가 없다고, 유니티를 못 찾는다고 못 되돌리면
+    # 정작 필요한 순간에 안 되는 되돌리기가 된다.
+    project_for_undo = Path(args.project)
+    if args.undo_list:
+        led = undo_ledger(project_for_undo)
+        if not led:
+            say("되돌릴 기록이 없습니다.")
+            return 0
+        for sid, row in led.items():
+            say(f"{sid}: 덮어씀 {len(row.get('overwritten', []))}개 · "
+                f"새로 만듦 {len(row.get('created', []))}개")
+        return 0
+    if args.undo:
+        return undo(project_for_undo, args.undo)
 
     if not args.key:
         say("회사 유니티 열쇠가 필요합니다 (ROOKERY_KEY 또는 --key).")
@@ -458,7 +565,7 @@ def drive(args, project: Path, unity: Path, scope: str, log: Path,
 
         files = reply.get("files") or []
         if files:
-            write_files(project, files, scope)
+            write_files(project, files, scope, session or '')
 
         if action == "compile" and not files and not measured:
             # 서버가 판정을 미루고 재 오라고 했다. 파일이 없어도 켠다.
