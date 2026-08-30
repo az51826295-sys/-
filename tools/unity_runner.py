@@ -213,9 +213,16 @@ def read_packages(project: Path) -> list[str]:
 
 def run_unity(unity: Path, project: Path, log: Path,
               execute_method: str | None, timeout: int) -> tuple[int, str]:
-    """유니티를 켠다. 돌아오는 것은 종료 코드와 로그 전문."""
-    if log.exists():
-        log.unlink()
+    """유니티를 켠다. 돌아오는 것은 종료 코드와 로그 전문.
+
+    로그는 **판마다 새 이름**을 쓴다. 처음에는 한 파일을 지우고 다시 썼는데,
+    윈도우에서 앞선 유니티의 핸들이 남아 있으면 지우기가 WinError 32 로 터지고
+    고리가 통째로 멈췄다. 유니티가 이미 끝난 뒤에도 그랬다.
+
+    지울 수 있느냐에 고리가 걸려 있을 이유가 없다. 새 이름을 쓰면 그 문제
+    자체가 없어진다.
+    """
+    log = log.with_name(f"{log.stem}-{int(time.monotonic() * 1000)}{log.suffix}")
     command = [
         str(unity), "-batchmode", "-quit", "-nographics",
         "-projectPath", str(project),
@@ -230,6 +237,15 @@ def run_unity(unity: Path, project: Path, log: Path,
         say(f"  유니티가 {timeout}초 안에 끝나지 않았습니다.")
         code = -1
     text = log.read_text(encoding="utf-8", errors="replace") if log.exists() else ""
+
+    # 판마다 파일이 하나씩 생기므로 지나간 것은 치운다. 못 지워도 그냥 둔다 —
+    # 청소가 안 되는 것으로 고리를 멈추는 것이 원래 문제였다.
+    for old_log in sorted(log.parent.glob(f"{log.stem.rsplit('-', 1)[0]}-*.log"))[:-3]:
+        try:
+            old_log.unlink()
+        except OSError:
+            pass
+
     return code, text
 
 
