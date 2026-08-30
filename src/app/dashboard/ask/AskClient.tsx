@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import Link from "next/link";
 import Icon from "@/components/Icon";
+import UnityStrip from "@/app/dashboard/chat/UnityStrip";
 
 /**
  * 회사에게 말을 거는 화면.
@@ -250,6 +251,18 @@ export default function AskClient({
           하면 제한 없이, 대화도 저장됩니다.
         </p>
       )}
+
+      {/*
+        유니티 일이 도는 동안의 진행. **대화 흐름 밖, 그러나 이 화면 안이다.**
+
+        처음에는 `/dashboard/chat` 에 붙였는데 그 화면은 메뉴에서 닿지도 않는
+        옛 화면이었다 — 사람이 실제로 쓰는 곳은 여기다. 화면을 안 보고 "대화창"
+        이라는 말만 보고 붙이면 이렇게 된다.
+
+        옆 칸이 아니라 띠로 둔다. 이 화면은 아이패드 분할에서도 열리고, 거기서
+        360px 칸을 떼면 정작 대화가 반으로 줄어든다.
+      */}
+      <UnityStrip />
 
       <div className="flex-1 space-y-4 overflow-y-auto py-6">
         {turns.length === 0 && (

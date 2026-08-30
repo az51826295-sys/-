@@ -2,7 +2,9 @@ import { notFound } from "next/navigation";
 import { UnityStripView, type Live } from "@/app/dashboard/chat/UnityStrip";
 
 /** 옆 칸으로 볼 것인가, 얹힌 띠로 볼 것인가. 둘 다 눈으로 대 봐야 한다. */
-const AS_PANEL = true;
+// 실제로 쓰는 화면(`/ask`)이 띠를 쓴다. 기본값을 그쪽에 맞춘다 —
+// 미리보기가 안 쓰는 모양만 보여 주면, 보고도 못 잡는다.
+const AS_PANEL = false;
 
 /**
  * 유니티 띠를 **눈으로 대 보는 자리.**
