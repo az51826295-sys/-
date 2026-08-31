@@ -48,12 +48,13 @@ EDITOR_ROOTS = [
     Path.home() / "Unity" / "Hub" / "Editor",
 ]
 
-# 2D 게임을 만들려면 실제로 있어야 했던 것들. 목록이 아니라 **데인 자리**다 —
-# `com.unity.ugui` 가 빈 프로젝트에 없어서 로키가 낸 UI 코드가 16개 오류를 냈고,
-# 패키지를 깔 수 없어 여섯 판을 돌다 멈췄다.
-NEEDED_PACKAGES = {
-    "com.unity.ugui": "1.0.0",
-    "com.unity.2d.sprite": "1.0.0",
+# 2D 게임을 만들다 실제로 막혔던 것들. **"필요한 것" 이 아니라 "없으면 막혔던
+# 자리" 다.** 그 차이가 중요하다 — `com.unity.ugui` 가 빈 프로젝트에 없어서
+# 로키가 낸 UI 코드가 16개 오류를 냈고, 패키지를 깔 수 없어 여섯 판을 돌다
+# 멈췄다. 그렇다고 이것이 모든 프로젝트에 필요하다는 뜻은 아니다.
+MAYBE_NEEDED = {
+    "com.unity.ugui": "UI(버튼·텍스트)를 쓰면 필요",
+    "com.unity.2d.sprite": "2D 스프라이트를 쓰면 필요",
 }
 
 
@@ -100,31 +101,38 @@ def project_version(project: Path) -> str | None:
     return None
 
 
-def missing_packages(project: Path) -> dict[str, str]:
+def unverified_packages(project: Path) -> dict[str, str]:
+    """**없다고 단정하지 않는다.** 없는 것과 필요한데 없는 것은 다르다.
+
+    이 도구는 이 프로젝트가 무엇을 만들지 모른다. 3D 게임이면 2D 스프라이트는
+    없어야 맞고, 있는 것이 오히려 군더더기다. 그래서 목록에 있는 것이 안 보이면
+    **미확인**으로 내놓는다 — 필요한지는 로키가 그것을 쓰는 코드를 냈을 때
+    컴파일러가 말해 준다. 그때 근거가 생긴다.
+
+    재지 않은 것을 없다고 적으면, 이 고리가 계속 데여 온 그 자리와 같아진다.
+    """
     manifest = project / "Packages" / "manifest.json"
     if not manifest.exists():
-        return dict(NEEDED_PACKAGES)
+        return dict(MAYBE_NEEDED)
     try:
         data = json.loads(manifest.read_text(encoding="utf-8"))
     except Exception:
-        return dict(NEEDED_PACKAGES)
+        return dict(MAYBE_NEEDED)
     have = data.get("dependencies", {})
-    return {k: v for k, v in NEEDED_PACKAGES.items() if k not in have}
+    return {k: why for k, why in MAYBE_NEEDED.items() if k not in have}
 
 
 def add_packages(project: Path, want: dict[str, str]) -> bool:
-    """빠진 패키지를 매니페스트에 넣는다.
-
-    **버전은 우리가 정하지 않는다.** `1.0.0` 을 적으면 유니티가 그 이상으로
-    해결한다. 특정 버전을 박으면 다른 유니티 버전에서 못 푸는 조합이 생긴다.
-    """
+    """미확인 패키지를 매니페스트에 넣는다. **사람이 따로 시켜야 한다.**"""
     manifest = project / "Packages" / "manifest.json"
     if not manifest.exists():
         return False
     data = json.loads(manifest.read_text(encoding="utf-8"))
     deps = data.setdefault("dependencies", {})
-    for name, version in want.items():
-        deps.setdefault(name, version)
+    # 버전은 우리가 정하지 않는다. `1.0.0` 을 적으면 유니티가 그 이상으로
+    # 해결한다. 특정 버전을 박으면 다른 유니티 버전에서 못 푸는 조합이 생긴다.
+    for name in want:
+        deps.setdefault(name, "1.0.0")
     # 원본을 한 번 떠 둔다. 매니페스트가 깨지면 프로젝트가 안 열린다.
     backup = manifest.with_suffix(".json.before-rookery")
     if not backup.exists():
@@ -155,7 +163,7 @@ def report(project: Path, hub_exe: Path | None) -> dict:
         "projectExists": (project / "Assets").is_dir(),
         "projectVersion": version,
         "editorForProject": editors.get(version) if version else None,
-        "missingPackages": missing_packages(project) if (project / "Assets").is_dir() else {},
+        "unverifiedPackages": unverified_packages(project) if (project / "Assets").is_dir() else {},
         "rookeryKey": bool(os.environ.get("ROOKERY_KEY")),
     }
 
@@ -171,9 +179,14 @@ def show(state: dict) -> list[str]:
     if state["projectVersion"]:
         say(f"프로젝트 버전  {state['projectVersion']}"
             + ("" if state["editorForProject"] else "  ← 이 버전 에디터가 없음"))
-    if state["missingPackages"]:
-        say(f"빠진 패키지    {', '.join(state['missingPackages'])}")
     say(f"회사 열쇠     {'있음' if state['rookeryKey'] else '없음 (ROOKERY_KEY)'}")
+    if state["unverifiedPackages"]:
+        say("")
+        say("미확인 (없는 것이지, 필요한데 없는 것인지는 모릅니다):")
+        for name, why in state["unverifiedPackages"].items():
+            say(f"  □ {name} — {why}")
+        say("  로키가 그것을 쓰는 코드를 내면 컴파일러가 말해 줍니다. 그때")
+        say("  근거가 생깁니다. 미리 넣으려면 --add-packages 를 붙이십시오.")
 
     human: list[str] = []
     if not state["hub"]:
@@ -198,6 +211,8 @@ def main() -> int:
                     help="고칠 수 있는 것을 고친다 (프로젝트 생성, 패키지 추가)")
     ap.add_argument("--install-editor", action="store_true",
                     help="프로젝트 버전의 에디터를 Hub 로 받는다. 수 GB, 오래 걸린다")
+    ap.add_argument("--add-packages", action="store_true",
+                    help="미확인 패키지를 매니페스트에 넣는다. 필요한지는 확인 안 됨")
     ap.add_argument("--json", action="store_true", help="상태를 JSON 으로만")
     args = ap.parse_args()
 
@@ -252,13 +267,19 @@ def main() -> int:
             if code != 0:
                 say("  받지 못했습니다. Hub 를 열어 직접 받으셔야 할 수 있습니다.")
 
-    missing = missing_packages(project)
-    if missing:
-        if add_packages(project, missing):
-            say(f"  패키지를 넣었습니다: {', '.join(missing)}")
-            say("  (유니티가 다음에 열릴 때 받아 옵니다.)")
+    if args.add_packages:
+        unverified = unverified_packages(project)
+        if not unverified:
+            say("  넣을 것이 없습니다.")
+        elif add_packages(project, unverified):
+            say(f"  넣었습니다: {', '.join(unverified)}")
+            say("  (유니티가 다음에 열릴 때 받아 옵니다. 원본은 떠 뒀습니다.)")
         else:
-            say("  매니페스트가 없어 패키지를 못 넣었습니다.")
+            say("  매니페스트가 없어 못 넣었습니다.")
+    else:
+        # 미확인은 **기본으로 안 고친다.** 필요한지 모르는 것을 넣으면 프로젝트에
+        # 군더더기가 쌓이고, 그 군더더기는 누가 왜 넣었는지 아무도 모른다.
+        say("  미확인 패키지는 그대로 뒀습니다 (--add-packages 로 넣습니다).")
 
     if human:
         say("\n사람이 해야 하는 것:")
