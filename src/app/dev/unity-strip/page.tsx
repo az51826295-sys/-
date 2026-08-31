@@ -161,9 +161,9 @@ export default function UnityStripPreview() {
   if (process.env.NODE_ENV === "production") notFound();
 
   return (
-    <div className="min-h-screen bg-[#050507] p-8 text-white" style={{ backgroundImage: "radial-gradient(60% 60% at 20% 0%, #1c1c2e 0%, #050507 100%)" }}>
+    <div className="min-h-screen bg-[#050505] p-8 text-white" style={{ backgroundImage: "radial-gradient(60% 60% at 20% 0%, #1a1a1a 0%, #050505 100%)" }}>
       {/* 이 화면 밖(문서 바탕)까지 어둡게 둔다. 개발용 화면이라 여기서만 쓴다. */}
-      <style>{"body{background:#050507}"}</style>
+      <style>{"body{background:#050505}"}</style>
       <h1 className="text-lg font-semibold text-white">유니티 띠 — 상태 넷</h1>
       <p className="mt-1 max-w-2xl text-sm text-white/40">
         개발용 화면입니다. 실제 세션이 아니라 손으로 만든 상태로, 색과 단계를 눈으로 대 보려고 있습니다.
