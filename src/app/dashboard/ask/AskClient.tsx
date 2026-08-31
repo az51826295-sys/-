@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import Link from "next/link";
 import Icon from "@/components/Icon";
 import UnityStrip from "@/app/dashboard/chat/UnityStrip";
+import RoutingNotice from "./RoutingNotice";
 
 /**
  * 회사에게 말을 거는 화면.
@@ -264,6 +265,12 @@ export default function AskClient({
         옆 칸이 아니라 띠로 둔다. 이 화면은 아이패드 분할에서도 열리고, 거기서
         360px 칸을 떼면 정작 대화가 반으로 줄어든다.
       */}
+      {/*
+        판단이 계획한 자리에서 안 돌고 있을 때만 뜨는 줄. 평소에는 아무것도
+        안 그린다 — 계획대로일 때 초록불을 켜면 그 불은 곧 안 보게 된다.
+      */}
+      <RoutingNotice />
+
       <UnityStrip />
 
       <div className="flex-1 space-y-4 overflow-y-auto py-6">
