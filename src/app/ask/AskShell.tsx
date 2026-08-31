@@ -130,7 +130,7 @@ export default function AskShell({
         </button>
 
         {open && (
-          <div className="mt-1 w-60 border-2 border-[var(--rk-ink)] bg-[var(--rk-paper)] p-1.5">
+          <div className="mt-1 w-60 border-2 border-[var(--rk-ink)] bg-[var(--rk-paper)] p-1.5 text-[var(--rk-ink)]">
             {me?.email ? (
               <>
                 {/*
@@ -237,7 +237,7 @@ export default function AskShell({
         </button>
 
         {tasksOpen && (
-          <div className="absolute right-0 mt-1 w-64 border-2 border-[var(--rk-ink)] bg-[var(--rk-paper)] p-1.5">
+          <div className="absolute right-0 mt-1 w-64 border-2 border-[var(--rk-ink)] bg-[var(--rk-paper)] p-1.5 text-[var(--rk-ink)]">
             {me?.email ? (
               <>
                 {activeTask && (
