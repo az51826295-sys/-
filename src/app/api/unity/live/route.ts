@@ -51,7 +51,7 @@ export async function GET() {
   const { data: rows } = await db
     .from("unity_sessions")
     .select(
-      "id, want, scope, status, round, ended_why, scene_method, criteria, plan, sprites, created_at, updated_at",
+      "id, want, scope, status, round, ended_why, scene_method, criteria, plan, created_at, updated_at",
     )
     .eq("company_id", company.id)
     .order("created_at", { ascending: false })
@@ -68,7 +68,6 @@ export async function GET() {
         scene_method: string | null;
         criteria: { when: string; then: string }[];
         plan: { path: string; purpose: string; written: boolean }[];
-        sprites: { name: string; made: boolean }[] | null;
         created_at: string;
         updated_at: string;
       }
@@ -106,7 +105,16 @@ export async function GET() {
 
   const plan = s.plan ?? [];
   const written = plan.filter((f) => f.written).length;
-  const sprites = s.sprites ?? [];
+  // 그림 목록은 따로 묻는다 — 칸이 없는 데이터베이스에서 세션 조회까지 같이
+  // 죽지 않게. 못 물으면 그림이 없는 일로 보이고, 그 칸은 건너뛴 것이 된다.
+  const spriteRow = await db
+    .from("unity_sessions")
+    .select("sprites")
+    .eq("id", s.id)
+    .maybeSingle();
+  const sprites = spriteRow.error
+    ? []
+    : ((spriteRow.data?.sprites ?? []) as { name: string; made: boolean }[]);
   const drawn = sprites.filter((sp) => sp.made).length;
 
   return NextResponse.json({

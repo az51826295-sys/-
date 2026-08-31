@@ -253,7 +253,7 @@ export async function POST(request: Request) {
   // ── 이어지는 판 ──────────────────────────────────────────────
   const { data: session } = await db
     .from("unity_sessions")
-    .select("id, want, scope, criteria, scene_method, plan, sprites, round, status")
+    .select("id, want, scope, criteria, scene_method, plan, round, status")
     .eq("id", b.sessionId)
     .eq("company_id", companyId)
     .maybeSingle();
@@ -271,7 +271,17 @@ export async function POST(request: Request) {
   const round = session.round as number;
   const plan = (session.plan ?? []) as Planned[];
   const remainingPlan = plan.filter((f) => !f.written);
-  const sprites = ((session.sprites ?? []) as PlannedSprite[]) ?? [];
+  // 그림 목록은 **따로 묻는다.** 세션 조회에 끼워 넣으면, 칸이 아직 없는
+  // 데이터베이스에서 조회가 통째로 실패하고 사람에게는 "그런 세션이 없습니다"
+  // 만 남는다 — 마이그레이션이 배포보다 늦은 것뿐인데 고리 전체가 멈춘다.
+  const spriteRow = await db
+    .from("unity_sessions")
+    .select("sprites")
+    .eq("id", session.id)
+    .maybeSingle();
+  const sprites = spriteRow.error
+    ? []
+    : ((spriteRow.data?.sprites ?? []) as PlannedSprite[]);
   const remainingSprites = sprites.filter((sp) => !sp.made);
 
   // ── 그리는 판 ───────────────────────────────────────────────
