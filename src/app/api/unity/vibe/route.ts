@@ -12,7 +12,11 @@ import {
   retrieveUnityLessons,
 } from "@/lib/unity/lessons";
 import { planUnitySession } from "@/lib/unity/plan";
-import { drawSprite, type PlannedSprite } from "@/lib/unity/sprites";
+import {
+  drawSprite,
+  spriteNote,
+  type PlannedSprite,
+} from "@/lib/unity/sprites";
 
 /**
  * 유니티와 **돌면서** 만든다.
@@ -302,7 +306,14 @@ export async function POST(request: Request) {
       // 코드가 `Texture2D` 로 때운다 — 그림 없이도 되는 길이 원래 있다.
       const marked = sprites.map((sp) =>
         sp.name === next.name
-          ? { ...sp, made: true, verdict: "FAIL" as const, measured: null }
+          ? {
+              ...sp,
+              made: true,
+              verdict: "FAIL" as const,
+              measured: null,
+              // 파일이 안 나갔다. 이 칸이 비어 있어야 쓰는 판이 코드로 때운다.
+              path: null,
+            }
           : sp,
       );
       await db
@@ -329,6 +340,9 @@ export async function POST(request: Request) {
             made: true,
             verdict: drawn.verdict,
             measured: drawn.measured,
+            // 쓰는 판이 이 경로를 보고 코드를 쓴다. 못 그린 판에는 안 붙는다 —
+            // 그것이 "그렸다"와 "그리려다 말았다"를 가르는 유일한 칸이다.
+            path: drawn.path,
           }
         : sp,
     );
@@ -396,6 +410,9 @@ export async function POST(request: Request) {
         ),
         "\n이번에 낼 파일:",
         ...files.map((f) => `- ${f.path} — ${f.purpose}`),
+        // 무엇이 **실제로** 만들어졌는지. 설계도는 "그림이 있으면 쓰라"고만 하고
+        // 무엇이 있는지는 안 알려 줬다 — 그래서 코드가 색 사각형을 찍었다.
+        spriteNote(scope, sprites),
         projectNote,
       ].join("\n"),
       schema: filesSchema,
@@ -607,6 +624,9 @@ export async function POST(request: Request) {
         : "",
       "\n이번에 돌아온 오류:\n" +
         errors.map((e) => `${e.file}(${e.line}): ${e.message}`).join("\n"),
+      // 고치는 판도 같은 쪽지를 받는다. 이것이 없으면 씬 빌더를 고치면서 그림
+      // 경로를 도로 잃고, 방금 이은 자리가 다음 판에 끊긴다.
+      spriteNote(scope, sprites),
       projectNote,
     ].join("\n"),
     schema: filesSchema,

@@ -41,6 +41,14 @@ export type PlannedSprite = {
   verdict: "PASS" | "FAIL" | "UNDEFINED" | null;
   /** 잰 것만 적는다. 못 쟀으면 비어 있다. */
   measured: Record<string, unknown> | null;
+  /**
+   * 실제로 파일이 나간 경로. **그린 것과 그리려다 만 것을 가르는 칸이다.**
+   *
+   * `made` 로는 못 가른다 — 못 그린 판도 "이 장은 끝났다"는 뜻으로 `made` 를
+   * 세운다. `made` 만 보고 코드에 경로를 넘기면 없는 파일을 가리키는 코드가
+   * 만들어지고, 컴파일은 통과하고 화면만 빈다.
+   */
+  path?: string | null;
 };
 
 /** 한 판에 그리는 장수. 그림은 글보다 느리고 비싸서 조금씩 낸다. */
@@ -81,6 +89,74 @@ export function spriteFileName(name: string): string {
 
 export function spritePath(scope: string, name: string): string {
   return `${scope}Sprites/${spriteFileName(name)}.png`;
+}
+
+/** 줄바꿈. 코드값으로 둔다 — 이 파일을 쓰는 길에서 역슬래시가 먹힌 적이 있다. */
+const NL = String.fromCharCode(10);
+
+/**
+ * 이 그림의 파일이 실제로 있는가. 있으면 그 경로.
+ *
+ * 옛 줄에는 `path` 칸이 없다. 그때도 경로는 이름에서 그대로 지어졌고, 그린
+ * 판에만 `measured` 가 붙었다(못 그린 판은 `measured: null`). 옛 줄은 그것으로
+ * 가른다 — 짐작이 아니라 그 시절의 기록이다.
+ */
+export function drawnPath(scope: string, sp: PlannedSprite): string | null {
+  if (sp.path) return sp.path;
+  if (sp.made && sp.measured) return spritePath(scope, sp.name);
+  return null;
+}
+
+/**
+ * 쓰는 판에 **무엇이 실제로 만들어졌는지** 알려 주는 쪽지.
+ *
+ * 이것이 없어서 08-31 에 그림 세 장을 그려 놓고도 화면의 플레이어가 초록
+ * 사각형이었다. 설계도는 "그림 목록에 있으면 그 경로를 쓰라"고 말했지만, 쓰는
+ * 판은 **무엇이 실제로 만들어졌는지 못 들었다.** 그래서 코드가 `Texture2D` 로
+ * 때웠고, 컴파일은 통과했고, 컴파일러가 못 보는 자리라 아무도 안 걸렸다.
+ *
+ * 쪽지는 한 벌만 만든다. 쓰는 판과 고치는 판이 서로 다른 목록을 받으면, 고치는
+ * 판이 그림을 모른 채 씬 빌더를 다시 써서 방금 이은 것을 도로 끊는다.
+ */
+export function spriteNote(scope: string, sprites: PlannedSprite[]): string {
+  if (!sprites.length) return "";
+
+  const have: string[] = [];
+  const lost: string[] = [];
+  for (const sp of sprites) {
+    const path = drawnPath(scope, sp);
+    if (path) {
+      have.push(`- ${path} — ${sp.purpose} (판정 ${sp.verdict ?? "없음"})`);
+    } else if (sp.made) {
+      lost.push(`- ${sp.name} — ${sp.purpose}`);
+    }
+  }
+
+  const out = [NL + "만들어 둔 그림:"];
+  if (have.length) {
+    out.push(
+      ...have,
+      "",
+      "이 경로의 파일은 **이미 있다.** 색 사각형을 새로 찍지 말고 이 파일을 써라.",
+      // 임포터 설정에 기대면 조용히 null 이 온다 — 컴파일은 통과하고 화면만
+      // 빈다. 우리가 여섯 번 밟은 자리라 읽는 법까지 적어 준다.
+      "읽을 때는 `AssetDatabase.LoadAssetAtPath<Texture2D>` 로 읽고 `Sprite.Create`",
+      "로 만들어라. PNG 가 Sprite 로 임포트돼 있지 않은 프로젝트가 있고, 그때",
+      "`LoadAssetAtPath<Sprite>` 는 조용히 null 을 돌려준다.",
+      "픽셀 그림이라 `FilterMode.Point` 로 둔다.",
+      "판정이 FAIL 이어도 쓴다 — 판정을 채택에 잇는 것은 아직 안 정해졌다.",
+    );
+  } else {
+    out.push("- 없다. 전부 코드로 그린다.");
+  }
+
+  if (lost.length) {
+    out.push(
+      NL + "그리려다 못 그린 것 — 파일이 없다. 이것만 코드로 때워라:",
+      ...lost,
+    );
+  }
+  return out.join(NL);
 }
 
 /**
