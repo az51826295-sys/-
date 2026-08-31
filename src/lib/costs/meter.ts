@@ -47,7 +47,27 @@ function meterAi(ai: AIProvider, db: Db, scope: UsageScope): AIProvider {
     name: base.name,
     model: base.model,
     async generateStructuredOutput(params) {
-      const result = await base.generateStructuredOutput(params);
+      const startedAt = Date.now();
+
+      let result;
+      try {
+        result = await base.generateStructuredOutput(params);
+      } catch (error) {
+        // 죽은 문도 남긴다.
+        //
+        // 아래 원장은 성공한 뒤에만 쓰인다. 그래서 08-28 부터 사흘 동안
+        // Anthropic 이 판단 등급을 전부 거절하고 있었는데 원장에는 한 줄도 안
+        // 남았고, 옆 벤더가 대신 한 줄만 있었다. 돈이 안 나갔으니 원장에 없는
+        // 것은 맞다 — 그러나 **벤더가 죽은 사건 자체가 어디에도 없었다.**
+        await recordExchange(db, scope, {
+          params,
+          ok: false,
+          model: base.model,
+          ms: Date.now() - startedAt,
+          error,
+        });
+        throw error;
+      }
 
       // Recorded after the call returns, so a failed call — which was still
       // charged for its input — is the one gap. Accepted: the alternative is
@@ -68,6 +88,20 @@ function meterAi(ai: AIProvider, db: Db, scope: UsageScope): AIProvider {
         tier: params.tier ?? "judgment",
         // 왜 그 자리에서 돌았는지. 라우터가 붙여 준다.
         routing: result.routing,
+      });
+
+      // 무엇을 물었고 뭐라 답했는지. 원장과 다른 질문에 답하는 표라 따로 적는다
+      // — 돈을 세는 곳은 위의 원장 하나뿐이고, 여기 줄이 없다고 해서 그 호출이
+      // 없었던 것은 아니다.
+      await recordExchange(db, scope, {
+        params,
+        ok: true,
+        model: result.model,
+        routing: result.routing,
+        inputTokens: result.inputTokens,
+        outputTokens: result.outputTokens,
+        output: result.output,
+        ms: Date.now() - startedAt,
       });
 
       return result;
@@ -142,5 +176,122 @@ async function record(
     }
   } catch {
     // Deliberately silent.
+  }
+}
+
+/**
+ * 한 줄에 담을 글의 최대 길이.
+ *
+ * 유니티 설계 프롬프트가 몇 만 자까지 간다. 통째로 담다가 언젠가 표가 창고가
+ * 되는 것보다는, 자르고 **잘랐다고 표시하는** 편이 낫다 — 잘린 줄을 온전한 줄과
+ * 같게 두면 나중에 이 표로 무엇을 하든 조용히 틀린다.
+ */
+const MAX_TEXT = 200_000;
+
+function clip(text: string): { text: string; truncated: boolean } {
+  return text.length > MAX_TEXT
+    ? { text: text.slice(0, MAX_TEXT), truncated: true }
+    : { text, truncated: false };
+}
+
+/**
+ * 실패를 몇 가지로 묶는다.
+ *
+ * 원문은 그대로 남기고 이 칸은 세기 위해 둔다 — "잔액이 떨어져 있던 날이
+ * 며칠이었나" 는 문장을 훑어서는 못 세고, 그 질문이 이 표를 만든 이유다.
+ * 모르겠으면 `other` 로 두고 지어내지 않는다.
+ */
+function errorKind(error: unknown): string {
+  const message = (
+    error instanceof Error ? error.message : String(error)
+  ).toLowerCase();
+  if (message.includes("credit balance") || message.includes("insufficient"))
+    return "credit";
+  if (message.includes("quota")) return "quota";
+  if (message.includes("rate limit") || message.includes("429"))
+    return "rate_limit";
+  if (message.includes("overloaded") || message.includes("529"))
+    return "overloaded";
+  if (message.includes("timeout") || message.includes("econnreset"))
+    return "timeout";
+  if (message.includes("schema") || message.includes("json"))
+    return "schema";
+  return "other";
+}
+
+/** 표가 아직 없을 때 매 호출마다 같은 말을 하지 않게 한다. */
+let warnedMissingTable = false;
+
+/**
+ * 무엇을 물었고 뭐라 답했는지 남긴다.
+ *
+ * **이것이 일을 막으면 안 된다.** 기록이 안 됐다고 끝난 일이 안 끝난 것이
+ * 되지는 않는다 — 원장과 같은 규율이다. 그래서 여기서 나는 오류는 삼킨다.
+ */
+async function recordExchange(
+  db: Db,
+  scope: UsageScope,
+  call: {
+    params: {
+      systemInstructions: string;
+      input: string;
+      images?: string[];
+      schemaName: string;
+      tier?: WorkTier;
+    };
+    ok: boolean;
+    model: string;
+    routing?: Routing;
+    inputTokens?: number;
+    outputTokens?: number;
+    output?: unknown;
+    ms: number;
+    error?: unknown;
+  },
+) {
+  try {
+    const system = clip(call.params.systemInstructions ?? "");
+    const input = clip(call.params.input ?? "");
+
+    const { error } = await db.from("model_exchanges").insert({
+      company_id: scope.companyId,
+      purpose: call.params.schemaName,
+      tier: call.params.tier ?? "judgment",
+      routing: call.routing ?? null,
+      model: call.model,
+      ok: call.ok,
+      error_kind: call.ok ? null : errorKind(call.error),
+      error_message: call.ok
+        ? null
+        : clip(
+            call.error instanceof Error
+              ? call.error.message
+              : String(call.error),
+          ).text,
+      system_instructions: system.text,
+      input: input.text,
+      // 실패한 줄에는 답이 없다. 빈 객체를 넣으면 "답이 비어 있었다" 로 읽힌다.
+      output: call.ok ? (call.output ?? null) : null,
+      truncated: system.truncated || input.truncated,
+      images: call.params.images?.length ?? 0,
+      input_tokens: call.inputTokens ?? null,
+      output_tokens: call.outputTokens ?? null,
+      ms: call.ms,
+      work_execution_id: scope.workExecutionId ?? null,
+      project_id: scope.projectId ?? null,
+      company_employee_id: scope.companyEmployeeId ?? null,
+    });
+
+    // 표가 아직 없는 데이터베이스에 배포될 수 있다. 그때 조용히 넘어가면
+    // "안 남기고 있다"는 사실 자체를 아무도 모른다 — 한 번은 말한다.
+    if (error && !warnedMissingTable) {
+      warnedMissingTable = true;
+      console.warn(
+        "model_exchanges 에 못 적었습니다 — supabase/schema_model_exchanges.sql " +
+          "을 적용하십시오. (" + error.message + ")",
+      );
+    }
+  } catch {
+    // 일부러 조용하다. 장부가 일을 막지 않는다.
   }
 }
