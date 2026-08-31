@@ -12,6 +12,7 @@ import {
   retrieveUnityLessons,
 } from "@/lib/unity/lessons";
 import { planUnitySession } from "@/lib/unity/plan";
+import { drawSprite, type PlannedSprite } from "@/lib/unity/sprites";
 
 /**
  * 유니티와 **돌면서** 만든다.
@@ -252,7 +253,7 @@ export async function POST(request: Request) {
   // ── 이어지는 판 ──────────────────────────────────────────────
   const { data: session } = await db
     .from("unity_sessions")
-    .select("id, want, scope, criteria, scene_method, plan, round, status")
+    .select("id, want, scope, criteria, scene_method, plan, sprites, round, status")
     .eq("id", b.sessionId)
     .eq("company_id", companyId)
     .maybeSingle();
@@ -270,6 +271,78 @@ export async function POST(request: Request) {
   const round = session.round as number;
   const plan = (session.plan ?? []) as Planned[];
   const remainingPlan = plan.filter((f) => !f.written);
+  const sprites = ((session.sprites ?? []) as PlannedSprite[]) ?? [];
+  const remainingSprites = sprites.filter((sp) => !sp.made);
+
+  // ── 그리는 판 ───────────────────────────────────────────────
+  //
+  // **코드보다 먼저 그린다.** 씬 빌더가 그림 경로를 참조하는데 그 파일이 아직
+  // 없으면, 컴파일은 통과하고 씬도 지어지는데 화면만 빈다 — 컴파일러가 못 보는
+  // 자리라 여섯 판을 돌아도 그대로다. 그림이 먼저 있으면 코드가 그 경로를 보고
+  // 쓴다.
+  //
+  // 한 판에 한 장이다. 그림은 글보다 느리고 비싸서, 여러 장을 한 요청에 담으면
+  // 게임을 만드는 것이 아니라 그림을 그리다 끊긴다.
+  if (remainingSprites.length > 0 && errors.length === 0) {
+    const next = remainingSprites[0];
+    const drawn = await drawSprite({ sprite: next, scope });
+
+    if ("error" in drawn) {
+      // 한 장을 못 그렸다고 게임을 멈추지 않는다. 못 그렸다고 적고 넘어가면
+      // 코드가 `Texture2D` 로 때운다 — 그림 없이도 되는 길이 원래 있다.
+      const marked = sprites.map((sp) =>
+        sp.name === next.name
+          ? { ...sp, made: true, verdict: "FAIL" as const, measured: null }
+          : sp,
+      );
+      await db
+        .from("unity_sessions")
+        .update({ sprites: marked, updated_at: new Date().toISOString() })
+        .eq("id", session.id);
+      return NextResponse.json({
+        sessionId: session.id,
+        round,
+        status: "running",
+        action: "draw",
+        scope,
+        files: [],
+        images: [],
+        note: `그림 "${next.name}" 을 못 그렸습니다(${drawn.error}). 코드로 때웁니다.`,
+        left: remainingSprites.length - 1,
+      });
+    }
+
+    const marked = sprites.map((sp) =>
+      sp.name === next.name
+        ? {
+            ...sp,
+            made: true,
+            verdict: drawn.verdict,
+            measured: drawn.measured,
+          }
+        : sp,
+    );
+    await db
+      .from("unity_sessions")
+      .update({ sprites: marked, updated_at: new Date().toISOString() })
+      .eq("id", session.id);
+
+    return NextResponse.json({
+      sessionId: session.id,
+      round,
+      status: "running",
+      action: "draw",
+      scope,
+      files: [],
+      // 심부름꾼이 그대로 파일로 쓴다. 글 파일과 길이 갈리는 유일한 자리다.
+      images: [{ path: drawn.path, base64: drawn.base64 }],
+      note: `${next.name}: ${drawn.why}`,
+      // 판정을 그대로 싣는다. UNDEFINED 는 "괜찮다"가 아니라 "못 쟀다"이고,
+      // 화면도 심부름꾼도 그렇게 읽어야 한다.
+      verdict: drawn.verdict,
+      left: remainingSprites.length - 1,
+    });
+  }
 
   // ── 내용을 몇 개씩 낸다 ─────────────────────────────────────
   //

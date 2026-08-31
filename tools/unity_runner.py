@@ -30,6 +30,7 @@
 from __future__ import annotations
 
 import argparse
+import base64
 import json
 import os
 import re
@@ -196,6 +197,38 @@ def write_files(project: Path, files: list[dict], scope: str,
         remember(project, session, path, existed)
         target.write_text(f.get("contents") or "", encoding="utf-8")
         say(f"  썼습니다: {path}")
+        written += 1
+    return written
+
+
+def write_images(project: Path, images: list[dict], scope: str,
+                 session: str = "") -> int:
+    """그림을 파일로 쓴다.
+
+    글 파일과 길이 갈리는 유일한 자리다 — 본문이 문자열이 아니라 base64 라
+    바이트로 써야 한다. 나머지(울타리 검사, 되돌리기 기록)는 똑같이 거친다.
+    **그림이라고 울타리 밖에 쓸 수 있게 두면 울타리가 반쪽이 된다.**
+    """
+    written = 0
+    for im in images:
+        path = (im.get("path") or "").replace("\\", "/")
+        if not inside_scope(path, scope):
+            say(f"  울타리 밖이라 건너뜁니다: {path}")
+            continue
+        b64 = im.get("base64") or ""
+        if not b64:
+            say(f"  빈 그림입니다: {path}")
+            continue
+        target = project / path
+        target.parent.mkdir(parents=True, exist_ok=True)
+        existed = target.exists()
+        if existed:
+            backup = target.with_suffix(target.suffix + ".before-rookery")
+            if not backup.exists():
+                shutil.copy2(target, backup)
+        remember(project, session, path, existed)
+        target.write_bytes(base64.b64decode(b64))
+        say(f"  그렸습니다: {path}")
         written += 1
     return written
 
@@ -567,9 +600,23 @@ def drive(args, project: Path, unity: Path, scope: str, log: Path,
         if files:
             write_files(project, files, scope, session or '')
 
+        images = reply.get("images") or []
+        if images:
+            write_images(project, images, scope, session or '')
+
         if action == "compile" and not files and not measured:
             # 서버가 판정을 미루고 재 오라고 했다. 파일이 없어도 켠다.
             say("  아직 잰 것이 없다고 합니다. 지금 상태를 재 봅니다…")
+
+        if action == "draw":
+            # 그리는 판에는 유니티를 안 켠다. 그림만 놓고 다음 판으로 간다 —
+            # 여기서 켜면 아직 코드가 없어서 오류만 잔뜩 받고, 그 오류는
+            # 우리가 만든 것이 아니다.
+            left = reply.get("left")
+            if left is not None:
+                say(f"  남은 그림 {left}장")
+            errors = []
+            continue
 
         if action == "write_more":
             # 아직 설계도가 남았다. 유니티를 켜 봐야 반쪽만 있는 상태라

@@ -51,7 +51,7 @@ export async function GET() {
   const { data: rows } = await db
     .from("unity_sessions")
     .select(
-      "id, want, scope, status, round, ended_why, scene_method, criteria, plan, created_at, updated_at",
+      "id, want, scope, status, round, ended_why, scene_method, criteria, plan, sprites, created_at, updated_at",
     )
     .eq("company_id", company.id)
     .order("created_at", { ascending: false })
@@ -68,6 +68,7 @@ export async function GET() {
         scene_method: string | null;
         criteria: { when: string; then: string }[];
         plan: { path: string; purpose: string; written: boolean }[];
+        sprites: { name: string; made: boolean }[] | null;
         created_at: string;
         updated_at: string;
       }
@@ -105,6 +106,8 @@ export async function GET() {
 
   const plan = s.plan ?? [];
   const written = plan.filter((f) => f.written).length;
+  const sprites = s.sprites ?? [];
+  const drawn = sprites.filter((sp) => sp.made).length;
 
   return NextResponse.json({
     runnerSeenAt,
@@ -122,6 +125,8 @@ export async function GET() {
       criteriaCount: (s.criteria ?? []).length,
       planned: plan.length,
       written,
+      sprites: sprites.length,
+      drawn,
       startedAt: s.created_at,
       updatedAt: s.updated_at,
       rounds,

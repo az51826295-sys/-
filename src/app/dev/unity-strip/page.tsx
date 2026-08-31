@@ -22,8 +22,8 @@ const ago = (sec: number) => new Date(now - sec * 1000).toISOString();
 
 const CASES: { label: string; note: string; live: Live }[] = [
   {
-    label: "쓰는 중",
-    note: "설계는 끝났고 파일을 두 개씩 받고 있다. 심부름꾼이 방금 다녀갔다.",
+    label: "그리는 중",
+    note: "설계는 끝났고 아티스트가 스프라이트를 한 장씩 그리고 있다.",
     live: {
       runnerSeenAt: ago(8),
       runnerMeasurable: true,
@@ -38,6 +38,8 @@ const CASES: { label: string; note: string; live: Live }[] = [
         criteriaCount: 4,
         planned: 6,
         written: 4,
+        sprites: 3,
+        drawn: 1,
         startedAt: ago(214),
         updatedAt: ago(8),
         rounds: [
@@ -64,6 +66,8 @@ const CASES: { label: string; note: string; live: Live }[] = [
         criteriaCount: 4,
         planned: 6,
         written: 6,
+        sprites: 3,
+        drawn: 3,
         startedAt: ago(602),
         updatedAt: ago(30),
         rounds: [
@@ -108,6 +112,8 @@ const CASES: { label: string; note: string; live: Live }[] = [
         criteriaCount: 4,
         planned: 6,
         written: 6,
+        sprites: 3,
+        drawn: 3,
         startedAt: ago(866),
         updatedAt: ago(20),
         rounds: [
@@ -135,6 +141,8 @@ const CASES: { label: string; note: string; live: Live }[] = [
         criteriaCount: 3,
         planned: 4,
         written: 4,
+        sprites: 0,
+        drawn: 0,
         startedAt: ago(1500),
         updatedAt: ago(120),
         rounds: [

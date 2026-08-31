@@ -44,6 +44,9 @@ export type Live = {
     criteriaCount: number;
     planned: number;
     written: number;
+    /** 설계도가 적은 그림 수와, 그중 만든 수. */
+    sprites: number;
+    drawn: number;
     startedAt: string;
     updatedAt: string;
     rounds: Round[];
@@ -90,12 +93,21 @@ type StepState = "done" | "now" | "wait" | "fail";
 function stepsOf(s: NonNullable<Live["session"]>): StepState[] {
   const running = s.status === "running";
   const failed = s.status === "stuck" || s.status === "stopped";
+  const drewAll = s.sprites === 0 || s.drawn >= s.sprites;
   const wroteAll = s.planned > 0 && s.written >= s.planned;
-  const lastErrors = s.rounds[0]?.errors.length ?? 0;
 
   // 설계는 세션이 있다는 것 자체가 끝났다는 뜻이다 — 설계 없이는 세션이 안 열린다.
   const design: StepState = "done";
-  const write: StepState = wroteAll ? "done" : running ? "now" : "fail";
+  // 그림이 없는 일도 있다. 그때는 이 칸을 **끝난 것으로 둔다** — 건너뛴 칸을
+  // 대기로 두면 영영 안 끝나는 칸이 하나 생긴다.
+  const draw: StepState = drewAll ? "done" : running ? "now" : "fail";
+  const write: StepState = !drewAll
+    ? "wait"
+    : wroteAll
+      ? "done"
+      : running
+        ? "now"
+        : "fail";
   const compile: StepState = !wroteAll
     ? "wait"
     : failed
@@ -107,31 +119,15 @@ function stepsOf(s: NonNullable<Live["session"]>): StepState[] {
   // 여기서 초록으로 칠하지 않는다.
   const judge: StepState = compile === "done" ? "now" : "wait";
 
-  void lastErrors;
-  return [design, write, compile, judge];
+  return [design, draw, write, compile, judge];
 }
 
-/**
- * 각 칸에 **누가 붙어 있는가.**
- *
- * 전에는 "도는 중" 처럼 일의 상태를 적었는데, 그건 기계가 무엇을 하는지를
- * 말할 뿐 **누구 차례인지**를 말하지 않는다. 사람이 화면에서 알고 싶은 것은
- * 뒤쪽이다 — 지금 내가 기다리는 것인지, 내가 할 차례인지.
- *
- * 직함은 회사 등록부(`employeeDefinitions`)의 것을 쓴다. 지금 유니티 고리는
- * 전부 개발 쪽 일이고, 그림은 이 고리가 아니라 **승인된 자산 경로**로 들어와서
- * 아직 아티스트 칸이 없다. 그림을 이 고리 안에서 만들게 되면 그때 칸이 늘고,
- * 그 전에 아티스트를 적어 두면 **하지도 않은 일을 한 것처럼 보인다.**
- *
- * 세 번째 칸은 사람이 아니다. 컴파일과 씬은 사장님 PC의 유니티가 재고, 우리는
- * 그 결과만 읽는다 — 그래서 직함 대신 유니티라고 적는다. 마지막 칸도 사람이다:
- * 재미와 손맛은 기계가 못 재고, 그건 처음부터 사장님 몫으로 두었다.
- */
 const STEPS = [
   { no: "01", label: "설계도와 합격 기준", who: "개발자" },
-  { no: "02", label: "C# 스크립트 나눠 쓰기", who: "개발자" },
-  { no: "03", label: "컴파일과 씬", who: "유니티" },
-  { no: "04", label: "켜서 보기", who: "사장님" },
+  { no: "02", label: "그림", who: "아티스트" },
+  { no: "03", label: "C# 스크립트 나눠 쓰기", who: "개발자" },
+  { no: "04", label: "컴파일과 씬", who: "유니티" },
+  { no: "05", label: "켜서 보기", who: "사장님" },
 ] as const;
 
 /**
@@ -443,7 +439,7 @@ export function UnityStripView({
                         }`}
                       >
                         {step.label}
-                        {i === 1 && s.planned > 0 && (
+                        {i === 2 && s.planned > 0 && (
                           <span className="ml-1.5 tabular-nums text-white/35">
                             {s.written}/{s.planned}
                           </span>
