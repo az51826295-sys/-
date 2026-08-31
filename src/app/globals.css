@@ -139,6 +139,13 @@ body {
   --rk-800: #2e2e2e;
 }
 
+/* 어두운 자리에서는 글씨만 가져간다 — `.pixel` 은 종이색까지 깔기 때문에
+   검은 바탕 위에 쓰면 바탕을 덮어 버린다. */
+.pixel-type {
+  font-family: Galmuri11, "Galmuri14", ui-monospace, monospace;
+  letter-spacing: 0;
+}
+
 .pixel {
   font-family: Galmuri11, "Galmuri14", ui-monospace, monospace;
   /* 픽셀 폰트는 자간이 이미 격자에 맞아 있다. 자간을 건드리면 격자가 깨진다. */

@@ -161,7 +161,7 @@ export default function UnityStripPreview() {
   if (process.env.NODE_ENV === "production") notFound();
 
   return (
-    <div className="min-h-screen bg-[#050505] p-8 text-white" style={{ backgroundImage: "radial-gradient(60% 60% at 20% 0%, #1a1a1a 0%, #050505 100%)" }}>
+    <div className="pixel-type min-h-screen bg-[#050505] p-8 text-white" style={{ backgroundImage: "radial-gradient(60% 60% at 20% 0%, #1a1a1a 0%, #050505 100%)", color: "#fff" }}>
       {/* 이 화면 밖(문서 바탕)까지 어둡게 둔다. 개발용 화면이라 여기서만 쓴다. */}
       <style>{"body{background:#050505}"}</style>
       <h1 className="text-lg font-semibold text-white">유니티 띠 — 상태 넷</h1>
@@ -177,10 +177,10 @@ export default function UnityStripPreview() {
               <p className="text-xs text-white/40">{c.note}</p>
             </div>
             {/* 대화창 안에 놓였을 때의 자리를 흉내 낸다. */}
-            <div className="flex overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.03]">
+            <div className="flex overflow-hidden border border-white/[0.15] bg-white/[0.03]">
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-3 border-b border-white/[0.06] px-4 py-2.5 text-sm">
-                  <span className="rounded-lg border border-white/10 px-2.5 py-1.5 text-sm font-medium text-white/80">
+                  <span className="border border-white/20 px-2.5 py-1.5 text-sm font-medium text-white/80">
                     로키 — 접수 담당
                   </span>
                   <span className="text-xs text-white/30">available</span>

@@ -54,8 +54,14 @@ export type Live = {
 const POLL_RUNNING = 5000;
 const POLL_IDLE = 30000;
 
-const FACE =
-  '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif';
+/**
+ * 띠도 같은 글씨를 쓴다.
+ *
+ * 전에는 여기만 애플 계열 글꼴을 따로 박아 뒀는데, 그러면 대화창은 픽셀인데
+ * 그 위에 얹힌 띠만 다른 글씨가 된다 — 한 화면에 두 제품이 있는 것처럼 보인다.
+ * 폰트는 `globals.css` 에서 한 번 정의하고 여기서는 이름만 부른다.
+ */
+const FACE = 'Galmuri11, "Galmuri14", ui-monospace, monospace';
 
 /**
  * 얼마나 지났나. **지금이 몇 시인지는 밖에서 받는다.**
@@ -155,7 +161,7 @@ const STEP_TEXT: Record<Exclude<StepState, "now">, string> = {
  */
 function Who({ title }: { title: string }) {
   return (
-    <span className="shrink-0 rounded-full bg-white px-2 py-0.5 text-[11px] font-medium text-black">
+    <span className="shrink-0  bg-white px-2 py-0.5 text-[11px] font-medium text-black">
       {title}
     </span>
   );
@@ -298,8 +304,8 @@ export function UnityStripView({
       <div
         className={
           panel
-            ? "rounded-2xl border border-white/[0.08] bg-white/[0.03]"
-            : "overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0b0b10] shadow-[0_12px_24px_-12px_rgba(0,0,0,.6)]"
+            ? "border border-white/[0.15] bg-white/[0.03]"
+            : "overflow-hidden border-2 border-black bg-[#0b0b0b]"
         }
       >
         {/* ── 접힌 줄 ─────────────────────────────────────── */}
@@ -312,9 +318,9 @@ export function UnityStripView({
         {panel ? (
           <div className="space-y-2 px-3.5 py-3">
             <div className="flex items-center gap-2">
-              <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-white/[0.06] px-2 py-1">
+              <span className="inline-flex shrink-0 items-center gap-1.5  bg-white/[0.06] px-2 py-1">
                 <span
-                  className={`h-1.5 w-1.5 rounded-full ${
+                  className={`h-1.5 w-1.5 ${
                     running ? "animate-pulse bg-white" : "bg-white/25"
                   }`}
                 />
@@ -324,7 +330,7 @@ export function UnityStripView({
               </span>
               {verdict && (
                 <span
-                  className={`shrink-0 rounded-full px-2 py-0.5 text-[11px] font-semibold ring-1 ${verdict.className}`}
+                  className={`shrink-0  px-2 py-0.5 text-[11px] font-semibold ring-1 ${verdict.className}`}
                 >
                   {verdict.label}
                 </span>
@@ -341,16 +347,16 @@ export function UnityStripView({
             )}
 
             <div className="flex flex-wrap items-center gap-1.5">
-              <span className="rounded-full bg-white/[0.06] px-2 py-0.5 text-[11px] tabular-nums text-white/60">
+              <span className=" bg-white/[0.06] px-2 py-0.5 text-[11px] tabular-nums text-white/60">
                 {s.round}판
               </span>
-              <span className="rounded-full bg-white/[0.06] px-2 py-0.5 text-[11px] tabular-nums text-white/45">
+              <span className=" bg-white/[0.06] px-2 py-0.5 text-[11px] tabular-nums text-white/45">
                 {since(s.startedAt, now)}
               </span>
               <span
-                className={`inline-flex items-center gap-1.5 rounded-full bg-white/[0.06] px-2 py-0.5 text-[11px] ${runner.tone}`}
+                className={`inline-flex items-center gap-1.5  bg-white/[0.06] px-2 py-0.5 text-[11px] ${runner.tone}`}
               >
-                <span className={`h-1.5 w-1.5 rounded-full ${runner.dot}`} />
+                <span className={`h-1.5 w-1.5  ${runner.dot}`} />
                 {runner.text}
               </span>
             </div>
@@ -361,9 +367,9 @@ export function UnityStripView({
             aria-expanded={expanded}
             className="flex w-full items-center gap-2.5 px-3.5 py-2.5 text-left transition-colors hover:bg-white/[0.03] focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
           >
-            <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-white/[0.06] px-2 py-1">
+            <span className="inline-flex shrink-0 items-center gap-1.5  bg-white/[0.06] px-2 py-1">
               <span
-                className={`h-1.5 w-1.5 rounded-full ${
+                className={`h-1.5 w-1.5  ${
                   running ? "animate-pulse bg-white" : "bg-white/25"
                 }`}
               />
@@ -380,22 +386,22 @@ export function UnityStripView({
 
             {verdict && (
               <span
-                className={`shrink-0 rounded-full px-2 py-0.5 text-[11px] font-semibold ring-1 ${verdict.className}`}
+                className={`shrink-0  px-2 py-0.5 text-[11px] font-semibold ring-1 ${verdict.className}`}
               >
                 {verdict.label}
               </span>
             )}
 
-            <span className="shrink-0 rounded-full bg-white/[0.06] px-2 py-0.5 text-[11px] tabular-nums text-white/60">
+            <span className="shrink-0  bg-white/[0.06] px-2 py-0.5 text-[11px] tabular-nums text-white/60">
               {s.round}판
             </span>
-            <span className="hidden shrink-0 rounded-full bg-white/[0.06] px-2 py-0.5 text-[11px] tabular-nums text-white/45 sm:inline">
+            <span className="hidden shrink-0  bg-white/[0.06] px-2 py-0.5 text-[11px] tabular-nums text-white/45 sm:inline">
               {since(s.startedAt, now)}
             </span>
             <span
-              className={`hidden shrink-0 items-center gap-1.5 rounded-full bg-white/[0.06] px-2 py-0.5 text-[11px] sm:inline-flex ${runner.tone}`}
+              className={`hidden shrink-0 items-center gap-1.5  bg-white/[0.06] px-2 py-0.5 text-[11px] sm:inline-flex ${runner.tone}`}
             >
-              <span className={`h-1.5 w-1.5 rounded-full ${runner.dot}`} />
+              <span className={`h-1.5 w-1.5  ${runner.dot}`} />
               {runner.text}
             </span>
             <span className="shrink-0 text-white/25">{open ? "▾" : "▸"}</span>
@@ -406,7 +412,7 @@ export function UnityStripView({
         {expanded && (
           <div className="space-y-2.5 border-t border-white/[0.06] p-3">
             {/* 네 단계 */}
-            <div className="rounded-xl border border-white/[0.06] bg-black/25 p-3">
+            <div className=" border border-white/[0.06] bg-black/25 p-3">
               <div className="mb-2 text-[10px] font-semibold tracking-[0.08em] text-white/35">
                 진행
               </div>
@@ -416,7 +422,7 @@ export function UnityStripView({
                   return (
                     <li key={step.no} className="flex items-center gap-2.5">
                       <span
-                        className={`h-4 w-4 shrink-0 rounded-full text-center text-[9px] font-bold leading-4 ${
+                        className={`h-4 w-4 shrink-0  text-center text-[9px] font-bold leading-4 ${
                           state === "done"
                             ? "bg-white/60 text-black"
                             : state === "now"
@@ -447,7 +453,7 @@ export function UnityStripView({
                         <Who title={step.who} />
                       ) : (
                         <span
-                          className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold ${STEP_CHIP[state]}`}
+                          className={`shrink-0  px-2 py-0.5 text-[10px] font-semibold ${STEP_CHIP[state]}`}
                         >
                           {STEP_TEXT[state]}
                         </span>
@@ -460,7 +466,7 @@ export function UnityStripView({
 
             {/* 유니티가 돌려준 오류 */}
             {errors.length > 0 && (
-              <div className="rounded-xl border border-white/[0.05] bg-black/40 p-3">
+              <div className=" border border-white/[0.05] bg-black/40 p-3">
                 <div className="mb-2 text-[10px] font-semibold tracking-[0.08em] text-white/35">
                   이번 판에 돌아온 오류 {errors.length}건
                 </div>
@@ -482,7 +488,7 @@ export function UnityStripView({
 
             {/* 판별 기록 */}
             {s.rounds.length > 0 && (
-              <div className="rounded-xl border border-white/[0.05] bg-white/[0.02] p-3">
+              <div className=" border border-white/[0.05] bg-white/[0.02] p-3">
                 <div className="mb-2 text-[10px] font-semibold tracking-[0.08em] text-white/35">
                   판별 기록
                 </div>
@@ -524,7 +530,7 @@ export function UnityStripView({
             {/* 이 제품이 절대 안 하는 말: "다 됐습니다". 컴파일은 문법이 맞다는
                 뜻이지 원하던 것이 됐다는 뜻이 아니다. */}
             {s.status === "compiled" && (
-              <p className="rounded-xl border border-white/25 bg-white/[0.06] px-3 py-2 text-[12px] leading-relaxed text-white/80">
+              <p className=" border border-white/25 bg-white/[0.06] px-3 py-2 text-[12px] leading-relaxed text-white/80">
                 합격 기준 {s.criteriaCount}개는 <strong>아직 확인되지 않았습니다.</strong>{" "}
                 컴파일과 씬 생성은 기계가 쟀고, 원하던 것이 됐는지는 켜 보셔야 압니다.
               </p>
