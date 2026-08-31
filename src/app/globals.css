@@ -1,3 +1,5 @@
+/* 한글 픽셀 폰트 (갈무리, OFL). CSS 규칙상 @import 는 맨 위여야 한다. */
+@import url("https://cdn.jsdelivr.net/gh/quiple/galmuri/dist/galmuri.css");
 @import "tailwindcss";
 
 :root {
@@ -110,4 +112,40 @@ body {
   background: #fafafa;
   font-weight: 600;
   color: #18181b;
+}
+
+
+/*
+  밝은 사무실 — 픽셀 살갗.
+
+  전부에 입히지 않는다. 대시보드 마흔 화면은 표와 숫자가 빽빽해서 픽셀 폰트를
+  씌우면 읽기가 나빠진다. **사람이 실제로 쓰는 화면(`/ask`)** 에만 `.pixel` 을
+  붙이고, 나머지는 그대로 둔다.
+
+  색은 아트 바이블(`docs/art-bible-office-draft.md`)의 여덟 색 그대로다.
+*/
+:root {
+  --rk-paper: #f4f1e8;
+  --rk-window: #fff6d8;
+  --rk-wood: #c9a227;
+  --rk-grey: #b8bfc7;
+  --rk-ink: #2b2d36;
+  --rk-accent: #e0703a;
+  --rk-pass: #4e8c5a;
+  --rk-undef: #c9922b;
+}
+
+.pixel {
+  font-family: Galmuri11, "Galmuri14", ui-monospace, monospace;
+  /* 픽셀 폰트는 자간이 이미 격자에 맞아 있다. 자간을 건드리면 격자가 깨진다. */
+  letter-spacing: 0;
+  background: var(--rk-paper);
+  color: var(--rk-ink);
+}
+
+/* 스프라이트는 **부드럽게 늘이면 안 된다.** 브라우저 기본 보간이 픽셀을
+   뭉개면 그건 더 이상 픽셀아트가 아니다. */
+.pixel img,
+img.pixelated {
+  image-rendering: pixelated;
 }

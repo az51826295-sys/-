@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { faceFor } from "@/lib/employees/cast";
 
 /**
  * 유니티 일이 도는 동안 **보이는 것**.
@@ -145,6 +146,34 @@ const STEP_TEXT: Record<Exclude<StepState, "now">, string> = {
   wait: "대기",
   fail: "멈춤",
 };
+
+/**
+ * 지금 붙어 있는 사람.
+ *
+ * 직원이면 얼굴이 붙고, 아니면 글자만 남는다. 유니티가 컴파일하는 칸과 사장님이
+ * 켜서 보는 칸에는 직원이 없다 — 거기에 아무 얼굴이나 세우면 화면이 없는 사람을
+ * 일하게 만든다.
+ */
+function Who({ title }: { title: string }) {
+  const face = faceFor(title);
+  return (
+    <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-[#0A84FF]/20 py-0.5 pl-0.5 pr-2 text-[11px] font-medium text-[#64D2FF]">
+      {face ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={face.src}
+          alt=""
+          width={18}
+          height={18}
+          className="h-[18px] w-[18px] [image-rendering:pixelated]"
+        />
+      ) : (
+        <span className="w-1" />
+      )}
+      {title}
+    </span>
+  );
+}
 
 /** 묻는 쪽. 도는 동안만 자주 묻고, 안 보는 탭에서는 아예 안 묻는다. */
 export default function UnityStrip({ panel = false }: { panel?: boolean }) {
@@ -311,7 +340,10 @@ export function UnityStripView({
             <div className="text-[13px] leading-snug text-[#F5F5F7]">{s.want}</div>
 
             {onIt && (
-              <div className="text-[11px] text-[#64D2FF]">{onIt}가 붙어 있습니다</div>
+              <div className="flex items-center gap-1.5">
+                <Who title={onIt} />
+                <span className="text-[11px] text-white/45">가 붙어 있습니다</span>
+              </div>
             )}
 
             <div className="flex flex-wrap items-center gap-1.5">
@@ -350,11 +382,7 @@ export function UnityStripView({
               {s.want}
             </span>
 
-            {onIt && (
-              <span className="shrink-0 rounded-full bg-[#0A84FF]/20 px-2 py-0.5 text-[11px] font-medium text-[#64D2FF]">
-                {onIt}
-              </span>
-            )}
+            {onIt && <Who title={onIt} />}
 
             {verdict && (
               <span
@@ -421,11 +449,15 @@ export function UnityStripView({
                           </span>
                         )}
                       </span>
-                      <span
-                        className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold ${STEP_CHIP[state]}`}
-                      >
-                        {state === "now" ? step.who : STEP_TEXT[state]}
-                      </span>
+                      {state === "now" ? (
+                        <Who title={step.who} />
+                      ) : (
+                        <span
+                          className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold ${STEP_CHIP[state]}`}
+                        >
+                          {STEP_TEXT[state]}
+                        </span>
+                      )}
                     </li>
                   );
                 })}

@@ -117,7 +117,9 @@ export default function AskShell({
   }, [open]);
 
   return (
-    <div className="relative">
+    // 종이 바탕은 **화면 전체**다. 가운데 칸에만 깔면 좌우가 흰색으로 남아
+    // 사무실이 아니라 흰 종이 위에 얹힌 사무실이 된다.
+    <div className="relative min-h-screen bg-[var(--rk-paper)]">
       <div ref={box} className="absolute left-3 top-3 z-20">
         <button
           onClick={() => setOpen((v) => !v)}

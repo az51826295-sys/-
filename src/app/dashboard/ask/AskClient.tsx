@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import Link from "next/link";
 import Icon from "@/components/Icon";
 import UnityStrip from "@/app/dashboard/chat/UnityStrip";
+import { CAST } from "@/lib/employees/cast";
 
 /**
  * 회사에게 말을 거는 화면.
@@ -236,7 +237,9 @@ export default function AskClient({
   return (
     // 위쪽 여백은 장식이 아니다. 좌우 모서리에 설정과 과제 버튼이 떠 있어서,
     // 이만큼 내리지 않으면 첫 줄이 버튼 밑에 깔린다.
-    <div className="mx-auto flex h-[calc(100vh-4rem)] max-w-2xl flex-col px-4 pt-9">
+    // `pixel` 은 globals.css 에 있다 — 폰트·종이색·픽셀 보간을 한 번에 켠다.
+    // 이 화면에만 붙인다: 대시보드는 표가 빽빽해서 픽셀 폰트가 오히려 나쁘다.
+    <div className="pixel mx-auto flex h-[calc(100vh-4rem)] max-w-2xl flex-col px-4 pt-9">
       {task && (
         <p className="pt-2 text-center text-xs text-neutral-500">
           과제 · {task.title}
@@ -266,20 +269,44 @@ export default function AskClient({
 
       <div className="flex-1 space-y-4 overflow-y-auto py-6">
         {turns.length === 0 && (
-          <p className="text-sm text-neutral-500">
-            {task
-              ? `"${task.title}" 안에서 나눈 이야기만 여기 모입니다.`
-              : "무엇이든 물어보세요. 찾아봐야 할 것은 찾아보고, 시간이 드는 일은 사람을 붙여 업무로 만듭니다."}
-          </p>
+          <div className="space-y-4">
+            {/*
+              빈 화면에 글자만 있으면 여기가 무엇을 하는 곳인지 읽어야 안다.
+              뽑을 수 있는 사람들을 세워 두면 **보면 안다.** 다섯은 등록부에
+              실제로 있는 직원이고, 없는 사람은 세우지 않는다.
+            */}
+            {!task && (
+              <div className="flex items-end justify-center gap-1 pt-4">
+                {CAST.map((c) => (
+                  <span key={c.name} className="flex flex-col items-center gap-1">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={c.src}
+                      alt={c.name}
+                      width={48}
+                      height={48}
+                      className="h-12 w-12 [image-rendering:pixelated]"
+                    />
+                    <span className="text-[10px] text-neutral-500">{c.title}</span>
+                  </span>
+                ))}
+              </div>
+            )}
+            <p className="text-sm text-neutral-600">
+              {task
+                ? `"${task.title}" 안에서 나눈 이야기만 여기 모입니다.`
+                : "무엇이든 물어보세요. 찾아봐야 할 것은 찾아보고, 시간이 드는 일은 사람을 붙여 업무로 만듭니다."}
+            </p>
+          </div>
         )}
         {turns.map((t, i) => (
           <div key={i} className={t.role === "user" ? "text-right" : ""}>
             <div
               className={
-                "inline-block max-w-[85%] whitespace-pre-wrap rounded-2xl px-4 py-2.5 text-sm " +
+                "inline-block max-w-[85%] whitespace-pre-wrap border-2 border-[var(--rk-ink)] px-4 py-2.5 text-sm " +
                 (t.role === "user"
-                  ? "bg-neutral-800 text-neutral-100"
-                  : "bg-neutral-100 text-neutral-900 dark:bg-neutral-900 dark:text-neutral-100")
+                  ? "bg-[var(--rk-ink)] text-[var(--rk-paper)]"
+                  : "bg-[var(--rk-window)] text-[var(--rk-ink)]")
               }
             >
               {t.content}
@@ -396,7 +423,7 @@ export default function AskClient({
         }}
         className="flex gap-2 border-t border-neutral-200 py-3 dark:border-neutral-800"
       >
-        <label className="flex cursor-pointer items-center rounded-xl border border-neutral-300 px-3 text-neutral-500 hover:bg-neutral-100 dark:border-neutral-700 dark:hover:bg-neutral-900">
+        <label className="flex cursor-pointer items-center border-2 border-[var(--rk-ink)] bg-white px-3 text-[var(--rk-ink)] hover:bg-[var(--rk-window)]">
           <Icon name="attach" size={20} />
           <input
             type="file"
@@ -413,11 +440,11 @@ export default function AskClient({
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder="무엇이든 물어보세요"
-          className="flex-1 rounded-xl border border-neutral-300 px-4 py-3 text-sm dark:border-neutral-700 dark:bg-neutral-950"
+          className="flex-1 border-2 border-[var(--rk-ink)] bg-white px-4 py-3 text-sm outline-none focus:bg-[var(--rk-window)]"
         />
         <button
           disabled={busy || !text.trim()}
-          className="rounded-xl bg-neutral-900 px-5 text-sm font-medium text-white disabled:opacity-40 dark:bg-neutral-100 dark:text-neutral-900"
+          className="border-2 border-[var(--rk-ink)] bg-[var(--rk-accent)] px-5 text-sm font-medium text-white disabled:opacity-40"
         >
           보내기
         </button>
