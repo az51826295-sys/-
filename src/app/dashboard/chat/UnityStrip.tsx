@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { faceFor } from "@/lib/employees/cast";
 
 /**
  * 유니티 일이 도는 동안 **보이는 것**.
@@ -148,28 +147,15 @@ const STEP_TEXT: Record<Exclude<StepState, "now">, string> = {
 };
 
 /**
- * 지금 붙어 있는 사람.
+ * 지금 붙어 있는 사람. **글자만이다.**
  *
- * 직원이면 얼굴이 붙고, 아니면 글자만 남는다. 유니티가 컴파일하는 칸과 사장님이
- * 켜서 보는 칸에는 직원이 없다 — 거기에 아무 얼굴이나 세우면 화면이 없는 사람을
- * 일하게 만든다.
+ * 한때 여기에 픽셀 얼굴을 붙였다가 뺐다(2026-08-31 사장님 지시). 그림은
+ * `public/cast/` 와 `lib/employees/cast.ts` 에 그대로 있으니, 다시 붙일 자리가
+ * 생기면 이 조각 하나만 고치면 된다.
  */
 function Who({ title }: { title: string }) {
-  const face = faceFor(title);
   return (
-    <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-[#0A84FF]/20 py-0.5 pl-0.5 pr-2 text-[11px] font-medium text-[#64D2FF]">
-      {face ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={face.src}
-          alt=""
-          width={18}
-          height={18}
-          className="h-[18px] w-[18px] [image-rendering:pixelated]"
-        />
-      ) : (
-        <span className="w-1" />
-      )}
+    <span className="shrink-0 rounded-full bg-[#0A84FF]/20 px-2 py-0.5 text-[11px] font-medium text-[#64D2FF]">
       {title}
     </span>
   );
