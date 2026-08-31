@@ -1,0 +1,26 @@
+{
+  "name": "Rookery.UnityAI",
+  "rootNamespace": "Rookery.AI",
+  "references": [
+    "GUID:e3051e6249837eb4aa4eeeb16fa62de2"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [
+    "ROOKERY_HAS_UNITY_AI"
+  ],
+  "versionDefines": [
+    {
+      "name": "com.unity.ai.generators",
+      "expression": "1.0.0",
+      "define": "ROOKERY_HAS_UNITY_AI"
+    }
+  ],
+  "noEngineReferences": false
+}
