@@ -134,10 +134,10 @@ const STEPS = [
  * 아직 그 사람이 붙어 있는 것처럼 읽힌다.
  */
 const STEP_CHIP: Record<StepState, string> = {
-  done: "bg-[#30D158]/15 text-[#30D158]",
-  now: "bg-[#0A84FF]/20 text-[#64D2FF]",
-  wait: "bg-white/5 text-white/30",
-  fail: "bg-[#FF453A]/15 text-[#FF453A]",
+  done: "bg-white/10 text-white/60",
+  now: "bg-white text-black",
+  wait: "bg-white/5 text-white/25",
+  fail: "bg-white text-black",
 };
 
 const STEP_TEXT: Record<Exclude<StepState, "now">, string> = {
@@ -155,7 +155,7 @@ const STEP_TEXT: Record<Exclude<StepState, "now">, string> = {
  */
 function Who({ title }: { title: string }) {
   return (
-    <span className="shrink-0 rounded-full bg-[#0A84FF]/20 px-2 py-0.5 text-[11px] font-medium text-[#64D2FF]">
+    <span className="shrink-0 rounded-full bg-white px-2 py-0.5 text-[11px] font-medium text-black">
       {title}
     </span>
   );
@@ -260,26 +260,34 @@ export function UnityStripView({
   const errors = s.rounds[0]?.errors ?? [];
 
   const runner = !live?.runnerMeasurable
-    ? { text: "심부름꾼 못 잼", dot: "bg-white/25", tone: "text-white/40" }
+    ? { text: "심부름꾼 못 잼", dot: "bg-white/20", tone: "text-white/35" }
     : !live?.runnerSeenAt
-      ? { text: "심부름꾼 아직 안 옴", dot: "bg-[#FFD60A]", tone: "text-[#FFD60A]" }
+      ? { text: "심부름꾼 아직 안 옴", dot: "bg-white", tone: "text-white" }
       : (() => {
           const ms = now - new Date(live.runnerSeenAt).getTime();
           const text = "심부름꾼 " + since(live.runnerSeenAt, now) + " 전";
-          if (ms < 60_000)
-            return { text, dot: "bg-[#30D158]", tone: "text-[#30D158]" };
+          // 방금 다녀갔으면 밝고, 오래됐으면 어둡다. 색이 아니라 밝기가 신호다.
+          if (ms < 60_000) return { text, dot: "bg-white", tone: "text-white/90" };
           if (ms < 300_000)
-            return { text, dot: "bg-[#FFD60A]", tone: "text-[#FFD60A]" };
-          return { text, dot: "bg-white/25", tone: "text-white/40" };
+            return { text, dot: "bg-white/60", tone: "text-white/60" };
+          return { text, dot: "bg-white/20", tone: "text-white/35" };
         })();
 
+  /**
+   * 판정을 색 없이 가른다.
+   *
+   * 색을 안 쓰기로 했으니 남은 손잡이는 **명도와 반전**뿐이다. 눈에 제일 먼저
+   * 들어와야 하는 것(막힘)을 채워진 흰 면으로 두고, 통과는 테두리만, 멈춤은
+   * 그 중간에 둔다. 세 단계 이상 만들지 않는다 — 흑백에서 단계가 늘면 어느
+   * 것이 더 급한지가 흐려진다.
+   */
   const verdict =
     s.status === "compiled"
-      ? { label: "컴파일 통과", className: "bg-[#30D158]/15 text-[#30D158] ring-[#30D158]/30" }
+      ? { label: "컴파일 통과", className: "text-white ring-white/40" }
       : s.status === "stuck"
-        ? { label: "막힘", className: "bg-[#FF453A]/15 text-[#FF453A] ring-[#FF453A]/30" }
+        ? { label: "막힘", className: "bg-white text-black ring-white" }
         : s.status === "stopped"
-          ? { label: "멈춤", className: "bg-[#FFD60A]/15 text-[#FFD60A] ring-[#FFD60A]/30" }
+          ? { label: "멈춤", className: "bg-white/20 text-white ring-white/40" }
           : null;
 
   return (
@@ -307,7 +315,7 @@ export function UnityStripView({
               <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-white/[0.06] px-2 py-1">
                 <span
                   className={`h-1.5 w-1.5 rounded-full ${
-                    running ? "animate-pulse bg-[#0A84FF]" : "bg-white/25"
+                    running ? "animate-pulse bg-white" : "bg-white/25"
                   }`}
                 />
                 <span className="text-[11px] font-semibold tracking-wide text-white/70">
@@ -351,12 +359,12 @@ export function UnityStripView({
           <button
             onClick={() => setOpen((v) => !v)}
             aria-expanded={expanded}
-            className="flex w-full items-center gap-2.5 px-3.5 py-2.5 text-left transition-colors hover:bg-white/[0.03] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#0A84FF]"
+            className="flex w-full items-center gap-2.5 px-3.5 py-2.5 text-left transition-colors hover:bg-white/[0.03] focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
           >
             <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-white/[0.06] px-2 py-1">
               <span
                 className={`h-1.5 w-1.5 rounded-full ${
-                  running ? "animate-pulse bg-[#0A84FF]" : "bg-white/25"
+                  running ? "animate-pulse bg-white" : "bg-white/25"
                 }`}
               />
               <span className="text-[11px] font-semibold tracking-wide text-white/70">
@@ -410,11 +418,11 @@ export function UnityStripView({
                       <span
                         className={`h-4 w-4 shrink-0 rounded-full text-center text-[9px] font-bold leading-4 ${
                           state === "done"
-                            ? "bg-[#30D158] text-black"
+                            ? "bg-white/60 text-black"
                             : state === "now"
-                              ? "bg-[#0A84FF] text-white"
+                              ? "bg-white text-black"
                               : state === "fail"
-                                ? "bg-[#FF453A] text-white"
+                                ? "bg-white text-black"
                                 : "bg-white/10 text-white/30"
                         }`}
                       >
@@ -458,7 +466,7 @@ export function UnityStripView({
                 </div>
                 <ul className="space-y-1 font-mono text-[11px] leading-relaxed">
                   {errors.slice(0, 4).map((e, i) => (
-                    <li key={i} className={panel ? "break-words text-[#FF453A]/85" : "truncate text-[#FF453A]/85"}>
+                    <li key={i} className={panel ? "break-words text-white/85" : "truncate text-white/85"}>
                       <span className="text-white/35">
                         {e.file.split("/").pop()}({e.line}){" "}
                       </span>
@@ -516,7 +524,7 @@ export function UnityStripView({
             {/* 이 제품이 절대 안 하는 말: "다 됐습니다". 컴파일은 문법이 맞다는
                 뜻이지 원하던 것이 됐다는 뜻이 아니다. */}
             {s.status === "compiled" && (
-              <p className="rounded-xl border border-[#FFD60A]/25 bg-[#FFD60A]/[0.08] px-3 py-2 text-[12px] leading-relaxed text-[#FFD60A]">
+              <p className="rounded-xl border border-white/25 bg-white/[0.06] px-3 py-2 text-[12px] leading-relaxed text-white/80">
                 합격 기준 {s.criteriaCount}개는 <strong>아직 확인되지 않았습니다.</strong>{" "}
                 컴파일과 씬 생성은 기계가 쟀고, 원하던 것이 됐는지는 켜 보셔야 압니다.
               </p>

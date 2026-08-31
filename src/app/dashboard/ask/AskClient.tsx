@@ -286,7 +286,7 @@ export default function AskClient({
                 "inline-block max-w-[85%] whitespace-pre-wrap border-2 border-[var(--rk-ink)] px-4 py-2.5 text-sm " +
                 (t.role === "user"
                   ? "bg-[var(--rk-ink)] text-[var(--rk-paper)]"
-                  : "bg-[var(--rk-window)] text-[var(--rk-ink)]")
+                  : "bg-white text-[var(--rk-ink)]")
               }
             >
               {t.content}
@@ -403,7 +403,7 @@ export default function AskClient({
         }}
         className="flex gap-2 border-t border-neutral-200 py-3 dark:border-neutral-800"
       >
-        <label className="flex cursor-pointer items-center border-2 border-[var(--rk-ink)] bg-white px-3 text-[var(--rk-ink)] hover:bg-[var(--rk-window)]">
+        <label className="flex cursor-pointer items-center border-2 border-[var(--rk-ink)] bg-white px-3 text-[var(--rk-ink)] hover:bg-[var(--rk-100)]">
           <Icon name="attach" size={20} />
           <input
             type="file"
@@ -420,11 +420,11 @@ export default function AskClient({
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder="무엇이든 물어보세요"
-          className="flex-1 border-2 border-[var(--rk-ink)] bg-white px-4 py-3 text-sm outline-none focus:bg-[var(--rk-window)]"
+          className="flex-1 border-2 border-[var(--rk-ink)] bg-white px-4 py-3 text-sm outline-none focus:bg-[var(--rk-100)]"
         />
         <button
           disabled={busy || !text.trim()}
-          className="border-2 border-[var(--rk-ink)] bg-[var(--rk-accent)] px-5 text-sm font-medium text-white disabled:opacity-40"
+          className="border-2 border-[var(--rk-ink)] bg-[var(--rk-ink)] px-5 text-sm font-medium text-white disabled:opacity-30"
         >
           보내기
         </button>
