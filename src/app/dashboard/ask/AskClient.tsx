@@ -4,7 +4,6 @@ import { useRef, useState } from "react";
 import Link from "next/link";
 import Icon from "@/components/Icon";
 import UnityStrip from "@/app/dashboard/chat/UnityStrip";
-import { CAST } from "@/lib/employees/cast";
 
 /**
  * 회사에게 말을 거는 화면.
@@ -268,36 +267,17 @@ export default function AskClient({
       <UnityStrip />
 
       <div className="flex-1 space-y-4 overflow-y-auto py-6">
+        {/*
+          빈 화면에 다섯을 세워 뒀다가 뺐다(2026-08-31 사장님 지시). 얼굴은
+          **일하는 중일 때** 나오는 것으로 남긴다 — 아무 일도 없는데 서 있으면
+          장식이고, 장식은 매번 봐야 하는 자리에서 제일 먼저 지겨워진다.
+        */}
         {turns.length === 0 && (
-          <div className="space-y-4">
-            {/*
-              빈 화면에 글자만 있으면 여기가 무엇을 하는 곳인지 읽어야 안다.
-              뽑을 수 있는 사람들을 세워 두면 **보면 안다.** 다섯은 등록부에
-              실제로 있는 직원이고, 없는 사람은 세우지 않는다.
-            */}
-            {!task && (
-              <div className="flex items-end justify-center gap-1 pt-4">
-                {CAST.map((c) => (
-                  <span key={c.name} className="flex flex-col items-center gap-1">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={c.src}
-                      alt={c.name}
-                      width={48}
-                      height={48}
-                      className="h-12 w-12 [image-rendering:pixelated]"
-                    />
-                    <span className="text-[10px] text-neutral-500">{c.title}</span>
-                  </span>
-                ))}
-              </div>
-            )}
-            <p className="text-sm text-neutral-600">
-              {task
-                ? `"${task.title}" 안에서 나눈 이야기만 여기 모입니다.`
-                : "무엇이든 물어보세요. 찾아봐야 할 것은 찾아보고, 시간이 드는 일은 사람을 붙여 업무로 만듭니다."}
-            </p>
-          </div>
+          <p className="text-sm text-neutral-600">
+            {task
+              ? `"${task.title}" 안에서 나눈 이야기만 여기 모입니다.`
+              : "무엇이든 물어보세요. 찾아봐야 할 것은 찾아보고, 시간이 드는 일은 사람을 붙여 업무로 만듭니다."}
+          </p>
         )}
         {turns.map((t, i) => (
           <div key={i} className={t.role === "user" ? "text-right" : ""}>
