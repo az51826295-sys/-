@@ -124,13 +124,13 @@ export default function AskShell({
         <button
           onClick={() => setOpen((v) => !v)}
           aria-label="설정"
-          className="flex h-9 w-9 items-center justify-center rounded-full text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-900"
+          className="flex h-9 w-9 items-center justify-center text-[var(--rk-600)] hover:bg-[var(--rk-100)]"
         >
           <Icon name="settings" size={18} />
         </button>
 
         {open && (
-          <div className="mt-1 w-60 rounded-xl border border-neutral-200 bg-white p-1.5 shadow-lg dark:border-neutral-800 dark:bg-neutral-950">
+          <div className="mt-1 w-60 border-2 border-[var(--rk-ink)] bg-[var(--rk-paper)] p-1.5">
             {me?.email ? (
               <>
                 {/*
@@ -141,11 +141,11 @@ export default function AskShell({
                   선으로 갈라 놓고, 되돌릴 수 없는 것(로그아웃)은 맨 아래 따로 둔다.
                 */}
                 <section>
-                  <p className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] uppercase tracking-wide text-neutral-400">
+                  <p className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] uppercase tracking-wide text-[var(--rk-400)]">
                     <Icon name="history" size={12} />대화
                   </p>
                   <a
-                    className="block rounded-lg px-3 py-2 text-sm hover:bg-neutral-100 dark:hover:bg-neutral-900"
+                    className="block px-3 py-2 text-sm hover:bg-[var(--rk-100)]"
                     href="/ask"
                   >
                     <span className="flex items-center gap-2">
@@ -158,7 +158,7 @@ export default function AskShell({
                         <li key={c.id}>
                           <a
                             href={`/ask?c=${c.id}`}
-                            className="block truncate rounded-lg px-3 py-1.5 text-sm text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-900"
+                            className="block truncate px-3 py-1.5 text-sm text-[var(--rk-600)] hover:bg-[var(--rk-100)] dark:text-[var(--rk-400)] dark:hover:bg-neutral-900"
                           >
                             {c.title || "(제목 없음)"}
                           </a>
@@ -168,12 +168,12 @@ export default function AskShell({
                   )}
                 </section>
 
-                <section className="mt-1 border-t border-neutral-200 pt-1 dark:border-neutral-800">
-                  <p className="px-3 py-1.5 text-[11px] uppercase tracking-wide text-neutral-400">
+                <section className="mt-1 border-t border-[var(--rk-200)] pt-1">
+                  <p className="px-3 py-1.5 text-[11px] uppercase tracking-wide text-[var(--rk-400)]">
                     회사
                   </p>
                   <a
-                    className="block rounded-lg px-3 py-2 text-sm hover:bg-neutral-100 dark:hover:bg-neutral-900"
+                    className="block px-3 py-2 text-sm hover:bg-[var(--rk-100)]"
                     href="/dashboard"
                   >
                     <span className="flex items-center gap-2">
@@ -182,14 +182,14 @@ export default function AskShell({
                   </a>
                 </section>
 
-                <section className="mt-1 border-t border-neutral-200 pt-1 dark:border-neutral-800">
-                  <p className="truncate px-3 py-1.5 text-[11px] text-neutral-400">
+                <section className="mt-1 border-t border-[var(--rk-200)] pt-1">
+                  <p className="truncate px-3 py-1.5 text-[11px] text-[var(--rk-400)]">
                     {me.email}
                   </p>
                   <form action="/api/auth/signout" method="post">
                     <button
                       type="submit"
-                      className="w-full rounded-lg px-3 py-2 text-left text-sm text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-900"
+                      className="w-full px-3 py-2 text-left text-sm text-[var(--rk-600)] hover:bg-[var(--rk-100)]"
                     >
                       <span className="flex items-center gap-2">
                         <Icon name="signout" size={16} />로그아웃
@@ -200,17 +200,17 @@ export default function AskShell({
               </>
             ) : (
               <>
-                <p className="px-3 py-2 text-xs text-neutral-500">
+                <p className="px-3 py-2 text-xs text-[var(--rk-600)]">
                   로그인하면 제한 없이 쓰고, 대화가 저장됩니다.
                 </p>
                 <a
-                  className="block rounded-lg px-3 py-2 text-sm hover:bg-neutral-100 dark:hover:bg-neutral-900"
+                  className="block px-3 py-2 text-sm hover:bg-[var(--rk-100)]"
                   href="/login"
                 >
                   로그인
                 </a>
                 <a
-                  className="block rounded-lg px-3 py-2 text-sm hover:bg-neutral-100 dark:hover:bg-neutral-900"
+                  className="block px-3 py-2 text-sm hover:bg-[var(--rk-100)]"
                   href="/signup"
                 >
                   가입하기
@@ -231,22 +231,22 @@ export default function AskShell({
       <div ref={tasksBox} className="absolute right-3 top-3 z-20">
         <button
           onClick={() => setTasksOpen((v) => !v)}
-          className="rounded-full px-3 py-1.5 text-sm text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-900"
+          className="px-3 py-1.5 text-sm text-[var(--rk-600)] hover:bg-[var(--rk-100)]"
         >
           과제
         </button>
 
         {tasksOpen && (
-          <div className="absolute right-0 mt-1 w-64 rounded-xl border border-neutral-200 bg-white p-1.5 shadow-lg dark:border-neutral-800 dark:bg-neutral-950">
+          <div className="absolute right-0 mt-1 w-64 border-2 border-[var(--rk-ink)] bg-[var(--rk-paper)] p-1.5">
             {me?.email ? (
               <>
                 {activeTask && (
-                  <div className="border-b border-neutral-200 pb-1.5 dark:border-neutral-800">
+                  <div className="border-b border-[var(--rk-200)] pb-1.5">
                     <p className="px-3 pt-1.5 text-xs font-medium">
                       {activeTask.title}
                     </p>
                     {inTask.length === 0 ? (
-                      <p className="px-3 py-1 text-xs text-neutral-500">
+                      <p className="px-3 py-1 text-xs text-[var(--rk-600)]">
                         아직 이 과제의 대화가 없습니다.
                       </p>
                     ) : (
@@ -255,7 +255,7 @@ export default function AskShell({
                           <li key={c.id}>
                             <a
                               href={`/ask?task=${activeTask.id}&c=${c.id}`}
-                              className="block truncate rounded-lg px-3 py-1.5 text-xs text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-900"
+                              className="block truncate px-3 py-1.5 text-xs text-[var(--rk-600)] hover:bg-[var(--rk-100)] dark:text-[var(--rk-400)] dark:hover:bg-neutral-900"
                             >
                               {c.title ?? "제목 없음"}
                             </a>
@@ -265,7 +265,7 @@ export default function AskShell({
                     )}
                     <a
                       href={`/ask?task=${activeTask.id}`}
-                      className="block rounded-lg px-3 py-1.5 text-xs text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-900"
+                      className="block px-3 py-1.5 text-xs text-[var(--rk-600)] hover:bg-[var(--rk-100)]"
                     >
                       + 이 과제에서 새 대화
                     </a>
@@ -279,18 +279,18 @@ export default function AskShell({
                       if (e.key === "Enter") void addTask();
                     }}
                     placeholder="새 과제"
-                    className="min-w-0 flex-1 rounded-lg border border-neutral-300 px-2.5 py-1.5 text-sm dark:border-neutral-700 dark:bg-neutral-950"
+                    className="min-w-0 flex-1 border border-[var(--rk-400)] bg-transparent px-2.5 py-1.5 text-sm text-[var(--rk-ink)]"
                   />
                   <button
                     onClick={() => void addTask()}
-                    className="rounded-lg px-2.5 text-sm text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-900"
+                    className="px-2.5 text-sm text-[var(--rk-600)] hover:bg-[var(--rk-100)]"
                   >
                     +
                   </button>
                 </div>
 
                 {tasks.length === 0 ? (
-                  <p className="px-3 py-2 text-xs text-neutral-500">
+                  <p className="px-3 py-2 text-xs text-[var(--rk-600)]">
                     아직 과제가 없습니다. 여러 번에 걸쳐 할 일을 하나 만들면 그
                     안의 대화가 따로 모입니다.
                   </p>
@@ -300,7 +300,7 @@ export default function AskShell({
                       <li key={t.id}>
                         <a
                           href={`/ask?task=${t.id}`}
-                          className="block truncate rounded-lg px-3 py-2 text-sm hover:bg-neutral-100 dark:hover:bg-neutral-900"
+                          className="block truncate px-3 py-2 text-sm hover:bg-[var(--rk-100)]"
                         >
                           {t.title}
                         </a>
@@ -310,7 +310,7 @@ export default function AskShell({
                 )}
               </>
             ) : (
-              <p className="px-3 py-2 text-xs text-neutral-500">
+              <p className="px-3 py-2 text-xs text-[var(--rk-600)]">
                 <a className="underline" href="/login">
                   로그인
                 </a>

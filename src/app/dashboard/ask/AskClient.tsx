@@ -240,12 +240,12 @@ export default function AskClient({
     // 이 화면에만 붙인다: 대시보드는 표가 빽빽해서 픽셀 폰트가 오히려 나쁘다.
     <div className="pixel mx-auto flex h-[calc(100vh-4rem)] max-w-2xl flex-col px-4 pt-9">
       {task && (
-        <p className="pt-2 text-center text-xs text-neutral-500">
+        <p className="pt-2 text-center text-xs text-[var(--rk-400)]">
           과제 · {task.title}
         </p>
       )}
       {turnsLeft !== null && (
-        <p className="pt-2 text-center text-xs text-neutral-500">
+        <p className="pt-2 text-center text-xs text-[var(--rk-400)]">
           로그인 없이 {turnsLeft}번 더 쓸 수 있습니다 ·{" "}
           <a className="underline" href="/login">
             로그인
@@ -273,7 +273,7 @@ export default function AskClient({
           장식이고, 장식은 매번 봐야 하는 자리에서 제일 먼저 지겨워진다.
         */}
         {turns.length === 0 && (
-          <p className="text-sm text-neutral-600">
+          <p className="text-sm text-[var(--rk-600)]">
             {task
               ? `"${task.title}" 안에서 나눈 이야기만 여기 모입니다.`
               : "무엇이든 물어보세요. 찾아봐야 할 것은 찾아보고, 시간이 드는 일은 사람을 붙여 업무로 만듭니다."}
@@ -286,18 +286,18 @@ export default function AskClient({
                 "inline-block max-w-[85%] whitespace-pre-wrap border-2 border-[var(--rk-ink)] px-4 py-2.5 text-sm " +
                 (t.role === "user"
                   ? "bg-[var(--rk-ink)] text-[var(--rk-paper)]"
-                  : "bg-white text-[var(--rk-ink)]")
+                  : "bg-[var(--rk-100)] text-[var(--rk-ink)]")
               }
             >
               {t.content}
             </div>
             {t.hired && (
-              <p className="mt-1.5 text-xs text-neutral-500">
+              <p className="mt-1.5 text-xs text-[var(--rk-400)]">
                 {t.hired.name} 고용 — {t.hired.why}
               </p>
             )}
             {t.assignment && (
-              <p className="mt-1.5 text-xs text-neutral-500">
+              <p className="mt-1.5 text-xs text-[var(--rk-400)]">
                 업무 생성: {t.assignment.title}
                 {t.assignment.queued ? " (대기열에 넣음)" : ""}{" "}
                 <Link className="underline" href={`/dashboard/assignments`}>
@@ -313,18 +313,18 @@ export default function AskClient({
                     key={k}
                     src={img.dataUrl}
                     alt={img.prompt}
-                    className="max-h-72 rounded-xl border border-neutral-200 dark:border-neutral-800"
+                    className="max-h-72 rounded-xl border border-[var(--rk-200)]"
                   />
                 ))}
               </div>
             )}
             {t.searched && t.searched.length > 0 && (
-              <p className="mt-1.5 text-xs text-neutral-500">
+              <p className="mt-1.5 text-xs text-[var(--rk-400)]">
                 찾아본 것: {t.searched.join(" · ")}
               </p>
             )}
             {t.sources && t.sources.length > 0 && (
-              <ul className="mt-1.5 space-y-0.5 text-xs text-neutral-500">
+              <ul className="mt-1.5 space-y-0.5 text-xs text-[var(--rk-400)]">
                 {t.sources.map((s) => (
                   <li key={s.url}>
                     <a className="underline" href={s.url} target="_blank" rel="noreferrer">
@@ -345,7 +345,7 @@ export default function AskClient({
           </div>
         ))}
         {busy && (
-          <p className="text-sm text-neutral-500">
+          <p className="text-sm text-[var(--rk-400)]">
             {/*
               점 세 개만 있으면 멈춘 건지 도는 건지 알 수 없다. 지금 무엇을
               하는 중인지 그대로 적는다 — 뒤에서 여러 곳에 붙는 것이 이 제품의
@@ -364,7 +364,7 @@ export default function AskClient({
               key={o.label}
               onClick={() => send(o.label)}
               title={o.description ?? undefined}
-              className="rounded-full border border-neutral-300 px-3 py-1.5 text-sm hover:bg-neutral-100 dark:border-neutral-700 dark:hover:bg-neutral-900"
+              className="border border-[var(--rk-400)] px-3 py-1.5 text-sm hover:bg-[var(--rk-100)]"
             >
               {o.label}
             </button>
@@ -380,14 +380,14 @@ export default function AskClient({
               <img
                 src={`data:image/png;base64,${a.b64}`}
                 alt={a.name}
-                className="h-16 w-16 rounded-lg border border-neutral-200 object-cover dark:border-neutral-800"
+                className="h-16 w-16 border border-[var(--rk-200)] object-cover"
               />
               <button
                 onClick={() =>
                   setAttached((prev) => prev.filter((_, k) => k !== i))
                 }
                 aria-label="빼기"
-                className="absolute -right-1.5 -top-1.5 h-5 w-5 rounded-full bg-neutral-900 text-xs text-white dark:bg-neutral-100 dark:text-neutral-900"
+                className="absolute -right-1.5 -top-1.5 h-5 w-5 bg-[var(--rk-ink)] text-xs text-[var(--rk-paper)]"
               >
                 ×
               </button>
@@ -401,9 +401,9 @@ export default function AskClient({
           e.preventDefault();
           send(text);
         }}
-        className="flex gap-2 border-t border-neutral-200 py-3 dark:border-neutral-800"
+        className="flex gap-2 border-t border-[var(--rk-200)] py-3"
       >
-        <label className="flex cursor-pointer items-center border-2 border-[var(--rk-ink)] bg-white px-3 text-[var(--rk-ink)] hover:bg-[var(--rk-100)]">
+        <label className="flex cursor-pointer items-center border-2 border-[var(--rk-ink)] bg-transparent px-3 text-[var(--rk-ink)] hover:bg-[var(--rk-100)]">
           <Icon name="attach" size={20} />
           <input
             type="file"
@@ -420,11 +420,11 @@ export default function AskClient({
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder="무엇이든 물어보세요"
-          className="flex-1 border-2 border-[var(--rk-ink)] bg-white px-4 py-3 text-sm outline-none focus:bg-[var(--rk-100)]"
+          className="flex-1 border-2 border-[var(--rk-ink)] bg-transparent px-4 py-3 text-sm text-[var(--rk-ink)] outline-none placeholder:text-[var(--rk-400)] focus:bg-[var(--rk-100)]"
         />
         <button
           disabled={busy || !text.trim()}
-          className="border-2 border-[var(--rk-ink)] bg-[var(--rk-ink)] px-5 text-sm font-medium text-white disabled:opacity-30"
+          className="border-2 border-[var(--rk-ink)] bg-[var(--rk-ink)] px-5 text-sm font-medium text-[var(--rk-paper)] disabled:opacity-30"
         >
           보내기
         </button>
