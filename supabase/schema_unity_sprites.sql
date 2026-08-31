@@ -1,0 +1,21 @@
+-- 고리 안에서 만들 그림 목록.
+--
+-- 지금까지 유니티 고리는 코드만 냈다. 그림이 없으니 씬 빌더가 `Texture2D` 를
+-- 코드로 찍어 색 사각형을 놓았고, 컴파일도 통과하고 씬도 지어졌지만 화면에
+-- 나오는 것은 사각형이었다. **재는 자(컴파일러)가 못 보는 자리**라 여섯 판을
+-- 돌아도 그대로였다.
+--
+-- 그래서 설계 단계가 그림 목록도 낸다. 코드 파일 목록과 같은 성격이다 —
+-- 무엇을 만들 것인지 먼저 적고, 하나씩 만들고, 만든 것에 표시를 남긴다.
+alter table unity_sessions add column if not exists sprites jsonb not null default '[]'::jsonb;
+
+-- 각 칸의 모양:
+--   { "name": "player", "purpose": "주인공. 정면 한 포즈",
+--     "kind": "character" | "prop",
+--     "made": false,
+--     "verdict": "PASS" | "FAIL" | "UNDEFINED" | null,
+--     "measured": { ... } }
+--
+-- `verdict` 가 null 인 것과 "UNDEFINED" 인 것은 다르다. null 은 아직 안 만든
+-- 것이고, UNDEFINED 는 **만들었는데 잴 수 없었다**는 뜻이다 — 판정 엔진이
+-- 없으면 여기가 전부 UNDEFINED 가 되고, 화면도 그렇게 말해야 한다.
