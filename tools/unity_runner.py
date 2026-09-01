@@ -412,6 +412,32 @@ def read_packages(project: Path) -> list[str]:
     )
 
 
+def read_input_handler(project: Path) -> str | None:
+    """이 프로젝트가 어느 입력 방식을 켜 두었는가.
+
+    **컴파일러가 못 보는 자리다.** 프로젝트가 새 입력 시스템 하나만 켜 두면
+    옛 `UnityEngine.Input` 은 컴파일은 통과하고 **실행할 때 던진다.** 그러면
+    게임은 켜지고 그려지는데 키를 눌러도 아무 일이 없다 — 그리고 우리는
+    "안 움직인다" 와 "내 입력이 안 갔다" 를 구분할 수 없다.
+
+    실제로 그렇게 한 판을 통째로 미확인으로 남겼다(08-31). 생성된 조작 코드는
+    전부 `Input.GetAxisRaw` 였고, 이 프로젝트는 새 입력 시스템 전용이었다.
+
+    ProjectSettings 의 `activeInputHandler`: 0 옛것, 1 새것, 2 둘 다.
+    """
+    settings = project / "ProjectSettings" / "ProjectSettings.asset"
+    if not settings.exists():
+        return None
+    try:
+        text = settings.read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return None
+    found = re.search(r"^\s*activeInputHandler:\s*(\d+)", text, re.MULTILINE)
+    if not found:
+        return None
+    return {"0": "legacy", "1": "new", "2": "both"}.get(found.group(1))
+
+
 def run_unity(unity: Path, project: Path, log: Path,
               execute_method: str | None, timeout: int) -> tuple[int, str]:
     """유니티를 켠다. 돌아오는 것은 종료 코드와 로그 전문.
@@ -643,6 +669,9 @@ def drive(args, project: Path, unity: Path, scope: str, log: Path,
             "errors": errors,
             "project": read_scope(project, scope),
             "packages": read_packages(project),
+            # 어느 입력 방식이 켜져 있는지. 이걸 안 보내면 컴파일은 통과하고
+            # 키를 눌러도 아무 일이 없는 게임이 나온다.
+            "inputHandler": read_input_handler(project),
             # 이번 요청에 실린 오류가 **실제로 재 본 결과**인가.
             #
             # 빈 목록은 "오류가 없다" 와 "아직 안 봤다" 둘 다로 읽힐 수 있고,

@@ -130,6 +130,8 @@ export async function POST(request: Request) {
     errors?: unknown;
     project?: unknown;
     packages?: unknown;
+    /** "legacy" | "new" | "both". 없으면 아무 말도 안 한다. */
+    inputHandler?: unknown;
     measured?: unknown;
   };
 
@@ -170,6 +172,29 @@ export async function POST(request: Request) {
       "한다고 setup 에 적어라. 네가 못 까는 것을 쓴 코드는 고칠 수 없는 오류로 " +
       "돌아오고, 판만 돌다 멈춘다."
     : "";
+
+  /**
+   * 이 프로젝트가 켜 둔 입력 방식. **컴파일러가 못 보는 자리다.**
+   *
+   * 새 입력 시스템만 켜 둔 프로젝트에서 옛 `UnityEngine.Input` 을 쓰면
+   * **컴파일은 통과하고 실행할 때 던진다.** 게임은 켜지고 그려지는데 키를
+   * 눌러도 아무 일이 없고, 그러면 "안 움직인다" 와 "내 입력이 안 갔다" 를
+   * 구분할 수 없다.
+   *
+   * 08-31 에 그렇게 한 판을 통째로 미확인으로 남겼다. 생성된 조작 코드는 전부
+   * `Input.GetAxisRaw` 였고 이 프로젝트는 새 것 전용이었다. 오류가 안 났으니
+   * 아무도 안 걸렸다.
+   */
+  const inputNote =
+    b.inputHandler === "new"
+      ? "\n\n**입력은 새 입력 시스템(com.unity.inputsystem)으로만 읽는다.** 이 " +
+        "프로젝트는 옛 입력이 꺼져 있어서 `UnityEngine.Input.GetAxis`·`GetKey` 는 " +
+        "**컴파일은 되고 실행할 때 던진다.** `Keyboard.current.aKey.wasPressedThisFrame` " +
+        "처럼 `UnityEngine.InputSystem` 을 쓴다."
+      : b.inputHandler === "legacy"
+        ? "\n\n**입력은 옛 방식(`UnityEngine.Input`)으로만 읽는다.** 이 프로젝트는 " +
+          "새 입력 시스템이 꺼져 있다."
+        : "";
 
   const projectNote = Array.isArray(b.project) && b.project.length
     ? "\n지금 프로젝트에 있는 파일:\n" +
@@ -396,6 +421,7 @@ export async function POST(request: Request) {
         `\n파일은 반드시 ${scope} 아래에 둔다.`,
         versionNote,
         packageNote,
+        inputNote,
         session.scene_method
           ? `\n씬을 짓는 메서드는 ${session.scene_method} 다.`
           : "",
@@ -603,6 +629,9 @@ export async function POST(request: Request) {
       "지어낸 수정은 다음 판에 같은 오류로 돌아오고, 그러면 세션이 멈춘다.",
       `\n파일은 반드시 ${scope} 아래에만 쓴다.`,
       versionNote,
+      // 고치는 판에도 실어야 한다. 모르면 고치면서 옛 입력으로 되돌리고,
+      // 그러면 컴파일은 또 통과하고 게임은 또 안 움직인다.
+      inputNote,
       knowledge ? "\n이 회사가 아는 것:\n" + knowledge : "",
       lessons,
     ].join("\n"),
