@@ -19,6 +19,13 @@ param(
 $ErrorActionPreference = "Continue"
 $Hub = "C:\Program Files\Unity Hub\Unity Hub.exe"
 
+# 에디터 설치는 **관리자 권한이 필요하다.** 아니면 Hub 가 UAC 창을 띄우고, 창 없이
+# 돌린 경우 아무도 못 눌러서 시간이 지나 죽는다 — 실제로 그렇게 한 판을 잃었다.
+# 그때 출력을 `Out-Null` 로 버리고 있어서 **이유도 안 남았다.**
+$IsAdmin = ([Security.Principal.WindowsPrincipal] `
+    [Security.Principal.WindowsIdentity]::GetCurrent() `
+).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+
 # 사람 손이 필요한 것을 모은다. 마지막에 번호를 붙여 한 번에 보여 준다 —
 # 중간중간 흘리면 스크롤에 묻히고, 묻히면 안 한 채로 무인 운영에 들어간다.
 $HumanHands = New-Object System.Collections.ArrayList
@@ -88,24 +95,41 @@ Step "Unity $UnityVersion" $hasEditor $(if ($hasEditor) { "" } else { "유니티
 if (-not $hasEditor -and $hasHub -and $Install) {
     # 에디터 설치는 자동으로 된다. Hub 에 headless CLI 가 있다.
     Write-Host "  ... Unity $UnityVersion 설치 중 (몇 GB 입니다. 오래 걸립니다)"
-    & $Hub -- --headless install --version $UnityVersion 2>&1 | Out-Null
+    # 출력을 버리지 않는다. 버렸다가 "왜 안 됐는지" 를 통째로 잃었다.
+    $log = & $Hub -- --headless install --version $UnityVersion 2>&1 | Out-String
+    $why = ($log -split "`n") | Where-Object { $_ -match "failed|Error given|Failed" }
+    if ($why) { $why | Select-Object -Last 3 | ForEach-Object { Write-Host "      $_" } }
     if (Test-Path $editorRoot) {
         $hasEditor = [bool](Get-ChildItem $editorRoot -Directory -EA SilentlyContinue |
             Where-Object { $_.Name -like "6000.0.*" })
     }
 }
-if (-not $hasEditor) { Mine "Unity $UnityVersion 설치" "Hub 의 headless CLI 로 깝니다. 몇 GB 라 오래 걸립니다" }
+if (-not $hasEditor) {
+    if ($IsAdmin) {
+        Mine "Unity $UnityVersion 설치" "Hub 의 headless CLI 로 깝니다. 몇 GB 라 오래 걸립니다"
+    } else {
+        # 관리자가 아니면 이건 로키가 못 한다. 자동으로 되는 척하면 숫자가 거짓말이 된다.
+        Need "관리자 권한으로 이 스크립트를 다시 실행" "에디터 설치가 UAC 승격을 요구합니다. 관리자로 돌리면 로키가 깝니다"
+    }
+}
 
 # ── 3. 사람만 할 수 있는 것 ────────────────────────────────
 #
 # 아래 셋은 스크립트로 못 넘긴다. 비밀번호를 대신 치지 않고, 결제를 대신 하지
 # 않는다. **그래서 자동화의 정직한 끝이 여기다.**
+# 라이선스는 **에디터와 상관없이** 본다. 처음에 `if ($hasEditor)` 안에 넣었더니,
+# 에디터가 없는 동안에는 검사 자체를 안 하고 "없음" 이라고 답했다 — 로그인은
+# 되어 있었다. 라이선스는 Hub 가 계정에 붙이는 것이라 에디터보다 먼저 생긴다.
+#
+# 자리도 틀렸었다. 유니티 6 은 여기 둔다. 옛 자리(`Unity_lic.ulf`)만 보고
+# **못 본 것을 없는 것으로 읽었다** — 이 도구가 하지 말라고 만든 바로 그 짓이다.
+$licPaths = @(
+    "$env:LOCALAPPDATA\Unity\licenses\UnityEntitlementLicense.xml",
+    "$env:APPDATA\Unity\Unity_lic.ulf",
+    "$env:PROGRAMDATA\Unity\Unity_lic.ulf"
+)
 $licensed = $false
-if ($hasEditor) {
-    $lic = "$env:APPDATA\Unity\Unity_lic.ulf"
-    $licAlt = "$env:PROGRAMDATA\Unity\Unity_lic.ulf"
-    $licensed = (Test-Path $lic) -or (Test-Path $licAlt)
-}
+foreach ($lp in $licPaths) { if (Test-Path $lp) { $licensed = $true } }
 Step "유니티 라이선스" $licensed $(if ($licensed) { "" } else { "Hub 에서 로그인해야 켜집니다" })
 if (-not $licensed) { Need "Unity Hub 에서 로그인 + 라이선스 활성화" "비밀번호는 사람이 칩니다" }
 
