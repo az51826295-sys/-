@@ -124,6 +124,31 @@ export const UNITY_RULES = [
   "  판부터 씬이 조용히 망가진다.",
 ].join("\n");
 
+/**
+ * 설계가 가리킨 씬 빌더가 **이미 울타리 안에 있는가.**
+ *
+ * 메서드 이름(`Rookery.Editor.PlatformerSceneBuilder.BuildOrRebuild`)에서
+ * 클래스 이름을 떼어 보내 준 파일 목록과 맞춰 본다. 파일 이름과 클래스
+ * 이름은 유니티에서 같아야 하므로(안 맞으면 컴포넌트를 못 붙인다) 이걸로 잰다.
+ *
+ * 내용까지는 안 본다. 있는 것이 정말 되는지는 **지어 보면** 알고, 그것이
+ * 이 고리가 하는 일이다.
+ */
+export function reusableScene(
+  sceneMethod: string | null | undefined,
+  project: { path: string }[] | undefined,
+  scope: string,
+): boolean {
+  if (!sceneMethod || !project?.length) return false;
+  const parts = sceneMethod.split(".").filter(Boolean);
+  // 마지막은 메서드, 그 앞이 클래스.
+  const className = parts.length >= 2 ? parts[parts.length - 2] : "";
+  if (!className) return false;
+  return project.some(
+    (f) => insideScope(f.path, scope) && f.path.endsWith(`/${className}.cs`),
+  );
+}
+
 export async function planUnitySession(args: {
   db: Supabase;
   providers: Providers;
@@ -204,8 +229,32 @@ export async function planUnitySession(args: {
       measured: null,
     }));
 
+  /**
+   * 만들 파일이 하나도 없다 — **이것이 늘 틀린 답은 아니다.**
+   *
+   * 09-01 에 이 자리에서 값을 두 번 헛썼다. 울타리에 이전 세션이 만든 씬 빌더가
+   * 이미 있었고, 설계가 "새로 쓸 파일 없음 + 있는 빌더를 쓴다"고 답했다. 그건
+   * 맞는 답이었는데 우리가 오류로 돌려보냈고, 같은 물음을 다시 던져서 **다른
+   * 답이 나올 때까지** 굴렸다. 두 번째가 더 나아서 통과한 것이 아니라 다르게
+   * 나와서 통과했다 — 그건 재는 것이 아니라 다시 굴리는 것이다.
+   *
+   * 그래서 가리키는 씬 빌더가 **우리가 보내 준 파일 안에 실제로 있으면** 받는다.
+   * 있는 것으로 지어 보고 컴파일까지 가면, 그 판단이 맞았는지는 그때 판정된다.
+   *
+   * 없는 것을 가리키면 여전히 거절한다. 그건 재사용이 아니라 지어낸 것이고,
+   * 씬은 만들어져도 화면이 빈다.
+   */
   if (planned.length === 0) {
-    return { error: "울타리 안에 만들 파일이 하나도 설계되지 않았습니다." };
+    const reuse = reusableScene(output.sceneMethod, args.project, scope);
+    if (!reuse) {
+      return {
+        error:
+          "울타리 안에 만들 파일이 하나도 설계되지 않았습니다." +
+          (output.sceneMethod
+            ? ` (${output.sceneMethod} 를 쓰겠다고 했는데 그 파일이 울타리 안에 없습니다.)`
+            : ""),
+      };
+    }
   }
 
   const row = {
