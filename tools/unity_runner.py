@@ -556,6 +556,13 @@ def main() -> int:
     parser.add_argument("--rounds", type=int, default=6,
                         help="여기까지만 돈다. 서버에도 같은 뚜껑이 있다.")
     parser.add_argument("--unity-timeout", type=int, default=1200)
+    # 로키가 한 판에 답하는 데 얼마나 기다릴지.
+    #
+    # 600초로 박아 두었다가 3D 첫 판에서 끊겼다. 울타리에 파일이 쌓이면 프롬프트가
+    # 같이 커지고(12만 자대), 그만큼 한 판이 길어진다. **끊기면 그 판에 쓴 값이
+    # 통째로 버려지므로**, 기다리는 쪽이 싸다.
+    parser.add_argument("--server-timeout", type=int, default=1200,
+                        help="로키의 한 판 응답을 기다리는 초")
     parser.add_argument(
         "--watch", action="store_true",
         help="대화창에서 연 일을 기다렸다가 알아서 집어 간다.")
@@ -695,7 +702,7 @@ def drive(args, project: Path, unity: Path, scope: str, log: Path,
         say(f"[{compiles + 1}판] 로키에게 보냅니다"
             + (f" (오류 {len(errors)}개)" if errors else "") + "…")
         try:
-            reply = post(args.url, args.key, payload, timeout=600)
+            reply = post(args.url, args.key, payload, timeout=args.server_timeout)
             refusals = 0
         except ServerRefused as error:
             refusals += 1
