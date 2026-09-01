@@ -550,6 +550,13 @@ def main() -> int:
     #
     # 만들려는 것의 문장에서 짐작하게 두면("점프 게임" 이면 2D?) 판마다
     # 다르게 굴고, 그러면 무엇을 재는지 알 수 없게 된다.
+    # 그림을 고리 안에서 그릴지.
+    #
+    # 기본은 안 그린다(09-01 사장님 지시). 프로토타입을 먼저 만들고, 사람이
+    # 보고 승인하면 그때 넣는다. 아직 될지 모르는 게임에 그림값을 먼저 쓰지
+    # 않고, 승인 문을 건너뛰지도 않는다.
+    parser.add_argument("--art", action="store_true",
+                        help="옛 방식대로 고리 안에서 그림을 그린다")
     parser.add_argument("--dim", choices=["2d", "3d"],
                         default=os.environ.get("ROOKERY_DIM", "2d"),
                         help="2d 또는 3d. 3D 는 기본 도형과 재질로 짓는다")
@@ -688,6 +695,7 @@ def drive(args, project: Path, unity: Path, scope: str, log: Path,
             # 키를 눌러도 아무 일이 없는 게임이 나온다.
             "inputHandler": read_input_handler(project),
             "dimension": args.dim,
+            "art": args.art,
             # 이번 요청에 실린 오류가 **실제로 재 본 결과**인가.
             #
             # 빈 목록은 "오류가 없다" 와 "아직 안 봤다" 둘 다로 읽힐 수 있고,

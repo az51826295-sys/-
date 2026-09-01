@@ -14,6 +14,7 @@ import {
 import { planUnitySession, rulesFor, type Dimension } from "@/lib/unity/plan";
 import {
   drawSprite,
+  pendingArtNote,
   spriteNote,
   type PlannedSprite,
 } from "@/lib/unity/sprites";
@@ -111,6 +112,8 @@ export async function POST(request: Request) {
     packages?: unknown;
     /** "2d" | "3d". 없으면 지금까지 하던 2D. */
     dimension?: unknown;
+    /** 참이면 옛 방식대로 고리 안에서 그린다. 기본은 프로토타입 우선. */
+    art?: unknown;
     /** "legacy" | "new" | "both". 없으면 아무 말도 안 한다. */
     inputHandler?: unknown;
     measured?: unknown;
@@ -305,14 +308,21 @@ export async function POST(request: Request) {
 
   // ── 그리는 판 ───────────────────────────────────────────────
   //
-  // **코드보다 먼저 그린다.** 씬 빌더가 그림 경로를 참조하는데 그 파일이 아직
-  // 없으면, 컴파일은 통과하고 씬도 지어지는데 화면만 빈다 — 컴파일러가 못 보는
-  // 자리라 여섯 판을 돌아도 그대로다. 그림이 먼저 있으면 코드가 그 경로를 보고
-  // 쓴다.
+  // **기본은 안 그린다.** 09-01 사장님 지시로 순서가 바뀌었다:
   //
-  // 한 판에 한 장이다. 그림은 글보다 느리고 비싸서, 여러 장을 한 요청에 담으면
-  // 게임을 만드는 것이 아니라 그림을 그리다 끊긴다.
-  if (remainingSprites.length > 0 && errors.length === 0) {
+  //     설계 → 프로토타입(도형) → 사람이 본다 → **승인** → 그림·소리를 넣는다
+  //
+  // 전에는 고리 안에서 바로 그렸다. 그러면 두 가지가 어긋난다. 하나는 값 —
+  // 아직 될지 안 될지 모르는 게임에 그림값이 먼저 나간다. 다른 하나는 문 —
+  // `/api/unity/assets` 는 **승인된 것만** 유니티로 내보내는데, 이 고리는 그
+  // 문을 안 지나고 직접 써 넣었다. 문이 둘이면 승인이 절차가 아니게 된다.
+  //
+  // 설계가 낸 그림 목록은 버리지 않는다. **발주서로 남는다** — 사람이 프로토타입을
+  // 보고 승인하면 그때 그 목록으로 그린다.
+  //
+  // `--art` 로 옛 방식을 부를 수 있게 남겨 둔다. 되던 길을 지우지는 않는다.
+  const drawInLoop = b.art === true;
+  if (drawInLoop && remainingSprites.length > 0 && errors.length === 0) {
     const next = remainingSprites[0];
     const drawn = await drawSprite({ sprite: next, scope });
 
@@ -428,7 +438,9 @@ export async function POST(request: Request) {
         ...files.map((f) => `- ${f.path} — ${f.purpose}`),
         // 무엇이 **실제로** 만들어졌는지. 설계도는 "그림이 있으면 쓰라"고만 하고
         // 무엇이 있는지는 안 알려 줬다 — 그래서 코드가 색 사각형을 찍었다.
-        spriteNote(scope, sprites),
+        drawInLoop
+          ? spriteNote(scope, sprites)
+          : pendingArtNote(scope, sprites),
         projectNote,
       ].join("\n"),
       schema: filesSchema,
@@ -645,7 +657,9 @@ export async function POST(request: Request) {
         errors.map((e) => `${e.file}(${e.line}): ${e.message}`).join("\n"),
       // 고치는 판도 같은 쪽지를 받는다. 이것이 없으면 씬 빌더를 고치면서 그림
       // 경로를 도로 잃고, 방금 이은 자리가 다음 판에 끊긴다.
-      spriteNote(scope, sprites),
+      drawInLoop
+        ? spriteNote(scope, sprites)
+        : pendingArtNote(scope, sprites),
       projectNote,
     ].join("\n"),
     schema: filesSchema,
