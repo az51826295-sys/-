@@ -103,6 +103,20 @@ if (Test-Path $editorRoot) {
         Where-Object { $_.Name -like "6000.0.*" })
 }
 Step "Unity $UnityVersion" $hasEditor $(if ($hasEditor) { "" } else { "유니티 AI 는 6000.0 을 겨냥합니다" })
+# **Hub 가 이미 떠 있으면 관리자로 돌려도 소용없다.**
+#
+# `Unity Hub.exe --headless install` 은 새 Hub 를 띄우는 것이 아니라 **이미 떠 있는
+# Hub 에게 말을 건다.** 그 Hub 가 일반 권한이면 자기가 승격을 요청하고, 우리
+# 관리자 권한은 거기까지 안 간다. 09-01 에 관리자로 돌리고도 같은 오류가 났다:
+# "The Windows elevation prompt was cancelled or timed out."
+if (-not $hasEditor -and $Install -and (Get-Process "Unity Hub" -EA SilentlyContinue)) {
+    Write-Host "  [멈춤] Unity Hub 가 이미 떠 있습니다."
+    Write-Host "         떠 있는 Hub 는 일반 권한이라, 관리자로 돌려도 승격을 다시 묻습니다."
+    Write-Host "         Hub 를 완전히 끄고(트레이 아이콘 포함) 다시 돌려 주십시오."
+    Need "Unity Hub 를 완전히 끄고 다시 실행" "떠 있는 Hub 에 관리자 권한이 안 전달됩니다"
+    $hasHub = $false   # 아래 설치를 건너뛴다. 될 리 없는 것을 시도하지 않는다.
+}
+
 if (-not $hasEditor -and $hasHub -and $Install) {
     # 에디터 설치는 자동으로 된다. Hub 에 headless CLI 가 있다.
     Write-Host "  ... Unity $UnityVersion 설치 중 (몇 GB 입니다. 오래 걸립니다)"
