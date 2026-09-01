@@ -113,8 +113,27 @@ class ServerRefused(Exception):
     """
 
 
+# 윈도우 콘솔은 cp949 다. 모델이 낸 문장에 줄표(—) 하나만 섞여도 `print` 가
+# 죽고, **그 순간 고리가 통째로 멈춘다.** 실제로 그렇게 멈췄다(09-01 설계 판).
+#
+# 이 병은 이 저장소에서만 세 번째다: genesis 에서 한국어 실패 메시지가 cp949 에
+# 죽어 FAIL 이 UNDEFINED 로 바뀌었고(`888e5ec`), 오늘 아침 유니티 AI 심부름꾼에서
+# 판정문 대신 역추적이 떴다. **말하다가 죽는 것은 말의 문제가 아니라 통로의
+# 문제라, 통로에서 막는다.**
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+    except (AttributeError, ValueError):
+        pass
+
+
 def say(text: str) -> None:
-    print(text, flush=True)
+    # 그래도 못 찍는 글자가 남을 수 있다. 찍기에 실패했다고 일이 멈추지는 않는다 —
+    # 화면에 글자 하나가 덜 나오는 것과 고리가 멈추는 것은 비교할 일이 아니다.
+    try:
+        print(text, flush=True)
+    except UnicodeEncodeError:
+        print(text.encode("ascii", "replace").decode("ascii"), flush=True)
 
 
 def post(url: str, key: str, payload: dict, timeout: int) -> dict:
