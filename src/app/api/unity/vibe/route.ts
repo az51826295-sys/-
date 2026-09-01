@@ -440,7 +440,7 @@ export async function POST(request: Request) {
         // 무엇이 있는지는 안 알려 줬다 — 그래서 코드가 색 사각형을 찍었다.
         drawInLoop
           ? spriteNote(scope, sprites)
-          : pendingArtNote(scope, sprites),
+          : pendingArtNote(scope, sprites, dimension),
         projectNote,
       ].join("\n"),
       schema: filesSchema,
@@ -659,7 +659,7 @@ export async function POST(request: Request) {
       // 경로를 도로 잃고, 방금 이은 자리가 다음 판에 끊긴다.
       drawInLoop
         ? spriteNote(scope, sprites)
-        : pendingArtNote(scope, sprites),
+        : pendingArtNote(scope, sprites, dimension),
       projectNote,
     ].join("\n"),
     schema: filesSchema,

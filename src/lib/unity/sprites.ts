@@ -118,24 +118,44 @@ export function drawnPath(scope: string, sp: PlannedSprite): string | null {
  * 코드를 다시 안 만진다. 이 계약이 없으면 승인할 때마다 게임을 다시 짓게 되고,
  * 그러면 승인이 값싼 절차가 아니라 비싼 절차가 된다.
  */
-export function pendingArtNote(scope: string, sprites: PlannedSprite[]): string {
+export function pendingArtNote(
+  scope: string,
+  sprites: PlannedSprite[],
+  dimension: "2d" | "3d" = "2d",
+): string {
+  // 3D 에 스프라이트 경로를 주면 **읽고도 안 쓴다.** 실제로 09-01 에 그랬다 —
+  // 문구는 프롬프트에 그대로 실려 갔는데, 만들어진 3D 코드 어디에도 그림을
+  // 불러올 자리가 없었다. 3D 물체에 스프라이트는 쓸 데가 없으니 당연한 반응이고,
+  // **틀린 것은 답이 아니라 우리가 준 계약이었다.**
+  const threeD = dimension === "3d";
+  const artPath = threeD ? `${scope}Textures/<이름>.png` : `${scope}Sprites/<이름>.png`;
+  const howToUse = threeD
+    ? "재질(Material)의 albedo 로 붙이고, 없으면 단색 재질을 쓴다"
+    : "SpriteRenderer 에 붙이고, 없으면 코드로 만든 단색 텍스처를 쓴다";
+
   const out = [
     NL + "**아직 그림도 소리도 없다. 도형과 색으로 먼저 짓는다.**",
     "사람이 이 프로토타입을 보고 승인하면 그때 그림과 소리가 아래 경로로 들어온다.",
-    "그러니 처음부터 이렇게 써라:",
-    `- 그림은 \`${scope}Sprites/<이름>.png\` 가 **있으면 불러 쓰고, 없으면** 도형이나`,
-    "  단색으로 그린다,",
-    `- 소리는 \`${scope}Audio/<이름>.wav\` 가 **있으면 재생하고, 없으면** 조용히 넘어간다,`,
-    "- 있고 없고를 **한 자리에서** 판단해라(작은 도우미 하나). 그래야 나중에 파일만",
-    "  넣으면 되고 코드를 다시 안 만진다,",
+    "**그때 코드를 다시 만지지 않아도 되게** 처음부터 이렇게 써라:",
+    `- 그림은 \`${artPath}\` 를 찾아본다. 있으면 ${howToUse},`,
+    `- 소리는 \`${scope}Audio/<이름>.wav\` 를 찾아본다. 있으면 재생하고, 없으면 조용히 넘어간다,`,
+    "- 찾는 일은 **작은 도우미 하나**에 모아라(예: `TryLoad(이름)`). 자리마다 흩어 두면",
+    "  나중에 갈아 끼울 때 코드를 다 뒤져야 한다,",
     "- 없을 때 오류를 내거나 멈추지 마라. **프로토타입은 그림 없이도 끝까지 돌아야 한다.**",
+    "- 이건 나중에 하는 일이 아니라 **지금 넣는 자리다.** 지금 안 넣으면 승인 뒤에",
+    "  게임을 다시 지어야 한다.",
   ];
 
   if (sprites.length) {
     out.push(
       "",
-      "설계가 적어 둔 그림 목록(발주서다. 아직 아무것도 안 그렸다):",
-      ...sprites.map((sp) => `- ${spritePath(scope, sp.name)} — ${sp.purpose}`),
+      threeD
+        ? "설계가 적어 둔 그림 목록(발주서다. 아직 아무것도 안 그렸다):"
+        : "설계가 적어 둔 그림 목록(발주서다. 아직 아무것도 안 그렸다):",
+      ...sprites.map(
+        (sp) =>
+          `- ${threeD ? `${scope}Textures/${spriteFileName(sp.name)}.png` : spritePath(scope, sp.name)} — ${sp.purpose}`,
+      ),
       "이 이름들로 자리를 잡아 두면 승인 뒤에 그대로 꽂힌다.",
     );
   }

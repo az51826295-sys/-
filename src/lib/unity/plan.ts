@@ -267,9 +267,16 @@ export async function planUnitySession(args: {
 
   // 그림도 울타리 안에만 쓴다. 이름은 모델이 아니라 우리가 짓는다 —
   // 파일 이름을 모델이 정하게 두면 경로가 되는 이름이 나온다.
-  // 3D 에서는 그림을 안 만든다. 메시를 만들 수 없어서 스프라이트가 쓰일 데가
-  // 없고, 계획에만 넣으면 못 그리고 넘어가는 판만 늘어난다.
-  const sprites: PlannedSprite[] = (dimension === "3d" ? [] : output.sprites ?? [])
+  // 3D 에서도 그림 목록을 받는다.
+  //
+  // 처음에는 3D 면 비웠다 — 고리가 그 목록을 보고 **바로 그렸기** 때문에, 쓸 데
+  // 없는 그림을 그리다 판만 늘어나서였다. 09-01 에 순서가 바뀌면서(프로토타입
+  // 먼저, 승인 뒤에 그림) 그 이유가 없어졌다. 이제 이 목록은 작업 지시가 아니라
+  // **발주서**다.
+  //
+  // 비워 두면 오히려 손해다. 쓰는 판이 "어떤 이름으로 자리를 잡아야 하는지"를
+  // 못 듣고, 그러면 갈아 끼울 자리를 안 만든다 — 실제로 그렇게 한 판을 잃었다.
+  const sprites: PlannedSprite[] = (output.sprites ?? [])
     .slice(0, MAX_PLANNED_SPRITES)
     .map((sp) => ({
       name: spriteFileName(sp.name),
