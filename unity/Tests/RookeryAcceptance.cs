@@ -122,6 +122,28 @@ namespace Rookery.Tests
             Assert.IsNotEmpty(renderers, "그려지는 것이 하나도 없습니다.");
         }
 
+        // ── 2-b. 3D 인데 조명이 있는가 ───────────────────────────
+        //
+        // 3D 물체는 조명이 없으면 **검게 그려진다.** 씬은 지어지고 물체도 다
+        // 있는데 화면만 까맣다 — 컴파일러도, 위의 "보이는 것이 있다" 도 못 잡는다.
+        // 2D 스프라이트는 조명이 필요 없으므로, 3D 물체가 있을 때만 묻는다.
+        [UnityTest]
+        public IEnumerator 삼차원이면_조명이_있다()
+        {
+            yield return LoadTarget();
+
+            var meshes = Object.FindObjectsByType<MeshRenderer>()
+                .Where(r => r.enabled && r.gameObject.activeInHierarchy).ToArray();
+            if (meshes.Length == 0)
+                Assert.Inconclusive("3D 물체가 없습니다 — 이 게임은 2D 입니다.");
+
+            var lights = Object.FindObjectsByType<Light>()
+                .Where(l => l.isActiveAndEnabled).ToArray();
+            Assert.IsNotEmpty(
+                lights,
+                $"3D 물체가 {meshes.Length}개 있는데 켜진 조명이 없습니다. 화면이 검게 나옵니다.");
+        }
+
         // ── 3. 그림이 진짜 파일인가 ──────────────────────────────
         //
         // 코드로 만든 `Texture2D` 는 이름이 없고 파일이 없다. 그것만으로 채워진
@@ -153,10 +175,15 @@ namespace Rookery.Tests
 #if ENABLE_INPUT_SYSTEM
             yield return LoadTarget();
 
+            // 2D 든 3D 든 본다. 차원을 알 필요가 없다 — 움직일 수 있는 것이
+            // 무엇이든 움직였는지만 보면 된다.
             var moving = Object.FindObjectsByType<Rigidbody2D>()
-                .Select(r => r.transform).ToArray();
+                .Select(r => r.transform)
+                .Concat(Object.FindObjectsByType<Rigidbody>().Select(r => r.transform))
+                .Distinct()
+                .ToArray();
             if (moving.Length == 0)
-                Assert.Inconclusive("움직일 수 있는 물체(Rigidbody2D)가 없습니다.");
+                Assert.Inconclusive("움직일 수 있는 물체(Rigidbody / Rigidbody2D)가 없습니다.");
 
             var before = moving.Select(t => t.position).ToArray();
 

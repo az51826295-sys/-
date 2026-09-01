@@ -11,7 +11,7 @@ import {
   renderUnityLessons,
   retrieveUnityLessons,
 } from "@/lib/unity/lessons";
-import { planUnitySession } from "@/lib/unity/plan";
+import { planUnitySession, rulesFor, type Dimension } from "@/lib/unity/plan";
 import {
   drawSprite,
   spriteNote,
@@ -63,27 +63,6 @@ const filesSchema = z.object({
   note: z.string(),
 });
 
-const RULES = [
-  "너는 유니티 C# 스크립트를 쓴다. 유니티가 네 코드를 몇 초 뒤에 컴파일하고,",
-  "오류는 그대로 너에게 돌아온다.",
-  "",
-  "- 파일은 **전체를 낸다.** 생략 표시로 줄이면 붙일 수가 없다.",
-  "- 클래스 이름과 파일 이름을 맞춘다 — 어긋나면 컴포넌트를 못 붙인다.",
-  "- 없는 패키지에 의존하지 마라. 기본 유니티로 되는 범위에서 쓴다.",
-  "- 잴 수 없는 것(재미, 손맛)은 기준인 척하지 마라.",
-  "",
-  "**사람은 에디터를 열지 않는다.** 씬에 물체를 끌어다 놓아 줄 사람이 없으니,",
-  "씬도 코드가 지어야 한다. 씬을 만들어 저장하는 에디터 정적 메서드를 하나 쓰고",
-  "(에디터 전용이라 Editor/ 폴더 아래에 둔다) 그 온전한 이름을 sceneMethod 에",
-  "적어라. 그 메서드는:",
-  "- 씬을 새로 만들고 필요한 GameObject 와 컴포넌트를 코드로 붙인다,",
-  "- 그림 파일이 없으면 코드로 만든 Texture2D 로 때운다 — 없는 파일을 참조하면",
-  "  씬은 만들어져도 화면이 비어 있고, 그건 컴파일로는 안 잡힌다,",
-  "- 카메라와 조명도 직접 만든다. 빈 씬에는 아무것도 없다,",
-  "- 씬을 저장하고 EditorBuildSettings.scenes 에 넣는다,",
-  "- **두 번 불려도 같은 결과**여야 한다. 부를 때마다 물체가 쌓이면, 두 번째",
-  "  판부터 씬이 조용히 망가진다.",
-].join("\n");
 
 type Planned = { path: string; purpose: string; written: boolean };
 
@@ -130,6 +109,8 @@ export async function POST(request: Request) {
     errors?: unknown;
     project?: unknown;
     packages?: unknown;
+    /** "2d" | "3d". 없으면 지금까지 하던 2D. */
+    dimension?: unknown;
     /** "legacy" | "new" | "both". 없으면 아무 말도 안 한다. */
     inputHandler?: unknown;
     measured?: unknown;
@@ -172,6 +153,14 @@ export async function POST(request: Request) {
       "한다고 setup 에 적어라. 네가 못 까는 것을 쓴 코드는 고칠 수 없는 오류로 " +
       "돌아오고, 판만 돌다 멈춘다."
     : "";
+
+  /**
+   * 2D 인가 3D 인가.
+   *
+   * 요청마다 실려 온다. 세션에 저장하지 않는다 — 한 번 켜면 안 바뀌는 값이라
+   * 칸을 만들 이유가 없고, 칸이 늘면 마이그레이션이 늘어난다.
+   */
+  const dimension: Dimension = b.dimension === "3d" ? "3d" : "2d";
 
   /**
    * 이 프로젝트가 켜 둔 입력 방식. **컴파일러가 못 보는 자리다.**
@@ -251,6 +240,7 @@ export async function POST(request: Request) {
       scope: typeof b.scope === "string" ? b.scope : undefined,
       unityVersion:
         typeof b.unityVersion === "string" ? b.unityVersion : undefined,
+      dimension,
       project: Array.isArray(b.project)
         ? (b.project as { path: string; contents: string }[])
         : undefined,
@@ -411,7 +401,7 @@ export async function POST(request: Request) {
     const ask = (files: Planned[], maxTokens: number) =>
       providers.ai.generateStructuredOutput({
       systemInstructions: [
-        RULES,
+        rulesFor(dimension),
         "",
         "지금은 **쓰는 판**이다. 아래에 적힌 파일만 내라. 다른 파일은 내지 마라 —",
         "나머지는 다음 판에 받는다.",
@@ -618,7 +608,7 @@ export async function POST(request: Request) {
 
   const { output } = await providers.ai.generateStructuredOutput({
     systemInstructions: [
-      RULES,
+      rulesFor(dimension),
       "",
       "지금은 **고치는 판**이다. 유니티가 컴파일해서 아래 오류를 돌려보냈다.",
       "오류를 하나씩 원인까지 읽고, 고쳐야 하는 파일만 전체로 다시 내라.",

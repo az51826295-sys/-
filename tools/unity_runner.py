@@ -546,6 +546,13 @@ def main() -> int:
         "UNITY_PROJECT", str(Path.home() / "My project")))
     parser.add_argument("--unity", default=os.environ.get("UNITY_EXE", ""))
     parser.add_argument("--scope", default="Assets/Rookery/")
+    # 2D 인가 3D 인가. **부르는 쪽이 정한다.**
+    #
+    # 만들려는 것의 문장에서 짐작하게 두면("점프 게임" 이면 2D?) 판마다
+    # 다르게 굴고, 그러면 무엇을 재는지 알 수 없게 된다.
+    parser.add_argument("--dim", choices=["2d", "3d"],
+                        default=os.environ.get("ROOKERY_DIM", "2d"),
+                        help="2d 또는 3d. 3D 는 기본 도형과 재질로 짓는다")
     parser.add_argument("--rounds", type=int, default=6,
                         help="여기까지만 돈다. 서버에도 같은 뚜껑이 있다.")
     parser.add_argument("--unity-timeout", type=int, default=1200)
@@ -604,6 +611,7 @@ def main() -> int:
     say(f"유니티: {unity}")
     say(f"프로젝트: {project}")
     say(f"쓸 폴더: {scope}  (이 밖에는 쓰지 않습니다)")
+    say(f"차원: {args.dim}")
     say("")
 
     # 서버에 닿는지 **먼저** 본다. 안 닿으면 유니티를 켜기 전에 끝난다 —
@@ -672,6 +680,7 @@ def drive(args, project: Path, unity: Path, scope: str, log: Path,
             # 어느 입력 방식이 켜져 있는지. 이걸 안 보내면 컴파일은 통과하고
             # 키를 눌러도 아무 일이 없는 게임이 나온다.
             "inputHandler": read_input_handler(project),
+            "dimension": args.dim,
             # 이번 요청에 실린 오류가 **실제로 재 본 결과**인가.
             #
             # 빈 목록은 "오류가 없다" 와 "아직 안 봤다" 둘 다로 읽힐 수 있고,

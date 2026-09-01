@@ -86,7 +86,57 @@ const planSchema = z.object({
   note: z.string(),
 });
 
-export const UNITY_RULES = [
+/**
+ * 2D 인가 3D 인가.
+ *
+ * 이 고리는 지금까지 2D 만 만들었고, 규칙에도 그게 박혀 있었다 — 스프라이트,
+ * `Sprite.Create`, 직교 카메라. 09-01 에 사장님이 3D 로 정하셔서 자리를 연다.
+ *
+ * **부르는 쪽이 정한다.** 만들려는 것의 문장에서 짐작하면("점프 게임" 이면 2D?)
+ * 판마다 다르게 굴고, 그러면 무엇을 재는지 알 수 없게 된다.
+ */
+export type Dimension = "2d" | "3d";
+
+/**
+ * 3D 에서 무엇으로 그리는가.
+ *
+ * **메시를 만들 수 없다.** 유니티 AI 생성기가 그 일을 하는데 지금 이 기계에서
+ * 컴파일되지 않고(6.5 와 패키지 버전이 어긋난다), GPT 는 3D 모델을 못 만든다.
+ * 그래서 3D 는 **기본 도형과 재질**로 짓는다. 그건 유니티에 원래 들어 있다.
+ *
+ * 이걸 안 적어 두면 없는 모델 파일을 참조하는 코드가 나오고, 컴파일은 통과하고
+ * 화면만 빈다 — 2D 에서 그림 목록 없이 경로를 쓰던 것과 같은 자리다.
+ */
+const RULES_3D = [
+  "",
+  "**이 프로젝트는 3D 다.**",
+  "- 카메라는 원근(perspective)으로 두고, **조명을 반드시 만든다.** 3D 빈 씬은",
+  "  조명이 없으면 전부 검게 나온다. 이건 컴파일로 안 잡힌다,",
+  "- 물체는 `GameObject.CreatePrimitive`(Cube·Sphere·Capsule·Plane·Cylinder)로",
+  "  만든다. **모델 파일을 만들 수 없으니 없는 `.fbx`·`.obj` 를 참조하지 마라.**",
+  "  없는 파일을 참조하면 씬은 만들어져도 화면이 비고, 그건 컴파일로 안 잡힌다,",
+  "- 색과 질감은 코드로 만든 `Material` 로 준다(URP 면 `Universal Render",
+  "  Pipeline/Lit`, 아니면 `Standard`). 셰이더를 못 찾으면 분홍으로 나온다,",
+  "- 물리는 3D 것을 쓴다 — `Rigidbody`, `BoxCollider`, `SphereCollider`.",
+  "  `Rigidbody2D`·`BoxCollider2D` 는 3D 물체에 안 붙는다,",
+  "- 바닥을 만든다. 바닥이 없으면 물체가 계속 떨어진다.",
+];
+
+/** 2D 일 때만 하는 말. 그림 단계가 여기 걸려 있다. */
+const RULES_2D = [
+  "- **그림은 `sprites` 에 적어라.** 아티스트가 그려서 `<울타리>Sprites/<이름>.png`",
+  "  에 놓는다. 씬 빌더는 그 경로를 `AssetDatabase.LoadAssetAtPath<Sprite>` 로",
+  "  불러 쓴다. 사람·적·아이템처럼 **보이는 것**은 여기에 적는다,",
+  "- 그림 목록에 없는 것을 참조하지 마라. 없는 파일을 참조하면 씬은 만들어져도",
+  "  화면이 비어 있고, 그건 컴파일로는 안 잡힌다. 목록에 없으면 코드로 만든",
+  "  `Texture2D` 로 때운다 — 그건 그림이 실패했을 때의 최후수단이지 기본이 아니다,",
+];
+
+/** 차원에 맞는 규칙. 잘라내는 것이 아니라 **조립한다** —
+ *  잘라내기는 한 글자만 어긋나도 조용히 아무것도 안 지우고,
+ *  그러면 3D 프롬프트에 2D 규칙이 그대로 남는다. */
+export function rulesFor(dimension: Dimension = "2d"): string {
+  return [
   "너는 유니티 C# 스크립트를 쓴다. 유니티가 네 코드를 몇 초 뒤에 컴파일하고,",
   "오류는 그대로 너에게 돌아온다.",
   "",
@@ -112,17 +162,13 @@ export const UNITY_RULES = [
   "(에디터 전용이라 Editor/ 폴더 아래에 둔다) 그 온전한 이름을 sceneMethod 에",
   "적어라. 그 메서드는:",
   "- 씬을 새로 만들고 필요한 GameObject 와 컴포넌트를 코드로 붙인다,",
-  "- **그림은 `sprites` 에 적어라.** 아티스트가 그려서 `<울타리>Sprites/<이름>.png`",
-  "  에 놓는다. 씬 빌더는 그 경로를 `AssetDatabase.LoadAssetAtPath<Sprite>` 로",
-  "  불러 쓴다. 사람·적·아이템처럼 **보이는 것**은 여기에 적는다,",
-  "- 그림 목록에 없는 것을 참조하지 마라. 없는 파일을 참조하면 씬은 만들어져도",
-  "  화면이 비어 있고, 그건 컴파일로는 안 잡힌다. 목록에 없으면 코드로 만든",
-  "  `Texture2D` 로 때운다 — 그건 그림이 실패했을 때의 최후수단이지 기본이 아니다,",
+  ...(dimension === "2d" ? RULES_2D : RULES_3D),
   "- 카메라와 조명도 직접 만든다. 빈 씬에는 아무것도 없다,",
   "- 씬을 저장하고 EditorBuildSettings.scenes 에 넣는다,",
   "- **두 번 불려도 같은 결과**여야 한다. 부를 때마다 물체가 쌓이면, 두 번째",
-  "  판부터 씬이 조용히 망가진다.",
-].join("\n");
+    "  판부터 씬이 조용히 망가진다.",
+  ].join("\n");
+}
 
 /**
  * 설계가 가리킨 씬 빌더가 **이미 울타리 안에 있는가.**
@@ -158,7 +204,10 @@ export async function planUnitySession(args: {
   unityVersion?: string;
   /** 프로젝트에 이미 있는 관련 파일. 없으면 생략된다. */
   project?: { path: string; contents: string }[];
+  /** 2D 인가 3D 인가. 없으면 지금까지 하던 2D. */
+  dimension?: Dimension;
 }): Promise<UnityPlan | { error: string }> {
+  const dimension: Dimension = args.dimension === "3d" ? "3d" : "2d";
   const scope =
     args.scope && args.scope.startsWith("Assets/")
       ? args.scope.endsWith("/")
@@ -172,7 +221,7 @@ export async function planUnitySession(args: {
 
   const { output } = await args.providers.ai.generateStructuredOutput({
     systemInstructions: [
-      UNITY_RULES,
+      rulesFor(dimension),
       "",
       "지금은 **설계하는 판**이다. 코드는 아직 쓰지 마라 — 어떤 파일을 만들",
       "것인지 경로와 한 줄 설명만 낸다. 내용은 다음 판에 나눠 받는다.",
@@ -218,7 +267,9 @@ export async function planUnitySession(args: {
 
   // 그림도 울타리 안에만 쓴다. 이름은 모델이 아니라 우리가 짓는다 —
   // 파일 이름을 모델이 정하게 두면 경로가 되는 이름이 나온다.
-  const sprites: PlannedSprite[] = (output.sprites ?? [])
+  // 3D 에서는 그림을 안 만든다. 메시를 만들 수 없어서 스프라이트가 쓰일 데가
+  // 없고, 계획에만 넣으면 못 그리고 넘어가는 판만 늘어난다.
+  const sprites: PlannedSprite[] = (dimension === "3d" ? [] : output.sprites ?? [])
     .slice(0, MAX_PLANNED_SPRITES)
     .map((sp) => ({
       name: spriteFileName(sp.name),
