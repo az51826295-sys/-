@@ -62,14 +62,14 @@ def fetch_assets(url: str, key: str) -> dict:
         return json.loads(response.read().decode("utf-8"))
 
 
-def open_slots(project: Path, scope: str) -> list[str]:
+def open_slots(project: Path, scope: str, sub: str = "Sprites") -> list[str]:
     """프로토타입이 기다리고 있는 자리.
 
     설계가 낸 그림 목록이 발주서인데, 그것은 서버에 있다. 여기서는 **이미 놓인
     파일**을 보고 무엇이 차 있는지만 말한다 — 자리 목록 자체를 짐작해서 만들지
     않는다. 짐작한 목록은 틀려도 그럴듯해 보인다.
     """
-    folder = project / scope.replace("/", "\\") / "Sprites"
+    folder = project / scope.replace("/", chr(92)) / sub
     if not folder.exists():
         return []
     return sorted(f.stem for f in folder.glob("*.png"))
@@ -85,6 +85,10 @@ def main() -> int:
     ap.add_argument("--put", action="append", default=[], metavar="자리=자산이름",
                     help="승인된 그림을 그 자리에 놓는다. 여러 번 쓸 수 있다")
     ap.add_argument("--session", default="art", help="되돌리기 기록에 남길 이름")
+    # 2D 는 스프라이트로, 3D 는 재질 텍스처로 들어간다. 폴더가 다르고,
+    # 3D 쪽은 씬의 **물체 이름**이 곧 자리 이름이다(Ground, Player, Trunk...).
+    ap.add_argument("--as", dest="kind", choices=["sprite", "texture"],
+                    default="sprite", help="어디에 놓을지")
     args = ap.parse_args()
 
     import os
@@ -124,9 +128,12 @@ def main() -> int:
             say("  아직 승인된 것이 없습니다. 승인해야 여기로 나옵니다.")
         for a in assets:
             say(f"  {a['name']}  ({a['title']})")
-        placed = open_slots(project, scope)
+        placed = open_slots(project, scope, "Textures" if args.kind == "texture" else "Sprites")
         say(f"\n이미 놓인 자리 {len(placed)}개: " + (", ".join(placed) or "없음"))
-        say(f"\n놓는 법: --put <자리>=<자산이름>  (자리는 {scope}Sprites/<자리>.png 가 됩니다)")
+        sub = "Textures" if args.kind == "texture" else "Sprites"
+        say(f"\n놓는 법: --put <자리>=<자산이름>  (자리는 {scope}{sub}/<자리>.png 가 됩니다)")
+        if args.kind == "texture":
+            say("자리 이름은 씬의 물체 이름입니다: Ground · Player · NPC · Trunk · Crown · Rock · Box")
         return 0
 
     wrote = 0
@@ -143,7 +150,8 @@ def main() -> int:
             say(f"'{name}' 은 승인된 그림 목록에 없습니다. 승인된 것만 넣습니다.")
             return 3
 
-        path = f"{scope}Sprites/{slot}.png"
+        folder = "Textures" if args.kind == "texture" else "Sprites"
+        path = f"{scope}{folder}/{slot}.png"
         if not inside_scope(path, scope):
             say(f"울타리 밖입니다: {path}")
             return 2
