@@ -4,6 +4,17 @@
 # 적혀 있는 것**이다. 0회라고 말해 놓고 중간에 로그인 창이 뜨면, 무인으로 두고
 # 나간 사람은 아침에 아무것도 안 된 것을 본다.
 #
+# **-Install 은 관리자 권한이 필요하다**(에디터 설치가 UAC 승격을 요구한다).
+# 그리고 그 창은 로키가 대신 못 띄운다 — 백그라운드 세션에서 띄운 승격 요청은
+# 사람 화면까지 안 가고 취소로 돌아온다. 09-01 에 두 번 해 보고 두 번 다 같았다.
+#
+# 시작 메뉴 > PowerShell 우클릭 > 관리자 권한으로 실행, 그 다음:
+#
+#   Set-ExecutionPolicy Bypass -Scope Process -Force; .\tools\bootstrap.ps1 -Install
+#
+# 관리자 창에서도 실행 정책에 한 번 더 막힌다. `-Scope Process` 는 그 창에서만
+# 풀고 시스템 설정은 안 건드린다.
+#
 #   powershell -ExecutionPolicy Bypass -File tools\bootstrap.ps1            # 세기만 한다
 #   powershell -ExecutionPolicy Bypass -File tools\bootstrap.ps1 -Install   # 할 수 있는 것을 한다
 #
