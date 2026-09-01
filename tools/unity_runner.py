@@ -35,10 +35,13 @@ import json
 import os
 import re
 import shutil
+import socket
+import ssl
 import subprocess
 import sys
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 from pathlib import Path
 
@@ -134,6 +137,67 @@ def say(text: str) -> None:
         print(text, flush=True)
     except UnicodeEncodeError:
         print(text.encode("ascii", "replace").decode("ascii"), flush=True)
+
+
+def diagnose_reach(url: str) -> str | None:
+    """서버에 닿는가. 안 닿으면 **왜 안 닿는지까지** 말한다.
+
+    2026-09-01 에 이 심부름꾼이 `[SSL: WRONG_VERSION_NUMBER]` 세 줄만 남기고
+    죽었다. 그 문장으로는 서버가 죽은 것인지, 이 기계가 이상한 것인지, 우리가
+    주소를 틀린 것인지 알 수 없다. 알아보는 데 반나절이 갔다.
+
+    그날 밝혀진 것: 같은 IP·같은 포트인데 **ClientHello 의 SNI 에 우리 호스트
+    이름이 들어 있을 때만** 악수가 깨졌다(SNI 를 빼거나 다른 이름을 넣으면
+    성공). 이 기계와 서버 사이 어딘가가 호스트 이름을 보고 끊는다는 뜻이다.
+    브라우저는 되는데, 그건 크로미움이 ECH·HTTP/3 를 쓰기 때문이고 파이썬
+    `ssl` 은 둘 다 못 쓴다.
+
+    고칠 수 있는 것이 아니라서 **이름을 붙여 준다.** 이름이 붙은 벽은 사장님이
+    도메인을 바꾸든 길을 바꾸든 정할 수 있지만, 이름이 없으면 매번 반나절이 간다.
+    """
+    parsed = urllib.parse.urlparse(url)
+    host = parsed.hostname or ""
+    port = parsed.port or (443 if parsed.scheme == "https" else 80)
+
+    try:
+        with socket.create_connection((host, port), timeout=10):
+            pass
+    except OSError as e:
+        return (f"{url} 에 연결하지 못했습니다: {e}\n"
+                f"  주소가 맞는지, 서버가 살아 있는지 보십시오.")
+
+    if parsed.scheme != "https":
+        return None
+
+    def handshake(sni: str | None) -> str | None:
+        ctx = ssl.create_default_context()
+        ctx.check_hostname = False
+        ctx.verify_mode = ssl.CERT_NONE
+        try:
+            with socket.create_connection((host, port), timeout=10) as raw:
+                with ctx.wrap_socket(raw, server_hostname=sni):
+                    return None
+        except Exception as e:  # noqa: BLE001 - 무엇이 나오든 이름을 붙여 돌려준다
+            return f"{type(e).__name__}: {e}"
+
+    ours = handshake(host)
+    if ours is None:
+        return None
+
+    # 우리 이름으로는 깨지는데 다른 이름으로는 되는가. 그러면 서버 문제가 아니다.
+    neutral = handshake("example.com")
+    if neutral is None:
+        return (
+            f"{host} 로는 TLS 악수가 깨지는데, **같은 IP 에 다른 이름으로는 됩니다.**\n"
+            f"  깨진 이유: {ours}\n"
+            "  이 기계와 서버 사이 어딘가가 호스트 이름(SNI)을 보고 끊고 있습니다.\n"
+            "  서버는 살아 있고 브라우저로는 열립니다 — 스크립트만 못 붙습니다.\n"
+            "  지금 할 수 있는 것: 로컬 서버로 우회 (npm run dev 뒤 --url http://localhost:3000)\n"
+            "  오래 갈 답: 이 주소가 아닌 우리 도메인을 붙이는 것."
+        )
+
+    return (f"{host} 에 TLS 악수가 안 됩니다: {ours}\n"
+            f"  다른 이름으로도 안 되니 서버나 네트워크 쪽입니다.")
 
 
 def post(url: str, key: str, payload: dict, timeout: int) -> dict:
@@ -515,6 +579,13 @@ def main() -> int:
     say(f"프로젝트: {project}")
     say(f"쓸 폴더: {scope}  (이 밖에는 쓰지 않습니다)")
     say("")
+
+    # 서버에 닿는지 **먼저** 본다. 안 닿으면 유니티를 켜기 전에 끝난다 —
+    # 켜고 나서 알면 되돌릴 것이 생기고, 사람은 십 분을 기다린 뒤에 안다.
+    trouble = diagnose_reach(args.url)
+    if trouble:
+        say(trouble)
+        return 2
 
     lock = Lock(project)
     try:
