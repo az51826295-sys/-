@@ -65,6 +65,43 @@ namespace Rookery.AI
         public int timeoutSeconds = 300;
     }
 
+    /// <summary>
+    /// 발주서. 여러 장을 한 번에 시킨다.
+    ///
+    /// 한 장씩 부르면 유니티를 그때마다 켜야 하고, 배치모드 콜드 스타트가 판마다
+    /// 몇 분씩 붙는다 — 일곱 장이면 그것만으로 반 시간이다. 한 번 켜서 다 만든다.
+    ///
+    /// **총 예산은 발주서에 붙는다.** 한 장씩 상한을 걸면 각각은 통과하는데
+    /// 합계가 넘을 수 있다. 우리 지출 한도와 같은 규율이다.
+    /// </summary>
+    [Serializable]
+    public class RookeryAiOrder
+    {
+        public RookeryAiJob[] jobs = Array.Empty<RookeryAiJob>();
+        /// <summary>이 발주서 전체에 쓸 수 있는 AI Points. 0 이면 상한 없음.</summary>
+        public long maxPoints;
+        /// <summary>
+        /// 한 장이 실패하면 멈출 것인가.
+        ///
+        /// 기본은 계속 간다. 일곱 장 중 하나가 안 됐다고 여섯 장을 버리면, 다시
+        /// 시킬 때 여섯 장 값을 또 낸다.
+        /// </summary>
+        public bool stopOnError;
+    }
+
+    /// <summary>발주서 하나의 결과. **몇 장을 못 만들었는지가 첫 줄에 온다.**</summary>
+    [Serializable]
+    public class RookeryAiOrderResult
+    {
+        public bool ok;
+        public int made;
+        public int failed;
+        public long pointCost;
+        public double seconds;
+        public string error = "";
+        public RookeryAiResult[] results = Array.Empty<RookeryAiResult>();
+    }
+
     /// <summary>돌려주는 것. 성공만이 아니라 **왜 안 됐는지**도 여기 적힌다.</summary>
     [Serializable]
     public class RookeryAiResult
@@ -150,6 +187,64 @@ namespace Rookery.AI
                 result.seconds = (DateTime.UtcNow - startedAt).TotalSeconds;
             }
 
+            return result;
+        }
+
+        /// <summary>
+        /// 발주서 하나를 다 만든다.
+        ///
+        /// 남은 예산을 장마다 다시 계산해서 넘겨준다. 그래야 앞의 것이 비싸게
+        /// 나왔을 때 뒤가 자동으로 막힌다 — 합계를 나중에 세면 이미 다 쓴 뒤다.
+        /// </summary>
+        public static async Task<RookeryAiOrderResult> GenerateOrderAsync(
+            RookeryAiOrder order,
+            CancellationToken token = default)
+        {
+            var startedAt = DateTime.UtcNow;
+            var result = new RookeryAiOrderResult();
+            var made = new List<RookeryAiResult>();
+
+            foreach (var job in order.jobs ?? Array.Empty<RookeryAiJob>())
+            {
+                if (order.maxPoints > 0)
+                {
+                    var left = order.maxPoints - result.pointCost;
+                    if (left <= 0)
+                    {
+                        // 예산이 다 됐다고 조용히 멈추지 않는다. 못 만든 것을
+                        // 결과에 남겨야 "일곱 장 시켰는데 넷만 왔다" 를 알 수 있다.
+                        made.Add(new RookeryAiResult
+                        {
+                            kind = job.kind,
+                            error = "발주서 예산을 다 썼습니다 — 만들지 않았습니다.",
+                            batchmode = Application.isBatchMode,
+                        });
+                        result.failed++;
+                        continue;
+                    }
+                    job.maxPoints = job.maxPoints > 0 ? Math.Min(job.maxPoints, left) : left;
+                }
+
+                var one = await GenerateAsync(job, token);
+                made.Add(one);
+                result.pointCost += one.pointCost;
+                if (one.ok) result.made++;
+                else
+                {
+                    result.failed++;
+                    if (order.stopOnError)
+                    {
+                        result.error = "한 장이 안 돼서 멈췄습니다: " + one.error;
+                        break;
+                    }
+                }
+            }
+
+            result.results = made.ToArray();
+            result.seconds = (DateTime.UtcNow - startedAt).TotalSeconds;
+            // 하나라도 못 만들었으면 통과가 아니다. 부른 쪽이 `made` 만 보고
+            // 넘어가지 않게 여기서 갈라 둔다.
+            result.ok = result.failed == 0 && result.made > 0;
             return result;
         }
 
@@ -279,6 +374,89 @@ namespace Rookery.AI
     /// </summary>
     public static class RookeryUnityAICli
     {
+        /// <summary>
+        /// 발주서 하나를 통째로 만든다. 유니티를 한 번만 켠다.
+        ///
+        ///     -executeMethod Rookery.AI.RookeryUnityAICli.RunOrder
+        ///     -rookeryAiOrder &lt;발주서.json&gt; -rookeryAiOut &lt;결과.json&gt;
+        /// </summary>
+        public static void RunOrder()
+        {
+            var orderPath = Arg("-rookeryAiOrder");
+            var outPath = Arg("-rookeryAiOut");
+
+            RookeryAiOrder order = null;
+            var parseError = "";
+            try
+            {
+                if (string.IsNullOrEmpty(orderPath))
+                    parseError = "-rookeryAiOrder <경로> 가 없습니다.";
+                else if (!File.Exists(orderPath))
+                    parseError = $"발주서 파일이 없습니다: {orderPath}";
+                else
+                    order = JsonUtility.FromJson<RookeryAiOrder>(File.ReadAllText(orderPath));
+            }
+            catch (Exception e)
+            {
+                parseError = e.GetType().Name + ": " + e.Message;
+            }
+
+            if (order == null || order.jobs == null || order.jobs.Length == 0)
+            {
+                WriteOrder(outPath, new RookeryAiOrderResult
+                {
+                    error = string.IsNullOrEmpty(parseError)
+                        ? "발주서에 만들 것이 하나도 없습니다."
+                        : parseError,
+                });
+                Quit(1);
+                return;
+            }
+
+            var seconds = Math.Max(60, order.jobs.Sum(j => Math.Max(10, j.timeoutSeconds)));
+            var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(seconds));
+            var task = GenerateOrder(order, cancel.Token);
+
+            var deadline = DateTime.UtcNow.AddSeconds(seconds + 60);
+            void Tick()
+            {
+                if (!task.IsCompleted && DateTime.UtcNow < deadline) return;
+                EditorApplication.update -= Tick;
+
+                var done = task.IsCompleted && task.Exception == null
+                    ? task.Result
+                    : new RookeryAiOrderResult
+                    {
+                        error = task.Exception != null
+                            ? task.Exception.GetBaseException().Message
+                            : $"{seconds}초 안에 안 끝났습니다.",
+                    };
+                WriteOrder(outPath, done);
+                Quit(done.ok ? 0 : 1);
+            }
+            EditorApplication.update += Tick;
+        }
+
+        static Task<RookeryAiOrderResult> GenerateOrder(
+            RookeryAiOrder order, CancellationToken token) =>
+            RookeryUnityAI.GenerateOrderAsync(order, token);
+
+        static void WriteOrder(string outPath, RookeryAiOrderResult result)
+        {
+            Debug.Log("ROOKERY_AI_ORDER " + JsonUtility.ToJson(result));
+            if (string.IsNullOrEmpty(outPath)) return;
+            try
+            {
+                var folder = Path.GetDirectoryName(outPath);
+                if (!string.IsNullOrEmpty(folder)) Directory.CreateDirectory(folder);
+                File.WriteAllText(outPath, JsonUtility.ToJson(result, true));
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("결과 파일을 못 썼습니다: " + e.Message);
+            }
+        }
+
         public static void Run()
         {
             var jobPath = Arg("-rookeryAiJob");
