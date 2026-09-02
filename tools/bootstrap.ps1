@@ -4,16 +4,16 @@
 # 적혀 있는 것**이다. 0회라고 말해 놓고 중간에 로그인 창이 뜨면, 무인으로 두고
 # 나간 사람은 아침에 아무것도 안 된 것을 본다.
 #
-# **-Install 은 관리자 권한이 필요하다**(에디터 설치가 UAC 승격을 요구한다).
-# 그리고 그 창은 로키가 대신 못 띄운다 — 백그라운드 세션에서 띄운 승격 요청은
-# 사람 화면까지 안 가고 취소로 돌아온다. 09-01 에 두 번 해 보고 두 번 다 같았다.
+# **관리자 권한은 이제 필요 없다.** (09-02)
 #
-# 시작 메뉴 > PowerShell 우클릭 > 관리자 권한으로 실행, 그 다음:
+# 에디터를 `Program Files` 가 아니라 사용자 폴더(`~\UnityEditors`)에 깐다.
+# 거기는 사용자 것이라 승격을 물을 이유가 없고, 그래서 UAC 창이 아예 안 뜬다.
+# 권한을 **더** 받는 것이 아니라 **덜** 받는 쪽이라 뚫는 것도 아니다.
 #
-#   Set-ExecutionPolicy Bypass -Scope Process -Force; .\tools\bootstrap.ps1 -Install
-#
-# 관리자 창에서도 실행 정책에 한 번 더 막힌다. `-Scope Process` 는 그 창에서만
-# 풀고 시스템 설정은 안 건드린다.
+# 이게 왜 중요한가: 승격 창은 로키가 대신 못 띄운다. 백그라운드 세션에서 띄운
+# 요청은 사람 화면까지 안 가고 취소로 돌아온다 — 09-01~02 에 네 번 해서 네 번
+# 다 그랬다. 사람이 화면 앞에 없으면 거기서 밤새 선다. 무인 운영이 목표인 이상
+# **승격이 필요한 설계 자체가 결함**이었다.
 #
 #   powershell -ExecutionPolicy Bypass -File tools\bootstrap.ps1            # 세기만 한다
 #   powershell -ExecutionPolicy Bypass -File tools\bootstrap.ps1 -Install   # 할 수 있는 것을 한다
@@ -96,46 +96,120 @@ if (-not $hasHub -and $hasWinget) {
 }
 if (-not $hasHub) { Mine "Unity Hub 설치" "winget 으로 깝니다" }
 
-$editorRoot = "C:\Program Files\Unity\Hub\Editor"
-$hasEditor = $false
-if (Test-Path $editorRoot) {
-    $hasEditor = [bool](Get-ChildItem $editorRoot -Directory -EA SilentlyContinue |
-        Where-Object { $_.Name -like "6000.0.*" })
-}
-Step "Unity $UnityVersion" $hasEditor $(if ($hasEditor) { "" } else { "유니티 AI 는 6000.0 을 겨냥합니다" })
-# **Hub 가 이미 떠 있으면 관리자로 돌려도 소용없다.**
+# ── 유니티 에디터 ─────────────────────────────────────────
 #
-# `Unity Hub.exe --headless install` 은 새 Hub 를 띄우는 것이 아니라 **이미 떠 있는
-# Hub 에게 말을 건다.** 그 Hub 가 일반 권한이면 자기가 승격을 요청하고, 우리
-# 관리자 권한은 거기까지 안 간다. 09-01 에 관리자로 돌리고도 같은 오류가 났다:
-# "The Windows elevation prompt was cancelled or timed out."
-if (-not $hasEditor -and $Install -and (Get-Process "Unity Hub" -EA SilentlyContinue)) {
-    Write-Host "  [멈춤] Unity Hub 가 이미 떠 있습니다."
-    Write-Host "         떠 있는 Hub 는 일반 권한이라, 관리자로 돌려도 승격을 다시 묻습니다."
-    Write-Host "         Hub 를 완전히 끄고(트레이 아이콘 포함) 다시 돌려 주십시오."
-    Need "Unity Hub 를 완전히 끄고 다시 실행" "떠 있는 Hub 에 관리자 권한이 안 전달됩니다"
-    $hasHub = $false   # 아래 설치를 건너뛴다. 될 리 없는 것을 시도하지 않는다.
+# **Program Files 에 안 깐다.**
+#
+# 거기에 깔려면 관리자 권한이 필요하고, 그 창은 사람이 눌러야 하고, 사람이
+# 화면 앞에 없으면 거기서 멈춘다 — 09-02 에 네 번 해서 네 번 다 그랬다.
+# 사용자 폴더는 사장님 것이라 그 창이 아예 안 뜬다. 권한을 **더** 받는 것이
+# 아니라 **덜** 받는 쪽이라, 뚫는 것도 아니다.
+#
+# Hub 도 안 쓴다. Hub 의 설치 도우미는 이 기계에서 세 시간 동안 파이프를 못
+# 열고 1.5초마다 같은 오류만 냈다. 설치본은 Unity 가 공개 API 로 알려 주는
+# 바로 그 파일이고, Hub 가 하려던 일도 결국 그 파일을 실행하는 것이다.
+$EditorHome  = "$env:USERPROFILE\UnityEditors"
+$editorRoots = @($EditorHome, "C:\Program Files\Unity\Hub\Editor")
+
+function FindEditor($ver) {
+    foreach ($root in $editorRoots) {
+        $exe = Join-Path $root "$ver\Editor\Unity.exe"
+        if (Test-Path $exe) { return $exe }
+    }
+    return $null
 }
 
-if (-not $hasEditor -and $hasHub -and $Install) {
-    # 에디터 설치는 자동으로 된다. Hub 에 headless CLI 가 있다.
-    Write-Host "  ... Unity $UnityVersion 설치 중 (몇 GB 입니다. 오래 걸립니다)"
-    # 출력을 버리지 않는다. 버렸다가 "왜 안 됐는지" 를 통째로 잃었다.
-    $log = & $Hub -- --headless install --version $UnityVersion 2>&1 | Out-String
-    $why = ($log -split "`n") | Where-Object { $_ -match "failed|Error given|Failed" }
-    if ($why) { $why | Select-Object -Last 3 | ForEach-Object { Write-Host "      $_" } }
-    if (Test-Path $editorRoot) {
-        $hasEditor = [bool](Get-ChildItem $editorRoot -Directory -EA SilentlyContinue |
-            Where-Object { $_.Name -like "6000.0.*" })
-    }
+# 설치본은 `/S`(조용히) 를 줘도 창을 **하나** 띄운다: "의존성 목록을 볼까요?"
+# 아무도 안 누르면 거기서 선 채로 안 끝난다 — 실제로 54분을 그렇게 섰다.
+# 그래서 **그 창만** 골라서 답한다. 읽어 보지 않은 창은 누르지 않는다.
+$ClickerSrc = @"
+using System;
+using System.Text;
+using System.Runtime.InteropServices;
+using System.Collections.Generic;
+public class SetupUI {
+  [DllImport("user32.dll")] public static extern bool EnumChildWindows(IntPtr h, EnumProc cb, IntPtr p);
+  [DllImport("user32.dll", CharSet=CharSet.Unicode)] public static extern int GetWindowTextW(IntPtr h, StringBuilder s, int n);
+  [DllImport("user32.dll", CharSet=CharSet.Unicode)] public static extern IntPtr SendMessageW(IntPtr h, uint m, IntPtr w, IntPtr l);
+  public delegate bool EnumProc(IntPtr h, IntPtr p);
+  public static List<string> Texts = new List<string>();
+  public static IntPtr NoButton = IntPtr.Zero;
+  public static void Scan(IntPtr root) {
+    Texts.Clear(); NoButton = IntPtr.Zero;
+    EnumChildWindows(root, delegate(IntPtr h, IntPtr p) {
+      var t = new StringBuilder(2048); GetWindowTextW(h, t, 2048);
+      string s = t.ToString().Trim();
+      if (s.Length > 0) { Texts.Add(s); if (s.Contains("(&N)")) NoButton = h; }
+      return true;
+    }, IntPtr.Zero);
+  }
+  public static void Click(IntPtr h) { SendMessageW(h, 0x00F5, IntPtr.Zero, IntPtr.Zero); }
 }
-if (-not $hasEditor) {
-    if ($IsAdmin) {
-        Mine "Unity $UnityVersion 설치" "Hub 의 headless CLI 로 깝니다. 몇 GB 라 오래 걸립니다"
-    } else {
-        # 관리자가 아니면 이건 로키가 못 한다. 자동으로 되는 척하면 숫자가 거짓말이 된다.
-        Need "관리자 권한으로 이 스크립트를 다시 실행" "에디터 설치가 UAC 승격을 요구합니다. 관리자로 돌리면 로키가 깝니다"
+"@
+
+function InstallEditor($ver, $dest) {
+    # 설치본 자리를 Unity 에게 물어본다. 링크를 코드에 박아 두면 판올림 때
+    # 조용히 404 가 되고, 그때는 "설치 실패" 로만 보인다.
+    $api = "https://services.api.unity.com/unity/editor/release/v1/releases?limit=1&version=$ver"
+    try { $rel = Invoke-RestMethod -Uri $api -TimeoutSec 60 }
+    catch { Write-Host "      릴리스 정보를 못 받았습니다: $($_.Exception.Message)"; return $null }
+    # 아키텍처는 기계에서 읽는다. 박아 두면 ARM 노트북에서 x86 설치본을 받고,
+    # 그건 깔리기는 해서 **왜 느린지 아무도 모르는 상태**가 된다.
+    $arch = if ($env:PROCESSOR_ARCHITECTURE -eq "ARM64") { "ARM64" } else { "X86_64" }
+    $dl = $rel.results[0].downloads |
+        Where-Object { $_.platform -eq "WINDOWS" -and $_.architecture -eq $arch -and $_.type -eq "EXE" } |
+        Select-Object -First 1
+    if (-not $dl) { Write-Host "      $ver 의 윈도우($arch) 설치본이 목록에 없습니다."; return $null }
+
+    # Hub 가 이미 받아 둔 것이 있으면 그걸 쓴다. 3.7GB 를 두 번 받지 않는다.
+    $setup = Join-Path $env:TEMP "UnitySetup64-$ver.exe"
+    $hubCopy = Join-Path $env:APPDATA "UnityHub\downloads\UnitySetup64-$ver.exe"
+    if (Test-Path $hubCopy) { $setup = $hubCopy }
+    elseif (-not (Test-Path $setup)) {
+        $mb = [math]::Round($dl.downloadSize.value / 1MB)
+        Write-Host "  ... 설치본 내려받는 중 ($mb MB)"
+        $old = $ProgressPreference; $ProgressPreference = "SilentlyContinue"
+        try { Invoke-WebRequest -Uri $dl.url -OutFile $setup -TimeoutSec 3600 -UseBasicParsing }
+        catch { Write-Host "      못 받았습니다: $($_.Exception.Message)"; return $null }
+        finally { $ProgressPreference = $old }
     }
+
+    Add-Type -TypeDefinition $ClickerSrc -Language CSharp -ErrorAction SilentlyContinue
+    Write-Host "  ... Unity $ver 설치 중 → $dest (10~20분)"
+    # 지금 권한 그대로 돌린다. 목적지가 사용자 폴더라 승격이 필요 없다.
+    $env:__COMPAT_LAYER = "RunAsInvoker"
+    $proc = Start-Process -FilePath $setup -ArgumentList "/S /D=$dest" -PassThru
+    $deadline = (Get-Date).AddMinutes(45)
+    while ((Get-Date) -lt $deadline) {
+        Start-Sleep -Seconds 10
+        $p = Get-Process -Id $proc.Id -ErrorAction SilentlyContinue
+        if (-not $p) { break }
+        $p.Refresh()
+        if ($p.MainWindowHandle -ne 0) {
+            [SetupUI]::Scan([IntPtr]$p.MainWindowHandle)
+            $joined = [SetupUI]::Texts -join " | "
+            if ($joined -match "Would you like to view the list now") {
+                if ([SetupUI]::NoButton -ne [IntPtr]::Zero) { [SetupUI]::Click([SetupUI]::NoButton) }
+            } elseif ($joined -and $joined -notmatch "Cancel") {
+                # 모르는 창은 안 누르고 **말한다.** 안 누르면 여기서 서지만,
+                # 읽지도 않고 누르면 아무도 안 본 것에 동의하게 된다.
+                Write-Host "      모르는 창이 떠 있습니다: $joined"
+            }
+        }
+    }
+    return (FindEditor $ver)
+}
+
+$editor = FindEditor $UnityVersion
+Step "Unity $UnityVersion" ([bool]$editor) $(if ($editor) { $editor } else { "유니티 AI 는 6000.0 을 겨냥합니다" })
+if (-not $editor -and $Install) {
+    $editor = InstallEditor $UnityVersion (Join-Path $EditorHome $UnityVersion)
+    if ($editor) { Write-Host "  [됨]   Unity $UnityVersion  $editor" }
+}
+$hasEditor = [bool]$editor
+if (-not $hasEditor) {
+    # 이제 관리자 권한이 필요 없다. 그래서 이건 사람 손이 아니라 로키 손이다.
+    Mine "Unity $UnityVersion 설치" "Unity 가 알려 준 설치본을 받아서 사용자 폴더에 깝니다"
 }
 
 # ── 3. 사람만 할 수 있는 것 ────────────────────────────────

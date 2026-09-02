@@ -1030,15 +1030,36 @@ def find_unity(project: Path) -> Path | None:
     version = read_version(project)
     if not version:
         return None
-    for base in [
-        Path(r"C:\Program Files\Unity\Hub\Editor"),
-        Path(r"C:\Program Files (x86)\Unity\Hub\Editor"),
-        Path.home() / "Unity" / "Hub" / "Editor",
-    ]:
+    for base in unity_bases():
         candidate = base / version / "Editor" / "Unity.exe"
         if candidate.exists():
             return candidate
     return None
+
+
+def unity_bases() -> list[Path]:
+    """에디터가 놓여 있을 수 있는 자리.
+
+    `Program Files` 만 보면 안 된다. 거기에 깔려면 **관리자 권한**이 필요하고,
+    그 창은 사람이 눌러야 하며, 사람이 화면 앞에 없으면 거기서 멈춘다. 그래서
+    권한 없이 깔 수 있는 **사용자 폴더**를 같이 본다 — 북극성이 "깨끗한 기계에
+    로키를 깔아서" 인 이상, 사람 손이 필요한 자리는 그 자체가 고칠 자리다.
+
+    `ROOKERY_UNITY_DIR` 로 자리를 하나 더 붙일 수 있다. 새 기계에서 다른 데
+    깔았을 때 코드를 고치지 않고 알려 주기 위한 것이다.
+    """
+    bases: list[Path] = []
+    extra = os.environ.get("ROOKERY_UNITY_DIR", "").strip()
+    if extra:
+        bases.append(Path(extra))
+    bases += [
+        # 권한 없이 깔리는 자리. 부트스트랩이 여기에 깐다.
+        Path.home() / "UnityEditors",
+        Path(r"C:\Program Files\Unity\Hub\Editor"),
+        Path(r"C:\Program Files (x86)\Unity\Hub\Editor"),
+        Path.home() / "Unity" / "Hub" / "Editor",
+    ]
+    return bases
 
 
 if __name__ == "__main__":

@@ -28,6 +28,11 @@ import sys
 import time
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+# 에디터를 찾는 자리는 한 벌만 둔다. 여기저기 적어 두면 새 자리가 생겼을 때
+# 한 군데를 빼먹고, 그 도구만 조용히 '유니티가 없다'고 말한다.
+from unity_runner import unity_bases  # noqa: E402
+
 for _stream in (sys.stdout, sys.stderr):
     try:
         _stream.reconfigure(encoding="utf-8", errors="replace")
@@ -37,11 +42,7 @@ for _stream in (sys.stdout, sys.stderr):
 # 생성기가 겨냥한 줄기. 여기서 벗어나면 컴파일부터 안 된다.
 WANTED_STREAM = "6000.0"
 
-HUB_DIRS = [
-    Path(r"C:\Program Files\Unity\Hub\Editor"),
-    Path(r"C:\Program Files (x86)\Unity\Hub\Editor"),
-    Path.home() / "Unity" / "Hub" / "Editor",
-]
+HUB_DIRS = unity_bases()
 
 BRIDGE = ["RookeryUnityAI.cs", "Rookery.UnityAI.asmdef"]
 

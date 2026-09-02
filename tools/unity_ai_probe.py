@@ -33,6 +33,11 @@ import sys
 import time
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+# 에디터를 찾는 자리는 한 벌만 둔다. 여기저기 적어 두면 새 자리가 생겼을 때
+# 한 군데를 빼먹고, 그 도구만 조용히 '유니티가 없다'고 말한다.
+from unity_runner import unity_bases  # noqa: E402
+
 # 윈도우 콘솔은 cp949 라서 한국어 설명에 섞인 줄표(—) 하나에 죽는다. 그러면
 # **판정문 대신 파이썬 역추적이 뜨고**, 정작 무엇이 됐는지가 사라진다.
 # genesis 에서 같은 병으로 빨간불 다섯 개가 났었다(FAIL 이 UNDEFINED 로 바뀌었다).
@@ -61,11 +66,7 @@ def find_unity(project: Path) -> Path | None:
     version = read_version(project)
     if not version:
         return None
-    for base in [
-        Path(r"C:\Program Files\Unity\Hub\Editor"),
-        Path(r"C:\Program Files (x86)\Unity\Hub\Editor"),
-        Path.home() / "Unity" / "Hub" / "Editor",
-    ]:
+    for base in unity_bases():
         exe = base / version / "Editor" / "Unity.exe"
         if exe.exists():
             return exe
