@@ -102,6 +102,28 @@ namespace Rookery.AI
         public RookeryAiResult[] results = Array.Empty<RookeryAiResult>();
     }
 
+    /// <summary>쓸 수 있는 모델 하나.</summary>
+    [Serializable]
+    public class RookeryAiModel
+    {
+        public string modelId = "";
+        public string description = "";
+    }
+
+    /// <summary>
+    /// 모델 목록. **빈 목록과 못 받은 것을 구분한다** — `ok` 가 참인데 목록이
+    /// 비었으면 "이 계정에 쓸 수 있는 모델이 없다"이고, `ok` 가 거짓이면
+    /// "못 물어봤다"이다. 둘을 같게 보면 못 물어볼수록 조용해진다.
+    /// </summary>
+    [Serializable]
+    public class RookeryAiModelList
+    {
+        public bool ok;
+        public string error = "";
+        public bool batchmode;
+        public RookeryAiModel[] models = Array.Empty<RookeryAiModel>();
+    }
+
     /// <summary>돌려주는 것. 성공만이 아니라 **왜 안 됐는지**도 여기 적힌다.</summary>
     [Serializable]
     public class RookeryAiResult
@@ -516,6 +538,64 @@ namespace Rookery.AI
                 Quit(result.ok ? 0 : 1);
             }
 
+            EditorApplication.update += Tick;
+        }
+
+        /// <summary>
+        /// 쓸 수 있는 모델 목록. **포인트를 안 쓴다.**
+        ///
+        ///     -executeMethod Rookery.AI.RookeryUnityAICli.Models
+        ///     -rookeryAiOut &lt;결과.json&gt;
+        ///
+        /// 생성기는 `modelId` 없이는 아무것도 안 만든다("A model must be selected
+        /// for this generation type"). 그런데 어떤 모델이 있는지는 계정마다 다르다.
+        /// 목록을 못 보면 이름을 **찍어서** 넣게 되고, 찍은 이름은 틀려도 그럴듯해
+        /// 보인다. 값이 0 이므로 견적 판보다도 먼저 이 판이 온다.
+        /// </summary>
+        public static void Models()
+        {
+            var outPath = Arg("-rookeryAiOut");
+            var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(180));
+            var task = AssetGenerators.GetAvailableModelsAsync(true, cancel.Token);
+
+            var deadline = DateTime.UtcNow.AddSeconds(210);
+            void Tick()
+            {
+                if (!task.IsCompleted && DateTime.UtcNow < deadline) return;
+                EditorApplication.update -= Tick;
+
+                var list = new RookeryAiModelList { batchmode = Application.isBatchMode };
+                if (task.IsCompleted && task.Exception == null && task.Result != null)
+                {
+                    list.ok = true;
+                    list.models = task.Result
+                        .Select(m => new RookeryAiModel { modelId = m.ModelId, description = m.Description })
+                        .ToArray();
+                }
+                else
+                {
+                    list.error = task.Exception != null
+                        ? task.Exception.GetBaseException().Message
+                        : "180초 안에 목록을 못 받았습니다.";
+                }
+
+                var json = JsonUtility.ToJson(list, true);
+                Debug.Log("ROOKERY_AI_MODELS " + JsonUtility.ToJson(list));
+                if (!string.IsNullOrEmpty(outPath))
+                {
+                    try
+                    {
+                        var folder = Path.GetDirectoryName(outPath);
+                        if (!string.IsNullOrEmpty(folder)) Directory.CreateDirectory(folder);
+                        File.WriteAllText(outPath, json);
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogError("결과 파일을 못 썼습니다: " + e.Message);
+                    }
+                }
+                Quit(list.ok ? 0 : 1);
+            }
             EditorApplication.update += Tick;
         }
 

@@ -30,6 +30,7 @@ import json
 import re
 import subprocess
 import sys
+import tempfile
 import time
 from pathlib import Path
 
@@ -85,8 +86,32 @@ def has_generators(project: Path) -> bool:
 
 
 def project_locked(project: Path) -> bool:
-    """유니티가 이미 이 프로젝트를 열고 있으면 두 번 못 연다."""
-    return (project / "Temp" / "UnityLockfile").exists()
+    """유니티가 이미 이 프로젝트를 열고 있는가.
+
+    **파일이 있다고 유니티가 도는 것은 아니다.** 앞선 배치 실행이 끝나거나
+    죽으면 파일만 남고, 그때 "열려 있습니다" 라고 하면 **없는 벽 앞에서 멈춘다.**
+    `unity_playmode.py` 에서 이미 겪고 고친 자리인데 여기까지 안 왔었다.
+
+    못 물어보면 **돈다고 본다** — 잠금을 잘못 치우면 남의 세션을 깨뜨리고,
+    그건 기다리는 것보다 훨씬 비싸다.
+    """
+    if not (project / "Temp" / "UnityLockfile").exists():
+        return False
+    try:
+        out = subprocess.run(
+            ["tasklist", "/FI", "IMAGENAME eq Unity.exe"],
+            capture_output=True, text=True, timeout=20).stdout
+    except (OSError, subprocess.SubprocessError):
+        return True
+    if "Unity.exe" in out:
+        return True
+    print("잠금 파일만 남아 있고 유니티는 없습니다 — 앞선 실행이 남긴 것입니다. 치웁니다.")
+    try:
+        (project / "Temp" / "UnityLockfile").unlink()
+    except OSError as e:
+        print(f"  못 치웠습니다: {e}")
+        return True
+    return False
 
 
 def main() -> int:
@@ -101,6 +126,8 @@ def main() -> int:
     ap.add_argument("--max-points", type=int, default=0,
                     help="견적이 이보다 크면 만들지 않는다. 0 이면 상한 없음")
     ap.add_argument("--timeout", type=int, default=600)
+    ap.add_argument("--list-models", action="store_true",
+                    help="쓸 수 있는 모델 목록만 받는다. 포인트를 안 쓴다")
     args = ap.parse_args()
 
     project = Path(args.project).resolve()
@@ -126,7 +153,13 @@ def main() -> int:
         return 5
 
     stamp = int(time.time())
-    work = project / "Temp"
+    # **주문서를 프로젝트 안에 두지 않는다.**
+    #
+    # `Temp/` 에 뒀더니, 유니티가 프로젝트를 여는 첫 동작으로 그 폴더를 통째로
+    # 지웠다. 그래서 우리 코드는 제대로 불렸는데 읽을 주문이 없었다 — 그러면
+    # "유니티 AI 가 안 된다" 로 보이지만 안 된 것은 우리 심부름 방식이다.
+    # 원인을 엉뚱한 데서 찾게 만드는 종류의 실패다.
+    work = Path(tempfile.gettempdir()) / "rookery-unity"
     work.mkdir(parents=True, exist_ok=True)
     job_path = work / f"rookery_ai_job_{stamp}.json"
     out_path = work / f"rookery_ai_out_{stamp}.json"
@@ -151,6 +184,77 @@ def main() -> int:
         "timeoutSeconds": args.timeout,
     }
     job_path.write_text(json.dumps(job, ensure_ascii=False), encoding="utf-8")
+
+    if args.list_models:
+        # **모델 목록이 견적보다도 먼저다.** 생성기는 `modelId` 없이는 아무것도
+        # 안 만드는데, 어떤 모델이 있는지는 계정마다 다르다. 목록을 못 보면
+        # 이름을 찍어 넣게 되고, 찍은 이름은 틀려도 그럴듯해 보인다.
+        command = [
+            str(unity), "-batchmode", "-nographics",
+            "-projectPath", str(project),
+            "-logFile", str(log_path),
+            "-executeMethod", "Rookery.AI.RookeryUnityAICli.Models",
+            "-rookeryAiOut", str(out_path),
+        ]
+        print(f"유니티 {read_version(project)} · 모델 목록 · 포인트를 안 씁니다")
+        try:
+            code = subprocess.run(command, timeout=420).returncode
+        except subprocess.TimeoutExpired:
+            print(f"420초 안에 안 끝났습니다. 로그: {log_path}")
+            return 6
+        data = None
+        if out_path.exists():
+            try:
+                data = json.loads(out_path.read_text(encoding="utf-8"))
+            except json.JSONDecodeError:
+                pass
+        if data is None:
+            log_text = log_path.read_text(encoding="utf-8", errors="replace") if log_path.exists() else ""
+            found = re.search(r"ROOKERY_AI_MODELS (\{.*?\})", log_text)
+            if found:
+                try:
+                    data = json.loads(found.group(1))
+                except json.JSONDecodeError:
+                    pass
+        if data is None:
+            print(f"목록을 못 읽었습니다(종료코드 {code}). 로그: {log_path}")
+            return 7
+        if not data.get("ok"):
+            print("목록을 못 받았습니다: " + (data.get("error") or "(이유 없음)"))
+            return 8
+        models = data.get("models") or []
+        print(f"\n쓸 수 있는 모델 {len(models)}개")
+        if not models:
+            # **빈 목록을 "없다"로 읽지 않는다.**
+            #
+            # 생성기 서비스는 로그인이 안 돼 있어도 오류를 안 내고 **빈 목록**을
+            # 준다. 그걸 "이 계정엔 모델이 없습니다" 로 읽으면, 정작 사실은
+            # "물어보지도 못했다" 다. 그러면 요금제를 결제하러 가게 되는데
+            # 결제는 이 문제를 안 고친다.
+            #
+            # 유니티는 이 사정을 로그에 적어 둔다. 그 줄을 찾아서 두 경우를
+            # 가른다 — 못 본 것과 없는 것을 구분하지 않으면, 못 볼수록 잘
+            # 통과한다.
+            log_text = (log_path.read_text(encoding="utf-8", errors="replace")
+                        if log_path.exists() else "")
+            blocked = [l.strip() for l in log_text.splitlines()
+                       if "Access token is unavailable" in l
+                       or "not signed in" in l.lower()]
+            if blocked:
+                print("  **없는 것이 아니라 못 물어본 것입니다.** 유니티가 클라우드"
+                      " 접속 토큰을 못 얻었습니다:")
+                for line in blocked[:3]:
+                    print("  | " + line)
+                print("  라이선스는 붙어 있습니다. 모자란 것은 로그인 토큰입니다.")
+                print(f"  로그: {log_path}")
+                return 9
+            print("  목록이 비었고, 로그에 막힌 흔적도 없습니다.")
+            print("  이 계정에 쓸 수 있는 생성 모델이 정말로 없을 수 있습니다.")
+            print(f"  로그: {log_path}")
+        for m in models:
+            print(f"  {m.get('modelId')}")
+            print(f"      {m.get('description')}")
+        return 0
 
     command = [
         str(unity), "-batchmode", "-nographics",
