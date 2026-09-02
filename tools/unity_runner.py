@@ -366,23 +366,112 @@ def undo(project: Path, which: str) -> int:
     return 0
 
 
+def pin_paths(errors: list[dict], scene_method: str | None,
+              scope: str) -> set[str]:
+    """내용을 반드시 보여 줘야 하는 파일.
+
+    두 가지다.
+
+    **오류가 난 파일.** 이름만 보내 놓고 고치라고 하면 고칠 것을 안 보여 준
+    것이다. 크기로 고르는 규칙에 이게 걸리면 고리가 조용히 헛돈다.
+
+    **씬을 짓는 파일.** 이어 짓는 판마다 손대는 자리인데, 이 프로젝트에서는
+    그게 제일 큰 파일이라 크기로만 고르면 **늘** 빠진다.
+    """
+    pinned: set[str] = set()
+    for e in errors or []:
+        p = (e.get("path") or "").replace("\\", "/")
+        if p and inside_scope(p, scope):
+            pinned.add(p)
+    if scene_method:
+        parts = [x for x in scene_method.split(".") if x]
+        if len(parts) >= 2:
+            pinned.add("*/" + parts[-2] + ".cs")
+    return pinned
+
+
 def read_scope(project: Path, scope: str, max_files: int = 24,
-               max_chars: int = 120_000) -> list[dict]:
-    """울타리 안의 지금 파일들. 고치려면 지금 뭐가 있는지 봐야 한다."""
+               max_chars: int = 120_000, max_paths: int = 400,
+               pin: set[str] | None = None) -> list[dict]:
+    """울타리 안의 지금 파일들. 고치려면 지금 뭐가 있는지 봐야 한다.
+
+    **이름은 다 보내고, 내용만 자른다.**
+
+    전에는 24개/120KB 에서 목록을 통째로 끊었다. 그러면 서버가 그 목록을
+    "지금 프로젝트에 있는 파일" 이라고 모델에게 준다 — 25번째 파일은 모델에게
+    **없는 파일**이 된다. 모델은 이미 있는 클래스를 다시 만들고, 이름이
+    부딪히고, 컴파일이 깨지고, 우리는 그 판을 또 산다. 프로젝트가 클수록
+    더 그런다.
+
+    못 본 것과 없는 것을 구분하지 않으면, **못 볼수록 잘 통과한다** — 이 고리가
+    계속 밟는 자리다. 이름 한 줄은 거의 공짜고 비싼 것은 내용이므로, 자르는
+    것도 내용만 자른다.
+
+    `max_paths` 는 이름까지도 무한정 보내지 않기 위한 것이다. 여기 걸리면
+    프롬프트가 프로젝트 크기를 따라 자라는 문제가 다시 시작되므로 말한다.
+    """
     root = project / scope
     if not root.exists():
         return []
+
+    paths = sorted(root.rglob("*.cs"))
+    dropped = max(0, len(paths) - max_paths)
+    paths = paths[:max_paths]
+
+    # 예산을 **작은 것부터** 채운다.
+    #
+    # 전에는 알파벳 순으로 앞에서부터 채웠다. 이 프로젝트에서는 `Editor/` 의
+    # 씬 빌더들이 제일 크고 제일 앞이라, 그 열한 개가 120KB 를 다 먹고
+    # `Gameplay/` 는 **한 개도 못 갔다.** 39개 중 13개만 나갔고, 나머지는
+    # 모델에게 없는 파일이었다. 자르는 규칙이 "무엇을 보여 줄지"를 정하고
+    # 있었는데, 그 규칙에 뜻이 없었던 것이다.
+    #
+    # 작은 것부터 담으면 같은 예산으로 **가장 많은 파일이 온전히** 들어간다.
+    # 반쪽으로 잘라 넣지 않는 이유는, 잘린 C# 은 모델에게 "여기서 끝나는
+    # 클래스"로 보이기 때문이다 — 그건 못 본 것보다 나쁘다.
+    def rel_of(p: Path) -> str:
+        return str(p.relative_to(project)).replace("\\", "/")
+
+    def is_pinned(p: Path) -> bool:
+        rel = rel_of(p)
+        for want in (pin or ()):
+            if want.startswith("*/"):
+                if rel.endswith(want[1:]):
+                    return True
+            elif rel == want:
+                return True
+        return False
+
+    # 박아 둔 것부터 담는다. 예산에는 같이 세지만 밀려나지는 않는다 —
+    # 밀려나면 그게 이 규칙을 만든 이유가 그대로 다시 생긴다.
+    chosen: set[Path] = set(p for p in paths if is_pinned(p))
+    total = sum(p.stat().st_size for p in chosen)
+
+    sized = sorted(((p.stat().st_size, p) for p in paths if p not in chosen),
+                   key=lambda x: x[0])
+    for size, p in sized:
+        if len(chosen) >= max_files or total + size > max_chars:
+            continue
+        total += size
+        chosen.add(p)
+
     out: list[dict] = []
-    total = 0
-    for p in sorted(root.rglob("*.cs")):
-        text = p.read_text(encoding="utf-8", errors="replace")
-        total += len(text)
-        if len(out) >= max_files or total > max_chars:
-            # 자른 것을 말한다. 조용히 자르면 "다 봤다"로 읽힌다.
-            say(f"  파일이 많아 {len(out)}개만 보냅니다.")
-            break
-        out.append({"path": str(p.relative_to(project)).replace("\\", "/"),
-                    "contents": text})
+    for p in paths:
+        rel = rel_of(p)
+        if p in chosen:
+            out.append({"path": rel,
+                        "contents": p.read_text(encoding="utf-8", errors="replace")})
+        else:
+            out.append({"path": rel, "clipped": True})
+    full = len(chosen)
+    clipped = len(out) - full
+    # 자른 것을 말한다. 조용히 자르면 "다 봤다"로 읽힌다.
+    if clipped:
+        say(f"  파일 {full + clipped}개 중 {full}개만 내용을 보냅니다"
+            f" (나머지 {clipped}개는 이름만).")
+    if dropped:
+        say(f"  파일이 {max_paths}개를 넘어 {dropped}개는 이름도 못 보냅니다."
+            " — 이 울타리는 한 세션에 담기에 너무 큽니다.")
     return out
 
 
@@ -689,7 +778,8 @@ def drive(args, project: Path, unity: Path, scope: str, log: Path,
             "scope": scope,
             "unityVersion": read_version(project),
             "errors": errors,
-            "project": read_scope(project, scope),
+            "project": read_scope(project, scope,
+                                  pin=pin_paths(errors, scene_method, scope)),
             "packages": read_packages(project),
             # 어느 입력 방식이 켜져 있는지. 이걸 안 보내면 컴파일은 통과하고
             # 키를 눌러도 아무 일이 없는 게임이 나온다.

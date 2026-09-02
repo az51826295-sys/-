@@ -5,6 +5,7 @@ import { blockedBySpendLimit } from "@/lib/costs/allowance";
 import { meterProviders } from "@/lib/costs/meter";
 import { defaultProviders } from "@/lib/execution/shared";
 import { retrieveCompanyKnowledge, renderCompanyKnowledge } from "@/lib/knowledge/retrieval";
+import { projectNoteOf, type ProjectFile } from "@/lib/unity/plan";
 
 /**
  * 유니티가 요청한 스크립트를 만들어 돌려준다.
@@ -124,12 +125,7 @@ export async function POST(request: Request) {
     ].join("\n"),
     input: [
       `만들 것: ${want}`,
-      Array.isArray(existing) && existing.length
-        ? "\n프로젝트에 이미 있는 관련 파일:\n" +
-          (existing as { path: string; contents: string }[])
-            .map((f) => `--- ${f.path}\n${f.contents}`)
-            .join("\n\n")
-        : "",
+      projectNoteOf(Array.isArray(existing) ? (existing as ProjectFile[]) : []),
     ].join("\n"),
     schema: buildSchema,
     schemaName: "unity_build",

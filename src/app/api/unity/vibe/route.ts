@@ -11,7 +11,13 @@ import {
   renderUnityLessons,
   retrieveUnityLessons,
 } from "@/lib/unity/lessons";
-import { planUnitySession, rulesFor, type Dimension } from "@/lib/unity/plan";
+import {
+  planUnitySession,
+  projectNoteOf,
+  rulesFor,
+  type Dimension,
+  type ProjectFile,
+} from "@/lib/unity/plan";
 import {
   drawSprite,
   pendingArtNote,
@@ -188,12 +194,12 @@ export async function POST(request: Request) {
           "새 입력 시스템이 꺼져 있다."
         : "";
 
-  const projectNote = Array.isArray(b.project) && b.project.length
-    ? "\n지금 프로젝트에 있는 파일:\n" +
-      (b.project as { path: string; contents: string }[])
-        .map((f) => "--- " + f.path + "\n" + f.contents)
-        .join("\n\n")
-    : "";
+  // 한 벌만 둔다. 여기에 따로 쓰면 자른 파일을 밝히는 문구가 설계 판에만 붙고
+  // 쓰는 판에는 안 붙는다 — 정작 클래스를 만드는 판이 쓰는 판이다.
+  const projectFiles: ProjectFile[] = Array.isArray(b.project)
+    ? (b.project as ProjectFile[])
+    : [];
+  const projectNote = projectNoteOf(projectFiles);
 
   // ── 심부름꾼이 포기했다고 알려 온다 ─────────────────────────
   //
@@ -244,9 +250,7 @@ export async function POST(request: Request) {
       unityVersion:
         typeof b.unityVersion === "string" ? b.unityVersion : undefined,
       dimension,
-      project: Array.isArray(b.project)
-        ? (b.project as { path: string; contents: string }[])
-        : undefined,
+      project: projectFiles.length ? projectFiles : undefined,
     });
     if ("error" in made) {
       return NextResponse.json({ error: made.error }, { status: 422 });

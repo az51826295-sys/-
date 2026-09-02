@@ -195,6 +195,54 @@ export function reusableScene(
   );
 }
 
+/**
+ * 프로젝트에 지금 있는 파일 한 개.
+ *
+ * `contents` 가 없으면 **이름만 온 것**이다 — 없는 파일이 아니라, 심부름꾼이
+ * 프롬프트 크기를 지키려고 내용을 뺀 파일이다. 이 둘을 같은 모양으로 두면
+ * 구분할 수가 없어서 칸을 따로 뒀다.
+ */
+export type ProjectFile = {
+  path: string;
+  contents?: string | null;
+  clipped?: boolean;
+};
+
+/**
+ * 프로젝트에 있는 파일을 모델에게 보여 주는 글.
+ *
+ * **이름만 온 파일을 따로 적는다.** 심부름꾼은 프롬프트가 프로젝트 크기를
+ * 따라 무한정 자라지 않게 내용을 자르는데, 자른 것을 여기서 안 밝히면 그
+ * 파일은 모델에게 **없는 파일**이 된다. 그러면 이미 있는 클래스를 다시 만들고,
+ * 이름이 부딪히고, 컴파일이 깨지고, 우리는 그 판을 다시 산다.
+ *
+ * 이름은 한 줄이라 거의 공짜다. 비싼 것은 내용이고, 자르는 것도 내용이다.
+ */
+export function projectNoteOf(files: ProjectFile[] | undefined): string {
+  if (!files?.length) return "";
+  const shown = files.filter(
+    (f) => typeof f.contents === "string" && f.contents.length > 0 && !f.clipped,
+  );
+  const clipped = files.filter((f) => !shown.includes(f));
+  const parts: string[] = [];
+  if (shown.length) {
+    parts.push(
+      "\n지금 프로젝트에 있는 파일:\n" +
+        shown.map((f) => "--- " + f.path + "\n" + f.contents).join("\n\n"),
+    );
+  }
+  if (clipped.length) {
+    parts.push(
+      "\n**아래 파일도 이미 있다. 내용만 안 보여 준다** — 프롬프트가 커져서 뺐을" +
+        " 뿐이지 없는 파일이 아니다. 여기 있는 이름으로 클래스를 새로 만들지" +
+        " 마라. 이름이 부딪히면 컴파일이 깨진다. 이 파일들이 필요하면 새로 만들지" +
+        " 말고 이미 있는 것을 쓴다고 적어라.\n" +
+        clipped.map((f) => "- " + f.path).join("\n"),
+    );
+  }
+  return parts.join("\n");
+}
+
 export async function planUnitySession(args: {
   db: Supabase;
   providers: Providers;
@@ -203,7 +251,7 @@ export async function planUnitySession(args: {
   scope?: string;
   unityVersion?: string;
   /** 프로젝트에 이미 있는 관련 파일. 없으면 생략된다. */
-  project?: { path: string; contents: string }[];
+  project?: ProjectFile[];
   /** 2D 인가 3D 인가. 없으면 지금까지 하던 2D. */
   dimension?: Dimension;
 }): Promise<UnityPlan | { error: string }> {
@@ -233,15 +281,7 @@ export async function planUnitySession(args: {
       args.unityVersion ? `\n대상 유니티 버전: ${args.unityVersion}` : "",
       knowledge ? "\n이 회사가 아는 것:\n" + knowledge : "",
     ].join("\n"),
-    input:
-      "만들 것: " +
-      args.want +
-      (args.project?.length
-        ? "\n\n프로젝트에 이미 있는 관련 파일:\n" +
-          args.project
-            .map((f) => "--- " + f.path + "\n" + f.contents)
-            .join("\n\n")
-        : ""),
+    input: "만들 것: " + args.want + projectNoteOf(args.project),
     schema: planSchema,
     schemaName: "unity_vibe_plan",
     // 목록만 받으므로 짧다. 여기서 크게 잡으면 끊기는 위험만 늘어난다.
