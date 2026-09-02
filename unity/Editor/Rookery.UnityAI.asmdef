@@ -2,7 +2,7 @@
   "name": "Rookery.UnityAI",
   "rootNamespace": "Rookery.AI",
   "references": [
-    "GUID:e3051e6249837eb4aa4eeeb16fa62de2"
+    "Unity.AI.Generators.Tools"
   ],
   "includePlatforms": [
     "Editor"
@@ -17,7 +17,7 @@
   ],
   "versionDefines": [
     {
-      "name": "com.unity.ai.generators",
+      "name": "com.unity.ai.assistant",
       "expression": "1.0.0",
       "define": "ROOKERY_HAS_UNITY_AI"
     }
