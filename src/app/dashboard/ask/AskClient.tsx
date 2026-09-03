@@ -1,5 +1,7 @@
 "use client";
 
+import { Waiting } from "@/components/Waiting";
+
 import { useRef, useState } from "react";
 import Link from "next/link";
 import Icon from "@/components/Icon";
@@ -352,14 +354,12 @@ export default function AskClient({
           </div>
         ))}
         {busy && (
-          <p className="text-sm text-[var(--rk-400)]">
-            {/*
-              점 세 개만 있으면 멈춘 건지 도는 건지 알 수 없다. 지금 무엇을
-              하는 중인지 그대로 적는다 — 뒤에서 여러 곳에 붙는 것이 이 제품의
-              값어치인데, 안 보이면 지연으로만 느껴진다.
-            */}
-            {doing ?? "…"}
-          </p>
+          /*
+            지금 무엇을 하는 중인지 그대로 적는다 — 뒤에서 여러 곳에 붙는 것이
+            이 제품의 값어치인데, 안 보이면 지연으로만 느껴진다. 거기에 흐르는
+            초를 더한다: 단계 글자만 있으면 그 단계에서 멈춘 것처럼 보인다.
+          */
+          <Waiting stage={doing} className="text-[var(--rk-400)]" />
         )}
         <div ref={endRef} />
       </div>

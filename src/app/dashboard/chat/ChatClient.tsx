@@ -1,5 +1,7 @@
 "use client";
 
+import { Waiting } from "@/components/Waiting";
+
 import { useEffect, useMemo, useRef, useState } from "react";
 import UnityStrip from "./UnityStrip";
 import Link from "next/link";
@@ -344,7 +346,9 @@ export default function ChatClient({
                 <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-neutral-900 text-xs font-semibold text-white">
                   {employee?.name.slice(0, 1) ?? "A"}
                 </div>
-                <div className="animate-pulse pt-1 text-neutral-400">…</div>
+                {/* 점 세 개만 있으면 멈춘 건지 도는 건지 알 수 없다.
+                    흐르는 초가 "아직 살아 있다" 를 참으로 말한다. */}
+                <Waiting className="pt-1 text-neutral-400" />
               </div>
             )}
             <div ref={endRef} />
