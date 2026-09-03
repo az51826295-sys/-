@@ -37,6 +37,8 @@ namespace Rookery.Tests
         const int SettleFrames = 10;
         /// <summary>입력을 주고 기다리는 프레임. 너무 짧으면 안 움직인 것과 구분이 안 된다.</summary>
         const int InputFrames = 40;
+        /// <summary>키를 누르고 있는 **시간**. 물리는 프레임이 아니라 시간으로 돈다.</summary>
+        const float HoldSeconds = 0.6f;
 
         readonly List<string> _problems = new();
 
@@ -188,19 +190,70 @@ namespace Rookery.Tests
             var before = moving.Select(t => t.position).ToArray();
 
             var keyboard = InputSystem.AddDevice<Keyboard>();
-            // 오른쪽과 점프. 어느 쪽이든 반응하면 조작이 닿은 것이다.
-            InputSystem.QueueStateEvent(keyboard, new KeyboardState(Key.RightArrow, Key.Space));
-            InputSystem.Update();
-            for (var i = 0; i < InputFrames; i++) yield return null;
 
-            var after = moving.Select(t => t.position).ToArray();
-            var moved = before.Where((p, i) => Vector2.Distance(p, after[i]) > 0.01f).Count();
+            // **한 조합만 눌러 보면 안 된다.**
+            //
+            // 여기 원래 오른쪽 화살표와 스페이스만 눌렀다. 그런데 09-03 에 나온
+            // 게임은 WASD 를 읽었고, 그래서 이 시험이 "안 움직인다"고 떨어뜨렸다 —
+            // **게임이 아니라 시험이 틀린 것이다.** 안 눌러 본 것을 안 되는 것으로
+            // 읽은 것이고, 이 저장소가 계속 밟는 바로 그 자리다.
+            //
+            // 어느 키를 쓰는지는 게임마다 다르므로, 흔한 것을 차례로 눌러 본다.
+            var keys = new[]
+            {
+                new[] { Key.W }, new[] { Key.A }, new[] { Key.S }, new[] { Key.D },
+                new[] { Key.UpArrow }, new[] { Key.RightArrow },
+                new[] { Key.Space },
+            };
+
+            var moved = 0;
+            var pressReached = false;
+            foreach (var combo in keys)
+            {
+                InputSystem.QueueStateEvent(keyboard, new KeyboardState(combo));
+                InputSystem.Update();
+                // 눌렀다는 것이 입력 시스템까지 갔는가. 이게 거짓이면 게임이
+                // 안 움직인 것이 아니라 **우리가 못 누른 것**이다. 둘을 같게
+                // 읽으면 못 누를수록 게임이 나빠 보인다.
+                // **게임이 읽는 자리에서 확인한다.** 우리가 만든 장치가 눌렸는지가
+                // 아니라, 게임이 보는 `Keyboard.current` 가 눌렸다고 하는지를 본다.
+                // 키보드가 둘이면 `current` 가 다른 것일 수 있고, 그러면 우리는
+                // 눌렀는데 게임은 못 본다 — 그건 게임 탓이 아니다.
+                var seen = Keyboard.current;
+                if (seen != null && seen.anyKey.isPressed) pressReached = true;
+
+                // **프레임이 아니라 시간으로 기다린다.**
+                //
+                // `yield return null` 은 프레임 하나를 넘길 뿐이고, 배치모드에서는
+                // 프레임이 아주 빨라서 40 프레임을 넘겨도 게임 시간은 몇십 ms 밖에
+                // 안 흐른다. 물리는 시간으로 도므로 그동안 `FixedUpdate` 가 한두
+                // 번 돌고 만다 — 그러면 "안 움직였다"가 나오는데 그건 게임이
+                // 아니라 우리가 안 기다린 것이다.
+                var until = Time.time + HoldSeconds;
+                while (Time.time < until) yield return null;
+
+                var now = moving.Select(t => t.position).ToArray();
+                moved = before.Where((p, i) => Vector3.Distance(p, now[i]) > 0.01f).Count();
+
+                InputSystem.QueueStateEvent(keyboard, new KeyboardState());
+                InputSystem.Update();
+                yield return null;
+
+                if (moved > 0) break;
+            }
 
             InputSystem.RemoveDevice(keyboard);
 
+            if (!pressReached)
+            {
+                Assert.Inconclusive(
+                    "키를 눌렀는데 입력 시스템이 눌렸다고 하지 않습니다 — " +
+                    "게임이 안 움직인 것이 아니라 우리가 못 누른 것입니다.");
+            }
+
             Assert.Greater(
                 moved, 0,
-                "오른쪽과 스페이스를 눌렀는데 아무것도 안 움직였습니다. " +
+                "WASD·화살표·스페이스를 차례로 눌렀는데 아무것도 안 움직였습니다. " +
                 "입력이 코드에 닿지 않았거나 조작이 붙지 않았습니다.");
 #else
             // 옛 입력만 켜진 프로젝트에서는 흉내 낼 길이 없다. 통과로 세지 않는다.

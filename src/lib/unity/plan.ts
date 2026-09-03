@@ -284,8 +284,12 @@ export async function planUnitySession(args: {
     input: "만들 것: " + args.want + projectNoteOf(args.project),
     schema: planSchema,
     schemaName: "unity_vibe_plan",
-    // 목록만 받으므로 짧다. 여기서 크게 잡으면 끊기는 위험만 늘어난다.
-    maxTokens: 6000,
+    // "목록만 받으므로 짧다. 크게 잡으면 끊기는 위험만 늘어난다"고 적혀
+    // 있었는데 **거꾸로다.** 이 값은 상한이지 목표가 아니라서, 크게 잡는다고
+    // 답이 길어지지 않는다. 반대로 작게 잡으면 추론 모델이 생각하는 데 예산을
+    // 쓰다가 `incomplete` 로 잘리고, 그러면 판이 통째로 죽는다.
+    // 09-03 에 이 판이 그렇게 한 번 죽었다(첫 판 500, 다시 시켜서 통과).
+    maxTokens: 24000,
     tier: "judgment",
   });
 

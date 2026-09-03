@@ -45,10 +45,28 @@ export const OBSERVES = [
   "stays",        // 그 물체가 그 자리에 있다
   "appears",      // 없던 것이 생긴다
   "disappears",   // 있던 것이 없어진다
-  "countUp",      // 그 이름을 가진 것이 늘어난다
+  "countUp",      // 그 이름을 가진 **물체의 수**가 늘어난다
   "countDown",    // 줄어든다
   "lightChanges", // 빛의 방향이나 색이 달라진다 (낮↔밤)
 ] as const;
+
+/**
+ * `countUp`/`countDown` 은 **물체의 수**다. 화면에 적힌 숫자가 아니다.
+ *
+ * 09-03 첫 판에서 모델이 "Carry 가 1 증가한다"를 `countUp target=Readout` 으로
+ * 옮겼다. `Readout` 은 글자를 보여 주는 물체 하나이고, 숫자가 바뀌어도 **물체는
+ * 계속 하나**다. 그래서 그 줄들은 무조건 떨어진다 — 게임이 틀린 것이 아니라
+ * 표가 틀렸는데, 판정문에는 "어김"으로 찍힌다.
+ *
+ * 거짓 통과보다는 낫지만 여전히 나쁘다. 못 잴 것을 못 잰다고 하지 않고 재기 쉬운
+ * 다른 것을 짚은 것이라, 이 파일 머리말이 경계한 바로 그 일이다.
+ */
+const VALUE_WARNING =
+  "**`countUp`/`countDown` 은 물체의 수다.** 화면에 적힌 숫자(HUD 의 " +
+  "'Carry: 3' 같은 것)가 바뀌는 것은 이 낱말로 못 잰다 — 글자가 바뀌어도 그 " +
+  "글자를 보여 주는 물체는 계속 하나이기 때문이다. 값이 바뀌는 것을 재라는 " +
+  "기준은 `humanOnly` 로 보낸다. 억지로 물체 수로 옮기면 그 줄은 늘 어김으로 " +
+  "찍히고, 사람은 게임이 틀렸다고 읽는다.";
 
 export type CriterionCheck = {
   /** 어느 기준인가. 설계가 낸 목록에서의 자리(1부터). */
@@ -126,6 +144,8 @@ export async function planCriteriaChecks(args: {
       "쓸 수 있는 동작: " + ACTIONS.join(" · "),
       "쓸 수 있는 관찰: " + OBSERVES.join(" · "),
       "",
+      VALUE_WARNING,
+      "",
       "`target` 은 **아래 씬 목록에 실제로 있는 이름**에서 고른다. 없는 이름을",
       "쓰면 게임이 틀린 것이 아니라 표가 틀린 것이 되고, 그러면 이 판정은",
       "아무 뜻이 없어진다.",
@@ -153,7 +173,10 @@ export async function planCriteriaChecks(args: {
     ].join("\n"),
     schema: checkSchema,
     schemaName: "unity_criteria_checks",
-    maxTokens: 8000,
+    // 표는 짧은데 예산은 넉넉히 준다. **추론 모델은 생각하는 토큰도 이
+    // 예산에서 쓴다** — 짧게 잡으면 답이 짧아지는 것이 아니라 `incomplete` 로
+    // 잘려서 판이 통째로 죽는다(09-03 에 여기서 500 이 났다).
+    maxTokens: 24000,
     tier: "judgment",
   });
 
