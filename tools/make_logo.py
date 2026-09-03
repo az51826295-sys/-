@@ -97,6 +97,31 @@ def write_svg(path: Path, w: int, h: int, rows: list[str], color: str) -> None:
     path.write_text("\n".join(parts) + "\n", encoding="utf-8")
 
 
+def write_icon(path: Path, w: int, h: int, rows: list[str]) -> None:
+    """탭 아이콘. 밝은 탭에서는 검게, 어두운 탭에서는 희게."""
+    parts = [
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" '
+        f'shape-rendering="crispEdges" role="img" aria-label="로키">',
+        "<style>",
+        "  rect { fill: #111111 }",
+        "  @media (prefers-color-scheme: dark) { rect { fill: #ffffff } }",
+        "</style>",
+    ]
+    for y, row in enumerate(rows):
+        x = 0
+        while x < w:
+            if row[x] != "#":
+                x += 1
+                continue
+            run = 0
+            while x + run < w and row[x + run] == "#":
+                run += 1
+            parts.append(f'<rect x="{x}" y="{y}" width="{run}" height="1"/>')
+            x += run
+    parts.append("</svg>")
+    path.write_text("\n".join(parts) + "\n", encoding="utf-8")
+
+
 def write_png(path: Path, w: int, h: int, rows: list[str], scale: int,
               rgb: tuple[int, int, int]) -> None:
     """정수 배로만 키운다. 반배는 도트를 흐린다."""
@@ -126,7 +151,11 @@ def main() -> int:
                   (255, 255, 255))
 
     # 탭 아이콘. Next 는 `src/app/icon.svg` 를 파비콘으로 쓴다.
-    write_svg(HERE.parent / "src" / "app" / "icon.svg", w, h, rows, "#ffffff")
+    #
+    # **한 가지 색으로 내면 안 된다.** 흰 것으로 냈더니 밝은 탭 바에서 아무것도
+    # 안 보였다(배포하고 열어 보고 알았다). 파비콘은 색을 물려받지 못하므로
+    # 그림 안에서 스스로 정해야 한다 — SVG 파비콘은 미디어 쿼리를 읽는다.
+    write_icon(HERE.parent / "src" / "app" / "icon.svg", w, h, rows)
 
     print(f"{w}x{h} 마크를 냈습니다:")
     for f in sorted(OUT.iterdir()):
