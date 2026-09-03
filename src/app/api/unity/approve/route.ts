@@ -11,6 +11,7 @@
  */
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/service";
 
 export const dynamic = "force-dynamic";
 
@@ -59,7 +60,17 @@ export async function POST(request: Request) {
   // 있는 칸으로 된다. `status` 는 이 판이 어떻게 끝났는지이고, 사람이 보고
   // 내린 판정도 그중 하나다. `ended_why` 는 "왜 그렇게 끝났는지" 라서 반려
   // 사유가 그대로 들어간다 — 뜻을 비트는 것이 아니라 원래 그 자리다.
-  const { data: updated, error } = await db
+  // **쓰는 것은 서비스 키로 한다.**
+  //
+  // `unity_sessions` 는 RLS 가 켜져 있는데 정책이 하나도 없다. 그래서 사용자
+  // 세션으로는 한 줄도 못 읽고 못 쓴다 — 이 표를 만지는 다른 경로가 전부
+  // 서비스 키인 이유다. 정책을 더하려면 마이그레이션이 하나 늘어난다.
+  //
+  // 대신 **누구 것인지는 위에서 이미 확인했다**: 로그인한 사람 → 그 사람이
+  // 주인인 회사 → 그 회사의 판. 아래 `company_id` 조건이 그 확인을 한 번 더
+  // 쓴다. 서비스 키가 여는 것은 RLS 이지 검사 자체가 아니다.
+  const admin = createServiceClient();
+  const { data: updated, error } = await admin
     .from("unity_sessions")
     .update({
       status: verdict,
