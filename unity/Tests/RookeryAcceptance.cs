@@ -229,8 +229,20 @@ namespace Rookery.Tests
                 // 안 흐른다. 물리는 시간으로 도므로 그동안 `FixedUpdate` 가 한두
                 // 번 돌고 만다 — 그러면 "안 움직였다"가 나오는데 그건 게임이
                 // 아니라 우리가 안 기다린 것이다.
+                // **매 프레임 다시 누른다.**
+                //
+                // 한 번만 큐에 넣으면 그 상태가 계속 눌린 채로 남을 것 같지만,
+                // 실제 장치가 없는 배치모드에서는 입력 시스템이 다음 갱신에
+                // 상태를 되돌릴 수 있다. 그러면 게임은 "한 프레임 눌렸다 뗐다"
+                // 를 보고, 우리는 "1초 눌렀는데 안 움직인다"고 적는다 —
+                // **멀쩡한 게임을 고치라고 시키게 된다.**
                 var until = Time.time + HoldSeconds;
-                while (Time.time < until) yield return null;
+                while (Time.time < until)
+                {
+                    InputSystem.QueueStateEvent(keyboard, new KeyboardState(combo));
+                    InputSystem.Update();
+                    yield return null;
+                }
 
                 var now = moving.Select(t => t.position).ToArray();
                 moved = before.Where((p, i) => Vector3.Distance(p, now[i]) > 0.01f).Count();

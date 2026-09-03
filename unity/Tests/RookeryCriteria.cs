@@ -64,7 +64,9 @@ namespace Rookery.Tests
         /// <summary>표는 씬 옆에 놓인다. 없으면 잰 적이 없는 것이다.</summary>
         static Sheet LoadSheet()
         {
-            var path = Path.Combine(Application.dataPath, "Rookery", "Tests", "PlayMode", "criteria.json");
+            // **울타리 밖**이다. `Assets/Rookery/` 안에 두면 고리가 자기 표를
+            // 고칠 수 있고, 시험 실패를 되먹이는 순간 그럴 동기가 생긴다.
+            var path = Path.Combine(Application.dataPath, "RookeryTests", "PlayMode", "criteria.json");
             if (!File.Exists(path)) return null;
             try { return JsonUtility.FromJson<Sheet>(File.ReadAllText(path)); }
             catch { return null; }

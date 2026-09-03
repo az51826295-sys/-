@@ -40,6 +40,7 @@ import time
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+from unity_playmode import TESTS_AT  # noqa: E402
 from unity_runner import (  # noqa: E402
     DEFAULT_URL,
     diagnose_reach,
@@ -202,7 +203,9 @@ def main() -> int:
         print(f"        {h.get('why')}")
 
     # ③ 표를 놓고 눌러 본다
-    dst = project / "Assets" / "Rookery" / "Tests" / "PlayMode"
+    # 시험지 자리는 한 곳에서만 정한다. 두 군데에 적으면 하나만 옮기고
+    # 나머지가 울타리 안에 남는다 — 그게 이 구멍이 생긴 방식이다.
+    dst = project / TESTS_AT
     dst.mkdir(parents=True, exist_ok=True)
     (dst / "criteria.json").write_text(
         json.dumps({"checks": checks}, ensure_ascii=False, indent=2), encoding="utf-8")

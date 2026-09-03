@@ -54,6 +54,17 @@ TESTS_SRC = HERE.parent / "unity" / "Tests"
 TEST_FILES = ["RookeryAcceptance.cs", "RookeryCriteria.cs",
               "Rookery.Tests.PlayMode.asmdef"]
 
+# **시험지는 울타리 밖에 둔다.**
+#
+# 원래 `Assets/Rookery/Tests/PlayMode/` 에 뒀는데, 고리의 울타리가
+# `Assets/Rookery/` 라서 **로키가 자기 시험지를 덮어쓸 수 있었다.** 지금까지
+# 안 건드렸지만, 시험 실패를 고리에 되먹이는 순간 고칠 동기와 수단이 동시에
+# 생긴다 — 그때는 게임을 고치는 것보다 시험을 고치는 쪽이 훨씬 쉽다.
+#
+# `RookeryArtBinder` 를 `Assets/Editor/` 에 둔 것과 같은 이유다: 재는 도구가
+# 재는 대상 안에 있으면, 대상이 도구를 지운다.
+TESTS_AT = Path("Assets") / "RookeryTests" / "PlayMode"
+
 
 def read_version(project: Path) -> str | None:
     f = project / "ProjectSettings" / "ProjectVersion.txt"
@@ -97,7 +108,7 @@ def install_tests(project: Path) -> str | None:
                 "없으면 시험지가 컴파일되지 않습니다.")
     if not has_package(project, "com.unity.inputsystem"):
         return ("com.unity.inputsystem 이 없습니다. 시험지가 그 어셈블리를 참조합니다.")
-    dst = project / "Assets" / "Rookery" / "Tests" / "PlayMode"
+    dst = project / TESTS_AT
     dst.mkdir(parents=True, exist_ok=True)
     for name in TEST_FILES:
         shutil.copy2(TESTS_SRC / name, dst / name)
