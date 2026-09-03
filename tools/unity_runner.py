@@ -1159,25 +1159,40 @@ def run_playmode(project: Path, timeout: int) -> tuple[list[str], list[str], boo
     results = work / f"rookery_play_{stamp}.xml"
     log = work / f"rookery_play_{stamp}.log"
 
-    say("  돌려 봅니다 (PlayMode)…")
-    try:
-        subprocess.run([
-            str(unity), "-batchmode", "-nographics",
-            "-projectPath", str(project),
-            "-runTests", "-testPlatform", "PlayMode",
-            "-testResults", str(results),
-            "-logFile", str(log),
-        ], timeout=timeout)
-    except subprocess.TimeoutExpired:
-        return [], [f"{timeout}초 안에 안 끝나 못 쟀습니다. 로그: {log}"], False
+    # **한 번 더 해 본다.**
+    #
+    # 코드를 막 새로 컴파일한 유니티 **바로 뒤**에 시험을 켜면, 6개를 찾아
+    # 놓고 0개를 돌린 채 0.1초 만에 끝난다(09-03 에 세 판 연속 그랬다). 손으로
+    # 같은 명령을 돌리면 다섯이 다 돈다 — 그때는 이미 다 가라앉은 뒤라서다.
+    #
+    # 다시 하면 통하는 것을 "안 된다" 로 적으면, 고리는 멀쩡한 것을 고치러 간다.
+    # 그래서 0개면 한 번만 더 해 본다. 두 번 다 0개면 그때는 못 잰 것이고,
+    # **다시 해 봤다는 사실까지 말한다.**
+    r = None
+    for attempt in (1, 2):
+        say("  돌려 봅니다 (PlayMode)…" + ("  [다시]" if attempt == 2 else ""))
+        try:
+            subprocess.run([
+                str(unity), "-batchmode", "-nographics",
+                "-projectPath", str(project),
+                "-runTests", "-testPlatform", "PlayMode",
+                "-testResults", str(results),
+                "-logFile", str(log),
+            ], timeout=timeout)
+        except subprocess.TimeoutExpired:
+            return [], [f"{timeout}초 안에 안 끝나 못 쟀습니다. 로그: {log}"], False
 
-    if not results.exists():
-        return [], [f"결과 파일이 없어 못 쟀습니다. 로그: {log}"], False
+        if results.exists():
+            r = pm.parse_results(results)
+            if sum(len(v) for v in r.values()) > 0:
+                break
+            r = None
+        if attempt == 2:
+            return [], [f"두 번 해 봤는데 시험이 0개 돌았습니다 — 잰 것이"
+                        f" 없습니다. 로그: {log}"], False
 
-    r = pm.parse_results(results)
-    if sum(len(v) for v in r.values()) == 0:
-        # 0개가 돈 것을 "다 통과" 로 읽지 않는다.
-        return [], [f"시험이 0개 돌았습니다 — 잰 것이 없습니다. 로그: {log}"], False
+    if r is None:
+        return [], [f"결과를 못 읽었습니다. 로그: {log}"], False
 
     fails = [f"{name}\n{message}".strip() for name, message in r["failed"]]
     unmeasured = [f"{name}: {message}".strip() for name, message in r["inconclusive"]]
