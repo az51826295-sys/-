@@ -30,9 +30,14 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import subprocess
 import sys
+import urllib.request
 from pathlib import Path
+
+# 유니티 공개 패키지 레지스트리. 버전을 우리가 짐작하지 않으려고 물어본다.
+REGISTRY = "https://packages.unity.com/"
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "tools"))
@@ -122,6 +127,79 @@ def unverified_packages(project: Path) -> dict[str, str]:
     return {k: why for k, why in MAYBE_NEEDED.items() if k not in have}
 
 
+def read_editor_version(project: Path) -> str:
+    """프로젝트가 적어 둔 에디터 버전. 없으면 빈 문자열."""
+    f = project / "ProjectSettings" / "ProjectVersion.txt"
+    if not f.exists():
+        return ""
+    for line in f.read_text(encoding="utf-8", errors="replace").splitlines():
+        if line.startswith("m_EditorVersion:"):
+            return line.split(":", 1)[1].strip()
+    return ""
+
+
+def version_key(v: str) -> tuple:
+    """`1.20.0` 이 `1.9.0` 보다 크다. 글자로 비교하면 반대가 된다."""
+    parts = re.split(r"[.\-+]", v)
+    out = []
+    for p in parts:
+        out.append((0, int(p)) if p.isdigit() else (1, 0))
+    return tuple(out)
+
+
+def latest_compatible(name: str, editor: str) -> tuple[str, str | None]:
+    """이 에디터에서 도는 것 중 제일 높은 버전.
+
+    돌려주는 것: `("ok", 버전)` · `("bundled", None)` · `("unreachable", None)`.
+
+    **셋을 구분한다.** "레지스트리에 없다"(에디터에 딸린 것이라 `1.0.0` 이 맞다)
+    와 "못 물어봤다"(맞는지 모른다)를 같게 말하면, 맞는 자리에도 경고가 붙어서
+    경고가 값을 잃는다. 그러면 정작 위험한 자리에서 아무도 안 본다.
+
+    패키지마다 `unity`(예: `6000.0`)를 적어 두므로 그것보다 새 에디터를 요구하는
+    것은 뺀다. **미리 나온 것(pre/exp)은 안 고른다** — 판올림이 우리 목적이
+    아니고, 미리 나온 것이 깨지면 그 이유를 찾는 데 하루가 간다.
+    """
+    if not editor:
+        return ("unreachable", None)
+    try:
+        want = version_key(".".join(editor.split(".")[:2]))
+    except Exception:
+        return ("unreachable", None)
+    try:
+        with urllib.request.urlopen(REGISTRY + name, timeout=60) as r:
+            meta = json.loads(r.read().decode("utf-8"))
+    except urllib.error.HTTPError as e:
+        # 404 는 "이 레지스트리에 없다" 다 — 에디터에 딸린 것이 그렇다.
+        return ("bundled", None) if e.code == 404 else ("unreachable", None)
+    except Exception:
+        return ("unreachable", None)
+    best = None
+    stable_seen = False
+    for version, info in (meta.get("versions") or {}).items():
+        if re.search(r"(pre|exp|preview)", version):
+            continue
+        stable_seen = True
+        need = info.get("unity")
+        if need:
+            try:
+                if version_key(need) > want:
+                    continue
+            except Exception:
+                continue
+        if best is None or version_key(version) > version_key(best):
+            best = version
+    if best:
+        return ("ok", best)
+    # 안정판이 레지스트리에 아예 없는 것들이 있다(`com.unity.ugui` 는 미리 나온
+    # 3.0.0-exp 만 올라와 있고, 쓰는 1.0.0 은 에디터에 딸려 온다). 그건 모르는
+    # 것이 아니라 **딸려 있는 것**이다.
+    if not stable_seen:
+        return ("bundled", None)
+    # 안정판은 있는데 이 에디터에 맞는 것이 없다. 이건 진짜로 모르는 자리다.
+    return ("unreachable", None)
+
+
 def add_packages(project: Path, want: dict[str, str]) -> bool:
     """미확인 패키지를 매니페스트에 넣는다. **사람이 따로 시켜야 한다.**"""
     manifest = project / "Packages" / "manifest.json"
@@ -129,10 +207,32 @@ def add_packages(project: Path, want: dict[str, str]) -> bool:
         return False
     data = json.loads(manifest.read_text(encoding="utf-8"))
     deps = data.setdefault("dependencies", {})
-    # 버전은 우리가 정하지 않는다. `1.0.0` 을 적으면 유니티가 그 이상으로
-    # 해결한다. 특정 버전을 박으면 다른 유니티 버전에서 못 푸는 조합이 생긴다.
+    # **`1.0.0` 은 "알아서 최신" 이 아니다.**
+    #
+    # 여기 원래 "1.0.0 을 적으면 유니티가 그 이상으로 해결한다"고 적혀 있었다.
+    # 그건 `com.unity.modules.*`(에디터에 딸린 것)에만 맞는 말이고, 레지스트리
+    # 패키지에는 **진짜로 1.0.0 이 깔린다.** 09-03 에 그걸로 데였다:
+    # `com.unity.inputsystem: "1.0.0"` 이 유니티 6.5 에서 컴파일되지 않는 옛
+    # 빌드를 끌어왔고, 패키지 안에서 오류 81개가 나서 판이 통째로 막혔다.
+    # 게다가 그건 **로키가 고칠 수 없는 자리**라 고리가 헛돌았다.
+    #
+    # 그래서 레지스트리에 물어본다. 못 물어보면 그 사실을 말하고 1.0.0 을 쓰되,
+    # 조용히 쓰지는 않는다 — 조용히 쓰면 다음 사람이 같은 자리에서 데인다.
+    version = read_editor_version(project)
     for name in want:
-        deps.setdefault(name, "1.0.0")
+        if name in deps:
+            continue
+        how, picked = latest_compatible(name, version)
+        if how == "ok" and picked:
+            deps[name] = picked
+            say(f"    {name} → {picked}")
+        elif how == "bundled":
+            deps[name] = "1.0.0"
+            say(f"    {name} → 1.0.0 (에디터에 딸린 것)")
+        else:
+            deps[name] = "1.0.0"
+            say(f"    {name} → 1.0.0 (레지스트리에 못 물어봤습니다. "
+                "이 버전이 이 에디터에서 도는지는 **확인 안 됐습니다**)")
     # 원본을 한 번 떠 둔다. 매니페스트가 깨지면 프로젝트가 안 열린다.
     backup = manifest.with_suffix(".json.before-rookery")
     if not backup.exists():

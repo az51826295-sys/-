@@ -906,6 +906,30 @@ def drive(args, project: Path, unity: Path, scope: str, log: Path,
         if len(errors) > 5:
             say(f"    … 그 외 {len(errors) - 5}개")
 
+        # **울타리 밖 오류만 남았으면 더 사지 않는다.**
+        #
+        # 09-03 에 이걸로 다섯 판을 샀다($0.67). 오류 81개가 전부
+        # `Library/PackageCache/com.unity.inputsystem/...` 안이었고, 로키는 매번
+        # 정확히 답했다: "패키지 코드라 Assets/Rookery 에서는 못 고칩니다."
+        # 맞는 말인데 그 말을 다섯 번 산 것이다.
+        #
+        # 고칠 수 없는 것을 다시 시켜 봐야 같은 답이 온다. 판 수로 막는 것은
+        # 늦다 — 애초에 보내지 않는 것이 맞다.
+        outside = [e for e in errors if not inside_scope(e["file"], scope)]
+        if errors and len(outside) == len(errors):
+            where = sorted({e["file"].split("/")[2] if e["file"].startswith(
+                "Library/PackageCache/") else e["file"].rsplit("/", 1)[0]
+                for e in outside})[:3]
+            say("")
+            say(f"  오류 {len(errors)}개가 **전부 울타리 밖**입니다:")
+            for w in where:
+                say(f"    {w}")
+            say("  로키는 여기를 못 고칩니다. 고칠 수 없는 것을 다시 시키지 않습니다.")
+            why = ("울타리 밖 코드가 깨져 있습니다. 로키가 고칠 수 있는 자리가 "
+                   "아닙니다: " + ", ".join(where))
+            give_up(args, session, why)
+            return 1
+
     # 왜 나왔는지 구분해서 말한다. "판을 다 썼다"와 "왕복만 하다 끝났다"는
     # 다음에 할 일이 다르다 — 앞은 고치기가 어려웠던 것이고, 뒤는 설계도가
     # 이상해서 같은 자리를 맴돈 것이다.
