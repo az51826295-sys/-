@@ -646,6 +646,12 @@ def main() -> int:
     # 않고, 승인 문을 건너뛰지도 않는다.
     parser.add_argument("--art", action="store_true",
                         help="옛 방식대로 고리 안에서 그림을 그린다")
+    # **기본은 돌려 보는 것이다.**
+    #
+    # 컴파일에서 멈추면 "문법이 맞다"까지만 알고 끝난다. 끄는 길은 남겨 두되
+    # (급할 때가 있다), 끄면 무엇을 못 재게 되는지 이름에 적어 둔다.
+    parser.add_argument("--no-play", dest="play", action="store_false",
+                        help="컴파일까지만 하고 돌려 보지 않는다 (실제로 되는지 안 잼)")
     parser.add_argument("--dim", choices=["2d", "3d"],
                         default=os.environ.get("ROOKERY_DIM", "2d"),
                         help="2d 또는 3d. 3D 는 기본 도형과 재질로 짓는다")
@@ -930,6 +936,33 @@ def drive(args, project: Path, unity: Path, scope: str, log: Path,
             give_up(args, session, why)
             return 1
 
+        # ── 컴파일이 됐으면 **돌려 본다** ────────────────────────
+        #
+        # 여기까지가 어제까지의 끝이었다: "컴파일이 통과했습니다. 합격 기준은
+        # 아직 확인되지 않았습니다." 그런데 컴파일은 문법이 맞다는 뜻일 뿐이고,
+        # 09-03 에 컴파일을 통과한 게임이 **키를 눌러도 안 움직였다.**
+        #
+        # 돌려 봐서 떨어진 것을 컴파일 오류와 같은 자리로 돌려보낸다. 그래야
+        # 이 고리가 "컴파일된다" 에서 **"실제로 된다"** 로 올라간다.
+        #
+        # 시험지는 울타리 밖(`Assets/RookeryTests/`)에 있다. 안에 두면 로키가
+        # 게임 대신 시험을 고칠 수 있고, 그건 고치는 것이 아니라 지우는 것이다.
+        if not errors and args.play:
+            fails, unmeasured = run_playmode(project, args.unity_timeout)
+            for line in unmeasured:
+                say(f"  못 잼: {line}")
+            if fails:
+                say(f"  돌려 봤더니 {len(fails)}개가 떨어졌습니다.")
+                errors = [{
+                    # 울타리 안 자리로 적는다. 이건 로키가 고칠 수 있는 것이다 —
+                    # 위의 '울타리 밖' 검사에 걸려서 포기하면 안 된다.
+                    "file": scope.rstrip("/"),
+                    "line": 0,
+                    "message": "돌려 봤더니 안 됩니다: " + f,
+                } for f in fails]
+                for e in errors[:3]:
+                    say(f"    {e['message'][:160]}")
+
     # 왜 나왔는지 구분해서 말한다. "판을 다 썼다"와 "왕복만 하다 끝났다"는
     # 다음에 할 일이 다르다 — 앞은 고치기가 어려웠던 것이고, 뒤는 설계도가
     # 이상해서 같은 자리를 맴돈 것이다.
@@ -1059,6 +1092,57 @@ def find_unity(project: Path) -> Path | None:
         if candidate.exists():
             return candidate
     return None
+
+
+def run_playmode(project: Path, timeout: int) -> tuple[list[str], list[str]]:
+    """게임을 켜서 눌러 본다. **떨어진 것과 못 잰 것을 나눠서** 돌려준다.
+
+    떨어진 것만 로키에게 보낸다. 못 잰 것(`Inconclusive`)은 결함이 아니라
+    **재지 못한 것**이라, 그걸 고치라고 보내면 로키가 없는 문제를 고치려 든다.
+    대신 사람에게는 말한다 — 조용히 없애면 못 잰 것이 없어진다.
+    """
+    # 여기서 늦게 들여온다. `unity_playmode` 가 이 파일을 들여오므로 위에서
+    # 하면 서로 물린다.
+    import unity_playmode as pm
+
+    trouble = pm.install_tests(project)
+    if trouble:
+        # 시험지를 못 넣는 것은 게임의 결함이 아니다. 그대로 말하고 넘어간다.
+        return [], [f"시험지를 못 넣었습니다: {trouble}"]
+
+    unity = find_unity(project)
+    if not unity:
+        return [], ["에디터를 못 찾아 돌려 보지 못했습니다."]
+
+    stamp = int(time.time())
+    results = project / "Temp" / f"rookery_play_{stamp}.xml"
+    log = project / "Temp" / f"rookery_play_{stamp}.log"
+    results.parent.mkdir(parents=True, exist_ok=True)
+
+    say("  돌려 봅니다 (PlayMode)…")
+    try:
+        subprocess.run([
+            str(unity), "-batchmode", "-nographics",
+            "-projectPath", str(project),
+            "-runTests", "-testPlatform", "PlayMode",
+            "-testResults", str(results),
+            "-logFile", str(log),
+        ], timeout=timeout)
+    except subprocess.TimeoutExpired:
+        return [], [f"{timeout}초 안에 안 끝나 못 쟀습니다. 로그: {log}"]
+
+    if not results.exists():
+        return [], [f"결과 파일이 없어 못 쟀습니다. 로그: {log}"]
+
+    r = pm.parse_results(results)
+    if sum(len(v) for v in r.values()) == 0:
+        # 0개가 돈 것을 "다 통과" 로 읽지 않는다.
+        return [], ["시험이 0개 돌았습니다 — 잰 것이 없습니다."]
+
+    fails = [f"{name}\n{message}".strip() for name, message in r["failed"]]
+    unmeasured = [f"{name}: {message}".strip() for name, message in r["inconclusive"]]
+    say(f"  통과 {len(r['passed'])} · 떨어짐 {len(fails)} · 못 잼 {len(unmeasured)}")
+    return fails, unmeasured
 
 
 def unity_bases() -> list[Path]:
