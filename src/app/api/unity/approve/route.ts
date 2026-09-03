@@ -49,33 +49,43 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "회사를 찾지 못했습니다." }, { status: 403 });
   }
 
+  // **칸을 새로 만들지 않는다.**
+  //
+  // 처음에는 `human_verdict`·`human_note`·`human_at` 세 칸을 더하려 했는데,
+  // 그러려면 마이그레이션을 하나 더 들고 다녀야 한다. 북극성이 "깨끗한 기계에
+  // 로키를 깔아서" 인 이상, **새 기계에서 사람이 해야 할 일이 하나 느는 것**은
+  // 그 자체로 값이다.
+  //
+  // 있는 칸으로 된다. `status` 는 이 판이 어떻게 끝났는지이고, 사람이 보고
+  // 내린 판정도 그중 하나다. `ended_why` 는 "왜 그렇게 끝났는지" 라서 반려
+  // 사유가 그대로 들어간다 — 뜻을 비트는 것이 아니라 원래 그 자리다.
   const { data: updated, error } = await db
     .from("unity_sessions")
     .update({
-      human_verdict: verdict,
-      human_note: note || null,
-      human_at: new Date().toISOString(),
+      status: verdict,
+      ended_why: note || null,
       updated_at: new Date().toISOString(),
     })
     .eq("id", sessionId)
     .eq("company_id", company.id)
-    .select("id, human_verdict, human_note, human_at");
+    // 아직 도는 판에는 도장을 못 찍는다. 다 되기 전에 승인하면 그 뒤에 바뀐
+    // 것은 아무도 안 본 것이 된다.
+    .in("status", ["compiled", "approved", "rejected"])
+    .select("id, status, ended_why, updated_at");
 
   if (error) {
-    // 칸이 아직 없을 수 있다(스키마 미적용). **된 척하지 않는다** — 화면이
-    // 도장을 찍었다고 말하는데 아무것도 안 남으면, 다음에 그 도장을 근거로
-    // 여는 문이 근거 없이 열린다.
+    // 저장이 안 됐는데 된 척하지 않는다 — 화면이 도장을 찍었다고 말하는데
+    // 아무것도 안 남으면, 다음에 그 도장을 근거로 여는 문이 근거 없이 열린다.
     return NextResponse.json(
-      {
-        error:
-          "승인을 저장하지 못했습니다. `supabase/schema_unity_approval.sql` 이 " +
-          "아직 적용되지 않았을 수 있습니다: " + error.message,
-      },
+      { error: "승인을 저장하지 못했습니다: " + error.message },
       { status: 500 },
     );
   }
   if (!updated?.length) {
-    return NextResponse.json({ error: "그런 판이 없습니다." }, { status: 404 });
+    return NextResponse.json(
+      { error: "그런 판이 없거나, 아직 도는 중이라 도장을 찍을 수 없습니다." },
+      { status: 404 },
+    );
   }
 
   return NextResponse.json({ ok: true, session: updated[0] });

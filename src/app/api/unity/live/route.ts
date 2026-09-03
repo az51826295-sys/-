@@ -51,7 +51,7 @@ export async function GET() {
   const { data: rows } = await db
     .from("unity_sessions")
     .select(
-      "id, want, scope, status, round, ended_why, scene_method, criteria, plan, human_verdict, human_note, human_at, created_at, updated_at",
+      "id, want, scope, status, round, ended_why, scene_method, criteria, plan, created_at, updated_at",
     )
     .eq("company_id", company.id)
     .order("created_at", { ascending: false })
@@ -67,9 +67,6 @@ export async function GET() {
         ended_why: string | null;
         scene_method: string | null;
         criteria: { when: string; then: string }[];
-        human_verdict: string | null;
-        human_note: string | null;
-        human_at: string | null;
         plan: { path: string; purpose: string; written: boolean }[];
         created_at: string;
         updated_at: string;
@@ -136,9 +133,11 @@ export async function GET() {
       criteriaCount: (s.criteria ?? []).length,
       // 사람이 켜 보고 무엇이라 했는가. **기계가 잰 것과 겹치지 않는다** —
       // 여기 도장이 찍혀도 합격 기준이 통과한 것은 아니다.
-      humanVerdict: (s.human_verdict as string | null) ?? null,
-      humanNote: (s.human_note as string | null) ?? null,
-      humanAt: (s.human_at as string | null) ?? null,
+      humanVerdict:
+        s.status === "approved" || s.status === "rejected" ? s.status : null,
+      humanNote: s.status === "approved" || s.status === "rejected" ? s.ended_why : null,
+      humanAt:
+        s.status === "approved" || s.status === "rejected" ? s.updated_at : null,
       planned: plan.length,
       written,
       sprites: sprites.length,

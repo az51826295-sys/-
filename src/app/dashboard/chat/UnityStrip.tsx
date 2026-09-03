@@ -99,6 +99,7 @@ type StepState = "done" | "now" | "wait" | "fail";
 function stepsOf(s: NonNullable<Live["session"]>): StepState[] {
   const running = s.status === "running";
   const failed = s.status === "stuck" || s.status === "stopped";
+  // 승인·반려는 **사람이 본 뒤**의 상태다. 멈춘 것도 도는 것도 아니다.
   const drewAll = s.sprites === 0 || s.drawn >= s.sprites;
   const wroteAll = s.planned > 0 && s.written >= s.planned;
 
@@ -523,7 +524,8 @@ export function UnityStripView({
               더 정확히(기준 몇 개인지까지) 하고 있어서, 둘을 다 걸면 화면이
               같은 말을 두 번 한다.
             */}
-            {s.endedWhy && s.status !== "compiled" && (
+            {s.endedWhy && s.status !== "compiled" && s.status !== "approved" &&
+              s.status !== "rejected" && (
               <p className="px-0.5 text-[12px] leading-relaxed text-white/70">
                 {s.endedWhy}
               </p>
@@ -531,7 +533,11 @@ export function UnityStripView({
 
             {/* 이 제품이 절대 안 하는 말: "다 됐습니다". 컴파일은 문법이 맞다는
                 뜻이지 원하던 것이 됐다는 뜻이 아니다. */}
-            {s.status === "compiled" && (
+            {/* 도장을 찍어도 이 줄은 그대로 남는다. `approved` 는 사람이 봤다는
+                뜻이지 기계가 쟀다는 뜻이 아니라서, 여기서 사라지면 **못 잰 것이
+                사람의 도장 뒤로 숨는다.** */}
+            {(s.status === "compiled" || s.status === "approved" ||
+              s.status === "rejected") && (
               <div className="space-y-2">
                 <p className=" border border-white/25 bg-white/[0.06] px-3 py-2 text-[12px] leading-relaxed text-white/80">
                   합격 기준 {s.criteriaCount}개는 <strong>아직 확인되지 않았습니다.</strong>{" "}
