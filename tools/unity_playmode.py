@@ -48,7 +48,11 @@ for _stream in (sys.stdout, sys.stderr):
 
 HERE = Path(__file__).resolve().parent
 TESTS_SRC = HERE.parent / "unity" / "Tests"
-TEST_FILES = ["RookeryAcceptance.cs", "Rookery.Tests.PlayMode.asmdef"]
+# 시험지 두 장이 같이 다닌다. 하나는 어떤 게임이든 지켜야 하는 것,
+# 하나는 **그 판이 약속한 것**(표는 `unity_checks.py` 가 놓는다).
+# 표가 없으면 그쪽은 "잴 표가 없습니다" 로 못 잼을 낸다 — 통과가 아니다.
+TEST_FILES = ["RookeryAcceptance.cs", "RookeryCriteria.cs",
+              "Rookery.Tests.PlayMode.asmdef"]
 
 
 def read_version(project: Path) -> str | None:
@@ -127,7 +131,13 @@ def parse_results(xml_path: Path) -> dict:
         result = (c.get("result") or "").lower()
         label = (c.get("label") or "").lower()
         message = ""
-        node = c.find("./failure/message") or c.find("./reason/message")
+        # `or` 로 쓰면 안 된다. `Element` 의 참/거짓은 **자식이 있는가**라서,
+        # 자식 없는 `<message>` 는 찾아 놓고도 거짓이 되어 다음으로 넘어간다.
+        # 그러면 이유가 있는데 없는 것처럼 나온다 — 판정문에서 이유가 사라지는
+        # 것은 판정을 못 읽게 만드는 것과 같다.
+        node = c.find("./failure/message")
+        if node is None:
+            node = c.find("./reason/message")
         if node is not None and node.text:
             message = node.text.strip()
         if result == "passed":
