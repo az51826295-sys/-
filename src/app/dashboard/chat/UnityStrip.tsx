@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 
+import { ApproveGate } from "./ApproveGate";
+
 /**
  * 유니티 일이 도는 동안 **보이는 것**.
  *
@@ -42,6 +44,10 @@ export type Live = {
     endedWhy: string | null;
     sceneMethod: string | null;
     criteriaCount: number;
+    /** 사람이 켜 보고 무엇이라 했는가. null 이면 **아직 안 봤다**. */
+    humanVerdict: "approved" | "rejected" | null;
+    humanNote: string | null;
+    humanAt: string | null;
     planned: number;
     written: number;
     /** 설계도가 적은 그림 수와, 그중 만든 수. */
@@ -526,10 +532,13 @@ export function UnityStripView({
             {/* 이 제품이 절대 안 하는 말: "다 됐습니다". 컴파일은 문법이 맞다는
                 뜻이지 원하던 것이 됐다는 뜻이 아니다. */}
             {s.status === "compiled" && (
-              <p className=" border border-white/25 bg-white/[0.06] px-3 py-2 text-[12px] leading-relaxed text-white/80">
-                합격 기준 {s.criteriaCount}개는 <strong>아직 확인되지 않았습니다.</strong>{" "}
-                컴파일과 씬 생성은 기계가 쟀고, 원하던 것이 됐는지는 켜 보셔야 압니다.
-              </p>
+              <div className="space-y-2">
+                <p className=" border border-white/25 bg-white/[0.06] px-3 py-2 text-[12px] leading-relaxed text-white/80">
+                  합격 기준 {s.criteriaCount}개는 <strong>아직 확인되지 않았습니다.</strong>{" "}
+                  컴파일과 씬 생성은 기계가 쟀고, 원하던 것이 됐는지는 켜 보셔야 압니다.
+                </p>
+                <ApproveGate session={s} />
+              </div>
             )}
           </div>
         )}
