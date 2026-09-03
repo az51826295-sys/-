@@ -39,6 +39,7 @@ import socket
 import ssl
 import subprocess
 import sys
+import tempfile
 import time
 import urllib.error
 import urllib.parse
@@ -1133,10 +1134,30 @@ def run_playmode(project: Path, timeout: int) -> tuple[list[str], list[str], boo
     if not unity:
         return [], ["에디터를 못 찾아 돌려 보지 못했습니다."], False
 
+    # **앞 판이 남긴 자물쇠를 치운다.**
+    #
+    # 씬을 지으려고 켠 유니티가 `Temp/UnityLockfile` 을 남기면, 바로 뒤따르는
+    # 시험이 거기 걸려 **0개**로 끝난다. `unity_playmode.py` 를 직접 부르면
+    # 그 안의 `main()` 이 이 검사를 하는데, 여기서는 유니티를 직접 켜느라
+    # 건너뛰고 있었다 — 그래서 손으로 돌리면 5개가 돌고 고리가 돌리면 0개였다.
+    #
+    # 파일이 있다고 유니티가 도는 것은 아니다. **프로세스를 본다.**
+    lock = project / "Temp" / "UnityLockfile"
+    if lock.exists():
+        if pm.unity_running():
+            return [], ["유니티가 열려 있어 못 쟀습니다."], False
+        try:
+            lock.unlink()
+        except OSError as e:
+            return [], [f"앞 판이 남긴 자물쇠를 못 치웠습니다: {e}"], False
+
+    # 결과와 로그를 **프로젝트 밖**에 둔다. `Temp/` 는 유니티가 켜질 때마다
+    # 비워서, 다음에 무슨 일이 있었는지 보러 가면 이미 없다.
     stamp = int(time.time())
-    results = project / "Temp" / f"rookery_play_{stamp}.xml"
-    log = project / "Temp" / f"rookery_play_{stamp}.log"
-    results.parent.mkdir(parents=True, exist_ok=True)
+    work = Path(tempfile.gettempdir()) / "rookery-unity"
+    work.mkdir(parents=True, exist_ok=True)
+    results = work / f"rookery_play_{stamp}.xml"
+    log = work / f"rookery_play_{stamp}.log"
 
     say("  돌려 봅니다 (PlayMode)…")
     try:
