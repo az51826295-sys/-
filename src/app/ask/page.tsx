@@ -55,7 +55,6 @@ export default async function PublicAskPage({
   return (
     <AskShell
       me={user ? { email: user.email ?? null } : null}
-      activeTask={task}
     >
       <AskClient initial={initial} task={task} />
     </AskShell>
