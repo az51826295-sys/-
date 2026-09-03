@@ -268,11 +268,25 @@ export function UnityStripView({
   const onIt = running ? STEPS[steps.indexOf("now")]?.who ?? null : null;
   const errors = s.rounds[0]?.errors ?? [];
 
-  const runner = !live?.runnerMeasurable
+  /**
+   * 심부름꾼이 마지막으로 다녀간 시각.
+   *
+   * **도는 판에서만 보여 준다.** 09-03 에 사장님이 끝난 판에서 "심부름꾼
+   * 72시간 28분 전" 을 보시고 "이거 72시간 돌리는" 이라 읽으셨다. 참인 숫자인데
+   * 뜻이 반대로 전달된 것이다 — 심부름꾼은 부를 때만 도는 물건이라, 안 도는
+   * 동안 커지는 숫자는 "오래 일했다" 로 읽힌다.
+   *
+   * 이 표시가 값어치 있는 자리는 **판이 도는데 소식이 없을 때** 하나뿐이다.
+   * 그때만 남기고 나머지에서는 지운다. 재는 것을 그만두는 것이 아니라,
+   * 뜻이 없는 자리에서 안 보여 주는 것이다.
+   */
+  const runner = !running
+    ? null
+    : !live?.runnerMeasurable
     ? { text: "심부름꾼 못 잼", dot: "bg-white/20", tone: "text-white/35" }
     : !live?.runnerSeenAt
-      ? { text: "심부름꾼 아직 안 옴", dot: "bg-white", tone: "text-white" }
-      : (() => {
+    ? { text: "심부름꾼 아직 안 옴", dot: "bg-white", tone: "text-white" }
+    : (() => {
           const ms = now - new Date(live.runnerSeenAt).getTime();
           const text = "심부름꾼 " + since(live.runnerSeenAt, now) + " 전";
           // 방금 다녀갔으면 밝고, 오래됐으면 어둡다. 색이 아니라 밝기가 신호다.
@@ -356,12 +370,14 @@ export function UnityStripView({
               <span className=" bg-white/[0.06] px-2 py-0.5 text-[11px] tabular-nums text-white/45">
                 {since(s.startedAt, now)}
               </span>
-              <span
-                className={`inline-flex items-center gap-1.5  bg-white/[0.06] px-2 py-0.5 text-[11px] ${runner.tone}`}
-              >
-                <span className={`h-1.5 w-1.5  ${runner.dot}`} />
-                {runner.text}
-              </span>
+              {runner && (
+                <span
+                  className={`inline-flex items-center gap-1.5  bg-white/[0.06] px-2 py-0.5 text-[11px] ${runner.tone}`}
+                >
+                  <span className={`h-1.5 w-1.5  ${runner.dot}`} />
+                  {runner.text}
+                </span>
+              )}
             </div>
           </div>
         ) : (
@@ -401,12 +417,14 @@ export function UnityStripView({
             <span className="hidden shrink-0  bg-white/[0.06] px-2 py-0.5 text-[11px] tabular-nums text-white/45 sm:inline">
               {since(s.startedAt, now)}
             </span>
-            <span
-              className={`hidden shrink-0 items-center gap-1.5  bg-white/[0.06] px-2 py-0.5 text-[11px] sm:inline-flex ${runner.tone}`}
-            >
-              <span className={`h-1.5 w-1.5  ${runner.dot}`} />
-              {runner.text}
-            </span>
+            {runner && (
+              <span
+                className={`hidden shrink-0 items-center gap-1.5  bg-white/[0.06] px-2 py-0.5 text-[11px] sm:inline-flex ${runner.tone}`}
+              >
+                <span className={`h-1.5 w-1.5  ${runner.dot}`} />
+                {runner.text}
+              </span>
+            )}
             <span className="shrink-0 text-white/25">{open ? "▾" : "▸"}</span>
           </button>
         )}
