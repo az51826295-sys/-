@@ -188,7 +188,15 @@ export async function POST(request: Request) {
       ? "\n\n**입력은 새 입력 시스템(com.unity.inputsystem)으로만 읽는다.** 이 " +
         "프로젝트는 옛 입력이 꺼져 있어서 `UnityEngine.Input.GetAxis`·`GetKey` 는 " +
         "**컴파일은 되고 실행할 때 던진다.** `Keyboard.current.aKey.wasPressedThisFrame` " +
-        "처럼 `UnityEngine.InputSystem` 을 쓴다."
+        "처럼 `UnityEngine.InputSystem` 을 쓴다.\n\n" +
+        // 09-03: "안 움직인다"를 고치라고 했더니 옛 입력 경로를 **하나 더**
+        // 붙였다("혹시 새 입력이 꺼진 환경이면"). 그 환경은 없다 — 우리가
+        // 지금 읽어서 알려 준 것이다. 그 파일은 실행할 때 던지고, 그래서
+        // 시험이 아예 안 돌았다. 고치라고 시켰더니 더 나빠진 것이다.
+        "**보험으로 옛 입력 경로를 하나 더 만들지 마라.** 이 프로젝트가 어떤 " +
+        "방식인지는 짐작이 아니라 **읽어서** 알려 준 것이다. '혹시 다른 환경이면' " +
+        "은 없다. 두 경로를 두면 그중 하나는 반드시 실행할 때 던지고, 그러면 " +
+        "게임이 아니라 씬 전체가 멈춘다."
       : b.inputHandler === "legacy"
         ? "\n\n**입력은 옛 방식(`UnityEngine.Input`)으로만 읽는다.** 이 프로젝트는 " +
           "새 입력 시스템이 꺼져 있다."

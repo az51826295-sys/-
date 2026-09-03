@@ -948,9 +948,24 @@ def drive(args, project: Path, unity: Path, scope: str, log: Path,
         # 시험지는 울타리 밖(`Assets/RookeryTests/`)에 있다. 안에 두면 로키가
         # 게임 대신 시험을 고칠 수 있고, 그건 고치는 것이 아니라 지우는 것이다.
         if not errors and args.play:
-            fails, unmeasured = run_playmode(project, args.unity_timeout)
+            fails, unmeasured, measured_any = run_playmode(project, args.unity_timeout)
             for line in unmeasured:
                 say(f"  못 잼: {line}")
+            if not measured_any:
+                # **못 쟀는데 통과로 끝내지 않는다.**
+                #
+                # 처음 지었을 때 여기가 비어 있었다. 시험이 0개 돌았는데 오류가
+                # 없으니 고리가 "컴파일 통과" 로 끝냈다 — 못 잰 것이 통과로
+                # 흘러간 것이고, 이 저장소가 제일 경계하는 모양이다.
+                #
+                # 고칠 것을 못 찾은 것이 아니라 **볼 수가 없었던 것**이므로,
+                # 로키에게 다시 시키지 않고 사람에게 넘긴다.
+                say("")
+                say("  돌려 봤지만 **못 쟀습니다.** 통과가 아닙니다.")
+                why = ("컴파일은 통과했는데 돌려 본 결과를 못 읽었습니다: "
+                       + (unmeasured[0] if unmeasured else "이유를 못 읽었습니다"))
+                give_up(args, session, why)
+                return 1
             if fails:
                 say(f"  돌려 봤더니 {len(fails)}개가 떨어졌습니다.")
                 errors = [{
@@ -1094,12 +1109,16 @@ def find_unity(project: Path) -> Path | None:
     return None
 
 
-def run_playmode(project: Path, timeout: int) -> tuple[list[str], list[str]]:
+def run_playmode(project: Path, timeout: int) -> tuple[list[str], list[str], bool]:
     """게임을 켜서 눌러 본다. **떨어진 것과 못 잰 것을 나눠서** 돌려준다.
 
     떨어진 것만 로키에게 보낸다. 못 잰 것(`Inconclusive`)은 결함이 아니라
     **재지 못한 것**이라, 그걸 고치라고 보내면 로키가 없는 문제를 고치려 든다.
     대신 사람에게는 말한다 — 조용히 없애면 못 잰 것이 없어진다.
+
+    셋째 칸은 **재기는 했는가**다. "떨어진 것이 없다" 와 "잰 적이 없다" 는
+    다르다 — 처음 지었을 때 이걸 안 나눠서, 시험이 0개 돌았는데 고리가
+    "컴파일 통과" 로 끝냈다. 못 잰 것이 통과로 흘러갔다.
     """
     # 여기서 늦게 들여온다. `unity_playmode` 가 이 파일을 들여오므로 위에서
     # 하면 서로 물린다.
@@ -1108,11 +1127,11 @@ def run_playmode(project: Path, timeout: int) -> tuple[list[str], list[str]]:
     trouble = pm.install_tests(project)
     if trouble:
         # 시험지를 못 넣는 것은 게임의 결함이 아니다. 그대로 말하고 넘어간다.
-        return [], [f"시험지를 못 넣었습니다: {trouble}"]
+        return [], [f"시험지를 못 넣었습니다: {trouble}"], False
 
     unity = find_unity(project)
     if not unity:
-        return [], ["에디터를 못 찾아 돌려 보지 못했습니다."]
+        return [], ["에디터를 못 찾아 돌려 보지 못했습니다."], False
 
     stamp = int(time.time())
     results = project / "Temp" / f"rookery_play_{stamp}.xml"
@@ -1129,20 +1148,20 @@ def run_playmode(project: Path, timeout: int) -> tuple[list[str], list[str]]:
             "-logFile", str(log),
         ], timeout=timeout)
     except subprocess.TimeoutExpired:
-        return [], [f"{timeout}초 안에 안 끝나 못 쟀습니다. 로그: {log}"]
+        return [], [f"{timeout}초 안에 안 끝나 못 쟀습니다. 로그: {log}"], False
 
     if not results.exists():
-        return [], [f"결과 파일이 없어 못 쟀습니다. 로그: {log}"]
+        return [], [f"결과 파일이 없어 못 쟀습니다. 로그: {log}"], False
 
     r = pm.parse_results(results)
     if sum(len(v) for v in r.values()) == 0:
         # 0개가 돈 것을 "다 통과" 로 읽지 않는다.
-        return [], ["시험이 0개 돌았습니다 — 잰 것이 없습니다."]
+        return [], [f"시험이 0개 돌았습니다 — 잰 것이 없습니다. 로그: {log}"], False
 
     fails = [f"{name}\n{message}".strip() for name, message in r["failed"]]
     unmeasured = [f"{name}: {message}".strip() for name, message in r["inconclusive"]]
     say(f"  통과 {len(r['passed'])} · 떨어짐 {len(fails)} · 못 잼 {len(unmeasured)}")
-    return fails, unmeasured
+    return fails, unmeasured, True
 
 
 def unity_bases() -> list[Path]:
