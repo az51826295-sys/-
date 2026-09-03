@@ -243,6 +243,42 @@ export function projectNoteOf(files: ProjectFile[] | undefined): string {
   return parts.join("\n");
 }
 
+/** 이 프로젝트에 켜져 있는 입력 방식. 읽어서 아는 것이지 짐작이 아니다. */
+export type InputHandler = "new" | "legacy" | "both" | null;
+
+/**
+ * 어느 입력을 쓸지 알려 주는 글. **설계 판과 쓰는 판이 같이 쓴다.**
+ *
+ * 09-01 에 이것을 만들 때는 쓰는 판에만 붙였다. 그런데 09-03 에 "안 움직인다"를
+ * 고치라고 했더니 **설계가** 이렇게 답했다: "구 입력만 활성화된 경우
+ * `Keyboard.current` 가 null 이라 … 두 입력 체계 모두에서 동작하도록 한다."
+ * 설계 판은 어느 쪽이 켜져 있는지 몰랐던 것이다. 그리고 쓰는 판은 그 설계를
+ * 따랐다 — 안내문이 쓰는 판에 붙어 있어도 소용이 없었다.
+ *
+ * **아는 것이 필요한 자리에 안 가면 모르는 것과 같다.**
+ */
+export function inputNoteOf(handler: InputHandler): string {
+  if (handler === "new") {
+    return [
+      "",
+      "**입력은 새 입력 시스템(com.unity.inputsystem)으로만 읽는다.** 이 프로젝트는",
+      "옛 입력이 꺼져 있어서 `UnityEngine.Input.GetAxis`·`GetKey` 는 **컴파일은 되고",
+      "실행할 때 던진다.** `Keyboard.current.aKey.wasPressedThisFrame` 처럼",
+      "`UnityEngine.InputSystem` 을 쓴다.",
+      "",
+      "**보험으로 옛 입력 경로를 하나 더 만들지 마라.** 이 프로젝트가 어떤 방식인지는",
+      "짐작이 아니라 **읽어서** 알려 준 것이다. '혹시 다른 환경이면' 은 없다. 두 경로를",
+      "두면 그중 하나는 반드시 실행할 때 던지고, 그러면 게임이 아니라 씬 전체가 멈춘다 —",
+      "09-03 에 그렇게 해서 시험이 0개 돌았다.",
+    ].join("\n");
+  }
+  if (handler === "legacy") {
+    return "\n\n**입력은 옛 방식(`UnityEngine.Input`)으로만 읽는다.** 이 " +
+      "프로젝트는 새 입력 시스템이 꺼져 있다.";
+  }
+  return "";
+}
+
 export async function planUnitySession(args: {
   db: Supabase;
   providers: Providers;
@@ -254,6 +290,8 @@ export async function planUnitySession(args: {
   project?: ProjectFile[];
   /** 2D 인가 3D 인가. 없으면 지금까지 하던 2D. */
   dimension?: Dimension;
+  /** 켜져 있는 입력 방식. 설계가 이걸 모르면 없는 환경을 가정한다. */
+  inputHandler?: InputHandler;
 }): Promise<UnityPlan | { error: string }> {
   const dimension: Dimension = args.dimension === "3d" ? "3d" : "2d";
   const scope =
@@ -278,6 +316,7 @@ export async function planUnitySession(args: {
       "사람이 눌러 보고 확인할 수 있는 문장으로. 컴파일 여부는 기준이 아니다.",
       "",
       `파일은 ${MAX_PLANNED_FILES}개를 넘지 않게, 반드시 ${scope} 아래에 둔다.`,
+      inputNoteOf(args.inputHandler ?? null),
       args.unityVersion ? `\n대상 유니티 버전: ${args.unityVersion}` : "",
       knowledge ? "\n이 회사가 아는 것:\n" + knowledge : "",
     ].join("\n"),

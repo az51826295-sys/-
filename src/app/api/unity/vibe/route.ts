@@ -12,10 +12,12 @@ import {
   retrieveUnityLessons,
 } from "@/lib/unity/lessons";
 import {
+  inputNoteOf,
   planUnitySession,
   projectNoteOf,
   rulesFor,
   type Dimension,
+  type InputHandler,
   type ProjectFile,
 } from "@/lib/unity/plan";
 import {
@@ -183,24 +185,16 @@ export async function POST(request: Request) {
    * `Input.GetAxisRaw` 였고 이 프로젝트는 새 것 전용이었다. 오류가 안 났으니
    * 아무도 안 걸렸다.
    */
-  const inputNote =
-    b.inputHandler === "new"
-      ? "\n\n**입력은 새 입력 시스템(com.unity.inputsystem)으로만 읽는다.** 이 " +
-        "프로젝트는 옛 입력이 꺼져 있어서 `UnityEngine.Input.GetAxis`·`GetKey` 는 " +
-        "**컴파일은 되고 실행할 때 던진다.** `Keyboard.current.aKey.wasPressedThisFrame` " +
-        "처럼 `UnityEngine.InputSystem` 을 쓴다.\n\n" +
-        // 09-03: "안 움직인다"를 고치라고 했더니 옛 입력 경로를 **하나 더**
-        // 붙였다("혹시 새 입력이 꺼진 환경이면"). 그 환경은 없다 — 우리가
-        // 지금 읽어서 알려 준 것이다. 그 파일은 실행할 때 던지고, 그래서
-        // 시험이 아예 안 돌았다. 고치라고 시켰더니 더 나빠진 것이다.
-        "**보험으로 옛 입력 경로를 하나 더 만들지 마라.** 이 프로젝트가 어떤 " +
-        "방식인지는 짐작이 아니라 **읽어서** 알려 준 것이다. '혹시 다른 환경이면' " +
-        "은 없다. 두 경로를 두면 그중 하나는 반드시 실행할 때 던지고, 그러면 " +
-        "게임이 아니라 씬 전체가 멈춘다."
-      : b.inputHandler === "legacy"
-        ? "\n\n**입력은 옛 방식(`UnityEngine.Input`)으로만 읽는다.** 이 프로젝트는 " +
-          "새 입력 시스템이 꺼져 있다."
-        : "";
+  // 켜져 있는 입력 방식. **설계 판에도 넘긴다.**
+  //
+  // 09-01 에 이 안내문을 만들 때 쓰는 판에만 붙였다. 그런데 09-03 에 설계가
+  // "구 입력만 활성화된 경우 Keyboard.current 가 null" 이라며 두 경로를 두는
+  // 쪽으로 잡았고, 쓰는 판은 그 설계를 따랐다 — 안내문이 쓰는 판에 있어도
+  // 소용이 없었다. **아는 것이 필요한 자리에 안 가면 모르는 것과 같다.**
+  const inputHandler: InputHandler =
+    b.inputHandler === "new" || b.inputHandler === "legacy" ||
+    b.inputHandler === "both" ? b.inputHandler : null;
+  const inputNote = inputNoteOf(inputHandler);
 
   // 한 벌만 둔다. 여기에 따로 쓰면 자른 파일을 밝히는 문구가 설계 판에만 붙고
   // 쓰는 판에는 안 붙는다 — 정작 클래스를 만드는 판이 쓰는 판이다.
@@ -258,6 +252,7 @@ export async function POST(request: Request) {
       unityVersion:
         typeof b.unityVersion === "string" ? b.unityVersion : undefined,
       dimension,
+      inputHandler,
       project: projectFiles.length ? projectFiles : undefined,
     });
     if ("error" in made) {
