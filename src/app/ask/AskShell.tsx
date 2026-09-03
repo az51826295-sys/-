@@ -24,6 +24,34 @@ export default function AskShell({
   const [open, setOpen] = useState(false);
   const [saved, setSaved] = useState<Saved[]>([]);
   const box = useRef<HTMLDivElement>(null);
+  /** 지우려고 한 번 누른 대화. 두 번째 눌러야 지워진다. */
+  const [killing, setKilling] = useState<string | null>(null);
+
+  /**
+   * 대화를 지운다. **두 번 눌러야** 지워진다.
+   *
+   * 09-03 사장님 지시로 붙였다. 지우는 문(`DELETE /api/conversations/[id]`)은
+   * 이미 있었고 화면에 손잡이만 없었다.
+   *
+   * 지워졌다고 말하기 전에 서버가 됐다고 해야 목록에서 뺀다 — 화면에서 먼저
+   * 지우면 실패했을 때 "지워진 줄 알았는데 남아 있는" 상태가 된다.
+   */
+  async function removeSaved(id: string) {
+    if (killing !== id) {
+      setKilling(id);
+      // 물어본 채로 두면 다음에 눌렀을 때 무엇을 지우는지 잊는다.
+      setTimeout(() => setKilling((v) => (v === id ? null : v)), 4000);
+      return;
+    }
+    try {
+      const res = await fetch(`/api/conversations/${id}`, { method: "DELETE" });
+      if (res.ok) setSaved((prev) => prev.filter((c) => c.id !== id));
+    } catch {
+      // 못 지웠으면 목록에 그대로 둔다. 조용히 사라지는 것이 더 나쁘다.
+    } finally {
+      setKilling(null);
+    }
+  }
 
   // 목록은 **열 때** 가져온다. 화면을 켤 때마다 부르면 대화를 시작할 생각이
   // 없는 사람에게도 요청이 나간다.
@@ -90,13 +118,31 @@ export default function AskShell({
                   {saved.length > 0 && (
                     <ul className="max-h-56 overflow-y-auto">
                       {saved.map((c) => (
-                        <li key={c.id}>
+                        <li
+                          key={c.id}
+                          className="group flex items-center hover:bg-[var(--rk-100)] dark:hover:bg-neutral-900"
+                        >
                           <a
                             href={`/ask?c=${c.id}`}
-                            className="block truncate px-3 py-1.5 text-sm text-[var(--rk-600)] hover:bg-[var(--rk-100)] dark:text-[var(--rk-400)] dark:hover:bg-neutral-900"
+                            className="min-w-0 flex-1 truncate px-3 py-1.5 text-sm text-[var(--rk-600)] dark:text-[var(--rk-400)]"
                           >
                             {c.title || "(제목 없음)"}
                           </a>
+                          {/*
+                            지우기는 **가리켰을 때만** 보인다. 목록마다 ✕ 가
+                            늘 떠 있으면 고르러 왔다가 지우게 된다.
+
+                            한 번 더 묻는다. 대화는 되돌릴 수 없고, 손이
+                            미끄러진 것과 지우려던 것은 구분이 안 된다.
+                          */}
+                          <button
+                            type="button"
+                            title="이 대화 지우기"
+                            onClick={() => void removeSaved(c.id)}
+                            className="shrink-0 px-2.5 py-1.5 text-xs text-[var(--rk-400)] opacity-0 hover:text-[var(--rk-ink)] focus:opacity-100 group-hover:opacity-100 dark:hover:text-white"
+                          >
+                            {killing === c.id ? "정말?" : "✕"}
+                          </button>
                         </li>
                       ))}
                     </ul>

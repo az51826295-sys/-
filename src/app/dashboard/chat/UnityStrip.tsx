@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { ApproveGate } from "./ApproveGate";
+import { DeleteSession } from "./DeleteSession";
 
 /**
  * 유니티 일이 도는 동안 **보이는 것**.
@@ -173,6 +174,7 @@ function Who({ title }: { title: string }) {
 /** 묻는 쪽. 도는 동안만 자주 묻고, 안 보는 탭에서는 아예 안 묻는다. */
 export default function UnityStrip({ panel = false }: { panel?: boolean }) {
   const [live, setLive] = useState<Live | null>(null);
+  const pullRef = useRef<(() => void) | null>(null);
 
   useEffect(() => {
     let stop = false;
@@ -202,13 +204,25 @@ export default function UnityStrip({ panel = false }: { panel?: boolean }) {
     }
 
     pull();
+    pullRef.current = pull;
     return () => {
       stop = true;
       clearTimeout(timer);
     };
   }, []);
 
-  return <UnityStripView live={live} panel={panel} />;
+  // 판을 지우면 다음 물음(30초)까지 화면에 남는다. 지웠는데 그대로 있으면
+  // 안 지워진 것으로 읽히므로, 그 자리에서 한 번 더 묻는다.
+  return (
+    <UnityStripView
+      live={live}
+      panel={panel}
+      onChanged={() => {
+        setLive(null);
+        pullRef.current?.();
+      }}
+    />
+  );
 }
 
 /**
@@ -218,6 +232,8 @@ export default function UnityStrip({ panel = false }: { panel?: boolean }) {
  */
 export function UnityStripView({
   live,
+  /** 판이 지워졌을 때처럼, 화면이 스스로 다시 물어봐야 하는 순간. */
+  onChanged,
   /**
    * 옆에 세워 두는 자리인가.
    *
@@ -229,6 +245,7 @@ export function UnityStripView({
   panel = false,
 }: {
   live: Live | null;
+  onChanged?: () => void;
   panel?: boolean;
 }) {
   const [open, setOpen] = useState(false);
@@ -593,6 +610,16 @@ export function UnityStripView({
                 <ApproveGate session={s} />
               </div>
             )}
+
+            {/* 지우기는 **맨 아래, 작게** 둔다. 되돌릴 수 없는 것이 눈에 먼저
+                들어오면 누르게 된다. */}
+            <div className="pt-1">
+              <DeleteSession
+                sessionId={s.id}
+                running={s.status === "running"}
+                onDeleted={onChanged ?? (() => {})}
+              />
+            </div>
           </div>
         )}
       </div>
