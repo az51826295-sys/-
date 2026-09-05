@@ -167,7 +167,9 @@ export async function runEverydayTurn(
     const guess = (user.email ?? "").split("@")[0] || "내 회사";
     const { data: made } = await supabase
       .from("companies")
-      .insert({ owner_id: user.id, name: guess })
+      // 유니티 창이 쓰는 회사 열쇠도 여기서 만든다. 없으면 그 회사는 유니티에
+      // 아무것도 못 가져간다.
+      .insert({ owner_id: user.id, name: guess, unity_key: "rk_" + crypto.randomUUID().replace(/-/g, "") })
       .select("id")
       .maybeSingle();
     companyId = (made?.id as string | undefined) ?? null;
