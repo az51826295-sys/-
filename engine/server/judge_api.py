@@ -173,3 +173,39 @@ def judge_mesh(req: MeshRequest) -> dict:
                 "measured": None, "why": "glb_url 도 glb_base64 도 없다"}], "measured": {},
                 "thresholds": mj.THRESHOLDS}
     return mj.judge_glb(data, want_rig=req.want_rig, profile=req.profile).to_dict()
+
+
+class TexturesRequest(BaseModel):
+    glb_url: str | None = None
+    glb_base64: str | None = None
+
+
+@router.post("/mesh/textures")
+def mesh_textures(req: TexturesRequest) -> dict:
+    """GLB 의 PBR 맵을 유니티 모양(PNG, base64)으로. 리깅 FBX 에 빠진 노멀·금속 맵을
+    원본 GLB 에서 되찾는 자리다(22:40)."""
+    import urllib.request
+    from genesis import mesh_textures as mt
+    if req.glb_base64:
+        data = base64.b64decode(req.glb_base64.split(",")[-1])
+    elif req.glb_url:
+        try:
+            with urllib.request.urlopen(req.glb_url, timeout=120) as r:
+                data = r.read()
+        except Exception as e:  # noqa: BLE001
+            return {"ok": False, "error": f"GLB 를 못 받았다: {str(e)[:160]}"}
+    else:
+        return {"ok": False, "error": "glb_url 도 glb_base64 도 없다"}
+    try:
+        maps = mt.extract_pbr_maps(data)
+    except Exception as e:  # noqa: BLE001
+        return {"ok": False, "error": f"맵을 못 꺼냈다: {str(e)[:160]}"}
+    enc = lambda b: base64.b64encode(b).decode("ascii") if b else None  # noqa: E731
+    return {
+        "ok": True,
+        "note": maps.note,
+        "base_color_png": enc(maps.base_color_png),
+        "normal_png": enc(maps.normal_png),
+        "metallic_smoothness_png": enc(maps.metallic_smoothness_png),
+        "occlusion_png": enc(maps.occlusion_png),
+    }
