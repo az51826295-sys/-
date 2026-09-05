@@ -392,7 +392,10 @@ export async function runEverydayTurn(
         assistant: {
           role: "assistant",
           content: reply,
-          attachments: { images, sources, searched: queries },
+          // 사람을 붙였으면 그 업무 id 를 턴에 남긴다. 결과가 돌아올 자리가
+          // **이 대화**뿐이라(업무 화면은 09-05 에 지웠다), 어느 턴이 어느 일을
+          // 시켰는지 여기 없으면 끝난 일을 어디에 붙일지 알 수 없다.
+          attachments: { images, sources, searched: queries, assignment },
         },
       })
     : null;

@@ -24,17 +24,41 @@ export default async function PublicAskPage({
   // 저장된 대화를 열고 들어올 수 있다. 남의 대화 id 를 넣어도 loadConversation
   // 이 소유자로 걸러 null 을 주므로, 그때는 그냥 새 대화가 된다.
   const { c, task: taskParam } = await searchParams;
-  let initial: { id: string; turns: { role: "user" | "assistant"; content: string }[] } | null =
-    null;
+  type Turn = {
+    role: "user" | "assistant";
+    content: string;
+    assignment?: { id: string; title: string; queued: boolean; returned?: boolean } | null;
+    returnedWork?: boolean;
+  };
+  let initial: { id: string; turns: Turn[] } | null = null;
   if (c && user) {
     const found = await loadConversation(supabase, user.id, c);
     if (found) {
+      const returnedIds = new Set(
+        (found.messages as { attachments: unknown }[])
+          .map((m) => (m.attachments as { returned?: { assignmentId?: string } } | null)?.returned?.assignmentId)
+          .filter((x): x is string => typeof x === "string"),
+      );
       initial = {
         id: found.conversation.id as string,
-        turns: (found.messages as { role: string; content: string }[]).map((m) => ({
-          role: m.role === "user" ? "user" : "assistant",
-          content: m.content,
-        })),
+        turns: (
+          found.messages as { role: string; content: string; attachments: unknown }[]
+        ).map((m) => {
+          // 그 턴이 일을 시켰으면 같이 싣는다. 화면이 그것을 보고 "끝났나" 를
+          // 묻고, 결과 턴(`returned`)이 이미 뒤에 있으면 더 묻지 않는다.
+          const att = (m.attachments ?? null) as {
+            assignment?: { id: string; title: string; queued: boolean } | null;
+            returned?: { assignmentId: string } | null;
+          } | null;
+          return {
+            role: m.role === "user" ? ("user" as const) : ("assistant" as const),
+            content: m.content,
+            assignment: att?.assignment
+              ? { ...att.assignment, returned: returnedIds.has(att.assignment.id) }
+              : null,
+            returnedWork: !!att?.returned,
+          };
+        }),
       };
     }
   }

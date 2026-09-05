@@ -2,7 +2,7 @@
 
 import { Waiting } from "@/components/Waiting";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Icon from "@/components/Icon";
 import RoutingNotice from "./RoutingNotice";
 
@@ -46,7 +46,10 @@ type Turn = {
   role: "user" | "assistant";
   content: string;
   hired?: { name: string; why: string } | null;
-  assignment?: { id: string; title: string; queued: boolean } | null;
+  /** `returned` 는 결과가 대화에 붙었다는 뜻. 그 뒤로는 안 묻는다. */
+  assignment?: { id: string; title: string; queued: boolean; returned?: boolean } | null;
+  /** 시킨 일이 끝나서 돌아온 턴. 답이 아니라 **결과**라 조금 다르게 그린다. */
+  returnedWork?: boolean;
   needsOnboarding?: { id: string; name: string } | null;
   options?: Option[] | null;
   sources?: Source[] | null;
@@ -77,6 +80,53 @@ export default function AskClient({
   /** 지금 뒤에서 무엇을 하는 중인지. 답이 오면 비운다. */
   const [doing, setDoing] = useState<string | null>(null);
   const endRef = useRef<HTMLDivElement>(null);
+
+  /**
+   * 시킨 일이 끝나면 **여기로** 돌아온다.
+   *
+   * 업무 화면은 2026-09-05 에 지웠다 — 로키는 이 대화 하나다. 그래서 어느 턴에
+   * 붙인 일이 아직 안 끝났으면, 화면이 열려 있는 동안 몇 초마다 물어보고, 끝난
+   * 것은 서버가 그 대화에 턴으로 붙여 준 것을 받아 그린다. 닫았다 다시 열면
+   * 이미 붙어 있다(저장된 턴이라).
+   *
+   * 다 끝나면 묻기를 멈춘다. 물을 것이 없는데 계속 물으면 서버가 아니라 사람이
+   * 먼저 지친다 — 탭이 늘 무언가를 하고 있는 것처럼 보이니까.
+   */
+  const pendingWork = turns.some((t) => t.assignment && !t.assignment.returned);
+  useEffect(() => {
+    if (!conversationId || !pendingWork) return;
+    let alive = true;
+    const tick = async () => {
+      try {
+        const res = await fetch(`/api/conversations/${conversationId}/work`);
+        if (!res.ok || !alive) return;
+        const data = (await res.json()) as {
+          pending: number;
+          posted: { role: "assistant"; content: string }[];
+        };
+        if (!alive) return;
+        if (data.posted.length > 0) {
+          setTurns((prev) => [...prev, ...data.posted.map((m) => ({ ...m, returnedWork: true }))]);
+        }
+        if (data.pending === 0) {
+          // 더 기다릴 것이 없다. 표시를 바꿔 묻기를 멈춘다.
+          setTurns((prev) =>
+            prev.map((t) =>
+              t.assignment ? { ...t, assignment: { ...t.assignment, returned: true } } : t,
+            ),
+          );
+        }
+      } catch {
+        // 한 번 못 물어본 것은 다음에 또 묻는다.
+      }
+    };
+    void tick();
+    const timer = setInterval(tick, 6000);
+    return () => {
+      alive = false;
+      clearInterval(timer);
+    };
+  }, [conversationId, pendingWork]);
 
   /**
    * 파일을 base64 로. 데이터 URL 접두사는 떼고 보낸다 — 서버가 순수 base64 를 받는다.
@@ -291,7 +341,10 @@ export default function AskClient({
                 "inline-block max-w-[85%] whitespace-pre-wrap border-2 border-[var(--rk-ink)] px-4 py-2.5 text-sm " +
                 (t.role === "user"
                   ? "bg-[var(--rk-ink)] text-[var(--rk-paper)]"
-                  : "bg-[var(--rk-100)] text-[var(--rk-ink)]")
+                  : "bg-[var(--rk-100)] text-[var(--rk-ink)]") +
+                // 시킨 일의 결과는 답이 아니라 **돌아온 것**이다. 왼쪽 띠 하나로
+                // 가른다 — 같은 회색 상자면 "누가 언제 한 말인지" 를 읽어야 안다.
+                (t.returnedWork ? " border-l-8 border-l-[#E0703A]" : "")
               }
             >
               {t.content}
@@ -305,6 +358,9 @@ export default function AskClient({
               <p className="mt-1.5 text-xs text-[var(--rk-400)]">
                 업무 생성: {t.assignment.title}
                 {t.assignment.queued ? " (대기열에 넣음)" : ""}
+                {t.assignment.returned
+                  ? " — 결과가 아래에 있습니다"
+                  : " — 끝나면 이 대화에 붙습니다"}
               </p>
             )}
             {t.images && t.images.length > 0 && (
