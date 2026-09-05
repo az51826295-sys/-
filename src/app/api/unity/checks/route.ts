@@ -24,6 +24,8 @@ type Body = {
   /** 시험지가 찍은 화면(PNG, base64). 사장님은 게임을 유니티에서만 볼 수 있어서,
    *  대화에는 이 한 장이 게임의 얼굴이다(09-05 저녁, Rosebud 의 게임 창을 보고). */
   screenshot?: string;
+  /** 정면 얼굴 사진(PNG, base64). 휴머노이드가 씬에 있을 때만 온다. */
+  portrait?: string;
 };
 
 export async function POST(request: Request) {
@@ -67,31 +69,35 @@ export async function POST(request: Request) {
 
     const { data: d } = await db.from("deliverables").select("content_json").eq("id", body.deliverableId).eq("company_id", company.id).maybeSingle();
     if (d) {
-      const { screenshot: _omit, ...rest } = body;
-      void _omit;
+      const { screenshot: _omit, portrait: _omit2, ...rest } = body;
+      void _omit; void _omit2;
       await db
         .from("deliverables")
         .update({ content_json: { ...(d.content_json as object), unityChecks: { ...rest, at: new Date().toISOString() } } })
         .eq("id", body.deliverableId);
     }
-    if (d && body.screenshot) {
+    const shots: [string | undefined, string, string, string][] = [
+      [body.screenshot, "unity-screenshot.png", "유니티 화면", "합격 시험이 도는 동안 찍은 게임 화면"],
+      [body.portrait, "unity-portrait.png", "유니티 얼굴", "같은 카메라를 얼굴 앞으로 옮겨 찍은 정면 사진"],
+    ];
+    for (const [b64, filename, title, description] of shots) {
+      if (!d || !b64) continue;
       try {
-        const bytes = Buffer.from(body.screenshot, "base64");
         const r = await storeDeliverableFile(db, {
           companyId: company.id as string,
           deliverableId: body.deliverableId,
-          filename: "unity-screenshot.png",
-          body: new Uint8Array(bytes),
+          filename,
+          body: new Uint8Array(Buffer.from(b64, "base64")),
           kind: "image",
           mimeType: "image/png",
-          title: "유니티 화면",
-          description: "합격 시험이 도는 동안 찍은 게임 화면",
+          title,
+          description,
           producedByBackend: "unity",
         });
-        if (r.ok) files = [{ path: "유니티 화면.png", href: `/api/files/${r.file.id}` }];
-        else console.warn("[unity/checks] 사진 저장 실패:", r.error);
+        if (r.ok) (files ??= []).push({ path: `${title}.png`, href: `/api/files/${r.file.id}` });
+        else console.warn("[unity/checks] 사진 저장 실패:", filename, r.error);
       } catch (e) {
-        console.warn("[unity/checks] 사진 처리 실패:", e);
+        console.warn("[unity/checks] 사진 처리 실패:", filename, e);
       }
     }
   }

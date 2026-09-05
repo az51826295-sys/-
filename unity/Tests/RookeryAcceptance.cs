@@ -214,7 +214,36 @@ namespace Rookery.Tests
             System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(full));
             System.IO.File.WriteAllBytes(full, png);
             Assert.Greater(png.Length, 0, "빈 사진이 나왔습니다.");
+
+            // ── 정면 얼굴 사진 ──
+            // 3인칭 화면은 뒤통수뿐이라 "사람 같은가" 를 못 본다(09-06 00:34). 휴머노이드가
+            // 있으면 같은 카메라(후처리 그대로)를 얼굴 앞으로 옮겨 한 장 더 찍고 되돌린다.
+            var human = Object.FindObjectsByType<Animator>(FindObjectsSortMode.None).FirstOrDefault(a => a.isHuman);
+            var head = human != null ? human.GetBoneTransform(HumanBodyBones.Head) : null;
+            if (head != null)
+            {
+                var root = human.transform;
+                var savedPos = cam.transform.position; var savedRot = cam.transform.rotation; var savedFov = cam.fieldOfView;
+                var target = head.position + Vector3.down * 0.12f;           // 머리와 어깨가 같이 들어오게
+                cam.transform.position = target + root.forward * 1.4f + Vector3.up * 0.05f;
+                cam.transform.rotation = Quaternion.LookRotation(target - cam.transform.position, Vector3.up);
+                cam.fieldOfView = 28f;
+                var prt = new RenderTexture(1080, 1080, 24) { antiAliasing = Mathf.Max(1, QualitySettings.antiAliasing) };
+                cam.targetTexture = prt;
+                yield return null;
+                yield return null;
+                cam.targetTexture = prev;
+                cam.transform.position = savedPos; cam.transform.rotation = savedRot; cam.fieldOfView = savedFov;
+                var ptex = new Texture2D(1080, 1080, TextureFormat.RGB24, false);
+                RenderTexture.active = prt;
+                ptex.ReadPixels(new Rect(0, 0, 1080, 1080), 0, 0);
+                ptex.Apply();
+                RenderTexture.active = active;
+                System.IO.File.WriteAllBytes(System.IO.Path.GetFullPath(PortraitPath), ptex.EncodeToPNG());
+                Object.Destroy(ptex); prt.Release(); Object.Destroy(prt);
+            }
         }
+        public const string PortraitPath = "Library/Rookery/portrait.png";
 
         // ── 2. 화면에 보이는 것이 있는가 ─────────────────────────
         [UnityTest]

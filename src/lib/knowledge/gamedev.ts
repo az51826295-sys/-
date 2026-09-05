@@ -245,6 +245,19 @@ export const GAMEDEV_LESSONS: Lesson[] = [
   { id: "O3", role: "unity_code", verified: true,
     text: "파티클 렌더러 재질은 URP 에서 'Universal Render Pipeline/Particles/Unlit', Built-in 에서 'Particles/Standard Unlit'. Shader.Find 로 앞을 먼저 찾고 없으면 뒤로." },
 
+  // ── P. 14회차 (09-06 00:35) — 살아 있는 서 있기·발 IK·얼굴 사진. 캐릭터만(사장님 '끝' 까지) ──
+  // 읽은 것: 애니메이션 시스템은 Update 뒤 LateUpdate 전에 뼈를 쓴다 — 덮어쓰려면 LateUpdate
+  // (Unity 포럼·DeepMotion). idle 은 2~4초 호흡, 8~12초 무게 이동(MoCap Online). 발 IK 는
+  // 발 뼈에서 아래로 레이캐스트해 hit.point·hit.normal 로(Yarsa Labs·Lem Apperson).
+  { id: "P1", role: "unity_code", verified: false,
+    text: "서 있을 때 '얼어 있는' 캐릭터는 죽어 보인다(animator.speed = 0 의 대가, M5). 생성 AI 없이 코드로 살린다 — 휴머노이드 뼈를 **LateUpdate** 에서 살짝 더 돌린다(애니메이터가 쓴 뒤라 덮인다): 숨 = Chest 를 x 축으로 ±1.5° · 주기 3.5초(sin), Spine ±0.7°; 무게 이동 = Hips 를 x 로 ±0.015 m · 주기 8초; 머리 미세 끄덕임 ±0.8° · 주기 5초(위상 다르게). 속도가 0.05 이하일 때만 weight 를 1 로 올리고(0.3초 감쇠), 걸을 때는 0. 뼈는 animator.GetBoneTransform(HumanBodyBones.Chest/Spine/Hips/Head)." },
+  { id: "P2", role: "unity_code", verified: false,
+    text: "발 IK(휴머노이드, OnAnimatorIK): 컨트롤러 레이어 iKPass 켜기(N5). 각 발 뼈 위치 + 위 0.5 m 에서 아래로 1 m 레이캐스트(바닥 레이어), 맞으면 SetIKPositionWeight/RotationWeight(goal, w); SetIKPosition(goal, hit.point + hit.normal * 0.06f); SetIKRotation(goal, Quaternion.FromToRotation(Vector3.up, hit.normal) * transform.rotation). w 는 서 있을 때 1, 걸을 때 0.3(감쇠). 평평한 바닥에서도 발이 바닥을 정확히 딛는 것이 보인다." },
+  { id: "P3", role: "unity_code", verified: false,
+    text: "얼굴이 보이는 순간의 조명: 키 조명이 카메라 반대쪽에서 오면 얼굴이 검다. 캐릭터 앞(카메라 쪽) 위 45° 에 세기 0.4 의 **캐릭터 전용 필** Point/Spot(range 4 m, 그림자 끔)을 캐릭터 루트의 자식으로 두면 어디를 봐도 얼굴이 읽힌다. 세기 0.6 이상은 밀랍처럼 보인다." },
+  { id: "P4", role: "blueprint", verified: false,
+    text: "캐릭터 기준엔 정면 사진을 넣는다: '서 있으면 3초 안에 가슴이 오르내린다', '발바닥이 바닥에 닿아 있다(떠 있거나 묻히지 않는다)', '정면 사진에서 얼굴이 검지 않다'. 유니티 창이 정면 얼굴 사진을 같이 찍어 준다." },
+
   // ── C. 범위·설계 (설계도) ──
   { id: "C1", role: "blueprint", verified: true,
     text: "첫 조각은 한 화면·한 조작·한 목표. 만들기→시험→다듬기→내보내기를 한 번 끝까지 돌리는 것이 목표다." },
