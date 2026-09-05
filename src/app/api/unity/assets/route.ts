@@ -89,8 +89,11 @@ export async function GET(request: Request) {
   // Dev 가 낸 글 파일. C# 과 유니티가 읽는 글 자산(.inputactions·.asmdef·.json·.txt)만.
   // 09-05 Dev 가 .inputactions 를 냈는데 .cs 만 보내서 씬 빌더가 못 찾을 뻔했다.
   const TEXT_OK = [".cs", ".inputactions", ".asmdef", ".json", ".txt", ".shader", ".md"];
-  const scripts = deliverables
-    .filter((d) => d.deliverable_type === "app_build")
+  // **최신 판 하나만.** 19:15 에 옛 판의 씬 빌더가 새 판 스크립트와 섞여 컴파일 오류
+  // 셋이 났고, 그 상태로 시험을 걸자 유니티가 죽었다. 두 판이 같은 파일 이름을 쓰면
+  // 어느 것이 이기는지는 순서 문제일 뿐이다. 옛 판이 필요하면 대화에서 다시 시킨다.
+  const latestBuild = deliverables.find((d) => d.deliverable_type === "app_build");
+  const scripts = (latestBuild ? [latestBuild] : [])
     .flatMap((d) =>
       (d.content_json?.files ?? [])
         .filter((f) => TEXT_OK.some((ext) => f.path.endsWith(ext)))
