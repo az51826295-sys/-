@@ -127,7 +127,8 @@ namespace Rookery
                 AssetDatabase.CreateAsset(profile, profilePath);
             }
             AddOverride(profile, profileType, "Tonemapping", ("mode", 2)); // ACES
-            AddOverride(profile, profileType, "Bloom", ("intensity", 0.35f), ("threshold", 1.0f));
+            // 블룸 문턱 1.0 이면 흰 옷이 조금만 밝아도 번진다(00:58). 1.25 로.
+            AddOverride(profile, profileType, "Bloom", ("intensity", 0.25f), ("threshold", 1.25f));
             AddOverride(profile, profileType, "Vignette", ("intensity", 0.22f));
             AddOverride(profile, profileType, "ColorAdjustments", ("contrast", 12f), ("saturation", 8f));
             EditorUtility.SetDirty(profile);
