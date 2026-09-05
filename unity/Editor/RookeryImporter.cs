@@ -149,8 +149,7 @@ namespace Rookery
                 if (steps.MoveNext()) return;
                 EditorApplication.update -= Tick;
                 AssetDatabase.Refresh();
-                _status += "
-" + RookeryModels.PrepareAll();
+                _status += "\n" + RookeryModels.PrepareAll();
                 Repaint();
             }
             EditorApplication.update += Tick;
