@@ -51,8 +51,8 @@ export const GAMEDEV_LESSONS: Lesson[] = [
 
   { id: "F1", role: "mesh_assets", verified: false,
     text: "폴리 예산은 PC 20~50k 삼각형, 텍스처 2K 가 표준이다. 히어로 자산만 4K. 텍스처가 메시보다 메모리를 더 먹으니 메시를 깎기 전에 텍스처를 줄인다." },
-  { id: "F3", role: "mesh_assets", verified: false,
-    text: "유니티 임포트에서 Normals 는 Import(Calculate 아님), Read/Write 는 끈다. 모델이 안 보이면 Transform 크기 0·뒤집힌 법선·재질 없음 셋 중 하나다." },
+  { id: "F3", role: "mesh_assets", verified: true,
+    text: "**Meshy FBX 는 법선을 다시 계산한다**(읽은 글의 'Normals 는 Import' 는 AI 메시엔 틀렸다 — 09-06 01:24 실험). 그대로 들이면 옷에 네모난 얼룩이 지고, 노멀 맵·텍스처를 바꿔도 안 없어진다. ModelImporter: importNormals = Calculate, normalSmoothingAngle = 180, weldVertices = true, 탄젠트 CalculateMikk. 로키 창이 받을 때 자동으로 한다. Read/Write 는 끈다." },
 
   // ── K. 9회차 (09-05 20:00) — Meshy 공식 반입 점검표에서 더 읽은 것 ──
   { id: "K1", role: "mesh_assets", verified: false,

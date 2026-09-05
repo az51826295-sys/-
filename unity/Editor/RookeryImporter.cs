@@ -149,6 +149,8 @@ namespace Rookery
                 if (steps.MoveNext()) return;
                 EditorApplication.update -= Tick;
                 AssetDatabase.Refresh();
+                _status += "
+" + RookeryModels.PrepareAll();
                 Repaint();
             }
             EditorApplication.update += Tick;
@@ -260,6 +262,7 @@ namespace Rookery
             foreach (var t in payload.tests ?? Array.Empty<TestEntry>())
                 Debug.Log("[Rookery] " + RookeryFiles.WriteManaged(t.path, t.contents));
             AssetDatabase.Refresh();
+            Debug.Log("[Rookery] " + RookeryModels.PrepareAll());
         }
 
         /// 가져온 뒤 짓고 재기까지. -quit 없이 부른다 — 시험이 끝나면 스스로 나간다.
@@ -276,6 +279,34 @@ namespace Rookery
             var sb = new StringBuilder();
             foreach (var c in s) sb.Append(Array.IndexOf(Path.GetInvalidFileNameChars(), c) >= 0 || c == ' ' ? '_' : c);
             return sb.Length == 0 ? "asset" : sb.ToString();
+        }
+    }
+
+    /// 받은 FBX 의 임포트 설정. Meshy FBX 는 법선 데이터가 나빠서 그대로 들이면 옷에
+    /// 네모난 얼룩이 진다(09-06 01:24 실험: 노멀 맵도 텍스처도 아니었고, 법선을 다시
+    /// 계산하니 사라졌다). 그리고 재질의 발광(베이스컬러가 발광 맵에도 들어감)은
+    /// 씬 재질 정리에서 끈다(RookeryRender). 여기는 임포터만.
+    public static class RookeryModels
+    {
+        public static string PrepareAll()
+        {
+            var n = 0;
+            foreach (var guid in AssetDatabase.FindAssets("t:Model", new[] { "Assets/Rookery" }))
+            {
+                var path = AssetDatabase.GUIDToAssetPath(guid);
+                if (!path.EndsWith(".fbx", StringComparison.OrdinalIgnoreCase)) continue;
+                var imp = AssetImporter.GetAtPath(path) as ModelImporter;
+                if (imp == null) continue;
+                if (imp.importNormals == ModelImporterNormals.Calculate && Math.Abs(imp.normalSmoothingAngle - 180f) < 0.5f && imp.weldVertices) continue;
+                imp.importNormals = ModelImporterNormals.Calculate;
+                imp.normalCalculationMode = ModelImporterNormalCalculationMode.AreaAndAngleWeighted;
+                imp.normalSmoothingAngle = 180f;
+                imp.importTangents = ModelImporterTangents.CalculateMikk;
+                imp.weldVertices = true;
+                imp.SaveAndReimport();
+                n++;
+            }
+            return n == 0 ? "FBX 법선: 이미 정리됨" : $"✓ FBX {n}개 법선 다시 계산(180°·용접)";
         }
     }
 
