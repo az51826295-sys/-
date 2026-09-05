@@ -76,3 +76,27 @@ export function judgeCharacter(
 export function judgePrompt(text: string): Promise<PromptVerdict> {
   return call<PromptVerdict>("/api/judge/prompt", { text });
 }
+
+
+/** 3D 메시 판정 결과 — `engine/docs/asset-3d-intake-v0-design.md` 의 표. */
+export type MeshVerdict = {
+  verdict: "PASS" | "FAIL" | "UNDEFINED";
+  rules: { id: string; verdict: "PASS" | "FAIL" | "UNDEFINED"; measured: unknown; why: string }[];
+  measured: Record<string, unknown>;
+  thresholds: Record<string, unknown>;
+};
+
+/**
+ * GLB 하나를 잰다. 링크(생성기의 서명 링크)나 base64 로. 거르기만 한다.
+ * 리깅을 요청한 일이면 `wantRig` — 그래야 본 규칙(B1)이 종합에 들어간다.
+ */
+export function judgeMesh(
+  input: { glbUrl?: string | null; glbBase64?: string | null },
+  opts: { wantRig?: boolean } = {},
+): Promise<MeshVerdict> {
+  return call<MeshVerdict>("/api/judge/mesh", {
+    glb_url: input.glbUrl ?? null,
+    glb_base64: input.glbBase64 ?? null,
+    want_rig: opts.wantRig ?? false,
+  });
+}

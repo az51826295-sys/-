@@ -27,6 +27,8 @@ export type ChatTurnInput = {
   companyEmployeeId: string;
   /** 클라이언트가 들고 있는 대화 기록. 오래된 것은 서버가 자른다. */
   messages: { role: "user" | "assistant"; content: string }[];
+  /** 이번 턴에 올린 사진(data URL). 3D 처럼 그림이 입력인 일에 레퍼런스로 간다. */
+  images?: string[];
 };
 
 export type ChatOption = { label: string; description: string | null };
@@ -200,6 +202,9 @@ How to behave:
     description: output.assignment.description,
     expectedOutcome: output.assignment.expectedOutcome ?? undefined,
     priority: "normal",
+    // 사진이 왔으면 첫 장을 레퍼런스로 싣는다. 받는 직원의 입력 스키마에 그 칸이
+    // 없으면 zod 가 조용히 버린다 — 3D(Vox)만 받는다.
+    roleInput: input.images?.[0] ? { referenceImage: input.images[0] } : undefined,
   });
 
   if ("error" in created && created.error) {

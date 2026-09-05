@@ -71,6 +71,7 @@ export type ArtDirectionKnowledge = z.infer<typeof artDirectionKnowledgeSchema>;
 // 따로 묻는 칸이 없다. 빈 객체가 맞다.
 export const gameArtKnowledgeSchema = z.object({});
 export const appBuildKnowledgeSchema = z.object({});
+export const meshAssetsKnowledgeSchema = z.object({});
 
 export const roleKnowledgeSchemaRegistry = {
   art_direction_knowledge_v1: artDirectionKnowledgeSchema,
@@ -78,6 +79,7 @@ export const roleKnowledgeSchemaRegistry = {
   lead_research_knowledge_v1: leadResearchKnowledgeSchema,
   game_art_knowledge_v1: gameArtKnowledgeSchema,
   app_build_knowledge_v1: appBuildKnowledgeSchema,
+  mesh_assets_knowledge_v1: meshAssetsKnowledgeSchema,
 } as const;
 
 export type RoleKnowledgeSchemaId = keyof typeof roleKnowledgeSchemaRegistry;
@@ -114,6 +116,10 @@ export const artBibleAssignmentSchema = z.object({});
 
 export const gameAssetsAssignmentSchema = z.object({});
 export const appBuildAssignmentSchema = z.object({});
+// 3D 는 이미지 한 장이 입력이다. 대화에 올린 사진이 여기로 온다(data URL).
+export const meshAssetsAssignmentSchema = z.object({
+  referenceImage: z.string().optional().nullable(),
+});
 
 export const assignmentInputSchemaRegistry = {
   art_bible_assignment_v1: artBibleAssignmentSchema,
@@ -121,6 +127,7 @@ export const assignmentInputSchemaRegistry = {
   lead_research_assignment_v1: leadResearchAssignmentSchema,
   game_assets_assignment_v1: gameAssetsAssignmentSchema,
   app_build_assignment_v1: appBuildAssignmentSchema,
+  mesh_assets_assignment_v1: meshAssetsAssignmentSchema,
 } as const;
 
 export type AssignmentInputSchemaId = keyof typeof assignmentInputSchemaRegistry;

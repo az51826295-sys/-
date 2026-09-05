@@ -1,6 +1,7 @@
 import { artBibleSkill } from "@/lib/skills/artBible";
 import { appBuildSkill } from "@/lib/skills/appBuild";
 import { gameAssetsSkill } from "@/lib/skills/gameAssets";
+import { meshAssetsSkill } from "@/lib/skills/meshAssets";
 import { leadResearchSkill } from "@/lib/skills/leadResearch";
 import { marketResearchSkill } from "@/lib/skills/marketResearch";
 import { SkillNotFoundError, type EmployeeSkill } from "@/lib/skills/types";
@@ -15,6 +16,7 @@ export const employeeSkillRegistry: Record<string, EmployeeSkill> = {
   art_bible: artBibleSkill,
   game_assets: gameAssetsSkill,
   app_build: appBuildSkill,
+  mesh_assets: meshAssetsSkill,
   lead_research: leadResearchSkill,
 };
 
