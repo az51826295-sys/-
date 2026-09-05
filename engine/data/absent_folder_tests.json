@@ -1,0 +1,125 @@
+{
+ "why": "2026-09-05 엔진을 로키 저장소로 옮기며 game/·out/·audition/·data/repos 를 안 가져왔다. 여기 적힌 시험은 그 폴더를 읽는다. 옮긴 뒤 한 번 돌려서 떨어진 것만 적었다. 폴더가 생기면 conftest 가 다시 돌린다.",
+ "tests": [
+  {
+   "nodeid": "tests/test_classify_inc.py::test_v3a_tasks_are_banned_from_reuse",
+   "needs": "data/repos"
+  },
+  {
+   "nodeid": "tests/test_diversity_run.py::test_examples_are_loadable_and_go_into_the_prompt",
+   "needs": "out"
+  },
+  {
+   "nodeid": "tests/test_example_dose.py::test_each_arm_carries_exactly_its_dose_of_examples",
+   "needs": "out"
+  },
+  {
+   "nodeid": "tests/test_game_smoke.py::test_the_game_actually_moves_when_pressed",
+   "needs": "game"
+  },
+  {
+   "nodeid": "tests/test_game_smoke.py::test_the_check_fails_when_nothing_is_pressed",
+   "needs": "game"
+  },
+  {
+   "nodeid": "tests/test_game_smoke.py::test_korean_failure_messages_survive_the_pipe",
+   "needs": "game"
+  },
+  {
+   "nodeid": "tests/test_icon_export.py::test_the_manifest_matches_the_pick_record",
+   "needs": "game"
+  },
+  {
+   "nodeid": "tests/test_icon_export.py::test_every_exported_icon_has_ink",
+   "needs": "game"
+  },
+  {
+   "nodeid": "tests/test_icon_export.py::test_exported_size_matches_the_declared_size",
+   "needs": "game"
+  },
+  {
+   "nodeid": "tests/test_icon_export.py::test_the_game_fails_when_an_assembled_icon_is_missing",
+   "needs": "game"
+  },
+  {
+   "nodeid": "tests/test_icon_export.py::test_the_assembled_icons_all_load_in_the_engine",
+   "needs": "game"
+  },
+  {
+   "nodeid": "tests/test_icon_export.py::test_the_game_fails_when_a_character_direction_is_missing",
+   "needs": "game"
+  },
+  {
+   "nodeid": "tests/test_icon_export.py::test_the_assembly_declaration_matches_what_is_in_the_game",
+   "needs": "game"
+  },
+  {
+   "nodeid": "tests/test_icon_set_verdict.py::test_a_measured_set_rule_actually_bites",
+   "needs": "out"
+  },
+  {
+   "nodeid": "tests/test_icon_set_verdict.py::test_set_verdict_is_three_valued",
+   "needs": "out"
+  },
+  {
+   "nodeid": "tests/test_inspec_variants.py::test_there_are_assets_to_vary",
+   "needs": "audition"
+  },
+  {
+   "nodeid": "tests/test_inspec_variants.py::test_skipped_variants_carry_a_reason",
+   "needs": "audition"
+  },
+  {
+   "nodeid": "tests/test_retest_board.py::test_multi_pick_slots_are_excluded_from_the_verdict",
+   "needs": "out"
+  },
+  {
+   "nodeid": "tests/test_set_impact.py::test_every_concept_gets_a_row_and_the_best_is_marked",
+   "needs": "out"
+  },
+  {
+   "nodeid": "tests/test_set_impact.py::test_it_asks_instead_of_deciding",
+   "needs": "out"
+  },
+  {
+   "nodeid": "tests/test_set_impact.py::test_the_headline_number_matches_the_judge",
+   "needs": "out"
+  },
+  {
+   "nodeid": "tests/test_set_impact.py::test_a_set_that_cannot_improve_says_so",
+   "needs": "out"
+  },
+  {
+   "nodeid": "tests/test_snap_fix.py::test_snapping_a_compliant_icon_changes_nothing_visible",
+   "needs": "out"
+  },
+  {
+   "nodeid": "tests/test_spent.py::test_all_b83_tasks_detected",
+   "needs": "data/repos"
+  },
+  {
+   "nodeid": "tests/test_spent.py::test_registry_resolves_every_report_task_id",
+   "needs": "data/repos"
+  },
+  {
+   "nodeid": "tests/test_spent.py::test_registry_is_derived_not_hardcoded",
+   "needs": "data/repos"
+  },
+  {
+   "nodeid": "tests/test_spent.py::test_synthetic_world_ids_are_not_unresolved",
+   "needs": "data/repos"
+  },
+  {
+   "nodeid": "tests/test_taste_bench.py::test_real_session_records_a_no_promote",
+   "needs": "out"
+  },
+  {
+   "nodeid": "tests/test_tile_probe.py::test_real_pixellab_tiles_are_measured",
+   "needs": "audition"
+  },
+  {
+   "nodeid": "tests/test_village_map.py::test_게임에_들어_있는_지도도_같은_검사를_통과한다",
+   "needs": "game"
+  }
+ ]
+}
