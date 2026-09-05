@@ -187,6 +187,61 @@ namespace Rookery
         }
     }
 
+    /// 창 없이 같은 일을 한다. 배치모드 시험용이고, 자동화에도 쓴다:
+    ///   Unity -batchmode -quit -projectPath ... -executeMethod Rookery.RookeryHeadless.Import
+    /// 환경변수 ROOKERY_URL, ROOKERY_KEY, ROOKERY_FOLDER(기본 Assets/Rookery).
+    public static class RookeryHeadless
+    {
+        [Serializable] class FileEntry { public string id, deliverableId, subject, kind, filename, mime, verdict, createdAt, url; public long size; public bool wantRig; }
+        [Serializable] class ScriptEntry { public string deliverableId, subject, path, contents, createdAt; }
+        [Serializable] class Payload { public string company; public int count; public FileEntry[] files; public ScriptEntry[] scripts; public string note; }
+
+        public static void Import()
+        {
+            var url = Environment.GetEnvironmentVariable("ROOKERY_URL") ?? "https://rookery-web-production.up.railway.app";
+            var key = Environment.GetEnvironmentVariable("ROOKERY_KEY") ?? "";
+            var folder = Environment.GetEnvironmentVariable("ROOKERY_FOLDER") ?? "Assets/Rookery";
+            if (string.IsNullOrEmpty(key)) { Debug.LogError("[Rookery] ROOKERY_KEY 가 없습니다."); return; }
+
+            using var http = new System.Net.Http.HttpClient();
+            http.DefaultRequestHeaders.Add("x-rookery-key", key);
+            var json = http.GetStringAsync($"{url.TrimEnd('/')}/api/unity/assets").GetAwaiter().GetResult();
+            var payload = JsonUtility.FromJson<Payload>(json);
+            Debug.Log($"[Rookery] {payload.company}: 파일 {payload.files?.Length ?? 0}, 스크립트 {payload.scripts?.Length ?? 0}");
+            Directory.CreateDirectory(folder);
+
+            foreach (var f in payload.files ?? Array.Empty<FileEntry>())
+            {
+                var dir = Path.Combine(folder, Safe(f.subject) + (f.verdict == "PASS" ? "" : "_" + f.verdict));
+                Directory.CreateDirectory(dir);
+                var dest = Path.Combine(dir, f.filename);
+                var bytes = http.GetByteArrayAsync(f.url).GetAwaiter().GetResult();
+                File.WriteAllBytes(dest, bytes);
+                File.WriteAllText(dest + ".rookery.json",
+                    "{\"deliverableId\":\"" + f.deliverableId + "\",\"verdict\":\"" + f.verdict +
+                    "\",\"wantRig\":" + (f.wantRig ? "true" : "false") + ",\"createdAt\":\"" + f.createdAt + "\"}");
+                Debug.Log($"[Rookery] ✓ {dest} ({bytes.Length / 1024} KB, {f.verdict})");
+            }
+            foreach (var s in payload.scripts ?? Array.Empty<ScriptEntry>())
+            {
+                var dir = Path.Combine(folder, "Scripts", Safe(s.subject));
+                Directory.CreateDirectory(dir);
+                var dest = Path.Combine(dir, Path.GetFileName(s.path));
+                if (File.Exists(dest)) { Debug.Log($"[Rookery] = {dest} 이미 있음"); continue; }
+                File.WriteAllText(dest, s.contents);
+                Debug.Log($"[Rookery] ✓ {dest}");
+            }
+            AssetDatabase.Refresh();
+        }
+
+        static string Safe(string s)
+        {
+            var sb = new StringBuilder();
+            foreach (var c in s) sb.Append(Array.IndexOf(Path.GetInvalidFileNameChars(), c) >= 0 || c == ' ' ? '_' : c);
+            return sb.Length == 0 ? "asset" : sb.ToString();
+        }
+    }
+
     static class CharArrayExt
     {
         public static bool Contains(this char[] arr, char c) => Array.IndexOf(arr, c) >= 0;
