@@ -2,7 +2,7 @@ import { ExecutionError, setStep } from "@/lib/execution/shared";
 import type { EmployeeSkill, SkillRunContext } from "@/lib/skills/types";
 import { createImageProvider } from "@/lib/providers/images";
 import { defaultMeshProvider } from "@/lib/providers/meshy";
-import { judgeMesh, JudgeUnavailable, type MeshVerdict } from "@/lib/providers/judge";
+import { meshTextures, judgeMesh, JudgeUnavailable, type MeshVerdict } from "@/lib/providers/judge";
 import { z } from "zod";
 import { storeDeliverableFile } from "@/lib/deliverables/files";
 import { renderGamedevLessons } from "@/lib/knowledge/gamedev";
@@ -287,6 +287,26 @@ export const meshAssetsSkill: EmployeeSkill = {
     await put("rigged.fbx", riggedFbx, "application/octet-stream", "document", `${brief.subject} (리깅 FBX)`);
     await put("walking.fbx", walkingFbx, "application/octet-stream", "document", `${brief.subject} 걷기`);
     await put("running.fbx", runningFbx, "application/octet-stream", "document", `${brief.subject} 달리기`);
+
+    // ── PBR 맵 되찾기 ─────────────────────────────────────────────
+    // 리깅 FBX 에는 베이스컬러 하나만 온다(22:40 확인). 원본 GLB 의 노멀·금속거칠기
+    // 맵을 자에게서 유니티 묶음으로 받아 파일로 둔다 — Dev 의 씬 빌더가 리깅 재질에
+    // 붙인다. 생성 AI 를 다시 돌리지 않고 디테일을 올리는 자리(사장님 22:37).
+    if (glbBytes) {
+      try {
+        const maps = await meshTextures({ glbBase64: Buffer.from(glbBytes).toString("base64") });
+        if (maps.ok) {
+          const dec = (b64: string | null | undefined) => (b64 ? new Uint8Array(Buffer.from(b64, "base64")) : null);
+          await put("normal.png", dec(maps.normal_png), "image/png", "image", `${brief.subject} 노멀 맵`);
+          await put("metallic_smoothness.png", dec(maps.metallic_smoothness_png), "image/png", "image", `${brief.subject} 금속·매끄러움 맵(R=metallic, A=smoothness)`);
+          await put("occlusion.png", dec(maps.occlusion_png), "image/png", "image", `${brief.subject} 오클루전 맵`);
+        } else {
+          storageErrors.push(`pbr maps: ${maps.error ?? "?"}`);
+        }
+      } catch (e) {
+        storageErrors.push(`pbr maps: ${e instanceof Error ? e.message : String(e)}`);
+      }
+    }
     if (storageErrors.length) {
       await store
         .from("deliverables")

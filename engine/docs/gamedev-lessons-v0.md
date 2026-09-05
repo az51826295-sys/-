@@ -228,6 +228,24 @@ Dev 두 번째 유니티 판(규칙 G8~G11 적용 뒤): 컴파일 0 · 씬 빌�
   빌더 파일을 지우고 돈다.
 - verified: M1·M3·M6~M9·M12~M15. 읽은 것으로 남김: M2·M4·M5·M10·M11.
 
+## N. 12회차 (09-05 22:40~) — 캐릭터 디테일(생성 후) (교과 과정 6a)
+
+사장님 22:37: "캐릭터 생성 AI 는 최대한 쓰지 말고, 생성된 캐릭터에 디테일을 주는 거야."
+22:26 의 "조잡하다" 가 이 회차의 출발점이다.
+
+**22:40 발견(우리 것):** 원본 model.glb 의 재질에는 baseColor·normal·metallicRoughness
+세 맵이 다 있는데(각 2048), 리깅된 rigged.fbx 에는 baseColor 한 장뿐이다. 리깅은 같은
+메시·같은 UV 위에서 하니, 원본의 맵을 리깅 캐릭터 재질에 그대로 붙이면 된다 — 생성기를
+다시 돌리지 않는다. 자(판정 서비스)에 `/mesh/textures` 를 두어 GLB 에서 맵을 꺼내 유니티
+묶음(R=metallic, A=1−roughness)으로 바꿔 주고, Vox 가 normal.png·metallic_smoothness.png
+로 저장한다. 첫 캐릭터에는 손으로 되채웠다.
+
+읽은 것: 재질 smoothness/normal(Medium·Coohom), 림 조명(Unity Toon Shader 문서·Rimlight
+글), Humanoid IK(공식 OnAnimatorIK·SetLookAtWeight, UnityQueen 머리 추적, 발 IK 데브로그),
+Standard 셰이더 노멀/세부 노멀(공식), 3인칭 카메라(Game Developer·CG Cookie·Little Polygon).
+
+엔진에 들어간 것: N1~N8(unity_code), N9(blueprint). 전부 verified: false.
+
 ## D. 다음에 배울 것 (아직 안 읽음)
 
 - LOD Group 기본(거리별 메시 3단).
@@ -276,3 +294,12 @@ Dev 두 번째 유니티 판(규칙 G8~G11 적용 뒤): 컴파일 0 · 씬 빌�
   [Unity — ModelImporterClipAnimation.loopTime](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/ModelImporterClipAnimation-loopTime.html),
   [Unity — Importing humanoid animations](https://docs.unity3d.com/Manual/ConfiguringtheAvatar.html),
   [Kirwan — Mixamo → Unity](https://danielkirwan.medium.com/download-and-import-mixamo-animations-for-your-humanoid-character-in-unity-a04763203691)
+
+- 12회차: [Unity — OnAnimatorIK](https://docs.unity3d.com/ScriptReference/MonoBehaviour.OnAnimatorIK.html),
+  [Unity — SetLookAtWeight](https://docs.unity3d.com/ScriptReference/Animator.SetLookAtWeight.html),
+  [UnityQueen — head tracking](https://unityqueen.com/2026/08/04/how-to-add-head-tracking-to-any-character-in-unity-simple-universal-method/),
+  [Unity — normal maps](https://docs.unity3d.com/Manual/StandardShaderMaterialParameterNormalMap.html),
+  [Unity Toon Shader — Rim light](https://docs.unity3d.com/Packages/com.unity.toonshader@0.8/manual/Rimlight.html),
+  [Shaun Codes — materials tips](https://medium.com/@fulton_shaun/mastering-materials-in-unity-10-pro-tips-you-should-know-ac67c10b9a71),
+  [Game Developer — third person camera](https://www.gamedeveloper.com/design/third-person-camera-view-in-games-a-record-of-the-most-common-problems-in-modern-games-solutions-taken-from-new-and-retro-games),
+  [Little Polygon — cameras](https://blog.littlepolygon.com/posts/cameras/)

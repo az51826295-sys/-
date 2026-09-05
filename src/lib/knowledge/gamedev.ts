@@ -210,6 +210,28 @@ export const GAMEDEV_LESSONS: Lesson[] = [
   { id: "M12", role: "blueprint", verified: true,
     text: "고치는 판에서 **지난 기준은 id 그대로 남긴다.** 여러 개를 '핵심 회귀' 한 줄로 묶지 않는다 — 21:08 판에서 29개가 13개로 묶여 무엇이 유지됐는지 볼 수 없게 됐다. 새 기준은 뒤에 더한다." },
 
+  // ── N. 12회차 (09-05 22:40) — 캐릭터 디테일(생성 후). 교과 과정 6a ──
+  // 사장님: "캐릭터 생성 AI 는 최대한 쓰지 말고, 생성된 캐릭터에 디테일을." 22:40 발견:
+  // 원본 GLB 엔 노멀·금속거칠기 맵이 있고 리깅 FBX 엔 베이스컬러뿐 — 같은 UV 라 되붙인다.
+  { id: "N1", role: "unity_code", verified: false,
+    text: "캐릭터 폴더에 normal.png 와 metallic_smoothness.png 가 있으면(원본 GLB 에서 되찾은 것, R=metallic·A=smoothness 유니티 묶음) 씬 빌더가 리깅 재질에 붙인다: 노멀은 TextureImporter.textureType = TextureImporterType.NormalMap 으로 바꿔 SaveAndReimport 한 뒤 mat.SetTexture(\"_BumpMap\", t); mat.EnableKeyword(\"_NORMALMAP\"). 금속 맵은 ti.sRGBTexture = false 로 두고 mat.SetTexture(\"_MetallicGlossMap\", t); mat.EnableKeyword(\"_METALLICGLOSSMAP\"); mat.SetFloat(\"_GlossMapScale\", 1f). 재질은 캐릭터 인스턴스의 SkinnedMeshRenderer.sharedMaterial(꺼낸 .mat)." },
+  { id: "N2", role: "unity_code", verified: false,
+    text: "캐릭터 텍스처 임포트: maxTextureSize 2048, anisoLevel 8, mipmapEnabled true, textureCompression = CompressedHQ. 기본 aniso 1 은 비스듬한 청바지가 뭉개진다." },
+  { id: "N3", role: "unity_code", verified: false,
+    text: "안티앨리어싱: QualitySettings.antiAliasing = 4 (MSAA 4x, Built-in forward). 캐릭터 윤곽의 계단이 사라진다 — 사진에서 제일 먼저 보이는 싸구려 티." },
+  { id: "N4", role: "unity_code", verified: false,
+    text: "림(rim) 조명: 캐릭터 뒤-위(카메라 반대쪽, 회전 (35, 180+30, 0))에서 오는 Directional 하나, 세기 0.5~0.7, 색 살짝 차게(0.8, 0.9, 1), 그림자 끔. 윤곽에 얇은 빛이 생겨 배경에서 떨어져 보인다. 키·필·림 = 3점 조명 완성." },
+  { id: "N5", role: "unity_code", verified: false,
+    text: "머리가 가는 곳을 본다(Humanoid IK): Animator 컨트롤러 레이어에 IK Pass 를 코드로 켠다 — var L = ctrl.layers; L[0].iKPass = true; ctrl.layers = L. 캐릭터 스크립트에 void OnAnimatorIK(int layer) { anim.SetLookAtWeight(0.6f, 0.15f, 0.8f, 0f, 0.5f); anim.SetLookAtPosition(목표); } 목표는 이동 방향 앞 5 m(서 있으면 카메라가 보는 앞점). 사람처럼 보이게 하는 가장 싼 한 줄." },
+  { id: "N6", role: "unity_code", verified: false,
+    text: "발 IK(읽은 것): OnAnimatorIK 에서 각 발 아래로 0.6 m 레이캐스트 → SetIKPositionWeight(AvatarIKGoal.LeftFoot, w); SetIKPosition(goal, hit.point + up*0.05). 서 있을 때 w=1, 걸을 때 0.3. 평평한 바닥에선 차이가 작으니 첫 판엔 넣지 않아도 된다." },
+  { id: "N7", role: "unity_code", verified: false,
+    text: "상태 전이는 hasExitTime = false, duration 0.15~0.25초. 0 이면 걷기→달리기가 끊기고, 0.5 이상이면 굼뜨다." },
+  { id: "N8", role: "unity_code", verified: false,
+    text: "3인칭 카메라 프레이밍(읽은 것): 어깨 높이(1.4~1.6 m), 거리 3.5~4.5 m, FOV 55, 오른쪽으로 0.4 m 비껴서 캐릭터가 화면 중앙 아래 1/3 에. 정면 뒤통수 한가운데는 캐릭터도 앞도 안 보인다." },
+  { id: "N9", role: "blueprint", verified: false,
+    text: "캐릭터 디테일 기준: '옷 주름·머리결이 빛 방향에 따라 명암이 진다(노멀 맵)', '청바지는 무광이고 피부는 살짝 매끈하다(금속·매끄러움 맵)', '캐릭터 윤곽에 계단이 없다(MSAA)', '캐릭터 뒤쪽 윤곽에 얇은 빛이 있다(림)', '걷는 방향으로 머리가 돈다(IK)'. 전부 사진 한 장으로 확인된다." },
+
   // ── C. 범위·설계 (설계도) ──
   { id: "C1", role: "blueprint", verified: true,
     text: "첫 조각은 한 화면·한 조작·한 목표. 만들기→시험→다듬기→내보내기를 한 번 끝까지 돌리는 것이 목표다." },

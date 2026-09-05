@@ -79,7 +79,7 @@ const UNITY_RULES =
   "EditorBuildSettings.scenes 에 추가. 두 번 불려도 겹치지 않게(있으면 지우고 다시).\n" +
   "- 에디터 스크립트는 Editor 폴더에만 두고 `using UnityEditor;` 를 쓴다.\n" +
   "- 3D 자산이 업무에 이름으로 적혀 있으면 `Assets/Rookery/<제목>/model.fbx`(캐릭터는 " +
-  "`rigged.fbx`, 애니메이션은 `walking.fbx`·`running.fbx`)를 쓴다. 폴더 이름에 판정 접미사" +
+  "`rigged.fbx`, 애니메이션은 `walking.fbx`·`running.fbx`, PBR 맵은 `normal.png`·`metallic_smoothness.png`)를 쓴다. 폴더 이름에 판정 접미사" +
   "(`_FAIL`·`_UNDEFINED`)가 붙어 있을 수 있으니 AssetDatabase.FindAssets 로 찾아 경로에 제목이 " +
   "든 것을 고른다. **없으면 기본 도형**으로 짓되 어디에 무엇을 끼우면 되는지 주석에 적는다. " +
   "없는 파일을 가리키는 코드를 내지 마라. 리깅된 캐릭터는 임포트 설정(Humanoid)·클립 루프·" +

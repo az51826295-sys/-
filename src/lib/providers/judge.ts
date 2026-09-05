@@ -102,3 +102,25 @@ export function judgeMesh(
     profile: opts.profile ?? (opts.wantRig ? "character" : "prop"),
   });
 }
+
+export type PbrMaps = {
+  ok: boolean;
+  error?: string;
+  note?: string;
+  base_color_png?: string | null;
+  normal_png?: string | null;
+  metallic_smoothness_png?: string | null;
+  occlusion_png?: string | null;
+};
+
+/**
+ * 원본 GLB 의 PBR 맵(노멀·금속거칠기)을 유니티 묶음 PNG 로. 리깅 FBX 에는 베이스컬러
+ * 하나만 오기 때문에(09-05 22:40), 같은 UV 인 원본에서 되찾아 리깅 캐릭터에 붙인다 —
+ * 생성 AI 를 다시 돌리지 않고 디테일을 올리는 길.
+ */
+export function meshTextures(input: { glbUrl?: string | null; glbBase64?: string | null }): Promise<PbrMaps> {
+  return call<PbrMaps>("/api/judge/mesh/textures", {
+    glb_url: input.glbUrl ?? null,
+    glb_base64: input.glbBase64 ?? null,
+  });
+}
