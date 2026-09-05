@@ -3,6 +3,7 @@ import { getEmployeeDefinition } from "@/lib/employees/definitions";
 import { capabilityCatalogue } from "@/lib/chat/companyService";
 import { runChatTurn, type ChatOption } from "@/lib/chat/service";
 import { retrieveCompanyKnowledge } from "@/lib/knowledge/retrieval";
+import { releaseEmployee } from "@/lib/assignments/service";
 
 /**
  * 능력 하나를 맡을 사람을 찾고, 없으면 뽑고, 일을 넘긴다.
@@ -103,6 +104,10 @@ export async function delegate(
   // 그래야 그 사람이 지어내지 않고, 결과가 대화로 돌아왔을 때 매니저가
   // 한 줄 더 말해 주면 다음 판에는 그것이 실린다.
   await ensureKnowledgeProfile(db, companyId, hireId);
+
+  // 실패한 채 / 넘긴 채 서 있는 옛 일을 접는다. 안 그러면 새 일은 대기열에
+  // 들어가고, 대기열을 꺼내 줄 화면이 없어서 영영 안 시작된다(09-05 14:12).
+  await releaseEmployee(db, hireId);
 
   const turn = await runChatTurn({ companyEmployeeId: hireId, messages });
   if (!turn.ok) {

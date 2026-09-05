@@ -1,4 +1,5 @@
 import type { Supabase } from "@/lib/execution/shared";
+import { releaseEmployee } from "@/lib/assignments/service";
 
 /**
  * 시킨 일이 끝나면 **그 대화로** 돌아온다.
@@ -73,7 +74,7 @@ export async function collectWorkReturns(
     // 관계 이름을 박는다. assignments ↔ company_employees 는 길이 둘이라
     // (담당자 / 지금 하는 일) 이름 없이 부르면 PostgREST 가 거절한다(PGRST201).
     .select(
-      "id, title, status, failure_reason, " +
+      "id, title, status, failure_reason, company_employee_id, " +
         "company_employees!assignments_company_employee_id_fkey(employees(name))",
     )
     .in("id", waiting);
@@ -83,6 +84,7 @@ export async function collectWorkReturns(
     title: string;
     status: string;
     failure_reason: string | null;
+    company_employee_id: string;
     company_employees: { employees: { name: string } | null } | null;
   };
 
@@ -116,6 +118,10 @@ export async function collectWorkReturns(
 
     if (text === null) {
       pending += 1;
+      // 대기열에 있는 것은 누가 꺼내 줘야 시작된다. 그 사람이 실패한 일이나
+      // 넘긴 일에 막혀 있으면 여기서 풀어 준다 — 화면이 열려 있는 한 대기열은
+      // 저절로 움직인다.
+      if (a.status === "waiting") await releaseEmployee(db, a.company_employee_id);
       continue;
     }
 
@@ -126,8 +132,12 @@ export async function collectWorkReturns(
       attachments: { returned: { assignmentId: a.id, deliverableId } },
     });
     // 못 붙였으면 다음에 다시 시도한다 — 표시가 안 남았으니 다시 잡힌다.
-    if (!error) posted.push({ role: "assistant", content: text });
-    else pending += 1;
+    if (!error) {
+      posted.push({ role: "assistant", content: text });
+      // 대화에 붙은 것이 곧 승인이다(끝난 것) / 접는 것이다(실패). 그래야 그
+      // 사람이 다음 일을 받는다. 기다리던 일이 있으면 여기서 시작된다.
+      await releaseEmployee(db, a.company_employee_id, a.id);
+    } else pending += 1;
   }
 
   return { pending, posted };

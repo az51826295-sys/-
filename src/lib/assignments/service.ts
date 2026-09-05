@@ -365,3 +365,68 @@ export async function buildEmployeeWorkContext(
     },
   };
 }
+
+/**
+ * 사람을 풀어 준다 — 대화가 유일한 화면이 된 뒤의 규칙.
+ *
+ * 한 사람은 한 번에 한 일만 한다(부분 유니크 인덱스). 그런데 그 '한 일'에
+ * **실패한 일**과 **다 해서 넘긴 일(submitted)** 도 들어간다. 전에는 업무 화면에서
+ * 매니저가 다시 시키거나 승인해서 풀었는데, 그 화면은 09-05 에 지웠다. 그러자
+ * 14:12 에 실제로 이렇게 됐다: Dev 의 첫 일이 실패 → 다시 시키니 "대기열" →
+ * 아무도 안 꺼내 줘서 영영 대기.
+ *
+ * 그래서 이제 결과가 대화에 붙는 순간이 곧 승인이고, 실패는 접는 것이다:
+ * - failed   → cancelled (다시 하려면 다시 말하면 된다)
+ * - submitted → completed (매니저가 대화에서 봤다)
+ * 그리고 기다리던 다음 일이 있으면 꺼내서 시작을 건다.
+ *
+ * `only` 를 주면 그 업무만 푼다(결과를 방금 붙인 그것). 없으면 그 사람의 막힌
+ * 것을 전부 푼다(새 일을 시키기 직전).
+ */
+export async function releaseEmployee(
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  db: any,
+  companyEmployeeId: string,
+  only?: string,
+): Promise<{ released: string[]; started: string | null }> {
+  let q = db
+    .from("assignments")
+    .select("id, status")
+    .eq("company_employee_id", companyEmployeeId)
+    .in("status", ["failed", "submitted"]);
+  if (only) q = q.eq("id", only);
+  const { data: stuck } = await q;
+
+  const released: string[] = [];
+  const now = new Date().toISOString();
+  for (const a of (stuck ?? []) as { id: string; status: string }[]) {
+    const patch =
+      a.status === "failed"
+        ? { status: "cancelled", cancelled_at: now }
+        : { status: "completed", completed_at: now };
+    const { data: done } = await db
+      .from("assignments")
+      .update(patch)
+      .eq("id", a.id)
+      .eq("status", a.status)
+      .select("id")
+      .maybeSingle();
+    if (done) released.push(a.id);
+  }
+
+  if (released.length) {
+    await db
+      .from("company_employees")
+      .update({ work_status: "ready", current_assignment_id: null })
+      .eq("id", companyEmployeeId);
+  }
+
+  const started = await startNextQueued(db, companyEmployeeId);
+  if (started) {
+    // 기다리지 않는다 — 실행은 몇 분이고 이 호출은 지금 답해야 한다.
+    void import("@/lib/execution/service")
+      .then(({ startExecution }) => startExecution(started))
+      .catch(() => {});
+  }
+  return { released, started };
+}
