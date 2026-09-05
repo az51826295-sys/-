@@ -22,7 +22,8 @@ type Row = {
   created_at: string;
 };
 
-export type ReturnedTurn = { role: "assistant"; content: string };
+export type ReturnedFile = { path: string; contents: string };
+export type ReturnedTurn = { role: "assistant"; content: string; files?: ReturnedFile[] };
 
 /** 아직 안 끝난 일과, 이번에 새로 붙인 턴. */
 export type WorkReturns = { pending: number; posted: ReturnedTurn[] };
@@ -95,11 +96,14 @@ export async function collectWorkReturns(
     const name = a.company_employees?.employees?.name ?? "담당자";
     let text: string | null = null;
     let deliverableId: string | null = null;
+    // Dev 가 만든 파일. 본문에도 코드 블록으로 있지만, 사람이 쓰는 것은 파일이다
+    // — 저장해서 열어야 게임이 돈다. 그래서 따로 싣는다.
+    let files: ReturnedFile[] | undefined;
 
     if (DONE.has(a.status)) {
       const { data: d } = await db
         .from("deliverables")
-        .select("id, title, content_markdown")
+        .select("id, title, content_markdown, content_json")
         .eq("assignment_id", a.id)
         .order("version", { ascending: false })
         .limit(1)
@@ -107,6 +111,13 @@ export async function collectWorkReturns(
       if (d) {
         deliverableId = d.id as string;
         text = finishedText(name, (d.title as string) || a.title, d.content_markdown as string);
+        const made = (d.content_json as { files?: unknown } | null)?.files;
+        if (Array.isArray(made)) {
+          files = made
+            .filter((f): f is ReturnedFile =>
+              !!f && typeof (f as ReturnedFile).path === "string" && typeof (f as ReturnedFile).contents === "string")
+            .map((f) => ({ path: f.path, contents: f.contents }));
+        }
       } else {
         // 끝났다는데 산출물이 없다. 그것도 말한다 — 없는 것을 있는 것처럼
         // 기다리게 두면 사람은 영영 기다린다.
@@ -129,11 +140,11 @@ export async function collectWorkReturns(
       conversation_id: conversationId,
       role: "assistant",
       content: text,
-      attachments: { returned: { assignmentId: a.id, deliverableId } },
+      attachments: { returned: { assignmentId: a.id, deliverableId }, files: files ?? null },
     });
     // 못 붙였으면 다음에 다시 시도한다 — 표시가 안 남았으니 다시 잡힌다.
     if (!error) {
-      posted.push({ role: "assistant", content: text });
+      posted.push({ role: "assistant", content: text, files });
       // 대화에 붙은 것이 곧 승인이다(끝난 것) / 접는 것이다(실패). 그래야 그
       // 사람이 다음 일을 받는다. 기다리던 일이 있으면 여기서 시작된다.
       await releaseEmployee(db, a.company_employee_id, a.id);

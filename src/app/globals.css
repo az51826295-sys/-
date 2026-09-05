@@ -172,3 +172,30 @@ body:has(.pixel) {
 img.pixelated {
   image-rendering: pixelated;
 }
+
+/* 대화 칸 안의 마크다운 — 색은 칸을 따르고, 넓은 것은 칸 안에서만 넘친다. */
+.chat-md > * + * { margin-top: 0.6rem; }
+.chat-md h1, .chat-md h2, .chat-md h3 { font-weight: 700; margin-top: 1rem; }
+.chat-md h2 { font-size: 1.05rem; }
+.chat-md h3 { font-size: 1rem; }
+.chat-md ul, .chat-md ol { padding-left: 1.25rem; }
+.chat-md ul { list-style: disc; }
+.chat-md ol { list-style: decimal; }
+.chat-md li + li { margin-top: 0.25rem; }
+.chat-md pre {
+  overflow-x: auto;
+  max-height: 24rem;
+  padding: 0.75rem;
+  border: 1px solid var(--rk-200);
+  background: var(--rk-paper);
+  font-size: 12px;
+  line-height: 1.45;
+  white-space: pre;
+}
+.chat-md code { font-family: ui-monospace, Consolas, monospace; }
+.chat-md :not(pre) > code { padding: 0 0.25rem; background: var(--rk-200); }
+.chat-md img { max-width: 100%; image-rendering: pixelated; }
+.chat-md a { text-decoration: underline; }
+.chat-md hr { border: 0; border-top: 1px solid var(--rk-200); }
+.chat-md table { border-collapse: collapse; }
+.chat-md th, .chat-md td { border: 1px solid var(--rk-200); padding: 0.25rem 0.5rem; }

@@ -4,6 +4,7 @@ import { Waiting } from "@/components/Waiting";
 
 import { useEffect, useRef, useState } from "react";
 import Icon from "@/components/Icon";
+import { ChatMarkdown } from "@/components/ChatMarkdown";
 import RoutingNotice from "./RoutingNotice";
 
 /**
@@ -50,6 +51,8 @@ type Turn = {
   assignment?: { id: string; title: string; queued: boolean; returned?: boolean } | null;
   /** 시킨 일이 끝나서 돌아온 턴. 답이 아니라 **결과**라 조금 다르게 그린다. */
   returnedWork?: boolean;
+  /** 돌아온 일에 딸린 파일. 저장하거나 새 탭에서 연다. */
+  files?: { path: string; contents: string }[] | null;
   needsOnboarding?: { id: string; name: string } | null;
   options?: Option[] | null;
   sources?: Source[] | null;
@@ -102,11 +105,14 @@ export default function AskClient({
         if (!res.ok || !alive) return;
         const data = (await res.json()) as {
           pending: number;
-          posted: { role: "assistant"; content: string }[];
+          posted: { role: "assistant"; content: string; files?: { path: string; contents: string }[] }[];
         };
         if (!alive) return;
         if (data.posted.length > 0) {
-          setTurns((prev) => [...prev, ...data.posted.map((m) => ({ ...m, returnedWork: true }))]);
+          setTurns((prev) => [
+            ...prev,
+            ...data.posted.map((m) => ({ ...m, returnedWork: true, files: m.files ?? null })),
+          ]);
         }
         if (data.pending === 0) {
           // 더 기다릴 것이 없다. 표시를 바꿔 묻기를 멈춘다.
@@ -127,6 +133,24 @@ export default function AskClient({
       clearInterval(timer);
     };
   }, [conversationId, pendingWork]);
+
+  /**
+   * 돌아온 파일을 브라우저에서 연다 / 저장한다. 서버는 파일을 실행하지 않는다 —
+   * 여는 것은 사람의 브라우저다. HTML 한 파일짜리 게임이면 새 탭에서 바로 돈다.
+   */
+  function blobUrl(f: { path: string; contents: string }): string {
+    const type = f.path.endsWith(".html") ? "text/html" : "text/plain";
+    return URL.createObjectURL(new Blob([f.contents], { type }));
+  }
+  function openFile(f: { path: string; contents: string }) {
+    window.open(blobUrl(f), "_blank", "noopener");
+  }
+  function saveFile(f: { path: string; contents: string }) {
+    const a = document.createElement("a");
+    a.href = blobUrl(f);
+    a.download = f.path.split("/").pop() ?? "file";
+    a.click();
+  }
 
   /**
    * 파일을 base64 로. 데이터 URL 접두사는 떼고 보낸다 — 서버가 순수 base64 를 받는다.
@@ -338,7 +362,8 @@ export default function AskClient({
           <div key={i} className={t.role === "user" ? "text-right" : ""}>
             <div
               className={
-                "inline-block max-w-[85%] whitespace-pre-wrap border-2 border-[var(--rk-ink)] px-4 py-2.5 text-sm " +
+                "inline-block max-w-[85%] border-2 border-[var(--rk-ink)] px-4 py-2.5 text-sm " +
+                (t.role === "user" ? "whitespace-pre-wrap " : "") +
                 (t.role === "user"
                   ? "bg-[var(--rk-ink)] text-[var(--rk-paper)]"
                   : "bg-[var(--rk-100)] text-[var(--rk-ink)]") +
@@ -347,8 +372,31 @@ export default function AskClient({
                 (t.returnedWork ? " border-l-8 border-l-[#E0703A]" : "")
               }
             >
-              {t.content}
+              {t.role === "assistant" ? <ChatMarkdown>{t.content}</ChatMarkdown> : t.content}
             </div>
+            {t.files && t.files.length > 0 && (
+              <div className="mt-1.5 flex flex-wrap gap-2">
+                {t.files.map((f) => (
+                  <span key={f.path} className="flex items-center gap-1 text-xs">
+                    <code className="px-1">{f.path}</code>
+                    <button
+                      type="button"
+                      className="underline"
+                      onClick={() => openFile(f)}
+                    >
+                      열기
+                    </button>
+                    <button
+                      type="button"
+                      className="underline"
+                      onClick={() => saveFile(f)}
+                    >
+                      저장
+                    </button>
+                  </span>
+                ))}
+              </div>
+            )}
             {t.hired && (
               <p className="mt-1.5 text-xs text-[var(--rk-400)]">
                 {t.hired.name} 고용 — {t.hired.why}
