@@ -483,8 +483,13 @@ export async function runEverydayTurn(
       assignment = d.assignment;
       if (d.tail && d.tail !== reply) reply += `\n\n${d.tail}`;
       if (d.why) reply += `\n\n(맡기지 못했습니다: ${d.why})`;
-    } catch {
+    } catch (e) {
       // 위임이 터져도 답은 나간다. 사용자가 물은 것에 대한 답은 이미 있다.
+      // 다만 조용히 삼키면 "왜 업무가 안 생겼지" 를 아무도 모른다(08:02).
+      console.error("[everyday] 위임 실패:", e instanceof Error ? e.message : e);
+      reply += "
+
+(맡기는 데서 막혔습니다 — 다시 한 번 말씀해 주세요.)";
     }
   } else if (plan.capabilityId && !companyId) {
     // 여기 오는 것은 이제 로그인 안 한 사람뿐이다(로그인했으면 위에서 회사를
