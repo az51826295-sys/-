@@ -187,40 +187,73 @@ export const appBuildSkill: EmployeeSkill = {
     // ── 4. 기준과 함께 넘긴다 ───────────────────────────────────────
     const met = made.coverage.filter((c) => c.met).length;
 
-    const { data: deliverable } = await ctx.supabase
-      .from("deliverables")
-      .insert({
-        company_id: ctx.execution.company_id,
-        assignment_id: ctx.execution.assignment_id,
-        company_employee_id: ctx.execution.company_employee_id,
-        type: "app_build",
-        title: spec.title,
-        content: {
-          criteria: spec.criteria,
-          humanGate: spec.humanGate,
-          files,
-          howToRun: made.howToRun,
-          coverage: made.coverage,
-          // 파싱 결과를 그대로 싣는다. **미검사를 통과에 섞지 않는다** —
-          // 파서가 없는 언어를 "괜찮다"로 세면 검사가 있으나 마나가 된다.
-          verify: { ...verify, repaired, files: checks },
-          summary: { criteria: spec.criteria.length, met },
-          note:
-            `문법 검사: ${verify.parsed}개 파싱됨 · ${verify.broken}개 깨짐 · ` +
-            `${verify.unchecked}개는 파서가 없어 **미검사**` +
-            (repaired ? " (한 번 고쳤습니다)" : "") +
-            ". **돌려 보지는 않았습니다** — 생성된 코드를 서버에서 실행하면 " +
-            "그건 임의 코드 실행이고, 그 문을 열면 이 회사의 모든 열쇠가 그 " +
-            "코드 안에 있습니다. 파싱 통과는 작동을 뜻하지 않습니다. " +
-            "위 기준으로 확인해 주십시오 — 기준은 코드보다 먼저 쓰였습니다.",
-        },
-      })
-      .select("id")
-      .single();
+    const note =
+      `문법 검사: ${verify.parsed}개 파싱됨 · ${verify.broken}개 깨짐 · ` +
+      `${verify.unchecked}개는 파서가 없어 **미검사**` +
+      (repaired ? " (한 번 고쳤습니다)" : "") +
+      ". **돌려 보지는 않았습니다** — 생성된 코드를 서버에서 실행하면 " +
+      "그건 임의 코드 실행이고, 그 문을 열면 이 회사의 모든 열쇠가 그 " +
+      "코드 안에 있습니다. 파싱 통과는 작동을 뜻하지 않습니다. " +
+      "위 기준으로 확인해 주십시오 — 기준은 코드보다 먼저 쓰였습니다.";
 
-    if (!deliverable) {
-      throw new ExecutionError("UNKNOWN_ERROR", "산출물을 저장하지 못했다.");
+    const content = {
+      criteria: spec.criteria,
+      humanGate: spec.humanGate,
+      files,
+      howToRun: made.howToRun,
+      coverage: made.coverage,
+      // 파싱 결과를 그대로 싣는다. **미검사를 통과에 섞지 않는다** —
+      // 파서가 없는 언어를 "괜찮다"로 세면 검사가 있으나 마나가 된다.
+      verify: { ...verify, repaired, files: checks },
+      summary: { criteria: spec.criteria.length, met },
+      note,
+    };
+
+    // **읽을 수 있는 본문을 같이 만든다.** 결과가 돌아오는 자리는 대화 한 칸
+    // (09-05, 업무 화면은 없다)이라, JSON 만 저장하면 사람은 아무것도 못 본다.
+    // 파일은 코드 블록으로 통째로 싣는다 — HTML 한 파일이면 그대로 저장해 열면 된다.
+    const markdown =
+      `## 실행 방법\n\n${made.howToRun.trim()}\n\n` +
+      `## 합격 기준 (${met}/${spec.criteria.length} 지킴)\n\n` +
+      spec.criteria
+        .map((c) => {
+          const cov = made.coverage.find((x) => x.criterionId === c.id);
+          const mark = cov?.met ? "✅" : "❌";
+          return `- ${mark} **${c.when}** → ${c.then}` + (cov?.where ? ` _(${cov.where})_` : "");
+        })
+        .join("\n") +
+      (spec.humanGate.length
+        ? `\n\n## 사람이 봐야 하는 것\n\n${spec.humanGate.map((h) => `- ${h}`).join("\n")}`
+        : "") +
+      `\n\n## 파일 ${files.length}개\n\n` +
+      files
+        .map((f) => `### \`${f.path}\`\n\n\`\`\`${f.language}\n${f.contents}\n\`\`\``)
+        .join("\n\n") +
+      `\n\n---\n\n${note}`;
+
+    // 다른 직원들과 같은 문으로 넘긴다. 처음(08-28)에는 표에 없는 열(type·content)
+    // 로 직접 insert 했고, 그래서 Dev 는 09-05 까지 산출물을 **한 번도** 저장하지
+    // 못했다. 이 RPC 가 실행을 completed, 업무를 submitted 로 같이 옮긴다.
+    const { data: saved, error: saveError } = await ctx.supabase.rpc(
+      "submit_generated_deliverable",
+      {
+        p_execution_id: ctx.executionId,
+        p_title: spec.title,
+        p_deliverable_type: "app_build",
+        p_content_markdown: markdown,
+        p_content_json: content,
+        p_generation_model: ctx.providers.ai.model,
+        p_citations: [],
+      },
+    );
+    if (saveError) {
+      throw new ExecutionError("DELIVERABLE_SAVE_FAILED", saveError.message);
     }
+    const rpc = saved as { ok: boolean; reason?: string; deliverableId?: string };
+    if (!rpc.ok && !(rpc.reason === "already_submitted" && rpc.deliverableId)) {
+      throw new ExecutionError("DELIVERABLE_SAVE_FAILED", rpc.reason ?? "unknown");
+    }
+    const deliverable = { id: rpc.deliverableId as string };
 
     return {
       deliverableId: deliverable.id as string,

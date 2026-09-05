@@ -155,48 +155,66 @@ export const gameAssetsSkill: EmployeeSkill = {
     const unmeasured = judged.filter((j) => j.verdict.verdict === "UNDEFINED");
 
     // ── 5. 넘긴다. 순위 없이 ────────────────────────────────────────
-    const { data: deliverable } = await ctx.supabase
-      .from("deliverables")
-      .insert({
-        company_id: ctx.execution.company_id,
-        assignment_id: ctx.execution.assignment_id,
-        company_employee_id: ctx.execution.company_employee_id,
-        type: "game_assets",
-        title: brief.subject,
-        content: {
-          prompt: brief.prompt,
-          candidates: judged.map((j) => ({
-            index: j.index,
-            image: j.dataUrl,
-            verdict: j.verdict.verdict,
-            // 왜 떨어졌는지 없이 탈락만 보여 주면 다음 주문을 못 고친다.
-            why: j.verdict.fail ?? j.verdict.undefined ?? [],
-            measured: {
-              colors: j.verdict.colors,
-              saturation: j.verdict.saturation,
-              lumaSpread: j.verdict.luma_spread,
-              edgeContrast: j.verdict.in_context?.edge_contrast,
-            },
-          })),
-          // 세 값을 나눠 적는다. 미측정을 실패에 섞으면 "판정기가 없어서 못 쟀다"
-          // 와 "재 보니 못 쓴다"가 같은 칸에 들어가고, 그 둘은 다음에 할 일이 다르다.
-          summary: {
-            passed: passed.length,
-            rejected: rejected.length,
-            unmeasured: unmeasured.length,
-          },
-          drawFailures,
-          note:
-            "기계는 걸렀을 뿐 고르지 않았습니다. 통과한 것 중 무엇을 쓸지는 " +
-            "사람이 정합니다 — 순위는 매기지 않았습니다.",
-        },
-      })
-      .select("id")
-      .single();
+    const note =
+      "기계는 걸렀을 뿐 고르지 않았습니다. 통과한 것 중 무엇을 쓸지는 " +
+      "사람이 정합니다 — 순위는 매기지 않았습니다.";
+    const candidates = judged.map((j) => ({
+      index: j.index,
+      image: j.dataUrl,
+      verdict: j.verdict.verdict,
+      // 왜 떨어졌는지 없이 탈락만 보여 주면 다음 주문을 못 고친다.
+      why: j.verdict.fail ?? j.verdict.undefined ?? [],
+      measured: {
+        colors: j.verdict.colors,
+        saturation: j.verdict.saturation,
+        lumaSpread: j.verdict.luma_spread,
+        edgeContrast: j.verdict.in_context?.edge_contrast,
+      },
+    }));
+    const content = {
+      prompt: brief.prompt,
+      candidates,
+      // 세 값을 나눠 적는다. 미측정을 실패에 섞으면 "판정기가 없어서 못 쟀다"
+      // 와 "재 보니 못 쓴다"가 같은 칸에 들어가고, 그 둘은 다음에 할 일이 다르다.
+      summary: { passed: passed.length, rejected: rejected.length, unmeasured: unmeasured.length },
+      drawFailures,
+      note,
+    };
+    // 대화 한 칸에 돌아올 본문. 그림은 데이터 URL 이라 마크다운 이미지로 그대로 뜬다.
+    const markdown =
+      `**${brief.subject}** — 통과 ${passed.length} · 떨어짐 ${rejected.length} · 못 잼 ${unmeasured.length}\n\n` +
+      candidates
+        .map(
+          (c) =>
+            `### #${c.index} ${c.verdict}\n\n![후보 ${c.index}](${c.image})\n\n` +
+            (c.why.length ? c.why.map((w: string) => `- ${w}`).join("\n") : "(지적 없음)"),
+        )
+        .join("\n\n") +
+      (drawFailures.length ? `\n\n못 그린 것:\n${drawFailures.map((d) => `- ${d}`).join("\n")}` : "") +
+      `\n\n---\n\n${note}`;
 
-    if (!deliverable) {
-      throw new ExecutionError("UNKNOWN_ERROR", "산출물을 저장하지 못했다.");
+    // 다른 직원들과 같은 문으로 넘긴다(08-28 의 직접 insert 는 표에 없는 열을
+    // 써서 한 번도 저장된 적이 없다).
+    const { data: saved, error: saveError } = await ctx.supabase.rpc(
+      "submit_generated_deliverable",
+      {
+        p_execution_id: ctx.executionId,
+        p_title: brief.subject,
+        p_deliverable_type: "game_assets",
+        p_content_markdown: markdown,
+        p_content_json: content,
+        p_generation_model: ctx.providers.ai.model,
+        p_citations: [],
+      },
+    );
+    if (saveError) {
+      throw new ExecutionError("DELIVERABLE_SAVE_FAILED", saveError.message);
     }
+    const rpc = saved as { ok: boolean; reason?: string; deliverableId?: string };
+    if (!rpc.ok && !(rpc.reason === "already_submitted" && rpc.deliverableId)) {
+      throw new ExecutionError("DELIVERABLE_SAVE_FAILED", rpc.reason ?? "unknown");
+    }
+    const deliverable = { id: rpc.deliverableId as string };
 
     return {
       deliverableId: deliverable.id as string,
