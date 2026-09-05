@@ -244,6 +244,12 @@ namespace Rookery.Tests
             var moving = all
                 .Where((t, i) => t != null && Vector3.Distance(start[i], t.position) <= 0.01f)
                 .ToArray();
+            // 입력 없이 움직여서 뺀 것들. 09-05 에 플레이어가 여기 들어갔다 — 바닥에
+            // 묻힌 채 저장돼 시작하자마자 물리가 밀어 올렸고, 자는 "입력이 안 닿았다" 고
+            // 엉뚱한 진단을 냈다. 무엇을 뺐는지 적어야 사람이 그 자리를 본다.
+            var driftedNames = string.Join(", ", all
+                .Where((t, i) => t != null && Vector3.Distance(start[i], t.position) > 0.01f)
+                .Select((t) => t.name).Take(8));
             if (moving.Length == 0)
             {
                 // 무엇을 봤는지 숫자로 적는다. "하나도 없다"만 남기면 다음 사람이
@@ -381,8 +387,11 @@ namespace Rookery.Tests
 
             Assert.Greater(
                 moved, 0,
-                "WASD·화살표·스페이스를 차례로 눌렀는데 아무것도 안 움직였습니다. " +
-                "입력이 코드에 닿지 않았거나 조작이 붙지 않았습니다.");
+                "WASD·화살표·스페이스를 차례로 눌렀는데 가만히 있던 물체 중 아무것도 안 움직였습니다. " +
+                (driftedNames.Length > 0
+                    ? $"입력 없이 스스로 움직여서 재지 않은 물체: [{driftedNames}] — 플레이어가 여기 있으면 " +
+                      "시작 위치가 바닥에 묻혔거나 무언가가 시작하자마자 밀고 있는 것입니다."
+                    : "입력이 코드에 닿지 않았거나 조작이 붙지 않았습니다."));
 #else
             // 옛 입력만 켜진 프로젝트에서는 흉내 낼 길이 없다. 통과로 세지 않는다.
             yield return null;

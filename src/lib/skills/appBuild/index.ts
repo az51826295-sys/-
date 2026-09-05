@@ -88,6 +88,9 @@ const UNITY_RULES =
   "null 로 Material 을 만들지 마라.\n" +
   "- 씬 경로는 `Assets/Rookery/Scenes/<이름>.unity`. 다른 곳에 두면 가져오기 창이 못 찾는다.\n" +
   "- UI 글꼴이 필요하면 LegacyRuntime.ttf. Arial.ttf 는 없다.\n" +
+  "- MonoBehaviour 의 `Reset()` 은 에디터 콜백이라 씬 빌더의 AddComponent 순간에 불린다. " +
+  "거기서 transform 을 건드리지 마라 — 빌더가 놓은 위치를 조용히 덮어써 플레이어가 바닥에 묻힌다.\n" +
+  "- 플레이어는 바닥 **위**에 놓는다(캡슐이면 y = 높이/2). 시작하자마자 물리가 밀어 올리는 것은 결함이다.\n" +
   "- `howToRun`: '유니티에서 Window → Rookery → 가져오기 → 메뉴 Rookery/<이름> 짓기 → Play'.\n";
 
 const build = z.object({

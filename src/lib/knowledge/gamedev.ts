@@ -98,6 +98,9 @@ export const GAMEDEV_LESSONS: Lesson[] = [
   { id: "G9", role: "unity_code", verified: true,
     text: "씬 빌더는 Directional Light 를 반드시 하나 만든다. 없으면 3D 물체가 검게 나오고 합격 시험(삼차원이면_조명이_있다)에서 떨어진다 — 09-05 Dev 의 첫 유니티 판이 그랬다." },
 
+  { id: "G12", role: "unity_code", verified: true,
+    text: "MonoBehaviour.Reset() 은 에디터 콜백이다 — 씬 빌더가 AddComponent 하는 순간 불려 transform 을 덮어쓴다. 09-05 Dev 가 거기서 position = 0 을 해서 플레이어가 바닥에 묻힌 채 저장됐고, 시작하자마자 물리가 밀어 올려 자가 '입력 없이 움직인 물체' 로 빼 버렸다. Reset 에 transform 을 두지 않는다." },
+
   // ── C. 범위·설계 (설계도) ──
   { id: "C1", role: "blueprint", verified: true,
     text: "첫 조각은 한 화면·한 조작·한 목표. 만들기→시험→다듬기→내보내기를 한 번 끝까지 돌리는 것이 목표다." },
