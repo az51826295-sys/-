@@ -142,20 +142,23 @@ export const GAMEDEV_LESSONS: Lesson[] = [
     text: "플레이어 조작 반응이 먼저다. 입력 지연은 어떤 연출로도 못 살린다(글들의 첫 번째 규칙). 이동은 Update 에서 입력 읽어 Rigidbody 는 FixedUpdate 에서(B1), 점프가 있으면 coyote time·input buffer 100~150 ms." },
 
   // ── L. 10회차 (09-05 20:42) — 캐릭터 음영·그림자. 교과 과정 5번 ──
+  // 21:10 같은 동전 줍기에 "고쳐 줘: 빛과 그림자만" → 필 조명·그림자 품질·재질·near 가 코드에,
+  // URP 타입 0, 사진에서 회색 바닥 위 그림자·금속 동전·무광 캡슐이 보였다. L1~L6 확인.
+  // 안 나온 것: Trilight(Flat 앰비언트로 대신), shadowBias/normalBias(줄무늬가 없어서 안 건드림).
   // 읽은 것: 유니티 URP 그림자 문제 해결(공식), 7colors 의 bias 수치, 3점 조명 글들,
   // 포스트 프로세싱 글들, Meshy game-asset-pipeline README. 시험 프로젝트가 Built-in 이라
   // 규칙은 파이프라인을 가리지 않는 API(Light·QualitySettings·RenderSettings)로 적는다.
-  { id: "L1", role: "unity_code", verified: false,
+  { id: "L1", role: "unity_code", verified: true,
     text: "조명은 셋으로 짓는다(3점 조명의 게임판). ① 키(key): Directional, 회전 (50, -30, 0), 세기 1.0~1.2, 색은 살짝 따뜻하게(1, 0.96, 0.9), 그림자 Soft. ② 필(fill): Directional 하나 더, 키의 반대쪽(회전 (30, 150, 0)), 세기 0.25~0.35, 색은 살짝 차게(0.8, 0.85, 1), **그림자 끔**. ③ 앰비언트: RenderSettings.ambientMode = Trilight, skyColor 하늘색 0.5 배, equatorColor 회색 0.4, groundColor 어두운 0.2. 키 하나만 있으면 그림자 쪽 얼굴이 검다 — 09-05 동전 판이 그랬다." },
-  { id: "L2", role: "unity_code", verified: false,
+  { id: "L2", role: "unity_code", verified: true,
     text: "그림자 품질은 코드로 박는다: QualitySettings.shadows = ShadowQuality.All, shadowResolution = ShadowResolution.High, shadowDistance = 40(가까운 게임은 30~50 — 150 이상이면 텍셀이 늘어나 계단이 진다), shadowCascades = 4. 키 조명에 light.shadowBias = 0.03, light.shadowNormalBias = 0.6 (줄무늬(acne)면 normalBias 를 먼저 올리고, 그림자가 발에서 떨어지면(peter-panning) bias 를 내린다). shadowStrength 0.8 — 1.0 은 검정 구멍처럼 보인다." },
-  { id: "L3", role: "unity_code", verified: false,
+  { id: "L3", role: "unity_code", verified: true,
     text: "재질은 Standard 기본값(smoothness 0.5)이 플라스틱처럼 보인다. 바닥·벽·소품은 smoothness 0.15~0.3, metallic 0. 금속(동전·갑옷)만 metallic 0.8~1, smoothness 0.6~0.8. 순색(1,1,0)은 쓰지 않는다 — (0.95, 0.8, 0.2) 처럼 한 단계 죽인 색이 조명을 받는다. material.SetFloat(\"_Glossiness\", …) / (\"_Metallic\", …)." },
-  { id: "L4", role: "unity_code", verified: false,
+  { id: "L4", role: "unity_code", verified: true,
     text: "바닥은 순백이 아니다. 알베도 0.35~0.55 의 회색이나 옅은 색이어야 그림자가 읽힌다 — 흰 바닥은 그림자 대비가 죽고 화면 전체가 날아간다(20:28 사진의 바닥이 그랬다). 바닥 색은 배경(하늘)색과 달라야 지평선이 보인다." },
-  { id: "L5", role: "unity_code", verified: false,
+  { id: "L5", role: "unity_code", verified: true,
     text: "카메라 near 는 0.3, far 는 100. near 0.01 은 깊이 정밀도를 버려 그림자·z-fighting 이 나빠진다. 3인칭이면 FOV 50~60." },
-  { id: "L6", role: "unity_code", verified: false,
+  { id: "L6", role: "unity_code", verified: true,
     text: "**`using UnityEngine.Rendering.Universal;` 을 쓰지 않는다.** URP 가 없는 프로젝트에서 컴파일이 깨져 시험이 0개가 된다. 포스트 프로세싱(Tonemapping ACES·Bloom 0.2·Vignette 0.2)은 코드로 만들지 말고 howToRun 에 'URP 프로젝트면 Volume 을 추가해 …' 로 사람 손 한 줄로 적는다. 파이프라인이 있는지는 UnityEngine.Rendering.GraphicsSettings.currentRenderPipeline != null 로 안다(이건 어디서나 컴파일된다)." },
   { id: "L7", role: "unity_code", verified: false,
     text: "캐릭터(rigged.fbx 등)를 놓을 때: 키 조명이 얼굴 쪽 앞-위에서 오게(캐릭터가 카메라를 보면 키는 카메라 쪽 위), 캐릭터의 MeshRenderer/SkinnedMeshRenderer 는 shadowCastingMode On + receiveShadows true, 바닥은 그림자를 받는다. 얼굴이 검으면 필 조명이 없는 것이고, 발이 떠 보이면 그림자가 없는 것이다." },
