@@ -111,6 +111,9 @@ export type PbrMaps = {
   normal_png?: string | null;
   metallic_smoothness_png?: string | null;
   occlusion_png?: string | null;
+  /** 16회차: 피부 질감 — 코드로 만든 타일 모공 노멀과 피부 마스크(알파). */
+  detail_normal_png?: string | null;
+  detail_mask_png?: string | null;
 };
 
 /**

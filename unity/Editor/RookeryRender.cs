@@ -195,6 +195,39 @@ namespace Rookery
             return $"✓ 씬 {sc.name}: 전역 Volume + 카메라 {cams}대 후처리·SMAA + 재질 {swapped}개 URP 로";
         }
 
+        static bool ApplySkinDetail(Material m)
+        {
+            if (!m.HasProperty("_DetailNormalMap") || !m.HasProperty("_BaseMap")) return false;
+            var baseTex = m.GetTexture("_BaseMap");
+            if (baseTex == null) return false;
+            var basePath = AssetDatabase.GetAssetPath(baseTex);
+            if (string.IsNullOrEmpty(basePath) || !basePath.StartsWith("Assets/Rookery/")) return false;
+            // 텍스처는 <폴더>/rigged.fbm/texture_0.png 에 있다 — 캐릭터 폴더는 그 위.
+            var folder = Path.GetDirectoryName(basePath).Replace('\\', '/');
+            if (folder.EndsWith(".fbm")) folder = Path.GetDirectoryName(folder).Replace('\\', '/');
+            var detailPath = folder + "/detail_normal.png";
+            var maskPath = folder + "/detail_mask.png";
+            if (!File.Exists(detailPath) || !File.Exists(maskPath)) return false;
+            if (m.GetTexture("_DetailNormalMap") != null) return false; // 이미 얹음
+
+            var ti = AssetImporter.GetAtPath(detailPath) as TextureImporter;
+            if (ti != null && ti.textureType != TextureImporterType.NormalMap) { ti.textureType = TextureImporterType.NormalMap; ti.wrapMode = TextureWrapMode.Repeat; ti.SaveAndReimport(); }
+            var mi = AssetImporter.GetAtPath(maskPath) as TextureImporter;
+            if (mi != null && mi.sRGBTexture) { mi.sRGBTexture = false; mi.alphaSource = TextureImporterAlphaSource.FromInput; mi.SaveAndReimport(); }
+            var detail = AssetDatabase.LoadAssetAtPath<Texture2D>(detailPath);
+            var mask = AssetDatabase.LoadAssetAtPath<Texture2D>(maskPath);
+            if (detail == null || mask == null) return false;
+            m.SetTexture("_DetailNormalMap", detail);
+            m.SetTexture("_DetailMask", mask);
+            m.SetTexture("_DetailAlbedoMap", null);
+            m.SetFloat("_DetailAlbedoMapScale", 0f);
+            m.SetFloat("_DetailNormalMapScale", 0.6f);
+            m.SetTextureScale("_DetailAlbedoMap", new Vector2(22f, 22f)); // 디테일 UV 타일 — 두 맵이 같이 쓴다
+            m.EnableKeyword("_DETAIL_MULX2");
+            EditorUtility.SetDirty(m);
+            return true;
+        }
+
         static int UpgradeSceneMaterials()
         {
             var lit = Shader.Find("Universal Render Pipeline/Lit");
@@ -227,6 +260,9 @@ namespace Rookery
                             n++;
                         }
                     }
+                    // 피부 질감(16회차): 캐릭터 폴더에 detail_normal.png·detail_mask.png 가 있으면
+                    // URP Lit 의 Detail 슬롯에 얹는다(피부에만 — 마스크 알파). 사람 손 0회.
+                    if (name.StartsWith("Universal Render Pipeline/") && ApplySkinDetail(m)) n++;
                     if (name.StartsWith("Universal Render Pipeline/")) continue;
                     if (name == "Hidden/InternalErrorShader" || name == "Standard" || name.StartsWith("Legacy Shaders/") || name.StartsWith("Particles/"))
                     {

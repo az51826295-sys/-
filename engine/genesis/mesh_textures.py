@@ -26,6 +26,62 @@ class PbrMaps:
     metallic_smoothness_png: bytes | None
     occlusion_png: bytes | None
     note: str
+    # 16회차(09-06): 피부 질감. 타일 모공 노멀(코드로 만든 노이즈)과 피부 마스크.
+    detail_normal_png: bytes | None = None
+    detail_mask_png: bytes | None = None
+
+
+def make_pore_detail_normal(size: int = 1024, seed: int = 7) -> Image.Image:
+    """모공·잔결 디테일 노멀. 생성 AI 없이 노이즈로. 타일된다(가장자리 이어짐).
+    큰 결(값 노이즈 두 옥타브) + 작은 움푹(모공, 무작위 점 가우시안)을 높이로 만들고
+    기울기로 노멀을 낸다. 세기는 유니티 쪽 _DetailNormalMapScale 로 조절한다."""
+    rng = np.random.default_rng(seed)
+
+    def value_noise(cells: int) -> np.ndarray:
+        g = rng.random((cells, cells)).astype(np.float32)
+        img = Image.fromarray((g * 255).astype(np.uint8), "L")
+        # 타일되게: 격자를 3x3 으로 이어 붙여 키운 뒤 가운데를 자른다
+        big = Image.new("L", (cells * 3, cells * 3))
+        for i in range(3):
+            for j in range(3):
+                big.paste(img, (i * cells, j * cells))
+        up = big.resize((size * 3, size * 3), Image.BICUBIC).crop((size, size, size * 2, size * 2))
+        return np.asarray(up).astype(np.float32) / 255.0
+
+    height = 0.6 * value_noise(16) + 0.4 * value_noise(64)
+    # 모공: 점 5000개, 반지름 1.5~3 px 의 움푹
+    yy, xx = np.mgrid[0:size, 0:size]
+    pores = np.zeros((size, size), dtype=np.float32)
+    n = int(size * size / 260)
+    px = rng.integers(0, size, n); py = rng.integers(0, size, n); pr = rng.uniform(1.0, 2.2, n)
+    for x, y, r in zip(px, py, pr):
+        x0, x1, y0, y1 = int(x - 7), int(x + 8), int(y - 7), int(y + 8)  # 3σ 넘게 잡아야 둥글다
+        sub_y = np.arange(y0, y1) % size; sub_x = np.arange(x0, x1) % size
+        dy = (np.arange(y0, y1) - y)[:, None]; dx = (np.arange(x0, x1) - x)[None, :]
+        pores[np.ix_(sub_y, sub_x)] += np.exp(-(dx * dx + dy * dy) / (2 * r * r))
+    height = height - 0.35 * np.clip(pores, 0, 1)
+    # 기울기 → 노멀 (타일되게 roll 로)
+    dx = (np.roll(height, -1, axis=1) - np.roll(height, 1, axis=1)) * 0.5
+    dy = (np.roll(height, -1, axis=0) - np.roll(height, 1, axis=0)) * 0.5
+    strength = 6.0
+    nx, ny, nz = -dx * strength, -dy * strength, np.ones_like(height)
+    length = np.sqrt(nx * nx + ny * ny + nz * nz)
+    nx, ny, nz = nx / length, ny / length, nz / length
+    out = np.stack([(nx * 0.5 + 0.5) * 255, (ny * 0.5 + 0.5) * 255, (nz * 0.5 + 0.5) * 255], axis=-1).astype(np.uint8)
+    return Image.fromarray(out, "RGB")
+
+
+def skin_mask_from_base(base: Image.Image) -> Image.Image:
+    """피부 영역 마스크(흰색 = 피부). 디테일 노멀은 여기에만 얹는다. 알파에 담아
+    URP Lit 의 _DetailMask(알파) 에 맞춘다."""
+    from PIL import ImageFilter
+    hsv = np.asarray(base.convert("RGB").convert("HSV")).astype(np.float32) / 255.0
+    h, sat, val = hsv[..., 0] * 360.0, hsv[..., 1], hsv[..., 2]
+    skin = (h < 40) & (sat > 0.12) & (sat < 0.65) & (val > 0.35) & (val < 0.97)
+    m = Image.fromarray((skin * 255).astype(np.uint8), "L").filter(ImageFilter.GaussianBlur(max(1, base.size[0] // 512)))
+    a = np.asarray(m)
+    rgba = np.stack([a, a, a, a], axis=-1)
+    return Image.fromarray(rgba, "RGBA")
 
 
 def _parse_glb(data: bytes) -> tuple[dict, bytes]:
@@ -140,4 +196,7 @@ def extract_pbr_maps(data: bytes, material_index: int = 0) -> PbrMaps:
         f"metallicRoughness={'있음' if mr else '없음'} occlusion={'있음' if occ else '없음'}; "
         "metallic_smoothness 는 유니티 묶음(R=metallic, A=1−roughness)"
     )
-    return PbrMaps(_png(base), _png(normal), _png(packed), _png(occ.convert("L") if occ else None), note)
+    detail = make_pore_detail_normal()
+    mask = skin_mask_from_base(base) if base is not None else None
+    return PbrMaps(_png(base), _png(normal), _png(packed), _png(occ.convert("L") if occ else None), note,
+                   detail_normal_png=_png(detail), detail_mask_png=_png(mask))

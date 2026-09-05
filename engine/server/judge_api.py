@@ -208,4 +208,6 @@ def mesh_textures(req: TexturesRequest) -> dict:
         "normal_png": enc(maps.normal_png),
         "metallic_smoothness_png": enc(maps.metallic_smoothness_png),
         "occlusion_png": enc(maps.occlusion_png),
+        "detail_normal_png": enc(maps.detail_normal_png),
+        "detail_mask_png": enc(maps.detail_mask_png),
     }

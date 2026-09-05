@@ -300,6 +300,11 @@ export const meshAssetsSkill: EmployeeSkill = {
           await put("normal.png", dec(maps.normal_png), "image/png", "image", `${brief.subject} 노멀 맵`);
           await put("metallic_smoothness.png", dec(maps.metallic_smoothness_png), "image/png", "image", `${brief.subject} 금속·매끄러움 맵(R=metallic, A=smoothness)`);
           await put("occlusion.png", dec(maps.occlusion_png), "image/png", "image", `${brief.subject} 오클루전 맵`);
+          // 피부 질감(16회차): 캐릭터에만. 유니티 창이 재질의 Detail 슬롯에 얹는다.
+          if (brief.wantRig) {
+            await put("detail_normal.png", dec(maps.detail_normal_png), "image/png", "image", `${brief.subject} 피부 디테일 노멀(타일)`);
+            await put("detail_mask.png", dec(maps.detail_mask_png), "image/png", "image", `${brief.subject} 피부 마스크(알파)`);
+          }
         } else {
           storageErrors.push(`pbr maps: ${maps.error ?? "?"}`);
         }
