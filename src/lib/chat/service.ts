@@ -219,10 +219,14 @@ How to behave:
   }
   if (input.requireAssignment && !output.assignment) {
     // 말만 하고 일을 안 받았다. 한 번 더 — 이번엔 그것만 시킨다.
-    ({ output } = await ask(
-      "\n- Your previous attempt returned \"assignment\": null for a request that is work. " +
-        "Fill \"assignment\" now (title 10+ chars, description 20+ chars). No options, no questions.",
-    ));
+    try {
+      ({ output } = await ask(
+        "\n- Your previous attempt returned \"assignment\": null for a request that is work. " +
+          "Fill \"assignment\" now (title 10+ chars, description 20+ chars). No options, no questions. Reply in one sentence.",
+      ));
+    } catch (e) {
+      console.warn("[chat] 두 번째 접수 답도 못 받음:", e instanceof Error ? e.message : e);
+    }
   }
   if (input.requireAssignment && !output.assignment) {
     // 두 번 시켜도 비웠다(22:54 Dev). 모델의 판단이 아니라 규칙이다: 이 턴은 일이다.
