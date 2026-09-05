@@ -269,6 +269,20 @@ namespace Rookery.Tests
             // 게임 탓으로 적는 자리라, 여기서 켜고 끝나면 되돌린다.
             var savedBackground = InputSystem.settings.backgroundBehavior;
             InputSystem.settings.backgroundBehavior = InputSettings.BackgroundBehavior.IgnoreFocus;
+            // **에디터 안에서는 이것까지 켜야 한다.** 09-03 에 IgnoreFocus 만 켜고
+            // "장치는 켜졌는데 게임은 못 본다" 를 봤다. 입력 시스템 소스
+            // (InputManager.cs) 를 읽으니 이유가 이렇다: 에디터는 게임 뷰에
+            // 포커스가 없으면 키보드·포인터 이벤트를 플레이어 갱신에서 **에디터
+            // 갱신으로 미룬다**(editorInputBehaviorInPlayMode 의 기본값
+            // PointersAndKeyboardsRespectGameViewFocus). 그리고 `InputSystem.Update()`
+            // 도 포커스가 없으면 에디터 갱신으로 돈다. 그래서 이 시험은 에디터
+            // 상태 버퍼에서 눌림을 읽었고, 게임의 Update 는 플레이어 버퍼를 읽어
+            // 아무것도 못 봤다 — 둘이 다른 버퍼를 보고 있었다.
+            // `gameHasFocus` 가 참이 되는 조건은 IgnoreFocus **그리고**
+            // AllDeviceInputAlwaysGoesToGameView, 둘 다다. 시험 끝에 되돌린다.
+            var savedEditorBehavior = InputSystem.settings.editorInputBehaviorInPlayMode;
+            InputSystem.settings.editorInputBehaviorInPlayMode =
+                InputSettings.EditorInputBehaviorInPlayMode.AllDeviceInputAlwaysGoesToGameView;
             var keyboard = InputSystem.AddDevice<Keyboard>();
             // 포커스가 없어 꺼진 장치를 명시적으로 켠다. IgnoreFocus 만으로는 09-03 에
             // 대조군이 여전히 키를 못 봤다.
@@ -351,6 +365,7 @@ namespace Rookery.Tests
             Object.Destroy(probe.gameObject);
             InputSystem.RemoveDevice(keyboard);
             InputSystem.settings.backgroundBehavior = savedBackground;
+            InputSystem.settings.editorInputBehaviorInPlayMode = savedEditorBehavior;
 
             if (moved == 0 && !probeSaw)
                 Assert.Inconclusive(
