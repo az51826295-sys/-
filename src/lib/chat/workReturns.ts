@@ -137,11 +137,28 @@ export async function collectWorkReturns(
         text = failedText(name, a.title, "끝났다고 적혀 있는데 산출물이 없습니다.");
       }
     } else if (DEAD.has(a.status)) {
-      text = failedText(name, a.title, a.failure_reason);
+      // failure_reason 은 코드(UNKNOWN_ERROR)뿐이라 사람이 읽을 게 없다. 실행 행의
+      // 오류 문장을 같이 보여 준다 — 09-05 에 "UNKNOWN_ERROR" 만 보고 아무도 무엇이
+      // 잘못됐는지 몰랐다. 길면 자른다.
+      const { data: ex } = await db
+        .from("work_executions")
+        .select("error_message")
+        .eq("assignment_id", a.id)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      const detail = (ex?.error_message as string | null)?.slice(0, 300);
+      text = failedText(name, a.title, detail ? `${a.failure_reason ?? ""} — ${detail}` : a.failure_reason);
     }
 
     if (text === null) {
       pending += 1;
+      // **죽은 실행을 죽었다고 적는다.** 서버가 배포로 재시작되면 그 안에서 돌던
+      // 실행은 그냥 사라진다 — 행은 'running' 인 채로(09-05 17:57 에 실제로 그랬다:
+      // Dev 의 유니티 판이 18분째 '생성 중'). 그러면 사람은 영영 기다리고 그 직원은
+      // 영영 막힌다. 한 단계가 이만큼 오래 안 움직였으면 끊긴 것이다. 실패로 적어
+      // 대화로 돌아오게 하고(다음 폴링), 사람이 다시 시키면 된다.
+      await failIfStale(db, a.id, a.title);
       // 대기열에 있는 것은 누가 꺼내 줘야 시작된다. 그 사람이 실패한 일이나
       // 넘긴 일에 막혀 있으면 여기서 풀어 준다 — 화면이 열려 있는 한 대기열은
       // 저절로 움직인다.
@@ -165,4 +182,27 @@ export async function collectWorkReturns(
   }
 
   return { pending, posted };
+}
+
+
+/** 한 단계가 이보다 오래 안 움직이면 끊긴 것으로 본다. 코드 생성이 제일 길고, 10분을 넘긴 적이 없다. */
+const STALE_MS = 20 * 60_000;
+
+async function failIfStale(db: Supabase, assignmentId: string, title: string): Promise<void> {
+  const { data: e } = await db
+    .from("work_executions")
+    .select("id, status, updated_at, current_step")
+    .eq("assignment_id", assignmentId)
+    .in("status", ["queued", "running"])
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (!e) return;
+  const age = Date.now() - new Date(e.updated_at as string).getTime();
+  if (age < STALE_MS) return;
+  await db.rpc("fail_work_execution", {
+    p_execution_id: e.id,
+    p_error_code: "UNKNOWN_ERROR",
+    p_error_message: `'${e.current_step}' 단계에서 ${Math.round(age / 60_000)}분 동안 소식이 없다 — 서버가 재시작돼 실행이 끊긴 것으로 본다 (${title}).`,
+  });
 }
