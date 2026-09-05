@@ -183,7 +183,7 @@ export const appBuildSkill: EmployeeSkill = {
         "너는 이 회사의 개발자다. **아직 코드를 쓰지 마라.**\n\n" +
         "먼저 이 앱이 무엇을 해야 하는지를 **사람이 직접 확인할 수 있는 문장**으로 " +
         "적는다. '빠르다'가 아니라 '목록이 50개일 때 스크롤이 끊기지 않는다' 처럼.\n\n" +
-        `기준은 ${MIN_CRITERIA}개 이상. 확인할 수 없는 것(예쁨·쓰기 편함)은 ` +
+        `기준은 ${MIN_CRITERIA}개 이상, 40개 이하. 한 기준은 두 문장 안에. 확인할 수 없는 것(예쁨·쓰기 편함)은 ` +
         "`humanGate` 에 따로 적는다 — 억지로 기준인 척하지 마라.\n\n" +
         "`target`: 게임·3D·유니티·캐릭터·씬 이야기면 **unity**(이 회사의 게임은 유니티 " +
         "안에서 산다 — HTML 게임을 내지 마라). 웹 도구·페이지·스크립트면 web. 모르면 unity.\n" +
@@ -205,7 +205,10 @@ export const appBuildSkill: EmployeeSkill = {
           : ""),
       schema: plan,
       schemaName: "app_plan",
-      maxTokens: 6000,
+      // 고치는 판은 지난 기준(29개)을 다 되쓰고 새 것을 더한다 — 6000 에서 잘려
+      // 21:40 캐릭터 판이 설계 단계에서 죽었다(MODEL_OUTPUT_TRUNCATED). gpt-5 는 추론
+      // 토큰도 여기서 센다.
+      maxTokens: 16000,
       tier: "judgment",
     });
 
