@@ -91,10 +91,17 @@ def extract_pbr_maps(data: bytes, material_index: int = 0) -> PbrMaps:
 
     packed = None
     if mr is not None:
-        arr = np.asarray(mr.convert("RGB")).astype(np.float32) / 255.0
+        # Meshy 의 거칠기 맵은 얼룩덜룩하다(AI 노이즈). 그대로 붙이면 셔츠에 네모난
+        # 하이라이트 얼룩이 진다(09-06 00:46 정면 사진). 넓게 흐리고(2048 기준 반지름 10)
+        # 매끄러움 범위를 0.1~0.55 로 눌러 하이라이트가 튀지 않게 한다 — 생성기를 다시
+        # 돌리지 않고 되는 일.
+        from PIL import ImageFilter
+        blur_r = max(2, mr.size[0] // 200)
+        mr_s = mr.convert("RGB").filter(ImageFilter.GaussianBlur(blur_r))
+        arr = np.asarray(mr_s).astype(np.float32) / 255.0
         rough = arr[..., 1] * float(pbr.get("roughnessFactor", 1.0))
         metal = arr[..., 2] * float(pbr.get("metallicFactor", 1.0))
-        smooth = 1.0 - rough
+        smooth = 0.10 + 0.45 * (1.0 - rough)
         out = np.zeros((*arr.shape[:2], 4), dtype=np.uint8)
         out[..., 0] = np.clip(metal * 255, 0, 255)
         out[..., 1] = out[..., 0]
