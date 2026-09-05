@@ -75,3 +75,12 @@ docs/               # architecture, decisions, progress
 
 See [docs/architecture.md](docs/architecture.md) for how the pieces fit, and
 [docs/progress.md](docs/progress.md) for what to build next.
+
+## 배포 (2026-09-05, 로키 저장소 안으로 옮긴 뒤)
+
+저장소 **루트**에서:
+
+    railway up engine --path-as-root --service judge
+
+`cd engine` 뒤에 `railway up` 을 하면 CLI 가 저장소 루트를 통째로 올려서 judge
+자리에 Next 앱이 뜬다 — 09-05 에 그렇게 한 번 죽였다. `--path-as-root` 가 자리다.
