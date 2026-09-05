@@ -1,0 +1,20 @@
+# 예시 기준 스펙 — 골든 케이스와 분할 검사가 이 파일로 돈다.
+# 실전 기준은 실험별로 이 형태를 복제해 등록·동결한다.
+criterion_id: example-ab
+version: 1
+eligibility:
+  min_runs_per_arm: 10
+  min_completion_rate: 0.5
+  max_stale_rate: 0.2
+  max_unresolved_rate: 0.2
+constructs:
+  - name: calls_per_success
+    unit: calls
+    derived_from: [calls_total, successes]
+    formula: ratio
+margin:
+  k: 1.0
+  sigma: 2.0        # 이 지표 단위의 측정 σ (실험별 실측으로 대체)
+decision:
+  metric: calls_per_success
+  better: lower

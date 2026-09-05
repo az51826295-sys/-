@@ -1,0 +1,20 @@
+[
+ {"task": "tX", "arm": "BS", "rep": 0, "round": 0,
+  "hypotheses": [
+   {"file": "src/a.py", "function": "foo"},
+   {"file": "src/b.py", "function": "bar"}],
+  "chosen": [{"file": "src/a.py", "function": "foo"}],
+  "validation": [
+   {"file": "src/a.py", "function": "foo", "resolved": "foo"},
+   {"file": "src/b.py", "function": "bar", "resolved": null}],
+  "negative": ["src/b.py::bar — 심볼 없음"]},
+ {"task": "tX", "arm": "BS", "rep": 0, "round": 1,
+  "hypotheses": [
+   {"file": "src/b.py", "function": "bar"},
+   {"file": "src/a.py", "function": "baz"}],
+  "chosen": [{"file": "src/a.py", "function": "baz"}],
+  "validation": [
+   {"file": "src/b.py", "function": "bar", "resolved": null},
+   {"file": "src/a.py", "function": "baz", "resolved": "baz"}],
+  "negative": ["src/b.py::bar — 심볼 없음"]}
+]

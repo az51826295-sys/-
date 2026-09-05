@@ -1,0 +1,68 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "df636eee71122ee668e5b3207f3741477f1bdbf2",
+ "parent_commit": "7d41aaa67a174856837230228522fae414e1eae1",
+ "answer_functions": [
+  "marshmallow/fields.py::decorated",
+  "marshmallow/fields.py::get_value",
+  "marshmallow/fields.py::validated"
+ ],
+ "repro_tests": [
+  "tests/test_marshmallow.py::test_required_field_failure",
+  "tests/test_marshmallow.py::test_required_list_field_failure",
+  "tests/test_marshmallow.py::test_serialization_with_required_field",
+  "tests/test_marshmallow.py::test_serialization_with_required_field_and_custom_validator"
+ ],
+ "smoke": [
+  "tests/test_marshmallow.py::TestFields::test_bad_list_field",
+  "tests/test_marshmallow.py::TestFields::test_date_field",
+  "tests/test_marshmallow.py::TestFields::test_datetime_field"
+ ],
+ "baseline_pass_count": 134,
+ "probes": [
+  {
+   "applied": "marshmallow/fields.py::validated",
+   "a_repro_pass": false,
+   "b_smoke_pass": true,
+   "c_no_regression": true,
+   "regressed": [],
+   "d_unmet": [
+    "tests/test_marshmallow.py::test_required_field_failure",
+    "tests/test_marshmallow.py::test_required_list_field_failure",
+    "tests/test_marshmallow.py::test_serialization_with_required_field",
+    "tests/test_marshmallow.py::test_serialization_with_required_field_and_custom_validator"
+   ],
+   "inc_event": false
+  },
+  {
+   "applied": "marshmallow/fields.py::decorated",
+   "a_repro_pass": false,
+   "b_smoke_pass": true,
+   "c_no_regression": true,
+   "regressed": [],
+   "d_unmet": [
+    "tests/test_marshmallow.py::test_required_field_failure",
+    "tests/test_marshmallow.py::test_required_list_field_failure",
+    "tests/test_marshmallow.py::test_serialization_with_required_field",
+    "tests/test_marshmallow.py::test_serialization_with_required_field_and_custom_validator"
+   ],
+   "inc_event": false
+  },
+  {
+   "applied": "marshmallow/fields.py::get_value",
+   "a_repro_pass": false,
+   "b_smoke_pass": true,
+   "c_no_regression": true,
+   "regressed": [],
+   "d_unmet": [
+    "tests/test_marshmallow.py::test_required_field_failure",
+    "tests/test_marshmallow.py::test_required_list_field_failure",
+    "tests/test_marshmallow.py::test_serialization_with_required_field",
+    "tests/test_marshmallow.py::test_serialization_with_required_field_and_custom_validator"
+   ],
+   "inc_event": false
+  }
+ ],
+ "inc_event": false,
+ "regression_event": false
+}

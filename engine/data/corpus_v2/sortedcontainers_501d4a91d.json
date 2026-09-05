@@ -1,0 +1,26 @@
+{
+ "repo": "sortedcontainers",
+ "fix_commit": "501d4a91def6fa3a715c712fc3eb700a44144b2b",
+ "parent_commit": "bc44999b262b61e9c4c1ce825b25589fbd5f1464",
+ "answer_files": [],
+ "answer_functions": [],
+ "patch_lines": 10,
+ "added_tests": {
+  "tests/test_coverage_sortedlist.py::test_setitem_empty_slice": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "tests/test_coverage_sortedlist.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 5.1,
+ "env_error_tests": 1,
+ "qualified": false,
+ "selector_event_proxy_v1": false
+}

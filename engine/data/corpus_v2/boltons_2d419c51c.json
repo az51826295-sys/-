@@ -1,0 +1,37 @@
+{
+ "repo": "boltons",
+ "fix_commit": "2d419c51c81e074e362459a05f6e11221dfb9e18",
+ "parent_commit": "2c0004f9f7f70bd1eefb1dd17e1d2291d576185e",
+ "answer_files": [
+  "boltons/iterutils.py"
+ ],
+ "answer_functions": [
+  "boltons/iterutils.py::default_handle_item",
+  "boltons/iterutils.py::default_handle_pop",
+  "boltons/iterutils.py::default_handle_push",
+  "boltons/iterutils.py::remap"
+ ],
+ "patch_lines": 51,
+ "added_tests": {
+  "tests/test_iterutils.py::TestRemap::test_empty": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_iterutils.py::TestRemap::test_unremappable": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "tests/test_iterutils.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 8.6,
+ "env_error_tests": 2,
+ "qualified": false
+}

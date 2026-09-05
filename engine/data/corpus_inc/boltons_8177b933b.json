@@ -1,0 +1,16 @@
+{
+ "repo": "boltons",
+ "fix_commit": "8177b933b418d91c7280909690f45589fbe004d2",
+ "parent_commit": "2c51dddb869eb7c0d05b4739d34406e20a0e03b8",
+ "answer_functions": [
+  "boltons/dictutils.py::addlist",
+  "boltons/dictutils.py::poplast"
+ ],
+ "repro_tests": [],
+ "smoke": [],
+ "baseline_pass_count": 0,
+ "probes": [],
+ "inc_event": false,
+ "regression_event": false,
+ "skipped": "no repro or no answer functions"
+}

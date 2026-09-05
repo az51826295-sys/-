@@ -1,0 +1,472 @@
+{
+  "id": "pick-v2",
+  "by": "사장님",
+  "ts": "2026-08-26T16:51:45",
+  "note": "05_equipment는 보류(미판정) - 거절이 아니다",
+  "groups": [
+    {
+      "group": "01_attack",
+      "shown": [
+        {
+          "no": 1,
+          "path": "out\\icons\\pick-v2\\candidates\\01_attack\\c01.svg",
+          "sha1": "08bbffb2a49e",
+          "structure_hash": "ee8e4977152739b3",
+          "picked": false
+        },
+        {
+          "no": 2,
+          "path": "out\\icons\\pick-v2\\candidates\\01_attack\\c02.svg",
+          "sha1": "e187a1bf230f",
+          "structure_hash": "ffc82ea18ed1f159",
+          "picked": false
+        },
+        {
+          "no": 3,
+          "path": "out\\icons\\pick-v2\\candidates\\01_attack\\c03.svg",
+          "sha1": "d5c1f63a382a",
+          "structure_hash": "d65f113d672ccaf7",
+          "picked": true
+        },
+        {
+          "no": 4,
+          "path": "out\\icons\\pick-v2\\candidates\\01_attack\\c04.svg",
+          "sha1": "e50705b9c7ed",
+          "structure_hash": "7f307ce6a23e4a85",
+          "picked": false
+        },
+        {
+          "no": 5,
+          "path": "out\\icons\\pick-v2\\candidates\\01_attack\\c05.svg",
+          "sha1": "8d1409d850c5",
+          "structure_hash": "c288437e8f765012",
+          "picked": false
+        },
+        {
+          "no": 6,
+          "path": "out\\icons\\pick-v2\\candidates\\01_attack\\c06.svg",
+          "sha1": "2f49411b78e0",
+          "structure_hash": "0660e35a58623acd",
+          "picked": false
+        }
+      ],
+      "picked_no": 3,
+      "picked_nos": [
+        3
+      ]
+    },
+    {
+      "group": "02_defend",
+      "shown": [
+        {
+          "no": 1,
+          "path": "out\\icons\\pick-v2\\candidates\\02_defend\\c01.svg",
+          "sha1": "897e9bcec351",
+          "structure_hash": "9bcdb91726628c01",
+          "picked": true
+        },
+        {
+          "no": 2,
+          "path": "out\\icons\\pick-v2\\candidates\\02_defend\\c02.svg",
+          "sha1": "d0047c668e8d",
+          "structure_hash": "e75832694bbad9fc",
+          "picked": false
+        },
+        {
+          "no": 3,
+          "path": "out\\icons\\pick-v2\\candidates\\02_defend\\c03.svg",
+          "sha1": "6506018a98c1",
+          "structure_hash": "1d982264613f5235",
+          "picked": false
+        },
+        {
+          "no": 4,
+          "path": "out\\icons\\pick-v2\\candidates\\02_defend\\c04.svg",
+          "sha1": "0cc060e4c20e",
+          "structure_hash": "73460718cccbd2bb",
+          "picked": false
+        },
+        {
+          "no": 5,
+          "path": "out\\icons\\pick-v2\\candidates\\02_defend\\c05.svg",
+          "sha1": "fe1a8b2b1c98",
+          "structure_hash": "be19a8cac220a847",
+          "picked": false
+        },
+        {
+          "no": 6,
+          "path": "out\\icons\\pick-v2\\candidates\\02_defend\\c06.svg",
+          "sha1": "76fbb59228b5",
+          "structure_hash": "80fc0a5c44fb01cd",
+          "picked": false
+        },
+        {
+          "no": 7,
+          "path": "out\\icons\\pick-v2\\candidates\\02_defend\\c07.svg",
+          "sha1": "85a7246c3a7c",
+          "structure_hash": "8cdc41130a0e6060",
+          "picked": false
+        }
+      ],
+      "picked_no": 1,
+      "picked_nos": [
+        1
+      ]
+    },
+    {
+      "group": "03_shop",
+      "shown": [
+        {
+          "no": 1,
+          "path": "out\\icons\\pick-v2\\candidates\\03_shop\\c01.svg",
+          "sha1": "824bb80f4fb9",
+          "structure_hash": "a7f8bf6ac17927a5",
+          "picked": false
+        },
+        {
+          "no": 2,
+          "path": "out\\icons\\pick-v2\\candidates\\03_shop\\c02.svg",
+          "sha1": "cf189ef96f4c",
+          "structure_hash": "ef55c25ec19caf4b",
+          "picked": false
+        },
+        {
+          "no": 3,
+          "path": "out\\icons\\pick-v2\\candidates\\03_shop\\c03.svg",
+          "sha1": "37c28398d27b",
+          "structure_hash": "26bdfd24383119d7",
+          "picked": false
+        },
+        {
+          "no": 4,
+          "path": "out\\icons\\pick-v2\\candidates\\03_shop\\c04.svg",
+          "sha1": "e6d12bd0c138",
+          "structure_hash": "bf943b48beb23180",
+          "picked": false
+        },
+        {
+          "no": 5,
+          "path": "out\\icons\\pick-v2\\candidates\\03_shop\\c05.svg",
+          "sha1": "b29e397ce47c",
+          "structure_hash": "fd11b577d91eeb7b",
+          "picked": true
+        },
+        {
+          "no": 6,
+          "path": "out\\icons\\pick-v2\\candidates\\03_shop\\c06.svg",
+          "sha1": "d0654e630b00",
+          "structure_hash": "9cefc3ca7d4b7ea8",
+          "picked": false
+        }
+      ],
+      "picked_no": 5,
+      "picked_nos": [
+        5
+      ]
+    },
+    {
+      "group": "04_quest",
+      "shown": [
+        {
+          "no": 1,
+          "path": "out\\icons\\pick-v2\\candidates\\04_quest\\c01.svg",
+          "sha1": "6a2ace488387",
+          "structure_hash": "c3744e76bbcbd563",
+          "picked": false
+        },
+        {
+          "no": 2,
+          "path": "out\\icons\\pick-v2\\candidates\\04_quest\\c02.svg",
+          "sha1": "cd98b3359bdf",
+          "structure_hash": "4739682dd9dd48f1",
+          "picked": false
+        },
+        {
+          "no": 3,
+          "path": "out\\icons\\pick-v2\\candidates\\04_quest\\c03.svg",
+          "sha1": "287f11cc28fc",
+          "structure_hash": "a2de2d9b6df52900",
+          "picked": false
+        },
+        {
+          "no": 4,
+          "path": "out\\icons\\pick-v2\\candidates\\04_quest\\c04.svg",
+          "sha1": "4bc85f925ff6",
+          "structure_hash": "53ce4e0a20839b10",
+          "picked": false
+        },
+        {
+          "no": 5,
+          "path": "out\\icons\\pick-v2\\candidates\\04_quest\\c05.svg",
+          "sha1": "5496604e3d5b",
+          "structure_hash": "b4e67e3a9dd6c805",
+          "picked": false
+        },
+        {
+          "no": 6,
+          "path": "out\\icons\\pick-v2\\candidates\\04_quest\\c06.svg",
+          "sha1": "b34df4172d5b",
+          "structure_hash": "05cbba483a7a7d0f",
+          "picked": true
+        }
+      ],
+      "picked_no": 6,
+      "picked_nos": [
+        6
+      ]
+    },
+    {
+      "group": "05_equipment",
+      "shown": [
+        {
+          "no": 1,
+          "path": "out\\icons\\pick-v2\\candidates\\05_equipment\\c01.svg",
+          "sha1": "e5bdc26bf300",
+          "structure_hash": "854c0d153d9d4387",
+          "picked": false
+        },
+        {
+          "no": 2,
+          "path": "out\\icons\\pick-v2\\candidates\\05_equipment\\c02.svg",
+          "sha1": "ab6918ec0173",
+          "structure_hash": "a0faa9a644a01fc1",
+          "picked": false
+        },
+        {
+          "no": 3,
+          "path": "out\\icons\\pick-v2\\candidates\\05_equipment\\c03.svg",
+          "sha1": "c6bcc5ef2e36",
+          "structure_hash": "677a8b82af4bb631",
+          "picked": false
+        },
+        {
+          "no": 4,
+          "path": "out\\icons\\pick-v2\\candidates\\05_equipment\\c04.svg",
+          "sha1": "3bea15b9c7b1",
+          "structure_hash": "8bd926364660e524",
+          "picked": false
+        },
+        {
+          "no": 5,
+          "path": "out\\icons\\pick-v2\\candidates\\05_equipment\\c05.svg",
+          "sha1": "a51d8c1a5aef",
+          "structure_hash": "1850ff8a2affdfdf",
+          "picked": false
+        }
+      ],
+      "picked_no": null,
+      "picked_nos": []
+    },
+    {
+      "group": "06_stats",
+      "shown": [
+        {
+          "no": 1,
+          "path": "out\\icons\\pick-v2\\candidates\\06_stats\\c01.svg",
+          "sha1": "84290066d4c0",
+          "structure_hash": "6ec5da453087736c",
+          "picked": true
+        },
+        {
+          "no": 2,
+          "path": "out\\icons\\pick-v2\\candidates\\06_stats\\c02.svg",
+          "sha1": "c00eb582afde",
+          "structure_hash": "3bb8d65a42e36c4b",
+          "picked": false
+        },
+        {
+          "no": 3,
+          "path": "out\\icons\\pick-v2\\candidates\\06_stats\\c03.svg",
+          "sha1": "d6fda87ccd04",
+          "structure_hash": "29b621cd6159b648",
+          "picked": false
+        },
+        {
+          "no": 4,
+          "path": "out\\icons\\pick-v2\\candidates\\06_stats\\c04.svg",
+          "sha1": "fd7e66fe6ffe",
+          "structure_hash": "4ff461f9096b8432",
+          "picked": false
+        },
+        {
+          "no": 5,
+          "path": "out\\icons\\pick-v2\\candidates\\06_stats\\c05.svg",
+          "sha1": "5aa70ae2c73a",
+          "structure_hash": "6ec08e5be4f1b884",
+          "picked": false
+        },
+        {
+          "no": 6,
+          "path": "out\\icons\\pick-v2\\candidates\\06_stats\\c06.svg",
+          "sha1": "2b56e0d2afdd",
+          "structure_hash": "4aba863eb9819b37",
+          "picked": false
+        }
+      ],
+      "picked_no": 1,
+      "picked_nos": [
+        1
+      ]
+    },
+    {
+      "group": "07_dialogue",
+      "shown": [
+        {
+          "no": 1,
+          "path": "out\\icons\\pick-v2\\candidates\\07_dialogue\\c01.svg",
+          "sha1": "ea92ec403189",
+          "structure_hash": "a322fa9766482402",
+          "picked": false
+        },
+        {
+          "no": 2,
+          "path": "out\\icons\\pick-v2\\candidates\\07_dialogue\\c02.svg",
+          "sha1": "cc8584526787",
+          "structure_hash": "ac16e19ecb2b9f5d",
+          "picked": false
+        },
+        {
+          "no": 3,
+          "path": "out\\icons\\pick-v2\\candidates\\07_dialogue\\c03.svg",
+          "sha1": "22917ea6723f",
+          "structure_hash": "a650882646ec84d1",
+          "picked": false
+        },
+        {
+          "no": 4,
+          "path": "out\\icons\\pick-v2\\candidates\\07_dialogue\\c04.svg",
+          "sha1": "3b0f7fc50a98",
+          "structure_hash": "b5b58ac4c7ae98e7",
+          "picked": true
+        },
+        {
+          "no": 5,
+          "path": "out\\icons\\pick-v2\\candidates\\07_dialogue\\c05.svg",
+          "sha1": "019e8aa28322",
+          "structure_hash": "cbf38b88664ecf2d",
+          "picked": false
+        },
+        {
+          "no": 6,
+          "path": "out\\icons\\pick-v2\\candidates\\07_dialogue\\c06.svg",
+          "sha1": "a06ba1b5aef7",
+          "structure_hash": "f022839af269ccdb",
+          "picked": false
+        }
+      ],
+      "picked_no": 4,
+      "picked_nos": [
+        4
+      ]
+    },
+    {
+      "group": "08_exit",
+      "shown": [
+        {
+          "no": 1,
+          "path": "out\\icons\\pick-v2\\candidates\\08_exit\\c01.svg",
+          "sha1": "3c26614a14c3",
+          "structure_hash": "7a8bd64440b76bc5",
+          "picked": false
+        },
+        {
+          "no": 2,
+          "path": "out\\icons\\pick-v2\\candidates\\08_exit\\c02.svg",
+          "sha1": "d4d90036272e",
+          "structure_hash": "db0bbece6a3a166c",
+          "picked": true
+        },
+        {
+          "no": 3,
+          "path": "out\\icons\\pick-v2\\candidates\\08_exit\\c03.svg",
+          "sha1": "c47bb224cedb",
+          "structure_hash": "4e58be3e3a922e29",
+          "picked": false
+        },
+        {
+          "no": 4,
+          "path": "out\\icons\\pick-v2\\candidates\\08_exit\\c04.svg",
+          "sha1": "27573892361a",
+          "structure_hash": "72da0a70a0d85a9d",
+          "picked": false
+        },
+        {
+          "no": 5,
+          "path": "out\\icons\\pick-v2\\candidates\\08_exit\\c05.svg",
+          "sha1": "fb66ee98b42d",
+          "structure_hash": "7f717164bfa620f6",
+          "picked": false
+        },
+        {
+          "no": 6,
+          "path": "out\\icons\\pick-v2\\candidates\\08_exit\\c06.svg",
+          "sha1": "5a3271fa0490",
+          "structure_hash": "63aa81d886ca64e1",
+          "picked": false
+        }
+      ],
+      "picked_no": 2,
+      "picked_nos": [
+        2
+      ]
+    }
+  ],
+  "picked": [
+    "out\\icons\\pick-v2\\candidates\\01_attack\\c03.svg",
+    "out\\icons\\pick-v2\\candidates\\02_defend\\c01.svg",
+    "out\\icons\\pick-v2\\candidates\\03_shop\\c05.svg",
+    "out\\icons\\pick-v2\\candidates\\04_quest\\c06.svg",
+    "out\\icons\\pick-v2\\candidates\\06_stats\\c01.svg",
+    "out\\icons\\pick-v2\\candidates\\07_dialogue\\c04.svg",
+    "out\\icons\\pick-v2\\candidates\\08_exit\\c02.svg"
+  ],
+  "rejected": [
+    "out\\icons\\pick-v2\\candidates\\01_attack\\c01.svg",
+    "out\\icons\\pick-v2\\candidates\\01_attack\\c02.svg",
+    "out\\icons\\pick-v2\\candidates\\01_attack\\c04.svg",
+    "out\\icons\\pick-v2\\candidates\\01_attack\\c05.svg",
+    "out\\icons\\pick-v2\\candidates\\01_attack\\c06.svg",
+    "out\\icons\\pick-v2\\candidates\\02_defend\\c02.svg",
+    "out\\icons\\pick-v2\\candidates\\02_defend\\c03.svg",
+    "out\\icons\\pick-v2\\candidates\\02_defend\\c04.svg",
+    "out\\icons\\pick-v2\\candidates\\02_defend\\c05.svg",
+    "out\\icons\\pick-v2\\candidates\\02_defend\\c06.svg",
+    "out\\icons\\pick-v2\\candidates\\02_defend\\c07.svg",
+    "out\\icons\\pick-v2\\candidates\\03_shop\\c01.svg",
+    "out\\icons\\pick-v2\\candidates\\03_shop\\c02.svg",
+    "out\\icons\\pick-v2\\candidates\\03_shop\\c03.svg",
+    "out\\icons\\pick-v2\\candidates\\03_shop\\c04.svg",
+    "out\\icons\\pick-v2\\candidates\\03_shop\\c06.svg",
+    "out\\icons\\pick-v2\\candidates\\04_quest\\c01.svg",
+    "out\\icons\\pick-v2\\candidates\\04_quest\\c02.svg",
+    "out\\icons\\pick-v2\\candidates\\04_quest\\c03.svg",
+    "out\\icons\\pick-v2\\candidates\\04_quest\\c04.svg",
+    "out\\icons\\pick-v2\\candidates\\04_quest\\c05.svg",
+    "out\\icons\\pick-v2\\candidates\\06_stats\\c02.svg",
+    "out\\icons\\pick-v2\\candidates\\06_stats\\c03.svg",
+    "out\\icons\\pick-v2\\candidates\\06_stats\\c04.svg",
+    "out\\icons\\pick-v2\\candidates\\06_stats\\c05.svg",
+    "out\\icons\\pick-v2\\candidates\\06_stats\\c06.svg",
+    "out\\icons\\pick-v2\\candidates\\07_dialogue\\c01.svg",
+    "out\\icons\\pick-v2\\candidates\\07_dialogue\\c02.svg",
+    "out\\icons\\pick-v2\\candidates\\07_dialogue\\c03.svg",
+    "out\\icons\\pick-v2\\candidates\\07_dialogue\\c05.svg",
+    "out\\icons\\pick-v2\\candidates\\07_dialogue\\c06.svg",
+    "out\\icons\\pick-v2\\candidates\\08_exit\\c01.svg",
+    "out\\icons\\pick-v2\\candidates\\08_exit\\c03.svg",
+    "out\\icons\\pick-v2\\candidates\\08_exit\\c04.svg",
+    "out\\icons\\pick-v2\\candidates\\08_exit\\c05.svg",
+    "out\\icons\\pick-v2\\candidates\\08_exit\\c06.svg"
+  ],
+  "undecided_items": [
+    "out\\icons\\pick-v2\\candidates\\05_equipment\\c01.svg",
+    "out\\icons\\pick-v2\\candidates\\05_equipment\\c02.svg",
+    "out\\icons\\pick-v2\\candidates\\05_equipment\\c03.svg",
+    "out\\icons\\pick-v2\\candidates\\05_equipment\\c04.svg",
+    "out\\icons\\pick-v2\\candidates\\05_equipment\\c05.svg"
+  ],
+  "shown_total": 48,
+  "undecided_groups": [
+    "05_equipment"
+  ]
+}

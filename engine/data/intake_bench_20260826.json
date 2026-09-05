@@ -1,0 +1,83 @@
+{
+  "expected": 1.0,
+  "carrier": "{alias} 만들어줘",
+  "pair_sentence": "{a} 하고 {b}",
+  "alias_recall": {
+    "n_aliases": 79,
+    "bare_recall": 1.0,
+    "carried_recall": 1.0,
+    "bare_misses": [],
+    "carried_misses": []
+  },
+  "multi_mention": {
+    "n_pairs": 153,
+    "recall": 1.0,
+    "misses": []
+  },
+  "collision_candidates": [
+    {
+      "short": "램",
+      "short_atom": "ram_booster",
+      "long": "픽토그램",
+      "long_atom": "icon_spec_fit",
+      "note": "짧은 별칭이 긴 별칭 안에 들어 있다 - 긴 쪽을 요청하면 짧은 쪽도 함께 걸린다"
+    },
+    {
+      "short": "정리",
+      "short_atom": "cache_cleanup",
+      "long": "메모리 정리",
+      "long_atom": "ram_booster",
+      "note": "짧은 별칭이 긴 별칭 안에 들어 있다 - 긴 쪽을 요청하면 짧은 쪽도 함께 걸린다"
+    },
+    {
+      "short": "아이콘",
+      "short_atom": "spec_fit_art_selection",
+      "long": "아이콘 세트",
+      "long_atom": "icon_spec_fit",
+      "note": "짧은 별칭이 긴 별칭 안에 들어 있다 - 긴 쪽을 요청하면 짧은 쪽도 함께 걸린다"
+    },
+    {
+      "short": "배경",
+      "short_atom": "spec_fit_art_selection",
+      "long": "배경음",
+      "long_atom": "music_selection",
+      "note": "짧은 별칭이 긴 별칭 안에 들어 있다 - 긴 쪽을 요청하면 짧은 쪽도 함께 걸린다"
+    },
+    {
+      "short": "일러스트",
+      "short_atom": "spec_fit_art_selection",
+      "long": "멋진 일러스트",
+      "long_atom": "beautiful_art_generation",
+      "note": "짧은 별칭이 긴 별칭 안에 들어 있다 - 긴 쪽을 요청하면 짧은 쪽도 함께 걸린다"
+    },
+    {
+      "short": "음악",
+      "short_atom": "music_selection",
+      "long": "음악 분위기",
+      "long_atom": "music_mood_fit",
+      "note": "짧은 별칭이 긴 별칭 안에 들어 있다 - 긴 쪽을 요청하면 짧은 쪽도 함께 걸린다"
+    },
+    {
+      "short": "스토리",
+      "short_atom": "story_writing",
+      "long": "스토리 선별",
+      "long_atom": "spec_fit_story_selection",
+      "note": "짧은 별칭이 긴 별칭 안에 들어 있다 - 긴 쪽을 요청하면 짧은 쪽도 함께 걸린다"
+    },
+    {
+      "short": "시나리오",
+      "short_atom": "story_writing",
+      "long": "시나리오 검수",
+      "long_atom": "spec_fit_story_selection",
+      "note": "짧은 별칭이 긴 별칭 안에 들어 있다 - 긴 쪽을 요청하면 짧은 쪽도 함께 걸린다"
+    }
+  ],
+  "n_collision_candidates": 8,
+  "collision_state": "미판정 - 사람이 정할 일(설계 §3)",
+  "gates": {
+    "bare_recall": true,
+    "carried_recall": true,
+    "multi_recall": true
+  },
+  "passes": true
+}

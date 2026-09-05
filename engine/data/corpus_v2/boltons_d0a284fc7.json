@@ -1,0 +1,57 @@
+{
+ "repo": "boltons",
+ "fix_commit": "d0a284fc7ef1aebceb54798600d73be4eeb76ed8",
+ "parent_commit": "609cabe932a1ea1423b24568644945abb1b8bb84",
+ "answer_files": [
+  "boltons/setutils.py"
+ ],
+ "answer_functions": [
+  "boltons/setutils.py::__getitem__",
+  "boltons/setutils.py::_get_real_index"
+ ],
+ "patch_lines": 10,
+ "added_tests": {
+  "tests/test_setutils.py::test_iset_scalar_index_bounds": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "tests/test_setutils.py::test_iset_scalar_index_multiple_dead_intervals": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [
+  "tests/test_setutils.py::test_iset_scalar_index_bounds",
+  "tests/test_setutils.py::test_iset_scalar_index_multiple_dead_intervals"
+ ],
+ "test_files": [
+  "tests/test_setutils.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [
+  {
+   "applied": "boltons/setutils.py::__getitem__",
+   "passes_repro": [],
+   "still_failing": [
+    "tests/test_setutils.py::test_iset_scalar_index_bounds",
+    "tests/test_setutils.py::test_iset_scalar_index_multiple_dead_intervals"
+   ],
+   "event": false
+  },
+  {
+   "applied": "boltons/setutils.py::_get_real_index",
+   "passes_repro": [],
+   "still_failing": [
+    "tests/test_setutils.py::test_iset_scalar_index_bounds",
+    "tests/test_setutils.py::test_iset_scalar_index_multiple_dead_intervals"
+   ],
+   "event": false
+  }
+ ],
+ "env_seconds": 4.1,
+ "env_error_tests": 0,
+ "qualified": true
+}

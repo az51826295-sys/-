@@ -1,0 +1,93 @@
+=== Rookery Alpha 일일 보고 2026-08-06
+
+[예산] 2026-08-06  단계=normal
+  오늘              34원 / 일한도 1,000원
+  이달 확정         88원 (예약중 0원)
+  고정비             0원
+  이달 합계         88원 / 한도 60,000원
+  정지선까지    44,912원 (잔여 25일)
+  월말 예상        471원 (일 15원 추세)
+  예약 원장   settled 143건
+
+[작업]
+  성공 54 / 실패 0 / 고아 0 / 진행 1
+  완료 작업 54건, 대기 0건
+
+[실패 분류]
+  분류 가능률 100% (목표 90%)
+  실패 없음
+
+[과제 유입]
+  등록 55 / 거부 6298
+  - duplicate: 6298
+
+[안전]
+  차단된 명령 0건, 격리 이탈 시도 0건
+
+[정지]
+  감사 불일치 0건, 엔진 정지 0건
+
+[검토 대기 브랜치] - 사람이 PR을 열어야 함
+  - rookery/intake-5bdb792387d18d69 [push됨]
+  - rookery/intake-df360e14a8404e3f [push됨]
+  - rookery/intake-e6decedcac73c098 [push됨]
+  - rookery/intake-6c3109f0f2ed6042 [push됨]
+  - rookery/intake-ce7d076a45874fa8 [push됨]
+  - rookery/intake-6982ce1d1f72341a [push됨]
+  - rookery/intake-f108bf444b1c41ba [push됨]
+  - rookery/intake-7ae9ace09fcef372 [push됨]
+  - rookery/intake-e62a181ef8fd3ad8 [push됨]
+  - rookery/intake-93a561c717447d11 [push됨]
+  - rookery/intake-78a50e0c4619eae9 [push됨]
+  - rookery/intake-770fc4b6b1353e71 [push됨]
+  - rookery/intake-c5c50c0b1b247b1e [push됨]
+  - rookery/intake-57104f3d5f03565a [push됨]
+  - rookery/intake-b8cdd64eaa4b2db3 [push됨]
+  - rookery/intake-934ad7a146e1bc2e [push됨]
+  - rookery/intake-03d9c8eb51e7fb95 [push됨]
+  - rookery/intake-5f9d3c1d6a04b2a6 [push됨]
+  - rookery/intake-d863461238b57212 [push됨]
+  - rookery/intake-b2de4c98a7c22163 [push됨]
+  - rookery/intake-fecad007307b5279 [push됨]
+  - rookery/intake-36d5da8dba822132 [push됨]
+  - rookery/intake-2978544c74dafb5b [push됨]
+  - rookery/intake-c9aeb10edfa0bc64 [push됨]
+  - rookery/intake-e9672eb0a6c6f46f [push됨]
+  - rookery/intake-d62858b1ee7cfc64 [push됨]
+  - rookery/intake-2b25c023a52eb9d6 [push됨]
+  - rookery/intake-19f6641d040caa17 [push됨]
+  - rookery/intake-b18cebc0f2c829ba [push됨]
+  - rookery/intake-ff018652f1411187 [push됨]
+  - rookery/intake-6ff9f8b80f721972 [push됨]
+  - rookery/intake-f33303c95c7462f1 [push됨]
+  - rookery/intake-017b2594980714cf [push됨]
+  - rookery/intake-51b6ad33490fde14 [push됨]
+  - rookery/intake-e3ac6cf053bd9ac0 [push됨]
+  - rookery/intake-bec49b379fa94558 [push됨]
+  - rookery/intake-be1bc1334ee687f3 [push됨]
+  - rookery/intake-d9da271816580035 [push됨]
+  - rookery/intake-c0282676a6499b95 [push됨]
+  - rookery/intake-04ecaf23b11dfa2d [push됨]
+  - rookery/intake-488d2b94c5828f5e [push됨]
+  - rookery/intake-b67ebe77d792a22f [push됨]
+  - rookery/intake-535179cc41c5da61 [push됨]
+  - rookery/intake-d3ebe568f2f6a113 [push됨]
+  - rookery/intake-7771d691b9d8dcba [push됨]
+  - rookery/intake-a58dd0a0c1d34949 [push됨]
+  - rookery/intake-2441e8ac2a3dfd25 [push됨]
+  - rookery/intake-88e169fc2708d594 [push됨]
+  - rookery/intake-db5e083d49a38994 [push됨]
+  - rookery/intake-d46f55abba10e74e [push됨]
+  - rookery/intake-1780d98969a3ae7c [push됨]
+  - rookery/intake-14d2d00036491021 [push됨]
+  - rookery/intake-f41f88b90668f475 [push됨]
+  - rookery/intake-f2c7a4dc3343d66a [push됨]
+
+[합격 조건]
+  completed_task_reruns: 0
+  budget_overruns: 0
+  workspace_escapes: 0
+  dangerous_commands_executed: 0
+  halt_on_disagreement: 100%
+  recovered_after_crash: 0
+  failure_classification_rate: 1.0

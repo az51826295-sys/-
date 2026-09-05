@@ -1,0 +1,20 @@
+{
+  "id": "1A",
+  "author": "openai:gpt-5",
+  "target": "character",
+  "note": "Classic academy apprentice in indigo; tassel hat, wand, satchel",
+  "body": {
+    "description": "Chibi main witch, same person across all directions; global key light from upper-left. Shared lamps: indigo cloth (deep shadow #121427, core shadow #23274f, mid #414992, light #7f8ce6, bright highlight #dfe3ff) for hat and robe; teal hair (deep shadow #052a2a, core #0f4f4f, mid #1e7a7a, light #43a7a7, bright highlight #b9f2f2); warm leather/wood (deep shadow #2a170d, core #4a2e1a, mid #7a4e2a, light #b67a3d, bright highlight #e7b36a) for belt, boots, satchel, and wand; brass metal (deep shadow #3b2a07, core #6a4b0e, mid #9c7316, light #cfa42a, bright highlight #fff2b3) for buckle and brooch; skin on the warm ramp (deep shadow #5a3a2c, core #8e5e45, mid #c68e6b, light #f1b88f, bright highlight #ffe1c9). Design: tall floppy indigo hat with small brass crescent brooch; short indigo robe with wide sleeves; teal bob peeking out; leather belt, boots, and side satchel; short wooden wand. Shading calls: deep shadow under the brim across eyes and upper face (#121427), bright highlight on the hat crown top-left (#dfe3ff); occlusion shadow under chin and inside sleeves (#5a3a2c / #23274f), bright highlight on cheek and nose tip (#ffe1c9); bright edge highlight along the robe’s top-left folds (#7f8ce6→#dfe3ff) with deep shadow on the lower-right hem (#23274f); contact shadow at boots on ground (#2a170d); tiny specular highlight on brass buckle and brooch (#fff2b3). Keep the silhouette chibi: big hat and head, short torso, stubby limbs; read the satchel on the side views and the brooch on the front; back view shows hat fold and robe seam with the same lamps."
+  },
+  "lint": {
+    "ok": true,
+    "fields": {
+      "description": {
+        "ok": true,
+        "banned": [],
+        "missing": [],
+        "words": 241
+      }
+    }
+  }
+}

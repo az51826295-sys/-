@@ -1,0 +1,305 @@
+{
+ "results": [
+  {
+   "seed": 901,
+   "condition": "1",
+   "calls": 8,
+   "rounds_used": 1,
+   "success": true,
+   "success_round": 1,
+   "champion_obj": 0.8054312827417761,
+   "n_candidates": 8,
+   "n_valid": 8,
+   "dup_rate": 0.125,
+   "unique_sigs": 7,
+   "wrong_blocks": 0,
+   "rounds": [
+    {
+     "round": 1,
+     "key_sig": "noChampion",
+     "phase": "early",
+     "adopted": true,
+     "champion_obj": 0.8054312827417761,
+     "round_blocked": false
+    }
+   ],
+   "candidates": [
+    {
+     "call": 1,
+     "round": 1,
+     "valid": true,
+     "obj": 0.8054312827417761,
+     "hash": "39a503c47a61",
+     "blocked": false
+    },
+    {
+     "call": 2,
+     "round": 1,
+     "valid": true,
+     "obj": 0.685715453593669,
+     "hash": "6386e14d61a3",
+     "blocked": false
+    },
+    {
+     "call": 3,
+     "round": 1,
+     "valid": true,
+     "obj": 0.8054312827417761,
+     "hash": "39a503c47a61",
+     "blocked": false
+    },
+    {
+     "call": 4,
+     "round": 1,
+     "valid": true,
+     "obj": 0.39416666666666667,
+     "hash": "377b82bffde1",
+     "blocked": false
+    },
+    {
+     "call": 5,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7392315699175616,
+     "hash": "e5f04b1fee0d",
+     "blocked": false
+    },
+    {
+     "call": 6,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7802754294193884,
+     "hash": "d58949a7a870",
+     "blocked": false
+    },
+    {
+     "call": 7,
+     "round": 1,
+     "valid": true,
+     "obj": 0.0,
+     "hash": "770224f17205",
+     "blocked": false
+    },
+    {
+     "call": 8,
+     "round": 1,
+     "valid": true,
+     "obj": 0.0,
+     "hash": "4dd5e20cd080",
+     "blocked": false
+    }
+   ],
+   "arm": "C1",
+   "task": "901",
+   "rep": 0,
+   "attempt": 1
+  },
+  {
+   "seed": 902,
+   "condition": "1",
+   "calls": 8,
+   "rounds_used": 1,
+   "success": true,
+   "success_round": 1,
+   "champion_obj": 0.7814317758112951,
+   "n_candidates": 8,
+   "n_valid": 8,
+   "dup_rate": 0.0,
+   "unique_sigs": 8,
+   "wrong_blocks": 0,
+   "rounds": [
+    {
+     "round": 1,
+     "key_sig": "noChampion",
+     "phase": "early",
+     "adopted": true,
+     "champion_obj": 0.7814317758112951,
+     "round_blocked": false
+    }
+   ],
+   "candidates": [
+    {
+     "call": 1,
+     "round": 1,
+     "valid": true,
+     "obj": 0.6523259437431762,
+     "hash": "5cbd83d42162",
+     "blocked": false
+    },
+    {
+     "call": 2,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7814317758112951,
+     "hash": "ba82fd8f74b8",
+     "blocked": false
+    },
+    {
+     "call": 3,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7409495668568694,
+     "hash": "8702e26f7cf3",
+     "blocked": false
+    },
+    {
+     "call": 4,
+     "round": 1,
+     "valid": true,
+     "obj": 0.723375449960041,
+     "hash": "4cac4a1e9e00",
+     "blocked": false
+    },
+    {
+     "call": 5,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7299777643117114,
+     "hash": "8b31bdd49270",
+     "blocked": false
+    },
+    {
+     "call": 6,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7334790697024066,
+     "hash": "39a503c47a61",
+     "blocked": false
+    },
+    {
+     "call": 7,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5232142857142857,
+     "hash": "ef658841bca6",
+     "blocked": false
+    },
+    {
+     "call": 8,
+     "round": 1,
+     "valid": true,
+     "obj": 0.0,
+     "hash": "3bc22ea5e092",
+     "blocked": false
+    }
+   ],
+   "arm": "C1",
+   "task": "902",
+   "rep": 0,
+   "attempt": 1
+  },
+  {
+   "seed": 903,
+   "condition": "1",
+   "calls": 8,
+   "rounds_used": 1,
+   "success": true,
+   "success_round": 1,
+   "champion_obj": 0.8166598300673565,
+   "n_candidates": 8,
+   "n_valid": 8,
+   "dup_rate": 0.0,
+   "unique_sigs": 8,
+   "wrong_blocks": 0,
+   "rounds": [
+    {
+     "round": 1,
+     "key_sig": "noChampion",
+     "phase": "early",
+     "adopted": true,
+     "champion_obj": 0.8166598300673565,
+     "round_blocked": false
+    }
+   ],
+   "candidates": [
+    {
+     "call": 1,
+     "round": 1,
+     "valid": true,
+     "obj": 0.746430468363033,
+     "hash": "ab11a425293e",
+     "blocked": false
+    },
+    {
+     "call": 2,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7521502898139567,
+     "hash": "83cf35e68d94",
+     "blocked": false
+    },
+    {
+     "call": 3,
+     "round": 1,
+     "valid": true,
+     "obj": 0.8166598300673565,
+     "hash": "22430b8e5c35",
+     "blocked": false
+    },
+    {
+     "call": 4,
+     "round": 1,
+     "valid": true,
+     "obj": 0.716855186858997,
+     "hash": "3c7294824bff",
+     "blocked": false
+    },
+    {
+     "call": 5,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7358187394702336,
+     "hash": "53615aae3a24",
+     "blocked": false
+    },
+    {
+     "call": 6,
+     "round": 1,
+     "valid": true,
+     "obj": 0.6797449110165988,
+     "hash": "f7b7c2286682",
+     "blocked": false
+    },
+    {
+     "call": 7,
+     "round": 1,
+     "valid": true,
+     "obj": 0.8071349019229889,
+     "hash": "3dc024a03823",
+     "blocked": false
+    },
+    {
+     "call": 8,
+     "round": 1,
+     "valid": true,
+     "obj": 0.553289069965106,
+     "hash": "7bf1df74f6e8",
+     "blocked": false
+    }
+   ],
+   "arm": "C1",
+   "task": "903",
+   "rep": 0,
+   "attempt": 1
+  }
+ ],
+ "summary": {
+  "runs": 3,
+  "success": {
+   "C1": 3
+  },
+  "calls_total": 24,
+  "usage": {
+   "calls": 24,
+   "input_tokens": 18432,
+   "output_tokens": 9385
+  },
+  "_runlog": {
+   "attempts": 1,
+   "completed": 3,
+   "call_logs": [
+    "data\\rookery3a_calls_condexp_pilot2.jsonl"
+   ]
+  }
+ }
+}

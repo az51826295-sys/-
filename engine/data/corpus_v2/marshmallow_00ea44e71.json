@@ -1,0 +1,41 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "00ea44e71f6b25dca82e9a9dfd531c3d08d97af6",
+ "parent_commit": "0a75653d6cc14562d35de605d08127a3d775d116",
+ "answer_files": [
+  "marshmallow/fields.py"
+ ],
+ "answer_functions": [
+  "marshmallow/fields.py::_create_data_object_from_parsed_value"
+ ],
+ "patch_lines": 36,
+ "added_tests": {
+  "tests/test_deserialization.py::TestFieldDeserialization::test_invalid_datetime_deserialization": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_schema.py::test_datetimeformat_option": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_schema.py::test_dateformat_option": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "tests/test_deserialization.py",
+  "tests/test_schema.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 12.3,
+ "env_error_tests": 3,
+ "qualified": false,
+ "selector_event_proxy_v1": false
+}

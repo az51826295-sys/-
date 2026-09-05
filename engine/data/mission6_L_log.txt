@@ -1,0 +1,22 @@
+[L] gen 1: v1 score=0.5408 acc=0.669 rules=2 
+[L] gen 2: v2 score=0.5458 acc=0.669 rules=1 
+[L] gen 3: v2 score=0.5458 acc=0.669 rules=1 (rollback)
+[L] gen 4: v2 score=0.5458 acc=0.669 rules=1 (rollback)
+[L] gen 5: v2 score=0.5458 acc=0.669 rules=1 (rollback)
+[L] gen 6: v2 score=0.5458 acc=0.669 rules=1 (rollback)
+[L] gen 7: v2 score=0.5458 acc=0.669 rules=1 (rollback)
+[L] gen 8: v2 score=0.5458 acc=0.669 rules=1 (rollback)
+[L] gen 9: v2 score=0.5458 acc=0.669 rules=1 (rollback)
+[L] gen 10: v2 score=0.5458 acc=0.669 rules=1 (rollback)
+[L] gen 11: v2 score=0.5458 acc=0.669 rules=1 (rollback)
+[L] gen 12: v2 score=0.5458 acc=0.669 rules=1 (rollback)
+[L] gen 13: v2 score=0.5458 acc=0.669 rules=1 (rollback)
+[L] gen 14: v2 score=0.5458 acc=0.669 rules=1 (rollback)
+[L] gen 15: v2 score=0.5458 acc=0.669 rules=1 (rollback)
+[L] gen 16: v2 score=0.5458 acc=0.669 rules=1 (rollback)
+[L] gen 17: v2 score=0.5458 acc=0.669 rules=1 (rollback)
+[L] gen 18: v2 score=0.5458 acc=0.669 rules=1 (rollback)
+[L] gen 19: v2 score=0.5458 acc=0.669 rules=1 (rollback)
+[L] gen 20: v2 score=0.5458 acc=0.669 rules=1 (rollback)
+[L] 완료 9066s -> data\mission6_L_lineage.json
+  계보 감사: 위반 0

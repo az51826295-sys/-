@@ -1,0 +1,410 @@
+{
+ "experiment": "ablation11_pilot",
+ "config": {
+  "model": "claude-haiku-4-5-20251001",
+  "temperature": 1.0,
+  "budget": 8,
+  "reps": 1,
+  "design": "docs/ablation-structure-design.md v1.1"
+ },
+ "runs": {
+  "BS|abl_boltons_d0a284fc7|0": {
+   "task": "abl_boltons_d0a284fc7",
+   "arm": "BS",
+   "rep": 0,
+   "candidates": [
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "tests/test_setutils.py::test_iset_scalar_index_bounds: etutils.py::test_iset_scalar_index_bounds - Failed: DID NO...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed in 0.97s\n",
+     "files": [
+      "boltons/setutils.py"
+     ],
+     "sig": "b4d0770d0783",
+     "repro_pass": false,
+     "smoke_pass": true,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 3,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "tests/test_setutils.py::test_iset_scalar_index_bounds: etutils.py::test_iset_scalar_index_bounds - Failed: DID NO...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed in 0.91s\n",
+     "files": [
+      "boltons/setutils.py"
+     ],
+     "sig": "b4d0770d0783",
+     "repro_pass": false,
+     "smoke_pass": true,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    }
+   ],
+   "test_runs": 15,
+   "rollback_rounds": 1,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "regression",
+   "wall_s": 36.8,
+   "failure_report_chars": 0,
+   "hyp_stats": {
+    "generated": 4,
+    "valid_selected": 2,
+    "distinct_files": 1,
+    "correct_file_hyp": true,
+    "banned_revisits": 0
+   },
+   "attempt": 1
+  },
+  "BF|abl_boltons_d0a284fc7|0": {
+   "task": "abl_boltons_d0a284fc7",
+   "arm": "BF",
+   "rep": 0,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "tests/test_setutils.py::test_iset_scalar_index_bounds: etutils.py::test_iset_scalar_index_bounds - Failed: DID NO...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed in 0.93s\n",
+     "files": [
+      "boltons/setutils.py"
+     ],
+     "sig": "b4d0770d0783",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": "",
+     "files": [
+      "boltons/setutils.py"
+     ],
+     "sig": "b4d0770d0783",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": "",
+     "files": [
+      "boltons/setutils.py"
+     ],
+     "sig": "b4d0770d0783",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 3,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": "",
+     "files": [
+      "boltons/setutils.py"
+     ],
+     "sig": "b4d0770d0783",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 4,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": "",
+     "files": [
+      "boltons/setutils.py"
+     ],
+     "sig": "b4d0770d0783",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 5,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": "",
+     "files": [
+      "boltons/setutils.py"
+     ],
+     "sig": "b4d0770d0783",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 6,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": "",
+     "files": [
+      "boltons/setutils.py"
+     ],
+     "sig": "b4d0770d0783",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 7,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": "",
+     "files": [
+      "boltons/setutils.py"
+     ],
+     "sig": "b4d0770d0783",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    }
+   ],
+   "test_runs": 23,
+   "rollback_rounds": 2,
+   "duplicates": 7,
+   "first_candidate_full": false,
+   "final_status": "regression",
+   "wall_s": 55.0,
+   "failure_report_chars": 0,
+   "attempt": 1
+  },
+  "BS|abl_dateutil_15fc1fa8c|0": {
+   "task": "abl_dateutil_15fc1fa8c",
+   "arm": "BS",
+   "rep": 0,
+   "candidates": [],
+   "test_runs": 0,
+   "rollback_rounds": 2,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "no_patch",
+   "wall_s": 1.6,
+   "failure_report_chars": 0,
+   "hyp_stats": {
+    "generated": 4,
+    "valid_selected": 0,
+    "distinct_files": 0,
+    "correct_file_hyp": false,
+    "banned_revisits": 2
+   },
+   "attempt": 1
+  },
+  "BF|abl_dateutil_15fc1fa8c|0": {
+   "task": "abl_dateutil_15fc1fa8c",
+   "arm": "BF",
+   "rep": 0,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test.py::RelativeDeltaTest::testRightAdditionToDatetime: est::testRightAdditionToDatetime - TypeError: u...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 2.07s\n",
+     "files": [
+      "dateutil/relativedelta.py"
+     ],
+     "sig": "f6cfa39f0d64",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": "",
+     "files": [
+      "dateutil/relativedelta.py"
+     ],
+     "sig": "f6cfa39f0d64",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": "",
+     "files": [
+      "dateutil/relativedelta.py"
+     ],
+     "sig": "f6cfa39f0d64",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 3,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": "",
+     "files": [
+      "dateutil/relativedelta.py"
+     ],
+     "sig": "f6cfa39f0d64",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 4,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": "",
+     "files": [
+      "dateutil/relativedelta.py"
+     ],
+     "sig": "f6cfa39f0d64",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 5,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": "",
+     "files": [
+      "dateutil/relativedelta.py"
+     ],
+     "sig": "f6cfa39f0d64",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 6,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": "",
+     "files": [
+      "dateutil/relativedelta.py"
+     ],
+     "sig": "f6cfa39f0d64",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 7,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": "",
+     "files": [
+      "dateutil/relativedelta.py"
+     ],
+     "sig": "f6cfa39f0d64",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    }
+   ],
+   "test_runs": 23,
+   "rollback_rounds": 2,
+   "duplicates": 7,
+   "first_candidate_full": false,
+   "final_status": "regression",
+   "wall_s": 69.2,
+   "failure_report_chars": 0,
+   "attempt": 1
+  }
+ },
+ "attempts": 1
+}

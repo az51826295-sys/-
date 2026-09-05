@@ -1,0 +1,30 @@
+{
+ "repo": "dateutil",
+ "fix_commit": "6330d8e35c92e2278fdf8dd47a00f615782c99be",
+ "parent_commit": "2587340d1363e289a494e7c40e98a9286ba4c3d0",
+ "answer_files": [
+  "dateutil/parser.py"
+ ],
+ "answer_functions": [
+  "dateutil/parser.py::resolve_ymd"
+ ],
+ "patch_lines": 6,
+ "added_tests": {
+  "dateutil/test/test_parser.py::test_Ybd_permutations": {
+   "parent": "fail",
+   "fix": "fail",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "dateutil/test/test_parser.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 2.2,
+ "env_error_tests": 0,
+ "qualified": false,
+ "selector_event_proxy_v1": false
+}

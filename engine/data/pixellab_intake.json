@@ -1,0 +1,672 @@
+{
+  "spec": "pixel-sprite-v1",
+  "source": "audition/pixellab (2026-08-07 오디션 산출물)",
+  "generator": "PixelLab (외부 AI, 우리가 이번에 부르지 않았다)",
+  "groups": [
+    {
+      "group": "01_cat",
+      "profile": "character",
+      "question": "마스코트 고양이 - 같은 자리에 놓을 대안들",
+      "rows": [
+        {
+          "source": "audition/pixellab/cat_0.png",
+          "raw_verdict": "FAIL",
+          "fixed": true,
+          "verdict": "PASS",
+          "profile": "character",
+          "measured": {
+            "error": null,
+            "width": 32,
+            "height": 32,
+            "color_count": 21,
+            "alpha_binary": true,
+            "has_transparent": true,
+            "block_size": 1,
+            "logical_width": 32,
+            "logical_height": 32
+          },
+          "violations": [],
+          "fixed_size": [
+            32,
+            32
+          ],
+          "path": "out/images/pixellab-v1/candidates/01_cat/c01.png"
+        },
+        {
+          "source": "audition/pixellab/cat_1.png",
+          "raw_verdict": "FAIL",
+          "fixed": true,
+          "verdict": "PASS",
+          "profile": "character",
+          "measured": {
+            "error": null,
+            "width": 32,
+            "height": 32,
+            "color_count": 23,
+            "alpha_binary": true,
+            "has_transparent": true,
+            "block_size": 1,
+            "logical_width": 32,
+            "logical_height": 32
+          },
+          "violations": [],
+          "fixed_size": [
+            32,
+            32
+          ],
+          "path": "out/images/pixellab-v1/candidates/01_cat/c02.png"
+        },
+        {
+          "source": "audition/pixellab/cat_final.png",
+          "raw_verdict": "FAIL",
+          "fixed": true,
+          "verdict": "PASS",
+          "profile": "character",
+          "measured": {
+            "error": null,
+            "width": 32,
+            "height": 32,
+            "color_count": 23,
+            "alpha_binary": true,
+            "has_transparent": true,
+            "block_size": 1,
+            "logical_width": 32,
+            "logical_height": 32
+          },
+          "violations": [],
+          "fixed_size": [
+            32,
+            32
+          ],
+          "path": "out/images/pixellab-v1/candidates/01_cat/c03.png"
+        },
+        {
+          "source": "audition/pixellab/cat_simple_a.png",
+          "raw_verdict": "PASS",
+          "fixed": false,
+          "verdict": "PASS",
+          "profile": "character",
+          "measured": {
+            "error": null,
+            "width": 32,
+            "height": 32,
+            "color_count": 18,
+            "alpha_binary": true,
+            "has_transparent": true,
+            "block_size": 1,
+            "logical_width": 32,
+            "logical_height": 32
+          },
+          "violations": [],
+          "path": "out/images/pixellab-v1/candidates/01_cat/c04.png"
+        },
+        {
+          "source": "audition/pixellab/cat_simple_b.png",
+          "raw_verdict": "FAIL",
+          "fixed": true,
+          "verdict": "PASS",
+          "profile": "character",
+          "measured": {
+            "error": null,
+            "width": 32,
+            "height": 32,
+            "color_count": 23,
+            "alpha_binary": true,
+            "has_transparent": true,
+            "block_size": 1,
+            "logical_width": 32,
+            "logical_height": 32
+          },
+          "violations": [],
+          "fixed_size": [
+            32,
+            32
+          ],
+          "path": "out/images/pixellab-v1/candidates/01_cat/c05.png"
+        }
+      ],
+      "passed": 5,
+      "raw_passed": 1,
+      "fixed": 4,
+      "total": 5
+    },
+    {
+      "group": "02_tileset",
+      "profile": "tile",
+      "question": "타일 - 쓸 만한 것을 고르는 자리(여러 개 가능)",
+      "rows": [
+        {
+          "source": "audition/pixellab/tileset_0.png",
+          "raw_verdict": "FAIL",
+          "fixed": true,
+          "verdict": "PASS",
+          "profile": "tile",
+          "measured": {
+            "error": null,
+            "width": 16,
+            "height": 16,
+            "color_count": 24,
+            "alpha_binary": true,
+            "has_transparent": false,
+            "block_size": 1,
+            "logical_width": 16,
+            "logical_height": 16
+          },
+          "violations": [],
+          "fixed_size": [
+            16,
+            16
+          ],
+          "path": "out/images/pixellab-v1/candidates/02_tileset/c01.png"
+        },
+        {
+          "source": "audition/pixellab/tileset_1.png",
+          "raw_verdict": "FAIL",
+          "fixed": true,
+          "verdict": "PASS",
+          "profile": "tile",
+          "measured": {
+            "error": null,
+            "width": 16,
+            "height": 16,
+            "color_count": 24,
+            "alpha_binary": true,
+            "has_transparent": false,
+            "block_size": 1,
+            "logical_width": 16,
+            "logical_height": 16
+          },
+          "violations": [],
+          "fixed_size": [
+            16,
+            16
+          ],
+          "path": "out/images/pixellab-v1/candidates/02_tileset/c02.png"
+        },
+        {
+          "source": "audition/pixellab/tileset_2.png",
+          "raw_verdict": "FAIL",
+          "fixed": true,
+          "verdict": "PASS",
+          "profile": "tile",
+          "measured": {
+            "error": null,
+            "width": 16,
+            "height": 16,
+            "color_count": 24,
+            "alpha_binary": true,
+            "has_transparent": false,
+            "block_size": 1,
+            "logical_width": 16,
+            "logical_height": 16
+          },
+          "violations": [],
+          "fixed_size": [
+            16,
+            16
+          ],
+          "path": "out/images/pixellab-v1/candidates/02_tileset/c03.png"
+        },
+        {
+          "source": "audition/pixellab/tileset_3.png",
+          "raw_verdict": "FAIL",
+          "fixed": true,
+          "verdict": "PASS",
+          "profile": "tile",
+          "measured": {
+            "error": null,
+            "width": 16,
+            "height": 16,
+            "color_count": 24,
+            "alpha_binary": true,
+            "has_transparent": false,
+            "block_size": 1,
+            "logical_width": 16,
+            "logical_height": 16
+          },
+          "violations": [],
+          "fixed_size": [
+            16,
+            16
+          ],
+          "path": "out/images/pixellab-v1/candidates/02_tileset/c04.png"
+        },
+        {
+          "source": "audition/pixellab/tileset_4.png",
+          "raw_verdict": "FAIL",
+          "fixed": true,
+          "verdict": "PASS",
+          "profile": "tile",
+          "measured": {
+            "error": null,
+            "width": 16,
+            "height": 16,
+            "color_count": 23,
+            "alpha_binary": true,
+            "has_transparent": false,
+            "block_size": 1,
+            "logical_width": 16,
+            "logical_height": 16
+          },
+          "violations": [],
+          "fixed_size": [
+            16,
+            16
+          ],
+          "path": "out/images/pixellab-v1/candidates/02_tileset/c05.png"
+        },
+        {
+          "source": "audition/pixellab/tileset_5.png",
+          "raw_verdict": "FAIL",
+          "fixed": true,
+          "verdict": "PASS",
+          "profile": "tile",
+          "measured": {
+            "error": null,
+            "width": 16,
+            "height": 16,
+            "color_count": 24,
+            "alpha_binary": true,
+            "has_transparent": false,
+            "block_size": 1,
+            "logical_width": 16,
+            "logical_height": 16
+          },
+          "violations": [],
+          "fixed_size": [
+            16,
+            16
+          ],
+          "path": "out/images/pixellab-v1/candidates/02_tileset/c06.png"
+        },
+        {
+          "source": "audition/pixellab/tileset_6.png",
+          "raw_verdict": "PASS",
+          "fixed": false,
+          "verdict": "PASS",
+          "profile": "tile",
+          "measured": {
+            "error": null,
+            "width": 16,
+            "height": 16,
+            "color_count": 6,
+            "alpha_binary": true,
+            "has_transparent": false,
+            "block_size": 1,
+            "logical_width": 16,
+            "logical_height": 16
+          },
+          "violations": [],
+          "path": "out/images/pixellab-v1/candidates/02_tileset/c07.png"
+        },
+        {
+          "source": "audition/pixellab/tileset_7.png",
+          "raw_verdict": "FAIL",
+          "fixed": true,
+          "verdict": "PASS",
+          "profile": "tile",
+          "measured": {
+            "error": null,
+            "width": 16,
+            "height": 16,
+            "color_count": 24,
+            "alpha_binary": true,
+            "has_transparent": false,
+            "block_size": 1,
+            "logical_width": 16,
+            "logical_height": 16
+          },
+          "violations": [],
+          "fixed_size": [
+            16,
+            16
+          ],
+          "path": "out/images/pixellab-v1/candidates/02_tileset/c08.png"
+        },
+        {
+          "source": "audition/pixellab/tileset_8.png",
+          "raw_verdict": "FAIL",
+          "fixed": true,
+          "verdict": "PASS",
+          "profile": "tile",
+          "measured": {
+            "error": null,
+            "width": 16,
+            "height": 16,
+            "color_count": 24,
+            "alpha_binary": true,
+            "has_transparent": false,
+            "block_size": 1,
+            "logical_width": 16,
+            "logical_height": 16
+          },
+          "violations": [],
+          "fixed_size": [
+            16,
+            16
+          ],
+          "path": "out/images/pixellab-v1/candidates/02_tileset/c09.png"
+        },
+        {
+          "source": "audition/pixellab/tileset_9.png",
+          "raw_verdict": "FAIL",
+          "fixed": true,
+          "verdict": "PASS",
+          "profile": "tile",
+          "measured": {
+            "error": null,
+            "width": 16,
+            "height": 16,
+            "color_count": 24,
+            "alpha_binary": true,
+            "has_transparent": false,
+            "block_size": 1,
+            "logical_width": 16,
+            "logical_height": 16
+          },
+          "violations": [],
+          "fixed_size": [
+            16,
+            16
+          ],
+          "path": "out/images/pixellab-v1/candidates/02_tileset/c10.png"
+        },
+        {
+          "source": "audition/pixellab/tileset_10.png",
+          "raw_verdict": "FAIL",
+          "fixed": true,
+          "verdict": "PASS",
+          "profile": "tile",
+          "measured": {
+            "error": null,
+            "width": 16,
+            "height": 16,
+            "color_count": 24,
+            "alpha_binary": true,
+            "has_transparent": false,
+            "block_size": 1,
+            "logical_width": 16,
+            "logical_height": 16
+          },
+          "violations": [],
+          "fixed_size": [
+            16,
+            16
+          ],
+          "path": "out/images/pixellab-v1/candidates/02_tileset/c11.png"
+        },
+        {
+          "source": "audition/pixellab/tileset_11.png",
+          "raw_verdict": "FAIL",
+          "fixed": true,
+          "verdict": "PASS",
+          "profile": "tile",
+          "measured": {
+            "error": null,
+            "width": 16,
+            "height": 16,
+            "color_count": 24,
+            "alpha_binary": true,
+            "has_transparent": false,
+            "block_size": 1,
+            "logical_width": 16,
+            "logical_height": 16
+          },
+          "violations": [],
+          "fixed_size": [
+            16,
+            16
+          ],
+          "path": "out/images/pixellab-v1/candidates/02_tileset/c12.png"
+        },
+        {
+          "source": "audition/pixellab/tileset_12.png",
+          "raw_verdict": "FAIL",
+          "fixed": true,
+          "verdict": "PASS",
+          "profile": "tile",
+          "measured": {
+            "error": null,
+            "width": 16,
+            "height": 16,
+            "color_count": 24,
+            "alpha_binary": true,
+            "has_transparent": false,
+            "block_size": 1,
+            "logical_width": 16,
+            "logical_height": 16
+          },
+          "violations": [],
+          "fixed_size": [
+            16,
+            16
+          ],
+          "path": "out/images/pixellab-v1/candidates/02_tileset/c13.png"
+        },
+        {
+          "source": "audition/pixellab/tileset_13.png",
+          "raw_verdict": "FAIL",
+          "fixed": true,
+          "verdict": "PASS",
+          "profile": "tile",
+          "measured": {
+            "error": null,
+            "width": 16,
+            "height": 16,
+            "color_count": 24,
+            "alpha_binary": true,
+            "has_transparent": false,
+            "block_size": 1,
+            "logical_width": 16,
+            "logical_height": 16
+          },
+          "violations": [],
+          "fixed_size": [
+            16,
+            16
+          ],
+          "path": "out/images/pixellab-v1/candidates/02_tileset/c14.png"
+        },
+        {
+          "source": "audition/pixellab/tileset_14.png",
+          "raw_verdict": "FAIL",
+          "fixed": true,
+          "verdict": "PASS",
+          "profile": "tile",
+          "measured": {
+            "error": null,
+            "width": 16,
+            "height": 16,
+            "color_count": 24,
+            "alpha_binary": true,
+            "has_transparent": false,
+            "block_size": 1,
+            "logical_width": 16,
+            "logical_height": 16
+          },
+          "violations": [],
+          "fixed_size": [
+            16,
+            16
+          ],
+          "path": "out/images/pixellab-v1/candidates/02_tileset/c15.png"
+        },
+        {
+          "source": "audition/pixellab/tileset_15.png",
+          "raw_verdict": "FAIL",
+          "fixed": true,
+          "verdict": "PASS",
+          "profile": "tile",
+          "measured": {
+            "error": null,
+            "width": 16,
+            "height": 16,
+            "color_count": 24,
+            "alpha_binary": true,
+            "has_transparent": false,
+            "block_size": 1,
+            "logical_width": 16,
+            "logical_height": 16
+          },
+          "violations": [],
+          "fixed_size": [
+            16,
+            16
+          ],
+          "path": "out/images/pixellab-v1/candidates/02_tileset/c16.png"
+        }
+      ],
+      "passed": 16,
+      "raw_passed": 1,
+      "fixed": 15,
+      "total": 16
+    },
+    {
+      "group": "03_merchant",
+      "profile": "character",
+      "question": "상인 4방향 - 대안이 아니라 한 캐릭터의 네 면(참고용)",
+      "rows": [
+        {
+          "source": "audition/pixellab/merchant_south.png",
+          "raw_verdict": "FAIL",
+          "fixed": true,
+          "verdict": "PASS",
+          "profile": "character",
+          "measured": {
+            "error": null,
+            "width": 32,
+            "height": 32,
+            "color_count": 18,
+            "alpha_binary": true,
+            "has_transparent": true,
+            "block_size": 1,
+            "logical_width": 32,
+            "logical_height": 32
+          },
+          "violations": [],
+          "fixed_size": [
+            32,
+            32
+          ],
+          "path": "out/images/pixellab-v1/candidates/03_merchant/c01.png"
+        },
+        {
+          "source": "audition/pixellab/merchant_north.png",
+          "raw_verdict": "FAIL",
+          "fixed": true,
+          "verdict": "PASS",
+          "profile": "character",
+          "measured": {
+            "error": null,
+            "width": 32,
+            "height": 32,
+            "color_count": 18,
+            "alpha_binary": true,
+            "has_transparent": true,
+            "block_size": 1,
+            "logical_width": 32,
+            "logical_height": 32
+          },
+          "violations": [],
+          "fixed_size": [
+            32,
+            32
+          ],
+          "path": "out/images/pixellab-v1/candidates/03_merchant/c02.png"
+        },
+        {
+          "source": "audition/pixellab/merchant_east.png",
+          "raw_verdict": "FAIL",
+          "fixed": true,
+          "verdict": "PASS",
+          "profile": "character",
+          "measured": {
+            "error": null,
+            "width": 32,
+            "height": 32,
+            "color_count": 18,
+            "alpha_binary": true,
+            "has_transparent": true,
+            "block_size": 1,
+            "logical_width": 32,
+            "logical_height": 32
+          },
+          "violations": [],
+          "fixed_size": [
+            32,
+            32
+          ],
+          "path": "out/images/pixellab-v1/candidates/03_merchant/c03.png"
+        },
+        {
+          "source": "audition/pixellab/merchant_west.png",
+          "raw_verdict": "FAIL",
+          "fixed": true,
+          "verdict": "PASS",
+          "profile": "character",
+          "measured": {
+            "error": null,
+            "width": 32,
+            "height": 32,
+            "color_count": 16,
+            "alpha_binary": true,
+            "has_transparent": true,
+            "block_size": 1,
+            "logical_width": 32,
+            "logical_height": 32
+          },
+          "violations": [],
+          "fixed_size": [
+            32,
+            32
+          ],
+          "path": "out/images/pixellab-v1/candidates/03_merchant/c04.png"
+        }
+      ],
+      "passed": 4,
+      "raw_passed": 0,
+      "fixed": 4,
+      "total": 4
+    },
+    {
+      "group": "04_icon",
+      "profile": "icon",
+      "question": "아이콘 1장(대조군)",
+      "rows": [
+        {
+          "source": "audition/pixellab/icon_0.png",
+          "raw_verdict": "FAIL",
+          "fixed": true,
+          "verdict": "PASS",
+          "profile": "icon",
+          "measured": {
+            "error": null,
+            "width": 16,
+            "height": 16,
+            "color_count": 11,
+            "alpha_binary": true,
+            "has_transparent": true,
+            "block_size": 1,
+            "logical_width": 16,
+            "logical_height": 16
+          },
+          "violations": [],
+          "fixed_size": [
+            16,
+            16
+          ],
+          "path": "out/images/pixellab-v1/candidates/04_icon/c01.png"
+        }
+      ],
+      "passed": 1,
+      "raw_passed": 0,
+      "fixed": 1,
+      "total": 1
+    }
+  ],
+  "passed": 26,
+  "raw_passed": 2,
+  "fixed": 24,
+  "total": 26,
+  "picked_by": null
+}

@@ -1,0 +1,177 @@
+{
+  "note": "docs/measurement-rules.md §7 — 기록에 design을 쓰는 도구는 전부 여기 있어야 한다",
+  "experiments": [
+    {
+      "id": "diversity-q1-v0",
+      "design": "docs/diversity-q1-v0-design.md",
+      "tool": "tools/diversity_curve.py",
+      "sample_unit": "concept",
+      "kind": "verdict",
+      "result": "data/diversity_q1_v0.json",
+      "note": "한계비용 곡선 v0 — undefined(자가 짧았다). 개념별 판정(diversity-by-concept-v0)이 이걸 대체한다"
+    },
+    {
+      "id": "conformance-q2-v0",
+      "design": "docs/conformance-cost-q2-v0-design.md",
+      "tool": "tools/conformance_cost.py",
+      "sample_unit": "asset",
+      "kind": "verdict",
+      "result": "data/conformance_q2_v0.json",
+      "note": "후처리가 내용을 버리나 — encoding_only. 자산이 서로 독립이라 자산 단위"
+    },
+    {
+      "id": "dual-implementation-v0",
+      "design": "docs/dual-implementation-v0-design.md",
+      "tool": "tools/dual_check.py",
+      "sample_unit": "asset",
+      "kind": "verdict",
+      "result": "data/dual_check_v0.json",
+      "note": "두 구현 대조는 전건 일치를 요구하므로 표본 단위가 통계적 쟁점이 아니다(문턱 1.0)"
+    },
+    {
+      "id": "diversity-run-v1",
+      "design": "docs/diversity-run-v1-design.md",
+      "tool": "tools/diversity_run.py",
+      "sample_unit": "call",
+      "kind": "verdict",
+      "result": "data/diversity_run_v1_run2.json",
+      "note": "호출 안/사이 새것 비율. run3·run4가 개념을 넷 더 얹었다"
+    },
+    {
+      "id": "diversity-by-concept-v0",
+      "design": "docs/diversity-by-concept-v0-design.md",
+      "tool": "tools/diversity_by_concept.py",
+      "sample_unit": "call",
+      "kind": "verdict",
+      "result": "data/diversity_by_concept_v0.json",
+      "note": "개념별 판정 + 세트 판정. 분해능은 천장 기준(§6 개정)"
+    },
+    {
+      "id": "diversity-power-v0",
+      "design": "docs/diversity-by-concept-v0-design.md",
+      "tool": "tools/diversity_power.py",
+      "sample_unit": "call",
+      "kind": "planning",
+      "result": "data/diversity_power_v0.json",
+      "note": "계획 도구 — 문턱을 만들지 않는다. 몇 호출이면 판정이 서는지"
+    },
+    {
+      "id": "prompt-ablation-v1",
+      "design": "docs/prompt-ablation-v0-design.md",
+      "tool": "tools/prompt_ablation.py",
+      "sample_unit": "call",
+      "kind": "verdict",
+      "result": "data/prompt_ablation_v1.json",
+      "note": "spec_helps. v0(후보 단위, data/prompt_ablation_v0.json)은 지우지 않고 남긴다"
+    },
+    {
+      "id": "example-dose-v0",
+      "design": "docs/example-dose-v0-design.md",
+      "tool": "tools/example_dose.py",
+      "sample_unit": "concept",
+      "kind": "verdict",
+      "result": "data/example_dose_v0.json",
+      "note": "예시 0·1·3개. 개념 단위 군집 부트스트랩"
+    },
+    {
+      "id": "snap-fix-v0",
+      "design": "docs/snap-fix-v0-design.md",
+      "tool": "tools/snap_experiment.py",
+      "sample_unit": "call",
+      "kind": "verdict",
+      "result": "data/snap_experiment_saved.json",
+      "note": "저장 통과분으로 손상 판정만 냈다. 통과율 판정은 지출 상한이 풀려야 한다"
+    },
+    {
+      "id": "threshold-sheet",
+      "design": "docs/lufs-v0-design.md",
+      "tool": "tools/threshold_sheet.py",
+      "sample_unit": "none",
+      "kind": "report",
+      "result": null,
+      "note": "미동결 문턱 한 장 — 판정이 아니라 목록이다. 화면 출력이 기본이라 기록 파일이 없을 수 있다"
+    },
+    {
+      "id": "full-run-v0",
+      "design": "docs/full-run-v0-design.md",
+      "tool": "tools/full_run.py",
+      "sample_unit": "none",
+      "kind": "verdict",
+      "result": "data/full_run_opus_v0.json",
+      "note": "완주 시도(게이트 ⑤). 표본이 아니라 경로 하나를 지나며 개입을 센다 - 통계 단위가 없다"
+    },
+    {
+      "id": "tier-compare-v0",
+      "design": "docs/tier-compare-v0-design.md",
+      "tool": "tools/tier_compare.py",
+      "sample_unit": "call",
+      "kind": "verdict",
+      "result": "data/tier_compare_v0.json",
+      "note": "티어 비교. 호출 단위, 교란 요인 둘(온도·사고)을 설계에 선언"
+    },
+    {
+      "id": "pick-weight-spread-v0",
+      "design": "docs/pick-weight-spread-v0-design.md",
+      "tool": "tools/pick_weight_spread.py",
+      "sample_unit": "none",
+      "kind": "verdict",
+      "result": "data/pick_weight_spread_v0.json",
+      "note": "탐색적 순열검정 — 세트 하나에 대한 관찰이라 통계 표본 단위가 없다. 가설이 관측에서 나왔음을 문서 §0에 선언"
+    },
+    {
+      "id": "set-impact-v0",
+      "design": "docs/pick-weight-spread-v0-design.md",
+      "tool": "tools/set_impact.py",
+      "sample_unit": "none",
+      "kind": "report",
+      "result": "data/set_impact_v0.json",
+      "note": "판정이 아니라 되묻기 재료. 기계가 고르지 않는다(테스트로 강제)"
+    },
+    {
+      "id": "taste-retest-v0",
+      "design": "docs/taste-retest-v0-design.md",
+      "tool": "tools/retest_board.py",
+      "sample_unit": "none",
+      "kind": "verdict",
+      "result": "data/picks/retest-v1.json",
+      "note": "자리 단위 정확 이항 구간. 1회차 0.40 undefined, 2회차는 등록만 하고 중단(설계 §7)"
+    },
+    {
+      "id": "tier-blind-tally-v0",
+      "design": "docs/tier-compare-v0-design.md",
+      "tool": "tools/tier_blind_tally.py",
+      "sample_unit": "none",
+      "kind": "verdict",
+      "result": "data/tier_blind_tally_v0.json",
+      "note": "선택 단위 순열검정. 귀무값은 균등이 아니라 각 개념 풀의 실제 구성"
+    },
+    {
+      "id": "tier-pair-test-v0",
+      "design": "docs/tier-pair-test-v0-design.md",
+      "tool": "tools/tier_pairs.py",
+      "sample_unit": "none",
+      "kind": "verdict",
+      "result": null,
+      "note": "짝비교 판. 만들어 두었으나 **실행하지 않았다** - 블라인드 집계가 같은 질문에 먼저 답했다"
+    },
+    {
+      "id": "shading-param-v0",
+      "design": "docs/shading-param-v0-design.md",
+      "tool": "tools/artgen/shading_test.py",
+      "sample_unit": "call",
+      "kind": "verdict",
+      "result": "data/shading_ab_v0.json",
+      "note": "사장님 질문에 답하는 실험 — 부족한 품질이 무료 옵션/내 프롬프트/우리 엔진 중 무엇인가. 같은 씨앗으로 shading·detail·outline 만 바꿨다. 주문 1회가 타일 16장을 낳으므로 표본 단위는 호출이다(08-27 오전의 뭉침 교훈과 같은 구조). **판정 shading_helps**(세 측정 전부 B>A). 다만 08-07 오디션이 같은 맨몸 주문인데도 B보다 높게 나와, **회차 간 변동이 파라미터 효과보다 크다**는 것이 같이 드러났다 - 그건 이 실험이 물은 것이 아니므로 판정이 아니라 관찰로 남긴다"
+    },
+    {
+      "id": "consistency-v0",
+      "design": "docs/consistency-v0-design.md",
+      "tool": "tools/artgen/palette_test.py",
+      "sample_unit": "call",
+      "kind": "verdict",
+      "result": "data/consistency_ab_v0.json",
+      "note": "사장님이 정한 집중 목표(일관성)에 대한 첫 실험. **철회했다.** A 갈래 2회차는 받았고(생성 6회) B 갈래는 color_image가 64x64여야 하는데 40x1을 보내 실패했다. 그 뒤 접근 자체가 틀렸음을 알았다 - color_image는 명세에도 'weakly guiding'이고, 일관성은 생성 시점에 부탁할 것이 아니라 생성 이후에 강제하거나(팔레트) 여러 개 뽑아 걸러야(오디션) 하는 것이다. B에 6회를 더 쓰는 대신 멈췄다. **판정 undefined. 쓴 6회는 답 없이 끝난다** - 접근을 잘못 잡은 값이다. 후속: measurement-rules §14·§15, genesis/audition.py",
+      "verdict": "undefined"
+    }
+  ]
+}

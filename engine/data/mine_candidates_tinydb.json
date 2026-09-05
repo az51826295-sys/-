@@ -1,0 +1,230 @@
+[
+ {
+  "sha": "1fa99fb3ff4e0f8ebd69d43a5fac7aa848b668d8",
+  "subject": "fix: make query callables work again",
+  "src_files": [
+   "tinydb/queries.py",
+   "tinydb/table.py"
+  ],
+  "test_files": [
+   "tests/test_tinydb.py"
+  ],
+  "src_lines": 26,
+  "multi_file": true
+ },
+ {
+  "sha": "5bb3a9e5594d9c2a870d72f88be301f8544ca5d1",
+  "subject": "fix(queries): correctly handle getitem calls for queries",
+  "src_files": [
+   "tinydb/queries.py"
+  ],
+  "test_files": [
+   "tests/test_queries.py"
+  ],
+  "src_lines": 9,
+  "multi_file": false
+ },
+ {
+  "sha": "8470d3e7d86531931ee3fcd85a258a1cb432589a",
+  "subject": "fix(queries): correctly handle non-string values for regexes",
+  "src_files": [
+   "tinydb/queries.py"
+  ],
+  "test_files": [
+   "tests/test_queries.py"
+  ],
+  "src_lines": 23,
+  "multi_file": false
+ },
+ {
+  "sha": "9722ecee7a45cea6d606c2ee40ed32d80ed78341",
+  "subject": "Fix: Make path queries work again",
+  "src_files": [
+   "tinydb/queries.py"
+  ],
+  "test_files": [
+   "tests/test_queries.py",
+   "tests/test_tinydb.py"
+  ],
+  "src_lines": 36,
+  "multi_file": false
+ },
+ {
+  "sha": "983b936e8990c41564c19984f8be2f9a08a0cc62",
+  "subject": "Fix bug in write_back with empty items (#202)",
+  "src_files": [
+   "tinydb/database.py"
+  ],
+  "test_files": [
+   "tests/test_tinydb.py"
+  ],
+  "src_lines": 8,
+  "multi_file": false
+ },
+ {
+  "sha": "06d64f46a90fc715129f7c54d2d70ab91e59a1c8",
+  "subject": "FIX: fix 0 capacity issue. now cache_size can be 0",
+  "src_files": [
+   "tinydb/utils.py"
+  ],
+  "test_files": [
+   "tests/test_tables.py"
+  ],
+  "src_lines": 5,
+  "multi_file": false
+ },
+ {
+  "sha": "cca5c234398383a8163725fdc542d9a9ffbedc45",
+  "subject": "Fix serialization",
+  "src_files": [
+   "tinydb/middlewares.py"
+  ],
+  "test_files": [
+   "tests/test_serializer.py"
+  ],
+  "src_lines": 40,
+  "multi_file": false
+ },
+ {
+  "sha": "cb7c30eb15831a0476218eb685a92cdfe61238f0",
+  "subject": "trying to fix #45",
+  "src_files": [
+   "tinydb/database.py"
+  ],
+  "test_files": [
+   "tests/test_tinydb.py"
+  ],
+  "src_lines": 11,
+  "multi_file": false
+ },
+ {
+  "sha": "1e865a8680c7bd9f2a0d38ab80c840227f62c7f8",
+  "subject": "Fix _last_id after opening old DB (closes #34)",
+  "src_files": [
+   "tinydb/database.py"
+  ],
+  "test_files": [
+   "tests/test_tinydb.py"
+  ],
+  "src_lines": 8,
+  "multi_file": false
+ },
+ {
+  "sha": "ea39c47aeb3ef7fd3a25c328dab5ac7872b3c439",
+  "subject": "Fix some minor code smells",
+  "src_files": [
+   "tinydb/database.py",
+   "tinydb/middlewares.py",
+   "tinydb/queries.py"
+  ],
+  "test_files": [
+   "tests/test_storages.py",
+   "tests/test_utils.py"
+  ],
+  "src_lines": 8,
+  "multi_file": true
+ },
+ {
+  "sha": "f959c8cfec35dfe7d8da058e10f5f19c76bf464f",
+  "subject": "Fix small bug in catch_warning; better code coverage",
+  "src_files": [
+   "tinydb/queries.py",
+   "tinydb/utils.py"
+  ],
+  "test_files": [
+   "tests/test_utils.py"
+  ],
+  "src_lines": 18,
+  "multi_file": true
+ },
+ {
+  "sha": "08305a1ea3e484c8cdd283ae35b37c00cd8cbf70",
+  "subject": "Fix Storage metaclass usage on Python 3",
+  "src_files": [
+   "tinydb/storages.py",
+   "tinydb/utils.py"
+  ],
+  "test_files": [
+   "tests/test_storages.py"
+  ],
+  "src_lines": 44,
+  "multi_file": true
+ },
+ {
+  "sha": "62a0a58773883e130c0f90604d71bc47d2b49eaf",
+  "subject": "Fix some code smells",
+  "src_files": [
+   "tinydb/__init__.py",
+   "tinydb/database.py"
+  ],
+  "test_files": [
+   "tests/conftest.py",
+   "tests/test_tinydb.py"
+  ],
+  "src_lines": 26,
+  "multi_file": true
+ },
+ {
+  "sha": "03f8df755bd89fadd1b6824ae8b16cdd3664996c",
+  "subject": "Fixed .update and .remove when using smart_cache",
+  "src_files": [
+   "tinydb/database.py"
+  ],
+  "test_files": [
+   "tests/test_tables.py"
+  ],
+  "src_lines": 20,
+  "multi_file": false
+ },
+ {
+  "sha": "8fd08fbf49d03c5d78b5b01100a29c7b9fe89be4",
+  "subject": "Fixed bug: IDs not unique (closes #7)",
+  "src_files": [
+   "tinydb/database.py"
+  ],
+  "test_files": [
+   "tests/tests_tinydb.py"
+  ],
+  "src_lines": 6,
+  "multi_file": false
+ },
+ {
+  "sha": "5d4abec76f1d5a77cf55e3ad49c966ec46dfd73e",
+  "subject": "Minor fixes",
+  "src_files": [
+   "middlewares.py"
+  ],
+  "test_files": [
+   "tests/tests_middlewares.py"
+  ],
+  "src_lines": 5,
+  "multi_file": false
+ },
+ {
+  "sha": "0f03c06408f5f579586813b9a1e1c24024715a53",
+  "subject": "Added query caching and fixed some bugs",
+  "src_files": [
+   "__init__.py",
+   "queries.py"
+  ],
+  "test_files": [
+   "tests/tests_tinydb.py"
+  ],
+  "src_lines": 29,
+  "multi_file": true
+ },
+ {
+  "sha": "57233c6f63b1833d078178d89c676a7d3435a4f8",
+  "subject": "Fixed problem with CachingMiddleware, some refactoring",
+  "src_files": [
+   "__init__.py",
+   "storages.py"
+  ],
+  "test_files": [
+   "tests/tests_tables.py",
+   "tests/tests_tinydb.py"
+  ],
+  "src_lines": 14,
+  "multi_file": true
+ }
+]

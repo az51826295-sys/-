@@ -1,0 +1,15 @@
+{
+ "repo": "tinydb",
+ "fix_commit": "ea39c47aeb3ef7fd3a25c328dab5ac7872b3c439",
+ "parent_commit": "ab1ed5281b8cf343a02a72278a30f05a6530d3b4",
+ "answer_functions": [
+  "tinydb/database.py::remove"
+ ],
+ "repro_tests": [],
+ "smoke": [],
+ "baseline_pass_count": 0,
+ "probes": [],
+ "inc_event": false,
+ "regression_event": false,
+ "skipped": "no repro or no answer functions"
+}

@@ -1,0 +1,28 @@
+# 픽셀 스프라이트 스펙 v1 — 숫자는 전부 사장님이 08-07에 동결한 아트 기준에서 온다
+# (docs/game-design-v0.md §1b: 타일 16×16, 캐릭터 16×32, 아이콘 16×16,
+#  에셋당 색 수 ≤ 24, 반입 오라클 = 크기·색 수·투명배경·격자 정합).
+# 내가 고른 숫자는 없다. 등급이 다르면 크기가 다르므로 부류별로 나눈다.
+spec_id: pixel-sprite-v1
+inherits_from: judge-bench-v1.2
+frozen_basis: "docs/game-design-v0.md §1b (2026-08-07 사용자 확정)"
+
+profiles:
+  tile:
+    logical_size: { width: 16, height: 16 }
+    max_logical_size: 16
+    max_colors: 24
+    alpha_binary: true
+  character:
+    logical_size: { width: 16, height: 32 }
+    max_logical_size: 32
+    max_colors: 24
+    alpha_binary: true
+  icon:
+    logical_size: { width: 16, height: 16 }
+    max_logical_size: 16
+    max_colors: 24
+    alpha_binary: true
+
+# 정직 조항: 이 스펙은 **반입 오라클**이다. 여기 걸린다고 그림이 나쁘다는 뜻이
+# 아니라, 이 게임의 규격에 안 맞는다는 뜻이다. 규격을 바꾸는 것은 사장님 몫이고,
+# 숫자를 보고 내가 늘리지 않는다.

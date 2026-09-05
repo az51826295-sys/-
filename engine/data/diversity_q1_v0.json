@@ -1,0 +1,272 @@
+{
+  "spec": "diversity-q1-v0",
+  "design": "docs/diversity-q1-v0-design.md",
+  "verdict": "undefined",
+  "why": "ci_straddles",
+  "tier_used": "T2",
+  "sample": {
+    "concepts": 9,
+    "candidates": 56,
+    "gate_ok": true,
+    "excluded": [
+      {
+        "run": "pick-v1",
+        "concept": "save",
+        "n_passed": 3,
+        "reason": "per_concept_min"
+      },
+      {
+        "run": "pick-v1",
+        "concept": "settings",
+        "n_passed": 5,
+        "reason": "per_concept_min"
+      },
+      {
+        "run": "pick-v2",
+        "concept": "equipment",
+        "n_passed": 5,
+        "reason": "per_concept_min"
+      }
+    ],
+    "min_concepts": 8,
+    "min_candidates": 40,
+    "min_per_concept": 6
+  },
+  "thresholds": {
+    "flat_lower": 0.8,
+    "saturating_upper": 0.5
+  },
+  "bootstrap": {
+    "n": 10000,
+    "seed": 12345
+  },
+  "tiers": {
+    "T1": {
+      "per_concept": [
+        {
+          "run": "pick-v1",
+          "concept": "inventory",
+          "n": 7,
+          "distinct": 7,
+          "u": 1.0
+        },
+        {
+          "run": "pick-v1",
+          "concept": "map",
+          "n": 6,
+          "distinct": 6,
+          "u": 1.0
+        },
+        {
+          "run": "pick-v2",
+          "concept": "attack",
+          "n": 6,
+          "distinct": 6,
+          "u": 1.0
+        },
+        {
+          "run": "pick-v2",
+          "concept": "defend",
+          "n": 7,
+          "distinct": 7,
+          "u": 1.0
+        },
+        {
+          "run": "pick-v2",
+          "concept": "shop",
+          "n": 6,
+          "distinct": 6,
+          "u": 1.0
+        },
+        {
+          "run": "pick-v2",
+          "concept": "quest",
+          "n": 6,
+          "distinct": 6,
+          "u": 1.0
+        },
+        {
+          "run": "pick-v2",
+          "concept": "stats",
+          "n": 6,
+          "distinct": 6,
+          "u": 1.0
+        },
+        {
+          "run": "pick-v2",
+          "concept": "dialogue",
+          "n": 6,
+          "distinct": 6,
+          "u": 1.0
+        },
+        {
+          "run": "pick-v2",
+          "concept": "exit",
+          "n": 6,
+          "distinct": 6,
+          "u": 1.0
+        }
+      ],
+      "mean_u": 1.0,
+      "ci95": [
+        1.0,
+        1.0
+      ],
+      "duplicates": 0,
+      "has_resolution": false
+    },
+    "T2": {
+      "per_concept": [
+        {
+          "run": "pick-v1",
+          "concept": "inventory",
+          "n": 7,
+          "distinct": 5,
+          "u": 0.42857142857142855
+        },
+        {
+          "run": "pick-v1",
+          "concept": "map",
+          "n": 6,
+          "distinct": 5,
+          "u": 0.6666666666666666
+        },
+        {
+          "run": "pick-v2",
+          "concept": "attack",
+          "n": 6,
+          "distinct": 3,
+          "u": 0.3333333333333333
+        },
+        {
+          "run": "pick-v2",
+          "concept": "defend",
+          "n": 7,
+          "distinct": 5,
+          "u": 0.42857142857142855
+        },
+        {
+          "run": "pick-v2",
+          "concept": "shop",
+          "n": 6,
+          "distinct": 5,
+          "u": 0.6666666666666666
+        },
+        {
+          "run": "pick-v2",
+          "concept": "quest",
+          "n": 6,
+          "distinct": 5,
+          "u": 0.6666666666666666
+        },
+        {
+          "run": "pick-v2",
+          "concept": "stats",
+          "n": 6,
+          "distinct": 6,
+          "u": 1.0
+        },
+        {
+          "run": "pick-v2",
+          "concept": "dialogue",
+          "n": 6,
+          "distinct": 6,
+          "u": 1.0
+        },
+        {
+          "run": "pick-v2",
+          "concept": "exit",
+          "n": 6,
+          "distinct": 5,
+          "u": 0.6666666666666666
+        }
+      ],
+      "mean_u": 0.6507936507936507,
+      "ci95": [
+        0.5132275132275131,
+        0.798941798941799
+      ],
+      "duplicates": 11,
+      "has_resolution": true
+    },
+    "T3": {
+      "per_concept": [
+        {
+          "run": "pick-v1",
+          "concept": "inventory",
+          "n": 7,
+          "distinct": 5,
+          "u": 0.42857142857142855
+        },
+        {
+          "run": "pick-v1",
+          "concept": "map",
+          "n": 6,
+          "distinct": 5,
+          "u": 0.6666666666666666
+        },
+        {
+          "run": "pick-v2",
+          "concept": "attack",
+          "n": 6,
+          "distinct": 3,
+          "u": 0.3333333333333333
+        },
+        {
+          "run": "pick-v2",
+          "concept": "defend",
+          "n": 7,
+          "distinct": 5,
+          "u": 0.42857142857142855
+        },
+        {
+          "run": "pick-v2",
+          "concept": "shop",
+          "n": 6,
+          "distinct": 5,
+          "u": 0.6666666666666666
+        },
+        {
+          "run": "pick-v2",
+          "concept": "quest",
+          "n": 6,
+          "distinct": 5,
+          "u": 0.6666666666666666
+        },
+        {
+          "run": "pick-v2",
+          "concept": "stats",
+          "n": 6,
+          "distinct": 6,
+          "u": 1.0
+        },
+        {
+          "run": "pick-v2",
+          "concept": "dialogue",
+          "n": 6,
+          "distinct": 6,
+          "u": 1.0
+        },
+        {
+          "run": "pick-v2",
+          "concept": "exit",
+          "n": 6,
+          "distinct": 5,
+          "u": 0.6666666666666666
+        }
+      ],
+      "mean_u": 0.6507936507936507,
+      "ci95": [
+        0.5132275132275131,
+        0.798941798941799
+      ],
+      "duplicates": 11,
+      "has_resolution": true
+    }
+  },
+  "marginal_cost": {
+    "per_passed_candidate": 1.5365853658536588,
+    "per_generated_candidate": 1.6322482680079722,
+    "pass_rate_used": 0.9413919413919414
+  }
+}

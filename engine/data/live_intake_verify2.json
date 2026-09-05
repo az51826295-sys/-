@@ -1,0 +1,815 @@
+{
+ "verified_at": "2026-08-22T07:12:12",
+ "mock": false,
+ "n_candidates": 85,
+ "outcomes": {
+  "invalid": 73,
+  "accepted": 8,
+  "not_reproducible": 4
+ },
+ "stage2_yield": 0.0941,
+ "rows": [
+  {
+   "repo": "mahmoud/boltons",
+   "number": 170,
+   "title": "iterutils.replaced -- replace instances of A with B",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom boltons.iterutils import replaced\n\n\ndef test_replaced_basic():\n    \"\"\"Test that replaced correctly replaces instances of old with new\"\"\"\n    # Test with list\n    result = list(replaced([1, 2, 3, 2, 4], 2, 99))\n    assert result == [1, 99, 3, 99, 4]\n\n\ndef test_replaced_all_instances():\n    \"\"\"Test that all instances are replaced\"\"\"\n    result = list(replaced([5, 5, 5], 5, 10))\n    assert result == [10, 10, 10]\n\n\ndef test_replaced_no_match():\n    \"\"\"Test when old value is not in iterable\"\"\"\n    result = list(replaced([1, 2, 3], 99, 0))\n    assert result == [1, 2, 3]\n\n\ndef test_replaced_with_strings():\n    \"\"\"Test replaced with string values\"\"\"\n    result = list(replaced(['a', 'b', 'c', 'b'], 'b', 'x'))\n    assert result == ['a', 'x', 'c', 'x']\n\n\ndef test_replaced_with_none():\n    \"\"\"Test replaced with None values\"\"\"\n    result = list(replaced([1, None, 2, None], None, 0))\n    assert result == [1, 0, 2, 0]\n\n\ndef test_replaced_empty():\n    \"\"\"Test replaced with empty iterable\"\"\"\n    result = list(replaced([], 1, 2))\n    assert result == []\n\n\ndef test_replaced_single_element():\n    \"\"\"Test replaced with single matching element\"\"\"\n    result = list(replaced([5], 5, 10))\n    assert result == [10]\n\n\ndef test_replaced_generator():\n    \"\"\"Test replaced works with generator input\"\"\"\n    gen = (x for x in [1, 2, 3, 2])\n    result = list(replaced(gen, 2, 99))\n    assert result == [1, 99, 3, 99]\n"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 148,
+   "title": "numpy multi-dimensional slices?",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom boltons.iterutils import nslice\n\n\ndef test_nslice_multidimensional_slicing():\n    \"\"\"Test numpy-style multi-dimensional slicing with nslice\"\"\"\n    # Test case: drop first column from 2D list (like database fetchall result)\n    rows = [\n        [1, 2, 3],\n        [4, 5, 6],\n        [7, 8, 9]\n    ]\n\n    # Should drop first column using [:, 1:]\n    result = nslice(rows)[:, 1:]\n    expected = [\n        [2, 3],\n        [5, 6],\n        [8, 9]\n    ]\n\n    assert result == expected\n"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 142,
+   "title": "camel2under possible error",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import pytest\nfrom boltons.strutils import camel2under\n\n\ndef test_camel2under_consecutive_capitals():\n    \"\"\"Test that consecutive capital letters are handled correctly.\"\"\"\n    # Single capital letters should not be separated by underscores\n    assert camel2under('NSDecimalToUInt') == 'ns_decimal_to_uint'\n    # This should also work for other consecutive capitals\n    assert camel2under('HTTPSConnection') == 'https_connection'\n    assert camel2under('XMLParser') == 'xml_parser'\n"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 141,
+   "title": "Time zones don't support fold",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import pytest\nfrom datetime import datetime, timedelta\nfrom boltons.timeutils import LocalTZInfo, Eastern\n\n\ndef fmt_offset(dt):\n    \"\"\"Format timedelta offset to readable string\"\"\"\n    td = dt.utcoffset()\n    if td is None:\n        return None\n    fmt_str = ('-' if td < timedelta(0) else '') + '{}'\n    return fmt_str.format(abs(td))\n\n\ndef test_fold_attribute_support():\n    \"\"\"Test that fold attribute is respected for ambiguous datetimes\"\"\"\n    EASTERN_BO = Eastern\n\n    # 2011-11-06 01:30 is ambiguous in US/Eastern timezone\n    # fold=0 (default) means first occurrence (EDT, UTC-4)\n    # fold=1 means second occurrence (EST, UTC-5)\n    dt_base = datetime(2011, 11, 6, 1, 30)\n\n    # Create datetime with fold=0 (unfolded, first occurrence)\n    dt_unfolded = datetime(2011, 11, 6, 1, 30, fold=0)\n    dt_unfolded_eastern = dt_unfolded.replace(tzinfo=EASTERN_BO)\n\n    # Create datetime with fold=1 (folded, second occurrence)\n    dt_folded = datetime(2011, 11, 6, 1, 30, fold=1)\n    dt_folded_eastern = dt_folded.replace(tzinfo=EASTERN_BO)\n\n    # Unfolded (fold=0) should be EDT (UTC-4)\n    assert fmt_offset(dt_unfolded_eastern) == '4:00:00', \\\n        f\"Unfolded should be EDT (UTC-4), got {fmt_offset(dt_unfolded_eastern)}\"\n    assert dt_unfolded_eastern.tzname() == 'EDT', \\\n        f\"Unfolded should be EDT, got {dt_unfolded_eastern.tzname()}\"\n\n    # Folded (fold=1) should be EST (UTC-5)\n    assert fmt_offset(dt_folded_eastern) == '5:00:00', \\\n        f\"Folded should be EST (UTC-5), got {fmt_offset(dt_folded_eastern)}\"\n    assert dt_folded_eastern.tzname() == 'EST', \\\n        f\"Folded should be EST, got {dt_folded_eastern.tzname()}\"\n"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 125,
+   "title": "dict rupdate()",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom boltons.dictutils import recursive_update\n\ndef test_recursive_update_nested_dicts():\n    \"\"\"Test that recursive_update properly merges nested dictionaries\"\"\"\n    a = {'x': {'y': 1, 'z': 2}}\n    b = {'x': {'y': 10, 'w': 3}}\n    result = recursive_update(a, b)\n\n    # Should recursively merge nested dicts\n    assert result == {'x': {'y': 10, 'z': 2, 'w': 3}}\n    assert result['x']['y'] == 10\n    assert result['x']['z'] == 2\n    assert result['x']['w'] == 3\n\ndef test_recursive_update_multiple_levels():\n    \"\"\"Test recursive_update with multiple nesting levels\"\"\"\n    a = {'a': {'b': {'c': 1}}}\n    b = {'a': {'b': {'d': 2}}}\n    result = recursive_update(a, b)\n\n    assert result == {'a': {'b': {'c': 1, 'd': 2}}}\n\ndef test_recursive_update_overwrite_nondict_with_dict():\n    \"\"\"Test that non-dict values are overwritten by dict values\"\"\"\n    a = {'x': 'string'}\n    b = {'x': {'y': 1}}\n    result = recursive_update(a, b)\n\n    assert result == {'x': {'y': 1}}\n\ndef test_recursive_update_overwrite_dict_with_nondict():\n    \"\"\"Test that dict values are overwritten by non-dict values\"\"\"\n    a = {'x': {'y': 1}}\n    b = {'x': 'string'}\n    result = recursive_update(a, b)\n\n    assert result == {'x': 'string'}\n"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1452,
+   "title": "`FREQ=YEARLY` with `BYMONTHDAY` but no `BYMONTH` expands to every month instead of DTSTART month (RF",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom dateutil.rrule import rrule, YEARLY\nfrom datetime import datetime\n\n\ndef test_yearly_bymonthday_without_bymonth_should_use_dtstart_month():\n    \"\"\"\n    Test that FREQ=YEARLY with BYMONTHDAY but no BYMONTH\n    uses the month from DTSTART, not every month.\n\n    Per RFC 5545 section 3.3.10, missing BYMONTH should be\n    derived from DTSTART.\n    \"\"\"\n    dtstart = datetime(2010, 3, 30)  # March 30, 2010\n    rr = rrule(YEARLY, bymonthday=30, dtstart=dtstart, count=12)\n\n    dates = [d.date() for d in rr]\n\n    # Expected: March 30 of each year (2010-2021)\n    expected_dates = [\n        datetime(2010, 3, 30).date(),\n        datetime(2011, 3, 30).date(),\n        datetime(2012, 3, 30).date(),\n        datetime(2013, 3, 30).date(),\n        datetime(2014, 3, 30).date(),\n        datetime(2015, 3, 30).date(),\n        datetime(2016, 3, 30).date(),\n        datetime(2017, 3, 30).date(),\n        datetime(2018, 3, 30).date(),\n        datetime(2019, 3, 30).date(),\n        datetime(2020, 3, 30).date(),\n        datetime(2021, 3, 30).date(),\n    ]\n\n    assert dates == expected_dates, (\n        f\"Expected dates in March only, but got dates in multiple months: {dates}\"\n    )\n"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1448,
+   "title": "dayfirst implementation bug",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom dateutil import parser\n\n\ndef test_dayfirst_should_not_affect_unambiguous_dates_when_yearfirst_false():\n    \"\"\"\n    Test that dayfirst parameter should NOT affect parsing when yearfirst=False\n    and the date is unambiguous (has 4-digit year).\n\n    According to documentation:\n    - dayfirst only matters for ambiguous 3-integer dates\n    - \"If yearfirst is set to True, this distinguishes between YDM and YMD\"\n    - This implies dayfirst should NOT affect the result when yearfirst=False\n\n    Bug: dayfirst=True incorrectly flips day and month even when year is unambiguous\n    \"\"\"\n    # Test with YYYY-MM-DD format (unambiguous - year is 4 digits)\n    date_string = '2024-11-06'\n\n    # Parse without dayfirst\n    result_default = parser.parse(date_string)\n\n    # Parse with dayfirst=True, yearfirst=False\n    # Should produce the SAME result because:\n    # 1. The date is unambiguous (4-digit year)\n    # 2. dayfirst should only affect ambiguous dates\n    # 3. When yearfirst=False, dayfirst should not distinguish YDM vs YMD\n    result_dayfirst = parser.parse(date_string, dayfirst=True, yearfirst=False)\n\n    # Both should interpret as 2024-11-06 (November 6, 2024)\n    assert result_default.year == 2024\n    assert result_default.month == 11\n    assert result_default.day == 6\n\n    assert result_dayfirst.year == 2024\n    assert result_dayfirst.month == 11\n    assert result_dayfirst.day == 6\n\n    # They should be equal\n    assert result_default == result_dayfirst, (\n        f\"dayfirst should not affect unambiguous dates when yearfirst=False. \"\n        f\"Got {result_default} vs {result_dayfirst}\"\n    )\n"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1442,
+   "title": "default parser fails to parse 9-digit time string as HHMMSSmmm format",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom dateutil import parser\nfrom datetime import datetime\n\n\ndef test_parse_9digit_time_string_with_microseconds():\n    \"\"\"Test parsing 9-digit time string as HHMMSSmmm format\"\"\"\n    dt = parser.parse(\"20010203 040506789\")\n    expected = datetime(2001, 2, 3, 4, 5, 6, 789000)\n    assert dt == expected\n"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1432,
+   "title": "TypeError in tzstr when parsing \"UTC\" or \"GMT\" without offset",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom dateutil.tz import tzstr\n\n\ndef test_tzstr_gmt_without_offset():\n    \"\"\"Test that tzstr can parse 'GMT' without explicit offset\"\"\"\n    tz = tzstr(\"GMT\")\n    assert tz is not None\n\n\ndef test_tzstr_utc_without_offset():\n    \"\"\"Test that tzstr can parse 'UTC' without explicit offset\"\"\"\n    tz = tzstr(\"UTC\")\n    assert tz is not None\n"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1425,
+   "title": "rrule generated creates datetimes with non-existent local time (i.e., not respecting DST gaps)",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom datetime import datetime\nfrom dateutil import tz\nfrom dateutil.rrule import DAILY, rrule\n\n\ndef test_rrule_respects_dst_gaps():\n    \"\"\"Test that rrule ignores non-existent local times during DST gaps\"\"\"\n    tzinfo = tz.gettz('America/New_York')\n    dt = datetime(2025, 3, 7, 2, 30, 0, tzinfo=tzinfo)\n\n    results = list(rrule(DAILY, dtstart=dt, count=5))\n\n    # Expected: 2025-03-07, 2025-03-08, 2025-03-10, 2025-03-11, 2025-03-12\n    # (2025-03-09 02:30:00 doesn't exist due to DST gap)\n    expected_dates = [\n        datetime(2025, 3, 7, 2, 30, 0, tzinfo=tzinfo),\n        datetime(2025, 3, 8, 2, 30, 0, tzinfo=tzinfo),\n        datetime(2025, 3, 10, 2, 30, 0, tzinfo=tzinfo),\n        datetime(2025, 3, 11, 2, 30, 0, tzinfo=tzinfo),\n        datetime(2025, 3, 12, 2, 30, 0, tzinfo=tzinfo),\n    ]\n\n    assert len(results) == len(expected_dates)\n    for result, expected in zip(results, expected_dates):\n        assert result == expected\n        # Ensure the datetime is valid (has a valid UTC offset)\n        assert result.utcoffset() is not None\n"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1421,
+   "title": "\"5pm\" with a default date is not considered \"5:00pm\"",
+   "class": "A",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "from datetime import datetime\nfrom dateutil.parser import parse\n\n\ndef test_dateutil():\n    \"\"\"Test dateutil interpreting 5pm\"\"\"\n    defaultdt = datetime(2025, month=1, day=1, hour=8, minute=15)\n\n    dt5  = parse(\"01-1 5pm\")\n    dt5a = parse(\"01-1 5pm\", default=defaultdt)\n\n    print(dt5)\n    print(dt5a)\n    assert dt5 == dt5a\n"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1414,
+   "title": "handle and parse date ranges",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom dateutil import parser\nfrom datetime import datetime, timedelta\n\n\ndef test_parse_date_range_forward():\n    \"\"\"Test parsing a date range from earlier to later date\"\"\"\n    date_str = \"January 1, 2020 to January 5, 2020\"\n    result = parser.parse(date_str)\n\n    expected = [\n        datetime(2020, 1, 1, 0, 0),\n        datetime(2020, 1, 2, 0, 0),\n        datetime(2020, 1, 3, 0, 0),\n        datetime(2020, 1, 4, 0, 0),\n        datetime(2020, 1, 5, 0, 0)\n    ]\n\n    assert isinstance(result, list), \"Parser should return a list for date ranges\"\n    assert result == expected, f\"Expected {expected}, got {result}\"\n\n\ndef test_parse_date_range_backward():\n    \"\"\"Test parsing a date range from later to earlier date\"\"\"\n    date_str = \"January 15, 2024 to January 11, 2024\"\n    result = parser.parse(date_str)\n\n    expected = [\n        datetime(2024, 1, 15, 0, 0),\n        datetime(2024, 1, 14, 0, 0),\n        datetime(2024, 1, 13, 0, 0),\n        datetime(2024, 1, 12, 0, 0),\n        datetime(2024, 1, 11, 0, 0)\n    ]\n\n    assert isinstance(result, list), \"Parser should return a list for date ranges\"\n    assert result == expected, f\"Expected {expected}, got {result}\"\n"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1413,
+   "title": "timezone definition inconsistencies in the past",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom dateutil.tz import gettz\nfrom zoneinfo import ZoneInfo\nimport datetime\n\n\ndef test_dateutil_eet_timezone_offset_consistency():\n    \"\"\"\n    Test that dateutil returns the same UTC offset as zoneinfo for EET timezone.\n\n    This test reproduces the bug where dateutil.tz.gettz(\"EET\") returns an\n    incorrect UTC offset (+3 hours instead of +2 hours) for a historical date\n    before DST transition.\n    \"\"\"\n    # Test date: March 27, 1983 at 03:00 (before DST transition in EET)\n    d = datetime.datetime(1983, 3, 27, 3, 0)\n\n    # Expected offset: +2 hours (7200 seconds)\n    expected_offset = datetime.timedelta(seconds=7200)\n\n    # dateutil offset\n    tz_dateutil = gettz(\"EET\")\n    dateutil_offset = tz_dateutil.utcoffset(d)\n\n    # zoneinfo offset (reference)\n    tz_zoneinfo = ZoneInfo(\"EET\")\n    zoneinfo_offset = tz_zoneinfo.utcoffset(d)\n\n    # Both should match the expected offset\n    assert zoneinfo_offset == expected_offset, f\"zoneinfo offset mismatch: {zoneinfo_offset}\"\n    assert dateutil_offset == expected_offset, f\"dateutil offset mismatch: {dateutil_offset} (expected {expected_offset})\"\n    assert dateutil_offset == zoneinfo_offset, f\"dateutil and zoneinfo offsets differ: {dateutil_offset} vs {zoneinfo_offset}\"\n"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1410,
+   "title": "Fuzzy parser returns wrong year",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom dateutil.parser import parse\nfrom datetime import datetime\n\n\ndef test_fuzzy_parser_underscore_delimiter_year():\n    \"\"\"Test that fuzzy parser correctly parses dates with underscore delimiters.\"\"\"\n    # Bug: fuzzy parser returns wrong year when using underscores instead of dashes\n    assert parse(\"2024_07_19\", fuzzy=True) == datetime(2024, 7, 19, 0, 0)\n    assert parse(\"1200_07_19\", fuzzy=True) == datetime(1200, 7, 19, 0, 0)\n    assert parse(\"1_07_19\", fuzzy=True) == datetime(1, 7, 19, 0, 0)\n"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1409,
+   "title": "ParserError when parsing a date like `2025-1-10,0:57:17.0,+1:0`",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom dateutil import parser\n\n\ndef test_parse_date_with_two_digit_day_and_comma_separator():\n    \"\"\"Test parsing date format like 2025-1-10,0:57:17.0,+1:0\"\"\"\n    date_str = \"2025-1-10,0:57:17.0,+1:0\"\n    result = parser.parse(date_str)\n    assert result.year == 2025\n    assert result.month == 1\n    assert result.day == 10\n    assert result.hour == 0\n    assert result.minute == 57\n    assert result.second == 17\n    assert result.microsecond == 0\n"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1404,
+   "title": "Is this project ACTIVELY maintained?",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom dateutil import relativedelta\n\n\ndef test_relativedelta_comparison_with_none():\n    \"\"\"Test that relativedelta objects can be compared with None using != and ==\"\"\"\n    rd = relativedelta.relativedelta(days=1)\n\n    # These should not both be False\n    # At least one of these comparisons should be True\n    assert (rd != None) or (rd == None), \\\n        \"relativedelta(days=1) should be comparable with None\"\n\n    # More specifically, they should be mutually exclusive\n    assert not ((rd != None) is False and (rd == None) is False), \\\n        \"relativedelta(days=1) != None and relativedelta(days=1) == None cannot both be False\"\n"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1402,
+   "title": "TypeError: unsupported operand type(s) for *=: 'NoneType' and 'int' when calling tz.gettz",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom dateutil import tz\n\n\ndef test_gettz_invalid_posix_string_raises_error():\n    \"\"\"Test that invalid POSIX timezone string raises ValueError instead of TypeError.\"\"\"\n    with pytest.raises((ValueError, TypeError)):\n        tz.gettz(\"GMT,4;3/4\")\n"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1400,
+   "title": "Open to a DateType support patch?",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom datetime import datetime, date, timedelta\nfrom dateutil.relativedelta import relativedelta\n\ntry:\n    from datetype import Date\n    HAS_DATETYPE = True\nexcept ImportError:\n    HAS_DATETYPE = False\n\n\n@pytest.mark.skipif(not HAS_DATETYPE, reason=\"datetype library not installed\")\ndef test_relativedelta_add_datetype_date_preserves_type():\n    \"\"\"Test that adding relativedelta to datetype.Date returns Date type.\"\"\"\n    d = Date(2023, 1, 15)\n    rd = relativedelta(days=10)\n\n    result = d + rd\n\n    assert isinstance(result, Date)\n    assert result == Date(2023, 1, 25)\n\n\n@pytest.mark.skipif(not HAS_DATETYPE, reason=\"datetype library not installed\")\ndef test_relativedelta_radd_datetype_date_preserves_type():\n    \"\"\"Test that adding relativedelta to datetype.Date (reversed) returns Date type.\"\"\"\n    d = Date(2023, 1, 15)\n    rd = relativedelta(months=1)\n\n    result = rd + d\n\n    assert isinstance(result, Date)\n    assert result == Date(2023, 2, 15)\n"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1397,
+   "title": "Next friday does not work",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "from datetime import datetime\nfrom dateutil.relativedelta import relativedelta, FR, MO\nimport pytest\n\n\ndef test_next_friday_bug():\n    \"\"\"Test that relativedelta with weekday parameter advances to next occurrence\"\"\"\n    # 2024-11-15 is a Friday\n    dt = datetime(2024, 11, 15, 11, 25, 11, 521636)\n    result = dt + relativedelta(weekday=FR)\n    # Should advance to next Friday, not stay on the same day\n    assert result.day == 22, f\"Expected day 22 (next Friday), got day {result.day}\"\n\n\ndef test_next_monday_bug():\n    \"\"\"Test that relativedelta with weekday parameter advances to next occurrence\"\"\"\n    # 2024-11-11 is a Monday\n    dt = datetime(2024, 11, 11, 11, 25, 11, 521636)\n    result = dt + relativedelta(weekday=MO)\n    # Should advance to next Monday, not stay on the same day\n    assert result.day == 18, f\"Expected day 18 (next Monday), got day {result.day}\"\n"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1394,
+   "title": "rrulestr doesn't currently work if no DTSTART is provided",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom dateutil.rrule import rrulestr\n\n\ndef test_rrulestr_without_dtstart():\n    \"\"\"Test that rrulestr works without DTSTART parameter\"\"\"\n    result = rrulestr(\"RRULE:FREQ=WEEKLY;BYDAY=MO,TU,WE,TH\")\n    assert result is not None\n"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1393,
+   "title": "ruleset infinite loop",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom datetime import datetime, timedelta\nfrom dateutil import rrule\nimport signal\n\n\ndef timeout_handler(signum, frame):\n    raise TimeoutError(\"Test timed out - infinite loop detected\")\n\n\ndef test_ruleset_infinite_loop_timeout():\n    \"\"\"Test that ruleset.after() doesn't infinite loop on impossible rules\"\"\"\n    rs = rrule.rruleset()\n    rs.rrule(rrule.rrulestr(\"RRULE:FREQ=DAILY;INTERVAL=1;BYDAY=MO\"))\n    rs.exrule(rrule.rrulestr(\"RRULE:FREQ=DAILY;BYDAY=MO\"))\n\n    # Set a 5-second timeout\n    signal.signal(signal.SIGALRM, timeout_handler)\n    signal.alarm(5)\n\n    try:\n        result = rs.after(datetime.now())\n        # If we get here without timeout, the bug is fixed\n        # The result should be None since no valid date exists\n        assert result is None\n    except TimeoutError:\n        pytest.fail(\"ruleset.after() entered infinite loop\")\n    finally:\n        signal.alarm(0)  # Disable the alarm\n"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1391,
+   "title": "[Bug] Incorrect static timezone issue processed from certain date strings",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom dateutil import parse\n\n\ndef test_gmt_offset_sign_bug():\n    \"\"\"Test that GMT prefix doesn't invert the timezone offset sign\"\"\"\n\n    # Parse with GMT prefix\n    date_gmt, _ = parse(\"Fri 1/01/2020 12:00 PM (GMT-04:00)\", fuzzy_with_tokens=True)\n\n    # Parse without GMT prefix\n    date_no_gmt, _ = parse(\"Fri 1/01/2020 12:00 PM (-04:00)\", fuzzy_with_tokens=True)\n\n    # Both should have the same timezone offset\n    assert date_gmt.tzinfo.utcoffset(None) == date_no_gmt.tzinfo.utcoffset(None), \\\n        f\"GMT-04:00 offset {date_gmt.tzinfo.utcoffset(None)} != -04:00 offset {date_no_gmt.tzinfo.utcoffset(None)}\"\n\n    # The offset should be negative (UTC-4 means -4 hours = -14400 seconds)\n    assert date_gmt.tzinfo.utcoffset(None).total_seconds() == -14400, \\\n        f\"Expected -14400 seconds for GMT-04:00, got {date_gmt.tzinfo.utcoffset(None).total_seconds()}\"\n"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1370,
+   "title": "pickle  tzical",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pickle\nimport copy\nfrom dateutil.tz.tz import _tzicalvtz\nfrom dateutil.tz import tzical\nfrom io import StringIO\n\n\ndef test_tzical_pickle_and_deepcopy():\n    \"\"\"Test that tzical objects can be pickled and deepcopied.\"\"\"\n    # Create a simple iCalendar format string with timezone definition\n    ical_str = \"\"\"BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Test//Test//EN\nBEGIN:VTIMEZONE\nTZID:America/New_York\nBEGIN:STANDARD\nDTSTART:20231105T020000\nRRULE:FREQ=YEARLY;BYMONTH=11;BYDAY=1SU\nTZOFFSETFROM:-0400\nTZOFFSETTO:-0500\nTZNAME:EST\nEND:STANDARD\nBEGIN:DAYLIGHT\nDTSTART:20230312T020000\nRRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=2SU\nTZOFFSETFROM:-0500\nTZOFFSETTO:-0400\nTZNAME:EDT\nEND:DAYLIGHT\nEND:VTIMEZONE\nEND:VCALENDAR\n\"\"\"\n\n    # Create tzical object\n    tz_obj = tzical(StringIO(ical_str))['America/New_York']\n\n    # Test pickle\n    pickled = pickle.dumps(tz_obj)\n    unpickled = pickle.loads(pickled)\n    assert str(tz_obj) == str(unpickled)\n\n    # Test deepcopy\n    copied = copy.deepcopy(tz_obj)\n    assert str(tz_obj) == str(copied)\n"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1369,
+   "title": "pickling & deepcopy of rruleset and rrule with cache",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pickle\nimport copy\nfrom dateutil.rrule import rrule, rruleset\nfrom datetime import datetime\n\n\ndef test_rrule_with_cache_pickle():\n    \"\"\"Test that rrule with cache=True can be pickled and unpickled.\"\"\"\n    dt = datetime(2020, 1, 1)\n    rule = rrule(freq=0, dtstart=dt, count=5, cache=True)\n\n    # Trigger cache\n    list(rule)\n\n    # Should not raise an exception\n    pickled = pickle.dumps(rule)\n    unpickled = pickle.loads(pickled)\n\n    # Verify the unpickled rule works\n    assert list(unpickled) == list(rule)\n\n\ndef test_rruleset_with_cache_pickle():\n    \"\"\"Test that rruleset with cache=True can be pickled and unpickled.\"\"\"\n    dt = datetime(2020, 1, 1)\n    rs = rruleset(cache=True)\n    rs.rrule(rrule(freq=0, dtstart=dt, count=5))\n    rs.rdate(datetime(2020, 1, 10))\n\n    # Trigger cache\n    list(rs)\n\n    # Should not raise an exception\n    pickled = pickle.dumps(rs)\n    unpickled = pickle.loads(pickled)\n\n    # Verify the unpickled rruleset works\n    assert list(unpickled) == list(rs)\n\n\ndef test_rrule_with_cache_deepcopy():\n    \"\"\"Test that rrule with cache=True can be deep copied.\"\"\"\n    dt = datetime(2020, 1, 1)\n    rule = rrule(freq=0, dtstart=dt, count=5, cache=True)\n\n    # Trigger cache\n    list(rule)\n\n    # Should not raise an exception\n    copied_rule = copy.deepcopy(rule)\n\n    # Verify the copied rule works\n    assert list(copied_rule) == list(rule)\n\n\ndef test_rruleset_with_cache_deepcopy():\n    \"\"\"Test that rruleset with cache=True can be deep copied.\"\"\"\n    dt = datetime(2020, 1, 1)\n    rs = rruleset(cache=True)\n    rs.rrule(rrule(freq=0, dtstart=dt, count=5))\n    rs.rdate(datetime(2020, 1, 10))\n\n    # Trigger cache\n    list(rs)\n\n    # Should not raise an exception\n    copied_rs = copy.deepcopy(rs)\n\n    # Verify the copied rruleset works\n    assert list(copied_rs) == list(rs)\n"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1368,
+   "title": "dateutil.tz.tzical fails on X- custom properties in VTIMEZONE component",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom dateutil.tz import tzical\nfrom io import StringIO\n\n\ndef test_tzical_with_custom_x_properties():\n    \"\"\"Test that tzical handles X- custom properties in VTIMEZONE component.\"\"\"\n    tz_string = \"\"\"BEGIN:VTIMEZONE\nTZID:custom_Pacific/Fiji\nTZURL:http://tzurl.org/zoneinfo/Pacific/Fiji\nX-LIC-LOCATION:Pacific/Fiji\nBEGIN:DAYLIGHT\nTZOFFSETFROM:+1200\nTZOFFSETTO:+1300\nDTSTART:20101024T020000\nRRULE:FREQ=YEARLY;BYMONTH=10;BYMONTHDAY=21,22,23,24,25,26,27;BYDAY=SU\nEND:DAYLIGHT\nBEGIN:STANDARD\nTZOFFSETFROM:+1300\nTZOFFSETTO:+1200\nDTSTART:20140119T020000\nRRULE:FREQ=YEARLY;BYMONTH=1;BYMONTHDAY=18,19,20,21,22,23,24;BYDAY=SU\nEND:STANDARD\nBEGIN:STANDARD\nTZOFFSETFROM:+115544\nTZOFFSETTO:+1200\nDTSTART:19151026T000000\nRDATE:19151026T000000\nEND:STANDARD\nBEGIN:DAYLIGHT\nTZOFFSETFROM:+1200\nTZOFFSETTO:+1300\nDTSTART:19981101T020000\nRDATE:19981101T020000\nRDATE:19991107T020000\nRDATE:20091129T020000\nEND:DAYLIGHT\nBEGIN:STANDARD\nTZOFFSETFROM:+1300\nTZOFFSETTO:+1200\nDTSTART:19990228T030000\nRDATE:19990228T030000\nRDATE:20000227T030000\nRDATE:20100328T030000\nRDATE:20110306T030000\nRDATE:20120122T030000\nRDATE:20130120T030000\nEND:STANDARD\nEND:VTIMEZONE\n\"\"\"\n\n    tz = tzical(StringIO(tz_string))\n    assert tz is not None\n"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1364,
+   "title": "port `default` argument from `dateutil.parser.parse` to `dateutil.parser.isoparse`",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom datetime import datetime\nfrom dateutil.parser import isoparse\n\n\ndef test_isoparse_with_default_argument():\n    \"\"\"Test that isoparse supports the default argument for reduced precision ISO 8601 strings.\"\"\"\n    # Test with reduced precision ISO 8601 string \"2024-04\"\n    result = isoparse(\"2024-04\", default=datetime.max)\n    expected = datetime(2024, 4, 30, 23, 59, 59, 999999)\n    assert result == expected\n"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1359,
+   "title": "Parser can raise DecimalException",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom dateutil.parser import parse\n\n\ndef test_parser_does_not_raise_decimal_exception_on_malformed_input():\n    \"\"\"Test that parser handles malformed input without raising DecimalException.\"\"\"\n    malformed_input = b'9999999999999999999999999999999999999999939999999999999999999999999999:99999999999999999999999999999\\n9'\n\n    # Should not raise an unhandled exception, but rather a ParserError or similar\n    with pytest.raises((ValueError, OverflowError, Exception)) as exc_info:\n        parse(malformed_input)\n\n    # Ensure it's not a decimal.InvalidOperation that escapes\n    assert 'InvalidOperation' not in str(type(exc_info.value))\n"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1357,
+   "title": "dateutil.parser.parse() giving different results for BST in Linux and Windows",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom dateutil import parser\nfrom dateutil.tz import tzoffset\n\n\ndef test_bst_offset_parsing():\n    \"\"\"Test that BST+0100 is parsed consistently across platforms.\n\n    BST (British Summer Time) is UTC+01:00.\n    The string 'BST+0100' should be interpreted as UTC+01:00, not UTC-01:00.\n    \"\"\"\n    t_str = '2024-03-31 02:00:25 BST+0100'\n    t = parser.parse(t_str)\n\n    # The offset should be +3600 seconds (1 hour ahead of UTC)\n    # not -3600 seconds (1 hour behind UTC)\n    assert t.tzinfo is not None, \"tzinfo should not be None\"\n\n    # Get the offset in seconds\n    offset = t.utcoffset()\n    assert offset is not None, \"utcoffset should not be None\"\n\n    # BST+0100 means +1 hour from UTC, so offset should be +3600 seconds\n    assert offset.total_seconds() == 3600, (\n        f\"Expected offset of +3600 seconds (UTC+01:00), \"\n        f\"but got {offset.total_seconds()} seconds\"\n    )\n\n    # Verify the timestamp is consistent\n    # 2024-03-31 02:00:25 BST+0100 should be 2024-03-31 01:00:25 UTC\n    expected_timestamp = 1711846825.0\n    assert t.timestamp() == expected_timestamp, (\n        f\"Expected timestamp {expected_timestamp}, \"\n        f\"but got {t.timestamp()}\"\n    )\n"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1353,
+   "title": "Error in gettz for Europe/Paris timezone",
+   "class": "A",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "def test_intake_issue():\n            ...\r\n            import dateutil.tz\r\n    \r\n            tz = dateutil.tz.UTC\r\n            assert pa.lib.tzinfo_to_string(tz) == 'UTC'\r\n            tz = dateutil.tz.gettz('Europe/Paris')\r\n            print(tz)\r\n    >       assert pa.lib.tzinfo_to_string(tz) == 'Europe/Paris'\r\n    E       AssertionError: assert 'Europe/Monaco' == 'Europe/Paris'\r\n    E         - Europe/Paris\r\n    E         + Europe/Monaco\r\n    pyarrow\\tests\\test_types.py:356: AssertionError\r\n    ---------------------------- Captured stdout call -----------------------------\r\n    tzfile('Europe/Monaco')\r\n"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1351,
+   "title": "rrule generator skipping window during exit of DST",
+   "class": "B",
+   "labels": [
+    "rrule",
+    "implementation-uncertain"
+   ],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom datetime import datetime\nfrom dateutil import tz\nfrom dateutil.rrule import rrule, SECONDLY\n\n\ndef test_rrule_dst_transition_ny():\n    \"\"\"Test that rrule doesn't skip the repeated hour during DST transition.\"\"\"\n    tz_ny = tz.gettz('America/New_York')\n    dtstart = datetime(2024, 11, 3, 1, 52, 3, tzinfo=tz_ny)\n\n    results = list(rrule(count=10, freq=SECONDLY, interval=240, dtstart=dtstart))\n\n    # Expected times\n    expected = [\n        datetime(2024, 11, 3, 1, 52, 3, tzinfo=tz_ny),\n        datetime(2024, 11, 3, 1, 56, 3, tzinfo=tz_ny),\n        datetime(2024, 11, 3, 1, 0, 3, tzinfo=tz_ny),   # Repeated 1 AM (EDT -> EST)\n        datetime(2024, 11, 3, 1, 4, 3, tzinfo=tz_ny),   # Still in repeated hour\n        datetime(2024, 11, 3, 1, 8, 3, tzinfo=tz_ny),\n        datetime(2024, 11, 3, 1, 12, 3, tzinfo=tz_ny),\n        datetime(2024, 11, 3, 1, 16, 3, tzinfo=tz_ny),\n        datetime(2024, 11, 3, 1, 20, 3, tzinfo=tz_ny),\n        datetime(2024, 11, 3, 1, 24, 3, tzinfo=tz_ny),\n        datetime(2024, 11, 3, 1, 28, 3, tzinfo=tz_ny),\n    ]\n\n    assert len(results) == len(expected), f\"Expected {len(expected)} results, got {len(results)}\"\n\n    for i, (result, exp) in enumerate(zip(results, expected)):\n        # Check hour and minute match\n        assert result.hour == exp.hour, (\n            f\"Result {i}: hour mismatch. Expected {exp.hour}, got {result.hour}. \"\n            f\"Result: {result}, Expected: {exp}\"\n        )\n        assert result.minute == exp.minute, (\n            f\"Result {i}: minute mismatch. Expected {exp.minute}, got {result.minute}. \"\n            f\"Result: {result}, Expected: {exp}\"\n        )\n        assert result.second == exp.second, (\n            f\"Result {i}: second mismatch. Expected {exp.second}, got {result.second}. \"\n            f\"Result: {result}, Expected: {exp}\"\n        )\n"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1341,
+   "title": "parser.isoparse() accepts invalid ISO 8601 timestamps",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom dateutil.parser import isoparse\n\ndef test_isoparse_rejects_mixed_basic_and_extended_format():\n    \"\"\"Test that isoparse rejects mixed basic and extended ISO 8601 formats\"\"\"\n\n    invalid_timestamps = [\n        \"2024-01-17T15:21:00-0800\",      # extended date, extended time, basic timezone\n        \"2024-01-17T152100-08:00\",       # extended date, basic time, extended timezone\n        \"20240117T15:21:00-08:00\",       # basic date, extended time, extended timezone\n        \"2024-01-17T152100-0800\",        # extended date, basic time, basic timezone\n        \"20240117T15:21:00-0800\",        # basic date, extended time, basic timezone\n        \"20240117T152100-08:00\",         # basic date, basic time, extended timezone\n    ]\n\n    for timestamp in invalid_timestamps:\n        with pytest.raises(ValueError):\n            isoparse(timestamp)\n"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1334,
+   "title": "Faulty behavior of \"dayfirst\" or another issue leading to wrong parsing",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom dateutil.parser import parse, ParserError\n\n\ndef test_dayfirst_with_ambiguous_dates():\n    \"\"\"Test that dayfirst=True correctly validates month/day ranges.\"\"\"\n    # When dayfirst=True and both numbers could be day or month,\n    # it should try day-first interpretation and validate properly\n\n    # This should fail because 30 > 12 (can't be month) and 09 is valid month\n    # So with dayfirst=True: day=30, month=09 is invalid (day out of range)\n    with pytest.raises(ParserError):\n        parse(\"2020-30-09\", dayfirst=True)\n\n    # Similarly, this should fail because 31 is not a valid day for September\n    with pytest.raises(ParserError):\n        parse(\"2020-09-31\", dayfirst=True)\n"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1327,
+   "title": "Wrong parsing - parse('2023年12月4日10点',fuzzy=True) datetime.datetime(2010, 12, 4, 0, 0)",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom dateutil.parser import parse\nfrom datetime import datetime\n\n\ndef test_parse_chinese_date_with_fuzzy():\n    \"\"\"Test parsing Chinese date format with fuzzy=True\"\"\"\n    result = parse('2023年12月4日10点', fuzzy=True)\n\n    # Should parse to 2023-12-04 10:00:00\n    assert result.year == 2023, f\"Expected year 2023, got {result.year}\"\n    assert result.month == 12, f\"Expected month 12, got {result.month}\"\n    assert result.day == 4, f\"Expected day 4, got {result.day}\"\n    assert result.hour == 10, f\"Expected hour 10, got {result.hour}\"\n"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1321,
+   "title": "Wrong parsing - june 15,1987 to datetime.datetime(2023, 6, 15, 0, 0)",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom dateutil.parser import parse as du_parse\nfrom datetime import datetime\n\n\ndef test_parse_date_without_space_after_comma():\n    \"\"\"Test that dateutil correctly parses dates with format 'month day,year' (no space after comma)\"\"\"\n    dt_string = \"june 15,1987\"\n    result = du_parse(dt_string)\n    expected = datetime(1987, 6, 15, 0, 0)\n    assert result == expected, f\"Expected {expected}, but got {result}\"\n"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1318,
+   "title": "Multiplying relativedelta with fractional days ends up with truncated values",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom dateutil.relativedelta import relativedelta\n\n\ndef test_relativedelta_multiply_fractional_days():\n    \"\"\"Test that multiplying relativedelta with fractional days preserves precision.\"\"\"\n    delta = relativedelta(days=1.5)\n\n    # Multiplying by 1 should preserve the fractional part\n    result = delta * 1\n\n    # The fractional day should be converted to seconds (0.5 days = 43200 seconds)\n    # Similar to how datetime.timedelta behaves\n    assert result.days == 1\n    assert result.seconds == 43200\n"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1312,
+   "title": "rrule return incorrect value with freq=MONTHLY",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom dateutil.rrule import rrule, MONTHLY\nimport datetime\n\n\ndef test_rrule_monthly_freq_bug():\n    \"\"\"Test that rrule with freq=MONTHLY returns all 12 months for a 1-year span\"\"\"\n    start = datetime.datetime(2023, 5, 31, 7, 5, 46, tzinfo=datetime.timezone.utc)\n    end = datetime.datetime(2024, 5, 31, 7, 5, 46, tzinfo=datetime.timezone.utc)\n    result = list(rrule(freq=MONTHLY, dtstart=start, until=end))\n\n    assert len(result) == 13, f\"Expected 13 occurrences (May 2023 to May 2024), got {len(result)}\"\n\n    expected_months = [\n        datetime.datetime(2023, 5, 31, 7, 5, 46, tzinfo=datetime.timezone.utc),\n        datetime.datetime(2023, 6, 30, 7, 5, 46, tzinfo=datetime.timezone.utc),\n        datetime.datetime(2023, 7, 31, 7, 5, 46, tzinfo=datetime.timezone.utc),\n        datetime.datetime(2023, 8, 31, 7, 5, 46, tzinfo=datetime.timezone.utc),\n        datetime.datetime(2023, 9, 30, 7, 5, 46, tzinfo=datetime.timezone.utc),\n        datetime.datetime(2023, 10, 31, 7, 5, 46, tzinfo=datetime.timezone.utc),\n        datetime.datetime(2023, 11, 30, 7, 5, 46, tzinfo=datetime.timezone.utc),\n        datetime.datetime(2023, 12, 31, 7, 5, 46, tzinfo=datetime.timezone.utc),\n        datetime.datetime(2024, 1, 31, 7, 5, 46, tzinfo=datetime.timezone.utc),\n        datetime.datetime(2024, 2, 29, 7, 5, 46, tzinfo=datetime.timezone.utc),\n        datetime.datetime(2024, 3, 31, 7, 5, 46, tzinfo=datetime.timezone.utc),\n        datetime.datetime(2024, 4, 30, 7, 5, 46, tzinfo=datetime.timezone.utc),\n        datetime.datetime(2024, 5, 31, 7, 5, 46, tzinfo=datetime.timezone.utc),\n    ]\n\n    assert result == expected_months, f\"Unexpected rrule result. Got {result}\"\n"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1971,
+   "title": "Should the type of `missing` be exposed publicly for use in type annotations?",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom marshmallow import Schema, fields, missing\nfrom typing import get_type_hints\n\n\ndef test_missing_type_is_publicly_exposed():\n    \"\"\"Test that the type of `missing` is publicly exposed for type annotations.\"\"\"\n    # The missing sentinel should be importable from marshmallow\n    from marshmallow import missing\n\n    # The type of missing should be publicly accessible\n    # This should not raise an AttributeError or similar\n    missing_type = type(missing)\n    assert missing_type.__name__ == \"MissingType\"\n\n    # It should be possible to import MissingType directly from marshmallow\n    # for use in type annotations\n    try:\n        from marshmallow import MissingType\n    except ImportError:\n        pytest.fail(\"MissingType should be publicly exposed in marshmallow for type annotations\")\n\n    # Verify that missing is an instance of MissingType\n    assert isinstance(missing, MissingType)\n\n    # Verify that type annotations work correctly\n    class MySchema(Schema):\n        raw = fields.Raw()\n\n        @staticmethod\n        def example_with_missing_annotation(x: MissingType | int) -> MissingType | int:\n            \"\"\"This should be valid type annotation syntax.\"\"\"\n            return x\n\n    # Test that we can use it in annotations\n    result = MySchema.example_with_missing_annotation(missing)\n    assert result is missing\n"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1964,
+   "title": "load many functionality doesn't seem to be of much help",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom marshmallow import Schema, ValidationError, fields, pre_load\n\n\nclass UserSchema(Schema):\n    name = fields.Str()\n    age = fields.Int()\n    height = fields.Float()\n\n    @pre_load(pass_many=False)\n    def check_age(self, data, **kwargs):\n        if data['age'] < 18:\n            raise ValidationError('Minor user', 'age')\n\n        return data\n\n\ndef test_load_many_should_continue_on_individual_validation_error():\n    \"\"\"Test that load(many=True) continues processing valid objects even when one object fails validation\"\"\"\n    user_schema = UserSchema()\n\n    data = [\n        {\n            'name': 'dk',\n            'age': 20,\n            'height': '5.5'\n        },\n        {\n            'name': 'dd',\n            'age': 19,\n            'height': '5.5'\n        },\n        {\n            'name': 'df',\n            'age': 10,\n            'height': '5.5'\n        }\n    ]\n\n    try:\n        result = user_schema.load(data, many=True)\n        pytest.fail(\"Expected ValidationError to be raised\")\n    except ValidationError as err:\n        # When loading many=True, valid objects should still be in valid_data\n        # even if some objects fail validation\n        valid_data = err.valid_data\n\n        # Should have 2 valid objects (age 20 and 19), not 0\n        assert len(valid_data) == 2, f\"Expected 2 valid objects but got {len(valid_data)}\"\n        assert valid_data[0]['name'] == 'dk'\n        assert valid_data[0]['age'] == 20\n        assert valid_data[1]['name'] == 'dd'\n        assert valid_data[1]['age'] == 19\n\n        # Error messages should only contain error for the invalid object (age 10)\n        assert len(err.messages) == 1\n        assert 2 in err.messages  # Index of the failing object\n"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1953,
+   "title": "Allow conditionally disabling fields",
+   "class": "B",
+   "labels": [
+    "polymorphism"
+   ],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom marshmallow import Schema, fields, validates_schema, ValidationError\nfrom datetime import date\n\n\ndef test_conditionally_disable_fields():\n    \"\"\"Test that fields can be conditionally disabled based on other field values.\"\"\"\n\n    class RequestAccessSchema(Schema):\n        request_cern_access = fields.Bool(load_default=False)\n        birth_date = fields.Date(load_default=None, required=False)\n        nationality = fields.String(load_default='', required=False)\n        birth_place = fields.String(load_default='', required=False)\n        by_car = fields.Bool(load_default=False)\n        license_plate = fields.String(load_default='', required=False)\n\n        @validates_schema\n        def validate_everything(self, data, **kwargs):\n            if not data.get('request_cern_access'):\n                return\n\n            required_fields = {'birth_date', 'nationality', 'birth_place'}\n            if data.get('by_car'):\n                required_fields.add('license_plate')\n\n            errors = {}\n            for field_name in required_fields:\n                if not data.get(field_name):\n                    errors[field_name] = ['This field is required.']\n\n            if errors:\n                raise ValidationError(errors)\n\n    schema = RequestAccessSchema()\n\n    # Test 1: When request_cern_access is False, other fields should not be required\n    result = schema.load({\n        'request_cern_access': False,\n        'birth_date': None,\n        'nationality': '',\n        'birth_place': ''\n    })\n    assert result['request_cern_access'] is False\n\n    # Test 2: When request_cern_access is True, required fields must be present\n    with pytest.raises(ValidationError) as exc_info:\n        schema.load({\n            'request_cern_access': True,\n            'birth_date': None,\n            'nationality': '',\n            'birth_place': ''\n        })\n    assert 'birth_date' in exc_info.value.messages\n    assert 'nationality' in exc_info.value.messages\n    assert 'birth_place' in exc_info.value.messages\n\n    # Test 3: When request_cern_access is True and all fields provided, should pass\n    result = schema.load({\n        'request_cern_access': True,\n        'birth_date': date(2000, 1, 1),\n        'nationality': 'US',\n        'birth_place': 'NYC',\n        'by_car': False\n    })\n    assert result['request_cern_access'] is True\n\n    # Test 4: When by_car is True, license_plate becomes required\n    with pytest.raises(ValidationError) as exc_info:\n        schema.load({\n            'request_cern_access': True,\n            'birth_date': date(2000, 1, 1),\n            'nationality': 'US',\n            'birth_place': 'NYC',\n            'by_car': True,\n            'license_plate': ''\n        })\n    assert 'license_plate' in exc_info.value.messages\n"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1942,
+   "title": "Different order of pre_load hooks for List(Nested) and Nested(many=True) fields",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom copy import deepcopy\nfrom marshmallow import Schema, fields, pre_load\n\n\nclass InnerSchema(Schema):\n    value = fields.String()\n\n    @pre_load(pass_many=False)\n    def add_prefix(self, data, **_):\n        data = deepcopy(data)\n        data['value'] = '_'.join([self.context.get('prefix'), data['value']])\n        return data\n\n\nclass MiddleSchema(Schema):\n    prefix = fields.String()\n    inner = fields.Nested(InnerSchema)\n\n    @pre_load(pass_many=False)\n    def store_prefix(self, data, **_):\n        self.context['prefix'] = data['prefix']\n        return data\n\n\nclass ListNestedSchema(Schema):\n    data = fields.List(fields.Nested(MiddleSchema))\n\n\nclass NestedManySchema(Schema):\n    data = fields.Nested(MiddleSchema, many=True)\n\n\ndef test_pre_load_hook_order_consistency():\n    \"\"\"Test that List(Nested) and Nested(many=True) execute pre_load hooks in the same order\"\"\"\n    obj = {'data': [\n        {'prefix': 'foo', 'inner': {'value': 'x'}},\n        {'prefix': 'bar', 'inner': {'value': 'z'}}\n    ]}\n\n    list_nested_result = ListNestedSchema().load(obj)\n    nested_many_result = NestedManySchema().load(obj)\n\n    # Both should produce the same result\n    # The bug causes NestedManySchema to use the last prefix ('bar') for all items\n    assert list_nested_result == nested_many_result\n\n    # Verify the expected correct behavior\n    assert list_nested_result['data'][0]['inner']['value'] == 'foo_x'\n    assert list_nested_result['data'][1]['inner']['value'] == 'bar_z'\n\n    assert nested_many_result['data'][0]['inner']['value'] == 'foo_x'\n    assert nested_many_result['data'][1]['inner']['value'] == 'bar_z'\n"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1895,
+   "title": "[validate.oneOf] Returning labels?",
+   "class": "B",
+   "labels": [
+    "backwards incompat"
+   ],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom marshmallow import Schema, fields\nfrom marshmallow.validate import OneOf\n\n\ndef test_oneOf_validator_should_return_label_when_label_exists():\n    \"\"\"Test that OneOf validator returns the label instead of the choice value when label is provided\"\"\"\n\n    class TestSchema(Schema):\n        foo = fields.Int(validate=OneOf(choices=[1, 2, 3], labels=[\"one\", \"two\", \"three\"]))\n\n    schema = TestSchema()\n\n    # When deserializing with a valid choice, the deserialized value should be the corresponding label\n    result = schema.load({\"foo\": 1})\n    assert result[\"foo\"] == \"one\", f\"Expected 'one' but got {result['foo']}\"\n\n    result = schema.load({\"foo\": 2})\n    assert result[\"foo\"] == \"two\", f\"Expected 'two' but got {result['foo']}\"\n\n    result = schema.load({\"foo\": 3})\n    assert result[\"foo\"] == \"three\", f\"Expected 'three' but got {result['foo']}\"\n"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1893,
+   "title": "Add a \"default_dump_fields\" or similar parameter to the schema definition",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom marshmallow import Schema, fields\n\n\nclass TestDefaultDumpFields:\n    \"\"\"Test for default_dump_fields functionality in Schema\"\"\"\n\n    def test_default_dump_fields_basic(self):\n        \"\"\"Test that default_dump_fields limits output fields by default\"\"\"\n\n        class MySchema(Schema):\n            field_a = fields.Str()\n            field_b = fields.Str()\n            field_x = fields.Str()\n            field_y = fields.Str()\n            field_z = fields.Str()\n\n            class Meta:\n                default_dump_fields = ['field_a', 'field_b']\n\n        obj = {\n            'field_a': 'value_a',\n            'field_b': 'value_b',\n            'field_x': 'value_x',\n            'field_y': 'value_y',\n            'field_z': 'value_z',\n        }\n\n        # Test 1: Default behavior should only include default_dump_fields\n        result = MySchema().dump(obj)\n        assert set(result.keys()) == {'field_a', 'field_b'}\n        assert result == {'field_a': 'value_a', 'field_b': 'value_b'}\n\n        # Test 2: Include additional fields beyond defaults\n        result = MySchema(include=['field_x', 'field_y']).dump(obj)\n        assert set(result.keys()) == {'field_a', 'field_b', 'field_x', 'field_y'}\n\n        # Test 3: Override with only parameter should ignore default_dump_fields\n        result = MySchema(only=['field_a']).dump(obj)\n        assert set(result.keys()) == {'field_a'}\n\n        # Test 4: Explicitly setting only=None or empty should respect defaults\n        result = MySchema().dump(obj)\n        assert set(result.keys()) == {'field_a', 'field_b'}\n"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1844,
+   "title": "email validation should support single character TLDs",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom marshmallow import Schema, fields\n\n\nclass EmailSchema(Schema):\n    email = fields.Email()\n\n\ndef test_email_validation_single_character_tld():\n    \"\"\"Test that single character TLDs are supported in email validation.\"\"\"\n    schema = EmailSchema()\n    result = schema.validate({\"email\": \"test@a.a\"})\n    assert result == {}, f\"Expected no validation errors, but got: {result}\"\n"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1841,
+   "title": "Should marshmallow v4 set required names for hooks?",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nimport marshmallow as ma\n\n\ndef test_hook_name_validation():\n    \"\"\"Test that hook methods must be named correctly with _h suffix\"\"\"\n\n    # This should raise ValueError because method name doesn't match hook_name\n    with pytest.raises(ValueError, match=\"post_load_h hook had incorrect name\"):\n        class A(ma.Schema):\n            foo = ma.fields.Str()\n\n            @ma.post_load\n            def wrong_name(self, data, **kwargs):\n                return {\"bar\": 1, **data}\n\n\ndef test_hook_name_validation_correct_name():\n    \"\"\"Test that correctly named hook methods work\"\"\"\n\n    class A(ma.Schema):\n        foo = ma.fields.Str()\n\n        @ma.post_load\n        def post_load_h(self, data, **kwargs):\n            return {\"bar\": 1, **data}\n\n    result = A().load({\"foo\": \"baz\"})\n    assert result == {\"bar\": 1, \"foo\": \"baz\"}\n\n\ndef test_hook_inheritance_with_super():\n    \"\"\"Test that hook methods can be overridden in subclasses using super()\"\"\"\n\n    class A(ma.Schema):\n        foo = ma.fields.Str()\n\n        @ma.post_load\n        def post_load_h(self, data, **kwargs):\n            return {\"bar\": 1, **data}\n\n    class B(A):\n        @ma.post_load\n        def post_load_h(self, data, **kwargs):\n            d = super().post_load_h(data, **kwargs)\n            del d[\"foo\"]\n            return d\n\n    class C(B):\n        @ma.post_load\n        def post_load_h(self, data, **kwargs):\n            data[\"save\"] = dict(data)\n            return super().post_load_h(data, **kwargs)\n\n    assert A().load({\"foo\": \"baz\"}) == {\"bar\": 1, \"foo\": \"baz\"}\n    assert B().load({\"foo\": \"baz\"}) == {\"bar\": 1}\n    assert C().load({\"foo\": \"baz\"}) == {\"bar\": 1, \"save\": {\"foo\": \"baz\"}}\n"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1829,
+   "title": "A better name for validation related module (`marshmallow.validate`), decorator (`@validates`), and ",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom marshmallow import Schema, fields\n\n\ndef test_validate_decorator_exists():\n    \"\"\"Test that @validate decorator exists as an alternative to @validates\"\"\"\n    from marshmallow import validate\n\n    class TestSchema(Schema):\n        name = fields.String()\n\n    # The @validate decorator should exist and be usable\n    assert hasattr(validate, 'validate') or callable(getattr(validate, 'validate', None))\n\n    # Should be able to use @validate as a decorator\n    schema = TestSchema()\n\n    @validate('name')\n    def validate_name(value):\n        if value == 'invalid':\n            raise ValueError('Invalid name')\n\n    # If this line is reached, the decorator exists and works\n    assert validate_name is not None\n\n\ndef test_validators_module_exists():\n    \"\"\"Test that marshmallow.validators module exists\"\"\"\n    try:\n        import marshmallow.validators\n        assert True\n    except ImportError:\n        pytest.fail(\"marshmallow.validators module does not exist\")\n\n\ndef test_validate_schema_decorator_exists():\n    \"\"\"Test that @validate_schema decorator exists as an alternative to @validates_schema\"\"\"\n    from marshmallow import validate\n\n    # The @validate_schema decorator should exist\n    assert hasattr(validate, 'validate_schema') or callable(getattr(validate, 'validate_schema', None))\n\n\ndef test_field_validator_argument():\n    \"\"\"Test that fields accept validator= and validators= arguments\"\"\"\n    from marshmallow.validators import Length\n\n    # Should accept singular validator= argument\n    field1 = fields.String(validator=Length(1, 10))\n    assert field1 is not None\n\n    # Should accept plural validators= argument\n    field2 = fields.String(validators=[Length(1, 10)])\n    assert field2 is not None\n"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1819,
+   "title": "Default deserialization with Function field",
+   "class": "B",
+   "labels": [
+    "docs"
+   ],
+   "outcome": "invalid",
+   "test_src": "import pytest\nimport marshmallow\nfrom marshmallow import Schema, fields\n\n\ndef test_function_field_default_deserialization():\n    \"\"\"Test that Function field without deserialize parameter passes value through unchanged.\"\"\"\n\n    class Foo(Schema):\n        baz = fields.Function(serialize=lambda x: x['bar']['baz'])\n        qux = fields.Function(serialize=lambda x: x['bar']['qux'])\n\n        @marshmallow.post_load\n        def post_load(self, data, many, **kwargs):\n            return {'bar': data}\n\n    s = {'baz': 'blue', 'qux': 'orange'}\n\n    # This should not raise ValidationError\n    d = Foo().load(s)\n\n    # Verify the result structure\n    assert d == {'bar': {'baz': 'blue', 'qux': 'orange'}}\n\n    # Verify serialization works\n    result = Foo().dump(d)\n    assert result == {'baz': 'blue', 'qux': 'orange'}\n"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1801,
+   "title": "List(Nested()) doesn't use `many` in the nested schema",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom marshmallow import Schema, fields, post_dump\n\n\nclass ItemSchema(Schema):\n    id = fields.Integer()\n    name = fields.String()\n\n    @post_dump(pass_many=True)\n    def query_extra_data(self, data, many, **kwargs):\n        # Store the many parameter to verify it later\n        if not hasattr(self, '_post_dump_many_values'):\n            self._post_dump_many_values = []\n        self._post_dump_many_values.append(many)\n        return data\n\n\nclass TestSchema(Schema):\n    items = fields.List(fields.Nested(ItemSchema))\n\n\ndef test_list_nested_passes_many_true_to_post_dump():\n    \"\"\"Test that List(Nested()) passes many=True to nested schema's post_dump hook.\"\"\"\n    schema = TestSchema()\n    data = {\n        'items': [\n            {'id': 1, 'name': 'foo'},\n            {'id': 2, 'name': 'bar'},\n            {'id': 3, 'name': 'snafu'},\n        ]\n    }\n\n    result = schema.dump(data)\n\n    # The nested ItemSchema instance should receive many=True, not many=False for each item\n    # In the buggy version, post_dump is called 3 times with many=False\n    # In the fixed version, post_dump should be called once with many=True\n    item_schema = ItemSchema()\n    item_schema._post_dump_many_values = []\n    ItemSchema().dump(data['items'], many=True)\n\n    # Verify that when dumping with many=True explicitly, many parameter is True\n    assert any(v is True for v in item_schema._post_dump_many_values), \\\n        \"When ItemSchema is used with many=True, post_dump should receive many=True\"\n\n    # Now verify the bug: List(Nested()) should also pass many=True\n    nested_item_schema = None\n\n    class ItemSchemaWithCapture(Schema):\n        id = fields.Integer()\n        name = fields.String()\n\n        @post_dump(pass_many=True)\n        def query_extra_data(self, data, many, **kwargs):\n            nonlocal nested_item_schema\n            nested_item_schema = (many, data)\n            return data\n\n    class TestSchemaWithCapture(Schema):\n        items = fields.List(fields.Nested(ItemSchemaWithCapture))\n\n    TestSchemaWithCapture().dump(data)\n\n    # The bug is that many=False when it should be many=True\n    assert nested_item_schema is not None\n    many_value, data_value = nested_item_schema\n    assert many_value is True, \\\n        f\"Expected many=True in post_dump for List(Nested()), but got many={many_value}\"\n"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1759,
+   "title": "Conveniently generating schema from a nested dict",
+   "class": "B",
+   "labels": [
+    "feedback welcome"
+   ],
+   "outcome": "invalid",
+   "test_src": "import pytest\nimport json\nfrom marshmallow import Schema, fields\n\n\ndef test_nested_schema_from_dict_with_nested_dicts():\n    \"\"\"\n    Test that Schema.from_dict() can conveniently handle nested dictionaries\n    without requiring a helper function to manually wrap them in fields.Nested().\n    \"\"\"\n    # This is what the user wants to be able to do\n    config_schema_dict = {\n        \"path\": {\n            \"file\": fields.Str(),\n            \"more_file\": fields.Str(),\n        },\n        \"cred\": {\n            \"user\": fields.Str(),\n            \"pass\": fields.Str(),\n        },\n    }\n\n    # Create schema from dict with nested dicts\n    schema = Schema.from_dict(config_schema_dict)()\n\n    # Test data\n    config_data = {\n        \"path\": {\n            \"file\": \"/path/to/file\",\n            \"more_file\": \"/path/to/another\",\n        },\n        \"cred\": {\n            \"user\": \"admin\",\n            \"pass\": \"secret\",\n        },\n    }\n\n    # This should work without manually wrapping nested dicts in fields.Nested()\n    result = schema.load(config_data)\n\n    assert result[\"path\"][\"file\"] == \"/path/to/file\"\n    assert result[\"path\"][\"more_file\"] == \"/path/to/another\"\n    assert result[\"cred\"][\"user\"] == \"admin\"\n    assert result[\"cred\"][\"pass\"] == \"secret\"\n"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1758,
+   "title": "v3 no longer accepts fields that call class methods ",
+   "class": "B",
+   "labels": [
+    "docs"
+   ],
+   "outcome": "invalid",
+   "test_src": "import pytest\nimport marshmallow\n\n\ndef test_schema_dump_with_class_method():\n    \"\"\"Test that marshmallow v3 accepts fields that call class methods\"\"\"\n\n    class TestSchema(marshmallow.Schema):\n        number = marshmallow.fields.Number()\n\n    class TestObject:\n        def number(self):\n            return 1\n\n    schema = TestSchema()\n    obj = TestObject()\n    result = schema.dump(obj)\n\n    assert result == {'number': 1.0}\n"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1751,
+   "title": "Consider moving `marshmallow-oneofschema` into the core library?",
+   "class": "B",
+   "labels": [
+    "polymorphism"
+   ],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom marshmallow import Schema, fields, ValidationError\n\n\nclass OneOfSchema(Schema):\n    \"\"\"OneOfSchema implementation that uses _deserialize and _serialize hooks\"\"\"\n    oneof = {}\n    discriminator = None\n\n    def discriminate_on_load(self, data):\n        if isinstance(data, dict) and self.discriminator in data:\n            schema_name = data[self.discriminator]\n            if schema_name in self.oneof:\n                return self.oneof[schema_name]\n        raise ValidationError(f\"Cannot determine schema for {data}\")\n\n    def discriminate_on_dump(self, obj, **kwargs):\n        if isinstance(obj, dict) and self.discriminator in obj:\n            schema_name = obj[self.discriminator]\n            if schema_name in self.oneof:\n                return self.oneof[schema_name]\n        raise ValidationError(f\"Cannot determine schema for {obj}\")\n\n    def _deserialize(self, data, attr, obj, **kwargs):\n        schema = self.discriminate_on_load(data)\n        return schema().load(data)\n\n    def _serialize(self, value, attr, obj, **kwargs):\n        schema = self.discriminate_on_dump(value)\n        return schema().dump(value)\n\n\nclass DogSchema(Schema):\n    pet_type = fields.Constant(\"dog\")\n    name = fields.Str()\n    bark = fields.Str()\n\n\nclass CatSchema(Schema):\n    pet_type = fields.Constant(\"cat\")\n    name = fields.Str()\n    meow = fields.Str()\n\n\nclass PetSchema(OneOfSchema):\n    oneof = {\"dog\": DogSchema, \"cat\": CatSchema}\n    discriminator = \"pet_type\"\n\n\ndef test_oneof_schema_with_hooks():\n    \"\"\"Test that OneOfSchema properly invokes pre/post load hooks\"\"\"\n    hook_called = []\n\n    class CustomDogSchema(DogSchema):\n        @fields.pre_load\n        def process_input(self, data, **kwargs):\n            hook_called.append(\"pre_load\")\n            return data\n\n        @fields.post_load\n        def process_output(self, data, **kwargs):\n            hook_called.append(\"post_load\")\n            return data\n\n    class CustomPetSchema(OneOfSchema):\n        oneof = {\"dog\": CustomDogSchema, \"cat\": CatSchema}\n        discriminator = \"pet_type\"\n\n    schema = CustomPetSchema()\n    data = {\"pet_type\": \"dog\", \"name\": \"Buddy\", \"bark\": \"Woof\"}\n\n    hook_called.clear()\n    result = schema.load(data)\n\n    # Hooks should be called when using _deserialize instead of overriding load\n    assert \"pre_load\" in hook_called, \"pre_load hook was not called\"\n    assert \"post_load\" in hook_called, \"post_load hook was not called\"\n    assert result[\"name\"] == \"Buddy\"\n"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1747,
+   "title": "only option not working properly for nested fields.",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom marshmallow import Schema, fields\n\n\nclass Address:\n    def __init__(self, street, country):\n        self.street = street\n        self.country = country\n\n\nclass User:\n    def __init__(self, name, email, location):\n        self.name = name\n        self.email = email\n        self.location = location\n\n\nclass Blog:\n    def __init__(self, id, title, author):\n        self.title = title\n        self.id = id\n        self.author = author\n\n\nclass AddressSchema(Schema):\n    street = fields.String()\n    country = fields.String()\n\n\nclass UserSchema(Schema):\n    name = fields.String()\n    email = fields.Email()\n    location = fields.Nested(AddressSchema)\n\n\nclass BlogSchema(Schema):\n    id = fields.Int()\n    title = fields.String()\n    author = fields.Nested(UserSchema, only=['location'])\n\n\ndef test_nested_only_with_dotted_notation():\n    address = Address(street='4 cross', country='myCountry')\n    user = User(name=\"Anantha\", email=\"anantha@python.org\", location=address)\n    blog = Blog(id=1, title=\"nested only test\", author=user)\n\n    result = BlogSchema(only=['title', 'author.location.street']).dump(blog)\n    expected = {'title': 'nested only test', 'author': {'location': {'street': '4 cross'}}}\n\n    assert result == expected\n"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1696,
+   "title": "Support streaming dump",
+   "class": "B",
+   "labels": [
+    "help wanted"
+   ],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom marshmallow import Schema, fields\nfrom io import StringIO\nimport json\n\n\nclass ItemSchema(Schema):\n    id = fields.Int()\n    name = fields.Str()\n\n\ndef test_streaming_dump_with_generator():\n    \"\"\"Test that dump with many=True and generator doesn't load entire generator into memory\"\"\"\n    schema = ItemSchema(many=True)\n\n    # Create a generator that tracks if it was fully consumed at once\n    consumed_items = []\n\n    def item_generator():\n        for i in range(5):\n            consumed_items.append(i)\n            yield {\"id\": i, \"name\": f\"item_{i}\"}\n\n    # Use dump with the generator\n    # The key test: with proper streaming support, we should be able to\n    # iterate/stream the result without fully materializing the generator first\n    result = schema.dump(item_generator())\n\n    # Result should be a list (current behavior) or an iterator (desired behavior)\n    # For now, test that it produces correct output\n    assert isinstance(result, list)\n    assert len(result) == 5\n    assert result[0] == {\"id\": 0, \"name\": \"item_0\"}\n    assert result[4] == {\"id\": 4, \"name\": \"item_4\"}\n\n    # Verify all items were consumed\n    assert consumed_items == [0, 1, 2, 3, 4]\n\n\ndef test_streaming_dumps_with_generator():\n    \"\"\"Test that dumps with many=True supports generator input for streaming\"\"\"\n    schema = ItemSchema(many=True)\n\n    def item_generator():\n        for i in range(3):\n            yield {\"id\": i, \"name\": f\"item_{i}\"}\n\n    # dumps should ideally support streaming/generator input\n    result = schema.dumps(item_generator())\n\n    # Parse result to verify it's valid JSON\n    parsed = json.loads(result)\n    assert len(parsed) == 3\n    assert parsed[0] == {\"id\": 0, \"name\": \"item_0\"}\n    assert parsed[2] == {\"id\": 2, \"name\": \"item_2\"}\n"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1642,
+   "title": "Dotted `only` and `exclude` not addressable for nested Tuples",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom marshmallow import fields, Schema\n\n\ndef test_dotted_only_with_nested_tuple():\n    \"\"\"Test that dotted 'only' notation works with nested fields in Tuples\"\"\"\n\n    class Child(Schema):\n        name = fields.String()\n        age = fields.Integer()\n\n    class Friend(Schema):\n        name = fields.String()\n        height = fields.Integer()\n\n    class Family(Schema):\n        kidsandfriends = fields.Tuple((fields.Nested(Child), fields.Nested(Friend)))\n\n    data = {\n        'kidsandfriends': (\n            {\"name\": \"steve\", \"age\": 0},\n            {\"name\": \"john\", \"height\": 2}\n        )\n    }\n\n    result = Family(only=['kidsandfriends.name']).dump(data)\n\n    # Expected: only 'name' field should be present in both tuple elements\n    expected = {\n        'kidsandfriends': (\n            {'name': 'steve'},\n            {'name': 'john'}\n        )\n    }\n\n    assert result == expected, f\"Expected {expected}, but got {result}\"\n"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1622,
+   "title": "dumping a dictionary with a schema containing an optional field 'items' ",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom dataclasses import dataclass\nfrom marshmallow import Schema, fields\n\n\nclass ListItem(Schema):\n    foo = fields.Str(required=True)\n\n\nclass MySchema(Schema):\n    bar = fields.Str(required=True)\n    items = fields.List(fields.Nested(ListItem()), required=True)\n\n\n@dataclass\nclass Thing:\n    bar: str = None\n\n\ndef test_dump_dict_with_optional_items_field():\n    \"\"\"\n    Test that dumping a dictionary with a schema containing an 'items' field\n    should not raise TypeError.\n\n    The bug occurs because getattr(dict, 'items') returns the dict.items method\n    instead of the default value, causing \"TypeError: 'builtin_function_or_method' object is not iterable\"\n    \"\"\"\n    thing = Thing(bar=\"barbarbar\")\n    d = {\"bar\": \"barbarbar\"}\n\n    # This works fine with dataclass\n    result1 = MySchema().dump(obj=thing)\n    assert result1[\"bar\"] == \"barbarbar\"\n\n    # This should also work with dict but fails due to the bug\n    # It should either dump successfully or raise a validation error,\n    # but NOT raise TypeError about builtin_function_or_method\n    result2 = MySchema().dump(obj=d)\n    assert result2[\"bar\"] == \"barbarbar\"\n"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1601,
+   "title": "Option to have strict Float field",
+   "class": "A",
+   "labels": [
+    "feedback welcome"
+   ],
+   "outcome": "invalid",
+   "test_src": "import pytest\r\nfrom marshmallow import fields, Schema, ValidationError\r\n\r\n\r\nclass ParamsSchema(Schema):\r\n    integer = fields.Int(strict=True)\r\n    number = fields.Float()  # need an option to make it strict\r\n    boolean = fields.Boolean(truthy=[True], falsy=[False])\r\n\r\n\r\n@pytest.fixture\r\ndef schema():\r\n    return ParamsSchema()\r\n\r\n\r\ndef test_strict(schema):\r\n    schema.load({\r\n        'integer': 0,\r\n        'number': 3.142,\r\n        'boolean': True\r\n    })\r\n\r\n\r\ndef test_int_str(schema):\r\n    with pytest.raises(ValidationError):\r\n        schema.load({'integer': '0'})\r\n\r\n\r\ndef test_float_str(schema):\r\n    with pytest.raises(ValidationError):\r\n        schema.load({'number': '3.142'})\r\n\r\n\r\ndef test_boolean_str(schema):\r\n    with pytest.raises(ValidationError):\r\n        schema.load({'boolean': 'true'})\r\n"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1566,
+   "title": "Inconsistent None items serialization between Nested(…, many=True) and List(Nested(…)) fields",
+   "class": "A",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "def test_intake_issue():\n    from marshmallow import Schema, fields\r\n\r\n\r\n    class N(Schema):\r\n        a = fields.String()\r\n        b = fields.String()\r\n\r\n\r\n    class S1(Schema):\r\n        nested = fields.Nested(N, many=True)\r\n\r\n\r\n    class S2(Schema):\r\n        nested = fields.List(fields.Nested(N))\r\n\r\n\r\n    schema1 = S1()\r\n    schema2 = S2()\r\n\r\n    data = {\r\n        \"nested\": [None],\r\n    }\r\n\r\n    result1 = schema1.dump(data)\r\n    result2 = schema2.dump(data)\r\n\r\n    assert result1.get(\"nested\") == [{}]\r\n    assert result2.get(\"nested\") == [None]\r\n"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1559,
+   "title": "Accessing builtin dict's attrs for a missing field",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom marshmallow import fields, Schema\n\n\ndef test_builtin_dict_attr_missing_field():\n    \"\"\"Test that accessing builtin dict attrs for missing fields doesn't cause TypeError.\"\"\"\n\n    class MyNestedSchema(Schema):\n        update = fields.Boolean(required=False)\n\n    class MySchema(Schema):\n        data = fields.Nested(MyNestedSchema)\n\n    class MyObj:\n        def __init__(self):\n            self.data = {\n                # NOT passing 'update' value, so it's missing\n            }\n\n    obj = MyObj()\n    # This should not raise TypeError: unhashable type: 'dict'\n    result = MySchema().dump(obj)\n    # The missing optional field should not be included or should be None\n    assert result == {\"data\": {}} or result == {\"data\": {\"update\": None}}\n"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1541,
+   "title": "Validation for Dynamically Nested Schema doesnt seem to work ",
+   "class": "B",
+   "labels": [
+    "polymorphism"
+   ],
+   "outcome": "invalid",
+   "test_src": "import pytest\nimport json\nfrom marshmallow import Schema, fields, validate, pre_load, ValidationError\n\n\ndef test_dynamically_nested_schema_validation():\n    ALLOWED_SYNCS = ['tag', 'receiver', 'customer']\n\n    class ReceiverSerializer(Schema):\n        receiver_id = fields.Integer(required=True)\n        receiver_name = fields.String(required=True)\n\n    class CustomerSerializer(Schema):\n        customer_id = fields.Integer(required=True)\n        customer_name = fields.String(required=True)\n        customer_enabled = fields.Boolean(required=True)\n\n    class SyncSerializer(Schema):\n        SYNC_OBJECT_SERIALIZERS = {\n            'receiver': ReceiverSerializer,\n            'customer': CustomerSerializer\n        }\n        sync = fields.String(required=True, validate=validate.OneOf(ALLOWED_SYNCS))\n        data = fields.Dict(required=True)\n\n        def _get_sync_object_data(self, sync):\n            serializer = self.SYNC_OBJECT_SERIALIZERS.get(sync)\n\n            if not serializer:\n                return None\n\n            return fields.Nested(serializer)\n\n        @pre_load\n        def pre_load(self, data, **kwargs):\n            sync_object = data.get('sync')\n\n            if sync_object:\n                data['sync'] = sync_object.lower()\n\n            # Dynamically change config field type based on delivery type\n            sync_data = self._get_sync_object_data(sync_object)\n            if sync_data:\n                self.fields['data'] = sync_data\n\n            return data\n\n    payload = {\n        'sync': 'receiver',\n        'data': {\n            'receiver_name': 'Test'\n        }\n    }\n\n    with pytest.raises(ValidationError) as exc_info:\n        SyncSerializer().loads(json.dumps(payload))\n\n    assert 'receiver_id' in str(exc_info.value)\n"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1533,
+   "title": "How to extract key from schema to place at a different place in response?",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom marshmallow import Schema, fields\n\n\nclass PackageSchema(Schema):\n    target_value = fields.Integer()\n    fluff_1 = fields.Integer()\n    fluff_2 = fields.Integer()\n\n\nclass ProposalItemResponseSchema(Schema):\n    test = fields.Method(\"get_test\")\n\n    def get_test(self, data):\n        return self.context.get('test_mode')\n\n\nclass ProposalItemFullResponseSchema(ProposalItemResponseSchema):\n    package = fields.Nested(PackageSchema)\n\n\nclass ProposalFullResponseSchema(Schema):\n    id = fields.Integer()\n    proposal_items = fields.Nested(ProposalItemFullResponseSchema, many=True)\n\n    def get_attribute(self, obj, attr, default):\n        if attr == \"proposal_items\":\n            self.context[\"test_mode\"] = {\"target_value\": 983, \"fluff_1\": 983, \"fluff_2\": 983}\n        return getattr(obj, attr, default)\n\n\nclass MockProposal:\n    def __init__(self):\n        self.id = 1\n        self.proposal_items = [MockProposalItem()]\n\n\nclass MockProposalItem:\n    def __init__(self):\n        self.package = None\n\n\ndef test_extract_nested_value_to_root():\n    \"\"\"Test that a nested value can be extracted and placed at root level\"\"\"\n    proposal = MockProposal()\n    schema = ProposalFullResponseSchema()\n\n    result = schema.dump(proposal)\n\n    # The desired behavior: extract target_value from nested test object\n    # and return only that value at the proposal_items level\n    assert result[\"proposal_items\"][0][\"test\"] == \"target_value\"\n"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1475,
+   "title": "Integer field won't accept boolean value when strict is False",
+   "class": "A",
+   "labels": [],
+   "outcome": "not_reproducible",
+   "test_src": "def test_intake_issue():\n    assert int(True) == 1\r\n    assert int(False) == 0\r\n"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1423,
+   "title": "URL TLD IP Address Allowed",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom marshmallow import Schema, fields, ValidationError\n\n\nclass TestURLWithRequireTLD(Schema):\n    foo = fields.URL(require_tld=True)\n\n\ndef test_url_require_tld_rejects_ip_address():\n    \"\"\"Test that require_tld=True rejects IP addresses\"\"\"\n    schema = TestURLWithRequireTLD()\n\n    with pytest.raises(ValidationError):\n        schema.load({'foo': 'http://192.168.1.1/'})\n"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1422,
+   "title": "fields.Url ValidationError parsing internationalized domain name",
+   "class": "A",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "\"\"\"Tests for marshmallow.validate\"\"\"\r\nimport pytest\r\n\r\nfrom marshmallow import validate\r\n\r\n\r\n@pytest.mark.parametrize(\r\n    \"valid_url\",\r\n    [\r\n        \"http://www.kunstkontor-nürnberg.de\",\r\n        \"http://💩.la\",\r\n    ],\r\n)\r\ndef test_url_absolute_valid(valid_url):\r\n    validator = validate.URL(relative=False)\r\n    assert validator(valid_url) == valid_url\r\n\r\n"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1419,
+   "title": "@field decorator to allow methods to return a Field object",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nimport marshmallow\nfrom marshmallow import Schema, fields\n\n\ndef test_field_decorator_returns_field_object():\n    \"\"\"Test that @field decorator allows methods to return Field objects\"\"\"\n\n    class MySchema(Schema):\n        def __init__(self, schemes=None, *args, **kwargs):\n            super().__init__(*args, **kwargs)\n            self.schemes = schemes or ['http', 'https']\n\n        @marshmallow.field\n        def url(self):\n            return fields.Url(schemes=self.schemes)\n\n    # Test with default schemes\n    schema1 = MySchema()\n    assert 'url' in schema1.fields\n    assert isinstance(schema1.fields['url'], fields.Url)\n    assert schema1.fields['url'].schemes == ['http', 'https']\n\n    # Test with custom schemes\n    schema2 = MySchema(schemes=['ftp', 'ftps'])\n    assert 'url' in schema2.fields\n    assert isinstance(schema2.fields['url'], fields.Url)\n    assert schema2.fields['url'].schemes == ['ftp', 'ftps']\n\n    # Test serialization\n    result = schema1.dump({'url': 'https://example.com'})\n    assert result == {'url': 'https://example.com'}\n\n    # Test deserialization\n    loaded = schema1.load({'url': 'https://example.com'})\n    assert loaded == {'url': 'https://example.com'}\n"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1411,
+   "title": "Generate a TypedDict or dataclass from Schema",
+   "class": "B",
+   "labels": [
+    "feedback welcome"
+   ],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom marshmallow import Schema, fields\n\n\ndef test_schema_type_attribute_exists():\n    \"\"\"Test that Schema has a .type attribute for type hints\"\"\"\n    class User(Schema):\n        name = fields.String()\n        age = fields.Integer()\n\n    # Schema should have a .type attribute that can be used for type hints\n    assert hasattr(User, 'type')\n\n    # The .type should be a TypedDict or dataclass that represents the deserialized structure\n    user_type = User.type\n    assert user_type is not None\n\n    # It should be usable as a type hint\n    def have_a_birthday(user: User.type) -> User.type:\n        user['age'] += 1\n        return user\n\n    # Should be able to call the function with proper data\n    result = have_a_birthday({'name': 'John', 'age': 30})\n    assert result['age'] == 31\n"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1090,
+   "title": "Custom error message for unknown when dump only",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom marshmallow import Schema, fields, ValidationError\n\n\ndef test_dump_only_field_custom_error_message():\n    \"\"\"Test that dump_only fields can have custom error messages\"\"\"\n\n    class InstanceSchema(Schema):\n        id = fields.Integer(\n            dump_only=True,\n            error_messages={'dump_only': {'message': 'id is readonly', 'code': 400}}\n        )\n        hostname = fields.String(required=True)\n        port = fields.Integer(required=True)\n\n    schema = InstanceSchema(partial=True)\n\n    with pytest.raises(ValidationError) as exc_info:\n        schema.load({'id': 4})\n\n    errors = exc_info.value.messages\n\n    # The custom error message should be used instead of \"Unknown field\"\n    assert 'id' in errors\n    assert errors['id'] == {'message': 'id is readonly', 'code': 400}\n"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 879,
+   "title": "How to report errors for container fields?",
+   "class": "A",
+   "labels": [
+    "feedback welcome",
+    "refactor",
+    "backwards incompat"
+   ],
+   "outcome": "accepted",
+   "test_src": "def test_intake_issue():\n    assert 'Some error.' in errors['nested']['field']\r\n"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 833,
+   "title": "Passing extra kwargs with ValidationError",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom marshmallow import Schema, fields, ValidationError, validates_schema\n\n\ndef test_validation_error_extra_kwargs_propagation():\n    \"\"\"Test that extra kwargs passed to ValidationError are preserved.\"\"\"\n\n    class MySchema(Schema):\n        name = fields.Str(required=True)\n\n        @validates_schema\n        def validate_schema(self, data, **kwargs):\n            if data.get('name') == 'forbidden':\n                raise ValidationError(\n                    'String is not allowed',\n                    error_code='FORBIDDEN_ENTITY'\n                )\n\n    schema = MySchema()\n\n    # Test that kwargs are preserved in ValidationError\n    with pytest.raises(ValidationError) as exc_info:\n        schema.load({'name': 'forbidden'})\n\n    error = exc_info.value\n\n    # The extra kwargs should be accessible in the ValidationError\n    assert hasattr(error, 'kwargs')\n    assert error.kwargs.get('error_code') == 'FORBIDDEN_ENTITY'\n"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 798,
+   "title": "allow for overriding dump’s iteration behavior",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom marshmallow import Schema, fields\n\n\ndef test_dump_iteration_override():\n    \"\"\"Test that dump iteration behavior can be overridden.\"\"\"\n\n    class CustomIterableSchema(Schema):\n        items = fields.List(fields.String())\n\n        def _dump_iteration(self, obj):\n            \"\"\"Override dump iteration to reverse order.\"\"\"\n            if hasattr(obj, '__iter__') and not isinstance(obj, (str, bytes)):\n                return reversed(list(obj))\n            return [obj]\n\n    class ItemSchema(Schema):\n        name = fields.String()\n        values = fields.List(fields.Integer())\n\n    schema = ItemSchema()\n\n    # Custom schema that overrides iteration behavior\n    class ReversedListSchema(Schema):\n        items = fields.List(fields.String())\n\n        def _dump_iteration(self, obj):\n            \"\"\"Return reversed iterator for lists.\"\"\"\n            if isinstance(obj, list):\n                return iter(reversed(obj))\n            return iter(obj)\n\n    reverse_schema = ReversedListSchema()\n\n    # Test with normal schema - should maintain order\n    normal_data = {\"items\": [\"a\", \"b\", \"c\"]}\n    normal_result = schema.dump({\"items\": [\"a\", \"b\", \"c\"]})\n\n    # Test with custom iteration schema - should reverse order\n    reversed_result = reverse_schema.dump({\"items\": [\"a\", \"b\", \"c\"]})\n\n    # Verify override works\n    assert hasattr(reverse_schema, '_dump_iteration'), \"Schema should support _dump_iteration override\"\n    assert callable(reverse_schema._dump_iteration), \"_dump_iteration should be callable\"\n"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 738,
+   "title": "Add decorator syntax for method fields?",
+   "class": "B",
+   "labels": [
+    "feedback welcome"
+   ],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom marshmallow import Schema, fields\n\n\ndef test_method_field_decorator_syntax():\n    \"\"\"Test that @fields.method decorator syntax works for method fields\"\"\"\n\n    class MySchema(Schema):\n        @fields.method\n        def is_valid(obj):\n            return True\n\n    schema = MySchema()\n    result = schema.dump({'id': 1})\n\n    assert 'is_valid' in result\n    assert result['is_valid'] is True\n\n\ndef test_method_field_decorator_with_arguments():\n    \"\"\"Test that @fields.method() decorator works with arguments\"\"\"\n\n    class MySchema(Schema):\n        @fields.method(dump_only=True)\n        def is_valid(obj):\n            return False\n\n    schema = MySchema()\n    result = schema.dump({'id': 1})\n\n    assert 'is_valid' in result\n    assert result['is_valid'] is False\n\n\ndef test_method_field_decorator_with_dump_to():\n    \"\"\"Test that @fields.method decorator works with dump_to argument\"\"\"\n\n    class MySchema(Schema):\n        @fields.method(dump_to='foo')\n        def is_valid(obj):\n            return \"bar\"\n\n    schema = MySchema()\n    result = schema.dump({'id': 1})\n\n    assert 'foo' in result\n    assert result['foo'] == \"bar\"\n"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 727,
+   "title": "Incorrect Integer validation for Floats",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom marshmallow import Schema, fields, ValidationError\n\n\ndef test_integer_field_strict_float_validation():\n    \"\"\"Test that Integer field with strict=True rejects float values\"\"\"\n\n    class TestSchema(Schema):\n        value = fields.Integer(strict=True)\n\n    schema = TestSchema()\n\n    # Should raise ValidationError when float is provided with strict=True\n    with pytest.raises(ValidationError) as exc_info:\n        schema.load({\"value\": 0.15})\n\n    assert \"value\" in exc_info.value.messages\n    assert \"valid integer\" in str(exc_info.value.messages).lower()\n"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 648,
+   "title": "Schema fields with dict attribute names return dict attributes when keys missing",
+   "class": "B",
+   "labels": [
+    "feedback welcome",
+    "needs review"
+   ],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom marshmallow import Schema, fields\n\n\ndef test_schema_fields_with_dict_attribute_names():\n    \"\"\"Test that Schema fields shadowing dict attributes don't return dict methods/attributes when keys missing\"\"\"\n\n    class A(Schema):\n        a = fields.Str()\n        keys = fields.Str(default='k')\n        values = fields.Str(missing='v')\n        items = fields.Str()\n\n    # Dump a dict without the shadowed field keys present\n    dumped = A().dump({'a': 'x'})\n\n    # Should only contain 'a' field (present in input)\n    # Should NOT contain dict methods/attributes for 'keys', 'values', 'items'\n    assert dumped.data == {'a': 'x'}\n\n    # Verify that we're not getting dict built-in methods or attributes\n    assert 'keys' not in dumped.data or not callable(dumped.data.get('keys'))\n    assert 'values' not in dumped.data or not callable(dumped.data.get('values'))\n    assert 'items' not in dumped.data or not callable(dumped.data.get('items'))\n\n    # Verify we're not getting string representations of dict views/methods\n    for key in ['keys', 'values', 'items']:\n        if key in dumped.data:\n            value = dumped.data[key]\n            assert not isinstance(value, str) or not value.startswith(('<built-in', 'dict_'))\n"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 496,
+   "title": "optional static typing for toolz",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import pytest\nfrom typing import Callable\nfrom toolz import compose\n\n\ndef test_compose_type_hints():\n    \"\"\"Test that compose preserves type hints for static type checking.\"\"\"\n\n    def f(x: int) -> str:\n        return str(x)\n\n    def g(y: str) -> float:\n        return float(len(y))\n\n    composed = compose(g, f)\n\n    # Check that the composed function has proper type hints\n    # The return type should be float (from g's return type)\n    # The parameter type should be int (from f's parameter type)\n    assert hasattr(composed, '__annotations__')\n\n    # Test runtime behavior\n    result = composed(42)\n    assert isinstance(result, float)\n    assert result == 2.0\n\n    # Verify that type hints are preserved in some form\n    # (either through __annotations__ or through typing information)\n    import inspect\n    sig = inspect.signature(composed)\n    assert sig is not None\n\n\nif __name__ == \"__main__\":\n    pytest.main([__file__, \"-v\"])\n"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 483,
+   "title": "eager map & filter?",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import pytest\nfrom toolz.curried import compose, map, filter, groupby\n\n\ndef test_curried_map_filter_should_be_eager():\n    \"\"\"Test that curried map and filter return eager (list) results, not lazy iterators.\"\"\"\n    is_even = lambda n: n % 2 == 0\n    inc = lambda n: n + 1\n\n    result = compose(\n        map(inc), \n        filter(is_even)\n    )([1, 2, 3, 4])\n\n    # Should return a list, not a map object\n    assert isinstance(result, list), f\"Expected list but got {type(result)}\"\n    assert result == [3, 5]\n\n\ndef test_curried_groupby_with_map_filter_should_be_eager():\n    \"\"\"Test that curried map and filter are eager when used with groupby.\"\"\"\n    result = compose(\n        groupby(lambda n: \"A\" if n < 2 else \"B\"), \n        map(lambda n: n + 1), \n        filter(lambda n: n % 2 == 0)\n    )([1, 2, 3, 4])\n\n    # Should return a dict with list values (eager), not iterators\n    assert isinstance(result, dict)\n    for key, value in result.items():\n        assert isinstance(value, list), f\"Expected list for key {key} but got {type(value)}\"\n\n    expected = {\"A\": [2], \"B\": [4]}\n    assert result == expected\n"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 481,
+   "title": "Bug in compose introduced in 0.10.0",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import pytest\nimport toolz\n\n\ndef test_compose_in_class_method_with_inner_class():\n    \"\"\"Test that compose works correctly when used in a class method with an inner class.\"\"\"\n\n    def g(x):\n        return x\n\n    class A(object):\n        def __call__(self):\n            _fg = toolz.compose(lambda x: x, g)\n\n            class Inner(object):\n                fg = _fg\n\n            return Inner()\n\n    a = A()()\n    result = a.fg(2)\n    assert result == 2\n"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 461,
+   "title": "A shortcut to create Lambdas?",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import pytest\nfrom toolz import pluck\nimport re\n\n\ndef _f_single_arg(function):\n    body = (function.replace('%%', '<!>')\n                    .replace('%', '_0')\n                    .replace('<!>', '%'))\n    return eval('lambda _0: ' + body)\n\n\ndef f(function):\n    \"\"\"Translates the provided expression in string form into a lambda. \n    Any %<n> where <n> is a int will be used as nth\n    argument (starting with 0). If only one argument is required,\n    a % can be used. To escape a % sign use %%.\"\"\"\n    single_percent_match = re.search(r\"%[^\\d]|%$\", function)\n    if single_percent_match:\n        return _f_single_arg(function)\n\n    matches = re.findall(r\"%(?P<n>\\d+)\", function)\n    n_args = 0 if len(matches) == 0 else\\\n        max(int(match) for match in matches) + 1\n    replace_tuples = [(f'%{n}', f'_{n}') for n in range(n_args)]\n    new_body = function\n    for tup in replace_tuples:\n        new_body = new_body.replace(*tup)\n    head = 'lambda ' + ', '.join(pluck(1, replace_tuples)) + ': ' \\\n        if n_args > 0 else 'lambda *_0: '\n    return eval(head + new_body)\n\n\ndef test_f_lambda_creation():\n    \"\"\"Test that f() function creates lambdas from string expressions\"\"\"\n    # Test single argument with %\n    assert f('%')('Hey') == 'Hey'\n\n    # Test multiple arguments with %0, %1\n    assert f('%1')(0, 'Hey') == 'Hey'\n\n    # Test constant string (no arguments)\n    assert f('\"Hey\"')(0, 1, 2) == 'Hey'\n\n    # Test arithmetic\n    assert f('%0 + %1')(2, 3) == 5\n\n    # Test with single % and operations\n    assert f('% * 2')(5) == 10\n\n    # Test escaping %%\n    assert f('%%')('x') == '%'\n"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 447,
+   "title": "Extract first truthy value",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom toolz import first_truthy\n\n\ndef test_first_truthy_basic():\n    \"\"\"Test first_truthy returns the first truthy value\"\"\"\n    assert first_truthy([0, False, None, 1, 2]) == 1\n    assert first_truthy([False, \"\", [], \"hello\"]) == \"hello\"\n    assert first_truthy([None, 0, {}, [1]]) == [1]\n\n\ndef test_first_truthy_all_falsy_with_default():\n    \"\"\"Test first_truthy returns default when all values are falsy\"\"\"\n    assert first_truthy([0, False, None], default=42) == 42\n    assert first_truthy([], default=\"default\") == \"default\"\n\n\ndef test_first_truthy_all_falsy_no_default():\n    \"\"\"Test first_truthy raises ValueError when all falsy and no default\"\"\"\n    with pytest.raises(ValueError, match=\"No truthy values in iterable\"):\n        first_truthy([0, False, None])\n    with pytest.raises(ValueError, match=\"No truthy values in iterable\"):\n        first_truthy([])\n\n\ndef test_first_truthy_first_is_truthy():\n    \"\"\"Test first_truthy returns immediately when first value is truthy\"\"\"\n    assert first_truthy([1, 0, False]) == 1\n    assert first_truthy([\"value\", \"\", None]) == \"value\"\n\n\ndef test_first_truthy_with_generators():\n    \"\"\"Test first_truthy works with generators\"\"\"\n    gen = (x for x in [0, False, 3, 4])\n    assert first_truthy(gen) == 3\n\n    gen_empty = (x for x in [0, False, None])\n    with pytest.raises(ValueError):\n        first_truthy(gen_empty)\n"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 444,
+   "title": "Extract value from iterable containing exactly one value",
+   "class": "A",
+   "labels": [],
+   "outcome": "not_reproducible",
+   "test_src": "def test_intake_issue():\n    lst = [99]\r\n    [val] = lst\r\n    assert val == 99\r\n"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 396,
+   "title": "num_required_args gives unexpected answer on composed methods",
+   "class": "A",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "def test_intake_issue():\n    >>> from toolz import compose, num_required_args\r\n\r\n    >>> int_identity = compose(ord, chr)\r\n\r\n    >>> req_args = num_required_args(int_identity)\r\n\r\n    >>> assert req_args == 1, req_args\r\n    AssertionError: 0\r\n"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 368,
+   "title": "Feature Request: call function",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom toolz.functoolz import call\n\n\ndef test_call_function_exists_and_works():\n    \"\"\"Test that call function exists and calls a function with args and kwargs.\"\"\"\n    def add(a, b):\n        return a + b\n\n    result = call(add, 2, 3)\n    assert result == 5\n\n\ndef test_call_function_with_kwargs():\n    \"\"\"Test that call function works with keyword arguments.\"\"\"\n    def greet(name, greeting=\"Hello\"):\n        return f\"{greeting}, {name}!\"\n\n    result = call(greet, \"Alice\", greeting=\"Hi\")\n    assert result == \"Hi, Alice!\"\n\n\ndef test_call_function_with_only_kwargs():\n    \"\"\"Test that call function works with only keyword arguments.\"\"\"\n    def func(x=1, y=2):\n        return x * y\n\n    result = call(func, x=3, y=4)\n    assert result == 12\n"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 367,
+   "title": "py.test fails on Ubuntu ppc64le",
+   "class": "A",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "============================================================== FAILURES ==============================================================\r\n__________________________________________________________ test_shakespeare __________________________________________________________\r\n\r\n    def test_shakespeare():\r\n>       with open('bench/shakespeare.txt') as f:\r\nE       IOError: [Errno 2] No such file or directory: 'bench/shakespeare.txt'\r\n\r\nbench/test_wordcount.py:17: IOError\r\n=============================================== 1 failed, 198 passed in 13.41 seconds ================================================\r\nbash-4.2#\r\n"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 291,
+   "title": "Consider adding a `zipdict()` function",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom toolz import zipdict\n\n\ndef test_zipdict_basic():\n    \"\"\"Test that zipdict function exists and works with multiple dictionaries\"\"\"\n    d1 = {'a': 1, 'b': 2, 'c': 3}\n    d2 = {'a': 10, 'b': 20, 'c': 30}\n    d3 = {'a': 100, 'b': 200, 'c': 300}\n\n    result = dict(zipdict(d1, d2, d3))\n\n    assert result == {\n        'a': (1, 10, 100),\n        'b': (2, 20, 200),\n        'c': (3, 30, 300)\n    }\n\n\ndef test_zipdict_common_keys_only():\n    \"\"\"Test that zipdict only includes common keys\"\"\"\n    d1 = {'a': 1, 'b': 2, 'c': 3}\n    d2 = {'a': 10, 'b': 20, 'd': 40}\n\n    result = dict(zipdict(d1, d2))\n\n    assert result == {\n        'a': (1, 10),\n        'b': (2, 20)\n    }\n    assert 'c' not in result\n    assert 'd' not in result\n\n\ndef test_zipdict_no_dicts():\n    \"\"\"Test that zipdict handles empty input\"\"\"\n    result = list(zipdict())\n    assert result == []\n\n\ndef test_zipdict_single_dict():\n    \"\"\"Test that zipdict works with single dictionary\"\"\"\n    d1 = {'a': 1, 'b': 2}\n    result = dict(zipdict(d1))\n\n    assert result == {\n        'a': (1,),\n        'b': (2,)\n    }\n"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 285,
+   "title": "Consider adding `repeat_each` to itertoolz",
+   "class": "B",
+   "labels": [],
+   "outcome": "not_reproducible",
+   "test_src": "import pytest\nfrom toolz import concat\nfrom itertools import tee\n\n\ndef repeat_each(elems, n):\n    \"\"\"\n    Repeat each element in elems N times.\n\n    >>> repeat_each([1, 2, 3], 3)\n    [1, 1, 1, 2, 2, 2, 3, 3, 3]\n    \"\"\"\n    return concat(zip(*tee(elems, n)))\n\n\ndef test_repeat_each_basic():\n    \"\"\"Test that repeat_each function works correctly\"\"\"\n    result = list(repeat_each([1, 2, 3], 3))\n    assert result == [1, 1, 1, 2, 2, 2, 3, 3, 3]\n\n\ndef test_repeat_each_single_repeat():\n    \"\"\"Test repeat_each with n=1\"\"\"\n    result = list(repeat_each([1, 2, 3], 1))\n    assert result == [1, 2, 3]\n\n\ndef test_repeat_each_double_repeat():\n    \"\"\"Test repeat_each with n=2\"\"\"\n    result = list(repeat_each(['a', 'b'], 2))\n    assert result == ['a', 'a', 'b', 'b']\n\n\ndef test_repeat_each_empty():\n    \"\"\"Test repeat_each with empty iterable\"\"\"\n    result = list(repeat_each([], 3))\n    assert result == []\n\n\ndef test_repeat_each_large_n():\n    \"\"\"Test repeat_each with large n\"\"\"\n    result = list(repeat_each([1, 2], 5))\n    assert result == [1, 1, 1, 1, 1, 2, 2, 2, 2, 2]\n"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 282,
+   "title": "add const function",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom toolz import const\n\n\ndef test_const_function():\n    \"\"\"Test that const function returns a function that always returns the constant value.\"\"\"\n    # Test with integer constant\n    f = const(5)\n    assert f(2) == 5\n    assert f(3.14, [1, 3], a='whatever') == 5\n\n    # Test with string constant\n    g = const(\"hello\")\n    assert g() == \"hello\"\n    assert g(1, 2, 3) == \"hello\"\n    assert g(x=1, y=2) == \"hello\"\n\n    # Test with None constant\n    h = const(None)\n    assert h(1, 2, 3) is None\n\n    # Test with list constant\n    lst = [1, 2, 3]\n    c = const(lst)\n    assert c() is lst\n    assert c(1, 2, 3) is lst\n\n    # Test with no arguments\n    f = const(42)\n    assert f() == 42\n"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 239,
+   "title": "Add an unzip function?",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom toolz import unzip\n\n\ndef test_unzip_basic():\n    \"\"\"Test that unzip is the inverse of zip\"\"\"\n    original = [(1, 2, 3), (4, 5, 6), (7, 8, 9)]\n    zipped = list(zip(*original))\n    unzipped = tuple(map(tuple, unzip(zipped)))\n    assert unzipped == original\n\n\ndef test_unzip_two_tuples():\n    \"\"\"Test unzip with simple two-element tuples\"\"\"\n    data = [(1, 'a'), (2, 'b'), (3, 'c')]\n    result = tuple(map(tuple, unzip(data)))\n    assert result == ((1, 2, 3), ('a', 'b', 'c'))\n\n\ndef test_unzip_single_element():\n    \"\"\"Test unzip with single element tuples\"\"\"\n    data = [(1,), (2,), (3,)]\n    result = tuple(map(tuple, unzip(data)))\n    assert result == ((1, 2, 3),)\n\n\ndef test_unzip_empty():\n    \"\"\"Test unzip with empty sequence\"\"\"\n    data = []\n    result = tuple(unzip(data))\n    assert result == ()\n"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 233,
+   "title": "Pipe over a sequence",
+   "class": "B",
+   "labels": [],
+   "outcome": "not_reproducible",
+   "test_src": "import pytest\nfrom toolz import pipe\n\n\ndef test_pipe_over_sequence():\n    \"\"\"Test that pipe works over a sequence of items with multiple functions\"\"\"\n\n    def add_one(x):\n        return x + 1\n\n    def multiply_by_two(x):\n        return x * 2\n\n    def subtract_three(x):\n        return x - 3\n\n    seq = [1, 2, 3, 4, 5]\n\n    # Expected behavior: apply add_one, multiply_by_two, subtract_three to each item\n    # For item 1: (1 + 1) * 2 - 3 = 2 * 2 - 3 = 4 - 3 = 1\n    # For item 2: (2 + 1) * 2 - 3 = 3 * 2 - 3 = 6 - 3 = 3\n    # For item 3: (3 + 1) * 2 - 3 = 4 * 2 - 3 = 8 - 3 = 5\n    # For item 4: (4 + 1) * 2 - 3 = 5 * 2 - 3 = 10 - 3 = 7\n    # For item 5: (5 + 1) * 2 - 3 = 6 * 2 - 3 = 12 - 3 = 9\n    expected = [1, 3, 5, 7, 9]\n\n    # This should work with pipe accepting a sequence as first argument\n    result = list(pipe(seq, lambda s: map(add_one, s), \n                            lambda s: map(multiply_by_two, s),\n                            lambda s: map(subtract_three, s)))\n\n    assert result == expected\n"
+  }
+ ],
+ "usage": {
+  "calls": 75,
+  "input_tokens": 44342,
+  "output_tokens": 26519
+ }
+}

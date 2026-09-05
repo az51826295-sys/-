@@ -1,0 +1,597 @@
+{
+  "threshold": 1.0,
+  "min_constructions": 3,
+  "rows": [
+    {
+      "atom": "malware_detection",
+      "kind": "human_gate",
+      "claimed": "no_judge",
+      "n": 0,
+      "flipped": 0,
+      "rate": null,
+      "rows": [],
+      "state": "skipped",
+      "why": "real 주장이 아니다 - 민감도를 묻지 않는다"
+    },
+    {
+      "atom": "dangerous_permission_scan",
+      "kind": "set_membership",
+      "claimed": "real",
+      "n": 2,
+      "flipped": 2,
+      "rate": 1.0,
+      "rows": [
+        {
+          "rule": "규칙에서 적중 제거",
+          "flipped": true,
+          "was": [
+            "CAMERA",
+            "READ_SMS",
+            "RECORD_AUDIO"
+          ],
+          "now": [
+            "READ_SMS",
+            "RECORD_AUDIO"
+          ],
+          "why": null
+        },
+        {
+          "rule": "규칙에 미적중 추가",
+          "flipped": true,
+          "was": [
+            "CAMERA",
+            "READ_SMS",
+            "RECORD_AUDIO"
+          ],
+          "now": [
+            "CAMERA",
+            "READ_SMS",
+            "RECORD_AUDIO",
+            "INTERNET"
+          ],
+          "why": null
+        }
+      ],
+      "exhaustive": true,
+      "state": "pass",
+      "why": null
+    },
+    {
+      "atom": "phishing_link_check",
+      "kind": "set_membership",
+      "claimed": "real",
+      "n": 1,
+      "flipped": 1,
+      "rate": 1.0,
+      "rows": [
+        {
+          "rule": "규칙에서 적중 제거",
+          "flipped": null,
+          "why": "적중이 1건뿐 - 빼면 공허한 샘플이 된다"
+        },
+        {
+          "rule": "규칙에 미적중 추가",
+          "flipped": true,
+          "was": [
+            "bad.example",
+            "evil.example"
+          ],
+          "now": [
+            "bad.example",
+            "evil.example",
+            "good.example"
+          ],
+          "why": null
+        }
+      ],
+      "exhaustive": true,
+      "state": "pass",
+      "why": null
+    },
+    {
+      "atom": "ram_booster",
+      "kind": "human_gate",
+      "claimed": "snake_oil",
+      "n": 0,
+      "flipped": 0,
+      "rate": null,
+      "rows": [],
+      "state": "skipped",
+      "why": "real 주장이 아니다 - 민감도를 묻지 않는다"
+    },
+    {
+      "atom": "battery_optimizer",
+      "kind": "human_gate",
+      "claimed": "snake_oil",
+      "n": 0,
+      "flipped": 0,
+      "rate": null,
+      "rows": [],
+      "state": "skipped",
+      "why": "real 주장이 아니다 - 민감도를 묻지 않는다"
+    },
+    {
+      "atom": "cache_cleanup",
+      "kind": "numeric_delta",
+      "claimed": "real",
+      "n": 1,
+      "flipped": 1,
+      "rate": 1.0,
+      "rows": [
+        {
+          "rule": "임계를 실제 차이 초과로",
+          "flipped": true,
+          "was": 1,
+          "now": 928001,
+          "why": null
+        }
+      ],
+      "exhaustive": true,
+      "state": "pass",
+      "why": null
+    },
+    {
+      "atom": "large_file_finder",
+      "kind": "threshold_match",
+      "claimed": "real",
+      "n": 2,
+      "flipped": 2,
+      "rate": 1.0,
+      "rows": [
+        {
+          "rule": "임계를 올려 적중 하나 제외",
+          "flipped": true,
+          "was": 100000000,
+          "now": 150000001,
+          "why": null
+        },
+        {
+          "rule": "임계를 내려 미적중 하나 포함",
+          "flipped": true,
+          "was": 100000000,
+          "now": 2048,
+          "why": null
+        }
+      ],
+      "exhaustive": true,
+      "state": "pass",
+      "why": null
+    },
+    {
+      "atom": "duplicate_file_finder",
+      "kind": "hash_pairs",
+      "claimed": "real",
+      "n": 0,
+      "flipped": 0,
+      "rate": null,
+      "rows": [],
+      "state": "undefined",
+      "why": "설계도 입력이 없는 심판(claim↔measured 자기일관성 검사)"
+    },
+    {
+      "atom": "beautiful_art_generation",
+      "kind": "human_gate",
+      "claimed": "no_judge",
+      "n": 0,
+      "flipped": 0,
+      "rate": null,
+      "rows": [],
+      "state": "skipped",
+      "why": "real 주장이 아니다 - 민감도를 묻지 않는다"
+    },
+    {
+      "atom": "spec_fit_art_selection",
+      "kind": "spec_conformance",
+      "claimed": "real",
+      "n": 5,
+      "flipped": 5,
+      "rate": 1.0,
+      "rows": [
+        {
+          "rule": "file_integrity",
+          "flipped": null,
+          "why": "is_null는 스펙을 참조하지 않는다"
+        },
+        {
+          "rule": "canvas.width",
+          "flipped": true,
+          "was": 320,
+          "now": 321,
+          "why": null
+        },
+        {
+          "rule": "canvas.height",
+          "flipped": true,
+          "was": 180,
+          "now": 181,
+          "why": null
+        },
+        {
+          "rule": "palette_conformance",
+          "flipped": true,
+          "was": 0.005,
+          "now": -1.0,
+          "why": null
+        },
+        {
+          "rule": "saturation.max",
+          "flipped": true,
+          "was": 0.45,
+          "now": -0.78,
+          "why": null
+        },
+        {
+          "rule": "value.min",
+          "flipped": true,
+          "was": 0.08,
+          "now": 1.31,
+          "why": null
+        }
+      ],
+      "exhaustive": false,
+      "state": "pass",
+      "why": null
+    },
+    {
+      "atom": "icon_spec_fit",
+      "kind": "spec_conformance",
+      "claimed": "real",
+      "n": 12,
+      "flipped": 12,
+      "rate": 1.0,
+      "rows": [
+        {
+          "rule": "parse",
+          "flipped": null,
+          "why": "is_null는 스펙을 참조하지 않는다"
+        },
+        {
+          "rule": "viewBox",
+          "flipped": true,
+          "was": "0 0 24 24",
+          "now": "0 0 24 24_x",
+          "why": null
+        },
+        {
+          "rule": "grid.snap",
+          "flipped": null,
+          "why": "empty는 스펙을 참조하지 않는다"
+        },
+        {
+          "rule": "stroke.width",
+          "flipped": true,
+          "was": 1.5,
+          "now": 2.0,
+          "why": null
+        },
+        {
+          "rule": "stroke.linecap",
+          "flipped": true,
+          "was": "round",
+          "now": "round_x",
+          "why": null
+        },
+        {
+          "rule": "stroke.linejoin",
+          "flipped": true,
+          "was": "round",
+          "now": "round_x",
+          "why": null
+        },
+        {
+          "rule": "palette",
+          "flipped": null,
+          "why": "empty는 스펙을 참조하지 않는다"
+        },
+        {
+          "rule": "fill",
+          "flipped": true,
+          "was": [
+            "none"
+          ],
+          "now": [],
+          "why": null
+        },
+        {
+          "rule": "padding.min",
+          "flipped": true,
+          "was": 2,
+          "now": 4.0,
+          "why": null
+        },
+        {
+          "rule": "path.max_count",
+          "flipped": true,
+          "was": 6,
+          "now": 1,
+          "why": null
+        },
+        {
+          "rule": "shape.max_count",
+          "flipped": true,
+          "was": 6,
+          "now": 1,
+          "why": null
+        },
+        {
+          "rule": "path.max_total_commands",
+          "flipped": true,
+          "was": 60,
+          "now": 8,
+          "why": null
+        },
+        {
+          "rule": "allowed_elements",
+          "flipped": true,
+          "was": [
+            "svg",
+            "path",
+            "circle",
+            "rect",
+            "line",
+            "polyline",
+            "g"
+          ],
+          "now": [
+            "svg",
+            "circle",
+            "rect",
+            "line",
+            "polyline",
+            "g"
+          ],
+          "why": null
+        },
+        {
+          "rule": "forbidden_elements",
+          "flipped": true,
+          "was": [
+            "text",
+            "image",
+            "filter",
+            "mask",
+            "style",
+            "script",
+            "defs"
+          ],
+          "now": [
+            "text",
+            "image",
+            "filter",
+            "mask",
+            "style",
+            "script",
+            "defs",
+            "path"
+          ],
+          "why": null
+        },
+        {
+          "rule": "size.max_bytes",
+          "flipped": true,
+          "was": 2048,
+          "now": 319,
+          "why": null
+        }
+      ],
+      "exhaustive": false,
+      "state": "pass",
+      "why": null
+    },
+    {
+      "atom": "music_selection",
+      "kind": "spec_conformance",
+      "claimed": "real",
+      "n": 6,
+      "flipped": 6,
+      "rate": 1.0,
+      "rows": [
+        {
+          "rule": "file_integrity",
+          "flipped": null,
+          "why": "is_null는 스펙을 참조하지 않는다"
+        },
+        {
+          "rule": "sample_rate",
+          "flipped": true,
+          "was": 44100,
+          "now": 44101,
+          "why": null
+        },
+        {
+          "rule": "duration.max",
+          "flipped": true,
+          "was": 180.0,
+          "now": 95.0,
+          "why": null
+        },
+        {
+          "rule": "sample_peak",
+          "flipped": true,
+          "was": -1.5,
+          "now": -7.2,
+          "why": null
+        },
+        {
+          "rule": "silence_head",
+          "flipped": true,
+          "was": 0.1,
+          "now": -1.0,
+          "why": null
+        },
+        {
+          "rule": "silence_tail",
+          "flipped": true,
+          "was": 0.1,
+          "now": -0.97,
+          "why": null
+        },
+        {
+          "rule": "dropout",
+          "flipped": true,
+          "was": 0.2,
+          "now": -1.0,
+          "why": null
+        }
+      ],
+      "exhaustive": false,
+      "state": "pass",
+      "why": null
+    },
+    {
+      "atom": "story_writing",
+      "kind": "human_gate",
+      "claimed": "no_judge",
+      "n": 0,
+      "flipped": 0,
+      "rate": null,
+      "rows": [],
+      "state": "skipped",
+      "why": "real 주장이 아니다 - 민감도를 묻지 않는다"
+    },
+    {
+      "atom": "spec_fit_story_selection",
+      "kind": "forbidden_absent",
+      "claimed": "real",
+      "n": 1,
+      "flipped": 1,
+      "rate": 1.0,
+      "rows": [
+        {
+          "rule": "금지 목록에 본문 낱말 추가",
+          "flipped": true,
+          "was": [
+            "용사",
+            "마왕",
+            "이세계 전생"
+          ],
+          "now": [
+            "용사",
+            "마왕",
+            "이세계 전생",
+            "등대지기는"
+          ],
+          "why": null
+        }
+      ],
+      "exhaustive": true,
+      "state": "pass",
+      "why": null
+    },
+    {
+      "atom": "game_feature_coding",
+      "kind": "spec_conformance",
+      "claimed": "real",
+      "n": 3,
+      "flipped": 3,
+      "rate": 1.0,
+      "rows": [
+        {
+          "rule": "runner_ok",
+          "flipped": null,
+          "why": "is_null는 스펙을 참조하지 않는다"
+        },
+        {
+          "rule": "returncode",
+          "flipped": true,
+          "was": 0,
+          "now": 1,
+          "why": null
+        },
+        {
+          "rule": "no_failures",
+          "flipped": true,
+          "was": 0,
+          "now": -1,
+          "why": null
+        },
+        {
+          "rule": "coverage_of_spec",
+          "flipped": true,
+          "was": 3,
+          "now": 13,
+          "why": null
+        }
+      ],
+      "exhaustive": false,
+      "state": "pass",
+      "why": null
+    },
+    {
+      "atom": "pixel_art_style",
+      "kind": "spec_conformance",
+      "claimed": "real",
+      "n": 4,
+      "flipped": 4,
+      "rate": 1.0,
+      "rows": [
+        {
+          "rule": "file_integrity",
+          "flipped": null,
+          "why": "is_null는 스펙을 참조하지 않는다"
+        },
+        {
+          "rule": "logical_width",
+          "flipped": true,
+          "was": 128,
+          "now": 31,
+          "why": null
+        },
+        {
+          "rule": "logical_height",
+          "flipped": true,
+          "was": 128,
+          "now": 31,
+          "why": null
+        },
+        {
+          "rule": "color_count",
+          "flipped": true,
+          "was": 32,
+          "now": 17,
+          "why": null
+        },
+        {
+          "rule": "alpha_binary",
+          "flipped": true,
+          "was": true,
+          "now": false,
+          "why": null
+        }
+      ],
+      "exhaustive": false,
+      "state": "pass",
+      "why": null
+    },
+    {
+      "atom": "art_mood_fit",
+      "kind": "human_gate",
+      "claimed": "no_judge",
+      "n": 0,
+      "flipped": 0,
+      "rate": null,
+      "rows": [],
+      "state": "skipped",
+      "why": "real 주장이 아니다 - 민감도를 묻지 않는다"
+    },
+    {
+      "atom": "music_mood_fit",
+      "kind": "human_gate",
+      "claimed": "no_judge",
+      "n": 0,
+      "flipped": 0,
+      "rate": null,
+      "rows": [],
+      "state": "skipped",
+      "why": "real 주장이 아니다 - 민감도를 묻지 않는다"
+    }
+  ],
+  "summary": {
+    "graded": 10,
+    "passed": 10,
+    "failed": 0,
+    "undefined": 1,
+    "constructions": 37,
+    "passes_strict": true
+  }
+}

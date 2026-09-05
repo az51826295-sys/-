@@ -1,0 +1,81 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "a6647521944c87a506b507c490fdc3c0c24ccd2e",
+ "parent_commit": "d5f8532d04172b57a0ff7daf322e8c38053bc302",
+ "answer_files": [
+  "marshmallow/serializer.py"
+ ],
+ "answer_functions": [
+  "marshmallow/serializer.py::_update_data",
+  "marshmallow/serializer.py::data_handler",
+  "marshmallow/serializer.py::error_handler"
+ ],
+ "patch_lines": 23,
+ "added_tests": {
+  "tests/test_marshmallow.py::test_serializer_with_custom_error_handler": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "tests/test_marshmallow.py::test_serializer_with_custom_data_handler": {
+   "parent": "pass",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "tests/test_marshmallow.py::test_serializer_with_multiple_data_handlers": {
+   "parent": "pass",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "tests/test_marshmallow.py::test_root_data_handler": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [
+  "tests/test_marshmallow.py::test_serializer_with_custom_error_handler",
+  "tests/test_marshmallow.py::test_root_data_handler"
+ ],
+ "test_files": [
+  "tests/test_marshmallow.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [
+  {
+   "applied": "marshmallow/serializer.py::_update_data",
+   "passes_repro": [],
+   "still_failing": [
+    "tests/test_marshmallow.py::test_serializer_with_custom_error_handler",
+    "tests/test_marshmallow.py::test_serializer_with_custom_data_handler",
+    "tests/test_marshmallow.py::test_serializer_with_multiple_data_handlers",
+    "tests/test_marshmallow.py::test_root_data_handler"
+   ],
+   "event": false
+  },
+  {
+   "applied": "marshmallow/serializer.py::data_handler",
+   "passes_repro": [],
+   "still_failing": [
+    "tests/test_marshmallow.py::test_serializer_with_custom_error_handler",
+    "tests/test_marshmallow.py::test_serializer_with_custom_data_handler",
+    "tests/test_marshmallow.py::test_serializer_with_multiple_data_handlers",
+    "tests/test_marshmallow.py::test_root_data_handler"
+   ],
+   "event": false
+  },
+  {
+   "applied": "marshmallow/serializer.py::error_handler",
+   "passes_repro": [],
+   "still_failing": [
+    "tests/test_marshmallow.py::test_serializer_with_custom_error_handler",
+    "tests/test_marshmallow.py::test_root_data_handler"
+   ],
+   "event": false
+  }
+ ],
+ "env_seconds": 13.3,
+ "env_error_tests": 0,
+ "qualified": true
+}

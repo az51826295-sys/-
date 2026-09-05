@@ -1,0 +1,54 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "2e0a4fcc832e6dfe10a96b539bb6a79378dbcc60",
+ "parent_commit": "a782c52d84f9ac0556e2771f7af8c5e5e8e86cab",
+ "answer_files": [
+  "src/marshmallow/utils.py"
+ ],
+ "answer_functions": [
+  "src/marshmallow/utils.py::from_timestamp"
+ ],
+ "patch_lines": 7,
+ "added_tests": {
+  "tests/test_deserialization.py::TestFieldDeserialization::test_invalid_timestamp_field_deserialization": {
+   "parent": "pass",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "tests/test_deserialization.py::TestFieldDeserialization::test_oversized_timestamp_field_deserialization": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "tests/test_utils.py::test_from_timestamp": {
+   "parent": "pass",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "tests/test_utils.py::test_from_timestamp_with_negative_value": {
+   "parent": "pass",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "tests/test_utils.py::test_from_timestamp_with_overflow_value": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [
+  "tests/test_deserialization.py::TestFieldDeserialization::test_oversized_timestamp_field_deserialization",
+  "tests/test_utils.py::test_from_timestamp_with_overflow_value"
+ ],
+ "test_files": [
+  "tests/test_deserialization.py",
+  "tests/test_utils.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 19.6,
+ "env_error_tests": 0,
+ "qualified": true,
+ "selector_event_proxy_v1": false
+}

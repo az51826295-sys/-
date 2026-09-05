@@ -1,0 +1,50 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "d104a5c3a07d97c4f7579be90048faf234bfed4c",
+ "parent_commit": "8b3a32614fd4a74e93e9a63a042e74c1fea34466",
+ "answer_files": [
+  "src/marshmallow/fields.py",
+  "src/marshmallow/schema.py"
+ ],
+ "answer_functions": [
+  "src/marshmallow/fields.py::schema",
+  "src/marshmallow/schema.py::__init__",
+  "src/marshmallow/schema.py::_do_load",
+  "src/marshmallow/schema.py::_init_fields",
+  "src/marshmallow/schema.py::_normalize_nested_options"
+ ],
+ "patch_lines": 58,
+ "added_tests": {
+  "tests/test_fields.py::TestListNested::test_list_nested_class_only_and_exclude_merged_with_nested": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_fields.py::TestListNested::test_list_nested_class_multiple_dumps": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_fields.py::TestListNested::test_list_nested_instance_only_and_exclude_merged_with_nested": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_fields.py::TestListNested::test_list_nested_instance_multiple_dumps": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "tests/test_fields.py"
+ ],
+ "location_hard_proxy": true,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 17.1,
+ "env_error_tests": 4,
+ "qualified": false,
+ "selector_event_proxy_v1": false
+}

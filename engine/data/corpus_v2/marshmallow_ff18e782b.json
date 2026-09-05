@@ -1,0 +1,60 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "ff18e782be9d04557f027116b147f16bcecb9999",
+ "parent_commit": "6a12c3ca7d28557f5ac33f8d0dfad95dffed31c2",
+ "answer_files": [
+  "marshmallow/fields.py",
+  "marshmallow/serializer.py"
+ ],
+ "answer_functions": [
+  "marshmallow/fields.py::_ensure_text_type",
+  "marshmallow/fields.py::_format_num",
+  "marshmallow/serializer.py::is_valid"
+ ],
+ "patch_lines": 26,
+ "added_tests": {
+  "tests/test_deserialization.py::TestFieldDeserialization::test_string_field_deserialization": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "tests/test_marshmallow.py::TestFieldSerialization::test_string_field": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [
+  "tests/test_deserialization.py::TestFieldDeserialization::test_string_field_deserialization",
+  "tests/test_marshmallow.py::TestFieldSerialization::test_string_field"
+ ],
+ "test_files": [
+  "tests/test_deserialization.py",
+  "tests/test_marshmallow.py"
+ ],
+ "location_hard_proxy": true,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [
+  {
+   "applied": "marshmallow/fields.py::_format_num",
+   "passes_repro": [],
+   "still_failing": [
+    "tests/test_deserialization.py::TestFieldDeserialization::test_string_field_deserialization",
+    "tests/test_marshmallow.py::TestFieldSerialization::test_string_field"
+   ],
+   "event": false
+  },
+  {
+   "applied": "marshmallow/serializer.py::is_valid",
+   "passes_repro": [],
+   "still_failing": [
+    "tests/test_deserialization.py::TestFieldDeserialization::test_string_field_deserialization",
+    "tests/test_marshmallow.py::TestFieldSerialization::test_string_field"
+   ],
+   "event": false
+  }
+ ],
+ "env_seconds": 5.9,
+ "env_error_tests": 0,
+ "qualified": true
+}

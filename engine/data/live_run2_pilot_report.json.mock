@@ -1,0 +1,18 @@
+{
+ "ran_at": "2026-08-21T21:37:01",
+ "mock": true,
+ "results": [
+  {
+   "repo": "mahmoud/boltons",
+   "number": 439,
+   "title": "IndexedSet: difference_update/intersection_update are quadratic for large remova",
+   "state": "failed",
+   "result": null,
+   "error": "validator rejected"
+  }
+ ],
+ "skipped": [],
+ "solved": 0,
+ "attempted": 1,
+ "spend_usd": 0.0
+}

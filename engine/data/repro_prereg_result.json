@@ -1,0 +1,39 @@
+{
+ "n_fresh": 4,
+ "by_cat": {
+  "not_reproducible": 1,
+  "broken_test": 1,
+  "reproduction": 2
+ },
+ "feature_request": 0,
+ "env_blocked": 0,
+ "denominator": 4,
+ "reproduction": 2,
+ "prereg_reproduction_rate": 0.5,
+ "rows": [
+  {
+   "slug": "dateutil/dateutil",
+   "number": 1263,
+   "title": "Confusing timezone while parsing strings like \"2022-01-01T00:00:00Z+03:00\", \"-03:00\" instead of \"+03",
+   "cat": "not_reproducible"
+  },
+  {
+   "slug": "dateutil/dateutil",
+   "number": 1260,
+   "title": "2.8.2: Two tests fails on OpenIndiana",
+   "cat": "broken_test"
+  },
+  {
+   "slug": "dateutil/dateutil",
+   "number": 1241,
+   "title": "ParserError when parsing a string containing a minus character",
+   "cat": "reproduction"
+  },
+  {
+   "slug": "dateutil/dateutil",
+   "number": 1240,
+   "title": "rrule daylight saving issue",
+   "cat": "reproduction"
+  }
+ ]
+}

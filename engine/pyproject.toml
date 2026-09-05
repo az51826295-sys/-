@@ -1,0 +1,30 @@
+[project]
+name = "genesis"
+version = "0.1.0"
+description = "Genesis MVP: an agent that observes, predicts, acts, and learns from experience in a small grid world."
+requires-python = ">=3.11"
+dependencies = [
+    "pydantic>=2.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["genesis*"]
+
+[tool.pytest.ini_options]
+pythonpath = [".", "tests"]
+testpaths = ["tests"]
+# 표식만 등록한다. addopts에 -m "not slow" 를 **넣지 않는다** - 넣는 순간
+# 상시 게이트가 조용히 줄어든다(그게 우리가 막으려는 위험이다).
+# 안쪽 반복에서는 사람이 명시적으로: pytest -n 4 -m "not slow"
+markers = [
+    "slow: 잰 값으로 20초 이상 걸리는 테스트 (data/slow_tests.json, conftest가 자동 부착)",
+]

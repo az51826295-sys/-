@@ -1,0 +1,422 @@
+{
+ "extracted_at": "2026-08-22",
+ "source": "run0~4",
+ "outcomes": [
+  {
+   "kind": "agent_fix",
+   "tier": "fast",
+   "attempt": 1,
+   "accepted": false,
+   "steps": 9,
+   "tool_calls": 9
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "fast",
+   "attempt": 1,
+   "accepted": false,
+   "steps": 9,
+   "tool_calls": 8
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "fast",
+   "attempt": 1,
+   "accepted": false,
+   "steps": 1,
+   "tool_calls": 0
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "fast",
+   "attempt": 1,
+   "accepted": false,
+   "steps": 10,
+   "tool_calls": 9
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 2,
+   "accepted": false,
+   "steps": 3,
+   "tool_calls": 3
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "fast",
+   "attempt": 1,
+   "accepted": false,
+   "steps": 8,
+   "tool_calls": 7
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 2,
+   "accepted": false,
+   "steps": 1,
+   "tool_calls": 0
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 2,
+   "accepted": false,
+   "steps": 7,
+   "tool_calls": 8
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 2,
+   "accepted": false,
+   "steps": 4,
+   "tool_calls": 3
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 2,
+   "accepted": false,
+   "steps": 4,
+   "tool_calls": 3
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "fast",
+   "attempt": 1,
+   "accepted": false,
+   "steps": 10,
+   "tool_calls": 9
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 2,
+   "accepted": false,
+   "steps": 4,
+   "tool_calls": 4
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "fast",
+   "attempt": 1,
+   "accepted": false,
+   "steps": 12,
+   "tool_calls": 11
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "fast",
+   "attempt": 1,
+   "accepted": false,
+   "steps": 1,
+   "tool_calls": 0
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 2,
+   "accepted": false,
+   "steps": 4,
+   "tool_calls": 3
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 2,
+   "accepted": false,
+   "steps": 4,
+   "tool_calls": 4
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "fast",
+   "attempt": 1,
+   "accepted": false,
+   "steps": 10,
+   "tool_calls": 9
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "fast",
+   "attempt": 1,
+   "accepted": false,
+   "steps": 12,
+   "tool_calls": 12
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "fast",
+   "attempt": 1,
+   "accepted": false,
+   "steps": 1,
+   "tool_calls": 0
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "fast",
+   "attempt": 1,
+   "accepted": false,
+   "steps": 9,
+   "tool_calls": 8
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 2,
+   "accepted": false,
+   "steps": 3,
+   "tool_calls": 3
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "fast",
+   "attempt": 1,
+   "accepted": false,
+   "steps": 12,
+   "tool_calls": 11
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 2,
+   "accepted": false,
+   "steps": 4,
+   "tool_calls": 3
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 2,
+   "accepted": false,
+   "steps": 9,
+   "tool_calls": 8
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 2,
+   "accepted": false,
+   "steps": 2,
+   "tool_calls": 1
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 2,
+   "accepted": false,
+   "steps": 1,
+   "tool_calls": 0
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "fast",
+   "attempt": 1,
+   "accepted": false,
+   "steps": 11,
+   "tool_calls": 10
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 2,
+   "accepted": false,
+   "steps": 4,
+   "tool_calls": 4
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "fast",
+   "attempt": 1,
+   "accepted": false,
+   "steps": 11,
+   "tool_calls": 10
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "fast",
+   "attempt": 1,
+   "accepted": true,
+   "steps": 10,
+   "tool_calls": 10
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "fast",
+   "attempt": 1,
+   "accepted": false,
+   "steps": 12,
+   "tool_calls": 12
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 2,
+   "accepted": false,
+   "steps": 1,
+   "tool_calls": 0
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 1,
+   "accepted": false,
+   "steps": 4,
+   "tool_calls": 3
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 1,
+   "accepted": false,
+   "steps": 4,
+   "tool_calls": 3
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 1,
+   "accepted": false,
+   "steps": 9,
+   "tool_calls": 8
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 1,
+   "accepted": false,
+   "steps": 4,
+   "tool_calls": 3
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 1,
+   "accepted": false,
+   "steps": 5,
+   "tool_calls": 4
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 1,
+   "accepted": false,
+   "steps": 5,
+   "tool_calls": 4
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 1,
+   "accepted": false,
+   "steps": 4,
+   "tool_calls": 3
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 1,
+   "accepted": false,
+   "steps": 9,
+   "tool_calls": 8
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 1,
+   "accepted": false,
+   "steps": 12,
+   "tool_calls": 11
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 1,
+   "accepted": false,
+   "steps": 12,
+   "tool_calls": 10
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 1,
+   "accepted": false,
+   "steps": 9,
+   "tool_calls": 8
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 1,
+   "accepted": false,
+   "steps": 9,
+   "tool_calls": 8
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 1,
+   "accepted": false,
+   "steps": 10,
+   "tool_calls": 10
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 1,
+   "accepted": true,
+   "steps": 8,
+   "tool_calls": 8
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "opus",
+   "attempt": 1,
+   "accepted": false,
+   "steps": 12,
+   "tool_calls": 13
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "opus",
+   "attempt": 1,
+   "accepted": false,
+   "steps": 12,
+   "tool_calls": 13
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "opus",
+   "attempt": 1,
+   "accepted": false,
+   "steps": 12,
+   "tool_calls": 15
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "opus",
+   "attempt": 1,
+   "accepted": true,
+   "steps": 12,
+   "tool_calls": 12
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "opus",
+   "attempt": 1,
+   "accepted": false,
+   "steps": 12,
+   "tool_calls": 15
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "opus",
+   "attempt": 1,
+   "accepted": false,
+   "steps": 12,
+   "tool_calls": 13
+  }
+ ]
+}

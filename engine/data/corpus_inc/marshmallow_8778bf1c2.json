@@ -1,0 +1,17 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "8778bf1c282c0e5cdc46fddc488ebd23b76ad89b",
+ "parent_commit": "a867533d53ddbe8cb0ff63c1dc3ca53337ba525c",
+ "answer_functions": [
+  "marshmallow/decorators.py::post_dump",
+  "marshmallow/decorators.py::post_load",
+  "marshmallow/schema.py::_invoke_processors"
+ ],
+ "repro_tests": [],
+ "smoke": [],
+ "baseline_pass_count": 0,
+ "probes": [],
+ "inc_event": false,
+ "regression_event": false,
+ "skipped": "no repro or no answer functions"
+}

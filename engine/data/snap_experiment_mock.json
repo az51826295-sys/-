@@ -1,0 +1,387 @@
+{
+  "spec": "snap-fix-v0",
+  "design": "docs/snap-fix-v0-design.md",
+  "provider": "mock",
+  "model": "mock",
+  "usd": 0.0,
+  "seconds": 1.6,
+  "thresholds": {
+    "snap_works_lower": 0.9,
+    "pointless_margin": 0.1,
+    "encoding_only_upper": 0.25,
+    "content_loss_lower": 0.5
+  },
+  "pass_verdict": {
+    "verdict": "undefined",
+    "why": "sample_gate",
+    "raw_pass": 0.0,
+    "snapped_pass": 0.6666666666666666,
+    "ci95": [
+      0.6666666666666666,
+      0.6666666666666666
+    ],
+    "calls": 9,
+    "candidates": 27,
+    "gate_ok": false
+  },
+  "damage_verdict": {
+    "verdict": "encoding_only",
+    "why": "ci_upper_le_threshold",
+    "median_r": 0.0,
+    "ci95": [
+      0.0,
+      0.008056323386963405
+    ],
+    "assets": 27,
+    "scale": {
+      "quest": 0.042327,
+      "equipment": 0.042327,
+      "stats": 0.042327,
+      "dialogue": 0.042327,
+      "exit": 0.042327,
+      "save": 0.042327,
+      "inventory": 0.042327,
+      "map": 0.042327,
+      "settings": 0.042327
+    },
+    "gate_ok": true
+  },
+  "rule_counts": {
+    "raw": {
+      "grid.snap": 9,
+      "palette": 9,
+      "allowed_elements": 9,
+      "forbidden_elements": 9
+    },
+    "snapped": {
+      "allowed_elements": 9,
+      "forbidden_elements": 9
+    }
+  },
+  "calls": [
+    {
+      "concept": "quest",
+      "candidates": [
+        {
+          "concept": "quest",
+          "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>",
+          "raw_verdict": "FAIL",
+          "snapped": "<ns0:svg xmlns:ns0=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><ns0:path d=\"M 4.5 6 L 19.5 6\" /></ns0:svg>",
+          "snap_why": null,
+          "changed": [
+            "path:d"
+          ],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "quest",
+          "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>",
+          "raw_verdict": "FAIL",
+          "snapped": "<ns0:svg xmlns:ns0=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><ns0:path d=\"M 4 6 L 19.5 6\" /></ns0:svg>",
+          "snap_why": null,
+          "changed": [
+            "root:stroke"
+          ],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "quest",
+          "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>",
+          "raw_verdict": "UNDEFINED",
+          "snapped": "<ns0:svg xmlns:ns0=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><ns0:text x=\"4\" y=\"6\">i</ns0:text></ns0:svg>",
+          "snap_why": null,
+          "changed": [],
+          "snapped_verdict": "UNDEFINED"
+        }
+      ]
+    },
+    {
+      "concept": "equipment",
+      "candidates": [
+        {
+          "concept": "equipment",
+          "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>",
+          "raw_verdict": "FAIL",
+          "snapped": "<ns0:svg xmlns:ns0=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><ns0:path d=\"M 4.5 6 L 19.5 6\" /></ns0:svg>",
+          "snap_why": null,
+          "changed": [
+            "path:d"
+          ],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "equipment",
+          "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>",
+          "raw_verdict": "FAIL",
+          "snapped": "<ns0:svg xmlns:ns0=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><ns0:path d=\"M 4 6 L 19.5 6\" /></ns0:svg>",
+          "snap_why": null,
+          "changed": [
+            "root:stroke"
+          ],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "equipment",
+          "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>",
+          "raw_verdict": "UNDEFINED",
+          "snapped": "<ns0:svg xmlns:ns0=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><ns0:text x=\"4\" y=\"6\">i</ns0:text></ns0:svg>",
+          "snap_why": null,
+          "changed": [],
+          "snapped_verdict": "UNDEFINED"
+        }
+      ]
+    },
+    {
+      "concept": "stats",
+      "candidates": [
+        {
+          "concept": "stats",
+          "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>",
+          "raw_verdict": "FAIL",
+          "snapped": "<ns0:svg xmlns:ns0=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><ns0:path d=\"M 4.5 6 L 19.5 6\" /></ns0:svg>",
+          "snap_why": null,
+          "changed": [
+            "path:d"
+          ],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "stats",
+          "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>",
+          "raw_verdict": "FAIL",
+          "snapped": "<ns0:svg xmlns:ns0=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><ns0:path d=\"M 4 6 L 19.5 6\" /></ns0:svg>",
+          "snap_why": null,
+          "changed": [
+            "root:stroke"
+          ],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "stats",
+          "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>",
+          "raw_verdict": "UNDEFINED",
+          "snapped": "<ns0:svg xmlns:ns0=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><ns0:text x=\"4\" y=\"6\">i</ns0:text></ns0:svg>",
+          "snap_why": null,
+          "changed": [],
+          "snapped_verdict": "UNDEFINED"
+        }
+      ]
+    },
+    {
+      "concept": "dialogue",
+      "candidates": [
+        {
+          "concept": "dialogue",
+          "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>",
+          "raw_verdict": "FAIL",
+          "snapped": "<ns0:svg xmlns:ns0=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><ns0:path d=\"M 4.5 6 L 19.5 6\" /></ns0:svg>",
+          "snap_why": null,
+          "changed": [
+            "path:d"
+          ],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "dialogue",
+          "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>",
+          "raw_verdict": "FAIL",
+          "snapped": "<ns0:svg xmlns:ns0=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><ns0:path d=\"M 4 6 L 19.5 6\" /></ns0:svg>",
+          "snap_why": null,
+          "changed": [
+            "root:stroke"
+          ],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "dialogue",
+          "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>",
+          "raw_verdict": "UNDEFINED",
+          "snapped": "<ns0:svg xmlns:ns0=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><ns0:text x=\"4\" y=\"6\">i</ns0:text></ns0:svg>",
+          "snap_why": null,
+          "changed": [],
+          "snapped_verdict": "UNDEFINED"
+        }
+      ]
+    },
+    {
+      "concept": "exit",
+      "candidates": [
+        {
+          "concept": "exit",
+          "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>",
+          "raw_verdict": "FAIL",
+          "snapped": "<ns0:svg xmlns:ns0=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><ns0:path d=\"M 4.5 6 L 19.5 6\" /></ns0:svg>",
+          "snap_why": null,
+          "changed": [
+            "path:d"
+          ],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "exit",
+          "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>",
+          "raw_verdict": "FAIL",
+          "snapped": "<ns0:svg xmlns:ns0=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><ns0:path d=\"M 4 6 L 19.5 6\" /></ns0:svg>",
+          "snap_why": null,
+          "changed": [
+            "root:stroke"
+          ],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "exit",
+          "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>",
+          "raw_verdict": "UNDEFINED",
+          "snapped": "<ns0:svg xmlns:ns0=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><ns0:text x=\"4\" y=\"6\">i</ns0:text></ns0:svg>",
+          "snap_why": null,
+          "changed": [],
+          "snapped_verdict": "UNDEFINED"
+        }
+      ]
+    },
+    {
+      "concept": "save",
+      "candidates": [
+        {
+          "concept": "save",
+          "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>",
+          "raw_verdict": "FAIL",
+          "snapped": "<ns0:svg xmlns:ns0=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><ns0:path d=\"M 4.5 6 L 19.5 6\" /></ns0:svg>",
+          "snap_why": null,
+          "changed": [
+            "path:d"
+          ],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "save",
+          "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>",
+          "raw_verdict": "FAIL",
+          "snapped": "<ns0:svg xmlns:ns0=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><ns0:path d=\"M 4 6 L 19.5 6\" /></ns0:svg>",
+          "snap_why": null,
+          "changed": [
+            "root:stroke"
+          ],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "save",
+          "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>",
+          "raw_verdict": "UNDEFINED",
+          "snapped": "<ns0:svg xmlns:ns0=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><ns0:text x=\"4\" y=\"6\">i</ns0:text></ns0:svg>",
+          "snap_why": null,
+          "changed": [],
+          "snapped_verdict": "UNDEFINED"
+        }
+      ]
+    },
+    {
+      "concept": "inventory",
+      "candidates": [
+        {
+          "concept": "inventory",
+          "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>",
+          "raw_verdict": "FAIL",
+          "snapped": "<ns0:svg xmlns:ns0=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><ns0:path d=\"M 4.5 6 L 19.5 6\" /></ns0:svg>",
+          "snap_why": null,
+          "changed": [
+            "path:d"
+          ],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "inventory",
+          "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>",
+          "raw_verdict": "FAIL",
+          "snapped": "<ns0:svg xmlns:ns0=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><ns0:path d=\"M 4 6 L 19.5 6\" /></ns0:svg>",
+          "snap_why": null,
+          "changed": [
+            "root:stroke"
+          ],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "inventory",
+          "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>",
+          "raw_verdict": "UNDEFINED",
+          "snapped": "<ns0:svg xmlns:ns0=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><ns0:text x=\"4\" y=\"6\">i</ns0:text></ns0:svg>",
+          "snap_why": null,
+          "changed": [],
+          "snapped_verdict": "UNDEFINED"
+        }
+      ]
+    },
+    {
+      "concept": "map",
+      "candidates": [
+        {
+          "concept": "map",
+          "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>",
+          "raw_verdict": "FAIL",
+          "snapped": "<ns0:svg xmlns:ns0=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><ns0:path d=\"M 4.5 6 L 19.5 6\" /></ns0:svg>",
+          "snap_why": null,
+          "changed": [
+            "path:d"
+          ],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "map",
+          "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>",
+          "raw_verdict": "FAIL",
+          "snapped": "<ns0:svg xmlns:ns0=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><ns0:path d=\"M 4 6 L 19.5 6\" /></ns0:svg>",
+          "snap_why": null,
+          "changed": [
+            "root:stroke"
+          ],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "map",
+          "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>",
+          "raw_verdict": "UNDEFINED",
+          "snapped": "<ns0:svg xmlns:ns0=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><ns0:text x=\"4\" y=\"6\">i</ns0:text></ns0:svg>",
+          "snap_why": null,
+          "changed": [],
+          "snapped_verdict": "UNDEFINED"
+        }
+      ]
+    },
+    {
+      "concept": "settings",
+      "candidates": [
+        {
+          "concept": "settings",
+          "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>",
+          "raw_verdict": "FAIL",
+          "snapped": "<ns0:svg xmlns:ns0=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><ns0:path d=\"M 4.5 6 L 19.5 6\" /></ns0:svg>",
+          "snap_why": null,
+          "changed": [
+            "path:d"
+          ],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "settings",
+          "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>",
+          "raw_verdict": "FAIL",
+          "snapped": "<ns0:svg xmlns:ns0=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><ns0:path d=\"M 4 6 L 19.5 6\" /></ns0:svg>",
+          "snap_why": null,
+          "changed": [
+            "root:stroke"
+          ],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "settings",
+          "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>",
+          "raw_verdict": "UNDEFINED",
+          "snapped": "<ns0:svg xmlns:ns0=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><ns0:text x=\"4\" y=\"6\">i</ns0:text></ns0:svg>",
+          "snap_why": null,
+          "changed": [],
+          "snapped_verdict": "UNDEFINED"
+        }
+      ]
+    }
+  ]
+}

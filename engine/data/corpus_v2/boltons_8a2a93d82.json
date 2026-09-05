@@ -1,0 +1,36 @@
+{
+ "repo": "boltons",
+ "fix_commit": "8a2a93d8213e1fa4da30c8167ab1a18caad17a17",
+ "parent_commit": "80f9eb4296daadad85db5ef6c0fd14e2f3602fa4",
+ "answer_files": [
+  "boltons/tbutils.py"
+ ],
+ "answer_functions": [
+  "boltons/tbutils.py::from_string"
+ ],
+ "patch_lines": 9,
+ "added_tests": {
+  "tests/test_tbutils_parsed_exc.py::test_parsed_exc_with_anchor": {
+   "parent": "pass",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "tests/test_tbutils_parsed_exc.py::test_parsed_exc_truncated": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [
+  "tests/test_tbutils_parsed_exc.py::test_parsed_exc_truncated"
+ ],
+ "test_files": [
+  "tests/test_tbutils_parsed_exc.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 3.5,
+ "env_error_tests": 0,
+ "qualified": true
+}

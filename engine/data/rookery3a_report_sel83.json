@@ -1,0 +1,2276 @@
+{
+ "results": [
+  {
+   "task": "b4_du_operators",
+   "arm": "BPUB",
+   "rep": 0,
+   "candidates": [
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": "",
+     "files": [
+      "dateutil/relativedelta.py"
+     ],
+     "sig": "91a1d94982c8",
+     "repro_pass": true,
+     "smoke_pass": true,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 2,
+     "code_fail": "patch_apply_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "patch_apply_fail: dateutil/test/_common.py is a test file",
+     "files": [
+      "dateutil/test/_common.py"
+     ],
+     "sig": "39826f568846",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    }
+   ],
+   "test_runs": 11,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "regression",
+   "wall_s": 40.5,
+   "failure_report_chars": 0,
+   "hyp": {
+    "generated": 5,
+    "valid_selected": 2,
+    "distinct_files": 2,
+    "correct_file_hyp": true,
+    "banned_revisits": 0
+   }
+  },
+  {
+   "task": "b4_du_operators",
+   "arm": "BSEL",
+   "rep": 0,
+   "candidates": [
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": "",
+     "files": [
+      "dateutil/relativedelta.py"
+     ],
+     "sig": "91a1d94982c8",
+     "repro_pass": true,
+     "smoke_pass": true,
+     "ia_valid": true,
+     "ia_len": 0,
+     "mapped_ids": [
+      "dateutil/test/test_imports.py::ImportRelativeDeltaTest::testRelativeDeltaAll",
+      "dateutil/test/test_parser.py::ParserTest::testDateCommandFormatWithLong",
+      "dateutil/test/test_parser.py::ParserTest::testDateCommandFormatIgnoreTz"
+     ],
+     "mapped_pass": true,
+     "no_mapped": false
+    },
+    {
+     "call": 2,
+     "code_fail": "patch_apply_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "patch_apply_fail: dateutil/test/_common.py is a test file",
+     "files": [
+      "dateutil/test/_common.py"
+     ],
+     "sig": "cd9b2b4dc3ec",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    }
+   ],
+   "test_runs": 20,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "regression",
+   "wall_s": 61.6,
+   "failure_report_chars": 0,
+   "hyp": {
+    "generated": 5,
+    "valid_selected": 2,
+    "distinct_files": 2,
+    "correct_file_hyp": true,
+    "banned_revisits": 0
+   }
+  },
+  {
+   "task": "b4_du_operators",
+   "arm": "BPUB",
+   "rep": 1,
+   "candidates": [
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": "",
+     "files": [
+      "dateutil/relativedelta.py"
+     ],
+     "sig": "91a1d94982c8",
+     "repro_pass": true,
+     "smoke_pass": true,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 2,
+     "code_fail": "patch_apply_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "patch_apply_fail: dateutil/_common.py does not exist",
+     "files": [
+      "dateutil/_common.py",
+      "dateutil/relativedelta.py"
+     ],
+     "sig": "3c3bcfba657e",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    }
+   ],
+   "test_runs": 11,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "regression",
+   "wall_s": 42.4,
+   "failure_report_chars": 0,
+   "hyp": {
+    "generated": 5,
+    "valid_selected": 2,
+    "distinct_files": 2,
+    "correct_file_hyp": true,
+    "banned_revisits": 0
+   }
+  },
+  {
+   "task": "b4_du_operators",
+   "arm": "BSEL",
+   "rep": 1,
+   "candidates": [
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": "",
+     "files": [
+      "dateutil/relativedelta.py"
+     ],
+     "sig": "91a1d94982c8",
+     "repro_pass": true,
+     "smoke_pass": true,
+     "ia_valid": true,
+     "ia_len": 0,
+     "mapped_ids": [
+      "dateutil/test/test_imports.py::ImportRelativeDeltaTest::testRelativeDeltaAll",
+      "dateutil/test/test_parser.py::ParserTest::testDateCommandFormatWithLong",
+      "dateutil/test/test_parser.py::ParserTest::testDateCommandFormatIgnoreTz"
+     ],
+     "mapped_pass": true,
+     "no_mapped": false
+    },
+    {
+     "call": 2,
+     "code_fail": "patch_apply_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "patch_apply_fail: dateutil/test/_common.py is a test file",
+     "files": [
+      "dateutil/relativedelta.py",
+      "dateutil/test/_common.py"
+     ],
+     "sig": "e9f3a843004c",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    }
+   ],
+   "test_runs": 20,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "regression",
+   "wall_s": 63.8,
+   "failure_report_chars": 0,
+   "hyp": {
+    "generated": 5,
+    "valid_selected": 2,
+    "distinct_files": 2,
+    "correct_file_hyp": true,
+    "banned_revisits": 0
+   }
+  },
+  {
+   "task": "b4_du_operators",
+   "arm": "BPUB",
+   "rep": 2,
+   "candidates": [
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": "",
+     "files": [
+      "dateutil/relativedelta.py"
+     ],
+     "sig": "91a1d94982c8",
+     "repro_pass": true,
+     "smoke_pass": true,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 2,
+     "code_fail": "patch_apply_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "patch_apply_fail: dateutil/test/_common.py is a test file",
+     "files": [
+      "dateutil/test/_common.py"
+     ],
+     "sig": "39826f568846",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    }
+   ],
+   "test_runs": 11,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "regression",
+   "wall_s": 40.0,
+   "failure_report_chars": 0,
+   "hyp": {
+    "generated": 5,
+    "valid_selected": 2,
+    "distinct_files": 2,
+    "correct_file_hyp": true,
+    "banned_revisits": 0
+   }
+  },
+  {
+   "task": "b4_du_operators",
+   "arm": "BSEL",
+   "rep": 2,
+   "candidates": [
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": "",
+     "files": [
+      "dateutil/relativedelta.py"
+     ],
+     "sig": "91a1d94982c8",
+     "repro_pass": true,
+     "smoke_pass": true,
+     "ia_valid": true,
+     "ia_len": 0,
+     "mapped_ids": [
+      "dateutil/test/test_imports.py::ImportRelativeDeltaTest::testRelativeDeltaAll",
+      "dateutil/test/test_relativedelta.py::RelativeDeltaTest::testInheritance",
+      "dateutil/test/test_relativedelta.py::RelativeDeltaTest::testMonthEndMonthBeginning",
+      "dateutil/test/test_relativedelta.py::RelativeDeltaTest::testMonthEndMonthBeginningLeapYear",
+      "dateutil/test/test_relativedelta.py::RelativeDeltaTest::testNextMonth",
+      "dateutil/test/test_relativedelta.py::RelativeDeltaTest::testNextMonthPlusOneWeek"
+     ],
+     "mapped_pass": true,
+     "no_mapped": false
+    },
+    {
+     "call": 2,
+     "code_fail": "patch_apply_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "patch_apply_fail: dateutil/test/_common.py is a test file",
+     "files": [
+      "dateutil/test/_common.py"
+     ],
+     "sig": "7e9450359d96",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    }
+   ],
+   "test_runs": 23,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "regression",
+   "wall_s": 68.1,
+   "failure_report_chars": 0,
+   "hyp": {
+    "generated": 5,
+    "valid_selected": 2,
+    "distinct_files": 2,
+    "correct_file_hyp": true,
+    "banned_revisits": 0
+   }
+  },
+  {
+   "task": "b4_du_operators",
+   "arm": "BPUB",
+   "rep": 3,
+   "candidates": [
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": "",
+     "files": [
+      "dateutil/relativedelta.py"
+     ],
+     "sig": "91a1d94982c8",
+     "repro_pass": true,
+     "smoke_pass": true,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 2,
+     "code_fail": "patch_apply_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "patch_apply_fail: dateutil/test/_common.py is a test file",
+     "files": [
+      "dateutil/test/_common.py"
+     ],
+     "sig": "d0d34185a977",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    }
+   ],
+   "test_runs": 11,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "regression",
+   "wall_s": 38.1,
+   "failure_report_chars": 0,
+   "hyp": {
+    "generated": 5,
+    "valid_selected": 2,
+    "distinct_files": 2,
+    "correct_file_hyp": true,
+    "banned_revisits": 0
+   }
+  },
+  {
+   "task": "b4_du_operators",
+   "arm": "BSEL",
+   "rep": 3,
+   "candidates": [
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": "",
+     "files": [
+      "dateutil/relativedelta.py"
+     ],
+     "sig": "91a1d94982c8",
+     "repro_pass": true,
+     "smoke_pass": true,
+     "ia_valid": true,
+     "ia_len": 0,
+     "mapped_ids": [
+      "dateutil/test/test_imports.py::ImportRelativeDeltaTest::testRelativeDeltaAll",
+      "dateutil/test/test_parser.py::ParserTest::testDateCommandFormatWithLong",
+      "dateutil/test/test_parser.py::ParserTest::testDateCommandFormatIgnoreTz"
+     ],
+     "mapped_pass": true,
+     "no_mapped": false
+    },
+    {
+     "call": 2,
+     "code_fail": "patch_apply_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "patch_apply_fail: dateutil/test/_common.py is a test file",
+     "files": [
+      "dateutil/test/_common.py"
+     ],
+     "sig": "7e9450359d96",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    }
+   ],
+   "test_runs": 20,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "regression",
+   "wall_s": 92.4,
+   "failure_report_chars": 0,
+   "hyp": {
+    "generated": 5,
+    "valid_selected": 2,
+    "distinct_files": 2,
+    "correct_file_hyp": true,
+    "banned_revisits": 0
+   }
+  },
+  {
+   "task": "b4_du_operators",
+   "arm": "BPUB",
+   "rep": 4,
+   "candidates": [
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": "",
+     "files": [
+      "dateutil/relativedelta.py"
+     ],
+     "sig": "91a1d94982c8",
+     "repro_pass": true,
+     "smoke_pass": true,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    }
+   ],
+   "test_runs": 11,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "regression",
+   "wall_s": 173.0,
+   "failure_report_chars": 0,
+   "hyp": {
+    "generated": 5,
+    "valid_selected": 1,
+    "distinct_files": 1,
+    "correct_file_hyp": true,
+    "banned_revisits": 0
+   }
+  },
+  {
+   "task": "b4_du_operators",
+   "arm": "BSEL",
+   "rep": 4,
+   "candidates": [
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": "",
+     "files": [
+      "dateutil/relativedelta.py"
+     ],
+     "sig": "91a1d94982c8",
+     "repro_pass": true,
+     "smoke_pass": true,
+     "ia_valid": true,
+     "ia_len": 0,
+     "mapped_ids": [
+      "dateutil/test/test_imports.py::ImportRelativeDeltaTest::testRelativeDeltaAll",
+      "dateutil/test/test_parser.py::ParserTest::testDateCommandFormatWithLong",
+      "dateutil/test/test_parser.py::ParserTest::testDateCommandFormatIgnoreTz"
+     ],
+     "mapped_pass": true,
+     "no_mapped": false
+    },
+    {
+     "call": 2,
+     "code_fail": "patch_apply_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "patch_apply_fail: dateutil/test/_common.py is a test file",
+     "files": [
+      "dateutil/test/_common.py"
+     ],
+     "sig": "ed5886031e78",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    }
+   ],
+   "test_runs": 20,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "regression",
+   "wall_s": 84.1,
+   "failure_report_chars": 0,
+   "hyp": {
+    "generated": 5,
+    "valid_selected": 2,
+    "distinct_files": 2,
+    "correct_file_hyp": true,
+    "banned_revisits": 0
+   }
+  },
+  {
+   "task": "b4_du_operators",
+   "arm": "BPUB",
+   "rep": 5,
+   "candidates": [
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": "",
+     "files": [
+      "dateutil/relativedelta.py"
+     ],
+     "sig": "687b818e72a0",
+     "repro_pass": true,
+     "smoke_pass": true,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 2,
+     "code_fail": "patch_apply_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "patch_apply_fail: dateutil/test/_common.py is a test file",
+     "files": [
+      "dateutil/test/_common.py"
+     ],
+     "sig": "7e9450359d96",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    }
+   ],
+   "test_runs": 11,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "regression",
+   "wall_s": 47.2,
+   "failure_report_chars": 0,
+   "hyp": {
+    "generated": 5,
+    "valid_selected": 2,
+    "distinct_files": 2,
+    "correct_file_hyp": true,
+    "banned_revisits": 0
+   }
+  },
+  {
+   "task": "b4_du_operators",
+   "arm": "BSEL",
+   "rep": 5,
+   "candidates": [
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": "",
+     "files": [
+      "dateutil/relativedelta.py"
+     ],
+     "sig": "91a1d94982c8",
+     "repro_pass": true,
+     "smoke_pass": true,
+     "ia_valid": true,
+     "ia_len": 0,
+     "mapped_ids": [
+      "dateutil/test/test_imports.py::ImportRelativeDeltaTest::testRelativeDeltaAll",
+      "dateutil/test/test_parser.py::ParserTest::testDateCommandFormatWithLong",
+      "dateutil/test/test_parser.py::ParserTest::testDateCommandFormatIgnoreTz"
+     ],
+     "mapped_pass": true,
+     "no_mapped": false
+    },
+    {
+     "call": 2,
+     "code_fail": "patch_apply_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "patch_apply_fail: dateutil/test/_common.py is a test file",
+     "files": [
+      "dateutil/test/_common.py"
+     ],
+     "sig": "0295d4eca024",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    }
+   ],
+   "test_runs": 20,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "regression",
+   "wall_s": 83.3,
+   "failure_report_chars": 0,
+   "hyp": {
+    "generated": 5,
+    "valid_selected": 2,
+    "distinct_files": 2,
+    "correct_file_hyp": true,
+    "banned_revisits": 0
+   }
+  },
+  {
+   "task": "b4_du_operators",
+   "arm": "BPUB",
+   "rep": 6,
+   "candidates": [
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": "",
+     "files": [
+      "dateutil/relativedelta.py"
+     ],
+     "sig": "91a1d94982c8",
+     "repro_pass": true,
+     "smoke_pass": true,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 2,
+     "code_fail": "patch_apply_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "patch_apply_fail: dateutil/test/_common.py is a test file",
+     "files": [
+      "dateutil/test/_common.py"
+     ],
+     "sig": "39826f568846",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    }
+   ],
+   "test_runs": 11,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "regression",
+   "wall_s": 44.4,
+   "failure_report_chars": 0,
+   "hyp": {
+    "generated": 5,
+    "valid_selected": 2,
+    "distinct_files": 2,
+    "correct_file_hyp": true,
+    "banned_revisits": 0
+   }
+  },
+  {
+   "task": "b4_du_operators",
+   "arm": "BSEL",
+   "rep": 6,
+   "candidates": [
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": "",
+     "files": [
+      "dateutil/relativedelta.py"
+     ],
+     "sig": "91a1d94982c8",
+     "repro_pass": true,
+     "smoke_pass": true,
+     "ia_valid": true,
+     "ia_len": 0,
+     "mapped_ids": [
+      "dateutil/test/test_imports.py::ImportRelativeDeltaTest::testRelativeDeltaAll",
+      "dateutil/test/test_relativedelta.py::RelativeDeltaTest::testInheritance",
+      "dateutil/test/test_relativedelta.py::RelativeDeltaTest::testMonthEndMonthBeginning",
+      "dateutil/test/test_relativedelta.py::RelativeDeltaTest::testMonthEndMonthBeginningLeapYear",
+      "dateutil/test/test_relativedelta.py::RelativeDeltaTest::testNextMonth",
+      "dateutil/test/test_relativedelta.py::RelativeDeltaTest::testNextMonthPlusOneWeek"
+     ],
+     "mapped_pass": true,
+     "no_mapped": false
+    }
+   ],
+   "test_runs": 23,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "regression",
+   "wall_s": 78.9,
+   "failure_report_chars": 0,
+   "hyp": {
+    "generated": 5,
+    "valid_selected": 1,
+    "distinct_files": 1,
+    "correct_file_hyp": true,
+    "banned_revisits": 0
+   }
+  },
+  {
+   "task": "b4_mi_repeat",
+   "arm": "BPUB",
+   "rep": 0,
+   "candidates": [
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "tests/test_more.py::GrayProductTests::test_repeat_with_iterators: ore.py::GrayProductTests::test_repeat_with_iterators - Val...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed in 2.69s\n",
+     "files": [
+      "more_itertools/more.py"
+     ],
+     "sig": "422668d646e9",
+     "repro_pass": false,
+     "smoke_pass": true,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 3,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "tests/test_more.py::GrayProductTests::test_repeat_with_iterators: ore.py::GrayProductTests::test_repeat_with_iterators - Val...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed in 2.52s\n",
+     "files": [
+      "more_itertools/more.py"
+     ],
+     "sig": "59d260635202",
+     "repro_pass": false,
+     "smoke_pass": true,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    }
+   ],
+   "test_runs": 15,
+   "rollback_rounds": 1,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "regression",
+   "wall_s": 82.6,
+   "failure_report_chars": 0,
+   "hyp": {
+    "generated": 10,
+    "valid_selected": 2,
+    "distinct_files": 1,
+    "correct_file_hyp": true,
+    "banned_revisits": 0
+   }
+  },
+  {
+   "task": "b4_mi_repeat",
+   "arm": "BSEL",
+   "rep": 0,
+   "candidates": [
+    {
+     "call": 2,
+     "code_fail": "patch_apply_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "patch_apply_fail: tests/test_more.py is a test file",
+     "files": [
+      "tests/test_more.py"
+     ],
+     "sig": "a0d23aad98b2",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    }
+   ],
+   "test_runs": 0,
+   "rollback_rounds": 2,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "no_patch",
+   "wall_s": 28.9,
+   "failure_report_chars": 0,
+   "hyp": {
+    "generated": 10,
+    "valid_selected": 1,
+    "distinct_files": 1,
+    "correct_file_hyp": false,
+    "banned_revisits": 0
+   }
+  },
+  {
+   "task": "b4_mi_repeat",
+   "arm": "BPUB",
+   "rep": 1,
+   "candidates": [],
+   "test_runs": 0,
+   "rollback_rounds": 2,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "no_patch",
+   "wall_s": 145.1,
+   "failure_report_chars": 0,
+   "hyp": {
+    "generated": 10,
+    "valid_selected": 0,
+    "distinct_files": 0,
+    "correct_file_hyp": false,
+    "banned_revisits": 4
+   }
+  },
+  {
+   "task": "b4_mi_repeat",
+   "arm": "BSEL",
+   "rep": 1,
+   "candidates": [
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "tests/test_more.py::GrayProductTests::test_repeat_with_iterators: ore.py::GrayProductTests::test_repeat_with_iterators - Val...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed in 2.54s\n",
+     "files": [
+      "more_itertools/more.py"
+     ],
+     "sig": "902ebaaa680e",
+     "repro_pass": false,
+     "smoke_pass": true,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 3,
+     "code_fail": "patch_apply_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "patch_apply_fail: tests/test_more.py is a test file",
+     "files": [
+      "tests/test_more.py"
+     ],
+     "sig": "58ed50d4ee50",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 4,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "tests/test_more.py::GrayProductTests::test_repeat_with_iterators: ore.py::GrayProductTests::test_repeat_with_iterators - Val...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed in 3.07s\n",
+     "files": [
+      "more_itertools/more.py"
+     ],
+     "sig": "ab795296dbf3",
+     "repro_pass": false,
+     "smoke_pass": true,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    }
+   ],
+   "test_runs": 15,
+   "rollback_rounds": 1,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "regression",
+   "wall_s": 79.4,
+   "failure_report_chars": 0,
+   "hyp": {
+    "generated": 10,
+    "valid_selected": 3,
+    "distinct_files": 2,
+    "correct_file_hyp": true,
+    "banned_revisits": 0
+   }
+  },
+  {
+   "task": "b4_mi_repeat",
+   "arm": "BPUB",
+   "rep": 2,
+   "candidates": [
+    {
+     "call": 2,
+     "code_fail": "patch_apply_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "patch_apply_fail: target_function not found in more_itertools/more.py (class (해당 함수를 찾아서))",
+     "files": [
+      "more_itertools/more.py"
+     ],
+     "sig": "b70d27c1aeab",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    }
+   ],
+   "test_runs": 0,
+   "rollback_rounds": 2,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "no_patch",
+   "wall_s": 30.3,
+   "failure_report_chars": 0,
+   "hyp": {
+    "generated": 10,
+    "valid_selected": 1,
+    "distinct_files": 1,
+    "correct_file_hyp": false,
+    "banned_revisits": 0
+   }
+  },
+  {
+   "task": "b4_mi_repeat",
+   "arm": "BSEL",
+   "rep": 2,
+   "candidates": [
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "tests/test_more.py::GrayProductTests::test_repeat_with_iterators: ore.py::GrayProductTests::test_repeat_with_iterators - Val...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed in 3.06s\n",
+     "files": [
+      "more_itertools/more.py"
+     ],
+     "sig": "41def8670f6e",
+     "repro_pass": false,
+     "smoke_pass": true,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    }
+   ],
+   "test_runs": 11,
+   "rollback_rounds": 1,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "regression",
+   "wall_s": 58.0,
+   "failure_report_chars": 0,
+   "hyp": {
+    "generated": 10,
+    "valid_selected": 1,
+    "distinct_files": 1,
+    "correct_file_hyp": true,
+    "banned_revisits": 0
+   }
+  },
+  {
+   "task": "b4_mi_repeat",
+   "arm": "BPUB",
+   "rep": 3,
+   "candidates": [],
+   "test_runs": 0,
+   "rollback_rounds": 2,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "no_patch",
+   "wall_s": 21.3,
+   "failure_report_chars": 0,
+   "hyp": {
+    "generated": 10,
+    "valid_selected": 0,
+    "distinct_files": 0,
+    "correct_file_hyp": false,
+    "banned_revisits": 0
+   }
+  },
+  {
+   "task": "b4_mi_repeat",
+   "arm": "BSEL",
+   "rep": 3,
+   "candidates": [
+    {
+     "call": 2,
+     "code_fail": "patch_apply_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "patch_apply_fail: target_function not found in more_itertools/more.py",
+     "files": [
+      "more_itertools/more.py"
+     ],
+     "sig": "dbcd203c9622",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 3,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": "",
+     "files": [
+      "more_itertools/more.py"
+     ],
+     "sig": "1ddc9fac26e6",
+     "repro_pass": true,
+     "smoke_pass": true,
+     "ia_valid": true,
+     "ia_len": 0,
+     "mapped_ids": [
+      "tests/test_more.py::PeekableTests::test_slicing_reset",
+      "tests/test_more.py::IsliceExtendedTests::test_all",
+      "tests/test_more.py::IsliceExtendedTests::test_slicing_extensive",
+      "tests/test_more.py::SequenceViewTests::test_slicing",
+      "tests/test_more.py::NthProductTests::test_basic",
+      "tests/test_more.py::NthProductTests::test_negative"
+     ],
+     "mapped_pass": true,
+     "no_mapped": false
+    }
+   ],
+   "test_runs": 23,
+   "rollback_rounds": 1,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "regression",
+   "wall_s": 107.1,
+   "failure_report_chars": 0,
+   "hyp": {
+    "generated": 10,
+    "valid_selected": 2,
+    "distinct_files": 2,
+    "correct_file_hyp": true,
+    "banned_revisits": 0
+   }
+  },
+  {
+   "task": "b4_mi_repeat",
+   "arm": "BPUB",
+   "rep": 4,
+   "candidates": [
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "tests/test_more.py::GrayProductTests::test_repeat_with_iterators: ore.py::GrayProductTests::test_repeat_with_iterators - Val...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed in 2.52s\n",
+     "files": [
+      "more_itertools/more.py"
+     ],
+     "sig": "365c85b47630",
+     "repro_pass": false,
+     "smoke_pass": true,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 3,
+     "code_fail": "patch_apply_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "patch_apply_fail: target_function not found in more_itertools/more.py (class (해당 함수가 있는 클래스))",
+     "files": [
+      "more_itertools/more.py"
+     ],
+     "sig": "60e2de73efed",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    }
+   ],
+   "test_runs": 11,
+   "rollback_rounds": 1,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "regression",
+   "wall_s": 68.3,
+   "failure_report_chars": 0,
+   "hyp": {
+    "generated": 10,
+    "valid_selected": 2,
+    "distinct_files": 2,
+    "correct_file_hyp": true,
+    "banned_revisits": 2
+   }
+  },
+  {
+   "task": "b4_mi_repeat",
+   "arm": "BSEL",
+   "rep": 4,
+   "candidates": [
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "tests/test_more.py::GrayProductTests::test_repeat_with_iterators: ore.py::GrayProductTests::test_repeat_with_iterators - Val...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed in 2.55s\n",
+     "files": [
+      "more_itertools/more.py"
+     ],
+     "sig": "482f5ec587e0",
+     "repro_pass": false,
+     "smoke_pass": true,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 3,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": "",
+     "files": [
+      "more_itertools/more.py"
+     ],
+     "sig": "78c1caf38dad",
+     "repro_pass": true,
+     "smoke_pass": true,
+     "ia_valid": true,
+     "ia_len": 0,
+     "mapped_ids": [
+      "tests/test_more.py::PeekableTests::test_slicing_reset",
+      "tests/test_more.py::IsliceExtendedTests::test_all",
+      "tests/test_more.py::IsliceExtendedTests::test_slicing_extensive",
+      "tests/test_more.py::SequenceViewTests::test_slicing",
+      "tests/test_more.py::SetPartitionsTests::test_no_group",
+      "tests/test_more.py::NthProductTests::test_basic"
+     ],
+     "mapped_pass": true,
+     "no_mapped": false
+    }
+   ],
+   "test_runs": 27,
+   "rollback_rounds": 1,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "regression",
+   "wall_s": 130.9,
+   "failure_report_chars": 0,
+   "hyp": {
+    "generated": 10,
+    "valid_selected": 2,
+    "distinct_files": 2,
+    "correct_file_hyp": true,
+    "banned_revisits": 0
+   }
+  },
+  {
+   "task": "b4_mi_repeat",
+   "arm": "BPUB",
+   "rep": 5,
+   "candidates": [
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "tests/test_more.py::GrayProductTests::test_repeat_with_iterators: ore.py::GrayProductTests::test_repeat_with_iterators - Val...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed in 2.49s\n",
+     "files": [
+      "more_itertools/more.py"
+     ],
+     "sig": "9d58c90ddf08",
+     "repro_pass": false,
+     "smoke_pass": true,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 3,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "tests/test_more.py::GrayProductTests::test_repeat_with_iterators: ore.py::GrayProductTests::test_repeat_with_iterators - Ass...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed in 2.81s\n",
+     "files": [
+      "more_itertools/more.py"
+     ],
+     "sig": "9846ba49d25b",
+     "repro_pass": false,
+     "smoke_pass": true,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    }
+   ],
+   "test_runs": 15,
+   "rollback_rounds": 1,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "regression",
+   "wall_s": 78.7,
+   "failure_report_chars": 0,
+   "hyp": {
+    "generated": 10,
+    "valid_selected": 2,
+    "distinct_files": 1,
+    "correct_file_hyp": true,
+    "banned_revisits": 0
+   }
+  },
+  {
+   "task": "b4_mi_repeat",
+   "arm": "BSEL",
+   "rep": 5,
+   "candidates": [],
+   "test_runs": 0,
+   "rollback_rounds": 2,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "no_patch",
+   "wall_s": 21.1,
+   "failure_report_chars": 0,
+   "hyp": {
+    "generated": 10,
+    "valid_selected": 0,
+    "distinct_files": 0,
+    "correct_file_hyp": false,
+    "banned_revisits": 0
+   }
+  },
+  {
+   "task": "b4_mi_repeat",
+   "arm": "BPUB",
+   "rep": 6,
+   "candidates": [
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "tests/test_more.py::GrayProductTests::test_repeat_with_iterators: ore.py::GrayProductTests::test_repeat_with_iterators - Val...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed in 2.43s\n",
+     "files": [
+      "more_itertools/more.py"
+     ],
+     "sig": "902ebaaa680e",
+     "repro_pass": false,
+     "smoke_pass": true,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    }
+   ],
+   "test_runs": 11,
+   "rollback_rounds": 1,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "regression",
+   "wall_s": 61.5,
+   "failure_report_chars": 0,
+   "hyp": {
+    "generated": 10,
+    "valid_selected": 1,
+    "distinct_files": 1,
+    "correct_file_hyp": true,
+    "banned_revisits": 0
+   }
+  },
+  {
+   "task": "b4_mi_repeat",
+   "arm": "BSEL",
+   "rep": 6,
+   "candidates": [],
+   "test_runs": 0,
+   "rollback_rounds": 2,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "no_patch",
+   "wall_s": 18.9,
+   "failure_report_chars": 0,
+   "hyp": {
+    "generated": 10,
+    "valid_selected": 0,
+    "distinct_files": 0,
+    "correct_file_hyp": false,
+    "banned_revisits": 0
+   }
+  },
+  {
+   "task": "b4_mm_validationerror",
+   "arm": "BPUB",
+   "rep": 0,
+   "candidates": [
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": "",
+     "files": [
+      "marshmallow/exceptions.py"
+     ],
+     "sig": "f99bb08f17f2",
+     "repro_pass": true,
+     "smoke_pass": true,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "tests/test_exceptions.py::TestValidationError::test_stores_message_in_list: ceptions.py::TestValidationError::test_stores_message_in_list\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed in 0.65s\n",
+     "files": [
+      "marshmallow/exceptions.py"
+     ],
+     "sig": "ce125b3d7734",
+     "repro_pass": true,
+     "smoke_pass": false,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    }
+   ],
+   "test_runs": 15,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 58.8,
+   "failure_report_chars": 0,
+   "hyp": {
+    "generated": 5,
+    "valid_selected": 2,
+    "distinct_files": 2,
+    "correct_file_hyp": true,
+    "banned_revisits": 0
+   }
+  },
+  {
+   "task": "b4_mm_validationerror",
+   "arm": "BSEL",
+   "rep": 0,
+   "candidates": [
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": "",
+     "files": [
+      "marshmallow/exceptions.py"
+     ],
+     "sig": "558807b1ad28",
+     "repro_pass": true,
+     "smoke_pass": true,
+     "ia_valid": true,
+     "ia_len": 0,
+     "mapped_ids": [
+      "tests/test_decorators.py::test_decorated_processors",
+      "tests/test_decorators.py::test_decorated_processor_returning_none",
+      "tests/test_decorators.py::TestPassOriginal::test_pass_original_single",
+      "tests/test_decorators.py::TestPassOriginal::test_pass_original_many",
+      "tests/test_decorators.py::test_decorated_processor_inheritance",
+      "tests/test_decorators.py::test_pre_dump_is_invoked_before_implicit_field_generation"
+     ],
+     "mapped_pass": true,
+     "no_mapped": false
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "tests/test_exceptions.py::TestValidationError::test_stores_message_in_list: ceptions.py::TestValidationError::test_stores_message_in_list\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed in 0.65s\n",
+     "files": [
+      "marshmallow/exceptions.py"
+     ],
+     "sig": "ce125b3d7734",
+     "repro_pass": true,
+     "smoke_pass": false,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 3,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "tests/test_exceptions.py::TestValidationError::test_stores_message_in_list: ceptions.py::TestValidationError::test_stores_message_in_list\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed in 0.65s\n; tests/test_exceptions.py::TestValidationError::test_can_pass_list_of_messages: tions.py::TestValidationError::test_can_pass_list_of_messages\n!!!!!!!!!!!!!!!!!!!!!",
+     "files": [
+      "marshmallow/exceptions.py"
+     ],
+     "sig": "dc624945759b",
+     "repro_pass": true,
+     "smoke_pass": false,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    }
+   ],
+   "test_runs": 31,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 110.8,
+   "failure_report_chars": 0,
+   "hyp": {
+    "generated": 5,
+    "valid_selected": 3,
+    "distinct_files": 3,
+    "correct_file_hyp": true,
+    "banned_revisits": 0
+   }
+  },
+  {
+   "task": "b4_mm_validationerror",
+   "arm": "BPUB",
+   "rep": 1,
+   "candidates": [
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": "",
+     "files": [
+      "marshmallow/exceptions.py"
+     ],
+     "sig": "1b1774725727",
+     "repro_pass": true,
+     "smoke_pass": true,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    }
+   ],
+   "test_runs": 11,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 42.9,
+   "failure_report_chars": 0,
+   "hyp": {
+    "generated": 5,
+    "valid_selected": 1,
+    "distinct_files": 1,
+    "correct_file_hyp": true,
+    "banned_revisits": 0
+   }
+  },
+  {
+   "task": "b4_mm_validationerror",
+   "arm": "BSEL",
+   "rep": 1,
+   "candidates": [
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": "",
+     "files": [
+      "marshmallow/exceptions.py"
+     ],
+     "sig": "2600fa8e1e59",
+     "repro_pass": true,
+     "smoke_pass": true,
+     "ia_valid": true,
+     "ia_len": 0,
+     "mapped_ids": [
+      "tests/test_decorators.py::test_decorated_processor_returning_none",
+      "tests/test_decorators.py::TestValidatesDecorator::test_validates",
+      "tests/test_decorators.py::TestValidatesDecorator::test_validates_with_attribute",
+      "tests/test_decorators.py::TestValidatesDecorator::test_validates_decorator",
+      "tests/test_decorators.py::TestValidatesDecorator::test_field_not_present",
+      "tests/test_decorators.py::TestValidatesDecorator::test_precedence"
+     ],
+     "mapped_pass": true,
+     "no_mapped": false
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "tests/test_exceptions.py::TestValidationError::test_stores_dictionaries: _exceptions.py::TestValidationError::test_stores_dictionaries\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed in 0.66s\n",
+     "files": [
+      "marshmallow/exceptions.py"
+     ],
+     "sig": "6f5e9c1b59bb",
+     "repro_pass": true,
+     "smoke_pass": false,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 3,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "tests/test_exceptions.py::TestValidationError::test_can_store_field_name: exceptions.py::TestValidationError::test_can_store_field_name\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed in 0.66s\n",
+     "files": [
+      "marshmallow/fields.py"
+     ],
+     "sig": "f19638968a0f",
+     "repro_pass": false,
+     "smoke_pass": true,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    }
+   ],
+   "test_runs": 31,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 114.0,
+   "failure_report_chars": 0,
+   "hyp": {
+    "generated": 5,
+    "valid_selected": 3,
+    "distinct_files": 3,
+    "correct_file_hyp": true,
+    "banned_revisits": 0
+   }
+  },
+  {
+   "task": "b4_mm_validationerror",
+   "arm": "BPUB",
+   "rep": 2,
+   "candidates": [
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": "",
+     "files": [
+      "marshmallow/exceptions.py"
+     ],
+     "sig": "558807b1ad28",
+     "repro_pass": true,
+     "smoke_pass": true,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    }
+   ],
+   "test_runs": 11,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 41.9,
+   "failure_report_chars": 0,
+   "hyp": {
+    "generated": 5,
+    "valid_selected": 1,
+    "distinct_files": 1,
+    "correct_file_hyp": true,
+    "banned_revisits": 0
+   }
+  },
+  {
+   "task": "b4_mm_validationerror",
+   "arm": "BSEL",
+   "rep": 2,
+   "candidates": [
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": "",
+     "files": [
+      "marshmallow/exceptions.py"
+     ],
+     "sig": "2600fa8e1e59",
+     "repro_pass": true,
+     "smoke_pass": true,
+     "ia_valid": true,
+     "ia_len": 0,
+     "mapped_ids": [
+      "tests/test_decorators.py::test_decorated_processor_returning_none",
+      "tests/test_decorators.py::TestValidatesDecorator::test_validates",
+      "tests/test_decorators.py::TestValidatesDecorator::test_validates_with_attribute",
+      "tests/test_decorators.py::TestValidatesDecorator::test_validates_decorator",
+      "tests/test_decorators.py::TestValidatesDecorator::test_field_not_present",
+      "tests/test_decorators.py::TestValidatesDecorator::test_precedence"
+     ],
+     "mapped_pass": true,
+     "no_mapped": false
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": "",
+     "files": [
+      "marshmallow/exceptions.py"
+     ],
+     "sig": "99da98d98713",
+     "repro_pass": true,
+     "smoke_pass": true,
+     "ia_valid": true,
+     "ia_len": 0,
+     "mapped_ids": [
+      "tests/test_decorators.py::test_decorated_processors",
+      "tests/test_decorators.py::test_decorated_processor_returning_none",
+      "tests/test_decorators.py::TestPassOriginal::test_pass_original_single",
+      "tests/test_decorators.py::TestPassOriginal::test_pass_original_many",
+      "tests/test_decorators.py::test_pre_dump_is_invoked_before_implicit_field_generation",
+      "tests/test_decorators.py::TestValidatesDecorator::test_validates"
+     ],
+     "mapped_pass": false,
+     "no_mapped": false
+    },
+    {
+     "call": 3,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "tests/test_exceptions.py::TestValidationError::test_stores_message_in_list: ceptions.py::TestValidationError::test_stores_message_in_list\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed in 0.72s\n",
+     "files": [
+      "marshmallow/exceptions.py"
+     ],
+     "sig": "fd8797ead161",
+     "repro_pass": true,
+     "smoke_pass": false,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    }
+   ],
+   "test_runs": 41,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 132.3,
+   "failure_report_chars": 0,
+   "hyp": {
+    "generated": 5,
+    "valid_selected": 3,
+    "distinct_files": 3,
+    "correct_file_hyp": true,
+    "banned_revisits": 0
+   }
+  },
+  {
+   "task": "b4_mm_validationerror",
+   "arm": "BPUB",
+   "rep": 3,
+   "candidates": [
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": "",
+     "files": [
+      "marshmallow/exceptions.py"
+     ],
+     "sig": "1144c3447baa",
+     "repro_pass": true,
+     "smoke_pass": true,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    }
+   ],
+   "test_runs": 11,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 40.4,
+   "failure_report_chars": 0,
+   "hyp": {
+    "generated": 5,
+    "valid_selected": 1,
+    "distinct_files": 1,
+    "correct_file_hyp": true,
+    "banned_revisits": 0
+   }
+  },
+  {
+   "task": "b4_mm_validationerror",
+   "arm": "BSEL",
+   "rep": 3,
+   "candidates": [
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": "",
+     "files": [
+      "marshmallow/exceptions.py"
+     ],
+     "sig": "558807b1ad28",
+     "repro_pass": true,
+     "smoke_pass": true,
+     "ia_valid": true,
+     "ia_len": 0,
+     "mapped_ids": [
+      "tests/test_decorators.py::test_decorated_processor_returning_none",
+      "tests/test_decorators.py::TestValidatesDecorator::test_validates",
+      "tests/test_decorators.py::TestValidatesDecorator::test_validates_with_attribute",
+      "tests/test_decorators.py::TestValidatesDecorator::test_validates_decorator",
+      "tests/test_decorators.py::TestValidatesDecorator::test_field_not_present",
+      "tests/test_decorators.py::TestValidatesDecorator::test_precedence"
+     ],
+     "mapped_pass": true,
+     "no_mapped": false
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": "",
+     "files": [
+      "marshmallow/exceptions.py"
+     ],
+     "sig": "16e989ecb5e0",
+     "repro_pass": true,
+     "smoke_pass": true,
+     "ia_valid": true,
+     "ia_len": 0,
+     "mapped_ids": [
+      "tests/test_decorators.py::test_decorated_processors",
+      "tests/test_decorators.py::test_decorated_processor_returning_none",
+      "tests/test_decorators.py::TestPassOriginal::test_pass_original_single",
+      "tests/test_decorators.py::TestPassOriginal::test_pass_original_many",
+      "tests/test_decorators.py::test_pre_dump_is_invoked_before_implicit_field_generation",
+      "tests/test_decorators.py::TestValidatesDecorator::test_validates"
+     ],
+     "mapped_pass": false,
+     "no_mapped": false
+    }
+   ],
+   "test_runs": 37,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 123.4,
+   "failure_report_chars": 0,
+   "hyp": {
+    "generated": 5,
+    "valid_selected": 2,
+    "distinct_files": 2,
+    "correct_file_hyp": true,
+    "banned_revisits": 0
+   }
+  },
+  {
+   "task": "b4_mm_validationerror",
+   "arm": "BPUB",
+   "rep": 4,
+   "candidates": [
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": "",
+     "files": [
+      "marshmallow/exceptions.py"
+     ],
+     "sig": "1b1774725727",
+     "repro_pass": true,
+     "smoke_pass": true,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "tests/test_exceptions.py::TestValidationError::test_can_store_field_name: exceptions.py::TestValidationError::test_can_store_field_name\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed in 0.75s\n",
+     "files": [
+      "marshmallow/fields.py"
+     ],
+     "sig": "f19638968a0f",
+     "repro_pass": false,
+     "smoke_pass": true,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 3,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "tests/test_exceptions.py::TestValidationError::test_stores_message_in_list: ceptions.py::TestValidationError::test_stores_message_in_list\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed in 0.67s\n; tests/test_exceptions.py::TestValidationError::test_can_pass_list_of_messages: tions.py::TestValidationError::test_can_pass_list_of_messages\n!!!!!!!!!!!!!!!!!!!!!",
+     "files": [
+      "marshmallow/exceptions.py"
+     ],
+     "sig": "92a8da60e221",
+     "repro_pass": true,
+     "smoke_pass": false,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    }
+   ],
+   "test_runs": 19,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 76.0,
+   "failure_report_chars": 0,
+   "hyp": {
+    "generated": 5,
+    "valid_selected": 3,
+    "distinct_files": 3,
+    "correct_file_hyp": true,
+    "banned_revisits": 0
+   }
+  },
+  {
+   "task": "b4_mm_validationerror",
+   "arm": "BSEL",
+   "rep": 4,
+   "candidates": [
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": "",
+     "files": [
+      "marshmallow/exceptions.py"
+     ],
+     "sig": "433aa2bcee5d",
+     "repro_pass": true,
+     "smoke_pass": true,
+     "ia_valid": true,
+     "ia_len": 0,
+     "mapped_ids": [
+      "tests/test_decorators.py::test_decorated_processor_returning_none",
+      "tests/test_decorators.py::TestValidatesDecorator::test_validates",
+      "tests/test_decorators.py::TestValidatesDecorator::test_validates_with_attribute",
+      "tests/test_decorators.py::TestValidatesDecorator::test_validates_decorator",
+      "tests/test_decorators.py::TestValidatesDecorator::test_field_not_present",
+      "tests/test_decorators.py::TestValidatesDecorator::test_precedence"
+     ],
+     "mapped_pass": true,
+     "no_mapped": false
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": "",
+     "files": [
+      "marshmallow/exceptions.py"
+     ],
+     "sig": "04f7a640514c",
+     "repro_pass": true,
+     "smoke_pass": true,
+     "ia_valid": true,
+     "ia_len": 0,
+     "mapped_ids": [
+      "tests/test_decorators.py::test_decorated_processors",
+      "tests/test_decorators.py::test_decorated_processor_returning_none",
+      "tests/test_decorators.py::TestPassOriginal::test_pass_original_single",
+      "tests/test_decorators.py::TestPassOriginal::test_pass_original_many",
+      "tests/test_decorators.py::test_pre_dump_is_invoked_before_implicit_field_generation",
+      "tests/test_decorators.py::TestValidatesDecorator::test_validates"
+     ],
+     "mapped_pass": false,
+     "no_mapped": false
+    }
+   ],
+   "test_runs": 37,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 118.4,
+   "failure_report_chars": 0,
+   "hyp": {
+    "generated": 5,
+    "valid_selected": 2,
+    "distinct_files": 2,
+    "correct_file_hyp": true,
+    "banned_revisits": 0
+   }
+  },
+  {
+   "task": "b4_mm_validationerror",
+   "arm": "BPUB",
+   "rep": 5,
+   "candidates": [
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": "",
+     "files": [
+      "marshmallow/exceptions.py"
+     ],
+     "sig": "433aa2bcee5d",
+     "repro_pass": true,
+     "smoke_pass": true,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    }
+   ],
+   "test_runs": 11,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 43.1,
+   "failure_report_chars": 0,
+   "hyp": {
+    "generated": 5,
+    "valid_selected": 1,
+    "distinct_files": 1,
+    "correct_file_hyp": true,
+    "banned_revisits": 0
+   }
+  },
+  {
+   "task": "b4_mm_validationerror",
+   "arm": "BSEL",
+   "rep": 5,
+   "candidates": [
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": "",
+     "files": [
+      "marshmallow/exceptions.py"
+     ],
+     "sig": "1b1774725727",
+     "repro_pass": true,
+     "smoke_pass": true,
+     "ia_valid": true,
+     "ia_len": 0,
+     "mapped_ids": [
+      "tests/test_decorators.py::test_decorated_processor_returning_none",
+      "tests/test_decorators.py::TestValidatesDecorator::test_validates",
+      "tests/test_decorators.py::TestValidatesDecorator::test_validates_with_attribute",
+      "tests/test_decorators.py::TestValidatesDecorator::test_validates_decorator",
+      "tests/test_decorators.py::TestValidatesDecorator::test_field_not_present",
+      "tests/test_decorators.py::TestValidatesDecorator::test_precedence"
+     ],
+     "mapped_pass": true,
+     "no_mapped": false
+    }
+   ],
+   "test_runs": 23,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 82.1,
+   "failure_report_chars": 0,
+   "hyp": {
+    "generated": 5,
+    "valid_selected": 1,
+    "distinct_files": 1,
+    "correct_file_hyp": true,
+    "banned_revisits": 0
+   }
+  },
+  {
+   "task": "b4_mm_validationerror",
+   "arm": "BPUB",
+   "rep": 6,
+   "candidates": [
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": "",
+     "files": [
+      "marshmallow/exceptions.py"
+     ],
+     "sig": "654ffc36028f",
+     "repro_pass": true,
+     "smoke_pass": true,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    }
+   ],
+   "test_runs": 11,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 41.6,
+   "failure_report_chars": 0,
+   "hyp": {
+    "generated": 5,
+    "valid_selected": 1,
+    "distinct_files": 1,
+    "correct_file_hyp": true,
+    "banned_revisits": 0
+   }
+  },
+  {
+   "task": "b4_mm_validationerror",
+   "arm": "BSEL",
+   "rep": 6,
+   "candidates": [
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": "",
+     "files": [
+      "marshmallow/exceptions.py"
+     ],
+     "sig": "db0a106bc908",
+     "repro_pass": true,
+     "smoke_pass": true,
+     "ia_valid": true,
+     "ia_len": 0,
+     "mapped_ids": [
+      "tests/test_decorators.py::test_decorated_processor_returning_none",
+      "tests/test_decorators.py::TestValidatesDecorator::test_validates",
+      "tests/test_decorators.py::TestValidatesDecorator::test_validates_with_attribute",
+      "tests/test_decorators.py::TestValidatesDecorator::test_validates_decorator",
+      "tests/test_decorators.py::TestValidatesDecorator::test_field_not_present",
+      "tests/test_decorators.py::TestValidatesDecorator::test_precedence"
+     ],
+     "mapped_pass": true,
+     "no_mapped": false
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": "",
+     "files": [
+      "marshmallow/exceptions.py"
+     ],
+     "sig": "16e989ecb5e0",
+     "repro_pass": true,
+     "smoke_pass": true,
+     "ia_valid": true,
+     "ia_len": 0,
+     "mapped_ids": [
+      "tests/test_decorators.py::test_decorated_processors",
+      "tests/test_decorators.py::test_decorated_processor_returning_none",
+      "tests/test_decorators.py::TestPassOriginal::test_pass_original_single",
+      "tests/test_decorators.py::TestPassOriginal::test_pass_original_many",
+      "tests/test_decorators.py::test_decorated_processor_inheritance",
+      "tests/test_decorators.py::test_pre_dump_is_invoked_before_implicit_field_generation"
+     ],
+     "mapped_pass": false,
+     "no_mapped": false
+    }
+   ],
+   "test_runs": 38,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 124.8,
+   "failure_report_chars": 0,
+   "hyp": {
+    "generated": 5,
+    "valid_selected": 2,
+    "distinct_files": 2,
+    "correct_file_hyp": true,
+    "banned_revisits": 0
+   }
+  }
+ ],
+ "summary": {
+  "BPUB": {
+   "n": 21,
+   "mean_unique_sigs": 1.1,
+   "mean_distinct_files": 0.9,
+   "dup_rate": 0.0,
+   "correct_file_run_rate": 0.86,
+   "public_pass_run_rate": 0.67,
+   "full_rate": 0.33
+  },
+  "BSEL": {
+   "n": 21,
+   "mean_unique_sigs": 1.38,
+   "mean_distinct_files": 0.9,
+   "dup_rate": 0.0,
+   "correct_file_run_rate": 0.86,
+   "public_pass_run_rate": 0.76,
+   "full_rate": 0.33
+  },
+  "usage": {
+   "calls": 145,
+   "input_tokens": 211623,
+   "output_tokens": 92019
+  }
+ }
+}

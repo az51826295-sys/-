@@ -1,0 +1,57 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "9ede1172e8720afa7825878f450a01349aee6eef",
+ "parent_commit": "99a2e48278902209b9591b874b77027a6eb2d393",
+ "answer_files": [
+  "marshmallow/exceptions.py",
+  "marshmallow/marshalling.py"
+ ],
+ "answer_functions": [
+  "marshmallow/exceptions.py::normalized_messages",
+  "marshmallow/marshalling.py::store_error"
+ ],
+ "patch_lines": 18,
+ "added_tests": {
+  "tests/test_schema.py::TestNestedSchema::test_all_errors_on_many_nested_field_with_validates_decorator": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [
+  "tests/test_schema.py::TestNestedSchema::test_all_errors_on_many_nested_field_with_validates_decorator"
+ ],
+ "test_files": [
+  "tests/test_schema.py"
+ ],
+ "location_hard_proxy": true,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [
+  {
+   "applied": "marshmallow/exceptions.py::normalized_messages",
+   "passes_repro": [],
+   "still_failing": [
+    "tests/test_schema.py::TestNestedSchema::test_all_errors_on_many_nested_field_with_validates_decorator"
+   ],
+   "event": false,
+   "still_failing_fixpass": [
+    "tests/test_schema.py::TestNestedSchema::test_all_errors_on_many_nested_field_with_validates_decorator"
+   ],
+   "event_v2": false
+  },
+  {
+   "applied": "marshmallow/marshalling.py::store_error",
+   "passes_repro": [
+    "tests/test_schema.py::TestNestedSchema::test_all_errors_on_many_nested_field_with_validates_decorator"
+   ],
+   "still_failing": [],
+   "event": false,
+   "still_failing_fixpass": [],
+   "event_v2": false
+  }
+ ],
+ "env_seconds": 4.5,
+ "env_error_tests": 0,
+ "qualified": true,
+ "selector_event_proxy_v1": false
+}

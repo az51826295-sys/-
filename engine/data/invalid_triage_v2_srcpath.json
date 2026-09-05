@@ -1,0 +1,610 @@
+{
+ "verify": "data/live_intake_verify2.json",
+ "n": 73,
+ "aggregate": {
+  "a_fabricated_api": 9,
+  "reran_failed": 53,
+  "e_other": 4,
+  "reran_passed": 4,
+  "d_test_defect": 3
+ },
+ "by_class": {
+  "A": {
+   "reran_failed": 3,
+   "d_test_defect": 3
+  },
+  "B": {
+   "a_fabricated_api": 9,
+   "reran_failed": 50,
+   "e_other": 4,
+   "reran_passed": 4
+  }
+ },
+ "rows": [
+  {
+   "repo": "mahmoud/boltons",
+   "number": 170,
+   "class": "B",
+   "axis": "a_fabricated_api",
+   "why": "cannot import replaced from boltons.iterutils",
+   "head": "=================================== ERRORS ====================================\n_________________ ERROR collecting test_triage_boltons_170.py _________________\nImportError while importing test module 'C:\\Users\\az518\\AppData\\Local\\Temp\\triage_rpraur_r\\boltons\\test_triage_boltons_170.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n..\\..\\..\\Programs\\Python\\Python31"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 148,
+   "class": "B",
+   "axis": "a_fabricated_api",
+   "why": "cannot import nslice from boltons.iterutils",
+   "head": "=================================== ERRORS ====================================\n_________________ ERROR collecting test_triage_boltons_148.py _________________\nImportError while importing test module 'C:\\Users\\az518\\AppData\\Local\\Temp\\triage_rpraur_r\\boltons\\test_triage_boltons_148.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n..\\..\\..\\Programs\\Python\\Python31"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 125,
+   "class": "B",
+   "axis": "a_fabricated_api",
+   "why": "cannot import recursive_update from boltons.dictutils",
+   "head": "=================================== ERRORS ====================================\n_________________ ERROR collecting test_triage_boltons_125.py _________________\nImportError while importing test module 'C:\\Users\\az518\\AppData\\Local\\Temp\\triage_rpraur_r\\boltons\\test_triage_boltons_125.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n..\\..\\..\\Programs\\Python\\Python31"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1452,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n_______ test_yearly_bymonthday_without_bymonth_should_use_dtstart_month _______\ntest_triage_dateutil_1452.py:35: in test_yearly_bymonthday_without_bymonth_should_use_dtstart_month\n    assert dates == expected_dates, (\nE   AssertionError: Ex"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1448,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n___ test_dayfirst_should_not_affect_unambiguous_dates_when_yearfirst_false ____\ntest_triage_dateutil_1448.py:36: in test_dayfirst_should_not_affect_unambiguous_dates_when_yearfirst_false\n    assert result_dayfirst.month == 11\nE   assert 6 ="
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1442,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n_______________ test_parse_9digit_time_string_with_microseconds _______________\ntest_triage_dateutil_1442.py:8: in test_parse_9digit_time_string_with_microseconds\n    dt = parser.parse(\"20010203 040506789\")\n         ^^^^^^^^^^^^^^^^^^^^^^^^"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1432,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "FF                                                                       [100%]\n================================== FAILURES ===================================\n________________________ test_tzstr_gmt_without_offset ________________________\ntest_triage_dateutil_1432.py:7: in test_tzstr_gmt_without_offset\n    tz = tzstr(\"GMT\")\n         ^^^^^^^^^^^^\nsrc\\dateutil\\tz\\_factories.py:69: in __call__\n    c"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1425,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n________________________ test_rrule_respects_dst_gaps _________________________\nsrc\\dateutil\\zoneinfo\\__init__.py:24: in getzoneinfofile_stream\n    return BytesIO(get_data(__name__, ZONEFILENAME))\n                   ^^^^^^^^^^^^^^^^^^^^^^^^"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1421,
+   "class": "A",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n________________________________ test_dateutil ________________________________\ntest_triage_dateutil_1421.py:14: in test_dateutil\n    assert dt5 == dt5a\nE   assert datetime.datetime(2026, 1, 1, 17, 0) == datetime.datetime(2025, 1, 1, 17, 15"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1414,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "FF                                                                       [100%]\n================================== FAILURES ===================================\n________________________ test_parse_date_range_forward ________________________\ntest_triage_dateutil_1414.py:9: in test_parse_date_range_forward\n    result = parser.parse(date_str)\n             ^^^^^^^^^^^^^^^^^^^^^^\nsrc\\dateutil\\parser\\_pa"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1413,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n________________ test_dateutil_eet_timezone_offset_consistency ________________\nsrc\\dateutil\\zoneinfo\\__init__.py:24: in getzoneinfofile_stream\n    return BytesIO(get_data(__name__, ZONEFILENAME))\n                   ^^^^^^^^^^^^^^^^^^^^^^^^"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1410,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n_________________ test_fuzzy_parser_underscore_delimiter_year _________________\ntest_triage_dateutil_1410.py:9: in test_fuzzy_parser_underscore_delimiter_year\n    assert parse(\"2024_07_19\", fuzzy=True) == datetime(2024, 7, 19, 0, 0)\nE   Ass"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1409,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n___________ test_parse_date_with_two_digit_day_and_comma_separator ____________\ntest_triage_dateutil_1409.py:8: in test_parse_date_with_two_digit_day_and_comma_separator\n    result = parser.parse(date_str)\n             ^^^^^^^^^^^^^^^^^^^^^"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1404,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n___________________ test_relativedelta_comparison_with_none ___________________\ntest_triage_dateutil_1404.py:11: in test_relativedelta_comparison_with_none\n    assert (rd != None) or (rd == None), \\\n            ^^^^^^^^^^\nsrc\\dateutil\\relat"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1402,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n________________ test_gettz_invalid_posix_string_raises_error _________________\nsrc\\dateutil\\zoneinfo\\__init__.py:24: in getzoneinfofile_stream\n    return BytesIO(get_data(__name__, ZONEFILENAME))\n                   ^^^^^^^^^^^^^^^^^^^^^^^^"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1400,
+   "class": "B",
+   "axis": "e_other",
+   "why": "2 skipped in 0.03s",
+   "head": "ss                                                                       [100%]\n=========================== short test summary info ===========================\nSKIPPED [1] test_triage_dateutil_1400.py:12: datetype library not installed\nSKIPPED [1] test_triage_dateutil_1400.py:24: datetype library not installed\n2 skipped in 0.03s"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1397,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "FF                                                                       [100%]\n================================== FAILURES ===================================\n____________________________ test_next_friday_bug _____________________________\ntest_triage_dateutil_1397.py:12: in test_next_friday_bug\n    assert result.day == 22, f\"Expected day 22 (next Friday), got day {result.day}\"\nE   AssertionError:"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1394,
+   "class": "B",
+   "axis": "reran_passed",
+   "why": "now PASSED",
+   "head": ".                                                                        [100%]\n=================================== PASSES ====================================\n=========================== short test summary info ===========================\nPASSED test_triage_dateutil_1394.py::test_rrulestr_without_dtstart\n1 passed in 0.02s"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1393,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n_____________________ test_ruleset_infinite_loop_timeout ______________________\ntest_triage_dateutil_1393.py:18: in test_ruleset_infinite_loop_timeout\n    signal.signal(signal.SIGALRM, timeout_handler)\n                  ^^^^^^^^^^^^^^\nE   A"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1391,
+   "class": "B",
+   "axis": "a_fabricated_api",
+   "why": "cannot import parse from dateutil",
+   "head": "=================================== ERRORS ====================================\n________________ ERROR collecting test_triage_dateutil_1391.py ________________\nImportError while importing test module 'C:\\Users\\az518\\AppData\\Local\\Temp\\triage_rpraur_r\\dateutil\\test_triage_dateutil_1391.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n..\\..\\..\\Programs\\Python\\Pytho"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1370,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n_______________________ test_tzical_pickle_and_deepcopy _______________________\ntest_triage_dateutil_1370.py:35: in test_tzical_pickle_and_deepcopy\n    tz_obj = tzical(StringIO(ical_str))['America/New_York']\n             ^^^^^^^^^^^^^^^^^^^"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1369,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "FFFF                                                                     [100%]\n================================== FAILURES ===================================\n________________________ test_rrule_with_cache_pickle _________________________\ntest_triage_dateutil_1369.py:16: in test_rrule_with_cache_pickle\n    pickled = pickle.dumps(rule)\n              ^^^^^^^^^^^^^^^^^^\nE   TypeError: cannot pickle "
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1368,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n____________________ test_tzical_with_custom_x_properties _____________________\ntest_triage_dateutil_1368.py:52: in test_tzical_with_custom_x_properties\n    tz = tzical(StringIO(tz_string))\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^\nsrc\\dateutil\\"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1364,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n_____________________ test_isoparse_with_default_argument _____________________\ntest_triage_dateutil_1364.py:9: in test_isoparse_with_default_argument\n    result = isoparse(\"2024-04\", default=datetime.max)\n             ^^^^^^^^^^^^^^^^^^^^^"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1359,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n_______ test_parser_does_not_raise_decimal_exception_on_malformed_input _______\ntest_triage_dateutil_1359.py:14: in test_parser_does_not_raise_decimal_exception_on_malformed_input\n    assert 'InvalidOperation' not in str(type(exc_info.value"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1357,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n___________________________ test_bst_offset_parsing ___________________________\ntest_triage_dateutil_1357.py:24: in test_bst_offset_parsing\n    assert offset.total_seconds() == 3600, (\nE   AssertionError: Expected offset of +3600 seconds (U"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1353,
+   "class": "A",
+   "axis": "d_test_defect",
+   "why": "syntax",
+   "head": "=================================== ERRORS ====================================\n________________ ERROR collecting test_triage_dateutil_1353.py ________________\n..\\..\\..\\Programs\\Python\\Python312\\Lib\\site-packages\\_pytest\\python.py:508: in importtestmodule\n    mod = import_path(\n..\\..\\..\\Programs\\Python\\Python312\\Lib\\site-packages\\_pytest\\pathlib.py:596: in import_path\n    importlib.import_module(m"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1351,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n________________________ test_rrule_dst_transition_ny _________________________\nsrc\\dateutil\\zoneinfo\\__init__.py:24: in getzoneinfofile_stream\n    return BytesIO(get_data(__name__, ZONEFILENAME))\n                   ^^^^^^^^^^^^^^^^^^^^^^^^"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1341,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n____________ test_isoparse_rejects_mixed_basic_and_extended_format ____________\ntest_triage_dateutil_1341.py:17: in test_isoparse_rejects_mixed_basic_and_extended_format\n    with pytest.raises(ValueError):\n         ^^^^^^^^^^^^^^^^^^^^^^^^^"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1334,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n_____________________ test_dayfirst_with_ambiguous_dates ______________________\ntest_triage_dateutil_1334.py:12: in test_dayfirst_with_ambiguous_dates\n    with pytest.raises(ParserError):\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   Failed: DID "
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1327,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n_____________________ test_parse_chinese_date_with_fuzzy ______________________\ntest_triage_dateutil_1327.py:11: in test_parse_chinese_date_with_fuzzy\n    assert result.year == 2023, f\"Expected year 2023, got {result.year}\"\nE   AssertionErr"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1321,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n__________________ test_parse_date_without_space_after_comma __________________\ntest_triage_dateutil_1321.py:11: in test_parse_date_without_space_after_comma\n    assert result == expected, f\"Expected {expected}, but got {result}\"\nE   Assert"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1318,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n_________________ test_relativedelta_multiply_fractional_days _________________\ntest_triage_dateutil_1318.py:15: in test_relativedelta_multiply_fractional_days\n    assert result.seconds == 43200\nE   assert 0 == 43200\nE    +  where 0 = relat"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1312,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n_________________________ test_rrule_monthly_freq_bug _________________________\ntest_triage_dateutil_1312.py:12: in test_rrule_monthly_freq_bug\n    assert len(result) == 13, f\"Expected 13 occurrences (May 2023 to May 2024), got {len(result)"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1971,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n____________________ test_missing_type_is_publicly_exposed ____________________\ntest_triage_marshmallow_1971.py:14: in test_missing_type_is_publicly_exposed\n    assert missing_type.__name__ == \"MissingType\"\nE   AssertionError: assert '_Miss"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1964,
+   "class": "B",
+   "axis": "e_other",
+   "why": "E   TypeError: pre_load() got an unexpected keyword argument 'pass_many'",
+   "head": "=================================== ERRORS ====================================\n______________ ERROR collecting test_triage_marshmallow_1964.py _______________\ntest_triage_marshmallow_1964.py:5: in <module>\n    class UserSchema(Schema):\ntest_triage_marshmallow_1964.py:10: in UserSchema\n    @pre_load(pass_many=False)\n     ^^^^^^^^^^^^^^^^^^^^^^^^^\nE   TypeError: pre_load() got an unexpected keyword"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1953,
+   "class": "B",
+   "axis": "reran_passed",
+   "why": "now PASSED",
+   "head": ".                                                                        [100%]\n=================================== PASSES ====================================\n=========================== short test summary info ===========================\nPASSED test_triage_marshmallow_1953.py::test_conditionally_disable_fields\n1 passed in 0.08s"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1942,
+   "class": "B",
+   "axis": "e_other",
+   "why": "E   TypeError: pre_load() got an unexpected keyword argument 'pass_many'",
+   "head": "=================================== ERRORS ====================================\n______________ ERROR collecting test_triage_marshmallow_1942.py _______________\ntest_triage_marshmallow_1942.py:6: in <module>\n    class InnerSchema(Schema):\ntest_triage_marshmallow_1942.py:9: in InnerSchema\n    @pre_load(pass_many=False)\n     ^^^^^^^^^^^^^^^^^^^^^^^^^\nE   TypeError: pre_load() got an unexpected keywor"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1895,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n_________ test_oneOf_validator_should_return_label_when_label_exists __________\ntest_triage_marshmallow_1895.py:16: in test_oneOf_validator_should_return_label_when_label_exists\n    assert result[\"foo\"] == \"one\", f\"Expected 'one' but got {r"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1893,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n____________ TestDefaultDumpFields.test_default_dump_fields_basic _____________\ntest_triage_marshmallow_1893.py:31: in test_default_dump_fields_basic\n    assert set(result.keys()) == {'field_a', 'field_b'}\nE   AssertionError: assert {'field"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1844,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n_________________ test_email_validation_single_character_tld __________________\ntest_triage_marshmallow_1844.py:13: in test_email_validation_single_character_tld\n    assert result == {}, f\"Expected no validation errors, but got: {result}\"\nE"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1841,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F..                                                                      [100%]\n================================== FAILURES ===================================\n__________________________ test_hook_name_validation __________________________\ntest_triage_marshmallow_1841.py:9: in test_hook_name_validation\n    with pytest.raises(ValueError, match=\"post_load_h hook had incorrect name\"):\n         ^^^^^^"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1829,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "FFFF                                                                     [100%]\n================================== FAILURES ===================================\n_______________________ test_validate_decorator_exists ________________________\ntest_triage_marshmallow_1829.py:13: in test_validate_decorator_exists\n    assert hasattr(validate, 'validate') or callable(getattr(validate, 'validate', None))\n"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1819,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n_________________ test_function_field_default_deserialization _________________\ntest_triage_marshmallow_1819.py:20: in test_function_field_default_deserialization\n    d = Foo().load(s)\n        ^^^^^^^^^^^^^\nsrc\\marshmallow\\schema.py:734: in"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1801,
+   "class": "B",
+   "axis": "e_other",
+   "why": "E   TypeError: post_dump() got an unexpected keyword argument 'pass_many'",
+   "head": "=================================== ERRORS ====================================\n______________ ERROR collecting test_triage_marshmallow_1801.py _______________\ntest_triage_marshmallow_1801.py:5: in <module>\n    class ItemSchema(Schema):\ntest_triage_marshmallow_1801.py:9: in ItemSchema\n    @post_dump(pass_many=True)\n     ^^^^^^^^^^^^^^^^^^^^^^^^^\nE   TypeError: post_dump() got an unexpected keyword"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1759,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n_______________ test_nested_schema_from_dict_with_nested_dicts ________________\ntest_triage_marshmallow_1759.py:39: in test_nested_schema_from_dict_with_nested_dicts\n    result = schema.load(config_data)\n             ^^^^^^^^^^^^^^^^^^^^^^^"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1758,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n_____________________ test_schema_dump_with_class_method ______________________\ntest_triage_marshmallow_1758.py:8: in test_schema_dump_with_class_method\n    class TestSchema(marshmallow.Schema):\ntest_triage_marshmallow_1758.py:9: in TestSch"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1751,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n________________________ test_oneof_schema_with_hooks _________________________\ntest_triage_marshmallow_1751.py:54: in test_oneof_schema_with_hooks\n    class CustomDogSchema(DogSchema):\ntest_triage_marshmallow_1751.py:55: in CustomDogSchema"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1747,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n____________________ test_nested_only_with_dotted_notation ____________________\ntest_triage_marshmallow_1747.py:50: in test_nested_only_with_dotted_notation\n    assert result == expected\nE   AssertionError: assert {'title': 'ne... 'author':"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1696,
+   "class": "B",
+   "axis": "reran_passed",
+   "why": "now PASSED",
+   "head": "..                                                                       [100%]\n=================================== PASSES ====================================\n=========================== short test summary info ===========================\nPASSED test_triage_marshmallow_1696.py::test_streaming_dump_with_generator\nPASSED test_triage_marshmallow_1696.py::test_streaming_dumps_with_generator\n2 passed "
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1642,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n_____________________ test_dotted_only_with_nested_tuple ______________________\ntest_triage_marshmallow_1642.py:36: in test_dotted_only_with_nested_tuple\n    assert result == expected, f\"Expected {expected}, but got {result}\"\nE   AssertionE"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1622,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n__________________ test_dump_dict_with_optional_items_field ___________________\ntest_triage_marshmallow_1622.py:38: in test_dump_dict_with_optional_items_field\n    result2 = MySchema().dump(obj=d)\n              ^^^^^^^^^^^^^^^^^^^^^^\nsrc\\ma"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1601,
+   "class": "A",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "..F.                                                                     [100%]\n================================== FAILURES ===================================\n_______________________________ test_float_str ________________________________\ntest_triage_marshmallow_1601.py:59: in test_float_str\n    with pytest.raises(ValidationError):\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   Failed: DID NOT RAISE"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1559,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n____________________ test_builtin_dict_attr_missing_field _____________________\ntest_triage_marshmallow_1559.py:24: in test_builtin_dict_attr_missing_field\n    assert result == {\"data\": {}} or result == {\"data\": {\"update\": None}}\nE   Assert"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1541,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n__________________ test_dynamically_nested_schema_validation __________________\ntest_triage_marshmallow_1541.py:55: in test_dynamically_nested_schema_validation\n    with pytest.raises(ValidationError) as exc_info:\n         ^^^^^^^^^^^^^^^^^"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1533,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n______________________ test_extract_nested_value_to_root ______________________\ntest_triage_marshmallow_1533.py:48: in test_extract_nested_value_to_root\n    result = schema.dump(proposal)\n             ^^^^^^^^^^^^^^^^^^^^^\nsrc\\marshmallow\\s"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1423,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n___________________ test_url_require_tld_rejects_ip_address ___________________\ntest_triage_marshmallow_1423.py:13: in test_url_require_tld_rejects_ip_address\n    with pytest.raises(ValidationError):\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1422,
+   "class": "A",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": ".F                                                                       [100%]\n================================== FAILURES ===================================\n________________ test_url_absolute_valid[http://\\U0001f4a9.la] ________________\ntest_triage_marshmallow_1422.py:31: in test_url_absolute_valid\n    assert validator(valid_url) == valid_url\n           ^^^^^^^^^^^^^^^^^^^^\nsrc\\marshmallow\\vali"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1419,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n__________________ test_field_decorator_returns_field_object __________________\ntest_triage_marshmallow_1419.py:9: in test_field_decorator_returns_field_object\n    class MySchema(Schema):\ntest_triage_marshmallow_1419.py:14: in MySchema\n    "
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1411,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n______________________ test_schema_type_attribute_exists ______________________\ntest_triage_marshmallow_1411.py:12: in test_schema_type_attribute_exists\n    assert hasattr(User, 'type')\nE   AssertionError: assert False\nE    +  where False ="
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1090,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n__________________ test_dump_only_field_custom_error_message __________________\ntest_triage_marshmallow_1090.py:25: in test_dump_only_field_custom_error_message\n    assert errors['id'] == {'message': 'id is readonly', 'code': 400}\nE   Asser"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 833,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n_______________ test_validation_error_extra_kwargs_propagation ________________\ntest_triage_marshmallow_833.py:29: in test_validation_error_extra_kwargs_propagation\n    assert error.kwargs.get('error_code') == 'FORBIDDEN_ENTITY'\nE   Asserti"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 798,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n________________________ test_dump_iteration_override _________________________\ntest_triage_marshmallow_798.py:37: in test_dump_iteration_override\n    normal_result = schema.dump({\"items\": [\"a\", \"b\", \"c\"]})\n                    ^^^^^^^^^^^^^"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 738,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "FFF                                                                      [100%]\n================================== FAILURES ===================================\n_____________________ test_method_field_decorator_syntax ______________________\ntest_triage_marshmallow_738.py:8: in test_method_field_decorator_syntax\n    class MySchema(Schema):\ntest_triage_marshmallow_738.py:9: in MySchema\n    @fields.me"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 727,
+   "class": "B",
+   "axis": "reran_passed",
+   "why": "now PASSED",
+   "head": ".                                                                        [100%]\n=================================== PASSES ====================================\n=========================== short test summary info ===========================\nPASSED test_triage_marshmallow_727.py::test_integer_field_strict_float_validation\n1 passed in 0.08s"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 648,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n________________ test_schema_fields_with_dict_attribute_names _________________\ntest_triage_marshmallow_648.py:8: in test_schema_fields_with_dict_attribute_names\n    class A(Schema):\ntest_triage_marshmallow_648.py:10: in A\n    keys = fields"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 447,
+   "class": "B",
+   "axis": "a_fabricated_api",
+   "why": "cannot import first_truthy from toolz",
+   "head": "=================================== ERRORS ====================================\n__________________ ERROR collecting test_triage_toolz_447.py __________________\nImportError while importing test module 'C:\\Users\\az518\\AppData\\Local\\Temp\\triage_rpraur_r\\toolz\\test_triage_toolz_447.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n..\\..\\..\\Programs\\Python\\Python312\\Li"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 396,
+   "class": "A",
+   "axis": "d_test_defect",
+   "why": "syntax",
+   "head": "=================================== ERRORS ====================================\n__________________ ERROR collecting test_triage_toolz_396.py __________________\n..\\..\\..\\Programs\\Python\\Python312\\Lib\\site-packages\\_pytest\\python.py:508: in importtestmodule\n    mod = import_path(\n..\\..\\..\\Programs\\Python\\Python312\\Lib\\site-packages\\_pytest\\pathlib.py:596: in import_path\n    importlib.import_module(m"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 368,
+   "class": "B",
+   "axis": "a_fabricated_api",
+   "why": "cannot import call from toolz.functoolz",
+   "head": "=================================== ERRORS ====================================\n__________________ ERROR collecting test_triage_toolz_368.py __________________\nImportError while importing test module 'C:\\Users\\az518\\AppData\\Local\\Temp\\triage_rpraur_r\\toolz\\test_triage_toolz_368.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n..\\..\\..\\Programs\\Python\\Python312\\Li"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 367,
+   "class": "A",
+   "axis": "d_test_defect",
+   "why": "syntax",
+   "head": "=================================== ERRORS ====================================\n__________________ ERROR collecting test_triage_toolz_367.py __________________\n..\\..\\..\\Programs\\Python\\Python312\\Lib\\site-packages\\_pytest\\python.py:508: in importtestmodule\n    mod = import_path(\n..\\..\\..\\Programs\\Python\\Python312\\Lib\\site-packages\\_pytest\\pathlib.py:596: in import_path\n    importlib.import_module(m"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 291,
+   "class": "B",
+   "axis": "a_fabricated_api",
+   "why": "cannot import zipdict from toolz",
+   "head": "=================================== ERRORS ====================================\n__________________ ERROR collecting test_triage_toolz_291.py __________________\nImportError while importing test module 'C:\\Users\\az518\\AppData\\Local\\Temp\\triage_rpraur_r\\toolz\\test_triage_toolz_291.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n..\\..\\..\\Programs\\Python\\Python312\\Li"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 282,
+   "class": "B",
+   "axis": "a_fabricated_api",
+   "why": "cannot import const from toolz",
+   "head": "=================================== ERRORS ====================================\n__________________ ERROR collecting test_triage_toolz_282.py __________________\nImportError while importing test module 'C:\\Users\\az518\\AppData\\Local\\Temp\\triage_rpraur_r\\toolz\\test_triage_toolz_282.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n..\\..\\..\\Programs\\Python\\Python312\\Li"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 239,
+   "class": "B",
+   "axis": "a_fabricated_api",
+   "why": "cannot import unzip from toolz",
+   "head": "=================================== ERRORS ====================================\n__________________ ERROR collecting test_triage_toolz_239.py __________________\nImportError while importing test module 'C:\\Users\\az518\\AppData\\Local\\Temp\\triage_rpraur_r\\toolz\\test_triage_toolz_239.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n..\\..\\..\\Programs\\Python\\Python312\\Li"
+  }
+ ],
+ "elapsed_s": 89.6
+}

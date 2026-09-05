@@ -1,0 +1,53 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "382c8cc0b1840b25bce524cef3defc784be24464",
+ "parent_commit": "9ede1172e8720afa7825878f450a01349aee6eef",
+ "answer_functions": [
+  "marshmallow/exceptions.py::__init__",
+  "marshmallow/exceptions.py::normalized_messages"
+ ],
+ "repro_tests": [
+  "tests/test_decorators.py::test_decorator_error_handling_with_dump_dict_error",
+  "tests/test_decorators.py::test_decorator_error_handling_with_load_dict_error"
+ ],
+ "smoke": [
+  "tests/test_decorators.py::TestPassOriginal::test_pass_original_many",
+  "tests/test_decorators.py::TestPassOriginal::test_pass_original_single",
+  "tests/test_decorators.py::TestValidatesDecorator::test_field_not_present"
+ ],
+ "baseline_pass_count": 31,
+ "probes": [
+  {
+   "applied": "marshmallow/exceptions.py::__init__",
+   "a_repro_pass": false,
+   "b_smoke_pass": true,
+   "c_no_regression": true,
+   "regressed": [],
+   "d_unmet": [
+    "tests/test_decorators.py::test_decorator_error_handling_with_dump_dict_error",
+    "tests/test_decorators.py::test_decorator_error_handling_with_load_dict_error"
+   ],
+   "inc_event": false
+  },
+  {
+   "applied": "marshmallow/exceptions.py::normalized_messages",
+   "a_repro_pass": false,
+   "b_smoke_pass": true,
+   "c_no_regression": false,
+   "regressed": [
+    "tests/test_decorators.py::test_decorator_error_handling",
+    "tests/test_decorators.py::test_decorator_error_handling_with_dump[post_dump]",
+    "tests/test_decorators.py::test_decorator_error_handling_with_dump[pre_dump]",
+    "tests/test_decorators.py::test_decorator_error_handling_with_load[post_load]",
+    "tests/test_decorators.py::test_decorator_error_handling_with_load[pre_load]"
+   ],
+   "d_unmet": [
+    "tests/test_decorators.py::test_decorator_error_handling_with_dump_dict_error",
+    "tests/test_decorators.py::test_decorator_error_handling_with_load_dict_error"
+   ],
+   "inc_event": false
+  }
+ ],
+ "inc_event": false,
+ "regression_event": false
+}

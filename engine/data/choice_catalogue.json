@@ -1,0 +1,79 @@
+{
+  "note": "연출가가 사장님께 내미는 선택지. **질문이 아니라 고르게 한다** (director-ai-vision 1단계). 고른 것이 곧 명세가 되므로, 각 선택지는 반드시 **측정 가능한 결과**(targets)나 **발주 문구**(fragments)로 이어져야 한다. 그 둘이 없는 선택지는 취향을 물어본 뒤 버리는 것과 같다.",
+  "rounds": [
+    {
+      "id": "time_of_day",
+      "ask": "이 세계는 하루 중 언제입니까?",
+      "why": "빛이 정해지면 밝기·대비가 따라 정해집니다",
+      "options": [
+        {"key": "morning", "label": "맑은 아침", "targets": {"luma_median": [160, 200]},
+         "fragments": ["clear morning light", "long soft shadows"]},
+        {"key": "noon", "label": "한낮", "targets": {"luma_median": [170, 215]},
+         "fragments": ["bright overhead light", "short crisp shadows"]},
+        {"key": "dusk", "label": "황혼", "targets": {"luma_median": [90, 140]},
+         "fragments": ["low amber sunset light", "long raking shadows"]},
+        {"key": "night", "label": "달빛 밤", "targets": {"luma_median": [40, 90]},
+         "fragments": ["cool moonlight", "deep shadow with pale rim light"]}
+      ]
+    },
+    {
+      "id": "mood",
+      "ask": "이 세계의 공기는 어떻습니까?",
+      "why": "분위기가 채도와 색 온도를 정합니다",
+      "options": [
+        {"key": "cozy", "label": "아늑하고 다정한", "targets": {"saturation_median": [25, 55]},
+         "fragments": ["cosy storybook mood", "warm inviting palette"]},
+        {"key": "lonely", "label": "쓸쓸하고 고요한", "targets": {"saturation_median": [15, 40]},
+         "fragments": ["quiet melancholy", "cool muted air"]},
+        {"key": "mystic", "label": "신비롭고 서늘한", "targets": {"saturation_median": [30, 65]},
+         "fragments": ["arcane hush", "violet and teal undertones"]},
+        {"key": "adventure", "label": "밝고 모험적인", "targets": {"saturation_median": [50, 90]},
+         "fragments": ["bright adventurous energy", "saturated storybook colours"]}
+      ]
+    },
+    {
+      "id": "contrast",
+      "ask": "빛과 그림자의 차이는 얼마나 셉니까?",
+      "why": "이게 '도트가 읽히나'를 가장 크게 좌우합니다",
+      "options": [
+        {"key": "soft", "label": "부드럽게 (은은한 명암)", "targets": {"luma_spread": [90, 140]},
+         "fragments": ["gentle three-step shading"]},
+        {"key": "strong", "label": "또렷하게 (깊은 그림자 · 밝은 하이라이트)",
+         "targets": {"luma_spread": [150, 200]},
+         "fragments": ["deep shadow cores and bright highlights", "clear light direction"]},
+        {"key": "graphic", "label": "아주 강하게 (거의 흑백 대비)",
+         "targets": {"luma_spread": [190, 240]},
+         "fragments": ["high-contrast graphic lighting"]}
+      ]
+    },
+    {
+      "id": "outline",
+      "ask": "형태의 테두리는 어떻게 합니까?",
+      "why": "작은 크기에서 형태가 읽히는지가 여기서 갈립니다",
+      "options": [
+        {"key": "selective", "label": "선택적 외곽선 (필요한 곳만)",
+         "params": {"outline": "selective outline"}},
+        {"key": "dark", "label": "짙은 외곽선 (또렷한 만화풍)",
+         "params": {"outline": "single color black outline"}},
+        {"key": "none", "label": "외곽선 없음 (회화풍)",
+         "params": {"outline": "lineless"},
+         "warn": "08-27 실측: 16px 타일에서 형태가 지워졌습니다. 캐릭터에는 쓸 만합니다"}
+      ]
+    },
+    {
+      "id": "proportion",
+      "ask": "사람 몸은 어떤 비율입니까?",
+      "why": "\"스타듀밸리 같다\"를 가르는 지점입니다",
+      "options": [
+        {"key": "chibi", "label": "작고 귀엽게 (머리 큼)",
+         "params": {"proportions": {"type": "preset", "name": "chibi"}}},
+        {"key": "cartoon", "label": "만화적 (중간)",
+         "params": {"proportions": {"type": "preset", "name": "cartoon"}}},
+        {"key": "stylized", "label": "날씬하고 어른스럽게",
+         "params": {"proportions": {"type": "preset", "name": "stylized"}}},
+        {"key": "heroic", "label": "영웅적 (크고 늠름하게)",
+         "params": {"proportions": {"type": "preset", "name": "heroic"}}}
+      ]
+    }
+  ]
+}

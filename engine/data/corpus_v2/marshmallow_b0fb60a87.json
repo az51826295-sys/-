@@ -1,0 +1,81 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "b0fb60a87f909bffeddcd8cdaac67e530adbcdf2",
+ "parent_commit": "a15b352bf618077b7dccea685cd31f4ae0c9bd2a",
+ "answer_files": [
+  "marshmallow/utils.py"
+ ],
+ "answer_functions": [
+  "marshmallow/utils.py::is_collection",
+  "marshmallow/utils.py::is_indexable_but_not_string",
+  "marshmallow/utils.py::is_iterable_but_not_string",
+  "marshmallow/utils.py::pprint",
+  "marshmallow/utils.py::to_marshallable_type"
+ ],
+ "patch_lines": 14,
+ "added_tests": {
+  "tests/test_marshmallow.py::test_no_implicit_list_handling": {
+   "parent": "pass",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "tests/test_marshmallow.py::test_serializing_named_tuple_with_meta": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [
+  "tests/test_marshmallow.py::test_serializing_named_tuple_with_meta"
+ ],
+ "test_files": [
+  "tests/test_marshmallow.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [
+  {
+   "applied": "marshmallow/utils.py::is_collection",
+   "passes_repro": [],
+   "still_failing": [
+    "tests/test_marshmallow.py::test_serializing_named_tuple_with_meta"
+   ],
+   "event": false
+  },
+  {
+   "applied": "marshmallow/utils.py::is_indexable_but_not_string",
+   "passes_repro": [],
+   "still_failing": [
+    "tests/test_marshmallow.py::test_serializing_named_tuple_with_meta"
+   ],
+   "event": false
+  },
+  {
+   "applied": "marshmallow/utils.py::is_iterable_but_not_string",
+   "passes_repro": [],
+   "still_failing": [
+    "tests/test_marshmallow.py::test_serializing_named_tuple_with_meta"
+   ],
+   "event": false
+  },
+  {
+   "applied": "marshmallow/utils.py::pprint",
+   "passes_repro": [],
+   "still_failing": [
+    "tests/test_marshmallow.py::test_serializing_named_tuple_with_meta"
+   ],
+   "event": false
+  },
+  {
+   "applied": "marshmallow/utils.py::to_marshallable_type",
+   "passes_repro": [
+    "tests/test_marshmallow.py::test_serializing_named_tuple_with_meta"
+   ],
+   "still_failing": [],
+   "event": false
+  }
+ ],
+ "env_seconds": 10.5,
+ "env_error_tests": 0,
+ "qualified": true
+}

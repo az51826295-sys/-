@@ -1,0 +1,21 @@
+[TP_deadlock_ms0] gen 1: v1 score=0.7915 
+[TP_deadlock_ms0] gen 2: v1 score=0.7915 (rollback)
+[TP_deadlock_ms0] gen 3: v1 score=0.7915 (rollback)
+[TP_deadlock_ms0] gen 4: v1 score=0.7915 (rollback)
+[TP_deadlock_ms0] gen 5: v1 score=0.7915 (rollback)
+[TP_deadlock_ms0] gen 6: v1 score=0.7915 (rollback)
+[TP_deadlock_ms0] gen 7: v1 score=0.7915 (rollback)
+[TP_deadlock_ms0] gen 8: v1 score=0.7915 (rollback)
+[TP_deadlock_ms0] gen 9: v1 score=0.7915 (rollback)
+[TP_deadlock_ms0] gen 10: v1 score=0.7915 (rollback)
+[TP_deadlock_ms0] gen 11: v1 score=0.7915 (rollback)
+[TP_deadlock_ms0] gen 12: v2 score=0.8490 
+[TP_deadlock_ms0] gen 13: v2 score=0.8490 (rollback)
+[TP_deadlock_ms0] gen 14: v2 score=0.8490 (rollback)
+[TP_deadlock_ms0] gen 15: v2 score=0.8490 (rollback)
+[TP_deadlock_ms0] gen 16: v2 score=0.8490 (rollback)
+[TP_deadlock_ms0] gen 17: v2 score=0.8490 (rollback)
+[TP_deadlock_ms0] gen 18: v2 score=0.8490 (rollback)
+[TP_deadlock_ms0] gen 19: v2 score=0.8490 (rollback)
+[TP_deadlock_ms0] gen 20: v2 score=0.8490 (rollback)
+[TP_deadlock_ms0] 완료 1477s

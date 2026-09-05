@@ -1,0 +1,123 @@
+{
+ "frozen_at": "2026-08-22",
+ "protocol": "docs/ledger-retest-live.md",
+ "rows": [
+  {
+   "repo": "mahmoud/boltons",
+   "number": 439,
+   "title": "IndexedSet: difference_update/intersection_update are quadratic for large removals",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import time\nimport pytest\nfrom boltons.setutils import IndexedSet\n\n\ndef test_difference_update_performance_is_linear():\n    \"\"\"Test that difference_update has linear time complexity for large scattered removals.\"\"\"\n    measurements = []\n\n    for n in (10_000, 20_000, 40_000):\n        s = IndexedSet(range(n))\n        to_remove = set(range(0, n, 2))  # every other element -> scattered holes\n\n        t0 = time.perf_counter()\n        s.difference_update(to_remove)\n        elapsed_ms = (time.perf_counter() - t0) * 1000\n\n        measurements.append((n, elapsed_ms))\n\n    # Check that scaling is approximately linear, not quadratic\n    # For quadratic: time should roughly quadruple when n doubles\n    # For linear: time should roughly double when n doubles\n\n    n1, t1 = measurements[0]\n    n2, t2 = measurements[1]\n    n3, t3 = measurements[2]\n\n    # Ratio of times when n doubles from 10k to 20k\n    ratio_1_to_2 = t2 / t1\n    # Ratio of times when n doubles from 20k to 40k\n    ratio_2_to_3 = t3 / t2\n\n    # For quadratic scaling: ratio should be ~4\n    # For linear scaling: ratio should be ~2\n    # We allow some variance, but reject clear quadratic behavior\n    # If it's quadratic, both ratios will be significantly > 3\n    assert ratio_1_to_2 < 3.0, f\"Time grew by {ratio_1_to_2:.1f}x when n doubled (quadratic behavior)\"\n    assert ratio_2_to_3 < 3.0, f\"Time grew by {ratio_2_to_3:.1f}x when n doubled (quadratic behavior)\"\n"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 310,
+   "title": "windowed with overlap",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import pytest\nimport itertools\nfrom boltons.iterutils import windowed\n\n\ndef test_windowed_with_step_parameter():\n    \"\"\"Test that windowed supports step parameter for overlapping windows\"\"\"\n    # Test case: windows of size 3 with step of 2 should give (0,1,2), (2,3,4), (4,5,6)...\n    g = windowed(itertools.count(), 3, step=2)\n\n    assert next(g) == (0, 1, 2)\n    assert next(g) == (2, 3, 4)\n    assert next(g) == (4, 5, 6)\n    assert next(g) == (6, 7, 8)\n"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 301,
+   "title": "`FunctionBuilder.from_func` not working",
+   "class": "A",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "def test_intake_issue():\n    def foo(a, b=2):\r\n        return a / b\r\n    \r\n    f = FunctionBuilder.from_func(foo).get_func()\r\n    assert f(20) == foo(20) == 10.0  # fails\r\n"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 280,
+   "title": "URL comparison is order-based for query parameters",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import pytest\nfrom boltons.urlutils import URL\n\n\ndef test_url_comparison_ignores_query_parameter_order():\n    \"\"\"\n    URL comparison should be order-agnostic for query parameters.\n    Two URLs with the same query parameters in different orders should be equal.\n    \"\"\"\n    a = URL('http://example.com/foo, bar?foo=bar&bar=foo')\n    b = URL('http://example.com/foo%2C%20bar?bar=foo&foo=bar')\n    assert a == b\n"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 201,
+   "title": "Adding parameters with wraps()",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import pytest\nfrom boltons.funcutils import wraps\n\n\ndef test_wraps_add_parameters():\n    \"\"\"Test that wraps() can add parameters to a wrapped function.\"\"\"\n\n    def add_arg_extra_arg(func):\n        @wraps(func)\n        def wrapper(*args, extra_arg=None, **kwargs):\n            if extra_arg is not None:\n                wrapper.extra_arg_value = extra_arg\n            return func(*args, **kwargs)\n        return wrapper\n\n    @add_arg_extra_arg\n    def myfunc(arg1, arg2, arg3='default'):\n        return f\"arg1={arg1}, arg2={arg2}, arg3={arg3}\"\n\n    # Test that the wrapped function accepts the extra_arg parameter\n    result = myfunc('val1', 'val2', extra_arg='extra!')\n    assert result == \"arg1=val1, arg2=val2, arg3=default\"\n    assert myfunc.extra_arg_value == 'extra!'\n\n    # Test that the signature includes the extra_arg parameter\n    import inspect\n    sig = inspect.signature(myfunc)\n    assert 'extra_arg' in sig.parameters\n\n    # Test that original parameters still work\n    result2 = myfunc('val1', 'val2', arg3='custom')\n    assert result2 == \"arg1=val1, arg2=val2, arg3=custom\"\n"
+  },
+  {
+   "repo": "msiemens/tinydb",
+   "number": 629,
+   "title": "insert_multiple can silently overwrite documents when mixing Document and dict",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import pytest\nfrom tinydb import TinyDB\nfrom tinydb.table import Document\nfrom tinydb.storages import MemoryStorage\n\n\ndef test_insert_multiple_mixed_document_and_dict_no_collision():\n    \"\"\"Test that insert_multiple with mixed Document and dict doesn't create duplicate IDs or overwrite documents.\"\"\"\n    db = TinyDB(storage=MemoryStorage())\n\n    # Test case 1: Document with explicit ID followed by auto-ID dict on empty table\n    ids = db.insert_multiple([\n        Document({'a': 1}, doc_id=1),\n        {'b': 2},\n    ])\n\n    # Should not have duplicate IDs\n    assert ids == [1, 2], f\"Expected [1, 2] but got {ids}\"\n\n    # Both documents should exist\n    all_docs = db.all()\n    assert len(all_docs) == 2, f\"Expected 2 documents but got {len(all_docs)}\"\n    assert any(doc.get('a') == 1 for doc in all_docs), \"Document with 'a': 1 not found\"\n    assert any(doc.get('b') == 2 for doc in all_docs), \"Document with 'b': 2 not found\"\n\n    # Test case 2: After normal insert, mixed Document and dict should not collide\n    db2 = TinyDB(storage=MemoryStorage())\n    db2.insert({'x': 1})  # id=1, _next_id becomes 2\n\n    ids2 = db2.insert_multiple([\n        Document({'a': 1}, doc_id=2),\n        {'b': 2},\n    ])\n\n    # Should not have duplicate IDs\n    assert ids2 == [2, 3], f\"Expected [2, 3] but got {ids2}\"\n\n    # All three documents should exist with correct content\n    all_docs2 = db2.all()\n    assert len(all_docs2) == 3, f\"Expected 3 documents but got {len(all_docs2)}\"\n    assert any(doc.get('x') == 1 for doc in all_docs2), \"Document with 'x': 1 not found\"\n    assert any(doc.get('a') == 1 for doc in all_docs2), \"Document with 'a': 1 not found\"\n    assert any(doc.get('b') == 2 for doc in all_docs2), \"Document with 'b': 2 not found\"\n"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 626,
+   "title": "tail(0, seq) returns the whole sequence instead of empty (and is inconsistent across iterable types)",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import pytest\nfrom toolz import tail\n\n\ndef test_tail_zero_returns_empty():\n    \"\"\"Test that tail(0, seq) returns empty sequence consistently across iterable types.\"\"\"\n    # Test with list (sliceable)\n    assert list(tail(0, [10, 20, 30])) == []\n\n    # Test with tuple (sliceable)\n    assert tuple(tail(0, (10, 20, 30))) == ()\n\n    # Test with iterator (non-sliceable)\n    assert tuple(tail(0, iter([10, 20, 30]))) == ()\n\n    # Test with string (sliceable)\n    assert tail(0, \"abc\") == \"\"\n\n    # Consistency check: all should be empty\n    assert list(tail(0, [1, 2, 3, 4, 5])) == []\n"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 529,
+   "title": "Combination of map and accumulate",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import pytest\nfrom toolz import assoc_in\n\n\ndef test_mapacc_combination_of_map_and_accumulate():\n    \"\"\"Test that mapacc function exists and works as expected\"\"\"\n    # Import should fail if mapacc doesn't exist\n    from toolz import mapacc\n\n    data = [{'id': 'a', 'value': 1},\n            {'id': 'b', 'value': 2},\n            {'id': 'c', 'value': 3},\n            {'id': 'd', 'value': 4}]\n\n    result, acc_values = mapacc(\n        mapper=lambda acc, elem: assoc_in(elem, ['value'], max(elem['value'] - acc, 0)),\n        accumulator=lambda acc, elem: max(acc - elem['value'], 0),\n        sequence=data,\n        accumulator_init=4\n    )\n\n    expected_result = (\n        {'id': 'a', 'value': 0},\n        {'id': 'b', 'value': 0},\n        {'id': 'c', 'value': 2},\n        {'id': 'd', 'value': 4}\n    )\n    expected_acc = (3, 1, 0, 0)\n\n    assert result == expected_result\n    assert acc_values == expected_acc\n"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 142,
+   "title": "camel2under possible error",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import pytest\nfrom boltons.strutils import camel2under\n\n\ndef test_camel2under_consecutive_capitals():\n    \"\"\"Test that consecutive capital letters are handled correctly.\"\"\"\n    # Single capital letters should not be separated by underscores\n    assert camel2under('NSDecimalToUInt') == 'ns_decimal_to_uint'\n    # This should also work for other consecutive capitals\n    assert camel2under('HTTPSConnection') == 'https_connection'\n    assert camel2under('XMLParser') == 'xml_parser'\n"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 141,
+   "title": "Time zones don't support fold",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import pytest\nfrom datetime import datetime, timedelta\nfrom boltons.timeutils import LocalTZInfo, Eastern\n\n\ndef fmt_offset(dt):\n    \"\"\"Format timedelta offset to readable string\"\"\"\n    td = dt.utcoffset()\n    if td is None:\n        return None\n    fmt_str = ('-' if td < timedelta(0) else '') + '{}'\n    return fmt_str.format(abs(td))\n\n\ndef test_fold_attribute_support():\n    \"\"\"Test that fold attribute is respected for ambiguous datetimes\"\"\"\n    EASTERN_BO = Eastern\n\n    # 2011-11-06 01:30 is ambiguous in US/Eastern timezone\n    # fold=0 (default) means first occurrence (EDT, UTC-4)\n    # fold=1 means second occurrence (EST, UTC-5)\n    dt_base = datetime(2011, 11, 6, 1, 30)\n\n    # Create datetime with fold=0 (unfolded, first occurrence)\n    dt_unfolded = datetime(2011, 11, 6, 1, 30, fold=0)\n    dt_unfolded_eastern = dt_unfolded.replace(tzinfo=EASTERN_BO)\n\n    # Create datetime with fold=1 (folded, second occurrence)\n    dt_folded = datetime(2011, 11, 6, 1, 30, fold=1)\n    dt_folded_eastern = dt_folded.replace(tzinfo=EASTERN_BO)\n\n    # Unfolded (fold=0) should be EDT (UTC-4)\n    assert fmt_offset(dt_unfolded_eastern) == '4:00:00', \\\n        f\"Unfolded should be EDT (UTC-4), got {fmt_offset(dt_unfolded_eastern)}\"\n    assert dt_unfolded_eastern.tzname() == 'EDT', \\\n        f\"Unfolded should be EDT, got {dt_unfolded_eastern.tzname()}\"\n\n    # Folded (fold=1) should be EST (UTC-5)\n    assert fmt_offset(dt_folded_eastern) == '5:00:00', \\\n        f\"Folded should be EST (UTC-5), got {fmt_offset(dt_folded_eastern)}\"\n    assert dt_folded_eastern.tzname() == 'EST', \\\n        f\"Folded should be EST, got {dt_folded_eastern.tzname()}\"\n"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1566,
+   "title": "Inconsistent None items serialization between Nested(…, many=True) and List(Nested(…)) fields",
+   "class": "A",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "def test_intake_issue():\n    from marshmallow import Schema, fields\r\n\r\n\r\n    class N(Schema):\r\n        a = fields.String()\r\n        b = fields.String()\r\n\r\n\r\n    class S1(Schema):\r\n        nested = fields.Nested(N, many=True)\r\n\r\n\r\n    class S2(Schema):\r\n        nested = fields.List(fields.Nested(N))\r\n\r\n\r\n    schema1 = S1()\r\n    schema2 = S2()\r\n\r\n    data = {\r\n        \"nested\": [None],\r\n    }\r\n\r\n    result1 = schema1.dump(data)\r\n    result2 = schema2.dump(data)\r\n\r\n    assert result1.get(\"nested\") == [{}]\r\n    assert result2.get(\"nested\") == [None]\r\n"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 496,
+   "title": "optional static typing for toolz",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import pytest\nfrom typing import Callable\nfrom toolz import compose\n\n\ndef test_compose_type_hints():\n    \"\"\"Test that compose preserves type hints for static type checking.\"\"\"\n\n    def f(x: int) -> str:\n        return str(x)\n\n    def g(y: str) -> float:\n        return float(len(y))\n\n    composed = compose(g, f)\n\n    # Check that the composed function has proper type hints\n    # The return type should be float (from g's return type)\n    # The parameter type should be int (from f's parameter type)\n    assert hasattr(composed, '__annotations__')\n\n    # Test runtime behavior\n    result = composed(42)\n    assert isinstance(result, float)\n    assert result == 2.0\n\n    # Verify that type hints are preserved in some form\n    # (either through __annotations__ or through typing information)\n    import inspect\n    sig = inspect.signature(composed)\n    assert sig is not None\n\n\nif __name__ == \"__main__\":\n    pytest.main([__file__, \"-v\"])\n"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 481,
+   "title": "Bug in compose introduced in 0.10.0",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import pytest\nimport toolz\n\n\ndef test_compose_in_class_method_with_inner_class():\n    \"\"\"Test that compose works correctly when used in a class method with an inner class.\"\"\"\n\n    def g(x):\n        return x\n\n    class A(object):\n        def __call__(self):\n            _fg = toolz.compose(lambda x: x, g)\n\n            class Inner(object):\n                fg = _fg\n\n            return Inner()\n\n    a = A()()\n    result = a.fg(2)\n    assert result == 2\n"
+  }
+ ]
+}

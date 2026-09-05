@@ -1,0 +1,10 @@
+[
+  {"concept": "attack", "meaning": "공격 - 전투 행동"},
+  {"concept": "defend", "meaning": "방어 - 막기 자세"},
+  {"concept": "shop", "meaning": "상점 - 물건을 사고파는 곳"},
+  {"concept": "quest", "meaning": "퀘스트 - 받은 임무 목록"},
+  {"concept": "equipment", "meaning": "장비 - 착용 중인 무기와 방어구"},
+  {"concept": "stats", "meaning": "능력치 - 캐릭터 수치"},
+  {"concept": "dialogue", "meaning": "대화 - NPC와 말하기"},
+  {"concept": "exit", "meaning": "종료 - 게임에서 나가기"}
+]

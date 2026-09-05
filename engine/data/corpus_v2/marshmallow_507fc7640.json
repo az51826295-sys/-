@@ -1,0 +1,46 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "507fc76400762617dd962d1aa7184ea993248edc",
+ "parent_commit": "68d2dc6917d7a8191177e8ce4195235ee0d4720c",
+ "answer_files": [
+  "marshmallow/marshalling.py",
+  "marshmallow/schema.py"
+ ],
+ "answer_functions": [
+  "marshmallow/marshalling.py::_run_validator",
+  "marshmallow/schema.py::_do_load"
+ ],
+ "patch_lines": 13,
+ "added_tests": {
+  "tests/test_schema.py::TestErrorHandler::test_load_with_custom_error_handler": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_schema.py::TestErrorHandler::test_load_with_custom_error_handler_and_partially_valid_data": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_schema.py::TestErrorHandler::test_custom_error_handler_with_validates_decorator": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_schema.py::TestErrorHandler::test_custom_error_handler_with_validates_schema_decorator": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "tests/test_schema.py"
+ ],
+ "location_hard_proxy": true,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 15.9,
+ "env_error_tests": 4,
+ "qualified": false
+}

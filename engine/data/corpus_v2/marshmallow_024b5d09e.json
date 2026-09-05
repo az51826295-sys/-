@@ -1,0 +1,28 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "024b5d09e9f026f0f96d220e243be69346687ce0",
+ "parent_commit": "252090c7c707166cf4fcfcdc73eb4376b7bbc4b7",
+ "answer_files": [],
+ "answer_functions": [],
+ "patch_lines": 5,
+ "added_tests": {
+  "tests/test_deserialization.py::TestFieldDeserialization::test_enum_field_by_symbol_rejects_non_member_attributes": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [
+  "tests/test_deserialization.py::TestFieldDeserialization::test_enum_field_by_symbol_rejects_non_member_attributes"
+ ],
+ "test_files": [
+  "tests/test_deserialization.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 3.9,
+ "env_error_tests": 0,
+ "qualified": true,
+ "selector_event_proxy_v1": false
+}

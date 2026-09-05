@@ -1,0 +1,55 @@
+{
+ "repo": "more-itertools",
+ "fix_commit": "4bd0bd876273a8ff2171352c937b91a8c053d00b",
+ "parent_commit": "17fd95a0c34763c34853f3a89048d60733815dc4",
+ "answer_files": [
+  "more_itertools/more.py"
+ ],
+ "answer_functions": [
+  "more_itertools/more.py::distinct_permutations"
+ ],
+ "patch_lines": 32,
+ "added_tests": {
+  "tests/test_more.py::DistinctPermutationsTests::test_basic": {
+   "parent": "pass",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "tests/test_more.py::DistinctPermutationsTests::test_r": {
+   "parent": "pass",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "tests/test_more.py::DistinctPermutationsTests::test_unsortable": {
+   "parent": "pass",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "tests/test_more.py::DistinctPermutationsTests::test_unsortable_r": {
+   "parent": "pass",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "tests/test_more.py::DistinctPermutationsTests::test_unsorted_equivalent": {
+   "parent": "pass",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "tests/test_more.py::DistinctPermutationsTests::test_unhashable": {
+   "parent": "pass",
+   "fix": "pass",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "tests/test_more.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 15.8,
+ "env_error_tests": 0,
+ "qualified": false,
+ "selector_event_proxy_v1": false
+}

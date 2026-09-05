@@ -1,0 +1,235 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "99a2e48278902209b9591b874b77027a6eb2d393",
+ "parent_commit": "9918eb00ee9e1fd2c075ea395a9fd8d90b474ffd",
+ "answer_files": [
+  "marshmallow/exceptions.py",
+  "marshmallow/marshalling.py",
+  "marshmallow/schema.py"
+ ],
+ "answer_functions": [
+  "marshmallow/exceptions.py::__init__",
+  "marshmallow/exceptions.py::normalized_messages",
+  "marshmallow/marshalling.py::__init__",
+  "marshmallow/marshalling.py::call_and_store",
+  "marshmallow/marshalling.py::run_validator",
+  "marshmallow/marshalling.py::store_error",
+  "marshmallow/marshalling.py::store_validation_error",
+  "marshmallow/schema.py::_do_load",
+  "marshmallow/schema.py::dump"
+ ],
+ "patch_lines": 31,
+ "added_tests": {
+  "tests/test_deserialization.py::test_deserialize_raises_exception_if_input_type_is_incorrect": {
+   "parent": "pass",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "tests/test_exceptions.py::TestValidationError::test_can_store_field_name": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "tests/test_schema.py::test_dump_mode_raises_error": {
+   "parent": "pass",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "tests/test_schema.py::test_dump_resets_error_fields": {
+   "parent": "pass",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "tests/test_schema.py::test_load_resets_error_fields": {
+   "parent": "pass",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "tests/test_schema.py::TestHandleError::test_load_with_custom_error_handler": {
+   "parent": "pass",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "tests/test_schema.py::TestHandleError::test_load_with_custom_error_handler_and_partially_valid_data": {
+   "parent": "pass",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "tests/test_schema.py::TestHandleError::test_custom_error_handler_with_validates_decorator": {
+   "parent": "pass",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "tests/test_schema.py::TestHandleError::test_custom_error_handler_with_validates_schema_decorator": {
+   "parent": "pass",
+   "fix": "pass",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [
+  "tests/test_exceptions.py::TestValidationError::test_can_store_field_name"
+ ],
+ "test_files": [
+  "tests/test_deserialization.py",
+  "tests/test_exceptions.py",
+  "tests/test_schema.py"
+ ],
+ "location_hard_proxy": true,
+ "selector_event_proxy": true,
+ "partial_fix_probes": [
+  {
+   "applied": "marshmallow/exceptions.py::__init__",
+   "passes_repro": [
+    "tests/test_exceptions.py::TestValidationError::test_can_store_field_name"
+   ],
+   "still_failing": [
+    "tests/test_schema.py::TestHandleError::test_custom_error_handler_with_validates_schema_decorator"
+   ],
+   "event": true,
+   "still_failing_fixpass": [
+    "tests/test_schema.py::TestHandleError::test_custom_error_handler_with_validates_schema_decorator"
+   ],
+   "event_v2": true
+  },
+  {
+   "applied": "marshmallow/exceptions.py::normalized_messages",
+   "passes_repro": [],
+   "still_failing": [
+    "tests/test_exceptions.py::TestValidationError::test_can_store_field_name"
+   ],
+   "event": false,
+   "still_failing_fixpass": [
+    "tests/test_exceptions.py::TestValidationError::test_can_store_field_name"
+   ],
+   "event_v2": false
+  },
+  {
+   "applied": "marshmallow/marshalling.py::__init__",
+   "passes_repro": [],
+   "still_failing": [
+    "tests/test_deserialization.py::test_deserialize_raises_exception_if_input_type_is_incorrect",
+    "tests/test_exceptions.py::TestValidationError::test_can_store_field_name",
+    "tests/test_schema.py::test_dump_mode_raises_error",
+    "tests/test_schema.py::test_dump_resets_error_fields",
+    "tests/test_schema.py::test_load_resets_error_fields",
+    "tests/test_schema.py::TestHandleError::test_load_with_custom_error_handler",
+    "tests/test_schema.py::TestHandleError::test_load_with_custom_error_handler_and_partially_valid_data",
+    "tests/test_schema.py::TestHandleError::test_custom_error_handler_with_validates_decorator",
+    "tests/test_schema.py::TestHandleError::test_custom_error_handler_with_validates_schema_decorator"
+   ],
+   "event": false,
+   "still_failing_fixpass": [
+    "tests/test_deserialization.py::test_deserialize_raises_exception_if_input_type_is_incorrect",
+    "tests/test_exceptions.py::TestValidationError::test_can_store_field_name",
+    "tests/test_schema.py::test_dump_mode_raises_error",
+    "tests/test_schema.py::test_dump_resets_error_fields",
+    "tests/test_schema.py::test_load_resets_error_fields",
+    "tests/test_schema.py::TestHandleError::test_load_with_custom_error_handler",
+    "tests/test_schema.py::TestHandleError::test_load_with_custom_error_handler_and_partially_valid_data",
+    "tests/test_schema.py::TestHandleError::test_custom_error_handler_with_validates_decorator",
+    "tests/test_schema.py::TestHandleError::test_custom_error_handler_with_validates_schema_decorator"
+   ],
+   "event_v2": false
+  },
+  {
+   "applied": "marshmallow/marshalling.py::call_and_store",
+   "passes_repro": [],
+   "still_failing": [
+    "tests/test_exceptions.py::TestValidationError::test_can_store_field_name",
+    "tests/test_schema.py::test_dump_mode_raises_error",
+    "tests/test_schema.py::test_dump_resets_error_fields",
+    "tests/test_schema.py::test_load_resets_error_fields",
+    "tests/test_schema.py::TestHandleError::test_load_with_custom_error_handler",
+    "tests/test_schema.py::TestHandleError::test_load_with_custom_error_handler_and_partially_valid_data",
+    "tests/test_schema.py::TestHandleError::test_custom_error_handler_with_validates_decorator"
+   ],
+   "event": false,
+   "still_failing_fixpass": [
+    "tests/test_exceptions.py::TestValidationError::test_can_store_field_name",
+    "tests/test_schema.py::test_dump_mode_raises_error",
+    "tests/test_schema.py::test_dump_resets_error_fields",
+    "tests/test_schema.py::test_load_resets_error_fields",
+    "tests/test_schema.py::TestHandleError::test_load_with_custom_error_handler",
+    "tests/test_schema.py::TestHandleError::test_load_with_custom_error_handler_and_partially_valid_data",
+    "tests/test_schema.py::TestHandleError::test_custom_error_handler_with_validates_decorator"
+   ],
+   "event_v2": false
+  },
+  {
+   "applied": "marshmallow/marshalling.py::run_validator",
+   "passes_repro": [],
+   "still_failing": [
+    "tests/test_exceptions.py::TestValidationError::test_can_store_field_name",
+    "tests/test_schema.py::TestHandleError::test_custom_error_handler_with_validates_schema_decorator"
+   ],
+   "event": false,
+   "still_failing_fixpass": [
+    "tests/test_exceptions.py::TestValidationError::test_can_store_field_name",
+    "tests/test_schema.py::TestHandleError::test_custom_error_handler_with_validates_schema_decorator"
+   ],
+   "event_v2": false
+  },
+  {
+   "applied": "marshmallow/marshalling.py::store_error",
+   "passes_repro": [],
+   "still_failing": [
+    "tests/test_exceptions.py::TestValidationError::test_can_store_field_name"
+   ],
+   "event": false,
+   "still_failing_fixpass": [
+    "tests/test_exceptions.py::TestValidationError::test_can_store_field_name"
+   ],
+   "event_v2": false
+  },
+  {
+   "applied": "marshmallow/marshalling.py::store_validation_error",
+   "passes_repro": [],
+   "still_failing": [
+    "tests/test_exceptions.py::TestValidationError::test_can_store_field_name",
+    "tests/test_schema.py::test_dump_mode_raises_error",
+    "tests/test_schema.py::TestHandleError::test_load_with_custom_error_handler",
+    "tests/test_schema.py::TestHandleError::test_load_with_custom_error_handler_and_partially_valid_data",
+    "tests/test_schema.py::TestHandleError::test_custom_error_handler_with_validates_decorator",
+    "tests/test_schema.py::TestHandleError::test_custom_error_handler_with_validates_schema_decorator"
+   ],
+   "event": false,
+   "still_failing_fixpass": [
+    "tests/test_exceptions.py::TestValidationError::test_can_store_field_name",
+    "tests/test_schema.py::test_dump_mode_raises_error",
+    "tests/test_schema.py::TestHandleError::test_load_with_custom_error_handler",
+    "tests/test_schema.py::TestHandleError::test_load_with_custom_error_handler_and_partially_valid_data",
+    "tests/test_schema.py::TestHandleError::test_custom_error_handler_with_validates_decorator",
+    "tests/test_schema.py::TestHandleError::test_custom_error_handler_with_validates_schema_decorator"
+   ],
+   "event_v2": false
+  },
+  {
+   "applied": "marshmallow/schema.py::_do_load",
+   "passes_repro": [],
+   "still_failing": [
+    "tests/test_exceptions.py::TestValidationError::test_can_store_field_name"
+   ],
+   "event": false,
+   "still_failing_fixpass": [
+    "tests/test_exceptions.py::TestValidationError::test_can_store_field_name"
+   ],
+   "event_v2": false
+  },
+  {
+   "applied": "marshmallow/schema.py::dump",
+   "passes_repro": [],
+   "still_failing": [
+    "tests/test_exceptions.py::TestValidationError::test_can_store_field_name"
+   ],
+   "event": false,
+   "still_failing_fixpass": [
+    "tests/test_exceptions.py::TestValidationError::test_can_store_field_name"
+   ],
+   "event_v2": false
+  }
+ ],
+ "env_seconds": 29.7,
+ "env_error_tests": 0,
+ "qualified": true,
+ "selector_event_proxy_v1": true
+}

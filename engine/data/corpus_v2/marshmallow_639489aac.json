@@ -1,0 +1,29 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "639489aaca1d913b076741fb9e2cb874375ec019",
+ "parent_commit": "d204edc84c108076677547181af25a82627b2798",
+ "answer_files": [
+  "marshmallow/fields.py"
+ ],
+ "answer_functions": [
+  "marshmallow/fields.py::_field_data_key"
+ ],
+ "patch_lines": 16,
+ "added_tests": {
+  "tests/test_schema.py::TestPluckSchema::test_pluck_with_data_key": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "tests/test_schema.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 3.5,
+ "env_error_tests": 1,
+ "qualified": false
+}

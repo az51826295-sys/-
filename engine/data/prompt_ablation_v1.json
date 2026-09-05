@@ -1,0 +1,2421 @@
+{
+  "spec": "prompt-ablation-v0",
+  "design": "docs/prompt-ablation-v0-design.md",
+  "provider": "anthropic",
+  "model": "claude-haiku-4-5",
+  "usd": 0.21109,
+  "seconds": 243.0,
+  "thresholds": {
+    "spec_helps_lower": 0.2,
+    "irrelevant_upper": 0.05
+  },
+  "bootstrap": {
+    "n": 10000,
+    "seed": 12345
+  },
+  "with_spec": {
+    "arm": "with_spec",
+    "calls": [
+      {
+        "concept": "quest",
+        "n": 7,
+        "passed": 0,
+        "rate": 0.0
+      },
+      {
+        "concept": "quest",
+        "n": 6,
+        "passed": 6,
+        "rate": 1.0
+      },
+      {
+        "concept": "equipment",
+        "n": 7,
+        "passed": 2,
+        "rate": 0.2857142857142857
+      },
+      {
+        "concept": "equipment",
+        "n": 6,
+        "passed": 6,
+        "rate": 1.0
+      },
+      {
+        "concept": "stats",
+        "n": 6,
+        "passed": 6,
+        "rate": 1.0
+      },
+      {
+        "concept": "stats",
+        "n": 6,
+        "passed": 6,
+        "rate": 1.0
+      },
+      {
+        "concept": "dialogue",
+        "n": 7,
+        "passed": 4,
+        "rate": 0.5714285714285714
+      },
+      {
+        "concept": "dialogue",
+        "n": 7,
+        "passed": 0,
+        "rate": 0.0
+      },
+      {
+        "concept": "exit",
+        "n": 6,
+        "passed": 0,
+        "rate": 0.0
+      },
+      {
+        "concept": "exit",
+        "n": 6,
+        "passed": 0,
+        "rate": 0.0
+      },
+      {
+        "concept": "save",
+        "n": 6,
+        "passed": 3,
+        "rate": 0.5
+      },
+      {
+        "concept": "save",
+        "n": 7,
+        "passed": 2,
+        "rate": 0.2857142857142857
+      },
+      {
+        "concept": "inventory",
+        "n": 6,
+        "passed": 0,
+        "rate": 0.0
+      },
+      {
+        "concept": "inventory",
+        "n": 7,
+        "passed": 6,
+        "rate": 0.8571428571428571
+      },
+      {
+        "concept": "map",
+        "n": 6,
+        "passed": 5,
+        "rate": 0.8333333333333334
+      },
+      {
+        "concept": "map",
+        "n": 7,
+        "passed": 7,
+        "rate": 1.0
+      },
+      {
+        "concept": "settings",
+        "n": 7,
+        "passed": 4,
+        "rate": 0.5714285714285714
+      },
+      {
+        "concept": "settings",
+        "n": 6,
+        "passed": 0,
+        "rate": 0.0
+      }
+    ],
+    "n_calls": 18,
+    "n": 116,
+    "passed": 57,
+    "pass_rate": 0.49137931034482757,
+    "concepts": [
+      "dialogue",
+      "equipment",
+      "exit",
+      "inventory",
+      "map",
+      "quest",
+      "save",
+      "settings",
+      "stats"
+    ],
+    "fingerprint": {
+      "spec_id": "icon-24-line-v1",
+      "arm": "with_spec",
+      "public_spec_sha": "5c38f9a9f798",
+      "system_prompt_sha": "43b76b8878c5",
+      "initial_prompt_skeleton_sha": "b042fe7d54c8",
+      "retry_prompt_sha": "02bc8528e2f2",
+      "restructure_prompt_sha": "30b7131462f1",
+      "note": "프롬프트 전문이 아니라 지문이다. 회차 간 '같았나 달랐나'를 사후에 답할 수 있게 하는 것이 목적."
+    },
+    "why": null
+  },
+  "no_spec": {
+    "arm": "no_spec",
+    "calls": [
+      {
+        "concept": "quest",
+        "n": 6,
+        "passed": 0,
+        "rate": 0.0
+      },
+      {
+        "concept": "quest",
+        "n": 6,
+        "passed": 0,
+        "rate": 0.0
+      },
+      {
+        "concept": "equipment",
+        "n": 6,
+        "passed": 0,
+        "rate": 0.0
+      },
+      {
+        "concept": "equipment",
+        "n": 6,
+        "passed": 0,
+        "rate": 0.0
+      },
+      {
+        "concept": "stats",
+        "n": 6,
+        "passed": 0,
+        "rate": 0.0
+      },
+      {
+        "concept": "stats",
+        "n": 6,
+        "passed": 0,
+        "rate": 0.0
+      },
+      {
+        "concept": "dialogue",
+        "n": 6,
+        "passed": 0,
+        "rate": 0.0
+      },
+      {
+        "concept": "dialogue",
+        "n": 6,
+        "passed": 0,
+        "rate": 0.0
+      },
+      {
+        "concept": "exit",
+        "n": 7,
+        "passed": 0,
+        "rate": 0.0
+      },
+      {
+        "concept": "exit",
+        "n": 6,
+        "passed": 0,
+        "rate": 0.0
+      },
+      {
+        "concept": "save",
+        "n": 7,
+        "passed": 0,
+        "rate": 0.0
+      },
+      {
+        "concept": "save",
+        "n": 6,
+        "passed": 0,
+        "rate": 0.0
+      },
+      {
+        "concept": "inventory",
+        "n": 6,
+        "passed": 0,
+        "rate": 0.0
+      },
+      {
+        "concept": "inventory",
+        "n": 7,
+        "passed": 1,
+        "rate": 0.14285714285714285
+      },
+      {
+        "concept": "map",
+        "n": 6,
+        "passed": 0,
+        "rate": 0.0
+      },
+      {
+        "concept": "map",
+        "n": 6,
+        "passed": 0,
+        "rate": 0.0
+      },
+      {
+        "concept": "settings",
+        "n": 7,
+        "passed": 0,
+        "rate": 0.0
+      },
+      {
+        "concept": "settings",
+        "n": 6,
+        "passed": 0,
+        "rate": 0.0
+      }
+    ],
+    "n_calls": 18,
+    "n": 112,
+    "passed": 1,
+    "pass_rate": 0.008928571428571428,
+    "concepts": [
+      "dialogue",
+      "equipment",
+      "exit",
+      "inventory",
+      "map",
+      "quest",
+      "save",
+      "settings",
+      "stats"
+    ],
+    "fingerprint": {
+      "spec_id": "icon-24-line-v1",
+      "arm": "no_spec",
+      "public_spec_sha": null,
+      "system_prompt_sha": "0d3731bd8f9c",
+      "initial_prompt_skeleton_sha": "190ab486cccf",
+      "retry_prompt_sha": "02bc8528e2f2",
+      "restructure_prompt_sha": "30b7131462f1",
+      "note": "프롬프트 전문이 아니라 지문이다. 회차 간 '같았나 달랐나'를 사후에 답할 수 있게 하는 것이 목적."
+    },
+    "why": null
+  },
+  "rule_counts": {
+    "with_spec": {
+      "grid.snap": 41,
+      "stroke.linecap": 31,
+      "stroke.linejoin": 31,
+      "padding.min": 5,
+      "fill": 1,
+      "path.max_count": 1,
+      "shape.max_count": 1
+    },
+    "no_spec": {
+      "stroke.width": 103,
+      "fill": 30,
+      "grid.snap": 20,
+      "stroke.linejoin": 13,
+      "padding.min": 12,
+      "stroke.linecap": 8,
+      "allowed_elements": 5,
+      "shape.max_count": 2
+    }
+  },
+  "judgement": {
+    "verdict": "spec_helps",
+    "why": "ci_lower_gt_threshold",
+    "d": 0.48677248677248675,
+    "ci95": [
+      0.2962962962962963,
+      0.67989417989418
+    ],
+    "gate_ok": true,
+    "unit": "call",
+    "n_with": 18,
+    "n_no": 18,
+    "min_per_arm": 18,
+    "min_concepts": 8
+  },
+  "judgement_v0_candidate_unit": {
+    "verdict": "spec_helps",
+    "why": "ci_lower_gt_threshold",
+    "d": 0.4824507389162561,
+    "ci95": [
+      0.3876231527093596,
+      0.5689655172413793
+    ],
+    "gate_ok": true,
+    "unit": "candidate",
+    "n_with": 116,
+    "n_no": 112,
+    "min_per_arm": 24,
+    "min_concepts": 4
+  },
+  "rows": {
+    "with_spec": [
+      {
+        "concept": "quest",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.linecap",
+          "stroke.linejoin"
+        ],
+        "hidden_violated": false,
+        "signature": 0
+      },
+      {
+        "concept": "quest",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.linecap",
+          "stroke.linejoin"
+        ],
+        "hidden_violated": false,
+        "signature": 0
+      },
+      {
+        "concept": "quest",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.linecap",
+          "stroke.linejoin"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "quest",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.linecap",
+          "stroke.linejoin"
+        ],
+        "hidden_violated": false,
+        "signature": 0
+      },
+      {
+        "concept": "quest",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.linecap",
+          "stroke.linejoin"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "quest",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.linecap",
+          "stroke.linejoin"
+        ],
+        "hidden_violated": false,
+        "signature": 0
+      },
+      {
+        "concept": "quest",
+        "verdict": "FAIL",
+        "violated": [
+          "padding.min",
+          "stroke.linecap",
+          "stroke.linejoin"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "quest",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "quest",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 0
+      },
+      {
+        "concept": "quest",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "quest",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "quest",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "quest",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "equipment",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "equipment",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "equipment",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "equipment",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "equipment",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "equipment",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "equipment",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "equipment",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "equipment",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "equipment",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "equipment",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "equipment",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 3
+      },
+      {
+        "concept": "equipment",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "stats",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 0
+      },
+      {
+        "concept": "stats",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "stats",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "stats",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 0
+      },
+      {
+        "concept": "stats",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 0
+      },
+      {
+        "concept": "stats",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "stats",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 0
+      },
+      {
+        "concept": "stats",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 0
+      },
+      {
+        "concept": "stats",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "stats",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 0
+      },
+      {
+        "concept": "stats",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "stats",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 0
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "padding.min"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "padding.min"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "hidden_violated": false,
+        "signature": 3
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "hidden_violated": false,
+        "signature": 4
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "hidden_violated": false,
+        "signature": 3
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "hidden_violated": false,
+        "signature": 3
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "exit",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "stroke.linecap",
+          "stroke.linejoin"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "exit",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "stroke.linecap",
+          "stroke.linejoin"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "exit",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "stroke.linecap",
+          "stroke.linejoin"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "exit",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.linecap",
+          "stroke.linejoin"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "exit",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.linecap",
+          "stroke.linejoin"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "exit",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.linecap",
+          "stroke.linejoin"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "exit",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "stroke.linecap",
+          "stroke.linejoin"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "exit",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.linecap",
+          "stroke.linejoin"
+        ],
+        "hidden_violated": false,
+        "signature": 0
+      },
+      {
+        "concept": "exit",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "stroke.linecap",
+          "stroke.linejoin"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "exit",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.linecap",
+          "stroke.linejoin"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "exit",
+        "verdict": "FAIL",
+        "violated": [
+          "padding.min",
+          "stroke.linecap",
+          "stroke.linejoin"
+        ],
+        "hidden_violated": false,
+        "signature": 0
+      },
+      {
+        "concept": "exit",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "stroke.linecap",
+          "stroke.linejoin"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "save",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 0
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "save",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "save",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "save",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "save",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 0
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "stroke.linecap",
+          "stroke.linejoin"
+        ],
+        "hidden_violated": false,
+        "signature": 3
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "stroke.linecap",
+          "stroke.linejoin"
+        ],
+        "hidden_violated": false,
+        "signature": 3
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "stroke.linecap",
+          "stroke.linejoin"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "stroke.linecap",
+          "stroke.linejoin"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "stroke.linecap",
+          "stroke.linejoin"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "stroke.linecap",
+          "stroke.linejoin"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "inventory",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 3
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "fill"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "inventory",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "inventory",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 4
+      },
+      {
+        "concept": "inventory",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "inventory",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 3
+      },
+      {
+        "concept": "inventory",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "map",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 4
+      },
+      {
+        "concept": "map",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "map",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 3
+      },
+      {
+        "concept": "map",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "map",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 3
+      },
+      {
+        "concept": "map",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "map",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "map",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "map",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "map",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "map",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 0
+      },
+      {
+        "concept": "map",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 3
+      },
+      {
+        "concept": "map",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 0
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "path.max_count",
+          "shape.max_count"
+        ],
+        "hidden_violated": false,
+        "signature": 8
+      },
+      {
+        "concept": "settings",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 0
+      },
+      {
+        "concept": "settings",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "settings",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "settings",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "stroke.linecap",
+          "stroke.linejoin"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.linecap",
+          "stroke.linejoin"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.linecap",
+          "stroke.linejoin"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.linecap",
+          "stroke.linejoin"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "padding.min",
+          "stroke.linecap",
+          "stroke.linejoin"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "stroke.linecap",
+          "stroke.linejoin"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      }
+    ],
+    "no_spec": [
+      {
+        "concept": "quest",
+        "verdict": "FAIL",
+        "violated": [
+          "fill",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "quest",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 3
+      },
+      {
+        "concept": "quest",
+        "verdict": "FAIL",
+        "violated": [
+          "fill",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "quest",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "quest",
+        "verdict": "FAIL",
+        "violated": [
+          "fill",
+          "grid.snap",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "quest",
+        "verdict": "FAIL",
+        "violated": [
+          "fill",
+          "stroke.linejoin",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "quest",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 3
+      },
+      {
+        "concept": "quest",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "quest",
+        "verdict": "FAIL",
+        "violated": [
+          "fill",
+          "grid.snap",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 4
+      },
+      {
+        "concept": "quest",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 3
+      },
+      {
+        "concept": "quest",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "quest",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "equipment",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "equipment",
+        "verdict": "FAIL",
+        "violated": [
+          "fill",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "equipment",
+        "verdict": "FAIL",
+        "violated": [
+          "allowed_elements",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "equipment",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "equipment",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "equipment",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "equipment",
+        "verdict": "FAIL",
+        "violated": [
+          "fill",
+          "stroke.linecap",
+          "stroke.linejoin",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 0
+      },
+      {
+        "concept": "equipment",
+        "verdict": "FAIL",
+        "violated": [
+          "fill",
+          "stroke.linecap",
+          "stroke.linejoin",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 0
+      },
+      {
+        "concept": "equipment",
+        "verdict": "FAIL",
+        "violated": [
+          "fill",
+          "stroke.linecap",
+          "stroke.linejoin",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "equipment",
+        "verdict": "FAIL",
+        "violated": [
+          "fill"
+        ],
+        "hidden_violated": false,
+        "signature": 3
+      },
+      {
+        "concept": "equipment",
+        "verdict": "FAIL",
+        "violated": [
+          "allowed_elements",
+          "fill",
+          "stroke.linecap",
+          "stroke.linejoin",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "equipment",
+        "verdict": "FAIL",
+        "violated": [
+          "fill",
+          "stroke.linecap",
+          "stroke.linejoin",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "stats",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 0
+      },
+      {
+        "concept": "stats",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 0
+      },
+      {
+        "concept": "stats",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 3
+      },
+      {
+        "concept": "stats",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 0
+      },
+      {
+        "concept": "stats",
+        "verdict": "FAIL",
+        "violated": [
+          "allowed_elements",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 0
+      },
+      {
+        "concept": "stats",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 0
+      },
+      {
+        "concept": "stats",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 0
+      },
+      {
+        "concept": "stats",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 0
+      },
+      {
+        "concept": "stats",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 0
+      },
+      {
+        "concept": "stats",
+        "verdict": "FAIL",
+        "violated": [
+          "shape.max_count",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 0
+      },
+      {
+        "concept": "stats",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "stats",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "FAIL",
+        "violated": [
+          "fill",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 5
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "FAIL",
+        "violated": [
+          "allowed_elements",
+          "grid.snap",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 5
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "padding.min",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "FAIL",
+        "violated": [
+          "fill",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 0
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "exit",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "exit",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "exit",
+        "verdict": "FAIL",
+        "violated": [
+          "fill",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "exit",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "exit",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "exit",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "exit",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "exit",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "exit",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "exit",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "exit",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "exit",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "exit",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "fill",
+          "stroke.linecap",
+          "stroke.linejoin",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 0
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "fill",
+          "grid.snap",
+          "stroke.linejoin",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "allowed_elements",
+          "fill",
+          "stroke.linejoin",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 0
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "fill",
+          "grid.snap",
+          "stroke.linejoin",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "fill",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 3
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 3
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "padding.min",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 3
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 4
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "padding.min",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 3
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 4
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.linecap",
+          "stroke.linejoin"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "inventory",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 3
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "fill"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.linejoin"
+        ],
+        "hidden_violated": false,
+        "signature": 3
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "hidden_violated": false,
+        "signature": 3
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "map",
+        "verdict": "FAIL",
+        "violated": [
+          "fill",
+          "padding.min"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "map",
+        "verdict": "FAIL",
+        "violated": [
+          "fill",
+          "padding.min"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "map",
+        "verdict": "FAIL",
+        "violated": [
+          "padding.min"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "map",
+        "verdict": "FAIL",
+        "violated": [
+          "fill",
+          "padding.min",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "map",
+        "verdict": "FAIL",
+        "violated": [
+          "fill",
+          "padding.min",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "map",
+        "verdict": "FAIL",
+        "violated": [
+          "fill",
+          "padding.min",
+          "stroke.linecap",
+          "stroke.linejoin",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "map",
+        "verdict": "FAIL",
+        "violated": [
+          "padding.min",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "map",
+        "verdict": "FAIL",
+        "violated": [
+          "fill",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "map",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "map",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "map",
+        "verdict": "FAIL",
+        "violated": [
+          "fill",
+          "shape.max_count",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "map",
+        "verdict": "FAIL",
+        "violated": [
+          "fill",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "padding.min",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "padding.min",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "fill",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      }
+    ]
+  }
+}

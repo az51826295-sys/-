@@ -1,0 +1,55 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "4cb155216e738de0fcc93e15b6adc7c923031bd1",
+ "parent_commit": "e427a7475d957f78667a50da9608cd32d6a53204",
+ "answer_files": [],
+ "answer_functions": [],
+ "patch_lines": 71,
+ "added_tests": {
+  "tests/test_validate.py::test_url_custom_message": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_validate.py::test_email_custom_message": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_validate.py::test_range_min_message": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_validate.py::test_equal_custom_message": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_validate.py::test_regexp_custom_message": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_validate.py::test_predicate": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_validate.py::test_predicate_custom_message": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "tests/test_validate.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 25.9,
+ "env_error_tests": 7,
+ "qualified": false
+}

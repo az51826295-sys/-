@@ -1,0 +1,51 @@
+# Rookery Alpha engine - systemd unit (build order step 8).
+#
+# Install:
+#   sudo cp deploy/rookery-alpha.service /etc/systemd/system/
+#   sudo cp deploy/rookery-alpha.env.example /etc/rookery/alpha.env
+#   # edit /etc/rookery/alpha.env: set the API key and paths
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now rookery-alpha
+#
+# enable makes it start on every boot (WantedBy=multi-user.target);
+# Restart=always brings it back after a crash. Because recovery is the
+# same path as a lease expiring, an unclean restart loses no work.
+
+[Unit]
+Description=Rookery Alpha autonomous code-fix engine
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=rookery
+Group=rookery
+
+# secrets and config live here, not in the unit
+EnvironmentFile=/etc/rookery/alpha.env
+WorkingDirectory=/opt/rookery/genesis-project
+ExecStartPre=/opt/rookery/venv/bin/python -m genesis.rookery.engine.service --check
+ExecStart=/opt/rookery/venv/bin/python -m genesis.rookery.engine.service
+
+Restart=always
+RestartSec=15
+# give in-flight worktree/pytest work time to stop on SIGTERM
+TimeoutStopSec=120
+
+# --- hardening -------------------------------------------------------
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+# the engine only ever writes under its data dir and its work tree,
+# and reads/commits inside the target repo clone. Grant exactly those.
+ReadWritePaths=/opt/rookery/data /opt/rookery/repo
+Environment=HOME=/opt/rookery/data
+Environment=GIT_TERMINAL_PROMPT=0
+
+[Install]
+WantedBy=multi-user.target

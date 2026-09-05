@@ -1,0 +1,41 @@
+{
+ "repo": "more-itertools",
+ "fix_commit": "d71c4ad9f828117e609269701f6df10419ae90c8",
+ "parent_commit": "c0ed9d187906d202b9276a0750b3c377584cb75f",
+ "answer_files": [
+  "more_itertools/more.py"
+ ],
+ "answer_functions": [
+  "more_itertools/more.py::locate",
+  "more_itertools/more.py::replace"
+ ],
+ "patch_lines": 22,
+ "added_tests": {
+  "tests/test_more.py::LocateTests::test_window_size_large": {
+   "parent": "pass",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "tests/test_more.py::RlocateTests::test_window_size_large": {
+   "parent": "pass",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "tests/test_more.py::ReplaceTests::test_window_size_large": {
+   "parent": "pass",
+   "fix": "pass",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "tests/test_more.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 9.2,
+ "env_error_tests": 0,
+ "qualified": false,
+ "selector_event_proxy_v1": false
+}

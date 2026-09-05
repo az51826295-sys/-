@@ -1,0 +1,202 @@
+# 자산 심판 v0 — 기계용 규칙 골격 (초안 §2 mechanical 중 **실제로 잴 수 있는** 것만)
+# 원문: docs/asset-judge-v0-draft.md / 해부: docs/asset-judge-v0-inheritance.md
+#
+# ★ status: draft. THRESH_*가 null인 한 심판은 pass/fail을 내지 않고 undefined다.
+#   (tools/judge_bench.py _rule_check → Unjudgeable). 숫자를 보고 문턱을 정하는
+#   경로를 코드가 막는다 — 초안 §6 never 2항.
+spec_id: asset_judge_v0
+inherits_from: judge-bench-v1.2        # 08-26 observed.* 승인으로 v1.1 → v1.2
+status: registered_partial      # 잴 수 있는 항목만 동결. 나머지는 여전히 null
+registered_at: 2026-08-26T00:31:49
+frozen_by: "사장님 (대화 승인: '문턱 동결해줘, 추천값 그대로')"
+frozen_basis: >
+  값은 docs/asset-judge-v0-inheritance.md §5의 추천 그대로다. 그 추천은
+  2026-08-25 22:50에 작성됐고, **후보 자산을 채점하며 조정한 적이 없다**
+  (그 뒤 돌린 것은 전부 합성 픽스처). 원칙 ① 유지.
+unfrozen_reason: >
+  DROPOUT_MAX_S·DC_OFFSET_MAX와 세트 문턱 7개는 근거가 없어 추천하지 않았다.
+  잴 도구가 없거나(BPM·조성·LUFS·임베딩) 사장님 취향이 기준인 항목이다.
+  null인 동안 그 규칙을 읽는 판정은 undefined로 나온다 - 설계대로다.
+
+thresholds:                            # ← 사장님이 동결할 자리. 지금은 전부 null
+  THRESH_PAL: 0.005                   # 동결 08-26 · 팔레트 밖 픽셀 비율 상한 (안티에일리어싱 경계 0.1~0.5% 여유)
+  EDGE_ALPHA_MAX: 0.05                 # 초안이 이미 박은 값
+  THRESH_DUR: 0.5                   # 동결 08-26 · 길이 오차 초 (사람이 못 느끼는 폭)
+  THRESH_SIL: 0.10                   # 동결 08-26 · 앞뒤 무음 초 (루프에서 0.1초는 이미 들린다)
+  PEAK_DBFS_MAX: -1.5                   # 동결 08-26 · 표본 피크 상한 dBFS (dBTP -1.0의 대체 - 표본 피크는 실제 피크를 과소평가하므로 더 조인다)
+  THRESH_SEAM: 0.02                   # 동결 08-26 · 이음새 점프(정규화 진폭). 스펙트럼 측정이 붙으면 재등록
+  DROPOUT_MAX_S: null                  # 구간 무음 결손 상한 초
+  DC_OFFSET_MAX: null                  # DC 오프셋 절대값 상한
+
+image_rules:
+  - name: file_integrity
+    measured: measured.error
+    op: is_null
+  - name: canvas_size.width
+    measured: measured.width
+    op: "=="
+    spec: spec.width
+  - name: canvas_size.height
+    measured: measured.height
+    op: "=="
+    spec: spec.height
+  - name: alpha_channel.edge
+    measured: measured.edge_alpha_max
+    op: "<="
+    spec: spec.edge_alpha_max
+  - name: palette_conformance
+    measured: measured.palette_outside_ratio
+    op: "<="
+    spec: spec.palette_outside_max
+  - name: color_count
+    measured: measured.color_count
+    op: "<="
+    spec: spec.color_count_max
+
+audio_rules:
+  - name: file_integrity
+    measured: measured.error
+    op: is_null
+  - name: sample_rate
+    measured: measured.sample_rate
+    op: "=="
+    spec: spec.sample_rate
+  - name: duration.max
+    measured: measured.duration_s
+    op: "<="
+    spec: spec.duration_max_s
+  - name: sample_peak
+    measured: measured.sample_peak_dbfs
+    op: "<="
+    spec: spec.peak_dbfs_max
+  - name: silence_head
+    measured: measured.lead_silence_s
+    op: "<="
+    spec: spec.silence_max_s
+  - name: silence_tail
+    measured: measured.tail_silence_s
+    op: "<="
+    spec: spec.silence_max_s
+  - name: dropout
+    measured: measured.max_dropout_s
+    op: "<="
+    spec: spec.dropout_max_s
+
+unmeasured:                            # 잴 도구가 없다. 규칙에 넣지 않는다
+  image: [license_provenance, style_conformance, subject_tags, forbidden_content]
+  audio: [bpm, key_mode, loudness_lufs, true_peak_dbtp, loop_seam_spectral,
+          mood_tags, instrument_tags]
+  reason: >
+    numpy/librosa/래스터라이저·임베딩 미도입, 라이선스 보관 규약 미정,
+    추출기(G) 호출은 지출 게이트. 도구가 생기기 전에는 판정에 넣지 않는다.
+
+# ─────────────────────────────────────────────────────────────────────
+# 심판대 검증용 샘플 (tools/judge_bench.py). **운영 문턱이 아니다** —
+# "이 규칙 묶음이 자기 반례를 거절할 수 있는가"만 보는 자체 검증용 숫자다.
+# 운영 문턱은 위 thresholds 블록이며 지금도 null이다.
+# ─────────────────────────────────────────────────────────────────────
+image_bench:
+  positive:
+    spec: {width: 64, height: 64, edge_alpha_max: 0.05,
+           palette_outside_max: 0.005, color_count_max: 8}
+    measured: {error: null, width: 64, height: 64, edge_alpha_max: 0.0,
+               palette_outside_ratio: 0.0, color_count: 2}
+  negatives:
+    - note: 해상도가 스펙과 다름
+      mutate: {measured.width: 128}
+    - note: 배경이 안 뚫림(가장자리 불투명)
+      mutate: {measured.edge_alpha_max: 1.0}
+    - note: 팔레트 밖 색이 많음
+      mutate: {measured.palette_outside_ratio: 0.4}
+    - note: 색 수 상한 초과
+      mutate: {measured.color_count: 900}
+    - note: 파일이 깨져 디코딩 실패
+      mutate: {measured.error: "디코딩 실패"}
+
+audio_bench:
+  positive:
+    spec: {sample_rate: 44100, duration_max_s: 60.0, peak_dbfs_max: -1.5,
+           silence_max_s: 0.1, dropout_max_s: 0.1}
+    measured: {error: null, sample_rate: 44100, duration_s: 30.0,
+               sample_peak_dbfs: -6.0, lead_silence_s: 0.0,
+               tail_silence_s: 0.02, max_dropout_s: 0.0}
+  negatives:
+    - note: 샘플레이트가 스펙과 다름
+      mutate: {measured.sample_rate: 22050}
+    - note: 길이 초과
+      mutate: {measured.duration_s: 120.0}
+    - note: 클리핑(피크가 상한 위)
+      mutate: {measured.sample_peak_dbfs: -0.1}
+    - note: 앞 무음이 길다
+      mutate: {measured.lead_silence_s: 1.5}
+    - note: 중간 결손(무음 구간)
+      mutate: {measured.max_dropout_s: 0.8}
+    - note: 디코딩 실패
+      mutate: {measured.error: "WAV 디코딩 실패"}
+
+# ─────────────────────────────────────────────────────────────────────
+# 세트 층(그림) — 초안 §3 layer_set.image 중 잴 수 있는 것.
+# THRESH_HUE_VAR / THRESH_VAL_OUT / THRESH_SAT_OUT / THRESH_LINE_CV 는 미동결.
+# outlier_detection은 격리(quarantine)이지 탈락이 아니므로 규칙에 넣지 않는다 —
+# 순위(outlier_ranking)만 내고 THRESH_OUT_PCT 동결 후 격리 큐에서 자른다.
+# ─────────────────────────────────────────────────────────────────────
+set_thresholds:
+  THRESH_HUE_VAR: null       # 세트 색상 원형 분산 상한 (0=완전 일치, 1=완전 분산)
+  THRESH_VAL_OUT: null       # 명도 중앙값 이탈 자산 비율 상한
+  THRESH_SAT_OUT: null       # 채도 중앙값 이탈 자산 비율 상한
+  THRESH_LINE_CV: null       # 획 두께 변동계수 상한
+  VALUE_TOLERANCE: null      # '이탈'의 폭(명도) - 비율을 세려면 이것도 있어야 한다
+  SATURATION_TOLERANCE: null # '이탈'의 폭(채도)
+  THRESH_OUT_PCT: null       # 격리 비율(상위 %) - 탈락 아님
+
+image_set_rules:
+  - name: hue_dispersion
+    measured: measured.hue_dispersion
+    op: "<="
+    spec: spec.hue_dispersion_max
+  - name: value_range_alignment
+    measured: measured.value_outside_ratio
+    op: "<="
+    spec: spec.value_outside_max
+  - name: saturation_alignment
+    measured: measured.saturation_outside_ratio
+    op: "<="
+    spec: spec.saturation_outside_max
+  - name: line_weight_consistency
+    measured: measured.thickness_cv
+    op: "<="
+    spec: spec.thickness_cv_max
+
+image_set_bench:                 # 심판대 검증용. 운영 문턱 아님
+  positive:
+    spec: {hue_dispersion_max: 0.25, value_outside_max: 0.2,
+           saturation_outside_max: 0.2, thickness_cv_max: 0.3}
+    measured: {hue_dispersion: 0.05, value_outside_ratio: 0.0,
+               saturation_outside_ratio: 0.0, thickness_cv: 0.08}
+  negatives:
+    - note: 세트 색이 제각각(색상 분산 초과)
+      mutate: {measured.hue_dispersion: 0.8}
+    - note: 명도 이탈 자산이 절반
+      mutate: {measured.value_outside_ratio: 0.5}
+    - note: 채도 이탈 자산이 절반
+      mutate: {measured.saturation_outside_ratio: 0.5}
+    - note: 획 두께가 들쭉날쭉
+      mutate: {measured.thickness_cv: 0.9}
+
+# ─────────────────────────────────────────────────────────────────────
+# 동결값이 실제로 쓰이는 경로. 호출자는 숫자를 손으로 다시 적지 말고 이 프로필을
+# 쓴다(genesis.asset_specs.frozen_spec). null인 칸은 여전히 undefined를 만든다.
+# ─────────────────────────────────────────────────────────────────────
+profiles:
+  image:
+    palette_outside_max: THRESH_PAL
+    edge_alpha_max: EDGE_ALPHA_MAX
+  audio:
+    silence_max_s: THRESH_SIL
+    peak_dbfs_max: PEAK_DBFS_MAX
+    dropout_max_s: DROPOUT_MAX_S        # 미동결 → 이 규칙은 undefined
+  set_image:
+    hue_dispersion_max: THRESH_HUE_VAR          # 미동결
+    value_outside_max: THRESH_VAL_OUT           # 미동결
+    saturation_outside_max: THRESH_SAT_OUT      # 미동결
+    thickness_cv_max: THRESH_LINE_CV            # 미동결

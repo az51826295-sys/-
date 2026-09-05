@@ -1,0 +1,1 @@
+{"rows": [[0, "fail"], [1, "full"], [2, "full"], [3, "full"], [4, "full"], [5, "full"], [6, "full"], [7, "full"], [8, "fail"], [9, "full"]], "outcomes": {"full": 8, "public_only": 0, "fail": 2}, "wrong_kinds": 0, "usage": {"calls": 10, "input_tokens": 16680, "output_tokens": 1938}}

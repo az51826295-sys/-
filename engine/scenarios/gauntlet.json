@@ -1,0 +1,11 @@
+{
+    "width": 12,
+    "height": 12,
+    "num_door_sections": 3,
+    "num_hazards": 3,
+    "hazard_energy_damage": 10,
+    "hazard_reward_penalty": -0.5,
+    "slip_probability": 0.05,
+    "initial_energy": 220,
+    "max_steps": 300
+}

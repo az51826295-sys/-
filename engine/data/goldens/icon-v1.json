@@ -1,0 +1,17 @@
+{
+  "id": "golden-icon-v1",
+  "spec": "data/icon_specs/icon-24-line-v1.yaml",
+  "fixed_at": "2026-08-26T09:05",
+  "fixed_by": "사장님 결정(A): 오늘 만든 아이콘을 표본으로",
+  "note": "정직 조항 — 이 positive는 우리 심판이 통과시킨 것이라 positive_control은 구조상 1.0이 나온다(순환). 심판을 시험하는 것은 negative·null 두 통제다. 사람이 채택 확정한 표본이 생기면 그것으로 교체할 것.",
+  "assets": [
+    "out/icons/rpg-ui-v1-strict/01_save.svg",
+    "out/icons/rpg-ui-v1-strict/02_inventory.svg",
+    "out/icons/rpg-ui-v1-strict/03_map.svg",
+    "out/icons/rpg-ui-v1-strict/04_settings.svg"
+  ],
+  "positive_source": "self",
+  "model_based_fields": [],
+  "recontracted_at": "2026-08-26T11:31",
+  "recontract_note": "G1/G2 재등록(docs/golden-decisions-20260826.md): positive 출처가 self이므로 positive_control은 UNDEFINED, model_based 필드 0건이므로 null_control은 N/A. 대신 spec_sensitivity가 관문이다."
+}

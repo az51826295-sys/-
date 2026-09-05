@@ -1,0 +1,1410 @@
+{
+ "experiment": "ablation11",
+ "config": {
+  "model": "claude-haiku-4-5-20251001",
+  "temperature": 1.0,
+  "budget": 8,
+  "reps": 5,
+  "design": "docs/ablation-structure-design.md v1.1"
+ },
+ "runs": {
+  "BS|abl_boltons_d0a284fc7|0": {
+   "task": "abl_boltons_d0a284fc7",
+   "arm": "BS",
+   "rep": 0,
+   "candidates": [],
+   "test_runs": 0,
+   "rollback_rounds": 2,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "no_patch",
+   "wall_s": 11.2,
+   "failure_report_chars": 0,
+   "hyp_stats": {
+    "generated": 0,
+    "valid_selected": 0,
+    "distinct_files": 0,
+    "correct_file_hyp": false,
+    "banned_revisits": 0
+   },
+   "attempt": 1
+  },
+  "BF|abl_boltons_d0a284fc7|0": {
+   "task": "abl_boltons_d0a284fc7",
+   "arm": "BF",
+   "rep": 0,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "tests/test_setutils.py::test_iset_scalar_index_bounds: st_setutils.py::test_iset_scalar_index_bounds - assert 1 == 0\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed in 0.89s\n; tests/test_setutils.py::test_indexed_set_mutate: etutils.py::test_indexed_set_mutate - assert (None, None) ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!",
+     "files": [
+      "boltons/setutils.py"
+     ],
+     "sig": "b660fe8212bf",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "tests/test_setutils.py::test_iset_scalar_index_bounds: st_setutils.py::test_iset_scalar_index_bounds - assert 1 == 0\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed in 0.89s\n; tests/test_setutils.py::test_indexed_set_mutate: etutils.py::test_indexed_set_mutate - assert (None, None) ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!",
+     "files": [
+      "boltons/setutils.py"
+     ],
+     "sig": "e46172bc5e39",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 2,
+     "code_fail": "patch_parse_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "",
+     "files": [],
+     "sig": "",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 3,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "tests/test_setutils.py::test_iset_scalar_index_bounds: etutils.py::test_iset_scalar_index_bounds - Failed: DID NO...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed in 1.04s\n",
+     "files": [
+      "boltons/setutils.py"
+     ],
+     "sig": "60463a4ef341",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 4,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "tests/test_setutils.py::test_indexed_set_mutate: etutils.py::test_indexed_set_mutate - assert (None, None) ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed in 0.65s\n",
+     "files": [
+      "boltons/setutils.py"
+     ],
+     "sig": "f5c76ee5c930",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 5,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": "",
+     "files": [
+      "boltons/setutils.py"
+     ],
+     "sig": "f9df03e37e0c",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    }
+   ],
+   "test_runs": 31,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "full",
+   "wall_s": 101.5,
+   "failure_report_chars": 0,
+   "attempt": 1
+  },
+  "BS|abl_boltons_d0a284fc7|1": {
+   "task": "abl_boltons_d0a284fc7",
+   "arm": "BS",
+   "rep": 1,
+   "candidates": [],
+   "test_runs": 0,
+   "rollback_rounds": 2,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "no_patch",
+   "wall_s": 10.5,
+   "failure_report_chars": 0,
+   "hyp_stats": {
+    "generated": 0,
+    "valid_selected": 0,
+    "distinct_files": 0,
+    "correct_file_hyp": false,
+    "banned_revisits": 0
+   },
+   "attempt": 1
+  },
+  "BF|abl_boltons_d0a284fc7|1": {
+   "task": "abl_boltons_d0a284fc7",
+   "arm": "BF",
+   "rep": 1,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": "",
+     "files": [
+      "boltons/setutils.py"
+     ],
+     "sig": "c2c607a6cd09",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": "",
+     "files": [
+      "boltons/setutils.py"
+     ],
+     "sig": "8a99bfadb9ec",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": "",
+     "files": [
+      "boltons/setutils.py"
+     ],
+     "sig": "8a99bfadb9ec",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    }
+   ],
+   "test_runs": 15,
+   "rollback_rounds": 0,
+   "duplicates": 1,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 37.3,
+   "failure_report_chars": 0,
+   "attempt": 1
+  },
+  "BS|abl_boltons_d0a284fc7|2": {
+   "task": "abl_boltons_d0a284fc7",
+   "arm": "BS",
+   "rep": 2,
+   "candidates": [],
+   "test_runs": 0,
+   "rollback_rounds": 2,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "no_patch",
+   "wall_s": 10.3,
+   "failure_report_chars": 0,
+   "hyp_stats": {
+    "generated": 0,
+    "valid_selected": 0,
+    "distinct_files": 0,
+    "correct_file_hyp": false,
+    "banned_revisits": 0
+   },
+   "attempt": 1
+  },
+  "BF|abl_boltons_d0a284fc7|2": {
+   "task": "abl_boltons_d0a284fc7",
+   "arm": "BF",
+   "rep": 2,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": "patch_parse_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "",
+     "files": [],
+     "sig": "",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": "",
+     "files": [
+      "boltons/setutils.py"
+     ],
+     "sig": "d1f9cc371ac5",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": "",
+     "files": [
+      "boltons/setutils.py"
+     ],
+     "sig": "41202f41f1da",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    }
+   ],
+   "test_runs": 15,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "full",
+   "wall_s": 34.3,
+   "failure_report_chars": 0,
+   "attempt": 1
+  },
+  "BS|abl_boltons_d0a284fc7|3": {
+   "task": "abl_boltons_d0a284fc7",
+   "arm": "BS",
+   "rep": 3,
+   "candidates": [],
+   "test_runs": 0,
+   "rollback_rounds": 2,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "no_patch",
+   "wall_s": 10.4,
+   "failure_report_chars": 0,
+   "hyp_stats": {
+    "generated": 0,
+    "valid_selected": 0,
+    "distinct_files": 0,
+    "correct_file_hyp": false,
+    "banned_revisits": 0
+   },
+   "attempt": 1
+  },
+  "BF|abl_boltons_d0a284fc7|3": {
+   "task": "abl_boltons_d0a284fc7",
+   "arm": "BF",
+   "rep": 3,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "tests/test_setutils.py::test_iset_scalar_index_bounds: etutils.py::test_iset_scalar_index_bounds - UnboundLocalEr...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed in 0.75s\n; tests/test_setutils.py::test_indexed_set_mutate: etutils.py::test_indexed_set_mutate - assert (None, None) ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!",
+     "files": [
+      "boltons/setutils.py"
+     ],
+     "sig": "77257c155394",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "tests/test_setutils.py::test_iset_scalar_index_bounds: etutils.py::test_iset_scalar_index_bounds - Failed: DID NO...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed in 0.73s\n",
+     "files": [
+      "boltons/setutils.py"
+     ],
+     "sig": "24592e4b3a54",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "tests/test_setutils.py::test_iset_scalar_index_bounds: etutils.py::test_iset_scalar_index_bounds - Failed: DID NO...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed in 0.76s\n",
+     "files": [
+      "boltons/setutils.py"
+     ],
+     "sig": "98745514dbfa",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 3,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": "",
+     "files": [
+      "boltons/setutils.py"
+     ],
+     "sig": "24592e4b3a54",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 4,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": "",
+     "files": [
+      "boltons/setutils.py"
+     ],
+     "sig": "24592e4b3a54",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 5,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": "",
+     "files": [
+      "boltons/setutils.py"
+     ],
+     "sig": "24592e4b3a54",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 6,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": "",
+     "files": [
+      "boltons/setutils.py"
+     ],
+     "sig": "24592e4b3a54",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 7,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": "",
+     "files": [
+      "boltons/setutils.py"
+     ],
+     "sig": "24592e4b3a54",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    }
+   ],
+   "test_runs": 31,
+   "rollback_rounds": 2,
+   "duplicates": 5,
+   "first_candidate_full": false,
+   "final_status": "regression",
+   "wall_s": 80.3,
+   "failure_report_chars": 0,
+   "attempt": 1
+  },
+  "BS|abl_boltons_d0a284fc7|4": {
+   "task": "abl_boltons_d0a284fc7",
+   "arm": "BS",
+   "rep": 4,
+   "candidates": [],
+   "test_runs": 0,
+   "rollback_rounds": 2,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "no_patch",
+   "wall_s": 11.3,
+   "failure_report_chars": 0,
+   "hyp_stats": {
+    "generated": 0,
+    "valid_selected": 0,
+    "distinct_files": 0,
+    "correct_file_hyp": false,
+    "banned_revisits": 0
+   },
+   "attempt": 1
+  },
+  "BF|abl_boltons_d0a284fc7|4": {
+   "task": "abl_boltons_d0a284fc7",
+   "arm": "BF",
+   "rep": 4,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": "",
+     "files": [
+      "boltons/setutils.py"
+     ],
+     "sig": "e5207594a2f4",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": "",
+     "files": [
+      "boltons/setutils.py"
+     ],
+     "sig": "38553d0fb10d",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": "",
+     "files": [
+      "boltons/setutils.py"
+     ],
+     "sig": "38553d0fb10d",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    }
+   ],
+   "test_runs": 15,
+   "rollback_rounds": 0,
+   "duplicates": 1,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 36.4,
+   "failure_report_chars": 0,
+   "attempt": 1
+  },
+  "BS|abl_dateutil_15fc1fa8c|0": {
+   "task": "abl_dateutil_15fc1fa8c",
+   "arm": "BS",
+   "rep": 0,
+   "candidates": [],
+   "test_runs": 0,
+   "rollback_rounds": 2,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "no_patch",
+   "wall_s": 10.0,
+   "failure_report_chars": 0,
+   "hyp_stats": {
+    "generated": 0,
+    "valid_selected": 0,
+    "distinct_files": 0,
+    "correct_file_hyp": false,
+    "banned_revisits": 0
+   },
+   "attempt": 1
+  },
+  "BF|abl_dateutil_15fc1fa8c|0": {
+   "task": "abl_dateutil_15fc1fa8c",
+   "arm": "BF",
+   "rep": 0,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": "",
+     "files": [
+      "dateutil/relativedelta.py"
+     ],
+     "sig": "38b78379fe6f",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": "",
+     "files": [
+      "dateutil/relativedelta.py"
+     ],
+     "sig": "53a18e93b360",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test.py::RelativeDeltaTest::testRightAdditionToDatetime: est::testRightAdditionToDatetime - RecursionErr...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 1.55s\n; test.py::RelativeDeltaTest::testNextMonth: est::testNextMonth - RecursionError: maximum re...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 faile",
+     "files": [
+      "dateutil/relativedelta.py"
+     ],
+     "sig": "f0db07b9805e",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    }
+   ],
+   "test_runs": 19,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "regression",
+   "wall_s": 46.7,
+   "failure_report_chars": 0,
+   "attempt": 1
+  },
+  "BS|abl_dateutil_15fc1fa8c|1": {
+   "task": "abl_dateutil_15fc1fa8c",
+   "arm": "BS",
+   "rep": 1,
+   "candidates": [],
+   "test_runs": 0,
+   "rollback_rounds": 2,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "no_patch",
+   "wall_s": 9.7,
+   "failure_report_chars": 0,
+   "hyp_stats": {
+    "generated": 0,
+    "valid_selected": 0,
+    "distinct_files": 0,
+    "correct_file_hyp": false,
+    "banned_revisits": 0
+   },
+   "attempt": 1
+  },
+  "BF|abl_dateutil_15fc1fa8c|1": {
+   "task": "abl_dateutil_15fc1fa8c",
+   "arm": "BF",
+   "rep": 1,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": "",
+     "files": [
+      "dateutil/relativedelta.py"
+     ],
+     "sig": "38b78379fe6f",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": "",
+     "files": [
+      "dateutil/relativedelta.py"
+     ],
+     "sig": "53a18e93b360",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test.py::RelativeDeltaTest::testRightAdditionToDatetime: est::testRightAdditionToDatetime - TypeError: u...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 1.26s\n",
+     "files": [
+      "dateutil/relativedelta.py"
+     ],
+     "sig": "7b598871fc0c",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    }
+   ],
+   "test_runs": 19,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "regression",
+   "wall_s": 46.5,
+   "failure_report_chars": 0,
+   "attempt": 1
+  },
+  "BS|abl_dateutil_15fc1fa8c|2": {
+   "task": "abl_dateutil_15fc1fa8c",
+   "arm": "BS",
+   "rep": 2,
+   "candidates": [],
+   "test_runs": 0,
+   "rollback_rounds": 2,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "no_patch",
+   "wall_s": 10.0,
+   "failure_report_chars": 0,
+   "hyp_stats": {
+    "generated": 0,
+    "valid_selected": 0,
+    "distinct_files": 0,
+    "correct_file_hyp": false,
+    "banned_revisits": 0
+   },
+   "attempt": 1
+  },
+  "BF|abl_dateutil_15fc1fa8c|2": {
+   "task": "abl_dateutil_15fc1fa8c",
+   "arm": "BF",
+   "rep": 2,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": "",
+     "files": [
+      "dateutil/relativedelta.py"
+     ],
+     "sig": "ce0ed50d8023",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 1,
+     "code_fail": "patch_parse_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "",
+     "files": [],
+     "sig": "",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test.py::RelativeDeltaTest::testRightAdditionToDatetime: est::testRightAdditionToDatetime - TypeError: u...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 1.24s\n",
+     "files": [
+      "dateutil/relativedelta.py"
+     ],
+     "sig": "56bd564df71c",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    }
+   ],
+   "test_runs": 15,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "regression",
+   "wall_s": 39.3,
+   "failure_report_chars": 0,
+   "attempt": 1
+  },
+  "BS|abl_dateutil_15fc1fa8c|3": {
+   "task": "abl_dateutil_15fc1fa8c",
+   "arm": "BS",
+   "rep": 3,
+   "candidates": [],
+   "test_runs": 0,
+   "rollback_rounds": 2,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "no_patch",
+   "wall_s": 11.0,
+   "failure_report_chars": 0,
+   "hyp_stats": {
+    "generated": 0,
+    "valid_selected": 0,
+    "distinct_files": 0,
+    "correct_file_hyp": false,
+    "banned_revisits": 0
+   },
+   "attempt": 1
+  },
+  "BF|abl_dateutil_15fc1fa8c|3": {
+   "task": "abl_dateutil_15fc1fa8c",
+   "arm": "BF",
+   "rep": 3,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": "",
+     "files": [
+      "dateutil/relativedelta.py"
+     ],
+     "sig": "84945cf528d4",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": "",
+     "files": [
+      "dateutil/relativedelta.py"
+     ],
+     "sig": "3667e2270083",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test.py::RelativeDeltaTest::testRightAdditionToDatetime: est::testRightAdditionToDatetime - TypeError: u...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 1.20s\n; test.py::RelativeDeltaTest::testNextMonth: est::testNextMonth - TypeError: unsupported typ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 faile",
+     "files": [
+      "dateutil/relativedelta.py"
+     ],
+     "sig": "e4762b42288e",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    }
+   ],
+   "test_runs": 19,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "regression",
+   "wall_s": 46.4,
+   "failure_report_chars": 0,
+   "attempt": 1
+  },
+  "BS|abl_dateutil_15fc1fa8c|4": {
+   "task": "abl_dateutil_15fc1fa8c",
+   "arm": "BS",
+   "rep": 4,
+   "candidates": [],
+   "test_runs": 0,
+   "rollback_rounds": 2,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "no_patch",
+   "wall_s": 9.8,
+   "failure_report_chars": 0,
+   "hyp_stats": {
+    "generated": 0,
+    "valid_selected": 0,
+    "distinct_files": 0,
+    "correct_file_hyp": false,
+    "banned_revisits": 0
+   },
+   "attempt": 1
+  },
+  "BF|abl_dateutil_15fc1fa8c|4": {
+   "task": "abl_dateutil_15fc1fa8c",
+   "arm": "BF",
+   "rep": 4,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": "",
+     "files": [
+      "dateutil/relativedelta.py"
+     ],
+     "sig": "ce0ed50d8023",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test.py::RelativeDeltaTest::testRightAdditionToDatetime: est::testRightAdditionToDatetime - TypeError: u...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 1.29s\n",
+     "files": [
+      "dateutil/relativedelta.py"
+     ],
+     "sig": "56bd564df71c",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": "",
+     "files": [
+      "dateutil/relativedelta.py"
+     ],
+     "sig": "ce0ed50d8023",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    }
+   ],
+   "test_runs": 15,
+   "rollback_rounds": 0,
+   "duplicates": 1,
+   "first_candidate_full": true,
+   "final_status": "regression",
+   "wall_s": 37.4,
+   "failure_report_chars": 0,
+   "attempt": 1
+  },
+  "BS|abl_dateutil_5f2052faf|0": {
+   "task": "abl_dateutil_5f2052faf",
+   "arm": "BS",
+   "rep": 0,
+   "candidates": [],
+   "test_runs": 0,
+   "rollback_rounds": 2,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "no_patch",
+   "wall_s": 17.7,
+   "failure_report_chars": 0,
+   "hyp_stats": {
+    "generated": 0,
+    "valid_selected": 0,
+    "distinct_files": 0,
+    "correct_file_hyp": false,
+    "banned_revisits": 0
+   },
+   "attempt": 1
+  },
+  "BF|abl_dateutil_5f2052faf|0": {
+   "task": "abl_dateutil_5f2052faf",
+   "arm": "BF",
+   "rep": 0,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": "patch_parse_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "",
+     "files": [],
+     "sig": "",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "dateutil/test/test_parser.py::test_decimal_error: er.py::test_decimal_error - TypeError: unsuppor...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 0.94s\n; dateutil/test/test_parser.py::TestFormat::test_ybd: er.py::TestFormat::test_ybd - TypeError: unsupp...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 fai",
+     "files": [
+      "dateutil/parser/_parser.py"
+     ],
+     "sig": "7662b381f309",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 2,
+     "code_fail": "patch_parse_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "",
+     "files": [],
+     "sig": "",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 3,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": "",
+     "files": [
+      "dateutil/parser/_parser.py"
+     ],
+     "sig": "7662b381f309",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 4,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": "",
+     "files": [
+      "dateutil/parser/_parser.py"
+     ],
+     "sig": "7662b381f309",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 5,
+     "code_fail": "patch_parse_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "",
+     "files": [],
+     "sig": "",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 6,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": "",
+     "files": [
+      "dateutil/parser/_parser.py"
+     ],
+     "sig": "7662b381f309",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 7,
+     "code_fail": "patch_parse_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "",
+     "files": [],
+     "sig": "",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    }
+   ],
+   "test_runs": 23,
+   "rollback_rounds": 2,
+   "duplicates": 3,
+   "first_candidate_full": false,
+   "final_status": "regression",
+   "wall_s": 87.4,
+   "failure_report_chars": 0,
+   "attempt": 1
+  },
+  "BS|abl_dateutil_5f2052faf|1": {
+   "task": "abl_dateutil_5f2052faf",
+   "arm": "BS",
+   "rep": 1,
+   "candidates": [],
+   "test_runs": 0,
+   "rollback_rounds": 2,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "no_patch",
+   "wall_s": 11.2,
+   "failure_report_chars": 0,
+   "hyp_stats": {
+    "generated": 0,
+    "valid_selected": 0,
+    "distinct_files": 0,
+    "correct_file_hyp": false,
+    "banned_revisits": 0
+   },
+   "attempt": 1
+  },
+  "BF|abl_dateutil_5f2052faf|1": {
+   "task": "abl_dateutil_5f2052faf",
+   "arm": "BF",
+   "rep": 1,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": "patch_parse_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "",
+     "files": [],
+     "sig": "",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 1,
+     "code_fail": "patch_parse_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "",
+     "files": [],
+     "sig": "",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 2,
+     "code_fail": "patch_parse_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "",
+     "files": [],
+     "sig": "",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 3,
+     "code_fail": "patch_parse_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "",
+     "files": [],
+     "sig": "",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 4,
+     "code_fail": "patch_parse_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "",
+     "files": [],
+     "sig": "",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 5,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "dateutil/test/test_parser.py::test_decimal_error: er.py::test_decimal_error - TypeError: unsuppor...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 0.92s\n; dateutil/test/test_parser.py::TestFormat::test_ybd: er.py::TestFormat::test_ybd - TypeError: unsupp...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 fai",
+     "files": [
+      "dateutil/parser/_parser.py"
+     ],
+     "sig": "c6ef8a7e9ad2",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 6,
+     "code_fail": "patch_parse_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "",
+     "files": [],
+     "sig": "",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    },
+    {
+     "call": 7,
+     "code_fail": "patch_parse_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "",
+     "files": [],
+     "sig": "",
+     "repro_pass": null,
+     "smoke_pass": null,
+     "ia_valid": null,
+     "ia_len": 0,
+     "mapped_ids": [],
+     "mapped_pass": null,
+     "no_mapped": null
+    }
+   ],
+   "test_runs": 19,
+   "rollback_rounds": 2,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "regression",
+   "wall_s": 87.5,
+   "failure_report_chars": 0,
+   "attempt": 1
+  },
+  "BS|abl_dateutil_5f2052faf|2": {
+   "task": "abl_dateutil_5f2052faf",
+   "arm": "BS",
+   "rep": 2,
+   "candidates": [],
+   "test_runs": 0,
+   "rollback_rounds": 2,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "no_patch",
+   "wall_s": 10.3,
+   "failure_report_chars": 0,
+   "hyp_stats": {
+    "generated": 0,
+    "valid_selected": 0,
+    "distinct_files": 0,
+    "correct_file_hyp": false,
+    "banned_revisits": 0
+   },
+   "attempt": 1
+  }
+ },
+ "attempts": 1
+}

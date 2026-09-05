@@ -1,0 +1,442 @@
+{
+ "extracted_at": "2026-08-22T19:49:20",
+ "protocol": "docs/routing-v2-design.md",
+ "tags": [
+  "live_runB",
+  "live_runA"
+ ],
+ "outcomes": [
+  {
+   "kind": "agent_fix",
+   "tier": "fast",
+   "attempt": 1,
+   "accepted": false,
+   "steps": 12,
+   "tool_calls": 12,
+   "usd": 0.223858
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "fast",
+   "attempt": 1,
+   "accepted": false,
+   "steps": 12,
+   "tool_calls": 12,
+   "usd": 0.159436
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "fast",
+   "attempt": 1,
+   "accepted": false,
+   "steps": 12,
+   "tool_calls": 12,
+   "usd": 0.118414
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 2,
+   "accepted": false,
+   "steps": 12,
+   "tool_calls": 12,
+   "usd": 0.563079
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 2,
+   "accepted": false,
+   "steps": 12,
+   "tool_calls": 12,
+   "usd": 0.500535
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 2,
+   "accepted": false,
+   "steps": 12,
+   "tool_calls": 12,
+   "usd": 0.28572
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "fast",
+   "attempt": 1,
+   "accepted": false,
+   "steps": 12,
+   "tool_calls": 12,
+   "usd": 0.166912
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "fast",
+   "attempt": 1,
+   "accepted": false,
+   "steps": 12,
+   "tool_calls": 12,
+   "usd": 0.181572
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 2,
+   "accepted": false,
+   "steps": 12,
+   "tool_calls": 12,
+   "usd": 0.59376
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 2,
+   "accepted": false,
+   "steps": 12,
+   "tool_calls": 12,
+   "usd": 0.549792
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "fast",
+   "attempt": 1,
+   "accepted": false,
+   "steps": 12,
+   "tool_calls": 12,
+   "usd": 0.131582
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "fast",
+   "attempt": 1,
+   "accepted": false,
+   "steps": 12,
+   "tool_calls": 12,
+   "usd": 0.171066
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 2,
+   "accepted": true,
+   "steps": 7,
+   "tool_calls": 6,
+   "usd": 0.370338
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 2,
+   "accepted": false,
+   "steps": 12,
+   "tool_calls": 12,
+   "usd": 0.975246
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "fast",
+   "attempt": 1,
+   "accepted": false,
+   "steps": 12,
+   "tool_calls": 12,
+   "usd": 0.140396
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 2,
+   "accepted": false,
+   "steps": 12,
+   "tool_calls": 12,
+   "usd": 0.570864
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "fast",
+   "attempt": 1,
+   "accepted": false,
+   "steps": 12,
+   "tool_calls": 12,
+   "usd": 0.152543
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 2,
+   "accepted": false,
+   "steps": 12,
+   "tool_calls": 13,
+   "usd": 0.763881
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "fast",
+   "attempt": 1,
+   "accepted": false,
+   "steps": 12,
+   "tool_calls": 12,
+   "usd": 0.174935
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "fast",
+   "attempt": 1,
+   "accepted": true,
+   "steps": 12,
+   "tool_calls": 13,
+   "usd": 0.190673
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "fast",
+   "attempt": 1,
+   "accepted": false,
+   "steps": 12,
+   "tool_calls": 12,
+   "usd": 0.146831
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 2,
+   "accepted": true,
+   "steps": 10,
+   "tool_calls": 9,
+   "usd": 0.335952
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "fast",
+   "attempt": 1,
+   "accepted": false,
+   "steps": 12,
+   "tool_calls": 12,
+   "usd": 0.157238
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 2,
+   "accepted": true,
+   "steps": 9,
+   "tool_calls": 8,
+   "usd": 0.454893
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 2,
+   "accepted": false,
+   "steps": 12,
+   "tool_calls": 12,
+   "usd": 0.520503
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 1,
+   "accepted": false,
+   "steps": 12,
+   "tool_calls": 12,
+   "usd": 1.252062
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 1,
+   "accepted": false,
+   "steps": 1,
+   "tool_calls": 0,
+   "usd": 0.0
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 1,
+   "accepted": false,
+   "steps": 12,
+   "tool_calls": 12,
+   "usd": 0.570816
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 2,
+   "accepted": false,
+   "steps": 8,
+   "tool_calls": 8,
+   "usd": 0.359718
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 2,
+   "accepted": false,
+   "steps": 12,
+   "tool_calls": 12,
+   "usd": 0.948318
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 2,
+   "accepted": false,
+   "steps": 12,
+   "tool_calls": 12,
+   "usd": 0.277818
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 1,
+   "accepted": false,
+   "steps": 12,
+   "tool_calls": 12,
+   "usd": 0.69045
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 1,
+   "accepted": false,
+   "steps": 12,
+   "tool_calls": 12,
+   "usd": 0.710232
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 2,
+   "accepted": false,
+   "steps": 12,
+   "tool_calls": 12,
+   "usd": 0.540951
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 2,
+   "accepted": false,
+   "steps": 12,
+   "tool_calls": 11,
+   "usd": 0.93285
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 1,
+   "accepted": true,
+   "steps": 8,
+   "tool_calls": 7,
+   "usd": 0.599373
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 1,
+   "accepted": false,
+   "steps": 12,
+   "tool_calls": 12,
+   "usd": 0.795477
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 2,
+   "accepted": false,
+   "steps": 12,
+   "tool_calls": 15,
+   "usd": 0.694461
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 1,
+   "accepted": false,
+   "steps": 12,
+   "tool_calls": 12,
+   "usd": 0.527877
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 2,
+   "accepted": false,
+   "steps": 12,
+   "tool_calls": 12,
+   "usd": 0.517035
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 1,
+   "accepted": false,
+   "steps": 12,
+   "tool_calls": 12,
+   "usd": 0.773658
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 2,
+   "accepted": false,
+   "steps": 12,
+   "tool_calls": 12,
+   "usd": 0.425274
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 1,
+   "accepted": true,
+   "steps": 6,
+   "tool_calls": 5,
+   "usd": 0.112227
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 1,
+   "accepted": true,
+   "steps": 12,
+   "tool_calls": 12,
+   "usd": 0.337428
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 1,
+   "accepted": false,
+   "steps": 12,
+   "tool_calls": 12,
+   "usd": 0.688188
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 1,
+   "accepted": false,
+   "steps": 12,
+   "tool_calls": 12,
+   "usd": 0.546561
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 2,
+   "accepted": false,
+   "steps": 12,
+   "tool_calls": 12,
+   "usd": 0.522372
+  },
+  {
+   "kind": "agent_fix",
+   "tier": "smart",
+   "attempt": 2,
+   "accepted": false,
+   "steps": 12,
+   "tool_calls": 12,
+   "usd": 0.606594
+  }
+ ]
+}

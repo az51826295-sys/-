@@ -1,0 +1,2360 @@
+[
+ {
+  "sha": "f07eadc87dfac25ed505d5cd9d186920f2682733",
+  "subject": "Fix validate.Email to accept IDNs (#2937)",
+  "src_files": [
+   "src/marshmallow/validate.py"
+  ],
+  "test_files": [
+   "tests/test_validate.py"
+  ],
+  "src_lines": 32,
+  "multi_file": false
+ },
+ {
+  "sha": "3bc191ab3c8cac8356839bcde0918cb6aed4d3a1",
+  "subject": "Fix Field.error_messages type to allow dict and list values (#2907)",
+  "src_files": [
+   "src/marshmallow/fields.py",
+   "src/marshmallow/types.py"
+  ],
+  "test_files": [
+   "tests/test_deserialization.py"
+  ],
+  "src_lines": 18,
+  "multi_file": true
+ },
+ {
+  "sha": "024b5d09e9f026f0f96d220e243be69346687ce0",
+  "subject": "Fix Enum field by-name lookup to only return actual members (#2902)",
+  "src_files": [
+   "src/marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_deserialization.py"
+  ],
+  "src_lines": 5,
+  "multi_file": false
+ },
+ {
+  "sha": "65374df0c31cdc45acc4435741779298201306a2",
+  "subject": "Fix OneOf.options() emitting phantom entries when labels outnumber choices (#2909)",
+  "src_files": [
+   "src/marshmallow/validate.py"
+  ],
+  "test_files": [
+   "tests/test_validate.py"
+  ],
+  "src_lines": 13,
+  "multi_file": false
+ },
+ {
+  "sha": "070dde08bad456e743a0d2e1842c142a799a9568",
+  "subject": "Fix Constant field with required=True raising ValueError (#2901)",
+  "src_files": [
+   "src/marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_deserialization.py"
+  ],
+  "src_lines": 14,
+  "multi_file": false
+ },
+ {
+  "sha": "22288b64532252ef2929c109e0c2ce7f9afe5edd",
+  "subject": "Fix ruff issues",
+  "src_files": [
+   "src/marshmallow/decorators.py",
+   "src/marshmallow/fields.py",
+   "src/marshmallow/schema.py"
+  ],
+  "test_files": [
+   "tests/test_decorators.py",
+   "tests/test_deserialization.py",
+   "tests/test_schema.py"
+  ],
+  "src_lines": 50,
+  "multi_file": true
+ },
+ {
+  "sha": "c83679506045fe7aea4fb7270235f20a2f8641b2",
+  "subject": "Fix types for class Meta options (#2806)",
+  "src_files": [
+   "src/marshmallow/schema.py"
+  ],
+  "test_files": [
+   "tests/mypy_test_cases/test_schema.py"
+  ],
+  "src_lines": 15,
+  "multi_file": false
+ },
+ {
+  "sha": "76bc28ae74e723760d54f097290ba85e717d5fe4",
+  "subject": "fix: add `file` handling to URL fields (#2800)",
+  "src_files": [
+   "src/marshmallow/validate.py"
+  ],
+  "test_files": [
+   "tests/test_validate.py"
+  ],
+  "src_lines": 10,
+  "multi_file": false
+ },
+ {
+  "sha": "9f751e1cef943e2ca1a77f93d3483b4a171d4303",
+  "subject": "Fix handling data_key in ValidationErrors raised in schema validators (#2792)",
+  "src_files": [
+   "src/marshmallow/decorators.py",
+   "src/marshmallow/schema.py",
+   "src/marshmallow/types.py"
+  ],
+  "test_files": [
+   "tests/test_decorators.py"
+  ],
+  "src_lines": 53,
+  "multi_file": true
+ },
+ {
+  "sha": "2e0a4fcc832e6dfe10a96b539bb6a79378dbcc60",
+  "subject": "fix: unhandled OSError and OverflowErrors from utils.from_timestamp #2102",
+  "src_files": [
+   "src/marshmallow/utils.py"
+  ],
+  "test_files": [
+   "tests/test_deserialization.py",
+   "tests/test_utils.py"
+  ],
+  "src_lines": 7,
+  "multi_file": false
+ },
+ {
+  "sha": "793470ebdb2d832350cff64cdcba5479ecc92d77",
+  "subject": "Add messages_dict property to ValidationError",
+  "src_files": [
+   "src/marshmallow/exceptions.py"
+  ],
+  "test_files": [
+   "tests/mypy_test_cases/test_validation_error.py",
+   "tests/test_exceptions.py"
+  ],
+  "src_lines": 9,
+  "multi_file": false
+ },
+ {
+  "sha": "af5d3cc270242abc8422e493db965ba0087c70a8",
+  "subject": "Fix small issues with TimeDelta serialization type",
+  "src_files": [
+   "src/marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_serialization.py"
+  ],
+  "src_lines": 23,
+  "multi_file": false
+ },
+ {
+  "sha": "d2a0cdb73807b2b28217850ee54edc29171e49cb",
+  "subject": "Fix: TimeDelta Precision Errors (#1867)",
+  "src_files": [
+   "src/marshmallow/fields.py",
+   "src/marshmallow/utils.py"
+  ],
+  "test_files": [
+   "tests/test_serialization.py"
+  ],
+  "src_lines": 12,
+  "multi_file": true
+ },
+ {
+  "sha": "12146245ca4ae398243346b3774c85dd1a09fd8d",
+  "subject": "Fix treatment of dotted keys when unknown=INCLUDE (#1745)",
+  "src_files": [
+   "src/marshmallow/schema.py"
+  ],
+  "test_files": [
+   "tests/test_deserialization.py"
+  ],
+  "src_lines": 14,
+  "multi_file": false
+ },
+ {
+  "sha": "fb63e3314b6622d807679d3e116df77c604c8a3d",
+  "subject": "Raise AttributeError when missing Schema methods (#1675)",
+  "src_files": [
+   "src/marshmallow/fields.py",
+   "src/marshmallow/utils.py"
+  ],
+  "test_files": [
+   "tests/test_deserialization.py",
+   "tests/test_serialization.py"
+  ],
+  "src_lines": 36,
+  "multi_file": true
+ },
+ {
+  "sha": "1ab5cf753852d9d41e3e0dba2c59728ba62845d4",
+  "subject": "Fix boolean handle unhashable exception",
+  "src_files": [
+   "src/marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_schema.py"
+  ],
+  "src_lines": 12,
+  "multi_file": false
+ },
+ {
+  "sha": "abe681ba8f9194d85cab16f9ce3d90ac809b4a4d",
+  "subject": "Fix typing in class_registry (#1574)",
+  "src_files": [
+   "src/marshmallow/class_registry.py"
+  ],
+  "test_files": [
+   "tests/test_schema.py"
+  ],
+  "src_lines": 8,
+  "multi_file": false
+ },
+ {
+  "sha": "c847b07b0649c05b2310253134907587849bdce6",
+  "subject": "Fix logic for field both load_only and dump_only",
+  "src_files": [
+   "src/marshmallow/schema.py"
+  ],
+  "test_files": [
+   "tests/test_deserialization.py",
+   "tests/test_serialization.py"
+  ],
+  "src_lines": 7,
+  "multi_file": false
+ },
+ {
+  "sha": "fbe22eb47db5df64b2c4133f9a5cb6c6920e8dd2",
+  "subject": "Chores: update pre-commit, autoupdate, fix types in validate (#1446)",
+  "src_files": [
+   "src/marshmallow/validate.py"
+  ],
+  "test_files": [
+   "tests/test_deserialization.py",
+   "tests/test_fields.py",
+   "tests/test_serialization.py"
+  ],
+  "src_lines": 16,
+  "multi_file": false
+ },
+ {
+  "sha": "82733e363d241b04d6305b91642add36c249f23e",
+  "subject": "Fix behavior when non-lists validators are passed to Email and URL (#1401)",
+  "src_files": [
+   "src/marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_deserialization.py"
+  ],
+  "src_lines": 22,
+  "multi_file": false
+ },
+ {
+  "sha": "8e4e746f46256f4e6ae5b2bb099e6927119c0f5b",
+  "subject": "Fix behavior when passing nested instance and `only` (#1395)",
+  "src_files": [
+   "src/marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_schema.py"
+  ],
+  "src_lines": 5,
+  "multi_file": false
+ },
+ {
+  "sha": "d104a5c3a07d97c4f7579be90048faf234bfed4c",
+  "subject": "Fix propagating `only` and `exclude` to nested field instances (#1385)",
+  "src_files": [
+   "src/marshmallow/fields.py",
+   "src/marshmallow/schema.py"
+  ],
+  "test_files": [
+   "tests/test_fields.py"
+  ],
+  "src_lines": 58,
+  "multi_file": true
+ },
+ {
+  "sha": "dbb97293d795d8415ae399406008b14fbac9b13d",
+  "subject": "Don't swallow TypeErrors raised by _bind_to_schema or on_bind_field (#1376)",
+  "src_files": [
+   "src/marshmallow/schema.py"
+  ],
+  "test_files": [
+   "tests/test_schema.py"
+  ],
+  "src_lines": 13,
+  "multi_file": false
+ },
+ {
+  "sha": "11a0545ba947db9582da479c57dbc8d97d8cf4fc",
+  "subject": "Deprecate Field.fail in favor of Field.make_error (#1332)",
+  "src_files": [
+   "src/marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_fields.py"
+  ],
+  "src_lines": 49,
+  "multi_file": false
+ },
+ {
+  "sha": "c4d98d9df501ea4fa06b935aeda1e98d419166df",
+  "subject": "handle_error receives `many` and `partial` (#1321)",
+  "src_files": [
+   "src/marshmallow/schema.py"
+  ],
+  "test_files": [
+   "tests/test_schema.py"
+  ],
+  "src_lines": 11,
+  "multi_file": false
+ },
+ {
+  "sha": "04cbcc1e89b625a88fe71fb2a8be88c54d67fbf1",
+  "subject": "Fix List(Nested(\"self\")) case",
+  "src_files": [
+   "src/marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_schema.py"
+  ],
+  "src_lines": 5,
+  "multi_file": false
+ },
+ {
+  "sha": "4ee991f1f57d3e3b53e8a834374cd14815f9621e",
+  "subject": "Fix flake8-bugbear issues",
+  "src_files": [
+   "src/marshmallow/schema.py",
+   "src/marshmallow/utils.py"
+  ],
+  "test_files": [
+   "tests/test_decorators.py",
+   "tests/test_serialization.py",
+   "tests/test_validate.py"
+  ],
+  "src_lines": 28,
+  "multi_file": true
+ },
+ {
+  "sha": "79c7bd2b4ea048b923ff54a1eedf3e6bcd1e6e27",
+  "subject": "Fix fields with dot notation in Meta.exclude on multiple instantiations",
+  "src_files": [
+   "src/marshmallow/schema.py"
+  ],
+  "test_files": [
+   "tests/test_schema.py"
+  ],
+  "src_lines": 22,
+  "multi_file": false
+ },
+ {
+  "sha": "7b2fe66e3612ed9bd1222636ec35c3ce1ca574da",
+  "subject": "Fix propagation of options to Nested containers",
+  "src_files": [
+   "src/marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_fields.py"
+  ],
+  "src_lines": 29,
+  "multi_file": false
+ },
+ {
+  "sha": "fe856316136e74e2ffac47c7a3b721f3f0b0ecd9",
+  "subject": "Fix propagation of \"partial\" to Nested containers",
+  "src_files": [
+   "src/marshmallow/fields.py",
+   "src/marshmallow/schema.py"
+  ],
+  "test_files": [
+   "tests/test_fields.py"
+  ],
+  "src_lines": 37,
+  "multi_file": true
+ },
+ {
+  "sha": "84a235d06d1c758081909d4533bce03447558e83",
+  "subject": "Fix PR review issues.",
+  "src_files": [
+   "src/marshmallow/validate.py"
+  ],
+  "test_files": [
+   "tests/test_validate.py"
+  ],
+  "src_lines": 18,
+  "multi_file": false
+ },
+ {
+  "sha": "893c2d2a9473de9780f85fb045c08b1e38e74139",
+  "subject": "Handle OverflowError separately",
+  "src_files": [
+   "src/marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_deserialization.py",
+   "tests/test_fields.py"
+  ],
+  "src_lines": 7,
+  "multi_file": false
+ },
+ {
+  "sha": "0b65da0dffd18b723dd5cc61c0efda56d83e4aae",
+  "subject": "Include valid choices in error message for OneOf and ContainsOnly",
+  "src_files": [
+   "src/marshmallow/validate.py"
+  ],
+  "test_files": [
+   "tests/test_validate.py"
+  ],
+  "src_lines": 7,
+  "multi_file": false
+ },
+ {
+  "sha": "b5363b0632ec99212632a81245a54ca19d063bcc",
+  "subject": "Show invalid value if 'input' included in 'invalid' error message",
+  "src_files": [
+   "marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_deserialization.py"
+  ],
+  "src_lines": 12,
+  "multi_file": false
+ },
+ {
+  "sha": "9d17fe2882989551a3d6660533f8710f0ce26c92",
+  "subject": "Update validation error messages",
+  "src_files": [
+   "marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_serialization.py"
+  ],
+  "src_lines": 15,
+  "multi_file": false
+ },
+ {
+  "sha": "49004dd4fc1d65a251f1cd594cc55b6e74c5f9a8",
+  "subject": "Fix \"missing\" singleton copy/deepcopy",
+  "src_files": [
+   "marshmallow/utils.py"
+  ],
+  "test_files": [
+   "tests/test_utils.py"
+  ],
+  "src_lines": 6,
+  "multi_file": false
+ },
+ {
+  "sha": "1eb3a057a8a80241cd3ed87fbcd47fa854556a04",
+  "subject": "Remove ErrorStore.error_kwargs",
+  "src_files": [
+   "marshmallow/error_store.py",
+   "marshmallow/schema.py"
+  ],
+  "test_files": [
+   "tests/test_schema.py"
+  ],
+  "src_lines": 6,
+  "multi_file": true
+ },
+ {
+  "sha": "5f6af38491931e7268274d54f3e9080ff03bac87",
+  "subject": "Merge inherited schema error messages correctly",
+  "src_files": [
+   "marshmallow/schema.py"
+  ],
+  "test_files": [
+   "tests/test_schema.py"
+  ],
+  "src_lines": 18,
+  "multi_file": false
+ },
+ {
+  "sha": "9ba7fe08a89723d6ed5d54183917f9502af9fc0d",
+  "subject": "Implemented the possibility to customize the error messages for Invalid input type and unknown field",
+  "src_files": [
+   "marshmallow/marshalling.py",
+   "marshmallow/schema.py"
+  ],
+  "test_files": [
+   "tests/test_schema.py"
+  ],
+  "src_lines": 21,
+  "multi_file": true
+ },
+ {
+  "sha": "bc376a70006fd0a2ce962f8490668cffed608220",
+  "subject": "Fix getting values from dicts with properties",
+  "src_files": [
+   "marshmallow/utils.py"
+  ],
+  "test_files": [
+   "tests/test_utils.py"
+  ],
+  "src_lines": 8,
+  "multi_file": false
+ },
+ {
+  "sha": "b2e5a7da74d2f62a4d3694a43bc31248eb14be24",
+  "subject": "Introduce merge_errors function",
+  "src_files": [
+   "marshmallow/marshalling.py"
+  ],
+  "test_files": [
+   "tests/test_marshalling.py"
+  ],
+  "src_lines": 50,
+  "multi_file": false
+ },
+ {
+  "sha": "382c8cc0b1840b25bce524cef3defc784be24464",
+  "subject": "Fix handling dict error on field in pre/post_dump/load",
+  "src_files": [
+   "marshmallow/exceptions.py"
+  ],
+  "test_files": [
+   "tests/test_decorators.py"
+  ],
+  "src_lines": 6,
+  "multi_file": false
+ },
+ {
+  "sha": "9ede1172e8720afa7825878f450a01349aee6eef",
+  "subject": "Merge _schema and _field errors",
+  "src_files": [
+   "marshmallow/exceptions.py",
+   "marshmallow/marshalling.py"
+  ],
+  "test_files": [
+   "tests/test_schema.py"
+  ],
+  "src_lines": 18,
+  "multi_file": true
+ },
+ {
+  "sha": "99a2e48278902209b9591b874b77027a6eb2d393",
+  "subject": "Only accept one field name in ValidationError",
+  "src_files": [
+   "marshmallow/exceptions.py",
+   "marshmallow/marshalling.py",
+   "marshmallow/schema.py"
+  ],
+  "test_files": [
+   "tests/test_deserialization.py",
+   "tests/test_exceptions.py",
+   "tests/test_schema.py"
+  ],
+  "src_lines": 31,
+  "multi_file": true
+ },
+ {
+  "sha": "1f899e9a84000c6475795a4e53e7581580177906",
+  "subject": "Fix memory leak when dynamically creating schema classes",
+  "src_files": [
+   "marshmallow/class_registry.py"
+  ],
+  "test_files": [
+   "tests/test_registry.py"
+  ],
+  "src_lines": 8,
+  "multi_file": false
+ },
+ {
+  "sha": "c95ce7bb8943e96adeacd7b266125a25e2b3ad1e",
+  "subject": "Fix flake errors",
+  "src_files": [
+   "docs/conf.py"
+  ],
+  "test_files": [
+   "tests/test_py3/test_utils.py",
+   "tests/test_validate.py"
+  ],
+  "src_lines": 27,
+  "multi_file": false
+ },
+ {
+  "sha": "3086d44e46fde6d9276c67af5b6c5e2d402874a4",
+  "subject": "Remove \"prefix\" Schema parameter",
+  "src_files": [
+   "marshmallow/fields.py",
+   "marshmallow/marshalling.py",
+   "marshmallow/schema.py"
+  ],
+  "test_files": [
+   "tests/base.py",
+   "tests/test_marshalling.py",
+   "tests/test_schema.py"
+  ],
+  "src_lines": 31,
+  "multi_file": true
+ },
+ {
+  "sha": "85416e44b82142f7edaf86b853ad0794e2108cef",
+  "subject": "Raise ValueError on attribute or data_key collision",
+  "src_files": [
+   "marshmallow/schema.py"
+  ],
+  "test_files": [
+   "tests/base.py",
+   "tests/test_schema.py"
+  ],
+  "src_lines": 14,
+  "multi_file": false
+ },
+ {
+  "sha": "639489aaca1d913b076741fb9e2cb874375ec019",
+  "subject": "Fix Pluck load with data_key",
+  "src_files": [
+   "marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_schema.py"
+  ],
+  "src_lines": 16,
+  "multi_file": false
+ },
+ {
+  "sha": "0f1c97340890b7327124b7468980c2955950129b",
+  "subject": "Don't raise ValidationError in Unmarshaller.deserialize",
+  "src_files": [
+   "marshmallow/marshalling.py"
+  ],
+  "test_files": [
+   "tests/test_marshalling.py"
+  ],
+  "src_lines": 13,
+  "multi_file": false
+ },
+ {
+  "sha": "f56280b98b9b4804a2adfb3fe72fb548fd1279fd",
+  "subject": "Prevent TypeError for non-collection with many=True",
+  "src_files": [
+   "marshmallow/marshalling.py"
+  ],
+  "test_files": [
+   "tests/test_schema.py"
+  ],
+  "src_lines": 32,
+  "multi_file": false
+ },
+ {
+  "sha": "00ea44e71f6b25dca82e9a9dfd531c3d08d97af6",
+  "subject": "Fix some issues",
+  "src_files": [
+   "marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_deserialization.py",
+   "tests/test_schema.py"
+  ],
+  "src_lines": 36,
+  "multi_file": false
+ },
+ {
+  "sha": "f63a2ba15186c8cfca5af477ec792e928daac4a1",
+  "subject": "Fix #930: Raise `ValidationError` on strings and mappings with `many=True`",
+  "src_files": [
+   "marshmallow/marshalling.py"
+  ],
+  "test_files": [
+   "tests/test_schema.py"
+  ],
+  "src_lines": 6,
+  "multi_file": false
+ },
+ {
+  "sha": "bf851497ef518f459c5fef1fa7ca997162400348",
+  "subject": "Fix #907: Return empty list as `ValidationError.valid_data` with many=True",
+  "src_files": [
+   "marshmallow/marshalling.py"
+  ],
+  "test_files": [
+   "tests/test_schema.py"
+  ],
+  "src_lines": 11,
+  "multi_file": false
+ },
+ {
+  "sha": "d9853d7ec836fde936d6ff1248c30b74b9fde91e",
+  "subject": "Nested: raise StringNotCollectionError if only or exclude is passed as string",
+  "src_files": [
+   "marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_fields.py"
+  ],
+  "src_lines": 9,
+  "multi_file": false
+ },
+ {
+  "sha": "189d3d4b75b444d5e6c46939600f959ba2a38b15",
+  "subject": "Raise StringNotCollectionError if only or exclude is passed as string",
+  "src_files": [
+   "marshmallow/exceptions.py",
+   "marshmallow/schema.py"
+  ],
+  "test_files": [
+   "tests/test_schema.py"
+  ],
+  "src_lines": 13,
+  "multi_file": true
+ },
+ {
+  "sha": "ceab28cce53a82150ffa73dab647c254a77716e6",
+  "subject": "Remove ValidationError.fields",
+  "src_files": [
+   "marshmallow/exceptions.py",
+   "marshmallow/marshalling.py",
+   "marshmallow/schema.py"
+  ],
+  "test_files": [
+   "tests/test_deserialization.py",
+   "tests/test_schema.py"
+  ],
+  "src_lines": 33,
+  "multi_file": true
+ },
+ {
+  "sha": "fbd93c24a1f612afbd493a1ad1c65cea594992cf",
+  "subject": "FIX GH#636: only is not bound by declared and additional fields on serializaton",
+  "src_files": [
+   "marshmallow/schema.py"
+  ],
+  "test_files": [
+   "tests/test_schema.py"
+  ],
+  "src_lines": 13,
+  "multi_file": false
+ },
+ {
+  "sha": "f54b49e8c5e4db8e9c2ca0e758c4e6e0289be0b8",
+  "subject": "fix: change how strict works so it's really strict about types",
+  "src_files": [
+   "marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_serialization.py"
+  ],
+  "src_lines": 7,
+  "multi_file": false
+ },
+ {
+  "sha": "8778bf1c282c0e5cdc46fddc488ebd23b76ad89b",
+  "subject": "Fix pass_original on nested many",
+  "src_files": [
+   "marshmallow/decorators.py",
+   "marshmallow/schema.py"
+  ],
+  "test_files": [
+   "tests/test_decorators.py"
+  ],
+  "src_lines": 10,
+  "multi_file": true
+ },
+ {
+  "sha": "c36cd2fda4f659f04da5c135fa8b6feda2cf7177",
+  "subject": "fixup! :bug: Fix pass_original for validate_schema on nested many",
+  "src_files": [
+   "marshmallow/schema.py"
+  ],
+  "test_files": [
+   "tests/test_decorators.py"
+  ],
+  "src_lines": 6,
+  "multi_file": false
+ },
+ {
+  "sha": "7f827137ca2068421e241c112db57507128eb0b5",
+  "subject": ":bug: Fix pass_original for validate_schema on nested many",
+  "src_files": [
+   "marshmallow/schema.py"
+  ],
+  "test_files": [
+   "tests/test_decorators.py"
+  ],
+  "src_lines": 6,
+  "multi_file": false
+ },
+ {
+  "sha": "20ef6fe0f2b3c9cea59e46d8eb607d72c76a8ef8",
+  "subject": "Rework error message collection in structured Dict",
+  "src_files": [
+   "marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_deserialization.py"
+  ],
+  "src_lines": 14,
+  "multi_file": false
+ },
+ {
+  "sha": "f14c2d9db9944423f8528fc2f72e41287e026436",
+  "subject": "BaseSchema.validate(): always return errors dict",
+  "src_files": [
+   "marshmallow/schema.py"
+  ],
+  "test_files": [
+   "tests/test_decorators.py",
+   "tests/test_deserialization.py",
+   "tests/test_schema.py"
+  ],
+  "src_lines": 12,
+  "multi_file": false
+ },
+ {
+  "sha": "541275e138005e906ac5c18c23abb2528dff4be0",
+  "subject": "Deprecate strict parameter: raise ValidationError all the time",
+  "src_files": [
+   "marshmallow/schema.py"
+  ],
+  "test_files": [
+   "tests/test_decorators.py",
+   "tests/test_deserialization.py",
+   "tests/test_options.py",
+   "tests/test_schema.py"
+  ],
+  "src_lines": 25,
+  "multi_file": false
+ },
+ {
+  "sha": "c2bd136568524d56f561d62792b4503b7f91ba04",
+  "subject": "Nested field: store data and valid_data in ValidationError on dump/load",
+  "src_files": [
+   "marshmallow/fields.py",
+   "marshmallow/marshalling.py"
+  ],
+  "test_files": [
+   "tests/test_deserialization.py",
+   "tests/test_schema.py"
+  ],
+  "src_lines": 12,
+  "multi_file": true
+ },
+ {
+  "sha": "8baf81301fe9c3b7acaf50117499674cf2d0546c",
+  "subject": "Fixed bug where serialization assumes that __getitem__(self, 0) will work on all objects",
+  "src_files": [
+   "marshmallow/schema.py"
+  ],
+  "test_files": [
+   "tests/test_schema.py"
+  ],
+  "src_lines": 5,
+  "multi_file": false
+ },
+ {
+  "sha": "afb1230811c6d588a18817f07a6a34e51dc7cde4",
+  "subject": "Store the valid, (de)serialized data on ValidationError",
+  "src_files": [
+   "marshmallow/__init__.py",
+   "marshmallow/exceptions.py",
+   "marshmallow/schema.py"
+  ],
+  "test_files": [
+   "tests/test_schema.py",
+   "tests/test_validate.py"
+  ],
+  "src_lines": 11,
+  "multi_file": true
+ },
+ {
+  "sha": "8d90fb9d67f74a7497437db32b0781f398e8449e",
+  "subject": "Fix attribute symmetry",
+  "src_files": [
+   "marshmallow/__init__.py",
+   "marshmallow/marshalling.py",
+   "marshmallow/utils.py"
+  ],
+  "test_files": [
+   "tests/test_deserialization.py",
+   "tests/test_utils.py"
+  ],
+  "src_lines": 32,
+  "multi_file": true
+ },
+ {
+  "sha": "4a4d8ef27f3520ad06411d3f125f8f6788756983",
+  "subject": "Revert \"Fix #597: Implement `ordered` option inheritance without breaking the API of 2.x-line\"",
+  "src_files": [
+   "marshmallow/schema.py"
+  ],
+  "test_files": [
+   "tests/test_options.py"
+  ],
+  "src_lines": 8,
+  "multi_file": false
+ },
+ {
+  "sha": "25c1a1ef46a782ad44f86b9c418b2a6b2fed8461",
+  "subject": "Fix #597: Implement `ordered` option inheritance without breaking the API of 2.x-line",
+  "src_files": [
+   "marshmallow/schema.py"
+  ],
+  "test_files": [
+   "tests/test_options.py"
+  ],
+  "src_lines": 8,
+  "multi_file": false
+ },
+ {
+  "sha": "54f731d02a841300cc41627254d318e60310b3fd",
+  "subject": "Method and Function fields don't swallow AttributeErrors",
+  "src_files": [
+   "marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/base.py",
+   "tests/test_schema.py"
+  ],
+  "src_lines": 23,
+  "multi_file": false
+ },
+ {
+  "sha": "c00a71b7cf047afff8c7b1a76bfc0d44a6dd9e97",
+  "subject": "Bugfix Issue 540 type annotations",
+  "src_files": [
+   "marshmallow/compat.py",
+   "marshmallow/utils.py",
+   "tasks.py"
+  ],
+  "test_files": [
+   "tests/test_py3/test_utils.py"
+  ],
+  "src_lines": 34,
+  "multi_file": true
+ },
+ {
+  "sha": "b85dac1215ed058b5830a8fd257f967cad238d09",
+  "subject": "Update Decimal field serialization to use fixed-point notation (#534)",
+  "src_files": [
+   "marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_serialization.py"
+  ],
+  "src_lines": 9,
+  "multi_file": false
+ },
+ {
+  "sha": "5e5f1ad65f4dc64bc286a5f57e9e7edea052c8fe",
+  "subject": "Fix UUID not validating on serialize",
+  "src_files": [
+   "marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_serialization.py"
+  ],
+  "src_lines": 14,
+  "multi_file": false
+ },
+ {
+  "sha": "50d097d38753328a7814339966cd7fc9740fd2ad",
+  "subject": "Fix nested errors missing from dump",
+  "src_files": [
+   "marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_schema.py"
+  ],
+  "src_lines": 6,
+  "multi_file": false
+ },
+ {
+  "sha": "89d33854b53c628a449ea317e1090bfd35914936",
+  "subject": "Handle different ways of raising validation errors",
+  "src_files": [
+   "marshmallow/exceptions.py",
+   "marshmallow/schema.py"
+  ],
+  "test_files": [
+   "tests/test_decorators.py"
+  ],
+  "src_lines": 14,
+  "multi_file": true
+ },
+ {
+  "sha": "b1b8ad873f7c51bc9889c1e45d330dc21d82dbab",
+  "subject": "Handle validation errors raised during pre_dump or post_dump hooks.",
+  "src_files": [
+   "marshmallow/schema.py"
+  ],
+  "test_files": [
+   "tests/test_decorators.py"
+  ],
+  "src_lines": 73,
+  "multi_file": false
+ },
+ {
+  "sha": "7d391f0e719a00f3913269ef6f7f82ab4138557f",
+  "subject": "Handle validation errors raised during pre_load hooks.",
+  "src_files": [
+   "marshmallow/schema.py"
+  ],
+  "test_files": [
+   "tests/test_decorators.py"
+  ],
+  "src_lines": 69,
+  "multi_file": false
+ },
+ {
+  "sha": "133815fb9e900ea984f14738941a7e2b4b099477",
+  "subject": "Catch validation errors raised during post processing. Moved post processing before error handling.",
+  "src_files": [
+   "marshmallow/schema.py"
+  ],
+  "test_files": [
+   "tests/test_decorators.py"
+  ],
+  "src_lines": 9,
+  "multi_file": false
+ },
+ {
+  "sha": "2d075c70252d352753d05bebfbb9c3f9abd7935b",
+  "subject": "Fix the inconsistency of validates decorator",
+  "src_files": [
+   "marshmallow/schema.py"
+  ],
+  "test_files": [
+   "tests/test_decorators.py"
+  ],
+  "src_lines": 9,
+  "multi_file": false
+ },
+ {
+  "sha": "f7d7e3820f4b85ec04f9c292fbf802facdc6b702",
+  "subject": "Remove __error_handler__, __accessor__...",
+  "src_files": [
+   "marshmallow/schema.py"
+  ],
+  "test_files": [
+   "tests/test_schema.py"
+  ],
+  "src_lines": 67,
+  "multi_file": false
+ },
+ {
+  "sha": "c9c093f7b3eb0b64a609e0e7bab18b01af2a7072",
+  "subject": "Prefer `load_from` in nested errors about required fields",
+  "src_files": [
+   "marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_schema.py"
+  ],
+  "src_lines": 5,
+  "multi_file": false
+ },
+ {
+  "sha": "1da951c0474f9af393a6736c13abf6cbcca85cee",
+  "subject": "Report validation errors for each item of List field",
+  "src_files": [
+   "marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_deserialization.py"
+  ],
+  "src_lines": 19,
+  "multi_file": false
+ },
+ {
+  "sha": "51e26d546a633e4b6e8516e6845e9dc6c2303bb9",
+  "subject": "Raise `ValueError` to avoid unnecessary parameters in validate.Length",
+  "src_files": [
+   "marshmallow/validate.py"
+  ],
+  "test_files": [
+   "tests/test_validate.py"
+  ],
+  "src_lines": 6,
+  "multi_file": false
+ },
+ {
+  "sha": "3062289ce4620f95dbab2800b294212cdd2cc1a3",
+  "subject": "Remove unnecessary raising of ValidationError in unmarshaller",
+  "src_files": [
+   "marshmallow/marshalling.py"
+  ],
+  "test_files": [
+   "tests/test_decorators.py"
+  ],
+  "src_lines": 6,
+  "multi_file": false
+ },
+ {
+  "sha": "d295dbb6c8c43e12bccb7bc3636abef1d3621a59",
+  "subject": "Optional skip_on_field_errors arg for validates_schema",
+  "src_files": [
+   "marshmallow/decorators.py",
+   "marshmallow/schema.py"
+  ],
+  "test_files": [
+   "tests/test_decorators.py"
+  ],
+  "src_lines": 22,
+  "multi_file": true
+ },
+ {
+  "sha": "84c31ed7eada0fbbb8c7b5d66578b4515bf3c1d4",
+  "subject": "Ensure prefix is included in key if both prefix and dump_to params are set",
+  "src_files": [
+   "marshmallow/marshalling.py"
+  ],
+  "test_files": [
+   "tests/test_marshalling.py"
+  ],
+  "src_lines": 9,
+  "multi_file": false
+ },
+ {
+  "sha": "2027de0741620121113a70b40c601f9d50b60683",
+  "subject": "Fix passing data when passing many=True to validates_schema",
+  "src_files": [
+   "marshmallow/__init__.py",
+   "marshmallow/marshalling.py",
+   "marshmallow/schema.py"
+  ],
+  "test_files": [
+   "tests/test_decorators.py"
+  ],
+  "src_lines": 6,
+  "multi_file": true
+ },
+ {
+  "sha": "7ba62ab59c3818baf80639866e8dcefd7dba63dc",
+  "subject": "Run all schema-level validators without stopping at first error",
+  "src_files": [
+   "marshmallow/schema.py"
+  ],
+  "test_files": [
+   "tests/test_decorators.py"
+  ],
+  "src_lines": 21,
+  "multi_file": false
+ },
+ {
+  "sha": "3203adbe4cb56b22e474902c6609f2cb6e5d9b45",
+  "subject": "Remove MarshallingError and UnmarshallingError",
+  "src_files": [
+   "marshmallow/__init__.py",
+   "marshmallow/exceptions.py"
+  ],
+  "test_files": [
+   "tests/test_exceptions.py"
+  ],
+  "src_lines": 33,
+  "multi_file": true
+ },
+ {
+  "sha": "b52112a37f24a5a24766c9e61c6040337ba6c00b",
+  "subject": "Fix up minor stuff as mentioned in https://github.com/marshmallow-code/marshmallow/pull/286",
+  "src_files": [
+   "marshmallow/fields.py",
+   "marshmallow/utils.py"
+  ],
+  "test_files": [
+   "tests/base.py"
+  ],
+  "src_lines": 10,
+  "multi_file": true
+ },
+ {
+  "sha": "ece03405c3f3594a69b2084e9c119d6be6abe7b7",
+  "subject": "Rename handle_errors -> handle_error; defer raising in strict mode",
+  "src_files": [
+   "marshmallow/schema.py"
+  ],
+  "test_files": [
+   "tests/test_schema.py"
+  ],
+  "src_lines": 26,
+  "multi_file": false
+ },
+ {
+  "sha": "507fc76400762617dd962d1aa7184ea993248edc",
+  "subject": "Correctly pass field_names and fields for schema validation errors",
+  "src_files": [
+   "marshmallow/marshalling.py",
+   "marshmallow/schema.py"
+  ],
+  "test_files": [
+   "tests/test_schema.py"
+  ],
+  "src_lines": 13,
+  "multi_file": true
+ },
+ {
+  "sha": "ac5aa5d6e31e20e160544d83112abb6c0d0fbc7d",
+  "subject": "Replace error_handler and accessor with handle_errors and get_attribute",
+  "src_files": [
+   "marshmallow/fields.py",
+   "marshmallow/schema.py"
+  ],
+  "test_files": [
+   "tests/test_schema.py"
+  ],
+  "src_lines": 56,
+  "multi_file": true
+ },
+ {
+  "sha": "23efb5c4c780e14ad150577f434ba5c470aa5e92",
+  "subject": "Fix another infinite loop",
+  "src_files": [
+   "marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_schema.py"
+  ],
+  "src_lines": 6,
+  "multi_file": false
+ },
+ {
+  "sha": "8cdb77b23d1c1a6d7f1c342fd4385dc43dd494e1",
+  "subject": "Fix validation of required Nested fields",
+  "src_files": [
+   "marshmallow/exceptions.py",
+   "marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_deserialization.py",
+   "tests/test_schema.py"
+  ],
+  "src_lines": 10,
+  "multi_file": true
+ },
+ {
+  "sha": "52c26614a141529c4fb798a1a223fc9e55693059",
+  "subject": "Fix error messages for Decimal and time fields",
+  "src_files": [
+   "marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_deserialization.py",
+   "tests/test_schema.py",
+   "tests/test_serialization.py"
+  ],
+  "src_lines": 25,
+  "multi_file": false
+ },
+ {
+  "sha": "9039f43fa1a5f6a4b8e608243efe32f721492640",
+  "subject": "Partial _accessor and _error_handler after init'ing attributes",
+  "src_files": [
+   "marshmallow/__init__.py",
+   "marshmallow/schema.py"
+  ],
+  "test_files": [
+   "tests/test_deserialization.py"
+  ],
+  "src_lines": 9,
+  "multi_file": true
+ },
+ {
+  "sha": "68a2c33df6c20f18cfb18e58c4b403f35ddffc90",
+  "subject": "Improve consistency of error messages",
+  "src_files": [
+   "marshmallow/fields.py",
+   "marshmallow/marshalling.py",
+   "marshmallow/utils.py",
+   "marshmallow/validate.py"
+  ],
+  "test_files": [
+   "tests/test_decorators.py",
+   "tests/test_deserialization.py",
+   "tests/test_marshalling.py",
+   "tests/test_schema.py",
+   "tests/test_utils.py",
+   "tests/test_validate.py"
+  ],
+  "src_lines": 62,
+  "multi_file": true
+ },
+ {
+  "sha": "5900c5aa145330c0d4ce11ba47fb78c548f3e3ff",
+  "subject": "Fixed boolean field serialization.",
+  "src_files": [
+   "marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_serialization.py"
+  ],
+  "src_lines": 9,
+  "multi_file": false
+ },
+ {
+  "sha": "14479c1c4d9ffc95c812ba69e500513790c2edf9",
+  "subject": "If invalid type is passed to a schema and strict=False, store error",
+  "src_files": [
+   "marshmallow/marshalling.py"
+  ],
+  "test_files": [
+   "tests/test_deserialization.py",
+   "tests/test_schema.py"
+  ],
+  "src_lines": 19,
+  "multi_file": false
+ },
+ {
+  "sha": "376349883c5bef2455db474d30b020b2cd8cd6c3",
+  "subject": "Fix errors on non-ASCII local email part",
+  "src_files": [
+   "marshmallow/validate.py"
+  ],
+  "test_files": [
+   "tests/test_validate.py"
+  ],
+  "src_lines": 6,
+  "multi_file": false
+ },
+ {
+  "sha": "27992463466a7d0936f4cef000402f853ed6f944",
+  "subject": "Don't include user input in error messages by default",
+  "src_files": [
+   "marshmallow/validate.py"
+  ],
+  "test_files": [
+   "tests/test_deserialization.py",
+   "tests/test_marshalling.py",
+   "tests/test_schema.py",
+   "tests/test_validate.py"
+  ],
+  "src_lines": 6,
+  "multi_file": false
+ },
+ {
+  "sha": "93f20e61b37909fbbf928b9fc48cc8f6b0d91b2e",
+  "subject": "Bug fix: correct recursive descent. Better test data.",
+  "src_files": [
+   "marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_schema.py"
+  ],
+  "src_lines": 17,
+  "multi_file": false
+ },
+ {
+  "sha": "a56ae89edbb1bb2900b7fa34c4c7037df4c6f92d",
+  "subject": "Bug fix: return errors from multiple missing required inner fields in a required schema",
+  "src_files": [
+   "marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_schema.py"
+  ],
+  "src_lines": 5,
+  "multi_file": false
+ },
+ {
+  "sha": "cf582d1415505a96f25944d66765feab13d2a6fb",
+  "subject": "Type error and missing required data error handling for nested fields.",
+  "src_files": [
+   "marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_schema.py"
+  ],
+  "src_lines": 7,
+  "multi_file": false
+ },
+ {
+  "sha": "16cb352c80318d01ec3aff4c62863153bbdfec04",
+  "subject": "Fix get_value to handle value accession from keyed tuple types",
+  "src_files": [
+   "marshmallow/fields.py",
+   "marshmallow/utils.py"
+  ],
+  "test_files": [
+   "tests/test_schema.py",
+   "tests/test_utils.py"
+  ],
+  "src_lines": 21,
+  "multi_file": true
+ },
+ {
+  "sha": "1dd05c65d3668fa98c65f2038646db462b2d1ebc",
+  "subject": "Fix indexing of schema-level errors",
+  "src_files": [
+   "marshmallow/marshalling.py",
+   "marshmallow/schema.py"
+  ],
+  "test_files": [
+   "tests/test_decorators.py"
+  ],
+  "src_lines": 31,
+  "multi_file": true
+ },
+ {
+  "sha": "2b258fee4334a1324518741053658983f08f7634",
+  "subject": "Backport: Correctly use error attribute for Boolean",
+  "src_files": [
+   "marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_deserialization.py"
+  ],
+  "src_lines": 10,
+  "multi_file": false
+ },
+ {
+  "sha": "cda728f7642107deb697d4ad18f2eeb319e09803",
+  "subject": "Fix error message for fields.Decimal",
+  "src_files": [
+   "marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_deserialization.py"
+  ],
+  "src_lines": 12,
+  "multi_file": false
+ },
+ {
+  "sha": "68d7eeb0deeb96e48eb8612600ea022b5b58008f",
+  "subject": "Correctly error attribute for Boolean; fix Decimal error message",
+  "src_files": [
+   "marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_deserialization.py"
+  ],
+  "src_lines": 12,
+  "multi_file": false
+ },
+ {
+  "sha": "8aab6b655211ecd0887b90eab9f9dfcfa57faaed",
+  "subject": "Remove 'validate.' prefix",
+  "src_files": [
+   "marshmallow/validate.py"
+  ],
+  "test_files": [
+   "tests/test_validate.py"
+  ],
+  "src_lines": 12,
+  "multi_file": false
+ },
+ {
+  "sha": "ba24e5a296d214a482fec939395813c289fe8803",
+  "subject": "Fix serialization of None for Time, Date, and TimeDelta",
+  "src_files": [
+   "marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_serialization.py"
+  ],
+  "src_lines": 27,
+  "multi_file": false
+ },
+ {
+  "sha": "20c112841c373494a6c628345cacc0063f901ca7",
+  "subject": "Fix validation of invalid types passed to Nested field when many=True",
+  "src_files": [
+   "marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_schema.py"
+  ],
+  "src_lines": 6,
+  "multi_file": false
+ },
+ {
+  "sha": "50b205c49f3b46e8763473f3ac1a948da24b66ac",
+  "subject": "Incorporate fixes from review and discussion",
+  "src_files": [
+   "marshmallow/decorators.py",
+   "marshmallow/schema.py",
+   "marshmallow/utils.py"
+  ],
+  "test_files": [
+   "tests/test_schema.py"
+  ],
+  "src_lines": 40,
+  "multi_file": true
+ },
+ {
+  "sha": "c81ecb819032260e1969acc68ee2ac81a4c524cc",
+  "subject": "Fix as_string on fields.Integer",
+  "src_files": [
+   "marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_serialization.py"
+  ],
+  "src_lines": 6,
+  "multi_file": false
+ },
+ {
+  "sha": "37d18993b3a4859c5f3a0f57357d7fc007b688f3",
+  "subject": "Fix raising ValidationErrors with schema validation",
+  "src_files": [
+   "marshmallow/marshalling.py"
+  ],
+  "test_files": [
+   "tests/test_schema.py"
+  ],
+  "src_lines": 12,
+  "multi_file": false
+ },
+ {
+  "sha": "670620ecb473b23f09fa7f9b8dd4a67fe7ac79b4",
+  "subject": "In strict mode, raise ValidationError with full errors dict and fields",
+  "src_files": [
+   "marshmallow/marshalling.py",
+   "marshmallow/schema.py"
+  ],
+  "test_files": [
+   "tests/test_schema.py"
+  ],
+  "src_lines": 45,
+  "multi_file": true
+ },
+ {
+  "sha": "97b954e9a26282377b2a04e53d8ec541e54c478c",
+  "subject": "Fix storing errors on specified fields",
+  "src_files": [
+   "marshmallow/exceptions.py",
+   "marshmallow/marshalling.py"
+  ],
+  "test_files": [
+   "tests/base.py",
+   "tests/test_exceptions.py",
+   "tests/test_schema.py"
+  ],
+  "src_lines": 22,
+  "multi_file": true
+ },
+ {
+  "sha": "b3e0f99e85b2a85050a709fe7914b54ce3cc1c1f",
+  "subject": "Raise DeprecationWarning if using Marshalling or UnmarshallingError",
+  "src_files": [
+   "marshmallow/exceptions.py"
+  ],
+  "test_files": [
+   "tests/test_exceptions.py"
+  ],
+  "src_lines": 42,
+  "multi_file": false
+ },
+ {
+  "sha": "927704be32a999b5c65edaa8ee6f76e58fe6890a",
+  "subject": "Fix inheritance of ordered option",
+  "src_files": [
+   "marshmallow/__init__.py",
+   "marshmallow/schema.py"
+  ],
+  "test_files": [
+   "tests/test_schema.py"
+  ],
+  "src_lines": 12,
+  "multi_file": true
+ },
+ {
+  "sha": "e82341f2be5ae6754f6d2ff37c87c3a68ed65481",
+  "subject": "Add index_errors class Meta option",
+  "src_files": [
+   "marshmallow/schema.py"
+  ],
+  "test_files": [
+   "tests/test_schema.py"
+  ],
+  "src_lines": 7,
+  "multi_file": false
+ },
+ {
+  "sha": "d69f3123ed9e82d396b6a516aba4355b59cd44fb",
+  "subject": "Add parameter to (Un)Marshaller to turn off error indexing",
+  "src_files": [
+   "marshmallow/marshalling.py"
+  ],
+  "test_files": [
+   "tests/test_marshalling.py"
+  ],
+  "src_lines": 17,
+  "multi_file": false
+ },
+ {
+  "sha": "82954cb115964ed4c3b51181b30045d74d3679b4",
+  "subject": "Add tests for Umarshaller and Marshaller for storing error indices",
+  "src_files": [
+   "marshmallow/marshalling.py"
+  ],
+  "test_files": [
+   "tests/test_marshalling.py"
+  ],
+  "src_lines": 6,
+  "multi_file": false
+ },
+ {
+  "sha": "4cb155216e738de0fcc93e15b6adc7c923031bd1",
+  "subject": "More consistent error message interpolation",
+  "src_files": [
+   "marshmallow/validate.py"
+  ],
+  "test_files": [
+   "tests/test_validate.py"
+  ],
+  "src_lines": 71,
+  "multi_file": false
+ },
+ {
+  "sha": "e92b36ca6816667d9cd5dec608da936300425365",
+  "subject": "Allow NoneOf error message to be interpolated with {input} and {values}",
+  "src_files": [
+   "marshmallow/validate.py"
+  ],
+  "test_files": [
+   "tests/test_validate.py"
+  ],
+  "src_lines": 13,
+  "multi_file": false
+ },
+ {
+  "sha": "6f529f39ef59c8e338528175c2fbe2d3e30b97c6",
+  "subject": "Fix allow_blank serialization behavior for URL and Email fields",
+  "src_files": [
+   "marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_schema.py"
+  ],
+  "src_lines": 13,
+  "multi_file": false
+ },
+ {
+  "sha": "02b72938259ed0fbf0814921481ea3d8e814a82b",
+  "subject": "Allow error messages for allow_none and allow_blank to be configured",
+  "src_files": [
+   "marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_schema.py"
+  ],
+  "src_lines": 28,
+  "multi_file": false
+ },
+ {
+  "sha": "278ff691f2e4de0bba6368ca05ccd4ba3dd92abe",
+  "subject": "Now accepting as the required message anything that the ValidationError constructor takes",
+  "src_files": [
+   "marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_deserialization.py"
+  ],
+  "src_lines": 13,
+  "multi_file": false
+ },
+ {
+  "sha": "1bf7ae9fc88acebbc341616d9294a233694128ed",
+  "subject": "WIP: Allow schema-level errors to be stored on multiple fields",
+  "src_files": [
+   "marshmallow/exceptions.py",
+   "marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_exceptions.py",
+   "tests/test_schema.py"
+  ],
+  "src_lines": 42,
+  "multi_file": true
+ },
+ {
+  "sha": "3ca29d046d1aa2117f6b378f5c5a9143e69417ba",
+  "subject": "Fix handling schema validation errors with dict or list",
+  "src_files": [
+   "marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_schema.py"
+  ],
+  "src_lines": 7,
+  "multi_file": false
+ },
+ {
+  "sha": "e5e7520d93dc4981eb484dfa3ffab0155f6d05af",
+  "subject": "Allow dict to be passed as error in user validator",
+  "src_files": [
+   "marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_schema.py"
+  ],
+  "src_lines": 5,
+  "multi_file": false
+ },
+ {
+  "sha": "1f28e30b244def9bce2bce4b9302bc4989590c04",
+  "subject": "Add failing test case for TimeDelta and also fix all of the errors",
+  "src_files": [
+   "marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_deserialization.py"
+  ],
+  "src_lines": 6,
+  "multi_file": false
+ },
+ {
+  "sha": "c501c3e256a8ab33bab1be5095f7c220ccad55bb",
+  "subject": "Fix `as_string` of Number fields when serializing to default val",
+  "src_files": [
+   "marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_serialization.py"
+  ],
+  "src_lines": 17,
+  "multi_file": false
+ },
+ {
+  "sha": "ae43a733b5fdf2d1084ec0ad6266d73c2bfbfaa8",
+  "subject": "Fix bug that raised AttributeError when using a class Validator",
+  "src_files": [
+   "marshmallow/fields.py",
+   "marshmallow/utils.py"
+  ],
+  "test_files": [
+   "tests/test_deserialization.py",
+   "tests/test_utils.py"
+  ],
+  "src_lines": 11,
+  "multi_file": true
+ },
+ {
+  "sha": "b617ffae4a579e68e1d78ae3a985946eca4efa71",
+  "subject": "More consistent error messages for DateTime, Date, Time, and TimeDelta",
+  "src_files": [
+   "marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_deserialization.py"
+  ],
+  "src_lines": 12,
+  "multi_file": false
+ },
+ {
+  "sha": "981d14f956dfe52d93f72a640ed28fc16f7a25b1",
+  "subject": "Fix behavior of skip_missing for String and List fields",
+  "src_files": [
+   "marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_schema.py"
+  ],
+  "src_lines": 13,
+  "multi_file": false
+ },
+ {
+  "sha": "1107a234c5681e54d1345bad1f32dc107a4aa344",
+  "subject": "Reset errors dictionary upon serializing object",
+  "src_files": [
+   "marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_schema.py"
+  ],
+  "src_lines": 14,
+  "multi_file": false
+ },
+ {
+  "sha": "187560311f868e7eeac76eed30edf69f538c483b",
+  "subject": "Reset errors dict on every load",
+  "src_files": [
+   "marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_schema.py"
+  ],
+  "src_lines": 11,
+  "multi_file": false
+ },
+ {
+  "sha": "8df4fde10f91c75b14d124faa5616f9fce6a6b50",
+  "subject": "Deprecate error parameter",
+  "src_files": [
+   "marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_fields.py"
+  ],
+  "src_lines": 7,
+  "multi_file": false
+ },
+ {
+  "sha": "98159735bf635dbe1751104fe85c82141e86ee50",
+  "subject": "Fix datetime deserialization when dateutil isn't installed",
+  "src_files": [
+   "marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_deserialization.py"
+  ],
+  "src_lines": 9,
+  "multi_file": false
+ },
+ {
+  "sha": "af5d0a2c5f3cbb9d935c4dd3aabc70b45704066f",
+  "subject": "Fix List field serialization of single values and None",
+  "src_files": [
+   "marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_deserialization.py",
+   "tests/test_serialization.py"
+  ],
+  "src_lines": 23,
+  "multi_file": false
+ },
+ {
+  "sha": "deaff064794edaf3ba8b98772b171791fc5df87a",
+  "subject": "Update flake8 config and fix all flake errors",
+  "src_files": [
+   "marshmallow/class_registry.py",
+   "marshmallow/fields.py",
+   "marshmallow/schema.py",
+   "marshmallow/validate.py"
+  ],
+  "test_files": [
+   "tests/base.py",
+   "tests/test_deserialization.py",
+   "tests/test_schema.py"
+  ],
+  "src_lines": 44,
+  "multi_file": true
+ },
+ {
+  "sha": "89a760a8c759776e85f7b12ec3c4eda2a7b7807b",
+  "subject": "Fix UUID deserialization",
+  "src_files": [
+   "marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_deserialization.py"
+  ],
+  "src_lines": 6,
+  "multi_file": false
+ },
+ {
+  "sha": "30c23cce5592b2cc4abbf5a195b89a504664f34d",
+  "subject": "Add test for storing multiple errors when many=True",
+  "src_files": [
+   "marshmallow/fields.py",
+   "marshmallow/schema.py"
+  ],
+  "test_files": [
+   "tests/test_schema.py"
+  ],
+  "src_lines": 5,
+  "multi_file": true
+ },
+ {
+  "sha": "47d8de2d8d8da23ce49ba25d8b7b5a835b5fdbab",
+  "subject": "Allow schema validators to store errors on specific field",
+  "src_files": [
+   "marshmallow/exceptions.py",
+   "marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_exceptions.py",
+   "tests/test_schema.py"
+  ],
+  "src_lines": 7,
+  "multi_file": true
+ },
+ {
+  "sha": "4698fe51e6d756dca92912a9097b11a7df8a57f2",
+  "subject": "Fix URL and Email field validation",
+  "src_files": [
+   "marshmallow/fields.py",
+   "marshmallow/schema.py",
+   "marshmallow/validate.py"
+  ],
+  "test_files": [
+   "tests/test_deserialization.py",
+   "tests/test_registry.py",
+   "tests/test_schema.py",
+   "tests/test_serialization.py"
+  ],
+  "src_lines": 59,
+  "multi_file": true
+ },
+ {
+  "sha": "d3dae6a708ba03614eff8417c096b2502649a644",
+  "subject": "Validators in validate.py raise ValidationErrors",
+  "src_files": [
+   "marshmallow/validate.py"
+  ],
+  "test_files": [
+   "tests/test_validate.py"
+  ],
+  "src_lines": 15,
+  "multi_file": false
+ },
+ {
+  "sha": "723364ff0d77b23c2f77afe1373d9b98e6f6d2df",
+  "subject": "Add ValidationError that gets wrapped by UnmarshallingError",
+  "src_files": [
+   "marshmallow/exceptions.py",
+   "marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_deserialization.py"
+  ],
+  "src_lines": 11,
+  "multi_file": true
+ },
+ {
+  "sha": "125c1d3c358a770470bd4ee8aa57e94b0f46b751",
+  "subject": "Prevent KeyError when extra data are passed in to Schema.load",
+  "src_files": [
+   "marshmallow/fields.py",
+   "marshmallow/serializer.py"
+  ],
+  "test_files": [
+   "tests/test_deserialization.py"
+  ],
+  "src_lines": 6,
+  "multi_file": true
+ },
+ {
+  "sha": "3e139b2ebeb448f02d8a1795b5dd69e4aacd6d6c",
+  "subject": "Expose __error_handler__ and __data_handler__ class members",
+  "src_files": [
+   "marshmallow/serializer.py"
+  ],
+  "test_files": [
+   "tests/test_serializer.py"
+  ],
+  "src_lines": 22,
+  "multi_file": false
+ },
+ {
+  "sha": "12a3b3b0ab9c5ab593ae8a8c532cc4b8349180fc",
+  "subject": "Call error_handler if error occurs when invoking \"load\"",
+  "src_files": [
+   "marshmallow/serializer.py"
+  ],
+  "test_files": [
+   "tests/test_serializer.py"
+  ],
+  "src_lines": 9,
+  "multi_file": false
+ },
+ {
+  "sha": "4c8f331d616a8be18a7570abd3f963e8be9a31f3",
+  "subject": "Fix ordering of declared fields",
+  "src_files": [
+   "marshmallow/fields.py",
+   "marshmallow/serializer.py"
+  ],
+  "test_files": [
+   "tests/test_serializer.py"
+  ],
+  "src_lines": 14,
+  "multi_file": true
+ },
+ {
+  "sha": "84f35c553b00bd1e95adca36406ee7c5fe8e73d2",
+  "subject": "Fix behavior of Nested field's required and default parameters",
+  "src_files": [
+   "marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_serializer.py"
+  ],
+  "src_lines": 22,
+  "multi_file": false
+ },
+ {
+  "sha": "d057cb9768c4dfb4d7614c56772bf4338d312073",
+  "subject": "load and dump return result and errors",
+  "src_files": [
+   "marshmallow/fields.py",
+   "marshmallow/serializer.py"
+  ],
+  "test_files": [
+   "tests/test_deserialization.py",
+   "tests/test_serializer.py"
+  ],
+  "src_lines": 12,
+  "multi_file": true
+ },
+ {
+  "sha": "29d8f6cd4fe76f64f54d762359e812b1fe26576a",
+  "subject": "Rename DeserializationError -> UnmarshallingError",
+  "src_files": [
+   "marshmallow/exceptions.py",
+   "marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_deserialization.py"
+  ],
+  "src_lines": 31,
+  "multi_file": true
+ },
+ {
+  "sha": "ff18e782be9d04557f027116b147f16bcecb9999",
+  "subject": "Fix serialization of binary strings",
+  "src_files": [
+   "marshmallow/fields.py",
+   "marshmallow/serializer.py"
+  ],
+  "test_files": [
+   "tests/test_deserialization.py",
+   "tests/test_marshmallow.py"
+  ],
+  "src_lines": 26,
+  "multi_file": true
+ },
+ {
+  "sha": "e918e8abb86b88ba99b0ac372a438383d956d24e",
+  "subject": "Add Marshaller#deserialize. Store deserialization errors",
+  "src_files": [
+   "marshmallow/fields.py",
+   "marshmallow/serializer.py"
+  ],
+  "test_files": [
+   "tests/test_marshmallow.py"
+  ],
+  "src_lines": 56,
+  "multi_file": true
+ },
+ {
+  "sha": "b0fb60a87f909bffeddcd8cdaac67e530adbcdf2",
+  "subject": "Fix serializing keyed tuple types with class Meta options",
+  "src_files": [
+   "marshmallow/utils.py"
+  ],
+  "test_files": [
+   "tests/test_marshmallow.py"
+  ],
+  "src_lines": 14,
+  "multi_file": false
+ },
+ {
+  "sha": "a6647521944c87a506b507c490fdc3c0c24ccd2e",
+  "subject": "Fix error_handler",
+  "src_files": [
+   "marshmallow/serializer.py"
+  ],
+  "test_files": [
+   "tests/test_marshmallow.py"
+  ],
+  "src_lines": 23,
+  "multi_file": false
+ },
+ {
+  "sha": "f6eeb0745b6ae0a21c32edb47dac0f01ceb49f97",
+  "subject": "Add Serializer.error_handler decorator",
+  "src_files": [
+   "marshmallow/fields.py",
+   "marshmallow/serializer.py"
+  ],
+  "test_files": [
+   "tests/test_marshmallow.py"
+  ],
+  "src_lines": 38,
+  "multi_file": true
+ },
+ {
+  "sha": "d93c4662dc5a85f9355441dd5c289e8d1d103839",
+  "subject": "Add error_handler param to Marshaller",
+  "src_files": [
+   "marshmallow/fields.py",
+   "marshmallow/utils.py"
+  ],
+  "test_files": [
+   "tests/test_marshmallow.py"
+  ],
+  "src_lines": 24,
+  "multi_file": true
+ },
+ {
+  "sha": "df636eee71122ee668e5b3207f3741477f1bdbf2",
+  "subject": "Move required validation to validated() and change its error message",
+  "src_files": [
+   "marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_marshmallow.py"
+  ],
+  "src_lines": 28,
+  "multi_file": false
+ },
+ {
+  "sha": "279dba51b4f773473da4247877896c49d79fa987",
+  "subject": "Fix bug with passing \"extra\" together with \"many=True\"",
+  "src_files": [
+   "marshmallow/__init__.py",
+   "marshmallow/serializer.py"
+  ],
+  "test_files": [
+   "tests/test_marshmallow.py"
+  ],
+  "src_lines": 18,
+  "multi_file": true
+ },
+ {
+  "sha": "7bf6a1ee5ba734793019440576fe75a7f46045d1",
+  "subject": "Fix test commands",
+  "src_files": [
+   "marshmallow/class_registry.py",
+   "tasks.py"
+  ],
+  "test_files": [
+   "tests/foo_serializer.py",
+   "tests/test_marshmallow.py"
+  ],
+  "src_lines": 16,
+  "multi_file": true
+ },
+ {
+  "sha": "7af14f949481b213ccb9fad9a9b4352cdace9d72",
+  "subject": "Prevent error when a module is reloaded",
+  "src_files": [
+   "marshmallow/class_registry.py",
+   "marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_marshmallow.py"
+  ],
+  "src_lines": 13,
+  "multi_file": true
+ },
+ {
+  "sha": "35bdfbaba34765129bdf730be535ec5457a36283",
+  "subject": "Raise RegistryError if class name is invalid",
+  "src_files": [
+   "marshmallow/class_registry.py",
+   "marshmallow/exceptions.py",
+   "marshmallow/fields.py",
+   "marshmallow/serializer.py"
+  ],
+  "test_files": [
+   "tests/test_marshmallow.py"
+  ],
+  "src_lines": 23,
+  "multi_file": true
+ },
+ {
+  "sha": "dd75c8675b9369926241fd74c23a3afa8c23e029",
+  "subject": "added required fields flag, fixes #16",
+  "src_files": [
+   "marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_marshmallow.py"
+  ],
+  "src_lines": 14,
+  "multi_file": false
+ },
+ {
+  "sha": "8297701e91f7694d2364aead7bb221c59eacb661",
+  "subject": "Raise error if no context is available",
+  "src_files": [
+   "marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_marshmallow.py"
+  ],
+  "src_lines": 9,
+  "multi_file": false
+ },
+ {
+  "sha": "42a1a6a25b82798a1c0059ac08eadd7a6a310138",
+  "subject": "Method field raises error if method is missing or uncallable",
+  "src_files": [
+   "marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_marshmallow.py"
+  ],
+  "src_lines": 11,
+  "multi_file": false
+ },
+ {
+  "sha": "ad9e0e6f4460aac6302e05ac891fdf8a9778ec11",
+  "subject": "Raise ValueError if fields or additional is not correct type",
+  "src_files": [
+   "marshmallow/serializer.py"
+  ],
+  "test_files": [
+   "tests/test_marshmallow.py"
+  ],
+  "src_lines": 6,
+  "multi_file": false
+ },
+ {
+  "sha": "efb436c3b32d23477d21e445c9fc6257717f6028",
+  "subject": "Allow custom error messages",
+  "src_files": [
+   "marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_marshmallow.py"
+  ],
+  "src_lines": 19,
+  "multi_file": false
+ },
+ {
+  "sha": "89b91b9379edda0a6cf834fdbf38393c5b8d7ed8",
+  "subject": "Fix serializing generator expression",
+  "src_files": [
+   "marshmallow/serializer.py",
+   "marshmallow/utils.py"
+  ],
+  "test_files": [
+   "tests/test_marshmallow.py"
+  ],
+  "src_lines": 10,
+  "multi_file": true
+ },
+ {
+  "sha": "37cb1e18cc1661c316e34b4c84d4669b7daeac06",
+  "subject": "Fix bug with serializing None",
+  "src_files": [
+   "marshmallow/serializer.py"
+  ],
+  "test_files": [
+   "tests/test_marshmallow.py"
+  ],
+  "src_lines": 8,
+  "multi_file": false
+ },
+ {
+  "sha": "23314215a40876bf24787dc13e52a336013a15a5",
+  "subject": "Fix py26 compatibility with timedelta",
+  "src_files": [
+   "marshmallow/compat.py",
+   "marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_marshmallow.py"
+  ],
+  "src_lines": 13,
+  "multi_file": true
+ },
+ {
+  "sha": "3f8828082280926aa60c7899d85ca233533907e9",
+  "subject": "Fix serializing empty list",
+  "src_files": [
+   "marshmallow/fields.py",
+   "marshmallow/serializer.py"
+  ],
+  "test_files": [
+   "tests/test_marshmallow.py"
+  ],
+  "src_lines": 9,
+  "multi_file": true
+ },
+ {
+  "sha": "fdde1b70b3929cc45c31445a0c170c753abfc610",
+  "subject": "Rename Exceptions -> Errors",
+  "src_files": [
+   "marshmallow/__init__.py",
+   "marshmallow/exceptions.py",
+   "marshmallow/fields.py",
+   "marshmallow/serializer.py"
+  ],
+  "test_files": [
+   "tests/test_marshmallow.py"
+  ],
+  "src_lines": 42,
+  "multi_file": true
+ },
+ {
+  "sha": "6f250eb0e247b211c9e88fc8845d8d95282f2dca",
+  "subject": "Fix failing tests",
+  "src_files": [
+   "marshmallow/fields.py",
+   "marshmallow/serializer.py"
+  ],
+  "test_files": [
+   "tests/test_marshmallow.py"
+  ],
+  "src_lines": 29,
+  "multi_file": true
+ },
+ {
+  "sha": "11cecb56a0a178b73feba1dd717810ea4eba832e",
+  "subject": "Fix nested serializers with Meta fields",
+  "src_files": [
+   "marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_marshmallow.py"
+  ],
+  "src_lines": 59,
+  "multi_file": false
+ },
+ {
+  "sha": "9ee32ac14734c8ccdf2ee4b690f87bed2f74b4e7",
+  "subject": "More useful error msg when declaring field as class",
+  "src_files": [
+   "marshmallow/serializer.py"
+  ],
+  "test_files": [
+   "tests/test_marshmallow.py"
+  ],
+  "src_lines": 21,
+  "multi_file": false
+ },
+ {
+  "sha": "f412a5254818d8c39c4815217f753df86703f30b",
+  "subject": "Fix storing errors on Nested serializers",
+  "src_files": [
+   "marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_marshmallow.py"
+  ],
+  "src_lines": 18,
+  "multi_file": false
+ },
+ {
+  "sha": "6c3ed365a04b4fa2937086538281ca82e0b96361",
+  "subject": "Raise KeyError if validating a nonexistent field",
+  "src_files": [
+   "marshmallow/core.py"
+  ],
+  "test_files": [
+   "tests/test_marshmallow.py"
+  ],
+  "src_lines": 9,
+  "multi_file": false
+ },
+ {
+  "sha": "a6368b2ed34f0d1faa73cbfefe38a2c67c3eb1cf",
+  "subject": "Basic field-level validation and error storage",
+  "src_files": [
+   "marshmallow/core.py",
+   "marshmallow/fields.py",
+   "tasks.py"
+  ],
+  "test_files": [
+   "tests/test_marshmallow.py"
+  ],
+  "src_lines": 65,
+  "multi_file": true
+ },
+ {
+  "sha": "50ef96ce151332bdfde38371c838dbe1f272569c",
+  "subject": "Fix nested fields",
+  "src_files": [
+   "marshmallow/base.py",
+   "marshmallow/core.py",
+   "marshmallow/fields.py"
+  ],
+  "test_files": [
+   "tests/test_marshmallow.py"
+  ],
+  "src_lines": 18,
+  "multi_file": true
+ }
+]

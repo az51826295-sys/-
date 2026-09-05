@@ -1,0 +1,30 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "d2a0cdb73807b2b28217850ee54edc29171e49cb",
+ "parent_commit": "bfd2593d4b416122e30cdefe0c72d322ef471611",
+ "answer_files": [
+  "src/marshmallow/utils.py"
+ ],
+ "answer_functions": [
+  "src/marshmallow/utils.py::timedelta_to_microseconds"
+ ],
+ "patch_lines": 12,
+ "added_tests": {
+  "tests/test_serialization.py::TestFieldSerialization::test_timedelta_field": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "tests/test_serialization.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 4.5,
+ "env_error_tests": 1,
+ "qualified": false,
+ "selector_event_proxy_v1": false
+}

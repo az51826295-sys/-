@@ -1,0 +1,86 @@
+{
+ "ran_at": "2026-08-21T21:51:58",
+ "mock": false,
+ "results": [
+  {
+   "repo": "mahmoud/boltons",
+   "number": 439,
+   "title": "IndexedSet: difference_update/intersection_update are quadratic for large remova",
+   "state": "failed",
+   "result": null,
+   "error": "validator rejected"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 310,
+   "title": "windowed with overlap",
+   "state": "failed",
+   "result": null,
+   "error": "validator rejected"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 301,
+   "title": "`FunctionBuilder.from_func` not working",
+   "state": "failed",
+   "result": null,
+   "error": "validator rejected"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 280,
+   "title": "URL comparison is order-based for query parameters",
+   "state": "failed",
+   "result": null,
+   "error": "validator rejected"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 201,
+   "title": "Adding parameters with wraps()",
+   "state": "failed",
+   "result": null,
+   "error": "validator rejected"
+  },
+  {
+   "repo": "msiemens/tinydb",
+   "number": 629,
+   "title": "insert_multiple can silently overwrite documents when mixing Document and dict",
+   "state": "failed",
+   "result": null,
+   "error": "validator rejected"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 626,
+   "title": "tail(0, seq) returns the whole sequence instead of empty (and is inconsistent ac",
+   "state": "succeeded",
+   "result": {
+    "steps": 8,
+    "tool_calls": 8,
+    "tier": "smart",
+    "changed_files": [
+     "toolz/itertoolz.py"
+    ],
+    "adopted": true,
+    "branch": "rookery/live-toolz_626",
+    "pr": {
+     "local_only": true,
+     "branch": "rookery/live-toolz_626",
+     "note": "외부 저장소 - 푸시 없음, 사람 검토 대기"
+    }
+   },
+   "error": null
+  }
+ ],
+ "skipped": [
+  {
+   "repo": "msiemens/tinydb",
+   "number": 631,
+   "note": "truncated_test_skip"
+  }
+ ],
+ "solved": 1,
+ "attempted": 7,
+ "spend_usd": 2.3757
+}

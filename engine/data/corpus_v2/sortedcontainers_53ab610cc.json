@@ -1,0 +1,30 @@
+{
+ "repo": "sortedcontainers",
+ "fix_commit": "53ab610cc4615888f3fcf2fa1d5d340440247a2a",
+ "parent_commit": "f6a359773de48e5adbe0e1946355d38f43c59c32",
+ "answer_files": [
+  "sortedcontainers/sortedlist.py"
+ ],
+ "answer_functions": [
+  "sortedcontainers/sortedlist.py::_loc"
+ ],
+ "patch_lines": 5,
+ "added_tests": {
+  "tests/test_coverage_sortedlist.py::test_extend": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "tests/test_coverage_sortedlist.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 4.4,
+ "env_error_tests": 1,
+ "qualified": false,
+ "selector_event_proxy_v1": false
+}

@@ -1,0 +1,69 @@
+{
+ "verified_at": "2026-08-20T21:55:57",
+ "mock": true,
+ "n_candidates": 6,
+ "outcomes": {
+  "accepted": 5,
+  "not_reproducible": 1
+ },
+ "stage2_yield": 0.8333,
+ "rows": [
+  {
+   "repo": "mahmoud/boltons",
+   "number": 439,
+   "title": "IndexedSet: difference_update/intersection_update are quadratic for large removals",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import boltons\n\ndef test_mock():\n    assert False, '배관 검증'\n"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 390,
+   "title": "Improve Test Suite Documentation",
+   "class": "A",
+   "labels": [],
+   "outcome": "not_reproducible",
+   "test_src": "def test_multibyte_delim():\n    \"\"\"Primarily tests recv_until with various maxsizes and True/False\n    for with_delimiter.\n    \"\"\"\n    # Clear test purpose\n"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 347,
+   "title": "tracking some ideas",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import boltons\n\ndef test_mock():\n    assert False, '배관 검증'\n"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 344,
+   "title": "chunked filter",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import boltons\n\ndef test_mock():\n    assert False, '배관 검증'\n"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 324,
+   "title": "attrs/dataclasses-style decorator helper",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import boltons\n\ndef test_mock():\n    assert False, '배관 검증'\n"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 311,
+   "title": "Feature request: intersection and union of lists of ranges",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import boltons\n\ndef test_mock():\n    assert False, '배관 검증'\n"
+  }
+ ],
+ "usage": {
+  "calls": 5
+ }
+}

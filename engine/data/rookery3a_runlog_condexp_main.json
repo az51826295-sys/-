@@ -1,0 +1,8453 @@
+{
+ "experiment": "condexp_main",
+ "config": {
+  "model": "claude-haiku-4-5-20251001",
+  "rounds": 8,
+  "calls_per_round": 8,
+  "success_obj": 0.78,
+  "design": "docs/ledger-condexp-design.md"
+ },
+ "runs": {
+  "C1|1|0": {
+   "seed": 1,
+   "condition": "1",
+   "calls": 8,
+   "rounds_used": 1,
+   "success": true,
+   "success_round": 1,
+   "champion_obj": 0.79270479258143,
+   "n_candidates": 8,
+   "n_valid": 8,
+   "dup_rate": 0.125,
+   "unique_sigs": 7,
+   "wrong_blocks": 0,
+   "rounds": [
+    {
+     "round": 1,
+     "key_sig": "noChampion",
+     "phase": "early",
+     "adopted": true,
+     "champion_obj": 0.79270479258143,
+     "round_blocked": false
+    }
+   ],
+   "candidates": [
+    {
+     "call": 1,
+     "round": 1,
+     "valid": true,
+     "obj": 0.761146153661881,
+     "hash": "935d217d5bff",
+     "blocked": false
+    },
+    {
+     "call": 2,
+     "round": 1,
+     "valid": true,
+     "obj": 0.34464285714285714,
+     "hash": "68476d8c506b",
+     "blocked": false
+    },
+    {
+     "call": 3,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7436610414273643,
+     "hash": "c9b41ea81c1c",
+     "blocked": false
+    },
+    {
+     "call": 4,
+     "round": 1,
+     "valid": true,
+     "obj": 0.79270479258143,
+     "hash": "65de6456233b",
+     "blocked": false
+    },
+    {
+     "call": 5,
+     "round": 1,
+     "valid": true,
+     "obj": 0.0,
+     "hash": "770224f17205",
+     "blocked": false
+    },
+    {
+     "call": 6,
+     "round": 1,
+     "valid": true,
+     "obj": 0.0,
+     "hash": "770224f17205",
+     "blocked": false
+    },
+    {
+     "call": 7,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7894148843879397,
+     "hash": "85eff04b6e26",
+     "blocked": false
+    },
+    {
+     "call": 8,
+     "round": 1,
+     "valid": true,
+     "obj": 0.0,
+     "hash": "d8b0435588f2",
+     "blocked": false
+    }
+   ],
+   "arm": "C1",
+   "task": "1",
+   "rep": 0,
+   "attempt": 1
+  },
+  "C2|1|0": {
+   "seed": 1,
+   "condition": "2",
+   "calls": 8,
+   "rounds_used": 1,
+   "success": true,
+   "success_round": 1,
+   "champion_obj": 0.8102200568289178,
+   "n_candidates": 8,
+   "n_valid": 8,
+   "dup_rate": 0.0,
+   "unique_sigs": 8,
+   "wrong_blocks": 0,
+   "rounds": [
+    {
+     "round": 1,
+     "key_sig": "noChampion",
+     "phase": "early",
+     "adopted": true,
+     "champion_obj": 0.8102200568289178,
+     "round_blocked": false
+    }
+   ],
+   "candidates": [
+    {
+     "call": 1,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7190192390707186,
+     "hash": "a7ed9a8b7d6f",
+     "blocked": false
+    },
+    {
+     "call": 2,
+     "round": 1,
+     "valid": true,
+     "obj": 0.0,
+     "hash": "ba31cc07c0d1",
+     "blocked": false
+    },
+    {
+     "call": 3,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7375173066118931,
+     "hash": "8994e1cb9ff6",
+     "blocked": false
+    },
+    {
+     "call": 4,
+     "round": 1,
+     "valid": true,
+     "obj": 0.79429243373408,
+     "hash": "d492e2284de7",
+     "blocked": false
+    },
+    {
+     "call": 5,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5288232311326535,
+     "hash": "3a778851f89a",
+     "blocked": false
+    },
+    {
+     "call": 6,
+     "round": 1,
+     "valid": true,
+     "obj": 0.8102200568289178,
+     "hash": "3eacee5dd465",
+     "blocked": false
+    },
+    {
+     "call": 7,
+     "round": 1,
+     "valid": true,
+     "obj": 0.34464285714285714,
+     "hash": "15386de4b413",
+     "blocked": false
+    },
+    {
+     "call": 8,
+     "round": 1,
+     "valid": true,
+     "obj": 0.0,
+     "hash": "aa54116a18c2",
+     "blocked": false
+    }
+   ],
+   "arm": "C2",
+   "task": "1",
+   "rep": 0,
+   "attempt": 1
+  },
+  "C1|2|0": {
+   "seed": 2,
+   "condition": "1",
+   "calls": 8,
+   "rounds_used": 1,
+   "success": true,
+   "success_round": 1,
+   "champion_obj": 0.7893735991119222,
+   "n_candidates": 8,
+   "n_valid": 8,
+   "dup_rate": 0.0,
+   "unique_sigs": 8,
+   "wrong_blocks": 0,
+   "rounds": [
+    {
+     "round": 1,
+     "key_sig": "noChampion",
+     "phase": "early",
+     "adopted": true,
+     "champion_obj": 0.7893735991119222,
+     "round_blocked": false
+    }
+   ],
+   "candidates": [
+    {
+     "call": 1,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7449329146447263,
+     "hash": "cd1cd4aac263",
+     "blocked": false
+    },
+    {
+     "call": 2,
+     "round": 1,
+     "valid": true,
+     "obj": 0.0,
+     "hash": "e6f009294082",
+     "blocked": false
+    },
+    {
+     "call": 3,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5592975703222287,
+     "hash": "82ccd19205aa",
+     "blocked": false
+    },
+    {
+     "call": 4,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5232142857142857,
+     "hash": "2eee6610fe57",
+     "blocked": false
+    },
+    {
+     "call": 5,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7893735991119222,
+     "hash": "39a503c47a61",
+     "blocked": false
+    },
+    {
+     "call": 6,
+     "round": 1,
+     "valid": true,
+     "obj": 0.6827876593833414,
+     "hash": "59f318ed6d07",
+     "blocked": false
+    },
+    {
+     "call": 7,
+     "round": 1,
+     "valid": true,
+     "obj": 0.743200343887411,
+     "hash": "1506e3cf2493",
+     "blocked": false
+    },
+    {
+     "call": 8,
+     "round": 1,
+     "valid": true,
+     "obj": 0.4275,
+     "hash": "5f3535e477c5",
+     "blocked": false
+    }
+   ],
+   "arm": "C1",
+   "task": "2",
+   "rep": 0,
+   "attempt": 1
+  },
+  "C2|2|0": {
+   "seed": 2,
+   "condition": "2",
+   "calls": 8,
+   "rounds_used": 1,
+   "success": true,
+   "success_round": 1,
+   "champion_obj": 0.8346729016476949,
+   "n_candidates": 8,
+   "n_valid": 8,
+   "dup_rate": 0.0,
+   "unique_sigs": 8,
+   "wrong_blocks": 0,
+   "rounds": [
+    {
+     "round": 1,
+     "key_sig": "noChampion",
+     "phase": "early",
+     "adopted": true,
+     "champion_obj": 0.8346729016476949,
+     "round_blocked": false
+    }
+   ],
+   "candidates": [
+    {
+     "call": 1,
+     "round": 1,
+     "valid": true,
+     "obj": 0.8346729016476949,
+     "hash": "3d8c8e22468d",
+     "blocked": false
+    },
+    {
+     "call": 2,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7065658353969236,
+     "hash": "2efda26b4547",
+     "blocked": false
+    },
+    {
+     "call": 3,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7655664682444661,
+     "hash": "b3236e2b6ebe",
+     "blocked": false
+    },
+    {
+     "call": 4,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7441530409473899,
+     "hash": "c869f35073ff",
+     "blocked": false
+    },
+    {
+     "call": 5,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7231052660799425,
+     "hash": "80e1bacb2ebe",
+     "blocked": false
+    },
+    {
+     "call": 6,
+     "round": 1,
+     "valid": true,
+     "obj": 0.6466594409572487,
+     "hash": "71b23266dff4",
+     "blocked": false
+    },
+    {
+     "call": 7,
+     "round": 1,
+     "valid": true,
+     "obj": 0.6934648170574006,
+     "hash": "c3a23da2dc1e",
+     "blocked": false
+    },
+    {
+     "call": 8,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7665942185161668,
+     "hash": "b6d666bbbf7e",
+     "blocked": false
+    }
+   ],
+   "arm": "C2",
+   "task": "2",
+   "rep": 0,
+   "attempt": 1
+  },
+  "C1|3|0": {
+   "seed": 3,
+   "condition": "1",
+   "calls": 64,
+   "rounds_used": 8,
+   "success": false,
+   "success_round": null,
+   "champion_obj": 0.7767421878306344,
+   "n_candidates": 64,
+   "n_valid": 64,
+   "dup_rate": 0.1406,
+   "unique_sigs": 55,
+   "wrong_blocks": 0,
+   "rounds": [
+    {
+     "round": 1,
+     "key_sig": "noChampion",
+     "phase": "early",
+     "adopted": true,
+     "champion_obj": 0.7767421878306344,
+     "round_blocked": false
+    },
+    {
+     "round": 2,
+     "key_sig": "c2453032e72d",
+     "phase": "early",
+     "adopted": false,
+     "champion_obj": 0.7767421878306344,
+     "round_blocked": false
+    },
+    {
+     "round": 3,
+     "key_sig": "c2453032e72d",
+     "phase": "early",
+     "adopted": false,
+     "champion_obj": 0.7767421878306344,
+     "round_blocked": false
+    },
+    {
+     "round": 4,
+     "key_sig": "c2453032e72d",
+     "phase": "mid",
+     "adopted": false,
+     "champion_obj": 0.7767421878306344,
+     "round_blocked": false
+    },
+    {
+     "round": 5,
+     "key_sig": "c2453032e72d",
+     "phase": "mid",
+     "adopted": false,
+     "champion_obj": 0.7767421878306344,
+     "round_blocked": false
+    },
+    {
+     "round": 6,
+     "key_sig": "c2453032e72d",
+     "phase": "mid",
+     "adopted": false,
+     "champion_obj": 0.7767421878306344,
+     "round_blocked": false
+    },
+    {
+     "round": 7,
+     "key_sig": "c2453032e72d",
+     "phase": "late",
+     "adopted": false,
+     "champion_obj": 0.7767421878306344,
+     "round_blocked": false
+    },
+    {
+     "round": 8,
+     "key_sig": "c2453032e72d",
+     "phase": "late",
+     "adopted": false,
+     "champion_obj": 0.7767421878306344,
+     "round_blocked": false
+    }
+   ],
+   "candidates": [
+    {
+     "call": 1,
+     "round": 1,
+     "valid": true,
+     "obj": 0.4517857142857143,
+     "hash": "03e30a58977a",
+     "blocked": false
+    },
+    {
+     "call": 2,
+     "round": 1,
+     "valid": true,
+     "obj": 0.4517857142857143,
+     "hash": "3b6da1d61298",
+     "blocked": false
+    },
+    {
+     "call": 3,
+     "round": 1,
+     "valid": true,
+     "obj": 0.4517857142857143,
+     "hash": "03e30a58977a",
+     "blocked": false
+    },
+    {
+     "call": 4,
+     "round": 1,
+     "valid": true,
+     "obj": 0.0,
+     "hash": "ba11c6bd671a",
+     "blocked": false
+    },
+    {
+     "call": 5,
+     "round": 1,
+     "valid": true,
+     "obj": 0.6874709146884931,
+     "hash": "72e330e74ab8",
+     "blocked": false
+    },
+    {
+     "call": 6,
+     "round": 1,
+     "valid": true,
+     "obj": 0.6874709146884931,
+     "hash": "0d2ec3867407",
+     "blocked": false
+    },
+    {
+     "call": 7,
+     "round": 1,
+     "valid": true,
+     "obj": 0.4517857142857143,
+     "hash": "de5e4e288690",
+     "blocked": false
+    },
+    {
+     "call": 8,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7767421878306344,
+     "hash": "c2453032e72d",
+     "blocked": false
+    },
+    {
+     "call": 9,
+     "round": 2,
+     "valid": true,
+     "obj": 0.3275,
+     "hash": "cceafb8147a4",
+     "blocked": false
+    },
+    {
+     "call": 10,
+     "round": 2,
+     "valid": true,
+     "obj": 0.3725,
+     "hash": "78661907dcb0",
+     "blocked": false
+    },
+    {
+     "call": 11,
+     "round": 2,
+     "valid": true,
+     "obj": 0.3725,
+     "hash": "f66b5f0ef25b",
+     "blocked": false
+    },
+    {
+     "call": 12,
+     "round": 2,
+     "valid": true,
+     "obj": 0.4275,
+     "hash": "65e5f0683858",
+     "blocked": false
+    },
+    {
+     "call": 13,
+     "round": 2,
+     "valid": true,
+     "obj": 0.5683333333333334,
+     "hash": "768a2b5cc36b",
+     "blocked": false
+    },
+    {
+     "call": 14,
+     "round": 2,
+     "valid": true,
+     "obj": 0.3725,
+     "hash": "e8a89a871080",
+     "blocked": false
+    },
+    {
+     "call": 15,
+     "round": 2,
+     "valid": true,
+     "obj": 0.53,
+     "hash": "229ffebfe4c0",
+     "blocked": false
+    },
+    {
+     "call": 16,
+     "round": 2,
+     "valid": true,
+     "obj": 0.4275,
+     "hash": "6ef657842da8",
+     "blocked": false
+    },
+    {
+     "call": 17,
+     "round": 3,
+     "valid": true,
+     "obj": 0.3725,
+     "hash": "93d6ea9a7520",
+     "blocked": false
+    },
+    {
+     "call": 18,
+     "round": 3,
+     "valid": true,
+     "obj": 0.3275,
+     "hash": "144ad02c288e",
+     "blocked": false
+    },
+    {
+     "call": 19,
+     "round": 3,
+     "valid": true,
+     "obj": 0.3725,
+     "hash": "1c703557ce4e",
+     "blocked": false
+    },
+    {
+     "call": 20,
+     "round": 3,
+     "valid": true,
+     "obj": 0.3275,
+     "hash": "144ad02c288e",
+     "blocked": false
+    },
+    {
+     "call": 21,
+     "round": 3,
+     "valid": true,
+     "obj": 0.5205599109281938,
+     "hash": "c5b6ec21dd9e",
+     "blocked": false
+    },
+    {
+     "call": 22,
+     "round": 3,
+     "valid": true,
+     "obj": 0.4275,
+     "hash": "b900f867e7a3",
+     "blocked": false
+    },
+    {
+     "call": 23,
+     "round": 3,
+     "valid": true,
+     "obj": 0.4325,
+     "hash": "9c936ad5e0c9",
+     "blocked": false
+    },
+    {
+     "call": 24,
+     "round": 3,
+     "valid": true,
+     "obj": 0.3725,
+     "hash": "ed427858da18",
+     "blocked": false
+    },
+    {
+     "call": 25,
+     "round": 4,
+     "valid": true,
+     "obj": 0.3725,
+     "hash": "9f990b1b88d4",
+     "blocked": false
+    },
+    {
+     "call": 26,
+     "round": 4,
+     "valid": true,
+     "obj": 0.3725,
+     "hash": "245a353ec716",
+     "blocked": false
+    },
+    {
+     "call": 27,
+     "round": 4,
+     "valid": true,
+     "obj": 0.3725,
+     "hash": "d97645457bfd",
+     "blocked": false
+    },
+    {
+     "call": 28,
+     "round": 4,
+     "valid": true,
+     "obj": 0.3275,
+     "hash": "2c79d3d8bfc1",
+     "blocked": false
+    },
+    {
+     "call": 29,
+     "round": 4,
+     "valid": true,
+     "obj": 0.3725,
+     "hash": "c9e38f1b595e",
+     "blocked": false
+    },
+    {
+     "call": 30,
+     "round": 4,
+     "valid": true,
+     "obj": 0.5685694097129116,
+     "hash": "43386ff1d042",
+     "blocked": false
+    },
+    {
+     "call": 31,
+     "round": 4,
+     "valid": true,
+     "obj": 0.4275,
+     "hash": "553f62b0a8e2",
+     "blocked": false
+    },
+    {
+     "call": 32,
+     "round": 4,
+     "valid": true,
+     "obj": 0.3725,
+     "hash": "9f990b1b88d4",
+     "blocked": false
+    },
+    {
+     "call": 33,
+     "round": 5,
+     "valid": true,
+     "obj": 0.3725,
+     "hash": "97694ecfa42d",
+     "blocked": false
+    },
+    {
+     "call": 34,
+     "round": 5,
+     "valid": true,
+     "obj": 0.47250000000000003,
+     "hash": "713a356d0182",
+     "blocked": false
+    },
+    {
+     "call": 35,
+     "round": 5,
+     "valid": true,
+     "obj": 0.5685694097129116,
+     "hash": "0dea440dd576",
+     "blocked": false
+    },
+    {
+     "call": 36,
+     "round": 5,
+     "valid": true,
+     "obj": 0.4275,
+     "hash": "27993ca07191",
+     "blocked": false
+    },
+    {
+     "call": 37,
+     "round": 5,
+     "valid": true,
+     "obj": 0.4225,
+     "hash": "4af719922bf6",
+     "blocked": false
+    },
+    {
+     "call": 38,
+     "round": 5,
+     "valid": true,
+     "obj": 0.4275,
+     "hash": "fc74f5923b4e",
+     "blocked": false
+    },
+    {
+     "call": 39,
+     "round": 5,
+     "valid": true,
+     "obj": 0.535,
+     "hash": "0b3d9a6111c7",
+     "blocked": false
+    },
+    {
+     "call": 40,
+     "round": 5,
+     "valid": true,
+     "obj": 0.47250000000000003,
+     "hash": "cb3428ae7a17",
+     "blocked": false
+    },
+    {
+     "call": 41,
+     "round": 6,
+     "valid": true,
+     "obj": 0.4275,
+     "hash": "1185a5d35c12",
+     "blocked": false
+    },
+    {
+     "call": 42,
+     "round": 6,
+     "valid": true,
+     "obj": 0.4225,
+     "hash": "67b0006bb4ec",
+     "blocked": false
+    },
+    {
+     "call": 43,
+     "round": 6,
+     "valid": true,
+     "obj": 0.5650000000000001,
+     "hash": "c0f308431af7",
+     "blocked": false
+    },
+    {
+     "call": 44,
+     "round": 6,
+     "valid": true,
+     "obj": 0.3725,
+     "hash": "844c4e76024f",
+     "blocked": false
+    },
+    {
+     "call": 45,
+     "round": 6,
+     "valid": true,
+     "obj": 0.3725,
+     "hash": "2b253e7f3a07",
+     "blocked": false
+    },
+    {
+     "call": 46,
+     "round": 6,
+     "valid": true,
+     "obj": 0.525,
+     "hash": "15afe7e9a3e1",
+     "blocked": false
+    },
+    {
+     "call": 47,
+     "round": 6,
+     "valid": true,
+     "obj": 0.3725,
+     "hash": "2b253e7f3a07",
+     "blocked": false
+    },
+    {
+     "call": 48,
+     "round": 6,
+     "valid": true,
+     "obj": 0.3725,
+     "hash": "9aa494938992",
+     "blocked": false
+    },
+    {
+     "call": 49,
+     "round": 7,
+     "valid": true,
+     "obj": 0.5725,
+     "hash": "2fce7a963660",
+     "blocked": false
+    },
+    {
+     "call": 50,
+     "round": 7,
+     "valid": true,
+     "obj": 0.3725,
+     "hash": "43492bd86c72",
+     "blocked": false
+    },
+    {
+     "call": 51,
+     "round": 7,
+     "valid": true,
+     "obj": 0.4275,
+     "hash": "e23bb9af3741",
+     "blocked": false
+    },
+    {
+     "call": 52,
+     "round": 7,
+     "valid": true,
+     "obj": 0.3725,
+     "hash": "97694ecfa42d",
+     "blocked": false
+    },
+    {
+     "call": 53,
+     "round": 7,
+     "valid": true,
+     "obj": 0.3275,
+     "hash": "6cbb406fff65",
+     "blocked": false
+    },
+    {
+     "call": 54,
+     "round": 7,
+     "valid": true,
+     "obj": 0.3725,
+     "hash": "7f51a1ef381a",
+     "blocked": false
+    },
+    {
+     "call": 55,
+     "round": 7,
+     "valid": true,
+     "obj": 0.4275,
+     "hash": "fc74f5923b4e",
+     "blocked": false
+    },
+    {
+     "call": 56,
+     "round": 7,
+     "valid": true,
+     "obj": 0.3725,
+     "hash": "2b253e7f3a07",
+     "blocked": false
+    },
+    {
+     "call": 57,
+     "round": 8,
+     "valid": true,
+     "obj": 0.6482454810904257,
+     "hash": "9c64a0150c1c",
+     "blocked": false
+    },
+    {
+     "call": 58,
+     "round": 8,
+     "valid": true,
+     "obj": 0.4275,
+     "hash": "d5f33fb6e4c2",
+     "blocked": false
+    },
+    {
+     "call": 59,
+     "round": 8,
+     "valid": true,
+     "obj": 0.3275,
+     "hash": "0b408e8c435e",
+     "blocked": false
+    },
+    {
+     "call": 60,
+     "round": 8,
+     "valid": true,
+     "obj": 0.3725,
+     "hash": "1c703557ce4e",
+     "blocked": false
+    },
+    {
+     "call": 61,
+     "round": 8,
+     "valid": true,
+     "obj": 0.6644222937091546,
+     "hash": "53fd17bfde4a",
+     "blocked": false
+    },
+    {
+     "call": 62,
+     "round": 8,
+     "valid": true,
+     "obj": 0.3275,
+     "hash": "946e6302e8b8",
+     "blocked": false
+    },
+    {
+     "call": 63,
+     "round": 8,
+     "valid": true,
+     "obj": 0.3725,
+     "hash": "a303af16c001",
+     "blocked": false
+    },
+    {
+     "call": 64,
+     "round": 8,
+     "valid": true,
+     "obj": 0.3725,
+     "hash": "1c703557ce4e",
+     "blocked": false
+    }
+   ],
+   "arm": "C1",
+   "task": "3",
+   "rep": 0,
+   "attempt": 1
+  },
+  "C2|3|0": {
+   "seed": 3,
+   "condition": "2",
+   "calls": 8,
+   "rounds_used": 1,
+   "success": true,
+   "success_round": 1,
+   "champion_obj": 0.7917174993352472,
+   "n_candidates": 8,
+   "n_valid": 8,
+   "dup_rate": 0.0,
+   "unique_sigs": 8,
+   "wrong_blocks": 0,
+   "rounds": [
+    {
+     "round": 1,
+     "key_sig": "noChampion",
+     "phase": "early",
+     "adopted": true,
+     "champion_obj": 0.7917174993352472,
+     "round_blocked": false
+    }
+   ],
+   "candidates": [
+    {
+     "call": 1,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7686939610904178,
+     "hash": "f0d92d2cf093",
+     "blocked": false
+    },
+    {
+     "call": 2,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7888281647537169,
+     "hash": "56d9530bf809",
+     "blocked": false
+    },
+    {
+     "call": 3,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7013342034425895,
+     "hash": "c869f35073ff",
+     "blocked": false
+    },
+    {
+     "call": 4,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7917174993352472,
+     "hash": "e1fc8aff13a9",
+     "blocked": false
+    },
+    {
+     "call": 5,
+     "round": 1,
+     "valid": true,
+     "obj": 0.41607142857142854,
+     "hash": "f07447c637b0",
+     "blocked": false
+    },
+    {
+     "call": 6,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7632081696456747,
+     "hash": "107cbb1ee1cb",
+     "blocked": false
+    },
+    {
+     "call": 7,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7099535631005254,
+     "hash": "8d125f30b3a3",
+     "blocked": false
+    },
+    {
+     "call": 8,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5408652406490339,
+     "hash": "aab64f3b2943",
+     "blocked": false
+    }
+   ],
+   "arm": "C2",
+   "task": "3",
+   "rep": 0,
+   "attempt": 1
+  },
+  "C1|4|0": {
+   "seed": 4,
+   "condition": "1",
+   "calls": 8,
+   "rounds_used": 1,
+   "success": true,
+   "success_round": 1,
+   "champion_obj": 0.7884561514910275,
+   "n_candidates": 8,
+   "n_valid": 8,
+   "dup_rate": 0.0,
+   "unique_sigs": 8,
+   "wrong_blocks": 0,
+   "rounds": [
+    {
+     "round": 1,
+     "key_sig": "noChampion",
+     "phase": "early",
+     "adopted": true,
+     "champion_obj": 0.7884561514910275,
+     "round_blocked": false
+    }
+   ],
+   "candidates": [
+    {
+     "call": 1,
+     "round": 1,
+     "valid": true,
+     "obj": 0.604824505671239,
+     "hash": "db8a29a7f8eb",
+     "blocked": false
+    },
+    {
+     "call": 2,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5405627778354816,
+     "hash": "7ff1927e5789",
+     "blocked": false
+    },
+    {
+     "call": 3,
+     "round": 1,
+     "valid": true,
+     "obj": 0.0,
+     "hash": "f49d3c33e805",
+     "blocked": false
+    },
+    {
+     "call": 4,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5752042252819725,
+     "hash": "acda9500d9d9",
+     "blocked": false
+    },
+    {
+     "call": 5,
+     "round": 1,
+     "valid": true,
+     "obj": 0.38035714285714284,
+     "hash": "3445b270ce5d",
+     "blocked": false
+    },
+    {
+     "call": 6,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7884561514910275,
+     "hash": "fdf32347e7a1",
+     "blocked": false
+    },
+    {
+     "call": 7,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7736384311848599,
+     "hash": "ab11a425293e",
+     "blocked": false
+    },
+    {
+     "call": 8,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5222411204711784,
+     "hash": "c5ccf4a54ae0",
+     "blocked": false
+    }
+   ],
+   "arm": "C1",
+   "task": "4",
+   "rep": 0,
+   "attempt": 1
+  },
+  "C2|4|0": {
+   "seed": 4,
+   "condition": "2",
+   "calls": 8,
+   "rounds_used": 1,
+   "success": true,
+   "success_round": 1,
+   "champion_obj": 0.8033341465264145,
+   "n_candidates": 8,
+   "n_valid": 8,
+   "dup_rate": 0.125,
+   "unique_sigs": 7,
+   "wrong_blocks": 0,
+   "rounds": [
+    {
+     "round": 1,
+     "key_sig": "noChampion",
+     "phase": "early",
+     "adopted": true,
+     "champion_obj": 0.8033341465264145,
+     "round_blocked": false
+    }
+   ],
+   "candidates": [
+    {
+     "call": 1,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5752042252819725,
+     "hash": "acda9500d9d9",
+     "blocked": false
+    },
+    {
+     "call": 2,
+     "round": 1,
+     "valid": true,
+     "obj": 0.38035714285714284,
+     "hash": "ef658841bca6",
+     "blocked": false
+    },
+    {
+     "call": 3,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7496486281187197,
+     "hash": "a481e2edcadd",
+     "blocked": false
+    },
+    {
+     "call": 4,
+     "round": 1,
+     "valid": true,
+     "obj": 0.8033341465264145,
+     "hash": "44e374a19905",
+     "blocked": false
+    },
+    {
+     "call": 5,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7213742828598055,
+     "hash": "a7ed9a8b7d6f",
+     "blocked": false
+    },
+    {
+     "call": 6,
+     "round": 1,
+     "valid": true,
+     "obj": 0.38035714285714284,
+     "hash": "d4b257ed70e1",
+     "blocked": false
+    },
+    {
+     "call": 7,
+     "round": 1,
+     "valid": true,
+     "obj": 0.38035714285714284,
+     "hash": "d4b257ed70e1",
+     "blocked": false
+    },
+    {
+     "call": 8,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7967564690315878,
+     "hash": "7120fc368a06",
+     "blocked": false
+    }
+   ],
+   "arm": "C2",
+   "task": "4",
+   "rep": 0,
+   "attempt": 1
+  },
+  "C1|5|0": {
+   "seed": 5,
+   "condition": "1",
+   "calls": 8,
+   "rounds_used": 1,
+   "success": true,
+   "success_round": 1,
+   "champion_obj": 0.8003602632731514,
+   "n_candidates": 8,
+   "n_valid": 8,
+   "dup_rate": 0.0,
+   "unique_sigs": 8,
+   "wrong_blocks": 0,
+   "rounds": [
+    {
+     "round": 1,
+     "key_sig": "noChampion",
+     "phase": "early",
+     "adopted": true,
+     "champion_obj": 0.8003602632731514,
+     "round_blocked": false
+    }
+   ],
+   "candidates": [
+    {
+     "call": 1,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5435004911198211,
+     "hash": "f293266fc1f7",
+     "blocked": false
+    },
+    {
+     "call": 2,
+     "round": 1,
+     "valid": true,
+     "obj": 0.8003602632731514,
+     "hash": "ed0c3440bbdf",
+     "blocked": false
+    },
+    {
+     "call": 3,
+     "round": 1,
+     "valid": true,
+     "obj": 0.8003602632731514,
+     "hash": "107cbb1ee1cb",
+     "blocked": false
+    },
+    {
+     "call": 4,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7443721357436616,
+     "hash": "8d9f29a3d888",
+     "blocked": false
+    },
+    {
+     "call": 5,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5435004911198211,
+     "hash": "460e7a292a14",
+     "blocked": false
+    },
+    {
+     "call": 6,
+     "round": 1,
+     "valid": true,
+     "obj": 0.41607142857142854,
+     "hash": "9001c16fd52b",
+     "blocked": false
+    },
+    {
+     "call": 7,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7240522763808863,
+     "hash": "0f973bf1c83f",
+     "blocked": false
+    },
+    {
+     "call": 8,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7145217896340341,
+     "hash": "c79118eeb7e1",
+     "blocked": false
+    }
+   ],
+   "arm": "C1",
+   "task": "5",
+   "rep": 0,
+   "attempt": 1
+  },
+  "C2|5|0": {
+   "seed": 5,
+   "condition": "2",
+   "calls": 8,
+   "rounds_used": 1,
+   "success": true,
+   "success_round": 1,
+   "champion_obj": 0.79640055579255,
+   "n_candidates": 8,
+   "n_valid": 8,
+   "dup_rate": 0.125,
+   "unique_sigs": 7,
+   "wrong_blocks": 0,
+   "rounds": [
+    {
+     "round": 1,
+     "key_sig": "noChampion",
+     "phase": "early",
+     "adopted": true,
+     "champion_obj": 0.79640055579255,
+     "round_blocked": false
+    }
+   ],
+   "candidates": [
+    {
+     "call": 1,
+     "round": 1,
+     "valid": true,
+     "obj": 0.3325,
+     "hash": "a34f438cc400",
+     "blocked": false
+    },
+    {
+     "call": 2,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7879745397280566,
+     "hash": "4c4497e0e66f",
+     "blocked": false
+    },
+    {
+     "call": 3,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7103590597354981,
+     "hash": "8d125f30b3a3",
+     "blocked": false
+    },
+    {
+     "call": 4,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7176348242519697,
+     "hash": "715adede9a86",
+     "blocked": false
+    },
+    {
+     "call": 5,
+     "round": 1,
+     "valid": true,
+     "obj": 0.632786447710899,
+     "hash": "d004782ddec4",
+     "blocked": false
+    },
+    {
+     "call": 6,
+     "round": 1,
+     "valid": true,
+     "obj": 0.79640055579255,
+     "hash": "d492e2284de7",
+     "blocked": false
+    },
+    {
+     "call": 7,
+     "round": 1,
+     "valid": true,
+     "obj": 0.79640055579255,
+     "hash": "d492e2284de7",
+     "blocked": false
+    },
+    {
+     "call": 8,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7482579588183869,
+     "hash": "89e6defa9bf7",
+     "blocked": false
+    }
+   ],
+   "arm": "C2",
+   "task": "5",
+   "rep": 0,
+   "attempt": 1
+  },
+  "C1|6|0": {
+   "seed": 6,
+   "condition": "1",
+   "calls": 8,
+   "rounds_used": 1,
+   "success": true,
+   "success_round": 1,
+   "champion_obj": 0.8369371356163371,
+   "n_candidates": 8,
+   "n_valid": 8,
+   "dup_rate": 0.0,
+   "unique_sigs": 8,
+   "wrong_blocks": 0,
+   "rounds": [
+    {
+     "round": 1,
+     "key_sig": "noChampion",
+     "phase": "early",
+     "adopted": true,
+     "champion_obj": 0.8369371356163371,
+     "round_blocked": false
+    }
+   ],
+   "candidates": [
+    {
+     "call": 1,
+     "round": 1,
+     "valid": true,
+     "obj": 0.38035714285714284,
+     "hash": "9b80652b0702",
+     "blocked": false
+    },
+    {
+     "call": 2,
+     "round": 1,
+     "valid": true,
+     "obj": 0.6627230268718156,
+     "hash": "8296b3f3996f",
+     "blocked": false
+    },
+    {
+     "call": 3,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7871421869704273,
+     "hash": "aab5fb506427",
+     "blocked": false
+    },
+    {
+     "call": 4,
+     "round": 1,
+     "valid": true,
+     "obj": 0.0,
+     "hash": "d01f91e3ec89",
+     "blocked": false
+    },
+    {
+     "call": 5,
+     "round": 1,
+     "valid": true,
+     "obj": 0.6181422804195863,
+     "hash": "8c9f0ffa70eb",
+     "blocked": false
+    },
+    {
+     "call": 6,
+     "round": 1,
+     "valid": true,
+     "obj": 0.8369371356163371,
+     "hash": "0bde335f88a2",
+     "blocked": false
+    },
+    {
+     "call": 7,
+     "round": 1,
+     "valid": true,
+     "obj": 0.0,
+     "hash": "89553147cc90",
+     "blocked": false
+    },
+    {
+     "call": 8,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7496872804981333,
+     "hash": "62aa6caf75de",
+     "blocked": false
+    }
+   ],
+   "arm": "C1",
+   "task": "6",
+   "rep": 0,
+   "attempt": 1
+  },
+  "C2|6|0": {
+   "seed": 6,
+   "condition": "2",
+   "calls": 8,
+   "rounds_used": 1,
+   "success": true,
+   "success_round": 1,
+   "champion_obj": 0.8262994248270685,
+   "n_candidates": 8,
+   "n_valid": 8,
+   "dup_rate": 0.0,
+   "unique_sigs": 8,
+   "wrong_blocks": 0,
+   "rounds": [
+    {
+     "round": 1,
+     "key_sig": "noChampion",
+     "phase": "early",
+     "adopted": true,
+     "champion_obj": 0.8262994248270685,
+     "round_blocked": false
+    }
+   ],
+   "candidates": [
+    {
+     "call": 1,
+     "round": 1,
+     "valid": true,
+     "obj": 0.0,
+     "hash": "14eb2385bca2",
+     "blocked": false
+    },
+    {
+     "call": 2,
+     "round": 1,
+     "valid": true,
+     "obj": 0.0,
+     "hash": "5152f267aaec",
+     "blocked": false
+    },
+    {
+     "call": 3,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7636838730893113,
+     "hash": "afb943fb4f5b",
+     "blocked": false
+    },
+    {
+     "call": 4,
+     "round": 1,
+     "valid": true,
+     "obj": 0.6643090003608553,
+     "hash": "a3955c951dd8",
+     "blocked": false
+    },
+    {
+     "call": 5,
+     "round": 1,
+     "valid": true,
+     "obj": 0.0,
+     "hash": "e68fdcfeca50",
+     "blocked": false
+    },
+    {
+     "call": 6,
+     "round": 1,
+     "valid": true,
+     "obj": 0.34464285714285714,
+     "hash": "d4b257ed70e1",
+     "blocked": false
+    },
+    {
+     "call": 7,
+     "round": 1,
+     "valid": true,
+     "obj": 0.8262994248270685,
+     "hash": "90d3fbf962c2",
+     "blocked": false
+    },
+    {
+     "call": 8,
+     "round": 1,
+     "valid": true,
+     "obj": 0.520269627643204,
+     "hash": "f293266fc1f7",
+     "blocked": false
+    }
+   ],
+   "arm": "C2",
+   "task": "6",
+   "rep": 0,
+   "attempt": 1
+  },
+  "C1|7|0": {
+   "seed": 7,
+   "condition": "1",
+   "calls": 24,
+   "rounds_used": 3,
+   "success": true,
+   "success_round": 3,
+   "champion_obj": 0.7851800302017313,
+   "n_candidates": 24,
+   "n_valid": 24,
+   "dup_rate": 0.0417,
+   "unique_sigs": 23,
+   "wrong_blocks": 0,
+   "rounds": [
+    {
+     "round": 1,
+     "key_sig": "noChampion",
+     "phase": "early",
+     "adopted": true,
+     "champion_obj": 0.7730857006213565,
+     "round_blocked": false
+    },
+    {
+     "round": 2,
+     "key_sig": "60783ea1f244",
+     "phase": "early",
+     "adopted": false,
+     "champion_obj": 0.7730857006213565,
+     "round_blocked": false
+    },
+    {
+     "round": 3,
+     "key_sig": "60783ea1f244",
+     "phase": "early",
+     "adopted": true,
+     "champion_obj": 0.7851800302017313,
+     "round_blocked": false
+    }
+   ],
+   "candidates": [
+    {
+     "call": 1,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7241108411132422,
+     "hash": "e1beaa8d2a5c",
+     "blocked": false
+    },
+    {
+     "call": 2,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7730857006213565,
+     "hash": "60783ea1f244",
+     "blocked": false
+    },
+    {
+     "call": 3,
+     "round": 1,
+     "valid": true,
+     "obj": 0.0,
+     "hash": "722b6b71428d",
+     "blocked": false
+    },
+    {
+     "call": 4,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7327810349383661,
+     "hash": "d492e2284de7",
+     "blocked": false
+    },
+    {
+     "call": 5,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7498192158849576,
+     "hash": "df1974d5e694",
+     "blocked": false
+    },
+    {
+     "call": 6,
+     "round": 1,
+     "valid": true,
+     "obj": 0.6614629793291985,
+     "hash": "fbc318687005",
+     "blocked": false
+    },
+    {
+     "call": 7,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5313087656459012,
+     "hash": "460e7a292a14",
+     "blocked": false
+    },
+    {
+     "call": 8,
+     "round": 1,
+     "valid": true,
+     "obj": 0.6725614038283779,
+     "hash": "424fa73a8b28",
+     "blocked": false
+    },
+    {
+     "call": 9,
+     "round": 2,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "1a2764a2d61c",
+     "blocked": false
+    },
+    {
+     "call": 10,
+     "round": 2,
+     "valid": true,
+     "obj": 0.3296428571428571,
+     "hash": "a8c3cdcd10d4",
+     "blocked": false
+    },
+    {
+     "call": 11,
+     "round": 2,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "693f70362c0b",
+     "blocked": false
+    },
+    {
+     "call": 12,
+     "round": 2,
+     "valid": true,
+     "obj": 0.3296428571428571,
+     "hash": "68593472ee52",
+     "blocked": false
+    },
+    {
+     "call": 13,
+     "round": 2,
+     "valid": true,
+     "obj": 0.6748132763688577,
+     "hash": "bfc1b0a3c978",
+     "blocked": false
+    },
+    {
+     "call": 14,
+     "round": 2,
+     "valid": true,
+     "obj": 0.2225,
+     "hash": "392cdf75bef7",
+     "blocked": false
+    },
+    {
+     "call": 15,
+     "round": 2,
+     "valid": true,
+     "obj": 0.5307446808808325,
+     "hash": "4ecc13702c77",
+     "blocked": false
+    },
+    {
+     "call": 16,
+     "round": 2,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "25bdba386e1a",
+     "blocked": false
+    },
+    {
+     "call": 17,
+     "round": 3,
+     "valid": true,
+     "obj": 0.3296428571428571,
+     "hash": "8b6e8f7fefba",
+     "blocked": false
+    },
+    {
+     "call": 18,
+     "round": 3,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "baa06e7edbf2",
+     "blocked": false
+    },
+    {
+     "call": 19,
+     "round": 3,
+     "valid": true,
+     "obj": 0.5275,
+     "hash": "d7751155a7d1",
+     "blocked": false
+    },
+    {
+     "call": 20,
+     "round": 3,
+     "valid": true,
+     "obj": 0.4775,
+     "hash": "43bf264173cb",
+     "blocked": false
+    },
+    {
+     "call": 21,
+     "round": 3,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "25bdba386e1a",
+     "blocked": false
+    },
+    {
+     "call": 22,
+     "round": 3,
+     "valid": true,
+     "obj": 0.5275,
+     "hash": "ba44959f30af",
+     "blocked": false
+    },
+    {
+     "call": 23,
+     "round": 3,
+     "valid": true,
+     "obj": 0.0,
+     "hash": "4a280959451b",
+     "blocked": false
+    },
+    {
+     "call": 24,
+     "round": 3,
+     "valid": true,
+     "obj": 0.7851800302017313,
+     "hash": "21d0f4368055",
+     "blocked": false
+    }
+   ],
+   "arm": "C1",
+   "task": "7",
+   "rep": 0,
+   "attempt": 1
+  },
+  "C2|7|0": {
+   "seed": 7,
+   "condition": "2",
+   "calls": 24,
+   "rounds_used": 3,
+   "success": true,
+   "success_round": 3,
+   "champion_obj": 0.8499760229648878,
+   "n_candidates": 24,
+   "n_valid": 24,
+   "dup_rate": 0.0417,
+   "unique_sigs": 23,
+   "wrong_blocks": 0,
+   "rounds": [
+    {
+     "round": 1,
+     "key_sig": "noChampion",
+     "phase": "early",
+     "adopted": true,
+     "champion_obj": 0.7370495982532351,
+     "round_blocked": false
+    },
+    {
+     "round": 2,
+     "key_sig": "4392f5c14d47",
+     "phase": "early",
+     "adopted": true,
+     "champion_obj": 0.7544162608502181,
+     "round_blocked": false
+    },
+    {
+     "round": 3,
+     "key_sig": "3cb0e5314001",
+     "phase": "early",
+     "adopted": true,
+     "champion_obj": 0.8499760229648878,
+     "round_blocked": false
+    }
+   ],
+   "candidates": [
+    {
+     "call": 1,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7249307379507602,
+     "hash": "aeccfeb7dedd",
+     "blocked": false
+    },
+    {
+     "call": 2,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5336010292562164,
+     "hash": "aab64f3b2943",
+     "blocked": false
+    },
+    {
+     "call": 3,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7166177679635175,
+     "hash": "71b23266dff4",
+     "blocked": false
+    },
+    {
+     "call": 4,
+     "round": 1,
+     "valid": true,
+     "obj": 0.732974340225192,
+     "hash": "a9b35161b5de",
+     "blocked": false
+    },
+    {
+     "call": 5,
+     "round": 1,
+     "valid": true,
+     "obj": 0.525466210151535,
+     "hash": "0e8e88756075",
+     "blocked": false
+    },
+    {
+     "call": 6,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7320450293695488,
+     "hash": "bee485373966",
+     "blocked": false
+    },
+    {
+     "call": 7,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5313087656459012,
+     "hash": "00b666615586",
+     "blocked": false
+    },
+    {
+     "call": 8,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7370495982532351,
+     "hash": "4392f5c14d47",
+     "blocked": false
+    },
+    {
+     "call": 9,
+     "round": 2,
+     "valid": true,
+     "obj": 0.4275,
+     "hash": "819212b7dbdd",
+     "blocked": false
+    },
+    {
+     "call": 10,
+     "round": 2,
+     "valid": true,
+     "obj": 0.7544162608502181,
+     "hash": "3cb0e5314001",
+     "blocked": false
+    },
+    {
+     "call": 11,
+     "round": 2,
+     "valid": true,
+     "obj": 0.5590332576826599,
+     "hash": "1f303549b9f2",
+     "blocked": false
+    },
+    {
+     "call": 12,
+     "round": 2,
+     "valid": true,
+     "obj": 0.3725,
+     "hash": "fd6bcd2b6c9f",
+     "blocked": false
+    },
+    {
+     "call": 13,
+     "round": 2,
+     "valid": true,
+     "obj": 0.3725,
+     "hash": "2fb149f9f102",
+     "blocked": false
+    },
+    {
+     "call": 14,
+     "round": 2,
+     "valid": true,
+     "obj": 0.4325,
+     "hash": "7675d993cf9e",
+     "blocked": false
+    },
+    {
+     "call": 15,
+     "round": 2,
+     "valid": true,
+     "obj": 0.3725,
+     "hash": "bea0efc6f81f",
+     "blocked": false
+    },
+    {
+     "call": 16,
+     "round": 2,
+     "valid": true,
+     "obj": 0.535,
+     "hash": "c52852ec709c",
+     "blocked": false
+    },
+    {
+     "call": 17,
+     "round": 3,
+     "valid": true,
+     "obj": 0.4060714285714286,
+     "hash": "818081690af8",
+     "blocked": false
+    },
+    {
+     "call": 18,
+     "round": 3,
+     "valid": true,
+     "obj": 0.836466641605248,
+     "hash": "aac052646a1f",
+     "blocked": false
+    },
+    {
+     "call": 19,
+     "round": 3,
+     "valid": true,
+     "obj": 0.8499760229648878,
+     "hash": "b995be8be227",
+     "blocked": false
+    },
+    {
+     "call": 20,
+     "round": 3,
+     "valid": true,
+     "obj": 0.5226862589564119,
+     "hash": "833595c37ac4",
+     "blocked": false
+    },
+    {
+     "call": 21,
+     "round": 3,
+     "valid": true,
+     "obj": 0.5497695922897452,
+     "hash": "865a9119fea7",
+     "blocked": false
+    },
+    {
+     "call": 22,
+     "round": 3,
+     "valid": true,
+     "obj": 0.5226862589564119,
+     "hash": "833595c37ac4",
+     "blocked": false
+    },
+    {
+     "call": 23,
+     "round": 3,
+     "valid": true,
+     "obj": 0.5226862589564119,
+     "hash": "f43b3038460b",
+     "blocked": false
+    },
+    {
+     "call": 24,
+     "round": 3,
+     "valid": true,
+     "obj": 0.5528696309436126,
+     "hash": "0524162fdcc6",
+     "blocked": false
+    }
+   ],
+   "arm": "C2",
+   "task": "7",
+   "rep": 0,
+   "attempt": 1
+  },
+  "C1|8|0": {
+   "seed": 8,
+   "condition": "1",
+   "calls": 8,
+   "rounds_used": 1,
+   "success": true,
+   "success_round": 1,
+   "champion_obj": 0.809487818844079,
+   "n_candidates": 8,
+   "n_valid": 8,
+   "dup_rate": 0.0,
+   "unique_sigs": 8,
+   "wrong_blocks": 0,
+   "rounds": [
+    {
+     "round": 1,
+     "key_sig": "noChampion",
+     "phase": "early",
+     "adopted": true,
+     "champion_obj": 0.809487818844079,
+     "round_blocked": false
+    }
+   ],
+   "candidates": [
+    {
+     "call": 1,
+     "round": 1,
+     "valid": true,
+     "obj": 0.809487818844079,
+     "hash": "f3d677a5063c",
+     "blocked": false
+    },
+    {
+     "call": 2,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5330281859430009,
+     "hash": "d1ae2b5d0d7a",
+     "blocked": false
+    },
+    {
+     "call": 3,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7254807176359641,
+     "hash": "f58e820c14b4",
+     "blocked": false
+    },
+    {
+     "call": 4,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7450330918059909,
+     "hash": "53615aae3a24",
+     "blocked": false
+    },
+    {
+     "call": 5,
+     "round": 1,
+     "valid": true,
+     "obj": 0.0,
+     "hash": "31b5896b1106",
+     "blocked": false
+    },
+    {
+     "call": 6,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5375821474947451,
+     "hash": "7ff1927e5789",
+     "blocked": false
+    },
+    {
+     "call": 7,
+     "round": 1,
+     "valid": true,
+     "obj": 0.735492281887575,
+     "hash": "463344360670",
+     "blocked": false
+    },
+    {
+     "call": 8,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7710657723083704,
+     "hash": "d492e2284de7",
+     "blocked": false
+    }
+   ],
+   "arm": "C1",
+   "task": "8",
+   "rep": 0,
+   "attempt": 1
+  },
+  "C2|8|0": {
+   "seed": 8,
+   "condition": "2",
+   "calls": 8,
+   "rounds_used": 1,
+   "success": true,
+   "success_round": 1,
+   "champion_obj": 0.8270851735712684,
+   "n_candidates": 8,
+   "n_valid": 7,
+   "dup_rate": 0.0,
+   "unique_sigs": 7,
+   "wrong_blocks": 0,
+   "rounds": [
+    {
+     "round": 1,
+     "key_sig": "noChampion",
+     "phase": "early",
+     "adopted": true,
+     "champion_obj": 0.8270851735712684,
+     "round_blocked": false
+    }
+   ],
+   "candidates": [
+    {
+     "call": 1,
+     "round": 1,
+     "valid": true,
+     "obj": 0.614630597712317,
+     "hash": "8c9f0ffa70eb",
+     "blocked": false
+    },
+    {
+     "call": 2,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5329668218985958,
+     "hash": "477a0e2cdf9d",
+     "blocked": false
+    },
+    {
+     "call": 3,
+     "round": 1,
+     "valid": true,
+     "obj": 0.8270851735712684,
+     "hash": "a1c92fbb08da",
+     "blocked": false
+    },
+    {
+     "call": 4,
+     "round": 1,
+     "valid": true,
+     "obj": 0.0,
+     "hash": "58a5b590175c",
+     "blocked": false
+    },
+    {
+     "call": 5,
+     "round": 1,
+     "valid": true,
+     "obj": 0.730564586239136,
+     "hash": "68b2e9a14587",
+     "blocked": false
+    },
+    {
+     "call": 6,
+     "round": 1,
+     "valid": true,
+     "obj": 0.6546149140979374,
+     "hash": "aeb5f0279792",
+     "blocked": false
+    },
+    {
+     "call": 7,
+     "round": 1,
+     "valid": false,
+     "obj": null,
+     "hash": null,
+     "blocked": false
+    },
+    {
+     "call": 8,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7710657723083704,
+     "hash": "d492e2284de7",
+     "blocked": false
+    }
+   ],
+   "arm": "C2",
+   "task": "8",
+   "rep": 0,
+   "attempt": 1
+  },
+  "C1|9|0": {
+   "seed": 9,
+   "condition": "1",
+   "calls": 48,
+   "rounds_used": 6,
+   "success": true,
+   "success_round": 6,
+   "champion_obj": 0.7831917763637969,
+   "n_candidates": 48,
+   "n_valid": 48,
+   "dup_rate": 0.0417,
+   "unique_sigs": 46,
+   "wrong_blocks": 0,
+   "rounds": [
+    {
+     "round": 1,
+     "key_sig": "noChampion",
+     "phase": "early",
+     "adopted": true,
+     "champion_obj": 0.7251690626008421,
+     "round_blocked": false
+    },
+    {
+     "round": 2,
+     "key_sig": "e5f04b1fee0d",
+     "phase": "early",
+     "adopted": true,
+     "champion_obj": 0.7457472588165536,
+     "round_blocked": false
+    },
+    {
+     "round": 3,
+     "key_sig": "065bef8b76f8",
+     "phase": "early",
+     "adopted": true,
+     "champion_obj": 0.7469216465345676,
+     "round_blocked": false
+    },
+    {
+     "round": 4,
+     "key_sig": "47e0746622e8",
+     "phase": "mid",
+     "adopted": false,
+     "champion_obj": 0.7469216465345676,
+     "round_blocked": false
+    },
+    {
+     "round": 5,
+     "key_sig": "47e0746622e8",
+     "phase": "mid",
+     "adopted": true,
+     "champion_obj": 0.7667771494620955,
+     "round_blocked": false
+    },
+    {
+     "round": 6,
+     "key_sig": "f8323c6c2950",
+     "phase": "mid",
+     "adopted": true,
+     "champion_obj": 0.7831917763637969,
+     "round_blocked": false
+    }
+   ],
+   "candidates": [
+    {
+     "call": 1,
+     "round": 1,
+     "valid": true,
+     "obj": 0.3375,
+     "hash": "beb249feb7f2",
+     "blocked": false
+    },
+    {
+     "call": 2,
+     "round": 1,
+     "valid": true,
+     "obj": 0.3375,
+     "hash": "96c1bcc54086",
+     "blocked": false
+    },
+    {
+     "call": 3,
+     "round": 1,
+     "valid": true,
+     "obj": 0.0,
+     "hash": "3f690fbdf61f",
+     "blocked": false
+    },
+    {
+     "call": 4,
+     "round": 1,
+     "valid": true,
+     "obj": 0.3375,
+     "hash": "5adada4466ae",
+     "blocked": false
+    },
+    {
+     "call": 5,
+     "round": 1,
+     "valid": true,
+     "obj": 0.6984776239596417,
+     "hash": "0ae554f4b5c7",
+     "blocked": false
+    },
+    {
+     "call": 6,
+     "round": 1,
+     "valid": true,
+     "obj": 0.528101085330458,
+     "hash": "f293266fc1f7",
+     "blocked": false
+    },
+    {
+     "call": 7,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7251690626008421,
+     "hash": "e5f04b1fee0d",
+     "blocked": false
+    },
+    {
+     "call": 8,
+     "round": 1,
+     "valid": true,
+     "obj": 0.6971834957459064,
+     "hash": "05b0e5cc9a07",
+     "blocked": false
+    },
+    {
+     "call": 9,
+     "round": 2,
+     "valid": true,
+     "obj": 0.6390681331951361,
+     "hash": "f81e83332aec",
+     "blocked": false
+    },
+    {
+     "call": 10,
+     "round": 2,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "35011c991ea2",
+     "blocked": false
+    },
+    {
+     "call": 11,
+     "round": 2,
+     "valid": true,
+     "obj": 0.5460891110799899,
+     "hash": "4ec4ea8b3165",
+     "blocked": false
+    },
+    {
+     "call": 12,
+     "round": 2,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "1489d0667f78",
+     "blocked": false
+    },
+    {
+     "call": 13,
+     "round": 2,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "2c3d59ab3013",
+     "blocked": false
+    },
+    {
+     "call": 14,
+     "round": 2,
+     "valid": true,
+     "obj": 0.7457472588165536,
+     "hash": "065bef8b76f8",
+     "blocked": false
+    },
+    {
+     "call": 15,
+     "round": 2,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "bc5af0bd5f2f",
+     "blocked": false
+    },
+    {
+     "call": 16,
+     "round": 2,
+     "valid": true,
+     "obj": 0.5711388388078523,
+     "hash": "3d484593e2a2",
+     "blocked": false
+    },
+    {
+     "call": 17,
+     "round": 3,
+     "valid": true,
+     "obj": 0.7461394140841864,
+     "hash": "1d4a974377c9",
+     "blocked": false
+    },
+    {
+     "call": 18,
+     "round": 3,
+     "valid": true,
+     "obj": 0.7409948802348275,
+     "hash": "1b11473da7be",
+     "blocked": false
+    },
+    {
+     "call": 19,
+     "round": 3,
+     "valid": true,
+     "obj": 0.7461394140841864,
+     "hash": "70f7bfba1892",
+     "blocked": false
+    },
+    {
+     "call": 20,
+     "round": 3,
+     "valid": true,
+     "obj": 0.7206459896155412,
+     "hash": "85868b1bc5f1",
+     "blocked": false
+    },
+    {
+     "call": 21,
+     "round": 3,
+     "valid": true,
+     "obj": 0.7381844872412263,
+     "hash": "7405e7aa3ff4",
+     "blocked": false
+    },
+    {
+     "call": 22,
+     "round": 3,
+     "valid": true,
+     "obj": 0.7461394140841864,
+     "hash": "32d413e2ba82",
+     "blocked": false
+    },
+    {
+     "call": 23,
+     "round": 3,
+     "valid": true,
+     "obj": 0.7409948802348275,
+     "hash": "91e9968f64cb",
+     "blocked": false
+    },
+    {
+     "call": 24,
+     "round": 3,
+     "valid": true,
+     "obj": 0.7469216465345676,
+     "hash": "47e0746622e8",
+     "blocked": false
+    },
+    {
+     "call": 25,
+     "round": 4,
+     "valid": true,
+     "obj": 0.4417857142857143,
+     "hash": "90bf756612eb",
+     "blocked": false
+    },
+    {
+     "call": 26,
+     "round": 4,
+     "valid": true,
+     "obj": 0.5275,
+     "hash": "65de67a955d6",
+     "blocked": false
+    },
+    {
+     "call": 27,
+     "round": 4,
+     "valid": true,
+     "obj": 0.5088608500731242,
+     "hash": "131a68b552cc",
+     "blocked": false
+    },
+    {
+     "call": 28,
+     "round": 4,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "b7788a49ec2a",
+     "blocked": false
+    },
+    {
+     "call": 29,
+     "round": 4,
+     "valid": true,
+     "obj": 0.5275,
+     "hash": "8a1e7c6c3ffe",
+     "blocked": false
+    },
+    {
+     "call": 30,
+     "round": 4,
+     "valid": true,
+     "obj": 0.5275,
+     "hash": "a4688842d5d3",
+     "blocked": false
+    },
+    {
+     "call": 31,
+     "round": 4,
+     "valid": true,
+     "obj": 0.5138608500731241,
+     "hash": "ceb01eed6877",
+     "blocked": false
+    },
+    {
+     "call": 32,
+     "round": 4,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "766d0d33aa79",
+     "blocked": false
+    },
+    {
+     "call": 33,
+     "round": 5,
+     "valid": true,
+     "obj": 0.4417857142857143,
+     "hash": "1d46d1896066",
+     "blocked": false
+    },
+    {
+     "call": 34,
+     "round": 5,
+     "valid": true,
+     "obj": 0.7667771494620955,
+     "hash": "f8323c6c2950",
+     "blocked": false
+    },
+    {
+     "call": 35,
+     "round": 5,
+     "valid": true,
+     "obj": 0.5275,
+     "hash": "ada589f0f5dc",
+     "blocked": false
+    },
+    {
+     "call": 36,
+     "round": 5,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "25ff83356d20",
+     "blocked": false
+    },
+    {
+     "call": 37,
+     "round": 5,
+     "valid": true,
+     "obj": 0.5088608500731242,
+     "hash": "d68902e191e6",
+     "blocked": false
+    },
+    {
+     "call": 38,
+     "round": 5,
+     "valid": true,
+     "obj": 0.5904358454334675,
+     "hash": "33829fd3c44a",
+     "blocked": false
+    },
+    {
+     "call": 39,
+     "round": 5,
+     "valid": true,
+     "obj": 0.5275,
+     "hash": "8a1e7c6c3ffe",
+     "blocked": false
+    },
+    {
+     "call": 40,
+     "round": 5,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "b46a9eacccfa",
+     "blocked": false
+    },
+    {
+     "call": 41,
+     "round": 6,
+     "valid": true,
+     "obj": 0.7831917763637969,
+     "hash": "8eb3a4572798",
+     "blocked": false
+    },
+    {
+     "call": 42,
+     "round": 6,
+     "valid": true,
+     "obj": 0.7831917763637969,
+     "hash": "8eb3a4572798",
+     "blocked": false
+    },
+    {
+     "call": 43,
+     "round": 6,
+     "valid": true,
+     "obj": 0.7301299257135929,
+     "hash": "ad8b67a616be",
+     "blocked": false
+    },
+    {
+     "call": 44,
+     "round": 6,
+     "valid": true,
+     "obj": 0.7409948802348275,
+     "hash": "48e0b9c9a79a",
+     "blocked": false
+    },
+    {
+     "call": 45,
+     "round": 6,
+     "valid": true,
+     "obj": 0.7409948802348275,
+     "hash": "cd74b54f1245",
+     "blocked": false
+    },
+    {
+     "call": 46,
+     "round": 6,
+     "valid": true,
+     "obj": 0.7365854976531524,
+     "hash": "bd3faa43af2b",
+     "blocked": false
+    },
+    {
+     "call": 47,
+     "round": 6,
+     "valid": true,
+     "obj": 0.7094008237398105,
+     "hash": "2b119c228ced",
+     "blocked": false
+    },
+    {
+     "call": 48,
+     "round": 6,
+     "valid": true,
+     "obj": 0.5706664332080597,
+     "hash": "920653242b14",
+     "blocked": false
+    }
+   ],
+   "arm": "C1",
+   "task": "9",
+   "rep": 0,
+   "attempt": 1
+  },
+  "C2|9|0": {
+   "seed": 9,
+   "condition": "2",
+   "calls": 8,
+   "rounds_used": 1,
+   "success": true,
+   "success_round": 1,
+   "champion_obj": 0.7894366899542106,
+   "n_candidates": 8,
+   "n_valid": 8,
+   "dup_rate": 0.0,
+   "unique_sigs": 8,
+   "wrong_blocks": 0,
+   "rounds": [
+    {
+     "round": 1,
+     "key_sig": "noChampion",
+     "phase": "early",
+     "adopted": true,
+     "champion_obj": 0.7894366899542106,
+     "round_blocked": false
+    }
+   ],
+   "candidates": [
+    {
+     "call": 1,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7127410182328848,
+     "hash": "ce66102f25e4",
+     "blocked": false
+    },
+    {
+     "call": 2,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7894366899542106,
+     "hash": "40b4e7573eab",
+     "blocked": false
+    },
+    {
+     "call": 3,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7564691194499735,
+     "hash": "ec853c5a2a67",
+     "blocked": false
+    },
+    {
+     "call": 4,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5286292729642652,
+     "hash": "34b7bfb535a4",
+     "blocked": false
+    },
+    {
+     "call": 5,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7302254695029393,
+     "hash": "9d91dbb69f3b",
+     "blocked": false
+    },
+    {
+     "call": 6,
+     "round": 1,
+     "valid": true,
+     "obj": 0.704757619911005,
+     "hash": "2bad5ea1ee77",
+     "blocked": false
+    },
+    {
+     "call": 7,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7555072011895091,
+     "hash": "935d217d5bff",
+     "blocked": false
+    },
+    {
+     "call": 8,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7582207397680896,
+     "hash": "2f97a1cbae16",
+     "blocked": false
+    }
+   ],
+   "arm": "C2",
+   "task": "9",
+   "rep": 0,
+   "attempt": 1
+  },
+  "C1|10|0": {
+   "seed": 10,
+   "condition": "1",
+   "calls": 64,
+   "rounds_used": 8,
+   "success": false,
+   "success_round": null,
+   "champion_obj": 0.7769249928970517,
+   "n_candidates": 64,
+   "n_valid": 64,
+   "dup_rate": 0.0625,
+   "unique_sigs": 60,
+   "wrong_blocks": 0,
+   "rounds": [
+    {
+     "round": 1,
+     "key_sig": "noChampion",
+     "phase": "early",
+     "adopted": true,
+     "champion_obj": 0.7769249928970517,
+     "round_blocked": false
+    },
+    {
+     "round": 2,
+     "key_sig": "bb5442dff86e",
+     "phase": "early",
+     "adopted": false,
+     "champion_obj": 0.7769249928970517,
+     "round_blocked": false
+    },
+    {
+     "round": 3,
+     "key_sig": "bb5442dff86e",
+     "phase": "early",
+     "adopted": false,
+     "champion_obj": 0.7769249928970517,
+     "round_blocked": false
+    },
+    {
+     "round": 4,
+     "key_sig": "bb5442dff86e",
+     "phase": "mid",
+     "adopted": false,
+     "champion_obj": 0.7769249928970517,
+     "round_blocked": false
+    },
+    {
+     "round": 5,
+     "key_sig": "bb5442dff86e",
+     "phase": "mid",
+     "adopted": false,
+     "champion_obj": 0.7769249928970517,
+     "round_blocked": false
+    },
+    {
+     "round": 6,
+     "key_sig": "bb5442dff86e",
+     "phase": "mid",
+     "adopted": false,
+     "champion_obj": 0.7769249928970517,
+     "round_blocked": false
+    },
+    {
+     "round": 7,
+     "key_sig": "bb5442dff86e",
+     "phase": "late",
+     "adopted": false,
+     "champion_obj": 0.7769249928970517,
+     "round_blocked": false
+    },
+    {
+     "round": 8,
+     "key_sig": "bb5442dff86e",
+     "phase": "late",
+     "adopted": false,
+     "champion_obj": 0.7769249928970517,
+     "round_blocked": false
+    }
+   ],
+   "candidates": [
+    {
+     "call": 1,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5211286851261713,
+     "hash": "33539262fcac",
+     "blocked": false
+    },
+    {
+     "call": 2,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7769249928970517,
+     "hash": "bb5442dff86e",
+     "blocked": false
+    },
+    {
+     "call": 3,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5287382708452899,
+     "hash": "aab64f3b2943",
+     "blocked": false
+    },
+    {
+     "call": 4,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7316538924492891,
+     "hash": "39a503c47a61",
+     "blocked": false
+    },
+    {
+     "call": 5,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7596715285595131,
+     "hash": "d492e2284de7",
+     "blocked": false
+    },
+    {
+     "call": 6,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7250285972061297,
+     "hash": "da94fe2ddcea",
+     "blocked": false
+    },
+    {
+     "call": 7,
+     "round": 1,
+     "valid": true,
+     "obj": 0.4517857142857143,
+     "hash": "f16477659886",
+     "blocked": false
+    },
+    {
+     "call": 8,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7013469661611353,
+     "hash": "968f2f44caed",
+     "blocked": false
+    },
+    {
+     "call": 9,
+     "round": 2,
+     "valid": true,
+     "obj": 0.3275,
+     "hash": "bc8459f06fc5",
+     "blocked": false
+    },
+    {
+     "call": 10,
+     "round": 2,
+     "valid": true,
+     "obj": 0.3275,
+     "hash": "00730a4c4a87",
+     "blocked": false
+    },
+    {
+     "call": 11,
+     "round": 2,
+     "valid": true,
+     "obj": 0.4275,
+     "hash": "2584726f1ea8",
+     "blocked": false
+    },
+    {
+     "call": 12,
+     "round": 2,
+     "valid": true,
+     "obj": 0.3275,
+     "hash": "e9fde7ccbfa0",
+     "blocked": false
+    },
+    {
+     "call": 13,
+     "round": 2,
+     "valid": true,
+     "obj": 0.3275,
+     "hash": "96f6a0102ff1",
+     "blocked": false
+    },
+    {
+     "call": 14,
+     "round": 2,
+     "valid": true,
+     "obj": 0.3275,
+     "hash": "9e05fa55a5f4",
+     "blocked": false
+    },
+    {
+     "call": 15,
+     "round": 2,
+     "valid": true,
+     "obj": 0.38,
+     "hash": "1237ed7c4677",
+     "blocked": false
+    },
+    {
+     "call": 16,
+     "round": 2,
+     "valid": true,
+     "obj": 0.3275,
+     "hash": "2b23cc8ff99a",
+     "blocked": false
+    },
+    {
+     "call": 17,
+     "round": 3,
+     "valid": true,
+     "obj": 0.5132142857142857,
+     "hash": "d5da12d87e25",
+     "blocked": false
+    },
+    {
+     "call": 18,
+     "round": 3,
+     "valid": true,
+     "obj": 0.5325,
+     "hash": "f2dc476103d9",
+     "blocked": false
+    },
+    {
+     "call": 19,
+     "round": 3,
+     "valid": true,
+     "obj": 0.4325,
+     "hash": "557d9e59b355",
+     "blocked": false
+    },
+    {
+     "call": 20,
+     "round": 3,
+     "valid": true,
+     "obj": 0.5132142857142857,
+     "hash": "8d1042bc598e",
+     "blocked": false
+    },
+    {
+     "call": 21,
+     "round": 3,
+     "valid": true,
+     "obj": 0.5275,
+     "hash": "9f7314586cdd",
+     "blocked": false
+    },
+    {
+     "call": 22,
+     "round": 3,
+     "valid": true,
+     "obj": 0.5725,
+     "hash": "a25bef941c78",
+     "blocked": false
+    },
+    {
+     "call": 23,
+     "round": 3,
+     "valid": true,
+     "obj": 0.54,
+     "hash": "5f2fcc4596d1",
+     "blocked": false
+    },
+    {
+     "call": 24,
+     "round": 3,
+     "valid": true,
+     "obj": 0.4275,
+     "hash": "2b0a27ec549c",
+     "blocked": false
+    },
+    {
+     "call": 25,
+     "round": 4,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "31cdc0e710ba",
+     "blocked": false
+    },
+    {
+     "call": 26,
+     "round": 4,
+     "valid": true,
+     "obj": 0.3275,
+     "hash": "176cdfbd7530",
+     "blocked": false
+    },
+    {
+     "call": 27,
+     "round": 4,
+     "valid": true,
+     "obj": 0.5132142857142857,
+     "hash": "9bbc5a2e4802",
+     "blocked": false
+    },
+    {
+     "call": 28,
+     "round": 4,
+     "valid": true,
+     "obj": 0.4225,
+     "hash": "e74480c45007",
+     "blocked": false
+    },
+    {
+     "call": 29,
+     "round": 4,
+     "valid": true,
+     "obj": 0.5275,
+     "hash": "d4f870865425",
+     "blocked": false
+    },
+    {
+     "call": 30,
+     "round": 4,
+     "valid": true,
+     "obj": 0.5683333333333334,
+     "hash": "55cfc555e757",
+     "blocked": false
+    },
+    {
+     "call": 31,
+     "round": 4,
+     "valid": true,
+     "obj": 0.5132142857142857,
+     "hash": "af9c05fd2605",
+     "blocked": false
+    },
+    {
+     "call": 32,
+     "round": 4,
+     "valid": true,
+     "obj": 0.5132142857142857,
+     "hash": "519dd9a0163d",
+     "blocked": false
+    },
+    {
+     "call": 33,
+     "round": 5,
+     "valid": true,
+     "obj": 0.4275,
+     "hash": "aa463fed3a66",
+     "blocked": false
+    },
+    {
+     "call": 34,
+     "round": 5,
+     "valid": true,
+     "obj": 0.4375,
+     "hash": "c55501743920",
+     "blocked": false
+    },
+    {
+     "call": 35,
+     "round": 5,
+     "valid": true,
+     "obj": 0.4275,
+     "hash": "edd24c65ec25",
+     "blocked": false
+    },
+    {
+     "call": 36,
+     "round": 5,
+     "valid": true,
+     "obj": 0.5582142857142858,
+     "hash": "b815c725ef60",
+     "blocked": false
+    },
+    {
+     "call": 37,
+     "round": 5,
+     "valid": true,
+     "obj": 0.5132142857142857,
+     "hash": "95b3585e437c",
+     "blocked": false
+    },
+    {
+     "call": 38,
+     "round": 5,
+     "valid": true,
+     "obj": 0.54,
+     "hash": "b34a598be9f8",
+     "blocked": false
+    },
+    {
+     "call": 39,
+     "round": 5,
+     "valid": true,
+     "obj": 0.5132142857142857,
+     "hash": "9bbc5a2e4802",
+     "blocked": false
+    },
+    {
+     "call": 40,
+     "round": 5,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "98db0ca50306",
+     "blocked": false
+    },
+    {
+     "call": 41,
+     "round": 6,
+     "valid": true,
+     "obj": 0.4225,
+     "hash": "7982d07fba11",
+     "blocked": false
+    },
+    {
+     "call": 42,
+     "round": 6,
+     "valid": true,
+     "obj": 0.5132142857142857,
+     "hash": "334a1653d0c7",
+     "blocked": false
+    },
+    {
+     "call": 43,
+     "round": 6,
+     "valid": true,
+     "obj": 0.4325,
+     "hash": "e5037f36d07d",
+     "blocked": false
+    },
+    {
+     "call": 44,
+     "round": 6,
+     "valid": true,
+     "obj": 0.4225,
+     "hash": "9c90815e2176",
+     "blocked": false
+    },
+    {
+     "call": 45,
+     "round": 6,
+     "valid": true,
+     "obj": 0.5132142857142857,
+     "hash": "d5da12d87e25",
+     "blocked": false
+    },
+    {
+     "call": 46,
+     "round": 6,
+     "valid": true,
+     "obj": 0.5275,
+     "hash": "d3967aa23c7a",
+     "blocked": false
+    },
+    {
+     "call": 47,
+     "round": 6,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "ed7afd69f396",
+     "blocked": false
+    },
+    {
+     "call": 48,
+     "round": 6,
+     "valid": true,
+     "obj": 0.3275,
+     "hash": "690643ecf544",
+     "blocked": false
+    },
+    {
+     "call": 49,
+     "round": 7,
+     "valid": true,
+     "obj": 0.5582142857142858,
+     "hash": "cf22af20b975",
+     "blocked": false
+    },
+    {
+     "call": 50,
+     "round": 7,
+     "valid": true,
+     "obj": 0.4375,
+     "hash": "1ac0639d4297",
+     "blocked": false
+    },
+    {
+     "call": 51,
+     "round": 7,
+     "valid": true,
+     "obj": 0.4275,
+     "hash": "a532bf67c111",
+     "blocked": false
+    },
+    {
+     "call": 52,
+     "round": 7,
+     "valid": true,
+     "obj": 0.2225,
+     "hash": "1e4842fe9b74",
+     "blocked": false
+    },
+    {
+     "call": 53,
+     "round": 7,
+     "valid": true,
+     "obj": 0.4275,
+     "hash": "ddd857c40dd9",
+     "blocked": false
+    },
+    {
+     "call": 54,
+     "round": 7,
+     "valid": true,
+     "obj": 0.5132142857142857,
+     "hash": "52d90b894f28",
+     "blocked": false
+    },
+    {
+     "call": 55,
+     "round": 7,
+     "valid": true,
+     "obj": 0.4275,
+     "hash": "edd24c65ec25",
+     "blocked": false
+    },
+    {
+     "call": 56,
+     "round": 7,
+     "valid": true,
+     "obj": 0.3275,
+     "hash": "703229a9ed63",
+     "blocked": false
+    },
+    {
+     "call": 57,
+     "round": 8,
+     "valid": true,
+     "obj": 0.4225,
+     "hash": "c23e39fc49a6",
+     "blocked": false
+    },
+    {
+     "call": 58,
+     "round": 8,
+     "valid": true,
+     "obj": 0.53,
+     "hash": "1721b2df0683",
+     "blocked": false
+    },
+    {
+     "call": 59,
+     "round": 8,
+     "valid": true,
+     "obj": 0.3275,
+     "hash": "68c8ac54f9b9",
+     "blocked": false
+    },
+    {
+     "call": 60,
+     "round": 8,
+     "valid": true,
+     "obj": 0.4275,
+     "hash": "7831f0f99660",
+     "blocked": false
+    },
+    {
+     "call": 61,
+     "round": 8,
+     "valid": true,
+     "obj": 0.4375,
+     "hash": "3355a8253821",
+     "blocked": false
+    },
+    {
+     "call": 62,
+     "round": 8,
+     "valid": true,
+     "obj": 0.3275,
+     "hash": "703229a9ed63",
+     "blocked": false
+    },
+    {
+     "call": 63,
+     "round": 8,
+     "valid": true,
+     "obj": 0.3275,
+     "hash": "9db2981bac9e",
+     "blocked": false
+    },
+    {
+     "call": 64,
+     "round": 8,
+     "valid": true,
+     "obj": 0.4275,
+     "hash": "619783185680",
+     "blocked": false
+    }
+   ],
+   "arm": "C1",
+   "task": "10",
+   "rep": 0,
+   "attempt": 1
+  },
+  "C2|10|0": {
+   "seed": 10,
+   "condition": "2",
+   "calls": 8,
+   "rounds_used": 1,
+   "success": true,
+   "success_round": 1,
+   "champion_obj": 0.7927596286827754,
+   "n_candidates": 8,
+   "n_valid": 8,
+   "dup_rate": 0.0,
+   "unique_sigs": 8,
+   "wrong_blocks": 0,
+   "rounds": [
+    {
+     "round": 1,
+     "key_sig": "noChampion",
+     "phase": "early",
+     "adopted": true,
+     "champion_obj": 0.7927596286827754,
+     "round_blocked": false
+    }
+   ],
+   "candidates": [
+    {
+     "call": 1,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7316538924492891,
+     "hash": "39a503c47a61",
+     "blocked": false
+    },
+    {
+     "call": 2,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7389652922562763,
+     "hash": "3631282ad8a0",
+     "blocked": false
+    },
+    {
+     "call": 3,
+     "round": 1,
+     "valid": true,
+     "obj": 0.6826562923971674,
+     "hash": "33508b9d8ed8",
+     "blocked": false
+    },
+    {
+     "call": 4,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7397848546983307,
+     "hash": "eaab731a5194",
+     "blocked": false
+    },
+    {
+     "call": 5,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5265975980624154,
+     "hash": "f293266fc1f7",
+     "blocked": false
+    },
+    {
+     "call": 6,
+     "round": 1,
+     "valid": true,
+     "obj": 0.6896614176062343,
+     "hash": "6c562dba20d7",
+     "blocked": false
+    },
+    {
+     "call": 7,
+     "round": 1,
+     "valid": true,
+     "obj": 0.6791380049904937,
+     "hash": "b9df3c943de1",
+     "blocked": false
+    },
+    {
+     "call": 8,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7927596286827754,
+     "hash": "86d99ea85696",
+     "blocked": false
+    }
+   ],
+   "arm": "C2",
+   "task": "10",
+   "rep": 0,
+   "attempt": 1
+  },
+  "C1|11|0": {
+   "seed": 11,
+   "condition": "1",
+   "calls": 8,
+   "rounds_used": 1,
+   "success": true,
+   "success_round": 1,
+   "champion_obj": 0.8059255120854056,
+   "n_candidates": 8,
+   "n_valid": 8,
+   "dup_rate": 0.125,
+   "unique_sigs": 7,
+   "wrong_blocks": 0,
+   "rounds": [
+    {
+     "round": 1,
+     "key_sig": "noChampion",
+     "phase": "early",
+     "adopted": true,
+     "champion_obj": 0.8059255120854056,
+     "round_blocked": false
+    }
+   ],
+   "candidates": [
+    {
+     "call": 1,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7256389142635291,
+     "hash": "b63be6014c84",
+     "blocked": false
+    },
+    {
+     "call": 2,
+     "round": 1,
+     "valid": true,
+     "obj": 0.4875,
+     "hash": "d4b257ed70e1",
+     "blocked": false
+    },
+    {
+     "call": 3,
+     "round": 1,
+     "valid": true,
+     "obj": 0.6179325409799405,
+     "hash": "de04250177ee",
+     "blocked": false
+    },
+    {
+     "call": 4,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7732659091774089,
+     "hash": "b8b16ea16b6e",
+     "blocked": false
+    },
+    {
+     "call": 5,
+     "round": 1,
+     "valid": true,
+     "obj": 0.8059255120854056,
+     "hash": "d180e73c7ab9",
+     "blocked": false
+    },
+    {
+     "call": 6,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7791480869671179,
+     "hash": "b83fc22a170c",
+     "blocked": false
+    },
+    {
+     "call": 7,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7416011332269065,
+     "hash": "5de8fc594e30",
+     "blocked": false
+    },
+    {
+     "call": 8,
+     "round": 1,
+     "valid": true,
+     "obj": 0.4875,
+     "hash": "d4b257ed70e1",
+     "blocked": false
+    }
+   ],
+   "arm": "C1",
+   "task": "11",
+   "rep": 0,
+   "attempt": 1
+  },
+  "C2|11|0": {
+   "seed": 11,
+   "condition": "2",
+   "calls": 64,
+   "rounds_used": 8,
+   "success": false,
+   "success_round": null,
+   "champion_obj": 0.7787236782655506,
+   "n_candidates": 64,
+   "n_valid": 64,
+   "dup_rate": 0.0156,
+   "unique_sigs": 63,
+   "wrong_blocks": 0,
+   "rounds": [
+    {
+     "round": 1,
+     "key_sig": "noChampion",
+     "phase": "early",
+     "adopted": true,
+     "champion_obj": 0.7787236782655506,
+     "round_blocked": false
+    },
+    {
+     "round": 2,
+     "key_sig": "70d188aa6253",
+     "phase": "early",
+     "adopted": false,
+     "champion_obj": 0.7787236782655506,
+     "round_blocked": false
+    },
+    {
+     "round": 3,
+     "key_sig": "70d188aa6253",
+     "phase": "early",
+     "adopted": false,
+     "champion_obj": 0.7787236782655506,
+     "round_blocked": false
+    },
+    {
+     "round": 4,
+     "key_sig": "70d188aa6253",
+     "phase": "mid",
+     "adopted": false,
+     "champion_obj": 0.7787236782655506,
+     "round_blocked": false
+    },
+    {
+     "round": 5,
+     "key_sig": "70d188aa6253",
+     "phase": "mid",
+     "adopted": false,
+     "champion_obj": 0.7787236782655506,
+     "round_blocked": false
+    },
+    {
+     "round": 6,
+     "key_sig": "70d188aa6253",
+     "phase": "mid",
+     "adopted": false,
+     "champion_obj": 0.7787236782655506,
+     "round_blocked": false
+    },
+    {
+     "round": 7,
+     "key_sig": "70d188aa6253",
+     "phase": "late",
+     "adopted": false,
+     "champion_obj": 0.7787236782655506,
+     "round_blocked": false
+    },
+    {
+     "round": 8,
+     "key_sig": "70d188aa6253",
+     "phase": "late",
+     "adopted": false,
+     "champion_obj": 0.7787236782655506,
+     "round_blocked": false
+    }
+   ],
+   "candidates": [
+    {
+     "call": 1,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7732659091774089,
+     "hash": "b61e6c40e1bf",
+     "blocked": false
+    },
+    {
+     "call": 2,
+     "round": 1,
+     "valid": true,
+     "obj": 0.0,
+     "hash": "7c8927cf3271",
+     "blocked": false
+    },
+    {
+     "call": 3,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5267502725237759,
+     "hash": "f293266fc1f7",
+     "blocked": false
+    },
+    {
+     "call": 4,
+     "round": 1,
+     "valid": true,
+     "obj": 0.6039948429217987,
+     "hash": "3e10a8b402af",
+     "blocked": false
+    },
+    {
+     "call": 5,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7312383259599039,
+     "hash": "7387c7622a75",
+     "blocked": false
+    },
+    {
+     "call": 6,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7787236782655506,
+     "hash": "70d188aa6253",
+     "blocked": false
+    },
+    {
+     "call": 7,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5232142857142857,
+     "hash": "03e30a58977a",
+     "blocked": false
+    },
+    {
+     "call": 8,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7678534278296464,
+     "hash": "3dc024a03823",
+     "blocked": false
+    },
+    {
+     "call": 9,
+     "round": 2,
+     "valid": true,
+     "obj": 0.2225,
+     "hash": "f6eab5540c31",
+     "blocked": false
+    },
+    {
+     "call": 10,
+     "round": 2,
+     "valid": true,
+     "obj": 0.5582142857142858,
+     "hash": "107d03c92721",
+     "blocked": false
+    },
+    {
+     "call": 11,
+     "round": 2,
+     "valid": true,
+     "obj": 0.2225,
+     "hash": "961875e5aa7d",
+     "blocked": false
+    },
+    {
+     "call": 12,
+     "round": 2,
+     "valid": true,
+     "obj": 0.2225,
+     "hash": "b5be64649249",
+     "blocked": false
+    },
+    {
+     "call": 13,
+     "round": 2,
+     "valid": true,
+     "obj": 0.39416666666666667,
+     "hash": "edfbb1b2efe8",
+     "blocked": false
+    },
+    {
+     "call": 14,
+     "round": 2,
+     "valid": true,
+     "obj": 0.5725,
+     "hash": "767310e0afff",
+     "blocked": false
+    },
+    {
+     "call": 15,
+     "round": 2,
+     "valid": true,
+     "obj": 0.22964285714285712,
+     "hash": "870a2ef595e8",
+     "blocked": false
+    },
+    {
+     "call": 16,
+     "round": 2,
+     "valid": true,
+     "obj": 0.22964285714285712,
+     "hash": "668cd7bf7955",
+     "blocked": false
+    },
+    {
+     "call": 17,
+     "round": 3,
+     "valid": true,
+     "obj": 0.22964285714285712,
+     "hash": "a0a393e882a2",
+     "blocked": false
+    },
+    {
+     "call": 18,
+     "round": 3,
+     "valid": true,
+     "obj": 0.22964285714285712,
+     "hash": "6afd449e5c89",
+     "blocked": false
+    },
+    {
+     "call": 19,
+     "round": 3,
+     "valid": true,
+     "obj": 0.38,
+     "hash": "780a5784b5c6",
+     "blocked": false
+    },
+    {
+     "call": 20,
+     "round": 3,
+     "valid": true,
+     "obj": 0.540379563362448,
+     "hash": "9f84cf6956ec",
+     "blocked": false
+    },
+    {
+     "call": 21,
+     "round": 3,
+     "valid": true,
+     "obj": 0.22964285714285712,
+     "hash": "c2a9eeb32ec3",
+     "blocked": false
+    },
+    {
+     "call": 22,
+     "round": 3,
+     "valid": true,
+     "obj": 0.6420974621015553,
+     "hash": "154413234c0f",
+     "blocked": false
+    },
+    {
+     "call": 23,
+     "round": 3,
+     "valid": true,
+     "obj": 0.4325,
+     "hash": "f1bd0e7e06f5",
+     "blocked": false
+    },
+    {
+     "call": 24,
+     "round": 3,
+     "valid": true,
+     "obj": 0.7200533771111628,
+     "hash": "b2a029492f52",
+     "blocked": false
+    },
+    {
+     "call": 25,
+     "round": 4,
+     "valid": true,
+     "obj": 0.22964285714285712,
+     "hash": "7aa07bd85186",
+     "blocked": false
+    },
+    {
+     "call": 26,
+     "round": 4,
+     "valid": true,
+     "obj": 0.4375,
+     "hash": "cd090358d632",
+     "blocked": false
+    },
+    {
+     "call": 27,
+     "round": 4,
+     "valid": true,
+     "obj": 0.5725,
+     "hash": "d118edd156d0",
+     "blocked": false
+    },
+    {
+     "call": 28,
+     "round": 4,
+     "valid": true,
+     "obj": 0.5725,
+     "hash": "bd3e82a42bd0",
+     "blocked": false
+    },
+    {
+     "call": 29,
+     "round": 4,
+     "valid": true,
+     "obj": 0.613126548581226,
+     "hash": "3f1ec4c5faea",
+     "blocked": false
+    },
+    {
+     "call": 30,
+     "round": 4,
+     "valid": true,
+     "obj": 0.4225,
+     "hash": "8d5d0cdf9f06",
+     "blocked": false
+    },
+    {
+     "call": 31,
+     "round": 4,
+     "valid": true,
+     "obj": 0.5582142857142858,
+     "hash": "fe637bffc526",
+     "blocked": false
+    },
+    {
+     "call": 32,
+     "round": 4,
+     "valid": true,
+     "obj": 0.605286509710921,
+     "hash": "ddcc5d2a34aa",
+     "blocked": false
+    },
+    {
+     "call": 33,
+     "round": 5,
+     "valid": true,
+     "obj": 0.39416666666666667,
+     "hash": "cce9dd464925",
+     "blocked": false
+    },
+    {
+     "call": 34,
+     "round": 5,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "aa241a939c7a",
+     "blocked": false
+    },
+    {
+     "call": 35,
+     "round": 5,
+     "valid": true,
+     "obj": 0.22964285714285712,
+     "hash": "6be17e5f73e5",
+     "blocked": false
+    },
+    {
+     "call": 36,
+     "round": 5,
+     "valid": true,
+     "obj": 0.22964285714285712,
+     "hash": "febe3ad8c615",
+     "blocked": false
+    },
+    {
+     "call": 37,
+     "round": 5,
+     "valid": true,
+     "obj": 0.525,
+     "hash": "e8dbce2548e4",
+     "blocked": false
+    },
+    {
+     "call": 38,
+     "round": 5,
+     "valid": true,
+     "obj": 0.5725,
+     "hash": "3b6cfd8cf81b",
+     "blocked": false
+    },
+    {
+     "call": 39,
+     "round": 5,
+     "valid": true,
+     "obj": 0.22964285714285712,
+     "hash": "b967104a8eb5",
+     "blocked": false
+    },
+    {
+     "call": 40,
+     "round": 5,
+     "valid": true,
+     "obj": 0.5361904761904762,
+     "hash": "91db98091bc5",
+     "blocked": false
+    },
+    {
+     "call": 41,
+     "round": 6,
+     "valid": true,
+     "obj": 0.22964285714285712,
+     "hash": "bae52adfaef7",
+     "blocked": false
+    },
+    {
+     "call": 42,
+     "round": 6,
+     "valid": true,
+     "obj": 0.4325,
+     "hash": "959535ea2254",
+     "blocked": false
+    },
+    {
+     "call": 43,
+     "round": 6,
+     "valid": true,
+     "obj": 0.2225,
+     "hash": "c7726a6b1924",
+     "blocked": false
+    },
+    {
+     "call": 44,
+     "round": 6,
+     "valid": true,
+     "obj": 0.3725,
+     "hash": "8d1671d78b88",
+     "blocked": false
+    },
+    {
+     "call": 45,
+     "round": 6,
+     "valid": true,
+     "obj": 0.0,
+     "hash": "d4ed32772e9a",
+     "blocked": false
+    },
+    {
+     "call": 46,
+     "round": 6,
+     "valid": true,
+     "obj": 0.5582142857142858,
+     "hash": "f834ccce3b51",
+     "blocked": false
+    },
+    {
+     "call": 47,
+     "round": 6,
+     "valid": true,
+     "obj": 0.0,
+     "hash": "28b7a9b79682",
+     "blocked": false
+    },
+    {
+     "call": 48,
+     "round": 6,
+     "valid": true,
+     "obj": 0.5725,
+     "hash": "8b74c974e030",
+     "blocked": false
+    },
+    {
+     "call": 49,
+     "round": 7,
+     "valid": true,
+     "obj": 0.38,
+     "hash": "1f5ffb9fc4eb",
+     "blocked": false
+    },
+    {
+     "call": 50,
+     "round": 7,
+     "valid": true,
+     "obj": 0.2225,
+     "hash": "e6b896412146",
+     "blocked": false
+    },
+    {
+     "call": 51,
+     "round": 7,
+     "valid": true,
+     "obj": 0.5725,
+     "hash": "3b6cfd8cf81b",
+     "blocked": false
+    },
+    {
+     "call": 52,
+     "round": 7,
+     "valid": true,
+     "obj": 0.39416666666666667,
+     "hash": "cbf0e26fff35",
+     "blocked": false
+    },
+    {
+     "call": 53,
+     "round": 7,
+     "valid": true,
+     "obj": 0.4225,
+     "hash": "8ddf5c79894a",
+     "blocked": false
+    },
+    {
+     "call": 54,
+     "round": 7,
+     "valid": true,
+     "obj": 0.0,
+     "hash": "a9304dec37c8",
+     "blocked": false
+    },
+    {
+     "call": 55,
+     "round": 7,
+     "valid": true,
+     "obj": 0.2225,
+     "hash": "74a9a8db60ea",
+     "blocked": false
+    },
+    {
+     "call": 56,
+     "round": 7,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "41c5cb3adf76",
+     "blocked": false
+    },
+    {
+     "call": 57,
+     "round": 8,
+     "valid": true,
+     "obj": 0.5314722842123569,
+     "hash": "789e9e64b454",
+     "blocked": false
+    },
+    {
+     "call": 58,
+     "round": 8,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "9c70e5d5cb4f",
+     "blocked": false
+    },
+    {
+     "call": 59,
+     "round": 8,
+     "valid": true,
+     "obj": 0.2225,
+     "hash": "5b78be96c0c7",
+     "blocked": false
+    },
+    {
+     "call": 60,
+     "round": 8,
+     "valid": true,
+     "obj": 0.515,
+     "hash": "ad5950b7833e",
+     "blocked": false
+    },
+    {
+     "call": 61,
+     "round": 8,
+     "valid": true,
+     "obj": 0.673628503304989,
+     "hash": "1e7fa2b00e57",
+     "blocked": false
+    },
+    {
+     "call": 62,
+     "round": 8,
+     "valid": true,
+     "obj": 0.39416666666666667,
+     "hash": "890530615ec9",
+     "blocked": false
+    },
+    {
+     "call": 63,
+     "round": 8,
+     "valid": true,
+     "obj": 0.2225,
+     "hash": "bc29101f2897",
+     "blocked": false
+    },
+    {
+     "call": 64,
+     "round": 8,
+     "valid": true,
+     "obj": 0.2225,
+     "hash": "d07b021b8403",
+     "blocked": false
+    }
+   ],
+   "arm": "C2",
+   "task": "11",
+   "rep": 0,
+   "attempt": 1
+  },
+  "C1|12|0": {
+   "seed": 12,
+   "condition": "1",
+   "calls": 8,
+   "rounds_used": 1,
+   "success": true,
+   "success_round": 1,
+   "champion_obj": 0.8133566675967928,
+   "n_candidates": 8,
+   "n_valid": 8,
+   "dup_rate": 0.0,
+   "unique_sigs": 8,
+   "wrong_blocks": 0,
+   "rounds": [
+    {
+     "round": 1,
+     "key_sig": "noChampion",
+     "phase": "early",
+     "adopted": true,
+     "champion_obj": 0.8133566675967928,
+     "round_blocked": false
+    }
+   ],
+   "candidates": [
+    {
+     "call": 1,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5419166606894853,
+     "hash": "5c734a28db52",
+     "blocked": false
+    },
+    {
+     "call": 2,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7319435622405471,
+     "hash": "0d1baa6629f8",
+     "blocked": false
+    },
+    {
+     "call": 3,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7590234671947094,
+     "hash": "5a9f1b77526f",
+     "blocked": false
+    },
+    {
+     "call": 4,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7735582237298136,
+     "hash": "bee485373966",
+     "blocked": false
+    },
+    {
+     "call": 5,
+     "round": 1,
+     "valid": true,
+     "obj": 0.8133566675967928,
+     "hash": "79d139a51e54",
+     "blocked": false
+    },
+    {
+     "call": 6,
+     "round": 1,
+     "valid": true,
+     "obj": 0.41607142857142854,
+     "hash": "54b6abb29bc5",
+     "blocked": false
+    },
+    {
+     "call": 7,
+     "round": 1,
+     "valid": true,
+     "obj": 0.0,
+     "hash": "6a1339ee1f51",
+     "blocked": false
+    },
+    {
+     "call": 8,
+     "round": 1,
+     "valid": true,
+     "obj": 0.0,
+     "hash": "c8520999bb78",
+     "blocked": false
+    }
+   ],
+   "arm": "C1",
+   "task": "12",
+   "rep": 0,
+   "attempt": 1
+  },
+  "C2|12|0": {
+   "seed": 12,
+   "condition": "2",
+   "calls": 8,
+   "rounds_used": 1,
+   "success": true,
+   "success_round": 1,
+   "champion_obj": 0.8310225015730505,
+   "n_candidates": 8,
+   "n_valid": 8,
+   "dup_rate": 0.0,
+   "unique_sigs": 8,
+   "wrong_blocks": 0,
+   "rounds": [
+    {
+     "round": 1,
+     "key_sig": "noChampion",
+     "phase": "early",
+     "adopted": true,
+     "champion_obj": 0.8310225015730505,
+     "round_blocked": false
+    }
+   ],
+   "candidates": [
+    {
+     "call": 1,
+     "round": 1,
+     "valid": true,
+     "obj": 0.0,
+     "hash": "b5d78b5a159d",
+     "blocked": false
+    },
+    {
+     "call": 2,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7030294663612243,
+     "hash": "0d2ec3867407",
+     "blocked": false
+    },
+    {
+     "call": 3,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5934214120243916,
+     "hash": "2267ec1c54b6",
+     "blocked": false
+    },
+    {
+     "call": 4,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5304280902491235,
+     "hash": "15cea72a22a0",
+     "blocked": false
+    },
+    {
+     "call": 5,
+     "round": 1,
+     "valid": true,
+     "obj": 0.749469341726331,
+     "hash": "54f677384a33",
+     "blocked": false
+    },
+    {
+     "call": 6,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7952107776627788,
+     "hash": "ba82fd8f74b8",
+     "blocked": false
+    },
+    {
+     "call": 7,
+     "round": 1,
+     "valid": true,
+     "obj": 0.8310225015730505,
+     "hash": "6653c03cd872",
+     "blocked": false
+    },
+    {
+     "call": 8,
+     "round": 1,
+     "valid": true,
+     "obj": 0.4517857142857143,
+     "hash": "19276651eaa2",
+     "blocked": false
+    }
+   ],
+   "arm": "C2",
+   "task": "12",
+   "rep": 0,
+   "attempt": 1
+  },
+  "C1|13|0": {
+   "seed": 13,
+   "condition": "1",
+   "calls": 8,
+   "rounds_used": 1,
+   "success": true,
+   "success_round": 1,
+   "champion_obj": 0.8007186904495253,
+   "n_candidates": 8,
+   "n_valid": 8,
+   "dup_rate": 0.125,
+   "unique_sigs": 7,
+   "wrong_blocks": 0,
+   "rounds": [
+    {
+     "round": 1,
+     "key_sig": "noChampion",
+     "phase": "early",
+     "adopted": true,
+     "champion_obj": 0.8007186904495253,
+     "round_blocked": false
+    }
+   ],
+   "candidates": [
+    {
+     "call": 1,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5232142857142857,
+     "hash": "8d3f57ac1d39",
+     "blocked": false
+    },
+    {
+     "call": 2,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7113811565231648,
+     "hash": "5fc29bd81941",
+     "blocked": false
+    },
+    {
+     "call": 3,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7647608982417331,
+     "hash": "bee485373966",
+     "blocked": false
+    },
+    {
+     "call": 4,
+     "round": 1,
+     "valid": true,
+     "obj": 0.0,
+     "hash": "6a1339ee1f51",
+     "blocked": false
+    },
+    {
+     "call": 5,
+     "round": 1,
+     "valid": true,
+     "obj": 0.8007186904495253,
+     "hash": "cdd68219cb83",
+     "blocked": false
+    },
+    {
+     "call": 6,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7647608982417331,
+     "hash": "bee485373966",
+     "blocked": false
+    },
+    {
+     "call": 7,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7935107198197423,
+     "hash": "39a503c47a61",
+     "blocked": false
+    },
+    {
+     "call": 8,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5879273018047971,
+     "hash": "279e47ea2353",
+     "blocked": false
+    }
+   ],
+   "arm": "C1",
+   "task": "13",
+   "rep": 0,
+   "attempt": 1
+  },
+  "C2|13|0": {
+   "seed": 13,
+   "condition": "2",
+   "calls": 8,
+   "rounds_used": 1,
+   "success": true,
+   "success_round": 1,
+   "champion_obj": 0.8083900628063391,
+   "n_candidates": 8,
+   "n_valid": 8,
+   "dup_rate": 0.0,
+   "unique_sigs": 8,
+   "wrong_blocks": 0,
+   "rounds": [
+    {
+     "round": 1,
+     "key_sig": "noChampion",
+     "phase": "early",
+     "adopted": true,
+     "champion_obj": 0.8083900628063391,
+     "round_blocked": false
+    }
+   ],
+   "candidates": [
+    {
+     "call": 1,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7418720325775878,
+     "hash": "78678577aa5b",
+     "blocked": false
+    },
+    {
+     "call": 2,
+     "round": 1,
+     "valid": true,
+     "obj": 0.4875,
+     "hash": "5adada4466ae",
+     "blocked": false
+    },
+    {
+     "call": 3,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5354787572119599,
+     "hash": "3c7d801ce785",
+     "blocked": false
+    },
+    {
+     "call": 4,
+     "round": 1,
+     "valid": true,
+     "obj": 0.8083900628063391,
+     "hash": "b3236e2b6ebe",
+     "blocked": false
+    },
+    {
+     "call": 5,
+     "round": 1,
+     "valid": true,
+     "obj": 0.6406657498981957,
+     "hash": "8296b3f3996f",
+     "blocked": false
+    },
+    {
+     "call": 6,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7500241280781533,
+     "hash": "e31256801bcd",
+     "blocked": false
+    },
+    {
+     "call": 7,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7047350650045247,
+     "hash": "acda9500d9d9",
+     "blocked": false
+    },
+    {
+     "call": 8,
+     "round": 1,
+     "valid": true,
+     "obj": 0.0,
+     "hash": "0700c2258c3b",
+     "blocked": false
+    }
+   ],
+   "arm": "C2",
+   "task": "13",
+   "rep": 0,
+   "attempt": 1
+  },
+  "C1|14|0": {
+   "seed": 14,
+   "condition": "1",
+   "calls": 8,
+   "rounds_used": 1,
+   "success": true,
+   "success_round": 1,
+   "champion_obj": 0.8084656628932809,
+   "n_candidates": 8,
+   "n_valid": 8,
+   "dup_rate": 0.0,
+   "unique_sigs": 8,
+   "wrong_blocks": 0,
+   "rounds": [
+    {
+     "round": 1,
+     "key_sig": "noChampion",
+     "phase": "early",
+     "adopted": true,
+     "champion_obj": 0.8084656628932809,
+     "round_blocked": false
+    }
+   ],
+   "candidates": [
+    {
+     "call": 1,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5260145378181322,
+     "hash": "12b701ea1373",
+     "blocked": false
+    },
+    {
+     "call": 2,
+     "round": 1,
+     "valid": true,
+     "obj": 0.0,
+     "hash": "61f98bab56aa",
+     "blocked": false
+    },
+    {
+     "call": 3,
+     "round": 1,
+     "valid": true,
+     "obj": 0.0,
+     "hash": "d8b0435588f2",
+     "blocked": false
+    },
+    {
+     "call": 4,
+     "round": 1,
+     "valid": true,
+     "obj": 0.8084656628932809,
+     "hash": "107cbb1ee1cb",
+     "blocked": false
+    },
+    {
+     "call": 5,
+     "round": 1,
+     "valid": true,
+     "obj": 0.4517857142857143,
+     "hash": "175a95a9cced",
+     "blocked": false
+    },
+    {
+     "call": 6,
+     "round": 1,
+     "valid": true,
+     "obj": 0.8032841208086641,
+     "hash": "aab5fb506427",
+     "blocked": false
+    },
+    {
+     "call": 7,
+     "round": 1,
+     "valid": true,
+     "obj": 0.0,
+     "hash": "833520194e56",
+     "blocked": false
+    },
+    {
+     "call": 8,
+     "round": 1,
+     "valid": true,
+     "obj": 0.6718342905284105,
+     "hash": "641e19d26cdf",
+     "blocked": false
+    }
+   ],
+   "arm": "C1",
+   "task": "14",
+   "rep": 0,
+   "attempt": 1
+  },
+  "C2|14|0": {
+   "seed": 14,
+   "condition": "2",
+   "calls": 64,
+   "rounds_used": 8,
+   "success": false,
+   "success_round": null,
+   "champion_obj": 0.7762732661521385,
+   "n_candidates": 64,
+   "n_valid": 64,
+   "dup_rate": 0.0625,
+   "unique_sigs": 60,
+   "wrong_blocks": 0,
+   "rounds": [
+    {
+     "round": 1,
+     "key_sig": "noChampion",
+     "phase": "early",
+     "adopted": true,
+     "champion_obj": 0.7762732661521385,
+     "round_blocked": false
+    },
+    {
+     "round": 2,
+     "key_sig": "6841490fe8b7",
+     "phase": "early",
+     "adopted": false,
+     "champion_obj": 0.7762732661521385,
+     "round_blocked": false
+    },
+    {
+     "round": 3,
+     "key_sig": "6841490fe8b7",
+     "phase": "early",
+     "adopted": false,
+     "champion_obj": 0.7762732661521385,
+     "round_blocked": false
+    },
+    {
+     "round": 4,
+     "key_sig": "6841490fe8b7",
+     "phase": "mid",
+     "adopted": false,
+     "champion_obj": 0.7762732661521385,
+     "round_blocked": false
+    },
+    {
+     "round": 5,
+     "key_sig": "6841490fe8b7",
+     "phase": "mid",
+     "adopted": false,
+     "champion_obj": 0.7762732661521385,
+     "round_blocked": false
+    },
+    {
+     "round": 6,
+     "key_sig": "6841490fe8b7",
+     "phase": "mid",
+     "adopted": false,
+     "champion_obj": 0.7762732661521385,
+     "round_blocked": false
+    },
+    {
+     "round": 7,
+     "key_sig": "6841490fe8b7",
+     "phase": "late",
+     "adopted": false,
+     "champion_obj": 0.7762732661521385,
+     "round_blocked": false
+    },
+    {
+     "round": 8,
+     "key_sig": "6841490fe8b7",
+     "phase": "late",
+     "adopted": false,
+     "champion_obj": 0.7762732661521385,
+     "round_blocked": false
+    }
+   ],
+   "candidates": [
+    {
+     "call": 1,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7762732661521385,
+     "hash": "6841490fe8b7",
+     "blocked": false
+    },
+    {
+     "call": 2,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7071239020061495,
+     "hash": "05b0e5cc9a07",
+     "blocked": false
+    },
+    {
+     "call": 3,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5375,
+     "hash": "03e30a58977a",
+     "blocked": false
+    },
+    {
+     "call": 4,
+     "round": 1,
+     "valid": true,
+     "obj": 0.4475,
+     "hash": "be7f388fca0e",
+     "blocked": false
+    },
+    {
+     "call": 5,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5331413177840443,
+     "hash": "f293266fc1f7",
+     "blocked": false
+    },
+    {
+     "call": 6,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5331413177840443,
+     "hash": "00b666615586",
+     "blocked": false
+    },
+    {
+     "call": 7,
+     "round": 1,
+     "valid": true,
+     "obj": 0.4875,
+     "hash": "3a1d164e59de",
+     "blocked": false
+    },
+    {
+     "call": 8,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7071239020061495,
+     "hash": "05b0e5cc9a07",
+     "blocked": false
+    },
+    {
+     "call": 9,
+     "round": 2,
+     "valid": true,
+     "obj": 0.4325,
+     "hash": "461053868a85",
+     "blocked": false
+    },
+    {
+     "call": 10,
+     "round": 2,
+     "valid": true,
+     "obj": 0.3725,
+     "hash": "0acb05edb901",
+     "blocked": false
+    },
+    {
+     "call": 11,
+     "round": 2,
+     "valid": true,
+     "obj": 0.4275,
+     "hash": "f3db81f09bbd",
+     "blocked": false
+    },
+    {
+     "call": 12,
+     "round": 2,
+     "valid": true,
+     "obj": 0.5725,
+     "hash": "9d7f677d3ebb",
+     "blocked": false
+    },
+    {
+     "call": 13,
+     "round": 2,
+     "valid": true,
+     "obj": 0.3725,
+     "hash": "d4fe7ec57cd6",
+     "blocked": false
+    },
+    {
+     "call": 14,
+     "round": 2,
+     "valid": true,
+     "obj": 0.4325,
+     "hash": "7411039cb8bf",
+     "blocked": false
+    },
+    {
+     "call": 15,
+     "round": 2,
+     "valid": true,
+     "obj": 0.4325,
+     "hash": "1aa5d5732e0d",
+     "blocked": false
+    },
+    {
+     "call": 16,
+     "round": 2,
+     "valid": true,
+     "obj": 0.22964285714285712,
+     "hash": "1c95062105c8",
+     "blocked": false
+    },
+    {
+     "call": 17,
+     "round": 3,
+     "valid": true,
+     "obj": 0.3725,
+     "hash": "e54d4f652f18",
+     "blocked": false
+    },
+    {
+     "call": 18,
+     "round": 3,
+     "valid": true,
+     "obj": 0.3725,
+     "hash": "f1a1e292bbc9",
+     "blocked": false
+    },
+    {
+     "call": 19,
+     "round": 3,
+     "valid": true,
+     "obj": 0.3725,
+     "hash": "e54d4f652f18",
+     "blocked": false
+    },
+    {
+     "call": 20,
+     "round": 3,
+     "valid": true,
+     "obj": 0.4325,
+     "hash": "c31544eb1265",
+     "blocked": false
+    },
+    {
+     "call": 21,
+     "round": 3,
+     "valid": true,
+     "obj": 0.58,
+     "hash": "4a4fa1060089",
+     "blocked": false
+    },
+    {
+     "call": 22,
+     "round": 3,
+     "valid": true,
+     "obj": 0.3725,
+     "hash": "ff72c13f973b",
+     "blocked": false
+    },
+    {
+     "call": 23,
+     "round": 3,
+     "valid": true,
+     "obj": 0.5275,
+     "hash": "38a0e115912b",
+     "blocked": false
+    },
+    {
+     "call": 24,
+     "round": 3,
+     "valid": true,
+     "obj": 0.5725,
+     "hash": "b8e786b17d42",
+     "blocked": false
+    },
+    {
+     "call": 25,
+     "round": 4,
+     "valid": true,
+     "obj": 0.4225,
+     "hash": "a2c4d1a391b2",
+     "blocked": false
+    },
+    {
+     "call": 26,
+     "round": 4,
+     "valid": true,
+     "obj": 0.53,
+     "hash": "fa260ac56487",
+     "blocked": false
+    },
+    {
+     "call": 27,
+     "round": 4,
+     "valid": true,
+     "obj": 0.5725,
+     "hash": "40b9fc63b920",
+     "blocked": false
+    },
+    {
+     "call": 28,
+     "round": 4,
+     "valid": true,
+     "obj": 0.4225,
+     "hash": "8ac6d720a190",
+     "blocked": false
+    },
+    {
+     "call": 29,
+     "round": 4,
+     "valid": true,
+     "obj": 0.5650000000000001,
+     "hash": "617133afa811",
+     "blocked": false
+    },
+    {
+     "call": 30,
+     "round": 4,
+     "valid": true,
+     "obj": 0.4275,
+     "hash": "3014e4e49b91",
+     "blocked": false
+    },
+    {
+     "call": 31,
+     "round": 4,
+     "valid": true,
+     "obj": 0.39416666666666667,
+     "hash": "a1024940b1a3",
+     "blocked": false
+    },
+    {
+     "call": 32,
+     "round": 4,
+     "valid": true,
+     "obj": 0.6950114123523164,
+     "hash": "30422ed61511",
+     "blocked": false
+    },
+    {
+     "call": 33,
+     "round": 5,
+     "valid": true,
+     "obj": 0.5650000000000001,
+     "hash": "db016a07a9f9",
+     "blocked": false
+    },
+    {
+     "call": 34,
+     "round": 5,
+     "valid": true,
+     "obj": 0.2225,
+     "hash": "f165437a7b98",
+     "blocked": false
+    },
+    {
+     "call": 35,
+     "round": 5,
+     "valid": true,
+     "obj": 0.3725,
+     "hash": "bbf116a3a368",
+     "blocked": false
+    },
+    {
+     "call": 36,
+     "round": 5,
+     "valid": true,
+     "obj": 0.3725,
+     "hash": "bbf116a3a368",
+     "blocked": false
+    },
+    {
+     "call": 37,
+     "round": 5,
+     "valid": true,
+     "obj": 0.22964285714285712,
+     "hash": "33a97b75f4a2",
+     "blocked": false
+    },
+    {
+     "call": 38,
+     "round": 5,
+     "valid": true,
+     "obj": 0.2225,
+     "hash": "02342fa6963f",
+     "blocked": false
+    },
+    {
+     "call": 39,
+     "round": 5,
+     "valid": true,
+     "obj": 0.4275,
+     "hash": "5f16335dbe13",
+     "blocked": false
+    },
+    {
+     "call": 40,
+     "round": 5,
+     "valid": true,
+     "obj": 0.47250000000000003,
+     "hash": "be13f4bc83c1",
+     "blocked": false
+    },
+    {
+     "call": 41,
+     "round": 6,
+     "valid": true,
+     "obj": 0.54,
+     "hash": "3bcef0a01374",
+     "blocked": false
+    },
+    {
+     "call": 42,
+     "round": 6,
+     "valid": true,
+     "obj": 0.49540563750880573,
+     "hash": "184efeeecc45",
+     "blocked": false
+    },
+    {
+     "call": 43,
+     "round": 6,
+     "valid": true,
+     "obj": 0.6771564599401604,
+     "hash": "cb0dcc14b846",
+     "blocked": false
+    },
+    {
+     "call": 44,
+     "round": 6,
+     "valid": true,
+     "obj": 0.3275,
+     "hash": "8a1ef782901c",
+     "blocked": false
+    },
+    {
+     "call": 45,
+     "round": 6,
+     "valid": true,
+     "obj": 0.54,
+     "hash": "6eb7408d99c0",
+     "blocked": false
+    },
+    {
+     "call": 46,
+     "round": 6,
+     "valid": true,
+     "obj": 0.5725,
+     "hash": "cb604dbbd4cb",
+     "blocked": false
+    },
+    {
+     "call": 47,
+     "round": 6,
+     "valid": true,
+     "obj": 0.5725,
+     "hash": "10455b2aa650",
+     "blocked": false
+    },
+    {
+     "call": 48,
+     "round": 6,
+     "valid": true,
+     "obj": 0.3725,
+     "hash": "c080e90022d6",
+     "blocked": false
+    },
+    {
+     "call": 49,
+     "round": 7,
+     "valid": true,
+     "obj": 0.4225,
+     "hash": "272210e6221a",
+     "blocked": false
+    },
+    {
+     "call": 50,
+     "round": 7,
+     "valid": true,
+     "obj": 0.5424071351032203,
+     "hash": "d9b7b3400eac",
+     "blocked": false
+    },
+    {
+     "call": 51,
+     "round": 7,
+     "valid": true,
+     "obj": 0.5725,
+     "hash": "40b9fc63b920",
+     "blocked": false
+    },
+    {
+     "call": 52,
+     "round": 7,
+     "valid": true,
+     "obj": 0.5725,
+     "hash": "1b8c7fb43626",
+     "blocked": false
+    },
+    {
+     "call": 53,
+     "round": 7,
+     "valid": true,
+     "obj": 0.49540563750880573,
+     "hash": "26c5e77e0591",
+     "blocked": false
+    },
+    {
+     "call": 54,
+     "round": 7,
+     "valid": true,
+     "obj": 0.5275,
+     "hash": "35d23dd226e8",
+     "blocked": false
+    },
+    {
+     "call": 55,
+     "round": 7,
+     "valid": true,
+     "obj": 0.22964285714285712,
+     "hash": "f68e66073efd",
+     "blocked": false
+    },
+    {
+     "call": 56,
+     "round": 7,
+     "valid": true,
+     "obj": 0.4275,
+     "hash": "87a21eb687c8",
+     "blocked": false
+    },
+    {
+     "call": 57,
+     "round": 8,
+     "valid": true,
+     "obj": 0.39416666666666667,
+     "hash": "7222e9a99f41",
+     "blocked": false
+    },
+    {
+     "call": 58,
+     "round": 8,
+     "valid": true,
+     "obj": 0.4275,
+     "hash": "5da81fab6e78",
+     "blocked": false
+    },
+    {
+     "call": 59,
+     "round": 8,
+     "valid": true,
+     "obj": 0.3725,
+     "hash": "4b9c5a0a41d8",
+     "blocked": false
+    },
+    {
+     "call": 60,
+     "round": 8,
+     "valid": true,
+     "obj": 0.3725,
+     "hash": "e6445f87248f",
+     "blocked": false
+    },
+    {
+     "call": 61,
+     "round": 8,
+     "valid": true,
+     "obj": 0.3275,
+     "hash": "0cef5a86e676",
+     "blocked": false
+    },
+    {
+     "call": 62,
+     "round": 8,
+     "valid": true,
+     "obj": 0.4225,
+     "hash": "4818185ba521",
+     "blocked": false
+    },
+    {
+     "call": 63,
+     "round": 8,
+     "valid": true,
+     "obj": 0.5725,
+     "hash": "0bbea921f65b",
+     "blocked": false
+    },
+    {
+     "call": 64,
+     "round": 8,
+     "valid": true,
+     "obj": 0.3725,
+     "hash": "c366ef70919a",
+     "blocked": false
+    }
+   ],
+   "arm": "C2",
+   "task": "14",
+   "rep": 0,
+   "attempt": 1
+  },
+  "C1|15|0": {
+   "seed": 15,
+   "condition": "1",
+   "calls": 64,
+   "rounds_used": 8,
+   "success": false,
+   "success_round": null,
+   "champion_obj": 0.6829580610259025,
+   "n_candidates": 64,
+   "n_valid": 64,
+   "dup_rate": 0.5312,
+   "unique_sigs": 30,
+   "wrong_blocks": 0,
+   "rounds": [
+    {
+     "round": 1,
+     "key_sig": "noChampion",
+     "phase": "early",
+     "adopted": true,
+     "champion_obj": 0.6829580610259025,
+     "round_blocked": false
+    },
+    {
+     "round": 2,
+     "key_sig": "3d89695b52b2",
+     "phase": "early",
+     "adopted": false,
+     "champion_obj": 0.6829580610259025,
+     "round_blocked": false
+    },
+    {
+     "round": 3,
+     "key_sig": "3d89695b52b2",
+     "phase": "early",
+     "adopted": false,
+     "champion_obj": 0.6829580610259025,
+     "round_blocked": false
+    },
+    {
+     "round": 4,
+     "key_sig": "3d89695b52b2",
+     "phase": "mid",
+     "adopted": false,
+     "champion_obj": 0.6829580610259025,
+     "round_blocked": false
+    },
+    {
+     "round": 5,
+     "key_sig": "3d89695b52b2",
+     "phase": "mid",
+     "adopted": false,
+     "champion_obj": 0.6829580610259025,
+     "round_blocked": false
+    },
+    {
+     "round": 6,
+     "key_sig": "3d89695b52b2",
+     "phase": "mid",
+     "adopted": false,
+     "champion_obj": 0.6829580610259025,
+     "round_blocked": false
+    },
+    {
+     "round": 7,
+     "key_sig": "3d89695b52b2",
+     "phase": "late",
+     "adopted": false,
+     "champion_obj": 0.6829580610259025,
+     "round_blocked": false
+    },
+    {
+     "round": 8,
+     "key_sig": "3d89695b52b2",
+     "phase": "late",
+     "adopted": false,
+     "champion_obj": 0.6829580610259025,
+     "round_blocked": false
+    }
+   ],
+   "candidates": [
+    {
+     "call": 1,
+     "round": 1,
+     "valid": true,
+     "obj": 0.6472923594096213,
+     "hash": "8c9f0ffa70eb",
+     "blocked": false
+    },
+    {
+     "call": 2,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5341255839083539,
+     "hash": "460e7a292a14",
+     "blocked": false
+    },
+    {
+     "call": 3,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5504040876588736,
+     "hash": "c5ccf4a54ae0",
+     "blocked": false
+    },
+    {
+     "call": 4,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5358647143431364,
+     "hash": "dda7932ce36f",
+     "blocked": false
+    },
+    {
+     "call": 5,
+     "round": 1,
+     "valid": true,
+     "obj": 0.6829580610259025,
+     "hash": "3d89695b52b2",
+     "blocked": false
+    },
+    {
+     "call": 6,
+     "round": 1,
+     "valid": true,
+     "obj": 0.6828425019284166,
+     "hash": "641e19d26cdf",
+     "blocked": false
+    },
+    {
+     "call": 7,
+     "round": 1,
+     "valid": true,
+     "obj": 0.6490513013464532,
+     "hash": "43d955dfe833",
+     "blocked": false
+    },
+    {
+     "call": 8,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5132142857142857,
+     "hash": "ed3fe9d1745b",
+     "blocked": false
+    },
+    {
+     "call": 9,
+     "round": 2,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "663b6eb38599",
+     "blocked": false
+    },
+    {
+     "call": 10,
+     "round": 2,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "293ee6eca9f7",
+     "blocked": false
+    },
+    {
+     "call": 11,
+     "round": 2,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "d9ba655b81c0",
+     "blocked": false
+    },
+    {
+     "call": 12,
+     "round": 2,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "7b3bdb58bb22",
+     "blocked": false
+    },
+    {
+     "call": 13,
+     "round": 2,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "293ee6eca9f7",
+     "blocked": false
+    },
+    {
+     "call": 14,
+     "round": 2,
+     "valid": true,
+     "obj": 0.2225,
+     "hash": "c937045c1c7d",
+     "blocked": false
+    },
+    {
+     "call": 15,
+     "round": 2,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "97e3d5193283",
+     "blocked": false
+    },
+    {
+     "call": 16,
+     "round": 2,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "c65bc65b5fd6",
+     "blocked": false
+    },
+    {
+     "call": 17,
+     "round": 3,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "97e3d5193283",
+     "blocked": false
+    },
+    {
+     "call": 18,
+     "round": 3,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "8d8d54c9ac2a",
+     "blocked": false
+    },
+    {
+     "call": 19,
+     "round": 3,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "e87ed2243992",
+     "blocked": false
+    },
+    {
+     "call": 20,
+     "round": 3,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "293ee6eca9f7",
+     "blocked": false
+    },
+    {
+     "call": 21,
+     "round": 3,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "97e3d5193283",
+     "blocked": false
+    },
+    {
+     "call": 22,
+     "round": 3,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "1a52128d5e81",
+     "blocked": false
+    },
+    {
+     "call": 23,
+     "round": 3,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "2fdeaee66df8",
+     "blocked": false
+    },
+    {
+     "call": 24,
+     "round": 3,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "293ee6eca9f7",
+     "blocked": false
+    },
+    {
+     "call": 25,
+     "round": 4,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "8d8d54c9ac2a",
+     "blocked": false
+    },
+    {
+     "call": 26,
+     "round": 4,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "74446c496564",
+     "blocked": false
+    },
+    {
+     "call": 27,
+     "round": 4,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "8d8d54c9ac2a",
+     "blocked": false
+    },
+    {
+     "call": 28,
+     "round": 4,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "de5560f3abfd",
+     "blocked": false
+    },
+    {
+     "call": 29,
+     "round": 4,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "97e3d5193283",
+     "blocked": false
+    },
+    {
+     "call": 30,
+     "round": 4,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "b6409fc0f0be",
+     "blocked": false
+    },
+    {
+     "call": 31,
+     "round": 4,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "e87ed2243992",
+     "blocked": false
+    },
+    {
+     "call": 32,
+     "round": 4,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "de5560f3abfd",
+     "blocked": false
+    },
+    {
+     "call": 33,
+     "round": 5,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "6d936991dfaf",
+     "blocked": false
+    },
+    {
+     "call": 34,
+     "round": 5,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "97e3d5193283",
+     "blocked": false
+    },
+    {
+     "call": 35,
+     "round": 5,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "de5560f3abfd",
+     "blocked": false
+    },
+    {
+     "call": 36,
+     "round": 5,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "8d8d54c9ac2a",
+     "blocked": false
+    },
+    {
+     "call": 37,
+     "round": 5,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "6ae7ef3e2111",
+     "blocked": false
+    },
+    {
+     "call": 38,
+     "round": 5,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "8d8d54c9ac2a",
+     "blocked": false
+    },
+    {
+     "call": 39,
+     "round": 5,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "de5560f3abfd",
+     "blocked": false
+    },
+    {
+     "call": 40,
+     "round": 5,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "6ae7ef3e2111",
+     "blocked": false
+    },
+    {
+     "call": 41,
+     "round": 6,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "97e3d5193283",
+     "blocked": false
+    },
+    {
+     "call": 42,
+     "round": 6,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "6ae7ef3e2111",
+     "blocked": false
+    },
+    {
+     "call": 43,
+     "round": 6,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "97e3d5193283",
+     "blocked": false
+    },
+    {
+     "call": 44,
+     "round": 6,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "97e3d5193283",
+     "blocked": false
+    },
+    {
+     "call": 45,
+     "round": 6,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "8728c0bed22f",
+     "blocked": false
+    },
+    {
+     "call": 46,
+     "round": 6,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "97e3d5193283",
+     "blocked": false
+    },
+    {
+     "call": 47,
+     "round": 6,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "97e3d5193283",
+     "blocked": false
+    },
+    {
+     "call": 48,
+     "round": 6,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "d9ba655b81c0",
+     "blocked": false
+    },
+    {
+     "call": 49,
+     "round": 7,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "97e3d5193283",
+     "blocked": false
+    },
+    {
+     "call": 50,
+     "round": 7,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "6ae7ef3e2111",
+     "blocked": false
+    },
+    {
+     "call": 51,
+     "round": 7,
+     "valid": true,
+     "obj": 0.5288608500731241,
+     "hash": "ce67f1515057",
+     "blocked": false
+    },
+    {
+     "call": 52,
+     "round": 7,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "1b81e524db7d",
+     "blocked": false
+    },
+    {
+     "call": 53,
+     "round": 7,
+     "valid": true,
+     "obj": 0.41607142857142854,
+     "hash": "5b8221c8d34a",
+     "blocked": false
+    },
+    {
+     "call": 54,
+     "round": 7,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "6ae7ef3e2111",
+     "blocked": false
+    },
+    {
+     "call": 55,
+     "round": 7,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "e87ed2243992",
+     "blocked": false
+    },
+    {
+     "call": 56,
+     "round": 7,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "c65bc65b5fd6",
+     "blocked": false
+    },
+    {
+     "call": 57,
+     "round": 8,
+     "valid": true,
+     "obj": 0.5232142857142857,
+     "hash": "79780f9d6386",
+     "blocked": false
+    },
+    {
+     "call": 58,
+     "round": 8,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "de5560f3abfd",
+     "blocked": false
+    },
+    {
+     "call": 59,
+     "round": 8,
+     "valid": true,
+     "obj": 0.3325,
+     "hash": "152b744a519e",
+     "blocked": false
+    },
+    {
+     "call": 60,
+     "round": 8,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "c65bc65b5fd6",
+     "blocked": false
+    },
+    {
+     "call": 61,
+     "round": 8,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "293ee6eca9f7",
+     "blocked": false
+    },
+    {
+     "call": 62,
+     "round": 8,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "97e3d5193283",
+     "blocked": false
+    },
+    {
+     "call": 63,
+     "round": 8,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "6ae7ef3e2111",
+     "blocked": false
+    },
+    {
+     "call": 64,
+     "round": 8,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "e87ed2243992",
+     "blocked": false
+    }
+   ],
+   "arm": "C1",
+   "task": "15",
+   "rep": 0,
+   "attempt": 1
+  },
+  "C2|15|0": {
+   "seed": 15,
+   "condition": "2",
+   "calls": 8,
+   "rounds_used": 1,
+   "success": true,
+   "success_round": 1,
+   "champion_obj": 0.7914587442807559,
+   "n_candidates": 8,
+   "n_valid": 8,
+   "dup_rate": 0.0,
+   "unique_sigs": 8,
+   "wrong_blocks": 0,
+   "rounds": [
+    {
+     "round": 1,
+     "key_sig": "noChampion",
+     "phase": "early",
+     "adopted": true,
+     "champion_obj": 0.7914587442807559,
+     "round_blocked": false
+    }
+   ],
+   "candidates": [
+    {
+     "call": 1,
+     "round": 1,
+     "valid": true,
+     "obj": 0.708789988115764,
+     "hash": "69f5efcbf2fd",
+     "blocked": false
+    },
+    {
+     "call": 2,
+     "round": 1,
+     "valid": true,
+     "obj": 0.756094142988054,
+     "hash": "c60976bfe8e4",
+     "blocked": false
+    },
+    {
+     "call": 3,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7914587442807559,
+     "hash": "7f4fd5ee8224",
+     "blocked": false
+    },
+    {
+     "call": 4,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7081030574022839,
+     "hash": "55a6c88e0f6d",
+     "blocked": false
+    },
+    {
+     "call": 5,
+     "round": 1,
+     "valid": true,
+     "obj": 0.4875,
+     "hash": "65d27d340f97",
+     "blocked": false
+    },
+    {
+     "call": 6,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5341255839083539,
+     "hash": "f293266fc1f7",
+     "blocked": false
+    },
+    {
+     "call": 7,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5908681970107565,
+     "hash": "3340582ebbb1",
+     "blocked": false
+    },
+    {
+     "call": 8,
+     "round": 1,
+     "valid": true,
+     "obj": 0.6866388744066565,
+     "hash": "acda9500d9d9",
+     "blocked": false
+    }
+   ],
+   "arm": "C2",
+   "task": "15",
+   "rep": 0,
+   "attempt": 1
+  },
+  "C1|16|0": {
+   "seed": 16,
+   "condition": "1",
+   "calls": 64,
+   "rounds_used": 8,
+   "success": false,
+   "success_round": null,
+   "champion_obj": 0.7724753266865019,
+   "n_candidates": 64,
+   "n_valid": 64,
+   "dup_rate": 0.0,
+   "unique_sigs": 64,
+   "wrong_blocks": 0,
+   "rounds": [
+    {
+     "round": 1,
+     "key_sig": "noChampion",
+     "phase": "early",
+     "adopted": true,
+     "champion_obj": 0.7724753266865019,
+     "round_blocked": false
+    },
+    {
+     "round": 2,
+     "key_sig": "39a503c47a61",
+     "phase": "early",
+     "adopted": false,
+     "champion_obj": 0.7724753266865019,
+     "round_blocked": false
+    },
+    {
+     "round": 3,
+     "key_sig": "39a503c47a61",
+     "phase": "early",
+     "adopted": false,
+     "champion_obj": 0.7724753266865019,
+     "round_blocked": false
+    },
+    {
+     "round": 4,
+     "key_sig": "39a503c47a61",
+     "phase": "mid",
+     "adopted": false,
+     "champion_obj": 0.7724753266865019,
+     "round_blocked": false
+    },
+    {
+     "round": 5,
+     "key_sig": "39a503c47a61",
+     "phase": "mid",
+     "adopted": false,
+     "champion_obj": 0.7724753266865019,
+     "round_blocked": false
+    },
+    {
+     "round": 6,
+     "key_sig": "39a503c47a61",
+     "phase": "mid",
+     "adopted": false,
+     "champion_obj": 0.7724753266865019,
+     "round_blocked": false
+    },
+    {
+     "round": 7,
+     "key_sig": "39a503c47a61",
+     "phase": "late",
+     "adopted": false,
+     "champion_obj": 0.7724753266865019,
+     "round_blocked": false
+    },
+    {
+     "round": 8,
+     "key_sig": "39a503c47a61",
+     "phase": "late",
+     "adopted": false,
+     "champion_obj": 0.7724753266865019,
+     "round_blocked": false
+    }
+   ],
+   "candidates": [
+    {
+     "call": 1,
+     "round": 1,
+     "valid": true,
+     "obj": 0.6184415299627716,
+     "hash": "5677ab4d6d0c",
+     "blocked": false
+    },
+    {
+     "call": 2,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5375,
+     "hash": "3d60f7ee2d79",
+     "blocked": false
+    },
+    {
+     "call": 3,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7724753266865019,
+     "hash": "39a503c47a61",
+     "blocked": false
+    },
+    {
+     "call": 4,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5375,
+     "hash": "9b80652b0702",
+     "blocked": false
+    },
+    {
+     "call": 5,
+     "round": 1,
+     "valid": true,
+     "obj": 0.0,
+     "hash": "2875b1b14bac",
+     "blocked": false
+    },
+    {
+     "call": 6,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5375,
+     "hash": "8d3f57ac1d39",
+     "blocked": false
+    },
+    {
+     "call": 7,
+     "round": 1,
+     "valid": true,
+     "obj": 0.6641180243891933,
+     "hash": "cabe78fb10e1",
+     "blocked": false
+    },
+    {
+     "call": 8,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7265034924131322,
+     "hash": "30f47751fc37",
+     "blocked": false
+    },
+    {
+     "call": 9,
+     "round": 2,
+     "valid": true,
+     "obj": 0.3275,
+     "hash": "4fb315b37526",
+     "blocked": false
+    },
+    {
+     "call": 10,
+     "round": 2,
+     "valid": true,
+     "obj": 0.3725,
+     "hash": "2a42928c3dd9",
+     "blocked": false
+    },
+    {
+     "call": 11,
+     "round": 2,
+     "valid": true,
+     "obj": 0.3725,
+     "hash": "18ee3fd0b882",
+     "blocked": false
+    },
+    {
+     "call": 12,
+     "round": 2,
+     "valid": true,
+     "obj": 0.47250000000000003,
+     "hash": "d79b34c07d28",
+     "blocked": false
+    },
+    {
+     "call": 13,
+     "round": 2,
+     "valid": true,
+     "obj": 0.3275,
+     "hash": "bc1a576d1765",
+     "blocked": false
+    },
+    {
+     "call": 14,
+     "round": 2,
+     "valid": true,
+     "obj": 0.39416666666666667,
+     "hash": "eae9621e3b27",
+     "blocked": false
+    },
+    {
+     "call": 15,
+     "round": 2,
+     "valid": true,
+     "obj": 0.47250000000000003,
+     "hash": "422d721a5408",
+     "blocked": false
+    },
+    {
+     "call": 16,
+     "round": 2,
+     "valid": true,
+     "obj": 0.4325,
+     "hash": "24468534ccee",
+     "blocked": false
+    },
+    {
+     "call": 17,
+     "round": 3,
+     "valid": true,
+     "obj": 0.3725,
+     "hash": "756780cc0179",
+     "blocked": false
+    },
+    {
+     "call": 18,
+     "round": 3,
+     "valid": true,
+     "obj": 0.4275,
+     "hash": "a78194c37568",
+     "blocked": false
+    },
+    {
+     "call": 19,
+     "round": 3,
+     "valid": true,
+     "obj": 0.39416666666666667,
+     "hash": "c89bb6e7d0f4",
+     "blocked": false
+    },
+    {
+     "call": 20,
+     "round": 3,
+     "valid": true,
+     "obj": 0.3725,
+     "hash": "8789f67145d8",
+     "blocked": false
+    },
+    {
+     "call": 21,
+     "round": 3,
+     "valid": true,
+     "obj": 0.3725,
+     "hash": "adad942faeb4",
+     "blocked": false
+    },
+    {
+     "call": 22,
+     "round": 3,
+     "valid": true,
+     "obj": 0.0,
+     "hash": "351699b96519",
+     "blocked": false
+    },
+    {
+     "call": 23,
+     "round": 3,
+     "valid": true,
+     "obj": 0.4275,
+     "hash": "715ecb7e55a7",
+     "blocked": false
+    },
+    {
+     "call": 24,
+     "round": 3,
+     "valid": true,
+     "obj": 0.3725,
+     "hash": "40c7500547fd",
+     "blocked": false
+    },
+    {
+     "call": 25,
+     "round": 4,
+     "valid": true,
+     "obj": 0.4275,
+     "hash": "880ba77571bc",
+     "blocked": false
+    },
+    {
+     "call": 26,
+     "round": 4,
+     "valid": true,
+     "obj": 0.4275,
+     "hash": "970c10af9e9c",
+     "blocked": false
+    },
+    {
+     "call": 27,
+     "round": 4,
+     "valid": true,
+     "obj": 0.4225,
+     "hash": "d6b4b0770213",
+     "blocked": false
+    },
+    {
+     "call": 28,
+     "round": 4,
+     "valid": true,
+     "obj": 0.39416666666666667,
+     "hash": "1a09a8574c67",
+     "blocked": false
+    },
+    {
+     "call": 29,
+     "round": 4,
+     "valid": true,
+     "obj": 0.3725,
+     "hash": "9bb1f697549f",
+     "blocked": false
+    },
+    {
+     "call": 30,
+     "round": 4,
+     "valid": true,
+     "obj": 0.47250000000000003,
+     "hash": "45c697ab92fa",
+     "blocked": false
+    },
+    {
+     "call": 31,
+     "round": 4,
+     "valid": true,
+     "obj": 0.47250000000000003,
+     "hash": "8082406691f5",
+     "blocked": false
+    },
+    {
+     "call": 32,
+     "round": 4,
+     "valid": true,
+     "obj": 0.3725,
+     "hash": "86e239200a44",
+     "blocked": false
+    },
+    {
+     "call": 33,
+     "round": 5,
+     "valid": true,
+     "obj": 0.39416666666666667,
+     "hash": "07b03ac143d6",
+     "blocked": false
+    },
+    {
+     "call": 34,
+     "round": 5,
+     "valid": true,
+     "obj": 0.3725,
+     "hash": "e3482c2908e8",
+     "blocked": false
+    },
+    {
+     "call": 35,
+     "round": 5,
+     "valid": true,
+     "obj": 0.4225,
+     "hash": "2bb8f1ac8a5d",
+     "blocked": false
+    },
+    {
+     "call": 36,
+     "round": 5,
+     "valid": true,
+     "obj": 0.3275,
+     "hash": "ecaab9564fb3",
+     "blocked": false
+    },
+    {
+     "call": 37,
+     "round": 5,
+     "valid": true,
+     "obj": 0.4325,
+     "hash": "ff979cbc47dd",
+     "blocked": false
+    },
+    {
+     "call": 38,
+     "round": 5,
+     "valid": true,
+     "obj": 0.2225,
+     "hash": "c8150bf40742",
+     "blocked": false
+    },
+    {
+     "call": 39,
+     "round": 5,
+     "valid": true,
+     "obj": 0.3725,
+     "hash": "d8fdf53b0961",
+     "blocked": false
+    },
+    {
+     "call": 40,
+     "round": 5,
+     "valid": true,
+     "obj": 0.47250000000000003,
+     "hash": "fbb07391d761",
+     "blocked": false
+    },
+    {
+     "call": 41,
+     "round": 6,
+     "valid": true,
+     "obj": 0.4225,
+     "hash": "10fa504e86c2",
+     "blocked": false
+    },
+    {
+     "call": 42,
+     "round": 6,
+     "valid": true,
+     "obj": 0.4225,
+     "hash": "649ae1c16904",
+     "blocked": false
+    },
+    {
+     "call": 43,
+     "round": 6,
+     "valid": true,
+     "obj": 0.4225,
+     "hash": "11321ca094ac",
+     "blocked": false
+    },
+    {
+     "call": 44,
+     "round": 6,
+     "valid": true,
+     "obj": 0.3725,
+     "hash": "e4e829f0b49e",
+     "blocked": false
+    },
+    {
+     "call": 45,
+     "round": 6,
+     "valid": true,
+     "obj": 0.4225,
+     "hash": "00314fe203a4",
+     "blocked": false
+    },
+    {
+     "call": 46,
+     "round": 6,
+     "valid": true,
+     "obj": 0.3275,
+     "hash": "02e897733558",
+     "blocked": false
+    },
+    {
+     "call": 47,
+     "round": 6,
+     "valid": true,
+     "obj": 0.4225,
+     "hash": "f62ee24e9d6d",
+     "blocked": false
+    },
+    {
+     "call": 48,
+     "round": 6,
+     "valid": true,
+     "obj": 0.3275,
+     "hash": "64e9114681eb",
+     "blocked": false
+    },
+    {
+     "call": 49,
+     "round": 7,
+     "valid": true,
+     "obj": 0.3725,
+     "hash": "7893cabc5f3a",
+     "blocked": false
+    },
+    {
+     "call": 50,
+     "round": 7,
+     "valid": true,
+     "obj": 0.47250000000000003,
+     "hash": "7f3f55acf7ee",
+     "blocked": false
+    },
+    {
+     "call": 51,
+     "round": 7,
+     "valid": true,
+     "obj": 0.3725,
+     "hash": "4fd4ffd40cb4",
+     "blocked": false
+    },
+    {
+     "call": 52,
+     "round": 7,
+     "valid": true,
+     "obj": 0.53,
+     "hash": "769205c33fdf",
+     "blocked": false
+    },
+    {
+     "call": 53,
+     "round": 7,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "e5ba28d80080",
+     "blocked": false
+    },
+    {
+     "call": 54,
+     "round": 7,
+     "valid": true,
+     "obj": 0.4275,
+     "hash": "08921588560f",
+     "blocked": false
+    },
+    {
+     "call": 55,
+     "round": 7,
+     "valid": true,
+     "obj": 0.3275,
+     "hash": "ab51a0b4c880",
+     "blocked": false
+    },
+    {
+     "call": 56,
+     "round": 7,
+     "valid": true,
+     "obj": 0.47250000000000003,
+     "hash": "3cafa015a15c",
+     "blocked": false
+    },
+    {
+     "call": 57,
+     "round": 8,
+     "valid": true,
+     "obj": 0.4275,
+     "hash": "10bddd0af9b7",
+     "blocked": false
+    },
+    {
+     "call": 58,
+     "round": 8,
+     "valid": true,
+     "obj": 0.5586488899460054,
+     "hash": "54d499baee81",
+     "blocked": false
+    },
+    {
+     "call": 59,
+     "round": 8,
+     "valid": true,
+     "obj": 0.4225,
+     "hash": "f2e74e6b3c47",
+     "blocked": false
+    },
+    {
+     "call": 60,
+     "round": 8,
+     "valid": true,
+     "obj": 0.6985425085969379,
+     "hash": "fcffa0ea07aa",
+     "blocked": false
+    },
+    {
+     "call": 61,
+     "round": 8,
+     "valid": true,
+     "obj": 0.5725,
+     "hash": "f629d5ba9799",
+     "blocked": false
+    },
+    {
+     "call": 62,
+     "round": 8,
+     "valid": true,
+     "obj": 0.4275,
+     "hash": "bb7ec7803672",
+     "blocked": false
+    },
+    {
+     "call": 63,
+     "round": 8,
+     "valid": true,
+     "obj": 0.4225,
+     "hash": "13046a344eed",
+     "blocked": false
+    },
+    {
+     "call": 64,
+     "round": 8,
+     "valid": true,
+     "obj": 0.4225,
+     "hash": "fd9048e19768",
+     "blocked": false
+    }
+   ],
+   "arm": "C1",
+   "task": "16",
+   "rep": 0,
+   "attempt": 1
+  },
+  "C2|16|0": {
+   "seed": 16,
+   "condition": "2",
+   "calls": 8,
+   "rounds_used": 1,
+   "success": true,
+   "success_round": 1,
+   "champion_obj": 0.7822060236181299,
+   "n_candidates": 8,
+   "n_valid": 8,
+   "dup_rate": 0.0,
+   "unique_sigs": 8,
+   "wrong_blocks": 0,
+   "rounds": [
+    {
+     "round": 1,
+     "key_sig": "noChampion",
+     "phase": "early",
+     "adopted": true,
+     "champion_obj": 0.7822060236181299,
+     "round_blocked": false
+    }
+   ],
+   "candidates": [
+    {
+     "call": 1,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5843252992712112,
+     "hash": "c5ccf4a54ae0",
+     "blocked": false
+    },
+    {
+     "call": 2,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7274535384450627,
+     "hash": "da94fe2ddcea",
+     "blocked": false
+    },
+    {
+     "call": 3,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7822060236181299,
+     "hash": "3a5fec65debf",
+     "blocked": false
+    },
+    {
+     "call": 4,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7156293451931163,
+     "hash": "780611821efa",
+     "blocked": false
+    },
+    {
+     "call": 5,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7265034924131322,
+     "hash": "71b23266dff4",
+     "blocked": false
+    },
+    {
+     "call": 6,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7203417691230332,
+     "hash": "e94f290fa511",
+     "blocked": false
+    },
+    {
+     "call": 7,
+     "round": 1,
+     "valid": true,
+     "obj": 0.0,
+     "hash": "f4c04fd86dda",
+     "blocked": false
+    },
+    {
+     "call": 8,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5375,
+     "hash": "86526e64ff27",
+     "blocked": false
+    }
+   ],
+   "arm": "C2",
+   "task": "16",
+   "rep": 0,
+   "attempt": 1
+  },
+  "C1|17|0": {
+   "seed": 17,
+   "condition": "1",
+   "calls": 8,
+   "rounds_used": 1,
+   "success": true,
+   "success_round": 1,
+   "champion_obj": 0.8124467151018778,
+   "n_candidates": 8,
+   "n_valid": 8,
+   "dup_rate": 0.0,
+   "unique_sigs": 8,
+   "wrong_blocks": 0,
+   "rounds": [
+    {
+     "round": 1,
+     "key_sig": "noChampion",
+     "phase": "early",
+     "adopted": true,
+     "champion_obj": 0.8124467151018778,
+     "round_blocked": false
+    }
+   ],
+   "candidates": [
+    {
+     "call": 1,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7066980787974175,
+     "hash": "641e19d26cdf",
+     "blocked": false
+    },
+    {
+     "call": 2,
+     "round": 1,
+     "valid": true,
+     "obj": 0.8124467151018778,
+     "hash": "39a503c47a61",
+     "blocked": false
+    },
+    {
+     "call": 3,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5410931074198734,
+     "hash": "080d393a8dcd",
+     "blocked": false
+    },
+    {
+     "call": 4,
+     "round": 1,
+     "valid": true,
+     "obj": 0.705754559491852,
+     "hash": "e6f8e992c6ba",
+     "blocked": false
+    },
+    {
+     "call": 5,
+     "round": 1,
+     "valid": true,
+     "obj": 0.0,
+     "hash": "ab54efa0a50c",
+     "blocked": false
+    },
+    {
+     "call": 6,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7187728167153155,
+     "hash": "9eb91494e0b3",
+     "blocked": false
+    },
+    {
+     "call": 7,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7066980787974175,
+     "hash": "71b23266dff4",
+     "blocked": false
+    },
+    {
+     "call": 8,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7000508060763886,
+     "hash": "968f2f44caed",
+     "blocked": false
+    }
+   ],
+   "arm": "C1",
+   "task": "17",
+   "rep": 0,
+   "attempt": 1
+  },
+  "C2|17|0": {
+   "seed": 17,
+   "condition": "2",
+   "calls": 8,
+   "rounds_used": 1,
+   "success": true,
+   "success_round": 1,
+   "champion_obj": 0.823760165837043,
+   "n_candidates": 8,
+   "n_valid": 8,
+   "dup_rate": 0.0,
+   "unique_sigs": 8,
+   "wrong_blocks": 0,
+   "rounds": [
+    {
+     "round": 1,
+     "key_sig": "noChampion",
+     "phase": "early",
+     "adopted": true,
+     "champion_obj": 0.823760165837043,
+     "round_blocked": false
+    }
+   ],
+   "candidates": [
+    {
+     "call": 1,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7199364633251261,
+     "hash": "b824ab98838c",
+     "blocked": false
+    },
+    {
+     "call": 2,
+     "round": 1,
+     "valid": true,
+     "obj": 0.8117025667078368,
+     "hash": "3dc024a03823",
+     "blocked": false
+    },
+    {
+     "call": 3,
+     "round": 1,
+     "valid": true,
+     "obj": 0.823760165837043,
+     "hash": "ba82fd8f74b8",
+     "blocked": false
+    },
+    {
+     "call": 4,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7742178668687957,
+     "hash": "6f345ac8234e",
+     "blocked": false
+    },
+    {
+     "call": 5,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7808946305407105,
+     "hash": "aab5fb506427",
+     "blocked": false
+    },
+    {
+     "call": 6,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5259274056179933,
+     "hash": "aab64f3b2943",
+     "blocked": false
+    },
+    {
+     "call": 7,
+     "round": 1,
+     "valid": true,
+     "obj": 0.4875,
+     "hash": "c2efc5ecc441",
+     "blocked": false
+    },
+    {
+     "call": 8,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7530888341231019,
+     "hash": "0d3dd4ecd9cc",
+     "blocked": false
+    }
+   ],
+   "arm": "C2",
+   "task": "17",
+   "rep": 0,
+   "attempt": 1
+  },
+  "C1|18|0": {
+   "seed": 18,
+   "condition": "1",
+   "calls": 8,
+   "rounds_used": 1,
+   "success": true,
+   "success_round": 1,
+   "champion_obj": 0.8605109677932034,
+   "n_candidates": 8,
+   "n_valid": 8,
+   "dup_rate": 0.0,
+   "unique_sigs": 8,
+   "wrong_blocks": 0,
+   "rounds": [
+    {
+     "round": 1,
+     "key_sig": "noChampion",
+     "phase": "early",
+     "adopted": true,
+     "champion_obj": 0.8605109677932034,
+     "round_blocked": false
+    }
+   ],
+   "candidates": [
+    {
+     "call": 1,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5375,
+     "hash": "9af8531a2034",
+     "blocked": false
+    },
+    {
+     "call": 2,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5223557012908494,
+     "hash": "460e7a292a14",
+     "blocked": false
+    },
+    {
+     "call": 3,
+     "round": 1,
+     "valid": true,
+     "obj": 0.0,
+     "hash": "32e79888d554",
+     "blocked": false
+    },
+    {
+     "call": 4,
+     "round": 1,
+     "valid": true,
+     "obj": 0.0,
+     "hash": "0e5b5454b569",
+     "blocked": false
+    },
+    {
+     "call": 5,
+     "round": 1,
+     "valid": true,
+     "obj": 0.8383510271187244,
+     "hash": "107cbb1ee1cb",
+     "blocked": false
+    },
+    {
+     "call": 6,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7401886407153577,
+     "hash": "de3cafe764c4",
+     "blocked": false
+    },
+    {
+     "call": 7,
+     "round": 1,
+     "valid": true,
+     "obj": 0.4225,
+     "hash": "ef9109561774",
+     "blocked": false
+    },
+    {
+     "call": 8,
+     "round": 1,
+     "valid": true,
+     "obj": 0.8605109677932034,
+     "hash": "dd344d099ebd",
+     "blocked": false
+    }
+   ],
+   "arm": "C1",
+   "task": "18",
+   "rep": 0,
+   "attempt": 1
+  },
+  "C2|18|0": {
+   "seed": 18,
+   "condition": "2",
+   "calls": 64,
+   "rounds_used": 8,
+   "success": false,
+   "success_round": null,
+   "champion_obj": 0.6292867086962011,
+   "n_candidates": 64,
+   "n_valid": 63,
+   "dup_rate": 0.1905,
+   "unique_sigs": 51,
+   "wrong_blocks": 0,
+   "rounds": [
+    {
+     "round": 1,
+     "key_sig": "noChampion",
+     "phase": "early",
+     "adopted": true,
+     "champion_obj": 0.6292867086962011,
+     "round_blocked": false
+    },
+    {
+     "round": 2,
+     "key_sig": "baf71af6f354",
+     "phase": "early",
+     "adopted": false,
+     "champion_obj": 0.6292867086962011,
+     "round_blocked": false
+    },
+    {
+     "round": 3,
+     "key_sig": "baf71af6f354",
+     "phase": "early",
+     "adopted": false,
+     "champion_obj": 0.6292867086962011,
+     "round_blocked": false
+    },
+    {
+     "round": 4,
+     "key_sig": "baf71af6f354",
+     "phase": "mid",
+     "adopted": false,
+     "champion_obj": 0.6292867086962011,
+     "round_blocked": false
+    },
+    {
+     "round": 5,
+     "key_sig": "baf71af6f354",
+     "phase": "mid",
+     "adopted": false,
+     "champion_obj": 0.6292867086962011,
+     "round_blocked": false
+    },
+    {
+     "round": 6,
+     "key_sig": "baf71af6f354",
+     "phase": "mid",
+     "adopted": false,
+     "champion_obj": 0.6292867086962011,
+     "round_blocked": false
+    },
+    {
+     "round": 7,
+     "key_sig": "baf71af6f354",
+     "phase": "late",
+     "adopted": false,
+     "champion_obj": 0.6292867086962011,
+     "round_blocked": false
+    },
+    {
+     "round": 8,
+     "key_sig": "baf71af6f354",
+     "phase": "late",
+     "adopted": false,
+     "champion_obj": 0.6292867086962011,
+     "round_blocked": false
+    }
+   ],
+   "candidates": [
+    {
+     "call": 1,
+     "round": 1,
+     "valid": true,
+     "obj": 0.6292867086962011,
+     "hash": "baf71af6f354",
+     "blocked": false
+    },
+    {
+     "call": 2,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5404707201193476,
+     "hash": "24b3ad8730b0",
+     "blocked": false
+    },
+    {
+     "call": 3,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5602124313179254,
+     "hash": "2231254ea1c9",
+     "blocked": false
+    },
+    {
+     "call": 4,
+     "round": 1,
+     "valid": true,
+     "obj": 0.0,
+     "hash": "b28a91c5e3e4",
+     "blocked": false
+    },
+    {
+     "call": 5,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5335157765440344,
+     "hash": "56757867e5b6",
+     "blocked": false
+    },
+    {
+     "call": 6,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5243387041237105,
+     "hash": "aab64f3b2943",
+     "blocked": false
+    },
+    {
+     "call": 7,
+     "round": 1,
+     "valid": true,
+     "obj": 0.0,
+     "hash": "c2a592470043",
+     "blocked": false
+    },
+    {
+     "call": 8,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5243387041237105,
+     "hash": "aab64f3b2943",
+     "blocked": false
+    },
+    {
+     "call": 9,
+     "round": 2,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "6d4ebfdff41c",
+     "blocked": false
+    },
+    {
+     "call": 10,
+     "round": 2,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "c4c4d965b96e",
+     "blocked": false
+    },
+    {
+     "call": 11,
+     "round": 2,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "4476fcae547c",
+     "blocked": false
+    },
+    {
+     "call": 12,
+     "round": 2,
+     "valid": true,
+     "obj": 0.3296428571428571,
+     "hash": "38e96925ea4e",
+     "blocked": false
+    },
+    {
+     "call": 13,
+     "round": 2,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "7885e219747e",
+     "blocked": false
+    },
+    {
+     "call": 14,
+     "round": 2,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "7a913a2f3e3f",
+     "blocked": false
+    },
+    {
+     "call": 15,
+     "round": 2,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "4476fcae547c",
+     "blocked": false
+    },
+    {
+     "call": 16,
+     "round": 2,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "915d67f95f6a",
+     "blocked": false
+    },
+    {
+     "call": 17,
+     "round": 3,
+     "valid": true,
+     "obj": 0.6192471594566084,
+     "hash": "12109e10c588",
+     "blocked": false
+    },
+    {
+     "call": 18,
+     "round": 3,
+     "valid": false,
+     "obj": null,
+     "hash": null,
+     "blocked": false
+    },
+    {
+     "call": 19,
+     "round": 3,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "fa95a045fae4",
+     "blocked": false
+    },
+    {
+     "call": 20,
+     "round": 3,
+     "valid": true,
+     "obj": 0.3296428571428571,
+     "hash": "c8d238c2d82c",
+     "blocked": false
+    },
+    {
+     "call": 21,
+     "round": 3,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "676e2b8e22f6",
+     "blocked": false
+    },
+    {
+     "call": 22,
+     "round": 3,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "e565b84c1f6e",
+     "blocked": false
+    },
+    {
+     "call": 23,
+     "round": 3,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "6ae1200b0c2d",
+     "blocked": false
+    },
+    {
+     "call": 24,
+     "round": 3,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "7885e219747e",
+     "blocked": false
+    },
+    {
+     "call": 25,
+     "round": 4,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "25439a73827b",
+     "blocked": false
+    },
+    {
+     "call": 26,
+     "round": 4,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "7885e219747e",
+     "blocked": false
+    },
+    {
+     "call": 27,
+     "round": 4,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "53d3501c6780",
+     "blocked": false
+    },
+    {
+     "call": 28,
+     "round": 4,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "c81caff7db4b",
+     "blocked": false
+    },
+    {
+     "call": 29,
+     "round": 4,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "4476fcae547c",
+     "blocked": false
+    },
+    {
+     "call": 30,
+     "round": 4,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "7eb5a9d3293d",
+     "blocked": false
+    },
+    {
+     "call": 31,
+     "round": 4,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "5f843e3cc329",
+     "blocked": false
+    },
+    {
+     "call": 32,
+     "round": 4,
+     "valid": true,
+     "obj": 0.5088608500731242,
+     "hash": "7e2e7003d7c3",
+     "blocked": false
+    },
+    {
+     "call": 33,
+     "round": 5,
+     "valid": true,
+     "obj": 0.49840534522932695,
+     "hash": "a64a35588c14",
+     "blocked": false
+    },
+    {
+     "call": 34,
+     "round": 5,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "074b5dfbb62a",
+     "blocked": false
+    },
+    {
+     "call": 35,
+     "round": 5,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "4476fcae547c",
+     "blocked": false
+    },
+    {
+     "call": 36,
+     "round": 5,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "7885e219747e",
+     "blocked": false
+    },
+    {
+     "call": 37,
+     "round": 5,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "1842801287df",
+     "blocked": false
+    },
+    {
+     "call": 38,
+     "round": 5,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "5053b673f083",
+     "blocked": false
+    },
+    {
+     "call": 39,
+     "round": 5,
+     "valid": true,
+     "obj": 0.3296428571428571,
+     "hash": "8f73b6762d43",
+     "blocked": false
+    },
+    {
+     "call": 40,
+     "round": 5,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "b4561dd56fb5",
+     "blocked": false
+    },
+    {
+     "call": 41,
+     "round": 6,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "0667aeacaadc",
+     "blocked": false
+    },
+    {
+     "call": 42,
+     "round": 6,
+     "valid": true,
+     "obj": 0.3296428571428571,
+     "hash": "73cea3f1d0e9",
+     "blocked": false
+    },
+    {
+     "call": 43,
+     "round": 6,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "613eb9c79871",
+     "blocked": false
+    },
+    {
+     "call": 44,
+     "round": 6,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "27621a78b72c",
+     "blocked": false
+    },
+    {
+     "call": 45,
+     "round": 6,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "53b5a4c50603",
+     "blocked": false
+    },
+    {
+     "call": 46,
+     "round": 6,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "cc588bcc282a",
+     "blocked": false
+    },
+    {
+     "call": 47,
+     "round": 6,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "8f1f58c92336",
+     "blocked": false
+    },
+    {
+     "call": 48,
+     "round": 6,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "27621a78b72c",
+     "blocked": false
+    },
+    {
+     "call": 49,
+     "round": 7,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "535dd750a091",
+     "blocked": false
+    },
+    {
+     "call": 50,
+     "round": 7,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "4476fcae547c",
+     "blocked": false
+    },
+    {
+     "call": 51,
+     "round": 7,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "e7dc0c7959dd",
+     "blocked": false
+    },
+    {
+     "call": 52,
+     "round": 7,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "54164ab6b733",
+     "blocked": false
+    },
+    {
+     "call": 53,
+     "round": 7,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "ffbe72cb9ea9",
+     "blocked": false
+    },
+    {
+     "call": 54,
+     "round": 7,
+     "valid": true,
+     "obj": 0.3296428571428571,
+     "hash": "d6aeef194ab5",
+     "blocked": false
+    },
+    {
+     "call": 55,
+     "round": 7,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "e972cc672d45",
+     "blocked": false
+    },
+    {
+     "call": 56,
+     "round": 7,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "535dd750a091",
+     "blocked": false
+    },
+    {
+     "call": 57,
+     "round": 8,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "27621a78b72c",
+     "blocked": false
+    },
+    {
+     "call": 58,
+     "round": 8,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "9dbffb2e20f8",
+     "blocked": false
+    },
+    {
+     "call": 59,
+     "round": 8,
+     "valid": true,
+     "obj": 0.3296428571428571,
+     "hash": "9f31c7f82524",
+     "blocked": false
+    },
+    {
+     "call": 60,
+     "round": 8,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "54d415bbffab",
+     "blocked": false
+    },
+    {
+     "call": 61,
+     "round": 8,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "7885e219747e",
+     "blocked": false
+    },
+    {
+     "call": 62,
+     "round": 8,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "594bcc9ba7fc",
+     "blocked": false
+    },
+    {
+     "call": 63,
+     "round": 8,
+     "valid": true,
+     "obj": 0.3296428571428571,
+     "hash": "9b0b3dc560ed",
+     "blocked": false
+    },
+    {
+     "call": 64,
+     "round": 8,
+     "valid": true,
+     "obj": 0.3225,
+     "hash": "3de696baa9c4",
+     "blocked": false
+    }
+   ],
+   "arm": "C2",
+   "task": "18",
+   "rep": 0,
+   "attempt": 1
+  },
+  "C1|19|0": {
+   "seed": 19,
+   "condition": "1",
+   "calls": 8,
+   "rounds_used": 1,
+   "success": true,
+   "success_round": 1,
+   "champion_obj": 0.7982353825407252,
+   "n_candidates": 8,
+   "n_valid": 8,
+   "dup_rate": 0.0,
+   "unique_sigs": 8,
+   "wrong_blocks": 0,
+   "rounds": [
+    {
+     "round": 1,
+     "key_sig": "noChampion",
+     "phase": "early",
+     "adopted": true,
+     "champion_obj": 0.7982353825407252,
+     "round_blocked": false
+    }
+   ],
+   "candidates": [
+    {
+     "call": 1,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5514864269057469,
+     "hash": "12af6b13aaab",
+     "blocked": false
+    },
+    {
+     "call": 2,
+     "round": 1,
+     "valid": true,
+     "obj": 0.77730661002513,
+     "hash": "71881c6d3825",
+     "blocked": false
+    },
+    {
+     "call": 3,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7534297175078819,
+     "hash": "fdc1fcdcf8a4",
+     "blocked": false
+    },
+    {
+     "call": 4,
+     "round": 1,
+     "valid": true,
+     "obj": 0.68613804536687,
+     "hash": "f2a2fbffde55",
+     "blocked": false
+    },
+    {
+     "call": 5,
+     "round": 1,
+     "valid": true,
+     "obj": 0.33964285714285714,
+     "hash": "7a2a7915e509",
+     "blocked": false
+    },
+    {
+     "call": 6,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5305071257020462,
+     "hash": "460e7a292a14",
+     "blocked": false
+    },
+    {
+     "call": 7,
+     "round": 1,
+     "valid": true,
+     "obj": 0.6605632939120045,
+     "hash": "91516677b898",
+     "blocked": false
+    },
+    {
+     "call": 8,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7982353825407252,
+     "hash": "0bde335f88a2",
+     "blocked": false
+    }
+   ],
+   "arm": "C1",
+   "task": "19",
+   "rep": 0,
+   "attempt": 1
+  },
+  "C2|19|0": {
+   "seed": 19,
+   "condition": "2",
+   "calls": 64,
+   "rounds_used": 8,
+   "success": false,
+   "success_round": null,
+   "champion_obj": 0.7332062153007849,
+   "n_candidates": 64,
+   "n_valid": 64,
+   "dup_rate": 0.0781,
+   "unique_sigs": 59,
+   "wrong_blocks": 0,
+   "rounds": [
+    {
+     "round": 1,
+     "key_sig": "noChampion",
+     "phase": "early",
+     "adopted": true,
+     "champion_obj": 0.7332062153007849,
+     "round_blocked": false
+    },
+    {
+     "round": 2,
+     "key_sig": "0f85a6390ab6",
+     "phase": "early",
+     "adopted": false,
+     "champion_obj": 0.7332062153007849,
+     "round_blocked": false
+    },
+    {
+     "round": 3,
+     "key_sig": "0f85a6390ab6",
+     "phase": "early",
+     "adopted": false,
+     "champion_obj": 0.7332062153007849,
+     "round_blocked": false
+    },
+    {
+     "round": 4,
+     "key_sig": "0f85a6390ab6",
+     "phase": "mid",
+     "adopted": false,
+     "champion_obj": 0.7332062153007849,
+     "round_blocked": false
+    },
+    {
+     "round": 5,
+     "key_sig": "0f85a6390ab6",
+     "phase": "mid",
+     "adopted": false,
+     "champion_obj": 0.7332062153007849,
+     "round_blocked": false
+    },
+    {
+     "round": 6,
+     "key_sig": "0f85a6390ab6",
+     "phase": "mid",
+     "adopted": false,
+     "champion_obj": 0.7332062153007849,
+     "round_blocked": false
+    },
+    {
+     "round": 7,
+     "key_sig": "0f85a6390ab6",
+     "phase": "late",
+     "adopted": false,
+     "champion_obj": 0.7332062153007849,
+     "round_blocked": false
+    },
+    {
+     "round": 8,
+     "key_sig": "0f85a6390ab6",
+     "phase": "late",
+     "adopted": false,
+     "champion_obj": 0.7332062153007849,
+     "round_blocked": false
+    }
+   ],
+   "candidates": [
+    {
+     "call": 1,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5305071257020462,
+     "hash": "4d9d9b7808d4",
+     "blocked": false
+    },
+    {
+     "call": 2,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7221464909193246,
+     "hash": "8efbc6606670",
+     "blocked": false
+    },
+    {
+     "call": 3,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5305071257020462,
+     "hash": "f293266fc1f7",
+     "blocked": false
+    },
+    {
+     "call": 4,
+     "round": 1,
+     "valid": true,
+     "obj": 0.0,
+     "hash": "5ff91272da1e",
+     "blocked": false
+    },
+    {
+     "call": 5,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7332062153007849,
+     "hash": "0f85a6390ab6",
+     "blocked": false
+    },
+    {
+     "call": 6,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7131815648941174,
+     "hash": "185319d5adef",
+     "blocked": false
+    },
+    {
+     "call": 7,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5305071257020462,
+     "hash": "e36fa4db4ae8",
+     "blocked": false
+    },
+    {
+     "call": 8,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5305071257020462,
+     "hash": "460e7a292a14",
+     "blocked": false
+    },
+    {
+     "call": 9,
+     "round": 2,
+     "valid": true,
+     "obj": 0.5275,
+     "hash": "29a1f58449e8",
+     "blocked": false
+    },
+    {
+     "call": 10,
+     "round": 2,
+     "valid": true,
+     "obj": 0.4325,
+     "hash": "0c7d104c3d4d",
+     "blocked": false
+    },
+    {
+     "call": 11,
+     "round": 2,
+     "valid": true,
+     "obj": 0.5725,
+     "hash": "da948c3dae2f",
+     "blocked": false
+    },
+    {
+     "call": 12,
+     "round": 2,
+     "valid": true,
+     "obj": 0.3296428571428571,
+     "hash": "cff322cf3d23",
+     "blocked": false
+    },
+    {
+     "call": 13,
+     "round": 2,
+     "valid": true,
+     "obj": 0.5582142857142858,
+     "hash": "bad85df1d452",
+     "blocked": false
+    },
+    {
+     "call": 14,
+     "round": 2,
+     "valid": true,
+     "obj": 0.4225,
+     "hash": "4882e445bffc",
+     "blocked": false
+    },
+    {
+     "call": 15,
+     "round": 2,
+     "valid": true,
+     "obj": 0.22964285714285712,
+     "hash": "1fe110637ca9",
+     "blocked": false
+    },
+    {
+     "call": 16,
+     "round": 2,
+     "valid": true,
+     "obj": 0.4275,
+     "hash": "a3e5fb5c28f7",
+     "blocked": false
+    },
+    {
+     "call": 17,
+     "round": 3,
+     "valid": true,
+     "obj": 0.549410970883674,
+     "hash": "2fc7d1ee9af2",
+     "blocked": false
+    },
+    {
+     "call": 18,
+     "round": 3,
+     "valid": true,
+     "obj": 0.2225,
+     "hash": "064975f176d5",
+     "blocked": false
+    },
+    {
+     "call": 19,
+     "round": 3,
+     "valid": true,
+     "obj": 0.2225,
+     "hash": "769e12a4f6b5",
+     "blocked": false
+    },
+    {
+     "call": 20,
+     "round": 3,
+     "valid": true,
+     "obj": 0.22964285714285712,
+     "hash": "d138016f9017",
+     "blocked": false
+    },
+    {
+     "call": 21,
+     "round": 3,
+     "valid": true,
+     "obj": 0.2225,
+     "hash": "4c8f1bf34806",
+     "blocked": false
+    },
+    {
+     "call": 22,
+     "round": 3,
+     "valid": true,
+     "obj": 0.2225,
+     "hash": "9f96c182d851",
+     "blocked": false
+    },
+    {
+     "call": 23,
+     "round": 3,
+     "valid": true,
+     "obj": 0.22964285714285712,
+     "hash": "cd6164bc6ee2",
+     "blocked": false
+    },
+    {
+     "call": 24,
+     "round": 3,
+     "valid": true,
+     "obj": 0.4425,
+     "hash": "4de897963d38",
+     "blocked": false
+    },
+    {
+     "call": 25,
+     "round": 4,
+     "valid": true,
+     "obj": 0.5275,
+     "hash": "29a1f58449e8",
+     "blocked": false
+    },
+    {
+     "call": 26,
+     "round": 4,
+     "valid": true,
+     "obj": 0.2225,
+     "hash": "4eab210dd473",
+     "blocked": false
+    },
+    {
+     "call": 27,
+     "round": 4,
+     "valid": true,
+     "obj": 0.22964285714285712,
+     "hash": "d138016f9017",
+     "blocked": false
+    },
+    {
+     "call": 28,
+     "round": 4,
+     "valid": true,
+     "obj": 0.518551546263421,
+     "hash": "0dd002b5fa33",
+     "blocked": false
+    },
+    {
+     "call": 29,
+     "round": 4,
+     "valid": true,
+     "obj": 0.4275,
+     "hash": "c4bcd5f8ac1b",
+     "blocked": false
+    },
+    {
+     "call": 30,
+     "round": 4,
+     "valid": true,
+     "obj": 0.2225,
+     "hash": "1bbf18e69067",
+     "blocked": false
+    },
+    {
+     "call": 31,
+     "round": 4,
+     "valid": true,
+     "obj": 0.2225,
+     "hash": "9b19f15cb4a5",
+     "blocked": false
+    },
+    {
+     "call": 32,
+     "round": 4,
+     "valid": true,
+     "obj": 0.4325,
+     "hash": "23bf2eb4b12c",
+     "blocked": false
+    },
+    {
+     "call": 33,
+     "round": 5,
+     "valid": true,
+     "obj": 0.6873506074617657,
+     "hash": "3986b2430865",
+     "blocked": false
+    },
+    {
+     "call": 34,
+     "round": 5,
+     "valid": true,
+     "obj": 0.22964285714285712,
+     "hash": "54583a96e08c",
+     "blocked": false
+    },
+    {
+     "call": 35,
+     "round": 5,
+     "valid": true,
+     "obj": 0.2225,
+     "hash": "527bba1e789b",
+     "blocked": false
+    },
+    {
+     "call": 36,
+     "round": 5,
+     "valid": true,
+     "obj": 0.5275,
+     "hash": "510f3c06221b",
+     "blocked": false
+    },
+    {
+     "call": 37,
+     "round": 5,
+     "valid": true,
+     "obj": 0.2225,
+     "hash": "e77e12c4d72d",
+     "blocked": false
+    },
+    {
+     "call": 38,
+     "round": 5,
+     "valid": true,
+     "obj": 0.3275,
+     "hash": "466ee546b06a",
+     "blocked": false
+    },
+    {
+     "call": 39,
+     "round": 5,
+     "valid": true,
+     "obj": 0.5275,
+     "hash": "510f3c06221b",
+     "blocked": false
+    },
+    {
+     "call": 40,
+     "round": 5,
+     "valid": true,
+     "obj": 0.3296428571428571,
+     "hash": "f1367879f262",
+     "blocked": false
+    },
+    {
+     "call": 41,
+     "round": 6,
+     "valid": true,
+     "obj": 0.4275,
+     "hash": "a09af690b546",
+     "blocked": false
+    },
+    {
+     "call": 42,
+     "round": 6,
+     "valid": true,
+     "obj": 0.2225,
+     "hash": "88111a92d1e9",
+     "blocked": false
+    },
+    {
+     "call": 43,
+     "round": 6,
+     "valid": true,
+     "obj": 0.2225,
+     "hash": "8f95e02d53e3",
+     "blocked": false
+    },
+    {
+     "call": 44,
+     "round": 6,
+     "valid": true,
+     "obj": 0.22964285714285712,
+     "hash": "d138016f9017",
+     "blocked": false
+    },
+    {
+     "call": 45,
+     "round": 6,
+     "valid": true,
+     "obj": 0.5968238447808195,
+     "hash": "d0bcaa565dbc",
+     "blocked": false
+    },
+    {
+     "call": 46,
+     "round": 6,
+     "valid": true,
+     "obj": 0.4275,
+     "hash": "583dbd5447f8",
+     "blocked": false
+    },
+    {
+     "call": 47,
+     "round": 6,
+     "valid": true,
+     "obj": 0.4275,
+     "hash": "c4bcd5f8ac1b",
+     "blocked": false
+    },
+    {
+     "call": 48,
+     "round": 6,
+     "valid": true,
+     "obj": 0.22964285714285712,
+     "hash": "22dd7fb5526a",
+     "blocked": false
+    },
+    {
+     "call": 49,
+     "round": 7,
+     "valid": true,
+     "obj": 0.5275,
+     "hash": "c97ce5fbce46",
+     "blocked": false
+    },
+    {
+     "call": 50,
+     "round": 7,
+     "valid": true,
+     "obj": 0.5725,
+     "hash": "004898fa7dda",
+     "blocked": false
+    },
+    {
+     "call": 51,
+     "round": 7,
+     "valid": true,
+     "obj": 0.22964285714285712,
+     "hash": "6f0af69cb5c6",
+     "blocked": false
+    },
+    {
+     "call": 52,
+     "round": 7,
+     "valid": true,
+     "obj": 0.37035714285714283,
+     "hash": "34900ca59377",
+     "blocked": false
+    },
+    {
+     "call": 53,
+     "round": 7,
+     "valid": true,
+     "obj": 0.6915169378519554,
+     "hash": "dbd08b0f83a2",
+     "blocked": false
+    },
+    {
+     "call": 54,
+     "round": 7,
+     "valid": true,
+     "obj": 0.4275,
+     "hash": "c4be4b090807",
+     "blocked": false
+    },
+    {
+     "call": 55,
+     "round": 7,
+     "valid": true,
+     "obj": 0.2225,
+     "hash": "c2951a31801e",
+     "blocked": false
+    },
+    {
+     "call": 56,
+     "round": 7,
+     "valid": true,
+     "obj": 0.22964285714285712,
+     "hash": "bf1609eeca5d",
+     "blocked": false
+    },
+    {
+     "call": 57,
+     "round": 8,
+     "valid": true,
+     "obj": 0.2225,
+     "hash": "0a9b159c28cb",
+     "blocked": false
+    },
+    {
+     "call": 58,
+     "round": 8,
+     "valid": true,
+     "obj": 0.6873506074617657,
+     "hash": "2233243479c9",
+     "blocked": false
+    },
+    {
+     "call": 59,
+     "round": 8,
+     "valid": true,
+     "obj": 0.6127005943054259,
+     "hash": "a148024cda54",
+     "blocked": false
+    },
+    {
+     "call": 60,
+     "round": 8,
+     "valid": true,
+     "obj": 0.3653571428571428,
+     "hash": "14e8cbed265e",
+     "blocked": false
+    },
+    {
+     "call": 61,
+     "round": 8,
+     "valid": true,
+     "obj": 0.4325,
+     "hash": "52b81f998973",
+     "blocked": false
+    },
+    {
+     "call": 62,
+     "round": 8,
+     "valid": true,
+     "obj": 0.39416666666666667,
+     "hash": "1a832c416f8a",
+     "blocked": false
+    },
+    {
+     "call": 63,
+     "round": 8,
+     "valid": true,
+     "obj": 0.4275,
+     "hash": "5ed7ede10bb8",
+     "blocked": false
+    },
+    {
+     "call": 64,
+     "round": 8,
+     "valid": true,
+     "obj": 0.2225,
+     "hash": "817f02ffc4a7",
+     "blocked": false
+    }
+   ],
+   "arm": "C2",
+   "task": "19",
+   "rep": 0,
+   "attempt": 1
+  },
+  "C1|20|0": {
+   "seed": 20,
+   "condition": "1",
+   "calls": 8,
+   "rounds_used": 1,
+   "success": true,
+   "success_round": 1,
+   "champion_obj": 0.8041517837122004,
+   "n_candidates": 8,
+   "n_valid": 8,
+   "dup_rate": 0.0,
+   "unique_sigs": 8,
+   "wrong_blocks": 0,
+   "rounds": [
+    {
+     "round": 1,
+     "key_sig": "noChampion",
+     "phase": "early",
+     "adopted": true,
+     "champion_obj": 0.8041517837122004,
+     "round_blocked": false
+    }
+   ],
+   "candidates": [
+    {
+     "call": 1,
+     "round": 1,
+     "valid": true,
+     "obj": 0.0,
+     "hash": "41f18ae36afb",
+     "blocked": false
+    },
+    {
+     "call": 2,
+     "round": 1,
+     "valid": true,
+     "obj": 0.533944563372489,
+     "hash": "de0cc88e27f9",
+     "blocked": false
+    },
+    {
+     "call": 3,
+     "round": 1,
+     "valid": true,
+     "obj": 0.5426709468397033,
+     "hash": "04b668d353e4",
+     "blocked": false
+    },
+    {
+     "call": 4,
+     "round": 1,
+     "valid": true,
+     "obj": 0.8041517837122004,
+     "hash": "aab5fb506427",
+     "blocked": false
+    },
+    {
+     "call": 5,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7354902403158253,
+     "hash": "71b23266dff4",
+     "blocked": false
+    },
+    {
+     "call": 6,
+     "round": 1,
+     "valid": true,
+     "obj": 0.0,
+     "hash": "ba31cc07c0d1",
+     "blocked": false
+    },
+    {
+     "call": 7,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7865452789553344,
+     "hash": "29b3a32812ca",
+     "blocked": false
+    },
+    {
+     "call": 8,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7024958270818255,
+     "hash": "185319d5adef",
+     "blocked": false
+    }
+   ],
+   "arm": "C1",
+   "task": "20",
+   "rep": 0,
+   "attempt": 1
+  },
+  "C2|20|0": {
+   "seed": 20,
+   "condition": "2",
+   "calls": 8,
+   "rounds_used": 1,
+   "success": true,
+   "success_round": 1,
+   "champion_obj": 0.8137539689990809,
+   "n_candidates": 8,
+   "n_valid": 8,
+   "dup_rate": 0.0,
+   "unique_sigs": 8,
+   "wrong_blocks": 0,
+   "rounds": [
+    {
+     "round": 1,
+     "key_sig": "noChampion",
+     "phase": "early",
+     "adopted": true,
+     "champion_obj": 0.8137539689990809,
+     "round_blocked": false
+    }
+   ],
+   "candidates": [
+    {
+     "call": 1,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7500403901276358,
+     "hash": "e2bb692ff2cb",
+     "blocked": false
+    },
+    {
+     "call": 2,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7248367804152914,
+     "hash": "67103d4d5ce3",
+     "blocked": false
+    },
+    {
+     "call": 3,
+     "round": 1,
+     "valid": true,
+     "obj": 0.7997178319746844,
+     "hash": "7f267aebd812",
+     "blocked": false
+    },
+    {
+     "call": 4,
+     "round": 1,
+     "valid": true,
+     "obj": 0.4517857142857143,
+     "hash": "9b80652b0702",
+     "blocked": false
+    },
+    {
+     "call": 5,
+     "round": 1,
+     "valid": true,
+     "obj": 0.739389495008266,
+     "hash": "89e6defa9bf7",
+     "blocked": false
+    },
+    {
+     "call": 6,
+     "round": 1,
+     "valid": true,
+     "obj": 0.4517857142857143,
+     "hash": "5683a94167f5",
+     "blocked": false
+    },
+    {
+     "call": 7,
+     "round": 1,
+     "valid": true,
+     "obj": 0.4517857142857143,
+     "hash": "e1475f23c841",
+     "blocked": false
+    },
+    {
+     "call": 8,
+     "round": 1,
+     "valid": true,
+     "obj": 0.8137539689990809,
+     "hash": "39a503c47a61",
+     "blocked": false
+    }
+   ],
+   "arm": "C2",
+   "task": "20",
+   "rep": 0,
+   "attempt": 1
+  }
+ },
+ "attempts": 1
+}

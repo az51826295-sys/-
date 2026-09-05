@@ -1,0 +1,16 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "12a3b3b0ab9c5ab593ae8a8c532cc4b8349180fc",
+ "parent_commit": "4d638e8d54796828da533c663e925c300cb427d5",
+ "answer_functions": [
+  "marshmallow/serializer.py::error_handler",
+  "marshmallow/serializer.py::load"
+ ],
+ "repro_tests": [],
+ "smoke": [],
+ "baseline_pass_count": 0,
+ "probes": [],
+ "inc_event": false,
+ "regression_event": false,
+ "skipped": "no repro or no answer functions"
+}

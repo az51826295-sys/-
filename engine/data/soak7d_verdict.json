@@ -1,0 +1,37 @@
+{
+ "evidence": {
+  "subject": {
+   "duration_h": 166.18,
+   "hours_planned": 168,
+   "interventions": 0,
+   "budget_overruns": 0,
+   "isolation_halts": 0,
+   "audit_halts": 0,
+   "succeeded": 329,
+   "n_runs": 1,
+   "completion_rate": 0.9892
+  },
+  "instrument": {
+   "stale_rate": 0.0,
+   "unknown_rate": 0.9429,
+   "unresolved_rate": 0.0
+  }
+ },
+ "result": {
+  "criterion_id": "soak7d-acceptance",
+  "version": 1,
+  "hash": "a962686a4b4d",
+  "verdict": "미정의",
+  "branch": null,
+  "layer": "eligibility",
+  "layers_exercised": [
+   "eligibility"
+  ],
+  "escaped": false
+ },
+ "detail": {
+  "fails": {
+   "subject.completion_rate": 0.9892
+  }
+ }
+}

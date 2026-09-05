@@ -1,0 +1,76 @@
+{
+  "set": "rpg-ui-curvy",
+  "results": [
+    {
+      "concept": "potion",
+      "meaning": "둥근 물약 병 - 곡선 형태",
+      "verdict": "PASS",
+      "svg": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" linecap=\"round\" linejoin=\"round\" fill=\"none\" stroke=\"currentColor\">\n<path d=\"M8.5 6.5l0-2c0-1 0.5-1.5 1.5-1.5h4c1 0 1.5 0.5 1.5 1.5l0 2\"/>\n<path d=\"M8 8.5c-0.5 0-1 0.5-1 1v6c0 2.5 1.5 4.5 4 4.5h2c2.5 0 4-2 4-4.5v-6c0-0.5-0.5-1-1-1z\"/>\n<circle cx=\"12\" cy=\"11.5\" r=\"1.5\"/>\n</svg>",
+      "extra_passes": 1,
+      "rounds": [
+        {
+          "round": 1,
+          "mode": "initial",
+          "temperature": 1.0,
+          "candidates": 2,
+          "judged": 2,
+          "dropped_duplicate": 0,
+          "passed": 2,
+          "failed": 0,
+          "undefined": 0,
+          "reports": [
+            "VERDICT: PASS\ncandidate: 0\npassed:\n  - parse\n  - viewBox\n  - grid.snap\n  - stroke.width\n  - palette\n  - fill\n  - padding.min\n  - path.max_count\n  - path.max_total_commands\n  - allowed_elements\n  - forbidden_elements\n  - size.max_bytes",
+            "VERDICT: PASS\ncandidate: 1\npassed:\n  - parse\n  - viewBox\n  - grid.snap\n  - stroke.width\n  - palette\n  - fill\n  - padding.min\n  - path.max_count\n  - path.max_total_commands\n  - allowed_elements\n  - forbidden_elements\n  - size.max_bytes"
+          ]
+        }
+      ],
+      "used_rounds": 1
+    },
+    {
+      "concept": "dialogue",
+      "meaning": "둥근 말풍선 - 곡선 형태",
+      "verdict": "PASS",
+      "svg": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" linecap=\"round\" linejoin=\"round\" fill=\"none\" stroke=\"currentColor\">\n<path d=\"M4.5 7c0-1 0.5-1.5 1.5-1.5h12c1 0 1.5 0.5 1.5 1.5v8c0 1-0.5 1.5-1.5 1.5h-4l-2.5 2.5v-2.5h-4c-1 0-1.5-0.5-1.5-1.5z\"/>\n<circle cx=\"8.5\" cy=\"11.5\" r=\"1\"/>\n<circle cx=\"12\" cy=\"11.5\" r=\"1\"/>\n<circle cx=\"15.5\" cy=\"11.5\" r=\"1\"/>\n</svg>",
+      "extra_passes": 1,
+      "rounds": [
+        {
+          "round": 1,
+          "mode": "initial",
+          "temperature": 1.0,
+          "candidates": 2,
+          "judged": 2,
+          "dropped_duplicate": 0,
+          "passed": 2,
+          "failed": 0,
+          "undefined": 0,
+          "reports": [
+            "VERDICT: PASS\ncandidate: 0\npassed:\n  - parse\n  - viewBox\n  - grid.snap\n  - stroke.width\n  - palette\n  - fill\n  - padding.min\n  - path.max_count\n  - path.max_total_commands\n  - allowed_elements\n  - forbidden_elements\n  - size.max_bytes",
+            "VERDICT: PASS\ncandidate: 1\npassed:\n  - parse\n  - viewBox\n  - grid.snap\n  - stroke.width\n  - palette\n  - fill\n  - padding.min\n  - path.max_count\n  - path.max_total_commands\n  - allowed_elements\n  - forbidden_elements\n  - size.max_bytes"
+          ]
+        }
+      ],
+      "used_rounds": 1
+    }
+  ],
+  "passed": 2,
+  "total": 2,
+  "calls": 2,
+  "usd": 0.005755,
+  "provider": "anthropic",
+  "model": "claude-haiku-4-5",
+  "set_consistency": {
+    "stroke_widths": [
+      1.5
+    ],
+    "variance_zero": true,
+    "optical_weight": "미측정 - 래스터라이저 필요"
+  },
+  "duplicates": [],
+  "unmeasured": [
+    "contrast",
+    "roundtrip",
+    "optical_weight_delta"
+  ],
+  "seconds": 7.51,
+  "ts": "2026-08-26T08:52:43"
+}

@@ -1,0 +1,14 @@
+{
+ "duration_h": 48.0,
+ "injected": 95,
+ "counts": {
+  "failed": 4,
+  "succeeded": 91
+ },
+ "spend_usd": 0.0425,
+ "runs": 104,
+ "alarms": 0,
+ "audit_halted": false,
+ "isolation_halt": false,
+ "pr_queue": 91
+}

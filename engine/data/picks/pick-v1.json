@@ -1,0 +1,206 @@
+{
+  "id": "pick-v1",
+  "by": "사장님",
+  "ts": "2026-08-26T09:30:18",
+  "note": "첫 선별 세션. 하드 스펙 통과분 21개 중 개념별 1개씩.",
+  "groups": [
+    {
+      "group": "01_save",
+      "shown": [
+        {
+          "no": 1,
+          "path": "out\\icons\\pick-v1\\candidates\\01_save\\c01.svg",
+          "sha1": "89b95351f067",
+          "structure_hash": "eff100f3f0eaf095",
+          "picked": false
+        },
+        {
+          "no": 2,
+          "path": "out\\icons\\pick-v1\\candidates\\01_save\\c02.svg",
+          "sha1": "6d69bfd73378",
+          "structure_hash": "4083b49d266d86fa",
+          "picked": false
+        },
+        {
+          "no": 3,
+          "path": "out\\icons\\pick-v1\\candidates\\01_save\\c03.svg",
+          "sha1": "60bd555f455b",
+          "structure_hash": "d9cfc00a5e45389d",
+          "picked": true
+        }
+      ],
+      "picked_no": 3
+    },
+    {
+      "group": "02_inventory",
+      "shown": [
+        {
+          "no": 1,
+          "path": "out\\icons\\pick-v1\\candidates\\02_inventory\\c01.svg",
+          "sha1": "55987f3ef098",
+          "structure_hash": "4de61258839be6cb",
+          "picked": false
+        },
+        {
+          "no": 2,
+          "path": "out\\icons\\pick-v1\\candidates\\02_inventory\\c02.svg",
+          "sha1": "f797866af63d",
+          "structure_hash": "b7367ecb8e687a09",
+          "picked": false
+        },
+        {
+          "no": 3,
+          "path": "out\\icons\\pick-v1\\candidates\\02_inventory\\c03.svg",
+          "sha1": "bdf6c84762af",
+          "structure_hash": "1f1f4a0f5e4f42a4",
+          "picked": false
+        },
+        {
+          "no": 4,
+          "path": "out\\icons\\pick-v1\\candidates\\02_inventory\\c04.svg",
+          "sha1": "3b8bc90dd127",
+          "structure_hash": "e701f1803d194c0c",
+          "picked": false
+        },
+        {
+          "no": 5,
+          "path": "out\\icons\\pick-v1\\candidates\\02_inventory\\c05.svg",
+          "sha1": "80a44de02cfe",
+          "structure_hash": "565192f35cba7843",
+          "picked": true
+        },
+        {
+          "no": 6,
+          "path": "out\\icons\\pick-v1\\candidates\\02_inventory\\c06.svg",
+          "sha1": "7dd7685c37ec",
+          "structure_hash": "000414ac7be98119",
+          "picked": false
+        },
+        {
+          "no": 7,
+          "path": "out\\icons\\pick-v1\\candidates\\02_inventory\\c07.svg",
+          "sha1": "f663d27dfba2",
+          "structure_hash": "b978f2b9b0243c2f",
+          "picked": false
+        }
+      ],
+      "picked_no": 5
+    },
+    {
+      "group": "03_map",
+      "shown": [
+        {
+          "no": 1,
+          "path": "out\\icons\\pick-v1\\candidates\\03_map\\c01.svg",
+          "sha1": "e062594f904c",
+          "structure_hash": "65433eff6b7aa4f2",
+          "picked": false
+        },
+        {
+          "no": 2,
+          "path": "out\\icons\\pick-v1\\candidates\\03_map\\c02.svg",
+          "sha1": "c5d10ad616c2",
+          "structure_hash": "b9910c97fc23e088",
+          "picked": false
+        },
+        {
+          "no": 3,
+          "path": "out\\icons\\pick-v1\\candidates\\03_map\\c03.svg",
+          "sha1": "bcd5b3a36a15",
+          "structure_hash": "c5f26e979d14b023",
+          "picked": false
+        },
+        {
+          "no": 4,
+          "path": "out\\icons\\pick-v1\\candidates\\03_map\\c04.svg",
+          "sha1": "2ca392dfe837",
+          "structure_hash": "5453c687b6aa2615",
+          "picked": false
+        },
+        {
+          "no": 5,
+          "path": "out\\icons\\pick-v1\\candidates\\03_map\\c05.svg",
+          "sha1": "0708461b2dac",
+          "structure_hash": "3529cc3cc7a3fcd5",
+          "picked": true
+        },
+        {
+          "no": 6,
+          "path": "out\\icons\\pick-v1\\candidates\\03_map\\c06.svg",
+          "sha1": "79939da8bd82",
+          "structure_hash": "5b3c31609efe67f3",
+          "picked": false
+        }
+      ],
+      "picked_no": 5
+    },
+    {
+      "group": "04_settings",
+      "shown": [
+        {
+          "no": 1,
+          "path": "out\\icons\\pick-v1\\candidates\\04_settings\\c01.svg",
+          "sha1": "f758b11e1f35",
+          "structure_hash": "326009462ed7e960",
+          "picked": false
+        },
+        {
+          "no": 2,
+          "path": "out\\icons\\pick-v1\\candidates\\04_settings\\c02.svg",
+          "sha1": "0eac653b2410",
+          "structure_hash": "cc483a33b12f0a69",
+          "picked": false
+        },
+        {
+          "no": 3,
+          "path": "out\\icons\\pick-v1\\candidates\\04_settings\\c03.svg",
+          "sha1": "a7eb3c704fa4",
+          "structure_hash": "9ec7cb0f76de4fab",
+          "picked": false
+        },
+        {
+          "no": 4,
+          "path": "out\\icons\\pick-v1\\candidates\\04_settings\\c04.svg",
+          "sha1": "9cb59ecfb5c0",
+          "structure_hash": "89e85c7009d81a6f",
+          "picked": false
+        },
+        {
+          "no": 5,
+          "path": "out\\icons\\pick-v1\\candidates\\04_settings\\c05.svg",
+          "sha1": "126f5ccc1282",
+          "structure_hash": "862b283d7b6c66fc",
+          "picked": true
+        }
+      ],
+      "picked_no": 5
+    }
+  ],
+  "picked": [
+    "out\\icons\\pick-v1\\candidates\\01_save\\c03.svg",
+    "out\\icons\\pick-v1\\candidates\\02_inventory\\c05.svg",
+    "out\\icons\\pick-v1\\candidates\\03_map\\c05.svg",
+    "out\\icons\\pick-v1\\candidates\\04_settings\\c05.svg"
+  ],
+  "rejected": [
+    "out\\icons\\pick-v1\\candidates\\01_save\\c01.svg",
+    "out\\icons\\pick-v1\\candidates\\01_save\\c02.svg",
+    "out\\icons\\pick-v1\\candidates\\02_inventory\\c01.svg",
+    "out\\icons\\pick-v1\\candidates\\02_inventory\\c02.svg",
+    "out\\icons\\pick-v1\\candidates\\02_inventory\\c03.svg",
+    "out\\icons\\pick-v1\\candidates\\02_inventory\\c04.svg",
+    "out\\icons\\pick-v1\\candidates\\02_inventory\\c06.svg",
+    "out\\icons\\pick-v1\\candidates\\02_inventory\\c07.svg",
+    "out\\icons\\pick-v1\\candidates\\03_map\\c01.svg",
+    "out\\icons\\pick-v1\\candidates\\03_map\\c02.svg",
+    "out\\icons\\pick-v1\\candidates\\03_map\\c03.svg",
+    "out\\icons\\pick-v1\\candidates\\03_map\\c04.svg",
+    "out\\icons\\pick-v1\\candidates\\03_map\\c06.svg",
+    "out\\icons\\pick-v1\\candidates\\04_settings\\c01.svg",
+    "out\\icons\\pick-v1\\candidates\\04_settings\\c02.svg",
+    "out\\icons\\pick-v1\\candidates\\04_settings\\c03.svg",
+    "out\\icons\\pick-v1\\candidates\\04_settings\\c04.svg"
+  ],
+  "shown_total": 21,
+  "undecided_groups": []
+}

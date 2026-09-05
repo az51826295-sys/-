@@ -1,0 +1,17 @@
+{
+ "repo": "tinydb",
+ "fix_commit": "cca5c234398383a8163725fdc542d9a9ffbedc45",
+ "parent_commit": "3daad55b08d756cbbff8d36b44db42a17833a0d6",
+ "answer_functions": [
+  "tinydb/middlewares.py::read",
+  "tinydb/middlewares.py::write"
+ ],
+ "repro_tests": [
+  "tests/test_serializer.py::test_serializer"
+ ],
+ "smoke": [],
+ "baseline_pass_count": 0,
+ "probes": [],
+ "inc_event": false,
+ "regression_event": false
+}

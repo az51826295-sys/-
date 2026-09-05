@@ -1,0 +1,662 @@
+{
+  "spec": "prompt-ablation-v0",
+  "design": "docs/prompt-ablation-v0-design.md",
+  "provider": "mock",
+  "model": "mock",
+  "usd": 0.0,
+  "seconds": 0.8,
+  "thresholds": {
+    "spec_helps_lower": 0.2,
+    "irrelevant_upper": 0.05
+  },
+  "bootstrap": {
+    "n": 10000,
+    "seed": 12345
+  },
+  "with_spec": {
+    "arm": "with_spec",
+    "calls": [
+      {
+        "concept": "save",
+        "n": 3,
+        "passed": 0,
+        "rate": 0.0
+      },
+      {
+        "concept": "save",
+        "n": 3,
+        "passed": 0,
+        "rate": 0.0
+      },
+      {
+        "concept": "inventory",
+        "n": 3,
+        "passed": 0,
+        "rate": 0.0
+      },
+      {
+        "concept": "inventory",
+        "n": 3,
+        "passed": 0,
+        "rate": 0.0
+      },
+      {
+        "concept": "map",
+        "n": 3,
+        "passed": 0,
+        "rate": 0.0
+      },
+      {
+        "concept": "map",
+        "n": 3,
+        "passed": 0,
+        "rate": 0.0
+      },
+      {
+        "concept": "settings",
+        "n": 3,
+        "passed": 0,
+        "rate": 0.0
+      },
+      {
+        "concept": "settings",
+        "n": 3,
+        "passed": 0,
+        "rate": 0.0
+      }
+    ],
+    "n_calls": 8,
+    "n": 24,
+    "passed": 0,
+    "pass_rate": 0.0,
+    "concepts": [
+      "inventory",
+      "map",
+      "save",
+      "settings"
+    ],
+    "fingerprint": {
+      "spec_id": "icon-24-line-v1",
+      "arm": "with_spec",
+      "public_spec_sha": "5c38f9a9f798",
+      "system_prompt_sha": "43b76b8878c5",
+      "initial_prompt_skeleton_sha": "b042fe7d54c8",
+      "retry_prompt_sha": "02bc8528e2f2",
+      "restructure_prompt_sha": "30b7131462f1",
+      "note": "프롬프트 전문이 아니라 지문이다. 회차 간 '같았나 달랐나'를 사후에 답할 수 있게 하는 것이 목적."
+    },
+    "why": null
+  },
+  "no_spec": {
+    "arm": "no_spec",
+    "calls": [
+      {
+        "concept": "save",
+        "n": 3,
+        "passed": 0,
+        "rate": 0.0
+      },
+      {
+        "concept": "save",
+        "n": 3,
+        "passed": 0,
+        "rate": 0.0
+      },
+      {
+        "concept": "inventory",
+        "n": 3,
+        "passed": 0,
+        "rate": 0.0
+      },
+      {
+        "concept": "inventory",
+        "n": 3,
+        "passed": 0,
+        "rate": 0.0
+      },
+      {
+        "concept": "map",
+        "n": 3,
+        "passed": 0,
+        "rate": 0.0
+      },
+      {
+        "concept": "map",
+        "n": 3,
+        "passed": 0,
+        "rate": 0.0
+      },
+      {
+        "concept": "settings",
+        "n": 3,
+        "passed": 0,
+        "rate": 0.0
+      },
+      {
+        "concept": "settings",
+        "n": 3,
+        "passed": 0,
+        "rate": 0.0
+      }
+    ],
+    "n_calls": 8,
+    "n": 24,
+    "passed": 0,
+    "pass_rate": 0.0,
+    "concepts": [
+      "inventory",
+      "map",
+      "save",
+      "settings"
+    ],
+    "fingerprint": {
+      "spec_id": "icon-24-line-v1",
+      "arm": "no_spec",
+      "public_spec_sha": null,
+      "system_prompt_sha": "0d3731bd8f9c",
+      "initial_prompt_skeleton_sha": "190ab486cccf",
+      "retry_prompt_sha": "02bc8528e2f2",
+      "restructure_prompt_sha": "30b7131462f1",
+      "note": "프롬프트 전문이 아니라 지문이다. 회차 간 '같았나 달랐나'를 사후에 답할 수 있게 하는 것이 목적."
+    },
+    "why": null
+  },
+  "rule_counts": {
+    "with_spec": {
+      "grid.snap": 8,
+      "palette": 8,
+      "allowed_elements": 8,
+      "forbidden_elements": 8
+    },
+    "no_spec": {
+      "grid.snap": 8,
+      "palette": 8,
+      "allowed_elements": 8,
+      "forbidden_elements": 8
+    }
+  },
+  "judgement": {
+    "verdict": "undefined",
+    "why": "sample_gate",
+    "d": 0.0,
+    "ci95": [
+      0.0,
+      0.0
+    ],
+    "gate_ok": false,
+    "unit": "call",
+    "n_with": 8,
+    "n_no": 8,
+    "min_per_arm": 18,
+    "min_concepts": 8
+  },
+  "judgement_v0_candidate_unit": {
+    "verdict": "prompt_irrelevant",
+    "why": "ci_upper_lt_threshold",
+    "d": 0.0,
+    "ci95": [
+      0.0,
+      0.0
+    ],
+    "gate_ok": true,
+    "unit": "candidate",
+    "n_with": 24,
+    "n_no": 24,
+    "min_per_arm": 24,
+    "min_concepts": 4
+  },
+  "rows": {
+    "with_spec": [
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "save",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "hidden_violated": false,
+        "signature": 0
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "save",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "hidden_violated": false,
+        "signature": 0
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "inventory",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "hidden_violated": false,
+        "signature": 0
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "inventory",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "hidden_violated": false,
+        "signature": 0
+      },
+      {
+        "concept": "map",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "map",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "map",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "hidden_violated": false,
+        "signature": 0
+      },
+      {
+        "concept": "map",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "map",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "map",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "hidden_violated": false,
+        "signature": 0
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "settings",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "hidden_violated": false,
+        "signature": 0
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "settings",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "hidden_violated": false,
+        "signature": 0
+      }
+    ],
+    "no_spec": [
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "save",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "hidden_violated": false,
+        "signature": 0
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "save",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "hidden_violated": false,
+        "signature": 0
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "inventory",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "hidden_violated": false,
+        "signature": 0
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "inventory",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "hidden_violated": false,
+        "signature": 0
+      },
+      {
+        "concept": "map",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "map",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "map",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "hidden_violated": false,
+        "signature": 0
+      },
+      {
+        "concept": "map",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "map",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "map",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "hidden_violated": false,
+        "signature": 0
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "settings",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "hidden_violated": false,
+        "signature": 0
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "settings",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "hidden_violated": false,
+        "signature": 0
+      }
+    ]
+  }
+}

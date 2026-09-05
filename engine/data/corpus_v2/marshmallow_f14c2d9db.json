@@ -1,0 +1,171 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "f14c2d9db9944423f8528fc2f72e41287e026436",
+ "parent_commit": "7b776d187e099a8d9aeb8b5475ae653a6f84c8fa",
+ "answer_files": [
+  "marshmallow/schema.py"
+ ],
+ "answer_functions": [
+  "marshmallow/schema.py::validate"
+ ],
+ "patch_lines": 12,
+ "added_tests": {
+  "tests/test_decorators.py::TestValidatesDecorator::test_validates_decorator": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_decorators.py::TestValidatesDecorator::test_precedence": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_decorators.py::TestValidatesSchemaDecorator::test_validator_nested_many": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_decorators.py::TestValidatesSchemaDecorator::test_decorated_validators": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_decorators.py::TestValidatesSchemaDecorator::test_multiple_validators": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_decorators.py::TestValidatesSchemaDecorator::test_passing_original_data": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_decorators.py::TestValidatesSchemaDecorator::test_allow_arbitrary_field_names_in_error": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_decorators.py::TestValidatesSchemaDecorator::test_skip_on_field_errors": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_deserialization.py::TestFieldDeserialization::test_field_deserialization_with_user_validator_that_raises_error_with_list": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_deserialization.py::TestSchemaDeserialization::test_nested_single_none_not_allowed": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_deserialization.py::TestSchemaDeserialization::test_nested_many_non_not_allowed": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_deserialization.py::TestSchemaDeserialization::test_nested_single_required_missing": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_deserialization.py::TestSchemaDeserialization::test_nested_many_required_missing": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_deserialization.py::TestSchemaDeserialization::test_partial_fields_validation": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_deserialization.py::TestValidation::test_false_value_validation": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_schema.py::test_multiple_errors_can_be_stored_for_a_given_index": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_schema.py::TestValidate::test_validate_raises_with_errors_dict": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_schema.py::TestValidate::test_validate_many": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_schema.py::TestValidate::test_validate_many_doesnt_store_index_if_index_errors_option_is_false": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_schema.py::TestValidate::test_validate": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_schema.py::TestValidate::test_validate_required": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_schema.py::TestFieldValidation::test_raises_error_with_list": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_schema.py::TestFieldValidation::test_raises_error_with_dict": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_schema.py::TestFieldValidation::test_ignored_if_not_in_only": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_schema.py::TestRequiredFields::test_required_string_field_missing": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_schema.py::TestRequiredFields::test_required_string_field_failure": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_schema.py::TestRequiredFields::test_allow_none_param": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_schema.py::TestRequiredFields::test_allow_none_custom_message": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_schema.py::TestDefaults::test_none_is_serialized_to_none": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "tests/test_decorators.py",
+  "tests/test_deserialization.py",
+  "tests/test_schema.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 92.0,
+ "env_error_tests": 29,
+ "qualified": false
+}

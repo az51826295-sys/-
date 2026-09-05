@@ -1,0 +1,316 @@
+{
+ "verify": "data/live_intake_verify.json",
+ "n": 36,
+ "aggregate": {
+  "a_fabricated_api": 8,
+  "reran_passed": 2,
+  "reran_failed": 20,
+  "d_test_defect": 4,
+  "c_env": 2
+ },
+ "by_class": {
+  "A": {
+   "d_test_defect": 3,
+   "reran_failed": 1,
+   "c_env": 1
+  },
+  "B": {
+   "a_fabricated_api": 8,
+   "reran_passed": 2,
+   "reran_failed": 19,
+   "d_test_defect": 1,
+   "c_env": 1
+  }
+ },
+ "rows": [
+  {
+   "repo": "mahmoud/boltons",
+   "number": 347,
+   "class": "B",
+   "axis": "a_fabricated_api",
+   "why": "cannot import get_any from boltons.dictutils",
+   "head": "=================================== ERRORS ====================================\n_________________ ERROR collecting test_triage_boltons_347.py _________________\nImportError while importing test module 'C:\\Users\\az518\\AppData\\Local\\Temp\\triage_yq3929n0\\boltons\\test_triage_boltons_347.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n..\\..\\..\\Programs\\Python\\Python31"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 311,
+   "class": "B",
+   "axis": "a_fabricated_api",
+   "why": "cannot import intersection from boltons.iterutils",
+   "head": "=================================== ERRORS ====================================\n_________________ ERROR collecting test_triage_boltons_311.py _________________\nImportError while importing test module 'C:\\Users\\az518\\AppData\\Local\\Temp\\triage_yq3929n0\\boltons\\test_triage_boltons_311.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n..\\..\\..\\Programs\\Python\\Python31"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 299,
+   "class": "B",
+   "axis": "a_fabricated_api",
+   "why": "cannot import shorten from boltons.strutils",
+   "head": "=================================== ERRORS ====================================\n_________________ ERROR collecting test_triage_boltons_299.py _________________\nImportError while importing test module 'C:\\Users\\az518\\AppData\\Local\\Temp\\triage_yq3929n0\\boltons\\test_triage_boltons_299.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n..\\..\\..\\Programs\\Python\\Python31"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 289,
+   "class": "B",
+   "axis": "a_fabricated_api",
+   "why": "cannot import typename from boltons.typeutils",
+   "head": "=================================== ERRORS ====================================\n_________________ ERROR collecting test_triage_boltons_289.py _________________\nImportError while importing test module 'C:\\Users\\az518\\AppData\\Local\\Temp\\triage_yq3929n0\\boltons\\test_triage_boltons_289.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n..\\..\\..\\Programs\\Python\\Python31"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 256,
+   "class": "B",
+   "axis": "a_fabricated_api",
+   "why": "cannot import _import_pkg_modules from boltons.tbutils",
+   "head": "=================================== ERRORS ====================================\n_________________ ERROR collecting test_triage_boltons_256.py _________________\nImportError while importing test module 'C:\\Users\\az518\\AppData\\Local\\Temp\\triage_yq3929n0\\boltons\\test_triage_boltons_256.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n..\\..\\..\\Programs\\Python\\Python31"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1548,
+   "class": "B",
+   "axis": "reran_passed",
+   "why": "now PASSED",
+   "head": ".                                                                        [100%]\n=================================== PASSES ====================================\n=========================== short test summary info ===========================\nPASSED test_triage_dateutil_1548.py::test_nth_ordinal_weekday\n1 passed in 0.08s"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1546,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n________________ test_parser_parse_fractional_seconds_rounding ________________\ntest_triage_dateutil_1546.py:11: in test_parser_parse_fractional_seconds_rounding\n    assert dt.microsecond == 123457\nE   assert 123456 == 123457\nE    +  where "
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1545,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n__________________ test_isoparse_fractional_seconds_rounding __________________\ntest_triage_dateutil_1545.py:9: in test_isoparse_fractional_seconds_rounding\n    assert result.microsecond == 123457, f\"Expected 123457, got {result.microsecond"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1508,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n_________________ test_parse_rejects_invalid_timezone_offsets _________________\ntest_triage_dateutil_1508.py:9: in test_parse_rejects_invalid_timezone_offsets\n    with pytest.raises((ParserError, ValueError)):\n         ^^^^^^^^^^^^^^^^^^^^^"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 3019,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n__________________ test_negative_posix_timestamp_round_trip ___________________\nsrc\\marshmallow\\fields.py:1298: in _deserialize\n    return func(value)\n           ^^^^^^^^^^^\nsrc\\marshmallow\\utils.py:45: in from_timestamp\n    raise ValueErro"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2999,
+   "class": "A",
+   "axis": "d_test_defect",
+   "why": "syntax",
+   "head": "=================================== ERRORS ====================================\n______________ ERROR collecting test_triage_marshmallow_2999.py _______________\n..\\..\\..\\Programs\\Python\\Python312\\Lib\\site-packages\\_pytest\\python.py:508: in importtestmodule\n    mod = import_path(\n..\\..\\..\\Programs\\Python\\Python312\\Lib\\site-packages\\_pytest\\pathlib.py:596: in import_path\n    importlib.import_module(m"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2961,
+   "class": "A",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": ".F                                                                       [100%]\n================================== FAILURES ===================================\n___________________________ test_load_invalid_uuid ____________________________\ntest_triage_marshmallow_2961.py:42: in test_load_invalid_uuid\n    result = Parent().load(data)\n             ^^^^^^^^^^^^^^^^^^^\nsrc\\marshmallow\\schema.py:734: i"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2893,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n____________________ test_get_value_out_of_range_int_index ____________________\nsrc\\marshmallow\\utils.py:126: in _get_value_for_key\n    return obj[key]\n           ^^^^^^^^\nE   IndexError: list index out of range\n\nDuring handling of the abov"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2872,
+   "class": "B",
+   "axis": "reran_passed",
+   "why": "now PASSED",
+   "head": ".                                                                        [100%]\n=================================== PASSES ====================================\n=========================== short test summary info ===========================\nPASSED test_triage_marshmallow_2872.py::test_nested_many_vs_list_performance\n1 passed in 1.65s"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2836,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n____________________ test_allow_none_consistency_dump_load ____________________\ntest_triage_marshmallow_2836.py:25: in test_allow_none_consistency_dump_load\n    loaded = schema.load(dumped)\n             ^^^^^^^^^^^^^^^^^^^\nsrc\\marshmallow\\s"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2794,
+   "class": "B",
+   "axis": "d_test_defect",
+   "why": "syntax",
+   "head": "=================================== ERRORS ====================================\n______________ ERROR collecting test_triage_marshmallow_2794.py _______________\n..\\..\\..\\Programs\\Python\\Python312\\Lib\\site-packages\\_pytest\\python.py:508: in importtestmodule\n    mod = import_path(\n..\\..\\..\\Programs\\Python\\Python312\\Lib\\site-packages\\_pytest\\pathlib.py:596: in import_path\n    importlib.import_module(m"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2243,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n______________ test_url_validation_error_message_for_missing_tld ______________\ntest_triage_marshmallow_2243.py:20: in test_url_validation_error_message_for_missing_tld\n    assert \"fqdn\" in error_message or \"tld\" in error_message or \"domain"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2194,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n____________________________ test_dot_in_key_loads ____________________________\ntest_triage_marshmallow_2194.py:18: in test_dot_in_key_loads\n    assert result2 == {'some.thing': 'data'}, \\\nE   AssertionError: Expected {'some.thing': 'data'}"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2189,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F.                                                                       [100%]\n================================== FAILURES ===================================\n_____________ test_dump_validation_with_data_key_and_invalid_type _____________\ntest_triage_marshmallow_2189.py:23: in test_dump_validation_with_data_key_and_invalid_type\n    schema.dump(invalid_data)\nsrc\\marshmallow\\schema.py:572: in dump\n"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2180,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n_____________________ test_nested_only_option_validation ______________________\ntest_triage_marshmallow_2180.py:11: in test_nested_only_option_validation\n    with pytest.raises(ValueError, match=\"Option: 'only' with value: 'a.b' is not vali"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2165,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n____ test_doubly_nested_schemas_with_instantiated_lambda_and_dot_notation _____\ntest_triage_marshmallow_2165.py:41: in test_doubly_nested_schemas_with_instantiated_lambda_and_dot_notation\n    assert result == {'d': {'c': {'b': {'a2': 'Hello"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2032,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n__________________ test_datetime_field_millisecond_precision __________________\ntest_triage_marshmallow_2032.py:20: in test_datetime_field_millisecond_precision\n    assert result[\"date_time\"] == \"2022-08-09T16:38:44.165Z\"\nE   AssertionError"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2012,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n_______________ test_custom_field_deserialize_called_with_none ________________\ntest_triage_marshmallow_2012.py:19: in test_custom_field_deserialize_called_with_none\n    assert result['foo'] == 0, \"Custom _deserialize logic should transform"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2000,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n___________________________ test_marsh_model_basic ____________________________\ntest_triage_marshmallow_2000.py:66: in test_marsh_model_basic\n    assert user.emai\n           ^^^^^^^^^\nE   AttributeError: 'UserModel' object has no attribute "
+  },
+  {
+   "repo": "more-itertools/more-itertools",
+   "number": 1225,
+   "class": "A",
+   "axis": "d_test_defect",
+   "why": "syntax",
+   "head": "=================================== ERRORS ====================================\n_____________ ERROR collecting test_triage_more-itertools_1225.py _____________\n..\\..\\..\\Programs\\Python\\Python312\\Lib\\site-packages\\_pytest\\python.py:508: in importtestmodule\n    mod = import_path(\n..\\..\\..\\Programs\\Python\\Python312\\Lib\\site-packages\\_pytest\\pathlib.py:596: in import_path\n    importlib.import_module(m"
+  },
+  {
+   "repo": "grantjenks/python-sortedcontainers",
+   "number": 244,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n____________________ test_default_sorted_dict_missing_key _____________________\ntest_triage_sortedcontainers_244.py:10: in test_default_sorted_dict_missing_key\n    assert hasattr(__import__('sortedcontainers'), 'DefaultSortedDict'), \\\nE   A"
+  },
+  {
+   "repo": "grantjenks/python-sortedcontainers",
+   "number": 239,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n_____________________ test_discard_with_changing_sort_key _____________________\ntest_triage_sortedcontainers_239.py:17: in test_discard_with_changing_sort_key\n    sorted_set.discard(sorted_set[-1])\nsrc\\sortedcontainers\\sortedset.py:397: in "
+  },
+  {
+   "repo": "grantjenks/python-sortedcontainers",
+   "number": 238,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n________________________ test_discard_during_iteration ________________________\ntest_triage_sortedcontainers_238.py:14: in test_discard_during_iteration\n    assert len(sorted_set) == 0\nE   assert 2 == 0\nE    +  where 2 = len(SortedSet([1, 3"
+  },
+  {
+   "repo": "grantjenks/python-sortedcontainers",
+   "number": 219,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n______ test_sorted_set_and_returns_not_implemented_for_unsupported_type _______\ntest_triage_sortedcontainers_219.py:32: in test_sorted_set_and_returns_not_implemented_for_unsupported_type\n    result = sorted_set & interval\n             ^^^^"
+  },
+  {
+   "repo": "grantjenks/python-sortedcontainers",
+   "number": 53,
+   "class": "B",
+   "axis": "reran_failed",
+   "why": "now FAILED (accepted on rerun)",
+   "head": "F                                                                        [100%]\n================================== FAILURES ===================================\n_________________ test_sorted_set_merge_disjoint_performance __________________\ntest_triage_sortedcontainers_53.py:44: in test_sorted_set_merge_disjoint_performance\n    assert chained_time < interleaved_time * 1.5, (\nE   AssertionError: Dis"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 612,
+   "class": "A",
+   "axis": "d_test_defect",
+   "why": "syntax",
+   "head": "=================================== ERRORS ====================================\n__________________ ERROR collecting test_triage_toolz_612.py __________________\n..\\..\\..\\Programs\\Python\\Python312\\Lib\\site-packages\\_pytest\\python.py:508: in importtestmodule\n    mod = import_path(\n..\\..\\..\\Programs\\Python\\Python312\\Lib\\site-packages\\_pytest\\pathlib.py:596: in import_path\n    importlib.import_module(m"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 606,
+   "class": "B",
+   "axis": "c_env",
+   "why": "missing third-party cloudpickle",
+   "head": "=================================== ERRORS ====================================\n__________________ ERROR collecting test_triage_toolz_606.py __________________\nImportError while importing test module 'C:\\Users\\az518\\AppData\\Local\\Temp\\triage_yq3929n0\\toolz\\test_triage_toolz_606.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n..\\..\\..\\Programs\\Python\\Python312\\Li"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 583,
+   "class": "A",
+   "axis": "c_env",
+   "why": "missing third-party cytoolz",
+   "head": "=================================== ERRORS ====================================\n__________________ ERROR collecting test_triage_toolz_583.py __________________\nImportError while importing test module 'C:\\Users\\az518\\AppData\\Local\\Temp\\triage_yq3929n0\\toolz\\test_triage_toolz_583.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n..\\..\\..\\Programs\\Python\\Python312\\Li"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 567,
+   "class": "B",
+   "axis": "a_fabricated_api",
+   "why": "cannot import partition_by from toolz",
+   "head": "=================================== ERRORS ====================================\n__________________ ERROR collecting test_triage_toolz_567.py __________________\nImportError while importing test module 'C:\\Users\\az518\\AppData\\Local\\Temp\\triage_yq3929n0\\toolz\\test_triage_toolz_567.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n..\\..\\..\\Programs\\Python\\Python312\\Li"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 540,
+   "class": "B",
+   "axis": "a_fabricated_api",
+   "why": "cannot import thread_as from toolz",
+   "head": "=================================== ERRORS ====================================\n__________________ ERROR collecting test_triage_toolz_540.py __________________\nImportError while importing test module 'C:\\Users\\az518\\AppData\\Local\\Temp\\triage_yq3929n0\\toolz\\test_triage_toolz_540.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n..\\..\\..\\Programs\\Python\\Python312\\Li"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 517,
+   "class": "B",
+   "axis": "a_fabricated_api",
+   "why": "cannot import iget from toolz",
+   "head": "=================================== ERRORS ====================================\n__________________ ERROR collecting test_triage_toolz_517.py __________________\nImportError while importing test module 'C:\\Users\\az518\\AppData\\Local\\Temp\\triage_yq3929n0\\toolz\\test_triage_toolz_517.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n..\\..\\..\\Programs\\Python\\Python312\\Li"
+  }
+ ],
+ "elapsed_s": 54.3
+}

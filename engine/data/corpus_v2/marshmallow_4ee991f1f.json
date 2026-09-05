@@ -1,0 +1,45 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "4ee991f1f57d3e3b53e8a834374cd14815f9621e",
+ "parent_commit": "fde2e4eb147b767e7e35fafe2df07a9c4f03fc57",
+ "answer_files": [
+  "src/marshmallow/schema.py",
+  "src/marshmallow/utils.py"
+ ],
+ "answer_functions": [
+  "src/marshmallow/schema.py::__new__",
+  "src/marshmallow/schema.py::_do_load",
+  "src/marshmallow/schema.py::resolve_hooks",
+  "src/marshmallow/utils.py::from_rfc"
+ ],
+ "patch_lines": 28,
+ "added_tests": {
+  "tests/test_decorators.py::test_pre_dump_is_invoked_before_implicit_field_generation": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_serialization.py::TestFieldSerialization::test_list_field_work_with_generators_empty_generator_returns_none_for_every_non_returning_yield_statement": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_validate.py::test_range_repr": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "tests/test_decorators.py",
+  "tests/test_serialization.py",
+  "tests/test_validate.py"
+ ],
+ "location_hard_proxy": true,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 10.9,
+ "env_error_tests": 3,
+ "qualified": false
+}

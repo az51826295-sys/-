@@ -1,0 +1,23 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "0f1c97340890b7327124b7468980c2955950129b",
+ "parent_commit": "5ceb28fabfe55d3ebc7b7cdc0286cfb12bded745",
+ "answer_files": [
+  "marshmallow/marshalling.py"
+ ],
+ "answer_functions": [
+  "marshmallow/marshalling.py::deserialize"
+ ],
+ "patch_lines": 13,
+ "added_tests": {},
+ "repro_tests": [],
+ "test_files": [
+  "tests/test_marshalling.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 0.0,
+ "env_error_tests": 0,
+ "qualified": false
+}

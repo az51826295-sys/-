@@ -1,0 +1,22 @@
+[M] gen 1: v0 score=0.5408 acc=0.669 rules=1 (rollback)
+[M] gen 2: v0 score=0.5408 acc=0.669 rules=1 (rollback)
+[M] gen 3: v0 score=0.5408 acc=0.669 rules=1 (rollback)
+[M] gen 4: v0 score=0.5408 acc=0.669 rules=1 (rollback)
+[M] gen 5: v0 score=0.5408 acc=0.669 rules=1 (rollback)
+[M] gen 6: v0 score=0.5408 acc=0.669 rules=1 (rollback)
+[M] gen 7: v0 score=0.5408 acc=0.669 rules=1 (rollback)
+[M] gen 8: v0 score=0.5408 acc=0.669 rules=1 (rollback)
+[M] gen 9: v0 score=0.5408 acc=0.669 rules=1 (rollback)
+[M] gen 10: v0 score=0.5408 acc=0.669 rules=1 (rollback)
+[M] gen 11: v0 score=0.5408 acc=0.669 rules=1 (rollback)
+[M] gen 12: v0 score=0.5408 acc=0.669 rules=1 (rollback)
+[M] gen 13: v0 score=0.5408 acc=0.669 rules=1 (rollback)
+[M] gen 14: v1 score=0.7447 acc=0.839 rules=2 
+[M] gen 15: v1 score=0.7447 acc=0.839 rules=2 (rollback)
+[M] gen 16: v1 score=0.7447 acc=0.839 rules=2 (rollback)
+[M] gen 17: v1 score=0.7447 acc=0.839 rules=2 (rollback)
+[M] gen 18: v1 score=0.7447 acc=0.839 rules=2 (rollback)
+[M] gen 19: v1 score=0.7447 acc=0.839 rules=2 (rollback)
+[M] gen 20: v1 score=0.7447 acc=0.839 rules=2 (rollback)
+[m7_T_deadlock_ms2] 완료 3351s -> data\mission7_m7_T_deadlock_ms2_lineage.json
+  계보 감사: 위반 0

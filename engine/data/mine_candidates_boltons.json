@@ -1,0 +1,416 @@
+[
+ {
+  "sha": "ead236e278ca0466bf468de746b5960fb12d7e5b",
+  "subject": "fix: backoff_iter with factor=1.0 and no count raised ZeroDivisionError",
+  "src_files": [
+   "boltons/iterutils.py"
+  ],
+  "test_files": [
+   "tests/test_iterutils.py"
+  ],
+  "src_lines": 10,
+  "multi_file": false
+ },
+ {
+  "sha": "1e61524a798ea73632029a013a7686036d5c126f",
+  "subject": "fix(strutils): stop singularize() mangling words ending in 'ss'",
+  "src_files": [
+   "boltons/strutils.py"
+  ],
+  "test_files": [
+   "tests/test_strutils.py"
+  ],
+  "src_lines": 7,
+  "multi_file": false
+ },
+ {
+  "sha": "55dfe5077bcb5fa76611b5f2a557ea6c442ad87c",
+  "subject": "fix(fileutils): accept os.PathLike in AtomicSaver",
+  "src_files": [
+   "boltons/fileutils.py"
+  ],
+  "test_files": [
+   "tests/test_fileutils.py"
+  ],
+  "src_lines": 5,
+  "multi_file": false
+ },
+ {
+  "sha": "ebc7a8f776debfa33f0b380b57a444bca75a251b",
+  "subject": "Fix copy.copy/copy.deepcopy collapsing OrderedMultiDict values",
+  "src_files": [
+   "boltons/dictutils.py"
+  ],
+  "test_files": [
+   "tests/test_dictutils.py"
+  ],
+  "src_lines": 8,
+  "multi_file": false
+ },
+ {
+  "sha": "d0a284fc7ef1aebceb54798600d73be4eeb76ed8",
+  "subject": "fix IndexedSet out-of-range negative indexing wrapping around (x[-n-k], pop(-n-k))",
+  "src_files": [
+   "boltons/setutils.py"
+  ],
+  "test_files": [
+   "tests/test_setutils.py"
+  ],
+  "src_lines": 10,
+  "multi_file": false
+ },
+ {
+  "sha": "609cabe932a1ea1423b24568644945abb1b8bb84",
+  "subject": "fix IndexedSet slicing after removals: keep iter_slice bounds in apparent index space (#423)",
+  "src_files": [
+   "boltons/setutils.py"
+  ],
+  "test_files": [
+   "tests/test_setutils.py"
+  ],
+  "src_lines": 14,
+  "multi_file": false
+ },
+ {
+  "sha": "c463d1633a075c398d6ffad7d8653064a615b696",
+  "subject": "Fix OrderedMultiDict equality to compare values against plain mappings",
+  "src_files": [
+   "boltons/dictutils.py",
+   "boltons/urlutils.py"
+  ],
+  "test_files": [
+   "tests/test_dictutils.py",
+   "tests/test_urlutils.py"
+  ],
+  "src_lines": 6,
+  "multi_file": true
+ },
+ {
+  "sha": "8a2a93d8213e1fa4da30c8167ab1a18caad17a17",
+  "subject": "fix(tbutils): avoid IndexError in ParsedException.from_string on truncated tracebacks",
+  "src_files": [
+   "boltons/tbutils.py"
+  ],
+  "test_files": [
+   "tests/test_tbutils_parsed_exc.py"
+  ],
+  "src_lines": 9,
+  "multi_file": false
+ },
+ {
+  "sha": "b4697c18731e18ac7e9dcd328dce6dc3e605382c",
+  "subject": "Add removeprefix to strutils for older python versions & fix test on windows",
+  "src_files": [
+   "boltons/strutils.py"
+  ],
+  "test_files": [
+   "tests/test_fileutils.py"
+  ],
+  "src_lines": 16,
+  "multi_file": false
+ },
+ {
+  "sha": "0341ab3d79e6430c0e6a4149df9c92679988a534",
+  "subject": "Make OMD picklable under py3, fixes #337 (#338)",
+  "src_files": [
+   "boltons/dictutils.py"
+  ],
+  "test_files": [
+   "tests/test_dictutils.py"
+  ],
+  "src_lines": 16,
+  "multi_file": false
+ },
+ {
+  "sha": "8ba3a7fa0d99b73f7f43c1aed82c571b941eecea",
+  "subject": "test and fix year step and december handling in date_range, fixes #319",
+  "src_files": [
+   "boltons/timeutils.py"
+  ],
+  "test_files": [
+   "tests/test_timeutils.py"
+  ],
+  "src_lines": 10,
+  "multi_file": false
+ },
+ {
+  "sha": "8177b933b418d91c7280909690f45589fbe004d2",
+  "subject": "improve OMD.addlist empty list handling, fixes #284",
+  "src_files": [
+   "boltons/dictutils.py"
+  ],
+  "test_files": [
+   "tests/test_dictutils.py"
+  ],
+  "src_lines": 6,
+  "multi_file": false
+ },
+ {
+  "sha": "16a258e3750063d874ec85c5fb5bc21358206c5c",
+  "subject": "fix Sentinel module logic, enabling pickling of Sentinels, fixes #285",
+  "src_files": [
+   "boltons/typeutils.py"
+  ],
+  "test_files": [
+   "tests/test_typeutils.py"
+  ],
+  "src_lines": 14,
+  "multi_file": false
+ },
+ {
+  "sha": "41a926e64ff69e152d14dff87a2766b27ae2b53b",
+  "subject": "add IndexedSet.__rsub__ which respects proper argument order, fixes #252",
+  "src_files": [
+   "boltons/setutils.py"
+  ],
+  "test_files": [
+   "tests/test_setutils.py"
+  ],
+  "src_lines": 6,
+  "multi_file": false
+ },
+ {
+  "sha": "4457decc614ee795804f2bb9c44ae9be30831d53",
+  "subject": "fix IndexedSet.index() to account for removals, fixes #240",
+  "src_files": [
+   "boltons/setutils.py"
+  ],
+  "test_files": [
+   "tests/test_setutils.py"
+  ],
+  "src_lines": 14,
+  "multi_file": false
+ },
+ {
+  "sha": "0a20b37cc94784197a7353130cc61b5becfb12c7",
+  "subject": "Fix NetstringSocket to correctly use arguments to .read_ns() method.",
+  "src_files": [
+   "boltons/socketutils.py"
+  ],
+  "test_files": [
+   "tests/test_socketutils.py"
+  ],
+  "src_lines": 19,
+  "multi_file": false
+ },
+ {
+  "sha": "67e4ba4ce87c238d72e7d9cebbc540ed2f98d308",
+  "subject": "Fix warnings regarding invalid escape sequences",
+  "src_files": [
+   "boltons/ecoutils.py",
+   "boltons/formatutils.py",
+   "boltons/urlutils.py",
+   "misc/linkify_changelog.py"
+  ],
+  "test_files": [
+   "tests/conftest.py"
+  ],
+  "src_lines": 10,
+  "multi_file": true
+ },
+ {
+  "sha": "962b310e5dff65399f6bac4c532077b843447839",
+  "subject": "fix up functionbuilder get_defaults_dict to support kwonly args",
+  "src_files": [
+   "boltons/funcutils.py"
+  ],
+  "test_files": [
+   "tests/test_funcutils_fb_py3.py"
+  ],
+  "src_lines": 7,
+  "multi_file": false
+ },
+ {
+  "sha": "29146135ea50e1d0727339bcc15dcf3cc105af87",
+  "subject": "Fix annotations.",
+  "src_files": [
+   "boltons/funcutils.py"
+  ],
+  "test_files": [
+   "tests/test_funcutils_fb_py3.py"
+  ],
+  "src_lines": 17,
+  "multi_file": false
+ },
+ {
+  "sha": "48b2411ecbf05c3fb330c52715a8d4f4374887fe",
+  "subject": "add funcutils.wraps(expected=['a', 'b']), fixes #167",
+  "src_files": [
+   "boltons/funcutils.py"
+  ],
+  "test_files": [
+   "tests/test_funcutils_fb.py"
+  ],
+  "src_lines": 60,
+  "multi_file": false
+ },
+ {
+  "sha": "8b4b5fdd8761c495d1374c870182eac85afbda94",
+  "subject": "bit of ManyToMany reorganization and test coverage with fixes (py26-compat repr). also got a bit mor",
+  "src_files": [
+   "boltons/dictutils.py"
+  ],
+  "test_files": [
+   "tests/test_dictutils.py"
+  ],
+  "src_lines": 28,
+  "multi_file": false
+ },
+ {
+  "sha": "a844c1d476cef72cc8b18340f003e7fda8d45eb3",
+  "subject": "add initial changes and tests for keeping coroutine functions async in functionbuilder, probably fix",
+  "src_files": [
+   "boltons/funcutils.py"
+  ],
+  "test_files": [
+   "tests/test_funcutils_fb_py3.py",
+   "tests/test_funcutils_fb_py35.py"
+  ],
+  "src_lines": 14,
+  "multi_file": false
+ },
+ {
+  "sha": "f3b90dbdc8ed04b66166343a3c18fd7aaeb2c272",
+  "subject": "fixed NotImplemented handling, added unit tests to check that complement set defers to other object ",
+  "src_files": [
+   "boltons/setutils.py"
+  ],
+  "test_files": [
+   "tests/test_setutils.py"
+  ],
+  "src_lines": 32,
+  "multi_file": false
+ },
+ {
+  "sha": "3b9c35385c100dd21589946e9e626177e52eb055",
+  "subject": "cleaning up complement set and fixing 2.6 compatibility",
+  "src_files": [
+   "boltons/setutils.py"
+  ],
+  "test_files": [
+   "tests/test_setutils.py"
+  ],
+  "src_lines": 11,
+  "multi_file": false
+ },
+ {
+  "sha": "e2c7b18a7b948ac25163b616b30b722eb3930211",
+  "subject": "tableutils.Table: add thead/tbody tags to the default html table, enabling more styling, and handy s",
+  "src_files": [
+   "boltons/tableutils.py"
+  ],
+  "test_files": [
+   "tests/test_tableutils.py"
+  ],
+  "src_lines": 8,
+  "multi_file": false
+ },
+ {
+  "sha": "55a2791b77a991bd130af9f1a2298019b318bd4a",
+  "subject": "Fix line-by-line file iteration in ioutils modules",
+  "src_files": [
+   "boltons/ioutils.py"
+  ],
+  "test_files": [
+   "tests/test_ioutils.py"
+  ],
+  "src_lines": 16,
+  "multi_file": false
+ },
+ {
+  "sha": "b61d5af99e683f82098316bc10a2fd4717729f65",
+  "subject": "improved type checking for MultiFileReader (enables more file-like objects including codecs.open etc",
+  "src_files": [
+   "boltons/ioutils.py"
+  ],
+  "test_files": [
+   "tests/test_ioutils.py"
+  ],
+  "src_lines": 23,
+  "multi_file": false
+ },
+ {
+  "sha": "14208cf6e3d5a125b5554394d8a695c2921fd2f8",
+  "subject": "fix kwonly arg removal in funcutils.FunctionBuilder, thus fixing funcutils.wraps, which fixes #123",
+  "src_files": [
+   "boltons/funcutils.py"
+  ],
+  "test_files": [
+   "tests/test_funcutils_fb_py3.py"
+  ],
+  "src_lines": 22,
+  "multi_file": false
+ },
+ {
+  "sha": "30f1d7d929ed48239a6c7c5989454f852a5d7e86",
+  "subject": "urlutils: added new factory method navigate. q alias became qp. remove suffix-y behavior of normaliz",
+  "src_files": [
+   "boltons/urlutils.py"
+  ],
+  "test_files": [
+   "tests/test_urlutils.py"
+  ],
+  "src_lines": 74,
+  "multi_file": false
+ },
+ {
+  "sha": "b4dc12d6bf72161fb8c64787b01491cabf23b7bf",
+  "subject": "couple more urlutils fixes (path setter, no-netloc schemes, allow empty URLs",
+  "src_files": [
+   "boltons/urlutils.py"
+  ],
+  "test_files": [
+   "tests/test_urlutils.py"
+  ],
+  "src_lines": 26,
+  "multi_file": false
+ },
+ {
+  "sha": "4140386d1fb1eee177298bfe7f5335d4ce2aab47",
+  "subject": "improving and testing exceptions around classmethod and staticmethod for funcutils.wraps and Functio",
+  "src_files": [
+   "boltons/funcutils.py"
+  ],
+  "test_files": [
+   "tests/test_funcutils_fb.py"
+  ],
+  "src_lines": 9,
+  "multi_file": false
+ },
+ {
+  "sha": "fea88172d77dca9658a39802a3a3bee269e4aef4",
+  "subject": "put a fix and test in for _sending_ large messages with BufferedSocket",
+  "src_files": [
+   "boltons/socketutils.py"
+  ],
+  "test_files": [
+   "tests/test_socketutils.py"
+  ],
+  "src_lines": 13,
+  "multi_file": false
+ },
+ {
+  "sha": "2d419c51c81e074e362459a05f6e11221dfb9e18",
+  "subject": "iterutils.remap: now supports mapping over non-default collections and raises an error when the obje",
+  "src_files": [
+   "boltons/iterutils.py"
+  ],
+  "test_files": [
+   "tests/test_iterutils.py"
+  ],
+  "src_lines": 51,
+  "multi_file": false
+ },
+ {
+  "sha": "f0b496f70e674bed812f307df7ed5924c17a99d1",
+  "subject": "namedutils tests, fix a namedutils pickles issue, add an __all__ to namedutils",
+  "src_files": [
+   "boltons/namedutils.py"
+  ],
+  "test_files": [
+   "tests/test_namedutils.py"
+  ],
+  "src_lines": 21,
+  "multi_file": false
+ }
+]

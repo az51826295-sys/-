@@ -1,0 +1,30 @@
+{
+ "repo": "boltons",
+ "fix_commit": "4457decc614ee795804f2bb9c44ae9be30831d53",
+ "parent_commit": "913aef46f58b9869cd93684917f5c231fba42b4a",
+ "answer_files": [
+  "boltons/setutils.py"
+ ],
+ "answer_functions": [
+  "boltons/setutils.py::_get_apparent_index",
+  "boltons/setutils.py::index"
+ ],
+ "patch_lines": 14,
+ "added_tests": {
+  "tests/test_setutils.py::test_iset_index_method": {
+   "parent": "fail",
+   "fix": "fail",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "tests/test_setutils.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 2.0,
+ "env_error_tests": 0,
+ "qualified": false
+}

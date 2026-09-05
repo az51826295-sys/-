@@ -1,0 +1,40 @@
+{
+ "repo": "sortedcontainers",
+ "fix_commit": "367c64a06f86f1eb60f2c331c3b13a3de32977b9",
+ "parent_commit": "07896eae5fd1694f2337c1b69cee7e6b3b7461b6",
+ "answer_files": [
+  "sortedcontainers/sortedlist.py"
+ ],
+ "answer_functions": [
+  "sortedcontainers/sortedlist.py::__setitem__"
+ ],
+ "patch_lines": 9,
+ "added_tests": {
+  "tests/test_coverage_sortedlist.py::test_setitem": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_coverage_sortedlist.py::test_setitem_slice": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_coverage_sortedlist.py::test_setitem_extended_slice": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "tests/test_coverage_sortedlist.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 12.2,
+ "env_error_tests": 3,
+ "qualified": false,
+ "selector_event_proxy_v1": false
+}

@@ -1,0 +1,42 @@
+{
+ "BS": {
+  "n_runs": 80,
+  "wrong_file_revisit_rate": 0.2254,
+  "wrong_file_revisits_abs": 48,
+  "revisit_eligible": 213,
+  "correct_file_rate": 0.75,
+  "distinct_files_mean": 1.55,
+  "mech_pass_rate": 0.6781,
+  "candidates_total": 292,
+  "public_cands_per_run": 0.375,
+  "public_cands_abs": 30,
+  "full_rate": 0.2375,
+  "status_counts": {
+   "full": 19,
+   "no_patch": 8,
+   "regression": 53
+  },
+  "hyp_revisit_rate_r2": 0.007,
+  "hyp_r2_total": 285,
+  "hyp_validation_rate": 0.7431,
+  "hyp_generated": 685
+ },
+ "BF": {
+  "n_runs": 80,
+  "wrong_file_revisit_rate": 0.0086,
+  "wrong_file_revisits_abs": 3,
+  "revisit_eligible": 348,
+  "correct_file_rate": 0.95,
+  "distinct_files_mean": 0.9625,
+  "mech_pass_rate": 0.771,
+  "candidates_total": 428,
+  "public_cands_per_run": 1.075,
+  "public_cands_abs": 86,
+  "full_rate": 0.375,
+  "status_counts": {
+   "full": 30,
+   "no_patch": 4,
+   "regression": 46
+  }
+ }
+}

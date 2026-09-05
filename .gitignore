@@ -44,3 +44,18 @@ next-env.d.ts
 # python
 __pycache__/
 *.pyc
+
+# engine (파이썬 판정·연출가 엔진, 09-05 genesis-project 에서 옮겨 옴)
+engine/__pycache__/
+engine/**/__pycache__/
+engine/.pytest_cache/
+engine/.venv/
+engine/data/*.db
+engine/data/*.db-journal
+engine/data/*.log
+engine/data/repos/
+engine/data/review_queue.json
+engine/data/tunnel*.log
+engine/.secrets/
+engine/out/
+engine/tools/bin/

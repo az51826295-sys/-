@@ -1,0 +1,6 @@
+{
+    "num_door_sections": 1,
+    "num_hazards": 0,
+    "slip_probability": 0.3,
+    "initial_energy": 130
+}

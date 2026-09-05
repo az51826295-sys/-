@@ -1,0 +1,235 @@
+{
+ "rows": [
+  {
+   "issue": "mahmoud/boltons#439",
+   "title": "IndexedSet: difference_update/intersection_update are quadratic for large remova",
+   "labels": [],
+   "feature_words": false,
+   "undefined": [],
+   "F": false,
+   "human": "bug"
+  },
+  {
+   "issue": "mahmoud/boltons#344",
+   "title": "chunked filter",
+   "labels": [],
+   "feature_words": false,
+   "undefined": [],
+   "F": false,
+   "human": "feature"
+  },
+  {
+   "issue": "mahmoud/boltons#324",
+   "title": "attrs/dataclasses-style decorator helper",
+   "labels": [],
+   "feature_words": false,
+   "undefined": [],
+   "F": false,
+   "human": "feature"
+  },
+  {
+   "issue": "mahmoud/boltons#310",
+   "title": "windowed with overlap",
+   "labels": [],
+   "feature_words": false,
+   "undefined": [],
+   "F": false,
+   "human": "feature"
+  },
+  {
+   "issue": "mahmoud/boltons#301",
+   "title": "`FunctionBuilder.from_func` not working",
+   "labels": [],
+   "feature_words": false,
+   "undefined": [],
+   "F": false,
+   "human": "bug"
+  },
+  {
+   "issue": "mahmoud/boltons#290",
+   "title": "__version__ field",
+   "labels": [],
+   "feature_words": true,
+   "undefined": [],
+   "F": true,
+   "human": "feature"
+  },
+  {
+   "issue": "mahmoud/boltons#289",
+   "title": "typename",
+   "labels": [],
+   "feature_words": false,
+   "undefined": [],
+   "F": false,
+   "human": "feature"
+  },
+  {
+   "issue": "mahmoud/boltons#280",
+   "title": "URL comparison is order-based for query parameters",
+   "labels": [],
+   "feature_words": false,
+   "undefined": [],
+   "F": false,
+   "human": "bug"
+  },
+  {
+   "issue": "mahmoud/boltons#266",
+   "title": "dict get_all()",
+   "labels": [],
+   "feature_words": false,
+   "undefined": [],
+   "F": false,
+   "human": "feature"
+  },
+  {
+   "issue": "mahmoud/boltons#256",
+   "title": "auto recursive module importer",
+   "labels": [],
+   "feature_words": false,
+   "undefined": [],
+   "F": false,
+   "human": "feature"
+  },
+  {
+   "issue": "mahmoud/boltons#201",
+   "title": "Adding parameters with wraps()",
+   "labels": [],
+   "feature_words": true,
+   "undefined": [],
+   "F": true,
+   "human": "bug"
+  },
+  {
+   "issue": "msiemens/tinydb#631",
+   "title": "CachingMiddleware: operations after close() still succeed in memory",
+   "labels": [],
+   "feature_words": false,
+   "undefined": [],
+   "F": false,
+   "human": "bug"
+  },
+  {
+   "issue": "msiemens/tinydb#629",
+   "title": "insert_multiple can silently overwrite documents when mixing Document and dict",
+   "labels": [],
+   "feature_words": false,
+   "undefined": [],
+   "F": false,
+   "human": "bug"
+  },
+  {
+   "issue": "msiemens/tinydb#354",
+   "title": "Move a document from a certain database to another one error",
+   "labels": [
+    "pinned"
+   ],
+   "feature_words": false,
+   "undefined": [],
+   "F": false,
+   "human": "bug"
+  },
+  {
+   "issue": "pytoolz/toolz#626",
+   "title": "tail(0, seq) returns the whole sequence instead of empty (and is inconsistent ac",
+   "labels": [],
+   "feature_words": false,
+   "undefined": [],
+   "F": false,
+   "human": "bug"
+  },
+  {
+   "issue": "pytoolz/toolz#580",
+   "title": "Dictionary chunking / batching (inverting merge_with)",
+   "labels": [],
+   "feature_words": true,
+   "undefined": [],
+   "F": true,
+   "human": "feature"
+  },
+  {
+   "issue": "pytoolz/toolz#569",
+   "title": "Loss of typing information on composed functions",
+   "labels": [],
+   "feature_words": false,
+   "undefined": [],
+   "F": false,
+   "human": "bug"
+  },
+  {
+   "issue": "pytoolz/toolz#567",
+   "title": "Split two lists/iterables of objects \"wanted_state\", \"existing_state\" in 3 lists",
+   "labels": [],
+   "feature_words": false,
+   "undefined": [],
+   "F": false,
+   "human": "feature"
+  },
+  {
+   "issue": "pytoolz/toolz#529",
+   "title": "Combination of map and accumulate",
+   "labels": [],
+   "feature_words": false,
+   "undefined": [],
+   "F": false,
+   "human": "feature"
+  },
+  {
+   "issue": "pytoolz/toolz#517",
+   "title": "iget for fetching indexes from a non-sequence iterable",
+   "labels": [],
+   "feature_words": true,
+   "undefined": [],
+   "F": true,
+   "human": "feature"
+  },
+  {
+   "issue": "mahmoud/boltons#142",
+   "title": "camel2under possible error",
+   "labels": [],
+   "feature_words": false,
+   "undefined": [],
+   "F": false,
+   "human": "bug"
+  },
+  {
+   "issue": "mahmoud/boltons#141",
+   "title": "Time zones don't support fold",
+   "labels": [],
+   "feature_words": false,
+   "undefined": [
+    "Eastern"
+   ],
+   "F": true,
+   "human": "bug"
+  },
+  {
+   "issue": "marshmallow-code/marshmallow#1566",
+   "title": "Inconsistent None items serialization between Nested(…, many=True) and List(Nest",
+   "labels": [],
+   "feature_words": false,
+   "undefined": [
+    "fields"
+   ],
+   "F": true,
+   "human": "bug"
+  },
+  {
+   "issue": "pytoolz/toolz#496",
+   "error": "HTTP Error 403: rate limit exceeded"
+  },
+  {
+   "issue": "pytoolz/toolz#481",
+   "error": "HTTP Error 403: rate limit exceeded"
+  }
+ ],
+ "aggregate": {
+  "labeled": 23,
+  "tp": 3,
+  "fp": 3,
+  "fn": 8,
+  "tn": 9,
+  "precision": 0.5,
+  "recall": 0.273,
+  "bug_misclassified_as_feature": 3
+ }
+}

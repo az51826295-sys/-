@@ -1,0 +1,17 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "afb1230811c6d588a18817f07a6a34e51dc7cde4",
+ "parent_commit": "df68ee4e34808ffdb7076ad98a6b9b763f119422",
+ "answer_functions": [
+  "marshmallow/exceptions.py::__init__",
+  "marshmallow/schema.py::_do_load",
+  "marshmallow/schema.py::dump"
+ ],
+ "repro_tests": [],
+ "smoke": [],
+ "baseline_pass_count": 0,
+ "probes": [],
+ "inc_event": false,
+ "regression_event": false,
+ "skipped": "no repro or no answer functions"
+}

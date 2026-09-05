@@ -1,0 +1,32 @@
+{
+ "more-itertools_def2d821c": {
+  "file_hits": "5/5",
+  "func_hits": "0/5",
+  "class": "미분류"
+ },
+ "dateutil_16424e936": {
+  "file_hits": "5/5",
+  "func_hits": "0/5",
+  "class": "미분류"
+ },
+ "dateutil_5f2052faf": {
+  "file_hits": "5/5",
+  "func_hits": "0/5",
+  "class": "미분류"
+ },
+ "sortedcontainers_2b037039b": {
+  "file_hits": "5/5",
+  "func_hits": "5/5",
+  "class": "천장 (제외)"
+ },
+ "sortedcontainers_7dc426c95": {
+  "file_hits": "5/5",
+  "func_hits": "5/5",
+  "class": "천장 (제외)"
+ },
+ "usage": {
+  "calls": 25,
+  "input_tokens": 13745,
+  "output_tokens": 5449
+ }
+}

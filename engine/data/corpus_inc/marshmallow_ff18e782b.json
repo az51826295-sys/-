@@ -1,0 +1,48 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "ff18e782be9d04557f027116b147f16bcecb9999",
+ "parent_commit": "6a12c3ca7d28557f5ac33f8d0dfad95dffed31c2",
+ "answer_functions": [
+  "marshmallow/fields.py::_ensure_text_type",
+  "marshmallow/fields.py::_format_num",
+  "marshmallow/serializer.py::is_valid"
+ ],
+ "repro_tests": [
+  "tests/test_deserialization.py::TestFieldDeserialization::test_string_field_deserialization",
+  "tests/test_marshmallow.py::TestFieldSerialization::test_string_field"
+ ],
+ "smoke": [
+  "tests/test_deserialization.py::TestFieldDeserialization::test_arbitrary_field_deserialization",
+  "tests/test_deserialization.py::TestFieldDeserialization::test_boolean_field_deserialization",
+  "tests/test_deserialization.py::TestFieldDeserialization::test_boolean_field_deserialization_with_custom_truthy_values"
+ ],
+ "baseline_pass_count": 203,
+ "probes": [
+  {
+   "applied": "marshmallow/serializer.py::is_valid",
+   "a_repro_pass": false,
+   "b_smoke_pass": true,
+   "c_no_regression": true,
+   "regressed": [],
+   "d_unmet": [
+    "tests/test_deserialization.py::TestFieldDeserialization::test_string_field_deserialization",
+    "tests/test_marshmallow.py::TestFieldSerialization::test_string_field"
+   ],
+   "inc_event": false
+  },
+  {
+   "applied": "marshmallow/fields.py::_format_num",
+   "a_repro_pass": false,
+   "b_smoke_pass": true,
+   "c_no_regression": true,
+   "regressed": [],
+   "d_unmet": [
+    "tests/test_deserialization.py::TestFieldDeserialization::test_string_field_deserialization",
+    "tests/test_marshmallow.py::TestFieldSerialization::test_string_field"
+   ],
+   "inc_event": false
+  }
+ ],
+ "inc_event": false,
+ "regression_event": false
+}

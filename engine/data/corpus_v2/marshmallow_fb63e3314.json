@@ -1,0 +1,58 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "fb63e3314b6622d807679d3e116df77c604c8a3d",
+ "parent_commit": "4d70481e21efeedd86b31d2a20ff89e706b3db8b",
+ "answer_files": [
+  "src/marshmallow/fields.py",
+  "src/marshmallow/utils.py"
+ ],
+ "answer_functions": [
+  "src/marshmallow/fields.py::_bind_to_schema",
+  "src/marshmallow/utils.py::callable_or_raise"
+ ],
+ "patch_lines": 36,
+ "added_tests": {
+  "tests/test_deserialization.py::TestFieldDeserialization::test_deserialization_function_must_be_callable": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_deserialization.py::TestFieldDeserialization::test_deserialization_method_must_be_a_method": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_deserialization.py::TestFieldDeserialization::test_method_field_deserialize_only": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_serialization.py::TestFieldSerialization::test_function_field_passed_uncallable_object": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_serialization.py::TestFieldSerialization::test_method_field_with_method_missing": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_serialization.py::TestFieldSerialization::test_method_field_with_uncallable_attribute": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "tests/test_deserialization.py",
+  "tests/test_serialization.py"
+ ],
+ "location_hard_proxy": true,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 25.8,
+ "env_error_tests": 6,
+ "qualified": false,
+ "selector_event_proxy_v1": false
+}

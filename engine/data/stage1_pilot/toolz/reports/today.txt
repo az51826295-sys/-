@@ -1,0 +1,36 @@
+=== Rookery Alpha 일일 보고 2026-08-22
+
+[예산] 2026-08-22  단계=normal
+  오늘               0원 / 일한도 5,000원
+  이달 확정          0원 (예약중 0원)
+  고정비        15,000원
+  이달 합계     15,000원 / 한도 60,000원
+  정지선까지    30,000원 (잔여 9일)
+  월말 예상     15,000원 (일 0원 추세)
+  예약 원장   settled 6건
+
+[작업]
+  성공 0 / 실패 0 / 고아 0 / 진행 1
+  완료 작업 0건, 대기 5건
+
+[실패 분류]
+  분류 가능률 100% (목표 90%)
+  실패 없음
+
+[과제 유입]
+  등록 0 / 거부 0
+
+[안전]
+  차단된 명령 0건, 격리 이탈 시도 0건
+
+[정지]
+  감사 불일치 0건, 엔진 정지 0건
+
+[합격 조건]
+  completed_task_reruns: 0
+  budget_overruns: 0
+  workspace_escapes: 0
+  dangerous_commands_executed: 0
+  halt_on_disagreement: 100%
+  recovered_after_crash: 0
+  failure_classification_rate: 1.0

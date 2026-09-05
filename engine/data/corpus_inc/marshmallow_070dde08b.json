@@ -1,0 +1,21 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "070dde08bad456e743a0d2e1842c142a799a9568",
+ "parent_commit": "fea5428567960f15be0c9a3a4b99c0d9bb63848c",
+ "answer_functions": [
+  "src/marshmallow/fields.py::__init__",
+  "src/marshmallow/fields.py::_validate_missing"
+ ],
+ "repro_tests": [
+  "tests/test_deserialization.py::TestFieldDeserialization::test_constant_with_required"
+ ],
+ "smoke": [
+  "tests/test_deserialization.py::TestDeserializingNone::test_allow_none_is_true_if_missing_is_true",
+  "tests/test_deserialization.py::TestDeserializingNone::test_fields_allow_none_deserialize_to_none[Boolean]",
+  "tests/test_deserialization.py::TestDeserializingNone::test_fields_allow_none_deserialize_to_none[DateTime]"
+ ],
+ "baseline_pass_count": 374,
+ "probes": [],
+ "inc_event": false,
+ "regression_event": false
+}

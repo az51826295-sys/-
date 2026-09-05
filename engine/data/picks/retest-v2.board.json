@@ -1,0 +1,308 @@
+{
+  "spec": "taste-retest-v0",
+  "seed": 20260829,
+  "design": "docs/taste-retest-v0-design.md",
+  "concepts": [
+    {
+      "slot": 1,
+      "concept": "01_save@v1",
+      "pool": "out/icons/pick-v1/candidates",
+      "items": [
+        {
+          "no": 1,
+          "file": "c02.svg",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><circle cx=\"12\" cy=\"12\" r=\"7.5\"/><path d=\"M9.5 12l2 2 4-4\"/></svg>"
+        },
+        {
+          "no": 2,
+          "file": "c03.svg",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><rect x=\"4.5\" y=\"6.5\" width=\"14\" height=\"11\" rx=\"1.5\"/><path d=\"M9.5 12.5l2 2.5 4.5-5\"/></svg>"
+        },
+        {
+          "no": 3,
+          "file": "c01.svg",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><rect x=\"4.5\" y=\"6.5\" width=\"12\" height=\"10\" rx=\"1\"/><polyline points=\"8.5,12.5 10.5,14.5 15.5,9.5\"/></svg>"
+        }
+      ]
+    },
+    {
+      "slot": 2,
+      "concept": "02_defend",
+      "pool": "out/icons/pick-v2/candidates",
+      "items": [
+        {
+          "no": 1,
+          "file": "c05.svg",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M12 2.5L6 8L6 20.5L18 20.5L18 8L12 2.5\"/>\n<line x1=\"6\" y1=\"11\" x2=\"18\" y2=\"11\"/>\n</svg>"
+        },
+        {
+          "no": 2,
+          "file": "c02.svg",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M12 2.5L5.5 8L5.5 20.5L18.5 20.5L18.5 8L12 2.5\"/>\n<polyline points=\"9,13 12,15.5 15,11\"/>\n</svg>"
+        },
+        {
+          "no": 3,
+          "file": "c07.svg",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M12 3L6.5 8L6.5 20L17.5 20L17.5 8L12 3\"/>\n<polyline points=\"11,16 12,17.5 13,16\"/>\n</svg>"
+        },
+        {
+          "no": 4,
+          "file": "c03.svg",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M12 2.5L6.5 7L6.5 20.5L17.5 20.5L17.5 7L12 2.5\"/>\n<circle cx=\"12\" cy=\"13.5\" r=\"3\"/>\n</svg>"
+        },
+        {
+          "no": 5,
+          "file": "c06.svg",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M12 2.5L7 7.5L7 20.5L17 20.5L17 7.5L12 2.5\"/>\n<rect x=\"9.5\" y=\"12\" width=\"5\" height=\"5\"/>\n</svg>"
+        },
+        {
+          "no": 6,
+          "file": "c01.svg",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M12 2.5L6.5 7.5L6.5 20.5L18 20.5L18 7.5L12 2.5\"/>\n<line x1=\"12\" y1=\"7\" x2=\"12\" y2=\"17\"/>\n</svg>"
+        },
+        {
+          "no": 7,
+          "file": "c04.svg",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M12 3L5.5 8.5L5.5 21L18.5 21L18.5 8.5L12 3\"/>\n<path d=\"M10 13L12 15L14 11\"/>\n</svg>"
+        }
+      ]
+    },
+    {
+      "slot": 3,
+      "concept": "02_inventory@v1",
+      "pool": "out/icons/pick-v1/candidates",
+      "items": [
+        {
+          "no": 1,
+          "file": "c06.svg",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><path d=\"M 7 6.5 Q 7 5.5 8 5.5 L 16 5.5 Q 17 5.5 17 6.5 L 17 9.5\"/><path d=\"M 19.5 9.5 L 19.5 18.5 Q 19.5 19.5 18.5 19.5 L 5.5 19.5 Q 4.5 19.5 4.5 18.5 L 4.5 9.5\"/><line x1=\"11\" y1=\"9.5\" x2=\"11\" y2=\"12\"/><polyline points=\"13.5,13 15.5,15 19,11.5\"/></svg>"
+        },
+        {
+          "no": 2,
+          "file": "c05.svg",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><path d=\"M 8.5 8 L 8.5 5 Q 8.5 4.5 9 4.5 L 15 4.5 Q 15.5 4.5 15.5 5 L 15.5 8\"/><path d=\"M 4.5 8.5 L 4.5 18.5 Q 4.5 19.5 5.5 19.5 L 18.5 19.5 Q 19.5 19.5 19.5 18.5 L 19.5 8.5\"/><polyline points=\"10,13 12,15 16,10.5\"/></svg>"
+        },
+        {
+          "no": 3,
+          "file": "c03.svg",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><path d=\"M 5.5 10 L 5.5 6 Q 5.5 4.5 7 4.5 L 17 4.5 Q 18.5 4.5 18.5 6 L 18.5 10\"/><rect x=\"3.5\" y=\"10\" width=\"17\" height=\"9\" rx=\"1\"/><path d=\"M 9.5 14.5 L 11.5 16.5 L 16 12\"/></svg>"
+        },
+        {
+          "no": 4,
+          "file": "c04.svg",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><line x1=\"9.5\" y1=\"4.5\" x2=\"9.5\" y2=\"8.5\"/><line x1=\"14.5\" y1=\"4.5\" x2=\"14.5\" y2=\"8.5\"/><rect x=\"4.5\" y=\"8.5\" width=\"15\" height=\"10\" rx=\"1\"/><polyline points=\"9.5,13 11.5,15 15.5,11\"/></svg>"
+        },
+        {
+          "no": 5,
+          "file": "c02.svg",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><path d=\"M 7.5 7 L 7.5 5.5 Q 7.5 4.5 8.5 4.5 L 15.5 4.5 Q 16.5 4.5 16.5 5.5 L 16.5 7\"/><rect x=\"4.5\" y=\"7\" width=\"15\" height=\"11\" rx=\"1\"/><polyline points=\"10.5,12.5 12.5,14.5 16.5,10\"/></svg>"
+        },
+        {
+          "no": 6,
+          "file": "c01.svg",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><path d=\"M 6.5 8.5 L 6.5 5.5 Q 6.5 4.5 7.5 4.5 L 16.5 4.5 Q 17.5 4.5 17.5 5.5 L 17.5 8.5\"/><rect x=\"4.5\" y=\"8.5\" width=\"15\" height=\"10\" rx=\"1\"/><path d=\"M 10 13 L 12 15 L 16 10.5\"/></svg>"
+        },
+        {
+          "no": 7,
+          "file": "c07.svg",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><rect x=\"5.5\" y=\"6.5\" width=\"13\" height=\"11\" rx=\"1\"/><path d=\"M 9.5 6.5 L 9.5 4.5 Q 9.5 3.5 10.5 3.5 L 13.5 3.5 Q 14.5 3.5 14.5 4.5 L 14.5 6.5\"/><polyline points=\"10.5,11.5 12.5,13.5 16,10\"/></svg>"
+        }
+      ]
+    },
+    {
+      "slot": 4,
+      "concept": "03_map@v1",
+      "pool": "out/icons/pick-v1/candidates",
+      "items": [
+        {
+          "no": 1,
+          "file": "c01.svg",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><rect x=\"2.5\" y=\"2.5\" width=\"19\" height=\"19\" rx=\"1\"/><circle cx=\"8.5\" cy=\"8.5\" r=\"1.5\"/><circle cx=\"15.5\" cy=\"12.5\" r=\"1.5\"/><polyline points=\"8.5,8.5 12,11 15.5,12.5\"/></svg>"
+        },
+        {
+          "no": 2,
+          "file": "c04.svg",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><path d=\"M 2.5 6.5 L 6 2.5 L 21.5 2.5 Q 21.5 12 12 21.5 Q 2.5 12 2.5 6.5\"/><circle cx=\"9\" cy=\"8.5\" r=\"1.5\"/><circle cx=\"14.5\" cy=\"12.5\" r=\"1.5\"/></svg>"
+        },
+        {
+          "no": 3,
+          "file": "c03.svg",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><rect x=\"2.5\" y=\"2.5\" width=\"19\" height=\"19\" rx=\"1\"/><line x1=\"8.5\" y1=\"2.5\" x2=\"8.5\" y2=\"21.5\"/><line x1=\"15.5\" y1=\"2.5\" x2=\"15.5\" y2=\"21.5\"/><circle cx=\"6\" cy=\"9\" r=\"1\"/><circle cx=\"11.5\" cy=\"15\" r=\"1\"/></svg>"
+        },
+        {
+          "no": 4,
+          "file": "c02.svg",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><rect x=\"2.5\" y=\"2.5\" width=\"19\" height=\"19\" rx=\"1\"/><path d=\"M 6.5 7.5 Q 8.5 5.5 10.5 7.5 T 14.5 7.5\"/><circle cx=\"7\" cy=\"13\" r=\"1.5\"/><circle cx=\"16\" cy=\"10.5\" r=\"1.5\"/></svg>"
+        },
+        {
+          "no": 5,
+          "file": "c06.svg",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><rect x=\"2.5\" y=\"2.5\" width=\"19\" height=\"19\" rx=\"1\"/><path d=\"M 4 10.5 Q 8 5 12 8 T 20 12\"/><line x1=\"7\" y1=\"15\" x2=\"10\" y2=\"18.5\"/><circle cx=\"6.5\" cy=\"14.5\" r=\"1\"/></svg>"
+        },
+        {
+          "no": 6,
+          "file": "c05.svg",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><rect x=\"2.5\" y=\"2.5\" width=\"19\" height=\"19\" rx=\"1\"/><path d=\"M 5.5 9.5 L 9 6.5 L 14.5 10 L 18.5 7\"/><circle cx=\"5.5\" cy=\"15\" r=\"1\"/><circle cx=\"18.5\" cy=\"14.5\" r=\"1\"/></svg>"
+        }
+      ]
+    },
+    {
+      "slot": 5,
+      "concept": "04_quest",
+      "pool": "out/icons/pick-v2/candidates",
+      "items": [
+        {
+          "no": 1,
+          "file": "c01.svg",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M4.5 6.5L19.5 6.5L19.5 19.5L4.5 19.5Z\"/>\n<path d=\"M8.5 10.5L15.5 10.5\"/>\n<path d=\"M8.5 14.5L15.5 14.5\"/>\n<path d=\"M8.5 18.5L12.5 18.5\"/>\n</svg>"
+        },
+        {
+          "no": 2,
+          "file": "c04.svg",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M6.5 4.5L12 2.5L17.5 4.5L17.5 20.5L6.5 20.5Z\"/>\n<path d=\"M9.5 9.5L14.5 9.5\"/>\n<path d=\"M9.5 13.5L14.5 13.5\"/>\n<path d=\"M9.5 17.5L13.5 17.5\"/>\n</svg>"
+        },
+        {
+          "no": 3,
+          "file": "c03.svg",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<rect x=\"4.5\" y=\"6.5\" width=\"15\" height=\"13\" rx=\"1\"/>\n<path d=\"M7.5 10.5L16.5 10.5\"/>\n<path d=\"M7.5 14.5L16.5 14.5\"/>\n<path d=\"M7.5 18.5L12.5 18.5\"/>\n</svg>"
+        },
+        {
+          "no": 4,
+          "file": "c05.svg",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M5.5 7.5L18.5 7.5L18.5 20.5L5.5 20.5Z\"/>\n<circle cx=\"8.5\" cy=\"11.5\" r=\"1\"/>\n<circle cx=\"15.5\" cy=\"11.5\" r=\"1\"/>\n<path d=\"M8.5 15L15.5 15\"/>\n<path d=\"M8.5 18.5L12.5 18.5\"/>\n</svg>"
+        },
+        {
+          "no": 5,
+          "file": "c06.svg",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M4.5 5.5L12 3.5L19.5 5.5\"/>\n<path d=\"M4.5 5.5L4.5 19.5L19.5 19.5L19.5 5.5\"/>\n<line x1=\"8.5\" y1=\"10.5\" x2=\"15.5\" y2=\"10.5\"/>\n<line x1=\"8.5\" y1=\"14.5\" x2=\"15.5\" y2=\"14.5\"/>\n</svg>"
+        },
+        {
+          "no": 6,
+          "file": "c02.svg",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M5.5 5.5L12 2.5L18.5 5.5L18.5 19.5L5.5 19.5Z\"/>\n<circle cx=\"9.5\" cy=\"11.5\" r=\"1.5\"/>\n<circle cx=\"14.5\" cy=\"11.5\" r=\"1.5\"/>\n<path d=\"M9 15.5L15 15.5\"/>\n</svg>"
+        }
+      ]
+    },
+    {
+      "slot": 6,
+      "concept": "04_settings@v1",
+      "pool": "out/icons/pick-v1/candidates",
+      "items": [
+        {
+          "no": 1,
+          "file": "c05.svg",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><path d=\"M 12 4.5 L 12 6.5 M 12 17.5 L 12 19.5 M 19.5 12 L 17.5 12 M 6.5 12 L 4.5 12\"/><circle cx=\"12\" cy=\"12\" r=\"3.5\"/><path d=\"M 15 9 L 17 7 M 7 17 L 9 15\"/></svg>"
+        },
+        {
+          "no": 2,
+          "file": "c04.svg",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><circle cx=\"12\" cy=\"8.5\" r=\"2.5\"/><rect x=\"5.5\" y=\"13\" width=\"13\" height=\"6.5\" rx=\"1\"/><polyline points=\"8.5,16 12,18 15.5,16\"/></svg>"
+        },
+        {
+          "no": 3,
+          "file": "c01.svg",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><rect x=\"8.5\" y=\"5.5\" width=\"7\" height=\"13\" rx=\"1\"/><circle cx=\"12\" cy=\"8.5\" r=\"1\"/><circle cx=\"12\" cy=\"15.5\" r=\"1\"/><line x1=\"12\" y1=\"10.5\" x2=\"12\" y2=\"13.5\"/></svg>"
+        },
+        {
+          "no": 4,
+          "file": "c03.svg",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><g><circle cx=\"6.5\" cy=\"6.5\" r=\"2\"/><path d=\"M 3.5 6.5 L 2.5 6.5 M 10.5 6.5 L 11.5 6.5\"/></g><g><circle cx=\"12\" cy=\"12\" r=\"2\"/><path d=\"M 9 12 L 8 12 M 15 12 L 16 12\"/></g><g><circle cx=\"17.5\" cy=\"17.5\" r=\"2\"/><path d=\"M 14.5 17.5 L 13.5 17.5 M 20.5 17.5 L 21.5 17.5\"/></g></svg>"
+        },
+        {
+          "no": 5,
+          "file": "c02.svg",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><rect x=\"6.5\" y=\"9.5\" width=\"11\" height=\"8\" rx=\"1\"/><circle cx=\"12\" cy=\"13.5\" r=\"2\"/><path d=\"M 3.5 13.5 Q 5 12 6.5 13.5 Q 5 15 3.5 13.5\"/><path d=\"M 20.5 13.5 Q 19 12 17.5 13.5 Q 19 15 20.5 13.5\"/></svg>"
+        }
+      ]
+    },
+    {
+      "slot": 7,
+      "concept": "08_exit",
+      "pool": "out/icons/pick-v2/candidates",
+      "items": [
+        {
+          "no": 1,
+          "file": "c02.svg",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<rect x=\"5.5\" y=\"6.5\" width=\"13\" height=\"14\" rx=\"1.5\"/>\n<path d=\"M9.5 11.5L14.5 16.5M14.5 11.5L9.5 16.5\"/>\n</svg>"
+        },
+        {
+          "no": 2,
+          "file": "c04.svg",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<circle cx=\"12\" cy=\"12\" r=\"8.5\"/>\n<path d=\"M12 7L12 12L15 14.5\"/>\n<line x1=\"12\" y1=\"2.5\" x2=\"12\" y2=\"5.5\"/>\n</svg>"
+        },
+        {
+          "no": 3,
+          "file": "c05.svg",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M6.5 8.5L12 2.5L17.5 8.5L17.5 20.5L6.5 20.5Z\"/>\n<line x1=\"10\" y1=\"14\" x2=\"14\" y2=\"10\"/>\n</svg>"
+        },
+        {
+          "no": 4,
+          "file": "c01.svg",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M19.5 4.5L4.5 19.5M4.5 4.5L19.5 19.5\"/>\n<line x1=\"12\" y1=\"2.5\" x2=\"12\" y2=\"8.5\"/>\n</svg>"
+        },
+        {
+          "no": 5,
+          "file": "c06.svg",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M4.5 10.5L12 3.5L19.5 10.5L19.5 20.5L4.5 20.5Z\"/>\n<polyline points=\"12,10.5 12,15.5 9.5,13\"/>\n<polyline points=\"12,10.5 12,15.5 14.5,13\"/>\n</svg>"
+        },
+        {
+          "no": 6,
+          "file": "c03.svg",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M3.5 12L12 3.5L20.5 12\"/>\n<path d=\"M12 3.5L12 20.5M5.5 13.5L18.5 13.5\"/>\n</svg>"
+        }
+      ]
+    }
+  ],
+  "key": {
+    "1:1": "c02.svg",
+    "1:2": "c03.svg",
+    "1:3": "c01.svg",
+    "1:first_choice": "c03.svg",
+    "2:1": "c05.svg",
+    "2:2": "c02.svg",
+    "2:3": "c07.svg",
+    "2:4": "c03.svg",
+    "2:5": "c06.svg",
+    "2:6": "c01.svg",
+    "2:7": "c04.svg",
+    "2:first_choice": "c01.svg",
+    "3:1": "c06.svg",
+    "3:2": "c05.svg",
+    "3:3": "c03.svg",
+    "3:4": "c04.svg",
+    "3:5": "c02.svg",
+    "3:6": "c01.svg",
+    "3:7": "c07.svg",
+    "3:first_choice": "c05.svg",
+    "4:1": "c01.svg",
+    "4:2": "c04.svg",
+    "4:3": "c03.svg",
+    "4:4": "c02.svg",
+    "4:5": "c06.svg",
+    "4:6": "c05.svg",
+    "4:first_choice": "c05.svg",
+    "5:1": "c01.svg",
+    "5:2": "c04.svg",
+    "5:3": "c03.svg",
+    "5:4": "c05.svg",
+    "5:5": "c06.svg",
+    "5:6": "c02.svg",
+    "5:first_choice": "c06.svg",
+    "6:1": "c05.svg",
+    "6:2": "c04.svg",
+    "6:3": "c01.svg",
+    "6:4": "c03.svg",
+    "6:5": "c02.svg",
+    "6:first_choice": "c05.svg",
+    "7:1": "c02.svg",
+    "7:2": "c04.svg",
+    "7:3": "c05.svg",
+    "7:4": "c01.svg",
+    "7:5": "c06.svg",
+    "7:6": "c03.svg",
+    "7:first_choice": "c02.svg"
+  },
+  "note": "대조표(key)는 사장님이 다시 고르신 뒤에만 연다",
+  "board_ts": "2026-08-27T12:58:38",
+  "board_ts_note": "파일 수정 시각에서 사후 보정. 판을 낼 때 기록한 값이 아니다"
+}

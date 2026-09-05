@@ -1,0 +1,288 @@
+{
+ "frozen_at": "2026-08-22",
+ "protocol": "docs/rookery-stage1-infra-design.md",
+ "source": "scan",
+ "rows": [
+  {
+   "repo": "mahmoud/boltons",
+   "number": 439,
+   "title": "IndexedSet: difference_update/intersection_update are quadratic for large removals",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import boltons\n\ndef test_mock():\n    assert False, '배관 검증'\n"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 347,
+   "title": "tracking some ideas",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import boltons\n\ndef test_mock():\n    assert False, '배관 검증'\n"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 344,
+   "title": "chunked filter",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import boltons\n\ndef test_mock():\n    assert False, '배관 검증'\n"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 324,
+   "title": "attrs/dataclasses-style decorator helper",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import boltons\n\ndef test_mock():\n    assert False, '배관 검증'\n"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 311,
+   "title": "Feature request: intersection and union of lists of ranges",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import boltons\n\ndef test_mock():\n    assert False, '배관 검증'\n"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 310,
+   "title": "windowed with overlap",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import boltons\n\ndef test_mock():\n    assert False, '배관 검증'\n"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 304,
+   "title": "question: how to get `remap` to ignore lists",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import boltons\n\ndef test_mock():\n    assert False, '배관 검증'\n"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 301,
+   "title": "`FunctionBuilder.from_func` not working",
+   "class": "A",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "def test_intake_issue():\n    def foo(a, b=2):\r\n        return a / b\r\n    \r\n    f = FunctionBuilder.from_func(foo).get_func()\r\n    assert f(20) == foo(20) == 10.0  # fails\r\n"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 299,
+   "title": "Proposal: shorten long string by truncate chars (not by words)",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import boltons\n\ndef test_mock():\n    assert False, '배관 검증'\n"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 290,
+   "title": "__version__ field",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import boltons\n\ndef test_mock():\n    assert False, '배관 검증'\n"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 289,
+   "title": "typename",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import boltons\n\ndef test_mock():\n    assert False, '배관 검증'\n"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 280,
+   "title": "URL comparison is order-based for query parameters",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import boltons\n\ndef test_mock():\n    assert False, '배관 검증'\n"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 266,
+   "title": "dict get_all()",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import boltons\n\ndef test_mock():\n    assert False, '배관 검증'\n"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 256,
+   "title": "auto recursive module importer",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import boltons\n\ndef test_mock():\n    assert False, '배관 검증'\n"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 225,
+   "title": "RFE: enhance IndexedSet to inherit from set",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import boltons\n\ndef test_mock():\n    assert False, '배관 검증'\n"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 201,
+   "title": "Adding parameters with wraps()",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import boltons\n\ndef test_mock():\n    assert False, '배관 검증'\n"
+  },
+  {
+   "repo": "more-itertools/more-itertools",
+   "number": 1017,
+   "title": "Faster `sliding_window`?",
+   "class": "A",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "def test_intake_issue():\n    def with_deque(iterable, n):\n        iterator = iter(iterable)\n        window = deque(islice(iterator, n - 1), maxlen=n)\n        for x in iterator:\n            window.append(x)\n            yield tuple(window)\n\n    def with_list(iterable, n):\n        iterator = iter(iterable)\n        window = list(islice(iterator, n - 1))\n        for x in iterator:\n            window.append(x)\n            yield tuple(window)\n            del window[0]\n\n    def with_tees(iterable, n):\n        iterators = tee(iterable, n)\n        for i, iterator in enumerate(iterators):\n            next(islice(iterator, i, i), None)\n        return zip(*iterators)\n\n    funcs = [\n        with_deque,\n        with_list,\n        with_tees,\n    ]\n\n    from time import perf_counter as time\n    from statistics import mean, stdev\n    from itertools import tee, islice\n    from collections import deque\n    import sys\n    import random\n\n    # Correctness\n    for m in range(20):\n        data = range(m)\n        for n in range(1, 30):\n            expect = list(funcs[0](data, n))\n            for f in funcs:\n                result = list(f(data, n))\n                assert result == expect, (data, n, f.__name__, expect, result)\n\n    # Speed\n    data = [None] * 10_000\n    ns = sorted({\n        n\n        for i in range(31)\n        for n in [round(10**(i/10))]\n        if n >= 3\n    })\n    def shuffled(xs):\n        return random.sample(xs, len(xs))\n\n    times = {f: {n: [] for n in ns} for f in funcs}\n    for i in range(30):\n        print(i)\n        for n in shuffled(ns):\n            for f in shuffled(funcs):\n                t0 = time()\n                for w in f(data, n):\n                    pass\n                t = time() - t0\n                times[f][n].append(t)\n\n    # fastest time for each (function,n) pair\n    times = {f.__name__.removeprefix('with_'): [min(times[f][n]) for n in ns]\n        for f in funcs\n    }\n\n    # Times in percent of the deque times\n    times = {\n        name: [t / td * 100 for t, td in zip(times[name], times['deque'])]\n        for name in times\n    }\n\n    # Plotting\n    import matplotlib.pyplot as plt\n    for name, y in times.items():\n        plt.semilogx(ns, y, label=name)\n    plt.ylim(0, 150)\n    plt.title('sliding_window([None]*10000, n)', weight='bold')\n    plt.xlabel('n', weight='bold')\n    plt.ylabel('time in % of deque solution time', weight='bold')\n    plt.legend(loc='upper left')\n    plt.savefig('sliding_window.png', dpi=200)\n\n    print(sys.version)\n"
+  },
+  {
+   "repo": "msiemens/tinydb",
+   "number": 631,
+   "title": "CachingMiddleware: operations after close() still succeed in memory",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import tinydb\n\ndef test_mock():\n    assert False, '배관 검증'\n"
+  },
+  {
+   "repo": "msiemens/tinydb",
+   "number": 629,
+   "title": "insert_multiple can silently overwrite documents when mixing Document and dict",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import tinydb\n\ndef test_mock():\n    assert False, '배관 검증'\n"
+  },
+  {
+   "repo": "msiemens/tinydb",
+   "number": 354,
+   "title": "Move a document from a certain database to another one error",
+   "class": "B",
+   "labels": [
+    "pinned"
+   ],
+   "outcome": "accepted",
+   "test_src": "import tinydb\n\ndef test_mock():\n    assert False, '배관 검증'\n"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 626,
+   "title": "tail(0, seq) returns the whole sequence instead of empty (and is inconsistent across iterable types)",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import toolz\n\ndef test_mock():\n    assert False, '배관 검증'\n"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 606,
+   "title": "can't unpickle `curry`ied function coming from `__main__`",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import toolz\n\ndef test_mock():\n    assert False, '배관 검증'\n"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 601,
+   "title": "Thoughts on partialz with ellipsis?",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import toolz\n\ndef test_mock():\n    assert False, '배관 검증'\n"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 596,
+   "title": "Feature proposal: `raise`/`throws` function",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import toolz\n\ndef test_mock():\n    assert False, '배관 검증'\n"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 580,
+   "title": "Dictionary chunking / batching (inverting merge_with)",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import toolz\n\ndef test_mock():\n    assert False, '배관 검증'\n"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 569,
+   "title": "Loss of typing information on composed functions",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import toolz\n\ndef test_mock():\n    assert False, '배관 검증'\n"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 567,
+   "title": "Split two lists/iterables of objects \"wanted_state\", \"existing_state\" in 3 lists \"create\", \"update\",",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import toolz\n\ndef test_mock():\n    assert False, '배관 검증'\n"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 540,
+   "title": "`thread_as` function ??",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import toolz\n\ndef test_mock():\n    assert False, '배관 검증'\n"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 529,
+   "title": "Combination of map and accumulate",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import toolz\n\ndef test_mock():\n    assert False, '배관 검증'\n"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 523,
+   "title": "Idea: compose as an operator",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import toolz\n\ndef test_mock():\n    assert False, '배관 검증'\n"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 517,
+   "title": "iget for fetching indexes from a non-sequence iterable",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import toolz\n\ndef test_mock():\n    assert False, '배관 검증'\n"
+  }
+ ]
+}

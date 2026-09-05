@@ -1,0 +1,55 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "7b2fe66e3612ed9bd1222636ec35c3ce1ca574da",
+ "parent_commit": "456bacbbead4fa30a1a82892c9446ac9efb8055b",
+ "answer_files": [
+  "src/marshmallow/fields.py"
+ ],
+ "answer_functions": [
+  "src/marshmallow/fields.py::_bind_to_schema"
+ ],
+ "patch_lines": 29,
+ "added_tests": {
+  "tests/test_fields.py::TestListNested::test_list_nested_only_exclude_dump_only_load_only_propagated_to_nested": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_fields.py::TestListNested::test_list_nested_only_and_exclude_merged_with_nested": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_fields.py::TestTupleNested::test_tuple_nested_only_exclude_dump_only_load_only_propagated_to_nested": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_fields.py::TestTupleNested::test_tuple_nested_only_and_exclude_merged_with_nested": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_fields.py::TestDictNested::test_dict_nested_only_exclude_dump_only_load_only_propagated_to_nested": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_fields.py::TestDictNested::test_dict_nested_only_and_exclude_merged_with_nested": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "tests/test_fields.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 31.8,
+ "env_error_tests": 6,
+ "qualified": false,
+ "selector_event_proxy_v1": false
+}

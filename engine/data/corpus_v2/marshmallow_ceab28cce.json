@@ -1,0 +1,75 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "ceab28cce53a82150ffa73dab647c254a77716e6",
+ "parent_commit": "e956144b90b645d7b0b9e3c29a1db8f38c8f4563",
+ "answer_files": [
+  "marshmallow/exceptions.py",
+  "marshmallow/marshalling.py",
+  "marshmallow/schema.py"
+ ],
+ "answer_functions": [
+  "marshmallow/exceptions.py::__init__",
+  "marshmallow/marshalling.py::call_and_store",
+  "marshmallow/marshalling.py::deserialize",
+  "marshmallow/marshalling.py::run_validator",
+  "marshmallow/marshalling.py::serialize",
+  "marshmallow/marshalling.py::store_error",
+  "marshmallow/schema.py::_do_load",
+  "marshmallow/schema.py::_invoke_field_validators",
+  "marshmallow/schema.py::dump"
+ ],
+ "patch_lines": 33,
+ "added_tests": {
+  "tests/test_deserialization.py::test_deserialize_raises_exception_if_input_type_is_incorrect": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_schema.py::test_dump_mode_raises_error": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_schema.py::test_dump_resets_error_fields": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_schema.py::test_load_resets_error_fields": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_schema.py::TestHandleError::test_load_with_custom_error_handler": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_schema.py::TestHandleError::test_load_with_custom_error_handler_and_partially_valid_data": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_schema.py::TestHandleError::test_custom_error_handler_with_validates_decorator": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_schema.py::TestHandleError::test_custom_error_handler_with_validates_schema_decorator": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "tests/test_deserialization.py",
+  "tests/test_schema.py"
+ ],
+ "location_hard_proxy": true,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 24.5,
+ "env_error_tests": 8,
+ "qualified": false
+}

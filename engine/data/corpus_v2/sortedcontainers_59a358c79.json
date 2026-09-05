@@ -1,0 +1,48 @@
+{
+ "repo": "sortedcontainers",
+ "fix_commit": "59a358c79f2500ff04bb90643dabbbc0c1a71ee6",
+ "parent_commit": "247b960b09356cc2cd41761702db25254ea87164",
+ "answer_files": [
+  "sortedcontainers/sortedlistwithkey.py"
+ ],
+ "answer_functions": [
+  "sortedcontainers/sortedlistwithkey.py::__contains__",
+  "sortedcontainers/sortedlistwithkey.py::__getitem__",
+  "sortedcontainers/sortedlistwithkey.py::__iter__",
+  "sortedcontainers/sortedlistwithkey.py::__reversed__",
+  "sortedcontainers/sortedlistwithkey.py::__setitem__",
+  "sortedcontainers/sortedlistwithkey.py::add",
+  "sortedcontainers/sortedlistwithkey.py::append",
+  "sortedcontainers/sortedlistwithkey.py::as_list",
+  "sortedcontainers/sortedlistwithkey.py::bisect",
+  "sortedcontainers/sortedlistwithkey.py::bisect_left",
+  "sortedcontainers/sortedlistwithkey.py::bisect_right",
+  "sortedcontainers/sortedlistwithkey.py::count",
+  "sortedcontainers/sortedlistwithkey.py::discard",
+  "sortedcontainers/sortedlistwithkey.py::extend",
+  "sortedcontainers/sortedlistwithkey.py::index",
+  "sortedcontainers/sortedlistwithkey.py::insert",
+  "sortedcontainers/sortedlistwithkey.py::pop",
+  "sortedcontainers/sortedlistwithkey.py::remove",
+  "sortedcontainers/sortedlistwithkey.py::update"
+ ],
+ "patch_lines": 68,
+ "added_tests": {
+  "tests/test_coverage_sortedlistwithkey.py::test_incomparable_value": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "tests/test_coverage_sortedlistwithkey.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 4.2,
+ "env_error_tests": 1,
+ "qualified": false,
+ "selector_event_proxy_v1": false
+}

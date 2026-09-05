@@ -1,0 +1,30 @@
+{
+ "repo": "dateutil",
+ "fix_commit": "7913760140e41abf91274171a53d757d8befb404",
+ "parent_commit": "f00c96c2d7bfb86e6f1802baadd1b93a41931089",
+ "answer_files": [
+  "dateutil/relativedelta.py"
+ ],
+ "answer_functions": [
+  "dateutil/relativedelta.py::__init__"
+ ],
+ "patch_lines": 16,
+ "added_tests": {
+  "dateutil/test/test_relativedelta.py::RelativeDeltaTest::testAdditionFloatValue": {
+   "parent": "fail",
+   "fix": "fail",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "dateutil/test/test_relativedelta.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 3.5,
+ "env_error_tests": 0,
+ "qualified": false,
+ "selector_event_proxy_v1": false
+}

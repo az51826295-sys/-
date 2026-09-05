@@ -1,0 +1,36 @@
+{
+ "1": {
+  "n_runs": 20,
+  "calls_total": 440,
+  "successes": 16,
+  "success_rate": 0.8,
+  "calls_per_success": 27.5,
+  "ci": {
+   "lo": 13.05,
+   "hi": 54.0,
+   "skipped": 0
+  },
+  "failure_repeats": 24,
+  "wrong_confirmed": 0,
+  "recovery_calls": 0,
+  "dup_rate_mean": 0.0596,
+  "unique_sigs_mean": 19.35
+ },
+ "2": {
+  "n_runs": 20,
+  "calls_total": 400,
+  "successes": 16,
+  "success_rate": 0.8,
+  "calls_per_success": 25.0,
+  "ci": {
+   "lo": 11.37,
+   "hi": 50.67,
+   "skipped": 0
+  },
+  "failure_repeats": 24,
+  "wrong_confirmed": 0,
+  "recovery_calls": 0,
+  "dup_rate_mean": 0.0319,
+  "unique_sigs_mean": 18.65
+ }
+}

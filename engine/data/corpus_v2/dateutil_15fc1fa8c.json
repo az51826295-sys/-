@@ -1,0 +1,91 @@
+{
+ "repo": "dateutil",
+ "fix_commit": "15fc1fa8c1e2c3d088e646d6d47ac9d25d902f95",
+ "parent_commit": "836f16166a473e379d59478e7e26b1cd5a61bcf0",
+ "answer_files": [
+  "dateutil/relativedelta.py"
+ ],
+ "answer_functions": [
+  "dateutil/relativedelta.py::__add__",
+  "dateutil/relativedelta.py::__radd__",
+  "dateutil/relativedelta.py::__sub__"
+ ],
+ "patch_lines": 74,
+ "added_tests": {
+  "test.py::RelativeDeltaTest::testAddition": {
+   "parent": "pass",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "test.py::RelativeDeltaTest::testAdditionToDatetime": {
+   "parent": "pass",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "test.py::RelativeDeltaTest::testRightAdditionToDatetime": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "test.py::RelativeDeltaTest::testSubtraction": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "test.py::RelativeDeltaTest::testRightSubtractionFromDatetime": {
+   "parent": "pass",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "test.py::RelativeDeltaTest::testSubractionWithDatetime": {
+   "parent": "pass",
+   "fix": "pass",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [
+  "test.py::RelativeDeltaTest::testRightAdditionToDatetime",
+  "test.py::RelativeDeltaTest::testSubtraction"
+ ],
+ "test_files": [
+  "test.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": true,
+ "partial_fix_probes": [
+  {
+   "applied": "dateutil/relativedelta.py::__add__",
+   "passes_repro": [
+    "test.py::RelativeDeltaTest::testRightAdditionToDatetime"
+   ],
+   "still_failing": [
+    "test.py::RelativeDeltaTest::testSubtraction"
+   ],
+   "event": true
+  },
+  {
+   "applied": "dateutil/relativedelta.py::__radd__",
+   "passes_repro": [],
+   "still_failing": [
+    "test.py::RelativeDeltaTest::testAdditionToDatetime",
+    "test.py::RelativeDeltaTest::testRightAdditionToDatetime",
+    "test.py::RelativeDeltaTest::testSubtraction",
+    "test.py::RelativeDeltaTest::testRightSubtractionFromDatetime"
+   ],
+   "event": false
+  },
+  {
+   "applied": "dateutil/relativedelta.py::__sub__",
+   "passes_repro": [
+    "test.py::RelativeDeltaTest::testSubtraction"
+   ],
+   "still_failing": [
+    "test.py::RelativeDeltaTest::testRightAdditionToDatetime"
+   ],
+   "event": true
+  }
+ ],
+ "env_seconds": 13.5,
+ "env_error_tests": 0,
+ "qualified": true
+}

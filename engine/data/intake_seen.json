@@ -1,0 +1,234 @@
+{
+ "dateutil/dateutil#1508": {
+  "at": "2026-08-22T18:09:08",
+  "outcome": "invalid"
+ },
+ "dateutil/dateutil#1545": {
+  "at": "2026-08-22T18:09:08",
+  "outcome": "invalid"
+ },
+ "dateutil/dateutil#1546": {
+  "at": "2026-08-22T18:09:08",
+  "outcome": "invalid"
+ },
+ "dateutil/dateutil#1548": {
+  "at": "2026-08-22T18:09:08",
+  "outcome": "invalid"
+ },
+ "grantjenks/python-sortedcontainers#219": {
+  "at": "2026-08-22T18:09:08",
+  "outcome": "invalid"
+ },
+ "grantjenks/python-sortedcontainers#238": {
+  "at": "2026-08-22T18:09:08",
+  "outcome": "invalid"
+ },
+ "grantjenks/python-sortedcontainers#239": {
+  "at": "2026-08-22T18:09:08",
+  "outcome": "invalid"
+ },
+ "grantjenks/python-sortedcontainers#244": {
+  "at": "2026-08-22T18:09:08",
+  "outcome": "invalid"
+ },
+ "grantjenks/python-sortedcontainers#53": {
+  "at": "2026-08-22T18:09:08",
+  "outcome": "invalid"
+ },
+ "mahmoud/boltons#201": {
+  "at": "2026-08-22T18:09:22",
+  "outcome": "queued",
+  "tag": "stage1_dry48",
+  "task": "live-boltons_201"
+ },
+ "mahmoud/boltons#256": {
+  "at": "2026-08-22T18:09:21",
+  "outcome": "queued",
+  "tag": "stage1_dry48",
+  "task": "live-boltons_256"
+ },
+ "mahmoud/boltons#266": {
+  "at": "2026-08-22T18:09:20",
+  "outcome": "queued",
+  "tag": "stage1_dry48",
+  "task": "live-boltons_266"
+ },
+ "mahmoud/boltons#280": {
+  "at": "2026-08-22T18:09:18",
+  "outcome": "queued",
+  "tag": "stage1_dry48",
+  "task": "live-boltons_280"
+ },
+ "mahmoud/boltons#289": {
+  "at": "2026-08-22T18:09:17",
+  "outcome": "queued",
+  "tag": "stage1_dry48",
+  "task": "live-boltons_289"
+ },
+ "mahmoud/boltons#290": {
+  "at": "2026-08-22T18:09:15",
+  "outcome": "queued",
+  "tag": "stage1_dry48",
+  "task": "live-boltons_290"
+ },
+ "mahmoud/boltons#301": {
+  "at": "2026-08-22T18:09:14",
+  "outcome": "queued",
+  "tag": "stage1_dry48",
+  "task": "live-boltons_301"
+ },
+ "mahmoud/boltons#310": {
+  "at": "2026-08-22T18:09:13",
+  "outcome": "queued",
+  "tag": "stage1_dry48",
+  "task": "live-boltons_310"
+ },
+ "mahmoud/boltons#324": {
+  "at": "2026-08-22T18:09:11",
+  "outcome": "queued",
+  "tag": "stage1_dry48",
+  "task": "live-boltons_324"
+ },
+ "mahmoud/boltons#344": {
+  "at": "2026-08-22T18:09:10",
+  "outcome": "queued",
+  "tag": "stage1_dry48",
+  "task": "live-boltons_344"
+ },
+ "mahmoud/boltons#390": {
+  "at": "2026-08-22T18:09:08",
+  "outcome": "not_reproducible"
+ },
+ "mahmoud/boltons#439": {
+  "at": "2026-08-22T18:09:09",
+  "outcome": "queued",
+  "tag": "stage1_dry48",
+  "task": "live-boltons_439"
+ },
+ "marshmallow-code/marshmallow#1971": {
+  "at": "2026-08-22T18:09:08",
+  "outcome": "invalid"
+ },
+ "marshmallow-code/marshmallow#2000": {
+  "at": "2026-08-22T18:09:08",
+  "outcome": "invalid"
+ },
+ "marshmallow-code/marshmallow#2012": {
+  "at": "2026-08-22T18:09:08",
+  "outcome": "invalid"
+ },
+ "marshmallow-code/marshmallow#2032": {
+  "at": "2026-08-22T18:09:08",
+  "outcome": "invalid"
+ },
+ "marshmallow-code/marshmallow#2165": {
+  "at": "2026-08-22T18:09:08",
+  "outcome": "invalid"
+ },
+ "marshmallow-code/marshmallow#2180": {
+  "at": "2026-08-22T18:09:08",
+  "outcome": "invalid"
+ },
+ "marshmallow-code/marshmallow#2189": {
+  "at": "2026-08-22T18:09:08",
+  "outcome": "invalid"
+ },
+ "marshmallow-code/marshmallow#2194": {
+  "at": "2026-08-22T18:09:08",
+  "outcome": "invalid"
+ },
+ "marshmallow-code/marshmallow#2243": {
+  "at": "2026-08-22T18:09:08",
+  "outcome": "invalid"
+ },
+ "marshmallow-code/marshmallow#2794": {
+  "at": "2026-08-22T18:09:08",
+  "outcome": "invalid"
+ },
+ "marshmallow-code/marshmallow#2836": {
+  "at": "2026-08-22T18:09:08",
+  "outcome": "invalid"
+ },
+ "marshmallow-code/marshmallow#2961": {
+  "at": "2026-08-22T18:09:08",
+  "outcome": "invalid"
+ },
+ "marshmallow-code/marshmallow#2999": {
+  "at": "2026-08-22T18:09:08",
+  "outcome": "invalid"
+ },
+ "marshmallow-code/marshmallow#3019": {
+  "at": "2026-08-22T18:09:08",
+  "outcome": "invalid"
+ },
+ "more-itertools/more-itertools#1225": {
+  "at": "2026-08-22T18:09:08",
+  "outcome": "invalid"
+ },
+ "msiemens/tinydb#354": {
+  "at": "2026-08-22T18:09:27",
+  "outcome": "queued",
+  "tag": "stage1_dry48",
+  "task": "live-tinydb_354"
+ },
+ "msiemens/tinydb#629": {
+  "at": "2026-08-22T18:09:25",
+  "outcome": "queued",
+  "tag": "stage1_dry48",
+  "task": "live-tinydb_629"
+ },
+ "msiemens/tinydb#631": {
+  "at": "2026-08-22T18:09:24",
+  "outcome": "queued",
+  "tag": "stage1_dry48",
+  "task": "live-tinydb_631"
+ },
+ "pytoolz/toolz#517": {
+  "at": "2026-08-22T18:09:39",
+  "outcome": "queued",
+  "tag": "stage1_dry48",
+  "task": "live-toolz_517"
+ },
+ "pytoolz/toolz#529": {
+  "at": "2026-08-22T18:09:37",
+  "outcome": "queued",
+  "tag": "stage1_dry48",
+  "task": "live-toolz_529"
+ },
+ "pytoolz/toolz#544": {
+  "at": "2026-08-22T18:09:08",
+  "outcome": "not_reproducible"
+ },
+ "pytoolz/toolz#567": {
+  "at": "2026-08-22T18:09:35",
+  "outcome": "queued",
+  "tag": "stage1_dry48",
+  "task": "live-toolz_567"
+ },
+ "pytoolz/toolz#569": {
+  "at": "2026-08-22T18:09:33",
+  "outcome": "queued",
+  "tag": "stage1_dry48",
+  "task": "live-toolz_569"
+ },
+ "pytoolz/toolz#580": {
+  "at": "2026-08-22T18:09:31",
+  "outcome": "queued",
+  "tag": "stage1_dry48",
+  "task": "live-toolz_580"
+ },
+ "pytoolz/toolz#583": {
+  "at": "2026-08-22T18:09:08",
+  "outcome": "invalid"
+ },
+ "pytoolz/toolz#612": {
+  "at": "2026-08-22T18:09:08",
+  "outcome": "invalid"
+ },
+ "pytoolz/toolz#626": {
+  "at": "2026-08-22T18:09:29",
+  "outcome": "queued",
+  "tag": "stage1_dry48",
+  "task": "live-toolz_626"
+ }
+}

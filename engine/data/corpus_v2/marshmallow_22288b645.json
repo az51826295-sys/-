@@ -1,0 +1,54 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "22288b64532252ef2929c109e0c2ce7f9afe5edd",
+ "parent_commit": "1d8fd278b1a617bc4a01912f5660c4ab7374e662",
+ "answer_files": [
+  "src/marshmallow/decorators.py",
+  "src/marshmallow/schema.py"
+ ],
+ "answer_functions": [
+  "src/marshmallow/decorators.py::post_dump",
+  "src/marshmallow/decorators.py::post_load",
+  "src/marshmallow/decorators.py::pre_dump",
+  "src/marshmallow/decorators.py::pre_load",
+  "src/marshmallow/decorators.py::set_hook",
+  "src/marshmallow/decorators.py::validates",
+  "src/marshmallow/decorators.py::validates_schema",
+  "src/marshmallow/schema.py::_invoke_schema_validators"
+ ],
+ "patch_lines": 50,
+ "added_tests": {
+  "tests/test_decorators.py::TestPassOriginal::test_pass_original_many": {
+   "parent": "pass",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "tests/test_deserialization.py::TestFieldDeserialization::test_datetime_list_field_deserialization": {
+   "parent": "pass",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "tests/test_deserialization.py::TestFieldDeserialization::test_datetime_int_tuple_field_deserialization": {
+   "parent": "pass",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "tests/test_schema.py::TestGetAttribute::test_get_attribute_with_many": {
+   "parent": "pass",
+   "fix": "pass",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "tests/test_decorators.py",
+  "tests/test_deserialization.py",
+  "tests/test_schema.py"
+ ],
+ "location_hard_proxy": true,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 9.2,
+ "env_error_tests": 0,
+ "qualified": false
+}

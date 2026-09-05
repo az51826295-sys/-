@@ -1,0 +1,51 @@
+{
+ "_note": "사람이 먼저 계산한 정답. 2주차 코드는 이 값을 재현해야 한다.",
+ "documents": {
+  "G1": {
+   "status": "fresh",
+   "in_aggregate": true,
+   "recheck_queue": false
+  },
+  "G2": {
+   "status": "stale",
+   "in_aggregate": true,
+   "recheck_queue": true
+  },
+  "G3": {
+   "status": "unknown",
+   "in_aggregate": false,
+   "recheck_queue": false
+  },
+  "G4": {
+   "status": "unknown",
+   "in_aggregate": false,
+   "recheck_queue": true,
+   "violation": "계약 2항: raw as_of != 마지막 이벤트 시각"
+  },
+  "G6": {
+   "status": "fresh",
+   "in_aggregate": false,
+   "recheck_queue": false
+  },
+  "G7": {
+   "status": "unknown",
+   "in_aggregate": false,
+   "recheck_queue": false,
+   "violation": "계약 1항: 규범 문서는 부모를 갖지 않는다 (파생이면 derived로)"
+  }
+ },
+ "promotions": {
+  "G5": {
+   "status": "fresh",
+   "verifier": "none",
+   "in_aggregate": true
+  }
+ },
+ "aggregate": {
+  "denominator": 3,
+  "stale_rate": 0.3333,
+  "unknown_rate": 0.4286,
+  "normative": 1,
+  "_calc": "분모 = fresh(G1,G5) + stale(G2) = 3 (규범 G6 제외); stale률 = 1/3; unknown률 = 3/7 (문서 6 + 승격 1 중 unknown G3·G4·G7)"
+ }
+}

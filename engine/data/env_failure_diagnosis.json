@@ -1,0 +1,383 @@
+{
+ "shortlist_n": 43,
+ "verified": [
+  "marshmallow_e918e8abb",
+  "marshmallow_a66475219",
+  "marshmallow_df636eee7",
+  "marshmallow_382c8cc0b",
+  "marshmallow_d057cb976",
+  "marshmallow_ff18e782b",
+  "marshmallow_b0fb60a87",
+  "marshmallow_d93c4662d",
+  "more-itertools_d992be0de",
+  "tinydb_f959c8cfe"
+ ],
+ "skipped": [
+  "marshmallow_4698fe51e",
+  "boltons_8177b933b",
+  "boltons_a844c1d47",
+  "boltons_55a2791b7",
+  "boltons_30f1d7d92",
+  "boltons_2d419c51c",
+  "dateutil_66d95db3a",
+  "marshmallow_8778bf1c2",
+  "marshmallow_afb123081",
+  "marshmallow_8d90fb9d6",
+  "marshmallow_f7d7e3820",
+  "marshmallow_2027de074",
+  "marshmallow_507fc7640",
+  "marshmallow_8cdb77b23",
+  "marshmallow_1dd05c65d",
+  "marshmallow_8aab6b655",
+  "marshmallow_d69f3123e",
+  "marshmallow_82954cb11",
+  "marshmallow_1bf7ae9fc",
+  "marshmallow_c501c3e25",
+  "marshmallow_1107a234c",
+  "marshmallow_3e139b2eb",
+  "marshmallow_12a3b3b0a",
+  "marshmallow_7bf6a1ee5",
+  "marshmallow_35bdfbaba",
+  "marshmallow_42a1a6a25",
+  "marshmallow_ad9e0e6f4",
+  "marshmallow_3f8828082",
+  "more-itertools_d71c4ad9f",
+  "more-itertools_395bdfc00",
+  "more-itertools_a43834e1f",
+  "more-itertools_500e9bb21",
+  "tinydb_ea39c47ae"
+ ],
+ "err_missing": [],
+ "extra_prev_era": [
+  "boltons_d0a284fc7",
+  "dateutil_15fc1fa8c",
+  "dateutil_5f2052faf",
+  "marshmallow_070dde08b",
+  "marshmallow_11a0545ba",
+  "marshmallow_22288b645",
+  "marshmallow_4cb155216",
+  "marshmallow_4ee991f1f",
+  "marshmallow_541275e13",
+  "marshmallow_670620ecb",
+  "marshmallow_68a2c33df",
+  "marshmallow_97b954e9a",
+  "marshmallow_9ede1172e",
+  "marshmallow_9f751e1ce",
+  "marshmallow_a6368b2ed",
+  "marshmallow_ac5aa5d6e",
+  "marshmallow_c4d98d9df",
+  "marshmallow_ceab28cce",
+  "marshmallow_d104a5c3a",
+  "marshmallow_deaff0647",
+  "marshmallow_e82341f2b",
+  "marshmallow_ece03405c",
+  "more-itertools_e0ee0c0f4",
+  "sortedcontainers_2b037039b",
+  "sortedcontainers_9e81697c6",
+  "tinydb_03f8df755",
+  "tinydb_0f03c0640",
+  "tinydb_9722ecee7",
+  "tinydb_cca5c2343"
+ ],
+ "stageB": {
+  "marshmallow_4698fe51e": "no_repro_tests",
+  "boltons_8177b933b": "no_repro_tests",
+  "boltons_a844c1d47": "no_repro_tests",
+  "boltons_55a2791b7": "no_repro_tests",
+  "boltons_30f1d7d92": "no_repro_tests",
+  "boltons_2d419c51c": "no_repro_tests",
+  "dateutil_66d95db3a": "no_repro_tests",
+  "marshmallow_8778bf1c2": "no_repro_tests",
+  "marshmallow_afb123081": "no_repro_tests",
+  "marshmallow_8d90fb9d6": "no_repro_tests",
+  "marshmallow_f7d7e3820": "no_repro_tests",
+  "marshmallow_2027de074": "no_repro_tests",
+  "marshmallow_507fc7640": "no_repro_tests",
+  "marshmallow_8cdb77b23": "no_repro_tests",
+  "marshmallow_1dd05c65d": "no_repro_tests",
+  "marshmallow_8aab6b655": "no_repro_tests",
+  "marshmallow_d69f3123e": "no_repro_tests",
+  "marshmallow_82954cb11": "no_repro_tests",
+  "marshmallow_1bf7ae9fc": "no_repro_tests",
+  "marshmallow_c501c3e25": "no_repro_tests",
+  "marshmallow_1107a234c": "no_answer_functions",
+  "marshmallow_3e139b2eb": "no_repro_tests",
+  "marshmallow_12a3b3b0a": "no_repro_tests",
+  "marshmallow_7bf6a1ee5": "no_repro_tests",
+  "marshmallow_35bdfbaba": "no_repro_tests",
+  "marshmallow_42a1a6a25": "no_repro_tests",
+  "marshmallow_ad9e0e6f4": "no_repro_tests",
+  "marshmallow_3f8828082": "no_repro_tests",
+  "more-itertools_d71c4ad9f": "no_repro_tests",
+  "more-itertools_395bdfc00": "no_repro_tests",
+  "more-itertools_a43834e1f": "no_repro_tests",
+  "more-itertools_500e9bb21": "no_repro_tests",
+  "tinydb_ea39c47ae": "no_repro_tests"
+ },
+ "diagnosis": [
+  {
+   "key": "marshmallow_4698fe51e",
+   "repo": "marshmallow",
+   "sha": "4698fe51e",
+   "stageB": "no_repro_tests",
+   "cause": "py_incompat",
+   "log_tail": "\nImportError while loading conftest 'C:\\Users\\az518\\Desktop\\genesis-project\\data\\repos\\mine_marshmallow_diag\\tests\\conftest.py'.\ntests\\conftest.py:5: in <module>\n    from tests.base import User, UserSchema, Blog\ntests\\base.py:8: in <module>\n    from marshmallow import Schema, fields\nmarshmallow\\__init__.py:8: in <module>\n    from marshmallow.schema import (\nmarshmallow\\schema.py:17: in <module>\n    from marshmallow.orderedset import OrderedSet\nmarshmallow\\orderedset.py:26: in <module>\n    class OrderedSet(collections.MutableSet):\n                     ^^^^^^^^^^^^^^^^^^^^^^\nE   AttributeError: module 'collections' has no attribute 'MutableSet'\n"
+  },
+  {
+   "key": "boltons_8177b933b",
+   "repo": "boltons",
+   "sha": "8177b933b",
+   "stageB": "no_repro_tests",
+   "cause": "runner_config",
+   "log_tail": "ackages\\_pytest\\config\\__init__.py\", line 571, in register\n    plugin_name = super().register(plugin, name)\n                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\az518\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\pluggy\\_manager.py\", line 168, in register\n    self._verify_hook(hook, hookimpl)\n  File \"C:\\Users\\az518\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\pluggy\\_manager.py\", line 343, in _verify_hook\n    raise PluginValidationError(\npluggy._manager.PluginValidationError: Plugin 'C:\\\\Users\\\\az518\\\\Desktop\\\\genesis-project\\\\data\\\\repos\\\\mine_boltons_diag\\\\tests\\\\conftest.py' for hook 'pytest_ignore_collect'\nhookimpl definition: pytest_ignore_collect(path, config)\nArgument(s) {'path'} are declared in the hookimpl but can not be found in the hookspec\n"
+  },
+  {
+   "key": "boltons_a844c1d47",
+   "repo": "boltons",
+   "sha": "a844c1d47",
+   "stageB": "no_repro_tests",
+   "cause": "runner_config",
+   "log_tail": "ackages\\_pytest\\config\\__init__.py\", line 571, in register\n    plugin_name = super().register(plugin, name)\n                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\az518\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\pluggy\\_manager.py\", line 168, in register\n    self._verify_hook(hook, hookimpl)\n  File \"C:\\Users\\az518\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\pluggy\\_manager.py\", line 343, in _verify_hook\n    raise PluginValidationError(\npluggy._manager.PluginValidationError: Plugin 'C:\\\\Users\\\\az518\\\\Desktop\\\\genesis-project\\\\data\\\\repos\\\\mine_boltons_diag\\\\tests\\\\conftest.py' for hook 'pytest_ignore_collect'\nhookimpl definition: pytest_ignore_collect(path, config)\nArgument(s) {'path'} are declared in the hookimpl but can not be found in the hookspec\n"
+  },
+  {
+   "key": "boltons_55a2791b7",
+   "repo": "boltons",
+   "sha": "55a2791b7",
+   "stageB": "no_repro_tests",
+   "cause": "runner_config",
+   "log_tail": "ackages\\_pytest\\config\\__init__.py\", line 571, in register\n    plugin_name = super().register(plugin, name)\n                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\az518\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\pluggy\\_manager.py\", line 168, in register\n    self._verify_hook(hook, hookimpl)\n  File \"C:\\Users\\az518\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\pluggy\\_manager.py\", line 343, in _verify_hook\n    raise PluginValidationError(\npluggy._manager.PluginValidationError: Plugin 'C:\\\\Users\\\\az518\\\\Desktop\\\\genesis-project\\\\data\\\\repos\\\\mine_boltons_diag\\\\tests\\\\conftest.py' for hook 'pytest_ignore_collect'\nhookimpl definition: pytest_ignore_collect(path, config)\nArgument(s) {'path'} are declared in the hookimpl but can not be found in the hookspec\n"
+  },
+  {
+   "key": "boltons_30f1d7d92",
+   "repo": "boltons",
+   "sha": "30f1d7d92",
+   "stageB": "no_repro_tests",
+   "cause": "runner_config",
+   "log_tail": "ackages\\_pytest\\config\\__init__.py\", line 571, in register\n    plugin_name = super().register(plugin, name)\n                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\az518\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\pluggy\\_manager.py\", line 168, in register\n    self._verify_hook(hook, hookimpl)\n  File \"C:\\Users\\az518\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\pluggy\\_manager.py\", line 343, in _verify_hook\n    raise PluginValidationError(\npluggy._manager.PluginValidationError: Plugin 'C:\\\\Users\\\\az518\\\\Desktop\\\\genesis-project\\\\data\\\\repos\\\\mine_boltons_diag\\\\tests\\\\conftest.py' for hook 'pytest_ignore_collect'\nhookimpl definition: pytest_ignore_collect(path, config)\nArgument(s) {'path'} are declared in the hookimpl but can not be found in the hookspec\n"
+  },
+  {
+   "key": "boltons_2d419c51c",
+   "repo": "boltons",
+   "sha": "2d419c51c",
+   "stageB": "no_repro_tests",
+   "cause": "py_incompat",
+   "log_tail": " Python names.\nTraceback:\nC:\\Users\\az518\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\importlib\\__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests\\test_iterutils.py:4: in <module>\n    from boltons.iterutils import first, remap\nboltons\\iterutils.py:589: in <module>\n    from collections import Mapping, Sequence, Set, ItemsView\nE   ImportError: cannot import name 'Mapping' from 'collections' (C:\\Users\\az518\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\collections\\__init__.py)\n=========================== short test summary info ===========================\nERROR tests\\test_iterutils.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n1 error in 3.48s\n\n"
+  },
+  {
+   "key": "dateutil_66d95db3a",
+   "repo": "dateutil",
+   "sha": "66d95db3a",
+   "stageB": "no_repro_tests",
+   "cause": "runs_ok",
+   "log_tail": "ffset - Asser...\nFAILED dateutil\\test\\test_tz.py::TZStrTest::testFoldPositiveUTCOffset - Asser...\nFAILED dateutil\\test\\test_tz.py::TzWinTest::testFoldIndependence - AssertionE...\nFAILED dateutil\\test\\test_tz.py::TzWinTest::testFoldNegativeUTCOffset - Asser...\nFAILED dateutil\\test\\test_tz.py::TzWinTest::testFoldPositiveUTCOffset - Asser...\nFAILED dateutil\\test\\test_tz.py::TzWinTest::testIsdstZoneWithNoDaylightSaving\nFAILED dateutil\\test\\test_tz.py::TzWinTest::testTzResLoadName - AssertionErro...\nFAILED dateutil\\test\\test_tz.py::TzWinTest::testTzResNameFromString - Asserti...\nFAILED dateutil\\test\\test_tz.py::TzWinTest::testTzwinName - AssertionError: '...\nFAILED dateutil\\test\\test_tz.py::TzWinTest::testTzwinTimeOnlyTZName - Asserti...\n20 failed, 129 passed, 35 skipped, 4 warnings in 12.35s\n\n"
+  },
+  {
+   "key": "marshmallow_8778bf1c2",
+   "repo": "marshmallow",
+   "sha": "8778bf1c2",
+   "stageB": "no_repro_tests",
+   "cause": "py_incompat",
+   "log_tail": "\nImportError while loading conftest 'C:\\Users\\az518\\Desktop\\genesis-project\\data\\repos\\mine_marshmallow_diag\\tests\\conftest.py'.\ntests\\conftest.py:5: in <module>\n    from tests.base import User, UserSchema, Blog\ntests\\base.py:10: in <module>\n    from marshmallow import Schema, fields, post_load, validate, missing\nmarshmallow\\__init__.py:4: in <module>\n    from marshmallow.schema import Schema, SchemaOpts\nmarshmallow\\schema.py:5: in <module>\n    from collections import defaultdict, Mapping\nE   ImportError: cannot import name 'Mapping' from 'collections' (C:\\Users\\az518\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\collections\\__init__.py)\n"
+  },
+  {
+   "key": "marshmallow_afb123081",
+   "repo": "marshmallow",
+   "sha": "afb123081",
+   "stageB": "no_repro_tests",
+   "cause": "py_incompat",
+   "log_tail": "\nImportError while loading conftest 'C:\\Users\\az518\\Desktop\\genesis-project\\data\\repos\\mine_marshmallow_diag\\tests\\conftest.py'.\ntests\\conftest.py:5: in <module>\n    from tests.base import User, UserSchema, Blog\ntests\\base.py:10: in <module>\n    from marshmallow import Schema, fields, post_load, validate, missing\nmarshmallow\\__init__.py:4: in <module>\n    from marshmallow.schema import (\nmarshmallow\\schema.py:5: in <module>\n    from collections import defaultdict, Mapping\nE   ImportError: cannot import name 'Mapping' from 'collections' (C:\\Users\\az518\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\collections\\__init__.py)\n"
+  },
+  {
+   "key": "marshmallow_8d90fb9d6",
+   "repo": "marshmallow",
+   "sha": "8d90fb9d6",
+   "stageB": "no_repro_tests",
+   "cause": "py_incompat",
+   "log_tail": "\nImportError while loading conftest 'C:\\Users\\az518\\Desktop\\genesis-project\\data\\repos\\mine_marshmallow_diag\\tests\\conftest.py'.\ntests\\conftest.py:5: in <module>\n    from tests.base import User, UserSchema, Blog\ntests\\base.py:10: in <module>\n    from marshmallow import Schema, fields, post_load, validate\nmarshmallow\\__init__.py:4: in <module>\n    from marshmallow.schema import (\nmarshmallow\\schema.py:5: in <module>\n    from collections import defaultdict, Mapping\nE   ImportError: cannot import name 'Mapping' from 'collections' (C:\\Users\\az518\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\collections\\__init__.py)\n"
+  },
+  {
+   "key": "marshmallow_f7d7e3820",
+   "repo": "marshmallow",
+   "sha": "f7d7e3820",
+   "stageB": "no_repro_tests",
+   "cause": "runner_config",
+   "log_tail": "fig(\n                                                     ^^^^^^^^^^^^^^\n  File \"C:\\Users\\az518\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\_pytest\\config\\findpaths.py\", line 189, in locate_config\n    ini_config = load_config_dict_from_file(p)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\az518\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\_pytest\\config\\findpaths.py\", line 91, in load_config_dict_from_file\n    fail(CFG_PYTEST_SECTION.format(filename=\"setup.cfg\"), pytrace=False)\n  File \"C:\\Users\\az518\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\_pytest\\outcomes.py\", line 162, in __call__\n    raise Failed(msg=reason, pytrace=pytrace)\nFailed: [pytest] section in setup.cfg files is no longer supported, change to [tool:pytest] instead.\n"
+  },
+  {
+   "key": "marshmallow_2027de074",
+   "repo": "marshmallow",
+   "sha": "2027de074",
+   "stageB": "no_repro_tests",
+   "cause": "py_incompat",
+   "log_tail": "\nImportError while loading conftest 'C:\\Users\\az518\\Desktop\\genesis-project\\data\\repos\\mine_marshmallow_diag\\tests\\conftest.py'.\ntests\\conftest.py:5: in <module>\n    from tests.base import User, UserSchema, Blog\ntests\\base.py:10: in <module>\n    from marshmallow import Schema, fields, post_load, validate\nmarshmallow\\__init__.py:4: in <module>\n    from marshmallow.schema import (\nmarshmallow\\schema.py:5: in <module>\n    from collections import defaultdict, Mapping\nE   ImportError: cannot import name 'Mapping' from 'collections' (C:\\Users\\az518\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\collections\\__init__.py)\n"
+  },
+  {
+   "key": "marshmallow_507fc7640",
+   "repo": "marshmallow",
+   "sha": "507fc7640",
+   "stageB": "no_repro_tests",
+   "cause": "py_incompat",
+   "log_tail": "\nImportError while loading conftest 'C:\\Users\\az518\\Desktop\\genesis-project\\data\\repos\\mine_marshmallow_diag\\tests\\conftest.py'.\ntests\\conftest.py:5: in <module>\n    from tests.base import User, UserSchema, Blog\ntests\\base.py:10: in <module>\n    from marshmallow import Schema, fields, post_load, validate\nmarshmallow\\__init__.py:4: in <module>\n    from marshmallow.schema import (\nmarshmallow\\schema.py:5: in <module>\n    from collections import defaultdict, Mapping\nE   ImportError: cannot import name 'Mapping' from 'collections' (C:\\Users\\az518\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\collections\\__init__.py)\n"
+  },
+  {
+   "key": "marshmallow_8cdb77b23",
+   "repo": "marshmallow",
+   "sha": "8cdb77b23",
+   "stageB": "no_repro_tests",
+   "cause": "py_incompat",
+   "log_tail": "\nImportError while loading conftest 'C:\\Users\\az518\\Desktop\\genesis-project\\data\\repos\\mine_marshmallow_diag\\tests\\conftest.py'.\ntests\\conftest.py:5: in <module>\n    from tests.base import User, UserSchema, Blog\ntests\\base.py:10: in <module>\n    from marshmallow import Schema, fields, post_load, validate\nmarshmallow\\__init__.py:4: in <module>\n    from marshmallow.schema import (\nmarshmallow\\schema.py:5: in <module>\n    from collections import defaultdict, Mapping\nE   ImportError: cannot import name 'Mapping' from 'collections' (C:\\Users\\az518\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\collections\\__init__.py)\n"
+  },
+  {
+   "key": "marshmallow_1dd05c65d",
+   "repo": "marshmallow",
+   "sha": "1dd05c65d",
+   "stageB": "no_repro_tests",
+   "cause": "py_incompat",
+   "log_tail": "\nImportError while loading conftest 'C:\\Users\\az518\\Desktop\\genesis-project\\data\\repos\\mine_marshmallow_diag\\tests\\conftest.py'.\ntests\\conftest.py:5: in <module>\n    from tests.base import User, UserSchema, Blog\ntests\\base.py:8: in <module>\n    from marshmallow import Schema, fields\nmarshmallow\\__init__.py:4: in <module>\n    from marshmallow.schema import (\nmarshmallow\\schema.py:5: in <module>\n    from collections import defaultdict, Mapping\nE   ImportError: cannot import name 'Mapping' from 'collections' (C:\\Users\\az518\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\collections\\__init__.py)\n"
+  },
+  {
+   "key": "marshmallow_8aab6b655",
+   "repo": "marshmallow",
+   "sha": "8aab6b655",
+   "stageB": "no_repro_tests",
+   "cause": "py_incompat",
+   "log_tail": "\nImportError while loading conftest 'C:\\Users\\az518\\Desktop\\genesis-project\\data\\repos\\mine_marshmallow_diag\\tests\\conftest.py'.\ntests\\conftest.py:5: in <module>\n    from tests.base import User, UserSchema, Blog\ntests\\base.py:8: in <module>\n    from marshmallow import Schema, fields\nmarshmallow\\__init__.py:4: in <module>\n    from marshmallow.schema import (\nmarshmallow\\schema.py:20: in <module>\n    from marshmallow.orderedset import OrderedSet\nmarshmallow\\orderedset.py:26: in <module>\n    class OrderedSet(collections.MutableSet):\n                     ^^^^^^^^^^^^^^^^^^^^^^\nE   AttributeError: module 'collections' has no attribute 'MutableSet'\n"
+  },
+  {
+   "key": "marshmallow_d69f3123e",
+   "repo": "marshmallow",
+   "sha": "d69f3123e",
+   "stageB": "no_repro_tests",
+   "cause": "py_incompat",
+   "log_tail": "\nImportError while loading conftest 'C:\\Users\\az518\\Desktop\\genesis-project\\data\\repos\\mine_marshmallow_diag\\tests\\conftest.py'.\ntests\\conftest.py:5: in <module>\n    from tests.base import User, UserSchema, Blog\ntests\\base.py:8: in <module>\n    from marshmallow import Schema, fields\nmarshmallow\\__init__.py:4: in <module>\n    from marshmallow.schema import (\nmarshmallow\\schema.py:18: in <module>\n    from marshmallow.orderedset import OrderedSet\nmarshmallow\\orderedset.py:26: in <module>\n    class OrderedSet(collections.MutableSet):\n                     ^^^^^^^^^^^^^^^^^^^^^^\nE   AttributeError: module 'collections' has no attribute 'MutableSet'\n"
+  },
+  {
+   "key": "marshmallow_82954cb11",
+   "repo": "marshmallow",
+   "sha": "82954cb11",
+   "stageB": "no_repro_tests",
+   "cause": "py_incompat",
+   "log_tail": "\nImportError while loading conftest 'C:\\Users\\az518\\Desktop\\genesis-project\\data\\repos\\mine_marshmallow_diag\\tests\\conftest.py'.\ntests\\conftest.py:5: in <module>\n    from tests.base import User, UserSchema, Blog\ntests\\base.py:8: in <module>\n    from marshmallow import Schema, fields\nmarshmallow\\__init__.py:4: in <module>\n    from marshmallow.schema import (\nmarshmallow\\schema.py:18: in <module>\n    from marshmallow.orderedset import OrderedSet\nmarshmallow\\orderedset.py:26: in <module>\n    class OrderedSet(collections.MutableSet):\n                     ^^^^^^^^^^^^^^^^^^^^^^\nE   AttributeError: module 'collections' has no attribute 'MutableSet'\n"
+  },
+  {
+   "key": "marshmallow_1bf7ae9fc",
+   "repo": "marshmallow",
+   "sha": "1bf7ae9fc",
+   "stageB": "no_repro_tests",
+   "cause": "py_incompat",
+   "log_tail": "\nImportError while loading conftest 'C:\\Users\\az518\\Desktop\\genesis-project\\data\\repos\\mine_marshmallow_diag\\tests\\conftest.py'.\ntests\\conftest.py:5: in <module>\n    from tests.base import User, UserSchema, Blog\ntests\\base.py:8: in <module>\n    from marshmallow import Schema, fields\nmarshmallow\\__init__.py:8: in <module>\n    from marshmallow.schema import (\nmarshmallow\\schema.py:18: in <module>\n    from marshmallow.orderedset import OrderedSet\nmarshmallow\\orderedset.py:26: in <module>\n    class OrderedSet(collections.MutableSet):\n                     ^^^^^^^^^^^^^^^^^^^^^^\nE   AttributeError: module 'collections' has no attribute 'MutableSet'\n"
+  },
+  {
+   "key": "marshmallow_c501c3e25",
+   "repo": "marshmallow",
+   "sha": "c501c3e25",
+   "stageB": "no_repro_tests",
+   "cause": "py_incompat",
+   "log_tail": "\nImportError while loading conftest 'C:\\Users\\az518\\Desktop\\genesis-project\\data\\repos\\mine_marshmallow_diag\\tests\\conftest.py'.\ntests\\conftest.py:5: in <module>\n    from tests.base import User, UserSchema, Blog\ntests\\base.py:8: in <module>\n    from marshmallow import Schema, fields\nmarshmallow\\__init__.py:8: in <module>\n    from marshmallow.schema import (\nmarshmallow\\schema.py:17: in <module>\n    from marshmallow.orderedset import OrderedSet\nmarshmallow\\orderedset.py:26: in <module>\n    class OrderedSet(collections.MutableSet):\n                     ^^^^^^^^^^^^^^^^^^^^^^\nE   AttributeError: module 'collections' has no attribute 'MutableSet'\n"
+  },
+  {
+   "key": "marshmallow_1107a234c",
+   "repo": "marshmallow",
+   "sha": "1107a234c",
+   "stageB": "no_answer_functions",
+   "cause": "py_incompat",
+   "log_tail": "\nImportError while loading conftest 'C:\\Users\\az518\\Desktop\\genesis-project\\data\\repos\\mine_marshmallow_diag\\tests\\conftest.py'.\ntests\\conftest.py:5: in <module>\n    from tests.base import User, UserSchema, Blog\ntests\\base.py:8: in <module>\n    from marshmallow import Schema, fields\nmarshmallow\\__init__.py:8: in <module>\n    from marshmallow.schema import (\nmarshmallow\\schema.py:17: in <module>\n    from marshmallow.orderedset import OrderedSet\nmarshmallow\\orderedset.py:26: in <module>\n    class OrderedSet(collections.MutableSet):\n                     ^^^^^^^^^^^^^^^^^^^^^^\nE   AttributeError: module 'collections' has no attribute 'MutableSet'\n"
+  },
+  {
+   "key": "marshmallow_3e139b2eb",
+   "repo": "marshmallow",
+   "sha": "3e139b2eb",
+   "stageB": "no_repro_tests",
+   "cause": "py_incompat",
+   "log_tail": "\nImportError while loading conftest 'C:\\Users\\az518\\Desktop\\genesis-project\\data\\repos\\mine_marshmallow_diag\\tests\\conftest.py'.\ntests\\conftest.py:5: in <module>\n    from tests.base import User, UserSerializer, Blog\ntests\\base.py:8: in <module>\n    from marshmallow import Serializer, fields\nmarshmallow\\__init__.py:8: in <module>\n    from marshmallow.serializer import (\nmarshmallow\\serializer.py:16: in <module>\n    from marshmallow.orderedset import OrderedSet\nmarshmallow\\orderedset.py:26: in <module>\n    class OrderedSet(collections.MutableSet):\n                     ^^^^^^^^^^^^^^^^^^^^^^\nE   AttributeError: module 'collections' has no attribute 'MutableSet'\n"
+  },
+  {
+   "key": "marshmallow_12a3b3b0a",
+   "repo": "marshmallow",
+   "sha": "12a3b3b0a",
+   "stageB": "no_repro_tests",
+   "cause": "py_incompat",
+   "log_tail": "\nImportError while loading conftest 'C:\\Users\\az518\\Desktop\\genesis-project\\data\\repos\\mine_marshmallow_diag\\tests\\conftest.py'.\ntests\\conftest.py:5: in <module>\n    from tests.base import User, UserSerializer, Blog\ntests\\base.py:8: in <module>\n    from marshmallow import Serializer, fields\nmarshmallow\\__init__.py:8: in <module>\n    from marshmallow.serializer import (\nmarshmallow\\serializer.py:16: in <module>\n    from marshmallow.orderedset import OrderedSet\nmarshmallow\\orderedset.py:26: in <module>\n    class OrderedSet(collections.MutableSet):\n                     ^^^^^^^^^^^^^^^^^^^^^^\nE   AttributeError: module 'collections' has no attribute 'MutableSet'\n"
+  },
+  {
+   "key": "marshmallow_7bf6a1ee5",
+   "repo": "marshmallow",
+   "sha": "7bf6a1ee5",
+   "stageB": "no_repro_tests",
+   "cause": "runs_ok",
+   "log_tail": "assert No...\nFAILED tests\\test_marshmallow.py::TestNestedSerializer::test_nested_function_field\nFAILED tests\\test_marshmallow.py::TestNestedSerializer::test_nested_method_field\nFAILED tests\\test_marshmallow.py::TestNestedSerializer::test_nested_prefixed_field\nFAILED tests\\test_marshmallow.py::TestFields::test_function_field - Assertion...\nFAILED tests\\test_marshmallow.py::TestValidation::test_function_validator - T...\nFAILED tests\\test_marshmallow.py::TestValidation::test_method_validator - Typ...\nFAILED tests\\test_marshmallow.py::TestContext::test_context_method - assert N...\nFAILED tests\\test_marshmallow.py::TestContext::test_context_method_function\nFAILED tests\\test_marshmallow.py::TestContext::test_function_field_raises_error_when_context_not_available\n14 failed, 148 passed in 12.33s\n\n"
+  },
+  {
+   "key": "marshmallow_35bdfbaba",
+   "repo": "marshmallow",
+   "sha": "35bdfbaba",
+   "stageB": "no_repro_tests",
+   "cause": "runs_ok",
+   "log_tail": " assert No...\nFAILED tests\\test_marshmallow.py::TestNestedSerializer::test_nested_function_field\nFAILED tests\\test_marshmallow.py::TestNestedSerializer::test_nested_method_field\nFAILED tests\\test_marshmallow.py::TestNestedSerializer::test_nested_prefixed_field\nFAILED tests\\test_marshmallow.py::TestFields::test_function_field - Assertion...\nFAILED tests\\test_marshmallow.py::TestValidation::test_function_validator - T...\nFAILED tests\\test_marshmallow.py::TestValidation::test_method_validator - Typ...\nFAILED tests\\test_marshmallow.py::TestContext::test_context_method - assert N...\nFAILED tests\\test_marshmallow.py::TestContext::test_context_method_function\nFAILED tests\\test_marshmallow.py::TestContext::test_function_field_raises_error_when_context_not_available\n14 failed, 146 passed in 9.42s\n\n"
+  },
+  {
+   "key": "marshmallow_42a1a6a25",
+   "repo": "marshmallow",
+   "sha": "42a1a6a25",
+   "stageB": "no_repro_tests",
+   "cause": "py_incompat",
+   "log_tail": "hmallow.py _\nImportError while importing test module 'C:\\Users\\az518\\Desktop\\genesis-project\\data\\repos\\mine_marshmallow_diag\\tests\\test_marshmallow.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\nC:\\Users\\az518\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\importlib\\__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests\\test_marshmallow.py:4: in <module>\n    import unittest2 as unittest\nE   ModuleNotFoundError: No module named 'unittest2'\n=========================== short test summary info ===========================\nERROR tests\\test_marshmallow.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n1 error in 3.22s\n\n"
+  },
+  {
+   "key": "marshmallow_ad9e0e6f4",
+   "repo": "marshmallow",
+   "sha": "ad9e0e6f4",
+   "stageB": "no_repro_tests",
+   "cause": "py_incompat",
+   "log_tail": "hmallow.py _\nImportError while importing test module 'C:\\Users\\az518\\Desktop\\genesis-project\\data\\repos\\mine_marshmallow_diag\\tests\\test_marshmallow.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\nC:\\Users\\az518\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\importlib\\__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests\\test_marshmallow.py:4: in <module>\n    import unittest2 as unittest\nE   ModuleNotFoundError: No module named 'unittest2'\n=========================== short test summary info ===========================\nERROR tests\\test_marshmallow.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n1 error in 2.95s\n\n"
+  },
+  {
+   "key": "marshmallow_3f8828082",
+   "repo": "marshmallow",
+   "sha": "3f8828082",
+   "stageB": "no_repro_tests",
+   "cause": "py_incompat",
+   "log_tail": "hmallow.py _\nImportError while importing test module 'C:\\Users\\az518\\Desktop\\genesis-project\\data\\repos\\mine_marshmallow_diag\\tests\\test_marshmallow.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\nC:\\Users\\az518\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\importlib\\__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests\\test_marshmallow.py:4: in <module>\n    import unittest2 as unittest\nE   ModuleNotFoundError: No module named 'unittest2'\n=========================== short test summary info ===========================\nERROR tests\\test_marshmallow.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n1 error in 2.64s\n\n"
+  },
+  {
+   "key": "more-itertools_d71c4ad9f",
+   "repo": "more-itertools",
+   "sha": "d71c4ad9f",
+   "stageB": "no_repro_tests",
+   "cause": "runs_ok",
+   "log_tail": "rMapTests::test_no_mapping\nPASSED tests\\test_more.py::ArgMinArgMaxTests::test_basic\nPASSED tests\\test_more.py::ArgMinArgMaxTests::test_key\nPASSED tests\\test_more.py::ExtractTests::test_all_orderings\nPASSED tests\\test_more.py::ExtractTests::test_basics\nPASSED tests\\test_more.py::ExtractTests::test_early_free\nPASSED tests\\test_more.py::ExtractTests::test_lazy_consumption\nPASSED tests\\test_more.py::ExtractTests::test_monotonic\nPASSED tests\\test_more.py::ExtractTests::test_negative_one_bug\nPASSED tests\\test_more.py::ExtractTests::test_none_value_bug\nPASSED tests\\test_more.py::TestSerialize::test_concurrent_calls\nPASSED tests\\test_more.py::TestSynchronized::test_concurrent_calls\nPASSED tests\\test_more.py::TestConcurrentTee::test_concurrent_consumers\n567 passed, 10027 subtests passed in 46.70s\n\n"
+  },
+  {
+   "key": "more-itertools_395bdfc00",
+   "repo": "more-itertools",
+   "sha": "395bdfc00",
+   "stageB": "no_repro_tests",
+   "cause": "runs_ok",
+   "log_tail": "ct\nSUBFAILED(objects=[[1, 2], [3], [4]], strict=True) tests\\test_more.py::ZipBroadcastTests::test_strict\nSUBFAILED(objects=[[1], [2, 3], [4]], strict=True) tests\\test_more.py::ZipBroadcastTests::test_strict\nSUBFAILED(objects=[[1], [2], [3, 4]], strict=True) tests\\test_more.py::ZipBroadcastTests::test_strict\nSUBFAILED(objects=[[1], [2, 3], [4, 5]], strict=True) tests\\test_more.py::ZipBroadcastTests::test_strict\nSUBFAILED(objects=[[1, 2], [3], [4, 5]], strict=True) tests\\test_more.py::ZipBroadcastTests::test_strict\nSUBFAILED(objects=[[1, 2], [3, 4], [5]], strict=True) tests\\test_more.py::ZipBroadcastTests::test_strict\nSUBFAILED(objects=['a', [1, 2], [3, 4, 5]], strict=True) tests\\test_more.py::ZipBroadcastTests::test_strict\n12 failed, 421 passed, 10 warnings, 2069 subtests passed in 23.22s\n\n"
+  },
+  {
+   "key": "more-itertools_a43834e1f",
+   "repo": "more-itertools",
+   "sha": "a43834e1f",
+   "stageB": "no_repro_tests",
+   "cause": "runs_ok",
+   "log_tail": "sts\\test_more.py::MapExceptTests::test_multiple\nPASSED tests\\test_more.py::MapExceptTests::test_no_exceptions_pass\nPASSED tests\\test_more.py::MapExceptTests::test_no_exceptions_raise\nPASSED tests\\test_more.py::MapExceptTests::test_raise\nPASSED tests\\test_more.py::SampleTests::test_invariance_under_permutations_unweighted\nPASSED tests\\test_more.py::SampleTests::test_invariance_under_permutations_weighted\nPASSED tests\\test_more.py::SampleTests::test_length\nPASSED tests\\test_more.py::SampleTests::test_samling_entire_iterable\nPASSED tests\\test_more.py::SampleTests::test_scale_invariance_of_weights\nPASSED tests\\test_more.py::SampleTests::test_unit_case\nFAILED tests\\test_more.py::TimeLimitedTests::test_zero_limit - AssertionError...\n1 failed, 324 passed, 5 warnings, 46 subtests passed in 8.47s\n\n"
+  },
+  {
+   "key": "more-itertools_500e9bb21",
+   "repo": "more-itertools",
+   "sha": "500e9bb21",
+   "stageB": "no_repro_tests",
+   "cause": "runs_ok",
+   "log_tail": "terExceptTests::test_multiple\nPASSED more_itertools\\tests\\test_more.py::FilterExceptTests::test_no_exceptions_pass\nPASSED more_itertools\\tests\\test_more.py::FilterExceptTests::test_no_exceptions_raise\nPASSED more_itertools\\tests\\test_more.py::FilterExceptTests::test_raise\nPASSED more_itertools\\tests\\test_more.py::MapExceptTests::test_multiple\nPASSED more_itertools\\tests\\test_more.py::MapExceptTests::test_no_exceptions_pass\nPASSED more_itertools\\tests\\test_more.py::MapExceptTests::test_no_exceptions_raise\nPASSED more_itertools\\tests\\test_more.py::MapExceptTests::test_raise\nFAILED more_itertools\\tests\\test_more.py::OneTests::test_too_long_default_message\nFAILED more_itertools\\tests\\test_more.py::TimeLimitedTests::test_zero_limit\n2 failed, 281 passed, 5 warnings, 15 subtests passed in 7.18s\n\n"
+  },
+  {
+   "key": "tinydb_ea39c47ae",
+   "repo": "tinydb",
+   "sha": "ea39c47ae",
+   "stageB": "no_repro_tests",
+   "cause": "runs_ok",
+   "log_tail": "=============== short test summary info ===========================\nPASSED tests\\test_storages.py::test_json\nPASSED tests\\test_storages.py::test_json_readwrite\nPASSED tests\\test_storages.py::test_in_memory\nPASSED tests\\test_storages.py::test_in_memory_close\nPASSED tests\\test_storages.py::test_custom\nPASSED tests\\test_utils.py::test_lru_cache\nPASSED tests\\test_utils.py::test_lru_cache_set_multiple\nPASSED tests\\test_utils.py::test_lru_cache_get\nPASSED tests\\test_utils.py::test_lru_cache_delete\nPASSED tests\\test_utils.py::test_lru_cache_clear\nPASSED tests\\test_utils.py::test_lru_cache_unlimited\nPASSED tests\\test_utils.py::test_lru_cache_unlimited_explicit\nPASSED tests\\test_utils.py::test_catch_warning\nPASSED tests\\test_utils.py::test_catch_warning_reset_filter\n14 passed, 2 warnings in 3.61s\n\n"
+  }
+ ]
+}

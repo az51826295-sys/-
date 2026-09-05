@@ -1,0 +1,341 @@
+{
+  "spec": "diversity-run-v1",
+  "design": "docs/diversity-run-v1-design.md",
+  "tier_used": "T2",
+  "thresholds": {
+    "flat_lower": 0.8,
+    "saturating_upper": 0.5
+  },
+  "gate": {
+    "min_calls": 10,
+    "min_candidates": 40
+  },
+  "tiers": {
+    "T1": {
+      "duplicates": 0,
+      "has_resolution": false,
+      "candidates": 20,
+      "calls": 20,
+      "per_concept": [
+        {
+          "concept": "save",
+          "calls": 10,
+          "passed": 12,
+          "distinct_total": 12
+        },
+        {
+          "concept": "inventory",
+          "calls": 10,
+          "passed": 8,
+          "distinct_total": 8
+        }
+      ],
+      "u_within": {
+        "verdict": "undefined",
+        "why": "sample_gate",
+        "mean": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ],
+        "n_calls": 5
+      },
+      "u_across": {
+        "verdict": "flat",
+        "why": "ci_lower_ge_flat",
+        "mean": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ],
+        "n_calls": 4
+      },
+      "novelty_curve": {
+        "save": [
+          {
+            "call": 2,
+            "novel": 1.0,
+            "seen_before": 3
+          },
+          {
+            "call": 8,
+            "novel": 1.0,
+            "seen_before": 6
+          }
+        ],
+        "inventory": [
+          {
+            "call": 3,
+            "novel": 1.0,
+            "seen_before": 0
+          },
+          {
+            "call": 8,
+            "novel": 1.0,
+            "seen_before": 6
+          }
+        ]
+      }
+    },
+    "T2": {
+      "duplicates": 6,
+      "has_resolution": true,
+      "candidates": 20,
+      "calls": 20,
+      "per_concept": [
+        {
+          "concept": "save",
+          "calls": 10,
+          "passed": 12,
+          "distinct_total": 7
+        },
+        {
+          "concept": "inventory",
+          "calls": 10,
+          "passed": 8,
+          "distinct_total": 7
+        }
+      ],
+      "u_within": {
+        "verdict": "undefined",
+        "why": "sample_gate",
+        "mean": 0.7666666666666667,
+        "ci95": [
+          0.4333333333333333,
+          1.0
+        ],
+        "n_calls": 5
+      },
+      "u_across": {
+        "verdict": "undefined",
+        "why": "ci_straddles",
+        "mean": 0.7916666666666666,
+        "ci95": [
+          0.375,
+          1.0
+        ],
+        "n_calls": 4
+      },
+      "novelty_curve": {
+        "save": [
+          {
+            "call": 2,
+            "novel": 1.0,
+            "seen_before": 3
+          },
+          {
+            "call": 8,
+            "novel": 0.16666666666666666,
+            "seen_before": 6
+          }
+        ],
+        "inventory": [
+          {
+            "call": 3,
+            "novel": 1.0,
+            "seen_before": 0
+          },
+          {
+            "call": 8,
+            "novel": 1.0,
+            "seen_before": 5
+          }
+        ]
+      }
+    },
+    "T3": {
+      "duplicates": 6,
+      "has_resolution": true,
+      "candidates": 20,
+      "calls": 20,
+      "per_concept": [
+        {
+          "concept": "save",
+          "calls": 10,
+          "passed": 12,
+          "distinct_total": 7
+        },
+        {
+          "concept": "inventory",
+          "calls": 10,
+          "passed": 8,
+          "distinct_total": 7
+        }
+      ],
+      "u_within": {
+        "verdict": "undefined",
+        "why": "sample_gate",
+        "mean": 0.7666666666666667,
+        "ci95": [
+          0.4333333333333333,
+          1.0
+        ],
+        "n_calls": 5
+      },
+      "u_across": {
+        "verdict": "undefined",
+        "why": "ci_straddles",
+        "mean": 0.7916666666666666,
+        "ci95": [
+          0.375,
+          1.0
+        ],
+        "n_calls": 4
+      },
+      "novelty_curve": {
+        "save": [
+          {
+            "call": 2,
+            "novel": 1.0,
+            "seen_before": 3
+          },
+          {
+            "call": 8,
+            "novel": 0.16666666666666666,
+            "seen_before": 6
+          }
+        ],
+        "inventory": [
+          {
+            "call": 3,
+            "novel": 1.0,
+            "seen_before": 0
+          },
+          {
+            "call": 8,
+            "novel": 1.0,
+            "seen_before": 5
+          }
+        ]
+      }
+    }
+  },
+  "provider": "anthropic",
+  "model": "claude-haiku-4-5",
+  "usd": 0.121145,
+  "seconds": 152.4,
+  "fingerprint": {
+    "spec_id": "icon-24-line-v1",
+    "arm": "with_spec",
+    "public_spec_sha": "5c38f9a9f798",
+    "system_prompt_sha": "43b76b8878c5",
+    "initial_prompt_skeleton_sha": "b042fe7d54c8",
+    "retry_prompt_sha": "02bc8528e2f2",
+    "restructure_prompt_sha": "30b7131462f1",
+    "note": "프롬프트 전문이 아니라 지문이다. 회차 간 '같았나 달랐나'를 사후에 답할 수 있게 하는 것이 목적."
+  },
+  "runs": [
+    {
+      "concept": "save",
+      "why": null,
+      "calls": [
+        {
+          "call": 1,
+          "n": 6,
+          "passed": 3
+        },
+        {
+          "call": 2,
+          "n": 6,
+          "passed": 3
+        },
+        {
+          "call": 3,
+          "n": 7,
+          "passed": 0
+        },
+        {
+          "call": 4,
+          "n": 7,
+          "passed": 0
+        },
+        {
+          "call": 5,
+          "n": 6,
+          "passed": 0
+        },
+        {
+          "call": 6,
+          "n": 7,
+          "passed": 0
+        },
+        {
+          "call": 7,
+          "n": 7,
+          "passed": 0
+        },
+        {
+          "call": 8,
+          "n": 7,
+          "passed": 6
+        },
+        {
+          "call": 9,
+          "n": 7,
+          "passed": 0
+        },
+        {
+          "call": 10,
+          "n": 7,
+          "passed": 0
+        }
+      ]
+    },
+    {
+      "concept": "inventory",
+      "why": null,
+      "calls": [
+        {
+          "call": 1,
+          "n": 6,
+          "passed": 0
+        },
+        {
+          "call": 2,
+          "n": 7,
+          "passed": 0
+        },
+        {
+          "call": 3,
+          "n": 6,
+          "passed": 6
+        },
+        {
+          "call": 4,
+          "n": 7,
+          "passed": 0
+        },
+        {
+          "call": 5,
+          "n": 6,
+          "passed": 0
+        },
+        {
+          "call": 6,
+          "n": 6,
+          "passed": 0
+        },
+        {
+          "call": 7,
+          "n": 7,
+          "passed": 0
+        },
+        {
+          "call": 8,
+          "n": 7,
+          "passed": 2
+        },
+        {
+          "call": 9,
+          "n": 6,
+          "passed": 0
+        },
+        {
+          "call": 10,
+          "n": 6,
+          "passed": 0
+        }
+      ]
+    }
+  ]
+}

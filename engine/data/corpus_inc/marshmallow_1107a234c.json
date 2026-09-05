@@ -1,0 +1,13 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "1107a234c5681e54d1345bad1f32dc107a4aa344",
+ "parent_commit": "187560311f868e7eeac76eed30edf69f538c483b",
+ "answer_functions": [],
+ "repro_tests": [],
+ "smoke": [],
+ "baseline_pass_count": 0,
+ "probes": [],
+ "inc_event": false,
+ "regression_event": false,
+ "skipped": "no repro or no answer functions"
+}

@@ -1,0 +1,85 @@
+[main] mi_sliced_negative A rep0: full (24.4s)
+[main] mi_sliced_negative B rep0: full (23.8s)
+[main] mi_sliced_negative A rep1: full (20.2s)
+[main] mi_sliced_negative B rep1: full (25.0s)
+[main] mi_sliced_negative A rep2: full (21.8s)
+[main] mi_sliced_negative B rep2: full (25.3s)
+[main] mi_interleave_empty A rep0: full (21.4s)
+[main] mi_interleave_empty B rep0: full (43.8s)
+[main] mi_interleave_empty A rep1: full (22.4s)
+[main] mi_interleave_empty B rep1: full (43.5s)
+[main] mi_interleave_empty A rep2: full (25.4s)
+[main] mi_interleave_empty B rep2: full (48.7s)
+[main] mi_numeric_range_reversed A rep0: full (23.6s)
+[main] mi_numeric_range_reversed B rep0: full (34.3s)
+[main] mi_numeric_range_reversed A rep1: full (24.0s)
+[main] mi_numeric_range_reversed B rep1: full (48.1s)
+[main] mi_numeric_range_reversed A rep2: full (26.1s)
+[main] mi_numeric_range_reversed B rep2: full (34.7s)
+[main] mi_running_minmax_stability A rep0: full (23.4s)
+[main] mi_running_minmax_stability B rep0: full (32.5s)
+[main] mi_running_minmax_stability A rep1: full (24.5s)
+[main] mi_running_minmax_stability B rep1: full (167.2s)
+[main] mi_running_minmax_stability A rep2: full (22.2s)
+[main] mi_running_minmax_stability B rep2: full (41.0s)
+[main] tdb_lru_falsy A rep0: full (22.1s)
+[main] tdb_lru_falsy B rep0: full (164.9s)
+[main] tdb_lru_falsy A rep1: full (25.1s)
+[main] tdb_lru_falsy B rep1: full (34.9s)
+[main] tdb_lru_falsy A rep2: full (17.8s)
+[main] tdb_lru_falsy B rep2: full (33.2s)
+[main] tdb_lru_set_update A rep0: full (17.5s)
+[main] tdb_lru_set_update B rep0: full (35.3s)
+[main] tdb_lru_set_update A rep1: full (17.3s)
+[main] tdb_lru_set_update B rep1: full (31.2s)
+[main] tdb_lru_set_update A rep2: full (17.1s)
+[main] tdb_lru_set_update B rep2: full (32.5s)
+[main] tdb_doc_ids_missing A rep0: full (24.0s)
+[main] tdb_doc_ids_missing B rep0: full (49.0s)
+[main] tdb_doc_ids_missing A rep1: full (27.5s)
+[main] tdb_doc_ids_missing B rep1: full (47.0s)
+[main] tdb_doc_ids_missing A rep2: full (23.6s)
+[main] tdb_doc_ids_missing B rep2: full (47.1s)
+[main] du_isotime_midnight A rep0: full (27.2s)
+[main] du_isotime_midnight B rep0: full (67.9s)
+[main] du_isotime_midnight A rep1: full (27.5s)
+[main] du_isotime_midnight B rep1: public_fail (84.1s)
+[main] du_isotime_midnight A rep2: full (27.2s)
+[main] du_isotime_midnight B rep2: full (58.6s)
+[main] du_isoparse_t24_rollover A rep0: regression (96.0s)
+[main] du_isoparse_t24_rollover B rep0: regression (142.0s)
+[main] du_isoparse_t24_rollover A rep1: regression (84.1s)
+[main] du_isoparse_t24_rollover B rep1: regression (108.6s)
+[main] du_isoparse_t24_rollover A rep2: regression (124.5s)
+[main] du_isoparse_t24_rollover B rep2: regression (127.2s)
+{
+ "A": {
+  "n": 27,
+  "full": 0.8888888888888888,
+  "public_only": 0.0,
+  "regression": 0.1111111111111111,
+  "first_candidate_full": 0.7777777777777778,
+  "recovery": 0.5,
+  "mean_test_runs": 7.333333333333333,
+  "duplicates": 0,
+  "mean_wall_s": 31.8,
+  "code_fails": 0
+ },
+ "B": {
+  "n": 27,
+  "full": 0.8518518518518519,
+  "public_only": 0.0,
+  "regression": 0.1111111111111111,
+  "first_candidate_full": 0.7777777777777778,
+  "recovery": 0.3333333333333333,
+  "mean_test_runs": 11.11111111111111,
+  "duplicates": 13,
+  "mean_wall_s": 60.4,
+  "code_fails": 0
+ },
+ "usage": {
+  "calls": 144,
+  "input_tokens": 266663,
+  "output_tokens": 80870
+ }
+}

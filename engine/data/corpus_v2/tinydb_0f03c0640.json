@@ -1,0 +1,50 @@
+{
+ "repo": "tinydb",
+ "fix_commit": "0f03c06408f5f579586813b9a1e1c24024715a53",
+ "parent_commit": "6a495d4c30347707c8e822fda158cc5c0b393731",
+ "answer_files": [
+  "__init__.py",
+  "queries.py"
+ ],
+ "answer_functions": [
+  "__init__.py::__init__",
+  "__init__.py::_clear_query_cache",
+  "__init__.py::_write",
+  "__init__.py::remove",
+  "__init__.py::search",
+  "queries.py::__hash__"
+ ],
+ "patch_lines": 29,
+ "added_tests": {
+  "tests/tests_tinydb.py::test_insert_multiple": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/tests_tinydb.py::test_remove": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/tests_tinydb.py::test_remove_multiple": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/tests_tinydb.py::test_contians": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "tests/tests_tinydb.py"
+ ],
+ "location_hard_proxy": true,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 14.2,
+ "env_error_tests": 4,
+ "qualified": false
+}

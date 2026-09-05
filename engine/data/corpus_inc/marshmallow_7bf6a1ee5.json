@@ -1,0 +1,17 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "7bf6a1ee5ba734793019440576fe75a7f46045d1",
+ "parent_commit": "7af14f949481b213ccb9fad9a9b4352cdace9d72",
+ "answer_functions": [
+  "marshmallow/class_registry.py::get_class",
+  "marshmallow/class_registry.py::register",
+  "tasks.py::test"
+ ],
+ "repro_tests": [],
+ "smoke": [],
+ "baseline_pass_count": 0,
+ "probes": [],
+ "inc_event": false,
+ "regression_event": false,
+ "skipped": "no repro or no answer functions"
+}

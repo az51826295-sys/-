@@ -1,0 +1,207 @@
+{
+ "runs": {
+  "R_ms0": {
+   "tag": "R_ms0",
+   "final_score": 0.8844275493025493,
+   "final_acc": 0.9416666666666667,
+   "candidates_to_r_target": null,
+   "r_target": 0.0,
+   "escape_gen": null
+  },
+  "R_ms1": {
+   "tag": "R_ms1",
+   "final_score": 0.8894275493025493,
+   "final_acc": 0.9416666666666667,
+   "candidates_to_r_target": null,
+   "r_target": 0.0,
+   "escape_gen": null
+  },
+  "R_ms2": {
+   "tag": "R_ms2",
+   "final_score": 0.5458215848965849,
+   "final_acc": 0.7095833333333333,
+   "candidates_to_r_target": null,
+   "r_target": 0.0,
+   "escape_gen": null
+  },
+  "Z_ms0": {
+   "tag": "Z_ms0",
+   "final_score": 0.636396164021164,
+   "final_acc": 0.0,
+   "candidates_to_r_target": null,
+   "r_target": 0.8844275493025493,
+   "escape_gen": null
+  },
+  "Z_ms1": {
+   "tag": "Z_ms1",
+   "final_score": 0.5989862193362193,
+   "final_acc": 0.0,
+   "candidates_to_r_target": null,
+   "r_target": 0.8894275493025493,
+   "escape_gen": null
+  },
+  "Z_ms2": {
+   "tag": "Z_ms2",
+   "final_score": 0.5989862193362193,
+   "final_acc": 0.0,
+   "candidates_to_r_target": 42,
+   "r_target": 0.5458215848965849,
+   "escape_gen": null
+  },
+  "S_ms0": {
+   "tag": "S_ms0",
+   "final_score": 0.8894275493025493,
+   "final_acc": 0.0,
+   "candidates_to_r_target": 6,
+   "r_target": 0.8844275493025493,
+   "escape_gen": null
+  },
+  "S_ms1": {
+   "tag": "S_ms1",
+   "final_score": 0.9123914742664743,
+   "final_acc": 0.0,
+   "candidates_to_r_target": 6,
+   "r_target": 0.8894275493025493,
+   "escape_gen": null
+  },
+  "S_ms2": {
+   "tag": "S_ms2",
+   "final_score": 0.8894275493025493,
+   "final_acc": 0.0,
+   "candidates_to_r_target": 6,
+   "r_target": 0.5458215848965849,
+   "escape_gen": null
+  },
+  "T_ms0": {
+   "tag": "T_ms0",
+   "final_score": 0.8894275493025493,
+   "final_acc": 0.0,
+   "candidates_to_r_target": 6,
+   "r_target": 0.8844275493025493,
+   "escape_gen": null
+  },
+  "T_ms1": {
+   "tag": "T_ms1",
+   "final_score": 0.8894275493025493,
+   "final_acc": 0.0,
+   "candidates_to_r_target": 6,
+   "r_target": 0.8894275493025493,
+   "escape_gen": null
+  },
+  "T_ms2": {
+   "tag": "T_ms2",
+   "final_score": 0.8894275493025493,
+   "final_acc": 0.0,
+   "candidates_to_r_target": 6,
+   "r_target": 0.5458215848965849,
+   "escape_gen": null
+  },
+  "Rdead_ms0": {
+   "tag": "Rdead_ms0",
+   "final_score": 0.5408215848965849,
+   "final_acc": 0.0,
+   "candidates_to_r_target": null,
+   "r_target": 0.0,
+   "escape_gen": null
+  },
+  "Rdead_ms1": {
+   "tag": "Rdead_ms1",
+   "final_score": 0.5408215848965849,
+   "final_acc": 0.0,
+   "candidates_to_r_target": null,
+   "r_target": 0.0,
+   "escape_gen": null
+  },
+  "Rdead_ms2": {
+   "tag": "Rdead_ms2",
+   "final_score": 0.5408215848965849,
+   "final_acc": 0.0,
+   "candidates_to_r_target": null,
+   "r_target": 0.0,
+   "escape_gen": null
+  },
+  "Tdead_ms0": {
+   "tag": "Tdead_ms0",
+   "final_score": 0.7447448653198653,
+   "final_acc": 0.0,
+   "candidates_to_r_target": null,
+   "r_target": 0.0,
+   "escape_gen": 1
+  },
+  "Tdead_ms1": {
+   "tag": "Tdead_ms1",
+   "final_score": 0.7447448653198653,
+   "final_acc": 0.0,
+   "candidates_to_r_target": null,
+   "r_target": 0.0,
+   "escape_gen": 4
+  },
+  "Tdead_ms2": {
+   "tag": "Tdead_ms2",
+   "final_score": 0.7447448653198653,
+   "final_acc": 0.0,
+   "candidates_to_r_target": null,
+   "r_target": 0.0,
+   "escape_gen": 14
+  }
+ },
+ "test_accuracy": {
+  "T_ms0": {
+   "1.0": 0.8666666666666666,
+   "1.25": 0.9875,
+   "1.5": 1.0,
+   "0.9": 0.6564583333333334,
+   "2.0": 1.0
+  },
+  "T_ms1": {
+   "1.0": 0.8666666666666666,
+   "1.25": 0.9875,
+   "1.5": 1.0,
+   "0.9": 0.6564583333333334,
+   "2.0": 1.0
+  },
+  "T_ms2": {
+   "1.0": 0.8666666666666666,
+   "1.25": 0.9875,
+   "1.5": 1.0,
+   "0.9": 0.6564583333333334,
+   "2.0": 1.0
+  },
+  "Tdead_ms0": {
+   "1.0": 0.7794047619047619,
+   "1.25": 0.9425000000000001,
+   "1.5": 1.0,
+   "0.9": 0.5121825396825397,
+   "2.0": 1.0
+  },
+  "Tdead_ms1": {
+   "1.0": 0.7794047619047619,
+   "1.25": 0.9425000000000001,
+   "1.5": 1.0,
+   "0.9": 0.5121825396825397,
+   "2.0": 1.0
+  },
+  "Tdead_ms2": {
+   "1.0": 0.7794047619047619,
+   "1.25": 0.9425000000000001,
+   "1.5": 1.0,
+   "0.9": 0.5121825396825397,
+   "2.0": 1.0
+  }
+ },
+ "usage": {
+  "Z_input_tokens": 379374,
+  "Z_output_tokens": 36446,
+  "S_input_tokens": 400080,
+  "S_output_tokens": 35795,
+  "T_input_tokens": 438174,
+  "T_output_tokens": 37488
+ },
+ "verdicts": [
+  "P28 (T 표본 효율 ≤50%): 충족 - 3/3 (기준 ≥2), 후보 수 ms0: 6/120, ms1: 6/120, ms2: 6/120",
+  "P29 (효율 순서 T≥S≥Z): 충족 - 평균 도달 후보 수 T 6, S 6, Z 94",
+  "P30 (탈출 score≥0.85, ≥2/3): 미충족 - 기준 도달 0/3. 탈출 사건 자체는 T 3/3 (세대 [1, 4, 14]), R 0/3",
+  "P31 (T_ms0 시험 일반화 vs C 0.735): 충족 - 0.951 (+0.216)",
+  "P31 (Tdead_ms0 시험 일반화 vs C 0.735): 충족 - 0.907 (+0.172)"
+ ]
+}

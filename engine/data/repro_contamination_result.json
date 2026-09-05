@@ -1,0 +1,75 @@
+{
+ "sample": "data/repro_contamination_sample.json (seed 20260822, 분류 전 동결)",
+ "schema": {
+  "i": "실패가 이슈 증상과 일치(진짜 버그 재현)",
+  "ii": "무관(기능요청·깨진 테스트·데이터파일 부재)",
+  "iii": "판정 불가"
+ },
+ "stratum1_original_accepted": [
+  {
+   "issue": "boltons#280",
+   "verdict": "i",
+   "why": "AssertionError가 URL 쿼리순서 불일치를 정확히 재현(엔진이 실제 푼 건, PR#456)"
+  },
+  {
+   "issue": "toolz#596",
+   "verdict": "ii",
+   "why": "기능요청 raise_/throws; assert hasattr(...,'raise_')==False — 없는 함수 단언(AssertionError지만 버그 아님)"
+  },
+  {
+   "issue": "toolz#523",
+   "verdict": "ii",
+   "why": "기능요청 compose 연산자; TypeError unsupported operand '|' — 없는 기능"
+  },
+  {
+   "issue": "marshmallow#879",
+   "verdict": "ii",
+   "why": "질문 이슈; NameError: 'errors' not defined — 유도 테스트 자체가 깨짐"
+  },
+  {
+   "issue": "tinydb#631",
+   "verdict": "ii",
+   "why": "실제 버그지만 유도 테스트가 SyntaxError(unterminated string) — 깨진 테스트"
+  }
+ ],
+ "stratum2_newly_flipped": [
+  {
+   "issue": "dateutil#1432",
+   "verdict": "i",
+   "why": "이슈가 'TypeError in tzstr' 명시, 실패도 TypeError — 증상 일치"
+  },
+  {
+   "issue": "dateutil#1425",
+   "verdict": "ii",
+   "why": "DST 버그인데 실패는 FileNotFoundError zoneinfo.tar.gz — 데이터파일 부재(무관)"
+  },
+  {
+   "issue": "marshmallow#1844",
+   "verdict": "i",
+   "why": "단문자 TLD 이메일이 거부됨; 실패가 {'email':['Not a valid...']} — 증상 일치"
+  },
+  {
+   "issue": "marshmallow#1411",
+   "verdict": "ii",
+   "why": "기능요청 TypedDict 생성; assert hasattr(User,'type')==False — 없는 기능"
+  },
+  {
+   "issue": "dateutil#1364",
+   "verdict": "ii",
+   "why": "기능요청 default 인자 포팅; TypeError unexpected kwarg 'default' — 없는 API"
+  }
+ ],
+ "tally": {
+  "stratum1": {
+   "genuine": 1,
+   "contaminated": 4,
+   "rate": 0.8
+  },
+  "stratum2": {
+   "genuine": 2,
+   "contaminated": 3,
+   "rate": 0.6
+  },
+  "overall_genuine_of_failing": "3/10"
+ }
+}

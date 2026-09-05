@@ -1,0 +1,35 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "ad9e0e6f4460aac6302e05ac891fdf8a9778ec11",
+ "parent_commit": "987c1dc77525c9993aca5e862a7e73362c56cecb",
+ "answer_files": [
+  "marshmallow/serializer.py"
+ ],
+ "answer_functions": [
+  "marshmallow/serializer.py::__get_opts_fields",
+  "marshmallow/serializer.py::_update_fields"
+ ],
+ "patch_lines": 6,
+ "added_tests": {
+  "tests/test_marshmallow.py::test_error_raised_if_fields_option_is_not_list": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_marshmallow.py::test_error_raised_if_additional_option_is_not_list": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "tests/test_marshmallow.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 10.2,
+ "env_error_tests": 2,
+ "qualified": false
+}

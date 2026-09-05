@@ -1,0 +1,58 @@
+{
+ "repo": "tinydb",
+ "fix_commit": "cca5c234398383a8163725fdc542d9a9ffbedc45",
+ "parent_commit": "3daad55b08d756cbbff8d36b44db42a17833a0d6",
+ "answer_files": [
+  "tinydb/middlewares.py"
+ ],
+ "answer_functions": [
+  "tinydb/middlewares.py::read",
+  "tinydb/middlewares.py::write"
+ ],
+ "patch_lines": 40,
+ "added_tests": {
+  "tests/test_serializer.py::test_serializer": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [
+  "tests/test_serializer.py::test_serializer"
+ ],
+ "test_files": [
+  "tests/test_serializer.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [
+  {
+   "applied": "tinydb/middlewares.py::read",
+   "passes_repro": [],
+   "still_failing": [
+    "tests/test_serializer.py::test_serializer"
+   ],
+   "event": false,
+   "still_failing_fixpass": [
+    "tests/test_serializer.py::test_serializer"
+   ],
+   "event_v2": false
+  },
+  {
+   "applied": "tinydb/middlewares.py::write",
+   "passes_repro": [],
+   "still_failing": [
+    "tests/test_serializer.py::test_serializer"
+   ],
+   "event": false,
+   "still_failing_fixpass": [
+    "tests/test_serializer.py::test_serializer"
+   ],
+   "event_v2": false
+  }
+ ],
+ "env_seconds": 2.5,
+ "env_error_tests": 0,
+ "qualified": true,
+ "selector_event_proxy_v1": false
+}

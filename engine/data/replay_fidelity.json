@@ -1,0 +1,32 @@
+{
+ "checked": 16,
+ "matched": 16,
+ "mismatches": [],
+ "clone_row_index_sample": {
+  "C/1": {
+   "real_rowid": 3,
+   "clone_rowids": [
+    4
+   ]
+  },
+  "C/7": {
+   "real_rowid": 33,
+   "clone_rowids": [
+    34
+   ]
+  },
+  "C/13": {
+   "real_rowid": 63,
+   "clone_rowids": [
+    64
+   ]
+  },
+  "C/20": {
+   "real_rowid": 98,
+   "clone_rowids": [
+    99
+   ]
+  }
+ },
+ "verdict": "재실행 충실 - 전체 보드 재구성 가능"
+}

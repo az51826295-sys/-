@@ -1,0 +1,40 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "20ef6fe0f2b3c9cea59e46d8eb607d72c76a8ef8",
+ "parent_commit": "642d18b58d9b42d16b450a30b42aa57ea3859192",
+ "answer_files": [],
+ "answer_functions": [],
+ "patch_lines": 14,
+ "added_tests": {
+  "tests/test_deserialization.py::TestFieldDeserialization::test_structured_dict_value_deserialization": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_deserialization.py::TestFieldDeserialization::test_structured_dict_key_deserialization": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_deserialization.py::TestFieldDeserialization::test_structured_dict_key_value_deserialization": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_deserialization.py::TestSchemaDeserialization::test_structured_dict_nested_value_deserialization": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "tests/test_deserialization.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 13.1,
+ "env_error_tests": 4,
+ "qualified": false
+}

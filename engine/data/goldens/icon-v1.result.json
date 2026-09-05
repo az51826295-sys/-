@@ -1,0 +1,1097 @@
+{
+  "manifest": "golden-icon-v1",
+  "spec": "data/icon_specs/icon-24-line-v1.yaml",
+  "positive_source": "self",
+  "model_based_fields": [],
+  "positive": {
+    "n": 4,
+    "n_min": 10,
+    "n_ok": false,
+    "rate": 1.0,
+    "threshold": 0.9,
+    "passes_threshold": true,
+    "state": "out_of_scope",
+    "why": "(ii) 스펙이 사람 뜻과 같은가는 골든이 답할 질문이 아니다 - 취향 라인(docs/taste-judge-v0-design.md)이 들고 있고 지금 NO-PROMOTE다. (i) 심판이 스펙과 같은가는 negative·spec_sensitivity·inspec·legal 넷이 답한다. [표본 출처: self, 변이 통제의 원본으로 계속 쓰인다]",
+    "counts": false,
+    "undefined": 0,
+    "verdicts": [
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS"
+    ]
+  },
+  "negative": {
+    "n": 40,
+    "n_min": 10,
+    "n_ok": true,
+    "rate": 1.0,
+    "threshold": 0.9,
+    "passes_threshold": true,
+    "state": "measured",
+    "why": null,
+    "counts": true,
+    "undefined": 0,
+    "verdicts": [
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL"
+    ]
+  },
+  "null": {
+    "n": 24,
+    "n_min": 20,
+    "n_ok": true,
+    "rate": 0.125,
+    "threshold": 0.05,
+    "passes_threshold": false,
+    "state": "n/a",
+    "why": "model_based 필드 0건 - 자산 심판 초안 §7·§8에 따라 이 심판에는 null 통제가 적용되지 않는다(값은 기록으로 남긴다).",
+    "counts": false,
+    "undefined": 0,
+    "verdicts": [
+      "PASS",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "PASS",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "PASS",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL"
+    ]
+  },
+  "sensitivity": {
+    "n": 20,
+    "n_min": 20,
+    "n_ok": true,
+    "rate": 1.0,
+    "threshold": 0.9,
+    "passes_threshold": true,
+    "state": "measured",
+    "why": null,
+    "counts": true,
+    "undefined": 0,
+    "verdicts": [
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL",
+      "FAIL"
+    ]
+  },
+  "inspec": {
+    "n": 41,
+    "n_min": 20,
+    "n_ok": true,
+    "rate": 1.0,
+    "threshold": 1.0,
+    "passes_threshold": true,
+    "state": "measured",
+    "why": null,
+    "counts": true,
+    "undefined": 0,
+    "verdicts": [
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS"
+    ]
+  },
+  "legal": {
+    "n": 200,
+    "n_min": 200,
+    "n_ok": true,
+    "rate": 1.0,
+    "threshold": 1.0,
+    "passes_threshold": true,
+    "state": "measured",
+    "why": null,
+    "counts": true,
+    "undefined": 0,
+    "verdicts": [
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS"
+    ]
+  },
+  "legal_coverage": {
+    "n": 200,
+    "axes": {
+      "path_count": {
+        "4": 27,
+        "5": 34,
+        "3": 42,
+        "6": 26,
+        "1": 45,
+        "2": 26
+      },
+      "command_count": {
+        "10": 48,
+        "15": 41,
+        "20": 26,
+        "0": 35,
+        "5": 48,
+        "25": 2
+      },
+      "elements": {
+        "path": 200,
+        "svg": 200
+      },
+      "bytes": {
+        "min": 191,
+        "max": 655
+      },
+      "min_padding": {
+        "min": 2.0,
+        "max": 5.0
+      },
+      "commands_used": {
+        "M": 200,
+        "L": 163,
+        "Q": 171,
+        "C": 164
+      }
+    },
+    "not_exercised": [
+      "circle·rect·line·polyline 요소(허용 목록에 있으나 v0 생성기는 안 씀)",
+      "Z(닫힌 경로)·A(원호)·H/V·상대 좌표 명령",
+      "금지 요소(text·image·filter·mask·style·script·defs) — 이건 negative 통제가 덮는다",
+      "팔레트 위반(currentColor 아닌 색) — 역시 negative 쪽"
+    ]
+  },
+  "inspec_rows": [
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/01_save.svg",
+      "op": "평행이동 x+0.5",
+      "verdict": "PASS"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/01_save.svg",
+      "op": "평행이동 y+0.5",
+      "verdict": "PASS"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/01_save.svg",
+      "op": "평행이동 x-0.5",
+      "verdict": "PASS"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/01_save.svg",
+      "op": "평행이동 y-0.5",
+      "verdict": "PASS"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/01_save.svg",
+      "op": "평행이동 x+1",
+      "verdict": "PASS"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/01_save.svg",
+      "op": "평행이동 y+1",
+      "verdict": "PASS"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/01_save.svg",
+      "op": "평행이동 x-1",
+      "verdict": "PASS"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/01_save.svg",
+      "op": "평행이동 y-1",
+      "verdict": "PASS"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/01_save.svg",
+      "op": "path 순서 뒤집기",
+      "verdict": "PASS"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/01_save.svg",
+      "op": "절대좌표 재표기",
+      "verdict": "PASS"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/02_inventory.svg",
+      "op": "평행이동 x+0.5",
+      "verdict": "PASS"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/02_inventory.svg",
+      "op": "평행이동 y+0.5",
+      "verdict": "PASS"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/02_inventory.svg",
+      "op": "평행이동 x-0.5",
+      "verdict": "PASS"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/02_inventory.svg",
+      "op": "평행이동 y-0.5",
+      "verdict": "PASS"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/02_inventory.svg",
+      "op": "평행이동 x+1",
+      "verdict": "PASS"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/02_inventory.svg",
+      "op": "평행이동 y+1",
+      "verdict": "PASS"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/02_inventory.svg",
+      "op": "평행이동 x-1",
+      "verdict": "PASS"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/02_inventory.svg",
+      "op": "평행이동 y-1",
+      "verdict": "PASS"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/02_inventory.svg",
+      "op": "path 순서 뒤집기",
+      "verdict": "PASS"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/02_inventory.svg",
+      "op": "절대좌표 재표기",
+      "verdict": "PASS"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/03_map.svg",
+      "op": "평행이동 x+0.5",
+      "verdict": "PASS"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/03_map.svg",
+      "op": "평행이동 y+0.5",
+      "verdict": "PASS"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/03_map.svg",
+      "op": "평행이동 x-0.5",
+      "verdict": "PASS"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/03_map.svg",
+      "op": "평행이동 y-0.5",
+      "verdict": "PASS"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/03_map.svg",
+      "op": "평행이동 x+1",
+      "verdict": "PASS"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/03_map.svg",
+      "op": "평행이동 y+1",
+      "verdict": "PASS"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/03_map.svg",
+      "op": "평행이동 x-1",
+      "verdict": "PASS"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/03_map.svg",
+      "op": "평행이동 y-1",
+      "verdict": "PASS"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/03_map.svg",
+      "op": "좌우 미러",
+      "verdict": "PASS"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/03_map.svg",
+      "op": "90도 회전",
+      "verdict": "PASS"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/03_map.svg",
+      "op": "절대좌표 재표기",
+      "verdict": "PASS"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/04_settings.svg",
+      "op": "평행이동 x+0.5",
+      "verdict": "PASS"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/04_settings.svg",
+      "op": "평행이동 y+0.5",
+      "verdict": "PASS"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/04_settings.svg",
+      "op": "평행이동 x-0.5",
+      "verdict": "PASS"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/04_settings.svg",
+      "op": "평행이동 y-0.5",
+      "verdict": "PASS"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/04_settings.svg",
+      "op": "평행이동 x+1",
+      "verdict": "PASS"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/04_settings.svg",
+      "op": "평행이동 y+1",
+      "verdict": "PASS"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/04_settings.svg",
+      "op": "평행이동 x-1",
+      "verdict": "PASS"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/04_settings.svg",
+      "op": "평행이동 y-1",
+      "verdict": "PASS"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/04_settings.svg",
+      "op": "path 순서 뒤집기",
+      "verdict": "PASS"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/04_settings.svg",
+      "op": "절대좌표 재표기",
+      "verdict": "PASS"
+    }
+  ],
+  "inspec_skipped": [
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/01_save.svg",
+      "op": "좌우 미러",
+      "why": "원호(A)가 있어 sweep 처리 없이는 기하가 안 보존된다"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/01_save.svg",
+      "op": "90도 회전",
+      "why": "원호(A)가 있어 sweep 처리 없이는 기하가 안 보존된다"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/01_save.svg",
+      "op": "line→path 치환",
+      "why": "line 요소가 없다"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/02_inventory.svg",
+      "op": "좌우 미러",
+      "why": "원호(A)가 있어 sweep 처리 없이는 기하가 안 보존된다"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/02_inventory.svg",
+      "op": "90도 회전",
+      "why": "원호(A)가 있어 sweep 처리 없이는 기하가 안 보존된다"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/02_inventory.svg",
+      "op": "line→path 치환",
+      "why": "line 요소가 없다"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/03_map.svg",
+      "op": "path 순서 뒤집기",
+      "why": "path가 2개 미만"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/03_map.svg",
+      "op": "line→path 치환",
+      "why": "line 요소가 없다"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/04_settings.svg",
+      "op": "좌우 미러",
+      "why": "원호(A)가 있어 sweep 처리 없이는 기하가 안 보존된다"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/04_settings.svg",
+      "op": "90도 회전",
+      "why": "원호(A)가 있어 sweep 처리 없이는 기하가 안 보존된다"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/04_settings.svg",
+      "op": "line→path 치환",
+      "why": "line 요소가 없다"
+    }
+  ],
+  "negative_rows": [
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/01_save.svg",
+      "rule": "grid.snap"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/01_save.svg",
+      "rule": "stroke.width"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/01_save.svg",
+      "rule": "palette"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/01_save.svg",
+      "rule": "fill"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/01_save.svg",
+      "rule": "viewBox"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/01_save.svg",
+      "rule": "stroke.linecap"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/01_save.svg",
+      "rule": "stroke.linejoin"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/01_save.svg",
+      "rule": "forbidden_elements"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/01_save.svg",
+      "rule": "padding.min"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/01_save.svg",
+      "rule": "size.max_bytes"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/02_inventory.svg",
+      "rule": "grid.snap"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/02_inventory.svg",
+      "rule": "stroke.width"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/02_inventory.svg",
+      "rule": "palette"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/02_inventory.svg",
+      "rule": "fill"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/02_inventory.svg",
+      "rule": "viewBox"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/02_inventory.svg",
+      "rule": "stroke.linecap"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/02_inventory.svg",
+      "rule": "stroke.linejoin"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/02_inventory.svg",
+      "rule": "forbidden_elements"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/02_inventory.svg",
+      "rule": "padding.min"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/02_inventory.svg",
+      "rule": "size.max_bytes"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/03_map.svg",
+      "rule": "grid.snap"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/03_map.svg",
+      "rule": "stroke.width"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/03_map.svg",
+      "rule": "palette"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/03_map.svg",
+      "rule": "fill"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/03_map.svg",
+      "rule": "viewBox"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/03_map.svg",
+      "rule": "stroke.linecap"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/03_map.svg",
+      "rule": "stroke.linejoin"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/03_map.svg",
+      "rule": "forbidden_elements"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/03_map.svg",
+      "rule": "padding.min"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/03_map.svg",
+      "rule": "size.max_bytes"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/04_settings.svg",
+      "rule": "grid.snap"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/04_settings.svg",
+      "rule": "stroke.width"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/04_settings.svg",
+      "rule": "palette"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/04_settings.svg",
+      "rule": "fill"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/04_settings.svg",
+      "rule": "viewBox"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/04_settings.svg",
+      "rule": "stroke.linecap"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/04_settings.svg",
+      "rule": "stroke.linejoin"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/04_settings.svg",
+      "rule": "forbidden_elements"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/04_settings.svg",
+      "rule": "padding.min"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/04_settings.svg",
+      "rule": "size.max_bytes"
+    }
+  ],
+  "null_rows": [
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/01_save.svg",
+      "spec": "grid-1.0"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/01_save.svg",
+      "spec": "stroke-2.0"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/01_save.svg",
+      "spec": "viewBox-32"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/01_save.svg",
+      "spec": "padding-5"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/01_save.svg",
+      "spec": "one-path"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/01_save.svg",
+      "spec": "tiny"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/02_inventory.svg",
+      "spec": "grid-1.0"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/02_inventory.svg",
+      "spec": "stroke-2.0"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/02_inventory.svg",
+      "spec": "viewBox-32"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/02_inventory.svg",
+      "spec": "padding-5"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/02_inventory.svg",
+      "spec": "one-path"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/02_inventory.svg",
+      "spec": "tiny"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/03_map.svg",
+      "spec": "grid-1.0"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/03_map.svg",
+      "spec": "stroke-2.0"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/03_map.svg",
+      "spec": "viewBox-32"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/03_map.svg",
+      "spec": "padding-5"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/03_map.svg",
+      "spec": "one-path"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/03_map.svg",
+      "spec": "tiny"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/04_settings.svg",
+      "spec": "grid-1.0"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/04_settings.svg",
+      "spec": "stroke-2.0"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/04_settings.svg",
+      "spec": "viewBox-32"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/04_settings.svg",
+      "spec": "padding-5"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/04_settings.svg",
+      "spec": "one-path"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/04_settings.svg",
+      "spec": "tiny"
+    }
+  ],
+  "sensitivity_rows": [
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/01_save.svg",
+      "spec": "stroke_width+0.5",
+      "verdict": "FAIL"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/01_save.svg",
+      "spec": "path_max_count-1",
+      "verdict": "FAIL"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/01_save.svg",
+      "spec": "command_max-1",
+      "verdict": "FAIL"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/01_save.svg",
+      "spec": "padding_min+1",
+      "verdict": "FAIL"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/01_save.svg",
+      "spec": "max_bytes-1",
+      "verdict": "FAIL"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/02_inventory.svg",
+      "spec": "stroke_width+0.5",
+      "verdict": "FAIL"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/02_inventory.svg",
+      "spec": "path_max_count-1",
+      "verdict": "FAIL"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/02_inventory.svg",
+      "spec": "command_max-1",
+      "verdict": "FAIL"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/02_inventory.svg",
+      "spec": "padding_min+1",
+      "verdict": "FAIL"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/02_inventory.svg",
+      "spec": "max_bytes-1",
+      "verdict": "FAIL"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/03_map.svg",
+      "spec": "stroke_width+0.5",
+      "verdict": "FAIL"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/03_map.svg",
+      "spec": "path_max_count-1",
+      "verdict": "FAIL"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/03_map.svg",
+      "spec": "command_max-1",
+      "verdict": "FAIL"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/03_map.svg",
+      "spec": "padding_min+1",
+      "verdict": "FAIL"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/03_map.svg",
+      "spec": "max_bytes-1",
+      "verdict": "FAIL"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/04_settings.svg",
+      "spec": "stroke_width+0.5",
+      "verdict": "FAIL"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/04_settings.svg",
+      "spec": "path_max_count-1",
+      "verdict": "FAIL"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/04_settings.svg",
+      "spec": "command_max-1",
+      "verdict": "FAIL"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/04_settings.svg",
+      "spec": "padding_min+1",
+      "verdict": "FAIL"
+    },
+    {
+      "asset": "out/icons/rpg-ui-v1-strict/04_settings.svg",
+      "spec": "max_bytes-1",
+      "verdict": "FAIL"
+    }
+  ],
+  "counted_controls": [
+    "negative",
+    "sensitivity",
+    "inspec",
+    "legal"
+  ],
+  "verdict": "go"
+}

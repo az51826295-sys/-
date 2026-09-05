@@ -1,0 +1,44 @@
+{
+  "spec": "game-assembly-v0",
+  "note": "게임에 무엇이 들어가야 하는지의 **선언**. 조립기(tools/assemble_game.py)는 이 파일만 읽고 옮긴다. 손으로 넣은 자산이 있으면 여기 없는 것이므로 조립 확인에서 드러난다.",
+  "icons": {
+    "from": "선별 기록(data/picks/*.json)",
+    "tool": "tools/icon_export.py",
+    "dest": "game/assets/ui",
+    "size": 24
+  },
+  "characters": [
+    {
+      "name": "hero",
+      "source": "audition/pixellab/hero_zip/Idle",
+      "dest": "game/assets/characters/hero",
+      "origin": "PixelLab 오디션 2026-08-07"
+    },
+    {
+      "name": "merchant",
+      "source": "audition/pixellab/merchant_zip/Idle",
+      "dest": "game/assets/characters/merchant",
+      "origin": "PixelLab 오디션 2026-08-07"
+    }
+  ],
+  "tiles": {
+    "kind": "mixed",
+    "generator": "tools/artgen/build_atlas.py",
+    "dest": "game/assets/tiles/atlas.png",
+    "expect_size": [
+      352,
+      16
+    ],
+    "wang_slots": 16,
+    "wang_source": "audition/pixellab/tileset_*.png (PixelLab 오디션 2026-08-07)",
+    "placeholder_slots": {
+      "water": 16,
+      "tree": 17,
+      "wall": 18,
+      "roof": 19,
+      "door": 20
+    },
+    "honest_note": "지형(풀·흙길) 16칸은 **진짜 오디션 타일**이다 — 08-27 색 상한을 24→48로 올린 뒤(pixel-sprite-v2) 16장 전부가 반입 오라클을 통과했다. **물·나무·벽·지붕·문 5칸은 아직 자리표시자다** — 오디션 세트가 wang 타일셋(두 지형의 모서리 조합)이라 그 그림 자체가 없다. 21번 칸은 **완전 투명**이고 그림 없이 충돌만 필요한 것(스프라이트로 그릴 나무 등)에 쓴다.",
+    "blocker_slot": 21
+  }
+}

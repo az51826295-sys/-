@@ -1,0 +1,32 @@
+{
+ "repo": "tinydb",
+ "fix_commit": "06d64f46a90fc715129f7c54d2d70ab91e59a1c8",
+ "parent_commit": "f9803331581ebd0078297704bca60153e8bb455f",
+ "answer_files": [
+  "tinydb/utils.py"
+ ],
+ "answer_functions": [
+  "tinydb/utils.py::__init__"
+ ],
+ "patch_lines": 5,
+ "added_tests": {
+  "tests/test_tables.py::test_zero_cache_size": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [
+  "tests/test_tables.py::test_zero_cache_size"
+ ],
+ "test_files": [
+  "tests/test_tables.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 2.2,
+ "env_error_tests": 0,
+ "qualified": true,
+ "selector_event_proxy_v1": false
+}

@@ -1,0 +1,1613 @@
+{
+ "results": [
+  {
+   "task": "mi_running_minmax_stability",
+   "arm": "B0",
+   "rep": 0,
+   "candidates": [
+    {
+     "call": 1,
+     "code_fail": "patch_apply_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "patch_apply_fail: running_min not found in more_itertools/more.py",
+     "files": [
+      "more_itertools/more.py"
+     ],
+     "sig": "6d2d3a91ee37"
+    },
+    {
+     "call": 2,
+     "code_fail": "patch_apply_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "patch_apply_fail: running_min not found in more_itertools/more.py",
+     "files": [
+      "more_itertools/more.py"
+     ],
+     "sig": "dccb8c75e848"
+    },
+    {
+     "call": 3,
+     "code_fail": "patch_apply_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "patch_apply_fail: running_min not found in more_itertools/more.py",
+     "files": [
+      "more_itertools/more.py"
+     ],
+     "sig": "52e24ef15f66"
+    },
+    {
+     "call": 4,
+     "code_fail": "patch_apply_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "patch_apply_fail: running_min not found in more_itertools/more.py",
+     "files": [
+      "more_itertools/more.py"
+     ],
+     "sig": "59b1ab63ee09"
+    },
+    {
+     "call": 5,
+     "code_fail": "patch_apply_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "patch_apply_fail: running_min not found in more_itertools/more.py",
+     "files": [
+      "more_itertools/more.py"
+     ],
+     "sig": "2e83cd717f44"
+    }
+   ],
+   "test_runs": 0,
+   "rollback_rounds": 2,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "no_patch",
+   "wall_s": 25.0,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "mi_running_minmax_stability",
+   "arm": "BS",
+   "rep": 0,
+   "candidates": [],
+   "test_runs": 0,
+   "rollback_rounds": 2,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "no_patch",
+   "wall_s": 20.4,
+   "failure_report_chars": 0,
+   "hyp": {
+    "generated": 10,
+    "valid_selected": 0,
+    "distinct_files": 0,
+    "correct_file_hyp": false,
+    "banned_revisits": 1
+   }
+  },
+  {
+   "task": "mi_running_minmax_stability",
+   "arm": "B0",
+   "rep": 1,
+   "candidates": [
+    {
+     "call": 1,
+     "code_fail": "patch_apply_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "patch_apply_fail: running_min not found in more_itertools/more.py",
+     "files": [
+      "more_itertools/more.py"
+     ],
+     "sig": "c00f8816ef13"
+    },
+    {
+     "call": 2,
+     "code_fail": "patch_apply_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "patch_apply_fail: running_min not found in more_itertools/more.py",
+     "files": [
+      "more_itertools/more.py"
+     ],
+     "sig": "f3f4901f900f"
+    },
+    {
+     "call": 3,
+     "code_fail": "patch_apply_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "patch_apply_fail: running_min not found in more_itertools/more.py",
+     "files": [
+      "more_itertools/more.py"
+     ],
+     "sig": "127805f9f179"
+    },
+    {
+     "call": 4,
+     "code_fail": "patch_apply_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "patch_apply_fail: running_min not found in more_itertools/more.py",
+     "files": [
+      "more_itertools/more.py"
+     ],
+     "sig": "c6756f25f2c9"
+    },
+    {
+     "call": 5,
+     "code_fail": "patch_apply_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "patch_apply_fail: running_min not found in more_itertools/more.py",
+     "files": [
+      "more_itertools/more.py"
+     ],
+     "sig": "525a84268f3c"
+    }
+   ],
+   "test_runs": 0,
+   "rollback_rounds": 2,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "no_patch",
+   "wall_s": 20.1,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "mi_running_minmax_stability",
+   "arm": "BS",
+   "rep": 1,
+   "candidates": [],
+   "test_runs": 0,
+   "rollback_rounds": 2,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "no_patch",
+   "wall_s": 22.9,
+   "failure_report_chars": 0,
+   "hyp": {
+    "generated": 10,
+    "valid_selected": 0,
+    "distinct_files": 0,
+    "correct_file_hyp": false,
+    "banned_revisits": 0
+   }
+  },
+  {
+   "task": "mi_running_minmax_stability",
+   "arm": "B0",
+   "rep": 2,
+   "candidates": [
+    {
+     "call": 1,
+     "code_fail": "patch_apply_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "patch_apply_fail: running_min not found in more_itertools/more.py",
+     "files": [
+      "more_itertools/more.py"
+     ],
+     "sig": "bd31f97ed222"
+    },
+    {
+     "call": 2,
+     "code_fail": "patch_apply_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "patch_apply_fail: running_min not found in more_itertools/more.py",
+     "files": [
+      "more_itertools/more.py"
+     ],
+     "sig": "e7a0ed969dd1"
+    },
+    {
+     "call": 3,
+     "code_fail": "patch_apply_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "patch_apply_fail: running_min not found in more_itertools/more.py",
+     "files": [
+      "more_itertools/more.py"
+     ],
+     "sig": "1d426087480f"
+    },
+    {
+     "call": 4,
+     "code_fail": "patch_apply_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "patch_apply_fail: running_min not found in more_itertools/more.py",
+     "files": [
+      "more_itertools/more.py"
+     ],
+     "sig": "d9da80eff16b"
+    },
+    {
+     "call": 5,
+     "code_fail": "patch_apply_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "patch_apply_fail: running_min not found in more_itertools/more.py",
+     "files": [
+      "more_itertools/more.py"
+     ],
+     "sig": "6a91f2f2b7d2"
+    }
+   ],
+   "test_runs": 0,
+   "rollback_rounds": 2,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "no_patch",
+   "wall_s": 24.4,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "mi_running_minmax_stability",
+   "arm": "BS",
+   "rep": 2,
+   "candidates": [],
+   "test_runs": 0,
+   "rollback_rounds": 2,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "no_patch",
+   "wall_s": 18.7,
+   "failure_report_chars": 0,
+   "hyp": {
+    "generated": 10,
+    "valid_selected": 0,
+    "distinct_files": 0,
+    "correct_file_hyp": false,
+    "banned_revisits": 1
+   }
+  },
+  {
+   "task": "mi_running_minmax_stability",
+   "arm": "B0",
+   "rep": 3,
+   "candidates": [
+    {
+     "call": 1,
+     "code_fail": "patch_apply_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "patch_apply_fail: running_min not found in more_itertools/more.py",
+     "files": [
+      "more_itertools/more.py"
+     ],
+     "sig": "d0fa17fb1295"
+    },
+    {
+     "call": 2,
+     "code_fail": "patch_apply_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "patch_apply_fail: running_min not found in more_itertools/more.py",
+     "files": [
+      "more_itertools/more.py"
+     ],
+     "sig": "7dd52fe830dd"
+    },
+    {
+     "call": 3,
+     "code_fail": "patch_apply_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "patch_apply_fail: running_min not found in more_itertools/more.py",
+     "files": [
+      "more_itertools/more.py"
+     ],
+     "sig": "209cdc7e7991"
+    },
+    {
+     "call": 4,
+     "code_fail": "patch_apply_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "patch_apply_fail: running_min not found in more_itertools/more.py",
+     "files": [
+      "more_itertools/more.py"
+     ],
+     "sig": "47e095e9ef2b"
+    },
+    {
+     "call": 5,
+     "code_fail": "patch_apply_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "patch_apply_fail: running_min not found in more_itertools/more.py",
+     "files": [
+      "more_itertools/more.py"
+     ],
+     "sig": "9b47c852bfab"
+    }
+   ],
+   "test_runs": 0,
+   "rollback_rounds": 2,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "no_patch",
+   "wall_s": 20.1,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "mi_running_minmax_stability",
+   "arm": "BS",
+   "rep": 3,
+   "candidates": [],
+   "test_runs": 0,
+   "rollback_rounds": 2,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "no_patch",
+   "wall_s": 22.3,
+   "failure_report_chars": 0,
+   "hyp": {
+    "generated": 10,
+    "valid_selected": 0,
+    "distinct_files": 0,
+    "correct_file_hyp": false,
+    "banned_revisits": 1
+   }
+  },
+  {
+   "task": "mi_running_minmax_stability",
+   "arm": "B0",
+   "rep": 4,
+   "candidates": [
+    {
+     "call": 1,
+     "code_fail": "patch_apply_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "patch_apply_fail: running_min not found in more_itertools/more.py",
+     "files": [
+      "more_itertools/more.py"
+     ],
+     "sig": "6bb1215004da"
+    },
+    {
+     "call": 2,
+     "code_fail": "patch_apply_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "patch_apply_fail: running_min not found in more_itertools/more.py",
+     "files": [
+      "more_itertools/more.py"
+     ],
+     "sig": "62e5464a0d7e"
+    },
+    {
+     "call": 3,
+     "code_fail": "patch_apply_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "patch_apply_fail: running_min not found in more_itertools/more.py",
+     "files": [
+      "more_itertools/more.py"
+     ],
+     "sig": "75b0888d5789"
+    },
+    {
+     "call": 4,
+     "code_fail": "patch_apply_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "patch_apply_fail: running_min not found in more_itertools/more.py",
+     "files": [
+      "more_itertools/more.py"
+     ],
+     "sig": "b219effc0057"
+    },
+    {
+     "call": 5,
+     "code_fail": "patch_apply_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "patch_apply_fail: running_min not found in more_itertools/more.py",
+     "files": [
+      "more_itertools/more.py"
+     ],
+     "sig": "360b526ee9d8"
+    }
+   ],
+   "test_runs": 0,
+   "rollback_rounds": 2,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "no_patch",
+   "wall_s": 21.1,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "mi_running_minmax_stability",
+   "arm": "BS",
+   "rep": 4,
+   "candidates": [],
+   "test_runs": 0,
+   "rollback_rounds": 2,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "no_patch",
+   "wall_s": 21.5,
+   "failure_report_chars": 0,
+   "hyp": {
+    "generated": 10,
+    "valid_selected": 0,
+    "distinct_files": 0,
+    "correct_file_hyp": false,
+    "banned_revisits": 1
+   }
+  },
+  {
+   "task": "du_isotime_midnight",
+   "arm": "B0",
+   "rep": 0,
+   "candidates": [
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "dateutil/test/test_isoparser.py::test_isotime_midnight: rser.py::test_isotime_midnight[24:00] - TypeEr...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.28s\n",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "3cce0988f1e9"
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": "",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "3cce0988f1e9"
+    },
+    {
+     "call": 3,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": "",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "3cce0988f1e9"
+    },
+    {
+     "call": 4,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": "",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "3cce0988f1e9"
+    },
+    {
+     "call": 5,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": "",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "3cce0988f1e9"
+    }
+   ],
+   "test_runs": 15,
+   "rollback_rounds": 1,
+   "duplicates": 4,
+   "first_candidate_full": false,
+   "final_status": "public_fail",
+   "wall_s": 66.9,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "du_isotime_midnight",
+   "arm": "BS",
+   "rep": 0,
+   "candidates": [
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "dateutil/test/test_isoparser.py::test_isotime_midnight: rser.py::test_isotime_midnight[24:00] - ValueE...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.30s\n",
+     "files": [
+      "dateutil/parser/_parser.py"
+     ],
+     "sig": "9500ca08e9e7"
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "dateutil/test/test_isoparser.py::test_isotime_midnight: rser.py::test_isotime_midnight[24:00] - ValueE...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.39s\n",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "ce0bff46f53f"
+    },
+    {
+     "call": 4,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "dateutil/test/test_isoparser.py::test_isotime_midnight: rser.py::test_isotime_midnight[24:00] - TypeEr...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.29s\n",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "3cce0988f1e9"
+    }
+   ],
+   "test_runs": 15,
+   "rollback_rounds": 1,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "public_fail",
+   "wall_s": 79.5,
+   "failure_report_chars": 0,
+   "hyp": {
+    "generated": 10,
+    "valid_selected": 3,
+    "distinct_files": 2,
+    "correct_file_hyp": true,
+    "banned_revisits": 2
+   }
+  },
+  {
+   "task": "du_isotime_midnight",
+   "arm": "B0",
+   "rep": 1,
+   "candidates": [
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "dateutil/test/test_isoparser.py::test_isotime_midnight: rser.py::test_isotime_midnight[24:00] - TypeEr...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.33s\n",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "3cce0988f1e9"
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": "",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "3cce0988f1e9"
+    },
+    {
+     "call": 3,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": "",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "3cce0988f1e9"
+    },
+    {
+     "call": 4,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": "",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "3cce0988f1e9"
+    },
+    {
+     "call": 5,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": "",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "3cce0988f1e9"
+    }
+   ],
+   "test_runs": 15,
+   "rollback_rounds": 1,
+   "duplicates": 4,
+   "first_candidate_full": false,
+   "final_status": "public_fail",
+   "wall_s": 66.3,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "du_isotime_midnight",
+   "arm": "BS",
+   "rep": 1,
+   "candidates": [
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "dateutil/test/test_isoparser.py::test_isotime_midnight: rser.py::test_isotime_midnight[24:00] - TypeEr...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.47s\n; dateutil/test/test_isoparser.py::test_year_month: rser.py::test_year_month[dt0] - ValueError: In...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 ",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "25e87a6e3e15"
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "dateutil/test/test_isoparser.py::test_isotime_midnight: rser.py::test_isotime_midnight[24:00] - ValueE...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.30s\n",
+     "files": [
+      "dateutil/parser/_parser.py"
+     ],
+     "sig": "50660728e1ca"
+    },
+    {
+     "call": 3,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": "",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "8bbdee20fc43"
+    }
+   ],
+   "test_runs": 15,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "full",
+   "wall_s": 77.1,
+   "failure_report_chars": 0,
+   "hyp": {
+    "generated": 5,
+    "valid_selected": 3,
+    "distinct_files": 2,
+    "correct_file_hyp": true,
+    "banned_revisits": 0
+   }
+  },
+  {
+   "task": "du_isotime_midnight",
+   "arm": "B0",
+   "rep": 2,
+   "candidates": [
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "dateutil/test/test_isoparser.py::test_isotime_midnight: rser.py::test_isotime_midnight[24:00] - TypeEr...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.28s\n",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "3cce0988f1e9"
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": "",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "3cce0988f1e9"
+    },
+    {
+     "call": 3,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": "",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "3cce0988f1e9"
+    },
+    {
+     "call": 4,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": "",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "3cce0988f1e9"
+    },
+    {
+     "call": 5,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": "",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "3cce0988f1e9"
+    }
+   ],
+   "test_runs": 15,
+   "rollback_rounds": 1,
+   "duplicates": 4,
+   "first_candidate_full": false,
+   "final_status": "public_fail",
+   "wall_s": 63.4,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "du_isotime_midnight",
+   "arm": "BS",
+   "rep": 2,
+   "candidates": [
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "dateutil/test/test_isoparser.py::test_isotime_midnight: rser.py::test_isotime_midnight[24:00] - ValueE...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.28s\n",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "923369517acf"
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "dateutil/test/test_isoparser.py::test_isotime_midnight: rser.py::test_isotime_midnight[24:00] - ValueE...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.38s\n",
+     "files": [
+      "dateutil/parser/_parser.py"
+     ],
+     "sig": "f9ece809d20e"
+    },
+    {
+     "call": 3,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "dateutil/test/test_isoparser.py::test_isotime_midnight: rser.py::test_isotime_midnight[24:00] - TypeEr...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.29s\n",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "3cce0988f1e9"
+    },
+    {
+     "call": 5,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "dateutil/test/test_isoparser.py::test_isotime_midnight: rser.py::test_isotime_midnight[24:00] - TypeEr...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.33s\n",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "3cce0988f1e9"
+    }
+   ],
+   "test_runs": 18,
+   "rollback_rounds": 1,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "public_fail",
+   "wall_s": 94.1,
+   "failure_report_chars": 0,
+   "hyp": {
+    "generated": 10,
+    "valid_selected": 4,
+    "distinct_files": 2,
+    "correct_file_hyp": true,
+    "banned_revisits": 0
+   }
+  },
+  {
+   "task": "du_isotime_midnight",
+   "arm": "B0",
+   "rep": 3,
+   "candidates": [
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "dateutil/test/test_isoparser.py::test_isotime_midnight: rser.py::test_isotime_midnight[24:00] - TypeEr...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.23s\n",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "3cce0988f1e9"
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": "",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "3cce0988f1e9"
+    },
+    {
+     "call": 3,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": "",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "3cce0988f1e9"
+    },
+    {
+     "call": 4,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": "",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "3cce0988f1e9"
+    },
+    {
+     "call": 5,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": "",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "3cce0988f1e9"
+    }
+   ],
+   "test_runs": 15,
+   "rollback_rounds": 1,
+   "duplicates": 4,
+   "first_candidate_full": false,
+   "final_status": "public_fail",
+   "wall_s": 64.2,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "du_isotime_midnight",
+   "arm": "BS",
+   "rep": 3,
+   "candidates": [
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "dateutil/test/test_isoparser.py::test_isotime_midnight: rser.py::test_isotime_midnight[24:00] - TypeEr...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.28s\n",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "3cce0988f1e9"
+    },
+    {
+     "call": 3,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "dateutil/test/test_isoparser.py::test_isotime_midnight: rser.py::test_isotime_midnight[24:00] - TypeEr...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.31s\n",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "11ce47cdbc23"
+    },
+    {
+     "call": 4,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "dateutil/test/test_isoparser.py::test_isotime_midnight: rser.py::test_isotime_midnight[24:00] - TypeEr...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.33s\n",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "3cce0988f1e9"
+    }
+   ],
+   "test_runs": 15,
+   "rollback_rounds": 1,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "public_fail",
+   "wall_s": 82.0,
+   "failure_report_chars": 0,
+   "hyp": {
+    "generated": 10,
+    "valid_selected": 3,
+    "distinct_files": 1,
+    "correct_file_hyp": true,
+    "banned_revisits": 0
+   }
+  },
+  {
+   "task": "du_isotime_midnight",
+   "arm": "B0",
+   "rep": 4,
+   "candidates": [
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "dateutil/test/test_isoparser.py::test_isotime_midnight: rser.py::test_isotime_midnight[24:00] - TypeEr...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.35s\n",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "3cce0988f1e9"
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": "",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "3cce0988f1e9"
+    },
+    {
+     "call": 3,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": "",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "3cce0988f1e9"
+    },
+    {
+     "call": 4,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": "",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "3cce0988f1e9"
+    },
+    {
+     "call": 5,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": "",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "3cce0988f1e9"
+    }
+   ],
+   "test_runs": 15,
+   "rollback_rounds": 1,
+   "duplicates": 4,
+   "first_candidate_full": false,
+   "final_status": "public_fail",
+   "wall_s": 64.6,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "du_isotime_midnight",
+   "arm": "BS",
+   "rep": 4,
+   "candidates": [
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "dateutil/test/test_isoparser.py::test_isotime_midnight: rser.py::test_isotime_midnight[24:00] - TypeEr...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.26s\n",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "3cce0988f1e9"
+    },
+    {
+     "call": 3,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "dateutil/test/test_isoparser.py::test_isotime_midnight: rser.py::test_isotime_midnight[24:00] - TypeEr...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.29s\n",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "326d7893e718"
+    }
+   ],
+   "test_runs": 12,
+   "rollback_rounds": 1,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "public_fail",
+   "wall_s": 63.3,
+   "failure_report_chars": 0,
+   "hyp": {
+    "generated": 10,
+    "valid_selected": 2,
+    "distinct_files": 1,
+    "correct_file_hyp": true,
+    "banned_revisits": 0
+   }
+  },
+  {
+   "task": "du_isoparse_t24_rollover",
+   "arm": "B0",
+   "rep": 0,
+   "candidates": [
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: Invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 1.15s\n; dateutil/test/test_isoparser.py::test_year_month: rser.py::test_year_month[dt0] - ValueError: In...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.55s\n",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "57cec8d1e87f"
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: Invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 1.49s\n; dateutil/test/test_isoparser.py::test_year_only: rser.py::test_year_only[dt0] - IndexError: lis...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.16s\n; dateutil",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "6ea5aaf2a43e"
+    },
+    {
+     "call": 3,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: Invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 1.21s\n; dateutil/test/test_isoparser.py::test_year_month: rser.py::test_year_month[dt0] - ValueError: In...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.26s\n",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "60d666e93b5d"
+    },
+    {
+     "call": 4,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: Invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 1.12s\n; dateutil/test/test_isoparser.py::test_year_month: rser.py::test_year_month[dt0] - ValueError: In...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.35s\n",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "d9a0c41c87b1"
+    },
+    {
+     "call": 5,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: Invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 1.24s\n; dateutil/test/test_isoparser.py::test_year_month: rser.py::test_year_month[dt0] - ValueError: In...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.28s\n",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "6ad520521623"
+    }
+   ],
+   "test_runs": 27,
+   "rollback_rounds": 1,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "regression",
+   "wall_s": 166.2,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "du_isoparse_t24_rollover",
+   "arm": "BS",
+   "rep": 0,
+   "candidates": [
+    {
+     "call": 1,
+     "code_fail": "patch_apply_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "patch_apply_fail: dateutil/parser/_isoparser.py does not exist",
+     "files": [
+      "dateutil/parser/_isoparser.py",
+      "dateutil/parser/_parser.py"
+     ],
+     "sig": "f61402f71302"
+    }
+   ],
+   "test_runs": 0,
+   "rollback_rounds": 2,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "no_patch",
+   "wall_s": 29.4,
+   "failure_report_chars": 0,
+   "hyp": {
+    "generated": 10,
+    "valid_selected": 1,
+    "distinct_files": 1,
+    "correct_file_hyp": false,
+    "banned_revisits": 1
+   }
+  },
+  {
+   "task": "du_isoparse_t24_rollover",
+   "arm": "B0",
+   "rep": 1,
+   "candidates": [
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: Invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 1.09s\n; dateutil/test/test_isoparser.py::test_year_month: rser.py::test_year_month[dt0] - ValueError: In...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.24s\n",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "67e44d4554fc"
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: Invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 1.45s\n; dateutil/test/test_isoparser.py::test_year_month: rser.py::test_year_month[dt0] - ValueError: In...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.40s\n",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "4d08c5ecaa03"
+    },
+    {
+     "call": 3,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: Invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 1.06s\n; dateutil/test/test_isoparser.py::test_year_month: rser.py::test_year_month[dt0] - ValueError: In...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.25s\n",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "cfa0a7452cbd"
+    },
+    {
+     "call": 4,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: Invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 1.19s\n; dateutil/test/test_isoparser.py::test_year_only: rser.py::test_year_only[dt0] - IndexError: lis...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.15s\n; dateutil",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "182472d9d86a"
+    },
+    {
+     "call": 5,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: Invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 1.13s\n; dateutil/test/test_isoparser.py::test_year_month: rser.py::test_year_month[dt0] - ValueError: In...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.25s\n",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "43b8148cb6d3"
+    }
+   ],
+   "test_runs": 27,
+   "rollback_rounds": 1,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "regression",
+   "wall_s": 175.7,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "du_isoparse_t24_rollover",
+   "arm": "BS",
+   "rep": 1,
+   "candidates": [
+    {
+     "call": 2,
+     "code_fail": "patch_apply_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "patch_apply_fail: dateutil/parser/_isoparser.py does not exist",
+     "files": [
+      "dateutil/parser/_isoparser.py",
+      "dateutil/parser/_parser.py"
+     ],
+     "sig": "eb912d02d76d"
+    }
+   ],
+   "test_runs": 0,
+   "rollback_rounds": 2,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "no_patch",
+   "wall_s": 27.4,
+   "failure_report_chars": 0,
+   "hyp": {
+    "generated": 10,
+    "valid_selected": 1,
+    "distinct_files": 1,
+    "correct_file_hyp": false,
+    "banned_revisits": 1
+   }
+  },
+  {
+   "task": "du_isoparse_t24_rollover",
+   "arm": "B0",
+   "rep": 2,
+   "candidates": [
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - AttributeError: 'iso...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 1.07s\n",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "9f537baa4d2a"
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: Invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 1.17s\n; dateutil/test/test_isoparser.py::test_year_month: rser.py::test_year_month[dt0] - ValueError: In...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.71s\n",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "1f67855603dc"
+    },
+    {
+     "call": 3,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: Invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 1.15s\n; dateutil/test/test_isoparser.py::test_year_month: rser.py::test_year_month[dt0] - ValueError: In...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.28s\n",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "4fb207f68b85"
+    },
+    {
+     "call": 4,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: Invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 1.25s\n; dateutil/test/test_isoparser.py::test_year_month: rser.py::test_year_month[dt0] - ValueError: In...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.26s\n",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "14cdcc93ba23"
+    },
+    {
+     "call": 5,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: Invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 1.14s\n; dateutil/test/test_isoparser.py::test_year_month: rser.py::test_year_month[dt0] - ValueError: In...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.58s\n",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "62328577e370"
+    }
+   ],
+   "test_runs": 27,
+   "rollback_rounds": 1,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "public_fail",
+   "wall_s": 169.5,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "du_isoparse_t24_rollover",
+   "arm": "BS",
+   "rep": 2,
+   "candidates": [
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: Invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 1.15s\n; dateutil/test/test_isoparser.py::test_year_month: rser.py::test_year_month[dt0] - ValueError: In...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.29s\n",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "8a73fa006e30"
+    },
+    {
+     "call": 3,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: Invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 1.13s\n; dateutil/test/test_isoparser.py::test_year_month: rser.py::test_year_month[dt0] - ValueError: In...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.27s\n",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "8910303ca69e"
+    }
+   ],
+   "test_runs": 12,
+   "rollback_rounds": 1,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "regression",
+   "wall_s": 85.4,
+   "failure_report_chars": 0,
+   "hyp": {
+    "generated": 10,
+    "valid_selected": 2,
+    "distinct_files": 1,
+    "correct_file_hyp": true,
+    "banned_revisits": 4
+   }
+  },
+  {
+   "task": "du_isoparse_t24_rollover",
+   "arm": "B0",
+   "rep": 3,
+   "candidates": [
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: Invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 1.11s\n; dateutil/test/test_isoparser.py::test_year_month: rser.py::test_year_month[dt0] - ValueError: In...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.53s\n",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "3d67d93fb853"
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: Invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 1.21s\n; dateutil/test/test_isoparser.py::test_year_month: rser.py::test_year_month[dt0] - ValueError: In...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.30s\n",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "8c9cc2950c0a"
+    },
+    {
+     "call": 3,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: Invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 1.09s\n; dateutil/test/test_isoparser.py::test_year_month: rser.py::test_year_month[dt0] - ValueError: In...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.28s\n",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "43089fc5eb4f"
+    },
+    {
+     "call": 4,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 1.05s\n",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "d7a3bd11e229"
+    },
+    {
+     "call": 5,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: Invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 1.07s\n; dateutil/test/test_isoparser.py::test_year_month: rser.py::test_year_month[dt0] - ValueError: In...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.33s\n",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "9f0448b8987c"
+    }
+   ],
+   "test_runs": 27,
+   "rollback_rounds": 1,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "regression",
+   "wall_s": 167.6,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "du_isoparse_t24_rollover",
+   "arm": "BS",
+   "rep": 3,
+   "candidates": [
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - AttributeError: 'iso...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 1.16s\n; dateutil/test/test_isoparser.py::test_year_only: rser.py::test_year_only[dt0] - AttributeError:...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.22s\n; dateutil",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "76c6fb10e37f"
+    }
+   ],
+   "test_runs": 9,
+   "rollback_rounds": 1,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "regression",
+   "wall_s": 59.5,
+   "failure_report_chars": 0,
+   "hyp": {
+    "generated": 10,
+    "valid_selected": 1,
+    "distinct_files": 1,
+    "correct_file_hyp": true,
+    "banned_revisits": 1
+   }
+  },
+  {
+   "task": "du_isoparse_t24_rollover",
+   "arm": "B0",
+   "rep": 4,
+   "candidates": [
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: Invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 1.17s\n; dateutil/test/test_isoparser.py::test_year_month: rser.py::test_year_month[dt0] - ValueError: In...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.55s\n",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "cbf330a3b222"
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: Invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 1.15s\n; dateutil/test/test_isoparser.py::test_year_month: rser.py::test_year_month[dt0] - ValueError: In...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.33s\n",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "9e4759c832a0"
+    },
+    {
+     "call": 3,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: Invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 1.12s\n; dateutil/test/test_isoparser.py::test_year_month: rser.py::test_year_month[dt0] - ValueError: In...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.28s\n",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "4fb207f68b85"
+    },
+    {
+     "call": 4,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: Invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 1.12s\n; dateutil/test/test_isoparser.py::test_year_month: rser.py::test_year_month[dt0] - ValueError: In...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.27s\n",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "2d04791f7bbc"
+    },
+    {
+     "call": 5,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: Invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 1.10s\n; dateutil/test/test_isoparser.py::test_year_month: rser.py::test_year_month[dt0] - ValueError: In...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.27s\n",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "4a2fed826751"
+    }
+   ],
+   "test_runs": 27,
+   "rollback_rounds": 1,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "regression",
+   "wall_s": 169.5,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "du_isoparse_t24_rollover",
+   "arm": "BS",
+   "rep": 4,
+   "candidates": [
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - AttributeError: 'iso...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 1.05s\n; dateutil/test/test_isoparser.py::test_year_only: rser.py::test_year_only[dt0] - AttributeError:...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.28s\n; dateutil",
+     "files": [
+      "dateutil/parser/isoparser.py"
+     ],
+     "sig": "45cb8eb369f6"
+    }
+   ],
+   "test_runs": 9,
+   "rollback_rounds": 1,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "regression",
+   "wall_s": 59.7,
+   "failure_report_chars": 0,
+   "hyp": {
+    "generated": 10,
+    "valid_selected": 1,
+    "distinct_files": 1,
+    "correct_file_hyp": true,
+    "banned_revisits": 3
+   }
+  }
+ ],
+ "summary": {
+  "B0": {
+   "n": 15,
+   "mean_unique_sigs": 2.0,
+   "mean_distinct_files": 0.67,
+   "dup_rate": 0.286,
+   "correct_file_run_rate": 0.67,
+   "public_pass_run_rate": 0.0,
+   "full_rate": 0.0
+  },
+  "BS": {
+   "n": 15,
+   "mean_unique_sigs": 1.13,
+   "mean_distinct_files": 0.73,
+   "dup_rate": 0.0,
+   "correct_file_run_rate": 0.53,
+   "public_pass_run_rate": 0.07,
+   "full_rate": 0.07
+  },
+  "BS_hyp": {
+   "mean_hyp_generated": 9.67,
+   "mean_hyp_distinct_files": 0.87,
+   "correct_file_hyp_rate": 0.53,
+   "banned_revisits": 16
+  },
+  "usage": {
+   "calls": 140,
+   "input_tokens": 402728,
+   "output_tokens": 101979
+  }
+ }
+}

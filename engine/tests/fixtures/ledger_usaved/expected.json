@@ -1,0 +1,8 @@
+{
+ "_note": "손 계산 (2026-08-08, 실표 관측 전). 키 = (서명, 국면, 행동). full: f1 2회 나머지 1회 -> U_saved 1, U_calls 8. local: l1 3회 -> U_saved 2, U_calls 16. stat: s1 4회 -> U_saved 3, U_calls 24. 오차단: BLOCK 1건이 성공행 -> 1/1. unresolved: outcome null 1/5, 전부 probe.",
+ "full": {"unique_keys": 4, "u_saved": 1, "u_calls": 8},
+ "local": {"unique_keys": 3, "u_saved": 2, "u_calls": 16},
+ "stat": {"unique_keys": 2, "u_saved": 3, "u_calls": 24},
+ "wrong_block": {"block_hits": 1, "wrong": 1, "rate": 1.0},
+ "unresolved": {"n": 1, "rate": 0.2, "by_archetype": {"probe": 1}}
+}

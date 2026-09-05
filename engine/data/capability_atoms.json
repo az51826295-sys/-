@@ -1,0 +1,1501 @@
+[
+  {
+    "id": "malware_detection",
+    "category": "security",
+    "aliases": [
+      "백신",
+      "바이러스",
+      "악성코드",
+      "antivirus",
+      "malware"
+    ],
+    "verdict": "no_judge",
+    "checkable": false,
+    "effort": null,
+    "reason": "악성코드 탐지는 적대적 도메인 - 시그니처 DB와 샌드박스가 필요하고, 우리가 세울 순수 심판이 없다(오탐 1건이 신뢰를 통째로 날린다)",
+    "reconstruct_to": [
+      "dangerous_permission_scan",
+      "phishing_link_check"
+    ],
+    "judge": {
+      "kind": "human_gate",
+      "params": {
+        "why": "적대적 도메인 - 시그니처 DB·샌드박스 없이는 오탐/미탐을 우리가 판정할 수 없다. 재구성 대상."
+      }
+    },
+    "worker_role": null,
+    "worker_impl": null
+  },
+  {
+    "id": "dangerous_permission_scan",
+    "category": "security",
+    "aliases": [
+      "권한 점검",
+      "권한 스캔",
+      "권한",
+      "permission"
+    ],
+    "verdict": "real",
+    "checkable": true,
+    "effort": "M",
+    "check": "설치된 앱이 요청한 권한을 위험권한 목록과 대조해 목록화한다 - 같은 입력이면 같은 결과(결정적)",
+    "reason": "위험 권한을 요청하는 앱을 나열 - 기계가 검증 가능",
+    "judge": {
+      "kind": "set_membership",
+      "params": {
+        "items": "measured.requested",
+        "rule": "spec.dangerous",
+        "reported": "claim.flagged"
+      },
+      "positive": {
+        "measured": {
+          "requested": [
+            "CAMERA",
+            "INTERNET",
+            "READ_SMS",
+            "VIBRATE"
+          ]
+        },
+        "spec": {
+          "dangerous": [
+            "CAMERA",
+            "READ_SMS",
+            "RECORD_AUDIO"
+          ]
+        },
+        "claim": {
+          "flagged": [
+            "CAMERA",
+            "READ_SMS"
+          ]
+        }
+      },
+      "negatives": [
+        {
+          "note": "위험 권한 하나를 빠뜨림",
+          "mutate": {
+            "claim.flagged": [
+              "CAMERA"
+            ]
+          }
+        },
+        {
+          "note": "무해한 권한까지 위험이라고 부풀림",
+          "mutate": {
+            "claim.flagged": [
+              "CAMERA",
+              "READ_SMS",
+              "VIBRATE"
+            ]
+          }
+        }
+      ]
+    },
+    "worker_role": "코딩 AI + 자체 검증",
+    "worker_impl": "Claude (코딩)"
+  },
+  {
+    "id": "phishing_link_check",
+    "category": "security",
+    "aliases": [
+      "피싱",
+      "링크 검사",
+      "phishing"
+    ],
+    "verdict": "real",
+    "checkable": true,
+    "effort": "M",
+    "check": "URL을 알려진 피싱 DB와 대조(외부 DB 의존을 설계도에 명시). DB가 주면 판정은 결정적",
+    "reason": "알려진 피싱 링크 차단 - 외부 DB 의존이지만 판정 자체는 검증 가능",
+    "judge": {
+      "kind": "set_membership",
+      "params": {
+        "items": "measured.urls",
+        "rule": "spec.known_phishing",
+        "reported": "claim.blocked"
+      },
+      "positive": {
+        "measured": {
+          "urls": [
+            "good.example",
+            "bad.example",
+            "shop.example"
+          ]
+        },
+        "spec": {
+          "known_phishing": [
+            "bad.example",
+            "evil.example"
+          ]
+        },
+        "claim": {
+          "blocked": [
+            "bad.example"
+          ]
+        }
+      },
+      "negatives": [
+        {
+          "note": "DB에 있는 피싱을 통과시킴",
+          "mutate": {
+            "claim.blocked": []
+          }
+        },
+        {
+          "note": "정상 링크를 오탐(신뢰를 날리는 쪽)",
+          "mutate": {
+            "claim.blocked": [
+              "bad.example",
+              "shop.example"
+            ]
+          }
+        }
+      ]
+    },
+    "worker_role": "코딩 AI + 자체 검증",
+    "worker_impl": "Claude (코딩)"
+  },
+  {
+    "id": "ram_booster",
+    "category": "cleaner",
+    "aliases": [
+      "청소",
+      "부스터",
+      "램",
+      "ram",
+      "메모리 정리",
+      "속도 향상",
+      "booster"
+    ],
+    "verdict": "snake_oil",
+    "checkable": false,
+    "effort": null,
+    "reason": "안드로이드 메모리 관리 구조상 RAM 비우기는 대체로 플라시보 - '빨라짐'을 잴 심판이 오히려 이걸 실패시킨다",
+    "reconstruct_to": [
+      "cache_cleanup",
+      "large_file_finder",
+      "duplicate_file_finder"
+    ],
+    "judge": {
+      "kind": "human_gate",
+      "params": {
+        "why": "'빨라짐'을 잴 심판이 오히려 이 기능을 실패시킨다(플라시보)."
+      }
+    },
+    "worker_role": null,
+    "worker_impl": null
+  },
+  {
+    "id": "battery_optimizer",
+    "category": "cleaner",
+    "aliases": [
+      "청소",
+      "배터리 최적화",
+      "battery"
+    ],
+    "verdict": "snake_oil",
+    "checkable": false,
+    "effort": null,
+    "reason": "백그라운드 강제종료식 배터리 최적화는 효과 근거가 약하고, OS가 이미 하는 일이라 심판 세울 게 없다",
+    "reconstruct_to": [
+      "cache_cleanup"
+    ],
+    "judge": {
+      "kind": "human_gate",
+      "params": {
+        "why": "OS가 이미 하는 일 - 개선분을 분리 측정할 심판이 없다."
+      }
+    },
+    "worker_role": null,
+    "worker_impl": null
+  },
+  {
+    "id": "cache_cleanup",
+    "category": "cleaner",
+    "aliases": [
+      "청소",
+      "캐시",
+      "정리",
+      "cleaner",
+      "clean"
+    ],
+    "verdict": "real",
+    "checkable": true,
+    "effort": "S",
+    "check": "정리 전후 캐시/임시파일 용량 차이를 바이트로 측정 - 결정적",
+    "reason": "캐시/임시파일 정리 - 회수 용량을 기계가 잰다",
+    "judge": {
+      "kind": "numeric_delta",
+      "params": {
+        "before": "measured.bytes_before",
+        "after": "measured.bytes_after",
+        "min_delta": 1
+      },
+      "positive": {
+        "measured": {
+          "bytes_before": 940000,
+          "bytes_after": 12000
+        }
+      },
+      "negatives": [
+        {
+          "note": "청소했다면서 용량이 그대로",
+          "mutate": {
+            "measured.bytes_after": 940000
+          }
+        },
+        {
+          "note": "오히려 늘어남",
+          "mutate": {
+            "measured.bytes_after": 1200000
+          }
+        }
+      ]
+    },
+    "adapter": "dir_bytes_pair",
+    "worker_role": "코딩 AI + 자체 검증",
+    "worker_impl": "Claude (코딩)"
+  },
+  {
+    "id": "large_file_finder",
+    "category": "cleaner",
+    "aliases": [
+      "청소",
+      "큰 파일",
+      "용량",
+      "large file"
+    ],
+    "verdict": "real",
+    "checkable": true,
+    "effort": "S",
+    "check": "용량 임계 초과 파일을 크기 내림차순으로 목록화 - 결정적",
+    "reason": "용량 잡아먹는 큰 파일 찾기 - 기계가 검증 가능",
+    "judge": {
+      "kind": "threshold_match",
+      "params": {
+        "measured": "measured.files",
+        "key": "size",
+        "id_key": "path",
+        "min_value": "spec.min_size",
+        "claim": "claim.paths"
+      },
+      "positive": {
+        "spec": {
+          "min_size": 100000000
+        },
+        "measured": {
+          "files": [
+            {
+              "path": "a.mp4",
+              "size": 2400000000
+            },
+            {
+              "path": "b.zip",
+              "size": 900000000
+            },
+            {
+              "path": "c.iso",
+              "size": 150000000
+            },
+            {
+              "path": "d.txt",
+              "size": 2048
+            }
+          ]
+        },
+        "claim": {
+          "paths": [
+            "a.mp4",
+            "b.zip",
+            "c.iso"
+          ]
+        }
+      },
+      "negatives": [
+        {
+          "note": "임계 넘는 파일을 놓침",
+          "mutate": {
+            "claim.paths": [
+              "a.mp4",
+              "b.zip"
+            ]
+          }
+        },
+        {
+          "note": "임계 미만 파일까지 보고(부풀림)",
+          "mutate": {
+            "claim.paths": [
+              "a.mp4",
+              "b.zip",
+              "c.iso",
+              "d.txt"
+            ]
+          }
+        }
+      ]
+    },
+    "adapter": "dir_files",
+    "worker_role": "코딩 AI + 자체 검증",
+    "worker_impl": "Claude (코딩)"
+  },
+  {
+    "id": "duplicate_file_finder",
+    "category": "cleaner",
+    "aliases": [
+      "청소",
+      "중복",
+      "duplicate"
+    ],
+    "verdict": "real",
+    "checkable": true,
+    "effort": "S",
+    "check": "내용 해시가 일치하는 파일쌍을 목록화 - 결정적",
+    "reason": "중복 파일 찾기 - 해시 대조로 검증 가능",
+    "judge": {
+      "kind": "hash_pairs",
+      "params": {
+        "files": "measured.hashes",
+        "pairs": "claim.pairs"
+      },
+      "positive": {
+        "measured": {
+          "hashes": {
+            "a.txt": "aa11",
+            "b.txt": "aa11",
+            "c.txt": "bb22"
+          }
+        },
+        "claim": {
+          "pairs": [
+            [
+              "a.txt",
+              "b.txt"
+            ]
+          ]
+        }
+      },
+      "negatives": [
+        {
+          "note": "내용이 다른 파일을 중복이라고 보고",
+          "mutate": {
+            "claim.pairs": [
+              [
+                "a.txt",
+                "c.txt"
+              ]
+            ]
+          }
+        },
+        {
+          "note": "존재하지 않는 파일을 보고",
+          "mutate": {
+            "claim.pairs": [
+              [
+                "a.txt",
+                "ghost.txt"
+              ]
+            ]
+          }
+        }
+      ]
+    },
+    "adapter": "dir_files",
+    "worker_role": "코딩 AI + 자체 검증",
+    "worker_impl": "Claude (코딩)"
+  },
+  {
+    "id": "beautiful_art_generation",
+    "category": "art",
+    "aliases": [
+      "예쁜 그림",
+      "아름다운 그림",
+      "멋진 일러스트",
+      "감성 이미지"
+    ],
+    "verdict": "no_judge",
+    "checkable": false,
+    "effort": null,
+    "reason": "절대적 미(美)는 심판이 없다 - 대신 '설계도 구성에 맞나'로 재구성한다",
+    "reconstruct_to": [
+      "spec_fit_art_selection"
+    ],
+    "judge": {
+      "kind": "human_gate",
+      "params": {
+        "why": "절대적 미(美)는 심판이 없다 - 구성 대조로 재구성한다."
+      }
+    },
+    "worker_role": null,
+    "worker_impl": null
+  },
+  {
+    "id": "spec_fit_art_selection",
+    "category": "art",
+    "aliases": [
+      "아이콘",
+      "로고",
+      "구성에 맞는 그림",
+      "스펙 이미지",
+      "배경",
+      "일러스트"
+    ],
+    "verdict": "real",
+    "checkable": true,
+    "effort": "M",
+    "check": "생성 후보 이미지의 캔버스 크기·팔레트 이탈률·채도/명도 중앙값·경계 알파를 직접 재서 설계도 규격과 대조한다 - 결정적",
+    "reason": "설계도의 **측정 가능한 규격**에 맞는 이미지 선별. 분위기 일치는 여기서 재지 않는다(art_mood_fit으로 분리)",
+    "judge": {
+      "kind": "spec_conformance",
+      "params": {
+        "rules": [
+          {
+            "name": "file_integrity",
+            "measured": "measured.error",
+            "op": "is_null"
+          },
+          {
+            "name": "canvas.width",
+            "measured": "measured.width",
+            "op": "==",
+            "spec": "spec.width"
+          },
+          {
+            "name": "canvas.height",
+            "measured": "measured.height",
+            "op": "==",
+            "spec": "spec.height"
+          },
+          {
+            "name": "palette_conformance",
+            "measured": "measured.palette_outside_ratio",
+            "op": "<=",
+            "spec": "spec.palette_outside_max"
+          },
+          {
+            "name": "saturation.max",
+            "measured": "measured.median_saturation",
+            "op": "<=",
+            "spec": "spec.saturation_max"
+          },
+          {
+            "name": "value.min",
+            "measured": "measured.median_value",
+            "op": ">=",
+            "spec": "spec.value_min"
+          }
+        ]
+      },
+      "positive": {
+        "spec": {
+          "width": 320,
+          "height": 180,
+          "palette_outside_max": 0.005,
+          "saturation_max": 0.45,
+          "value_min": 0.08
+        },
+        "measured": {
+          "error": null,
+          "width": 320,
+          "height": 180,
+          "palette_outside_ratio": 0.0,
+          "median_saturation": 0.22,
+          "median_value": 0.31
+        }
+      },
+      "negatives": [
+        {
+          "note": "해상도가 설계도와 다름",
+          "mutate": {
+            "measured.width": 512
+          }
+        },
+        {
+          "note": "세로 해상도가 다름",
+          "mutate": {
+            "measured.height": 1080
+          }
+        },
+        {
+          "note": "지정 팔레트 밖 색이 40%",
+          "mutate": {
+            "measured.palette_outside_ratio": 0.4
+          }
+        },
+        {
+          "note": "채도가 설계도 상한을 넘음(공포인데 형광)",
+          "mutate": {
+            "measured.median_saturation": 0.95
+          }
+        },
+        {
+          "note": "너무 어두워 형체가 안 보임",
+          "mutate": {
+            "measured.median_value": 0.01
+          }
+        },
+        {
+          "note": "파일이 깨짐",
+          "mutate": {
+            "measured.error": "디코딩 실패"
+          }
+        }
+      ]
+    },
+    "adapter": "image_style_asset",
+    "worker_role": "이미지 생성 AI + 자체 선별",
+    "worker_impl": "이미지 생성 AI(미정)"
+  },
+  {
+    "id": "icon_spec_fit",
+    "category": "art",
+    "aliases": [
+      "아이콘",
+      "아이콘 세트",
+      "icon",
+      "픽토그램"
+    ],
+    "verdict": "real",
+    "checkable": true,
+    "effort": "M",
+    "adapter": "svg_file",
+    "check": "생성된 SVG의 격자·획 굵기·팔레트·패스 수·여백·바이트를 우리가 직접 재서 설계도 스펙과 대조한다 - 모델 호출 0, 결정적",
+    "reason": "스펙으로 조인 아이콘은 기계가 전부 잰다 - 주관적 이미지(④)와 달리 심판이 선다 (docs/icon-lane-design.md)",
+    "judge": {
+      "kind": "spec_conformance",
+      "params": {
+        "rules": [
+          {
+            "name": "parse",
+            "measured": "measured.error",
+            "op": "is_null"
+          },
+          {
+            "name": "viewBox",
+            "measured": "measured.viewbox",
+            "op": "==",
+            "spec": "spec.viewBox"
+          },
+          {
+            "name": "grid.snap",
+            "measured": "measured.off_grid",
+            "op": "empty"
+          },
+          {
+            "name": "stroke.width",
+            "measured": "measured.stroke_widths",
+            "op": "all_equal",
+            "spec": "spec.stroke_width"
+          },
+          {
+            "name": "stroke.linecap",
+            "measured": "measured.linecaps",
+            "op": "all_equal",
+            "spec": "spec.stroke_linecap"
+          },
+          {
+            "name": "stroke.linejoin",
+            "measured": "measured.linejoins",
+            "op": "all_equal",
+            "spec": "spec.stroke_linejoin"
+          },
+          {
+            "name": "palette",
+            "measured": "measured.colors",
+            "op": "empty"
+          },
+          {
+            "name": "fill",
+            "measured": "measured.fills",
+            "op": "subset",
+            "spec": "spec.fill_allowed"
+          },
+          {
+            "name": "padding.min",
+            "measured": "measured.min_padding",
+            "op": ">=",
+            "spec": "spec.padding_min"
+          },
+          {
+            "name": "path.max_count",
+            "measured": "measured.path_count",
+            "op": "<=",
+            "spec": "spec.path_max_count"
+          },
+          {
+            "name": "shape.max_count",
+            "measured": "measured.shape_count",
+            "op": "<=",
+            "spec": "spec.shape_max_count"
+          },
+          {
+            "name": "path.max_total_commands",
+            "measured": "measured.command_count",
+            "op": "<=",
+            "spec": "spec.path_max_commands"
+          },
+          {
+            "name": "allowed_elements",
+            "measured": "measured.elements",
+            "op": "subset",
+            "spec": "spec.allowed_elements"
+          },
+          {
+            "name": "forbidden_elements",
+            "measured": "measured.elements",
+            "op": "disjoint",
+            "spec": "spec.forbidden_elements"
+          },
+          {
+            "name": "size.max_bytes",
+            "measured": "measured.bytes",
+            "op": "<=",
+            "spec": "spec.max_bytes"
+          }
+        ]
+      },
+      "positive": {
+        "spec": {
+          "viewBox": "0 0 24 24",
+          "stroke_width": 1.5,
+          "fill_allowed": [
+            "none"
+          ],
+          "padding_min": 2,
+          "path_max_count": 6,
+          "path_max_commands": 60,
+          "allowed_elements": [
+            "svg",
+            "path",
+            "circle",
+            "rect",
+            "line",
+            "polyline",
+            "g"
+          ],
+          "forbidden_elements": [
+            "text",
+            "image",
+            "filter",
+            "mask",
+            "style",
+            "script",
+            "defs"
+          ],
+          "max_bytes": 2048,
+          "stroke_linecap": "round",
+          "stroke_linejoin": "round",
+          "shape_max_count": 6
+        },
+        "measured": {
+          "error": null,
+          "viewbox": "0 0 24 24",
+          "off_grid": [],
+          "stroke_widths": [
+            1.5
+          ],
+          "colors": [],
+          "fills": [
+            "none"
+          ],
+          "min_padding": 3.0,
+          "path_count": 2,
+          "command_count": 9,
+          "elements": [
+            "path",
+            "svg"
+          ],
+          "bytes": 320,
+          "linecaps": [
+            "round"
+          ],
+          "linejoins": [
+            "round"
+          ],
+          "shape_count": 2
+        }
+      },
+      "negatives": [
+        {
+          "note": "격자를 벗어난 좌표(0.5 배수 아님)",
+          "mutate": {
+            "measured.off_grid": [
+              12.37
+            ]
+          }
+        },
+        {
+          "note": "획 굵기가 스펙과 다름",
+          "mutate": {
+            "measured.stroke_widths": [
+              2.0
+            ]
+          }
+        },
+        {
+          "note": "세트 안에서 획 굵기가 두 종류",
+          "mutate": {
+            "measured.stroke_widths": [
+              1.5,
+              2.0
+            ]
+          }
+        },
+        {
+          "note": "색을 하드코딩(currentColor 아님)",
+          "mutate": {
+            "measured.colors": [
+              "#3b82f6"
+            ]
+          }
+        },
+        {
+          "note": "여백이 스펙 미만",
+          "mutate": {
+            "measured.min_padding": 0.8
+          }
+        },
+        {
+          "note": "패스 개수 초과",
+          "mutate": {
+            "measured.path_count": 8
+          }
+        },
+        {
+          "name": "명령 수 초과",
+          "note": "전체 명령 수 초과",
+          "mutate": {
+            "measured.command_count": 61
+          }
+        },
+        {
+          "note": "금지 요소 사용(script)",
+          "mutate": {
+            "measured.elements": [
+              "path",
+              "script",
+              "svg"
+            ]
+          }
+        },
+        {
+          "note": "용량 초과",
+          "mutate": {
+            "measured.bytes": 4096
+          }
+        },
+        {
+          "note": "viewBox가 다름",
+          "mutate": {
+            "measured.viewbox": "0 0 32 32"
+          }
+        },
+        {
+          "note": "파싱 자체가 안 됨",
+          "mutate": {
+            "measured.error": "SVG 파싱 실패"
+          }
+        },
+        {
+          "note": "선끝 모양이 스펙과 다름(butt)",
+          "mutate": {
+            "measured.linecaps": [
+              "butt"
+            ]
+          }
+        },
+        {
+          "note": "선끝 모양 미지정 - 속성 이름이 틀렸다(linecap= 은 SVG 속성이 아니다)",
+          "mutate": {
+            "measured.linecaps": []
+          }
+        },
+        {
+          "note": "이음 모양이 스펙과 다름(miter)",
+          "mutate": {
+            "measured.linejoins": [
+              "miter"
+            ]
+          }
+        },
+        {
+          "note": "이음 모양 미지정",
+          "mutate": {
+            "measured.linejoins": []
+          }
+        },
+        {
+          "note": "도형 총량 초과(path만 세던 규칙을 rect/circle로 비껴가던 구멍)",
+          "mutate": {
+            "measured.shape_count": 7
+          }
+        }
+      ]
+    },
+    "worker_role": "아이콘 생성 AI + 자체 심판",
+    "worker_impl": "외부 LLM (SVG 생성)"
+  },
+  {
+    "id": "music_selection",
+    "category": "audio",
+    "aliases": [
+      "음악",
+      "배경음",
+      "bgm",
+      "사운드트랙"
+    ],
+    "verdict": "real",
+    "checkable": true,
+    "effort": "M",
+    "check": "트랙의 길이·샘플레이트·표본 피크·앞뒤 무음·구간 결손을 직접 재고, 에너지 포락선 자기상관으로 BPM을 추정해 설계도와 대조한다 (배수 오검출은 fail이 아니라 미정의)",
+    "reason": "설계도의 기술 규격 + 템포에 맞는 트랙 선별. 분위기·악기 편성은 여기서 재지 않는다(music_mood_fit으로 분리)",
+    "judge": {
+      "kind": "spec_conformance",
+      "params": {
+        "rules": [
+          {
+            "name": "file_integrity",
+            "measured": "measured.error",
+            "op": "is_null"
+          },
+          {
+            "name": "sample_rate",
+            "measured": "measured.sample_rate",
+            "op": "==",
+            "spec": "spec.sample_rate"
+          },
+          {
+            "name": "duration.max",
+            "measured": "measured.duration_s",
+            "op": "<=",
+            "spec": "spec.duration_max_s"
+          },
+          {
+            "name": "sample_peak",
+            "measured": "measured.sample_peak_dbfs",
+            "op": "<=",
+            "spec": "spec.peak_dbfs_max"
+          },
+          {
+            "name": "silence_head",
+            "measured": "measured.lead_silence_s",
+            "op": "<=",
+            "spec": "spec.silence_max_s"
+          },
+          {
+            "name": "silence_tail",
+            "measured": "measured.tail_silence_s",
+            "op": "<=",
+            "spec": "spec.silence_max_s"
+          },
+          {
+            "name": "dropout",
+            "measured": "measured.max_dropout_s",
+            "op": "<=",
+            "spec": "spec.dropout_max_s"
+          }
+        ]
+      },
+      "positive": {
+        "spec": {
+          "sample_rate": 44100,
+          "duration_max_s": 180.0,
+          "peak_dbfs_max": -1.5,
+          "silence_max_s": 0.1,
+          "dropout_max_s": 0.2
+        },
+        "measured": {
+          "error": null,
+          "sample_rate": 44100,
+          "duration_s": 96.0,
+          "sample_peak_dbfs": -6.2,
+          "lead_silence_s": 0.0,
+          "tail_silence_s": 0.03,
+          "max_dropout_s": 0.0
+        }
+      },
+      "negatives": [
+        {
+          "note": "샘플레이트가 규격과 다름",
+          "mutate": {
+            "measured.sample_rate": 22050
+          }
+        },
+        {
+          "note": "길이 초과",
+          "mutate": {
+            "measured.duration_s": 600.0
+          }
+        },
+        {
+          "note": "클리핑",
+          "mutate": {
+            "measured.sample_peak_dbfs": -0.05
+          }
+        },
+        {
+          "note": "앞 무음이 길다",
+          "mutate": {
+            "measured.lead_silence_s": 2.0
+          }
+        },
+        {
+          "note": "뒤 무음이 길다",
+          "mutate": {
+            "measured.tail_silence_s": 1.2
+          }
+        },
+        {
+          "note": "중간이 끊긴다",
+          "mutate": {
+            "measured.max_dropout_s": 1.0
+          }
+        },
+        {
+          "note": "디코딩 실패",
+          "mutate": {
+            "measured.error": "WAV 디코딩 실패"
+          }
+        }
+      ]
+    },
+    "adapter": "music_asset",
+    "worker_role": "음악 생성 AI + 자체 선별",
+    "worker_impl": "음악 생성 AI(미정)"
+  },
+  {
+    "id": "story_writing",
+    "category": "story",
+    "aliases": [
+      "스토리",
+      "시나리오",
+      "이야기",
+      "각본",
+      "story",
+      "서사"
+    ],
+    "verdict": "no_judge",
+    "checkable": false,
+    "effort": null,
+    "reason": "'좋은 이야기'의 절대 기준은 심판이 없다 - 설계도 플롯/톤/캐릭터 제약에 맞나로 재구성한다",
+    "reconstruct_to": [
+      "spec_fit_story_selection"
+    ],
+    "judge": {
+      "kind": "human_gate",
+      "params": {
+        "why": "'좋은 이야기'의 절대 기준은 심판이 없다 - 제약 대조로 재구성하고, 재미 자체는 사람 눈 게이트."
+      }
+    },
+    "worker_role": null,
+    "worker_impl": null
+  },
+  {
+    "id": "spec_fit_story_selection",
+    "category": "story",
+    "aliases": [
+      "스토리 선별",
+      "시나리오 검수",
+      "플롯 검증"
+    ],
+    "verdict": "real",
+    "checkable": true,
+    "effort": "M",
+    "check": "후보 스토리를 설계도 플롯/톤/캐릭터/금지어 제약과 대조 - 제약 위반은 결정적으로 걸린다(주관적 '재미'는 사람 눈 게이트)",
+    "reason": "설계도 제약에 맞는 스토리 선별 - 제약 위반은 기계가 검증 가능",
+    "judge": {
+      "kind": "forbidden_absent",
+      "params": {
+        "forbidden": "spec.forbidden",
+        "text": "measured.text"
+      },
+      "positive": {
+        "spec": {
+          "forbidden": [
+            "용사",
+            "마왕",
+            "이세계 전생"
+          ]
+        },
+        "measured": {
+          "text": "폐광 마을의 등대지기는 매일 밤 같은 배를 본다."
+        }
+      },
+      "negatives": [
+        {
+          "note": "설계도가 금지한 클리셰가 들어감",
+          "mutate": {
+            "measured.text": "용사는 마왕을 물리치러 떠났다."
+          }
+        },
+        {
+          "note": "금지어가 문장 중간에 숨어 있음",
+          "mutate": {
+            "measured.text": "등대지기는 사실 이세계 전생한 사람이었다."
+          }
+        }
+      ]
+    },
+    "adapter": "text_file",
+    "worker_role": "스토리 생성 AI + 자체 선별",
+    "worker_impl": "ChatGPT (스토리)"
+  },
+  {
+    "id": "game_feature_coding",
+    "category": "code",
+    "aliases": [
+      "게임 기능",
+      "게임 개발",
+      "게임 코딩",
+      "gameplay",
+      "기능 구현"
+    ],
+    "verdict": "real",
+    "checkable": true,
+    "effort": "L",
+    "check": "설계도 명세 테스트를 **우리가 직접 실행**해 통과·실패 수와 종료코드를 잰다 - 후보가 낸 성적표를 읽지 않는다",
+    "reason": "게임 기능 구현 - 명세 테스트를 직접 돌려 검증",
+    "judge": {
+      "kind": "spec_conformance",
+      "params": {
+        "rules": [
+          {
+            "name": "runner_ok",
+            "measured": "measured.error",
+            "op": "is_null"
+          },
+          {
+            "name": "returncode",
+            "measured": "measured.returncode",
+            "op": "==",
+            "spec": "spec.returncode_ok"
+          },
+          {
+            "name": "no_failures",
+            "measured": "measured.tests_failed",
+            "op": "<=",
+            "spec": "spec.max_failures"
+          },
+          {
+            "name": "coverage_of_spec",
+            "measured": "measured.tests_total",
+            "op": ">=",
+            "spec": "spec.min_tests"
+          }
+        ]
+      },
+      "positive": {
+        "spec": {
+          "returncode_ok": 0,
+          "max_failures": 0,
+          "min_tests": 3
+        },
+        "measured": {
+          "error": null,
+          "returncode": 0,
+          "tests_failed": 0,
+          "tests_total": 12
+        }
+      },
+      "negatives": [
+        {
+          "note": "테스트가 깨짐",
+          "mutate": {
+            "measured.tests_failed": 3
+          }
+        },
+        {
+          "note": "러너가 비정상 종료",
+          "mutate": {
+            "measured.returncode": 1
+          }
+        },
+        {
+          "note": "명세 테스트가 너무 적다(형식만 통과)",
+          "mutate": {
+            "measured.tests_total": 1
+          }
+        },
+        {
+          "note": "테스트를 못 돌렸다",
+          "mutate": {
+            "measured.error": "pytest 요약줄을 못 읽었다 - 미측정"
+          }
+        }
+      ]
+    },
+    "adapter": "pytest_run",
+    "worker_role": "코딩 AI + 자체 테스트 실행",
+    "worker_impl": "Claude (코딩)"
+  },
+  {
+    "id": "pixel_art_style",
+    "category": "promoted",
+    "aliases": [
+      "픽셀",
+      "픽셀아트",
+      "픽셀 아트",
+      "도트",
+      "도트그래픽",
+      "pixel art",
+      "pixelart"
+    ],
+    "verdict": "real",
+    "checkable": true,
+    "effort": "M",
+    "check": "이미지의 격자 블록에서 논리 해상도를 역산해 상한과 대조하고, 불투명 고유 색 수와 알파 이진 여부를 잰다 - 모델 호출 0, 결정적",
+    "reason": "도트(픽셀 아트) 규격에 맞는 이미지 자산 - 격자·색 수·알파를 기계가 잰다",
+    "judge": {
+      "kind": "spec_conformance",
+      "params": {
+        "rules": [
+          {
+            "name": "file_integrity",
+            "measured": "measured.error",
+            "op": "is_null"
+          },
+          {
+            "name": "logical_width",
+            "measured": "measured.logical_width",
+            "op": "<=",
+            "spec": "spec.max_logical_size"
+          },
+          {
+            "name": "logical_height",
+            "measured": "measured.logical_height",
+            "op": "<=",
+            "spec": "spec.max_logical_size"
+          },
+          {
+            "name": "color_count",
+            "measured": "measured.color_count",
+            "op": "<=",
+            "spec": "spec.max_colors"
+          },
+          {
+            "name": "alpha_binary",
+            "measured": "measured.alpha_binary",
+            "op": "==",
+            "spec": "spec.alpha_binary"
+          }
+        ]
+      },
+      "positive": {
+        "spec": {
+          "max_logical_size": 128,
+          "max_colors": 32,
+          "alpha_binary": true
+        },
+        "measured": {
+          "error": null,
+          "logical_width": 32,
+          "logical_height": 32,
+          "color_count": 18,
+          "alpha_binary": true
+        }
+      },
+      "negatives": [
+        {
+          "note": "픽셀처럼 보이지만 격자가 없다(논리 해상도가 그대로 1024)",
+          "mutate": {
+            "measured.logical_width": 1024
+          }
+        },
+        {
+          "note": "세로만 격자를 벗어남",
+          "mutate": {
+            "measured.logical_height": 512
+          }
+        },
+        {
+          "note": "색이 무한하다(사진을 도트라고 우김)",
+          "mutate": {
+            "measured.color_count": 5000
+          }
+        },
+        {
+          "note": "반투명 픽셀이 있다(안티에일리어싱 - 도트가 아니다)",
+          "mutate": {
+            "measured.alpha_binary": false
+          }
+        },
+        {
+          "note": "파일이 깨져 못 읽는다",
+          "mutate": {
+            "measured.error": "디코딩 실패"
+          }
+        }
+      ]
+    },
+    "adapter": "pixel_art_asset",
+    "worker_role": "이미지 생성 AI + 자체 도트 변환·선별",
+    "worker_impl": "이미지 생성 AI(미정) + tools/artgen/pixelize.py"
+  },
+  {
+    "id": "art_mood_fit",
+    "category": "art",
+    "aliases": [
+      "그림 분위기",
+      "화풍 일치",
+      "무드"
+    ],
+    "verdict": "no_judge",
+    "checkable": false,
+    "effort": null,
+    "reason": "이미지가 설계도의 분위기에 맞는가 - 기계 심판 없음. 규격(해상도·팔레트·채도/명도)은 spec_fit_art_selection이 잰다",
+    "judge": {
+      "kind": "human_gate",
+      "params": {
+        "why": "분위기 일치는 임베딩 없이 잴 수 없다. 규격 통과분만 사람이 본다."
+      }
+    },
+    "worker_role": null,
+    "worker_impl": null,
+    "no_reconstruction": "재구성 대상이 없다 — 규격 부분은 이미 spec_fit_art_selection으로 분리돼 있고, 남은 '분위기'는 사람 눈 게이트다. 대체 원자를 지어내면 심판이 있는 척하는 것이 된다."
+  },
+  {
+    "id": "music_mood_fit",
+    "category": "audio",
+    "aliases": [
+      "음악 분위기",
+      "악기 편성",
+      "보컬 유무"
+    ],
+    "verdict": "no_judge",
+    "checkable": false,
+    "effort": null,
+    "reason": "트랙이 설계도의 분위기·악기 편성에 맞는가 - 기계 심판 없음. 기술 규격과 템포는 music_selection이 잰다",
+    "judge": {
+      "kind": "human_gate",
+      "params": {
+        "why": "분위기·악기 분류기는 미도입(신뢰도 미측정). 널 통제 통과 전에는 판정에 넣지 않는다 - 자산 심판 초안 status_unbuilt 조항."
+      }
+    },
+    "worker_role": null,
+    "worker_impl": null,
+    "no_reconstruction": "재구성 대상이 없다 — 기술 규격·템포는 music_selection이 갖고 있고, 남은 '분위기·악기 편성'은 분류기 도입(널 통제 통과) 전까지 사람 눈 게이트다."
+  },
+  {
+    "id": "character_set_consistency",
+    "category": "promoted",
+    "aliases": [
+      "캐릭터 세트",
+      "방향 일관성",
+      "스프라이트 세트"
+    ],
+    "verdict": "real",
+    "checkable": true,
+    "effort": "M",
+    "check": "네 방향의 걷기 프레임 수가 같은지, 방향별 불투명 bbox 높이 차가 1픽셀 이내인지를 잰다 - 모델 호출 0, 결정적",
+    "reason": "캐릭터가 방향을 바꿔도 같은 캐릭터로 보이는가 - 한 장으로는 안 보이는 결함(프레임 수 불일치·키 변동)을 세트로 잡는다",
+    "judge": {
+      "kind": "spec_conformance",
+      "params": {
+        "rules": [
+          {
+            "name": "file_integrity",
+            "measured": "measured.error",
+            "op": "is_null"
+          },
+          {
+            "name": "frame_count_equal",
+            "measured": "measured.frame_count_equal",
+            "op": "==",
+            "spec": "spec.require_equal_frame_counts"
+          },
+          {
+            "name": "bbox_height_spread",
+            "measured": "measured.bbox_height_spread",
+            "op": "<=",
+            "spec": "spec.max_bbox_height_spread"
+          }
+        ]
+      },
+      "positive": {
+        "spec": {
+          "require_equal_frame_counts": true,
+          "max_bbox_height_spread": 1
+        },
+        "measured": {
+          "error": null,
+          "frame_count_equal": true,
+          "bbox_height_spread": 1
+        }
+      },
+      "negatives": [
+        {
+          "note": "한 방향만 걷기 프레임이 하나 적다(애니메이션이 튄다)",
+          "mutate": {
+            "measured.frame_count_equal": false
+          }
+        },
+        {
+          "note": "방향에 따라 키가 2픽셀 달라진다(돌면 커졌다 작아진다)",
+          "mutate": {
+            "measured.bbox_height_spread": 2
+          }
+        },
+        {
+          "note": "방향 파일이 없어 못 읽는다",
+          "mutate": {
+            "measured.error": "rotations/north.png 없음"
+          }
+        }
+      ]
+    },
+    "adapter": "character_set",
+    "worker_role": "캐릭터 생성 AI",
+    "worker_impl": "PixelLab(오디션 08-07) + tools/artgen"
+  },
+  {
+    "id": "tile_seam",
+    "category": "promoted",
+    "aliases": [
+      "타일 이음새",
+      "심리스 타일",
+      "타일링"
+    ],
+    "verdict": "real",
+    "checkable": true,
+    "effort": "S",
+    "check": "타일을 자기 자신과 이어 붙였을 때 가장자리 불연속이 내부 이웃 변화의 몇 배인지를 잰다(seam_ratio) - 모델 호출 0, 결정적",
+    "reason": "타일은 이어 붙는다. 한 장만 보면 통과하지만 깔면 이음새가 보이는 결함을 잡는다. **문턱은 아직 미동결**이라 지금은 measured·미판정이다",
+    "judge": {
+      "kind": "spec_conformance",
+      "params": {
+        "rules": [
+          {
+            "name": "file_integrity",
+            "measured": "measured.error",
+            "op": "is_null"
+          },
+          {
+            "name": "seam_ratio_x",
+            "measured": "measured.seam_ratio_x",
+            "op": "<=",
+            "spec": "spec.max_seam_ratio"
+          },
+          {
+            "name": "seam_ratio_y",
+            "measured": "measured.seam_ratio_y",
+            "op": "<=",
+            "spec": "spec.max_seam_ratio"
+          }
+        ]
+      },
+      "positive": {
+        "spec": {
+          "max_seam_ratio": 1.5
+        },
+        "measured": {
+          "error": null,
+          "seam_ratio_x": 1.0,
+          "seam_ratio_y": 1.1
+        }
+      },
+      "negatives": [
+        {
+          "note": "가로로 깔면 이음새가 보인다(내부 변화의 6배)",
+          "mutate": {
+            "measured.seam_ratio_x": 6.0
+          }
+        },
+        {
+          "note": "세로 이음새가 터진다",
+          "mutate": {
+            "measured.seam_ratio_y": 8.7
+          }
+        }
+      ],
+      "note_undefined": "단색 타일은 내부 변화가 0이라 비율이 정의되지 않는다 → fail이 아니라 undefined다. 반례가 아니므로 negatives에 넣지 않고 테스트(tests/test_tile_probe.py)로 지킨다"
+    },
+    "adapter": "tile_asset",
+    "worker_role": "타일 생성 AI",
+    "worker_impl": "PixelLab / Retro Diffusion(미도입)"
+  },
+  {
+    "id": "tile_set_consistency",
+    "category": "promoted",
+    "aliases": [
+      "타일셋",
+      "타일 세트",
+      "타일 아틀라스"
+    ],
+    "verdict": "real",
+    "checkable": true,
+    "effort": "M",
+    "check": "타일 여러 장을 한 세트로 보고 크기 균일 여부·세트 전체 고유색 수·가장 나쁜 이음새를 잰다 - 모델 호출 0, 결정적",
+    "reason": "타일은 같이 깔린다. 낱장이 다 통과해도 크기가 제각각이면 못 깔고, 세트 팔레트가 갈라지면 한 세계로 안 보인다. **세트 색 상한·이음새 문턱은 미동결**이라 그 둘은 지금 미판정이다",
+    "judge": {
+      "kind": "spec_conformance",
+      "params": {
+        "rules": [
+          {
+            "name": "file_integrity",
+            "measured": "measured.error",
+            "op": "is_null"
+          },
+          {
+            "name": "sizes_uniform",
+            "measured": "measured.sizes_uniform",
+            "op": "==",
+            "spec": "spec.require_uniform_size"
+          },
+          {
+            "name": "set_palette",
+            "measured": "measured.palette_union",
+            "op": "<=",
+            "spec": "spec.max_set_colors"
+          },
+          {
+            "name": "worst_seam",
+            "measured": "measured.seam_ratio_max",
+            "op": "<=",
+            "spec": "spec.max_seam_ratio"
+          }
+        ]
+      },
+      "positive": {
+        "spec": {
+          "require_uniform_size": true,
+          "max_set_colors": 48,
+          "max_seam_ratio": 1.5
+        },
+        "measured": {
+          "error": null,
+          "sizes_uniform": true,
+          "palette_union": 40,
+          "seam_ratio_max": 1.2
+        }
+      },
+      "negatives": [
+        {
+          "note": "타일 크기가 제각각이라 못 깐다",
+          "mutate": {
+            "measured.sizes_uniform": false
+          }
+        },
+        {
+          "note": "세트 전체 색이 팔레트를 넘는다(한 세계로 안 보인다)",
+          "mutate": {
+            "measured.palette_union": 300
+          }
+        },
+        {
+          "note": "한 장이 이음새가 터져 깔면 눈에 띈다",
+          "mutate": {
+            "measured.seam_ratio_max": 8.69
+          }
+        },
+        {
+          "note": "세트를 못 읽는다",
+          "mutate": {
+            "measured.error": "타일이 없다"
+          }
+        }
+      ]
+    },
+    "adapter": "tile_set",
+    "worker_role": "타일 생성 AI",
+    "worker_impl": "PixelLab / Retro Diffusion(미도입)"
+  }
+]

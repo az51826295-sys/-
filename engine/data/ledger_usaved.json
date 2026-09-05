@@ -1,0 +1,37 @@
+{
+ "n_rows": 9160,
+ "c_k": 8,
+ "full": {
+  "unique_keys": 6111,
+  "u_saved": 3049,
+  "u_calls": 24392
+ },
+ "local": {
+  "unique_keys": 5341,
+  "u_saved": 3819,
+  "u_calls": 30552
+ },
+ "stat": {
+  "unique_keys": 1638,
+  "u_saved": 7522,
+  "u_calls": 60176
+ },
+ "wrong_block": {
+  "block_hits": 1624,
+  "wrong": 251,
+  "rate": 0.1546
+ },
+ "unresolved": {
+  "n": 0,
+  "rate": 0.0,
+  "by_archetype": {}
+ },
+ "threshold": {
+  "t_exp": 2560,
+  "verdict_by_resolution": {
+   "full": "PASS",
+   "local": "PASS",
+   "stat": "PASS"
+  }
+ }
+}

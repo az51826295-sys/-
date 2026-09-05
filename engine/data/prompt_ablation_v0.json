@@ -1,0 +1,596 @@
+{
+  "spec": "prompt-ablation-v0",
+  "design": "docs/prompt-ablation-v0-design.md",
+  "provider": "anthropic",
+  "model": "claude-haiku-4-5",
+  "usd": 0.048458,
+  "seconds": 60.2,
+  "thresholds": {
+    "spec_helps_lower": 0.2,
+    "irrelevant_upper": 0.05
+  },
+  "bootstrap": {
+    "n": 10000,
+    "seed": 12345
+  },
+  "with_spec": {
+    "arm": "with_spec",
+    "n": 26,
+    "passed": 10,
+    "pass_rate": 0.38461538461538464,
+    "concepts": [
+      "inventory",
+      "map",
+      "save",
+      "settings"
+    ],
+    "fingerprint": {
+      "spec_id": "icon-24-line-v1",
+      "arm": "with_spec",
+      "public_spec_sha": "5c38f9a9f798",
+      "system_prompt_sha": "43b76b8878c5",
+      "initial_prompt_skeleton_sha": "b042fe7d54c8",
+      "retry_prompt_sha": "02bc8528e2f2",
+      "restructure_prompt_sha": "30b7131462f1",
+      "note": "프롬프트 전문이 아니라 지문이다. 회차 간 '같았나 달랐나'를 사후에 답할 수 있게 하는 것이 목적."
+    },
+    "why": null
+  },
+  "no_spec": {
+    "arm": "no_spec",
+    "n": 26,
+    "passed": 0,
+    "pass_rate": 0.0,
+    "concepts": [
+      "inventory",
+      "map",
+      "save",
+      "settings"
+    ],
+    "fingerprint": {
+      "spec_id": "icon-24-line-v1",
+      "arm": "no_spec",
+      "public_spec_sha": null,
+      "system_prompt_sha": "0d3731bd8f9c",
+      "initial_prompt_skeleton_sha": "190ab486cccf",
+      "retry_prompt_sha": "02bc8528e2f2",
+      "restructure_prompt_sha": "30b7131462f1",
+      "note": "프롬프트 전문이 아니라 지문이다. 회차 간 '같았나 달랐나'를 사후에 답할 수 있게 하는 것이 목적."
+    },
+    "why": null
+  },
+  "rule_counts": {
+    "with_spec": {
+      "grid.snap": 13,
+      "stroke.linecap": 13,
+      "stroke.linejoin": 13,
+      "padding.min": 2
+    },
+    "no_spec": {
+      "stroke.width": 26,
+      "fill": 9,
+      "grid.snap": 8,
+      "stroke.linecap": 4,
+      "padding.min": 4,
+      "stroke.linejoin": 2
+    }
+  },
+  "judgement": {
+    "verdict": "undefined",
+    "why": "ci_straddles",
+    "d": 0.38461538461538464,
+    "ci95": [
+      0.19230769230769232,
+      0.5769230769230769
+    ],
+    "gate_ok": true,
+    "min_per_arm": 24,
+    "min_concepts": 4
+  },
+  "rows": {
+    "with_spec": [
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "stroke.linecap",
+          "stroke.linejoin"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "stroke.linecap",
+          "stroke.linejoin"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.linecap",
+          "stroke.linejoin"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.linecap",
+          "stroke.linejoin"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.linecap",
+          "stroke.linejoin"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "stroke.linecap",
+          "stroke.linejoin"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "stroke.linecap",
+          "stroke.linejoin"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "stroke.linecap",
+          "stroke.linejoin"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "padding.min",
+          "stroke.linecap",
+          "stroke.linejoin"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "stroke.linecap",
+          "stroke.linejoin"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "stroke.linecap",
+          "stroke.linejoin"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "stroke.linecap",
+          "stroke.linejoin"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "stroke.linecap",
+          "stroke.linejoin"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "map",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "map",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "map",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "map",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "map",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "map",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "padding.min"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "map",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "settings",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 0
+      },
+      {
+        "concept": "settings",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 0
+      },
+      {
+        "concept": "settings",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 0
+      },
+      {
+        "concept": "settings",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "settings",
+        "verdict": "PASS",
+        "violated": [],
+        "hidden_violated": false,
+        "signature": 2
+      }
+    ],
+    "no_spec": [
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "fill",
+          "grid.snap",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "fill",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.linecap",
+          "stroke.linejoin",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.linecap",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "fill",
+          "stroke.linejoin",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "stroke.linecap",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "fill",
+          "grid.snap",
+          "stroke.linecap",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 3
+      },
+      {
+        "concept": "map",
+        "verdict": "FAIL",
+        "violated": [
+          "padding.min",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "map",
+        "verdict": "FAIL",
+        "violated": [
+          "fill",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "map",
+        "verdict": "FAIL",
+        "violated": [
+          "fill",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "map",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "map",
+        "verdict": "FAIL",
+        "violated": [
+          "fill",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "map",
+        "verdict": "FAIL",
+        "violated": [
+          "fill",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "map",
+        "verdict": "FAIL",
+        "violated": [
+          "fill",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "padding.min",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "padding.min",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 0
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "padding.min",
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 2
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.width"
+        ],
+        "hidden_violated": false,
+        "signature": 1
+      }
+    ]
+  }
+}

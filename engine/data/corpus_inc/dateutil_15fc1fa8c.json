@@ -1,0 +1,96 @@
+{
+ "repo": "dateutil",
+ "fix_commit": "15fc1fa8c1e2c3d088e646d6d47ac9d25d902f95",
+ "parent_commit": "836f16166a473e379d59478e7e26b1cd5a61bcf0",
+ "answer_functions": [
+  "dateutil/relativedelta.py::__add__",
+  "dateutil/relativedelta.py::__radd__",
+  "dateutil/relativedelta.py::__sub__"
+ ],
+ "repro_tests": [
+  "test.py::RelativeDeltaTest::testRightAdditionToDatetime",
+  "test.py::RelativeDeltaTest::testSubtraction"
+ ],
+ "smoke": [
+  "test.py::EasterTest::testEaster",
+  "test.py::ParserTest::testDateCommandFormatIgnoreTz",
+  "test.py::ParserTest::testDateCommandFormatWithLong"
+ ],
+ "baseline_pass_count": 60,
+ "probes": [
+  {
+   "applied": "dateutil/relativedelta.py::__add__",
+   "a_repro_pass": true,
+   "b_smoke_pass": true,
+   "c_no_regression": true,
+   "regressed": [],
+   "d_unmet": [
+    "test.py::RelativeDeltaTest::testSubtraction"
+   ],
+   "inc_event": true
+  },
+  {
+   "applied": "dateutil/relativedelta.py::__radd__",
+   "a_repro_pass": false,
+   "b_smoke_pass": true,
+   "c_no_regression": false,
+   "regressed": [
+    "test.py::RelativeDeltaTest::test15thISOYearWeek",
+    "test.py::RelativeDeltaTest::testAdditionToDatetime",
+    "test.py::RelativeDeltaTest::testDivision",
+    "test.py::RelativeDeltaTest::testJohnAge",
+    "test.py::RelativeDeltaTest::testJohnAgeWithDate",
+    "test.py::RelativeDeltaTest::testLastFridayInThisMonth",
+    "test.py::RelativeDeltaTest::testMillenniumAge",
+    "test.py::RelativeDeltaTest::testMonthsOfDiffNumOfDays",
+    "test.py::RelativeDeltaTest::testMonthsOfDiffNumOfDaysWithYears",
+    "test.py::RelativeDeltaTest::testMultiplication",
+    "test.py::RelativeDeltaTest::testNextFriday",
+    "test.py::RelativeDeltaTest::testNextFridayInt",
+    "test.py::RelativeDeltaTest::testNextMonth",
+    "test.py::RelativeDeltaTest::testNextMonthPlusOneWeek",
+    "test.py::RelativeDeltaTest::testNextMonthPlusOneWeek10am",
+    "test.py::RelativeDeltaTest::testNextMonthPlusOneWeek10amDiff",
+    "test.py::RelativeDeltaTest::testNextWednesdayIsToday",
+    "test.py::RelativeDeltaTest::testNextWenesdayNotToday",
+    "test.py::RelativeDeltaTest::testNonLeapYearDay",
+    "test.py::RelativeDeltaTest::testOneMonthBeforeOneYear",
+    "test.py::RelativeDeltaTest::testRightSubtractionFromDatetime",
+    "test.py::RelativeDeltaTest::testYearDay",
+    "test.py::RelativeDeltaTest::testYearDayBug",
+    "test.py::TZTest::testStrEnd1",
+    "test.py::TZTest::testStrEnd2",
+    "test.py::TZTest::testStrEnd3",
+    "test.py::TZTest::testStrEnd4",
+    "test.py::TZTest::testStrEnd5",
+    "test.py::TZTest::testStrEnd6",
+    "test.py::TZTest::testStrStart1",
+    "test.py::TZTest::testStrStart2",
+    "test.py::TZTest::testStrStart3",
+    "test.py::TZTest::testStrStart4",
+    "test.py::TZTest::testStrStart5",
+    "test.py::TZTest::testStrStart6"
+   ],
+   "d_unmet": [
+    "test.py::RelativeDeltaTest::testAdditionToDatetime",
+    "test.py::RelativeDeltaTest::testRightAdditionToDatetime",
+    "test.py::RelativeDeltaTest::testRightSubtractionFromDatetime",
+    "test.py::RelativeDeltaTest::testSubtraction"
+   ],
+   "inc_event": false
+  },
+  {
+   "applied": "dateutil/relativedelta.py::__sub__",
+   "a_repro_pass": true,
+   "b_smoke_pass": true,
+   "c_no_regression": true,
+   "regressed": [],
+   "d_unmet": [
+    "test.py::RelativeDeltaTest::testRightAdditionToDatetime"
+   ],
+   "inc_event": true
+  }
+ ],
+ "inc_event": true,
+ "regression_event": false
+}

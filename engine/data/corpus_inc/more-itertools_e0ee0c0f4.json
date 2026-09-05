@@ -1,0 +1,42 @@
+{
+ "repo": "more-itertools",
+ "fix_commit": "e0ee0c0f456b94750ca2bfca3b1f20483886494c",
+ "parent_commit": "c29f0bad771fa26c8cd7b7311b7bb97abaa6d9ff",
+ "answer_functions": [
+  "more_itertools/more.py::one",
+  "more_itertools/more.py::only"
+ ],
+ "repro_tests": [
+  "more_itertools/tests/test_more.py::OnlyTests::test_default_exception_message"
+ ],
+ "smoke": [
+  "more_itertools/tests/test_more.py::AdjacentTests::test_call_once",
+  "more_itertools/tests/test_more.py::AdjacentTests::test_consecutive_true",
+  "more_itertools/tests/test_more.py::AdjacentTests::test_distance"
+ ],
+ "baseline_pass_count": 280,
+ "probes": [
+  {
+   "applied": "more_itertools/more.py::one",
+   "a_repro_pass": false,
+   "b_smoke_pass": true,
+   "c_no_regression": true,
+   "regressed": [],
+   "d_unmet": [
+    "more_itertools/tests/test_more.py::OnlyTests::test_default_exception_message"
+   ],
+   "inc_event": false
+  },
+  {
+   "applied": "more_itertools/more.py::only",
+   "a_repro_pass": true,
+   "b_smoke_pass": true,
+   "c_no_regression": true,
+   "regressed": [],
+   "d_unmet": [],
+   "inc_event": false
+  }
+ ],
+ "inc_event": false,
+ "regression_event": false
+}

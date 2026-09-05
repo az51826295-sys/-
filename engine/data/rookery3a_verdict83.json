@@ -1,0 +1,40 @@
+{
+ "BPUB": {
+  "n_runs": 21,
+  "1_target_run_rate": 0.33,
+  "1_target_runs_abs": 7,
+  "2_target_excluded": "0/7",
+  "3_answer_pick": "7/7",
+  "4_target_champion_rate": 0.389,
+  "4_target_champions_abs": "7/18",
+  "5_over_conservatism": 0.0,
+  "full_rate": 0.33,
+  "mapping_success": null,
+  "status": {
+   "full": 7,
+   "no_patch": 3,
+   "regression": 11
+  },
+  "mean_test_runs": 10.4,
+  "mean_wall_s": 59.9
+ },
+ "BSEL": {
+  "n_runs": 21,
+  "1_target_run_rate": 0.62,
+  "1_target_runs_abs": 13,
+  "2_target_excluded": "4/13",
+  "3_answer_pick": "7/7",
+  "4_target_champion_rate": 0.5,
+  "4_target_champions_abs": "9/18",
+  "5_over_conservatism": 0.0,
+  "full_rate": 0.33,
+  "mapping_success": 1.0,
+  "status": {
+   "full": 7,
+   "no_patch": 3,
+   "regression": 11
+  },
+  "mean_test_runs": 21.9,
+  "mean_wall_s": 84.9
+ }
+}

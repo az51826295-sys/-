@@ -1,0 +1,37 @@
+{
+  "verdict": "shading_helps",
+  "design": "docs/shading-param-v0-design.md",
+  "measures": {
+    "colors": {
+      "a": 21,
+      "b": 28.0,
+      "b_bigger": true
+    },
+    "luma_steps": {
+      "a": 19,
+      "b": 25.5,
+      "b_bigger": true
+    },
+    "luma_range": {
+      "a": 69,
+      "b": 81.0,
+      "b_bigger": true
+    }
+  },
+  "a": {
+    "colors": 21,
+    "luma_steps": 19,
+    "luma_range": 69,
+    "n": 15
+  },
+  "b": {
+    "colors": 28.0,
+    "luma_steps": 25.5,
+    "luma_range": 81.0,
+    "n": 16
+  },
+  "n_files": {
+    "A": 15,
+    "B": 16
+  }
+}

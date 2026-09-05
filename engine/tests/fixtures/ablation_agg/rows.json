@@ -1,0 +1,24 @@
+[
+ {"task": "tX", "arm": "BS", "rep": 0, "final_status": "full",
+  "candidates": [
+   {"call": 1, "files": ["src/a.py"], "code_fail": null,
+    "public_pass": false},
+   {"call": 2, "files": ["src/a.py"], "code_fail": null,
+    "public_pass": false},
+   {"call": 3, "files": ["src/a.py"], "code_fail": null,
+    "public_pass": true}
+  ]},
+ {"task": "tX", "arm": "BF", "rep": 0, "final_status": "regression",
+  "candidates": [
+   {"call": 0, "files": ["src/b.py"], "code_fail": "patch_apply_fail",
+    "public_pass": null},
+   {"call": 1, "files": ["src/a.py"], "code_fail": null,
+    "public_pass": false},
+   {"call": 2, "files": ["src/a.py"], "code_fail": null,
+    "public_pass": false},
+   {"call": 3, "files": ["src/c.py"], "code_fail": null,
+    "public_pass": false},
+   {"call": 4, "files": ["src/b.py"], "code_fail": null,
+    "public_pass": false}
+  ]}
+]

@@ -1,0 +1,9347 @@
+{
+ "experiment": "mission7b_R_ms2",
+ "versions": {
+  "0": {
+   "version": 0,
+   "parent_version": null,
+   "rules": [
+    {
+     "rule_id": "r0",
+     "conditions": [],
+     "actions": [
+      {
+       "name": "SHARE_BEST",
+       "mode": null
+      }
+     ],
+     "role": null,
+     "priority": 0,
+     "author_id": "founder",
+     "created_gen": 0
+    }
+   ],
+   "init_threshold": 0.0,
+   "adopted_gen": 0
+  },
+  "1": {
+   "version": 0,
+   "parent_version": null,
+   "rules": [
+    {
+     "rule_id": "r0",
+     "conditions": [
+      {
+       "metric": "rounds_since_my_action",
+       "op": ">=",
+       "value": 3.0
+      }
+     ],
+     "actions": [
+      {
+       "name": "SHARE_BEST",
+       "mode": null
+      }
+     ],
+     "role": null,
+     "priority": 0,
+     "author_id": "founder",
+     "created_gen": 0
+    }
+   ],
+   "init_threshold": 0.0,
+   "adopted_gen": 0
+  },
+  "2": {
+   "version": 0,
+   "parent_version": null,
+   "rules": [
+    {
+     "rule_id": "r0",
+     "conditions": [
+      {
+       "metric": "rounds_since_my_action",
+       "op": ">=",
+       "value": 3.0
+      }
+     ],
+     "actions": [
+      {
+       "name": "SHARE_BEST",
+       "mode": null
+      }
+     ],
+     "role": null,
+     "priority": 0,
+     "author_id": "founder",
+     "created_gen": 0
+    },
+    {
+     "rule_id": "g3-agent0-0",
+     "conditions": [],
+     "actions": [
+      {
+       "name": "PASS",
+       "mode": null
+      },
+      {
+       "name": "PASS",
+       "mode": null
+      }
+     ],
+     "role": 0,
+     "priority": 8,
+     "author_id": "agent0",
+     "created_gen": 3
+    }
+   ],
+   "init_threshold": 0.0,
+   "adopted_gen": 0
+  },
+  "3": {
+   "version": 0,
+   "parent_version": null,
+   "rules": [
+    {
+     "rule_id": "r0",
+     "conditions": [
+      {
+       "metric": "rounds_since_my_action",
+       "op": ">=",
+       "value": 3.0
+      }
+     ],
+     "actions": [
+      {
+       "name": "SHARE_BEST",
+       "mode": null
+      }
+     ],
+     "role": null,
+     "priority": 0,
+     "author_id": "founder",
+     "created_gen": 0
+    },
+    {
+     "rule_id": "g3-agent0-0",
+     "conditions": [],
+     "actions": [
+      {
+       "name": "PASS",
+       "mode": null
+      },
+      {
+       "name": "PASS",
+       "mode": null
+      }
+     ],
+     "role": 0,
+     "priority": 8,
+     "author_id": "agent0",
+     "created_gen": 3
+    },
+    {
+     "rule_id": "g4-agent4-4",
+     "conditions": [
+      {
+       "metric": "active_speaker_count",
+       "op": "<",
+       "value": 2.0
+      }
+     ],
+     "actions": [
+      {
+       "name": "CLEAR_MODE",
+       "mode": null
+      }
+     ],
+     "role": null,
+     "priority": 1,
+     "author_id": "agent4",
+     "created_gen": 4
+    }
+   ],
+   "init_threshold": 0.0,
+   "adopted_gen": 0
+  },
+  "4": {
+   "version": 0,
+   "parent_version": null,
+   "rules": [
+    {
+     "rule_id": "r0",
+     "conditions": [
+      {
+       "metric": "rounds_since_my_action",
+       "op": ">=",
+       "value": 3.0
+      }
+     ],
+     "actions": [
+      {
+       "name": "SHARE_BEST",
+       "mode": null
+      }
+     ],
+     "role": null,
+     "priority": 0,
+     "author_id": "founder",
+     "created_gen": 0
+    },
+    {
+     "rule_id": "g3-agent0-0",
+     "conditions": [
+      {
+       "metric": "my_best_gain",
+       "op": "<",
+       "value": 0.3
+      }
+     ],
+     "actions": [
+      {
+       "name": "PASS",
+       "mode": null
+      },
+      {
+       "name": "PASS",
+       "mode": null
+      }
+     ],
+     "role": 0,
+     "priority": 8,
+     "author_id": "agent0",
+     "created_gen": 3
+    },
+    {
+     "rule_id": "g4-agent4-4",
+     "conditions": [
+      {
+       "metric": "active_speaker_count",
+       "op": "<",
+       "value": 2.0
+      }
+     ],
+     "actions": [
+      {
+       "name": "CLEAR_MODE",
+       "mode": null
+      }
+     ],
+     "role": null,
+     "priority": 1,
+     "author_id": "agent4",
+     "created_gen": 4
+    }
+   ],
+   "init_threshold": 0.0,
+   "adopted_gen": 0
+  },
+  "5": {
+   "version": 0,
+   "parent_version": null,
+   "rules": [
+    {
+     "rule_id": "r0",
+     "conditions": [
+      {
+       "metric": "rounds_since_my_action",
+       "op": ">=",
+       "value": 3.0
+      }
+     ],
+     "actions": [
+      {
+       "name": "SHARE_BEST",
+       "mode": null
+      }
+     ],
+     "role": null,
+     "priority": 0,
+     "author_id": "founder",
+     "created_gen": 0
+    },
+    {
+     "rule_id": "g3-agent0-0",
+     "conditions": [
+      {
+       "metric": "my_best_gain",
+       "op": "<",
+       "value": 0.3
+      }
+     ],
+     "actions": [
+      {
+       "name": "SET_MODE",
+       "mode": 3
+      },
+      {
+       "name": "PASS",
+       "mode": null
+      }
+     ],
+     "role": 0,
+     "priority": 8,
+     "author_id": "agent0",
+     "created_gen": 3
+    },
+    {
+     "rule_id": "g4-agent4-4",
+     "conditions": [
+      {
+       "metric": "active_speaker_count",
+       "op": "<",
+       "value": 2.0
+      }
+     ],
+     "actions": [
+      {
+       "name": "CLEAR_MODE",
+       "mode": null
+      }
+     ],
+     "role": null,
+     "priority": 1,
+     "author_id": "agent4",
+     "created_gen": 4
+    }
+   ],
+   "init_threshold": 0.0,
+   "adopted_gen": 0
+  },
+  "6": {
+   "version": 0,
+   "parent_version": null,
+   "rules": [
+    {
+     "rule_id": "r0",
+     "conditions": [
+      {
+       "metric": "rounds_since_my_action",
+       "op": ">=",
+       "value": 3.0
+      }
+     ],
+     "actions": [
+      {
+       "name": "SHARE_BEST",
+       "mode": null
+      }
+     ],
+     "role": null,
+     "priority": 0,
+     "author_id": "founder",
+     "created_gen": 0
+    },
+    {
+     "rule_id": "g3-agent0-0",
+     "conditions": [
+      {
+       "metric": "my_best_gain",
+       "op": "<",
+       "value": 0.3
+      }
+     ],
+     "actions": [
+      {
+       "name": "SET_MODE",
+       "mode": 3
+      },
+      {
+       "name": "PASS",
+       "mode": null
+      }
+     ],
+     "role": null,
+     "priority": 8,
+     "author_id": "agent0",
+     "created_gen": 3
+    },
+    {
+     "rule_id": "g4-agent4-4",
+     "conditions": [
+      {
+       "metric": "active_speaker_count",
+       "op": "<",
+       "value": 2.0
+      }
+     ],
+     "actions": [
+      {
+       "name": "CLEAR_MODE",
+       "mode": null
+      }
+     ],
+     "role": null,
+     "priority": 1,
+     "author_id": "agent4",
+     "created_gen": 4
+    }
+   ],
+   "init_threshold": 0.0,
+   "adopted_gen": 0
+  },
+  "7": {
+   "version": 0,
+   "parent_version": null,
+   "rules": [
+    {
+     "rule_id": "r0",
+     "conditions": [
+      {
+       "metric": "rounds_since_my_action",
+       "op": ">=",
+       "value": 3.0
+      }
+     ],
+     "actions": [
+      {
+       "name": "SHARE_BEST",
+       "mode": null
+      }
+     ],
+     "role": null,
+     "priority": 0,
+     "author_id": "founder",
+     "created_gen": 0
+    },
+    {
+     "rule_id": "g3-agent0-0",
+     "conditions": [
+      {
+       "metric": "my_best_gain",
+       "op": "<",
+       "value": 0.3
+      }
+     ],
+     "actions": [
+      {
+       "name": "SET_MODE",
+       "mode": 3
+      },
+      {
+       "name": "PASS",
+       "mode": null
+      }
+     ],
+     "role": null,
+     "priority": 8,
+     "author_id": "agent0",
+     "created_gen": 3
+    },
+    {
+     "rule_id": "g4-agent4-4",
+     "conditions": [
+      {
+       "metric": "active_speaker_count",
+       "op": "<",
+       "value": 2.0
+      }
+     ],
+     "actions": [
+      {
+       "name": "CLEAR_MODE",
+       "mode": null
+      }
+     ],
+     "role": null,
+     "priority": 1,
+     "author_id": "agent4",
+     "created_gen": 4
+    },
+    {
+     "rule_id": "g19-agent2-2",
+     "conditions": [],
+     "actions": [
+      {
+       "name": "SHARE_BEST",
+       "mode": null
+      }
+     ],
+     "role": 2,
+     "priority": 2,
+     "author_id": "agent2",
+     "created_gen": 19
+    }
+   ],
+   "init_threshold": 0.0,
+   "adopted_gen": 0
+  },
+  "8": {
+   "version": 0,
+   "parent_version": null,
+   "rules": [
+    {
+     "rule_id": "r0",
+     "conditions": [
+      {
+       "metric": "rounds_since_my_action",
+       "op": ">=",
+       "value": 3.0
+      }
+     ],
+     "actions": [
+      {
+       "name": "SHARE_BEST",
+       "mode": null
+      }
+     ],
+     "role": null,
+     "priority": 0,
+     "author_id": "founder",
+     "created_gen": 0
+    },
+    {
+     "rule_id": "g3-agent0-0",
+     "conditions": [
+      {
+       "metric": "my_best_gain",
+       "op": "<",
+       "value": 0.3
+      }
+     ],
+     "actions": [
+      {
+       "name": "SET_MODE",
+       "mode": 3
+      },
+      {
+       "name": "PASS",
+       "mode": null
+      }
+     ],
+     "role": null,
+     "priority": 8,
+     "author_id": "agent0",
+     "created_gen": 3
+    },
+    {
+     "rule_id": "g4-agent4-4",
+     "conditions": [
+      {
+       "metric": "active_speaker_count",
+       "op": "<",
+       "value": 2.0
+      }
+     ],
+     "actions": [
+      {
+       "name": "SHARE_BEST",
+       "mode": null
+      }
+     ],
+     "role": null,
+     "priority": 1,
+     "author_id": "agent4",
+     "created_gen": 4
+    },
+    {
+     "rule_id": "g19-agent2-2",
+     "conditions": [],
+     "actions": [
+      {
+       "name": "SHARE_BEST",
+       "mode": null
+      }
+     ],
+     "role": 2,
+     "priority": 2,
+     "author_id": "agent2",
+     "created_gen": 19
+    }
+   ],
+   "init_threshold": 0.0,
+   "adopted_gen": 0
+  }
+ },
+ "generations": [
+  {
+   "gen": 1,
+   "incumbent_version_before": 0,
+   "incumbent_version_after": 1,
+   "incumbent_score": 0.5654015031265032,
+   "rolled_back": false,
+   "observation_metrics": {
+    "mean_accuracy": 0.6209239130434783,
+    "unsolved_rate": 0.6,
+    "comm_ratio": 0.9421626984126984,
+    "weak_share_rate": 0.15111652236652234,
+    "pass_rate": 0.0,
+    "forced_share_rate": 0.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "mutate",
+     "score": 0.37018037518037517,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "init_threshold",
+     "score": 0.37018037518037517,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       }
+      ],
+      "init_threshold": 0.1,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "init_threshold",
+     "score": 0.37018037518037517,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "mutate",
+     "score": 0.5202871017871018,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "estimated_slack",
+          "op": ">=",
+          "value": 1.2
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "mutate",
+     "score": 0.5654015031265032,
+     "adopted": true,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "mutate",
+     "score": 0.44808772246272244,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "mean_recent_gain",
+          "op": "<",
+          "value": 0.05
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  },
+  {
+   "gen": 2,
+   "incumbent_version_before": 1,
+   "incumbent_version_after": 1,
+   "incumbent_score": 0.5654015031265032,
+   "rolled_back": true,
+   "observation_metrics": {
+    "mean_accuracy": 0.7875,
+    "unsolved_rate": 0.3,
+    "comm_ratio": 0.883829365079365,
+    "weak_share_rate": 0.0753409090909091,
+    "pass_rate": 0.9621046860995472,
+    "forced_share_rate": 1.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "add",
+     "score": 0.5504015031265032,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g2-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.9
+         },
+         {
+          "metric": "recent_share_gain",
+          "op": ">=",
+          "value": 0.2
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 2
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "init_threshold",
+     "score": 0.5654015031265032,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       }
+      ],
+      "init_threshold": 0.1,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "init_threshold",
+     "score": 0.5654015031265032,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "mutate",
+     "score": 0.5007620897620898,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         },
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 10.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "init_threshold",
+     "score": 0.5654015031265032,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       }
+      ],
+      "init_threshold": 0.2,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "add",
+     "score": 0.35518037518037515,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g2-agent5-5",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         },
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent5",
+        "created_gen": 2
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  },
+  {
+   "gen": 3,
+   "incumbent_version_before": 1,
+   "incumbent_version_after": 2,
+   "incumbent_score": 0.5886101010101009,
+   "rolled_back": false,
+   "observation_metrics": {
+    "mean_accuracy": 0.7875,
+    "unsolved_rate": 0.3,
+    "comm_ratio": 0.883829365079365,
+    "weak_share_rate": 0.0753409090909091,
+    "pass_rate": 0.9621046860995472,
+    "forced_share_rate": 1.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "add",
+     "score": 0.5886101010101009,
+     "adopted": true,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "mutate",
+     "score": 0.4267470765345766,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": "<",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "init_threshold",
+     "score": 0.5654015031265032,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "mutate",
+     "score": 0.5654015031265032,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 8,
+        "author_id": "founder",
+        "created_gen": 0
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "mutate",
+     "score": 0.4267470765345766,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": "<",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "add",
+     "score": 0.35518037518037515,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent5-5",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 3
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 3
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  },
+  {
+   "gen": 4,
+   "incumbent_version_before": 2,
+   "incumbent_version_after": 3,
+   "incumbent_score": 0.6005579725829725,
+   "rolled_back": false,
+   "observation_metrics": {
+    "mean_accuracy": 0.6583333333333333,
+    "unsolved_rate": 0.5,
+    "comm_ratio": 0.8992640692640693,
+    "weak_share_rate": 0.10514069264069263,
+    "pass_rate": 0.9623292821515829,
+    "forced_share_rate": 1.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "mutate",
+     "score": 0.5504015031265032,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 9,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "init_threshold",
+     "score": 0.5886101010101009,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       }
+      ],
+      "init_threshold": 0.2,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "remove",
+     "score": 0.5006906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "init_threshold",
+     "score": 0.5886101010101009,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       }
+      ],
+      "init_threshold": 0.2,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "add",
+     "score": 0.6005579725829725,
+     "adopted": true,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "remove",
+     "score": 0.5006906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  },
+  {
+   "gen": 5,
+   "incumbent_version_before": 3,
+   "incumbent_version_after": 3,
+   "incumbent_score": 0.6005579725829725,
+   "rolled_back": true,
+   "observation_metrics": {
+    "mean_accuracy": 0.6704166666666667,
+    "unsolved_rate": 0.45,
+    "comm_ratio": 0.905196608946609,
+    "weak_share_rate": 0.1294047619047619,
+    "pass_rate": 0.9783927981760397,
+    "forced_share_rate": 1.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "init_threshold",
+     "score": 0.6005579725829725,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "add",
+     "score": 0.47069066119066133,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       },
+       {
+        "rule_id": "g5-agent1-1",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 0
+         }
+        ],
+        "role": null,
+        "priority": 7,
+        "author_id": "agent1",
+        "created_gen": 5
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "add",
+     "score": 0.4656906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       },
+       {
+        "rule_id": "g5-agent2-2",
+        "conditions": [
+         {
+          "metric": "my_threshold",
+          "op": "<",
+          "value": 0.5
+         },
+         {
+          "metric": "rounds_since_my_action",
+          "op": "<",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 7,
+        "author_id": "agent2",
+        "created_gen": 5
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "add",
+     "score": 0.48079723424723425,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       },
+       {
+        "rule_id": "g5-agent3-3",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.05
+         },
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": 1,
+        "priority": 6,
+        "author_id": "agent3",
+        "created_gen": 5
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "init_threshold",
+     "score": 0.6005579725829725,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "add",
+     "score": 0.47069066119066133,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       },
+       {
+        "rule_id": "g5-agent5-5",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 1.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 8,
+        "author_id": "agent5",
+        "created_gen": 5
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  },
+  {
+   "gen": 6,
+   "incumbent_version_before": 3,
+   "incumbent_version_after": 4,
+   "incumbent_score": 0.6384428932178932,
+   "rolled_back": false,
+   "observation_metrics": {
+    "mean_accuracy": 0.6704166666666667,
+    "unsolved_rate": 0.45,
+    "comm_ratio": 0.905196608946609,
+    "weak_share_rate": 0.1294047619047619,
+    "pass_rate": 0.9783927981760397,
+    "forced_share_rate": 1.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "add",
+     "score": 0.48450847763347765,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": 2,
+        "priority": 2,
+        "author_id": "agent0",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "remove",
+     "score": 0.4906906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "mutate",
+     "score": 0.6384428932178932,
+     "adopted": true,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "init_threshold",
+     "score": 0.6005579725829725,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "add",
+     "score": 0.35718493265993273,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       },
+       {
+        "rule_id": "g6-agent4-4",
+        "conditions": [
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 25.0
+         },
+         {
+          "metric": "number_of_passes",
+          "op": "<",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "remove",
+     "score": 0.4906906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  },
+  {
+   "gen": 7,
+   "incumbent_version_before": 4,
+   "incumbent_version_after": 4,
+   "incumbent_score": 0.6384428932178932,
+   "rolled_back": true,
+   "observation_metrics": {
+    "mean_accuracy": 0.74125,
+    "unsolved_rate": 0.35,
+    "comm_ratio": 0.8883910533910534,
+    "weak_share_rate": 0.10200396825396825,
+    "pass_rate": 0.9767379324891234,
+    "forced_share_rate": 1.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "init_threshold",
+     "score": 0.6384428932178932,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.1,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "remove",
+     "score": 0.611464874939875,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "mutate",
+     "score": 0.47569066119066133,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 0
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "remove",
+     "score": 0.4856906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "add",
+     "score": 0.5102050745550746,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       },
+       {
+        "rule_id": "g7-agent4-4",
+        "conditions": [
+         {
+          "metric": "recent_share_gain",
+          "op": "<",
+          "value": 0.5
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": 2,
+        "priority": 9,
+        "author_id": "agent4",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "mutate",
+     "score": 0.47069066119066133,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         },
+         {
+          "metric": "my_mode",
+          "op": ">=",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  },
+  {
+   "gen": 8,
+   "incumbent_version_before": 4,
+   "incumbent_version_after": 4,
+   "incumbent_score": 0.6384428932178932,
+   "rolled_back": true,
+   "observation_metrics": {
+    "mean_accuracy": 0.74125,
+    "unsolved_rate": 0.35,
+    "comm_ratio": 0.8883910533910534,
+    "weak_share_rate": 0.10200396825396825,
+    "pass_rate": 0.9767379324891234,
+    "forced_share_rate": 1.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "remove",
+     "score": 0.611464874939875,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "mutate",
+     "score": 0.5556083453583452,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": 2,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "remove",
+     "score": 0.5935231601731601,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "mutate",
+     "score": 0.47569066119066133,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "remove",
+     "score": 0.5935231601731601,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "mutate",
+     "score": 0.6334428932178932,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         },
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.9
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  },
+  {
+   "gen": 9,
+   "incumbent_version_before": 4,
+   "incumbent_version_after": 4,
+   "incumbent_score": 0.6384428932178932,
+   "rolled_back": true,
+   "observation_metrics": {
+    "mean_accuracy": 0.74125,
+    "unsolved_rate": 0.35,
+    "comm_ratio": 0.8883910533910534,
+    "weak_share_rate": 0.10200396825396825,
+    "pass_rate": 0.9767379324891234,
+    "forced_share_rate": 1.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "remove",
+     "score": 0.4856906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "mutate",
+     "score": 0.5685231601731601,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         },
+         {
+          "metric": "consecutive_low_gain",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "remove",
+     "score": 0.4856906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "mutate",
+     "score": 0.6384428932178932,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "remove",
+     "score": 0.4856906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "remove",
+     "score": 0.5935231601731601,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  },
+  {
+   "gen": 10,
+   "incumbent_version_before": 4,
+   "incumbent_version_after": 4,
+   "incumbent_score": 0.6384428932178932,
+   "rolled_back": true,
+   "observation_metrics": {
+    "mean_accuracy": 0.74125,
+    "unsolved_rate": 0.35,
+    "comm_ratio": 0.8883910533910534,
+    "weak_share_rate": 0.10200396825396825,
+    "pass_rate": 0.9767379324891234,
+    "forced_share_rate": 1.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "add",
+     "score": 0.386518740981241,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       },
+       {
+        "rule_id": "g10-agent0-0",
+        "conditions": [
+         {
+          "metric": "estimated_slack",
+          "op": "<",
+          "value": 3.0
+         },
+         {
+          "metric": "my_threshold",
+          "op": "<",
+          "value": 0.1
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": 2,
+        "priority": 1,
+        "author_id": "agent0",
+        "created_gen": 10
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "init_threshold",
+     "score": 0.6384428932178932,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "mutate",
+     "score": 0.5809696248196248,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": 2,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "add",
+     "score": 0.586464874939875,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       },
+       {
+        "rule_id": "g10-agent3-3",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": ">=",
+          "value": 1.0
+         },
+         {
+          "metric": "rounds_since_my_action",
+          "op": "<",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 7,
+        "author_id": "agent3",
+        "created_gen": 10
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "remove",
+     "score": 0.5935231601731601,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "init_threshold",
+     "score": 0.6384428932178932,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  },
+  {
+   "gen": 11,
+   "incumbent_version_before": 4,
+   "incumbent_version_after": 4,
+   "incumbent_score": 0.6384428932178932,
+   "rolled_back": true,
+   "observation_metrics": {
+    "mean_accuracy": 0.74125,
+    "unsolved_rate": 0.35,
+    "comm_ratio": 0.8883910533910534,
+    "weak_share_rate": 0.10200396825396825,
+    "pass_rate": 0.9767379324891234,
+    "forced_share_rate": 1.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "remove",
+     "score": 0.611464874939875,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "init_threshold",
+     "score": 0.6384428932178932,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.2,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "remove",
+     "score": 0.4856906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "mutate",
+     "score": 0.6384428932178932,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "remove",
+     "score": 0.611464874939875,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "mutate",
+     "score": 0.6384428932178932,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  },
+  {
+   "gen": 12,
+   "incumbent_version_before": 4,
+   "incumbent_version_after": 4,
+   "incumbent_score": 0.6384428932178932,
+   "rolled_back": true,
+   "observation_metrics": {
+    "mean_accuracy": 0.74125,
+    "unsolved_rate": 0.35,
+    "comm_ratio": 0.8883910533910534,
+    "weak_share_rate": 0.10200396825396825,
+    "pass_rate": 0.9767379324891234,
+    "forced_share_rate": 1.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "remove",
+     "score": 0.4856906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "remove",
+     "score": 0.5935231601731601,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "add",
+     "score": 0.6184428932178931,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       },
+       {
+        "rule_id": "g12-agent2-2",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.5
+         },
+         {
+          "metric": "consecutive_low_gain",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         },
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent2",
+        "created_gen": 12
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "remove",
+     "score": 0.5935231601731601,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "remove",
+     "score": 0.611464874939875,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "remove",
+     "score": 0.5935231601731601,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  },
+  {
+   "gen": 13,
+   "incumbent_version_before": 4,
+   "incumbent_version_after": 4,
+   "incumbent_score": 0.6384428932178932,
+   "rolled_back": true,
+   "observation_metrics": {
+    "mean_accuracy": 0.74125,
+    "unsolved_rate": 0.35,
+    "comm_ratio": 0.8883910533910534,
+    "weak_share_rate": 0.10200396825396825,
+    "pass_rate": 0.9767379324891234,
+    "forced_share_rate": 1.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "add",
+     "score": 0.5834386890886891,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       },
+       {
+        "rule_id": "g13-agent0-0",
+        "conditions": [
+         {
+          "metric": "mean_recent_gain",
+          "op": "<",
+          "value": 0.2
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent0",
+        "created_gen": 13
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "init_threshold",
+     "score": 0.6384428932178932,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.1,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "add",
+     "score": 0.6344053150553151,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       },
+       {
+        "rule_id": "g13-agent2-2",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         },
+         {
+          "metric": "number_of_passes",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 3,
+        "author_id": "agent2",
+        "created_gen": 13
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "remove",
+     "score": 0.4856906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "init_threshold",
+     "score": 0.6384428932178932,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.1,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "remove",
+     "score": 0.611464874939875,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  },
+  {
+   "gen": 14,
+   "incumbent_version_before": 4,
+   "incumbent_version_after": 4,
+   "incumbent_score": 0.6384428932178932,
+   "rolled_back": true,
+   "observation_metrics": {
+    "mean_accuracy": 0.74125,
+    "unsolved_rate": 0.35,
+    "comm_ratio": 0.8883910533910534,
+    "weak_share_rate": 0.10200396825396825,
+    "pass_rate": 0.9767379324891234,
+    "forced_share_rate": 1.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "mutate",
+     "score": 0.5685231601731601,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         },
+         {
+          "metric": "rounds_since_my_action",
+          "op": "<",
+          "value": 1.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "remove",
+     "score": 0.4856906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "mutate",
+     "score": 0.47569066119066133,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": ">=",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "init_threshold",
+     "score": 0.6384428932178932,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.2,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "remove",
+     "score": 0.4856906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "remove",
+     "score": 0.611464874939875,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  },
+  {
+   "gen": 15,
+   "incumbent_version_before": 4,
+   "incumbent_version_after": 4,
+   "incumbent_score": 0.6384428932178932,
+   "rolled_back": true,
+   "observation_metrics": {
+    "mean_accuracy": 0.74125,
+    "unsolved_rate": 0.35,
+    "comm_ratio": 0.8883910533910534,
+    "weak_share_rate": 0.10200396825396825,
+    "pass_rate": 0.9767379324891234,
+    "forced_share_rate": 1.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "add",
+     "score": 0.5322496272246273,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       },
+       {
+        "rule_id": "g15-agent0-0",
+        "conditions": [
+         {
+          "metric": "recent_share_gain",
+          "op": "<",
+          "value": 0.2
+         },
+         {
+          "metric": "number_of_passes",
+          "op": "<",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "LOWER_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 2,
+        "priority": 3,
+        "author_id": "agent0",
+        "created_gen": 15
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "remove",
+     "score": 0.4856906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "add",
+     "score": 0.3252041847041847,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       },
+       {
+        "rule_id": "g15-agent2-2",
+        "conditions": [
+         {
+          "metric": "estimated_slack",
+          "op": "<",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 8,
+        "author_id": "agent2",
+        "created_gen": 15
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "mutate",
+     "score": 0.6384428932178932,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 3,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "add",
+     "score": 0.590817352092352,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       },
+       {
+        "rule_id": "g15-agent4-4",
+        "conditions": [
+         {
+          "metric": "consecutive_low_gain",
+          "op": ">=",
+          "value": 1.0
+         },
+         {
+          "metric": "consecutive_all_pass",
+          "op": ">=",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 0
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 15
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "add",
+     "score": 0.5181384078884079,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       },
+       {
+        "rule_id": "g15-agent5-5",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "LOWER_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": 2,
+        "priority": 2,
+        "author_id": "agent5",
+        "created_gen": 15
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  },
+  {
+   "gen": 16,
+   "incumbent_version_before": 4,
+   "incumbent_version_after": 5,
+   "incumbent_score": 0.6389984487734488,
+   "rolled_back": false,
+   "observation_metrics": {
+    "mean_accuracy": 0.74125,
+    "unsolved_rate": 0.35,
+    "comm_ratio": 0.8883910533910534,
+    "weak_share_rate": 0.10200396825396825,
+    "pass_rate": 0.9767379324891234,
+    "forced_share_rate": 1.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "mutate",
+     "score": 0.6389984487734488,
+     "adopted": true,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 3
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "add",
+     "score": 0.5634201418951419,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       },
+       {
+        "rule_id": "g16-agent1-1",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent1",
+        "created_gen": 16
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "init_threshold",
+     "score": 0.6384428932178932,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "mutate",
+     "score": 0.6384428932178932,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "init_threshold",
+     "score": 0.6384428932178932,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.1,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "add",
+     "score": 0.5121809764309765,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       },
+       {
+        "rule_id": "g16-agent5-5",
+        "conditions": [
+         {
+          "metric": "mean_recent_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 0
+         },
+         {
+          "name": "LOWER_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 8,
+        "author_id": "agent5",
+        "created_gen": 16
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  },
+  {
+   "gen": 17,
+   "incumbent_version_before": 5,
+   "incumbent_version_after": 5,
+   "incumbent_score": 0.6389984487734488,
+   "rolled_back": true,
+   "observation_metrics": {
+    "mean_accuracy": 0.7787499999999999,
+    "unsolved_rate": 0.3,
+    "comm_ratio": 0.8946410533910534,
+    "weak_share_rate": 0.10200396825396825,
+    "pass_rate": 0.9789346955269167,
+    "forced_share_rate": 1.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "mutate",
+     "score": 0.5191280543530543,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 3
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "mutate",
+     "score": 0.6384428932178932,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "add",
+     "score": 0.6139984487734489,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 3
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       },
+       {
+        "rule_id": "g17-agent2-2",
+        "conditions": [
+         {
+          "metric": "estimated_slack",
+          "op": ">=",
+          "value": 1.5
+         },
+         {
+          "metric": "estimated_slack",
+          "op": "<",
+          "value": 1.5
+         }
+        ],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 3
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": 1,
+        "priority": 7,
+        "author_id": "agent2",
+        "created_gen": 17
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "remove",
+     "score": 0.5935231601731601,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "mutate",
+     "score": 0.581288949013949,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 3
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 1.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "remove",
+     "score": 0.4856906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 3
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  },
+  {
+   "gen": 18,
+   "incumbent_version_before": 5,
+   "incumbent_version_after": 6,
+   "incumbent_score": 0.6920058441558441,
+   "rolled_back": false,
+   "observation_metrics": {
+    "mean_accuracy": 0.7787499999999999,
+    "unsolved_rate": 0.3,
+    "comm_ratio": 0.8946410533910534,
+    "weak_share_rate": 0.10200396825396825,
+    "pass_rate": 0.9789346955269167,
+    "forced_share_rate": 1.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "init_threshold",
+     "score": 0.6389984487734488,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 3
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "init_threshold",
+     "score": 0.6389984487734488,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 3
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "add",
+     "score": 0.47069066119066133,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 3
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       },
+       {
+        "rule_id": "g18-agent2-2",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "agent2",
+        "created_gen": 18
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "mutate",
+     "score": 0.6389984487734488,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 3
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "mutate",
+     "score": 0.6920058441558441,
+     "adopted": true,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 3
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "mutate",
+     "score": 0.6389984487734488,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 3
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  },
+  {
+   "gen": 19,
+   "incumbent_version_before": 6,
+   "incumbent_version_after": 7,
+   "incumbent_score": 0.7414578763828764,
+   "rolled_back": false,
+   "observation_metrics": {
+    "mean_accuracy": 0.8604166666666666,
+    "unsolved_rate": 0.2,
+    "comm_ratio": 0.8682900432900432,
+    "weak_share_rate": 0.05,
+    "pass_rate": 0.9862600484454636,
+    "forced_share_rate": 1.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "mutate",
+     "score": 0.4806906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 3
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": ">=",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "mutate",
+     "score": 0.6920058441558441,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 3
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "add",
+     "score": 0.7414578763828764,
+     "adopted": true,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 3
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       },
+       {
+        "rule_id": "g19-agent2-2",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": 2,
+        "priority": 2,
+        "author_id": "agent2",
+        "created_gen": 19
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "mutate",
+     "score": 0.6920058441558441,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 3
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "mutate",
+     "score": 0.6386266113516114,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         },
+         {
+          "metric": "remaining_budget_ratio",
+          "op": ">=",
+          "value": 0.25
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 3
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "mutate",
+     "score": 0.6920058441558441,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 3
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  },
+  {
+   "gen": 20,
+   "incumbent_version_before": 7,
+   "incumbent_version_after": 8,
+   "incumbent_score": 0.8391681697931699,
+   "rolled_back": false,
+   "observation_metrics": {
+    "mean_accuracy": 0.8583333333333334,
+    "unsolved_rate": 0.25,
+    "comm_ratio": 0.8367027417027417,
+    "weak_share_rate": 0.03214285714285714,
+    "pass_rate": 0.9061709081261945,
+    "forced_share_rate": 0.85
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "mutate",
+     "score": 0.8391681697931699,
+     "adopted": true,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 3
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       },
+       {
+        "rule_id": "g19-agent2-2",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": 2,
+        "priority": 2,
+        "author_id": "agent2",
+        "created_gen": 19
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "add",
+     "score": 0.5511826839826839,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 3
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       },
+       {
+        "rule_id": "g19-agent2-2",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": 2,
+        "priority": 2,
+        "author_id": "agent2",
+        "created_gen": 19
+       },
+       {
+        "rule_id": "g20-agent1-1",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": ">=",
+          "value": 0.25
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 5,
+        "author_id": "agent1",
+        "created_gen": 20
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "remove",
+     "score": 0.4396428391053392,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       },
+       {
+        "rule_id": "g19-agent2-2",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": 2,
+        "priority": 2,
+        "author_id": "agent2",
+        "created_gen": 19
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "remove",
+     "score": 0.8063352453102454,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 3
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g19-agent2-2",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": 2,
+        "priority": 2,
+        "author_id": "agent2",
+        "created_gen": 19
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "mutate",
+     "score": 0.5074354316979316,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 3
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 1,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       },
+       {
+        "rule_id": "g19-agent2-2",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": 2,
+        "priority": 2,
+        "author_id": "agent2",
+        "created_gen": 19
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "remove",
+     "score": 0.4396428391053392,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 4
+       },
+       {
+        "rule_id": "g19-agent2-2",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": 2,
+        "priority": 2,
+        "author_id": "agent2",
+        "created_gen": 19
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  }
+ ],
+ "incumbent_version": 8,
+ "incumbent_score": 0.8391681697931699,
+ "next_version": 9
+}

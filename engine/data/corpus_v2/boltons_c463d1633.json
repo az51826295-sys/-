@@ -1,0 +1,38 @@
+{
+ "repo": "boltons",
+ "fix_commit": "c463d1633a075c398d6ffad7d8653064a615b696",
+ "parent_commit": "766b5547392fe8d54c1e000098499dc556bb5cb7",
+ "answer_files": [
+  "boltons/urlutils.py"
+ ],
+ "answer_functions": [
+  "boltons/urlutils.py::__eq__"
+ ],
+ "patch_lines": 6,
+ "added_tests": {
+  "tests/test_dictutils.py::test_eq_with_dict": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "tests/test_urlutils.py::test_query_param_dict_eq_with_dict": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [
+  "tests/test_dictutils.py::test_eq_with_dict",
+  "tests/test_urlutils.py::test_query_param_dict_eq_with_dict"
+ ],
+ "test_files": [
+  "tests/test_dictutils.py",
+  "tests/test_urlutils.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 4.2,
+ "env_error_tests": 0,
+ "qualified": true
+}

@@ -1,0 +1,40 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "1bf7ae9fc88acebbc341616d9294a233694128ed",
+ "parent_commit": "30ec6b8f8efdd5d7ef38b81a18ef13c3ba54ebb3",
+ "answer_files": [
+  "marshmallow/exceptions.py"
+ ],
+ "answer_functions": [
+  "marshmallow/exceptions.py::__init__"
+ ],
+ "patch_lines": 42,
+ "added_tests": {
+  "tests/test_exceptions.py::TestMarshallingError::test_can_store_field_and_field_name": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_exceptions.py::TestUnmarshallingError::test_can_store_field_and_field_name": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_schema.py::TestSchemaValidator::test_schema_validation_error_stored_on_multiple_fields": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "tests/test_exceptions.py",
+  "tests/test_schema.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 9.8,
+ "env_error_tests": 3,
+ "qualified": false
+}

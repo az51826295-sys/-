@@ -1,0 +1,56 @@
+{
+ "repo": "tinydb",
+ "fix_commit": "f959c8cfec35dfe7d8da058e10f5f19c76bf464f",
+ "parent_commit": "55961fc25caf580198e89fd0aca4ddf23f0122a2",
+ "answer_files": [
+  "tinydb/queries.py",
+  "tinydb/utils.py"
+ ],
+ "answer_functions": [
+  "tinydb/queries.py::__eq__",
+  "tinydb/utils.py::catch_warning"
+ ],
+ "patch_lines": 18,
+ "added_tests": {
+  "tests/test_utils.py::test_catch_warning": {
+   "parent": "pass",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "tests/test_utils.py::test_catch_warning_reset_filter": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [
+  "tests/test_utils.py::test_catch_warning_reset_filter"
+ ],
+ "test_files": [
+  "tests/test_utils.py"
+ ],
+ "location_hard_proxy": true,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [
+  {
+   "applied": "tinydb/queries.py::__eq__",
+   "passes_repro": [],
+   "still_failing": [
+    "tests/test_utils.py::test_catch_warning_reset_filter"
+   ],
+   "event": false
+  },
+  {
+   "applied": "tinydb/utils.py::catch_warning",
+   "passes_repro": [],
+   "still_failing": [
+    "tests/test_utils.py::test_catch_warning",
+    "tests/test_utils.py::test_catch_warning_reset_filter"
+   ],
+   "event": false
+  }
+ ],
+ "env_seconds": 3.7,
+ "env_error_tests": 0,
+ "qualified": true
+}

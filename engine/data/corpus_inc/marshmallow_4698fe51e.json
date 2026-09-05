@@ -1,0 +1,17 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "4698fe51e6d756dca92912a9097b11a7df8a57f2",
+ "parent_commit": "e563f3af86680bec7b470f53e059e1b5b231e7ba",
+ "answer_functions": [
+  "marshmallow/fields.py::_call_and_store",
+  "marshmallow/validate.py::email",
+  "marshmallow/validate.py::url"
+ ],
+ "repro_tests": [],
+ "smoke": [],
+ "baseline_pass_count": 0,
+ "probes": [],
+ "inc_event": false,
+ "regression_event": false,
+ "skipped": "no repro or no answer functions"
+}

@@ -1,0 +1,26 @@
+# 재시도 루프 점검용 **탐침 스펙** — 상품 스펙이 아니다.
+# 등록된 icon-24-line-v1보다 일부러 좁혀서(격자 1.0·여백 3·패스 2개)
+# 1회차 탈락을 유도하고, 위반 리포트 주입이 실제 모델을 고치는지 본다.
+# 판정 대상 상품에는 쓰지 않는다 - 문턱을 숫자 보고 고른 게 아니라 어렵게 만든 것.
+spec_id: icon-24-line-hard-probe
+
+public:
+  viewBox: "0 0 24 24"
+  grid: { snap: 1.0 }
+  stroke: { width: 1.5, linecap: round, linejoin: round }
+  fill: none
+  palette: [currentColor]
+  padding: { min: 3 }
+  path: { max_count: 2, max_total_commands: 24 }
+  allowed_elements: [svg, path, circle, rect, line, polyline, g]
+  forbidden_elements: [text, image, filter, mask, style, script, defs]
+  size: { max_bytes: 2048 }
+
+hidden:
+  novelty:
+    structure_hash: reject_duplicate
+  set_consistency:
+    stroke_width_variance: 0
+    optical_weight_delta_max: 0.15
+  contrast: { min_ratio: 4.5, against: ["#ffffff", "#0b0b0b"] }
+  roundtrip: { render_px: 96, max_pixel_diff: 0.02 }

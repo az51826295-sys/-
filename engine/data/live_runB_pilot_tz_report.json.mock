@@ -1,0 +1,42 @@
+{
+ "ran_at": "2026-08-22T09:29:42",
+ "mock": true,
+ "results": [
+  {
+   "repo": "pytoolz/toolz",
+   "number": 626,
+   "title": "tail(0, seq) returns the whole sequence instead of empty (and is inconsistent ac",
+   "state": "failed",
+   "result": null,
+   "error": "validator rejected"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 529,
+   "title": "Combination of map and accumulate",
+   "state": "failed",
+   "result": null,
+   "error": "validator rejected"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 496,
+   "title": "optional static typing for toolz",
+   "state": "failed",
+   "result": null,
+   "error": "validator rejected"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 481,
+   "title": "Bug in compose introduced in 0.10.0",
+   "state": "failed",
+   "result": null,
+   "error": "validator rejected"
+  }
+ ],
+ "skipped": [],
+ "solved": 0,
+ "attempted": 4,
+ "spend_usd": 0.0
+}

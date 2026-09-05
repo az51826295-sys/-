@@ -1,0 +1,128 @@
+{
+  "note": "2회차 진단 - 훈련 목적함수가 퇴화했다(전부 거절이 최적). 절차는 바꾸지 않았다",
+  "rows": [
+    {
+      "concept": "pick-v1:01_save",
+      "feature": "bytes",
+      "op": "<=",
+      "train_accuracy": 0.836066,
+      "train_items_passed": 0,
+      "train_items": 61,
+      "reject_all_accuracy": 0.836066,
+      "picked_rank": 2,
+      "n_candidates": 3
+    },
+    {
+      "concept": "pick-v1:02_inventory",
+      "feature": "ink_length",
+      "op": ">=",
+      "train_accuracy": 0.824561,
+      "train_items_passed": 2,
+      "train_items": 57,
+      "reject_all_accuracy": 0.824561,
+      "picked_rank": 5,
+      "n_candidates": 7
+    },
+    {
+      "concept": "pick-v1:03_map",
+      "feature": "ink_length",
+      "op": ">=",
+      "train_accuracy": 0.844828,
+      "train_items_passed": 1,
+      "train_items": 58,
+      "reject_all_accuracy": 0.827586,
+      "picked_rank": 3,
+      "n_candidates": 6
+    },
+    {
+      "concept": "pick-v1:04_settings",
+      "feature": "shape_count",
+      "op": ">=",
+      "train_accuracy": 0.830508,
+      "train_items_passed": 0,
+      "train_items": 59,
+      "reject_all_accuracy": 0.830508,
+      "picked_rank": 5,
+      "n_candidates": 5
+    },
+    {
+      "concept": "pick-v2:01_attack",
+      "feature": "shape_count",
+      "op": "<=",
+      "train_accuracy": 0.827586,
+      "train_items_passed": 0,
+      "train_items": 58,
+      "reject_all_accuracy": 0.827586,
+      "picked_rank": 3,
+      "n_candidates": 6
+    },
+    {
+      "concept": "pick-v2:02_defend",
+      "feature": "ink_length",
+      "op": ">=",
+      "train_accuracy": 0.824561,
+      "train_items_passed": 2,
+      "train_items": 57,
+      "reject_all_accuracy": 0.824561,
+      "picked_rank": 5,
+      "n_candidates": 7
+    },
+    {
+      "concept": "pick-v2:03_shop",
+      "feature": "shape_count",
+      "op": ">=",
+      "train_accuracy": 0.810345,
+      "train_items_passed": 1,
+      "train_items": 58,
+      "reject_all_accuracy": 0.827586,
+      "picked_rank": 6,
+      "n_candidates": 6
+    },
+    {
+      "concept": "pick-v2:04_quest",
+      "feature": "path_count",
+      "op": ">=",
+      "train_accuracy": 0.827586,
+      "train_items_passed": 0,
+      "train_items": 58,
+      "reject_all_accuracy": 0.827586,
+      "picked_rank": 6,
+      "n_candidates": 6
+    },
+    {
+      "concept": "pick-v2:06_stats",
+      "feature": "bytes",
+      "op": ">=",
+      "train_accuracy": 0.827586,
+      "train_items_passed": 0,
+      "train_items": 58,
+      "reject_all_accuracy": 0.827586,
+      "picked_rank": 5,
+      "n_candidates": 6
+    },
+    {
+      "concept": "pick-v2:07_dialogue",
+      "feature": "command_count",
+      "op": ">=",
+      "train_accuracy": 0.827586,
+      "train_items_passed": 4,
+      "train_items": 58,
+      "reject_all_accuracy": 0.827586,
+      "picked_rank": 4,
+      "n_candidates": 6
+    },
+    {
+      "concept": "pick-v2:08_exit",
+      "feature": "ink_length",
+      "op": ">=",
+      "train_accuracy": 0.827586,
+      "train_items_passed": 2,
+      "train_items": 58,
+      "reject_all_accuracy": 0.827586,
+      "picked_rank": 4,
+      "n_candidates": 6
+    }
+  ],
+  "median_picked_rank": 5,
+  "folds_passing_nothing": 5
+}

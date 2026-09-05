@@ -1,0 +1,180 @@
+{
+  "label": "주인공 마녀",
+  "n": 4,
+  "passed": [
+    {
+      "i": 0,
+      "cand": {
+        "id": "1A",
+        "note": "Classic academy apprentice in indigo; tassel hat, wand, satchel",
+        "flat": "C:\\Users\\az518\\Desktop\\genesis-project\\audition\\gpt_raw\\witch_1A\\witch_1A_0.png",
+        "dir": "C:\\Users\\az518\\Desktop\\genesis-project\\audition\\rotated\\witch_1A",
+        "paths": [
+          "C:\\Users\\az518\\Desktop\\genesis-project\\audition\\rotated\\witch_1A\\Idle\\rotations\\east.png",
+          "C:\\Users\\az518\\Desktop\\genesis-project\\audition\\rotated\\witch_1A\\Idle\\rotations\\north-east.png",
+          "C:\\Users\\az518\\Desktop\\genesis-project\\audition\\rotated\\witch_1A\\Idle\\rotations\\north-west.png",
+          "C:\\Users\\az518\\Desktop\\genesis-project\\audition\\rotated\\witch_1A\\Idle\\rotations\\north.png",
+          "C:\\Users\\az518\\Desktop\\genesis-project\\audition\\rotated\\witch_1A\\Idle\\rotations\\south-east.png",
+          "C:\\Users\\az518\\Desktop\\genesis-project\\audition\\rotated\\witch_1A\\Idle\\rotations\\south-west.png",
+          "C:\\Users\\az518\\Desktop\\genesis-project\\audition\\rotated\\witch_1A\\Idle\\rotations\\south.png",
+          "C:\\Users\\az518\\Desktop\\genesis-project\\audition\\rotated\\witch_1A\\Idle\\rotations\\west.png"
+        ]
+      },
+      "judgement": {
+        "verdict": "PASS",
+        "fail": [],
+        "undefined": [],
+        "thresholds": {
+          "luma_spread": 120,
+          "colors": 16,
+          "ground_contrast": 60,
+          "color_spread": 0.5,
+          "saturation": 25
+        },
+        "basis": "사장님 참고 화면 실측 (밝기폭 172 · 캐릭터-바닥 대비 99)",
+        "n": 8,
+        "colors": 62.0,
+        "colors_min": 46,
+        "colors_max": 63,
+        "color_spread": 0.27,
+        "luma_spread": 186.2,
+        "luma_median": 53.2,
+        "saturation": 58.0,
+        "ground_contrast": 115.8
+      }
+    },
+    {
+      "i": 1,
+      "cand": {
+        "id": "1B",
+        "note": "Forest herbalist variant; leaf charms, short capelet, wooden staff",
+        "flat": "C:\\Users\\az518\\Desktop\\genesis-project\\audition\\gpt_raw\\witch_1B\\witch_1B_0.png",
+        "dir": "C:\\Users\\az518\\Desktop\\genesis-project\\audition\\rotated\\witch_1B",
+        "paths": [
+          "C:\\Users\\az518\\Desktop\\genesis-project\\audition\\rotated\\witch_1B\\Idle\\rotations\\east.png",
+          "C:\\Users\\az518\\Desktop\\genesis-project\\audition\\rotated\\witch_1B\\Idle\\rotations\\north-east.png",
+          "C:\\Users\\az518\\Desktop\\genesis-project\\audition\\rotated\\witch_1B\\Idle\\rotations\\north-west.png",
+          "C:\\Users\\az518\\Desktop\\genesis-project\\audition\\rotated\\witch_1B\\Idle\\rotations\\north.png",
+          "C:\\Users\\az518\\Desktop\\genesis-project\\audition\\rotated\\witch_1B\\Idle\\rotations\\south-east.png",
+          "C:\\Users\\az518\\Desktop\\genesis-project\\audition\\rotated\\witch_1B\\Idle\\rotations\\south-west.png",
+          "C:\\Users\\az518\\Desktop\\genesis-project\\audition\\rotated\\witch_1B\\Idle\\rotations\\south.png",
+          "C:\\Users\\az518\\Desktop\\genesis-project\\audition\\rotated\\witch_1B\\Idle\\rotations\\west.png"
+        ]
+      },
+      "judgement": {
+        "verdict": "PASS",
+        "fail": [],
+        "undefined": [],
+        "thresholds": {
+          "luma_spread": 120,
+          "colors": 16,
+          "ground_contrast": 60,
+          "color_spread": 0.5,
+          "saturation": 25
+        },
+        "basis": "사장님 참고 화면 실측 (밝기폭 172 · 캐릭터-바닥 대비 99)",
+        "n": 8,
+        "colors": 63.0,
+        "colors_min": 46,
+        "colors_max": 63,
+        "color_spread": 0.27,
+        "luma_spread": 211.8,
+        "luma_median": 49.8,
+        "saturation": 46.0,
+        "ground_contrast": 119.2
+      }
+    },
+    {
+      "i": 2,
+      "cand": {
+        "id": "1C",
+        "note": "Astral navigator; star-pinned hat, lined mantle with star dots",
+        "flat": "C:\\Users\\az518\\Desktop\\genesis-project\\audition\\gpt_raw\\witch_1C\\witch_1C_0.png",
+        "dir": "C:\\Users\\az518\\Desktop\\genesis-project\\audition\\rotated\\witch_1C",
+        "paths": [
+          "C:\\Users\\az518\\Desktop\\genesis-project\\audition\\rotated\\witch_1C\\Idle\\rotations\\east.png",
+          "C:\\Users\\az518\\Desktop\\genesis-project\\audition\\rotated\\witch_1C\\Idle\\rotations\\north-east.png",
+          "C:\\Users\\az518\\Desktop\\genesis-project\\audition\\rotated\\witch_1C\\Idle\\rotations\\north-west.png",
+          "C:\\Users\\az518\\Desktop\\genesis-project\\audition\\rotated\\witch_1C\\Idle\\rotations\\north.png",
+          "C:\\Users\\az518\\Desktop\\genesis-project\\audition\\rotated\\witch_1C\\Idle\\rotations\\south-east.png",
+          "C:\\Users\\az518\\Desktop\\genesis-project\\audition\\rotated\\witch_1C\\Idle\\rotations\\south-west.png",
+          "C:\\Users\\az518\\Desktop\\genesis-project\\audition\\rotated\\witch_1C\\Idle\\rotations\\south.png",
+          "C:\\Users\\az518\\Desktop\\genesis-project\\audition\\rotated\\witch_1C\\Idle\\rotations\\west.png"
+        ]
+      },
+      "judgement": {
+        "verdict": "PASS",
+        "fail": [],
+        "undefined": [],
+        "thresholds": {
+          "luma_spread": 120,
+          "colors": 16,
+          "ground_contrast": 60,
+          "color_spread": 0.5,
+          "saturation": 25
+        },
+        "basis": "사장님 참고 화면 실측 (밝기폭 172 · 캐릭터-바닥 대비 99)",
+        "n": 8,
+        "colors": 64.0,
+        "colors_min": 47,
+        "colors_max": 64,
+        "color_spread": 0.266,
+        "luma_spread": 222.8,
+        "luma_median": 61.0,
+        "saturation": 41.0,
+        "ground_contrast": 108.0
+      }
+    },
+    {
+      "i": 3,
+      "cand": {
+        "id": "1D",
+        "note": "Traveling potion-maker; scarf, potion belt with small vials, broom",
+        "flat": "C:\\Users\\az518\\Desktop\\genesis-project\\audition\\gpt_raw\\witch_1D\\witch_1D_0.png",
+        "dir": "C:\\Users\\az518\\Desktop\\genesis-project\\audition\\rotated\\witch_1D",
+        "paths": [
+          "C:\\Users\\az518\\Desktop\\genesis-project\\audition\\rotated\\witch_1D\\Idle\\rotations\\east.png",
+          "C:\\Users\\az518\\Desktop\\genesis-project\\audition\\rotated\\witch_1D\\Idle\\rotations\\north-east.png",
+          "C:\\Users\\az518\\Desktop\\genesis-project\\audition\\rotated\\witch_1D\\Idle\\rotations\\north-west.png",
+          "C:\\Users\\az518\\Desktop\\genesis-project\\audition\\rotated\\witch_1D\\Idle\\rotations\\north.png",
+          "C:\\Users\\az518\\Desktop\\genesis-project\\audition\\rotated\\witch_1D\\Idle\\rotations\\south-east.png",
+          "C:\\Users\\az518\\Desktop\\genesis-project\\audition\\rotated\\witch_1D\\Idle\\rotations\\south-west.png",
+          "C:\\Users\\az518\\Desktop\\genesis-project\\audition\\rotated\\witch_1D\\Idle\\rotations\\south.png",
+          "C:\\Users\\az518\\Desktop\\genesis-project\\audition\\rotated\\witch_1D\\Idle\\rotations\\west.png"
+        ]
+      },
+      "judgement": {
+        "verdict": "PASS",
+        "fail": [],
+        "undefined": [],
+        "thresholds": {
+          "luma_spread": 120,
+          "colors": 16,
+          "ground_contrast": 60,
+          "color_spread": 0.5,
+          "saturation": 25
+        },
+        "basis": "사장님 참고 화면 실측 (밝기폭 172 · 캐릭터-바닥 대비 99)",
+        "n": 8,
+        "colors": 63.5,
+        "colors_min": 47,
+        "colors_max": 64,
+        "color_spread": 0.266,
+        "luma_spread": 210.4,
+        "luma_median": 62.0,
+        "saturation": 39.8,
+        "ground_contrast": 107.0
+      }
+    }
+  ],
+  "rejected": [],
+  "undefined": [],
+  "errors": [],
+  "counts": {
+    "passed": 4,
+    "rejected": 0,
+    "undefined": 0,
+    "errors": 0
+  },
+  "note": "기계는 걸렀을 뿐 고르지 않았다. 마지막 칸은 사람이 고른다 (2026-08-26 확정 · 영구 human_gate)"
+}

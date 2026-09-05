@@ -1,0 +1,40 @@
+# 아이콘 레인 스펙 v1 — 설계 docs/icon-lane-design.md §1 그대로.
+# public: 프롬프트에 넣는다 / hidden: 심판만 안다(프롬프트 주입 금지, 굿하트 대응)
+spec_id: icon-24-line-v1
+
+public:
+  viewBox: "0 0 24 24"
+  grid: { snap: 0.5 }
+  stroke: { width: 1.5, linecap: round, linejoin: round }
+  fill: none
+  palette: [currentColor]
+  padding: { min: 2 }
+  path: { max_count: 6, max_total_commands: 60 }
+  # G3(2026-08-26 재등록): path만 세던 규칙이 rect/circle을 놓쳤다.
+  # 6은 새 숫자가 아니라 path.max_count 6의 도형 전체 일반화다.
+  shape: { max_count: 6 }
+  allowed_elements: [svg, path, circle, rect, line, polyline, g]
+  forbidden_elements: [text, image, filter, mask, style, script, defs]
+  size: { max_bytes: 2048 }
+
+hidden:
+  novelty:
+    structure_hash: reject_duplicate      # 구현됨 - 세트 내 중복 후보 거부
+  set_consistency:
+    stroke_width_variance: 0              # 구현됨 - 세트 획 굵기 통일
+    optical_weight_delta_max: 0.15        # 미측정 - 래스터라이저 필요
+  roundtrip: { render_px: 96, max_pixel_diff: 0.02 }   # 구현됨(08-26) - 파서 재출력본 대조
+
+# 자산이 아니라 **화면**이 답할 규칙. 사장님 결정 (b), 2026-08-26.
+# 팔레트가 currentColor뿐이라 아이콘 파일에는 색이 없다. 대비는 색과 배경 사이의
+# 값이고 색은 이 아이콘을 쓰는 화면이 정한다 - 여기서 재면 자산과 무관한 상수가
+# 된다. UI 테마가 동결될 때 그 층에서 검사한다(scope가 다르므로 아이콘 심판의
+# 미측정 목록에도 올리지 않는다: "못 쟀다"가 아니라 "여기서 잴 것이 아니다").
+screen_layer:
+  contrast:
+    min_ratio: 4.5
+    against: ["#ffffff", "#0b0b0b"]
+    owner: ui-theme                       # 검사 주체
+    status: deferred                      # UI 테마 동결 전까지 대기
+    moved_from: hidden.contrast
+    moved_at: "2026-08-26"

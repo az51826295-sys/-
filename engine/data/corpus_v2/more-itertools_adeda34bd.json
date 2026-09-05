@@ -1,0 +1,37 @@
+{
+ "repo": "more-itertools",
+ "fix_commit": "adeda34bd11ff636f5f19238cf422a73e1455483",
+ "parent_commit": "f75535b5ed95394a3a24c1495e1f8508a06d56ab",
+ "answer_files": [
+  "more_itertools/more.py"
+ ],
+ "answer_functions": [
+  "more_itertools/more.py::exactly_n"
+ ],
+ "patch_lines": 15,
+ "added_tests": {
+  "tests/test_more.py::ExactlyNTests::test_true": {
+   "parent": "pass",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "tests/test_more.py::ExactlyNTests::test_false": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [
+  "tests/test_more.py::ExactlyNTests::test_false"
+ ],
+ "test_files": [
+  "tests/test_more.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 5.6,
+ "env_error_tests": 0,
+ "qualified": true,
+ "selector_event_proxy_v1": false
+}

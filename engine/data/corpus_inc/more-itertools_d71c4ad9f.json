@@ -1,0 +1,16 @@
+{
+ "repo": "more-itertools",
+ "fix_commit": "d71c4ad9f828117e609269701f6df10419ae90c8",
+ "parent_commit": "c0ed9d187906d202b9276a0750b3c377584cb75f",
+ "answer_functions": [
+  "more_itertools/more.py::locate",
+  "more_itertools/more.py::replace"
+ ],
+ "repro_tests": [],
+ "smoke": [],
+ "baseline_pass_count": 0,
+ "probes": [],
+ "inc_event": false,
+ "regression_event": false,
+ "skipped": "no repro or no answer functions"
+}

@@ -1,0 +1,41 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "2027de0741620121113a70b40c601f9d50b60683",
+ "parent_commit": "1dbcae9c439d1a268717feb089351fc3c5180ac3",
+ "answer_files": [
+  "marshmallow/marshalling.py",
+  "marshmallow/schema.py"
+ ],
+ "answer_functions": [
+  "marshmallow/marshalling.py::run_validator",
+  "marshmallow/schema.py::_invoke_validators"
+ ],
+ "patch_lines": 6,
+ "added_tests": {
+  "tests/test_decorators.py::TestValidatesSchemaDecorator::test_decorated_validators": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_decorators.py::TestValidatesSchemaDecorator::test_multiple_validators": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_decorators.py::TestValidatesSchemaDecorator::test_passing_original_data": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "tests/test_decorators.py"
+ ],
+ "location_hard_proxy": true,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 11.4,
+ "env_error_tests": 3,
+ "qualified": false
+}

@@ -1,0 +1,31 @@
+{
+ "repo": "boltons",
+ "fix_commit": "0a20b37cc94784197a7353130cc61b5becfb12c7",
+ "parent_commit": "81e44a2319ce0bef0de44f1059762b97879cb35d",
+ "answer_files": [
+  "boltons/socketutils.py"
+ ],
+ "answer_functions": [
+  "boltons/socketutils.py::_calc_msgsize_maxsize",
+  "boltons/socketutils.py::read_ns",
+  "boltons/socketutils.py::setmaxsize"
+ ],
+ "patch_lines": 19,
+ "added_tests": {
+  "tests/test_socketutils.py::test_socketutils_netstring_timeout": {
+   "parent": "fail",
+   "fix": "fail",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "tests/test_socketutils.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 1.6,
+ "env_error_tests": 0,
+ "qualified": false
+}

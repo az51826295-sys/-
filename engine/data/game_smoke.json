@@ -1,0 +1,38 @@
+{
+  "animations_seen": [
+    "idle_south",
+    "walk_east"
+  ],
+  "assets": {
+    "bad": [],
+    "declared": 8,
+    "loaded": 8
+  },
+  "drift_after_release": 0.0,
+  "dx_pressed": 55.0003051757813,
+  "dy_pressed": 0.0,
+  "fail": [],
+  "game_assets": {
+    "bad": [],
+    "character_files": 16,
+    "characters": 2,
+    "tiles_ok": true
+  },
+  "map": {
+    "atlas_px": [
+      336,
+      16
+    ],
+    "bad": [],
+    "cells": 294,
+    "terrain_cells": 984
+  },
+  "ticks": 46,
+  "undefined": [],
+  "verdict": "PASS",
+  "engine": "Godot_v4.7.1-stable_win64_console.exe",
+  "returncode": 0,
+  "seconds": 1.2,
+  "no_input": false,
+  "drop_asset": null
+}

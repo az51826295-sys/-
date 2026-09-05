@@ -1,0 +1,25 @@
+{
+ "repo": "dateutil",
+ "fix_commit": "bcbc00f1688a6a30cdb48e509563a2ab0aeed41e",
+ "parent_commit": "31dc2a5e89a8db129c3209ebb981a2c21a9c3c62",
+ "answer_files": [
+  "dateutil/parser/_parser.py"
+ ],
+ "answer_functions": [
+  "dateutil/parser/_parser.py::_parse",
+  "dateutil/parser/_parser.py::_parse_numeric_token"
+ ],
+ "patch_lines": 24,
+ "added_tests": {},
+ "repro_tests": [],
+ "test_files": [
+  "dateutil/test/test_imports.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 0.0,
+ "env_error_tests": 0,
+ "qualified": false,
+ "selector_event_proxy_v1": false
+}

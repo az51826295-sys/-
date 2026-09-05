@@ -1,0 +1,294 @@
+{
+  "spec": "pixel-bg-v1",
+  "provider": "mock",
+  "model": "mock",
+  "quality": null,
+  "results": [
+    {
+      "scene": "마을 광장",
+      "slug": "01_village_square",
+      "verdict": "PASS",
+      "candidates": [
+        {
+          "raw": "out/images/bg-mock/raw/01_village_square/r01.png",
+          "path": "out/images/bg-mock/candidates/01_village_square/c01.png",
+          "verdict": "PASS",
+          "raw_verdict": "PASS",
+          "measured": {
+            "error": null,
+            "width": 640,
+            "height": 360,
+            "color_count": 3,
+            "alpha_binary": true,
+            "has_transparent": false,
+            "block_size": 8,
+            "logical_width": 80,
+            "logical_height": 45
+          },
+          "raw_measured": {
+            "error": null,
+            "width": 640,
+            "height": 360,
+            "color_count": 3,
+            "alpha_binary": true,
+            "has_transparent": false,
+            "block_size": 8,
+            "logical_width": 80,
+            "logical_height": 45
+          },
+          "report": "VERDICT: PASS\npassed:\n  - file_integrity\n  - logical_width\n  - logical_height\n  - color_count\n  - alpha_binary",
+          "raw_report": "VERDICT: PASS\npassed:\n  - file_integrity\n  - logical_width\n  - logical_height\n  - color_count\n  - alpha_binary"
+        },
+        {
+          "raw": "out/images/bg-mock/raw/01_village_square/r02.png",
+          "path": "out/images/bg-mock/candidates/01_village_square/c02.png",
+          "verdict": "PASS",
+          "raw_verdict": "FAIL",
+          "measured": {
+            "error": null,
+            "width": 640,
+            "height": 360,
+            "color_count": 22,
+            "alpha_binary": true,
+            "has_transparent": false,
+            "block_size": 1,
+            "logical_width": 640,
+            "logical_height": 360
+          },
+          "raw_measured": {
+            "error": null,
+            "width": 640,
+            "height": 360,
+            "color_count": 65536,
+            "alpha_binary": true,
+            "has_transparent": false,
+            "block_size": 1,
+            "logical_width": 640,
+            "logical_height": 360
+          },
+          "report": "VERDICT: PASS\npassed:\n  - file_integrity\n  - logical_width\n  - logical_height\n  - color_count\n  - alpha_binary",
+          "raw_report": "VERDICT: FAIL\nviolations:\n  - rule: color_count\n    got: 65536\n    want: \"<= 24\"\npassed:\n  - file_integrity\n  - logical_width\n  - logical_height\n  - alpha_binary"
+        }
+      ],
+      "rejected": [],
+      "raw_passed": 1
+    },
+    {
+      "scene": "숲길",
+      "slug": "02_forest_path",
+      "verdict": "PASS",
+      "candidates": [
+        {
+          "raw": "out/images/bg-mock/raw/02_forest_path/r01.png",
+          "path": "out/images/bg-mock/candidates/02_forest_path/c01.png",
+          "verdict": "PASS",
+          "raw_verdict": "PASS",
+          "measured": {
+            "error": null,
+            "width": 640,
+            "height": 360,
+            "color_count": 3,
+            "alpha_binary": true,
+            "has_transparent": false,
+            "block_size": 8,
+            "logical_width": 80,
+            "logical_height": 45
+          },
+          "raw_measured": {
+            "error": null,
+            "width": 640,
+            "height": 360,
+            "color_count": 3,
+            "alpha_binary": true,
+            "has_transparent": false,
+            "block_size": 8,
+            "logical_width": 80,
+            "logical_height": 45
+          },
+          "report": "VERDICT: PASS\npassed:\n  - file_integrity\n  - logical_width\n  - logical_height\n  - color_count\n  - alpha_binary",
+          "raw_report": "VERDICT: PASS\npassed:\n  - file_integrity\n  - logical_width\n  - logical_height\n  - color_count\n  - alpha_binary"
+        },
+        {
+          "raw": "out/images/bg-mock/raw/02_forest_path/r02.png",
+          "path": "out/images/bg-mock/candidates/02_forest_path/c02.png",
+          "verdict": "PASS",
+          "raw_verdict": "FAIL",
+          "measured": {
+            "error": null,
+            "width": 640,
+            "height": 360,
+            "color_count": 22,
+            "alpha_binary": true,
+            "has_transparent": false,
+            "block_size": 1,
+            "logical_width": 640,
+            "logical_height": 360
+          },
+          "raw_measured": {
+            "error": null,
+            "width": 640,
+            "height": 360,
+            "color_count": 65536,
+            "alpha_binary": true,
+            "has_transparent": false,
+            "block_size": 1,
+            "logical_width": 640,
+            "logical_height": 360
+          },
+          "report": "VERDICT: PASS\npassed:\n  - file_integrity\n  - logical_width\n  - logical_height\n  - color_count\n  - alpha_binary",
+          "raw_report": "VERDICT: FAIL\nviolations:\n  - rule: color_count\n    got: 65536\n    want: \"<= 24\"\npassed:\n  - file_integrity\n  - logical_width\n  - logical_height\n  - alpha_binary"
+        }
+      ],
+      "rejected": [],
+      "raw_passed": 1
+    },
+    {
+      "scene": "항구",
+      "slug": "03_harbor",
+      "verdict": "PASS",
+      "candidates": [
+        {
+          "raw": "out/images/bg-mock/raw/03_harbor/r01.png",
+          "path": "out/images/bg-mock/candidates/03_harbor/c01.png",
+          "verdict": "PASS",
+          "raw_verdict": "PASS",
+          "measured": {
+            "error": null,
+            "width": 640,
+            "height": 360,
+            "color_count": 3,
+            "alpha_binary": true,
+            "has_transparent": false,
+            "block_size": 8,
+            "logical_width": 80,
+            "logical_height": 45
+          },
+          "raw_measured": {
+            "error": null,
+            "width": 640,
+            "height": 360,
+            "color_count": 3,
+            "alpha_binary": true,
+            "has_transparent": false,
+            "block_size": 8,
+            "logical_width": 80,
+            "logical_height": 45
+          },
+          "report": "VERDICT: PASS\npassed:\n  - file_integrity\n  - logical_width\n  - logical_height\n  - color_count\n  - alpha_binary",
+          "raw_report": "VERDICT: PASS\npassed:\n  - file_integrity\n  - logical_width\n  - logical_height\n  - color_count\n  - alpha_binary"
+        },
+        {
+          "raw": "out/images/bg-mock/raw/03_harbor/r02.png",
+          "path": "out/images/bg-mock/candidates/03_harbor/c02.png",
+          "verdict": "PASS",
+          "raw_verdict": "FAIL",
+          "measured": {
+            "error": null,
+            "width": 640,
+            "height": 360,
+            "color_count": 22,
+            "alpha_binary": true,
+            "has_transparent": false,
+            "block_size": 1,
+            "logical_width": 640,
+            "logical_height": 360
+          },
+          "raw_measured": {
+            "error": null,
+            "width": 640,
+            "height": 360,
+            "color_count": 65536,
+            "alpha_binary": true,
+            "has_transparent": false,
+            "block_size": 1,
+            "logical_width": 640,
+            "logical_height": 360
+          },
+          "report": "VERDICT: PASS\npassed:\n  - file_integrity\n  - logical_width\n  - logical_height\n  - color_count\n  - alpha_binary",
+          "raw_report": "VERDICT: FAIL\nviolations:\n  - rule: color_count\n    got: 65536\n    want: \"<= 24\"\npassed:\n  - file_integrity\n  - logical_width\n  - logical_height\n  - alpha_binary"
+        }
+      ],
+      "rejected": [],
+      "raw_passed": 1
+    },
+    {
+      "scene": "동굴 입구",
+      "slug": "04_cave_entrance",
+      "verdict": "PASS",
+      "candidates": [
+        {
+          "raw": "out/images/bg-mock/raw/04_cave_entrance/r01.png",
+          "path": "out/images/bg-mock/candidates/04_cave_entrance/c01.png",
+          "verdict": "PASS",
+          "raw_verdict": "PASS",
+          "measured": {
+            "error": null,
+            "width": 640,
+            "height": 360,
+            "color_count": 3,
+            "alpha_binary": true,
+            "has_transparent": false,
+            "block_size": 8,
+            "logical_width": 80,
+            "logical_height": 45
+          },
+          "raw_measured": {
+            "error": null,
+            "width": 640,
+            "height": 360,
+            "color_count": 3,
+            "alpha_binary": true,
+            "has_transparent": false,
+            "block_size": 8,
+            "logical_width": 80,
+            "logical_height": 45
+          },
+          "report": "VERDICT: PASS\npassed:\n  - file_integrity\n  - logical_width\n  - logical_height\n  - color_count\n  - alpha_binary",
+          "raw_report": "VERDICT: PASS\npassed:\n  - file_integrity\n  - logical_width\n  - logical_height\n  - color_count\n  - alpha_binary"
+        },
+        {
+          "raw": "out/images/bg-mock/raw/04_cave_entrance/r02.png",
+          "path": "out/images/bg-mock/candidates/04_cave_entrance/c02.png",
+          "verdict": "PASS",
+          "raw_verdict": "FAIL",
+          "measured": {
+            "error": null,
+            "width": 640,
+            "height": 360,
+            "color_count": 22,
+            "alpha_binary": true,
+            "has_transparent": false,
+            "block_size": 1,
+            "logical_width": 640,
+            "logical_height": 360
+          },
+          "raw_measured": {
+            "error": null,
+            "width": 640,
+            "height": 360,
+            "color_count": 65536,
+            "alpha_binary": true,
+            "has_transparent": false,
+            "block_size": 1,
+            "logical_width": 640,
+            "logical_height": 360
+          },
+          "report": "VERDICT: PASS\npassed:\n  - file_integrity\n  - logical_width\n  - logical_height\n  - color_count\n  - alpha_binary",
+          "raw_report": "VERDICT: FAIL\nviolations:\n  - rule: color_count\n    got: 65536\n    want: \"<= 24\"\npassed:\n  - file_integrity\n  - logical_width\n  - logical_height\n  - alpha_binary"
+        }
+      ],
+      "rejected": [],
+      "raw_passed": 1
+    }
+  ],
+  "scenes": 4,
+  "kept": 8,
+  "rejected": 0,
+  "raw_passed": 4,
+  "hard_judge_note": "후처리(pixelize) 뒤의 반입 오라클은 거의 공허하다 — 우리가 격자·색 수·알파를 맞춰 만든 파일이기 때문이다. 생성기가 진짜 도트를 냈는지는 raw_verdict만 말한다. 후처리본의 진짜 관문은 사람 선별(그리고 아직 미동결인 마스터 팔레트)이다.",
+  "images": 0,
+  "usd": 0.0,
+  "picked_by": null,
+  "seconds": 3.84,
+  "ts": "2026-08-26T09:43:14"
+}

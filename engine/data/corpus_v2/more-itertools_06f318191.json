@@ -1,0 +1,43 @@
+{
+ "repo": "more-itertools",
+ "fix_commit": "06f31819121eb0620d3165fda73a44cbf71b140d",
+ "parent_commit": "def2d821c0a15ede86578660e7dc48e44bad9579",
+ "answer_files": [
+  "more_itertools/more.py"
+ ],
+ "answer_functions": [
+  "more_itertools/more.py::nth_combination_with_replacement"
+ ],
+ "patch_lines": 11,
+ "added_tests": {
+  "tests/test_more.py::NthCombinationWithReplacementTests::test_basic": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "tests/test_more.py::NthCombinationWithReplacementTests::test_invalid_r": {
+   "parent": "pass",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "tests/test_more.py::NthCombinationWithReplacementTests::test_invalid_index": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [
+  "tests/test_more.py::NthCombinationWithReplacementTests::test_basic",
+  "tests/test_more.py::NthCombinationWithReplacementTests::test_invalid_index"
+ ],
+ "test_files": [
+  "tests/test_more.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 8.6,
+ "env_error_tests": 0,
+ "qualified": true,
+ "selector_event_proxy_v1": false
+}

@@ -1,0 +1,20 @@
+{
+  "id": "1D",
+  "author": "openai:gpt-5",
+  "target": "character",
+  "note": "Traveling potion-maker; scarf, potion belt with small vials, broom",
+  "body": {
+    "description": "Chibi main witch, same person; global key light from upper-left. Shared lamps: indigo cloth (#121427→#dfe3ff) for hat, robe, and short scarf; teal hair (#052a2a→#b9f2f2); warm leather/wood (#2a170d→#e7b36a) for belt, boots, broom handle; brass metal (#3b2a07→#fff2b3) for buckles and vial hoops; skin on warm ramp (#5a3a2c→#ffe1c9). Potion glass/liquid stays within teal ramp for readability (deep shadow #0f4f4f, mid #1e7a7a, light #43a7a7, bright highlight #b9f2f2). Design: indigo hat with folded tip, short scarf, belt holding two tiny vials, small broom carried. Shading calls: deep shadow under the hat brim and below the scarf knot (#121427 / #23274f), bright highlight on the hat crown and scarf fold facing top-left (#dfe3ff); occlusion shadow under the potion belt and where vials touch the robe (#2a170d / #23274f); bright highlight on glass rims and liquid meniscus (#b9f2f2) with a darker teal band on the far side of each vial (#0f4f4f) to read volume; broom handle gets a bright top-left ridge (#e7b36a) and a deep shadow along the underside (#4a2e1a); cheek highlight (#ffe1c9), small neck shadow (#5a3a2c), contact shadow at boots (#2a170d); glittering point on brass buckles (#fff2b3). Front view shows vials clearly; side view reads broom silhouette; back view shows hat fold and scarf tails with light on top-left and deep shadow at lower-right."
+  },
+  "lint": {
+    "ok": true,
+    "fields": {
+      "description": {
+        "ok": true,
+        "banned": [],
+        "missing": [],
+        "words": 208
+      }
+    }
+  }
+}

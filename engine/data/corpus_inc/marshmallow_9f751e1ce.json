@@ -1,0 +1,57 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "9f751e1cef943e2ca1a77f93d3483b4a171d4303",
+ "parent_commit": "a578ed23092bd558acfbd9cd09a164108689326d",
+ "answer_functions": [
+  "src/marshmallow/decorators.py::validates_schema",
+  "src/marshmallow/schema.py::_run_validator",
+  "src/marshmallow/types.py::__call__"
+ ],
+ "repro_tests": [
+  "tests/test_decorators.py::TestValidatesSchemaDecorator::test_data_key_is_used_in_errors_dict"
+ ],
+ "smoke": [
+  "tests/test_decorators.py::TestPassOriginal::test_pass_original_many",
+  "tests/test_decorators.py::TestPassOriginal::test_pass_original_single",
+  "tests/test_decorators.py::TestValidatesDecorator::test_field_not_present"
+ ],
+ "baseline_pass_count": 36,
+ "probes": [
+  {
+   "applied": "src/marshmallow/schema.py::_run_validator",
+   "a_repro_pass": false,
+   "b_smoke_pass": true,
+   "c_no_regression": false,
+   "regressed": [
+    "tests/test_decorators.py::TestValidatesSchemaDecorator::test_allow_arbitrary_field_names_in_error",
+    "tests/test_decorators.py::TestValidatesSchemaDecorator::test_allow_reporting_field_errors_in_schema_validator",
+    "tests/test_decorators.py::TestValidatesSchemaDecorator::test_decorated_validators",
+    "tests/test_decorators.py::TestValidatesSchemaDecorator::test_multiple_validators",
+    "tests/test_decorators.py::TestValidatesSchemaDecorator::test_multiple_validators_merge_dict_errors",
+    "tests/test_decorators.py::TestValidatesSchemaDecorator::test_passing_original_data",
+    "tests/test_decorators.py::TestValidatesSchemaDecorator::test_skip_on_field_errors",
+    "tests/test_decorators.py::TestValidatesSchemaDecorator::test_validator_nested_many_field_error",
+    "tests/test_decorators.py::TestValidatesSchemaDecorator::test_validator_nested_many_pass_original_and_pass_many[False-expected_data1-expected_original_data1-data0]",
+    "tests/test_decorators.py::TestValidatesSchemaDecorator::test_validator_nested_many_pass_original_and_pass_many[True-expected_data0-expected_original_data0-data0]",
+    "tests/test_decorators.py::TestValidatesSchemaDecorator::test_validator_nested_many_schema_error"
+   ],
+   "d_unmet": [
+    "tests/test_decorators.py::TestValidatesSchemaDecorator::test_data_key_is_used_in_errors_dict"
+   ],
+   "inc_event": false
+  },
+  {
+   "applied": "src/marshmallow/decorators.py::validates_schema",
+   "a_repro_pass": false,
+   "b_smoke_pass": true,
+   "c_no_regression": true,
+   "regressed": [],
+   "d_unmet": [
+    "tests/test_decorators.py::TestValidatesSchemaDecorator::test_data_key_is_used_in_errors_dict"
+   ],
+   "inc_event": false
+  }
+ ],
+ "inc_event": false,
+ "regression_event": false
+}

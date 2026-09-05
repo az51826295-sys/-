@@ -1,0 +1,116 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "d057cb9768c4dfb4d7614c56772bf4338d312073",
+ "parent_commit": "cde0ff74e5803ed2c0244fce2dc3da256d4a300b",
+ "answer_files": [
+  "marshmallow/serializer.py"
+ ],
+ "answer_functions": [
+  "marshmallow/serializer.py::dump",
+  "marshmallow/serializer.py::load"
+ ],
+ "patch_lines": 12,
+ "added_tests": {
+  "tests/test_deserialization.py::TestSchemaDeserialization::test_deserialize_to_dict": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "tests/test_deserialization.py::TestSchemaDeserialization::test_deserialize_many": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "tests/test_deserialization.py::TestSchemaDeserialization::test_make_object": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "tests/test_deserialization.py::TestSchemaDeserialization::test_deserialize_from_json": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "tests/test_deserialization.py::TestSchemaDeserialization::test_nested_single_deserialization_to_dict": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "tests/test_deserialization.py::TestSchemaDeserialization::test_nested_list_deserialization_to_dict": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "tests/test_deserialization.py::TestSchemaDeserialization::test_deserialize_with_attribute_param": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "tests/test_deserialization.py::TestSchemaDeserialization::test_deserialization_returns_errors": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "tests/test_serializer.py::test_dump_returns_dict_of_errors": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [
+  "tests/test_deserialization.py::TestSchemaDeserialization::test_deserialize_to_dict",
+  "tests/test_deserialization.py::TestSchemaDeserialization::test_deserialize_many",
+  "tests/test_deserialization.py::TestSchemaDeserialization::test_make_object",
+  "tests/test_deserialization.py::TestSchemaDeserialization::test_deserialize_from_json",
+  "tests/test_deserialization.py::TestSchemaDeserialization::test_nested_single_deserialization_to_dict",
+  "tests/test_deserialization.py::TestSchemaDeserialization::test_nested_list_deserialization_to_dict",
+  "tests/test_deserialization.py::TestSchemaDeserialization::test_deserialize_with_attribute_param",
+  "tests/test_deserialization.py::TestSchemaDeserialization::test_deserialization_returns_errors",
+  "tests/test_serializer.py::test_dump_returns_dict_of_errors"
+ ],
+ "test_files": [
+  "tests/test_deserialization.py",
+  "tests/test_serializer.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": true,
+ "partial_fix_probes": [
+  {
+   "applied": "marshmallow/serializer.py::dump",
+   "passes_repro": [
+    "tests/test_serializer.py::test_dump_returns_dict_of_errors"
+   ],
+   "still_failing": [
+    "tests/test_deserialization.py::TestSchemaDeserialization::test_deserialize_to_dict",
+    "tests/test_deserialization.py::TestSchemaDeserialization::test_deserialize_many",
+    "tests/test_deserialization.py::TestSchemaDeserialization::test_make_object",
+    "tests/test_deserialization.py::TestSchemaDeserialization::test_deserialize_from_json",
+    "tests/test_deserialization.py::TestSchemaDeserialization::test_nested_single_deserialization_to_dict",
+    "tests/test_deserialization.py::TestSchemaDeserialization::test_nested_list_deserialization_to_dict",
+    "tests/test_deserialization.py::TestSchemaDeserialization::test_deserialize_with_attribute_param",
+    "tests/test_deserialization.py::TestSchemaDeserialization::test_deserialization_returns_errors"
+   ],
+   "event": true
+  },
+  {
+   "applied": "marshmallow/serializer.py::load",
+   "passes_repro": [
+    "tests/test_deserialization.py::TestSchemaDeserialization::test_deserialize_to_dict",
+    "tests/test_deserialization.py::TestSchemaDeserialization::test_deserialize_many",
+    "tests/test_deserialization.py::TestSchemaDeserialization::test_make_object",
+    "tests/test_deserialization.py::TestSchemaDeserialization::test_deserialize_from_json",
+    "tests/test_deserialization.py::TestSchemaDeserialization::test_deserialize_with_attribute_param",
+    "tests/test_deserialization.py::TestSchemaDeserialization::test_deserialization_returns_errors"
+   ],
+   "still_failing": [
+    "tests/test_deserialization.py::TestSchemaDeserialization::test_nested_single_deserialization_to_dict",
+    "tests/test_deserialization.py::TestSchemaDeserialization::test_nested_list_deserialization_to_dict",
+    "tests/test_serializer.py::test_dump_returns_dict_of_errors"
+   ],
+   "event": true
+  }
+ ],
+ "env_seconds": 24.5,
+ "env_error_tests": 0,
+ "qualified": true
+}

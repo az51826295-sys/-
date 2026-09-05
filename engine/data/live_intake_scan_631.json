@@ -1,0 +1,1 @@
+{"issues": [{"repo": "msiemens/tinydb", "number": 631, "title": "CachingMiddleware: operations after close() still succeed in memory", "class": "B", "labels": []}]}

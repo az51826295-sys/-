@@ -1,0 +1,32 @@
+{
+ "repo": "toolz",
+ "fix_commit": "a69f8a5c9d80b193fce84f5f126d09f4d3108338",
+ "parent_commit": "c789e3cff7887f64a259d1364c589e827f59a654",
+ "answer_files": [
+  "toolz/itertoolz.py"
+ ],
+ "answer_functions": [
+  "toolz/itertoolz.py::accumulate"
+ ],
+ "patch_lines": 8,
+ "added_tests": {
+  "toolz/tests/test_itertoolz.py::test_accumulate": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [
+  "toolz/tests/test_itertoolz.py::test_accumulate"
+ ],
+ "test_files": [
+  "toolz/tests/test_itertoolz.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 3.6,
+ "env_error_tests": 0,
+ "qualified": true,
+ "selector_event_proxy_v1": false
+}

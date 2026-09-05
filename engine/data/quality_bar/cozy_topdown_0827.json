@@ -1,0 +1,25 @@
+{
+  "source": "7cd5cd57-image.png",
+  "size": [
+    1210,
+    720
+  ],
+  "crop": [
+    0,
+    110,
+    2420,
+    1550
+  ],
+  "scale_down": 2,
+  "luma_median": 177.0,
+  "luma_spread": 164.9,
+  "saturation_median": 34,
+  "colors": null,
+  "colors_note": "화면 캡처는 압축으로 색이 부풀려져 세지 않았다(미측정)",
+  "palette_taken": false,
+  "palette_note": "남의 작품에서 팔레트를 가져오지 않는다. 통계만 뽑는다 - '이 정도 톤으로'는 참고이고 색을 통째로 가져오는 것은 다른 일이다",
+  "basis": "docs/director-ai-vision.md 2단계 — 품질 바는 레퍼런스 작품",
+  "name": "cozy_topdown_0827",
+  "pointed_by": "사장님 2026-08-27",
+  "note": "'이 정도 퀄리티로 가고' — 파스텔 탑다운 RPG 화면"
+}

@@ -1,0 +1,35 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "e918e8abb86b88ba99b0ac372a438383d956d24e",
+ "parent_commit": "b456b2836940361d1715d5f89d614ca8ff9513e2",
+ "answer_functions": [
+  "marshmallow/serializer.py::_deserialize_single",
+  "marshmallow/serializer.py::deserialize"
+ ],
+ "repro_tests": [
+  "tests/test_marshmallow.py::TestMarshaller::test_deserialize",
+  "tests/test_marshmallow.py::TestMarshaller::test_deserialize_stores_errors"
+ ],
+ "smoke": [
+  "tests/test_marshmallow.py::TestFields::test_arbitrary_field",
+  "tests/test_marshmallow.py::TestFields::test_bad_list_field",
+  "tests/test_marshmallow.py::TestFields::test_date_field"
+ ],
+ "baseline_pass_count": 157,
+ "probes": [
+  {
+   "applied": "marshmallow/serializer.py::deserialize",
+   "a_repro_pass": false,
+   "b_smoke_pass": true,
+   "c_no_regression": true,
+   "regressed": [],
+   "d_unmet": [
+    "tests/test_marshmallow.py::TestMarshaller::test_deserialize",
+    "tests/test_marshmallow.py::TestMarshaller::test_deserialize_stores_errors"
+   ],
+   "inc_event": false
+  }
+ ],
+ "inc_event": false,
+ "regression_event": false
+}

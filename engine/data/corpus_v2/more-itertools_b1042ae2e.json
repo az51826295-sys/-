@@ -1,0 +1,50 @@
+{
+ "repo": "more-itertools",
+ "fix_commit": "b1042ae2e9cb6e6588806b4aebf7af5e76cb90bc",
+ "parent_commit": "13638be1c2ad38e55731ba62a5e0c519c2fe865f",
+ "answer_files": [
+  "more_itertools/recipes.py"
+ ],
+ "answer_functions": [
+  "more_itertools/recipes.py::nth_product"
+ ],
+ "patch_lines": 27,
+ "added_tests": {
+  "tests/test_recipes.py::NthProductTests::test_basic": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "tests/test_recipes.py::NthProductTests::test_long": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "tests/test_recipes.py::NthProductTests::test_negative": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "tests/test_recipes.py::NthProductTests::test_invalid_index": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [
+  "tests/test_recipes.py::NthProductTests::test_basic",
+  "tests/test_recipes.py::NthProductTests::test_long",
+  "tests/test_recipes.py::NthProductTests::test_negative",
+  "tests/test_recipes.py::NthProductTests::test_invalid_index"
+ ],
+ "test_files": [
+  "tests/test_recipes.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 9.5,
+ "env_error_tests": 0,
+ "qualified": true,
+ "selector_event_proxy_v1": false
+}

@@ -1,0 +1,41 @@
+{
+ "BIA": {
+  "n_runs": 30,
+  "applied": 71,
+  "1_file_hit_rate": 0.69,
+  "2_func_hit_rate": 0.577,
+  "2_func_hit_abs": 41,
+  "3_first_patch_file": 0.96,
+  "3_first_patch_func": 0.83,
+  "4_first_ok_correct_loc": "3/3",
+  "4_cands_to_func_mean": 1.23,
+  "4_runs_reaching_func": 22,
+  "5_pub_smoke_cands": 3,
+  "ctx_status": {
+   "full": 3,
+   "no_patch": 7,
+   "public_fail": 11,
+   "regression": 9
+  }
+ },
+ "BPAD": {
+  "n_runs": 30,
+  "applied": 62,
+  "1_file_hit_rate": 0.79,
+  "2_func_hit_rate": 0.774,
+  "2_func_hit_abs": 48,
+  "3_first_patch_file": 0.95,
+  "3_first_patch_func": 0.95,
+  "4_first_ok_correct_loc": "3/4",
+  "4_cands_to_func_mean": 1.05,
+  "4_runs_reaching_func": 22,
+  "5_pub_smoke_cands": 4,
+  "ctx_status": {
+   "full": 3,
+   "no_patch": 8,
+   "public_fail": 9,
+   "public_only": 1,
+   "regression": 9
+  }
+ }
+}

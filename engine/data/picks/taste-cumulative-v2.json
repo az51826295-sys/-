@@ -1,0 +1,187 @@
+{
+  "picks": [
+    "data/picks/pick-v1.json",
+    "data/picks/pick-v2.json"
+  ],
+  "concepts": [
+    "pick-v1:01_save",
+    "pick-v1:02_inventory",
+    "pick-v1:03_map",
+    "pick-v1:04_settings",
+    "pick-v2:01_attack",
+    "pick-v2:02_defend",
+    "pick-v2:03_shop",
+    "pick-v2:04_quest",
+    "pick-v2:06_stats",
+    "pick-v2:07_dialogue",
+    "pick-v2:08_exit"
+  ],
+  "skipped": [
+    {
+      "concept": "05_equipment",
+      "picked": 0,
+      "why": "미선택"
+    }
+  ],
+  "loco": {
+    "rows": [
+      {
+        "concept": "pick-v1:01_save",
+        "rule": {
+          "feature": "bytes",
+          "op": "<=",
+          "threshold": 199.5,
+          "train_accuracy": 0.836066
+        },
+        "hit": false,
+        "n_candidates": 3
+      },
+      {
+        "concept": "pick-v1:02_inventory",
+        "rule": {
+          "feature": "ink_length",
+          "op": ">=",
+          "threshold": 91.7254,
+          "train_accuracy": 0.824561
+        },
+        "hit": false,
+        "n_candidates": 7
+      },
+      {
+        "concept": "pick-v1:03_map",
+        "rule": {
+          "feature": "ink_length",
+          "op": ">=",
+          "threshold": 91.7254,
+          "train_accuracy": 0.844828
+        },
+        "hit": false,
+        "n_candidates": 6
+      },
+      {
+        "concept": "pick-v1:04_settings",
+        "rule": {
+          "feature": "shape_count",
+          "op": ">=",
+          "threshold": 5.5,
+          "train_accuracy": 0.830508
+        },
+        "hit": false,
+        "n_candidates": 5
+      },
+      {
+        "concept": "pick-v2:01_attack",
+        "rule": {
+          "feature": "shape_count",
+          "op": "<=",
+          "threshold": 1.5,
+          "train_accuracy": 0.827586
+        },
+        "hit": false,
+        "n_candidates": 6
+      },
+      {
+        "concept": "pick-v2:02_defend",
+        "rule": {
+          "feature": "ink_length",
+          "op": ">=",
+          "threshold": 91.7254,
+          "train_accuracy": 0.824561
+        },
+        "hit": false,
+        "n_candidates": 7
+      },
+      {
+        "concept": "pick-v2:03_shop",
+        "rule": {
+          "feature": "shape_count",
+          "op": ">=",
+          "threshold": 5.5,
+          "train_accuracy": 0.810345
+        },
+        "hit": false,
+        "n_candidates": 6
+      },
+      {
+        "concept": "pick-v2:04_quest",
+        "rule": {
+          "feature": "path_count",
+          "op": ">=",
+          "threshold": 3.5,
+          "train_accuracy": 0.827586
+        },
+        "hit": false,
+        "n_candidates": 6
+      },
+      {
+        "concept": "pick-v2:06_stats",
+        "rule": {
+          "feature": "bytes",
+          "op": ">=",
+          "threshold": 409.5,
+          "train_accuracy": 0.827586
+        },
+        "hit": false,
+        "n_candidates": 6
+      },
+      {
+        "concept": "pick-v2:07_dialogue",
+        "rule": {
+          "feature": "command_count",
+          "op": ">=",
+          "threshold": 11.5,
+          "train_accuracy": 0.827586
+        },
+        "hit": false,
+        "n_candidates": 6
+      },
+      {
+        "concept": "pick-v2:08_exit",
+        "rule": {
+          "feature": "ink_length",
+          "op": ">=",
+          "threshold": 91.7254,
+          "train_accuracy": 0.827586
+        },
+        "hit": false,
+        "n_candidates": 6
+      }
+    ],
+    "hits": 0,
+    "n": 11,
+    "accuracy": 0.0
+  },
+  "gates": {
+    "sample": {
+      "ok": true,
+      "concepts": 11,
+      "candidates": 64,
+      "min_per_concept": 3,
+      "want": "개념>=8, 후보>=40, 개념당>=3"
+    },
+    "accuracy": {
+      "ok": false,
+      "value": 0.0,
+      "want": ">= 0.75"
+    },
+    "permutation": {
+      "ok": false,
+      "value": 1.0,
+      "want": "< 0.05",
+      "permutations": 200
+    },
+    "baseline": {
+      "ok": false,
+      "value": 0.180519,
+      "want": "적중률이 무작위 기준선보다 높을 것"
+    }
+  },
+  "rule_on_all": {
+    "feature": "ink_length",
+    "op": ">=",
+    "threshold": 91.7254,
+    "train_accuracy": 0.828125
+  },
+  "verdict": "no-promote",
+  "note": "관문 미달 - human_gate 유지. 취향은 아직 기계 심판이 없다"
+}

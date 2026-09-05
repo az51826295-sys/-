@@ -1,0 +1,61 @@
+[bsearch] mi_running_minmax_stability B0 rep0: no_patch
+[bsearch] mi_running_minmax_stability BS rep0: no_patch (가설파일 0, 정답파일 False)
+[bsearch] mi_running_minmax_stability B0 rep1: no_patch
+[bsearch] mi_running_minmax_stability BS rep1: public_only (가설파일 1, 정답파일 True)
+[bsearch] mi_running_minmax_stability B0 rep2: no_patch
+[bsearch] mi_running_minmax_stability BS rep2: no_patch (가설파일 0, 정답파일 False)
+[bsearch] mi_running_minmax_stability B0 rep3: no_patch
+[bsearch] mi_running_minmax_stability BS rep3: public_only (가설파일 2, 정답파일 True)
+[bsearch] mi_running_minmax_stability B0 rep4: no_patch
+[bsearch] mi_running_minmax_stability BS rep4: no_patch (가설파일 0, 정답파일 False)
+[bsearch] du_isotime_midnight B0 rep0: public_fail
+[bsearch] du_isotime_midnight BS rep0: public_fail (가설파일 2, 정답파일 True)
+[bsearch] du_isotime_midnight B0 rep1: public_fail
+[bsearch] du_isotime_midnight BS rep1: full (가설파일 2, 정답파일 True)
+[bsearch] du_isotime_midnight B0 rep2: public_fail
+[bsearch] du_isotime_midnight BS rep2: public_fail (가설파일 2, 정답파일 True)
+[bsearch] du_isotime_midnight B0 rep3: public_fail
+[bsearch] du_isotime_midnight BS rep3: public_fail (가설파일 2, 정답파일 True)
+[bsearch] du_isotime_midnight B0 rep4: public_fail
+[bsearch] du_isotime_midnight BS rep4: public_fail (가설파일 1, 정답파일 True)
+[bsearch] du_isoparse_t24_rollover B0 rep0: regression
+[bsearch] du_isoparse_t24_rollover BS rep0: regression (가설파일 2, 정답파일 True)
+[bsearch] du_isoparse_t24_rollover B0 rep1: regression
+[bsearch] du_isoparse_t24_rollover BS rep1: regression (가설파일 2, 정답파일 True)
+[bsearch] du_isoparse_t24_rollover B0 rep2: regression
+[bsearch] du_isoparse_t24_rollover BS rep2: regression (가설파일 2, 정답파일 True)
+[bsearch] du_isoparse_t24_rollover B0 rep3: regression
+[bsearch] du_isoparse_t24_rollover BS rep3: regression (가설파일 1, 정답파일 True)
+[bsearch] du_isoparse_t24_rollover B0 rep4: regression
+[bsearch] du_isoparse_t24_rollover BS rep4: regression (가설파일 3, 정답파일 True)
+{
+ "B0": {
+  "n": 15,
+  "mean_unique_sigs": 1.93,
+  "mean_distinct_files": 0.73,
+  "dup_rate": 0.3,
+  "correct_file_run_rate": 0.67,
+  "public_pass_run_rate": 0.0,
+  "full_rate": 0.0
+ },
+ "BS": {
+  "n": 15,
+  "mean_unique_sigs": 2.0,
+  "mean_distinct_files": 1.27,
+  "dup_rate": 0.0,
+  "correct_file_run_rate": 0.8,
+  "public_pass_run_rate": 0.2,
+  "full_rate": 0.07
+ },
+ "BS_hyp": {
+  "mean_hyp_generated": 9.67,
+  "mean_hyp_distinct_files": 1.47,
+  "correct_file_hyp_rate": 0.8,
+  "banned_revisits": 11
+ },
+ "usage": {
+  "calls": 160,
+  "input_tokens": 520386,
+  "output_tokens": 122599
+ }
+}

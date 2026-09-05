@@ -1,0 +1,54 @@
+[
+ {"seed": 1, "condition": "1", "calls": 32, "success": true,
+  "success_round": 4, "dup_rate": 0.1, "unique_sigs": 20,
+  "wrong_blocks": 0,
+  "rounds": [
+   {"round": 1, "key_sig": "k1", "phase": "early", "adopted": true,
+    "champion_obj": 0.70},
+   {"round": 2, "key_sig": "k2", "phase": "early", "adopted": false,
+    "champion_obj": 0.70},
+   {"round": 3, "key_sig": "k2", "phase": "early", "adopted": false,
+    "champion_obj": 0.70},
+   {"round": 4, "key_sig": "k3", "phase": "mid", "adopted": true,
+    "champion_obj": 0.80}
+  ]},
+ {"seed": 2, "condition": "1", "calls": 64, "success": false,
+  "success_round": null, "dup_rate": 0.2, "unique_sigs": 40,
+  "wrong_blocks": 0,
+  "rounds": [
+   {"round": 1, "key_sig": "k1", "phase": "early", "adopted": true,
+    "champion_obj": 0.65},
+   {"round": 2, "key_sig": "k2", "phase": "early", "adopted": false,
+    "champion_obj": 0.65},
+   {"round": 3, "key_sig": "k2", "phase": "early", "adopted": false,
+    "champion_obj": 0.65},
+   {"round": 4, "key_sig": "k2", "phase": "mid", "adopted": false,
+    "champion_obj": 0.65},
+   {"round": 5, "key_sig": "k3", "phase": "mid", "adopted": false,
+    "champion_obj": 0.65},
+   {"round": 6, "key_sig": "k4", "phase": "mid", "adopted": false,
+    "champion_obj": 0.65},
+   {"round": 7, "key_sig": "k5", "phase": "late", "adopted": false,
+    "champion_obj": 0.65},
+   {"round": 8, "key_sig": "k6", "phase": "late", "adopted": false,
+    "champion_obj": 0.65}
+  ]},
+ {"seed": 3, "condition": "2", "calls": 8, "success": true,
+  "success_round": 1, "dup_rate": 0.0, "unique_sigs": 8,
+  "wrong_blocks": 0,
+  "rounds": [
+   {"round": 1, "key_sig": "k1", "phase": "early", "adopted": true,
+    "champion_obj": 0.79}
+  ]},
+ {"seed": 4, "condition": "2", "calls": 24, "success": false,
+  "success_round": null, "dup_rate": 0.3, "unique_sigs": 12,
+  "wrong_blocks": 1,
+  "rounds": [
+   {"round": 1, "key_sig": "k1", "phase": "early", "adopted": true,
+    "champion_obj": 0.70},
+   {"round": 2, "key_sig": "k2", "phase": "early", "adopted": false,
+    "champion_obj": 0.70},
+   {"round": 3, "key_sig": "k2", "phase": "early", "adopted": false,
+    "champion_obj": 0.70, "round_blocked": true}
+  ]}
+]

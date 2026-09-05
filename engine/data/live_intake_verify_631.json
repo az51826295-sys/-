@@ -1,0 +1,25 @@
+{
+ "verified_at": "2026-08-22T07:13:52",
+ "mock": false,
+ "n_candidates": 1,
+ "outcomes": {
+  "not_reproducible": 1
+ },
+ "stage2_yield": 0.0,
+ "rows": [
+  {
+   "repo": "msiemens/tinydb",
+   "number": 631,
+   "title": "CachingMiddleware: operations after close() still succeed in memory",
+   "class": "B",
+   "labels": [],
+   "outcome": "not_reproducible",
+   "test_src": "import os\nimport tempfile\nimport pytest\nfrom tinydb import TinyDB\nfrom tinydb.storages import JSONStorage\nfrom tinydb.middlewares import CachingMiddleware\n\n\ndef test_caching_middleware_operations_after_close_should_fail():\n    \"\"\"Test that operations after close() should either raise or not persist to disk.\"\"\"\n    fd, path = tempfile.mkstemp(suffix='.json')\n    os.close(fd)\n\n    try:\n        # Insert before close and verify it's on disk\n        db = TinyDB(path, storage=CachingMiddleware(JSONStorage))\n        db.insert({'a': 1})\n        db.close()\n\n        # Read the file content after close\n        with open(path, 'r') as f:\n            content_after_close = f.read()\n\n        # Try to insert after close\n        # This should either raise an error (preferred) or silently fail\n        result = db.insert({'b': 2})\n\n        # If no error was raised, verify the insert didn't actually persist to disk\n        with open(path, 'r') as f:\n            content_after_insert = f.read()\n\n        # The file content should be unchanged (no durability after close)\n        assert content_after_close == content_after_insert, \\\n            \"Post-close insert should not be durable to disk\"\n\n        # Verify that db.all() after close also doesn't show the inserted data\n        # when we reopen the database\n        db2 = TinyDB(path, storage=CachingMiddleware(JSONStorage))\n        all_records = db2.all()\n        db2.close()\n\n        assert len(all_records) == 1, \\\n            \"Reopened database should only have pre-close data\"\n        assert all_records[0] == {'a': 1}, \\\n            \"Post-close insert should not be persisted\"\n\n    finally:\n        if os.path.exists(path):\n            os.unlink(path)\n"
+  }
+ ],
+ "usage": {
+  "calls": 1,
+  "input_tokens": 896,
+  "output_tokens": 499
+ }
+}

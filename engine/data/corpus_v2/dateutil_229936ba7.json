@@ -1,0 +1,35 @@
+{
+ "repo": "dateutil",
+ "fix_commit": "229936ba73a247775c4fc1371154f45a14f352e5",
+ "parent_commit": "aaf01e3f0fe55d282d23c28047048f8fbcb6f7f8",
+ "answer_files": [
+  "dateutil/rrule.py"
+ ],
+ "answer_functions": [
+  "dateutil/rrule.py::_handle_BYWEEKDAY"
+ ],
+ "patch_lines": 5,
+ "added_tests": {
+  "dateutil/test/test_rrule.py::RRuleTest::testStrEmptyByDay": {
+   "parent": "fail",
+   "fix": "fail",
+   "mode": "file"
+  },
+  "dateutil/test/test_rrule.py::RRuleTest::testStrInvalidByDay": {
+   "parent": "fail",
+   "fix": "fail",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "dateutil/test/test_rrule.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 6.8,
+ "env_error_tests": 0,
+ "qualified": false,
+ "selector_event_proxy_v1": false
+}

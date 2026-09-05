@@ -1,0 +1,155 @@
+{
+  "registration": {
+    "spec_id": "asset_judge_v0",
+    "status": "registered_partial",
+    "registered_at": "2026-08-26 00:31:49",
+    "frozen_by": "사장님 (대화 승인: '문턱 동결해줘, 추천값 그대로')",
+    "inherits_from": "judge-bench-v1.2"
+  },
+  "unfrozen": [
+    {
+      "threshold": "DC_OFFSET_MAX",
+      "read_by": [],
+      "measured_fields": [],
+      "mentions_outside_profiles": 1,
+      "where": "프로필 밖(도구 인자·큐 등)",
+      "alive_if_frozen": false
+    },
+    {
+      "threshold": "DROPOUT_MAX_S",
+      "read_by": [
+        {
+          "profile": "audio",
+          "field": "dropout_max_s"
+        }
+      ],
+      "measured_fields": [],
+      "mentions_outside_profiles": 2,
+      "where": "프로필",
+      "alive_if_frozen": true
+    },
+    {
+      "threshold": "SATURATION_TOLERANCE",
+      "read_by": [],
+      "measured_fields": [],
+      "mentions_outside_profiles": 0,
+      "where": "아무 데서도 안 읽힘",
+      "alive_if_frozen": false
+    },
+    {
+      "threshold": "THRESH_HUE_VAR",
+      "read_by": [
+        {
+          "profile": "set_image",
+          "field": "hue_dispersion_max"
+        }
+      ],
+      "measured_fields": [],
+      "mentions_outside_profiles": 2,
+      "where": "프로필",
+      "alive_if_frozen": true
+    },
+    {
+      "threshold": "THRESH_LINE_CV",
+      "read_by": [
+        {
+          "profile": "set_image",
+          "field": "thickness_cv_max"
+        }
+      ],
+      "measured_fields": [],
+      "mentions_outside_profiles": 2,
+      "where": "프로필",
+      "alive_if_frozen": true
+    },
+    {
+      "threshold": "THRESH_OUT_PCT",
+      "read_by": [],
+      "measured_fields": [],
+      "mentions_outside_profiles": 1,
+      "where": "프로필 밖(도구 인자·큐 등)",
+      "alive_if_frozen": false
+    },
+    {
+      "threshold": "THRESH_SAT_OUT",
+      "read_by": [
+        {
+          "profile": "set_image",
+          "field": "saturation_outside_max"
+        }
+      ],
+      "measured_fields": [],
+      "mentions_outside_profiles": 2,
+      "where": "프로필",
+      "alive_if_frozen": true
+    },
+    {
+      "threshold": "THRESH_VAL_OUT",
+      "read_by": [
+        {
+          "profile": "set_image",
+          "field": "value_outside_max"
+        }
+      ],
+      "measured_fields": [],
+      "mentions_outside_profiles": 2,
+      "where": "프로필",
+      "alive_if_frozen": true
+    },
+    {
+      "threshold": "VALUE_TOLERANCE",
+      "read_by": [],
+      "measured_fields": [],
+      "mentions_outside_profiles": 0,
+      "where": "아무 데서도 안 읽힘",
+      "alive_if_frozen": false
+    }
+  ],
+  "n_unfrozen": 9,
+  "instruments_without_slot": [
+    {
+      "measure": "integrated_lufs",
+      "adapter": "wav_asset",
+      "layer": "낱개(음악)",
+      "design": "docs/lufs-v0-design.md",
+      "note": "BS.1770-4 게이트된 라우드니스. 목표 LUFS를 정하면 판정이 된다"
+    },
+    {
+      "measure": "true_peak_dbtp",
+      "adapter": "wav_asset",
+      "layer": "낱개(음악)",
+      "design": "docs/true-peak-v0-design.md",
+      "note": "초안에 -1.0 dBTP라는 문장은 있으나 동결은 별건이다"
+    },
+    {
+      "measure": "seam_spectral",
+      "adapter": "wav_asset",
+      "layer": "낱개(음악)",
+      "design": "docs/loop-seam-v0-design.md",
+      "note": "루프로 선언된 곡에만 적용. THRESH_SEAM은 지금 진폭 점프용이라 스펙트럼 쪽은 자리가 따로 필요하다"
+    },
+    {
+      "measure": "loudness.loudness_spread",
+      "adapter": "audio_set",
+      "layer": "세트(음악)",
+      "design": "docs/audio-set-layer-v0-design.md",
+      "note": "지역 내 LUFS 최대-최소"
+    },
+    {
+      "measure": "max_transition_seam",
+      "adapter": "audio_set",
+      "layer": "세트(음악)",
+      "design": "docs/audio-set-layer-v0-design.md",
+      "note": "인접 곡쌍 전환 불연속의 최댓값"
+    },
+    {
+      "measure": "duplication.min_distance",
+      "adapter": "audio_set",
+      "layer": "세트(음악)",
+      "design": "docs/audio-set-layer-v0-design.md",
+      "note": "가장 닮은 두 곡의 거리. 작을수록 닮았다(하한을 정한다)"
+    }
+  ],
+  "n_instruments_without_slot": 6,
+  "note": "값을 제안하지 않는다. 무엇을 정하면 무엇이 살아나는지만 보여준다 - 문턱은 사장님 몫이다"
+}

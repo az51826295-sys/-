@@ -1,0 +1,138 @@
+[
+ {
+  "sha": "7dc426c95a0c329d5514e6198d92080f1ffc1e5e",
+  "subject": "Fix update() ordering to be more consistent with add() ordering (#159)",
+  "src_files": [
+   "sortedcontainers/sortedlist.py"
+  ],
+  "test_files": [
+   "tests/test_coverage_sortedkeylist_modulo.py",
+   "tests/test_coverage_sortedkeylist_negate.py"
+  ],
+  "src_lines": 6,
+  "multi_file": false
+ },
+ {
+  "sha": "2b037039bb16c81ddc1ee94e88c44aa85eed2810",
+  "subject": "Fix for issue #147 -- Stop caching dict methods using super",
+  "src_files": [
+   "sortedcontainers/sorteddict.py"
+  ],
+  "test_files": [
+   "tests/issue_147.py",
+   "tests/test_coverage_sorteddict.py"
+  ],
+  "src_lines": 37,
+  "multi_file": false
+ },
+ {
+  "sha": "3367ea58432ef5ee7f34ca566c3120dc2b57c4cc",
+  "subject": "Make iteritems, iterkeys, itervalues, viewitems, viewkeys, viewvalues raise AttributeError",
+  "src_files": [
+   "sortedcontainers/sorteddict.py"
+  ],
+  "test_files": [
+   "tests/test_coverage_sorteddict.py"
+  ],
+  "src_lines": 21,
+  "multi_file": false
+ },
+ {
+  "sha": "501d4a91def6fa3a715c712fc3eb700a44144b2b",
+  "subject": "Fix SortedList.__setitem__ to support slices with stop less than start and step equal one (v 1.5.7)",
+  "src_files": [
+   "sortedcontainers/__init__.py",
+   "sortedcontainers/sortedlist.py"
+  ],
+  "test_files": [
+   "tests/test_coverage_sortedlist.py"
+  ],
+  "src_lines": 10,
+  "multi_file": true
+ },
+ {
+  "sha": "53ab610cc4615888f3fcf2fa1d5d340440247a2a",
+  "subject": "Test and bug fix for SortedList.extend with empty iterable",
+  "src_files": [
+   "sortedcontainers/sortedlist.py"
+  ],
+  "test_files": [
+   "tests/test_coverage_sortedlist.py"
+  ],
+  "src_lines": 5,
+  "multi_file": false
+ },
+ {
+  "sha": "fe780f5b89944a891d98cdec67a849130d7d73a8",
+  "subject": "Fixes for Python 2.6, 3.2, 3.3, and 3.4",
+  "src_files": [
+   "sortedcontainers/sorteddict.py"
+  ],
+  "test_files": [
+   "tests/test_coverage_sorteddict.py",
+   "tests/test_stress_sorteddict.py"
+  ],
+  "src_lines": 10,
+  "multi_file": false
+ },
+ {
+  "sha": "367c64a06f86f1eb60f2c331c3b13a3de32977b9",
+  "subject": "Bug fix: setitem must update _maxes",
+  "src_files": [
+   "sortedcontainers/sortedlist.py"
+  ],
+  "test_files": [
+   "tests/test_coverage_sortedlist.py"
+  ],
+  "src_lines": 9,
+  "multi_file": false
+ },
+ {
+  "sha": "dc9cf97d7c4dac8a542bea48ad147abfa767f8f5",
+  "subject": "Revert \"Fix SortedListWithKey w/ incomparable values on Python 3\"",
+  "src_files": [
+   "sortedcontainers/sortedlistwithkey.py"
+  ],
+  "test_files": [
+   "tests/test_coverage_sortedlistwithkey.py"
+  ],
+  "src_lines": 68,
+  "multi_file": false
+ },
+ {
+  "sha": "59a358c79f2500ff04bb90643dabbbc0c1a71ee6",
+  "subject": "Fix SortedListWithKey w/ incomparable values on Python 3",
+  "src_files": [
+   "sortedcontainers/sortedlistwithkey.py"
+  ],
+  "test_files": [
+   "tests/test_coverage_sortedlistwithkey.py"
+  ],
+  "src_lines": 68,
+  "multi_file": false
+ },
+ {
+  "sha": "a04f4a68188fea6797fe3e5f16f388086e405e62",
+  "subject": "Fix bug in SortedDict comparison (possible KeyError)",
+  "src_files": [
+   "sortedcontainers/sorteddict.py"
+  ],
+  "test_files": [
+   "tests/test_coverage_sorteddict.py"
+  ],
+  "src_lines": 6,
+  "multi_file": false
+ },
+ {
+  "sha": "9e81697c60a83114c67032b846f3f6ed00870a2b",
+  "subject": "Improve coverage for sorteddict and fix bugs",
+  "src_files": [
+   "sortedcontainers/sorteddict.py"
+  ],
+  "test_files": [
+   "tests/test_coverage_sorteddict.py"
+  ],
+  "src_lines": 32,
+  "multi_file": false
+ }
+]

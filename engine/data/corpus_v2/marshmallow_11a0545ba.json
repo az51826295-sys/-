@@ -1,0 +1,43 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "11a0545ba947db9582da479c57dbc8d97d8cf4fc",
+ "parent_commit": "0b7e6b95594133249857e7ef22558021803bcd9c",
+ "answer_files": [
+  "src/marshmallow/fields.py"
+ ],
+ "answer_functions": [
+  "src/marshmallow/fields.py::_test_collection",
+  "src/marshmallow/fields.py::_validate",
+  "src/marshmallow/fields.py::_validate_missing",
+  "src/marshmallow/fields.py::fail",
+  "src/marshmallow/fields.py::make_error"
+ ],
+ "patch_lines": 49,
+ "added_tests": {
+  "tests/test_fields.py::TestErrorMessages::test_make_error": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_fields.py::TestErrorMessages::test_fail": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_fields.py::TestErrorMessages::test_make_error_key_doesnt_exist": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "tests/test_fields.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 11.4,
+ "env_error_tests": 3,
+ "qualified": false
+}

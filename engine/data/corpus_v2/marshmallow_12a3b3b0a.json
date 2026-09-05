@@ -1,0 +1,35 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "12a3b3b0ab9c5ab593ae8a8c532cc4b8349180fc",
+ "parent_commit": "4d638e8d54796828da533c663e925c300cb427d5",
+ "answer_files": [
+  "marshmallow/serializer.py"
+ ],
+ "answer_functions": [
+  "marshmallow/serializer.py::error_handler",
+  "marshmallow/serializer.py::load"
+ ],
+ "patch_lines": 9,
+ "added_tests": {
+  "tests/test_serializer.py::test_dump_with_custom_error_handler": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_serializer.py::test_load_with_custom_error_handler": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "tests/test_serializer.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 7.3,
+ "env_error_tests": 2,
+ "qualified": false
+}

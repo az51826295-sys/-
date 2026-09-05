@@ -1,0 +1,60 @@
+{
+  "source": "audition/pixellab (2026-08-07 오디션 산출물)",
+  "generator": "PixelLab (외부 AI, 우리가 이번에 부르지 않았다)",
+  "groups": [
+    {
+      "group": "01_cat",
+      "profile": "character",
+      "question": "마스코트 고양이 - 같은 자리에 놓을 대안들",
+      "files": [
+        "audition/pixellab/cat_0.png",
+        "audition/pixellab/cat_1.png",
+        "audition/pixellab/cat_final.png",
+        "audition/pixellab/cat_simple_a.png",
+        "audition/pixellab/cat_simple_b.png"
+      ]
+    },
+    {
+      "group": "02_tileset",
+      "profile": "tile",
+      "question": "타일 - 쓸 만한 것을 고르는 자리(여러 개 가능)",
+      "files": [
+        "audition/pixellab/tileset_0.png",
+        "audition/pixellab/tileset_1.png",
+        "audition/pixellab/tileset_2.png",
+        "audition/pixellab/tileset_3.png",
+        "audition/pixellab/tileset_4.png",
+        "audition/pixellab/tileset_5.png",
+        "audition/pixellab/tileset_6.png",
+        "audition/pixellab/tileset_7.png",
+        "audition/pixellab/tileset_8.png",
+        "audition/pixellab/tileset_9.png",
+        "audition/pixellab/tileset_10.png",
+        "audition/pixellab/tileset_11.png",
+        "audition/pixellab/tileset_12.png",
+        "audition/pixellab/tileset_13.png",
+        "audition/pixellab/tileset_14.png",
+        "audition/pixellab/tileset_15.png"
+      ]
+    },
+    {
+      "group": "03_merchant",
+      "profile": "character",
+      "question": "상인 4방향 - 대안이 아니라 한 캐릭터의 네 면(참고용)",
+      "files": [
+        "audition/pixellab/merchant_south.png",
+        "audition/pixellab/merchant_north.png",
+        "audition/pixellab/merchant_east.png",
+        "audition/pixellab/merchant_west.png"
+      ]
+    },
+    {
+      "group": "04_icon",
+      "profile": "icon",
+      "question": "아이콘 1장(대조군)",
+      "files": [
+        "audition/pixellab/icon_0.png"
+      ]
+    }
+  ]
+}

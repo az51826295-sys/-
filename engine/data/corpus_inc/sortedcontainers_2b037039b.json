@@ -1,0 +1,180 @@
+{
+ "repo": "sortedcontainers",
+ "fix_commit": "2b037039bb16c81ddc1ee94e88c44aa85eed2810",
+ "parent_commit": "22dec805ce6ef7657efaa9e6f846938bc90825f5",
+ "answer_functions": [
+  "sortedcontainers/sorteddict.py::__delitem__",
+  "sortedcontainers/sorteddict.py::__init__",
+  "sortedcontainers/sorteddict.py::__setitem__",
+  "sortedcontainers/sorteddict.py::_view_delitem",
+  "sortedcontainers/sorteddict.py::clear",
+  "sortedcontainers/sorteddict.py::pop",
+  "sortedcontainers/sorteddict.py::popitem",
+  "sortedcontainers/sorteddict.py::setdefault",
+  "sortedcontainers/sorteddict.py::update"
+ ],
+ "repro_tests": [
+  "tests/test_coverage_sorteddict.py::test_ref_counts"
+ ],
+ "smoke": [
+  "tests/test_coverage_sorteddict.py::test_bisect",
+  "tests/test_coverage_sorteddict.py::test_bisect_key",
+  "tests/test_coverage_sorteddict.py::test_bisect_key2"
+ ],
+ "baseline_pass_count": 53,
+ "probes": [
+  {
+   "applied": "sortedcontainers/sorteddict.py::_view_delitem",
+   "a_repro_pass": false,
+   "b_smoke_pass": true,
+   "c_no_regression": true,
+   "regressed": [],
+   "d_unmet": [
+    "tests/test_coverage_sorteddict.py::test_ref_counts"
+   ],
+   "inc_event": false
+  },
+  {
+   "applied": "sortedcontainers/sorteddict.py::__init__",
+   "a_repro_pass": false,
+   "b_smoke_pass": false,
+   "c_no_regression": false,
+   "regressed": [
+    "tests/test_coverage_sorteddict.py::test_bisect",
+    "tests/test_coverage_sorteddict.py::test_bisect_key",
+    "tests/test_coverage_sorteddict.py::test_bisect_key2",
+    "tests/test_coverage_sorteddict.py::test_clear",
+    "tests/test_coverage_sorteddict.py::test_contains",
+    "tests/test_coverage_sorteddict.py::test_copy",
+    "tests/test_coverage_sorteddict.py::test_copy_copy",
+    "tests/test_coverage_sorteddict.py::test_delitem",
+    "tests/test_coverage_sorteddict.py::test_eq",
+    "tests/test_coverage_sorteddict.py::test_fromkeys",
+    "tests/test_coverage_sorteddict.py::test_get",
+    "tests/test_coverage_sorteddict.py::test_getitem",
+    "tests/test_coverage_sorteddict.py::test_iloc",
+    "tests/test_coverage_sorteddict.py::test_index",
+    "tests/test_coverage_sorteddict.py::test_index_key",
+    "tests/test_coverage_sorteddict.py::test_init",
+    "tests/test_coverage_sorteddict.py::test_init_args",
+    "tests/test_coverage_sorteddict.py::test_init_key",
+    "tests/test_coverage_sorteddict.py::test_init_kwargs",
+    "tests/test_coverage_sorteddict.py::test_irange",
+    "tests/test_coverage_sorteddict.py::test_irange_key",
+    "tests/test_coverage_sorteddict.py::test_islice",
+    "tests/test_coverage_sorteddict.py::test_items",
+    "tests/test_coverage_sorteddict.py::test_items_view_index",
+    "tests/test_coverage_sorteddict.py::test_itemsview",
+    "tests/test_coverage_sorteddict.py::test_iter",
+    "tests/test_coverage_sorteddict.py::test_iter_key",
+    "tests/test_coverage_sorteddict.py::test_iterkeys",
+    "tests/test_coverage_sorteddict.py::test_keys",
+    "tests/test_coverage_sorteddict.py::test_keysview",
+    "tests/test_coverage_sorteddict.py::test_len",
+    "tests/test_coverage_sorteddict.py::test_peekitem",
+    "tests/test_coverage_sorteddict.py::test_peekitem2",
+    "tests/test_coverage_sorteddict.py::test_pickle",
+    "tests/test_coverage_sorteddict.py::test_pop",
+    "tests/test_coverage_sorteddict.py::test_pop2",
+    "tests/test_coverage_sorteddict.py::test_popitem",
+    "tests/test_coverage_sorteddict.py::test_popitem2",
+    "tests/test_coverage_sorteddict.py::test_popitem3",
+    "tests/test_coverage_sorteddict.py::test_repr",
+    "tests/test_coverage_sorteddict.py::test_repr_recursion",
+    "tests/test_coverage_sorteddict.py::test_repr_subclass",
+    "tests/test_coverage_sorteddict.py::test_reversed",
+    "tests/test_coverage_sorteddict.py::test_reversed_key",
+    "tests/test_coverage_sorteddict.py::test_setdefault",
+    "tests/test_coverage_sorteddict.py::test_setitem",
+    "tests/test_coverage_sorteddict.py::test_update",
+    "tests/test_coverage_sorteddict.py::test_update2",
+    "tests/test_coverage_sorteddict.py::test_values",
+    "tests/test_coverage_sorteddict.py::test_values_view_index",
+    "tests/test_coverage_sorteddict.py::test_valuesview"
+   ],
+   "d_unmet": [
+    "tests/test_coverage_sorteddict.py::test_ref_counts"
+   ],
+   "inc_event": false
+  },
+  {
+   "applied": "sortedcontainers/sorteddict.py::clear",
+   "a_repro_pass": false,
+   "b_smoke_pass": true,
+   "c_no_regression": true,
+   "regressed": [],
+   "d_unmet": [
+    "tests/test_coverage_sorteddict.py::test_ref_counts"
+   ],
+   "inc_event": false
+  },
+  {
+   "applied": "sortedcontainers/sorteddict.py::__delitem__",
+   "a_repro_pass": false,
+   "b_smoke_pass": true,
+   "c_no_regression": true,
+   "regressed": [],
+   "d_unmet": [
+    "tests/test_coverage_sorteddict.py::test_ref_counts"
+   ],
+   "inc_event": false
+  },
+  {
+   "applied": "sortedcontainers/sorteddict.py::__setitem__",
+   "a_repro_pass": false,
+   "b_smoke_pass": true,
+   "c_no_regression": true,
+   "regressed": [],
+   "d_unmet": [
+    "tests/test_coverage_sorteddict.py::test_ref_counts"
+   ],
+   "inc_event": false
+  },
+  {
+   "applied": "sortedcontainers/sorteddict.py::pop",
+   "a_repro_pass": false,
+   "b_smoke_pass": true,
+   "c_no_regression": true,
+   "regressed": [],
+   "d_unmet": [
+    "tests/test_coverage_sorteddict.py::test_ref_counts"
+   ],
+   "inc_event": false
+  },
+  {
+   "applied": "sortedcontainers/sorteddict.py::popitem",
+   "a_repro_pass": false,
+   "b_smoke_pass": true,
+   "c_no_regression": true,
+   "regressed": [],
+   "d_unmet": [
+    "tests/test_coverage_sorteddict.py::test_ref_counts"
+   ],
+   "inc_event": false
+  },
+  {
+   "applied": "sortedcontainers/sorteddict.py::setdefault",
+   "a_repro_pass": false,
+   "b_smoke_pass": true,
+   "c_no_regression": true,
+   "regressed": [],
+   "d_unmet": [
+    "tests/test_coverage_sorteddict.py::test_ref_counts"
+   ],
+   "inc_event": false
+  },
+  {
+   "applied": "sortedcontainers/sorteddict.py::update",
+   "a_repro_pass": false,
+   "b_smoke_pass": true,
+   "c_no_regression": true,
+   "regressed": [],
+   "d_unmet": [
+    "tests/test_coverage_sorteddict.py::test_ref_counts"
+   ],
+   "inc_event": false
+  }
+ ],
+ "inc_event": false,
+ "regression_event": false
+}

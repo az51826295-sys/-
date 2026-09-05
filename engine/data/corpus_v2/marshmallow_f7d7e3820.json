@@ -1,0 +1,38 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "f7d7e3820f4b85ec04f9c292fbf802facdc6b702",
+ "parent_commit": "79c3d6cb881f3d7f057e89457cc561756e130446",
+ "answer_files": [
+  "marshmallow/schema.py"
+ ],
+ "answer_functions": [
+  "marshmallow/schema.py::_do_load",
+  "marshmallow/schema.py::_postprocess",
+  "marshmallow/schema.py::accessor",
+  "marshmallow/schema.py::dump",
+  "marshmallow/schema.py::error_handler"
+ ],
+ "patch_lines": 67,
+ "added_tests": {
+  "tests/test_schema.py::TestGetAttribute::test_get_attribute_is_used": {
+   "parent": "fail",
+   "fix": "fail",
+   "mode": "file"
+  },
+  "tests/test_schema.py::TestGetAttribute::test_get_attribute_with_many": {
+   "parent": "fail",
+   "fix": "fail",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "tests/test_schema.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 3.1,
+ "env_error_tests": 0,
+ "qualified": false
+}

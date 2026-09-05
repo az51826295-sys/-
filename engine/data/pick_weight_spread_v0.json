@@ -1,0 +1,78 @@
+{
+  "spec": "pick-weight-spread-v0",
+  "design": "docs/pick-weight-spread-v0-design.md",
+  "exploratory": true,
+  "note": "가설이 관측에서 나왔다 — 확정 판정이 아니다(설계 §0)",
+  "verdict": "no_signal",
+  "why": "p_above_half",
+  "p": 0.7053,
+  "chosen_spread": 0.135711,
+  "machine_first_spread": 0.169567,
+  "machine_percentile": 0.92,
+  "random_median": 0.112491,
+  "random_min": 0.020263000000000003,
+  "random_max": 0.19088899999999998,
+  "concepts": [
+    "01_attack",
+    "02_defend",
+    "03_shop",
+    "04_quest",
+    "05_equipment",
+    "06_stats",
+    "07_dialogue",
+    "08_exit"
+  ],
+  "trials": 10000,
+  "seed": 12345,
+  "gate_ok": true,
+  "per_concept": {
+    "01_attack": {
+      "n": 6,
+      "chosen": 0.146949,
+      "min": 0.087438,
+      "max": 0.18545
+    },
+    "02_defend": {
+      "n": 7,
+      "chosen": 0.165802,
+      "min": 0.141145,
+      "max": 0.184633
+    },
+    "03_shop": {
+      "n": 6,
+      "chosen": 0.210465,
+      "min": 0.182854,
+      "max": 0.25961
+    },
+    "04_quest": {
+      "n": 6,
+      "chosen": 0.194145,
+      "min": 0.186968,
+      "max": 0.211166
+    },
+    "05_equipment": {
+      "n": 5,
+      "chosen": 0.142616,
+      "min": 0.136341,
+      "max": 0.212105
+    },
+    "06_stats": {
+      "n": 6,
+      "chosen": 0.278327,
+      "min": 0.109226,
+      "max": 0.278327
+    },
+    "07_dialogue": {
+      "n": 6,
+      "chosen": 0.168597,
+      "min": 0.168597,
+      "max": 0.207772
+    },
+    "08_exit": {
+      "n": 6,
+      "chosen": 0.172811,
+      "min": 0.131233,
+      "max": 0.176056
+    }
+  }
+}

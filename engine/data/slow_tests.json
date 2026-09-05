@@ -1,0 +1,81 @@
+{
+  "note": "잰 값으로만 채운다. 손으로 추가하지 말 것 - 추측으로 넣으면 빠른 부분집합이 거짓말을 한다.",
+  "threshold_seconds": 20.0,
+  "measured_from": "data\\suite_gate_20260826_2112.log",
+  "measured_at": "2026-08-26T21:24:24",
+  "gate_is_full_suite": true,
+  "tests": [
+    {
+      "nodeid": "tests/test_mine.py::test_known_positive_qualifies",
+      "seconds": 136.78
+    },
+    {
+      "nodeid": "tests/test_loop.py::test_resume_continues_not_restarts",
+      "seconds": 108.01
+    },
+    {
+      "nodeid": "tests/test_mission6.py::test_evolution_mechanics_and_audit[K]",
+      "seconds": 96.77
+    },
+    {
+      "nodeid": "tests/test_service_multi.py::test_mock_mode_runs_without_api_or_spend",
+      "seconds": 90.04
+    },
+    {
+      "nodeid": "tests/test_loop.py::test_generic_loop_reproduces_mission6",
+      "seconds": 88.71
+    },
+    {
+      "nodeid": "tests/test_engine_agentic.py::test_agent_cannot_touch_test_files",
+      "seconds": 44.46
+    },
+    {
+      "nodeid": "tests/test_engine_agentic.py::test_unverified_done_is_rejected",
+      "seconds": 39.41
+    },
+    {
+      "nodeid": "tests/test_loop.py::test_registry_rollback_and_lineage",
+      "seconds": 39.03
+    },
+    {
+      "nodeid": "tests/test_rookie_evolution4.py::test_outcome_recorded_on_failure",
+      "seconds": 37.97
+    },
+    {
+      "nodeid": "tests/test_mine.py::test_event_requires_fix_passing_discriminator",
+      "seconds": 37.83
+    },
+    {
+      "nodeid": "tests/test_mission6.py::test_evolution_mechanics_and_audit[M]",
+      "seconds": 30.39
+    },
+    {
+      "nodeid": "tests/test_mission6.py::test_m_incumbent_score_never_falls",
+      "seconds": 28.03
+    },
+    {
+      "nodeid": "tests/test_mission5.py::test_training_runs_and_returns_curve",
+      "seconds": 27.59
+    },
+    {
+      "nodeid": "tests/test_engine_handler.py::test_wrong_fix_is_not_adopted",
+      "seconds": 27.3
+    },
+    {
+      "nodeid": "tests/test_mission4.py::test_more_slack_never_hurts_c_on_average",
+      "seconds": 26.88
+    },
+    {
+      "nodeid": "tests/test_engine_seeder.py::test_seeded_task_is_fixable_end_to_end",
+      "seconds": 24.22
+    },
+    {
+      "nodeid": "tests/test_mission6.py::test_evolution_mechanics_and_audit[J]",
+      "seconds": 23.37
+    },
+    {
+      "nodeid": "tests/test_engine_handler.py::test_second_candidate_succeeds",
+      "seconds": 22.92
+    }
+  ]
+}

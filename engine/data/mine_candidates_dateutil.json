@@ -1,0 +1,419 @@
+[
+ {
+  "sha": "ea7f441b455cabbae2bf98f2d10fd11724001155",
+  "subject": "Fix custom repr for ParserError",
+  "src_files": [
+   "dateutil/parser/_parser.py"
+  ],
+  "test_files": [
+   "dateutil/test/test_parser.py"
+  ],
+  "src_lines": 5,
+  "multi_file": false
+ },
+ {
+  "sha": "31e8c66d76b1a53ab692decf4330b6b5706bf08c",
+  "subject": "Wrap ValueError in ParserError",
+  "src_files": [
+   "dateutil/parser/_parser.py"
+  ],
+  "test_files": [
+   "dateutil/test/test_parser.py"
+  ],
+  "src_lines": 5,
+  "multi_file": false
+ },
+ {
+  "sha": "424a438b3791962e50590410972fdb0ebfd7b4a2",
+  "subject": "Fix isoparser misinterprets T24:00",
+  "src_files": [
+   "dateutil/parser/isoparser.py"
+  ],
+  "test_files": [
+   "dateutil/test/test_isoparser.py"
+  ],
+  "src_lines": 8,
+  "multi_file": false
+ },
+ {
+  "sha": "16424e936b12270dcd515f3be26166fea65f68a6",
+  "subject": "Catch infinite decimal values in `_is_decimal` (fix #662)",
+  "src_files": [
+   "dateutil/parser/_parser.py"
+  ],
+  "test_files": [
+   "dateutil/test/test_parser.py"
+  ],
+  "src_lines": 7,
+  "multi_file": false
+ },
+ {
+  "sha": "5f2052faf7532424203c23f979f1f8f7b2653571",
+  "subject": "Catch non-ValueError exceptions in decimal",
+  "src_files": [
+   "dateutil/parser/_parser.py"
+  ],
+  "test_files": [
+   "dateutil/test/test_parser.py"
+  ],
+  "src_lines": 17,
+  "multi_file": false
+ },
+ {
+  "sha": "bcbc00f1688a6a30cdb48e509563a2ab0aeed41e",
+  "subject": "Only raise ValueError in parser for now",
+  "src_files": [
+   "dateutil/parser/__init__.py",
+   "dateutil/parser/_parser.py"
+  ],
+  "test_files": [
+   "dateutil/test/test_imports.py"
+  ],
+  "src_lines": 24,
+  "multi_file": true
+ },
+ {
+  "sha": "3b43612c35c7d0918ae96d132a698f7e19c7cdff",
+  "subject": "Fix issue #427, all tests passing",
+  "src_files": [
+   "dateutil/parser/_parser.py"
+  ],
+  "test_files": [
+   "dateutil/test/test_parser.py"
+  ],
+  "src_lines": 10,
+  "multi_file": false
+ },
+ {
+  "sha": "7913760140e41abf91274171a53d757d8befb404",
+  "subject": "Fix float handling for years and months in relativedelta",
+  "src_files": [
+   "dateutil/relativedelta.py"
+  ],
+  "test_files": [
+   "dateutil/test/test_relativedelta.py"
+  ],
+  "src_lines": 16,
+  "multi_file": false
+ },
+ {
+  "sha": "f8f802b4b18ab5f5a33f7002953cafd821e8d409",
+  "subject": "Fix unreachable code and loose validation",
+  "src_files": [
+   "dateutil/parser/isoparser.py"
+  ],
+  "test_files": [
+   "dateutil/test/test_isoparser.py"
+  ],
+  "src_lines": 16,
+  "multi_file": false
+ },
+ {
+  "sha": "af20fd4240a2b894630edbe2aa639535f3de8ad5",
+  "subject": "Fix attributeerror",
+  "src_files": [
+   "dateutil/parser.py"
+  ],
+  "test_files": [
+   "dateutil/test/test_parser.py"
+  ],
+  "src_lines": 8,
+  "multi_file": false
+ },
+ {
+  "sha": "6330d8e35c92e2278fdf8dd47a00f615782c99be",
+  "subject": "Add fix for b-Y-d cases; add tests; remove redundant tests",
+  "src_files": [
+   "dateutil/parser.py"
+  ],
+  "test_files": [
+   "dateutil/test/test_parser.py"
+  ],
+  "src_lines": 6,
+  "multi_file": false
+ },
+ {
+  "sha": "cd82dd50cefbd5f0e11600f138c333e2a591753a",
+  "subject": "Fix improper indent in parser.",
+  "src_files": [
+   "dateutil/parser.py"
+  ],
+  "test_files": [
+   "dateutil/test/test_parser.py"
+  ],
+  "src_lines": 14,
+  "multi_file": false
+ },
+ {
+  "sha": "89bc4968b272defc5f18a2d229564c8845e88de9",
+  "subject": "Fix all instances of flake8 F841",
+  "src_files": [
+   "dateutil/parser.py",
+   "dateutil/tz/tz.py"
+  ],
+  "test_files": [
+   "dateutil/test/test_imports.py",
+   "dateutil/test/test_rrule.py",
+   "dateutil/test/test_tz.py"
+  ],
+  "src_lines": 9,
+  "multi_file": true
+ },
+ {
+  "sha": "66d95db3a2363f307565b54166f52f980f030f9e",
+  "subject": "Fixed AEST tzical in test, refactor comp finding.",
+  "src_files": [
+   "dateutil/tz/tz.py"
+  ],
+  "test_files": [
+   "dateutil/test/test_tz.py"
+  ],
+  "src_lines": 44,
+  "multi_file": false
+ },
+ {
+  "sha": "ceb748d1b1a084cc1341cb2827256668bd35c46b",
+  "subject": "Added additional flexibility to tzlocal() to allow time() objects to be tz aware in fixed offsets.",
+  "src_files": [
+   "dateutil/tz/tz.py"
+  ],
+  "test_files": [
+   "dateutil/test/test_tz.py"
+  ],
+  "src_lines": 17,
+  "multi_file": false
+ },
+ {
+  "sha": "f42ee4c13c092725f8da650e2272a08a019f17b7",
+  "subject": "Switch relativedelta operators to return NotImplemented instead of raising TypeError",
+  "src_files": [
+   "dateutil/relativedelta.py"
+  ],
+  "test_files": [
+   "dateutil/test/_common.py",
+   "dateutil/test/test_relativedelta.py"
+  ],
+  "src_lines": 19,
+  "multi_file": false
+ },
+ {
+  "sha": "2d42e046d55b9fbbc0a2f41ce83fb8ec5de2d28b",
+  "subject": "Fix yearfirst/dayfirst bug.",
+  "src_files": [
+   "dateutil/parser.py"
+  ],
+  "test_files": [
+   "dateutil/test/test_parser.py"
+  ],
+  "src_lines": 5,
+  "multi_file": false
+ },
+ {
+  "sha": "229936ba73a247775c4fc1371154f45a14f352e5",
+  "subject": "Explicitly throw error in rrulestr on empty BYDAY",
+  "src_files": [
+   "dateutil/rrule.py"
+  ],
+  "test_files": [
+   "dateutil/test/test_rrule.py"
+  ],
+  "src_lines": 5,
+  "multi_file": false
+ },
+ {
+  "sha": "511930d5d77b850805ffeeb2ed615902597be95f",
+  "subject": "Empty string parsing now raises an error.",
+  "src_files": [
+   "dateutil/parser.py"
+  ],
+  "test_files": [
+   "dateutil/test/test.py"
+  ],
+  "src_lines": 7,
+  "multi_file": false
+ },
+ {
+  "sha": "96b2112d277b76bc059c3fb887bde6d71d7fce56",
+  "subject": "Change warning from error to warning.",
+  "src_files": [
+   "dateutil/rrule.py"
+  ],
+  "test_files": [
+   "dateutil/test/test.py"
+  ],
+  "src_lines": 7,
+  "multi_file": false
+ },
+ {
+  "sha": "cfa0098a581b01fe8d3609a083be380c7c56361e",
+  "subject": "Fixed tzfile parsing for leapcnt-containing tzfile, with tests.",
+  "src_files": [
+   "dateutil/tz/tz.py"
+  ],
+  "test_files": [
+   "dateutil/test/test.py"
+  ],
+  "src_lines": 8,
+  "multi_file": false
+ },
+ {
+  "sha": "4b6edeea5fcf761b417f5ed0a064edf44289dc41",
+  "subject": "Fix tzwinlocal bug.",
+  "src_files": [
+   "dateutil/tz/win.py"
+  ],
+  "test_files": [
+   "dateutil/test/test.py",
+   "dateutil/test/test_tz.py"
+  ],
+  "src_lines": 26,
+  "multi_file": false
+ },
+ {
+  "sha": "bd5de2786d8bfdfd7801d16d8edcc30d237fa412",
+  "subject": "Fix issue with tzstr parsing on Python 2.x. lp:1331576, gh #51",
+  "src_files": [
+   "dateutil/parser.py"
+  ],
+  "test_files": [
+   "dateutil/test/test.py"
+  ],
+  "src_lines": 5,
+  "multi_file": false
+ },
+ {
+  "sha": "4cc9637390a180a2f295d926ae90602b72223951",
+  "subject": "Fix invalid date fallback. Deal with leap years in the smart parser defaults.",
+  "src_files": [
+   "dateutil/parser.py"
+  ],
+  "test_files": [
+   "dateutil/test/test.py"
+  ],
+  "src_lines": 52,
+  "multi_file": false
+ },
+ {
+  "sha": "7c78cf8e0f1c8add46f11595a0d3f3d7ed2ec834",
+  "subject": "Fix issue with tzstr parsing on Python 2.x. lp:1331576, gh #51",
+  "src_files": [
+   "dateutil/parser.py"
+  ],
+  "test_files": [
+   "dateutil/test/test.py"
+  ],
+  "src_lines": 5,
+  "multi_file": false
+ },
+ {
+  "sha": "b8e944b5111350c79e2abfa77076d5a749f1de4d",
+  "subject": "windows: fix tzinfo for timezones without dst",
+  "src_files": [
+   "dateutil/tzwin.py"
+  ],
+  "test_files": [
+   "dateutil/test/test.py"
+  ],
+  "src_lines": 5,
+  "multi_file": false
+ },
+ {
+  "sha": "08679489e84595298b98257039e1afdbdbd0ab46",
+  "subject": "fix error type raised by parsing a string. _parse will return a tuple only if requested",
+  "src_files": [
+   "dateutil/parser.py"
+  ],
+  "test_files": [
+   "test.py"
+  ],
+  "src_lines": 16,
+  "multi_file": false
+ },
+ {
+  "sha": "15fc1fa8c1e2c3d088e646d6d47ac9d25d902f95",
+  "subject": "Fix relativedelta arithmetics, bug #965881",
+  "src_files": [
+   "dateutil/relativedelta.py"
+  ],
+  "test_files": [
+   "test.py"
+  ],
+  "src_lines": 74,
+  "multi_file": false
+ },
+ {
+  "sha": "95b2a249793d9092e9466f48ab24995d06fddf2f",
+  "subject": "Fix opening files in tz",
+  "src_files": [
+   "dateutil/tz.py"
+  ],
+  "test_files": [
+   "test.py"
+  ],
+  "src_lines": 10,
+  "multi_file": false
+ },
+ {
+  "sha": "b6993d02819b4f927d76c15613d6648fa416bad3",
+  "subject": "Fix relativedelta arithmetics",
+  "src_files": [
+   "dateutil/relativedelta.py"
+  ],
+  "test_files": [
+   "test.py"
+  ],
+  "src_lines": 18,
+  "multi_file": false
+ },
+ {
+  "sha": "05c217d3ae21303cc4d5ccff241854caf44af317",
+  "subject": "- Fixed case where tzrange.utcoffset and tzrange.dst() might fail due   to a date being used where a",
+  "src_files": [
+   "dateutil/parser.py",
+   "dateutil/tz.py"
+  ],
+  "test_files": [
+   "test.py"
+  ],
+  "src_lines": 27,
+  "multi_file": true
+ },
+ {
+  "sha": "f296b1a67f3b6a58b81221da98c3cebc177ea31e",
+  "subject": "Fixed another precision problem on conversion of decimal seconds to microseconds, as reported by Eri",
+  "src_files": [
+   "dateutil/parser.py"
+  ],
+  "test_files": [
+   "test.py"
+  ],
+  "src_lines": 23,
+  "multi_file": false
+ },
+ {
+  "sha": "c52a13d7d3057f33b98d25db7be14cefef88393f",
+  "subject": "Fixed precision problem on conversion of decimal seconds to microseconds, as reported by Skip Montan",
+  "src_files": [
+   "dateutil/parser.py"
+  ],
+  "test_files": [
+   "test.py"
+  ],
+  "src_lines": 16,
+  "multi_file": false
+ },
+ {
+  "sha": "34788e450d5eb40ed3012a9999f231bfd2567aeb",
+  "subject": "- Fixed support for negative byyearday in rrule. - New tests for negative byyearday. - Fixed some em",
+  "src_files": [
+   "dateutil/__init__.py",
+   "dateutil/rrule.py",
+   "dateutil/zoneinfo/__init__.py"
+  ],
+  "test_files": [
+   "test.py"
+  ],
+  "src_lines": 17,
+  "multi_file": true
+ }
+]

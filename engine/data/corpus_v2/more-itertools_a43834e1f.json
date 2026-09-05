@@ -1,0 +1,36 @@
+{
+ "repo": "more-itertools",
+ "fix_commit": "a43834e1f985d896888d5bc67e0773d833702845",
+ "parent_commit": "97f501415c5efd96a0a4af56ffdc0a524cca03b6",
+ "answer_files": [
+  "more_itertools/more.py"
+ ],
+ "answer_functions": [
+  "more_itertools/more.py::_zip_equal_generator",
+  "more_itertools/more.py::zip_equal"
+ ],
+ "patch_lines": 20,
+ "added_tests": {
+  "tests/test_more.py::ZipEqualTest::test_equal": {
+   "parent": "pass",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "tests/test_more.py::ZipEqualTest::test_unequal": {
+   "parent": "pass",
+   "fix": "pass",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "tests/test_more.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 4.6,
+ "env_error_tests": 0,
+ "qualified": false,
+ "selector_event_proxy_v1": false
+}

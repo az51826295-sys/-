@@ -1,0 +1,29 @@
+{
+ "repo": "tinydb",
+ "fix_commit": "1fa99fb3ff4e0f8ebd69d43a5fac7aa848b668d8",
+ "parent_commit": "7e5dc031b5326971241f8322c0a1d8e3b50acd1a",
+ "answer_files": [
+  "tinydb/table.py"
+ ],
+ "answer_functions": [
+  "tinydb/table.py::search"
+ ],
+ "patch_lines": 26,
+ "added_tests": {
+  "tests/test_tinydb.py::test_lambda_query": {
+   "parent": "pass",
+   "fix": "pass",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "tests/test_tinydb.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 2.7,
+ "env_error_tests": 0,
+ "qualified": false
+}

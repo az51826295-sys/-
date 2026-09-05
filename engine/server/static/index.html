@@ -1,0 +1,105 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>연출가 AI</title>
+<style>
+ :root{--bg:#14141a;--fg:#e8e6e3;--dim:#94918a;--line:#2b2b35;--accent:#c8a24a;
+       --me:#22323f;--ai:#1b1b23}
+ *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+ body{margin:0;background:var(--bg);color:var(--fg);
+   font:16px/1.55 "Malgun Gothic",-apple-system,system-ui,sans-serif}
+ header{position:sticky;top:0;background:var(--bg);border-bottom:1px solid var(--line);
+   padding:12px 16px;display:flex;align-items:baseline;gap:10px;z-index:5}
+ header b{font-size:16px}
+ header span{color:var(--dim);font-size:12px}
+ #log{padding:14px 14px 0;max-width:760px;margin:0 auto}
+ .msg{margin:10px 0;padding:11px 14px;border-radius:12px;max-width:88%;
+   white-space:pre-wrap;word-break:break-word}
+ .me{background:var(--me);margin-left:auto}
+ .ai{background:var(--ai);border:1px solid var(--line)}
+ .opts{display:flex;flex-direction:column;gap:8px;margin:8px 0 4px}
+ button.opt{text-align:left;background:#1c1c25;color:var(--fg);
+   border:1px solid var(--line);border-radius:10px;padding:12px 14px;
+   cursor:pointer;font:inherit}
+ button.opt:active{background:var(--accent);color:#191919}
+ button.opt .lab{font-weight:600}
+ button.opt .det{color:var(--dim);font-size:12.5px;margin-top:5px;line-height:1.45}
+ button.opt .gate{color:#cf9a55;font-size:12.5px;margin-top:3px}
+ .spec{max-width:760px;margin:16px auto 0;border-top:1px solid var(--line);
+   padding:12px 14px;color:var(--dim);font-size:13px}
+ .spec b{color:var(--fg)}
+ .bar{height:6px;background:#23232c;border-radius:3px;overflow:hidden;margin:7px 0}
+ .bar i{display:block;height:100%;background:var(--accent)}
+ form{position:sticky;bottom:0;background:var(--bg);border-top:1px solid var(--line);
+   padding:10px 14px;display:flex;gap:8px;max-width:760px;margin:20px auto 0}
+ input{flex:1;padding:13px;background:#1c1c25;color:var(--fg);
+   border:1px solid var(--line);border-radius:10px;font:inherit}
+ button.send{background:var(--accent);color:#191919;border:0;border-radius:10px;
+   padding:0 18px;font:inherit;font-weight:700;cursor:pointer}
+ .think{color:var(--dim);font-style:italic}
+</style>
+<header><b>연출가 AI</b><span>고르시면 그게 곧 명세가 됩니다</span></header>
+<div id="log"></div>
+<div class="spec" id="spec"></div>
+<form id="f"><input id="t" placeholder="무엇을 만들까요?" autocomplete="off">
+  <button class="send">보내기</button></form>
+<script>
+let SID=null,BUSY=false;
+const log=document.getElementById('log');
+const esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const add=(cls,html)=>{const d=document.createElement('div');d.className='msg '+cls;
+  d.innerHTML=html;log.appendChild(d);d.scrollIntoView({block:'end'});return d};
+
+async function send(message,picked){
+  if(BUSY)return; BUSY=true;
+  if(message&&!picked) add('me',esc(message));
+  const t=add('ai think','생각 중…');
+  try{
+    const r=await fetch('/api/chat',{method:'POST',
+      headers:{'Content-Type':'application/json','x-client-time':new Date().toISOString()},
+      body:JSON.stringify({session:SID,message:message||'',picked})}).then(r=>r.json());
+    t.remove();
+    if(r.error){add('ai','오류: '+esc(r.error));BUSY=false;return}
+    SID=r.session;
+    add('ai',esc(r.reply));
+    if(r.choices&&r.choices.length){
+      const box=document.createElement('div');box.className='opts';
+      r.choices.forEach(c=>{
+        const b=document.createElement('button');b.className='opt';
+        const det=(c.measurables||[]).map(m=>
+          `· ${esc(m.name)} ${esc(m.op)} ${esc(m.value)}`).join('<br>');
+        const gate=(c.human_gate||[]).map(g=>`? ${esc(g)}`).join('<br>');
+        b.innerHTML=`<div class="lab">${esc(c.label)}</div>`+
+          (det?`<div class="det">${det}</div>`:'')+
+          (gate?`<div class="gate">${gate}</div>`:'');
+        b.onclick=()=>{box.remove();add('me',esc(c.label));send('',c.key)};
+        box.appendChild(b);
+      });
+      log.appendChild(box);box.scrollIntoView({block:'end'});
+    }
+    if(r.done&&r.blueprint){
+      add('ai','<b>설계도</b>\n'+esc(r.blueprint.summary||r.blueprint.vision||''));
+    }
+    showSpec(r);
+  }catch(e){t.remove();add('ai','연결이 끊겼습니다: '+esc(e.message))}
+  BUSY=false;
+}
+
+function showSpec(r){
+  const d=r.decomposition||{},s=r.spec||{};
+  const pct=d.rate==null?0:Math.round(d.rate*100);
+  document.getElementById('spec').innerHTML=
+    `<b>분해율 ${d.rate==null?'—':pct+'%'}</b> — 기계가 잴 수 있는 기준 `+
+    `${d.measurable||0}개 / 사람 눈에 남긴 것 ${d.human_gate||0}개`+
+    `<div class="bar"><i style="width:${pct}%"></i></div>`+
+    (s.picks&&s.picks.length?
+      '고른 것: '+s.picks.map(p=>esc(p.label)).join(' · '):'');
+}
+
+document.getElementById('f').onsubmit=e=>{
+  e.preventDefault();
+  const t=document.getElementById('t');
+  const v=t.value.trim(); if(!v)return; t.value='';
+  send(v,null);
+};
+</script>

@@ -1,0 +1,123 @@
+{
+  "spec": "tier-blind-tally-v0",
+  "design": "docs/tier-compare-v0-design.md",
+  "trials": 10000,
+  "seed": 12345,
+  "alpha": 0.05,
+  "n_picks": 31,
+  "n_concepts": 9,
+  "gate_ok": true,
+  "by_tier": {
+    "haiku": {
+      "observed": 0,
+      "expected": 3.66,
+      "p_value": 0.0252,
+      "verdict": "avoided",
+      "why": "permutation_significant",
+      "pool_share": 0.1385
+    },
+    "opus": {
+      "observed": 13,
+      "expected": 14.27,
+      "p_value": 0.6893,
+      "verdict": "undefined",
+      "why": "not_significant",
+      "pool_share": 0.4545
+    },
+    "sonnet": {
+      "observed": 18,
+      "expected": 13.07,
+      "p_value": 0.0759,
+      "verdict": "undefined",
+      "why": "not_significant",
+      "pool_share": 0.4069
+    }
+  },
+  "per_concept": {
+    "01_dialogue": {
+      "picked": 1,
+      "pool": 20,
+      "picked_arms": [
+        "opus"
+      ]
+    },
+    "02_equipment": {
+      "picked": 1,
+      "pool": 28,
+      "picked_arms": [
+        "sonnet"
+      ]
+    },
+    "03_exit": {
+      "picked": 3,
+      "pool": 26,
+      "picked_arms": [
+        "opus",
+        "opus",
+        "opus"
+      ]
+    },
+    "04_inventory": {
+      "picked": 2,
+      "pool": 24,
+      "picked_arms": [
+        "sonnet",
+        "opus"
+      ]
+    },
+    "05_map": {
+      "picked": 6,
+      "pool": 30,
+      "picked_arms": [
+        "sonnet",
+        "sonnet",
+        "opus",
+        "opus",
+        "sonnet",
+        "opus"
+      ]
+    },
+    "06_quest": {
+      "picked": 5,
+      "pool": 24,
+      "picked_arms": [
+        "sonnet",
+        "opus",
+        "sonnet",
+        "sonnet",
+        "sonnet"
+      ]
+    },
+    "07_save": {
+      "picked": 6,
+      "pool": 23,
+      "picked_arms": [
+        "sonnet",
+        "sonnet",
+        "sonnet",
+        "opus",
+        "sonnet",
+        "sonnet"
+      ]
+    },
+    "08_settings": {
+      "picked": 2,
+      "pool": 28,
+      "picked_arms": [
+        "sonnet",
+        "sonnet"
+      ]
+    },
+    "09_stats": {
+      "picked": 5,
+      "pool": 28,
+      "picked_arms": [
+        "sonnet",
+        "opus",
+        "opus",
+        "sonnet",
+        "opus"
+      ]
+    }
+  }
+}

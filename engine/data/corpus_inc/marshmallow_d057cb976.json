@@ -1,0 +1,61 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "d057cb9768c4dfb4d7614c56772bf4338d312073",
+ "parent_commit": "cde0ff74e5803ed2c0244fce2dc3da256d4a300b",
+ "answer_functions": [
+  "marshmallow/serializer.py::dump",
+  "marshmallow/serializer.py::load"
+ ],
+ "repro_tests": [
+  "tests/test_deserialization.py::TestSchemaDeserialization::test_deserialization_returns_errors",
+  "tests/test_deserialization.py::TestSchemaDeserialization::test_deserialize_from_json",
+  "tests/test_deserialization.py::TestSchemaDeserialization::test_deserialize_many",
+  "tests/test_deserialization.py::TestSchemaDeserialization::test_deserialize_to_dict",
+  "tests/test_deserialization.py::TestSchemaDeserialization::test_deserialize_with_attribute_param",
+  "tests/test_deserialization.py::TestSchemaDeserialization::test_make_object",
+  "tests/test_deserialization.py::TestSchemaDeserialization::test_nested_list_deserialization_to_dict",
+  "tests/test_deserialization.py::TestSchemaDeserialization::test_nested_single_deserialization_to_dict",
+  "tests/test_serializer.py::test_dump_returns_dict_of_errors"
+ ],
+ "smoke": [
+  "tests/test_deserialization.py::TestFieldDeserialization::test_arbitrary_field_deserialization",
+  "tests/test_deserialization.py::TestFieldDeserialization::test_boolean_field_deserialization",
+  "tests/test_deserialization.py::TestFieldDeserialization::test_boolean_field_deserialization_with_custom_truthy_values"
+ ],
+ "baseline_pass_count": 190,
+ "probes": [
+  {
+   "applied": "marshmallow/serializer.py::dump",
+   "a_repro_pass": true,
+   "b_smoke_pass": true,
+   "c_no_regression": true,
+   "regressed": [],
+   "d_unmet": [
+    "tests/test_deserialization.py::TestSchemaDeserialization::test_deserialization_returns_errors",
+    "tests/test_deserialization.py::TestSchemaDeserialization::test_deserialize_from_json",
+    "tests/test_deserialization.py::TestSchemaDeserialization::test_deserialize_many",
+    "tests/test_deserialization.py::TestSchemaDeserialization::test_deserialize_to_dict",
+    "tests/test_deserialization.py::TestSchemaDeserialization::test_deserialize_with_attribute_param",
+    "tests/test_deserialization.py::TestSchemaDeserialization::test_make_object",
+    "tests/test_deserialization.py::TestSchemaDeserialization::test_nested_list_deserialization_to_dict",
+    "tests/test_deserialization.py::TestSchemaDeserialization::test_nested_single_deserialization_to_dict"
+   ],
+   "inc_event": true
+  },
+  {
+   "applied": "marshmallow/serializer.py::load",
+   "a_repro_pass": true,
+   "b_smoke_pass": true,
+   "c_no_regression": true,
+   "regressed": [],
+   "d_unmet": [
+    "tests/test_deserialization.py::TestSchemaDeserialization::test_nested_list_deserialization_to_dict",
+    "tests/test_deserialization.py::TestSchemaDeserialization::test_nested_single_deserialization_to_dict",
+    "tests/test_serializer.py::test_dump_returns_dict_of_errors"
+   ],
+   "inc_event": true
+  }
+ ],
+ "inc_event": true,
+ "regression_event": false
+}

@@ -1,0 +1,45 @@
+{
+ "repo": "dateutil",
+ "fix_commit": "2d42e046d55b9fbbc0a2f41ce83fb8ec5de2d28b",
+ "parent_commit": "061e835e726937a90e143d0d2c28630c97c982f7",
+ "answer_files": [
+  "dateutil/parser.py"
+ ],
+ "answer_functions": [
+  "dateutil/parser.py::resolve_ymd"
+ ],
+ "patch_lines": 5,
+ "added_tests": {
+  "dateutil/test/test_parser.py::ParserTest::testNoYearFirstNoDayFirst": {
+   "parent": "fail",
+   "fix": "fail",
+   "mode": "file"
+  },
+  "dateutil/test/test_parser.py::ParserTest::testYearFirst": {
+   "parent": "fail",
+   "fix": "fail",
+   "mode": "file"
+  },
+  "dateutil/test/test_parser.py::ParserTest::testDayFirst": {
+   "parent": "fail",
+   "fix": "fail",
+   "mode": "file"
+  },
+  "dateutil/test/test_parser.py::ParserTest::testDayFirstYearFirst": {
+   "parent": "fail",
+   "fix": "fail",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "dateutil/test/test_parser.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 11.1,
+ "env_error_tests": 0,
+ "qualified": false,
+ "selector_event_proxy_v1": false
+}

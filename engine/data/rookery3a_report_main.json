@@ -1,0 +1,1799 @@
+{
+ "results": [
+  {
+   "task": "mi_sliced_negative",
+   "arm": "A",
+   "rep": 0,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    }
+   ],
+   "test_runs": 6,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 24.4,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "mi_sliced_negative",
+   "arm": "B",
+   "rep": 0,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    },
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": ""
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": ""
+    }
+   ],
+   "test_runs": 6,
+   "rollback_rounds": 0,
+   "duplicates": 2,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 23.8,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "mi_sliced_negative",
+   "arm": "A",
+   "rep": 1,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    }
+   ],
+   "test_runs": 6,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 20.2,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "mi_sliced_negative",
+   "arm": "B",
+   "rep": 1,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    },
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": ""
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": ""
+    }
+   ],
+   "test_runs": 6,
+   "rollback_rounds": 0,
+   "duplicates": 2,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 25.0,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "mi_sliced_negative",
+   "arm": "A",
+   "rep": 2,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    }
+   ],
+   "test_runs": 6,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 21.8,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "mi_sliced_negative",
+   "arm": "B",
+   "rep": 2,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    },
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": ""
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": ""
+    }
+   ],
+   "test_runs": 6,
+   "rollback_rounds": 0,
+   "duplicates": 2,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 25.3,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "mi_interleave_empty",
+   "arm": "A",
+   "rep": 0,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    }
+   ],
+   "test_runs": 6,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 21.4,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "mi_interleave_empty",
+   "arm": "B",
+   "rep": 0,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    },
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    }
+   ],
+   "test_runs": 10,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 43.8,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "mi_interleave_empty",
+   "arm": "A",
+   "rep": 1,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    }
+   ],
+   "test_runs": 6,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 22.4,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "mi_interleave_empty",
+   "arm": "B",
+   "rep": 1,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    },
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    }
+   ],
+   "test_runs": 10,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 43.5,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "mi_interleave_empty",
+   "arm": "A",
+   "rep": 2,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    }
+   ],
+   "test_runs": 6,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 25.4,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "mi_interleave_empty",
+   "arm": "B",
+   "rep": 2,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    },
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    }
+   ],
+   "test_runs": 10,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 48.7,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "mi_numeric_range_reversed",
+   "arm": "A",
+   "rep": 0,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    }
+   ],
+   "test_runs": 6,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 23.6,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "mi_numeric_range_reversed",
+   "arm": "B",
+   "rep": 0,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    },
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": ""
+    }
+   ],
+   "test_runs": 8,
+   "rollback_rounds": 0,
+   "duplicates": 1,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 34.3,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "mi_numeric_range_reversed",
+   "arm": "A",
+   "rep": 1,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    }
+   ],
+   "test_runs": 6,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 24.0,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "mi_numeric_range_reversed",
+   "arm": "B",
+   "rep": 1,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    },
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    }
+   ],
+   "test_runs": 10,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 48.1,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "mi_numeric_range_reversed",
+   "arm": "A",
+   "rep": 2,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    }
+   ],
+   "test_runs": 6,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 26.1,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "mi_numeric_range_reversed",
+   "arm": "B",
+   "rep": 2,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    },
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": ""
+    }
+   ],
+   "test_runs": 8,
+   "rollback_rounds": 0,
+   "duplicates": 1,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 34.7,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "mi_running_minmax_stability",
+   "arm": "A",
+   "rep": 0,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    }
+   ],
+   "test_runs": 6,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 23.4,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "mi_running_minmax_stability",
+   "arm": "B",
+   "rep": 0,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    },
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": ""
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    }
+   ],
+   "test_runs": 8,
+   "rollback_rounds": 0,
+   "duplicates": 1,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 32.5,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "mi_running_minmax_stability",
+   "arm": "A",
+   "rep": 1,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    }
+   ],
+   "test_runs": 6,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 24.5,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "mi_running_minmax_stability",
+   "arm": "B",
+   "rep": 1,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    },
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    }
+   ],
+   "test_runs": 10,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 167.2,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "mi_running_minmax_stability",
+   "arm": "A",
+   "rep": 2,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    }
+   ],
+   "test_runs": 6,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 22.2,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "mi_running_minmax_stability",
+   "arm": "B",
+   "rep": 2,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    },
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    }
+   ],
+   "test_runs": 10,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 41.0,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "tdb_lru_falsy",
+   "arm": "A",
+   "rep": 0,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    }
+   ],
+   "test_runs": 6,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 22.1,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "tdb_lru_falsy",
+   "arm": "B",
+   "rep": 0,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    },
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: ic.py::test_falsy_update_moves_to_end - AssertionError: as...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed in 0.86s\n"
+    }
+   ],
+   "test_runs": 10,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 164.9,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "tdb_lru_falsy",
+   "arm": "A",
+   "rep": 1,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    }
+   ],
+   "test_runs": 6,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 25.1,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "tdb_lru_falsy",
+   "arm": "B",
+   "rep": 1,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    },
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: ic.py::test_falsy_update_moves_to_end - AssertionError: as...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed in 0.90s\n"
+    }
+   ],
+   "test_runs": 10,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 34.9,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "tdb_lru_falsy",
+   "arm": "A",
+   "rep": 2,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    }
+   ],
+   "test_runs": 6,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 17.8,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "tdb_lru_falsy",
+   "arm": "B",
+   "rep": 2,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    },
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: ic.py::test_falsy_update_moves_to_end - AssertionError: as...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed in 0.91s\n"
+    }
+   ],
+   "test_runs": 10,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 33.2,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "tdb_lru_set_update",
+   "arm": "A",
+   "rep": 0,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    }
+   ],
+   "test_runs": 6,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 17.5,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "tdb_lru_set_update",
+   "arm": "B",
+   "rep": 0,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    },
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    }
+   ],
+   "test_runs": 10,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 35.3,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "tdb_lru_set_update",
+   "arm": "A",
+   "rep": 1,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    }
+   ],
+   "test_runs": 6,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 17.3,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "tdb_lru_set_update",
+   "arm": "B",
+   "rep": 1,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    },
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    }
+   ],
+   "test_runs": 10,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 31.2,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "tdb_lru_set_update",
+   "arm": "A",
+   "rep": 2,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    }
+   ],
+   "test_runs": 6,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 17.1,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "tdb_lru_set_update",
+   "arm": "B",
+   "rep": 2,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    },
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    }
+   ],
+   "test_runs": 10,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 32.5,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "tdb_doc_ids_missing",
+   "arm": "A",
+   "rep": 0,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    }
+   ],
+   "test_runs": 6,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 24.0,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "tdb_doc_ids_missing",
+   "arm": "B",
+   "rep": 0,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    },
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: rk_public.py::test_remove_missing_id_is_silent - KeyError: 99\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed in 0.96s\n"
+    }
+   ],
+   "test_runs": 10,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 49.0,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "tdb_doc_ids_missing",
+   "arm": "A",
+   "rep": 1,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    }
+   ],
+   "test_runs": 6,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 27.5,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "tdb_doc_ids_missing",
+   "arm": "B",
+   "rep": 1,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    },
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: rk_public.py::test_remove_missing_id_is_silent - KeyError: 99\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed in 0.90s\n"
+    }
+   ],
+   "test_runs": 10,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 47.0,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "tdb_doc_ids_missing",
+   "arm": "A",
+   "rep": 2,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    }
+   ],
+   "test_runs": 6,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 23.6,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "tdb_doc_ids_missing",
+   "arm": "B",
+   "rep": 2,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    },
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: rk_public.py::test_remove_missing_id_is_silent - KeyError: 99\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed in 1.31s\n"
+    }
+   ],
+   "test_runs": 10,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": true,
+   "final_status": "full",
+   "wall_s": 47.1,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "du_isotime_midnight",
+   "arm": "A",
+   "rep": 0,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "dateutil/test/test_isoparser.py::test_isotime_midnight: rser.py::test_isotime_midnight[24:00] - TypeEr...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.09s\n"
+    },
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    }
+   ],
+   "test_runs": 8,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "full",
+   "wall_s": 27.2,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "du_isotime_midnight",
+   "arm": "B",
+   "rep": 0,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "dateutil/test/test_isoparser.py::test_isotime_midnight: rser.py::test_isotime_midnight[24:00] - TypeEr...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.12s\n"
+    },
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "dateutil/test/test_isoparser.py::test_isotime_midnight: rser.py::test_isotime_midnight[24:00] - TypeEr...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.11s\n"
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "dateutil/test/test_isoparser.py::test_isotime_midnight: rser.py::test_isotime_midnight[24:00] - TypeEr...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.08s\n"
+    },
+    {
+     "call": 3,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    },
+    {
+     "call": 4,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "dateutil/test/test_isoparser.py::test_isotime_midnight: rser.py::test_isotime_midnight[24:00] - TypeEr...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.10s\n"
+    },
+    {
+     "call": 5,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": ""
+    }
+   ],
+   "test_runs": 16,
+   "rollback_rounds": 0,
+   "duplicates": 1,
+   "first_candidate_full": false,
+   "final_status": "full",
+   "wall_s": 67.9,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "du_isotime_midnight",
+   "arm": "A",
+   "rep": 1,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "dateutil/test/test_isoparser.py::test_isotime_midnight: rser.py::test_isotime_midnight[24:00] - TypeEr...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.08s\n"
+    },
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    }
+   ],
+   "test_runs": 8,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "full",
+   "wall_s": 27.5,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "du_isotime_midnight",
+   "arm": "B",
+   "rep": 1,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "dateutil/test/test_isoparser.py::test_isotime_midnight: rser.py::test_isotime_midnight[24:00] - TypeEr...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.09s\n"
+    },
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "dateutil/test/test_isoparser.py::test_isotime_midnight: rser.py::test_isotime_midnight[24:00] - TypeEr...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.09s\n"
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "dateutil/test/test_isoparser.py::test_isotime_midnight: rser.py::test_isotime_midnight[24:00] - TypeEr...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.11s\n"
+    },
+    {
+     "call": 3,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "dateutil/test/test_isoparser.py::test_isotime_midnight: rser.py::test_isotime_midnight[24:00] - TypeEr...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.09s\n"
+    },
+    {
+     "call": 4,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "dateutil/test/test_isoparser.py::test_isotime_midnight: rser.py::test_isotime_midnight[24:00] - TypeEr...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.11s\n"
+    },
+    {
+     "call": 5,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "dateutil/test/test_isoparser.py::test_isotime_midnight: rser.py::test_isotime_midnight[24:00] - TypeEr...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.08s\n"
+    }
+   ],
+   "test_runs": 20,
+   "rollback_rounds": 1,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "public_fail",
+   "wall_s": 84.1,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "du_isotime_midnight",
+   "arm": "A",
+   "rep": 2,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "dateutil/test/test_isoparser.py::test_isotime_midnight: rser.py::test_isotime_midnight[24:00] - TypeEr...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.09s\n"
+    },
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    }
+   ],
+   "test_runs": 8,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "full",
+   "wall_s": 27.2,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "du_isotime_midnight",
+   "arm": "B",
+   "rep": 2,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "dateutil/test/test_isoparser.py::test_isotime_midnight: rser.py::test_isotime_midnight[24:00] - TypeEr...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.09s\n"
+    },
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "dateutil/test/test_isoparser.py::test_isotime_midnight: rser.py::test_isotime_midnight[24:00] - TypeEr...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.66s\n"
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "dateutil/test/test_isoparser.py::test_isotime_midnight: rser.py::test_isotime_midnight[24:00] - TypeEr...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.07s\n"
+    },
+    {
+     "call": 3,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": true,
+     "detail": ""
+    },
+    {
+     "call": 4,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": ""
+    },
+    {
+     "call": 5,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": ""
+    }
+   ],
+   "test_runs": 14,
+   "rollback_rounds": 0,
+   "duplicates": 2,
+   "first_candidate_full": false,
+   "final_status": "full",
+   "wall_s": 58.6,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "du_isoparse_t24_rollover",
+   "arm": "A",
+   "rep": 0,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: Invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 1.09s\n"
+    },
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - TypeError: function ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 0.99s\n"
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: Invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 0.96s\n"
+    },
+    {
+     "call": 3,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - TypeError: function ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 0.89s\n"
+    },
+    {
+     "call": 4,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: Invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 0.97s\n"
+    },
+    {
+     "call": 5,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: Invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 0.96s\n"
+    }
+   ],
+   "test_runs": 16,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "regression",
+   "wall_s": 96.0,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "du_isoparse_t24_rollover",
+   "arm": "B",
+   "rep": 0,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: Invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 0.99s\n; dateutil/test/test_isoparser.py::test_year_only: rser.py::test_year_only[dt0] - IndexError: lis...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.08s\n"
+    },
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: Invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 0.94s\n; dateutil/test/test_isoparser.py::test_year_only: rser.py::test_year_only[dt0] - IndexError: lis...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.09s\n"
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: Invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 0.99s\n; dateutil/test/test_isoparser.py::test_year_only: rser.py::test_year_only[dt0] - IndexError: lis...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.11s\n"
+    },
+    {
+     "call": 3,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: Invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 0.97s\n; dateutil/test/test_isoparser.py::test_year_only: rser.py::test_year_only[dt0] - IndexError: lis...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.03s\n"
+    },
+    {
+     "call": 4,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: Invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 0.93s\n; dateutil/test/test_isoparser.py::test_year_only: rser.py::test_year_only[dt0] - IndexError: lis...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.10s\n"
+    },
+    {
+     "call": 5,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: Invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 0.94s\n; dateutil/test/test_isoparser.py::test_year_only: rser.py::test_year_only[dt0] - IndexError: lis...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.07s\n"
+    }
+   ],
+   "test_runs": 20,
+   "rollback_rounds": 1,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "regression",
+   "wall_s": 142.0,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "du_isoparse_t24_rollover",
+   "arm": "A",
+   "rep": 1,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: Invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 0.96s\n; dateutil/test/test_isoparser.py::test_year_only: rser.py::test_year_only[dt0] - IndexError: lis...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.07s\n"
+    },
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: Invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 0.92s\n"
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: Invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 0.95s\n"
+    },
+    {
+     "call": 3,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: Invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 1.05s\n"
+    },
+    {
+     "call": 4,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: Invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 0.95s\n"
+    },
+    {
+     "call": 5,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: Invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 0.97s\n"
+    }
+   ],
+   "test_runs": 16,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "regression",
+   "wall_s": 84.1,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "du_isoparse_t24_rollover",
+   "arm": "B",
+   "rep": 1,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: Invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 1.03s\n; dateutil/test/test_isoparser.py::test_year_only: rser.py::test_year_only[dt0] - IndexError: lis...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.06s\n"
+    },
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: Invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 0.98s\n; dateutil/test/test_isoparser.py::test_year_only: rser.py::test_year_only[dt0] - IndexError: lis...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.16s\n"
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: Invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 0.97s\n; dateutil/test/test_isoparser.py::test_year_only: rser.py::test_year_only[dt0] - IndexError: lis...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.06s\n"
+    },
+    {
+     "call": 3,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - AssertionError: asse...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 1.03s\n"
+    },
+    {
+     "call": 4,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: Invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 0.96s\n; dateutil/test/test_isoparser.py::test_year_only: rser.py::test_year_only[dt0] - IndexError: lis...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.06s\n"
+    },
+    {
+     "call": 5,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: Invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 0.95s\n; dateutil/test/test_isoparser.py::test_year_only: rser.py::test_year_only[dt0] - IndexError: lis...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.07s\n"
+    }
+   ],
+   "test_runs": 20,
+   "rollback_rounds": 1,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "regression",
+   "wall_s": 108.6,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "du_isoparse_t24_rollover",
+   "arm": "A",
+   "rep": 2,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: Invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 0.95s\n; dateutil/test/test_isoparser.py::test_year_only: rser.py::test_year_only[dt0] - IndexError: lis...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.08s\n"
+    },
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: Invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 0.99s\n; dateutil/test/test_isoparser.py::test_year_only: rser.py::test_year_only[dt0] - IndexError: lis...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.06s\n"
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: Invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 0.96s\n; dateutil/test/test_isoparser.py::test_year_only: rser.py::test_year_only[dt0] - IndexError: lis...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.06s\n"
+    },
+    {
+     "call": 3,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: Invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 0.96s\n; dateutil/test/test_isoparser.py::test_year_only: rser.py::test_year_only[dt0] - IndexError: lis...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.04s\n"
+    },
+    {
+     "call": 4,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: Invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 0.95s\n; dateutil/test/test_isoparser.py::test_year_only: rser.py::test_year_only[dt0] - IndexError: lis...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.12s\n"
+    },
+    {
+     "call": 5,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: Invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 0.96s\n; dateutil/test/test_isoparser.py::test_year_only: rser.py::test_year_only[dt0] - IndexError: lis...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.08s\n"
+    }
+   ],
+   "test_runs": 16,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "regression",
+   "wall_s": 124.5,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "du_isoparse_t24_rollover",
+   "arm": "B",
+   "rep": 2,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: Invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 0.95s\n; dateutil/test/test_isoparser.py::test_year_only: rser.py::test_year_only[dt0] - IndexError: lis...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.03s\n"
+    },
+    {
+     "call": 1,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: Invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 0.97s\n; dateutil/test/test_isoparser.py::test_year_only: rser.py::test_year_only[dt0] - IndexError: lis...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.08s\n"
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: Invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 0.96s\n; dateutil/test/test_isoparser.py::test_year_only: rser.py::test_year_only[dt0] - IndexError: lis...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.06s\n"
+    },
+    {
+     "call": 3,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": ""
+    },
+    {
+     "call": 4,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: Invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 0.96s\n; dateutil/test/test_isoparser.py::test_year_only: rser.py::test_year_only[dt0] - IndexError: lis...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.04s\n"
+    },
+    {
+     "call": 5,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "test_rk_public.py: _t2400_rolls_to_next_day - ValueError: Invalid ...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 1 warning in 0.99s\n; dateutil/test/test_isoparser.py::test_year_only: rser.py::test_year_only[dt0] - IndexError: lis...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 2 warnings in 1.05s\n"
+    }
+   ],
+   "test_runs": 18,
+   "rollback_rounds": 1,
+   "duplicates": 1,
+   "first_candidate_full": false,
+   "final_status": "regression",
+   "wall_s": 127.2,
+   "failure_report_chars": 0
+  }
+ ],
+ "summary": {
+  "A": {
+   "n": 27,
+   "full": 0.8888888888888888,
+   "public_only": 0.0,
+   "regression": 0.1111111111111111,
+   "first_candidate_full": 0.7777777777777778,
+   "recovery": 0.5,
+   "mean_test_runs": 7.333333333333333,
+   "duplicates": 0,
+   "mean_wall_s": 31.8,
+   "code_fails": 0
+  },
+  "B": {
+   "n": 27,
+   "full": 0.8518518518518519,
+   "public_only": 0.0,
+   "regression": 0.1111111111111111,
+   "first_candidate_full": 0.7777777777777778,
+   "recovery": 0.3333333333333333,
+   "mean_test_runs": 11.11111111111111,
+   "duplicates": 13,
+   "mean_wall_s": 60.4,
+   "code_fails": 0
+  },
+  "usage": {
+   "calls": 144,
+   "input_tokens": 266663,
+   "output_tokens": 80870
+  }
+ }
+}

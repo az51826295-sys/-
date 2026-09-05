@@ -1,0 +1,39 @@
+{
+ "repo": "dateutil",
+ "fix_commit": "cfa0098a581b01fe8d3609a083be380c7c56361e",
+ "parent_commit": "b46e7215bcaab6e87fc3da7217a7c71c3a5f308d",
+ "answer_files": [],
+ "answer_functions": [],
+ "patch_lines": 8,
+ "added_tests": {
+  "dateutil/test/test.py::TZTest::testLeapCountDecodesProperly": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "dateutil/test/test.py::TZTest::testIsStd": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "dateutil/test/test.py::TZTest::testIsGmt": {
+   "parent": "pass",
+   "fix": "pass",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [
+  "dateutil/test/test.py::TZTest::testLeapCountDecodesProperly",
+  "dateutil/test/test.py::TZTest::testIsStd"
+ ],
+ "test_files": [
+  "dateutil/test/test.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 7.4,
+ "env_error_tests": 0,
+ "qualified": true,
+ "selector_event_proxy_v1": false
+}

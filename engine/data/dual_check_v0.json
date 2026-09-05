@@ -1,0 +1,383 @@
+{
+  "spec": "dual-implementation-v0",
+  "design": "docs/dual-implementation-v0-design.md",
+  "compare": {
+    "verdict": "agree",
+    "why": "identical_on_every_sample",
+    "agreement": 1.0,
+    "n": 505,
+    "violating": 188,
+    "gate_ok": true,
+    "by_kind": {
+      "candidate": {
+        "n": 69,
+        "agree": 69
+      },
+      "legal": {
+        "n": 200,
+        "agree": 200
+      },
+      "inspec": {
+        "n": 48,
+        "agree": 48
+      },
+      "negative": {
+        "n": 188,
+        "agree": 188
+      }
+    },
+    "disagreements": []
+  },
+  "sweep": {
+    "verdict": "exact",
+    "mismatches": [],
+    "axes": {
+      "padding.min": {
+        "want": 2,
+        "observed": 2,
+        "status": "exact",
+        "why": null,
+        "points": [
+          {
+            "value": 0,
+            "ok": false,
+            "why": null
+          },
+          {
+            "value": 0.5,
+            "ok": false,
+            "why": null
+          },
+          {
+            "value": 1,
+            "ok": false,
+            "why": null
+          },
+          {
+            "value": 1.5,
+            "ok": false,
+            "why": null
+          },
+          {
+            "value": 2,
+            "ok": true,
+            "why": null
+          },
+          {
+            "value": 2.5,
+            "ok": true,
+            "why": null
+          },
+          {
+            "value": 3,
+            "ok": true,
+            "why": null
+          },
+          {
+            "value": 3.5,
+            "ok": true,
+            "why": null
+          },
+          {
+            "value": 4,
+            "ok": true,
+            "why": null
+          }
+        ]
+      },
+      "path.max_count": {
+        "want": 6,
+        "observed": 6,
+        "status": "exact",
+        "why": null,
+        "points": [
+          {
+            "value": 1,
+            "ok": true,
+            "why": null
+          },
+          {
+            "value": 2,
+            "ok": true,
+            "why": null
+          },
+          {
+            "value": 3,
+            "ok": true,
+            "why": null
+          },
+          {
+            "value": 4,
+            "ok": true,
+            "why": null
+          },
+          {
+            "value": 5,
+            "ok": true,
+            "why": null
+          },
+          {
+            "value": 6,
+            "ok": true,
+            "why": null
+          },
+          {
+            "value": 7,
+            "ok": false,
+            "why": null
+          },
+          {
+            "value": 8,
+            "ok": false,
+            "why": null
+          },
+          {
+            "value": 9,
+            "ok": false,
+            "why": null
+          }
+        ]
+      },
+      "shape.max_count": {
+        "want": 6,
+        "observed": 6,
+        "status": "exact",
+        "why": null,
+        "points": [
+          {
+            "value": 1,
+            "ok": true,
+            "why": null
+          },
+          {
+            "value": 2,
+            "ok": true,
+            "why": null
+          },
+          {
+            "value": 3,
+            "ok": true,
+            "why": null
+          },
+          {
+            "value": 4,
+            "ok": true,
+            "why": null
+          },
+          {
+            "value": 5,
+            "ok": true,
+            "why": null
+          },
+          {
+            "value": 6,
+            "ok": true,
+            "why": null
+          },
+          {
+            "value": 7,
+            "ok": false,
+            "why": null
+          },
+          {
+            "value": 8,
+            "ok": false,
+            "why": null
+          },
+          {
+            "value": 9,
+            "ok": false,
+            "why": null
+          }
+        ]
+      },
+      "path.max_total_commands": {
+        "want": 60,
+        "observed": 60,
+        "status": "exact",
+        "why": null,
+        "points": [
+          {
+            "value": 55,
+            "ok": true,
+            "why": null
+          },
+          {
+            "value": 56,
+            "ok": true,
+            "why": null
+          },
+          {
+            "value": 57,
+            "ok": true,
+            "why": null
+          },
+          {
+            "value": 58,
+            "ok": true,
+            "why": null
+          },
+          {
+            "value": 59,
+            "ok": true,
+            "why": null
+          },
+          {
+            "value": 60,
+            "ok": true,
+            "why": null
+          },
+          {
+            "value": 61,
+            "ok": false,
+            "why": null
+          },
+          {
+            "value": 62,
+            "ok": false,
+            "why": null
+          },
+          {
+            "value": 63,
+            "ok": false,
+            "why": null
+          },
+          {
+            "value": 64,
+            "ok": false,
+            "why": null
+          },
+          {
+            "value": 65,
+            "ok": false,
+            "why": null
+          }
+        ]
+      },
+      "stroke.width": {
+        "want": 1.5,
+        "observed": [
+          1.5
+        ],
+        "status": "exact",
+        "why": null,
+        "points": [
+          {
+            "value": 0.5,
+            "ok": false,
+            "why": null
+          },
+          {
+            "value": 1.0,
+            "ok": false,
+            "why": null
+          },
+          {
+            "value": 1.5,
+            "ok": true,
+            "why": null
+          },
+          {
+            "value": 2.0,
+            "ok": false,
+            "why": null
+          }
+        ]
+      },
+      "grid.snap": {
+        "want": 0.5,
+        "observed": [
+          0,
+          0.5,
+          1.0
+        ],
+        "status": "exact",
+        "why": null,
+        "points": [
+          {
+            "value": 0,
+            "ok": true,
+            "why": null
+          },
+          {
+            "value": 0.25,
+            "ok": false,
+            "why": null
+          },
+          {
+            "value": 0.5,
+            "ok": true,
+            "why": null
+          },
+          {
+            "value": 0.75,
+            "ok": false,
+            "why": null
+          },
+          {
+            "value": 1.0,
+            "ok": true,
+            "why": null
+          }
+        ]
+      },
+      "size.max_bytes": {
+        "want": 2048,
+        "observed": 2048,
+        "status": "exact",
+        "why": null,
+        "points": [
+          {
+            "value": 2044,
+            "ok": true,
+            "why": null
+          },
+          {
+            "value": 2045,
+            "ok": true,
+            "why": null
+          },
+          {
+            "value": 2046,
+            "ok": true,
+            "why": null
+          },
+          {
+            "value": 2047,
+            "ok": true,
+            "why": null
+          },
+          {
+            "value": 2048,
+            "ok": true,
+            "why": null
+          },
+          {
+            "value": 2049,
+            "ok": false,
+            "why": null
+          },
+          {
+            "value": 2050,
+            "ok": false,
+            "why": null
+          },
+          {
+            "value": 2051,
+            "ok": false,
+            "why": null
+          },
+          {
+            "value": 2052,
+            "ok": false,
+            "why": null
+          }
+        ]
+      }
+    }
+  },
+  "gate": {
+    "min_total": 300,
+    "min_violating": 40
+  }
+}

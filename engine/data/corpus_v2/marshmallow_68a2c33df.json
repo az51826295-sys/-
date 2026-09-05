@@ -1,0 +1,203 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "68a2c33df6c20f18cfb18e58c4b403f35ddffc90",
+ "parent_commit": "9d0ad0f237a30365892ece88cf5c6e2e4953d116",
+ "answer_files": [
+  "marshmallow/fields.py",
+  "marshmallow/marshalling.py",
+  "marshmallow/utils.py"
+ ],
+ "answer_functions": [
+  "marshmallow/fields.py::_validate",
+  "marshmallow/marshalling.py::_run_validator",
+  "marshmallow/utils.py::get_callable_name"
+ ],
+ "patch_lines": 62,
+ "added_tests": {
+  "tests/test_decorators.py::TestValidatesDecorator::test_precedence": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_deserialization.py::TestFieldDeserialization::test_invalid_float_field_deserialization": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_deserialization.py::TestFieldDeserialization::test_integer_field_deserialization": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_deserialization.py::TestFieldDeserialization::test_decimal_field_deserialization": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_deserialization.py::TestFieldDeserialization::test_decimal_field_with_places": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_deserialization.py::TestFieldDeserialization::test_invalid_datetime_deserialization": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_deserialization.py::TestFieldDeserialization::test_custom_date_format_datetime_field_deserialization": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_deserialization.py::TestFieldDeserialization::test_invalid_time_field_deserialization": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_deserialization.py::TestFieldDeserialization::test_invalid_timedelta_field_deserialization": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_deserialization.py::TestFieldDeserialization::test_invalid_date_field_deserialization": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_deserialization.py::TestFieldDeserialization::test_url_field_deserialization": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_deserialization.py::TestFieldDeserialization::test_email_field_deserialization": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_deserialization.py::TestFieldDeserialization::test_invalid_uuid_deserialization": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_deserialization.py::TestFieldDeserialization::test_field_deserialization_with_user_validator_function": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_deserialization.py::TestFieldDeserialization::test_field_deserialization_with_user_validator_class_that_returns_bool": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_deserialization.py::TestFieldDeserialization::test_field_deserialization_with_user_validators": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_deserialization.py::TestSchemaDeserialization::test_deserialize_with_attribute_param_error_returns_field_name_not_attribute_name": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_deserialization.py::TestSchemaDeserialization::test_deserialize_with_attribute_param_error_returns_load_from_not_attribute_name": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_deserialization.py::TestSchemaDeserialization::test_multiple_errors_can_be_stored_for_an_email_field": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_deserialization.py::TestSchemaDeserialization::test_multiple_errors_can_be_stored_for_a_url_field": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_deserialization.py::TestValidation::test_method_validator": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_marshalling.py::TestUnmarshaller::test_strict_mode_many": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_schema.py::test_dump_with_strict_mode_raises_error": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_schema.py::test_dump_resets_errors": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_schema.py::test_load_resets_errors": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_schema.py::TestValidate::test_validate_strict": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_schema.py::test_stores_invalid_url_error": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_schema.py::test_stored_invalid_email": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_schema.py::test_invalid_email": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_schema.py::test_invalid_url": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_schema.py::test_load_errors_with_many": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_schema.py::TestNestedSchema::test_nested_errors": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_validate.py::test_url_repr": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_validate.py::test_email_repr": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "tests/test_decorators.py",
+  "tests/test_deserialization.py",
+  "tests/test_marshalling.py",
+  "tests/test_schema.py",
+  "tests/test_utils.py",
+  "tests/test_validate.py"
+ ],
+ "location_hard_proxy": true,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 131.3,
+ "env_error_tests": 34,
+ "qualified": false
+}

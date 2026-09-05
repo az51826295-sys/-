@@ -1,0 +1,20 @@
+{
+ "ran_at": "2026-08-22T22:06:50",
+ "mock": true,
+ "tag": "stage1_dry48",
+ "scanned": 134,
+ "candidates": 11,
+ "verify_outcomes": {
+  "accepted": 11
+ },
+ "corpus": "C:\\Users\\az518\\Desktop\\genesis-project\\data\\corpus_20260822.json",
+ "enqueue": {
+  "added": 0,
+  "existing": 0,
+  "no_longer_fails": 0,
+  "title_filtered": 11,
+  "truncated": 0,
+  "unknown_repo": 0,
+  "added_ids": []
+ }
+}

@@ -1,0 +1,22 @@
+[J] gen 1: score=0.4731 acc=0.617 adopted=2/6
+[J] gen 2: score=0.5045 acc=0.643 adopted=2/6
+[J] gen 3: score=0.5045 acc=0.643 adopted=0/6
+[J] gen 4: score=0.5045 acc=0.643 adopted=0/6
+[J] gen 5: score=0.5045 acc=0.643 adopted=0/6
+[J] gen 6: score=0.6234 acc=0.729 adopted=1/6
+[J] gen 7: score=0.6234 acc=0.729 adopted=0/6
+[J] gen 8: score=0.6243 acc=0.729 adopted=1/6
+[J] gen 9: score=0.6243 acc=0.729 adopted=0/6
+[J] gen 10: score=0.6243 acc=0.729 adopted=0/6
+[J] gen 11: score=0.6251 acc=0.729 adopted=1/6
+[J] gen 12: score=0.6251 acc=0.729 adopted=0/6
+[J] gen 13: score=0.6251 acc=0.729 adopted=0/6
+[J] gen 14: score=0.6251 acc=0.729 adopted=0/6
+[J] gen 15: score=0.6251 acc=0.729 adopted=0/6
+[J] gen 16: score=0.6251 acc=0.729 adopted=0/6
+[J] gen 17: score=0.6251 acc=0.729 adopted=0/6
+[J] gen 18: score=0.6251 acc=0.729 adopted=0/6
+[J] gen 19: score=0.6251 acc=0.729 adopted=0/6
+[J] gen 20: score=0.6251 acc=0.729 adopted=0/6
+[J] 완료 9173s -> data\mission6_J_lineage.json
+  계보 감사: 위반 0

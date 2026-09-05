@@ -1,0 +1,28 @@
+{
+ "rows": 9160,
+ "full": {
+  "unique_keys": 6111,
+  "rematch": 3049,
+  "rematch_rate": 0.3329,
+  "rematch_in_run": 2081
+ },
+ "local": {
+  "unique_keys": 5341,
+  "rematch": 3819,
+  "rematch_rate": 0.4169,
+  "rematch_in_run": 2051
+ },
+ "stat": {
+  "unique_keys": 1638,
+  "rematch": 7522,
+  "rematch_rate": 0.8212,
+  "rematch_in_run": 4537
+ },
+ "blocked_counts": {
+  "CONDITIONAL": 425,
+  "PENALIZE": 257,
+  "BLOCK": 1624,
+  "APPROVAL_QUEUE": 0,
+  "NONE": 6854
+ }
+}

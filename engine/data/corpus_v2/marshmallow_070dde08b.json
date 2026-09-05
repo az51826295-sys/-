@@ -1,0 +1,58 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "070dde08bad456e743a0d2e1842c142a799a9568",
+ "parent_commit": "fea5428567960f15be0c9a3a4b99c0d9bb63848c",
+ "answer_files": [
+  "src/marshmallow/fields.py"
+ ],
+ "answer_functions": [
+  "src/marshmallow/fields.py::__init__",
+  "src/marshmallow/fields.py::_validate_missing"
+ ],
+ "patch_lines": 14,
+ "added_tests": {
+  "tests/test_deserialization.py::TestFieldDeserialization::test_constant_with_required": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [
+  "tests/test_deserialization.py::TestFieldDeserialization::test_constant_with_required"
+ ],
+ "test_files": [
+  "tests/test_deserialization.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [
+  {
+   "applied": "src/marshmallow/fields.py::__init__",
+   "passes_repro": [],
+   "still_failing": [
+    "tests/test_deserialization.py::TestFieldDeserialization::test_constant_with_required"
+   ],
+   "event": false,
+   "still_failing_fixpass": [
+    "tests/test_deserialization.py::TestFieldDeserialization::test_constant_with_required"
+   ],
+   "event_v2": false
+  },
+  {
+   "applied": "src/marshmallow/fields.py::_validate_missing",
+   "passes_repro": [],
+   "still_failing": [
+    "tests/test_deserialization.py::TestFieldDeserialization::test_constant_with_required"
+   ],
+   "event": false,
+   "still_failing_fixpass": [
+    "tests/test_deserialization.py::TestFieldDeserialization::test_constant_with_required"
+   ],
+   "event_v2": false
+  }
+ ],
+ "env_seconds": 4.4,
+ "env_error_tests": 0,
+ "qualified": true,
+ "selector_event_proxy_v1": false
+}

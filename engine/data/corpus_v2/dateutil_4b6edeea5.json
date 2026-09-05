@@ -1,0 +1,43 @@
+{
+ "repo": "dateutil",
+ "fix_commit": "4b6edeea5fcf761b417f5ed0a064edf44289dc41",
+ "parent_commit": "cb2a3c1c6be7224100dcf5937fa0945a12cb6d80",
+ "answer_files": [
+  "dateutil/tz/win.py"
+ ],
+ "answer_functions": [
+  "dateutil/tz/win.py::valuestodict"
+ ],
+ "patch_lines": 26,
+ "added_tests": {
+  "dateutil/test/test_tz.py::TzWinTest::testIsdstZoneWithNoDaylightSaving": {
+   "parent": "fail",
+   "fix": "fail",
+   "mode": "file"
+  },
+  "dateutil/test/test_tz.py::TzWinTest::testOffset": {
+   "parent": "pass",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "dateutil/test/test_tz.py::TzWinTest::testLocal": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [
+  "dateutil/test/test_tz.py::TzWinTest::testLocal"
+ ],
+ "test_files": [
+  "dateutil/test/test.py",
+  "dateutil/test/test_tz.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 7.1,
+ "env_error_tests": 0,
+ "qualified": true,
+ "selector_event_proxy_v1": false
+}

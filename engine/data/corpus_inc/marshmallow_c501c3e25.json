@@ -1,0 +1,16 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "c501c3e256a8ab33bab1be5095f7c220ccad55bb",
+ "parent_commit": "0dfb64751535a4c7064ab3a38cf84d602eada9be",
+ "answer_functions": [
+  "marshmallow/fields.py::_format_num",
+  "marshmallow/fields.py::serialize"
+ ],
+ "repro_tests": [],
+ "smoke": [],
+ "baseline_pass_count": 0,
+ "probes": [],
+ "inc_event": false,
+ "regression_event": false,
+ "skipped": "no repro or no answer functions"
+}

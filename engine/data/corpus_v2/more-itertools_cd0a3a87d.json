@@ -1,0 +1,42 @@
+{
+ "repo": "more-itertools",
+ "fix_commit": "cd0a3a87d231033db06a3c222fe893025e398a86",
+ "parent_commit": "7c1b6482a00cb9c1f76061c12be192ed5043e5ea",
+ "answer_files": [
+  "more_itertools/more.py"
+ ],
+ "answer_functions": [
+  "more_itertools/more.py::iterate"
+ ],
+ "patch_lines": 5,
+ "added_tests": {
+  "tests/test_more.py::IterateTests::test_basic": {
+   "parent": "pass",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "tests/test_more.py::IterateTests::test_func_controls_iteration_stop": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "tests/test_more.py::IterateTests::test_runtime_error_keeps_to_raise": {
+   "parent": "pass",
+   "fix": "pass",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [
+  "tests/test_more.py::IterateTests::test_func_controls_iteration_stop"
+ ],
+ "test_files": [
+  "tests/test_more.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 7.1,
+ "env_error_tests": 0,
+ "qualified": true,
+ "selector_event_proxy_v1": false
+}

@@ -1,0 +1,6286 @@
+{
+ "experiment": "mission7b_R_ms1",
+ "versions": {
+  "0": {
+   "version": 0,
+   "parent_version": null,
+   "rules": [
+    {
+     "rule_id": "r0",
+     "conditions": [],
+     "actions": [
+      {
+       "name": "SHARE_BEST",
+       "mode": null
+      }
+     ],
+     "role": null,
+     "priority": 0,
+     "author_id": "founder",
+     "created_gen": 0
+    }
+   ],
+   "init_threshold": 0.0,
+   "adopted_gen": 0
+  },
+  "1": {
+   "version": 0,
+   "parent_version": null,
+   "rules": [
+    {
+     "rule_id": "r0",
+     "conditions": [],
+     "actions": [
+      {
+       "name": "SHARE_BEST",
+       "mode": null
+      }
+     ],
+     "role": null,
+     "priority": 0,
+     "author_id": "founder",
+     "created_gen": 0
+    },
+    {
+     "rule_id": "g1-agent0-0",
+     "conditions": [],
+     "actions": [
+      {
+       "name": "PASS",
+       "mode": null
+      },
+      {
+       "name": "RAISE_THRESHOLD",
+       "mode": null
+      }
+     ],
+     "role": null,
+     "priority": 1,
+     "author_id": "agent0",
+     "created_gen": 1
+    }
+   ],
+   "init_threshold": 0.0,
+   "adopted_gen": 0
+  },
+  "2": {
+   "version": 0,
+   "parent_version": null,
+   "rules": [
+    {
+     "rule_id": "g1-agent0-0",
+     "conditions": [],
+     "actions": [
+      {
+       "name": "PASS",
+       "mode": null
+      },
+      {
+       "name": "RAISE_THRESHOLD",
+       "mode": null
+      }
+     ],
+     "role": null,
+     "priority": 1,
+     "author_id": "agent0",
+     "created_gen": 1
+    }
+   ],
+   "init_threshold": 0.0,
+   "adopted_gen": 0
+  },
+  "3": {
+   "version": 0,
+   "parent_version": null,
+   "rules": [
+    {
+     "rule_id": "g1-agent0-0",
+     "conditions": [],
+     "actions": [
+      {
+       "name": "PASS",
+       "mode": null
+      },
+      {
+       "name": "RAISE_THRESHOLD",
+       "mode": null
+      }
+     ],
+     "role": null,
+     "priority": 1,
+     "author_id": "agent0",
+     "created_gen": 1
+    },
+    {
+     "rule_id": "g7-agent5-5",
+     "conditions": [
+      {
+       "metric": "active_speaker_count",
+       "op": "<",
+       "value": 2.0
+      }
+     ],
+     "actions": [
+      {
+       "name": "RAISE_THRESHOLD",
+       "mode": null
+      },
+      {
+       "name": "SHARE_BEST",
+       "mode": null
+      }
+     ],
+     "role": null,
+     "priority": 6,
+     "author_id": "agent5",
+     "created_gen": 7
+    }
+   ],
+   "init_threshold": 0.0,
+   "adopted_gen": 0
+  },
+  "4": {
+   "version": 0,
+   "parent_version": null,
+   "rules": [
+    {
+     "rule_id": "g7-agent5-5",
+     "conditions": [
+      {
+       "metric": "active_speaker_count",
+       "op": "<",
+       "value": 2.0
+      }
+     ],
+     "actions": [
+      {
+       "name": "RAISE_THRESHOLD",
+       "mode": null
+      },
+      {
+       "name": "SHARE_BEST",
+       "mode": null
+      }
+     ],
+     "role": null,
+     "priority": 6,
+     "author_id": "agent5",
+     "created_gen": 7
+    }
+   ],
+   "init_threshold": 0.0,
+   "adopted_gen": 0
+  },
+  "5": {
+   "version": 0,
+   "parent_version": null,
+   "rules": [
+    {
+     "rule_id": "g7-agent5-5",
+     "conditions": [
+      {
+       "metric": "active_speaker_count",
+       "op": "<",
+       "value": 2.0
+      }
+     ],
+     "actions": [
+      {
+       "name": "RAISE_THRESHOLD",
+       "mode": null
+      },
+      {
+       "name": "SHARE_BEST",
+       "mode": null
+      }
+     ],
+     "role": null,
+     "priority": 6,
+     "author_id": "agent5",
+     "created_gen": 7
+    },
+    {
+     "rule_id": "g17-agent1-1",
+     "conditions": [
+      {
+       "metric": "mean_recent_gain",
+       "op": "<",
+       "value": 0.2
+      }
+     ],
+     "actions": [
+      {
+       "name": "SET_MODE",
+       "mode": 0
+      },
+      {
+       "name": "PASS",
+       "mode": null
+      }
+     ],
+     "role": null,
+     "priority": 9,
+     "author_id": "agent1",
+     "created_gen": 17
+    }
+   ],
+   "init_threshold": 0.0,
+   "adopted_gen": 0
+  }
+ },
+ "generations": [
+  {
+   "gen": 1,
+   "incumbent_version_before": 0,
+   "incumbent_version_after": 1,
+   "incumbent_score": 0.5006906611906613,
+   "rolled_back": false,
+   "observation_metrics": {
+    "mean_accuracy": 0.6209239130434783,
+    "unsolved_rate": 0.6,
+    "comm_ratio": 0.9421626984126984,
+    "weak_share_rate": 0.15111652236652234,
+    "pass_rate": 0.0,
+    "forced_share_rate": 0.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "add",
+     "score": 0.5006906611906613,
+     "adopted": true,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g1-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent0",
+        "created_gen": 1
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "mutate",
+     "score": 0.36518037518037516,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "number_of_passes",
+          "op": "<",
+          "value": 1.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "mutate",
+     "score": 0.4726033475783475,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "init_threshold",
+     "score": 0.37018037518037517,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "add",
+     "score": 0.3517134920634921,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g1-agent4-4",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 7,
+        "author_id": "agent4",
+        "created_gen": 1
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "mutate",
+     "score": 0.44808772246272244,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 1.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  },
+  {
+   "gen": 2,
+   "incumbent_version_before": 1,
+   "incumbent_version_after": 2,
+   "incumbent_score": 0.5056906611906613,
+   "rolled_back": false,
+   "observation_metrics": {
+    "mean_accuracy": 0.5829166666666666,
+    "unsolved_rate": 0.65,
+    "comm_ratio": 0.9593434343434343,
+    "weak_share_rate": 0.1653174603174603,
+    "pass_rate": 1.0,
+    "forced_share_rate": 1.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "remove",
+     "score": 0.37018037518037517,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "add",
+     "score": 0.4856906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g1-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g2-agent1-1",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 1,
+        "author_id": "agent1",
+        "created_gen": 2
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "init_threshold",
+     "score": 0.5006906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g1-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent0",
+        "created_gen": 1
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "remove",
+     "score": 0.37018037518037517,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "remove",
+     "score": 0.5056906611906613,
+     "adopted": true,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g1-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent0",
+        "created_gen": 1
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "remove",
+     "score": 0.37018037518037517,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  },
+  {
+   "gen": 3,
+   "incumbent_version_before": 2,
+   "incumbent_version_after": 2,
+   "incumbent_score": 0.5056906611906613,
+   "rolled_back": true,
+   "observation_metrics": {
+    "mean_accuracy": 0.5829166666666666,
+    "unsolved_rate": 0.65,
+    "comm_ratio": 0.9593434343434343,
+    "weak_share_rate": 0.1653174603174603,
+    "pass_rate": 1.0,
+    "forced_share_rate": 1.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "mutate",
+     "score": 0.5006906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g1-agent0-0",
+        "conditions": [
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 300.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent0",
+        "created_gen": 1
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "mutate",
+     "score": 0.5056906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g1-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 5,
+        "author_id": "agent0",
+        "created_gen": 1
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "add",
+     "score": 0.4906906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g1-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g3-agent2-2",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 9,
+        "author_id": "agent2",
+        "created_gen": 3
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "add",
+     "score": 0.4906906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g1-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g3-agent3-3",
+        "conditions": [
+         {
+          "metric": "my_mode",
+          "op": "<",
+          "value": 2.0
+         },
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent3",
+        "created_gen": 3
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "add",
+     "score": 0.4806906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g1-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "my_mode",
+          "op": ">=",
+          "value": 1.0
+         },
+         {
+          "metric": "rounds_since_my_action",
+          "op": "<",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 0
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": 2,
+        "priority": 5,
+        "author_id": "agent4",
+        "created_gen": 3
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "add",
+     "score": 0.2897601715916933,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g1-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g3-agent5-5",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": "<",
+          "value": 10.0
+         },
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.7
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 9,
+        "author_id": "agent5",
+        "created_gen": 3
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  },
+  {
+   "gen": 4,
+   "incumbent_version_before": 2,
+   "incumbent_version_after": 2,
+   "incumbent_score": 0.5056906611906613,
+   "rolled_back": true,
+   "observation_metrics": {
+    "mean_accuracy": 0.5829166666666666,
+    "unsolved_rate": 0.65,
+    "comm_ratio": 0.9593434343434343,
+    "weak_share_rate": 0.1653174603174603,
+    "pass_rate": 1.0,
+    "forced_share_rate": 1.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "mutate",
+     "score": 0.5056906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g1-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent0",
+        "created_gen": 1
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "add",
+     "score": 0.4806906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g1-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g4-agent1-1",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 2.0
+         },
+         {
+          "metric": "consecutive_all_pass",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": 2,
+        "priority": 7,
+        "author_id": "agent1",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "mutate",
+     "score": 0.5006906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g1-agent0-0",
+        "conditions": [
+         {
+          "metric": "number_of_passes",
+          "op": "<",
+          "value": 1.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent0",
+        "created_gen": 1
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "init_threshold",
+     "score": 0.5056906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g1-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent0",
+        "created_gen": 1
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "init_threshold",
+     "score": 0.5056906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g1-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent0",
+        "created_gen": 1
+       }
+      ],
+      "init_threshold": 0.1,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "mutate",
+     "score": 0.5006906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g1-agent0-0",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 10.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent0",
+        "created_gen": 1
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  },
+  {
+   "gen": 5,
+   "incumbent_version_before": 2,
+   "incumbent_version_after": 2,
+   "incumbent_score": 0.5056906611906613,
+   "rolled_back": true,
+   "observation_metrics": {
+    "mean_accuracy": 0.5829166666666666,
+    "unsolved_rate": 0.65,
+    "comm_ratio": 0.9593434343434343,
+    "weak_share_rate": 0.1653174603174603,
+    "pass_rate": 1.0,
+    "forced_share_rate": 1.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "mutate",
+     "score": 0.5006906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g1-agent0-0",
+        "conditions": [
+         {
+          "metric": "consecutive_low_gain",
+          "op": ">=",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent0",
+        "created_gen": 1
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "add",
+     "score": 0.4906906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g1-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g5-agent1-1",
+        "conditions": [
+         {
+          "metric": "my_mode",
+          "op": ">=",
+          "value": 3.0
+         },
+         {
+          "metric": "recent_share_gain",
+          "op": ">=",
+          "value": 0.05
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 9,
+        "author_id": "agent1",
+        "created_gen": 5
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "init_threshold",
+     "score": 0.5056906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g1-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent0",
+        "created_gen": 1
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "add",
+     "score": 0.5006906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g1-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g5-agent3-3",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 0
+         }
+        ],
+        "role": null,
+        "priority": 5,
+        "author_id": "agent3",
+        "created_gen": 5
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "add",
+     "score": 0.4856906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g1-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g5-agent4-4",
+        "conditions": [
+         {
+          "metric": "recent_share_gain",
+          "op": "<",
+          "value": 0.1
+         },
+         {
+          "metric": "active_speaker_count",
+          "op": ">=",
+          "value": 1.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 2,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 5
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "init_threshold",
+     "score": 0.5056906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g1-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent0",
+        "created_gen": 1
+       }
+      ],
+      "init_threshold": 0.1,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  },
+  {
+   "gen": 6,
+   "incumbent_version_before": 2,
+   "incumbent_version_after": 2,
+   "incumbent_score": 0.5056906611906613,
+   "rolled_back": true,
+   "observation_metrics": {
+    "mean_accuracy": 0.5829166666666666,
+    "unsolved_rate": 0.65,
+    "comm_ratio": 0.9593434343434343,
+    "weak_share_rate": 0.1653174603174603,
+    "pass_rate": 1.0,
+    "forced_share_rate": 1.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "init_threshold",
+     "score": 0.5056906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g1-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent0",
+        "created_gen": 1
+       }
+      ],
+      "init_threshold": 0.2,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "init_threshold",
+     "score": 0.5056906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g1-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent0",
+        "created_gen": 1
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "init_threshold",
+     "score": 0.5056906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g1-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent0",
+        "created_gen": 1
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "mutate",
+     "score": 0.5006906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g1-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": 2,
+        "priority": 1,
+        "author_id": "agent0",
+        "created_gen": 1
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "add",
+     "score": 0.35518037518037515,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g1-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g6-agent4-4",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.9
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 7,
+        "author_id": "agent4",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "add",
+     "score": 0.35518037518037515,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g1-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g6-agent5-5",
+        "conditions": [
+         {
+          "metric": "my_threshold",
+          "op": "<",
+          "value": 0.5
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 3,
+        "author_id": "agent5",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  },
+  {
+   "gen": 7,
+   "incumbent_version_before": 2,
+   "incumbent_version_after": 3,
+   "incumbent_score": 0.540649494949495,
+   "rolled_back": false,
+   "observation_metrics": {
+    "mean_accuracy": 0.5829166666666666,
+    "unsolved_rate": 0.65,
+    "comm_ratio": 0.9593434343434343,
+    "weak_share_rate": 0.1653174603174603,
+    "pass_rate": 1.0,
+    "forced_share_rate": 1.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "mutate",
+     "score": 0.5056906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g1-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "init_threshold",
+     "score": 0.5056906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g1-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent0",
+        "created_gen": 1
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "init_threshold",
+     "score": 0.5056906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g1-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent0",
+        "created_gen": 1
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "add",
+     "score": 0.4906906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g1-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g7-agent3-3",
+        "conditions": [
+         {
+          "metric": "consecutive_low_gain",
+          "op": "<",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "LOWER_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 9,
+        "author_id": "agent3",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "add",
+     "score": 0.4856906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g1-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g7-agent4-4",
+        "conditions": [
+         {
+          "metric": "mean_recent_gain",
+          "op": "<",
+          "value": 0.2
+         },
+         {
+          "metric": "round_index",
+          "op": "<",
+          "value": 10.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 2,
+        "priority": 2,
+        "author_id": "agent4",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "add",
+     "score": 0.540649494949495,
+     "adopted": true,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g1-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  },
+  {
+   "gen": 8,
+   "incumbent_version_before": 3,
+   "incumbent_version_after": 3,
+   "incumbent_score": 0.540649494949495,
+   "rolled_back": true,
+   "observation_metrics": {
+    "mean_accuracy": 0.675,
+    "unsolved_rate": 0.5,
+    "comm_ratio": 0.9148412698412699,
+    "weak_share_rate": 0.11441197691197691,
+    "pass_rate": 0.9850523156264597,
+    "forced_share_rate": 1.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "mutate",
+     "score": 0.5281754810004811,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g1-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "mutate",
+     "score": 0.535649494949495,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g1-agent0-0",
+        "conditions": [
+         {
+          "metric": "mean_recent_gain",
+          "op": "<",
+          "value": 0.5
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "remove",
+     "score": 0.5056906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g1-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent0",
+        "created_gen": 1
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "init_threshold",
+     "score": 0.540649494949495,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g1-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "mutate",
+     "score": 0.535649494949495,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g1-agent0-0",
+        "conditions": [
+         {
+          "metric": "consecutive_low_gain",
+          "op": "<",
+          "value": 1.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "add",
+     "score": 0.5144056878306879,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g1-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       },
+       {
+        "rule_id": "g8-agent5-5",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.5
+         }
+        ],
+        "actions": [
+         {
+          "name": "LOWER_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 1
+         }
+        ],
+        "role": 2,
+        "priority": 7,
+        "author_id": "agent5",
+        "created_gen": 8
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  },
+  {
+   "gen": 9,
+   "incumbent_version_before": 3,
+   "incumbent_version_after": 4,
+   "incumbent_score": 0.550649494949495,
+   "rolled_back": false,
+   "observation_metrics": {
+    "mean_accuracy": 0.675,
+    "unsolved_rate": 0.5,
+    "comm_ratio": 0.9148412698412699,
+    "weak_share_rate": 0.11441197691197691,
+    "pass_rate": 0.9850523156264597,
+    "forced_share_rate": 1.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "mutate",
+     "score": 0.540649494949495,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g1-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "mutate",
+     "score": 0.535649494949495,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g1-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_threshold",
+          "op": "<",
+          "value": 0.7
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "add",
+     "score": 0.525649494949495,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g1-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       },
+       {
+        "rule_id": "g9-agent2-2",
+        "conditions": [
+         {
+          "metric": "number_of_passes",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 2,
+        "author_id": "agent2",
+        "created_gen": 9
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "mutate",
+     "score": 0.4315955507455507,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g1-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": ">=",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "add",
+     "score": 0.520649494949495,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g1-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       },
+       {
+        "rule_id": "g9-agent4-4",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.9
+         }
+        ],
+        "actions": [
+         {
+          "name": "LOWER_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 0
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent4",
+        "created_gen": 9
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "remove",
+     "score": 0.550649494949495,
+     "adopted": true,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  },
+  {
+   "gen": 10,
+   "incumbent_version_before": 4,
+   "incumbent_version_after": 4,
+   "incumbent_score": 0.550649494949495,
+   "rolled_back": true,
+   "observation_metrics": {
+    "mean_accuracy": 0.675,
+    "unsolved_rate": 0.5,
+    "comm_ratio": 0.9148412698412699,
+    "weak_share_rate": 0.11441197691197691,
+    "pass_rate": 0.9850523156264597,
+    "forced_share_rate": 1.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "add",
+     "score": 0.5365503487253487,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       },
+       {
+        "rule_id": "g10-agent0-0",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 3.0
+         },
+         {
+          "metric": "number_of_passes",
+          "op": "<",
+          "value": 1.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 7,
+        "author_id": "agent0",
+        "created_gen": 10
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "add",
+     "score": 0.545649494949495,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       },
+       {
+        "rule_id": "g10-agent1-1",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 5,
+        "author_id": "agent1",
+        "created_gen": 10
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "add",
+     "score": 0.3971556878306878,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       },
+       {
+        "rule_id": "g10-agent2-2",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "LOWER_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": 2,
+        "priority": 3,
+        "author_id": "agent2",
+        "created_gen": 10
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "add",
+     "score": 0.5227482804232804,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       },
+       {
+        "rule_id": "g10-agent3-3",
+        "conditions": [
+         {
+          "metric": "estimated_slack",
+          "op": "<",
+          "value": 2.0
+         },
+         {
+          "metric": "active_speaker_count",
+          "op": ">=",
+          "value": 1.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": 2,
+        "priority": 8,
+        "author_id": "agent3",
+        "created_gen": 10
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "init_threshold",
+     "score": 0.550649494949495,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "init_threshold",
+     "score": 0.550649494949495,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  },
+  {
+   "gen": 11,
+   "incumbent_version_before": 4,
+   "incumbent_version_after": 4,
+   "incumbent_score": 0.550649494949495,
+   "rolled_back": true,
+   "observation_metrics": {
+    "mean_accuracy": 0.675,
+    "unsolved_rate": 0.5,
+    "comm_ratio": 0.9148412698412699,
+    "weak_share_rate": 0.11441197691197691,
+    "pass_rate": 0.9850523156264597,
+    "forced_share_rate": 1.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "add",
+     "score": 0.45000578403078406,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       },
+       {
+        "rule_id": "g11-agent0-0",
+        "conditions": [
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 10.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 11
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "mutate",
+     "score": 0.550649494949495,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "mutate",
+     "score": 0.550649494949495,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "mutate",
+     "score": 0.45318890091390096,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": 1,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "init_threshold",
+     "score": 0.550649494949495,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "mutate",
+     "score": 0.550649494949495,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 1
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  },
+  {
+   "gen": 12,
+   "incumbent_version_before": 4,
+   "incumbent_version_after": 4,
+   "incumbent_score": 0.550649494949495,
+   "rolled_back": true,
+   "observation_metrics": {
+    "mean_accuracy": 0.675,
+    "unsolved_rate": 0.5,
+    "comm_ratio": 0.9148412698412699,
+    "weak_share_rate": 0.11441197691197691,
+    "pass_rate": 0.9850523156264597,
+    "forced_share_rate": 1.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "mutate",
+     "score": 0.44308772246272243,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 1.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "mutate",
+     "score": 0.45318890091390096,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": 1,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "add",
+     "score": 0.35018037518037515,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       },
+       {
+        "rule_id": "g12-agent2-2",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "LOWER_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "agent2",
+        "created_gen": 12
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "add",
+     "score": 0.540649494949495,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       },
+       {
+        "rule_id": "g12-agent3-3",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 3
+         }
+        ],
+        "role": null,
+        "priority": 5,
+        "author_id": "agent3",
+        "created_gen": 12
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "mutate",
+     "score": 0.5381754810004811,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "init_threshold",
+     "score": 0.550649494949495,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  },
+  {
+   "gen": 13,
+   "incumbent_version_before": 4,
+   "incumbent_version_after": 4,
+   "incumbent_score": 0.550649494949495,
+   "rolled_back": true,
+   "observation_metrics": {
+    "mean_accuracy": 0.675,
+    "unsolved_rate": 0.5,
+    "comm_ratio": 0.9148412698412699,
+    "weak_share_rate": 0.11441197691197691,
+    "pass_rate": 0.9850523156264597,
+    "forced_share_rate": 1.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "init_threshold",
+     "score": 0.550649494949495,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "init_threshold",
+     "score": 0.550649494949495,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.2,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "init_threshold",
+     "score": 0.550649494949495,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.2,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "mutate",
+     "score": 0.44159555074555074,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": ">=",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "mutate",
+     "score": 0.5036639536389536,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         },
+         {
+          "metric": "mean_recent_gain",
+          "op": ">=",
+          "value": 0.5
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "init_threshold",
+     "score": 0.550649494949495,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  },
+  {
+   "gen": 14,
+   "incumbent_version_before": 4,
+   "incumbent_version_after": 4,
+   "incumbent_score": 0.550649494949495,
+   "rolled_back": true,
+   "observation_metrics": {
+    "mean_accuracy": 0.675,
+    "unsolved_rate": 0.5,
+    "comm_ratio": 0.9148412698412699,
+    "weak_share_rate": 0.11441197691197691,
+    "pass_rate": 0.9850523156264597,
+    "forced_share_rate": 1.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "init_threshold",
+     "score": 0.550649494949495,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.1,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "add",
+     "score": 0.545649494949495,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       },
+       {
+        "rule_id": "g14-agent1-1",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 1
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent1",
+        "created_gen": 14
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "init_threshold",
+     "score": 0.550649494949495,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.2,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "init_threshold",
+     "score": 0.550649494949495,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "mutate",
+     "score": 0.5381754810004811,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "mutate",
+     "score": 0.550649494949495,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  },
+  {
+   "gen": 15,
+   "incumbent_version_before": 4,
+   "incumbent_version_after": 4,
+   "incumbent_score": 0.550649494949495,
+   "rolled_back": true,
+   "observation_metrics": {
+    "mean_accuracy": 0.675,
+    "unsolved_rate": 0.5,
+    "comm_ratio": 0.9148412698412699,
+    "weak_share_rate": 0.11441197691197691,
+    "pass_rate": 0.9850523156264597,
+    "forced_share_rate": 1.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "mutate",
+     "score": 0.44159555074555074,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": ">=",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "mutate",
+     "score": 0.550649494949495,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 5,
+        "author_id": "agent5",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "mutate",
+     "score": 0.5381754810004811,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "mutate",
+     "score": 0.44159555074555074,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": ">=",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "add",
+     "score": 0.540649494949495,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       },
+       {
+        "rule_id": "g15-agent4-4",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": 1,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 15
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "add",
+     "score": 0.4956906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       },
+       {
+        "rule_id": "g15-agent5-5",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 8,
+        "author_id": "agent5",
+        "created_gen": 15
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  },
+  {
+   "gen": 16,
+   "incumbent_version_before": 4,
+   "incumbent_version_after": 4,
+   "incumbent_score": 0.550649494949495,
+   "rolled_back": true,
+   "observation_metrics": {
+    "mean_accuracy": 0.675,
+    "unsolved_rate": 0.5,
+    "comm_ratio": 0.9148412698412699,
+    "weak_share_rate": 0.11441197691197691,
+    "pass_rate": 0.9850523156264597,
+    "forced_share_rate": 1.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "add",
+     "score": 0.26619210419210415,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       },
+       {
+        "rule_id": "g16-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.05
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 16
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "add",
+     "score": 0.545649494949495,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       },
+       {
+        "rule_id": "g16-agent1-1",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent1",
+        "created_gen": 16
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "init_threshold",
+     "score": 0.550649494949495,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "init_threshold",
+     "score": 0.550649494949495,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.2,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "add",
+     "score": 0.545649494949495,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       },
+       {
+        "rule_id": "g16-agent4-4",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent4",
+        "created_gen": 16
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "mutate",
+     "score": 0.44159555074555074,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": ">=",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  },
+  {
+   "gen": 17,
+   "incumbent_version_before": 4,
+   "incumbent_version_after": 5,
+   "incumbent_score": 0.5579232128982128,
+   "rolled_back": false,
+   "observation_metrics": {
+    "mean_accuracy": 0.675,
+    "unsolved_rate": 0.5,
+    "comm_ratio": 0.9148412698412699,
+    "weak_share_rate": 0.11441197691197691,
+    "pass_rate": 0.9850523156264597,
+    "forced_share_rate": 1.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "add",
+     "score": 0.3921365486365487,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       },
+       {
+        "rule_id": "g17-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 0
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 5,
+        "author_id": "agent0",
+        "created_gen": 17
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "add",
+     "score": 0.5579232128982128,
+     "adopted": true,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       },
+       {
+        "rule_id": "g17-agent1-1",
+        "conditions": [
+         {
+          "metric": "mean_recent_gain",
+          "op": "<",
+          "value": 0.2
+         }
+        ],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 0
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 9,
+        "author_id": "agent1",
+        "created_gen": 17
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "add",
+     "score": 0.4047973785473785,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       },
+       {
+        "rule_id": "g17-agent2-2",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 9,
+        "author_id": "agent2",
+        "created_gen": 17
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "init_threshold",
+     "score": 0.550649494949495,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "add",
+     "score": 0.4705416786916785,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       },
+       {
+        "rule_id": "g17-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": "<",
+          "value": 10.0
+         },
+         {
+          "metric": "number_of_passes",
+          "op": "<",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 9,
+        "author_id": "agent4",
+        "created_gen": 17
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "mutate",
+     "score": 0.5006906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "LOWER_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  },
+  {
+   "gen": 18,
+   "incumbent_version_before": 5,
+   "incumbent_version_after": 5,
+   "incumbent_score": 0.5579232128982128,
+   "rolled_back": true,
+   "observation_metrics": {
+    "mean_accuracy": 0.5727083333333334,
+    "unsolved_rate": 0.65,
+    "comm_ratio": 0.9276767676767677,
+    "weak_share_rate": 0.14823412698412697,
+    "pass_rate": 0.9978434210491279,
+    "forced_share_rate": 1.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "init_threshold",
+     "score": 0.5579232128982128,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       },
+       {
+        "rule_id": "g17-agent1-1",
+        "conditions": [
+         {
+          "metric": "mean_recent_gain",
+          "op": "<",
+          "value": 0.2
+         }
+        ],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 0
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 9,
+        "author_id": "agent1",
+        "created_gen": 17
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "add",
+     "score": 0.5379232128982128,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       },
+       {
+        "rule_id": "g17-agent1-1",
+        "conditions": [
+         {
+          "metric": "mean_recent_gain",
+          "op": "<",
+          "value": 0.2
+         }
+        ],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 0
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 9,
+        "author_id": "agent1",
+        "created_gen": 17
+       },
+       {
+        "rule_id": "g18-agent1-1",
+        "conditions": [
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 2.0
+         },
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 1.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 6,
+        "author_id": "agent1",
+        "created_gen": 18
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "remove",
+     "score": 0.550649494949495,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "init_threshold",
+     "score": 0.5579232128982128,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       },
+       {
+        "rule_id": "g17-agent1-1",
+        "conditions": [
+         {
+          "metric": "mean_recent_gain",
+          "op": "<",
+          "value": 0.2
+         }
+        ],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 0
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 9,
+        "author_id": "agent1",
+        "created_gen": 17
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "remove",
+     "score": 0.5006906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g17-agent1-1",
+        "conditions": [
+         {
+          "metric": "mean_recent_gain",
+          "op": "<",
+          "value": 0.2
+         }
+        ],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 0
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 9,
+        "author_id": "agent1",
+        "created_gen": 17
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "mutate",
+     "score": 0.5579232128982128,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       },
+       {
+        "rule_id": "g17-agent1-1",
+        "conditions": [
+         {
+          "metric": "mean_recent_gain",
+          "op": "<",
+          "value": 0.2
+         }
+        ],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 0
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 9,
+        "author_id": "agent1",
+        "created_gen": 17
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  },
+  {
+   "gen": 19,
+   "incumbent_version_before": 5,
+   "incumbent_version_after": 5,
+   "incumbent_score": 0.5579232128982128,
+   "rolled_back": true,
+   "observation_metrics": {
+    "mean_accuracy": 0.5727083333333334,
+    "unsolved_rate": 0.65,
+    "comm_ratio": 0.9276767676767677,
+    "weak_share_rate": 0.14823412698412697,
+    "pass_rate": 0.9978434210491279,
+    "forced_share_rate": 1.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "mutate",
+     "score": 0.40868327783327774,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": ">=",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       },
+       {
+        "rule_id": "g17-agent1-1",
+        "conditions": [
+         {
+          "metric": "mean_recent_gain",
+          "op": "<",
+          "value": 0.2
+         }
+        ],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 0
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 9,
+        "author_id": "agent1",
+        "created_gen": 17
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "mutate",
+     "score": 0.535649494949495,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       },
+       {
+        "rule_id": "g17-agent1-1",
+        "conditions": [
+         {
+          "metric": "mean_recent_gain",
+          "op": "<",
+          "value": 0.2
+         }
+        ],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 0
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 2,
+        "author_id": "agent1",
+        "created_gen": 17
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "remove",
+     "score": 0.550649494949495,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "add",
+     "score": 0.5529232128982128,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       },
+       {
+        "rule_id": "g17-agent1-1",
+        "conditions": [
+         {
+          "metric": "mean_recent_gain",
+          "op": "<",
+          "value": 0.2
+         }
+        ],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 0
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 9,
+        "author_id": "agent1",
+        "created_gen": 17
+       },
+       {
+        "rule_id": "g19-agent3-3",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "LOWER_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent3",
+        "created_gen": 19
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "remove",
+     "score": 0.5006906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g17-agent1-1",
+        "conditions": [
+         {
+          "metric": "mean_recent_gain",
+          "op": "<",
+          "value": 0.2
+         }
+        ],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 0
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 9,
+        "author_id": "agent1",
+        "created_gen": 17
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "init_threshold",
+     "score": 0.5579232128982128,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       },
+       {
+        "rule_id": "g17-agent1-1",
+        "conditions": [
+         {
+          "metric": "mean_recent_gain",
+          "op": "<",
+          "value": 0.2
+         }
+        ],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 0
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 9,
+        "author_id": "agent1",
+        "created_gen": 17
+       }
+      ],
+      "init_threshold": 0.2,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  },
+  {
+   "gen": 20,
+   "incumbent_version_before": 5,
+   "incumbent_version_after": 5,
+   "incumbent_score": 0.5579232128982128,
+   "rolled_back": true,
+   "observation_metrics": {
+    "mean_accuracy": 0.5727083333333334,
+    "unsolved_rate": 0.65,
+    "comm_ratio": 0.9276767676767677,
+    "weak_share_rate": 0.14823412698412697,
+    "pass_rate": 0.9978434210491279,
+    "forced_share_rate": 1.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "remove",
+     "score": 0.550649494949495,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "mutate",
+     "score": 0.4856906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 1.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       },
+       {
+        "rule_id": "g17-agent1-1",
+        "conditions": [
+         {
+          "metric": "mean_recent_gain",
+          "op": "<",
+          "value": 0.2
+         }
+        ],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 0
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 9,
+        "author_id": "agent1",
+        "created_gen": 17
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "add",
+     "score": 0.5529232128982128,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       },
+       {
+        "rule_id": "g17-agent1-1",
+        "conditions": [
+         {
+          "metric": "mean_recent_gain",
+          "op": "<",
+          "value": 0.2
+         }
+        ],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 0
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 9,
+        "author_id": "agent1",
+        "created_gen": 17
+       },
+       {
+        "rule_id": "g20-agent2-2",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 3,
+        "author_id": "agent2",
+        "created_gen": 20
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "remove",
+     "score": 0.5006906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g17-agent1-1",
+        "conditions": [
+         {
+          "metric": "mean_recent_gain",
+          "op": "<",
+          "value": 0.2
+         }
+        ],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 0
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 9,
+        "author_id": "agent1",
+        "created_gen": 17
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "init_threshold",
+     "score": 0.5579232128982128,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       },
+       {
+        "rule_id": "g17-agent1-1",
+        "conditions": [
+         {
+          "metric": "mean_recent_gain",
+          "op": "<",
+          "value": 0.2
+         }
+        ],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 0
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 9,
+        "author_id": "agent1",
+        "created_gen": 17
+       }
+      ],
+      "init_threshold": 0.2,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "remove",
+     "score": 0.550649494949495,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  }
+ ],
+ "incumbent_version": 5,
+ "incumbent_score": 0.5579232128982128,
+ "next_version": 6
+}

@@ -1,0 +1,42 @@
+{
+ "repo": "dateutil",
+ "fix_commit": "66d95db3a2363f307565b54166f52f980f030f9e",
+ "parent_commit": "e67407d1c9f670f3d23a18433c3212d0e76b7de7",
+ "answer_files": [
+  "dateutil/tz/tz.py"
+ ],
+ "answer_functions": [
+  "dateutil/tz/tz.py::_find_comp",
+  "dateutil/tz/tz.py::_find_compdt",
+  "dateutil/tz/tz.py::_find_last_transition"
+ ],
+ "patch_lines": 44,
+ "added_tests": {
+  "dateutil/test/test_tz.py::TZICalTest::testFoldNegativeUTCOffset": {
+   "parent": "pass",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "dateutil/test/test_tz.py::TZICalTest::testFoldPositiveUTCOffset": {
+   "parent": "pass",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "dateutil/test/test_tz.py::TZICalTest::testFoldIndependence": {
+   "parent": "pass",
+   "fix": "pass",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "dateutil/test/test_tz.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 6.5,
+ "env_error_tests": 0,
+ "qualified": false,
+ "selector_event_proxy_v1": false
+}

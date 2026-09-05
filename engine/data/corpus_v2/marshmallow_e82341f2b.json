@@ -1,0 +1,40 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "e82341f2be5ae6754f6d2ff37c87c3a68ed65481",
+ "parent_commit": "d69f3123ed9e82d396b6a516aba4355b59cd44fb",
+ "answer_files": [
+  "marshmallow/schema.py"
+ ],
+ "answer_functions": [
+  "marshmallow/schema.py::_do_load",
+  "marshmallow/schema.py::dump"
+ ],
+ "patch_lines": 7,
+ "added_tests": {
+  "tests/test_schema.py::test_dump_many_stores_error_indices": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_schema.py::test_dump_many_doesnt_stores_error_indices_when_index_errors_is_false": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_schema.py::TestValidate::test_validate_many_doesnt_store_index_if_index_errors_option_is_false": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "tests/test_schema.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 11.5,
+ "env_error_tests": 3,
+ "qualified": false
+}

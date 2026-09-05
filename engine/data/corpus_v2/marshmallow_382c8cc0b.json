@@ -1,0 +1,57 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "382c8cc0b1840b25bce524cef3defc784be24464",
+ "parent_commit": "9ede1172e8720afa7825878f450a01349aee6eef",
+ "answer_files": [
+  "marshmallow/exceptions.py"
+ ],
+ "answer_functions": [
+  "marshmallow/exceptions.py::__init__",
+  "marshmallow/exceptions.py::normalized_messages"
+ ],
+ "patch_lines": 6,
+ "added_tests": {
+  "tests/test_decorators.py::test_decorator_error_handling_with_load_dict_error": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "tests/test_decorators.py::test_decorator_error_handling_with_dump_dict_error": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [
+  "tests/test_decorators.py::test_decorator_error_handling_with_load_dict_error",
+  "tests/test_decorators.py::test_decorator_error_handling_with_dump_dict_error"
+ ],
+ "test_files": [
+  "tests/test_decorators.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [
+  {
+   "applied": "marshmallow/exceptions.py::__init__",
+   "passes_repro": [],
+   "still_failing": [
+    "tests/test_decorators.py::test_decorator_error_handling_with_load_dict_error",
+    "tests/test_decorators.py::test_decorator_error_handling_with_dump_dict_error"
+   ],
+   "event": false
+  },
+  {
+   "applied": "marshmallow/exceptions.py::normalized_messages",
+   "passes_repro": [
+    "tests/test_decorators.py::test_decorator_error_handling_with_load_dict_error",
+    "tests/test_decorators.py::test_decorator_error_handling_with_dump_dict_error"
+   ],
+   "still_failing": [],
+   "event": false
+  }
+ ],
+ "env_seconds": 6.7,
+ "env_error_tests": 0,
+ "qualified": true
+}

@@ -1,0 +1,45 @@
+{
+ "repo": "boltons",
+ "fix_commit": "8177b933b418d91c7280909690f45589fbe004d2",
+ "parent_commit": "2c51dddb869eb7c0d05b4739d34406e20a0e03b8",
+ "answer_files": [
+  "boltons/dictutils.py"
+ ],
+ "answer_functions": [
+  "boltons/dictutils.py::addlist",
+  "boltons/dictutils.py::poplast"
+ ],
+ "patch_lines": 6,
+ "added_tests": {
+  "tests/test_dictutils.py::test_pop": {
+   "parent": "fail",
+   "fix": "fail",
+   "mode": "file"
+  },
+  "tests/test_dictutils.py::test_addlist": {
+   "parent": "fail",
+   "fix": "fail",
+   "mode": "file"
+  },
+  "tests/test_dictutils.py::test_pop_all": {
+   "parent": "fail",
+   "fix": "fail",
+   "mode": "file"
+  },
+  "tests/test_dictutils.py::test_setdefault": {
+   "parent": "fail",
+   "fix": "fail",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "tests/test_dictutils.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 6.8,
+ "env_error_tests": 0,
+ "qualified": false
+}

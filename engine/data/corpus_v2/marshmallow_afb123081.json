@@ -1,0 +1,38 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "afb1230811c6d588a18817f07a6a34e51dc7cde4",
+ "parent_commit": "df68ee4e34808ffdb7076ad98a6b9b763f119422",
+ "answer_files": [
+  "marshmallow/exceptions.py",
+  "marshmallow/schema.py"
+ ],
+ "answer_functions": [
+  "marshmallow/exceptions.py::__init__",
+  "marshmallow/schema.py::_do_load",
+  "marshmallow/schema.py::dump"
+ ],
+ "patch_lines": 11,
+ "added_tests": {
+  "tests/test_schema.py::test_strict_load_validation_error_stores_input_data_and_valid_data": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_schema.py::test_strict_dump_validation_error_stores_partially_valid_data": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "tests/test_schema.py",
+  "tests/test_validate.py"
+ ],
+ "location_hard_proxy": true,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 7.3,
+ "env_error_tests": 2,
+ "qualified": false
+}

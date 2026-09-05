@@ -1,0 +1,20 @@
+{
+  "id": "1C",
+  "author": "openai:gpt-5",
+  "target": "character",
+  "note": "Astral navigator; star-pinned hat, lined mantle with star dots",
+  "body": {
+    "description": "Chibi main witch, same person; global key light from upper-left. Same lamps to keep the palette unified: indigo cloth (#121427→#dfe3ff) for hat, robe, and short mantle; teal hair (#052a2a→#b9f2f2); warm leather/wood (#2a170d→#e7b36a) for boots, belt, and wand; brass metal (#3b2a07→#fff2b3) for star pins and trim; skin on the warm ramp (#5a3a2c→#ffe1c9). Design: tall hat with brass star pin; short mantle over robe with a sparse field of tiny star dots placed with light tones (#7f8ce6 and #dfe3ff) so they read on mid indigo; slim wand with a brass tip. Shading calls: deep shadow under the hat brim cutting across the eyes (#121427), bright highlight on the hat crown and star pin edges (#dfe3ff on cloth, #fff2b3 on brass); deep shadow inside the mantle’s interior where it opens (#23274f) with bright highlight on the outer shoulder facing top-left (#7f8ce6→#dfe3ff); occlusion shadow under the collar and at the wand grip (#4a2e1a); bright line highlight along the wand’s top-left edge (#e7b36a) and a tiny specular on the brass tip (#fff2b3); cheek and nose catch light (#ffe1c9) while the chin casts a small shadow onto the neck (#5a3a2c). Back view shows the mantle’s star dots fading into deep shadow toward the lower-right (#23274f) with a bright shoulder highlight (#dfe3ff)."
+  },
+  "lint": {
+    "ok": true,
+    "fields": {
+      "description": {
+        "ok": true,
+        "banned": [],
+        "missing": [],
+        "words": 205
+      }
+    }
+  }
+}

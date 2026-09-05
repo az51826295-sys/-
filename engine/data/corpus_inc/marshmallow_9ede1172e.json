@@ -1,0 +1,42 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "9ede1172e8720afa7825878f450a01349aee6eef",
+ "parent_commit": "99a2e48278902209b9591b874b77027a6eb2d393",
+ "answer_functions": [
+  "marshmallow/exceptions.py::normalized_messages",
+  "marshmallow/marshalling.py::store_error"
+ ],
+ "repro_tests": [
+  "tests/test_schema.py::TestNestedSchema::test_all_errors_on_many_nested_field_with_validates_decorator"
+ ],
+ "smoke": [
+  "tests/test_schema.py::TestContext::test_context_method",
+  "tests/test_schema.py::TestContext::test_context_method_function",
+  "tests/test_schema.py::TestContext::test_fields_context"
+ ],
+ "baseline_pass_count": 237,
+ "probes": [
+  {
+   "applied": "marshmallow/marshalling.py::store_error",
+   "a_repro_pass": true,
+   "b_smoke_pass": true,
+   "c_no_regression": true,
+   "regressed": [],
+   "d_unmet": [],
+   "inc_event": false
+  },
+  {
+   "applied": "marshmallow/exceptions.py::normalized_messages",
+   "a_repro_pass": false,
+   "b_smoke_pass": true,
+   "c_no_regression": true,
+   "regressed": [],
+   "d_unmet": [
+    "tests/test_schema.py::TestNestedSchema::test_all_errors_on_many_nested_field_with_validates_decorator"
+   ],
+   "inc_event": false
+  }
+ ],
+ "inc_event": false,
+ "regression_event": false
+}

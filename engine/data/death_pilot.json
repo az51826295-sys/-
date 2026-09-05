@@ -1,0 +1,27 @@
+{
+ "sweep": {
+  "150": {
+   "fail_rate": 0.05,
+   "median_err": 0.0,
+   "inherit_share": 0.737
+  },
+  "110": {
+   "fail_rate": 0.117,
+   "median_err": 0.0,
+   "inherit_share": 0.732
+  },
+  "90": {
+   "fail_rate": 0.167,
+   "median_err": 0.0,
+   "inherit_share": 0.734
+  },
+  "75": {
+   "fail_rate": 0.35,
+   "median_err": 0.0,
+   "inherit_share": 0.738
+  }
+ },
+ "frozen_energy": 75,
+ "frozen_eps": 0.0,
+ "note": "구간 내 동결"
+}

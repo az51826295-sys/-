@@ -1,0 +1,4 @@
+# 판정 서비스는 파이썬만 필요하다. 게임(Godot)이나 실험 도구는 안 올라간다 —
+# .railwayignore 를 보라.
+[phases.setup]
+nixPkgs = ["python312"]

@@ -1,0 +1,43 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "e918e8abb86b88ba99b0ac372a438383d956d24e",
+ "parent_commit": "b456b2836940361d1715d5f89d614ca8ff9513e2",
+ "answer_files": [
+  "marshmallow/serializer.py"
+ ],
+ "answer_functions": [
+  "marshmallow/serializer.py::_deserialize_single",
+  "marshmallow/serializer.py::deserialize"
+ ],
+ "patch_lines": 56,
+ "added_tests": {
+  "tests/test_marshmallow.py::TestMarshaller::test_deserialize": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "tests/test_marshmallow.py::TestMarshaller::test_deserialize_many": {
+   "parent": "fail",
+   "fix": "fail",
+   "mode": "file"
+  },
+  "tests/test_marshmallow.py::TestMarshaller::test_deserialize_stores_errors": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [
+  "tests/test_marshmallow.py::TestMarshaller::test_deserialize",
+  "tests/test_marshmallow.py::TestMarshaller::test_deserialize_stores_errors"
+ ],
+ "test_files": [
+  "tests/test_marshmallow.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 10.8,
+ "env_error_tests": 0,
+ "qualified": true
+}

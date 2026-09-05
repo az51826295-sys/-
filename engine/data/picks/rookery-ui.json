@@ -1,0 +1,15 @@
+{
+  "set": "rookery-ui",
+  "by": "사장님",
+  "answer": "621133",
+  "note": "로키 웹 UI 아이콘. 후보 30개 중 개념당 하나.",
+  "picked": {
+    "chat": "c06.svg",
+    "company": "c02.svg",
+    "attach": "c01.svg",
+    "history": "c01.svg",
+    "settings": "c03.svg",
+    "signout": "c03.svg"
+  },
+  "source": "data/icon_out/rookery-ui/candidates"
+}

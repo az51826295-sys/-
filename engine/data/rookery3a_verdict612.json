@@ -1,0 +1,47 @@
+{
+ "BS": {
+  "n_runs": 15,
+  "revisit_rate_r2": 0.157,
+  "revisits_abs": 11,
+  "r2_hyps": 70,
+  "hyp_distinct_files_mean": 1.47,
+  "cand_distinct_files_mean": 1.27,
+  "hyp_correct_file_rate": 0.8,
+  "cand_correct_file_rate": 0.8,
+  "validation_pass_rate": 0.566,
+  "hyp_generated": 145,
+  "public_smoke_cands_per_run": 0.2,
+  "public_smoke_cands_abs": 3,
+  "full_rate": 0.07,
+  "no_patch_rate": 0.2,
+  "status_counts": {
+   "full": 1,
+   "no_patch": 3,
+   "public_fail": 4,
+   "public_only": 2,
+   "regression": 5
+  }
+ },
+ "BSN": {
+  "n_runs": 15,
+  "revisit_rate_r2": 0.187,
+  "revisits_abs": 14,
+  "r2_hyps": 75,
+  "hyp_distinct_files_mean": 1.47,
+  "cand_distinct_files_mean": 1.4,
+  "hyp_correct_file_rate": 0.8,
+  "cand_correct_file_rate": 0.8,
+  "validation_pass_rate": 0.567,
+  "hyp_generated": 150,
+  "public_smoke_cands_per_run": 0.13,
+  "public_smoke_cands_abs": 2,
+  "full_rate": 0.0,
+  "no_patch_rate": 0.2,
+  "status_counts": {
+   "no_patch": 3,
+   "public_fail": 6,
+   "public_only": 2,
+   "regression": 4
+  }
+ }
+}

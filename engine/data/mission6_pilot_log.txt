@@ -1,0 +1,23 @@
+=== 파일럿: 기계 검증 (3세대, 축소 seed, 성능은 결과가 아님) ===
+[J] gen 1: score=0.4218 acc=0.580 adopted=1/6
+[J] gen 2: score=0.5019 acc=0.639 adopted=2/6
+[J] gen 3: score=0.5019 acc=0.639 adopted=0/6
+[J] 370.6s - 후보 18개, 채택 3, 롤백/유지 1, 연산 {'mutate': 9, 'add': 3, 'init_threshold': 6}
+  계보 감사: 위반 0
+[K] gen 1: v0 score=0.4483 acc=0.606 rules=1 (rollback)
+[K] gen 2: v1 score=0.8917 acc=0.944 rules=2 
+[K] gen 3: v1 score=0.8917 acc=0.944 rules=2 (rollback)
+[K] 466.0s - 후보 18개, 채택 1, 롤백/유지 2, 연산 {'mutate': 5, 'init_threshold': 7, 'add': 5, 'remove': 1}
+  계보 감사: 위반 0
+[L] gen 1: v1 score=0.5695 acc=0.685 rules=1 
+[L] gen 2: v2 score=0.7112 acc=0.810 rules=2 
+[L] gen 3: v2 score=0.7112 acc=0.810 rules=2 (rollback)
+[L] 237.3s - 후보 18개, 채택 2, 롤백/유지 1, 연산 {'add': 6, 'mutate': 4, 'init_threshold': 6, 'remove': 2}
+  계보 감사: 위반 0
+[M] gen 1: v1 score=0.6646 acc=0.775 rules=2 
+[M] gen 2: v2 score=0.7062 acc=0.810 rules=3 
+[M] gen 3: v2 score=0.7062 acc=0.810 rules=3 (rollback)
+[M] 296.2s - 후보 18개, 채택 2, 롤백/유지 1, 연산 {'init_threshold': 5, 'add': 5, 'mutate': 5, 'remove': 3}
+  계보 감사: 위반 0
+
+파일럿 판정: 통과 - 기계 검증 완료, 하이퍼파라미터 동결 가능

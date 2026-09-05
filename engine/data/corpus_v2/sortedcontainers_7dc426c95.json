@@ -1,0 +1,39 @@
+{
+ "repo": "sortedcontainers",
+ "fix_commit": "7dc426c95a0c329d5514e6198d92080f1ffc1e5e",
+ "parent_commit": "13d30bc654eb9e6be092282ca502967fcb7f0113",
+ "answer_files": [
+  "sortedcontainers/sortedlist.py"
+ ],
+ "answer_functions": [
+  "sortedcontainers/sortedlist.py::update"
+ ],
+ "patch_lines": 6,
+ "added_tests": {
+  "tests/test_coverage_sortedkeylist_modulo.py::test_update_order_consistency": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "tests/test_coverage_sortedkeylist_negate.py::test_update_order_consistency": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [
+  "tests/test_coverage_sortedkeylist_modulo.py::test_update_order_consistency",
+  "tests/test_coverage_sortedkeylist_negate.py::test_update_order_consistency"
+ ],
+ "test_files": [
+  "tests/test_coverage_sortedkeylist_modulo.py",
+  "tests/test_coverage_sortedkeylist_negate.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 4.7,
+ "env_error_tests": 0,
+ "qualified": true,
+ "selector_event_proxy_v1": false
+}

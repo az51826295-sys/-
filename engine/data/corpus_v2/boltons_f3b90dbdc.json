@@ -1,0 +1,41 @@
+{
+ "repo": "boltons",
+ "fix_commit": "f3b90dbdc8ed04b66166343a3c18fd7aaeb2c272",
+ "parent_commit": "a2aeb4c8ca3ff7841cf8e4e045f2e8634ab1a408",
+ "answer_files": [
+  "boltons/setutils.py"
+ ],
+ "answer_functions": [
+  "boltons/setutils.py::__and__",
+  "boltons/setutils.py::__ge__",
+  "boltons/setutils.py::__gt__",
+  "boltons/setutils.py::__iand__",
+  "boltons/setutils.py::__ior__",
+  "boltons/setutils.py::__isub__",
+  "boltons/setutils.py::__le__",
+  "boltons/setutils.py::__lt__",
+  "boltons/setutils.py::__or__",
+  "boltons/setutils.py::__sub__",
+  "boltons/setutils.py::__xor__",
+  "boltons/setutils.py::_norm_args_notimplemented",
+  "boltons/setutils.py::isdisjoint"
+ ],
+ "patch_lines": 32,
+ "added_tests": {
+  "tests/test_setutils.py::test_complement_set": {
+   "parent": "fail",
+   "fix": "fail",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "tests/test_setutils.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 1.6,
+ "env_error_tests": 0,
+ "qualified": false
+}

@@ -1,0 +1,99 @@
+{
+ "current_parent_hashes": {
+  "log-mission1": "aaaa1111",
+  "log-rookery-bs": "bbbb2222"
+ },
+ "documents": [
+  {
+   "case": "G1",
+   "header": {
+    "source_id": "doc-brief-1",
+    "source_kind": "derived",
+    "parent_ids": [
+     "log-mission1"
+    ],
+    "parent_hash": "aaaa1111",
+    "as_of": "2026-08-01T10:00:00",
+    "generator": "tools/report.py",
+    "status": null
+   }
+  },
+  {
+   "case": "G2",
+   "header": {
+    "source_id": "doc-brief-2",
+    "source_kind": "derived",
+    "parent_ids": [
+     "log-rookery-bs"
+    ],
+    "parent_hash": "bbbb0000",
+    "as_of": "2026-07-30T09:00:00",
+    "generator": "tools/report.py",
+    "status": null
+   }
+  },
+  {
+   "case": "G3",
+   "header": null,
+   "note": "헤더 없는 legacy 문서"
+  },
+  {
+   "case": "G4",
+   "header": {
+    "source_id": "log-mission1",
+    "source_kind": "raw",
+    "parent_ids": [],
+    "parent_hash": null,
+    "as_of": "2026-08-05T00:00:00",
+    "generator": "genesis/mission/runner.py",
+    "status": null
+   },
+   "last_event_at": "2026-08-06T13:45:00"
+  },
+  {
+   "case": "G6",
+   "header": {
+    "source_id": "docs/some-design.md",
+    "source_kind": "normative",
+    "parent_ids": [],
+    "parent_hash": {},
+    "as_of": "2026-08-22T12:00:00",
+    "generator": "human",
+    "status": null
+   },
+   "note": "규범 문서 - 부모 없음 (v0.1 §5)"
+  },
+  {
+   "case": "G7",
+   "header": {
+    "source_id": "docs/mixed.md",
+    "source_kind": "normative",
+    "parent_ids": [
+     "log-mission1"
+    ],
+    "parent_hash": {
+     "log-mission1": "aaaa1111"
+    },
+    "as_of": "2026-08-22T12:00:00",
+    "generator": "human",
+    "status": null
+   },
+   "note": "규범을 자처하지만 부모가 있다 - 파생이다"
+  }
+ ],
+ "promotions": [
+  {
+   "case": "G5",
+   "record": {
+    "claim_id": "clm-1",
+    "text": "실험 1 최종안 objective 중앙값 A 0.814",
+    "source_id": "log-mission1",
+    "source_locator": "mission.db::results#seed*",
+    "parent_hash": "aaaa1111",
+    "promoted_at": "2026-08-01T10:05:00",
+    "verifier": null,
+    "status": null
+   }
+  }
+ ]
+}

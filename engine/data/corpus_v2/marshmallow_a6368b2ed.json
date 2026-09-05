@@ -1,0 +1,65 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "a6368b2ed34f0d1faa73cbfefe38a2c67c3eb1cf",
+ "parent_commit": "ad89162f49edc6c455eeeed98f8d1e97d841d869",
+ "answer_files": [
+  "marshmallow/core.py",
+  "tasks.py"
+ ],
+ "answer_functions": [
+  "marshmallow/core.py::__init__",
+  "marshmallow/core.py::data",
+  "marshmallow/core.py::is_valid",
+  "marshmallow/core.py::marshal",
+  "marshmallow/core.py::to_data",
+  "tasks.py::test"
+ ],
+ "patch_lines": 65,
+ "added_tests": {
+  "tests/test_marshmallow.py::TestSerializer::test_stores_invalid_url_error": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_marshmallow.py::TestSerializer::test_stored_invalid_email": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_marshmallow.py::TestSerializer::test_validate": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_marshmallow.py::TestSerializer::test_validate_field": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_marshmallow.py::TestSerializer::test_fields_param_must_be_list_or_tuple": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_marshmallow.py::TestNestedSerializer::test_nested_errors": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_marshmallow.py::TestFields::test_repr": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "tests/test_marshmallow.py"
+ ],
+ "location_hard_proxy": true,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 23.7,
+ "env_error_tests": 7,
+ "qualified": false
+}

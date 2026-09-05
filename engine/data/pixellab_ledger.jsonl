@@ -1,0 +1,14 @@
+{"what": "create-tileset shading A_bare", "before": 21, "after": 18, "spent": 3, "ok": true, "note": "소급 기록(추정) - 21→9 사이를 성공 4건으로 나눈 값. 도구가 없어 실측 못 함", "at": "2026-08-27T14:20"}
+{"what": "create-tileset shading B_shaded", "before": 18, "after": 15, "spent": 3, "ok": true, "note": "소급 기록(추정)", "at": "2026-08-27T14:22"}
+{"what": "create-tileset palette A_bare #1", "before": 15, "after": 12, "spent": 3, "ok": true, "note": "소급 기록(추정)", "at": "2026-08-27T15:05"}
+{"what": "create-tileset palette A_bare #2", "before": 12, "after": 9, "spent": 3, "ok": true, "note": "소급 기록(추정)", "at": "2026-08-27T15:07"}
+{"what": "create-tileset palette B_palette #1", "before": 9, "after": 9, "spent": 0, "ok": false, "note": "color_image가 64x64여야 하는데 40x1을 보냈다. 실패는 0회 소모", "at": "2026-08-27T15:08"}
+{"what": "create-image-pixflux tree 16px", "before": 9, "after": 9, "spent": 0, "ok": false, "note": "캔버스 최소 32x32. 주문 자체가 거부됨(422), 0회 소모", "at": "2026-08-27T15:30"}
+{"what": "create-tileset pastel(제대로 된 문장+파라미터+팔레트)", "before": 9.0, "after": 6.0, "spent": 3.0, "ok": true, "note": ""}
+{"what": "create-character-v3 witch_a", "before": 6.0, "after": 3.0, "spent": 3.0, "ok": true, "note": ""}
+{"what": "create-character-v3 witch_a", "before": 5.0, "after": 2.0, "spent": 3.0, "ok": true, "note": ""}
+{"what": "create-character-v3 ref witch 64px", "before": 2.0, "after": 1.0, "spent": 1.0, "ok": true, "note": ""}
+{"what": "create-character-v3 ref witch_1A 64px", "before": 1.0, "after": 0.0, "spent": 1.0, "ok": true, "note": ""}
+{"what": "create-character-v3 ref witch_1B 64px", "before": 0.0, "after": 0.0, "spent": 0.0, "ok": true, "note": ""}
+{"what": "create-character-v3 ref witch_1C 64px", "before": 0.0, "after": 0.0, "spent": 0.0, "ok": true, "note": ""}
+{"what": "create-character-v3 ref witch_1D 64px", "before": 0.0, "after": 0.0, "spent": 0.0, "ok": true, "note": ""}

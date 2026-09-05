@@ -1,0 +1,30 @@
+{
+ "repo": "dateutil",
+ "fix_commit": "f8f802b4b18ab5f5a33f7002953cafd821e8d409",
+ "parent_commit": "fd2d201853fbd6e96ae9b34b57b7a18277892f71",
+ "answer_files": [
+  "dateutil/parser/isoparser.py"
+ ],
+ "answer_functions": [
+  "dateutil/parser/isoparser.py::_parse_isodate_uncommon"
+ ],
+ "patch_lines": 16,
+ "added_tests": {
+  "dateutil/test/test_isoparser.py::test_parse_tzstr_fails": {
+   "parent": "pass",
+   "fix": "pass",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "dateutil/test/test_isoparser.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 2.3,
+ "env_error_tests": 0,
+ "qualified": false,
+ "selector_event_proxy_v1": false
+}

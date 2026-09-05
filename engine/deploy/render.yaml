@@ -1,0 +1,19 @@
+# Render.com 원클릭 배포 (무료 티어 가능). 개인키·시크릿은 대시보드에서 주입.
+services:
+  - type: web
+    name: rookery-reproduce
+    runtime: docker
+    dockerfilePath: ./deploy/Dockerfile
+    plan: starter
+    healthCheckPath: /health
+    envVars:
+      - key: GITHUB_APP_ID
+        sync: false
+      - key: GITHUB_APP_KEY_B64      # .pem을 base64로 (한 줄), 시작 시 디코드
+        sync: false
+      - key: WEBHOOK_SECRET
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: REVIEW_MODE
+        value: "1"

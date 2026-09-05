@@ -1,0 +1,314 @@
+{
+ "verify": "data/live_intake_verify.json",
+ "n": 36,
+ "aggregate": {
+  "a_fabricated_api": 8,
+  "c_env_not_importable": 22,
+  "d_test_defect": 4,
+  "c_env": 2
+ },
+ "by_class": {
+  "A": {
+   "d_test_defect": 3,
+   "c_env_not_importable": 1,
+   "c_env": 1
+  },
+  "B": {
+   "a_fabricated_api": 8,
+   "c_env_not_importable": 21,
+   "d_test_defect": 1,
+   "c_env": 1
+  }
+ },
+ "rows": [
+  {
+   "repo": "mahmoud/boltons",
+   "number": 347,
+   "class": "B",
+   "axis": "a_fabricated_api",
+   "why": "cannot import get_any from boltons.dictutils",
+   "head": "=================================== ERRORS ====================================\n_________________ ERROR collecting test_triage_boltons_347.py _________________\nImportError while importing test module 'C:\\Users\\az518\\AppData\\Local\\Temp\\triage_pnc001sj\\boltons\\test_triage_boltons_347.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n..\\..\\..\\Programs\\Python\\Python31"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 311,
+   "class": "B",
+   "axis": "a_fabricated_api",
+   "why": "cannot import intersection from boltons.iterutils",
+   "head": "=================================== ERRORS ====================================\n_________________ ERROR collecting test_triage_boltons_311.py _________________\nImportError while importing test module 'C:\\Users\\az518\\AppData\\Local\\Temp\\triage_pnc001sj\\boltons\\test_triage_boltons_311.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n..\\..\\..\\Programs\\Python\\Python31"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 299,
+   "class": "B",
+   "axis": "a_fabricated_api",
+   "why": "cannot import shorten from boltons.strutils",
+   "head": "=================================== ERRORS ====================================\n_________________ ERROR collecting test_triage_boltons_299.py _________________\nImportError while importing test module 'C:\\Users\\az518\\AppData\\Local\\Temp\\triage_pnc001sj\\boltons\\test_triage_boltons_299.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n..\\..\\..\\Programs\\Python\\Python31"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 289,
+   "class": "B",
+   "axis": "a_fabricated_api",
+   "why": "cannot import typename from boltons.typeutils",
+   "head": "=================================== ERRORS ====================================\n_________________ ERROR collecting test_triage_boltons_289.py _________________\nImportError while importing test module 'C:\\Users\\az518\\AppData\\Local\\Temp\\triage_pnc001sj\\boltons\\test_triage_boltons_289.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n..\\..\\..\\Programs\\Python\\Python31"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 256,
+   "class": "B",
+   "axis": "a_fabricated_api",
+   "why": "cannot import _import_pkg_modules from boltons.tbutils",
+   "head": "=================================== ERRORS ====================================\n_________________ ERROR collecting test_triage_boltons_256.py _________________\nImportError while importing test module 'C:\\Users\\az518\\AppData\\Local\\Temp\\triage_pnc001sj\\boltons\\test_triage_boltons_256.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n..\\..\\..\\Programs\\Python\\Python31"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1548,
+   "class": "B",
+   "axis": "c_env_not_importable",
+   "why": "top-level 'dateutil' not importable",
+   "head": "=================================== ERRORS ====================================\n________________ ERROR collecting test_triage_dateutil_1548.py ________________\nImportError while importing test module 'C:\\Users\\az518\\AppData\\Local\\Temp\\triage_pnc001sj\\dateutil\\test_triage_dateutil_1548.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n..\\..\\..\\Programs\\Python\\Pytho"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1546,
+   "class": "B",
+   "axis": "c_env_not_importable",
+   "why": "top-level 'dateutil' not importable",
+   "head": "=================================== ERRORS ====================================\n________________ ERROR collecting test_triage_dateutil_1546.py ________________\nImportError while importing test module 'C:\\Users\\az518\\AppData\\Local\\Temp\\triage_pnc001sj\\dateutil\\test_triage_dateutil_1546.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n..\\..\\..\\Programs\\Python\\Pytho"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1545,
+   "class": "B",
+   "axis": "c_env_not_importable",
+   "why": "top-level 'dateutil' not importable",
+   "head": "=================================== ERRORS ====================================\n________________ ERROR collecting test_triage_dateutil_1545.py ________________\nImportError while importing test module 'C:\\Users\\az518\\AppData\\Local\\Temp\\triage_pnc001sj\\dateutil\\test_triage_dateutil_1545.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n..\\..\\..\\Programs\\Python\\Pytho"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1508,
+   "class": "B",
+   "axis": "c_env_not_importable",
+   "why": "top-level 'dateutil' not importable",
+   "head": "=================================== ERRORS ====================================\n________________ ERROR collecting test_triage_dateutil_1508.py ________________\nImportError while importing test module 'C:\\Users\\az518\\AppData\\Local\\Temp\\triage_pnc001sj\\dateutil\\test_triage_dateutil_1508.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n..\\..\\..\\Programs\\Python\\Pytho"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 3019,
+   "class": "B",
+   "axis": "c_env_not_importable",
+   "why": "top-level 'marshmallow' not importable",
+   "head": "=================================== ERRORS ====================================\n______________ ERROR collecting test_triage_marshmallow_3019.py _______________\nImportError while importing test module 'C:\\Users\\az518\\AppData\\Local\\Temp\\triage_pnc001sj\\marshmallow\\test_triage_marshmallow_3019.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n..\\..\\..\\Programs\\Python"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2999,
+   "class": "A",
+   "axis": "d_test_defect",
+   "why": "syntax",
+   "head": "=================================== ERRORS ====================================\n______________ ERROR collecting test_triage_marshmallow_2999.py _______________\n..\\..\\..\\Programs\\Python\\Python312\\Lib\\site-packages\\_pytest\\python.py:508: in importtestmodule\n    mod = import_path(\n..\\..\\..\\Programs\\Python\\Python312\\Lib\\site-packages\\_pytest\\pathlib.py:596: in import_path\n    importlib.import_module(m"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2961,
+   "class": "A",
+   "axis": "c_env_not_importable",
+   "why": "top-level 'marshmallow' not importable",
+   "head": "=================================== ERRORS ====================================\n______________ ERROR collecting test_triage_marshmallow_2961.py _______________\nImportError while importing test module 'C:\\Users\\az518\\AppData\\Local\\Temp\\triage_pnc001sj\\marshmallow\\test_triage_marshmallow_2961.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n..\\..\\..\\Programs\\Python"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2893,
+   "class": "B",
+   "axis": "c_env_not_importable",
+   "why": "top-level 'marshmallow' not importable",
+   "head": "=================================== ERRORS ====================================\n______________ ERROR collecting test_triage_marshmallow_2893.py _______________\nImportError while importing test module 'C:\\Users\\az518\\AppData\\Local\\Temp\\triage_pnc001sj\\marshmallow\\test_triage_marshmallow_2893.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n..\\..\\..\\Programs\\Python"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2872,
+   "class": "B",
+   "axis": "c_env_not_importable",
+   "why": "top-level 'marshmallow' not importable",
+   "head": "=================================== ERRORS ====================================\n______________ ERROR collecting test_triage_marshmallow_2872.py _______________\nImportError while importing test module 'C:\\Users\\az518\\AppData\\Local\\Temp\\triage_pnc001sj\\marshmallow\\test_triage_marshmallow_2872.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n..\\..\\..\\Programs\\Python"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2836,
+   "class": "B",
+   "axis": "c_env_not_importable",
+   "why": "top-level 'marshmallow' not importable",
+   "head": "=================================== ERRORS ====================================\n______________ ERROR collecting test_triage_marshmallow_2836.py _______________\nImportError while importing test module 'C:\\Users\\az518\\AppData\\Local\\Temp\\triage_pnc001sj\\marshmallow\\test_triage_marshmallow_2836.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n..\\..\\..\\Programs\\Python"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2794,
+   "class": "B",
+   "axis": "d_test_defect",
+   "why": "syntax",
+   "head": "=================================== ERRORS ====================================\n______________ ERROR collecting test_triage_marshmallow_2794.py _______________\n..\\..\\..\\Programs\\Python\\Python312\\Lib\\site-packages\\_pytest\\python.py:508: in importtestmodule\n    mod = import_path(\n..\\..\\..\\Programs\\Python\\Python312\\Lib\\site-packages\\_pytest\\pathlib.py:596: in import_path\n    importlib.import_module(m"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2243,
+   "class": "B",
+   "axis": "c_env_not_importable",
+   "why": "top-level 'marshmallow' not importable",
+   "head": "=================================== ERRORS ====================================\n______________ ERROR collecting test_triage_marshmallow_2243.py _______________\nImportError while importing test module 'C:\\Users\\az518\\AppData\\Local\\Temp\\triage_pnc001sj\\marshmallow\\test_triage_marshmallow_2243.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n..\\..\\..\\Programs\\Python"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2194,
+   "class": "B",
+   "axis": "c_env_not_importable",
+   "why": "top-level 'marshmallow' not importable",
+   "head": "=================================== ERRORS ====================================\n______________ ERROR collecting test_triage_marshmallow_2194.py _______________\nImportError while importing test module 'C:\\Users\\az518\\AppData\\Local\\Temp\\triage_pnc001sj\\marshmallow\\test_triage_marshmallow_2194.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n..\\..\\..\\Programs\\Python"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2189,
+   "class": "B",
+   "axis": "c_env_not_importable",
+   "why": "top-level 'marshmallow' not importable",
+   "head": "=================================== ERRORS ====================================\n______________ ERROR collecting test_triage_marshmallow_2189.py _______________\nImportError while importing test module 'C:\\Users\\az518\\AppData\\Local\\Temp\\triage_pnc001sj\\marshmallow\\test_triage_marshmallow_2189.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n..\\..\\..\\Programs\\Python"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2180,
+   "class": "B",
+   "axis": "c_env_not_importable",
+   "why": "top-level 'marshmallow' not importable",
+   "head": "=================================== ERRORS ====================================\n______________ ERROR collecting test_triage_marshmallow_2180.py _______________\nImportError while importing test module 'C:\\Users\\az518\\AppData\\Local\\Temp\\triage_pnc001sj\\marshmallow\\test_triage_marshmallow_2180.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n..\\..\\..\\Programs\\Python"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2165,
+   "class": "B",
+   "axis": "c_env_not_importable",
+   "why": "top-level 'marshmallow' not importable",
+   "head": "=================================== ERRORS ====================================\n______________ ERROR collecting test_triage_marshmallow_2165.py _______________\nImportError while importing test module 'C:\\Users\\az518\\AppData\\Local\\Temp\\triage_pnc001sj\\marshmallow\\test_triage_marshmallow_2165.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n..\\..\\..\\Programs\\Python"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2032,
+   "class": "B",
+   "axis": "c_env_not_importable",
+   "why": "top-level 'marshmallow' not importable",
+   "head": "=================================== ERRORS ====================================\n______________ ERROR collecting test_triage_marshmallow_2032.py _______________\nImportError while importing test module 'C:\\Users\\az518\\AppData\\Local\\Temp\\triage_pnc001sj\\marshmallow\\test_triage_marshmallow_2032.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n..\\..\\..\\Programs\\Python"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2012,
+   "class": "B",
+   "axis": "c_env_not_importable",
+   "why": "top-level 'marshmallow' not importable",
+   "head": "=================================== ERRORS ====================================\n______________ ERROR collecting test_triage_marshmallow_2012.py _______________\nImportError while importing test module 'C:\\Users\\az518\\AppData\\Local\\Temp\\triage_pnc001sj\\marshmallow\\test_triage_marshmallow_2012.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n..\\..\\..\\Programs\\Python"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2000,
+   "class": "B",
+   "axis": "c_env_not_importable",
+   "why": "top-level 'marshmallow' not importable",
+   "head": "=================================== ERRORS ====================================\n______________ ERROR collecting test_triage_marshmallow_2000.py _______________\nImportError while importing test module 'C:\\Users\\az518\\AppData\\Local\\Temp\\triage_pnc001sj\\marshmallow\\test_triage_marshmallow_2000.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n..\\..\\..\\Programs\\Python"
+  },
+  {
+   "repo": "more-itertools/more-itertools",
+   "number": 1225,
+   "class": "A",
+   "axis": "d_test_defect",
+   "why": "syntax",
+   "head": "=================================== ERRORS ====================================\n_____________ ERROR collecting test_triage_more-itertools_1225.py _____________\n..\\..\\..\\Programs\\Python\\Python312\\Lib\\site-packages\\_pytest\\python.py:508: in importtestmodule\n    mod = import_path(\n..\\..\\..\\Programs\\Python\\Python312\\Lib\\site-packages\\_pytest\\pathlib.py:596: in import_path\n    importlib.import_module(m"
+  },
+  {
+   "repo": "grantjenks/python-sortedcontainers",
+   "number": 244,
+   "class": "B",
+   "axis": "c_env_not_importable",
+   "why": "top-level 'sortedcontainers' not importable",
+   "head": "=================================== ERRORS ====================================\n____________ ERROR collecting test_triage_sortedcontainers_244.py _____________\nImportError while importing test module 'C:\\Users\\az518\\AppData\\Local\\Temp\\triage_pnc001sj\\sortedcontainers\\test_triage_sortedcontainers_244.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n..\\..\\..\\Progra"
+  },
+  {
+   "repo": "grantjenks/python-sortedcontainers",
+   "number": 239,
+   "class": "B",
+   "axis": "c_env_not_importable",
+   "why": "top-level 'sortedcontainers' not importable",
+   "head": "=================================== ERRORS ====================================\n____________ ERROR collecting test_triage_sortedcontainers_239.py _____________\nImportError while importing test module 'C:\\Users\\az518\\AppData\\Local\\Temp\\triage_pnc001sj\\sortedcontainers\\test_triage_sortedcontainers_239.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n..\\..\\..\\Progra"
+  },
+  {
+   "repo": "grantjenks/python-sortedcontainers",
+   "number": 238,
+   "class": "B",
+   "axis": "c_env_not_importable",
+   "why": "top-level 'sortedcontainers' not importable",
+   "head": "=================================== ERRORS ====================================\n____________ ERROR collecting test_triage_sortedcontainers_238.py _____________\nImportError while importing test module 'C:\\Users\\az518\\AppData\\Local\\Temp\\triage_pnc001sj\\sortedcontainers\\test_triage_sortedcontainers_238.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n..\\..\\..\\Progra"
+  },
+  {
+   "repo": "grantjenks/python-sortedcontainers",
+   "number": 219,
+   "class": "B",
+   "axis": "c_env_not_importable",
+   "why": "top-level 'sortedcontainers' not importable",
+   "head": "=================================== ERRORS ====================================\n____________ ERROR collecting test_triage_sortedcontainers_219.py _____________\nImportError while importing test module 'C:\\Users\\az518\\AppData\\Local\\Temp\\triage_pnc001sj\\sortedcontainers\\test_triage_sortedcontainers_219.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n..\\..\\..\\Progra"
+  },
+  {
+   "repo": "grantjenks/python-sortedcontainers",
+   "number": 53,
+   "class": "B",
+   "axis": "c_env_not_importable",
+   "why": "top-level 'sortedcontainers' not importable",
+   "head": "=================================== ERRORS ====================================\n_____________ ERROR collecting test_triage_sortedcontainers_53.py _____________\nImportError while importing test module 'C:\\Users\\az518\\AppData\\Local\\Temp\\triage_pnc001sj\\sortedcontainers\\test_triage_sortedcontainers_53.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n..\\..\\..\\Program"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 612,
+   "class": "A",
+   "axis": "d_test_defect",
+   "why": "syntax",
+   "head": "=================================== ERRORS ====================================\n__________________ ERROR collecting test_triage_toolz_612.py __________________\n..\\..\\..\\Programs\\Python\\Python312\\Lib\\site-packages\\_pytest\\python.py:508: in importtestmodule\n    mod = import_path(\n..\\..\\..\\Programs\\Python\\Python312\\Lib\\site-packages\\_pytest\\pathlib.py:596: in import_path\n    importlib.import_module(m"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 606,
+   "class": "B",
+   "axis": "c_env",
+   "why": "missing third-party cloudpickle",
+   "head": "=================================== ERRORS ====================================\n__________________ ERROR collecting test_triage_toolz_606.py __________________\nImportError while importing test module 'C:\\Users\\az518\\AppData\\Local\\Temp\\triage_pnc001sj\\toolz\\test_triage_toolz_606.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n..\\..\\..\\Programs\\Python\\Python312\\Li"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 583,
+   "class": "A",
+   "axis": "c_env",
+   "why": "missing third-party cytoolz",
+   "head": "=================================== ERRORS ====================================\n__________________ ERROR collecting test_triage_toolz_583.py __________________\nImportError while importing test module 'C:\\Users\\az518\\AppData\\Local\\Temp\\triage_pnc001sj\\toolz\\test_triage_toolz_583.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n..\\..\\..\\Programs\\Python\\Python312\\Li"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 567,
+   "class": "B",
+   "axis": "a_fabricated_api",
+   "why": "cannot import partition_by from toolz",
+   "head": "=================================== ERRORS ====================================\n__________________ ERROR collecting test_triage_toolz_567.py __________________\nImportError while importing test module 'C:\\Users\\az518\\AppData\\Local\\Temp\\triage_pnc001sj\\toolz\\test_triage_toolz_567.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n..\\..\\..\\Programs\\Python\\Python312\\Li"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 540,
+   "class": "B",
+   "axis": "a_fabricated_api",
+   "why": "cannot import thread_as from toolz",
+   "head": "=================================== ERRORS ====================================\n__________________ ERROR collecting test_triage_toolz_540.py __________________\nImportError while importing test module 'C:\\Users\\az518\\AppData\\Local\\Temp\\triage_pnc001sj\\toolz\\test_triage_toolz_540.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n..\\..\\..\\Programs\\Python\\Python312\\Li"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 517,
+   "class": "B",
+   "axis": "a_fabricated_api",
+   "why": "cannot import iget from toolz",
+   "head": "=================================== ERRORS ====================================\n__________________ ERROR collecting test_triage_toolz_517.py __________________\nImportError while importing test module 'C:\\Users\\az518\\AppData\\Local\\Temp\\triage_pnc001sj\\toolz\\test_triage_toolz_517.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n..\\..\\..\\Programs\\Python\\Python312\\Li"
+  }
+ ],
+ "elapsed_s": 52.2
+}

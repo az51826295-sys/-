@@ -1,0 +1,1092 @@
+{
+ "candidates": 146,
+ "by_cat": {
+  "bug_assertion": 36,
+  "passed": 22,
+  "feature_import": 18,
+  "other_exception": 46,
+  "broken_test": 12,
+  "feature_hasattr": 5,
+  "env_data": 7
+ },
+ "feature_requests_excluded": 23,
+ "bug_candidate_denominator": 123,
+ "other_exception_symptom_matched": 11,
+ "pure_bug_repro": {
+  "low_assertion_only": 0.293,
+  "mid_plus_matched_exc": 0.382,
+  "high_plus_all_other": 0.667,
+  "counts": "36/47/82 of 123"
+ },
+ "elapsed_s": 196.9,
+ "rows": [
+  {
+   "tag": "v1",
+   "slug": "mahmoud/boltons",
+   "number": 439,
+   "cat": "bug_assertion",
+   "why": "value assertion"
+  },
+  {
+   "tag": "v1",
+   "slug": "mahmoud/boltons",
+   "number": 390,
+   "cat": "passed",
+   "why": "passed"
+  },
+  {
+   "tag": "v1",
+   "slug": "mahmoud/boltons",
+   "number": 347,
+   "cat": "feature_import",
+   "why": "cannot import requested name"
+  },
+  {
+   "tag": "v1",
+   "slug": "mahmoud/boltons",
+   "number": 344,
+   "cat": "passed",
+   "why": "passed"
+  },
+  {
+   "tag": "v1",
+   "slug": "mahmoud/boltons",
+   "number": 324,
+   "cat": "passed",
+   "why": "passed"
+  },
+  {
+   "tag": "v1",
+   "slug": "mahmoud/boltons",
+   "number": 311,
+   "cat": "feature_import",
+   "why": "cannot import requested name"
+  },
+  {
+   "tag": "v1",
+   "slug": "mahmoud/boltons",
+   "number": 310,
+   "cat": "other_exception",
+   "why": "TypeError",
+   "symptom_match": false
+  },
+  {
+   "tag": "v1",
+   "slug": "mahmoud/boltons",
+   "number": 304,
+   "cat": "bug_assertion",
+   "why": "value assertion"
+  },
+  {
+   "tag": "v1",
+   "slug": "mahmoud/boltons",
+   "number": 301,
+   "cat": "broken_test",
+   "why": "NameError in test"
+  },
+  {
+   "tag": "v1",
+   "slug": "mahmoud/boltons",
+   "number": 299,
+   "cat": "feature_import",
+   "why": "cannot import requested name"
+  },
+  {
+   "tag": "v1",
+   "slug": "mahmoud/boltons",
+   "number": 290,
+   "cat": "passed",
+   "why": "passed"
+  },
+  {
+   "tag": "v1",
+   "slug": "mahmoud/boltons",
+   "number": 289,
+   "cat": "feature_import",
+   "why": "cannot import requested name"
+  },
+  {
+   "tag": "v1",
+   "slug": "mahmoud/boltons",
+   "number": 280,
+   "cat": "bug_assertion",
+   "why": "value assertion"
+  },
+  {
+   "tag": "v1",
+   "slug": "mahmoud/boltons",
+   "number": 266,
+   "cat": "passed",
+   "why": "passed"
+  },
+  {
+   "tag": "v1",
+   "slug": "mahmoud/boltons",
+   "number": 256,
+   "cat": "feature_import",
+   "why": "cannot import requested name"
+  },
+  {
+   "tag": "v1",
+   "slug": "mahmoud/boltons",
+   "number": 225,
+   "cat": "bug_assertion",
+   "why": "value assertion"
+  },
+  {
+   "tag": "v1",
+   "slug": "mahmoud/boltons",
+   "number": 201,
+   "cat": "other_exception",
+   "why": "TypeError",
+   "symptom_match": false
+  },
+  {
+   "tag": "v1",
+   "slug": "dateutil/dateutil",
+   "number": 1548,
+   "cat": "passed",
+   "why": "passed"
+  },
+  {
+   "tag": "v1",
+   "slug": "dateutil/dateutil",
+   "number": 1546,
+   "cat": "bug_assertion",
+   "why": "value assertion"
+  },
+  {
+   "tag": "v1",
+   "slug": "dateutil/dateutil",
+   "number": 1545,
+   "cat": "bug_assertion",
+   "why": "value assertion"
+  },
+  {
+   "tag": "v1",
+   "slug": "dateutil/dateutil",
+   "number": 1508,
+   "cat": "other_exception",
+   "why": "unknown",
+   "symptom_match": false
+  },
+  {
+   "tag": "v1",
+   "slug": "marshmallow-code/marshmallow",
+   "number": 3019,
+   "cat": "other_exception",
+   "why": "ValueError",
+   "symptom_match": false
+  },
+  {
+   "tag": "v1",
+   "slug": "marshmallow-code/marshmallow",
+   "number": 2999,
+   "cat": "broken_test",
+   "why": "syntax"
+  },
+  {
+   "tag": "v1",
+   "slug": "marshmallow-code/marshmallow",
+   "number": 2961,
+   "cat": "bug_assertion",
+   "why": "value assertion"
+  },
+  {
+   "tag": "v1",
+   "slug": "marshmallow-code/marshmallow",
+   "number": 2893,
+   "cat": "other_exception",
+   "why": "IndexError",
+   "symptom_match": true
+  },
+  {
+   "tag": "v1",
+   "slug": "marshmallow-code/marshmallow",
+   "number": 2872,
+   "cat": "passed",
+   "why": "passed"
+  },
+  {
+   "tag": "v1",
+   "slug": "marshmallow-code/marshmallow",
+   "number": 2836,
+   "cat": "other_exception",
+   "why": "unknown",
+   "symptom_match": false
+  },
+  {
+   "tag": "v1",
+   "slug": "marshmallow-code/marshmallow",
+   "number": 2794,
+   "cat": "broken_test",
+   "why": "syntax"
+  },
+  {
+   "tag": "v1",
+   "slug": "marshmallow-code/marshmallow",
+   "number": 2243,
+   "cat": "bug_assertion",
+   "why": "value assertion"
+  },
+  {
+   "tag": "v1",
+   "slug": "marshmallow-code/marshmallow",
+   "number": 2194,
+   "cat": "bug_assertion",
+   "why": "value assertion"
+  },
+  {
+   "tag": "v1",
+   "slug": "marshmallow-code/marshmallow",
+   "number": 2189,
+   "cat": "other_exception",
+   "why": "TypeError",
+   "symptom_match": false
+  },
+  {
+   "tag": "v1",
+   "slug": "marshmallow-code/marshmallow",
+   "number": 2180,
+   "cat": "other_exception",
+   "why": "unknown",
+   "symptom_match": false
+  },
+  {
+   "tag": "v1",
+   "slug": "marshmallow-code/marshmallow",
+   "number": 2165,
+   "cat": "bug_assertion",
+   "why": "value assertion"
+  },
+  {
+   "tag": "v1",
+   "slug": "marshmallow-code/marshmallow",
+   "number": 2032,
+   "cat": "bug_assertion",
+   "why": "value assertion"
+  },
+  {
+   "tag": "v1",
+   "slug": "marshmallow-code/marshmallow",
+   "number": 2012,
+   "cat": "bug_assertion",
+   "why": "value assertion"
+  },
+  {
+   "tag": "v1",
+   "slug": "marshmallow-code/marshmallow",
+   "number": 2000,
+   "cat": "other_exception",
+   "why": "AttributeError",
+   "symptom_match": false
+  },
+  {
+   "tag": "v1",
+   "slug": "more-itertools/more-itertools",
+   "number": 1225,
+   "cat": "broken_test",
+   "why": "syntax"
+  },
+  {
+   "tag": "v1",
+   "slug": "more-itertools/more-itertools",
+   "number": 1017,
+   "cat": "broken_test",
+   "why": "syntax"
+  },
+  {
+   "tag": "v1",
+   "slug": "grantjenks/python-sortedcontainers",
+   "number": 244,
+   "cat": "feature_hasattr",
+   "why": "absent-API assertion"
+  },
+  {
+   "tag": "v1",
+   "slug": "grantjenks/python-sortedcontainers",
+   "number": 239,
+   "cat": "other_exception",
+   "why": "ValueError",
+   "symptom_match": true
+  },
+  {
+   "tag": "v1",
+   "slug": "grantjenks/python-sortedcontainers",
+   "number": 238,
+   "cat": "bug_assertion",
+   "why": "value assertion"
+  },
+  {
+   "tag": "v1",
+   "slug": "grantjenks/python-sortedcontainers",
+   "number": 219,
+   "cat": "other_exception",
+   "why": "TypeError",
+   "symptom_match": true
+  },
+  {
+   "tag": "v1",
+   "slug": "grantjenks/python-sortedcontainers",
+   "number": 53,
+   "cat": "passed",
+   "why": "passed"
+  },
+  {
+   "tag": "v1",
+   "slug": "msiemens/tinydb",
+   "number": 631,
+   "cat": "broken_test",
+   "why": "syntax"
+  },
+  {
+   "tag": "v1",
+   "slug": "msiemens/tinydb",
+   "number": 629,
+   "cat": "other_exception",
+   "why": "TypeError",
+   "symptom_match": false
+  },
+  {
+   "tag": "v1",
+   "slug": "msiemens/tinydb",
+   "number": 354,
+   "cat": "passed",
+   "why": "passed"
+  },
+  {
+   "tag": "v1",
+   "slug": "pytoolz/toolz",
+   "number": 626,
+   "cat": "bug_assertion",
+   "why": "value assertion"
+  },
+  {
+   "tag": "v1",
+   "slug": "pytoolz/toolz",
+   "number": 612,
+   "cat": "broken_test",
+   "why": "syntax"
+  },
+  {
+   "tag": "v1",
+   "slug": "pytoolz/toolz",
+   "number": 606,
+   "cat": "env_data",
+   "why": "module missing"
+  },
+  {
+   "tag": "v1",
+   "slug": "pytoolz/toolz",
+   "number": 601,
+   "cat": "passed",
+   "why": "passed"
+  },
+  {
+   "tag": "v1",
+   "slug": "pytoolz/toolz",
+   "number": 596,
+   "cat": "feature_hasattr",
+   "why": "absent-API assertion"
+  },
+  {
+   "tag": "v1",
+   "slug": "pytoolz/toolz",
+   "number": 583,
+   "cat": "env_data",
+   "why": "module missing"
+  },
+  {
+   "tag": "v1",
+   "slug": "pytoolz/toolz",
+   "number": 580,
+   "cat": "passed",
+   "why": "passed"
+  },
+  {
+   "tag": "v1",
+   "slug": "pytoolz/toolz",
+   "number": 569,
+   "cat": "passed",
+   "why": "passed"
+  },
+  {
+   "tag": "v1",
+   "slug": "pytoolz/toolz",
+   "number": 567,
+   "cat": "feature_import",
+   "why": "cannot import requested name"
+  },
+  {
+   "tag": "v1",
+   "slug": "pytoolz/toolz",
+   "number": 544,
+   "cat": "passed",
+   "why": "passed"
+  },
+  {
+   "tag": "v1",
+   "slug": "pytoolz/toolz",
+   "number": 540,
+   "cat": "feature_import",
+   "why": "cannot import requested name"
+  },
+  {
+   "tag": "v1",
+   "slug": "pytoolz/toolz",
+   "number": 529,
+   "cat": "feature_import",
+   "why": "cannot import requested name"
+  },
+  {
+   "tag": "v1",
+   "slug": "pytoolz/toolz",
+   "number": 523,
+   "cat": "other_exception",
+   "why": "TypeError",
+   "symptom_match": false
+  },
+  {
+   "tag": "v1",
+   "slug": "pytoolz/toolz",
+   "number": 517,
+   "cat": "feature_import",
+   "why": "cannot import requested name"
+  },
+  {
+   "tag": "v1",
+   "slug": "pytoolz/toolz",
+   "number": 510,
+   "cat": "other_exception",
+   "why": "TypeError",
+   "symptom_match": false
+  },
+  {
+   "tag": "v2",
+   "slug": "mahmoud/boltons",
+   "number": 170,
+   "cat": "feature_import",
+   "why": "cannot import requested name"
+  },
+  {
+   "tag": "v2",
+   "slug": "mahmoud/boltons",
+   "number": 148,
+   "cat": "feature_import",
+   "why": "cannot import requested name"
+  },
+  {
+   "tag": "v2",
+   "slug": "mahmoud/boltons",
+   "number": 142,
+   "cat": "bug_assertion",
+   "why": "value assertion"
+  },
+  {
+   "tag": "v2",
+   "slug": "mahmoud/boltons",
+   "number": 141,
+   "cat": "bug_assertion",
+   "why": "value assertion"
+  },
+  {
+   "tag": "v2",
+   "slug": "mahmoud/boltons",
+   "number": 125,
+   "cat": "feature_import",
+   "why": "cannot import requested name"
+  },
+  {
+   "tag": "v2",
+   "slug": "dateutil/dateutil",
+   "number": 1452,
+   "cat": "bug_assertion",
+   "why": "value assertion"
+  },
+  {
+   "tag": "v2",
+   "slug": "dateutil/dateutil",
+   "number": 1448,
+   "cat": "bug_assertion",
+   "why": "value assertion"
+  },
+  {
+   "tag": "v2",
+   "slug": "dateutil/dateutil",
+   "number": 1442,
+   "cat": "other_exception",
+   "why": "unknown",
+   "symptom_match": true
+  },
+  {
+   "tag": "v2",
+   "slug": "dateutil/dateutil",
+   "number": 1432,
+   "cat": "other_exception",
+   "why": "TypeError",
+   "symptom_match": true
+  },
+  {
+   "tag": "v2",
+   "slug": "dateutil/dateutil",
+   "number": 1425,
+   "cat": "env_data",
+   "why": "data file missing"
+  },
+  {
+   "tag": "v2",
+   "slug": "dateutil/dateutil",
+   "number": 1421,
+   "cat": "bug_assertion",
+   "why": "value assertion"
+  },
+  {
+   "tag": "v2",
+   "slug": "dateutil/dateutil",
+   "number": 1414,
+   "cat": "other_exception",
+   "why": "unknown",
+   "symptom_match": false
+  },
+  {
+   "tag": "v2",
+   "slug": "dateutil/dateutil",
+   "number": 1413,
+   "cat": "env_data",
+   "why": "data file missing"
+  },
+  {
+   "tag": "v2",
+   "slug": "dateutil/dateutil",
+   "number": 1410,
+   "cat": "bug_assertion",
+   "why": "value assertion"
+  },
+  {
+   "tag": "v2",
+   "slug": "dateutil/dateutil",
+   "number": 1409,
+   "cat": "other_exception",
+   "why": "unknown",
+   "symptom_match": true
+  },
+  {
+   "tag": "v2",
+   "slug": "dateutil/dateutil",
+   "number": 1404,
+   "cat": "other_exception",
+   "why": "unknown",
+   "symptom_match": false
+  },
+  {
+   "tag": "v2",
+   "slug": "dateutil/dateutil",
+   "number": 1402,
+   "cat": "env_data",
+   "why": "data file missing"
+  },
+  {
+   "tag": "v2",
+   "slug": "dateutil/dateutil",
+   "number": 1400,
+   "cat": "other_exception",
+   "why": "unknown",
+   "symptom_match": false
+  },
+  {
+   "tag": "v2",
+   "slug": "dateutil/dateutil",
+   "number": 1397,
+   "cat": "bug_assertion",
+   "why": "value assertion"
+  },
+  {
+   "tag": "v2",
+   "slug": "dateutil/dateutil",
+   "number": 1394,
+   "cat": "passed",
+   "why": "passed"
+  },
+  {
+   "tag": "v2",
+   "slug": "dateutil/dateutil",
+   "number": 1393,
+   "cat": "other_exception",
+   "why": "AttributeError",
+   "symptom_match": false
+  },
+  {
+   "tag": "v2",
+   "slug": "dateutil/dateutil",
+   "number": 1391,
+   "cat": "feature_import",
+   "why": "cannot import requested name"
+  },
+  {
+   "tag": "v2",
+   "slug": "dateutil/dateutil",
+   "number": 1370,
+   "cat": "other_exception",
+   "why": "TypeError",
+   "symptom_match": false
+  },
+  {
+   "tag": "v2",
+   "slug": "dateutil/dateutil",
+   "number": 1369,
+   "cat": "other_exception",
+   "why": "TypeError",
+   "symptom_match": false
+  },
+  {
+   "tag": "v2",
+   "slug": "dateutil/dateutil",
+   "number": 1368,
+   "cat": "other_exception",
+   "why": "ValueError",
+   "symptom_match": true
+  },
+  {
+   "tag": "v2",
+   "slug": "dateutil/dateutil",
+   "number": 1364,
+   "cat": "other_exception",
+   "why": "TypeError",
+   "symptom_match": false
+  },
+  {
+   "tag": "v2",
+   "slug": "dateutil/dateutil",
+   "number": 1359,
+   "cat": "bug_assertion",
+   "why": "value assertion"
+  },
+  {
+   "tag": "v2",
+   "slug": "dateutil/dateutil",
+   "number": 1357,
+   "cat": "bug_assertion",
+   "why": "value assertion"
+  },
+  {
+   "tag": "v2",
+   "slug": "dateutil/dateutil",
+   "number": 1353,
+   "cat": "broken_test",
+   "why": "syntax"
+  },
+  {
+   "tag": "v2",
+   "slug": "dateutil/dateutil",
+   "number": 1351,
+   "cat": "env_data",
+   "why": "data file missing"
+  },
+  {
+   "tag": "v2",
+   "slug": "dateutil/dateutil",
+   "number": 1341,
+   "cat": "other_exception",
+   "why": "unknown",
+   "symptom_match": false
+  },
+  {
+   "tag": "v2",
+   "slug": "dateutil/dateutil",
+   "number": 1334,
+   "cat": "other_exception",
+   "why": "unknown",
+   "symptom_match": false
+  },
+  {
+   "tag": "v2",
+   "slug": "dateutil/dateutil",
+   "number": 1327,
+   "cat": "bug_assertion",
+   "why": "value assertion"
+  },
+  {
+   "tag": "v2",
+   "slug": "dateutil/dateutil",
+   "number": 1321,
+   "cat": "bug_assertion",
+   "why": "value assertion"
+  },
+  {
+   "tag": "v2",
+   "slug": "dateutil/dateutil",
+   "number": 1318,
+   "cat": "bug_assertion",
+   "why": "value assertion"
+  },
+  {
+   "tag": "v2",
+   "slug": "dateutil/dateutil",
+   "number": 1312,
+   "cat": "bug_assertion",
+   "why": "value assertion"
+  },
+  {
+   "tag": "v2",
+   "slug": "marshmallow-code/marshmallow",
+   "number": 1971,
+   "cat": "bug_assertion",
+   "why": "value assertion"
+  },
+  {
+   "tag": "v2",
+   "slug": "marshmallow-code/marshmallow",
+   "number": 1964,
+   "cat": "other_exception",
+   "why": "TypeError",
+   "symptom_match": false
+  },
+  {
+   "tag": "v2",
+   "slug": "marshmallow-code/marshmallow",
+   "number": 1953,
+   "cat": "passed",
+   "why": "passed"
+  },
+  {
+   "tag": "v2",
+   "slug": "marshmallow-code/marshmallow",
+   "number": 1942,
+   "cat": "other_exception",
+   "why": "TypeError",
+   "symptom_match": false
+  },
+  {
+   "tag": "v2",
+   "slug": "marshmallow-code/marshmallow",
+   "number": 1895,
+   "cat": "bug_assertion",
+   "why": "value assertion"
+  },
+  {
+   "tag": "v2",
+   "slug": "marshmallow-code/marshmallow",
+   "number": 1893,
+   "cat": "bug_assertion",
+   "why": "value assertion"
+  },
+  {
+   "tag": "v2",
+   "slug": "marshmallow-code/marshmallow",
+   "number": 1844,
+   "cat": "bug_assertion",
+   "why": "value assertion"
+  },
+  {
+   "tag": "v2",
+   "slug": "marshmallow-code/marshmallow",
+   "number": 1841,
+   "cat": "other_exception",
+   "why": "unknown",
+   "symptom_match": false
+  },
+  {
+   "tag": "v2",
+   "slug": "marshmallow-code/marshmallow",
+   "number": 1829,
+   "cat": "env_data",
+   "why": "module missing"
+  },
+  {
+   "tag": "v2",
+   "slug": "marshmallow-code/marshmallow",
+   "number": 1819,
+   "cat": "other_exception",
+   "why": "unknown",
+   "symptom_match": true
+  },
+  {
+   "tag": "v2",
+   "slug": "marshmallow-code/marshmallow",
+   "number": 1801,
+   "cat": "other_exception",
+   "why": "TypeError",
+   "symptom_match": false
+  },
+  {
+   "tag": "v2",
+   "slug": "marshmallow-code/marshmallow",
+   "number": 1759,
+   "cat": "other_exception",
+   "why": "unknown",
+   "symptom_match": false
+  },
+  {
+   "tag": "v2",
+   "slug": "marshmallow-code/marshmallow",
+   "number": 1758,
+   "cat": "other_exception",
+   "why": "TypeError",
+   "symptom_match": true
+  },
+  {
+   "tag": "v2",
+   "slug": "marshmallow-code/marshmallow",
+   "number": 1751,
+   "cat": "other_exception",
+   "why": "AttributeError",
+   "symptom_match": false
+  },
+  {
+   "tag": "v2",
+   "slug": "marshmallow-code/marshmallow",
+   "number": 1747,
+   "cat": "bug_assertion",
+   "why": "value assertion"
+  },
+  {
+   "tag": "v2",
+   "slug": "marshmallow-code/marshmallow",
+   "number": 1696,
+   "cat": "passed",
+   "why": "passed"
+  },
+  {
+   "tag": "v2",
+   "slug": "marshmallow-code/marshmallow",
+   "number": 1642,
+   "cat": "bug_assertion",
+   "why": "value assertion"
+  },
+  {
+   "tag": "v2",
+   "slug": "marshmallow-code/marshmallow",
+   "number": 1622,
+   "cat": "other_exception",
+   "why": "TypeError",
+   "symptom_match": true
+  },
+  {
+   "tag": "v2",
+   "slug": "marshmallow-code/marshmallow",
+   "number": 1601,
+   "cat": "other_exception",
+   "why": "unknown",
+   "symptom_match": false
+  },
+  {
+   "tag": "v2",
+   "slug": "marshmallow-code/marshmallow",
+   "number": 1566,
+   "cat": "passed",
+   "why": "passed"
+  },
+  {
+   "tag": "v2",
+   "slug": "marshmallow-code/marshmallow",
+   "number": 1559,
+   "cat": "bug_assertion",
+   "why": "value assertion"
+  },
+  {
+   "tag": "v2",
+   "slug": "marshmallow-code/marshmallow",
+   "number": 1541,
+   "cat": "other_exception",
+   "why": "unknown",
+   "symptom_match": false
+  },
+  {
+   "tag": "v2",
+   "slug": "marshmallow-code/marshmallow",
+   "number": 1533,
+   "cat": "other_exception",
+   "why": "AttributeError",
+   "symptom_match": true
+  },
+  {
+   "tag": "v2",
+   "slug": "marshmallow-code/marshmallow",
+   "number": 1475,
+   "cat": "passed",
+   "why": "passed"
+  },
+  {
+   "tag": "v2",
+   "slug": "marshmallow-code/marshmallow",
+   "number": 1423,
+   "cat": "other_exception",
+   "why": "unknown",
+   "symptom_match": false
+  },
+  {
+   "tag": "v2",
+   "slug": "marshmallow-code/marshmallow",
+   "number": 1422,
+   "cat": "other_exception",
+   "why": "unknown",
+   "symptom_match": null
+  },
+  {
+   "tag": "v2",
+   "slug": "marshmallow-code/marshmallow",
+   "number": 1419,
+   "cat": "other_exception",
+   "why": "AttributeError",
+   "symptom_match": null
+  },
+  {
+   "tag": "v2",
+   "slug": "marshmallow-code/marshmallow",
+   "number": 1411,
+   "cat": "feature_hasattr",
+   "why": "absent-API assertion"
+  },
+  {
+   "tag": "v2",
+   "slug": "marshmallow-code/marshmallow",
+   "number": 1090,
+   "cat": "bug_assertion",
+   "why": "value assertion"
+  },
+  {
+   "tag": "v2",
+   "slug": "marshmallow-code/marshmallow",
+   "number": 879,
+   "cat": "broken_test",
+   "why": "NameError in test"
+  },
+  {
+   "tag": "v2",
+   "slug": "marshmallow-code/marshmallow",
+   "number": 833,
+   "cat": "feature_hasattr",
+   "why": "absent-API assertion"
+  },
+  {
+   "tag": "v2",
+   "slug": "marshmallow-code/marshmallow",
+   "number": 798,
+   "cat": "other_exception",
+   "why": "TypeError",
+   "symptom_match": null
+  },
+  {
+   "tag": "v2",
+   "slug": "marshmallow-code/marshmallow",
+   "number": 738,
+   "cat": "other_exception",
+   "why": "AttributeError",
+   "symptom_match": null
+  },
+  {
+   "tag": "v2",
+   "slug": "marshmallow-code/marshmallow",
+   "number": 727,
+   "cat": "passed",
+   "why": "passed"
+  },
+  {
+   "tag": "v2",
+   "slug": "marshmallow-code/marshmallow",
+   "number": 648,
+   "cat": "other_exception",
+   "why": "TypeError",
+   "symptom_match": null
+  },
+  {
+   "tag": "v2",
+   "slug": "pytoolz/toolz",
+   "number": 496,
+   "cat": "feature_hasattr",
+   "why": "absent-API assertion"
+  },
+  {
+   "tag": "v2",
+   "slug": "pytoolz/toolz",
+   "number": 483,
+   "cat": "bug_assertion",
+   "why": "value assertion"
+  },
+  {
+   "tag": "v2",
+   "slug": "pytoolz/toolz",
+   "number": 481,
+   "cat": "other_exception",
+   "why": "TypeError",
+   "symptom_match": null
+  },
+  {
+   "tag": "v2",
+   "slug": "pytoolz/toolz",
+   "number": 461,
+   "cat": "broken_test",
+   "why": "syntax"
+  },
+  {
+   "tag": "v2",
+   "slug": "pytoolz/toolz",
+   "number": 447,
+   "cat": "feature_import",
+   "why": "cannot import requested name"
+  },
+  {
+   "tag": "v2",
+   "slug": "pytoolz/toolz",
+   "number": 444,
+   "cat": "passed",
+   "why": "passed"
+  },
+  {
+   "tag": "v2",
+   "slug": "pytoolz/toolz",
+   "number": 396,
+   "cat": "broken_test",
+   "why": "syntax"
+  },
+  {
+   "tag": "v2",
+   "slug": "pytoolz/toolz",
+   "number": 368,
+   "cat": "feature_import",
+   "why": "cannot import requested name"
+  },
+  {
+   "tag": "v2",
+   "slug": "pytoolz/toolz",
+   "number": 367,
+   "cat": "broken_test",
+   "why": "syntax"
+  },
+  {
+   "tag": "v2",
+   "slug": "pytoolz/toolz",
+   "number": 291,
+   "cat": "feature_import",
+   "why": "cannot import requested name"
+  },
+  {
+   "tag": "v2",
+   "slug": "pytoolz/toolz",
+   "number": 285,
+   "cat": "passed",
+   "why": "passed"
+  },
+  {
+   "tag": "v2",
+   "slug": "pytoolz/toolz",
+   "number": 282,
+   "cat": "feature_import",
+   "why": "cannot import requested name"
+  },
+  {
+   "tag": "v2",
+   "slug": "pytoolz/toolz",
+   "number": 239,
+   "cat": "feature_import",
+   "why": "cannot import requested name"
+  },
+  {
+   "tag": "v2",
+   "slug": "pytoolz/toolz",
+   "number": 233,
+   "cat": "passed",
+   "why": "passed"
+  }
+ ]
+}

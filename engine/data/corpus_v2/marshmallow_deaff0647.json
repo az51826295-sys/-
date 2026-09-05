@@ -1,0 +1,49 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "deaff064794edaf3ba8b98772b171791fc5df87a",
+ "parent_commit": "b5337432e4f4999c1455851210e2242f24144946",
+ "answer_files": [
+  "marshmallow/fields.py",
+  "marshmallow/schema.py"
+ ],
+ "answer_functions": [
+  "marshmallow/fields.py::_validated",
+  "marshmallow/fields.py::schema",
+  "marshmallow/schema.py::_update_fields"
+ ],
+ "patch_lines": 44,
+ "added_tests": {
+  "tests/test_deserialization.py::TestFieldDeserialization::test_field_deserialization_with_user_validators": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_deserialization.py::TestUnMarshaller::test_preprocessing_many": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_schema.py::TestNestedSchema::test_nested_errors": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_schema.py::test_deserialization_with_required_field_and_custom_validator": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "tests/base.py",
+  "tests/test_deserialization.py",
+  "tests/test_schema.py"
+ ],
+ "location_hard_proxy": true,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 12.9,
+ "env_error_tests": 4,
+ "qualified": false
+}

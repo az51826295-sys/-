@@ -1,0 +1,74 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "8aab6b655211ecd0887b90eab9f9dfcfa57faaed",
+ "parent_commit": "e0c81924229fb7e38342546ea50fe159abf11a6f",
+ "answer_files": [
+  "marshmallow/validate.py"
+ ],
+ "answer_functions": [
+  "marshmallow/validate.py::__repr__"
+ ],
+ "patch_lines": 12,
+ "added_tests": {
+  "tests/test_validate.py::test_url_repr": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_validate.py::test_email_repr": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_validate.py::test_range_repr": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_validate.py::test_length_repr": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_validate.py::test_equal_repr": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_validate.py::test_regexp_repr": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_validate.py::test_predicate_repr": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_validate.py::test_noneof_repr": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_validate.py::test_oneof_repr": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_validate.py::test_containsonly_repr": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "tests/test_validate.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 37.7,
+ "env_error_tests": 10,
+ "qualified": false
+}

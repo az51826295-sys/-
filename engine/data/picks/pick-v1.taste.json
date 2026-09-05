@@ -1,0 +1,93 @@
+{
+  "picks": "data/picks/pick-v1.json",
+  "concepts": [
+    "01_save",
+    "02_inventory",
+    "03_map",
+    "04_settings"
+  ],
+  "loco": {
+    "rows": [
+      {
+        "concept": "01_save",
+        "rule": {
+          "feature": "command_count",
+          "op": ">=",
+          "threshold": 11.5,
+          "train_accuracy": 0.888889
+        },
+        "hit": false,
+        "n_candidates": 3
+      },
+      {
+        "concept": "02_inventory",
+        "rule": {
+          "feature": "command_count",
+          "op": ">=",
+          "threshold": 7.5,
+          "train_accuracy": 0.785714
+        },
+        "hit": true,
+        "n_candidates": 7
+      },
+      {
+        "concept": "03_map",
+        "rule": {
+          "feature": "command_count",
+          "op": ">=",
+          "threshold": 11.5,
+          "train_accuracy": 0.866667
+        },
+        "hit": false,
+        "n_candidates": 6
+      },
+      {
+        "concept": "04_settings",
+        "rule": {
+          "feature": "command_count",
+          "op": ">=",
+          "threshold": 11.5,
+          "train_accuracy": 0.875
+        },
+        "hit": false,
+        "n_candidates": 5
+      }
+    ],
+    "hits": 1,
+    "n": 4,
+    "accuracy": 0.25
+  },
+  "gates": {
+    "sample": {
+      "ok": false,
+      "concepts": 4,
+      "candidates": 21,
+      "min_per_concept": 3,
+      "want": "개념>=8, 후보>=40, 개념당>=3"
+    },
+    "accuracy": {
+      "ok": false,
+      "value": 0.25,
+      "want": ">= 0.75"
+    },
+    "permutation": {
+      "ok": false,
+      "value": 0.323383,
+      "want": "< 0.05",
+      "permutations": 200
+    },
+    "baseline": {
+      "ok": true,
+      "value": 0.210714,
+      "want": "적중률이 무작위 기준선보다 높을 것"
+    }
+  },
+  "rule_on_all": {
+    "feature": "command_count",
+    "op": ">=",
+    "threshold": 11.5,
+    "train_accuracy": 0.857143
+  },
+  "verdict": "no-promote",
+  "note": "관문 미달 - human_gate 유지. 취향은 아직 기계 심판이 없다"
+}

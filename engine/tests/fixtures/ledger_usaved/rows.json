@@ -1,0 +1,22 @@
+[
+ {"run": "C/1/0", "action": "MODIFY", "phase": "mid",
+  "sig_full": "f1", "sig_local": "l1", "sig_stat": "s1",
+  "failed": true, "blocked": "NONE", "outcome": 0.5,
+  "archetype": "regressed"},
+ {"run": "C/1/0", "action": "MODIFY", "phase": "mid",
+  "sig_full": "f2", "sig_local": "l1", "sig_stat": "s1",
+  "failed": false, "blocked": "BLOCK", "outcome": 0.7,
+  "archetype": "improved"},
+ {"run": "C/2/0", "action": "MODIFY", "phase": "mid",
+  "sig_full": "f3", "sig_local": "l2", "sig_stat": "s1",
+  "failed": false, "blocked": "NONE", "outcome": null,
+  "archetype": "probe"},
+ {"run": "C/2/0", "action": "MODIFY", "phase": "mid",
+  "sig_full": "f1", "sig_local": "l1", "sig_stat": "s1",
+  "failed": true, "blocked": "PENALIZE", "outcome": 0.4,
+  "archetype": "regressed"},
+ {"run": "C/3/0", "action": "MODIFY", "phase": "mid",
+  "sig_full": "f4", "sig_local": "l3", "sig_stat": "s2",
+  "failed": false, "blocked": "NONE", "outcome": 0.6,
+  "archetype": "new"}
+]

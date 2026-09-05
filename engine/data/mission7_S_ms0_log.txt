@@ -1,0 +1,22 @@
+[M] gen 1: v1 score=0.8894 acc=0.939 rules=1 
+[M] gen 2: v1 score=0.8894 acc=0.939 rules=1 (rollback)
+[M] gen 3: v1 score=0.8894 acc=0.939 rules=1 (rollback)
+[M] gen 4: v1 score=0.8894 acc=0.939 rules=1 (rollback)
+[M] gen 5: v1 score=0.8894 acc=0.939 rules=1 (rollback)
+[M] gen 6: v1 score=0.8894 acc=0.939 rules=1 (rollback)
+[M] gen 7: v1 score=0.8894 acc=0.939 rules=1 (rollback)
+[M] gen 8: v1 score=0.8894 acc=0.939 rules=1 (rollback)
+[M] gen 9: v1 score=0.8894 acc=0.939 rules=1 (rollback)
+[M] gen 10: v1 score=0.8894 acc=0.939 rules=1 (rollback)
+[M] gen 11: v1 score=0.8894 acc=0.939 rules=1 (rollback)
+[M] gen 12: v1 score=0.8894 acc=0.939 rules=1 (rollback)
+[M] gen 13: v1 score=0.8894 acc=0.939 rules=1 (rollback)
+[M] gen 14: v1 score=0.8894 acc=0.939 rules=1 (rollback)
+[M] gen 15: v1 score=0.8894 acc=0.939 rules=1 (rollback)
+[M] gen 16: v1 score=0.8894 acc=0.939 rules=1 (rollback)
+[M] gen 17: v1 score=0.8894 acc=0.939 rules=1 (rollback)
+[M] gen 18: v1 score=0.8894 acc=0.939 rules=1 (rollback)
+[M] gen 19: v1 score=0.8894 acc=0.939 rules=1 (rollback)
+[M] gen 20: v1 score=0.8894 acc=0.939 rules=1 (rollback)
+[m7_S_ms0] 완료 4700s -> data\mission7_m7_S_ms0_lineage.json
+  계보 감사: 위반 0

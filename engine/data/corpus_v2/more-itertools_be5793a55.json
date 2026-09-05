@@ -1,0 +1,68 @@
+{
+ "repo": "more-itertools",
+ "fix_commit": "be5793a55f58ee29521d8cbc9f14019f5833454e",
+ "parent_commit": "fdbd43c569feb4388302ddee0551d18edd39fadc",
+ "answer_files": [
+  "more_itertools/more.py"
+ ],
+ "answer_functions": [
+  "more_itertools/more.py::gray_product",
+  "more_itertools/more.py::partial_product"
+ ],
+ "patch_lines": 5,
+ "added_tests": {
+  "tests/test_more.py::GrayProductTests::test_repeat_with_iterators": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "tests/test_more.py::PartialProductTests::test_repeat_with_iterators": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [
+  "tests/test_more.py::GrayProductTests::test_repeat_with_iterators",
+  "tests/test_more.py::PartialProductTests::test_repeat_with_iterators"
+ ],
+ "test_files": [
+  "tests/test_more.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": true,
+ "partial_fix_probes": [
+  {
+   "applied": "more_itertools/more.py::gray_product",
+   "passes_repro": [
+    "tests/test_more.py::GrayProductTests::test_repeat_with_iterators"
+   ],
+   "still_failing": [
+    "tests/test_more.py::PartialProductTests::test_repeat_with_iterators"
+   ],
+   "event": true,
+   "still_failing_fixpass": [
+    "tests/test_more.py::PartialProductTests::test_repeat_with_iterators"
+   ],
+   "event_v2": true
+  },
+  {
+   "applied": "more_itertools/more.py::partial_product",
+   "passes_repro": [
+    "tests/test_more.py::PartialProductTests::test_repeat_with_iterators"
+   ],
+   "still_failing": [
+    "tests/test_more.py::GrayProductTests::test_repeat_with_iterators"
+   ],
+   "event": true,
+   "still_failing_fixpass": [
+    "tests/test_more.py::GrayProductTests::test_repeat_with_iterators"
+   ],
+   "event_v2": true
+  }
+ ],
+ "env_seconds": 6.3,
+ "env_error_tests": 0,
+ "qualified": true,
+ "selector_event_proxy_v1": true
+}

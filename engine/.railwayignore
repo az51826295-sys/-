@@ -1,0 +1,9 @@
+.git
+audition
+game
+tools/bin
+node_modules
+__pycache__
+*.pyc
+data/*.log
+data/proposer_ledger.jsonl

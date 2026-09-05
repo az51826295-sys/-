@@ -1,0 +1,6 @@
+{
+  "version": 1,
+  "note": "observed.*(추출기 G가 본 값) 필드의 null 통제 등록부. 여기 null_control_passed=true 로 등록된 필드만 판정에 쓰인다. 미등록/미달 필드를 읽는 규칙은 fail이 아니라 undefined다. 등록은 골든 null 통제(tools/golden_bench.py 계열) 결과로만 한다 - 손으로 채우지 않는다.",
+  "threshold": 0.05,
+  "fields": {}
+}

@@ -1,0 +1,47 @@
+{
+ "repo": "boltons",
+ "fix_commit": "d0a284fc7ef1aebceb54798600d73be4eeb76ed8",
+ "parent_commit": "609cabe932a1ea1423b24568644945abb1b8bb84",
+ "answer_functions": [
+  "boltons/setutils.py::__getitem__",
+  "boltons/setutils.py::_get_real_index"
+ ],
+ "repro_tests": [
+  "tests/test_setutils.py::test_iset_scalar_index_bounds",
+  "tests/test_setutils.py::test_iset_scalar_index_multiple_dead_intervals"
+ ],
+ "smoke": [
+  "tests/test_setutils.py::test_complement_set",
+  "tests/test_setutils.py::test_indexed_set_basic",
+  "tests/test_setutils.py::test_indexed_set_mutate"
+ ],
+ "baseline_pass_count": 7,
+ "probes": [
+  {
+   "applied": "boltons/setutils.py::_get_real_index",
+   "a_repro_pass": false,
+   "b_smoke_pass": true,
+   "c_no_regression": true,
+   "regressed": [],
+   "d_unmet": [
+    "tests/test_setutils.py::test_iset_scalar_index_bounds",
+    "tests/test_setutils.py::test_iset_scalar_index_multiple_dead_intervals"
+   ],
+   "inc_event": false
+  },
+  {
+   "applied": "boltons/setutils.py::__getitem__",
+   "a_repro_pass": false,
+   "b_smoke_pass": true,
+   "c_no_regression": true,
+   "regressed": [],
+   "d_unmet": [
+    "tests/test_setutils.py::test_iset_scalar_index_bounds",
+    "tests/test_setutils.py::test_iset_scalar_index_multiple_dead_intervals"
+   ],
+   "inc_event": false
+  }
+ ],
+ "inc_event": false,
+ "regression_event": false
+}

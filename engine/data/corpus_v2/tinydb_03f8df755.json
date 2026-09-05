@@ -1,0 +1,58 @@
+{
+ "repo": "tinydb",
+ "fix_commit": "03f8df755bd89fadd1b6824ae8b16cdd3664996c",
+ "parent_commit": "f30afef2ecd09f7ec96dbb386bb943b8d3351581",
+ "answer_files": [
+  "tinydb/database.py"
+ ],
+ "answer_functions": [
+  "tinydb/database.py::remove",
+  "tinydb/database.py::update"
+ ],
+ "patch_lines": 20,
+ "added_tests": {
+  "tests/test_tables.py::test_smart_query_cache": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [
+  "tests/test_tables.py::test_smart_query_cache"
+ ],
+ "test_files": [
+  "tests/test_tables.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [
+  {
+   "applied": "tinydb/database.py::remove",
+   "passes_repro": [],
+   "still_failing": [
+    "tests/test_tables.py::test_smart_query_cache"
+   ],
+   "event": false,
+   "still_failing_fixpass": [
+    "tests/test_tables.py::test_smart_query_cache"
+   ],
+   "event_v2": false
+  },
+  {
+   "applied": "tinydb/database.py::update",
+   "passes_repro": [],
+   "still_failing": [
+    "tests/test_tables.py::test_smart_query_cache"
+   ],
+   "event": false,
+   "still_failing_fixpass": [
+    "tests/test_tables.py::test_smart_query_cache"
+   ],
+   "event_v2": false
+  }
+ ],
+ "env_seconds": 2.6,
+ "env_error_tests": 0,
+ "qualified": true,
+ "selector_event_proxy_v1": false
+}

@@ -1,0 +1,40 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "fe856316136e74e2ffac47c7a3b721f3f0b0ecd9",
+ "parent_commit": "41dc19f123afb81105310de6de451235c306f711",
+ "answer_files": [
+  "src/marshmallow/schema.py"
+ ],
+ "answer_functions": [
+  "src/marshmallow/schema.py::_deserialize"
+ ],
+ "patch_lines": 37,
+ "added_tests": {
+  "tests/test_fields.py::TestListNested::test_list_nested_partial_propagated_to_nested": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_fields.py::TestTupleNested::test_tuple_nested_partial_propagated_to_nested": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_fields.py::TestDictNested::test_dict_nested_partial_propagated_to_nested": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "tests/test_fields.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 12.6,
+ "env_error_tests": 3,
+ "qualified": false,
+ "selector_event_proxy_v1": false
+}

@@ -1,0 +1,150 @@
+{
+ "repo": "sortedcontainers",
+ "fix_commit": "2b037039bb16c81ddc1ee94e88c44aa85eed2810",
+ "parent_commit": "22dec805ce6ef7657efaa9e6f846938bc90825f5",
+ "answer_files": [
+  "sortedcontainers/sorteddict.py"
+ ],
+ "answer_functions": [
+  "sortedcontainers/sorteddict.py::__delitem__",
+  "sortedcontainers/sorteddict.py::__init__",
+  "sortedcontainers/sorteddict.py::__setitem__",
+  "sortedcontainers/sorteddict.py::_view_delitem",
+  "sortedcontainers/sorteddict.py::clear",
+  "sortedcontainers/sorteddict.py::pop",
+  "sortedcontainers/sorteddict.py::popitem",
+  "sortedcontainers/sorteddict.py::setdefault",
+  "sortedcontainers/sorteddict.py::update"
+ ],
+ "patch_lines": 37,
+ "added_tests": {
+  "tests/test_coverage_sorteddict.py::test_ref_counts": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [
+  "tests/test_coverage_sorteddict.py::test_ref_counts"
+ ],
+ "test_files": [
+  "tests/issue_147.py",
+  "tests/test_coverage_sorteddict.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [
+  {
+   "applied": "sortedcontainers/sorteddict.py::__delitem__",
+   "passes_repro": [],
+   "still_failing": [
+    "tests/test_coverage_sorteddict.py::test_ref_counts"
+   ],
+   "event": false,
+   "still_failing_fixpass": [
+    "tests/test_coverage_sorteddict.py::test_ref_counts"
+   ],
+   "event_v2": false
+  },
+  {
+   "applied": "sortedcontainers/sorteddict.py::__init__",
+   "passes_repro": [],
+   "still_failing": [
+    "tests/test_coverage_sorteddict.py::test_ref_counts"
+   ],
+   "event": false,
+   "still_failing_fixpass": [
+    "tests/test_coverage_sorteddict.py::test_ref_counts"
+   ],
+   "event_v2": false
+  },
+  {
+   "applied": "sortedcontainers/sorteddict.py::__setitem__",
+   "passes_repro": [],
+   "still_failing": [
+    "tests/test_coverage_sorteddict.py::test_ref_counts"
+   ],
+   "event": false,
+   "still_failing_fixpass": [
+    "tests/test_coverage_sorteddict.py::test_ref_counts"
+   ],
+   "event_v2": false
+  },
+  {
+   "applied": "sortedcontainers/sorteddict.py::_view_delitem",
+   "passes_repro": [],
+   "still_failing": [
+    "tests/test_coverage_sorteddict.py::test_ref_counts"
+   ],
+   "event": false,
+   "still_failing_fixpass": [
+    "tests/test_coverage_sorteddict.py::test_ref_counts"
+   ],
+   "event_v2": false
+  },
+  {
+   "applied": "sortedcontainers/sorteddict.py::clear",
+   "passes_repro": [],
+   "still_failing": [
+    "tests/test_coverage_sorteddict.py::test_ref_counts"
+   ],
+   "event": false,
+   "still_failing_fixpass": [
+    "tests/test_coverage_sorteddict.py::test_ref_counts"
+   ],
+   "event_v2": false
+  },
+  {
+   "applied": "sortedcontainers/sorteddict.py::pop",
+   "passes_repro": [],
+   "still_failing": [
+    "tests/test_coverage_sorteddict.py::test_ref_counts"
+   ],
+   "event": false,
+   "still_failing_fixpass": [
+    "tests/test_coverage_sorteddict.py::test_ref_counts"
+   ],
+   "event_v2": false
+  },
+  {
+   "applied": "sortedcontainers/sorteddict.py::popitem",
+   "passes_repro": [],
+   "still_failing": [
+    "tests/test_coverage_sorteddict.py::test_ref_counts"
+   ],
+   "event": false,
+   "still_failing_fixpass": [
+    "tests/test_coverage_sorteddict.py::test_ref_counts"
+   ],
+   "event_v2": false
+  },
+  {
+   "applied": "sortedcontainers/sorteddict.py::setdefault",
+   "passes_repro": [],
+   "still_failing": [
+    "tests/test_coverage_sorteddict.py::test_ref_counts"
+   ],
+   "event": false,
+   "still_failing_fixpass": [
+    "tests/test_coverage_sorteddict.py::test_ref_counts"
+   ],
+   "event_v2": false
+  },
+  {
+   "applied": "sortedcontainers/sorteddict.py::update",
+   "passes_repro": [],
+   "still_failing": [
+    "tests/test_coverage_sorteddict.py::test_ref_counts"
+   ],
+   "event": false,
+   "still_failing_fixpass": [
+    "tests/test_coverage_sorteddict.py::test_ref_counts"
+   ],
+   "event_v2": false
+  }
+ ],
+ "env_seconds": 2.9,
+ "env_error_tests": 0,
+ "qualified": true,
+ "selector_event_proxy_v1": false
+}

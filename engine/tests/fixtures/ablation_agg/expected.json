@@ -1,0 +1,35 @@
+{
+ "_note": "손 계산 정답 (2026-08-08, 실측 관측 전 작성). BS: 후보 3(전부 기계 통과, 전부 정답 파일), 오파일 재방문 0/2. BF: 후보 5(1 apply 실패), c4가 실패 이력 있는 비정답 b.py 재방문 = 1/4. BS 가설: 생성 4 중 해결 2, 2라운드 가설 2 중 재방문 1.",
+ "BS": {
+  "n_runs": 1,
+  "wrong_file_revisit_rate": 0.0,
+  "wrong_file_revisits_abs": 0,
+  "revisit_eligible": 2,
+  "correct_file_rate": 1.0,
+  "distinct_files_mean": 1.0,
+  "mech_pass_rate": 1.0,
+  "candidates_total": 3,
+  "public_cands_per_run": 1.0,
+  "public_cands_abs": 1,
+  "full_rate": 1.0,
+  "status_counts": {"full": 1},
+  "hyp_revisit_rate_r2": 0.5,
+  "hyp_r2_total": 2,
+  "hyp_validation_rate": 0.5,
+  "hyp_generated": 4
+ },
+ "BF": {
+  "n_runs": 1,
+  "wrong_file_revisit_rate": 0.25,
+  "wrong_file_revisits_abs": 1,
+  "revisit_eligible": 4,
+  "correct_file_rate": 1.0,
+  "distinct_files_mean": 3.0,
+  "mech_pass_rate": 0.8,
+  "candidates_total": 5,
+  "public_cands_per_run": 0.0,
+  "public_cands_abs": 0,
+  "full_rate": 0.0,
+  "status_counts": {"regression": 1}
+ }
+}

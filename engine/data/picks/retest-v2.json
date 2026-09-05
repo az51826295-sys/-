@@ -1,0 +1,125 @@
+{
+  "spec": "taste-retest-v0",
+  "verdict": "undefined",
+  "why": "interval_straddles_gate",
+  "repeat_rate": 0.42857142857142855,
+  "k": 3,
+  "n": 7,
+  "ci95": [
+    0.099,
+    0.8159
+  ],
+  "gate": 0.75,
+  "chance_single": 0.1667,
+  "inclusive": {
+    "k": 3,
+    "n": 7,
+    "rate": 0.42857142857142855,
+    "chance": 0.1884,
+    "note": "기술 통계다. 여러 개를 고르면 우연 확률이 올라가므로 판정에 쓰지 않는다"
+  },
+  "skipped": [],
+  "rows": [
+    {
+      "slot": 1,
+      "concept": "01_save@v1",
+      "answer": [
+        2
+      ],
+      "first_choice": "c03.svg",
+      "second_choice": [
+        "c03.svg"
+      ],
+      "included": true,
+      "pool": 3,
+      "same": true
+    },
+    {
+      "slot": 2,
+      "concept": "02_defend",
+      "answer": [
+        1
+      ],
+      "first_choice": "c01.svg",
+      "second_choice": [
+        "c05.svg"
+      ],
+      "included": false,
+      "pool": 7,
+      "same": false
+    },
+    {
+      "slot": 3,
+      "concept": "02_inventory@v1",
+      "answer": [
+        5
+      ],
+      "first_choice": "c05.svg",
+      "second_choice": [
+        "c02.svg"
+      ],
+      "included": false,
+      "pool": 7,
+      "same": false
+    },
+    {
+      "slot": 4,
+      "concept": "03_map@v1",
+      "answer": [
+        6
+      ],
+      "first_choice": "c05.svg",
+      "second_choice": [
+        "c05.svg"
+      ],
+      "included": true,
+      "pool": 6,
+      "same": true
+    },
+    {
+      "slot": 5,
+      "concept": "04_quest",
+      "answer": [
+        3
+      ],
+      "first_choice": "c06.svg",
+      "second_choice": [
+        "c03.svg"
+      ],
+      "included": false,
+      "pool": 6,
+      "same": false
+    },
+    {
+      "slot": 6,
+      "concept": "04_settings@v1",
+      "answer": [
+        1
+      ],
+      "first_choice": "c05.svg",
+      "second_choice": [
+        "c05.svg"
+      ],
+      "included": true,
+      "pool": 5,
+      "same": true
+    },
+    {
+      "slot": 7,
+      "concept": "08_exit",
+      "answer": [
+        4
+      ],
+      "first_choice": "c02.svg",
+      "second_choice": [
+        "c01.svg"
+      ],
+      "included": false,
+      "pool": 6,
+      "same": false
+    }
+  ],
+  "selection_minutes_upper": 55.1,
+  "selection_slots": 7,
+  "selection_note": "판을 낸 시각과 기록 시각의 차. 사장님이 그 사이 다른 일을 하셨을 수 있어 **상한**이다"
+}

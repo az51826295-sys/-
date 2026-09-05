@@ -1,0 +1,835 @@
+{
+  "spec": "snap-fix-v0",
+  "design": "docs/snap-fix-v0-design.md",
+  "provider": "saved",
+  "model": "-",
+  "usd": 0.0,
+  "seconds": 2.6,
+  "thresholds": {
+    "snap_works_lower": 0.9,
+    "pointless_margin": 0.1,
+    "encoding_only_upper": 0.25,
+    "content_loss_lower": 0.5
+  },
+  "source": "saved:out/icons/pick-v2/candidates,out/icons/pick-v1/candidates",
+  "pass_verdict": {
+    "verdict": "undefined",
+    "why": "corpus_is_all_passing",
+    "raw_pass": 1.0,
+    "snapped_pass": 1.0,
+    "ci95": [
+      1.0,
+      1.0
+    ],
+    "calls": 12,
+    "candidates": 69,
+    "gate_ok": true,
+    "note": "탈락분이 없는 표본에서는 통과율 판정을 내지 않는다"
+  },
+  "damage_verdict": {
+    "verdict": "encoding_only",
+    "why": "ci_upper_le_threshold",
+    "median_r": 0.0,
+    "ci95": [
+      0.0,
+      0.0
+    ],
+    "assets": 69,
+    "scale": {
+      "01_attack": 0.189544,
+      "02_defend": 0.118375,
+      "03_shop": 0.222482,
+      "04_quest": 0.231489,
+      "05_equipment": 0.2014865,
+      "06_stats": 0.24291,
+      "07_dialogue": 0.192108,
+      "08_exit": 0.209016,
+      "01_save": 0.150617,
+      "02_inventory": 0.199154,
+      "03_map": 0.152513,
+      "04_settings": 0.2026175
+    },
+    "gate_ok": true
+  },
+  "rule_counts": {
+    "raw": {},
+    "snapped": {}
+  },
+  "calls": [
+    {
+      "concept": "01_attack",
+      "candidates": [
+        {
+          "concept": "01_attack",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M6.5 4.5L17.5 15.5M17.5 4.5L6.5 15.5M12 2.5L14.5 8M12 2.5L9.5 8\"/>\n</svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M 6.5 4.5 L 17.5 15.5 M 17.5 4.5 L 6.5 15.5 M 12 2.5 L 14.5 8 M 12 2.5 L 9.5 8\" />\n</svg>",
+          "snap_why": null,
+          "changed": [
+            "path:d"
+          ],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "01_attack",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M4.5 6.5L10.5 12.5L4.5 18.5M19.5 6.5L13.5 12.5L19.5 18.5M10.5 12.5L13.5 12.5\"/>\n</svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M 4.5 6.5 L 10.5 12.5 L 4.5 18.5 M 19.5 6.5 L 13.5 12.5 L 19.5 18.5 M 10.5 12.5 L 13.5 12.5\" />\n</svg>",
+          "snap_why": null,
+          "changed": [
+            "path:d"
+          ],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "01_attack",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M12 2.5L18.5 9.5L12 10.5L15.5 16.5L9.5 12.5L8.5 18.5L5.5 12.5L2.5 9.5Z\"/>\n</svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M 12 2.5 L 18.5 9.5 L 12 10.5 L 15.5 16.5 L 9.5 12.5 L 8.5 18.5 L 5.5 12.5 L 2.5 9.5 Z\" />\n</svg>",
+          "snap_why": null,
+          "changed": [
+            "path:d"
+          ],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "01_attack",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M18 4.5L6 16.5M18 4.5L14.5 9.5M18 4.5L20.5 9.5\"/>\n<path d=\"M6 16.5L10.5 13.5M6 16.5L5.5 21.5\"/>\n</svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M 18 4.5 L 6 16.5 M 18 4.5 L 14.5 9.5 M 18 4.5 L 20.5 9.5\" />\n<path d=\"M 6 16.5 L 10.5 13.5 M 6 16.5 L 5.5 21.5\" />\n</svg>",
+          "snap_why": null,
+          "changed": [
+            "path:d"
+          ],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "01_attack",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M3.5 8.5L12 2.5L20.5 8.5L15.5 13.5L19.5 19.5L12 15.5L4.5 19.5L8.5 13.5Z\"/>\n</svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M 3.5 8.5 L 12 2.5 L 20.5 8.5 L 15.5 13.5 L 19.5 19.5 L 12 15.5 L 4.5 19.5 L 8.5 13.5 Z\" />\n</svg>",
+          "snap_why": null,
+          "changed": [
+            "path:d"
+          ],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "01_attack",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M12 3.5L20 11.5L12 12.5L18 18.5L12 14.5L6 18.5L12 12.5L4 11.5Z\"/>\n<line x1=\"12\" y1=\"3.5\" x2=\"12\" y2=\"18.5\"/>\n</svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M 12 3.5 L 20 11.5 L 12 12.5 L 18 18.5 L 12 14.5 L 6 18.5 L 12 12.5 L 4 11.5 Z\" />\n<line x1=\"12\" y1=\"3.5\" x2=\"12\" y2=\"18.5\" />\n</svg>",
+          "snap_why": null,
+          "changed": [
+            "path:d"
+          ],
+          "snapped_verdict": "PASS"
+        }
+      ]
+    },
+    {
+      "concept": "02_defend",
+      "candidates": [
+        {
+          "concept": "02_defend",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M12 2.5L6.5 7.5L6.5 20.5L18 20.5L18 7.5L12 2.5\"/>\n<line x1=\"12\" y1=\"7\" x2=\"12\" y2=\"17\"/>\n</svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M 12 2.5 L 6.5 7.5 L 6.5 20.5 L 18 20.5 L 18 7.5 L 12 2.5\" />\n<line x1=\"12\" y1=\"7\" x2=\"12\" y2=\"17\" />\n</svg>",
+          "snap_why": null,
+          "changed": [
+            "path:d"
+          ],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "02_defend",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M12 2.5L5.5 8L5.5 20.5L18.5 20.5L18.5 8L12 2.5\"/>\n<polyline points=\"9,13 12,15.5 15,11\"/>\n</svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M 12 2.5 L 5.5 8 L 5.5 20.5 L 18.5 20.5 L 18.5 8 L 12 2.5\" />\n<polyline points=\"9,13 12,15.5 15,11\" />\n</svg>",
+          "snap_why": null,
+          "changed": [
+            "path:d"
+          ],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "02_defend",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M12 2.5L6.5 7L6.5 20.5L17.5 20.5L17.5 7L12 2.5\"/>\n<circle cx=\"12\" cy=\"13.5\" r=\"3\"/>\n</svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M 12 2.5 L 6.5 7 L 6.5 20.5 L 17.5 20.5 L 17.5 7 L 12 2.5\" />\n<circle cx=\"12\" cy=\"13.5\" r=\"3\" />\n</svg>",
+          "snap_why": null,
+          "changed": [
+            "path:d"
+          ],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "02_defend",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M12 3L5.5 8.5L5.5 21L18.5 21L18.5 8.5L12 3\"/>\n<path d=\"M10 13L12 15L14 11\"/>\n</svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M 12 3 L 5.5 8.5 L 5.5 21 L 18.5 21 L 18.5 8.5 L 12 3\" />\n<path d=\"M 10 13 L 12 15 L 14 11\" />\n</svg>",
+          "snap_why": null,
+          "changed": [
+            "path:d"
+          ],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "02_defend",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M12 2.5L6 8L6 20.5L18 20.5L18 8L12 2.5\"/>\n<line x1=\"6\" y1=\"11\" x2=\"18\" y2=\"11\"/>\n</svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M 12 2.5 L 6 8 L 6 20.5 L 18 20.5 L 18 8 L 12 2.5\" />\n<line x1=\"6\" y1=\"11\" x2=\"18\" y2=\"11\" />\n</svg>",
+          "snap_why": null,
+          "changed": [
+            "path:d"
+          ],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "02_defend",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M12 2.5L7 7.5L7 20.5L17 20.5L17 7.5L12 2.5\"/>\n<rect x=\"9.5\" y=\"12\" width=\"5\" height=\"5\"/>\n</svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M 12 2.5 L 7 7.5 L 7 20.5 L 17 20.5 L 17 7.5 L 12 2.5\" />\n<rect x=\"9.5\" y=\"12\" width=\"5\" height=\"5\" />\n</svg>",
+          "snap_why": null,
+          "changed": [
+            "path:d"
+          ],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "02_defend",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M12 3L6.5 8L6.5 20L17.5 20L17.5 8L12 3\"/>\n<polyline points=\"11,16 12,17.5 13,16\"/>\n</svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M 12 3 L 6.5 8 L 6.5 20 L 17.5 20 L 17.5 8 L 12 3\" />\n<polyline points=\"11,16 12,17.5 13,16\" />\n</svg>",
+          "snap_why": null,
+          "changed": [
+            "path:d"
+          ],
+          "snapped_verdict": "PASS"
+        }
+      ]
+    },
+    {
+      "concept": "03_shop",
+      "candidates": [
+        {
+          "concept": "03_shop",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M3.5 8.5L5 20.5L19 20.5L20.5 8.5\"/>\n<path d=\"M6.5 8.5L17.5 8.5\"/>\n<circle cx=\"9.5\" cy=\"12.5\" r=\"1.5\"/>\n<circle cx=\"14.5\" cy=\"12.5\" r=\"1.5\"/>\n</svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M 3.5 8.5 L 5 20.5 L 19 20.5 L 20.5 8.5\" />\n<path d=\"M 6.5 8.5 L 17.5 8.5\" />\n<circle cx=\"9.5\" cy=\"12.5\" r=\"1.5\" />\n<circle cx=\"14.5\" cy=\"12.5\" r=\"1.5\" />\n</svg>",
+          "snap_why": null,
+          "changed": [
+            "path:d"
+          ],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "03_shop",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<rect x=\"4.5\" y=\"6.5\" width=\"15\" height=\"14\"/>\n<path d=\"M4.5 6.5L6 3.5L18 3.5L19.5 6.5\"/>\n<line x1=\"8.5\" y1=\"6.5\" x2=\"8.5\" y2=\"20.5\"/>\n<line x1=\"15.5\" y1=\"6.5\" x2=\"15.5\" y2=\"20.5\"/>\n</svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<rect x=\"4.5\" y=\"6.5\" width=\"15\" height=\"14\" />\n<path d=\"M 4.5 6.5 L 6 3.5 L 18 3.5 L 19.5 6.5\" />\n<line x1=\"8.5\" y1=\"6.5\" x2=\"8.5\" y2=\"20.5\" />\n<line x1=\"15.5\" y1=\"6.5\" x2=\"15.5\" y2=\"20.5\" />\n</svg>",
+          "snap_why": null,
+          "changed": [
+            "path:d"
+          ],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "03_shop",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M4.5 9.5L6.5 3.5L17.5 3.5L19.5 9.5L19.5 20.5L4.5 20.5Z\"/>\n<line x1=\"9\" y1=\"9.5\" x2=\"9\" y2=\"16.5\"/>\n<line x1=\"15\" y1=\"9.5\" x2=\"15\" y2=\"16.5\"/>\n</svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M 4.5 9.5 L 6.5 3.5 L 17.5 3.5 L 19.5 9.5 L 19.5 20.5 L 4.5 20.5 Z\" />\n<line x1=\"9\" y1=\"9.5\" x2=\"9\" y2=\"16.5\" />\n<line x1=\"15\" y1=\"9.5\" x2=\"15\" y2=\"16.5\" />\n</svg>",
+          "snap_why": null,
+          "changed": [
+            "path:d"
+          ],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "03_shop",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<rect x=\"5.5\" y=\"7.5\" width=\"13\" height=\"13\"/>\n<path d=\"M5.5 7.5L7 2.5L17 2.5L18.5 7.5\"/>\n<polyline points=\"8.5,7.5 8.5,15.5\"/>\n<polyline points=\"15.5,7.5 15.5,15.5\"/>\n<line x1=\"5.5\" y1=\"12.5\" x2=\"18.5\" y2=\"12.5\"/>\n</svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<rect x=\"5.5\" y=\"7.5\" width=\"13\" height=\"13\" />\n<path d=\"M 5.5 7.5 L 7 2.5 L 17 2.5 L 18.5 7.5\" />\n<polyline points=\"8.5,7.5 8.5,15.5\" />\n<polyline points=\"15.5,7.5 15.5,15.5\" />\n<line x1=\"5.5\" y1=\"12.5\" x2=\"18.5\" y2=\"12.5\" />\n</svg>",
+          "snap_why": null,
+          "changed": [
+            "path:d"
+          ],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "03_shop",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M3 10L5.5 4L18.5 4L21 10M4.5 10L4.5 19.5L19.5 19.5L19.5 10\"/>\n<circle cx=\"9\" cy=\"14\" r=\"1.5\"/>\n<circle cx=\"15\" cy=\"14\" r=\"1.5\"/>\n</svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M 3 10 L 5.5 4 L 18.5 4 L 21 10 M 4.5 10 L 4.5 19.5 L 19.5 19.5 L 19.5 10\" />\n<circle cx=\"9\" cy=\"14\" r=\"1.5\" />\n<circle cx=\"15\" cy=\"14\" r=\"1.5\" />\n</svg>",
+          "snap_why": null,
+          "changed": [
+            "path:d"
+          ],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "03_shop",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<rect x=\"6.5\" y=\"8.5\" width=\"11\" height=\"12\"/>\n<path d=\"M6.5 8.5L8 2.5L16 2.5L17.5 8.5\"/>\n<line x1=\"12\" y1=\"8.5\" x2=\"12\" y2=\"20.5\"/>\n<line x1=\"6.5\" y1=\"13\" x2=\"17.5\" y2=\"13\"/>\n</svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<rect x=\"6.5\" y=\"8.5\" width=\"11\" height=\"12\" />\n<path d=\"M 6.5 8.5 L 8 2.5 L 16 2.5 L 17.5 8.5\" />\n<line x1=\"12\" y1=\"8.5\" x2=\"12\" y2=\"20.5\" />\n<line x1=\"6.5\" y1=\"13\" x2=\"17.5\" y2=\"13\" />\n</svg>",
+          "snap_why": null,
+          "changed": [
+            "path:d"
+          ],
+          "snapped_verdict": "PASS"
+        }
+      ]
+    },
+    {
+      "concept": "04_quest",
+      "candidates": [
+        {
+          "concept": "04_quest",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M4.5 6.5L19.5 6.5L19.5 19.5L4.5 19.5Z\"/>\n<path d=\"M8.5 10.5L15.5 10.5\"/>\n<path d=\"M8.5 14.5L15.5 14.5\"/>\n<path d=\"M8.5 18.5L12.5 18.5\"/>\n</svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M 4.5 6.5 L 19.5 6.5 L 19.5 19.5 L 4.5 19.5 Z\" />\n<path d=\"M 8.5 10.5 L 15.5 10.5\" />\n<path d=\"M 8.5 14.5 L 15.5 14.5\" />\n<path d=\"M 8.5 18.5 L 12.5 18.5\" />\n</svg>",
+          "snap_why": null,
+          "changed": [
+            "path:d"
+          ],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "04_quest",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M5.5 5.5L12 2.5L18.5 5.5L18.5 19.5L5.5 19.5Z\"/>\n<circle cx=\"9.5\" cy=\"11.5\" r=\"1.5\"/>\n<circle cx=\"14.5\" cy=\"11.5\" r=\"1.5\"/>\n<path d=\"M9 15.5L15 15.5\"/>\n</svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M 5.5 5.5 L 12 2.5 L 18.5 5.5 L 18.5 19.5 L 5.5 19.5 Z\" />\n<circle cx=\"9.5\" cy=\"11.5\" r=\"1.5\" />\n<circle cx=\"14.5\" cy=\"11.5\" r=\"1.5\" />\n<path d=\"M 9 15.5 L 15 15.5\" />\n</svg>",
+          "snap_why": null,
+          "changed": [
+            "path:d"
+          ],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "04_quest",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<rect x=\"4.5\" y=\"6.5\" width=\"15\" height=\"13\" rx=\"1\"/>\n<path d=\"M7.5 10.5L16.5 10.5\"/>\n<path d=\"M7.5 14.5L16.5 14.5\"/>\n<path d=\"M7.5 18.5L12.5 18.5\"/>\n</svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<rect x=\"4.5\" y=\"6.5\" width=\"15\" height=\"13\" rx=\"1\" />\n<path d=\"M 7.5 10.5 L 16.5 10.5\" />\n<path d=\"M 7.5 14.5 L 16.5 14.5\" />\n<path d=\"M 7.5 18.5 L 12.5 18.5\" />\n</svg>",
+          "snap_why": null,
+          "changed": [
+            "path:d"
+          ],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "04_quest",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M6.5 4.5L12 2.5L17.5 4.5L17.5 20.5L6.5 20.5Z\"/>\n<path d=\"M9.5 9.5L14.5 9.5\"/>\n<path d=\"M9.5 13.5L14.5 13.5\"/>\n<path d=\"M9.5 17.5L13.5 17.5\"/>\n</svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M 6.5 4.5 L 12 2.5 L 17.5 4.5 L 17.5 20.5 L 6.5 20.5 Z\" />\n<path d=\"M 9.5 9.5 L 14.5 9.5\" />\n<path d=\"M 9.5 13.5 L 14.5 13.5\" />\n<path d=\"M 9.5 17.5 L 13.5 17.5\" />\n</svg>",
+          "snap_why": null,
+          "changed": [
+            "path:d"
+          ],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "04_quest",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M5.5 7.5L18.5 7.5L18.5 20.5L5.5 20.5Z\"/>\n<circle cx=\"8.5\" cy=\"11.5\" r=\"1\"/>\n<circle cx=\"15.5\" cy=\"11.5\" r=\"1\"/>\n<path d=\"M8.5 15L15.5 15\"/>\n<path d=\"M8.5 18.5L12.5 18.5\"/>\n</svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M 5.5 7.5 L 18.5 7.5 L 18.5 20.5 L 5.5 20.5 Z\" />\n<circle cx=\"8.5\" cy=\"11.5\" r=\"1\" />\n<circle cx=\"15.5\" cy=\"11.5\" r=\"1\" />\n<path d=\"M 8.5 15 L 15.5 15\" />\n<path d=\"M 8.5 18.5 L 12.5 18.5\" />\n</svg>",
+          "snap_why": null,
+          "changed": [
+            "path:d"
+          ],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "04_quest",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M4.5 5.5L12 3.5L19.5 5.5\"/>\n<path d=\"M4.5 5.5L4.5 19.5L19.5 19.5L19.5 5.5\"/>\n<line x1=\"8.5\" y1=\"10.5\" x2=\"15.5\" y2=\"10.5\"/>\n<line x1=\"8.5\" y1=\"14.5\" x2=\"15.5\" y2=\"14.5\"/>\n</svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M 4.5 5.5 L 12 3.5 L 19.5 5.5\" />\n<path d=\"M 4.5 5.5 L 4.5 19.5 L 19.5 19.5 L 19.5 5.5\" />\n<line x1=\"8.5\" y1=\"10.5\" x2=\"15.5\" y2=\"10.5\" />\n<line x1=\"8.5\" y1=\"14.5\" x2=\"15.5\" y2=\"14.5\" />\n</svg>",
+          "snap_why": null,
+          "changed": [
+            "path:d"
+          ],
+          "snapped_verdict": "PASS"
+        }
+      ]
+    },
+    {
+      "concept": "05_equipment",
+      "candidates": [
+        {
+          "concept": "05_equipment",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M8.5 6.5L8.5 18.5L15.5 18.5L15.5 6.5L12 3.5L8.5 6.5\"/>\n<line x1=\"10.5\" y1=\"10\" x2=\"13.5\" y2=\"10\"/>\n<line x1=\"10.5\" y1=\"13.5\" x2=\"13.5\" y2=\"13.5\"/>\n<line x1=\"10.5\" y1=\"17\" x2=\"13.5\" y2=\"17\"/>\n</svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M 8.5 6.5 L 8.5 18.5 L 15.5 18.5 L 15.5 6.5 L 12 3.5 L 8.5 6.5\" />\n<line x1=\"10.5\" y1=\"10\" x2=\"13.5\" y2=\"10\" />\n<line x1=\"10.5\" y1=\"13.5\" x2=\"13.5\" y2=\"13.5\" />\n<line x1=\"10.5\" y1=\"17\" x2=\"13.5\" y2=\"17\" />\n</svg>",
+          "snap_why": null,
+          "changed": [
+            "path:d"
+          ],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "05_equipment",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M5.5 10.5L6.5 4.5L17.5 4.5L18.5 10.5L18.5 19.5L5.5 19.5L5.5 10.5\"/>\n<circle cx=\"10.5\" cy=\"14.5\" r=\"1.5\"/>\n<circle cx=\"13.5\" cy=\"14.5\" r=\"1.5\"/>\n</svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M 5.5 10.5 L 6.5 4.5 L 17.5 4.5 L 18.5 10.5 L 18.5 19.5 L 5.5 19.5 L 5.5 10.5\" />\n<circle cx=\"10.5\" cy=\"14.5\" r=\"1.5\" />\n<circle cx=\"13.5\" cy=\"14.5\" r=\"1.5\" />\n</svg>",
+          "snap_why": null,
+          "changed": [
+            "path:d"
+          ],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "05_equipment",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M12 2.5L8.5 5.5L8.5 9.5L6 9.5L6 18.5L18 18.5L18 9.5L15.5 9.5L15.5 5.5L12 2.5\"/>\n<line x1=\"11\" y1=\"12\" x2=\"13\" y2=\"12\"/>\n</svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M 12 2.5 L 8.5 5.5 L 8.5 9.5 L 6 9.5 L 6 18.5 L 18 18.5 L 18 9.5 L 15.5 9.5 L 15.5 5.5 L 12 2.5\" />\n<line x1=\"11\" y1=\"12\" x2=\"13\" y2=\"12\" />\n</svg>",
+          "snap_why": null,
+          "changed": [
+            "path:d"
+          ],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "05_equipment",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M7 5.5L5.5 11.5L5.5 20.5L18.5 20.5L18.5 11.5L17 5.5L12 2.5L7 5.5\"/>\n<polyline points=\"8.5,9.5 15.5,9.5\"/>\n<circle cx=\"10\" cy=\"15\" r=\"1.5\"/>\n<circle cx=\"14\" cy=\"15\" r=\"1.5\"/>\n</svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M 7 5.5 L 5.5 11.5 L 5.5 20.5 L 18.5 20.5 L 18.5 11.5 L 17 5.5 L 12 2.5 L 7 5.5\" />\n<polyline points=\"8.5,9.5 15.5,9.5\" />\n<circle cx=\"10\" cy=\"15\" r=\"1.5\" />\n<circle cx=\"14\" cy=\"15\" r=\"1.5\" />\n</svg>",
+          "snap_why": null,
+          "changed": [
+            "path:d"
+          ],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "05_equipment",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M6 8.5L7 4.5L17 4.5L18 8.5L18 20.5L6 20.5L6 8.5\"/>\n<path d=\"M10 11.5L10 16.5M14 11.5L14 16.5\"/>\n<circle cx=\"12\" cy=\"8.5\" r=\"1\"/>\n</svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M 6 8.5 L 7 4.5 L 17 4.5 L 18 8.5 L 18 20.5 L 6 20.5 L 6 8.5\" />\n<path d=\"M 10 11.5 L 10 16.5 M 14 11.5 L 14 16.5\" />\n<circle cx=\"12\" cy=\"8.5\" r=\"1\" />\n</svg>",
+          "snap_why": null,
+          "changed": [
+            "path:d"
+          ],
+          "snapped_verdict": "PASS"
+        }
+      ]
+    },
+    {
+      "concept": "06_stats",
+      "candidates": [
+        {
+          "concept": "06_stats",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<rect x=\"3.5\" y=\"5.5\" width=\"4\" height=\"14\"/>\n<rect x=\"10.5\" y=\"3.5\" width=\"4\" height=\"16\"/>\n<rect x=\"17.5\" y=\"7.5\" width=\"4\" height=\"12\"/>\n</svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<rect x=\"3.5\" y=\"5.5\" width=\"4\" height=\"14\" />\n<rect x=\"10.5\" y=\"3.5\" width=\"4\" height=\"16\" />\n<rect x=\"17.5\" y=\"7.5\" width=\"4\" height=\"12\" />\n</svg>",
+          "snap_why": null,
+          "changed": [],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "06_stats",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<circle cx=\"6.5\" cy=\"14.5\" r=\"3\"/>\n<circle cx=\"12\" cy=\"9.5\" r=\"3\"/>\n<circle cx=\"17.5\" cy=\"15.5\" r=\"3\"/>\n<line x1=\"6.5\" y1=\"14.5\" x2=\"12\" y2=\"9.5\"/>\n<line x1=\"12\" y1=\"9.5\" x2=\"17.5\" y2=\"15.5\"/>\n</svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<circle cx=\"6.5\" cy=\"14.5\" r=\"3\" />\n<circle cx=\"12\" cy=\"9.5\" r=\"3\" />\n<circle cx=\"17.5\" cy=\"15.5\" r=\"3\" />\n<line x1=\"6.5\" y1=\"14.5\" x2=\"12\" y2=\"9.5\" />\n<line x1=\"12\" y1=\"9.5\" x2=\"17.5\" y2=\"15.5\" />\n</svg>",
+          "snap_why": null,
+          "changed": [],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "06_stats",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<polyline points=\"4.5,18.5 9.5,8.5 14.5,13.5 19.5,4.5\"/>\n<circle cx=\"9.5\" cy=\"8.5\" r=\"1.5\"/>\n<circle cx=\"14.5\" cy=\"13.5\" r=\"1.5\"/>\n</svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<polyline points=\"4.5,18.5 9.5,8.5 14.5,13.5 19.5,4.5\" />\n<circle cx=\"9.5\" cy=\"8.5\" r=\"1.5\" />\n<circle cx=\"14.5\" cy=\"13.5\" r=\"1.5\" />\n</svg>",
+          "snap_why": null,
+          "changed": [],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "06_stats",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M4.5 18.5L4.5 6.5C4.5 5.5 5.5 4.5 6.5 4.5L17.5 4.5C18.5 4.5 19.5 5.5 19.5 6.5L19.5 18.5\"/>\n<line x1=\"4.5\" y1=\"18.5\" x2=\"19.5\" y2=\"18.5\"/>\n<line x1=\"8.5\" y1=\"9.5\" x2=\"8.5\" y2=\"16.5\"/>\n<line x1=\"12\" y1=\"7.5\" x2=\"12\" y2=\"16.5\"/>\n<line x1=\"15.5\" y1=\"11.5\" x2=\"15.5\" y2=\"16.5\"/>\n</svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M 4.5 18.5 L 4.5 6.5 C 4.5 5.5 5.5 4.5 6.5 4.5 L 17.5 4.5 C 18.5 4.5 19.5 5.5 19.5 6.5 L 19.5 18.5\" />\n<line x1=\"4.5\" y1=\"18.5\" x2=\"19.5\" y2=\"18.5\" />\n<line x1=\"8.5\" y1=\"9.5\" x2=\"8.5\" y2=\"16.5\" />\n<line x1=\"12\" y1=\"7.5\" x2=\"12\" y2=\"16.5\" />\n<line x1=\"15.5\" y1=\"11.5\" x2=\"15.5\" y2=\"16.5\" />\n</svg>",
+          "snap_why": null,
+          "changed": [
+            "path:d"
+          ],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "06_stats",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M3.5 20.5L3.5 10.5C3.5 9 5 7.5 6.5 7.5L8.5 2.5\"/>\n<path d=\"M12 20.5L12 5.5\"/>\n<path d=\"M20.5 20.5L20.5 12.5C20.5 11 19 9.5 17.5 9.5L15.5 2.5\"/>\n</svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M 3.5 20.5 L 3.5 10.5 C 3.5 9 5 7.5 6.5 7.5 L 8.5 2.5\" />\n<path d=\"M 12 20.5 L 12 5.5\" />\n<path d=\"M 20.5 20.5 L 20.5 12.5 C 20.5 11 19 9.5 17.5 9.5 L 15.5 2.5\" />\n</svg>",
+          "snap_why": null,
+          "changed": [
+            "path:d"
+          ],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "06_stats",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M2.5 20.5L6.5 8.5L10.5 14.5L15.5 5.5L21.5 20.5\"/>\n<circle cx=\"6.5\" cy=\"8.5\" r=\"1.5\"/>\n<circle cx=\"10.5\" cy=\"14.5\" r=\"1.5\"/>\n<circle cx=\"15.5\" cy=\"5.5\" r=\"1.5\"/>\n</svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M 2.5 20.5 L 6.5 8.5 L 10.5 14.5 L 15.5 5.5 L 21.5 20.5\" />\n<circle cx=\"6.5\" cy=\"8.5\" r=\"1.5\" />\n<circle cx=\"10.5\" cy=\"14.5\" r=\"1.5\" />\n<circle cx=\"15.5\" cy=\"5.5\" r=\"1.5\" />\n</svg>",
+          "snap_why": null,
+          "changed": [
+            "path:d"
+          ],
+          "snapped_verdict": "PASS"
+        }
+      ]
+    },
+    {
+      "concept": "07_dialogue",
+      "candidates": [
+        {
+          "concept": "07_dialogue",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M4.5 6.5L4.5 18.5Q4.5 20.5 6.5 20.5L13.5 20.5Q15.5 20.5 15.5 18.5L15.5 10.5\"/>\n<path d=\"M8.5 3.5L8.5 8.5L12.5 8.5L12.5 3.5\"/>\n<path d=\"M18.5 10.5L18.5 18.5Q18.5 20.5 16.5 20.5\"/>\n<circle cx=\"10\" cy=\"14.5\" r=\"1.5\"/>\n</svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M 4.5 6.5 L 4.5 18.5 Q 4.5 20.5 6.5 20.5 L 13.5 20.5 Q 15.5 20.5 15.5 18.5 L 15.5 10.5\" />\n<path d=\"M 8.5 3.5 L 8.5 8.5 L 12.5 8.5 L 12.5 3.5\" />\n<path d=\"M 18.5 10.5 L 18.5 18.5 Q 18.5 20.5 16.5 20.5\" />\n<circle cx=\"10\" cy=\"14.5\" r=\"1.5\" />\n</svg>",
+          "snap_why": null,
+          "changed": [
+            "path:d"
+          ],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "07_dialogue",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M3.5 7.5L3.5 19.5Q3.5 21 5 20.5L16 20.5Q17.5 20.5 17.5 19L17.5 9.5Q17.5 8 16 8L8.5 8\"/>\n<path d=\"M8.5 8L8.5 3.5L12.5 3.5L12.5 8\"/>\n<path d=\"M20.5 9.5L20.5 18.5L18.5 20.5\"/>\n<polyline points=\"10,13 10,15 12,15\"/>\n</svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M 3.5 7.5 L 3.5 19.5 Q 3.5 21 5 20.5 L 16 20.5 Q 17.5 20.5 17.5 19 L 17.5 9.5 Q 17.5 8 16 8 L 8.5 8\" />\n<path d=\"M 8.5 8 L 8.5 3.5 L 12.5 3.5 L 12.5 8\" />\n<path d=\"M 20.5 9.5 L 20.5 18.5 L 18.5 20.5\" />\n<polyline points=\"10,13 10,15 12,15\" />\n</svg>",
+          "snap_why": null,
+          "changed": [
+            "path:d"
+          ],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "07_dialogue",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M5.5 8.5L5.5 20.5L16.5 20.5L16.5 8.5Q16.5 6.5 14.5 6.5L7.5 6.5Q5.5 6.5 5.5 8.5\"/>\n<rect x=\"8.5\" y=\"2.5\" width=\"4\" height=\"5\"/>\n<path d=\"M10.5 14.5L13.5 14.5\"/>\n<line x1=\"10.5\" y1=\"16.5\" x2=\"13.5\" y2=\"16.5\"/>\n</svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M 5.5 8.5 L 5.5 20.5 L 16.5 20.5 L 16.5 8.5 Q 16.5 6.5 14.5 6.5 L 7.5 6.5 Q 5.5 6.5 5.5 8.5\" />\n<rect x=\"8.5\" y=\"2.5\" width=\"4\" height=\"5\" />\n<path d=\"M 10.5 14.5 L 13.5 14.5\" />\n<line x1=\"10.5\" y1=\"16.5\" x2=\"13.5\" y2=\"16.5\" />\n</svg>",
+          "snap_why": null,
+          "changed": [
+            "path:d"
+          ],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "07_dialogue",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M4.5 9.5L4.5 19.5Q4.5 20.5 5.5 20.5L15.5 20.5Q16.5 20.5 16.5 19.5L16.5 9.5Q16.5 7.5 14.5 7.5L6.5 7.5Q4.5 7.5 4.5 9.5\"/>\n<path d=\"M9.5 2.5L9.5 7.5L14.5 7.5\"/>\n<circle cx=\"10.5\" cy=\"14.5\" r=\"1\"/>\n<circle cx=\"13.5\" cy=\"14.5\" r=\"1\"/>\n</svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M 4.5 9.5 L 4.5 19.5 Q 4.5 20.5 5.5 20.5 L 15.5 20.5 Q 16.5 20.5 16.5 19.5 L 16.5 9.5 Q 16.5 7.5 14.5 7.5 L 6.5 7.5 Q 4.5 7.5 4.5 9.5\" />\n<path d=\"M 9.5 2.5 L 9.5 7.5 L 14.5 7.5\" />\n<circle cx=\"10.5\" cy=\"14.5\" r=\"1\" />\n<circle cx=\"13.5\" cy=\"14.5\" r=\"1\" />\n</svg>",
+          "snap_why": null,
+          "changed": [
+            "path:d"
+          ],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "07_dialogue",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M3.5 8.5Q3.5 6.5 5.5 6.5L13.5 6.5L13.5 2.5M13.5 6.5L16.5 6.5Q18.5 6.5 18.5 8.5L18.5 19.5Q18.5 20.5 17.5 20.5L4.5 20.5Q3.5 20.5 3.5 19.5L3.5 8.5\"/>\n<line x1=\"9.5\" y1=\"13.5\" x2=\"14.5\" y2=\"13.5\"/>\n<line x1=\"9.5\" y1=\"16.5\" x2=\"14.5\" y2=\"16.5\"/>\n</svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M 3.5 8.5 Q 3.5 6.5 5.5 6.5 L 13.5 6.5 L 13.5 2.5 M 13.5 6.5 L 16.5 6.5 Q 18.5 6.5 18.5 8.5 L 18.5 19.5 Q 18.5 20.5 17.5 20.5 L 4.5 20.5 Q 3.5 20.5 3.5 19.5 L 3.5 8.5\" />\n<line x1=\"9.5\" y1=\"13.5\" x2=\"14.5\" y2=\"13.5\" />\n<line x1=\"9.5\" y1=\"16.5\" x2=\"14.5\" y2=\"16.5\" />\n</svg>",
+          "snap_why": null,
+          "changed": [
+            "path:d"
+          ],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "07_dialogue",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M6.5 5.5L10.5 5.5L10.5 2.5L13.5 2.5L13.5 5.5L17.5 5.5\"/>\n<path d=\"M5.5 7.5L5.5 19.5Q5.5 20.5 6.5 20.5L17.5 20.5Q18.5 20.5 18.5 19.5L18.5 7.5L5.5 7.5\"/>\n<polyline points=\"10,13.5 10,16.5 14,16.5 14,13.5\"/>\n</svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M 6.5 5.5 L 10.5 5.5 L 10.5 2.5 L 13.5 2.5 L 13.5 5.5 L 17.5 5.5\" />\n<path d=\"M 5.5 7.5 L 5.5 19.5 Q 5.5 20.5 6.5 20.5 L 17.5 20.5 Q 18.5 20.5 18.5 19.5 L 18.5 7.5 L 5.5 7.5\" />\n<polyline points=\"10,13.5 10,16.5 14,16.5 14,13.5\" />\n</svg>",
+          "snap_why": null,
+          "changed": [
+            "path:d"
+          ],
+          "snapped_verdict": "PASS"
+        }
+      ]
+    },
+    {
+      "concept": "08_exit",
+      "candidates": [
+        {
+          "concept": "08_exit",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M19.5 4.5L4.5 19.5M4.5 4.5L19.5 19.5\"/>\n<line x1=\"12\" y1=\"2.5\" x2=\"12\" y2=\"8.5\"/>\n</svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M 19.5 4.5 L 4.5 19.5 M 4.5 4.5 L 19.5 19.5\" />\n<line x1=\"12\" y1=\"2.5\" x2=\"12\" y2=\"8.5\" />\n</svg>",
+          "snap_why": null,
+          "changed": [
+            "path:d"
+          ],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "08_exit",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<rect x=\"5.5\" y=\"6.5\" width=\"13\" height=\"14\" rx=\"1.5\"/>\n<path d=\"M9.5 11.5L14.5 16.5M14.5 11.5L9.5 16.5\"/>\n</svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<rect x=\"5.5\" y=\"6.5\" width=\"13\" height=\"14\" rx=\"1.5\" />\n<path d=\"M 9.5 11.5 L 14.5 16.5 M 14.5 11.5 L 9.5 16.5\" />\n</svg>",
+          "snap_why": null,
+          "changed": [
+            "path:d"
+          ],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "08_exit",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M3.5 12L12 3.5L20.5 12\"/>\n<path d=\"M12 3.5L12 20.5M5.5 13.5L18.5 13.5\"/>\n</svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M 3.5 12 L 12 3.5 L 20.5 12\" />\n<path d=\"M 12 3.5 L 12 20.5 M 5.5 13.5 L 18.5 13.5\" />\n</svg>",
+          "snap_why": null,
+          "changed": [
+            "path:d"
+          ],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "08_exit",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<circle cx=\"12\" cy=\"12\" r=\"8.5\"/>\n<path d=\"M12 7L12 12L15 14.5\"/>\n<line x1=\"12\" y1=\"2.5\" x2=\"12\" y2=\"5.5\"/>\n</svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<circle cx=\"12\" cy=\"12\" r=\"8.5\" />\n<path d=\"M 12 7 L 12 12 L 15 14.5\" />\n<line x1=\"12\" y1=\"2.5\" x2=\"12\" y2=\"5.5\" />\n</svg>",
+          "snap_why": null,
+          "changed": [
+            "path:d"
+          ],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "08_exit",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M6.5 8.5L12 2.5L17.5 8.5L17.5 20.5L6.5 20.5Z\"/>\n<line x1=\"10\" y1=\"14\" x2=\"14\" y2=\"10\"/>\n</svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M 6.5 8.5 L 12 2.5 L 17.5 8.5 L 17.5 20.5 L 6.5 20.5 Z\" />\n<line x1=\"10\" y1=\"14\" x2=\"14\" y2=\"10\" />\n</svg>",
+          "snap_why": null,
+          "changed": [
+            "path:d"
+          ],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "08_exit",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M4.5 10.5L12 3.5L19.5 10.5L19.5 20.5L4.5 20.5Z\"/>\n<polyline points=\"12,10.5 12,15.5 9.5,13\"/>\n<polyline points=\"12,10.5 12,15.5 14.5,13\"/>\n</svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\">\n<path d=\"M 4.5 10.5 L 12 3.5 L 19.5 10.5 L 19.5 20.5 L 4.5 20.5 Z\" />\n<polyline points=\"12,10.5 12,15.5 9.5,13\" />\n<polyline points=\"12,10.5 12,15.5 14.5,13\" />\n</svg>",
+          "snap_why": null,
+          "changed": [
+            "path:d"
+          ],
+          "snapped_verdict": "PASS"
+        }
+      ]
+    },
+    {
+      "concept": "01_save",
+      "candidates": [
+        {
+          "concept": "01_save",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><rect x=\"4.5\" y=\"6.5\" width=\"12\" height=\"10\" rx=\"1\"/><polyline points=\"8.5,12.5 10.5,14.5 15.5,9.5\"/></svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><rect x=\"4.5\" y=\"6.5\" width=\"12\" height=\"10\" rx=\"1\" /><polyline points=\"8.5,12.5 10.5,14.5 15.5,9.5\" /></svg>",
+          "snap_why": null,
+          "changed": [],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "01_save",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><circle cx=\"12\" cy=\"12\" r=\"7.5\"/><path d=\"M9.5 12l2 2 4-4\"/></svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><circle cx=\"12\" cy=\"12\" r=\"7.5\" /><path d=\"M 9.5 12 l 2 2 l 4 -4\" /></svg>",
+          "snap_why": null,
+          "changed": [
+            "path:d"
+          ],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "01_save",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><rect x=\"4.5\" y=\"6.5\" width=\"14\" height=\"11\" rx=\"1.5\"/><path d=\"M9.5 12.5l2 2.5 4.5-5\"/></svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><rect x=\"4.5\" y=\"6.5\" width=\"14\" height=\"11\" rx=\"1.5\" /><path d=\"M 9.5 12.5 l 2 2.5 l 4.5 -5\" /></svg>",
+          "snap_why": null,
+          "changed": [
+            "path:d"
+          ],
+          "snapped_verdict": "PASS"
+        }
+      ]
+    },
+    {
+      "concept": "02_inventory",
+      "candidates": [
+        {
+          "concept": "02_inventory",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><path d=\"M 6.5 8.5 L 6.5 5.5 Q 6.5 4.5 7.5 4.5 L 16.5 4.5 Q 17.5 4.5 17.5 5.5 L 17.5 8.5\"/><rect x=\"4.5\" y=\"8.5\" width=\"15\" height=\"10\" rx=\"1\"/><path d=\"M 10 13 L 12 15 L 16 10.5\"/></svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><path d=\"M 6.5 8.5 L 6.5 5.5 Q 6.5 4.5 7.5 4.5 L 16.5 4.5 Q 17.5 4.5 17.5 5.5 L 17.5 8.5\" /><rect x=\"4.5\" y=\"8.5\" width=\"15\" height=\"10\" rx=\"1\" /><path d=\"M 10 13 L 12 15 L 16 10.5\" /></svg>",
+          "snap_why": null,
+          "changed": [],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "02_inventory",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><path d=\"M 7.5 7 L 7.5 5.5 Q 7.5 4.5 8.5 4.5 L 15.5 4.5 Q 16.5 4.5 16.5 5.5 L 16.5 7\"/><rect x=\"4.5\" y=\"7\" width=\"15\" height=\"11\" rx=\"1\"/><polyline points=\"10.5,12.5 12.5,14.5 16.5,10\"/></svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><path d=\"M 7.5 7 L 7.5 5.5 Q 7.5 4.5 8.5 4.5 L 15.5 4.5 Q 16.5 4.5 16.5 5.5 L 16.5 7\" /><rect x=\"4.5\" y=\"7\" width=\"15\" height=\"11\" rx=\"1\" /><polyline points=\"10.5,12.5 12.5,14.5 16.5,10\" /></svg>",
+          "snap_why": null,
+          "changed": [],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "02_inventory",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><path d=\"M 5.5 10 L 5.5 6 Q 5.5 4.5 7 4.5 L 17 4.5 Q 18.5 4.5 18.5 6 L 18.5 10\"/><rect x=\"3.5\" y=\"10\" width=\"17\" height=\"9\" rx=\"1\"/><path d=\"M 9.5 14.5 L 11.5 16.5 L 16 12\"/></svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><path d=\"M 5.5 10 L 5.5 6 Q 5.5 4.5 7 4.5 L 17 4.5 Q 18.5 4.5 18.5 6 L 18.5 10\" /><rect x=\"3.5\" y=\"10\" width=\"17\" height=\"9\" rx=\"1\" /><path d=\"M 9.5 14.5 L 11.5 16.5 L 16 12\" /></svg>",
+          "snap_why": null,
+          "changed": [],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "02_inventory",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><line x1=\"9.5\" y1=\"4.5\" x2=\"9.5\" y2=\"8.5\"/><line x1=\"14.5\" y1=\"4.5\" x2=\"14.5\" y2=\"8.5\"/><rect x=\"4.5\" y=\"8.5\" width=\"15\" height=\"10\" rx=\"1\"/><polyline points=\"9.5,13 11.5,15 15.5,11\"/></svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><line x1=\"9.5\" y1=\"4.5\" x2=\"9.5\" y2=\"8.5\" /><line x1=\"14.5\" y1=\"4.5\" x2=\"14.5\" y2=\"8.5\" /><rect x=\"4.5\" y=\"8.5\" width=\"15\" height=\"10\" rx=\"1\" /><polyline points=\"9.5,13 11.5,15 15.5,11\" /></svg>",
+          "snap_why": null,
+          "changed": [],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "02_inventory",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><path d=\"M 8.5 8 L 8.5 5 Q 8.5 4.5 9 4.5 L 15 4.5 Q 15.5 4.5 15.5 5 L 15.5 8\"/><path d=\"M 4.5 8.5 L 4.5 18.5 Q 4.5 19.5 5.5 19.5 L 18.5 19.5 Q 19.5 19.5 19.5 18.5 L 19.5 8.5\"/><polyline points=\"10,13 12,15 16,10.5\"/></svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><path d=\"M 8.5 8 L 8.5 5 Q 8.5 4.5 9 4.5 L 15 4.5 Q 15.5 4.5 15.5 5 L 15.5 8\" /><path d=\"M 4.5 8.5 L 4.5 18.5 Q 4.5 19.5 5.5 19.5 L 18.5 19.5 Q 19.5 19.5 19.5 18.5 L 19.5 8.5\" /><polyline points=\"10,13 12,15 16,10.5\" /></svg>",
+          "snap_why": null,
+          "changed": [],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "02_inventory",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><path d=\"M 7 6.5 Q 7 5.5 8 5.5 L 16 5.5 Q 17 5.5 17 6.5 L 17 9.5\"/><path d=\"M 19.5 9.5 L 19.5 18.5 Q 19.5 19.5 18.5 19.5 L 5.5 19.5 Q 4.5 19.5 4.5 18.5 L 4.5 9.5\"/><line x1=\"11\" y1=\"9.5\" x2=\"11\" y2=\"12\"/><polyline points=\"13.5,13 15.5,15 19,11.5\"/></svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><path d=\"M 7 6.5 Q 7 5.5 8 5.5 L 16 5.5 Q 17 5.5 17 6.5 L 17 9.5\" /><path d=\"M 19.5 9.5 L 19.5 18.5 Q 19.5 19.5 18.5 19.5 L 5.5 19.5 Q 4.5 19.5 4.5 18.5 L 4.5 9.5\" /><line x1=\"11\" y1=\"9.5\" x2=\"11\" y2=\"12\" /><polyline points=\"13.5,13 15.5,15 19,11.5\" /></svg>",
+          "snap_why": null,
+          "changed": [],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "02_inventory",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><rect x=\"5.5\" y=\"6.5\" width=\"13\" height=\"11\" rx=\"1\"/><path d=\"M 9.5 6.5 L 9.5 4.5 Q 9.5 3.5 10.5 3.5 L 13.5 3.5 Q 14.5 3.5 14.5 4.5 L 14.5 6.5\"/><polyline points=\"10.5,11.5 12.5,13.5 16,10\"/></svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><rect x=\"5.5\" y=\"6.5\" width=\"13\" height=\"11\" rx=\"1\" /><path d=\"M 9.5 6.5 L 9.5 4.5 Q 9.5 3.5 10.5 3.5 L 13.5 3.5 Q 14.5 3.5 14.5 4.5 L 14.5 6.5\" /><polyline points=\"10.5,11.5 12.5,13.5 16,10\" /></svg>",
+          "snap_why": null,
+          "changed": [],
+          "snapped_verdict": "PASS"
+        }
+      ]
+    },
+    {
+      "concept": "03_map",
+      "candidates": [
+        {
+          "concept": "03_map",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><rect x=\"2.5\" y=\"2.5\" width=\"19\" height=\"19\" rx=\"1\"/><circle cx=\"8.5\" cy=\"8.5\" r=\"1.5\"/><circle cx=\"15.5\" cy=\"12.5\" r=\"1.5\"/><polyline points=\"8.5,8.5 12,11 15.5,12.5\"/></svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><rect x=\"2.5\" y=\"2.5\" width=\"19\" height=\"19\" rx=\"1\" /><circle cx=\"8.5\" cy=\"8.5\" r=\"1.5\" /><circle cx=\"15.5\" cy=\"12.5\" r=\"1.5\" /><polyline points=\"8.5,8.5 12,11 15.5,12.5\" /></svg>",
+          "snap_why": null,
+          "changed": [],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "03_map",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><rect x=\"2.5\" y=\"2.5\" width=\"19\" height=\"19\" rx=\"1\"/><path d=\"M 6.5 7.5 Q 8.5 5.5 10.5 7.5 T 14.5 7.5\"/><circle cx=\"7\" cy=\"13\" r=\"1.5\"/><circle cx=\"16\" cy=\"10.5\" r=\"1.5\"/></svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><rect x=\"2.5\" y=\"2.5\" width=\"19\" height=\"19\" rx=\"1\" /><path d=\"M 6.5 7.5 Q 8.5 5.5 10.5 7.5 T 14.5 7.5\" /><circle cx=\"7\" cy=\"13\" r=\"1.5\" /><circle cx=\"16\" cy=\"10.5\" r=\"1.5\" /></svg>",
+          "snap_why": null,
+          "changed": [],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "03_map",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><rect x=\"2.5\" y=\"2.5\" width=\"19\" height=\"19\" rx=\"1\"/><line x1=\"8.5\" y1=\"2.5\" x2=\"8.5\" y2=\"21.5\"/><line x1=\"15.5\" y1=\"2.5\" x2=\"15.5\" y2=\"21.5\"/><circle cx=\"6\" cy=\"9\" r=\"1\"/><circle cx=\"11.5\" cy=\"15\" r=\"1\"/></svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><rect x=\"2.5\" y=\"2.5\" width=\"19\" height=\"19\" rx=\"1\" /><line x1=\"8.5\" y1=\"2.5\" x2=\"8.5\" y2=\"21.5\" /><line x1=\"15.5\" y1=\"2.5\" x2=\"15.5\" y2=\"21.5\" /><circle cx=\"6\" cy=\"9\" r=\"1\" /><circle cx=\"11.5\" cy=\"15\" r=\"1\" /></svg>",
+          "snap_why": null,
+          "changed": [],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "03_map",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><path d=\"M 2.5 6.5 L 6 2.5 L 21.5 2.5 Q 21.5 12 12 21.5 Q 2.5 12 2.5 6.5\"/><circle cx=\"9\" cy=\"8.5\" r=\"1.5\"/><circle cx=\"14.5\" cy=\"12.5\" r=\"1.5\"/></svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><path d=\"M 2.5 6.5 L 6 2.5 L 21.5 2.5 Q 21.5 12 12 21.5 Q 2.5 12 2.5 6.5\" /><circle cx=\"9\" cy=\"8.5\" r=\"1.5\" /><circle cx=\"14.5\" cy=\"12.5\" r=\"1.5\" /></svg>",
+          "snap_why": null,
+          "changed": [],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "03_map",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><rect x=\"2.5\" y=\"2.5\" width=\"19\" height=\"19\" rx=\"1\"/><path d=\"M 5.5 9.5 L 9 6.5 L 14.5 10 L 18.5 7\"/><circle cx=\"5.5\" cy=\"15\" r=\"1\"/><circle cx=\"18.5\" cy=\"14.5\" r=\"1\"/></svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><rect x=\"2.5\" y=\"2.5\" width=\"19\" height=\"19\" rx=\"1\" /><path d=\"M 5.5 9.5 L 9 6.5 L 14.5 10 L 18.5 7\" /><circle cx=\"5.5\" cy=\"15\" r=\"1\" /><circle cx=\"18.5\" cy=\"14.5\" r=\"1\" /></svg>",
+          "snap_why": null,
+          "changed": [],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "03_map",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><rect x=\"2.5\" y=\"2.5\" width=\"19\" height=\"19\" rx=\"1\"/><path d=\"M 4 10.5 Q 8 5 12 8 T 20 12\"/><line x1=\"7\" y1=\"15\" x2=\"10\" y2=\"18.5\"/><circle cx=\"6.5\" cy=\"14.5\" r=\"1\"/></svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><rect x=\"2.5\" y=\"2.5\" width=\"19\" height=\"19\" rx=\"1\" /><path d=\"M 4 10.5 Q 8 5 12 8 T 20 12\" /><line x1=\"7\" y1=\"15\" x2=\"10\" y2=\"18.5\" /><circle cx=\"6.5\" cy=\"14.5\" r=\"1\" /></svg>",
+          "snap_why": null,
+          "changed": [],
+          "snapped_verdict": "PASS"
+        }
+      ]
+    },
+    {
+      "concept": "04_settings",
+      "candidates": [
+        {
+          "concept": "04_settings",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><rect x=\"8.5\" y=\"5.5\" width=\"7\" height=\"13\" rx=\"1\"/><circle cx=\"12\" cy=\"8.5\" r=\"1\"/><circle cx=\"12\" cy=\"15.5\" r=\"1\"/><line x1=\"12\" y1=\"10.5\" x2=\"12\" y2=\"13.5\"/></svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><rect x=\"8.5\" y=\"5.5\" width=\"7\" height=\"13\" rx=\"1\" /><circle cx=\"12\" cy=\"8.5\" r=\"1\" /><circle cx=\"12\" cy=\"15.5\" r=\"1\" /><line x1=\"12\" y1=\"10.5\" x2=\"12\" y2=\"13.5\" /></svg>",
+          "snap_why": null,
+          "changed": [],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "04_settings",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><rect x=\"6.5\" y=\"9.5\" width=\"11\" height=\"8\" rx=\"1\"/><circle cx=\"12\" cy=\"13.5\" r=\"2\"/><path d=\"M 3.5 13.5 Q 5 12 6.5 13.5 Q 5 15 3.5 13.5\"/><path d=\"M 20.5 13.5 Q 19 12 17.5 13.5 Q 19 15 20.5 13.5\"/></svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><rect x=\"6.5\" y=\"9.5\" width=\"11\" height=\"8\" rx=\"1\" /><circle cx=\"12\" cy=\"13.5\" r=\"2\" /><path d=\"M 3.5 13.5 Q 5 12 6.5 13.5 Q 5 15 3.5 13.5\" /><path d=\"M 20.5 13.5 Q 19 12 17.5 13.5 Q 19 15 20.5 13.5\" /></svg>",
+          "snap_why": null,
+          "changed": [],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "04_settings",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><g><circle cx=\"6.5\" cy=\"6.5\" r=\"2\"/><path d=\"M 3.5 6.5 L 2.5 6.5 M 10.5 6.5 L 11.5 6.5\"/></g><g><circle cx=\"12\" cy=\"12\" r=\"2\"/><path d=\"M 9 12 L 8 12 M 15 12 L 16 12\"/></g><g><circle cx=\"17.5\" cy=\"17.5\" r=\"2\"/><path d=\"M 14.5 17.5 L 13.5 17.5 M 20.5 17.5 L 21.5 17.5\"/></g></svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><g><circle cx=\"6.5\" cy=\"6.5\" r=\"2\" /><path d=\"M 3.5 6.5 L 2.5 6.5 M 10.5 6.5 L 11.5 6.5\" /></g><g><circle cx=\"12\" cy=\"12\" r=\"2\" /><path d=\"M 9 12 L 8 12 M 15 12 L 16 12\" /></g><g><circle cx=\"17.5\" cy=\"17.5\" r=\"2\" /><path d=\"M 14.5 17.5 L 13.5 17.5 M 20.5 17.5 L 21.5 17.5\" /></g></svg>",
+          "snap_why": null,
+          "changed": [],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "04_settings",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><circle cx=\"12\" cy=\"8.5\" r=\"2.5\"/><rect x=\"5.5\" y=\"13\" width=\"13\" height=\"6.5\" rx=\"1\"/><polyline points=\"8.5,16 12,18 15.5,16\"/></svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><circle cx=\"12\" cy=\"8.5\" r=\"2.5\" /><rect x=\"5.5\" y=\"13\" width=\"13\" height=\"6.5\" rx=\"1\" /><polyline points=\"8.5,16 12,18 15.5,16\" /></svg>",
+          "snap_why": null,
+          "changed": [],
+          "snapped_verdict": "PASS"
+        },
+        {
+          "concept": "04_settings",
+          "svg": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><path d=\"M 12 4.5 L 12 6.5 M 12 17.5 L 12 19.5 M 19.5 12 L 17.5 12 M 6.5 12 L 4.5 12\"/><circle cx=\"12\" cy=\"12\" r=\"3.5\"/><path d=\"M 15 9 L 17 7 M 7 17 L 9 15\"/></svg>",
+          "raw_verdict": "PASS",
+          "snapped": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><path d=\"M 12 4.5 L 12 6.5 M 12 17.5 L 12 19.5 M 19.5 12 L 17.5 12 M 6.5 12 L 4.5 12\" /><circle cx=\"12\" cy=\"12\" r=\"3.5\" /><path d=\"M 15 9 L 17 7 M 7 17 L 9 15\" /></svg>",
+          "snap_why": null,
+          "changed": [],
+          "snapped_verdict": "PASS"
+        }
+      ]
+    }
+  ]
+}

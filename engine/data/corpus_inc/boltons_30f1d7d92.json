@@ -1,0 +1,18 @@
+{
+ "repo": "boltons",
+ "fix_commit": "30f1d7d929ed48239a6c7c5989454f852a5d7e86",
+ "parent_commit": "405d8b9c1b24d5b68ad1f74fd74f53c6ee78e6fe",
+ "answer_functions": [
+  "boltons/urlutils.py::from_parts",
+  "boltons/urlutils.py::navigate",
+  "boltons/urlutils.py::normalize",
+  "boltons/urlutils.py::register_scheme"
+ ],
+ "repro_tests": [],
+ "smoke": [],
+ "baseline_pass_count": 0,
+ "probes": [],
+ "inc_event": false,
+ "regression_event": false,
+ "skipped": "no repro or no answer functions"
+}

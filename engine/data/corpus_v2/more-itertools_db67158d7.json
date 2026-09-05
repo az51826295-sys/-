@@ -1,0 +1,32 @@
+{
+ "repo": "more-itertools",
+ "fix_commit": "db67158d793afac4c1165cf8001b357317cf13c4",
+ "parent_commit": "258791eb405a36b3b3ed2c180e88f4b08f865e2d",
+ "answer_files": [
+  "more_itertools/more.py"
+ ],
+ "answer_functions": [
+  "more_itertools/more.py::distinct_permutations"
+ ],
+ "patch_lines": 15,
+ "added_tests": {
+  "tests/test_more.py::DistinctPermutationsTests::test_unsortable_hashables": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [
+  "tests/test_more.py::DistinctPermutationsTests::test_unsortable_hashables"
+ ],
+ "test_files": [
+  "tests/test_more.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 6.7,
+ "env_error_tests": 0,
+ "qualified": true,
+ "selector_event_proxy_v1": false
+}

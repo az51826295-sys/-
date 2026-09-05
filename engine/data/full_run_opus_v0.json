@@ -1,0 +1,110 @@
+{
+  "spec": "full-run-v0",
+  "design": "docs/full-run-v0-design.md",
+  "want": "아이콘 세트 만들어줘",
+  "provider": "anthropic",
+  "model": "claude-opus-5",
+  "verdict": "stopped",
+  "counts": {
+    "auto": 5,
+    "approval": 2,
+    "choice": 1,
+    "fix": 0,
+    "undefined": 0
+  },
+  "stopped_at": [
+    {
+      "step": 7,
+      "name": "선별",
+      "status": "choice",
+      "why": "심판은 거를 뿐 고르지 않는다(2026-08-26 규율). 취향 심판이 승격되기 전에는 여기서 항상 멈춘다"
+    }
+  ],
+  "seconds": 43.3,
+  "steps": [
+    {
+      "step": 1,
+      "name": "요청 분해",
+      "status": "auto",
+      "atoms": [
+        "icon_spec_fit"
+      ],
+      "why": null
+    },
+    {
+      "step": 2,
+      "name": "재구성·되묻기",
+      "status": "auto",
+      "keep": [
+        "icon_spec_fit"
+      ],
+      "dropped": [],
+      "question": null
+    },
+    {
+      "step": 3,
+      "name": "설계도·견적",
+      "status": "approval",
+      "checklist": 1,
+      "human_gate": 0,
+      "coins": 30,
+      "won": 30000,
+      "why": "견적 승인은 사람 몫이다(코인이 돈이다)"
+    },
+    {
+      "step": 4,
+      "name": "자산 생성",
+      "status": "approval",
+      "provider": "anthropic",
+      "candidates": 18,
+      "why": null,
+      "usd": 0.08673
+    },
+    {
+      "step": 5,
+      "name": "낱개 심판",
+      "status": "auto",
+      "candidates": 18,
+      "passed": 18,
+      "concepts_with_pass": [
+        "key",
+        "potion",
+        "torch"
+      ],
+      "why": null
+    },
+    {
+      "step": 6,
+      "name": "세트 심판",
+      "status": "auto",
+      "set_verdict": "PASS",
+      "rules": {
+        "set.stroke_width_variance_zero": true,
+        "set.no_duplicate_structure": true,
+        "set.optical_weight_delta_max": true,
+        "set.every_icon_passes": true
+      },
+      "why": null
+    },
+    {
+      "step": 7,
+      "name": "선별",
+      "status": "choice",
+      "pool": {
+        "potion": 6,
+        "key": 6,
+        "torch": 6
+      },
+      "why": "심판은 거를 뿐 고르지 않는다(2026-08-26 규율). 취향 심판이 승격되기 전에는 여기서 항상 멈춘다"
+    },
+    {
+      "step": 8,
+      "name": "조립·게임 확인",
+      "status": "auto",
+      "smoke": "PASS",
+      "icons": 8,
+      "characters": 2,
+      "why": null
+    }
+  ]
+}

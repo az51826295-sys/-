@@ -1,0 +1,26 @@
+{
+  "design": "docs/consistency-v0-design.md",
+  "verdict": "undefined",
+  "why": "B 갈래를 못 받았다(color_image가 64x64여야 하는데 40x1을 보내 실패). 그 뒤 실험을 철회했다 - 접근 자체가 틀렸다. 판정식은 옮기지 않았다.",
+  "withdrawn": true,
+  "withdrawn_reason": "color_image는 명세에도 'weakly guiding'이다. 확률적인 생성기에게 부탁해서 결정적인 일관성을 얻을 수 없다. 일관성은 생성 **이후**에 강제하거나(팔레트 잠금) 여러 개 뽑아 걸러야(오디션) 한다. B에 6회를 더 쓰는 대신 멈췄다.",
+  "arms_received": {
+    "A_bare": [
+      16,
+      15
+    ],
+    "B_palette": [
+      0,
+      0
+    ]
+  },
+  "A_wobble_palette_distance": 0.0585,
+  "wobble_note": "A 갈래 두 회차 사이의 팔레트 거리. **비교 대상이 없으므로 이 수는 아무것도 판정하지 않는다.** 흔들림의 크기를 기록해 둘 뿐이다.",
+  "generations_spent": 6,
+  "honest_cost": "쓴 6회는 답 없이 끝난다. 접근을 잘못 잡은 값이다.",
+  "followups": [
+    "docs/measurement-rules.md §14",
+    "docs/measurement-rules.md §15",
+    "genesis/audition.py"
+  ]
+}

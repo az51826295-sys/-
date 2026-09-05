@@ -1,0 +1,8 @@
+[
+  {"concept": "chat", "meaning": "대화 - 말을 걸어 답을 받는 곳"},
+  {"concept": "company", "meaning": "회사 - 직원과 업무가 있는 곳"},
+  {"concept": "attach", "meaning": "사진 붙이기 - 그림을 대화에 올린다"},
+  {"concept": "history", "meaning": "지난 대화 - 예전에 나눈 이야기 목록"},
+  {"concept": "settings", "meaning": "설정 - 계정과 환경"},
+  {"concept": "signout", "meaning": "로그아웃 - 계정에서 나간다"}
+]

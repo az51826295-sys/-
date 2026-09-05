@@ -1,0 +1,212 @@
+{
+  "set": "pick-v1",
+  "results": [
+    {
+      "concept": "save",
+      "meaning": "진행 상황 저장",
+      "verdict": "PASS",
+      "svg": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><rect x=\"4.5\" y=\"6.5\" width=\"12\" height=\"10\" rx=\"1\"/><polyline points=\"8.5,12.5 10.5,14.5 15.5,9.5\"/></svg>",
+      "candidates": [
+        "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><rect x=\"4.5\" y=\"6.5\" width=\"12\" height=\"10\" rx=\"1\"/><polyline points=\"8.5,12.5 10.5,14.5 15.5,9.5\"/></svg>",
+        "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><circle cx=\"12\" cy=\"12\" r=\"7.5\"/><path d=\"M9.5 12l2 2 4-4\"/></svg>",
+        "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><rect x=\"4.5\" y=\"6.5\" width=\"14\" height=\"11\" rx=\"1.5\"/><path d=\"M9.5 12.5l2 2.5 4.5-5\"/></svg>"
+      ],
+      "extra_passes": 2,
+      "rounds": [
+        {
+          "round": 1,
+          "mode": "initial",
+          "temperature": 1.0,
+          "temperature_requested": 1.0,
+          "temperature_capped": false,
+          "candidates": 7,
+          "judged": 7,
+          "dropped_duplicate": 0,
+          "passed": 3,
+          "failed": 4,
+          "undefined": 0,
+          "reports": [
+            "VERDICT: FAIL\ncandidate: 0\nviolations:\n  - rule: grid.snap\n    got: [1.1, 0.9, 1.1, -0.9, -1.1, -0.9, -1.1, 0.9]\n    want: \"비어 있어야 함\"\npassed:\n  - parse\n  - viewBox\n  - stroke.width\n  - stroke.linecap\n  - stroke.linejoin\n  - palette\n  - fill\n  - padding.min\n  - path.max_count\n  - path.max_total_commands\n  - allowed_elements\n  - forbidden_elements\n  - size.max_bytes",
+            "VERDICT: PASS\ncandidate: 1\npassed:\n  - parse\n  - viewBox\n  - grid.snap\n  - stroke.width\n  - stroke.linecap\n  - stroke.linejoin\n  - palette\n  - fill\n  - padding.min\n  - path.max_count\n  - path.max_total_commands\n  - allowed_elements\n  - forbidden_elements\n  - size.max_bytes",
+            "VERDICT: FAIL\ncandidate: 2\nviolations:\n  - rule: grid.snap\n    got: [1.1, 0.9, 1.1, -0.9]\n    want: \"비어 있어야 함\"\npassed:\n  - parse\n  - viewBox\n  - stroke.width\n  - stroke.linecap\n  - stroke.linejoin\n  - palette\n  - fill\n  - padding.min\n  - path.max_count\n  - path.max_total_commands\n  - allowed_elements\n  - forbidden_elements\n  - size.max_bytes",
+            "VERDICT: PASS\ncandidate: 3\npassed:\n  - parse\n  - viewBox\n  - grid.snap\n  - stroke.width\n  - stroke.linecap\n  - stroke.linejoin\n  - palette\n  - fill\n  - padding.min\n  - path.max_count\n  - path.max_total_commands\n  - allowed_elements\n  - forbidden_elements\n  - size.max_bytes",
+            "VERDICT: FAIL\ncandidate: 4\nviolations:\n  - rule: grid.snap\n    got: [1.1, -0.9, -1.1, -0.9]\n    want: \"비어 있어야 함\"\npassed:\n  - parse\n  - viewBox\n  - stroke.width\n  - stroke.linecap\n  - stroke.linejoin\n  - palette\n  - fill\n  - padding.min\n  - path.max_count\n  - path.max_total_commands\n  - allowed_elements\n  - forbidden_elements\n  - size.max_bytes",
+            "VERDICT: FAIL\ncandidate: 5\nviolations:\n  - rule: grid.snap\n    got: [1.1, 0.9, 1.1, -0.9]\n    want: \"비어 있어야 함\"\npassed:\n  - parse\n  - viewBox\n  - stroke.width\n  - stroke.linecap\n  - stroke.linejoin\n  - palette\n  - fill\n  - padding.min\n  - path.max_count\n  - path.max_total_commands\n  - allowed_elements\n  - forbidden_elements\n  - size.max_bytes",
+            "VERDICT: PASS\ncandidate: 6\npassed:\n  - parse\n  - viewBox\n  - grid.snap\n  - stroke.width\n  - stroke.linecap\n  - stroke.linejoin\n  - palette\n  - fill\n  - padding.min\n  - path.max_count\n  - path.max_total_commands\n  - allowed_elements\n  - forbidden_elements\n  - size.max_bytes"
+          ]
+        }
+      ],
+      "used_rounds": 1,
+      "candidate_paths": [
+        "out\\icons\\pick-v1\\candidates\\01_save\\c01.svg",
+        "out\\icons\\pick-v1\\candidates\\01_save\\c02.svg",
+        "out\\icons\\pick-v1\\candidates\\01_save\\c03.svg"
+      ]
+    },
+    {
+      "concept": "inventory",
+      "meaning": "소지품 가방 열기",
+      "verdict": "PASS",
+      "svg": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><path d=\"M 6.5 8.5 L 6.5 5.5 Q 6.5 4.5 7.5 4.5 L 16.5 4.5 Q 17.5 4.5 17.5 5.5 L 17.5 8.5\"/><rect x=\"4.5\" y=\"8.5\" width=\"15\" height=\"10\" rx=\"1\"/><path d=\"M 10 13 L 12 15 L 16 10.5\"/></svg>",
+      "candidates": [
+        "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><path d=\"M 6.5 8.5 L 6.5 5.5 Q 6.5 4.5 7.5 4.5 L 16.5 4.5 Q 17.5 4.5 17.5 5.5 L 17.5 8.5\"/><rect x=\"4.5\" y=\"8.5\" width=\"15\" height=\"10\" rx=\"1\"/><path d=\"M 10 13 L 12 15 L 16 10.5\"/></svg>",
+        "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><path d=\"M 7.5 7 L 7.5 5.5 Q 7.5 4.5 8.5 4.5 L 15.5 4.5 Q 16.5 4.5 16.5 5.5 L 16.5 7\"/><rect x=\"4.5\" y=\"7\" width=\"15\" height=\"11\" rx=\"1\"/><polyline points=\"10.5,12.5 12.5,14.5 16.5,10\"/></svg>",
+        "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><path d=\"M 5.5 10 L 5.5 6 Q 5.5 4.5 7 4.5 L 17 4.5 Q 18.5 4.5 18.5 6 L 18.5 10\"/><rect x=\"3.5\" y=\"10\" width=\"17\" height=\"9\" rx=\"1\"/><path d=\"M 9.5 14.5 L 11.5 16.5 L 16 12\"/></svg>",
+        "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><line x1=\"9.5\" y1=\"4.5\" x2=\"9.5\" y2=\"8.5\"/><line x1=\"14.5\" y1=\"4.5\" x2=\"14.5\" y2=\"8.5\"/><rect x=\"4.5\" y=\"8.5\" width=\"15\" height=\"10\" rx=\"1\"/><polyline points=\"9.5,13 11.5,15 15.5,11\"/></svg>",
+        "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><path d=\"M 8.5 8 L 8.5 5 Q 8.5 4.5 9 4.5 L 15 4.5 Q 15.5 4.5 15.5 5 L 15.5 8\"/><path d=\"M 4.5 8.5 L 4.5 18.5 Q 4.5 19.5 5.5 19.5 L 18.5 19.5 Q 19.5 19.5 19.5 18.5 L 19.5 8.5\"/><polyline points=\"10,13 12,15 16,10.5\"/></svg>",
+        "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><path d=\"M 7 6.5 Q 7 5.5 8 5.5 L 16 5.5 Q 17 5.5 17 6.5 L 17 9.5\"/><path d=\"M 19.5 9.5 L 19.5 18.5 Q 19.5 19.5 18.5 19.5 L 5.5 19.5 Q 4.5 19.5 4.5 18.5 L 4.5 9.5\"/><line x1=\"11\" y1=\"9.5\" x2=\"11\" y2=\"12\"/><polyline points=\"13.5,13 15.5,15 19,11.5\"/></svg>",
+        "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><rect x=\"5.5\" y=\"6.5\" width=\"13\" height=\"11\" rx=\"1\"/><path d=\"M 9.5 6.5 L 9.5 4.5 Q 9.5 3.5 10.5 3.5 L 13.5 3.5 Q 14.5 3.5 14.5 4.5 L 14.5 6.5\"/><polyline points=\"10.5,11.5 12.5,13.5 16,10\"/></svg>"
+      ],
+      "extra_passes": 6,
+      "rounds": [
+        {
+          "round": 1,
+          "mode": "initial",
+          "temperature": 1.0,
+          "temperature_requested": 1.0,
+          "temperature_capped": false,
+          "candidates": 7,
+          "judged": 7,
+          "dropped_duplicate": 0,
+          "passed": 7,
+          "failed": 0,
+          "undefined": 0,
+          "reports": [
+            "VERDICT: PASS\ncandidate: 0\npassed:\n  - parse\n  - viewBox\n  - grid.snap\n  - stroke.width\n  - stroke.linecap\n  - stroke.linejoin\n  - palette\n  - fill\n  - padding.min\n  - path.max_count\n  - path.max_total_commands\n  - allowed_elements\n  - forbidden_elements\n  - size.max_bytes",
+            "VERDICT: PASS\ncandidate: 1\npassed:\n  - parse\n  - viewBox\n  - grid.snap\n  - stroke.width\n  - stroke.linecap\n  - stroke.linejoin\n  - palette\n  - fill\n  - padding.min\n  - path.max_count\n  - path.max_total_commands\n  - allowed_elements\n  - forbidden_elements\n  - size.max_bytes",
+            "VERDICT: PASS\ncandidate: 2\npassed:\n  - parse\n  - viewBox\n  - grid.snap\n  - stroke.width\n  - stroke.linecap\n  - stroke.linejoin\n  - palette\n  - fill\n  - padding.min\n  - path.max_count\n  - path.max_total_commands\n  - allowed_elements\n  - forbidden_elements\n  - size.max_bytes",
+            "VERDICT: PASS\ncandidate: 3\npassed:\n  - parse\n  - viewBox\n  - grid.snap\n  - stroke.width\n  - stroke.linecap\n  - stroke.linejoin\n  - palette\n  - fill\n  - padding.min\n  - path.max_count\n  - path.max_total_commands\n  - allowed_elements\n  - forbidden_elements\n  - size.max_bytes",
+            "VERDICT: PASS\ncandidate: 4\npassed:\n  - parse\n  - viewBox\n  - grid.snap\n  - stroke.width\n  - stroke.linecap\n  - stroke.linejoin\n  - palette\n  - fill\n  - padding.min\n  - path.max_count\n  - path.max_total_commands\n  - allowed_elements\n  - forbidden_elements\n  - size.max_bytes",
+            "VERDICT: PASS\ncandidate: 5\npassed:\n  - parse\n  - viewBox\n  - grid.snap\n  - stroke.width\n  - stroke.linecap\n  - stroke.linejoin\n  - palette\n  - fill\n  - padding.min\n  - path.max_count\n  - path.max_total_commands\n  - allowed_elements\n  - forbidden_elements\n  - size.max_bytes",
+            "VERDICT: PASS\ncandidate: 6\npassed:\n  - parse\n  - viewBox\n  - grid.snap\n  - stroke.width\n  - stroke.linecap\n  - stroke.linejoin\n  - palette\n  - fill\n  - padding.min\n  - path.max_count\n  - path.max_total_commands\n  - allowed_elements\n  - forbidden_elements\n  - size.max_bytes"
+          ]
+        }
+      ],
+      "used_rounds": 1,
+      "candidate_paths": [
+        "out\\icons\\pick-v1\\candidates\\02_inventory\\c01.svg",
+        "out\\icons\\pick-v1\\candidates\\02_inventory\\c02.svg",
+        "out\\icons\\pick-v1\\candidates\\02_inventory\\c03.svg",
+        "out\\icons\\pick-v1\\candidates\\02_inventory\\c04.svg",
+        "out\\icons\\pick-v1\\candidates\\02_inventory\\c05.svg",
+        "out\\icons\\pick-v1\\candidates\\02_inventory\\c06.svg",
+        "out\\icons\\pick-v1\\candidates\\02_inventory\\c07.svg"
+      ]
+    },
+    {
+      "concept": "map",
+      "meaning": "지역 지도 보기",
+      "verdict": "PASS",
+      "svg": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><rect x=\"2.5\" y=\"2.5\" width=\"19\" height=\"19\" rx=\"1\"/><circle cx=\"8.5\" cy=\"8.5\" r=\"1.5\"/><circle cx=\"15.5\" cy=\"12.5\" r=\"1.5\"/><polyline points=\"8.5,8.5 12,11 15.5,12.5\"/></svg>",
+      "candidates": [
+        "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><rect x=\"2.5\" y=\"2.5\" width=\"19\" height=\"19\" rx=\"1\"/><circle cx=\"8.5\" cy=\"8.5\" r=\"1.5\"/><circle cx=\"15.5\" cy=\"12.5\" r=\"1.5\"/><polyline points=\"8.5,8.5 12,11 15.5,12.5\"/></svg>",
+        "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><rect x=\"2.5\" y=\"2.5\" width=\"19\" height=\"19\" rx=\"1\"/><path d=\"M 6.5 7.5 Q 8.5 5.5 10.5 7.5 T 14.5 7.5\"/><circle cx=\"7\" cy=\"13\" r=\"1.5\"/><circle cx=\"16\" cy=\"10.5\" r=\"1.5\"/></svg>",
+        "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><rect x=\"2.5\" y=\"2.5\" width=\"19\" height=\"19\" rx=\"1\"/><line x1=\"8.5\" y1=\"2.5\" x2=\"8.5\" y2=\"21.5\"/><line x1=\"15.5\" y1=\"2.5\" x2=\"15.5\" y2=\"21.5\"/><circle cx=\"6\" cy=\"9\" r=\"1\"/><circle cx=\"11.5\" cy=\"15\" r=\"1\"/></svg>",
+        "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><path d=\"M 2.5 6.5 L 6 2.5 L 21.5 2.5 Q 21.5 12 12 21.5 Q 2.5 12 2.5 6.5\"/><circle cx=\"9\" cy=\"8.5\" r=\"1.5\"/><circle cx=\"14.5\" cy=\"12.5\" r=\"1.5\"/></svg>",
+        "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><rect x=\"2.5\" y=\"2.5\" width=\"19\" height=\"19\" rx=\"1\"/><path d=\"M 5.5 9.5 L 9 6.5 L 14.5 10 L 18.5 7\"/><circle cx=\"5.5\" cy=\"15\" r=\"1\"/><circle cx=\"18.5\" cy=\"14.5\" r=\"1\"/></svg>",
+        "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><rect x=\"2.5\" y=\"2.5\" width=\"19\" height=\"19\" rx=\"1\"/><path d=\"M 4 10.5 Q 8 5 12 8 T 20 12\"/><line x1=\"7\" y1=\"15\" x2=\"10\" y2=\"18.5\"/><circle cx=\"6.5\" cy=\"14.5\" r=\"1\"/></svg>"
+      ],
+      "extra_passes": 5,
+      "rounds": [
+        {
+          "round": 1,
+          "mode": "initial",
+          "temperature": 1.0,
+          "temperature_requested": 1.0,
+          "temperature_capped": false,
+          "candidates": 6,
+          "judged": 6,
+          "dropped_duplicate": 0,
+          "passed": 6,
+          "failed": 0,
+          "undefined": 0,
+          "reports": [
+            "VERDICT: PASS\ncandidate: 0\npassed:\n  - parse\n  - viewBox\n  - grid.snap\n  - stroke.width\n  - stroke.linecap\n  - stroke.linejoin\n  - palette\n  - fill\n  - padding.min\n  - path.max_count\n  - path.max_total_commands\n  - allowed_elements\n  - forbidden_elements\n  - size.max_bytes",
+            "VERDICT: PASS\ncandidate: 1\npassed:\n  - parse\n  - viewBox\n  - grid.snap\n  - stroke.width\n  - stroke.linecap\n  - stroke.linejoin\n  - palette\n  - fill\n  - padding.min\n  - path.max_count\n  - path.max_total_commands\n  - allowed_elements\n  - forbidden_elements\n  - size.max_bytes",
+            "VERDICT: PASS\ncandidate: 2\npassed:\n  - parse\n  - viewBox\n  - grid.snap\n  - stroke.width\n  - stroke.linecap\n  - stroke.linejoin\n  - palette\n  - fill\n  - padding.min\n  - path.max_count\n  - path.max_total_commands\n  - allowed_elements\n  - forbidden_elements\n  - size.max_bytes",
+            "VERDICT: PASS\ncandidate: 3\npassed:\n  - parse\n  - viewBox\n  - grid.snap\n  - stroke.width\n  - stroke.linecap\n  - stroke.linejoin\n  - palette\n  - fill\n  - padding.min\n  - path.max_count\n  - path.max_total_commands\n  - allowed_elements\n  - forbidden_elements\n  - size.max_bytes",
+            "VERDICT: PASS\ncandidate: 4\npassed:\n  - parse\n  - viewBox\n  - grid.snap\n  - stroke.width\n  - stroke.linecap\n  - stroke.linejoin\n  - palette\n  - fill\n  - padding.min\n  - path.max_count\n  - path.max_total_commands\n  - allowed_elements\n  - forbidden_elements\n  - size.max_bytes",
+            "VERDICT: PASS\ncandidate: 5\npassed:\n  - parse\n  - viewBox\n  - grid.snap\n  - stroke.width\n  - stroke.linecap\n  - stroke.linejoin\n  - palette\n  - fill\n  - padding.min\n  - path.max_count\n  - path.max_total_commands\n  - allowed_elements\n  - forbidden_elements\n  - size.max_bytes"
+          ]
+        }
+      ],
+      "used_rounds": 1,
+      "candidate_paths": [
+        "out\\icons\\pick-v1\\candidates\\03_map\\c01.svg",
+        "out\\icons\\pick-v1\\candidates\\03_map\\c02.svg",
+        "out\\icons\\pick-v1\\candidates\\03_map\\c03.svg",
+        "out\\icons\\pick-v1\\candidates\\03_map\\c04.svg",
+        "out\\icons\\pick-v1\\candidates\\03_map\\c05.svg",
+        "out\\icons\\pick-v1\\candidates\\03_map\\c06.svg"
+      ]
+    },
+    {
+      "concept": "settings",
+      "meaning": "환경 설정",
+      "verdict": "PASS",
+      "svg": "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><rect x=\"8.5\" y=\"5.5\" width=\"7\" height=\"13\" rx=\"1\"/><circle cx=\"12\" cy=\"8.5\" r=\"1\"/><circle cx=\"12\" cy=\"15.5\" r=\"1\"/><line x1=\"12\" y1=\"10.5\" x2=\"12\" y2=\"13.5\"/></svg>",
+      "candidates": [
+        "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><rect x=\"8.5\" y=\"5.5\" width=\"7\" height=\"13\" rx=\"1\"/><circle cx=\"12\" cy=\"8.5\" r=\"1\"/><circle cx=\"12\" cy=\"15.5\" r=\"1\"/><line x1=\"12\" y1=\"10.5\" x2=\"12\" y2=\"13.5\"/></svg>",
+        "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><rect x=\"6.5\" y=\"9.5\" width=\"11\" height=\"8\" rx=\"1\"/><circle cx=\"12\" cy=\"13.5\" r=\"2\"/><path d=\"M 3.5 13.5 Q 5 12 6.5 13.5 Q 5 15 3.5 13.5\"/><path d=\"M 20.5 13.5 Q 19 12 17.5 13.5 Q 19 15 20.5 13.5\"/></svg>",
+        "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><g><circle cx=\"6.5\" cy=\"6.5\" r=\"2\"/><path d=\"M 3.5 6.5 L 2.5 6.5 M 10.5 6.5 L 11.5 6.5\"/></g><g><circle cx=\"12\" cy=\"12\" r=\"2\"/><path d=\"M 9 12 L 8 12 M 15 12 L 16 12\"/></g><g><circle cx=\"17.5\" cy=\"17.5\" r=\"2\"/><path d=\"M 14.5 17.5 L 13.5 17.5 M 20.5 17.5 L 21.5 17.5\"/></g></svg>",
+        "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><circle cx=\"12\" cy=\"8.5\" r=\"2.5\"/><rect x=\"5.5\" y=\"13\" width=\"13\" height=\"6.5\" rx=\"1\"/><polyline points=\"8.5,16 12,18 15.5,16\"/></svg>",
+        "<svg viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><path d=\"M 12 4.5 L 12 6.5 M 12 17.5 L 12 19.5 M 19.5 12 L 17.5 12 M 6.5 12 L 4.5 12\"/><circle cx=\"12\" cy=\"12\" r=\"3.5\"/><path d=\"M 15 9 L 17 7 M 7 17 L 9 15\"/></svg>"
+      ],
+      "extra_passes": 4,
+      "rounds": [
+        {
+          "round": 1,
+          "mode": "initial",
+          "temperature": 1.0,
+          "temperature_requested": 1.0,
+          "temperature_capped": false,
+          "candidates": 6,
+          "judged": 6,
+          "dropped_duplicate": 0,
+          "passed": 5,
+          "failed": 1,
+          "undefined": 0,
+          "reports": [
+            "VERDICT: FAIL\ncandidate: 0\nviolations:\n  - rule: path.max_count\n    got: 8\n    want: \"<= 6\"\npassed:\n  - parse\n  - viewBox\n  - grid.snap\n  - stroke.width\n  - stroke.linecap\n  - stroke.linejoin\n  - palette\n  - fill\n  - padding.min\n  - path.max_total_commands\n  - allowed_elements\n  - forbidden_elements\n  - size.max_bytes",
+            "VERDICT: PASS\ncandidate: 1\npassed:\n  - parse\n  - viewBox\n  - grid.snap\n  - stroke.width\n  - stroke.linecap\n  - stroke.linejoin\n  - palette\n  - fill\n  - padding.min\n  - path.max_count\n  - path.max_total_commands\n  - allowed_elements\n  - forbidden_elements\n  - size.max_bytes",
+            "VERDICT: PASS\ncandidate: 2\npassed:\n  - parse\n  - viewBox\n  - grid.snap\n  - stroke.width\n  - stroke.linecap\n  - stroke.linejoin\n  - palette\n  - fill\n  - padding.min\n  - path.max_count\n  - path.max_total_commands\n  - allowed_elements\n  - forbidden_elements\n  - size.max_bytes",
+            "VERDICT: PASS\ncandidate: 3\npassed:\n  - parse\n  - viewBox\n  - grid.snap\n  - stroke.width\n  - stroke.linecap\n  - stroke.linejoin\n  - palette\n  - fill\n  - padding.min\n  - path.max_count\n  - path.max_total_commands\n  - allowed_elements\n  - forbidden_elements\n  - size.max_bytes",
+            "VERDICT: PASS\ncandidate: 4\npassed:\n  - parse\n  - viewBox\n  - grid.snap\n  - stroke.width\n  - stroke.linecap\n  - stroke.linejoin\n  - palette\n  - fill\n  - padding.min\n  - path.max_count\n  - path.max_total_commands\n  - allowed_elements\n  - forbidden_elements\n  - size.max_bytes",
+            "VERDICT: PASS\ncandidate: 5\npassed:\n  - parse\n  - viewBox\n  - grid.snap\n  - stroke.width\n  - stroke.linecap\n  - stroke.linejoin\n  - palette\n  - fill\n  - padding.min\n  - path.max_count\n  - path.max_total_commands\n  - allowed_elements\n  - forbidden_elements\n  - size.max_bytes"
+          ]
+        }
+      ],
+      "used_rounds": 1,
+      "candidate_paths": [
+        "out\\icons\\pick-v1\\candidates\\04_settings\\c01.svg",
+        "out\\icons\\pick-v1\\candidates\\04_settings\\c02.svg",
+        "out\\icons\\pick-v1\\candidates\\04_settings\\c03.svg",
+        "out\\icons\\pick-v1\\candidates\\04_settings\\c04.svg",
+        "out\\icons\\pick-v1\\candidates\\04_settings\\c05.svg"
+      ]
+    }
+  ],
+  "passed": 4,
+  "total": 4,
+  "calls": 4,
+  "usd": 0.024801,
+  "provider": "anthropic",
+  "model": "claude-haiku-4-5",
+  "set_consistency": {
+    "stroke_widths": [
+      1.5
+    ],
+    "variance_zero": true,
+    "optical_weight": "미측정 - 래스터라이저 필요"
+  },
+  "duplicates": [],
+  "candidate_total": 21,
+  "picked_by": null,
+  "unmeasured": [
+    "contrast",
+    "roundtrip",
+    "optical_weight_delta"
+  ],
+  "seconds": 26.45,
+  "ts": "2026-08-26T09:27:44"
+}

@@ -1,0 +1,38 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "7bf6a1ee5ba734793019440576fe75a7f46045d1",
+ "parent_commit": "7af14f949481b213ccb9fad9a9b4352cdace9d72",
+ "answer_files": [
+  "marshmallow/class_registry.py",
+  "tasks.py"
+ ],
+ "answer_functions": [
+  "marshmallow/class_registry.py::get_class",
+  "marshmallow/class_registry.py::register",
+  "tasks.py::test"
+ ],
+ "patch_lines": 16,
+ "added_tests": {
+  "tests/test_marshmallow.py::test_invalid_class_name_in_nested_field_raises_error": {
+   "parent": "pass",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "tests/test_marshmallow.py::test_multiple_classes_with_same_name": {
+   "parent": "pass",
+   "fix": "pass",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "tests/foo_serializer.py",
+  "tests/test_marshmallow.py"
+ ],
+ "location_hard_proxy": true,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 7.7,
+ "env_error_tests": 0,
+ "qualified": false
+}

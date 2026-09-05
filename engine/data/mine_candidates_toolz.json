@@ -1,0 +1,53 @@
+[
+ {
+  "sha": "a69f8a5c9d80b193fce84f5f126d09f4d3108338",
+  "subject": "Fix accumulate for Python 3.7",
+  "src_files": [
+   "toolz/itertoolz.py"
+  ],
+  "test_files": [
+   "toolz/tests/test_itertoolz.py"
+  ],
+  "src_lines": 8,
+  "multi_file": false
+ },
+ {
+  "sha": "339086323206afb3a8fd2ab688d2e704e5a597d0",
+  "subject": "Fix some coverage and pep8 issues.",
+  "src_files": [
+   "toolz/functoolz.py"
+  ],
+  "test_files": [
+   "toolz/tests/test_serialization.py"
+  ],
+  "src_lines": 7,
+  "multi_file": false
+ },
+ {
+  "sha": "ba5a11c924ca0841538b7a2efbd613a31b9c01c6",
+  "subject": "kludge fix for _num_required_args(map)",
+  "src_files": [
+   "toolz/functoolz.py"
+  ],
+  "test_files": [
+   "toolz/tests/test_functoolz.py"
+  ],
+  "src_lines": 9,
+  "multi_file": false
+ },
+ {
+  "sha": "3673cd17f27919771d8d52815214f29f32862b76",
+  "subject": "PEP-8 fixes",
+  "src_files": [
+   "toolz/functoolz/core.py",
+   "toolz/itertoolz/core.py"
+  ],
+  "test_files": [
+   "toolz/functoolz/tests/test_core.py",
+   "toolz/itertoolz/tests/test_core.py",
+   "toolz/tests/test_utils.py"
+  ],
+  "src_lines": 7,
+  "multi_file": true
+ }
+]

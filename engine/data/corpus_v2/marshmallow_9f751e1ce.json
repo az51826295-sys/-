@@ -1,0 +1,61 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "9f751e1cef943e2ca1a77f93d3483b4a171d4303",
+ "parent_commit": "a578ed23092bd558acfbd9cd09a164108689326d",
+ "answer_files": [
+  "src/marshmallow/decorators.py",
+  "src/marshmallow/schema.py",
+  "src/marshmallow/types.py"
+ ],
+ "answer_functions": [
+  "src/marshmallow/decorators.py::validates_schema",
+  "src/marshmallow/schema.py::_run_validator",
+  "src/marshmallow/types.py::__call__"
+ ],
+ "patch_lines": 53,
+ "added_tests": {
+  "tests/test_decorators.py::TestValidatesSchemaDecorator::test_data_key_is_used_in_errors_dict": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [
+  "tests/test_decorators.py::TestValidatesSchemaDecorator::test_data_key_is_used_in_errors_dict"
+ ],
+ "test_files": [
+  "tests/test_decorators.py"
+ ],
+ "location_hard_proxy": true,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [
+  {
+   "applied": "src/marshmallow/decorators.py::validates_schema",
+   "passes_repro": [],
+   "still_failing": [
+    "tests/test_decorators.py::TestValidatesSchemaDecorator::test_data_key_is_used_in_errors_dict"
+   ],
+   "event": false,
+   "still_failing_fixpass": [
+    "tests/test_decorators.py::TestValidatesSchemaDecorator::test_data_key_is_used_in_errors_dict"
+   ],
+   "event_v2": false
+  },
+  {
+   "applied": "src/marshmallow/schema.py::_run_validator",
+   "passes_repro": [],
+   "still_failing": [
+    "tests/test_decorators.py::TestValidatesSchemaDecorator::test_data_key_is_used_in_errors_dict"
+   ],
+   "event": false,
+   "still_failing_fixpass": [
+    "tests/test_decorators.py::TestValidatesSchemaDecorator::test_data_key_is_used_in_errors_dict"
+   ],
+   "event_v2": false
+  }
+ ],
+ "env_seconds": 3.3,
+ "env_error_tests": 0,
+ "qualified": true,
+ "selector_event_proxy_v1": false
+}

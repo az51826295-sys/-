@@ -1,0 +1,31 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "82733e363d241b04d6305b91642add36c249f23e",
+ "parent_commit": "8e217c8d6fefb7049ab3389f31a8d35824fa2d96",
+ "answer_files": [],
+ "answer_functions": [],
+ "patch_lines": 22,
+ "added_tests": {
+  "tests/test_deserialization.py::TestFieldDeserialization::test_url_field_non_list_validators": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_deserialization.py::TestFieldDeserialization::test_email_field_non_list_validators": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "tests/test_deserialization.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 8.8,
+ "env_error_tests": 2,
+ "qualified": false,
+ "selector_event_proxy_v1": false
+}

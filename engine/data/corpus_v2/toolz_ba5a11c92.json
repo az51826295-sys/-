@@ -1,0 +1,30 @@
+{
+ "repo": "toolz",
+ "fix_commit": "ba5a11c924ca0841538b7a2efbd613a31b9c01c6",
+ "parent_commit": "58d6184d82b91f6d5a33a5dbe6d6a44fbc6f9325",
+ "answer_files": [
+  "toolz/functoolz.py"
+ ],
+ "answer_functions": [
+  "toolz/functoolz.py::_num_required_args"
+ ],
+ "patch_lines": 9,
+ "added_tests": {
+  "toolz/tests/test_functoolz.py::test__num_required_args": {
+   "parent": "fail",
+   "fix": "fail",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "toolz/tests/test_functoolz.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 3.5,
+ "env_error_tests": 0,
+ "qualified": false,
+ "selector_event_proxy_v1": false
+}

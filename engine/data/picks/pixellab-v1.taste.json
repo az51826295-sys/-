@@ -1,0 +1,60 @@
+{
+  "picks": "data/picks/pixellab-v1.json",
+  "concepts": [],
+  "skipped": [
+    {
+      "concept": "01_cat",
+      "picked": 2,
+      "why": "사전 등록된 특징이 SVG용뿐 - .png 는 아직 못 잰다"
+    },
+    {
+      "concept": "02_tileset",
+      "picked": 16,
+      "why": "사전 등록된 특징이 SVG용뿐 - .png 는 아직 못 잰다"
+    },
+    {
+      "concept": "03_merchant",
+      "picked": 0,
+      "why": "사전 등록된 특징이 SVG용뿐 - .png 는 아직 못 잰다"
+    },
+    {
+      "concept": "04_icon",
+      "picked": 0,
+      "why": "사전 등록된 특징이 SVG용뿐 - .png 는 아직 못 잰다"
+    }
+  ],
+  "loco": {
+    "rows": [],
+    "hits": 0,
+    "n": 0,
+    "accuracy": 0.0
+  },
+  "gates": {
+    "sample": {
+      "ok": false,
+      "concepts": 0,
+      "candidates": 0,
+      "min_per_concept": 0,
+      "want": "개념>=8, 후보>=40, 개념당>=3"
+    },
+    "accuracy": {
+      "ok": false,
+      "value": 0.0,
+      "want": ">= 0.75"
+    },
+    "permutation": {
+      "ok": false,
+      "value": 1.0,
+      "want": "< 0.05",
+      "permutations": 200
+    },
+    "baseline": {
+      "ok": false,
+      "value": 0.0,
+      "want": "적중률이 무작위 기준선보다 높을 것"
+    }
+  },
+  "rule_on_all": null,
+  "verdict": "not-measured",
+  "note": "잴 수 있는 자리가 없다 - 사전 등록된 특징이 없는 매체이거나 top-1로 못 재는 선택뿐이다. 숫자를 만들지 않는다"
+}

@@ -1,0 +1,279 @@
+[
+ {
+  "sha": "d992be0de9383ddcaae3a24866a2d96b52132b07",
+  "subject": "Fix stability in running_min and running_max",
+  "src_files": [
+   "more_itertools/recipes.py"
+  ],
+  "test_files": [
+   "tests/test_more.py"
+  ],
+  "src_lines": 50,
+  "multi_file": false
+ },
+ {
+  "sha": "edb3346f835ca917efbfda5e2d6664ab952da369",
+  "subject": "Fix empty ranges in numeric_range.__reversed__",
+  "src_files": [
+   "more_itertools/more.py"
+  ],
+  "test_files": [
+   "tests/test_more.py"
+  ],
+  "src_lines": 10,
+  "multi_file": false
+ },
+ {
+  "sha": "d71c4ad9f828117e609269701f6df10419ae90c8",
+  "subject": "fix: prevent _marker from being passed to user predicates in replace() and locate()",
+  "src_files": [
+   "more_itertools/more.py"
+  ],
+  "test_files": [
+   "tests/test_more.py"
+  ],
+  "src_lines": 22,
+  "multi_file": false
+ },
+ {
+  "sha": "be5793a55f58ee29521d8cbc9f14019f5833454e",
+  "subject": "Two fixes for repeat with iterator arguments",
+  "src_files": [
+   "more_itertools/more.py"
+  ],
+  "test_files": [
+   "tests/test_more.py"
+  ],
+  "src_lines": 5,
+  "multi_file": false
+ },
+ {
+  "sha": "06f31819121eb0620d3165fda73a44cbf71b140d",
+  "subject": "Simplify nth_combination_with_replacement. Fix incorrect exception.",
+  "src_files": [
+   "more_itertools/more.py"
+  ],
+  "test_files": [
+   "tests/test_more.py"
+  ],
+  "src_lines": 11,
+  "multi_file": false
+ },
+ {
+  "sha": "def2d821c0a15ede86578660e7dc48e44bad9579",
+  "subject": "Simplify nth_permutation. Fix incorrect exception.",
+  "src_files": [
+   "more_itertools/more.py"
+  ],
+  "test_files": [
+   "tests/test_recipes.py"
+  ],
+  "src_lines": 15,
+  "multi_file": false
+ },
+ {
+  "sha": "adeda34bd11ff636f5f19238cf422a73e1455483",
+  "subject": "Fix bug for negative inputs to exactly_n(). Optimize code.",
+  "src_files": [
+   "more_itertools/more.py"
+  ],
+  "test_files": [
+   "tests/test_more.py"
+  ],
+  "src_lines": 15,
+  "multi_file": false
+ },
+ {
+  "sha": "f5774b65f79c4d71c38b2adb2eefcaff0867d142",
+  "subject": "Clean up one() and fix over-specified test",
+  "src_files": [
+   "more_itertools/more.py"
+  ],
+  "test_files": [
+   "tests/test_more.py"
+  ],
+  "src_lines": 31,
+  "multi_file": false
+ },
+ {
+  "sha": "0de415570d062395855eb145baa30e4e28b0f7da",
+  "subject": "fix checks",
+  "src_files": [
+   "more_itertools/more.py"
+  ],
+  "test_files": [
+   "tests/test_more.py"
+  ],
+  "src_lines": 17,
+  "multi_file": false
+ },
+ {
+  "sha": "4bd0bd876273a8ff2171352c937b91a8c053d00b",
+  "subject": "Merge fix for issue 832 (distinct_permutations)",
+  "src_files": [
+   "more_itertools/more.py"
+  ],
+  "test_files": [
+   "tests/test_more.py"
+  ],
+  "src_lines": 32,
+  "multi_file": false
+ },
+ {
+  "sha": "db67158d793afac4c1165cf8001b357317cf13c4",
+  "subject": "Fixed.  Indices need to be sorted.",
+  "src_files": [
+   "more_itertools/more.py"
+  ],
+  "test_files": [
+   "tests/test_more.py"
+  ],
+  "src_lines": 15,
+  "multi_file": false
+ },
+ {
+  "sha": "ab72fc8a4e120678525c3e2b67203c6cea462204",
+  "subject": "Fix unique_in_window to match described behavior",
+  "src_files": [
+   "more_itertools/more.py"
+  ],
+  "test_files": [
+   "tests/test_more.py"
+  ],
+  "src_lines": 23,
+  "multi_file": false
+ },
+ {
+  "sha": "cd0a3a87d231033db06a3c222fe893025e398a86",
+  "subject": "Issue #707: fix ``iterate()`` to enable ``func`` to raise StopIteration",
+  "src_files": [
+   "more_itertools/more.py"
+  ],
+  "test_files": [
+   "tests/test_more.py"
+  ],
+  "src_lines": 5,
+  "multi_file": false
+ },
+ {
+  "sha": "ddbbea2c50b51d879ca72089ef267c6e46529dbe",
+  "subject": "Add function `longest_common_prefix`",
+  "src_files": [
+   "more_itertools/more.py"
+  ],
+  "test_files": [
+   "tests/test_more.py"
+  ],
+  "src_lines": 12,
+  "multi_file": false
+ },
+ {
+  "sha": "395bdfc00db80a36b36662a3bddf1f453289adf6",
+  "subject": "Reimplement zip_broadcast() to fix #561",
+  "src_files": [
+   "more_itertools/more.py"
+  ],
+  "test_files": [
+   "tests/test_more.py"
+  ],
+  "src_lines": 56,
+  "multi_file": false
+ },
+ {
+  "sha": "b1042ae2e9cb6e6588806b4aebf7af5e76cb90bc",
+  "subject": "nth_product fixes",
+  "src_files": [
+   "more_itertools/recipes.py"
+  ],
+  "test_files": [
+   "tests/test_recipes.py"
+  ],
+  "src_lines": 27,
+  "multi_file": false
+ },
+ {
+  "sha": "b283c49b420f3fb863605a253e535f0d7ef124bb",
+  "subject": "Error message in string",
+  "src_files": [
+   "more_itertools/more.py"
+  ],
+  "test_files": [
+   "tests/test_more.py"
+  ],
+  "src_lines": 33,
+  "multi_file": false
+ },
+ {
+  "sha": "a43834e1f985d896888d5bc67e0773d833702845",
+  "subject": "Check lengths of iterables in zip_equal for better speed and error message",
+  "src_files": [
+   "more_itertools/more.py"
+  ],
+  "test_files": [
+   "tests/test_more.py"
+  ],
+  "src_lines": 20,
+  "multi_file": false
+ },
+ {
+  "sha": "f77823f366ae14f72b3ad62764eb490bdbc9d3ff",
+  "subject": "Fix PEP8 violation in test_more.py. Improve \"split_\" speed when maxsplit is positive.",
+  "src_files": [
+   "more_itertools/more.py"
+  ],
+  "test_files": [
+   "tests/test_more.py"
+  ],
+  "src_lines": 45,
+  "multi_file": false
+ },
+ {
+  "sha": "500e9bb214d13fbecb7df87ddba21c2819de796d",
+  "subject": "Fix long lines",
+  "src_files": [
+   "more_itertools/more.py"
+  ],
+  "test_files": [
+   "more_itertools/tests/test_more.py"
+  ],
+  "src_lines": 6,
+  "multi_file": false
+ },
+ {
+  "sha": "e0ee0c0f456b94750ca2bfca3b1f20483886494c",
+  "subject": "Show first two iterable items in errors for one(), only()",
+  "src_files": [
+   "more_itertools/more.py"
+  ],
+  "test_files": [
+   "more_itertools/tests/test_more.py"
+  ],
+  "src_lines": 30,
+  "multi_file": false
+ },
+ {
+  "sha": "86c2172b2c3c6bfc0463dda18419ce024ba871cf",
+  "subject": "Fix some cases where peekable slicing gives the wrong answer",
+  "src_files": [
+   "more_itertools/more.py"
+  ],
+  "test_files": [
+   "more_itertools/tests/test_more.py"
+  ],
+  "src_lines": 38,
+  "multi_file": false
+ },
+ {
+  "sha": "36885887f26294eb7a8b32983e98b4c6474e7220",
+  "subject": "Make `chunked` return lists rather than tuples. After all, they're homogeneous. Bump version to 2.0.",
+  "src_files": [
+   "docs/conf.py",
+   "more_itertools/__init__.py"
+  ],
+  "test_files": [
+   "more_itertools/tests.py"
+  ],
+  "src_lines": 9,
+  "multi_file": true
+ }
+]

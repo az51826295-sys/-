@@ -1,0 +1,26 @@
+{
+ "repo": "sortedcontainers",
+ "fix_commit": "a04f4a68188fea6797fe3e5f16f388086e405e62",
+ "parent_commit": "7495364027feeeebcfc5cab1330d4ffd1b89b538",
+ "answer_files": [],
+ "answer_functions": [],
+ "patch_lines": 6,
+ "added_tests": {
+  "tests/test_coverage_sorteddict.py::test_eq": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "tests/test_coverage_sorteddict.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 4.2,
+ "env_error_tests": 1,
+ "qualified": false,
+ "selector_event_proxy_v1": false
+}

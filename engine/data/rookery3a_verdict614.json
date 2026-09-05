@@ -1,0 +1,42 @@
+{
+ "BIA": {
+  "n_runs": 15,
+  "applied_cands": 33,
+  "regression_cand_rate": 0.394,
+  "regression_cand_abs": 13,
+  "public_smoke_cands": 2,
+  "answer_func_rate": 0.758,
+  "answer_func_abs": 25,
+  "partial_fix_rate": 0.0,
+  "full": 2,
+  "status": {
+   "full": 2,
+   "no_patch": 3,
+   "public_fail": 5,
+   "regression": 5
+  },
+  "guard_answer_file_rate": 0.8,
+  "ia_valid_rate": 0.95,
+  "ia_len_mean": 752
+ },
+ "BPAD": {
+  "n_runs": 15,
+  "applied_cands": 34,
+  "regression_cand_rate": 0.471,
+  "regression_cand_abs": 16,
+  "public_smoke_cands": 1,
+  "answer_func_rate": 0.676,
+  "answer_func_abs": 23,
+  "partial_fix_rate": 0.07,
+  "full": 0,
+  "status": {
+   "no_patch": 4,
+   "public_fail": 5,
+   "public_only": 1,
+   "regression": 5
+  },
+  "guard_answer_file_rate": 0.73,
+  "ia_valid_rate": null,
+  "ia_len_mean": null
+ }
+}

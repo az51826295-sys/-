@@ -1,0 +1,114 @@
+{
+ "ran_at": "2026-08-22T09:22:56",
+ "mock": true,
+ "results": [
+  {
+   "repo": "mahmoud/boltons",
+   "number": 439,
+   "title": "IndexedSet: difference_update/intersection_update are quadratic for large remova",
+   "state": "failed",
+   "result": null,
+   "error": "validator rejected"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 310,
+   "title": "windowed with overlap",
+   "state": "failed",
+   "result": null,
+   "error": "validator rejected"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 301,
+   "title": "`FunctionBuilder.from_func` not working",
+   "state": "failed",
+   "result": null,
+   "error": "validator rejected"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 280,
+   "title": "URL comparison is order-based for query parameters",
+   "state": "failed",
+   "result": null,
+   "error": "validator rejected"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 201,
+   "title": "Adding parameters with wraps()",
+   "state": "failed",
+   "result": null,
+   "error": "validator rejected"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 142,
+   "title": "camel2under possible error",
+   "state": "failed",
+   "result": null,
+   "error": "validator rejected"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 141,
+   "title": "Time zones don't support fold",
+   "state": "failed",
+   "result": null,
+   "error": "validator rejected"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1566,
+   "title": "Inconsistent None items serialization between Nested(…, many=True) and List(Nest",
+   "state": "failed",
+   "result": null,
+   "error": "validator rejected"
+  },
+  {
+   "repo": "msiemens/tinydb",
+   "number": 629,
+   "title": "insert_multiple can silently overwrite documents when mixing Document and dict",
+   "state": "failed",
+   "result": null,
+   "error": "validator rejected"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 626,
+   "title": "tail(0, seq) returns the whole sequence instead of empty (and is inconsistent ac",
+   "state": "pending",
+   "result": null,
+   "error": "validator rejected"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 529,
+   "title": "Combination of map and accumulate",
+   "state": "pending",
+   "result": null,
+   "error": "auditor disagreement: 모든 테스트가 error - 환경·경로 문제 의심"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 496,
+   "title": "optional static typing for toolz",
+   "state": "pending",
+   "result": null,
+   "error": null
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 481,
+   "title": "Bug in compose introduced in 0.10.0",
+   "state": "pending",
+   "result": null,
+   "error": null
+  }
+ ],
+ "skipped": [],
+ "solved": 0,
+ "attempted": 13,
+ "spend_usd": 0.0
+}

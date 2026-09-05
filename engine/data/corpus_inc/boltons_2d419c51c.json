@@ -1,0 +1,18 @@
+{
+ "repo": "boltons",
+ "fix_commit": "2d419c51c81e074e362459a05f6e11221dfb9e18",
+ "parent_commit": "2c0004f9f7f70bd1eefb1dd17e1d2291d576185e",
+ "answer_functions": [
+  "boltons/iterutils.py::default_handle_item",
+  "boltons/iterutils.py::default_handle_pop",
+  "boltons/iterutils.py::default_handle_push",
+  "boltons/iterutils.py::remap"
+ ],
+ "repro_tests": [],
+ "smoke": [],
+ "baseline_pass_count": 0,
+ "probes": [],
+ "inc_event": false,
+ "regression_event": false,
+ "skipped": "no repro or no answer functions"
+}

@@ -1,0 +1,31 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "bc376a70006fd0a2ce962f8490668cffed608220",
+ "parent_commit": "55932fa4e4ba7496f424ed2942d7963051030699",
+ "answer_files": [
+  "marshmallow/utils.py"
+ ],
+ "answer_functions": [
+  "marshmallow/utils.py::_get_value_for_key"
+ ],
+ "patch_lines": 8,
+ "added_tests": {
+  "tests/test_utils.py::test_get_value_from_object": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [
+  "tests/test_utils.py::test_get_value_from_object"
+ ],
+ "test_files": [
+  "tests/test_utils.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 2.9,
+ "env_error_tests": 0,
+ "qualified": true
+}

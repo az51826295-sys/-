@@ -1,0 +1,37 @@
+{
+ "repo": "boltons",
+ "fix_commit": "609cabe932a1ea1423b24568644945abb1b8bb84",
+ "parent_commit": "979fa9b613fa8c0a455ae16ea6f2ec91c11ecafe",
+ "answer_files": [
+  "boltons/setutils.py"
+ ],
+ "answer_functions": [
+  "boltons/setutils.py::iter_slice"
+ ],
+ "patch_lines": 14,
+ "added_tests": {
+  "tests/test_setutils.py::test_iset_slice_after_removal": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "tests/test_setutils.py::test_iset_slice_agreement": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [
+  "tests/test_setutils.py::test_iset_slice_after_removal",
+  "tests/test_setutils.py::test_iset_slice_agreement"
+ ],
+ "test_files": [
+  "tests/test_setutils.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 4.0,
+ "env_error_tests": 0,
+ "qualified": true
+}

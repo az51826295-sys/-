@@ -1,0 +1,24 @@
+{
+ "day": 1,
+ "metrics": {
+  "pending": 0,
+  "leased": 0,
+  "succeeded": 47,
+  "failed": 1,
+  "pr_queue": 47,
+  "halted": false
+ },
+ "spend": {
+  "cost_usd": 0.023461,
+  "tokens_in": 16916,
+  "tokens_out": 1309,
+  "runs": 50
+ },
+ "injected": 48,
+ "alarms": 0,
+ "isolation_events": 0,
+ "provenance": {
+  "stale_rate": 0.0,
+  "unknown_rate": 0.9375
+ }
+}

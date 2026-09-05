@@ -1,0 +1,26 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "af5d3cc270242abc8422e493db965ba0087c70a8",
+ "parent_commit": "5f6aa368fc5eea704a8a1a30706285e48a6b3d54",
+ "answer_files": [],
+ "answer_functions": [],
+ "patch_lines": 23,
+ "added_tests": {
+  "tests/test_serialization.py::TestFieldSerialization::test_timedelta_field": {
+   "parent": "pass",
+   "fix": "pass",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "tests/test_serialization.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 5.3,
+ "env_error_tests": 0,
+ "qualified": false,
+ "selector_event_proxy_v1": false
+}

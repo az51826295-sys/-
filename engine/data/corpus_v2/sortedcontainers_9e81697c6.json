@@ -1,0 +1,160 @@
+{
+ "repo": "sortedcontainers",
+ "fix_commit": "9e81697c60a83114c67032b846f3f6ed00870a2b",
+ "parent_commit": "c1c2002e81ef0e8a045567f83fd60a49e28d8fb7",
+ "answer_files": [
+  "sortedcontainers/sorteddict.py"
+ ],
+ "answer_functions": [
+  "sortedcontainers/sorteddict.py::__ge__",
+  "sortedcontainers/sorteddict.py::__gte__",
+  "sortedcontainers/sorteddict.py::__init__",
+  "sortedcontainers/sorteddict.py::__le__",
+  "sortedcontainers/sorteddict.py::__lte__",
+  "sortedcontainers/sorteddict.py::__repr__",
+  "sortedcontainers/sorteddict.py::setdefault"
+ ],
+ "patch_lines": 32,
+ "added_tests": {
+  "tests/test_coverage_sorteddict.py::test_copy": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_coverage_sorteddict.py::test_fromkeys": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_coverage_sorteddict.py::test_get": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_coverage_sorteddict.py::test_has_key": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_coverage_sorteddict.py::test_items": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_coverage_sorteddict.py::test_iteritems": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_coverage_sorteddict.py::test_keys": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_coverage_sorteddict.py::test_iterkeys": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_coverage_sorteddict.py::test_values": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_coverage_sorteddict.py::test_itervalues": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_coverage_sorteddict.py::test_pop": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_coverage_sorteddict.py::test_pop2": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_coverage_sorteddict.py::test_popitem": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_coverage_sorteddict.py::test_setdefault": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_coverage_sorteddict.py::test_update": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_coverage_sorteddict.py::test_update2": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_coverage_sorteddict.py::test_keysview": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_coverage_sorteddict.py::test_valuesview": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_coverage_sorteddict.py::test_values_view_lt": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_coverage_sorteddict.py::test_values_view_gt": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_coverage_sorteddict.py::test_values_view_lte": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_coverage_sorteddict.py::test_values_view_gte": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_coverage_sorteddict.py::test_values_view_and": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_coverage_sorteddict.py::test_values_view_or": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_coverage_sorteddict.py::test_values_view_sub": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_coverage_sorteddict.py::test_values_view_xor": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "tests/test_coverage_sorteddict.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 106.1,
+ "env_error_tests": 26,
+ "qualified": false
+}

@@ -1,0 +1,127 @@
+{
+  "label": "캐릭터(오늘 가진 것 전부)",
+  "n": 3,
+  "passed": [
+    {
+      "i": 2,
+      "cand": {
+        "id": "merchant",
+        "paths": [
+          "game/assets/characters/merchant/rotations\\east.png",
+          "game/assets/characters/merchant/rotations\\north.png",
+          "game/assets/characters/merchant/rotations\\south.png",
+          "game/assets/characters/merchant/rotations\\west.png"
+        ]
+      },
+      "judgement": {
+        "verdict": "PASS",
+        "fail": [],
+        "undefined": [],
+        "thresholds": {
+          "luma_spread": 120,
+          "colors": 16,
+          "ground_contrast": 60,
+          "color_spread": 0.5,
+          "saturation": 25
+        },
+        "basis": "사장님 참고 화면 실측 (밝기폭 172 · 캐릭터-바닥 대비 99)",
+        "n": 4,
+        "colors": 19.5,
+        "colors_min": 16,
+        "colors_max": 22,
+        "color_spread": 0.273,
+        "luma_spread": 214.3,
+        "luma_median": 45.7,
+        "saturation": 36.0,
+        "ground_contrast": 123.3
+      }
+    }
+  ],
+  "rejected": [
+    {
+      "i": 0,
+      "cand": {
+        "id": "witch_a",
+        "paths": [
+          "audition/witch/witch_a/Idle/rotations\\east.png",
+          "audition/witch/witch_a/Idle/rotations\\north-east.png",
+          "audition/witch/witch_a/Idle/rotations\\north-west.png",
+          "audition/witch/witch_a/Idle/rotations\\north.png",
+          "audition/witch/witch_a/Idle/rotations\\south-east.png",
+          "audition/witch/witch_a/Idle/rotations\\south-west.png",
+          "audition/witch/witch_a/Idle/rotations\\south.png",
+          "audition/witch/witch_a/Idle/rotations\\west.png"
+        ]
+      },
+      "judgement": {
+        "verdict": "FAIL",
+        "fail": [
+          "채도 3.0 < 25 (참고 캐릭터 30) — 흑백에 가까워 세계에서 뜬다"
+        ],
+        "undefined": [],
+        "thresholds": {
+          "luma_spread": 120,
+          "colors": 16,
+          "ground_contrast": 60,
+          "color_spread": 0.5,
+          "saturation": 25
+        },
+        "basis": "사장님 참고 화면 실측 (밝기폭 172 · 캐릭터-바닥 대비 99)",
+        "n": 8,
+        "colors": 19.5,
+        "colors_min": 15,
+        "colors_max": 22,
+        "color_spread": 0.318,
+        "luma_spread": 123.2,
+        "luma_median": 43.0,
+        "saturation": 3.0,
+        "ground_contrast": 126.0
+      }
+    },
+    {
+      "i": 1,
+      "cand": {
+        "id": "hero",
+        "paths": [
+          "game/assets/characters/hero/rotations\\east.png",
+          "game/assets/characters/hero/rotations\\north.png",
+          "game/assets/characters/hero/rotations\\south.png",
+          "game/assets/characters/hero/rotations\\west.png"
+        ]
+      },
+      "judgement": {
+        "verdict": "FAIL",
+        "fail": [
+          "색 5.5 < 16 — 실루엣에 가깝다"
+        ],
+        "undefined": [],
+        "thresholds": {
+          "luma_spread": 120,
+          "colors": 16,
+          "ground_contrast": 60,
+          "color_spread": 0.5,
+          "saturation": 25
+        },
+        "basis": "사장님 참고 화면 실측 (밝기폭 172 · 캐릭터-바닥 대비 99)",
+        "n": 4,
+        "colors": 5.5,
+        "colors_min": 5,
+        "colors_max": 6,
+        "color_spread": 0.167,
+        "luma_spread": 164.1,
+        "luma_median": 52.2,
+        "saturation": 33.0,
+        "ground_contrast": 116.8
+      }
+    }
+  ],
+  "undefined": [],
+  "errors": [],
+  "counts": {
+    "passed": 1,
+    "rejected": 2,
+    "undefined": 0,
+    "errors": 0
+  },
+  "note": "기계는 걸렀을 뿐 고르지 않았다. 마지막 칸은 사람이 고른다 (2026-08-26 확정 · 영구 human_gate)"
+}

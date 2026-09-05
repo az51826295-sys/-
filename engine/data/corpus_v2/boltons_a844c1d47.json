@@ -1,0 +1,36 @@
+{
+ "repo": "boltons",
+ "fix_commit": "a844c1d476cef72cc8b18340f003e7fda8d45eb3",
+ "parent_commit": "c5360a023738170de1a0baf9b2f5372af88f018e",
+ "answer_files": [
+  "boltons/funcutils.py"
+ ],
+ "answer_functions": [
+  "boltons/funcutils.py::from_func",
+  "boltons/funcutils.py::get_func"
+ ],
+ "patch_lines": 14,
+ "added_tests": {
+  "tests/test_funcutils_fb_py3.py::test_wraps_async": {
+   "parent": "fail",
+   "fix": "fail",
+   "mode": "file"
+  },
+  "tests/test_funcutils_fb_py35.py::test_wraps_async": {
+   "parent": "fail",
+   "fix": "fail",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "tests/test_funcutils_fb_py3.py",
+  "tests/test_funcutils_fb_py35.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 3.5,
+ "env_error_tests": 0,
+ "qualified": false
+}

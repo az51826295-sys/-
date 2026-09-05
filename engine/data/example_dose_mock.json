@@ -1,0 +1,864 @@
+{
+  "spec": "example-dose-v0",
+  "design": "docs/example-dose-v0-design.md",
+  "provider": "mock",
+  "model": "mock",
+  "usd": 0.0,
+  "seconds": 0.9,
+  "retries": 0,
+  "thresholds": {
+    "carry_lower": 0.2,
+    "irrelevant_band": 0.05
+  },
+  "bootstrap": {
+    "n": 10000,
+    "seed": 12345,
+    "unit": "concept"
+  },
+  "judgement": {
+    "verdict": "undefined",
+    "why": "sample_gate",
+    "D": 0.0,
+    "ci95": [
+      0.0,
+      0.0
+    ],
+    "gate_ok": false,
+    "min_concepts": 8,
+    "min_per_arm": 40
+  },
+  "arms": {
+    "ex0": {
+      "n": 27,
+      "passed": 0,
+      "pass_rate": 0.0,
+      "concepts": [
+        "dialogue",
+        "equipment",
+        "exit",
+        "inventory",
+        "map",
+        "quest",
+        "save",
+        "settings",
+        "stats"
+      ],
+      "why": null
+    },
+    "ex1": {
+      "n": 27,
+      "passed": 0,
+      "pass_rate": 0.0,
+      "concepts": [
+        "dialogue",
+        "equipment",
+        "exit",
+        "inventory",
+        "map",
+        "quest",
+        "save",
+        "settings",
+        "stats"
+      ],
+      "why": null
+    },
+    "ex3": {
+      "n": 27,
+      "passed": 0,
+      "pass_rate": 0.0,
+      "concepts": [
+        "dialogue",
+        "equipment",
+        "exit",
+        "inventory",
+        "map",
+        "quest",
+        "save",
+        "settings",
+        "stats"
+      ],
+      "why": null
+    }
+  },
+  "by_concept": {
+    "ex0": {
+      "quest": {
+        "passed": 0,
+        "n": 3,
+        "rate": 0.0
+      },
+      "equipment": {
+        "passed": 0,
+        "n": 3,
+        "rate": 0.0
+      },
+      "stats": {
+        "passed": 0,
+        "n": 3,
+        "rate": 0.0
+      },
+      "dialogue": {
+        "passed": 0,
+        "n": 3,
+        "rate": 0.0
+      },
+      "exit": {
+        "passed": 0,
+        "n": 3,
+        "rate": 0.0
+      },
+      "save": {
+        "passed": 0,
+        "n": 3,
+        "rate": 0.0
+      },
+      "inventory": {
+        "passed": 0,
+        "n": 3,
+        "rate": 0.0
+      },
+      "map": {
+        "passed": 0,
+        "n": 3,
+        "rate": 0.0
+      },
+      "settings": {
+        "passed": 0,
+        "n": 3,
+        "rate": 0.0
+      }
+    },
+    "ex1": {
+      "quest": {
+        "passed": 0,
+        "n": 3,
+        "rate": 0.0
+      },
+      "equipment": {
+        "passed": 0,
+        "n": 3,
+        "rate": 0.0
+      },
+      "stats": {
+        "passed": 0,
+        "n": 3,
+        "rate": 0.0
+      },
+      "dialogue": {
+        "passed": 0,
+        "n": 3,
+        "rate": 0.0
+      },
+      "exit": {
+        "passed": 0,
+        "n": 3,
+        "rate": 0.0
+      },
+      "save": {
+        "passed": 0,
+        "n": 3,
+        "rate": 0.0
+      },
+      "inventory": {
+        "passed": 0,
+        "n": 3,
+        "rate": 0.0
+      },
+      "map": {
+        "passed": 0,
+        "n": 3,
+        "rate": 0.0
+      },
+      "settings": {
+        "passed": 0,
+        "n": 3,
+        "rate": 0.0
+      }
+    },
+    "ex3": {
+      "quest": {
+        "passed": 0,
+        "n": 3,
+        "rate": 0.0
+      },
+      "equipment": {
+        "passed": 0,
+        "n": 3,
+        "rate": 0.0
+      },
+      "stats": {
+        "passed": 0,
+        "n": 3,
+        "rate": 0.0
+      },
+      "dialogue": {
+        "passed": 0,
+        "n": 3,
+        "rate": 0.0
+      },
+      "exit": {
+        "passed": 0,
+        "n": 3,
+        "rate": 0.0
+      },
+      "save": {
+        "passed": 0,
+        "n": 3,
+        "rate": 0.0
+      },
+      "inventory": {
+        "passed": 0,
+        "n": 3,
+        "rate": 0.0
+      },
+      "map": {
+        "passed": 0,
+        "n": 3,
+        "rate": 0.0
+      },
+      "settings": {
+        "passed": 0,
+        "n": 3,
+        "rate": 0.0
+      }
+    }
+  },
+  "rule_counts": {
+    "ex0": {
+      "grid.snap": 9,
+      "palette": 9,
+      "allowed_elements": 9,
+      "forbidden_elements": 9
+    },
+    "ex1": {
+      "grid.snap": 9,
+      "palette": 9,
+      "allowed_elements": 9,
+      "forbidden_elements": 9
+    },
+    "ex3": {
+      "grid.snap": 9,
+      "palette": 9,
+      "allowed_elements": 9,
+      "forbidden_elements": 9
+    }
+  },
+  "steps": {
+    "d01": {
+      "delta": 0.0,
+      "ci95": [
+        0.0,
+        0.0
+      ]
+    },
+    "d13": {
+      "delta": 0.0,
+      "ci95": [
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "rows": {
+    "ex0": [
+      {
+        "concept": "quest",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ]
+      },
+      {
+        "concept": "quest",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ]
+      },
+      {
+        "concept": "quest",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ]
+      },
+      {
+        "concept": "equipment",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ]
+      },
+      {
+        "concept": "equipment",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ]
+      },
+      {
+        "concept": "equipment",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ]
+      },
+      {
+        "concept": "stats",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ]
+      },
+      {
+        "concept": "stats",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ]
+      },
+      {
+        "concept": "stats",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ]
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ]
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ]
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ]
+      },
+      {
+        "concept": "exit",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ]
+      },
+      {
+        "concept": "exit",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ]
+      },
+      {
+        "concept": "exit",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ]
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ]
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ]
+      },
+      {
+        "concept": "save",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ]
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ]
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ]
+      },
+      {
+        "concept": "inventory",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ]
+      },
+      {
+        "concept": "map",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ]
+      },
+      {
+        "concept": "map",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ]
+      },
+      {
+        "concept": "map",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ]
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ]
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ]
+      },
+      {
+        "concept": "settings",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ]
+      }
+    ],
+    "ex1": [
+      {
+        "concept": "quest",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ]
+      },
+      {
+        "concept": "quest",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ]
+      },
+      {
+        "concept": "quest",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ]
+      },
+      {
+        "concept": "equipment",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ]
+      },
+      {
+        "concept": "equipment",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ]
+      },
+      {
+        "concept": "equipment",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ]
+      },
+      {
+        "concept": "stats",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ]
+      },
+      {
+        "concept": "stats",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ]
+      },
+      {
+        "concept": "stats",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ]
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ]
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ]
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ]
+      },
+      {
+        "concept": "exit",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ]
+      },
+      {
+        "concept": "exit",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ]
+      },
+      {
+        "concept": "exit",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ]
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ]
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ]
+      },
+      {
+        "concept": "save",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ]
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ]
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ]
+      },
+      {
+        "concept": "inventory",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ]
+      },
+      {
+        "concept": "map",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ]
+      },
+      {
+        "concept": "map",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ]
+      },
+      {
+        "concept": "map",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ]
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ]
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ]
+      },
+      {
+        "concept": "settings",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ]
+      }
+    ],
+    "ex3": [
+      {
+        "concept": "quest",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ]
+      },
+      {
+        "concept": "quest",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ]
+      },
+      {
+        "concept": "quest",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ]
+      },
+      {
+        "concept": "equipment",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ]
+      },
+      {
+        "concept": "equipment",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ]
+      },
+      {
+        "concept": "equipment",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ]
+      },
+      {
+        "concept": "stats",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ]
+      },
+      {
+        "concept": "stats",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ]
+      },
+      {
+        "concept": "stats",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ]
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ]
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ]
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ]
+      },
+      {
+        "concept": "exit",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ]
+      },
+      {
+        "concept": "exit",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ]
+      },
+      {
+        "concept": "exit",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ]
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ]
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ]
+      },
+      {
+        "concept": "save",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ]
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ]
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ]
+      },
+      {
+        "concept": "inventory",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ]
+      },
+      {
+        "concept": "map",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ]
+      },
+      {
+        "concept": "map",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ]
+      },
+      {
+        "concept": "map",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ]
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ]
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ]
+      },
+      {
+        "concept": "settings",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,9471 @@
+{
+ "experiment": "mission7b_R_ms4",
+ "versions": {
+  "0": {
+   "version": 0,
+   "parent_version": null,
+   "rules": [
+    {
+     "rule_id": "r0",
+     "conditions": [],
+     "actions": [
+      {
+       "name": "SHARE_BEST",
+       "mode": null
+      }
+     ],
+     "role": null,
+     "priority": 0,
+     "author_id": "founder",
+     "created_gen": 0
+    }
+   ],
+   "init_threshold": 0.0,
+   "adopted_gen": 0
+  },
+  "1": {
+   "version": 0,
+   "parent_version": null,
+   "rules": [
+    {
+     "rule_id": "r0",
+     "conditions": [
+      {
+       "metric": "total_shares",
+       "op": ">=",
+       "value": 10.0
+      }
+     ],
+     "actions": [
+      {
+       "name": "SHARE_BEST",
+       "mode": null
+      }
+     ],
+     "role": null,
+     "priority": 0,
+     "author_id": "founder",
+     "created_gen": 0
+    }
+   ],
+   "init_threshold": 0.0,
+   "adopted_gen": 0
+  },
+  "2": {
+   "version": 0,
+   "parent_version": null,
+   "rules": [
+    {
+     "rule_id": "r0",
+     "conditions": [
+      {
+       "metric": "total_shares",
+       "op": ">=",
+       "value": 4.0
+      }
+     ],
+     "actions": [
+      {
+       "name": "SHARE_BEST",
+       "mode": null
+      }
+     ],
+     "role": null,
+     "priority": 0,
+     "author_id": "founder",
+     "created_gen": 0
+    }
+   ],
+   "init_threshold": 0.0,
+   "adopted_gen": 0
+  },
+  "3": {
+   "version": 0,
+   "parent_version": null,
+   "rules": [
+    {
+     "rule_id": "r0",
+     "conditions": [
+      {
+       "metric": "total_shares",
+       "op": ">=",
+       "value": 4.0
+      }
+     ],
+     "actions": [
+      {
+       "name": "SHARE_BEST",
+       "mode": null
+      }
+     ],
+     "role": null,
+     "priority": 0,
+     "author_id": "founder",
+     "created_gen": 0
+    },
+    {
+     "rule_id": "g3-agent4-4",
+     "conditions": [
+      {
+       "metric": "round_index",
+       "op": ">=",
+       "value": 6.0
+      },
+      {
+       "metric": "rounds_since_my_action",
+       "op": "<",
+       "value": 2.0
+      }
+     ],
+     "actions": [
+      {
+       "name": "CLEAR_MODE",
+       "mode": null
+      },
+      {
+       "name": "SET_MODE",
+       "mode": 2
+      }
+     ],
+     "role": null,
+     "priority": 4,
+     "author_id": "agent4",
+     "created_gen": 3
+    }
+   ],
+   "init_threshold": 0.0,
+   "adopted_gen": 0
+  },
+  "4": {
+   "version": 0,
+   "parent_version": null,
+   "rules": [
+    {
+     "rule_id": "r0",
+     "conditions": [
+      {
+       "metric": "total_shares",
+       "op": ">=",
+       "value": 4.0
+      }
+     ],
+     "actions": [
+      {
+       "name": "SHARE_BEST",
+       "mode": null
+      }
+     ],
+     "role": null,
+     "priority": 0,
+     "author_id": "founder",
+     "created_gen": 0
+    },
+    {
+     "rule_id": "g3-agent4-4",
+     "conditions": [
+      {
+       "metric": "round_index",
+       "op": ">=",
+       "value": 6.0
+      }
+     ],
+     "actions": [
+      {
+       "name": "CLEAR_MODE",
+       "mode": null
+      },
+      {
+       "name": "SET_MODE",
+       "mode": 2
+      }
+     ],
+     "role": null,
+     "priority": 4,
+     "author_id": "agent4",
+     "created_gen": 3
+    }
+   ],
+   "init_threshold": 0.0,
+   "adopted_gen": 0
+  },
+  "5": {
+   "version": 0,
+   "parent_version": null,
+   "rules": [
+    {
+     "rule_id": "r0",
+     "conditions": [
+      {
+       "metric": "total_shares",
+       "op": ">=",
+       "value": 4.0
+      }
+     ],
+     "actions": [
+      {
+       "name": "SHARE_BEST",
+       "mode": null
+      }
+     ],
+     "role": null,
+     "priority": 0,
+     "author_id": "founder",
+     "created_gen": 0
+    },
+    {
+     "rule_id": "g3-agent4-4",
+     "conditions": [
+      {
+       "metric": "round_index",
+       "op": ">=",
+       "value": 6.0
+      }
+     ],
+     "actions": [
+      {
+       "name": "CLEAR_MODE",
+       "mode": null
+      },
+      {
+       "name": "SET_MODE",
+       "mode": 2
+      }
+     ],
+     "role": null,
+     "priority": 4,
+     "author_id": "agent4",
+     "created_gen": 3
+    },
+    {
+     "rule_id": "g6-agent0-0",
+     "conditions": [],
+     "actions": [
+      {
+       "name": "RAISE_THRESHOLD",
+       "mode": null
+      },
+      {
+       "name": "PASS",
+       "mode": null
+      }
+     ],
+     "role": 0,
+     "priority": 0,
+     "author_id": "agent0",
+     "created_gen": 6
+    }
+   ],
+   "init_threshold": 0.0,
+   "adopted_gen": 0
+  },
+  "6": {
+   "version": 0,
+   "parent_version": null,
+   "rules": [
+    {
+     "rule_id": "r0",
+     "conditions": [
+      {
+       "metric": "total_shares",
+       "op": ">=",
+       "value": 4.0
+      }
+     ],
+     "actions": [
+      {
+       "name": "SHARE_BEST",
+       "mode": null
+      }
+     ],
+     "role": null,
+     "priority": 0,
+     "author_id": "founder",
+     "created_gen": 0
+    },
+    {
+     "rule_id": "g3-agent4-4",
+     "conditions": [
+      {
+       "metric": "round_index",
+       "op": ">=",
+       "value": 6.0
+      }
+     ],
+     "actions": [
+      {
+       "name": "CLEAR_MODE",
+       "mode": null
+      },
+      {
+       "name": "SET_MODE",
+       "mode": 2
+      }
+     ],
+     "role": null,
+     "priority": 4,
+     "author_id": "agent4",
+     "created_gen": 3
+    },
+    {
+     "rule_id": "g6-agent0-0",
+     "conditions": [],
+     "actions": [
+      {
+       "name": "RAISE_THRESHOLD",
+       "mode": null
+      },
+      {
+       "name": "PASS",
+       "mode": null
+      }
+     ],
+     "role": 0,
+     "priority": 0,
+     "author_id": "agent0",
+     "created_gen": 6
+    },
+    {
+     "rule_id": "g19-agent4-4",
+     "conditions": [
+      {
+       "metric": "my_mode",
+       "op": "<",
+       "value": 2.0
+      },
+      {
+       "metric": "my_best_gain",
+       "op": "<",
+       "value": 0.05
+      }
+     ],
+     "actions": [
+      {
+       "name": "SET_MODE",
+       "mode": 3
+      }
+     ],
+     "role": null,
+     "priority": 8,
+     "author_id": "agent4",
+     "created_gen": 19
+    }
+   ],
+   "init_threshold": 0.0,
+   "adopted_gen": 0
+  }
+ },
+ "generations": [
+  {
+   "gen": 1,
+   "incumbent_version_before": 0,
+   "incumbent_version_after": 1,
+   "incumbent_score": 0.5057620897620898,
+   "rolled_back": false,
+   "observation_metrics": {
+    "mean_accuracy": 0.6209239130434783,
+    "unsolved_rate": 0.6,
+    "comm_ratio": 0.9421626984126984,
+    "weak_share_rate": 0.15111652236652234,
+    "pass_rate": 0.0,
+    "forced_share_rate": 0.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "mutate",
+     "score": 0.4128702501202501,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": 1,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "init_threshold",
+     "score": 0.37018037518037517,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "add",
+     "score": 0.5056906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g1-agent2-2",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent2",
+        "created_gen": 1
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "mutate",
+     "score": 0.5057620897620898,
+     "adopted": true,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 10.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "init_threshold",
+     "score": 0.37018037518037517,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       }
+      ],
+      "init_threshold": 0.1,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "init_threshold",
+     "score": 0.37018037518037517,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  },
+  {
+   "gen": 2,
+   "incumbent_version_before": 1,
+   "incumbent_version_after": 2,
+   "incumbent_score": 0.5203558321308321,
+   "rolled_back": false,
+   "observation_metrics": {
+    "mean_accuracy": 0.5829166666666666,
+    "unsolved_rate": 0.65,
+    "comm_ratio": 0.9557720057720058,
+    "weak_share_rate": 0.16202075702075702,
+    "pass_rate": 0.9995575221238939,
+    "forced_share_rate": 1.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "mutate",
+     "score": 0.5056906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 10.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "LOWER_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "init_threshold",
+     "score": 0.5057620897620898,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 10.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "add",
+     "score": 0.4807620897620898,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 10.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g2-agent2-2",
+        "conditions": [
+         {
+          "metric": "recent_share_gain",
+          "op": "<",
+          "value": 0.05
+         },
+         {
+          "metric": "remaining_budget_ratio",
+          "op": ">=",
+          "value": 0.1
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": 2,
+        "priority": 4,
+        "author_id": "agent2",
+        "created_gen": 2
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "mutate",
+     "score": 0.5203558321308321,
+     "adopted": true,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "mutate",
+     "score": 0.5056906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 10.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 3
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "add",
+     "score": 0.4907620897620898,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 10.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g2-agent5-5",
+        "conditions": [
+         {
+          "metric": "number_of_passes",
+          "op": ">=",
+          "value": 1.0
+         },
+         {
+          "metric": "round_index",
+          "op": "<",
+          "value": 10.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent5",
+        "created_gen": 2
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  },
+  {
+   "gen": 3,
+   "incumbent_version_before": 2,
+   "incumbent_version_after": 3,
+   "incumbent_score": 0.5293842712842712,
+   "rolled_back": false,
+   "observation_metrics": {
+    "mean_accuracy": 0.6820833333333334,
+    "unsolved_rate": 0.45,
+    "comm_ratio": 0.9178733766233765,
+    "weak_share_rate": 0.11750000000000001,
+    "pass_rate": 0.9753154953832739,
+    "forced_share_rate": 1.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "mutate",
+     "score": 0.5056906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "add",
+     "score": 0.4956906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent1-1",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 3
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "agent1",
+        "created_gen": 3
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "init_threshold",
+     "score": 0.5203558321308321,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "add",
+     "score": 0.5006906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent3-3",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 3,
+        "author_id": "agent3",
+        "created_gen": 3
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "add",
+     "score": 0.5293842712842712,
+     "adopted": true,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         },
+         {
+          "metric": "rounds_since_my_action",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "add",
+     "score": 0.5120595358345358,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent5-5",
+        "conditions": [
+         {
+          "metric": "mean_recent_gain",
+          "op": "<",
+          "value": 0.2
+         }
+        ],
+        "actions": [
+         {
+          "name": "LOWER_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": 2,
+        "priority": 8,
+        "author_id": "agent5",
+        "created_gen": 3
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  },
+  {
+   "gen": 4,
+   "incumbent_version_before": 3,
+   "incumbent_version_after": 3,
+   "incumbent_score": 0.5293842712842712,
+   "rolled_back": true,
+   "observation_metrics": {
+    "mean_accuracy": 0.7104166666666667,
+    "unsolved_rate": 0.4,
+    "comm_ratio": 0.9178733766233765,
+    "weak_share_rate": 0.10797619047619048,
+    "pass_rate": 0.9753569020348195,
+    "forced_share_rate": 1.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "add",
+     "score": 0.5143842712842712,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         },
+         {
+          "metric": "rounds_since_my_action",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_threshold",
+          "op": ">=",
+          "value": 0.5
+         },
+         {
+          "metric": "recent_share_gain",
+          "op": "<",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "add",
+     "score": 0.4806906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         },
+         {
+          "metric": "rounds_since_my_action",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g4-agent1-1",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "agent1",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "remove",
+     "score": 0.4956906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         },
+         {
+          "metric": "rounds_since_my_action",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "remove",
+     "score": 0.5203558321308321,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "remove",
+     "score": 0.4956906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         },
+         {
+          "metric": "rounds_since_my_action",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "remove",
+     "score": 0.4956906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         },
+         {
+          "metric": "rounds_since_my_action",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  },
+  {
+   "gen": 5,
+   "incumbent_version_before": 3,
+   "incumbent_version_after": 4,
+   "incumbent_score": 0.551541835016835,
+   "rolled_back": false,
+   "observation_metrics": {
+    "mean_accuracy": 0.7104166666666667,
+    "unsolved_rate": 0.4,
+    "comm_ratio": 0.9178733766233765,
+    "weak_share_rate": 0.10797619047619048,
+    "pass_rate": 0.9753569020348195,
+    "forced_share_rate": 1.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "mutate",
+     "score": 0.551541835016835,
+     "adopted": true,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "init_threshold",
+     "score": 0.5293842712842712,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         },
+         {
+          "metric": "rounds_since_my_action",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       }
+      ],
+      "init_threshold": 0.2,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "add",
+     "score": 0.4806906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         },
+         {
+          "metric": "rounds_since_my_action",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g5-agent2-2",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "LOWER_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "agent2",
+        "created_gen": 5
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "mutate",
+     "score": 0.4906906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "mutate",
+     "score": 0.5293842712842712,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         },
+         {
+          "metric": "rounds_since_my_action",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "init_threshold",
+     "score": 0.5293842712842712,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         },
+         {
+          "metric": "rounds_since_my_action",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       }
+      ],
+      "init_threshold": 0.2,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  },
+  {
+   "gen": 6,
+   "incumbent_version_before": 4,
+   "incumbent_version_after": 5,
+   "incumbent_score": 0.5850100889850889,
+   "rolled_back": false,
+   "observation_metrics": {
+    "mean_accuracy": 0.7570833333333333,
+    "unsolved_rate": 0.35,
+    "comm_ratio": 0.9274404761904762,
+    "weak_share_rate": 0.11172979797979798,
+    "pass_rate": 0.9912966326824215,
+    "forced_share_rate": 1.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "add",
+     "score": 0.5850100889850889,
+     "adopted": true,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "mutate",
+     "score": 0.546541835016835,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         },
+         {
+          "metric": "my_mode",
+          "op": "<",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "remove",
+     "score": 0.5203558321308321,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "mutate",
+     "score": 0.4906906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "init_threshold",
+     "score": 0.551541835016835,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "add",
+     "score": 0.5455332371332371,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent5-5",
+        "conditions": [
+         {
+          "metric": "recent_share_gain",
+          "op": "<",
+          "value": 0.05
+         },
+         {
+          "metric": "round_index",
+          "op": "<",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 9,
+        "author_id": "agent5",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  },
+  {
+   "gen": 7,
+   "incumbent_version_before": 5,
+   "incumbent_version_after": 5,
+   "incumbent_score": 0.5850100889850889,
+   "rolled_back": true,
+   "observation_metrics": {
+    "mean_accuracy": 0.6870833333333334,
+    "unsolved_rate": 0.45,
+    "comm_ratio": 0.9310119047619047,
+    "weak_share_rate": 0.12289432789432789,
+    "pass_rate": 0.9913422015906772,
+    "forced_share_rate": 1.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "add",
+     "score": 0.5700100889850889,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       },
+       {
+        "rule_id": "g7-agent0-0",
+        "conditions": [
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 300.0
+         },
+         {
+          "metric": "recent_share_gain",
+          "op": ">=",
+          "value": 0.05
+         }
+        ],
+        "actions": [
+         {
+          "name": "LOWER_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent0",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "add",
+     "score": 0.4417354497354497,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       },
+       {
+        "rule_id": "g7-agent1-1",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": 1,
+        "priority": 1,
+        "author_id": "agent1",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "add",
+     "score": 0.5700100889850889,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       },
+       {
+        "rule_id": "g7-agent2-2",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": "<",
+          "value": 3.0
+         },
+         {
+          "metric": "total_shares",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "LOWER_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 5,
+        "author_id": "agent2",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "remove",
+     "score": 0.4856906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "add",
+     "score": 0.47069066119066133,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       },
+       {
+        "rule_id": "g7-agent4-4",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "agent4",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "add",
+     "score": 0.5650100889850889,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       },
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "public_candidate_count",
+          "op": "<",
+          "value": 300.0
+         },
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 10.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 9,
+        "author_id": "agent5",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  },
+  {
+   "gen": 8,
+   "incumbent_version_before": 5,
+   "incumbent_version_after": 5,
+   "incumbent_score": 0.5850100889850889,
+   "rolled_back": true,
+   "observation_metrics": {
+    "mean_accuracy": 0.6870833333333334,
+    "unsolved_rate": 0.45,
+    "comm_ratio": 0.9310119047619047,
+    "weak_share_rate": 0.12289432789432789,
+    "pass_rate": 0.9913422015906772,
+    "forced_share_rate": 1.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "add",
+     "score": 0.47069066119066133,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       },
+       {
+        "rule_id": "g8-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 5,
+        "author_id": "agent0",
+        "created_gen": 8
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "init_threshold",
+     "score": 0.5850100889850889,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "mutate",
+     "score": 0.5850100889850889,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 8,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "mutate",
+     "score": 0.5850100889850889,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "init_threshold",
+     "score": 0.5850100889850889,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "add",
+     "score": 0.5650100889850889,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       },
+       {
+        "rule_id": "g8-agent5-5",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": ">=",
+          "value": 0.9
+         },
+         {
+          "metric": "active_speaker_count",
+          "op": "<",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": 1,
+        "priority": 6,
+        "author_id": "agent5",
+        "created_gen": 8
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  },
+  {
+   "gen": 9,
+   "incumbent_version_before": 5,
+   "incumbent_version_after": 5,
+   "incumbent_score": 0.5850100889850889,
+   "rolled_back": true,
+   "observation_metrics": {
+    "mean_accuracy": 0.6870833333333334,
+    "unsolved_rate": 0.45,
+    "comm_ratio": 0.9310119047619047,
+    "weak_share_rate": 0.12289432789432789,
+    "pass_rate": 0.9913422015906772,
+    "forced_share_rate": 1.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "remove",
+     "score": 0.551541835016835,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "mutate",
+     "score": 0.47569066119066133,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "init_threshold",
+     "score": 0.5850100889850889,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.1,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "init_threshold",
+     "score": 0.5850100889850889,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.2,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "remove",
+     "score": 0.4856906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "add",
+     "score": 0.47069066119066133,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       },
+       {
+        "rule_id": "g9-agent5-5",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 9,
+        "author_id": "agent5",
+        "created_gen": 9
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  },
+  {
+   "gen": 10,
+   "incumbent_version_before": 5,
+   "incumbent_version_after": 5,
+   "incumbent_score": 0.5850100889850889,
+   "rolled_back": true,
+   "observation_metrics": {
+    "mean_accuracy": 0.6870833333333334,
+    "unsolved_rate": 0.45,
+    "comm_ratio": 0.9310119047619047,
+    "weak_share_rate": 0.12289432789432789,
+    "pass_rate": 0.9913422015906772,
+    "forced_share_rate": 1.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "remove",
+     "score": 0.5290348244348244,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "init_threshold",
+     "score": 0.5850100889850889,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "init_threshold",
+     "score": 0.5850100889850889,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.2,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "init_threshold",
+     "score": 0.5850100889850889,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "remove",
+     "score": 0.4856906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "remove",
+     "score": 0.4856906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  },
+  {
+   "gen": 11,
+   "incumbent_version_before": 5,
+   "incumbent_version_after": 5,
+   "incumbent_score": 0.5850100889850889,
+   "rolled_back": true,
+   "observation_metrics": {
+    "mean_accuracy": 0.6870833333333334,
+    "unsolved_rate": 0.45,
+    "comm_ratio": 0.9310119047619047,
+    "weak_share_rate": 0.12289432789432789,
+    "pass_rate": 0.9913422015906772,
+    "forced_share_rate": 1.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "add",
+     "score": 0.5700100889850889,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       },
+       {
+        "rule_id": "g11-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_threshold",
+          "op": ">=",
+          "value": 0.5
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent0",
+        "created_gen": 11
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "mutate",
+     "score": 0.47069066119066133,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         },
+         {
+          "metric": "my_mode",
+          "op": ">=",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "add",
+     "score": 0.4656906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       },
+       {
+        "rule_id": "g11-agent2-2",
+        "conditions": [
+         {
+          "metric": "my_mode",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 3,
+        "author_id": "agent2",
+        "created_gen": 11
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "mutate",
+     "score": 0.4969407814407814,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": "<",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "remove",
+     "score": 0.5290348244348244,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "add",
+     "score": 0.5700100889850889,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       },
+       {
+        "rule_id": "g11-agent5-5",
+        "conditions": [
+         {
+          "metric": "mean_recent_gain",
+          "op": "<",
+          "value": 0.05
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         }
+        ],
+        "role": 1,
+        "priority": 5,
+        "author_id": "agent5",
+        "created_gen": 11
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  },
+  {
+   "gen": 12,
+   "incumbent_version_before": 5,
+   "incumbent_version_after": 5,
+   "incumbent_score": 0.5850100889850889,
+   "rolled_back": true,
+   "observation_metrics": {
+    "mean_accuracy": 0.6870833333333334,
+    "unsolved_rate": 0.45,
+    "comm_ratio": 0.9310119047619047,
+    "weak_share_rate": 0.12289432789432789,
+    "pass_rate": 0.9913422015906772,
+    "forced_share_rate": 1.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "mutate",
+     "score": 0.5850100889850889,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 5,
+        "author_id": "agent0",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "mutate",
+     "score": 0.4288044178044177,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": "<",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "mutate",
+     "score": 0.5800100889850889,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         },
+         {
+          "metric": "total_shares",
+          "op": "<",
+          "value": 10.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "init_threshold",
+     "score": 0.5850100889850889,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.2,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "mutate",
+     "score": 0.5800100889850889,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [
+         {
+          "metric": "consecutive_low_gain",
+          "op": "<",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "init_threshold",
+     "score": 0.5850100889850889,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.2,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  },
+  {
+   "gen": 13,
+   "incumbent_version_before": 5,
+   "incumbent_version_after": 5,
+   "incumbent_score": 0.5850100889850889,
+   "rolled_back": true,
+   "observation_metrics": {
+    "mean_accuracy": 0.6870833333333334,
+    "unsolved_rate": 0.45,
+    "comm_ratio": 0.9310119047619047,
+    "weak_share_rate": 0.12289432789432789,
+    "pass_rate": 0.9913422015906772,
+    "forced_share_rate": 1.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "init_threshold",
+     "score": 0.5850100889850889,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "mutate",
+     "score": 0.5799862794612793,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         },
+         {
+          "metric": "consecutive_low_gain",
+          "op": "<",
+          "value": 3.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "add",
+     "score": 0.5099410173160174,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       },
+       {
+        "rule_id": "g13-agent2-2",
+        "conditions": [
+         {
+          "metric": "my_mode",
+          "op": "<",
+          "value": 2.0
+         },
+         {
+          "metric": "remaining_budget_ratio",
+          "op": ">=",
+          "value": 0.5
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 5,
+        "author_id": "agent2",
+        "created_gen": 13
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "init_threshold",
+     "score": 0.5850100889850889,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "mutate",
+     "score": 0.5850100889850889,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "mutate",
+     "score": 0.5850100889850889,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 0
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  },
+  {
+   "gen": 14,
+   "incumbent_version_before": 5,
+   "incumbent_version_after": 5,
+   "incumbent_score": 0.5850100889850889,
+   "rolled_back": true,
+   "observation_metrics": {
+    "mean_accuracy": 0.6870833333333334,
+    "unsolved_rate": 0.45,
+    "comm_ratio": 0.9310119047619047,
+    "weak_share_rate": 0.12289432789432789,
+    "pass_rate": 0.9913422015906772,
+    "forced_share_rate": 1.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "add",
+     "score": 0.29452656820303885,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       },
+       {
+        "rule_id": "g14-agent0-0",
+        "conditions": [
+         {
+          "metric": "mean_recent_gain",
+          "op": ">=",
+          "value": 0.05
+         },
+         {
+          "metric": "rounds_since_my_action",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         },
+         {
+          "name": "LOWER_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 14
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "mutate",
+     "score": 0.5850100889850889,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 6,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "init_threshold",
+     "score": 0.5850100889850889,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "add",
+     "score": 0.5030310966810966,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       },
+       {
+        "rule_id": "g14-agent3-3",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 5,
+        "author_id": "agent3",
+        "created_gen": 14
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "add",
+     "score": 0.4558078403078402,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       },
+       {
+        "rule_id": "g14-agent4-4",
+        "conditions": [
+         {
+          "metric": "number_of_passes",
+          "op": ">=",
+          "value": 3.0
+         },
+         {
+          "metric": "recent_share_gain",
+          "op": ">=",
+          "value": 0.1
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 7,
+        "author_id": "agent4",
+        "created_gen": 14
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "add",
+     "score": 0.5750100889850889,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       },
+       {
+        "rule_id": "g14-agent5-5",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 5,
+        "author_id": "agent5",
+        "created_gen": 14
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  },
+  {
+   "gen": 15,
+   "incumbent_version_before": 5,
+   "incumbent_version_after": 5,
+   "incumbent_score": 0.5850100889850889,
+   "rolled_back": true,
+   "observation_metrics": {
+    "mean_accuracy": 0.6870833333333334,
+    "unsolved_rate": 0.45,
+    "comm_ratio": 0.9310119047619047,
+    "weak_share_rate": 0.12289432789432789,
+    "pass_rate": 0.9913422015906772,
+    "forced_share_rate": 1.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "add",
+     "score": 0.560010088985089,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       },
+       {
+        "rule_id": "g15-agent0-0",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": ">=",
+          "value": 0.5
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": "<",
+          "value": 2.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "LOWER_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": 1,
+        "priority": 5,
+        "author_id": "agent0",
+        "created_gen": 15
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "mutate",
+     "score": 0.5578844276094276,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.5
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "mutate",
+     "score": 0.536541835016835,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "mutate",
+     "score": 0.5850100889850889,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "init_threshold",
+     "score": 0.5850100889850889,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "add",
+     "score": 0.5700100889850889,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       },
+       {
+        "rule_id": "g15-agent5-5",
+        "conditions": [
+         {
+          "metric": "my_mode",
+          "op": ">=",
+          "value": 3.0
+         },
+         {
+          "metric": "total_shares",
+          "op": "<",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 2,
+        "author_id": "agent5",
+        "created_gen": 15
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  },
+  {
+   "gen": 16,
+   "incumbent_version_before": 5,
+   "incumbent_version_after": 5,
+   "incumbent_score": 0.5850100889850889,
+   "rolled_back": true,
+   "observation_metrics": {
+    "mean_accuracy": 0.6870833333333334,
+    "unsolved_rate": 0.45,
+    "comm_ratio": 0.9310119047619047,
+    "weak_share_rate": 0.12289432789432789,
+    "pass_rate": 0.9913422015906772,
+    "forced_share_rate": 1.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "init_threshold",
+     "score": 0.5850100889850889,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.2,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "add",
+     "score": 0.42794699374699374,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       },
+       {
+        "rule_id": "g16-agent1-1",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": ">=",
+          "value": 0.9
+         },
+         {
+          "metric": "my_threshold",
+          "op": "<",
+          "value": 0.7
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 3,
+        "author_id": "agent1",
+        "created_gen": 16
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "remove",
+     "score": 0.4856906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "mutate",
+     "score": 0.5315418350168349,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [
+         {
+          "metric": "public_candidate_count",
+          "op": "<",
+          "value": 10.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "remove",
+     "score": 0.5290348244348244,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "init_threshold",
+     "score": 0.5850100889850889,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.1,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  },
+  {
+   "gen": 17,
+   "incumbent_version_before": 5,
+   "incumbent_version_after": 5,
+   "incumbent_score": 0.5850100889850889,
+   "rolled_back": true,
+   "observation_metrics": {
+    "mean_accuracy": 0.6870833333333334,
+    "unsolved_rate": 0.45,
+    "comm_ratio": 0.9310119047619047,
+    "weak_share_rate": 0.12289432789432789,
+    "pass_rate": 0.9913422015906772,
+    "forced_share_rate": 1.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "add",
+     "score": 0.5700100889850889,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       },
+       {
+        "rule_id": "g17-agent0-0",
+        "conditions": [
+         {
+          "metric": "my_threshold",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": 1,
+        "priority": 7,
+        "author_id": "agent0",
+        "created_gen": 17
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "mutate",
+     "score": 0.49035583213083217,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 5,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "remove",
+     "score": 0.5290348244348244,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "remove",
+     "score": 0.551541835016835,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "init_threshold",
+     "score": 0.5850100889850889,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "remove",
+     "score": 0.4856906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  },
+  {
+   "gen": 18,
+   "incumbent_version_before": 5,
+   "incumbent_version_after": 5,
+   "incumbent_score": 0.5850100889850889,
+   "rolled_back": true,
+   "observation_metrics": {
+    "mean_accuracy": 0.6870833333333334,
+    "unsolved_rate": 0.45,
+    "comm_ratio": 0.9310119047619047,
+    "weak_share_rate": 0.12289432789432789,
+    "pass_rate": 0.9913422015906772,
+    "forced_share_rate": 1.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "init_threshold",
+     "score": 0.5850100889850889,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "remove",
+     "score": 0.4856906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "init_threshold",
+     "score": 0.5850100889850889,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "mutate",
+     "score": 0.5800100889850889,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         },
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "init_threshold",
+     "score": 0.5850100889850889,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.1,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "add",
+     "score": 0.462639381914382,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       },
+       {
+        "rule_id": "g18-agent5-5",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         },
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "agent5",
+        "created_gen": 18
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  },
+  {
+   "gen": 19,
+   "incumbent_version_before": 5,
+   "incumbent_version_after": 6,
+   "incumbent_score": 0.6080409331409331,
+   "rolled_back": false,
+   "observation_metrics": {
+    "mean_accuracy": 0.6870833333333334,
+    "unsolved_rate": 0.45,
+    "comm_ratio": 0.9310119047619047,
+    "weak_share_rate": 0.12289432789432789,
+    "pass_rate": 0.9913422015906772,
+    "forced_share_rate": 1.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "mutate",
+     "score": 0.5180310966810966,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "remove",
+     "score": 0.5290348244348244,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "remove",
+     "score": 0.551541835016835,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "add",
+     "score": 0.5650100889850889,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       },
+       {
+        "rule_id": "g19-agent3-3",
+        "conditions": [
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 1.0
+         },
+         {
+          "metric": "rounds_since_my_action",
+          "op": "<",
+          "value": 1.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "LOWER_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 3,
+        "author_id": "agent3",
+        "created_gen": 19
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "add",
+     "score": 0.6080409331409331,
+     "adopted": true,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       },
+       {
+        "rule_id": "g19-agent4-4",
+        "conditions": [
+         {
+          "metric": "my_mode",
+          "op": "<",
+          "value": 2.0
+         },
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.05
+         }
+        ],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 3
+         }
+        ],
+        "role": null,
+        "priority": 8,
+        "author_id": "agent4",
+        "created_gen": 19
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "init_threshold",
+     "score": 0.5850100889850889,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  },
+  {
+   "gen": 20,
+   "incumbent_version_before": 6,
+   "incumbent_version_after": 6,
+   "incumbent_score": 0.6080409331409331,
+   "rolled_back": true,
+   "observation_metrics": {
+    "mean_accuracy": 0.7120833333333334,
+    "unsolved_rate": 0.4,
+    "comm_ratio": 0.9153553391053391,
+    "weak_share_rate": 0.10872405372405372,
+    "pass_rate": 0.9911984978584467,
+    "forced_share_rate": 1.0
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "add",
+     "score": 0.5930409331409332,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       },
+       {
+        "rule_id": "g19-agent4-4",
+        "conditions": [
+         {
+          "metric": "my_mode",
+          "op": "<",
+          "value": 2.0
+         },
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.05
+         }
+        ],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 3
+         }
+        ],
+        "role": null,
+        "priority": 8,
+        "author_id": "agent4",
+        "created_gen": 19
+       },
+       {
+        "rule_id": "g20-agent0-0",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 10.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "PASS",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 3
+         }
+        ],
+        "role": null,
+        "priority": 3,
+        "author_id": "agent0",
+        "created_gen": 20
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent1",
+     "op": "add",
+     "score": 0.4506906611906613,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       },
+       {
+        "rule_id": "g19-agent4-4",
+        "conditions": [
+         {
+          "metric": "my_mode",
+          "op": "<",
+          "value": 2.0
+         },
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.05
+         }
+        ],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 3
+         }
+        ],
+        "role": null,
+        "priority": 8,
+        "author_id": "agent4",
+        "created_gen": 19
+       },
+       {
+        "rule_id": "g20-agent1-1",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 0
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent1",
+        "created_gen": 20
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent2",
+     "op": "init_threshold",
+     "score": 0.6080409331409331,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       },
+       {
+        "rule_id": "g19-agent4-4",
+        "conditions": [
+         {
+          "metric": "my_mode",
+          "op": "<",
+          "value": 2.0
+         },
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.05
+         }
+        ],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 3
+         }
+        ],
+        "role": null,
+        "priority": 8,
+        "author_id": "agent4",
+        "created_gen": 19
+       }
+      ],
+      "init_threshold": 0.2,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent3",
+     "op": "add",
+     "score": 0.5880409331409332,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       },
+       {
+        "rule_id": "g19-agent4-4",
+        "conditions": [
+         {
+          "metric": "my_mode",
+          "op": "<",
+          "value": 2.0
+         },
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.05
+         }
+        ],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 3
+         }
+        ],
+        "role": null,
+        "priority": 8,
+        "author_id": "agent4",
+        "created_gen": 19
+       },
+       {
+        "rule_id": "g20-agent3-3",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": "<",
+          "value": 2.0
+         },
+         {
+          "metric": "rounds_since_my_action",
+          "op": ">=",
+          "value": 1.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 1
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 1,
+        "author_id": "agent3",
+        "created_gen": 20
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent4",
+     "op": "init_threshold",
+     "score": 0.6080409331409331,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       },
+       {
+        "rule_id": "g19-agent4-4",
+        "conditions": [
+         {
+          "metric": "my_mode",
+          "op": "<",
+          "value": 2.0
+         },
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.05
+         }
+        ],
+        "actions": [
+         {
+          "name": "SET_MODE",
+          "mode": 3
+         }
+        ],
+        "role": null,
+        "priority": 8,
+        "author_id": "agent4",
+        "created_gen": 19
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    },
+    {
+     "proposer": "agent5",
+     "op": "remove",
+     "score": 0.5850100889850889,
+     "adopted": false,
+     "artifact": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "total_shares",
+          "op": ">=",
+          "value": 4.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "SHARE_BEST",
+          "mode": null
+         }
+        ],
+        "role": null,
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 6.0
+         }
+        ],
+        "actions": [
+         {
+          "name": "CLEAR_MODE",
+          "mode": null
+         },
+         {
+          "name": "SET_MODE",
+          "mode": 2
+         }
+        ],
+        "role": null,
+        "priority": 4,
+        "author_id": "agent4",
+        "created_gen": 3
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [],
+        "actions": [
+         {
+          "name": "RAISE_THRESHOLD",
+          "mode": null
+         },
+         {
+          "name": "PASS",
+          "mode": null
+         }
+        ],
+        "role": 0,
+        "priority": 0,
+        "author_id": "agent0",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "meta": {}
+    }
+   ]
+  }
+ ],
+ "incumbent_version": 6,
+ "incumbent_score": 0.6080409331409331,
+ "next_version": 7
+}

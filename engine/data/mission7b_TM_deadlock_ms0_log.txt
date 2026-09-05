@@ -1,0 +1,80 @@
+[TM_deadlock_ms0] gen 1: v0 score=0.5057 (rollback)
+[TM_deadlock_ms0] gen 2: v1 score=0.7915 
+[TM_deadlock_ms0] gen 3: v1 score=0.7915 (rollback)
+[TM_deadlock_ms0] gen 4: v1 score=0.7915 (rollback)
+[TM_deadlock_ms0] gen 5: v1 score=0.7915 (rollback)
+[TM_deadlock_ms0] gen 6: v1 score=0.7915 (rollback)
+[TM_deadlock_ms0] gen 7: v1 score=0.7915 (rollback)
+[TM_deadlock_ms0] gen 8: v1 score=0.7915 (rollback)
+[TM_deadlock_ms0] gen 9: v1 score=0.7915 (rollback)
+[TM_deadlock_ms0] gen 10: v1 score=0.7915 (rollback)
+[TM_deadlock_ms0] gen 11: v1 score=0.7915 (rollback)
+[TM_deadlock_ms0] gen 12: v1 score=0.7915 (rollback)
+[TM_deadlock_ms0] gen 13: v1 score=0.7915 (rollback)
+[TM_deadlock_ms0] gen 14: v1 score=0.7915 (rollback)
+[TM_deadlock_ms0] gen 15: v1 score=0.7915 (rollback)
+[TM_deadlock_ms0] gen 16: v1 score=0.7915 (rollback)
+[TM_deadlock_ms0] gen 17: v1 score=0.7915 (rollback)
+[TM_deadlock_ms0] gen 18: v1 score=0.7915 (rollback)
+[TM_deadlock_ms0] gen 19: v1 score=0.7915 (rollback)
+Traceback (most recent call last):
+  File "C:\Users\az518\AppData\Local\Programs\Python\Python312\Lib\urllib\request.py", line 1344, in do_open
+    h.request(req.get_method(), req.selector, req.data, headers,
+  File "C:\Users\az518\AppData\Local\Programs\Python\Python312\Lib\http\client.py", line 1338, in request
+    self._send_request(method, url, body, headers, encode_chunked)
+  File "C:\Users\az518\AppData\Local\Programs\Python\Python312\Lib\http\client.py", line 1384, in _send_request
+    self.endheaders(body, encode_chunked=encode_chunked)
+  File "C:\Users\az518\AppData\Local\Programs\Python\Python312\Lib\http\client.py", line 1333, in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+  File "C:\Users\az518\AppData\Local\Programs\Python\Python312\Lib\http\client.py", line 1093, in _send_output
+    self.send(msg)
+  File "C:\Users\az518\AppData\Local\Programs\Python\Python312\Lib\http\client.py", line 1037, in send
+    self.connect()
+  File "C:\Users\az518\AppData\Local\Programs\Python\Python312\Lib\http\client.py", line 1472, in connect
+    super().connect()
+  File "C:\Users\az518\AppData\Local\Programs\Python\Python312\Lib\http\client.py", line 1003, in connect
+    self.sock = self._create_connection(
+                ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\az518\AppData\Local\Programs\Python\Python312\Lib\socket.py", line 865, in create_connection
+    raise exceptions[0]
+  File "C:\Users\az518\AppData\Local\Programs\Python\Python312\Lib\socket.py", line 850, in create_connection
+    sock.connect(sa)
+OSError: [WinError 10055] 큐 공간 또는 버퍼가 부족하여 소켓에서 해당 작업을 진행하지 못했습니다
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\az518\Desktop\genesis-project\genesis\mission7b\__main__.py", line 211, in <module>
+    main()
+  File "C:\Users\az518\Desktop\genesis-project\genesis\mission7b\__main__.py", line 205, in main
+    runner.run(founding, generations=args.generations)
+  File "C:\Users\az518\Desktop\genesis-project\genesis\loop\runner.py", line 83, in run
+    self.proposer.propose(incumbent, observation, history,
+  File "C:\Users\az518\Desktop\genesis-project\genesis\mission7b\proposers7b.py", line 111, in propose
+    response = self.provider.complete(prompt, self.temperature,
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\az518\Desktop\genesis-project\genesis\mission7\proposers.py", line 175, in complete
+    with urllib.request.urlopen(req, timeout=120) as resp:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\az518\AppData\Local\Programs\Python\Python312\Lib\urllib\request.py", line 215, in urlopen
+    return opener.open(url, data, timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\az518\AppData\Local\Programs\Python\Python312\Lib\urllib\request.py", line 515, in open
+    response = self._open(req, data)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\az518\AppData\Local\Programs\Python\Python312\Lib\urllib\request.py", line 532, in _open
+    result = self._call_chain(self.handle_open, protocol, protocol +
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\az518\AppData\Local\Programs\Python\Python312\Lib\urllib\request.py", line 492, in _call_chain
+    result = func(*args)
+             ^^^^^^^^^^^
+  File "C:\Users\az518\AppData\Local\Programs\Python\Python312\Lib\urllib\request.py", line 1392, in https_open
+    return self.do_open(http.client.HTTPSConnection, req,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\az518\AppData\Local\Programs\Python\Python312\Lib\urllib\request.py", line 1347, in do_open
+    raise URLError(err)
+urllib.error.URLError: <urlopen error [WinError 10055] 큐 공간 또는 버퍼가 부족하여 소켓에서 해당 작업을 진행하지 못했습니다>
+[TM_deadlock_ms0] gen 20: v1 score=0.7915 (rollback)
+[TM_deadlock_ms0] 완료 5806s

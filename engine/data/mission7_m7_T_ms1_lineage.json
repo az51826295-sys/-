@@ -1,0 +1,7947 @@
+{
+ "group": "M7-T",
+ "master_seed": 1,
+ "generations": [
+  {
+   "gen": 1,
+   "incumbent_version_before": 0,
+   "incumbent_version_after": 1,
+   "incumbent_score": 0.8894275493025493,
+   "rolled_back": false,
+   "train": {
+    "mean_accuracy": 0.521626984126984,
+    "unsolved_rate": 0.7,
+    "comm_ratio": 0.9629563492063491,
+    "complexity": 1.0,
+    "score": 0.357367857142857,
+    "weak_share_rate": 0.16303016428016429,
+    "pass_rate": 0.0,
+    "forced_share_rate": 0.0,
+    "fidelity": 0.2986061161061161,
+    "rule_fires": {
+     "r0": 160
+    }
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "mutate",
+     "slot": null,
+     "protocol": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "stats": {
+      "mean_accuracy": 0.9388888888888889,
+      "unsolved_rate": 0.11666666666666667,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 2.0,
+      "score": 0.8894275493025493,
+      "weak_share_rate": 0.01945286195286195,
+      "pass_rate": 0.4990590030408792,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.6695021645021645,
+      "rule_fires": {
+       "r0": 352
+      }
+     },
+     "votes": 0,
+     "adopted": true
+    },
+    {
+     "proposer": "agent1",
+     "op": "mutate",
+     "slot": null,
+     "protocol": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent1",
+        "created_gen": 1
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "stats": {
+      "mean_accuracy": 0.9388888888888889,
+      "unsolved_rate": 0.11666666666666667,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 2.0,
+      "score": 0.8894275493025493,
+      "weak_share_rate": 0.01945286195286195,
+      "pass_rate": 0.4990590030408792,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.6695021645021645,
+      "rule_fires": {
+       "r0": 352
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent2",
+     "op": "mutate",
+     "slot": null,
+     "protocol": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.2
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 0,
+        "author_id": "agent2",
+        "created_gen": 1
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "stats": {
+      "mean_accuracy": 0.9347222222222222,
+      "unsolved_rate": 0.11666666666666667,
+      "comm_ratio": 0.8057780182780182,
+      "complexity": 2.0,
+      "score": 0.8852733285233285,
+      "weak_share_rate": 0.019823232323232323,
+      "pass_rate": 0.4838003374607414,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.65489898989899,
+      "rule_fires": {
+       "r0": 359
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent3",
+     "op": "mutate",
+     "slot": null,
+     "protocol": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.2
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 0,
+        "author_id": "agent3",
+        "created_gen": 1
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "stats": {
+      "mean_accuracy": 0.9347222222222222,
+      "unsolved_rate": 0.11666666666666667,
+      "comm_ratio": 0.8057780182780182,
+      "complexity": 2.0,
+      "score": 0.8852733285233285,
+      "weak_share_rate": 0.019823232323232323,
+      "pass_rate": 0.4838003374607414,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.65489898989899,
+      "rule_fires": {
+       "r0": 359
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent4",
+     "op": "mutate",
+     "slot": null,
+     "protocol": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent4",
+        "created_gen": 1
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "stats": {
+      "mean_accuracy": 0.9388888888888889,
+      "unsolved_rate": 0.11666666666666667,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 2.0,
+      "score": 0.8894275493025493,
+      "weak_share_rate": 0.01945286195286195,
+      "pass_rate": 0.4990590030408792,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.6695021645021645,
+      "rule_fires": {
+       "r0": 352
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent5",
+     "op": "mutate",
+     "slot": null,
+     "protocol": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.2
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent5",
+        "created_gen": 1
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "stats": {
+      "mean_accuracy": 0.9347222222222222,
+      "unsolved_rate": 0.11666666666666667,
+      "comm_ratio": 0.8057780182780182,
+      "complexity": 2.0,
+      "score": 0.8852733285233285,
+      "weak_share_rate": 0.019823232323232323,
+      "pass_rate": 0.4838003374607414,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.65489898989899,
+      "rule_fires": {
+       "r0": 359
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    }
+   ]
+  },
+  {
+   "gen": 2,
+   "incumbent_version_before": 1,
+   "incumbent_version_after": 1,
+   "incumbent_score": 0.8894275493025493,
+   "rolled_back": true,
+   "train": {
+    "mean_accuracy": 0.9416666666666667,
+    "unsolved_rate": 0.1,
+    "comm_ratio": 0.736185064935065,
+    "complexity": 2.0,
+    "score": 0.8969429653679654,
+    "weak_share_rate": 0.0,
+    "pass_rate": 0.48317813450166397,
+    "forced_share_rate": 0.1,
+    "fidelity": 0.7057142857142857,
+    "rule_fires": {
+     "r0": 114
+    }
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g2-agent0-0",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 2
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g2-agent0-0": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent1",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g2-agent1-1",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent1",
+        "created_gen": 2
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g2-agent1-1": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent2",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g2-agent2-2",
+        "conditions": [
+         {
+          "metric": "estimated_slack",
+          "op": "<",
+          "value": 1.0
+         },
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.2
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent2",
+        "created_gen": 2
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.9347222222222222,
+      "unsolved_rate": 0.11666666666666667,
+      "comm_ratio": 0.808483645983646,
+      "complexity": 5.0,
+      "score": 0.8702192159692159,
+      "weak_share_rate": 0.01945286195286195,
+      "pass_rate": 0.48903158635543337,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.6607720057720058,
+      "rule_fires": {
+       "r0": 348,
+       "g2-agent2-2": 7
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent3",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g2-agent3-3",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent3",
+        "created_gen": 2
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g2-agent3-3": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent4",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g2-agent4-4",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent4",
+        "created_gen": 2
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g2-agent4-4": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent5",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g2-agent5-5",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent5",
+        "created_gen": 2
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g2-agent5-5": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    }
+   ]
+  },
+  {
+   "gen": 3,
+   "incumbent_version_before": 1,
+   "incumbent_version_after": 1,
+   "incumbent_score": 0.8894275493025493,
+   "rolled_back": true,
+   "train": {
+    "mean_accuracy": 0.9416666666666667,
+    "unsolved_rate": 0.1,
+    "comm_ratio": 0.736185064935065,
+    "complexity": 2.0,
+    "score": 0.8969429653679654,
+    "weak_share_rate": 0.0,
+    "pass_rate": 0.48317813450166397,
+    "forced_share_rate": 0.1,
+    "fidelity": 0.7057142857142857,
+    "rule_fires": {
+     "r0": 114
+    }
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 3
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g3-agent0-0": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent1",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g3-agent1-1",
+        "conditions": [
+         {
+          "metric": "public_candidate_count",
+          "op": "<",
+          "value": 5.0
+         },
+         {
+          "metric": "remaining_budget_ratio",
+          "op": ">=",
+          "value": 0.25
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent1",
+        "created_gen": 3
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.9388888888888889,
+      "unsolved_rate": 0.11666666666666667,
+      "comm_ratio": 0.8099717412217412,
+      "complexity": 5.0,
+      "score": 0.8743561207311207,
+      "weak_share_rate": 0.026618104118104117,
+      "pass_rate": 0.4949964695400212,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.6635406260406261,
+      "rule_fires": {
+       "r0": 350,
+       "g3-agent1-1": 9
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent2",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g3-agent2-2",
+        "conditions": [
+         {
+          "metric": "public_candidate_count",
+          "op": "<",
+          "value": 10.0
+         },
+         {
+          "metric": "remaining_budget_ratio",
+          "op": ">=",
+          "value": 0.25
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent2",
+        "created_gen": 3
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.9333333333333333,
+      "unsolved_rate": 0.13333333333333333,
+      "comm_ratio": 0.8369498556998557,
+      "complexity": 5.0,
+      "score": 0.8649276695526696,
+      "weak_share_rate": 0.05058080808080808,
+      "pass_rate": 0.446347077282841,
+      "forced_share_rate": 0.08333333333333333,
+      "fidelity": 0.641631794131794,
+      "rule_fires": {
+       "r0": 351,
+       "g3-agent2-2": 38
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent3",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g3-agent3-3",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent3",
+        "created_gen": 3
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g3-agent3-3": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent4",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g3-agent4-4",
+        "conditions": [
+         {
+          "metric": "public_candidate_count",
+          "op": "<",
+          "value": 10.0
+         },
+         {
+          "metric": "remaining_budget_ratio",
+          "op": ">=",
+          "value": 0.25
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent4",
+        "created_gen": 3
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.9333333333333333,
+      "unsolved_rate": 0.13333333333333333,
+      "comm_ratio": 0.8369498556998557,
+      "complexity": 5.0,
+      "score": 0.8649276695526696,
+      "weak_share_rate": 0.05058080808080808,
+      "pass_rate": 0.446347077282841,
+      "forced_share_rate": 0.08333333333333333,
+      "fidelity": 0.641631794131794,
+      "rule_fires": {
+       "r0": 351,
+       "g3-agent4-4": 38
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent5",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g3-agent5-5",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent5",
+        "created_gen": 3
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g3-agent5-5": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    }
+   ]
+  },
+  {
+   "gen": 4,
+   "incumbent_version_before": 1,
+   "incumbent_version_after": 1,
+   "incumbent_score": 0.8894275493025493,
+   "rolled_back": true,
+   "train": {
+    "mean_accuracy": 0.9416666666666667,
+    "unsolved_rate": 0.1,
+    "comm_ratio": 0.736185064935065,
+    "complexity": 2.0,
+    "score": 0.8969429653679654,
+    "weak_share_rate": 0.0,
+    "pass_rate": 0.48317813450166397,
+    "forced_share_rate": 0.1,
+    "fidelity": 0.7057142857142857,
+    "rule_fires": {
+     "r0": 114
+    }
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g4-agent0-0",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g4-agent0-0": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent1",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g4-agent1-1",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent1",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g4-agent1-1": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent2",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g4-agent2-2",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent2",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g4-agent2-2": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent3",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g4-agent3-3",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent3",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g4-agent3-3": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent4",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g4-agent4-4",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent4",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g4-agent4-4": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent5",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g4-agent5-5",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent5",
+        "created_gen": 4
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g4-agent5-5": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    }
+   ]
+  },
+  {
+   "gen": 5,
+   "incumbent_version_before": 1,
+   "incumbent_version_after": 1,
+   "incumbent_score": 0.8894275493025493,
+   "rolled_back": true,
+   "train": {
+    "mean_accuracy": 0.9416666666666667,
+    "unsolved_rate": 0.1,
+    "comm_ratio": 0.736185064935065,
+    "complexity": 2.0,
+    "score": 0.8969429653679654,
+    "weak_share_rate": 0.0,
+    "pass_rate": 0.48317813450166397,
+    "forced_share_rate": 0.1,
+    "fidelity": 0.7057142857142857,
+    "rule_fires": {
+     "r0": 114
+    }
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g5-agent0-0",
+        "conditions": [
+         {
+          "metric": "public_candidate_count",
+          "op": "<",
+          "value": 5.0
+         },
+         {
+          "metric": "remaining_budget_ratio",
+          "op": ">=",
+          "value": 0.25
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 5
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.9388888888888889,
+      "unsolved_rate": 0.11666666666666667,
+      "comm_ratio": 0.8099717412217412,
+      "complexity": 5.0,
+      "score": 0.8743561207311207,
+      "weak_share_rate": 0.026618104118104117,
+      "pass_rate": 0.4949964695400212,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.6635406260406261,
+      "rule_fires": {
+       "r0": 350,
+       "g5-agent0-0": 9
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent1",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g5-agent1-1",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent1",
+        "created_gen": 5
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g5-agent1-1": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent2",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g5-agent2-2",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent2",
+        "created_gen": 5
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g5-agent2-2": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent3",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g5-agent3-3",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent3",
+        "created_gen": 5
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g5-agent3-3": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent4",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g5-agent4-4",
+        "conditions": [
+         {
+          "metric": "estimated_slack",
+          "op": "<",
+          "value": 1.0
+         },
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.2
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent4",
+        "created_gen": 5
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.9347222222222222,
+      "unsolved_rate": 0.11666666666666667,
+      "comm_ratio": 0.808483645983646,
+      "complexity": 5.0,
+      "score": 0.8702192159692159,
+      "weak_share_rate": 0.01945286195286195,
+      "pass_rate": 0.48903158635543337,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.6607720057720058,
+      "rule_fires": {
+       "r0": 348,
+       "g5-agent4-4": 7
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent5",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g5-agent5-5",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent5",
+        "created_gen": 5
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g5-agent5-5": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    }
+   ]
+  },
+  {
+   "gen": 6,
+   "incumbent_version_before": 1,
+   "incumbent_version_after": 1,
+   "incumbent_score": 0.8894275493025493,
+   "rolled_back": true,
+   "train": {
+    "mean_accuracy": 0.9416666666666667,
+    "unsolved_rate": 0.1,
+    "comm_ratio": 0.736185064935065,
+    "complexity": 2.0,
+    "score": 0.8969429653679654,
+    "weak_share_rate": 0.0,
+    "pass_rate": 0.48317813450166397,
+    "forced_share_rate": 0.1,
+    "fidelity": 0.7057142857142857,
+    "rule_fires": {
+     "r0": 114
+    }
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g6-agent0-0",
+        "conditions": [
+         {
+          "metric": "public_candidate_count",
+          "op": "<",
+          "value": 5.0
+         },
+         {
+          "metric": "remaining_budget_ratio",
+          "op": ">=",
+          "value": 0.25
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.9388888888888889,
+      "unsolved_rate": 0.11666666666666667,
+      "comm_ratio": 0.8099717412217412,
+      "complexity": 5.0,
+      "score": 0.8743561207311207,
+      "weak_share_rate": 0.026618104118104117,
+      "pass_rate": 0.4949964695400212,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.6635406260406261,
+      "rule_fires": {
+       "r0": 350,
+       "g6-agent0-0": 9
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent1",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g6-agent1-1",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent1",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g6-agent1-1": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent2",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g6-agent2-2",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent2",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g6-agent2-2": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent3",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g6-agent3-3",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent3",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g6-agent3-3": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent4",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g6-agent4-4",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent4",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g6-agent4-4": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent5",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g6-agent5-5",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent5",
+        "created_gen": 6
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g6-agent5-5": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    }
+   ]
+  },
+  {
+   "gen": 7,
+   "incumbent_version_before": 1,
+   "incumbent_version_after": 1,
+   "incumbent_score": 0.8894275493025493,
+   "rolled_back": true,
+   "train": {
+    "mean_accuracy": 0.9416666666666667,
+    "unsolved_rate": 0.1,
+    "comm_ratio": 0.736185064935065,
+    "complexity": 2.0,
+    "score": 0.8969429653679654,
+    "weak_share_rate": 0.0,
+    "pass_rate": 0.48317813450166397,
+    "forced_share_rate": 0.1,
+    "fidelity": 0.7057142857142857,
+    "rule_fires": {
+     "r0": 114
+    }
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g7-agent0-0",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g7-agent0-0": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent1",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g7-agent1-1",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent1",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g7-agent1-1": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent2",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g7-agent2-2",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent2",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g7-agent2-2": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent3",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g7-agent3-3",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent3",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g7-agent3-3": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent4",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g7-agent4-4",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent4",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g7-agent4-4": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent5",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g7-agent5-5",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent5",
+        "created_gen": 7
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g7-agent5-5": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    }
+   ]
+  },
+  {
+   "gen": 8,
+   "incumbent_version_before": 1,
+   "incumbent_version_after": 1,
+   "incumbent_score": 0.8894275493025493,
+   "rolled_back": true,
+   "train": {
+    "mean_accuracy": 0.9416666666666667,
+    "unsolved_rate": 0.1,
+    "comm_ratio": 0.736185064935065,
+    "complexity": 2.0,
+    "score": 0.8969429653679654,
+    "weak_share_rate": 0.0,
+    "pass_rate": 0.48317813450166397,
+    "forced_share_rate": 0.1,
+    "fidelity": 0.7057142857142857,
+    "rule_fires": {
+     "r0": 114
+    }
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g8-agent0-0",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 8
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g8-agent0-0": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent1",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g8-agent1-1",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent1",
+        "created_gen": 8
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g8-agent1-1": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent2",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g8-agent2-2",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent2",
+        "created_gen": 8
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g8-agent2-2": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent3",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g8-agent3-3",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent3",
+        "created_gen": 8
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g8-agent3-3": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent4",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g8-agent4-4",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent4",
+        "created_gen": 8
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g8-agent4-4": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent5",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g8-agent5-5",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent5",
+        "created_gen": 8
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g8-agent5-5": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    }
+   ]
+  },
+  {
+   "gen": 9,
+   "incumbent_version_before": 1,
+   "incumbent_version_after": 1,
+   "incumbent_score": 0.8894275493025493,
+   "rolled_back": true,
+   "train": {
+    "mean_accuracy": 0.9416666666666667,
+    "unsolved_rate": 0.1,
+    "comm_ratio": 0.736185064935065,
+    "complexity": 2.0,
+    "score": 0.8969429653679654,
+    "weak_share_rate": 0.0,
+    "pass_rate": 0.48317813450166397,
+    "forced_share_rate": 0.1,
+    "fidelity": 0.7057142857142857,
+    "rule_fires": {
+     "r0": 114
+    }
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g9-agent0-0",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 9
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g9-agent0-0": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent1",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g9-agent1-1",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent1",
+        "created_gen": 9
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g9-agent1-1": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent2",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g9-agent2-2",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent2",
+        "created_gen": 9
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g9-agent2-2": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent3",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g9-agent3-3",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent3",
+        "created_gen": 9
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g9-agent3-3": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent4",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g9-agent4-4",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent4",
+        "created_gen": 9
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g9-agent4-4": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent5",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g9-agent5-5",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent5",
+        "created_gen": 9
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g9-agent5-5": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    }
+   ]
+  },
+  {
+   "gen": 10,
+   "incumbent_version_before": 1,
+   "incumbent_version_after": 1,
+   "incumbent_score": 0.8894275493025493,
+   "rolled_back": true,
+   "train": {
+    "mean_accuracy": 0.9416666666666667,
+    "unsolved_rate": 0.1,
+    "comm_ratio": 0.736185064935065,
+    "complexity": 2.0,
+    "score": 0.8969429653679654,
+    "weak_share_rate": 0.0,
+    "pass_rate": 0.48317813450166397,
+    "forced_share_rate": 0.1,
+    "fidelity": 0.7057142857142857,
+    "rule_fires": {
+     "r0": 114
+    }
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g10-agent0-0",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 10
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g10-agent0-0": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent1",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g10-agent1-1",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent1",
+        "created_gen": 10
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g10-agent1-1": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent2",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g10-agent2-2",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent2",
+        "created_gen": 10
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g10-agent2-2": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent3",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g10-agent3-3",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent3",
+        "created_gen": 10
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g10-agent3-3": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent4",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g10-agent4-4",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent4",
+        "created_gen": 10
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g10-agent4-4": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent5",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g10-agent5-5",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent5",
+        "created_gen": 10
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g10-agent5-5": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    }
+   ]
+  },
+  {
+   "gen": 11,
+   "incumbent_version_before": 1,
+   "incumbent_version_after": 1,
+   "incumbent_score": 0.8894275493025493,
+   "rolled_back": true,
+   "train": {
+    "mean_accuracy": 0.9416666666666667,
+    "unsolved_rate": 0.1,
+    "comm_ratio": 0.736185064935065,
+    "complexity": 2.0,
+    "score": 0.8969429653679654,
+    "weak_share_rate": 0.0,
+    "pass_rate": 0.48317813450166397,
+    "forced_share_rate": 0.1,
+    "fidelity": 0.7057142857142857,
+    "rule_fires": {
+     "r0": 114
+    }
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g11-agent0-0",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 11
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g11-agent0-0": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent1",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g11-agent1-1",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent1",
+        "created_gen": 11
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g11-agent1-1": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent2",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g11-agent2-2",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent2",
+        "created_gen": 11
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g11-agent2-2": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent3",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g11-agent3-3",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent3",
+        "created_gen": 11
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g11-agent3-3": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent4",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g11-agent4-4",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent4",
+        "created_gen": 11
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g11-agent4-4": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent5",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g11-agent5-5",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent5",
+        "created_gen": 11
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g11-agent5-5": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    }
+   ]
+  },
+  {
+   "gen": 12,
+   "incumbent_version_before": 1,
+   "incumbent_version_after": 1,
+   "incumbent_score": 0.8894275493025493,
+   "rolled_back": true,
+   "train": {
+    "mean_accuracy": 0.9416666666666667,
+    "unsolved_rate": 0.1,
+    "comm_ratio": 0.736185064935065,
+    "complexity": 2.0,
+    "score": 0.8969429653679654,
+    "weak_share_rate": 0.0,
+    "pass_rate": 0.48317813450166397,
+    "forced_share_rate": 0.1,
+    "fidelity": 0.7057142857142857,
+    "rule_fires": {
+     "r0": 114
+    }
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g12-agent0-0",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 12
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g12-agent0-0": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent1",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g12-agent1-1",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent1",
+        "created_gen": 12
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g12-agent1-1": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent2",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g12-agent2-2",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent2",
+        "created_gen": 12
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g12-agent2-2": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent3",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g12-agent3-3",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent3",
+        "created_gen": 12
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g12-agent3-3": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent4",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g12-agent4-4",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent4",
+        "created_gen": 12
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g12-agent4-4": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent5",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g12-agent5-5",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent5",
+        "created_gen": 12
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g12-agent5-5": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    }
+   ]
+  },
+  {
+   "gen": 13,
+   "incumbent_version_before": 1,
+   "incumbent_version_after": 1,
+   "incumbent_score": 0.8894275493025493,
+   "rolled_back": true,
+   "train": {
+    "mean_accuracy": 0.9416666666666667,
+    "unsolved_rate": 0.1,
+    "comm_ratio": 0.736185064935065,
+    "complexity": 2.0,
+    "score": 0.8969429653679654,
+    "weak_share_rate": 0.0,
+    "pass_rate": 0.48317813450166397,
+    "forced_share_rate": 0.1,
+    "fidelity": 0.7057142857142857,
+    "rule_fires": {
+     "r0": 114
+    }
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g13-agent0-0",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 13
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g13-agent0-0": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent1",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g13-agent1-1",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent1",
+        "created_gen": 13
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g13-agent1-1": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent2",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g13-agent2-2",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent2",
+        "created_gen": 13
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g13-agent2-2": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent3",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g13-agent3-3",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent3",
+        "created_gen": 13
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g13-agent3-3": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent4",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g13-agent4-4",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent4",
+        "created_gen": 13
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g13-agent4-4": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent5",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g13-agent5-5",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent5",
+        "created_gen": 13
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g13-agent5-5": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    }
+   ]
+  },
+  {
+   "gen": 14,
+   "incumbent_version_before": 1,
+   "incumbent_version_after": 1,
+   "incumbent_score": 0.8894275493025493,
+   "rolled_back": true,
+   "train": {
+    "mean_accuracy": 0.9416666666666667,
+    "unsolved_rate": 0.1,
+    "comm_ratio": 0.736185064935065,
+    "complexity": 2.0,
+    "score": 0.8969429653679654,
+    "weak_share_rate": 0.0,
+    "pass_rate": 0.48317813450166397,
+    "forced_share_rate": 0.1,
+    "fidelity": 0.7057142857142857,
+    "rule_fires": {
+     "r0": 114
+    }
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g14-agent0-0",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 14
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g14-agent0-0": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent1",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g14-agent1-1",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent1",
+        "created_gen": 14
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g14-agent1-1": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent2",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g14-agent2-2",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent2",
+        "created_gen": 14
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g14-agent2-2": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent3",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g14-agent3-3",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent3",
+        "created_gen": 14
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g14-agent3-3": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent4",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g14-agent4-4",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent4",
+        "created_gen": 14
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g14-agent4-4": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent5",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g14-agent5-5",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent5",
+        "created_gen": 14
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g14-agent5-5": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    }
+   ]
+  },
+  {
+   "gen": 15,
+   "incumbent_version_before": 1,
+   "incumbent_version_after": 1,
+   "incumbent_score": 0.8894275493025493,
+   "rolled_back": true,
+   "train": {
+    "mean_accuracy": 0.9416666666666667,
+    "unsolved_rate": 0.1,
+    "comm_ratio": 0.736185064935065,
+    "complexity": 2.0,
+    "score": 0.8969429653679654,
+    "weak_share_rate": 0.0,
+    "pass_rate": 0.48317813450166397,
+    "forced_share_rate": 0.1,
+    "fidelity": 0.7057142857142857,
+    "rule_fires": {
+     "r0": 114
+    }
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g15-agent0-0",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 15
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g15-agent0-0": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent1",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g15-agent1-1",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent1",
+        "created_gen": 15
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g15-agent1-1": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent2",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g15-agent2-2",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent2",
+        "created_gen": 15
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g15-agent2-2": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent3",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g15-agent3-3",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent3",
+        "created_gen": 15
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g15-agent3-3": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent4",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g15-agent4-4",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent4",
+        "created_gen": 15
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g15-agent4-4": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent5",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g15-agent5-5",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent5",
+        "created_gen": 15
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g15-agent5-5": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    }
+   ]
+  },
+  {
+   "gen": 16,
+   "incumbent_version_before": 1,
+   "incumbent_version_after": 1,
+   "incumbent_score": 0.8894275493025493,
+   "rolled_back": true,
+   "train": {
+    "mean_accuracy": 0.9416666666666667,
+    "unsolved_rate": 0.1,
+    "comm_ratio": 0.736185064935065,
+    "complexity": 2.0,
+    "score": 0.8969429653679654,
+    "weak_share_rate": 0.0,
+    "pass_rate": 0.48317813450166397,
+    "forced_share_rate": 0.1,
+    "fidelity": 0.7057142857142857,
+    "rule_fires": {
+     "r0": 114
+    }
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g16-agent0-0",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 16
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g16-agent0-0": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent1",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g16-agent1-1",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent1",
+        "created_gen": 16
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g16-agent1-1": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent2",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g16-agent2-2",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent2",
+        "created_gen": 16
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g16-agent2-2": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent3",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g16-agent3-3",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent3",
+        "created_gen": 16
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g16-agent3-3": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent4",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g16-agent4-4",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent4",
+        "created_gen": 16
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g16-agent4-4": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent5",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g16-agent5-5",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent5",
+        "created_gen": 16
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g16-agent5-5": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    }
+   ]
+  },
+  {
+   "gen": 17,
+   "incumbent_version_before": 1,
+   "incumbent_version_after": 1,
+   "incumbent_score": 0.8894275493025493,
+   "rolled_back": true,
+   "train": {
+    "mean_accuracy": 0.9416666666666667,
+    "unsolved_rate": 0.1,
+    "comm_ratio": 0.736185064935065,
+    "complexity": 2.0,
+    "score": 0.8969429653679654,
+    "weak_share_rate": 0.0,
+    "pass_rate": 0.48317813450166397,
+    "forced_share_rate": 0.1,
+    "fidelity": 0.7057142857142857,
+    "rule_fires": {
+     "r0": 114
+    }
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g17-agent0-0",
+        "conditions": [
+         {
+          "metric": "public_candidate_count",
+          "op": "<",
+          "value": 5.0
+         },
+         {
+          "metric": "remaining_budget_ratio",
+          "op": ">=",
+          "value": 0.25
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 17
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.9388888888888889,
+      "unsolved_rate": 0.11666666666666667,
+      "comm_ratio": 0.8099717412217412,
+      "complexity": 5.0,
+      "score": 0.8743561207311207,
+      "weak_share_rate": 0.026618104118104117,
+      "pass_rate": 0.4949964695400212,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.6635406260406261,
+      "rule_fires": {
+       "r0": 350,
+       "g17-agent0-0": 9
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent1",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g17-agent1-1",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent1",
+        "created_gen": 17
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g17-agent1-1": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent2",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g17-agent2-2",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent2",
+        "created_gen": 17
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g17-agent2-2": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent3",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g17-agent3-3",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent3",
+        "created_gen": 17
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g17-agent3-3": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent4",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g17-agent4-4",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent4",
+        "created_gen": 17
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g17-agent4-4": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent5",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g17-agent5-5",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent5",
+        "created_gen": 17
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g17-agent5-5": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    }
+   ]
+  },
+  {
+   "gen": 18,
+   "incumbent_version_before": 1,
+   "incumbent_version_after": 1,
+   "incumbent_score": 0.8894275493025493,
+   "rolled_back": true,
+   "train": {
+    "mean_accuracy": 0.9416666666666667,
+    "unsolved_rate": 0.1,
+    "comm_ratio": 0.736185064935065,
+    "complexity": 2.0,
+    "score": 0.8969429653679654,
+    "weak_share_rate": 0.0,
+    "pass_rate": 0.48317813450166397,
+    "forced_share_rate": 0.1,
+    "fidelity": 0.7057142857142857,
+    "rule_fires": {
+     "r0": 114
+    }
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g18-agent0-0",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 18
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g18-agent0-0": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent1",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g18-agent1-1",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent1",
+        "created_gen": 18
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g18-agent1-1": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent2",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g18-agent2-2",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent2",
+        "created_gen": 18
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g18-agent2-2": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent3",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g18-agent3-3",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent3",
+        "created_gen": 18
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g18-agent3-3": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent4",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g18-agent4-4",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent4",
+        "created_gen": 18
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g18-agent4-4": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent5",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g18-agent5-5",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent5",
+        "created_gen": 18
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g18-agent5-5": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    }
+   ]
+  },
+  {
+   "gen": 19,
+   "incumbent_version_before": 1,
+   "incumbent_version_after": 1,
+   "incumbent_score": 0.8894275493025493,
+   "rolled_back": true,
+   "train": {
+    "mean_accuracy": 0.9416666666666667,
+    "unsolved_rate": 0.1,
+    "comm_ratio": 0.736185064935065,
+    "complexity": 2.0,
+    "score": 0.8969429653679654,
+    "weak_share_rate": 0.0,
+    "pass_rate": 0.48317813450166397,
+    "forced_share_rate": 0.1,
+    "fidelity": 0.7057142857142857,
+    "rule_fires": {
+     "r0": 114
+    }
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g19-agent0-0",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 19
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g19-agent0-0": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent1",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g19-agent1-1",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent1",
+        "created_gen": 19
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g19-agent1-1": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent2",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g19-agent2-2",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent2",
+        "created_gen": 19
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g19-agent2-2": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent3",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g19-agent3-3",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent3",
+        "created_gen": 19
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g19-agent3-3": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent4",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g19-agent4-4",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent4",
+        "created_gen": 19
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g19-agent4-4": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent5",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g19-agent5-5",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent5",
+        "created_gen": 19
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g19-agent5-5": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    }
+   ]
+  },
+  {
+   "gen": 20,
+   "incumbent_version_before": 1,
+   "incumbent_version_after": 1,
+   "incumbent_score": 0.8894275493025493,
+   "rolled_back": true,
+   "train": {
+    "mean_accuracy": 0.9416666666666667,
+    "unsolved_rate": 0.1,
+    "comm_ratio": 0.736185064935065,
+    "complexity": 2.0,
+    "score": 0.8969429653679654,
+    "weak_share_rate": 0.0,
+    "pass_rate": 0.48317813450166397,
+    "forced_share_rate": 0.1,
+    "fidelity": 0.7057142857142857,
+    "rule_fires": {
+     "r0": 114
+    }
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g20-agent0-0",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent0",
+        "created_gen": 20
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g20-agent0-0": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent1",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g20-agent1-1",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent1",
+        "created_gen": 20
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g20-agent1-1": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent2",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g20-agent2-2",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent2",
+        "created_gen": 20
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g20-agent2-2": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent3",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g20-agent3-3",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent3",
+        "created_gen": 20
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g20-agent3-3": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent4",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g20-agent4-4",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent4",
+        "created_gen": 20
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g20-agent4-4": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent5",
+     "op": "add",
+     "slot": null,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.3
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 9,
+        "author_id": "agent0",
+        "created_gen": 1
+       },
+       {
+        "rule_id": "g20-agent5-5",
+        "conditions": [
+         {
+          "metric": "remaining_budget_ratio",
+          "op": "<",
+          "value": 0.25
+         },
+         {
+          "metric": "public_candidate_count",
+          "op": ">=",
+          "value": 5.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "agent5",
+        "created_gen": 20
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.8808333333333334,
+      "unsolved_rate": 0.2,
+      "comm_ratio": 0.8064003126503126,
+      "complexity": 5.0,
+      "score": 0.799705327080327,
+      "weak_share_rate": 0.03911616161616161,
+      "pass_rate": 0.4774639742498895,
+      "forced_share_rate": 0.15,
+      "fidelity": 0.652061087061087,
+      "rule_fires": {
+       "r0": 344,
+       "g20-agent5-5": 11
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    }
+   ]
+  }
+ ],
+ "protocols": {
+  "0": {
+   "version": 0,
+   "parent_version": null,
+   "rules": [
+    {
+     "rule_id": "r0",
+     "conditions": [],
+     "action": "SHARE_BEST",
+     "priority": 0,
+     "author_id": "founder",
+     "created_gen": 0
+    }
+   ],
+   "init_threshold": 0.0,
+   "adopted_gen": 0
+  },
+  "1": {
+   "version": 1,
+   "parent_version": 0,
+   "rules": [
+    {
+     "rule_id": "r0",
+     "conditions": [
+      {
+       "metric": "my_best_gain",
+       "op": ">=",
+       "value": 0.3
+      }
+     ],
+     "action": "SHARE_BEST",
+     "priority": 9,
+     "author_id": "agent0",
+     "created_gen": 1
+    }
+   ],
+   "init_threshold": 0.0,
+   "adopted_gen": 1
+  }
+ },
+ "final_per_agent": null
+}

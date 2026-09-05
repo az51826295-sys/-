@@ -1,0 +1,1307 @@
+{
+  "spec": "example-dose-v0",
+  "design": "docs/example-dose-v0-design.md",
+  "provider": "anthropic",
+  "model": "claude-haiku-4-5",
+  "usd": 0.170474,
+  "seconds": 184.9,
+  "retries": 0,
+  "thresholds": {
+    "carry_lower": 0.2,
+    "irrelevant_band": 0.05
+  },
+  "bootstrap": {
+    "n": 10000,
+    "seed": 12345,
+    "unit": "concept"
+  },
+  "judgement": {
+    "verdict": "examples_carry_compliance",
+    "why": "ci_lower_gt_threshold",
+    "D": 0.8912337662337662,
+    "ci95": [
+      0.8151515151515152,
+      0.9636363636363636
+    ],
+    "gate_ok": true,
+    "min_concepts": 8,
+    "min_per_arm": 40
+  },
+  "arms": {
+    "ex0": {
+      "n": 56,
+      "passed": 1,
+      "pass_rate": 0.017857142857142856,
+      "concepts": [
+        "dialogue",
+        "equipment",
+        "exit",
+        "inventory",
+        "map",
+        "quest",
+        "save",
+        "settings",
+        "stats"
+      ],
+      "why": null
+    },
+    "ex1": {
+      "n": 55,
+      "passed": 46,
+      "pass_rate": 0.8363636363636363,
+      "concepts": [
+        "dialogue",
+        "equipment",
+        "exit",
+        "inventory",
+        "map",
+        "quest",
+        "save",
+        "settings",
+        "stats"
+      ],
+      "why": null
+    },
+    "ex3": {
+      "n": 55,
+      "passed": 50,
+      "pass_rate": 0.9090909090909091,
+      "concepts": [
+        "dialogue",
+        "equipment",
+        "exit",
+        "inventory",
+        "map",
+        "quest",
+        "save",
+        "settings",
+        "stats"
+      ],
+      "why": null
+    }
+  },
+  "by_concept": {
+    "ex0": {
+      "quest": {
+        "passed": 0,
+        "n": 6,
+        "rate": 0.0
+      },
+      "equipment": {
+        "passed": 0,
+        "n": 6,
+        "rate": 0.0
+      },
+      "stats": {
+        "passed": 0,
+        "n": 6,
+        "rate": 0.0
+      },
+      "dialogue": {
+        "passed": 0,
+        "n": 7,
+        "rate": 0.0
+      },
+      "exit": {
+        "passed": 0,
+        "n": 6,
+        "rate": 0.0
+      },
+      "save": {
+        "passed": 0,
+        "n": 6,
+        "rate": 0.0
+      },
+      "inventory": {
+        "passed": 1,
+        "n": 6,
+        "rate": 0.16666666666666666
+      },
+      "map": {
+        "passed": 0,
+        "n": 7,
+        "rate": 0.0
+      },
+      "settings": {
+        "passed": 0,
+        "n": 6,
+        "rate": 0.0
+      }
+    },
+    "ex1": {
+      "quest": {
+        "passed": 4,
+        "n": 6,
+        "rate": 0.6666666666666666
+      },
+      "equipment": {
+        "passed": 6,
+        "n": 6,
+        "rate": 1.0
+      },
+      "stats": {
+        "passed": 5,
+        "n": 6,
+        "rate": 0.8333333333333334
+      },
+      "dialogue": {
+        "passed": 5,
+        "n": 6,
+        "rate": 0.8333333333333334
+      },
+      "exit": {
+        "passed": 6,
+        "n": 6,
+        "rate": 1.0
+      },
+      "save": {
+        "passed": 6,
+        "n": 6,
+        "rate": 1.0
+      },
+      "inventory": {
+        "passed": 5,
+        "n": 6,
+        "rate": 0.8333333333333334
+      },
+      "map": {
+        "passed": 7,
+        "n": 7,
+        "rate": 1.0
+      },
+      "settings": {
+        "passed": 2,
+        "n": 6,
+        "rate": 0.3333333333333333
+      }
+    },
+    "ex3": {
+      "quest": {
+        "passed": 5,
+        "n": 6,
+        "rate": 0.8333333333333334
+      },
+      "equipment": {
+        "passed": 4,
+        "n": 6,
+        "rate": 0.6666666666666666
+      },
+      "stats": {
+        "passed": 5,
+        "n": 6,
+        "rate": 0.8333333333333334
+      },
+      "dialogue": {
+        "passed": 5,
+        "n": 6,
+        "rate": 0.8333333333333334
+      },
+      "exit": {
+        "passed": 7,
+        "n": 7,
+        "rate": 1.0
+      },
+      "save": {
+        "passed": 6,
+        "n": 6,
+        "rate": 1.0
+      },
+      "inventory": {
+        "passed": 6,
+        "n": 6,
+        "rate": 1.0
+      },
+      "map": {
+        "passed": 6,
+        "n": 6,
+        "rate": 1.0
+      },
+      "settings": {
+        "passed": 6,
+        "n": 6,
+        "rate": 1.0
+      }
+    }
+  },
+  "rule_counts": {
+    "ex0": {
+      "stroke.linecap": 50,
+      "stroke.linejoin": 50,
+      "grid.snap": 22,
+      "padding.min": 1
+    },
+    "ex1": {
+      "shape.max_count": 5,
+      "fill": 4,
+      "grid.snap": 3
+    },
+    "ex3": {
+      "grid.snap": 3,
+      "shape.max_count": 1,
+      "padding.min": 1
+    }
+  },
+  "steps": {
+    "d01": {
+      "delta": 0.8185064935064934,
+      "ci95": [
+        0.667003367003367,
+        0.9454545454545454
+      ]
+    },
+    "d13": {
+      "delta": 0.07272727272727275,
+      "ci95": [
+        -0.07407407407407407,
+        0.2407407407407408
+      ]
+    }
+  },
+  "rows": {
+    "ex0": [
+      {
+        "concept": "quest",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.linecap",
+          "stroke.linejoin"
+        ]
+      },
+      {
+        "concept": "quest",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.linecap",
+          "stroke.linejoin"
+        ]
+      },
+      {
+        "concept": "quest",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.linecap",
+          "stroke.linejoin"
+        ]
+      },
+      {
+        "concept": "quest",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "stroke.linecap",
+          "stroke.linejoin"
+        ]
+      },
+      {
+        "concept": "quest",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.linecap",
+          "stroke.linejoin"
+        ]
+      },
+      {
+        "concept": "quest",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "stroke.linecap",
+          "stroke.linejoin"
+        ]
+      },
+      {
+        "concept": "equipment",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "stroke.linecap",
+          "stroke.linejoin"
+        ]
+      },
+      {
+        "concept": "equipment",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "stroke.linecap",
+          "stroke.linejoin"
+        ]
+      },
+      {
+        "concept": "equipment",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "stroke.linecap",
+          "stroke.linejoin"
+        ]
+      },
+      {
+        "concept": "equipment",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "stroke.linecap",
+          "stroke.linejoin"
+        ]
+      },
+      {
+        "concept": "equipment",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "stroke.linecap",
+          "stroke.linejoin"
+        ]
+      },
+      {
+        "concept": "equipment",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "stroke.linecap",
+          "stroke.linejoin"
+        ]
+      },
+      {
+        "concept": "stats",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.linecap",
+          "stroke.linejoin"
+        ]
+      },
+      {
+        "concept": "stats",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.linecap",
+          "stroke.linejoin"
+        ]
+      },
+      {
+        "concept": "stats",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.linecap",
+          "stroke.linejoin"
+        ]
+      },
+      {
+        "concept": "stats",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "stroke.linecap",
+          "stroke.linejoin"
+        ]
+      },
+      {
+        "concept": "stats",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.linecap",
+          "stroke.linejoin"
+        ]
+      },
+      {
+        "concept": "stats",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.linecap",
+          "stroke.linejoin"
+        ]
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.linecap",
+          "stroke.linejoin"
+        ]
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.linecap",
+          "stroke.linejoin"
+        ]
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.linecap",
+          "stroke.linejoin"
+        ]
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "FAIL",
+        "violated": [
+          "padding.min",
+          "stroke.linecap",
+          "stroke.linejoin"
+        ]
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.linecap",
+          "stroke.linejoin"
+        ]
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.linecap",
+          "stroke.linejoin"
+        ]
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.linecap",
+          "stroke.linejoin"
+        ]
+      },
+      {
+        "concept": "exit",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "stroke.linecap",
+          "stroke.linejoin"
+        ]
+      },
+      {
+        "concept": "exit",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.linecap",
+          "stroke.linejoin"
+        ]
+      },
+      {
+        "concept": "exit",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "stroke.linecap",
+          "stroke.linejoin"
+        ]
+      },
+      {
+        "concept": "exit",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "stroke.linecap",
+          "stroke.linejoin"
+        ]
+      },
+      {
+        "concept": "exit",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.linecap",
+          "stroke.linejoin"
+        ]
+      },
+      {
+        "concept": "exit",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.linecap",
+          "stroke.linejoin"
+        ]
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.linecap",
+          "stroke.linejoin"
+        ]
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "stroke.linecap",
+          "stroke.linejoin"
+        ]
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.linecap",
+          "stroke.linejoin"
+        ]
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.linecap",
+          "stroke.linejoin"
+        ]
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.linecap",
+          "stroke.linejoin"
+        ]
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "stroke.linecap",
+          "stroke.linejoin"
+        ]
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ]
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ]
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ]
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ]
+      },
+      {
+        "concept": "inventory",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ]
+      },
+      {
+        "concept": "map",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.linecap",
+          "stroke.linejoin"
+        ]
+      },
+      {
+        "concept": "map",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.linecap",
+          "stroke.linejoin"
+        ]
+      },
+      {
+        "concept": "map",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.linecap",
+          "stroke.linejoin"
+        ]
+      },
+      {
+        "concept": "map",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.linecap",
+          "stroke.linejoin"
+        ]
+      },
+      {
+        "concept": "map",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.linecap",
+          "stroke.linejoin"
+        ]
+      },
+      {
+        "concept": "map",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.linecap",
+          "stroke.linejoin"
+        ]
+      },
+      {
+        "concept": "map",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.linecap",
+          "stroke.linejoin"
+        ]
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "stroke.linecap",
+          "stroke.linejoin"
+        ]
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "stroke.linecap",
+          "stroke.linejoin"
+        ]
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "stroke.linecap",
+          "stroke.linejoin"
+        ]
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.linecap",
+          "stroke.linejoin"
+        ]
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "stroke.linecap",
+          "stroke.linejoin"
+        ]
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap",
+          "stroke.linecap",
+          "stroke.linejoin"
+        ]
+      }
+    ],
+    "ex1": [
+      {
+        "concept": "quest",
+        "verdict": "FAIL",
+        "violated": [
+          "fill",
+          "grid.snap"
+        ]
+      },
+      {
+        "concept": "quest",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "quest",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "quest",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "quest",
+        "verdict": "FAIL",
+        "violated": [
+          "fill",
+          "shape.max_count"
+        ]
+      },
+      {
+        "concept": "quest",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "equipment",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "equipment",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "equipment",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "equipment",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "equipment",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "equipment",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "stats",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "stats",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "stats",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "stats",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "stats",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ]
+      },
+      {
+        "concept": "stats",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "FAIL",
+        "violated": [
+          "fill",
+          "grid.snap"
+        ]
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "exit",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "exit",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "exit",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "exit",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "exit",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "exit",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "save",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "save",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "save",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "save",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "save",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "save",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "inventory",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "inventory",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "fill"
+        ]
+      },
+      {
+        "concept": "inventory",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "inventory",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "inventory",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "map",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "map",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "map",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "map",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "map",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "map",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "map",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "shape.max_count"
+        ]
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "shape.max_count"
+        ]
+      },
+      {
+        "concept": "settings",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "shape.max_count"
+        ]
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "shape.max_count"
+        ]
+      },
+      {
+        "concept": "settings",
+        "verdict": "PASS",
+        "violated": []
+      }
+    ],
+    "ex3": [
+      {
+        "concept": "quest",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "quest",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "quest",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "quest",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "quest",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ]
+      },
+      {
+        "concept": "quest",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "equipment",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ]
+      },
+      {
+        "concept": "equipment",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "equipment",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "equipment",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "equipment",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "equipment",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ]
+      },
+      {
+        "concept": "stats",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "stats",
+        "verdict": "FAIL",
+        "violated": [
+          "shape.max_count"
+        ]
+      },
+      {
+        "concept": "stats",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "stats",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "stats",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "stats",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "FAIL",
+        "violated": [
+          "padding.min"
+        ]
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "exit",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "exit",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "exit",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "exit",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "exit",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "exit",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "exit",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "save",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "save",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "save",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "save",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "save",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "save",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "inventory",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "inventory",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "inventory",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "inventory",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "inventory",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "inventory",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "map",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "map",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "map",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "map",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "map",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "map",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "settings",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "settings",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "settings",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "settings",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "settings",
+        "verdict": "PASS",
+        "violated": []
+      },
+      {
+        "concept": "settings",
+        "verdict": "PASS",
+        "violated": []
+      }
+    ]
+  }
+}

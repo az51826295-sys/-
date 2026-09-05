@@ -1,0 +1,63 @@
+{
+ "seed": 20260822,
+ "frozen_before_classification": true,
+ "schema": {
+  "i": "실패 메시지가 이슈 본문 증상과 일치(행동 재현)",
+  "ii": "무관한 API·버전 오류",
+  "iii": "판정 불가"
+ },
+ "stratum1_original_accepted_root": [
+  [
+   "v2",
+   "marshmallow-code/marshmallow",
+   879
+  ],
+  [
+   "v1",
+   "pytoolz/toolz",
+   596
+  ],
+  [
+   "v1",
+   "mahmoud/boltons",
+   280
+  ],
+  [
+   "v1",
+   "pytoolz/toolz",
+   523
+  ],
+  [
+   "v1",
+   "msiemens/tinydb",
+   631
+  ]
+ ],
+ "stratum2_newly_flipped_src": [
+  [
+   "v2",
+   "dateutil/dateutil",
+   1432
+  ],
+  [
+   "v2",
+   "dateutil/dateutil",
+   1425
+  ],
+  [
+   "v2",
+   "marshmallow-code/marshmallow",
+   1844
+  ],
+  [
+   "v2",
+   "marshmallow-code/marshmallow",
+   1411
+  ],
+  [
+   "v2",
+   "dateutil/dateutil",
+   1364
+  ]
+ ]
+}

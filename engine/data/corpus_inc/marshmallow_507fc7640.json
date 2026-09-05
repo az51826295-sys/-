@@ -1,0 +1,16 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "507fc76400762617dd962d1aa7184ea993248edc",
+ "parent_commit": "68d2dc6917d7a8191177e8ce4195235ee0d4720c",
+ "answer_functions": [
+  "marshmallow/marshalling.py::_run_validator",
+  "marshmallow/schema.py::_do_load"
+ ],
+ "repro_tests": [],
+ "smoke": [],
+ "baseline_pass_count": 0,
+ "probes": [],
+ "inc_event": false,
+ "regression_event": false,
+ "skipped": "no repro or no answer functions"
+}

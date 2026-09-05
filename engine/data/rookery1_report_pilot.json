@@ -1,0 +1,2231 @@
+{
+ "results": [
+  {
+   "task": "sum_range",
+   "arm": "A",
+   "calls_used": 6,
+   "patches": [
+    {
+     "call_index": 0,
+     "valid": true,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 2,
+     "failures": [
+      "test0: AssertionError()",
+      "test1: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 1,
+     "valid": false,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 2,
+     "valid": false,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "syntax error: invalid syntax (<unknown>, line 1)"
+     ]
+    },
+    {
+     "call_index": 3,
+     "valid": true,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 2,
+     "failures": [
+      "test0: AssertionError()",
+      "test1: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 4,
+     "valid": false,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 5,
+     "valid": false,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "syntax error: invalid syntax (<unknown>, line 1)"
+     ]
+    }
+   ],
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "final_public_pass": false,
+   "final_hidden_pass": false,
+   "regression": false,
+   "first_try_failed": true,
+   "recovered": false
+  },
+  {
+   "task": "sum_range",
+   "arm": "B",
+   "calls_used": 6,
+   "patches": [
+    {
+     "call_index": 0,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 0,
+     "public_total": 2,
+     "failures": [
+      "test0: AssertionError()",
+      "test1: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 1,
+     "valid": false,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 2,
+     "valid": false,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "syntax error: invalid syntax (<unknown>, line 1)"
+     ]
+    },
+    {
+     "call_index": 3,
+     "valid": false,
+     "duplicate": true,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 4,
+     "valid": false,
+     "duplicate": true,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "syntax error: invalid syntax (<unknown>, line 1)"
+     ]
+    },
+    {
+     "call_index": 5,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 0,
+     "public_total": 2,
+     "failures": [
+      "test0: AssertionError()",
+      "test1: AssertionError()"
+     ]
+    }
+   ],
+   "rollback_rounds": 2,
+   "duplicates": 4,
+   "final_public_pass": false,
+   "final_hidden_pass": false,
+   "regression": false,
+   "first_try_failed": true,
+   "recovered": false
+  },
+  {
+   "task": "median",
+   "arm": "A",
+   "calls_used": 6,
+   "patches": [
+    {
+     "call_index": 0,
+     "valid": true,
+     "duplicate": false,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 1,
+     "valid": false,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 2,
+     "valid": true,
+     "duplicate": false,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 3,
+     "valid": true,
+     "duplicate": false,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 4,
+     "valid": false,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 5,
+     "valid": true,
+     "duplicate": false,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    }
+   ],
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "final_public_pass": false,
+   "final_hidden_pass": false,
+   "regression": false,
+   "first_try_failed": true,
+   "recovered": false
+  },
+  {
+   "task": "median",
+   "arm": "B",
+   "calls_used": 6,
+   "patches": [
+    {
+     "call_index": 0,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 1,
+     "valid": false,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 2,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 3,
+     "valid": false,
+     "duplicate": true,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 4,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 5,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    }
+   ],
+   "rollback_rounds": 2,
+   "duplicates": 5,
+   "final_public_pass": false,
+   "final_hidden_pass": false,
+   "regression": false,
+   "first_try_failed": true,
+   "recovered": false
+  },
+  {
+   "task": "count_vowels",
+   "arm": "A",
+   "calls_used": 6,
+   "patches": [
+    {
+     "call_index": 0,
+     "valid": true,
+     "duplicate": false,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 1,
+     "valid": false,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 2,
+     "valid": true,
+     "duplicate": false,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 3,
+     "valid": true,
+     "duplicate": false,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 4,
+     "valid": false,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 5,
+     "valid": true,
+     "duplicate": false,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    }
+   ],
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "final_public_pass": false,
+   "final_hidden_pass": false,
+   "regression": false,
+   "first_try_failed": true,
+   "recovered": false
+  },
+  {
+   "task": "count_vowels",
+   "arm": "B",
+   "calls_used": 6,
+   "patches": [
+    {
+     "call_index": 0,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 1,
+     "valid": false,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 2,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 3,
+     "valid": false,
+     "duplicate": true,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 4,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 5,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    }
+   ],
+   "rollback_rounds": 2,
+   "duplicates": 5,
+   "final_public_pass": false,
+   "final_hidden_pass": false,
+   "regression": false,
+   "first_try_failed": true,
+   "recovered": false
+  },
+  {
+   "task": "is_palindrome",
+   "arm": "A",
+   "calls_used": 6,
+   "patches": [
+    {
+     "call_index": 0,
+     "valid": true,
+     "duplicate": false,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test0: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 1,
+     "valid": false,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 2,
+     "valid": true,
+     "duplicate": false,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test0: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 3,
+     "valid": true,
+     "duplicate": false,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test0: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 4,
+     "valid": false,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 5,
+     "valid": true,
+     "duplicate": false,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test0: AssertionError()"
+     ]
+    }
+   ],
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "final_public_pass": false,
+   "final_hidden_pass": false,
+   "regression": false,
+   "first_try_failed": true,
+   "recovered": false
+  },
+  {
+   "task": "is_palindrome",
+   "arm": "B",
+   "calls_used": 6,
+   "patches": [
+    {
+     "call_index": 0,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test0: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 1,
+     "valid": false,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 2,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test0: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 3,
+     "valid": false,
+     "duplicate": true,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 4,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test0: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 5,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test0: AssertionError()"
+     ]
+    }
+   ],
+   "rollback_rounds": 2,
+   "duplicates": 5,
+   "final_public_pass": false,
+   "final_hidden_pass": false,
+   "regression": false,
+   "first_try_failed": true,
+   "recovered": false
+  },
+  {
+   "task": "fib",
+   "arm": "A",
+   "calls_used": 6,
+   "patches": [
+    {
+     "call_index": 0,
+     "valid": true,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 2,
+     "failures": [
+      "test0: AssertionError()",
+      "test1: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 1,
+     "valid": false,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 2,
+     "valid": true,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 2,
+     "failures": [
+      "test0: AssertionError()",
+      "test1: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 3,
+     "valid": true,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 2,
+     "failures": [
+      "test0: AssertionError()",
+      "test1: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 4,
+     "valid": false,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 5,
+     "valid": true,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 2,
+     "failures": [
+      "test0: AssertionError()",
+      "test1: AssertionError()"
+     ]
+    }
+   ],
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "final_public_pass": false,
+   "final_hidden_pass": false,
+   "regression": false,
+   "first_try_failed": true,
+   "recovered": false
+  },
+  {
+   "task": "fib",
+   "arm": "B",
+   "calls_used": 6,
+   "patches": [
+    {
+     "call_index": 0,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 0,
+     "public_total": 2,
+     "failures": [
+      "test0: AssertionError()",
+      "test1: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 1,
+     "valid": false,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 2,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 0,
+     "public_total": 2,
+     "failures": [
+      "test0: AssertionError()",
+      "test1: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 3,
+     "valid": false,
+     "duplicate": true,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 4,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 0,
+     "public_total": 2,
+     "failures": [
+      "test0: AssertionError()",
+      "test1: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 5,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 0,
+     "public_total": 2,
+     "failures": [
+      "test0: AssertionError()",
+      "test1: AssertionError()"
+     ]
+    }
+   ],
+   "rollback_rounds": 2,
+   "duplicates": 5,
+   "final_public_pass": false,
+   "final_hidden_pass": false,
+   "regression": false,
+   "first_try_failed": true,
+   "recovered": false
+  },
+  {
+   "task": "flatten",
+   "arm": "A",
+   "calls_used": 6,
+   "patches": [
+    {
+     "call_index": 0,
+     "valid": true,
+     "duplicate": false,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 1,
+     "valid": false,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 2,
+     "valid": true,
+     "duplicate": false,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 3,
+     "valid": true,
+     "duplicate": false,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 4,
+     "valid": false,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 5,
+     "valid": true,
+     "duplicate": false,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    }
+   ],
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "final_public_pass": false,
+   "final_hidden_pass": false,
+   "regression": false,
+   "first_try_failed": true,
+   "recovered": false
+  },
+  {
+   "task": "flatten",
+   "arm": "B",
+   "calls_used": 6,
+   "patches": [
+    {
+     "call_index": 0,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 1,
+     "valid": false,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 2,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 3,
+     "valid": false,
+     "duplicate": true,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 4,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 5,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    }
+   ],
+   "rollback_rounds": 2,
+   "duplicates": 5,
+   "final_public_pass": false,
+   "final_hidden_pass": false,
+   "regression": false,
+   "first_try_failed": true,
+   "recovered": false
+  },
+  {
+   "task": "clamp",
+   "arm": "A",
+   "calls_used": 6,
+   "patches": [
+    {
+     "call_index": 0,
+     "valid": true,
+     "duplicate": false,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 1,
+     "valid": false,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 2,
+     "valid": true,
+     "duplicate": false,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 3,
+     "valid": true,
+     "duplicate": false,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 4,
+     "valid": false,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 5,
+     "valid": true,
+     "duplicate": false,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    }
+   ],
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "final_public_pass": false,
+   "final_hidden_pass": false,
+   "regression": false,
+   "first_try_failed": true,
+   "recovered": false
+  },
+  {
+   "task": "clamp",
+   "arm": "B",
+   "calls_used": 6,
+   "patches": [
+    {
+     "call_index": 0,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 1,
+     "valid": false,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 2,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 3,
+     "valid": false,
+     "duplicate": true,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 4,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 5,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    }
+   ],
+   "rollback_rounds": 2,
+   "duplicates": 5,
+   "final_public_pass": false,
+   "final_hidden_pass": false,
+   "regression": false,
+   "first_try_failed": true,
+   "recovered": false
+  },
+  {
+   "task": "moving_average",
+   "arm": "A",
+   "calls_used": 6,
+   "patches": [
+    {
+     "call_index": 0,
+     "valid": true,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 1,
+     "failures": [
+      "test0: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 1,
+     "valid": false,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 2,
+     "valid": true,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 1,
+     "failures": [
+      "test0: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 3,
+     "valid": true,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 1,
+     "failures": [
+      "test0: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 4,
+     "valid": false,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 5,
+     "valid": true,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 1,
+     "failures": [
+      "test0: AssertionError()"
+     ]
+    }
+   ],
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "final_public_pass": false,
+   "final_hidden_pass": false,
+   "regression": false,
+   "first_try_failed": true,
+   "recovered": false
+  },
+  {
+   "task": "moving_average",
+   "arm": "B",
+   "calls_used": 6,
+   "patches": [
+    {
+     "call_index": 0,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 0,
+     "public_total": 1,
+     "failures": [
+      "test0: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 1,
+     "valid": false,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 2,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 0,
+     "public_total": 1,
+     "failures": [
+      "test0: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 3,
+     "valid": false,
+     "duplicate": true,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 4,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 0,
+     "public_total": 1,
+     "failures": [
+      "test0: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 5,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 0,
+     "public_total": 1,
+     "failures": [
+      "test0: AssertionError()"
+     ]
+    }
+   ],
+   "rollback_rounds": 2,
+   "duplicates": 5,
+   "final_public_pass": false,
+   "final_hidden_pass": false,
+   "regression": false,
+   "first_try_failed": true,
+   "recovered": false
+  },
+  {
+   "task": "dedup_preserve",
+   "arm": "A",
+   "calls_used": 6,
+   "patches": [
+    {
+     "call_index": 0,
+     "valid": true,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 1,
+     "failures": [
+      "test0: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 1,
+     "valid": false,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 2,
+     "valid": true,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 1,
+     "failures": [
+      "test0: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 3,
+     "valid": true,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 1,
+     "failures": [
+      "test0: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 4,
+     "valid": false,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 5,
+     "valid": true,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 1,
+     "failures": [
+      "test0: AssertionError()"
+     ]
+    }
+   ],
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "final_public_pass": false,
+   "final_hidden_pass": false,
+   "regression": false,
+   "first_try_failed": true,
+   "recovered": false
+  },
+  {
+   "task": "dedup_preserve",
+   "arm": "B",
+   "calls_used": 6,
+   "patches": [
+    {
+     "call_index": 0,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 0,
+     "public_total": 1,
+     "failures": [
+      "test0: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 1,
+     "valid": false,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 2,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 0,
+     "public_total": 1,
+     "failures": [
+      "test0: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 3,
+     "valid": false,
+     "duplicate": true,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 4,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 0,
+     "public_total": 1,
+     "failures": [
+      "test0: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 5,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 0,
+     "public_total": 1,
+     "failures": [
+      "test0: AssertionError()"
+     ]
+    }
+   ],
+   "rollback_rounds": 2,
+   "duplicates": 5,
+   "final_public_pass": false,
+   "final_hidden_pass": false,
+   "regression": false,
+   "first_try_failed": true,
+   "recovered": false
+  },
+  {
+   "task": "word_count",
+   "arm": "A",
+   "calls_used": 6,
+   "patches": [
+    {
+     "call_index": 0,
+     "valid": true,
+     "duplicate": false,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 1,
+     "valid": false,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 2,
+     "valid": true,
+     "duplicate": false,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 3,
+     "valid": true,
+     "duplicate": false,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 4,
+     "valid": false,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 5,
+     "valid": true,
+     "duplicate": false,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    }
+   ],
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "final_public_pass": false,
+   "final_hidden_pass": false,
+   "regression": false,
+   "first_try_failed": true,
+   "recovered": false
+  },
+  {
+   "task": "word_count",
+   "arm": "B",
+   "calls_used": 6,
+   "patches": [
+    {
+     "call_index": 0,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 1,
+     "valid": false,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 2,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 3,
+     "valid": false,
+     "duplicate": true,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 4,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 5,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    }
+   ],
+   "rollback_rounds": 2,
+   "duplicates": 5,
+   "final_public_pass": false,
+   "final_hidden_pass": false,
+   "regression": false,
+   "first_try_failed": true,
+   "recovered": false
+  },
+  {
+   "task": "running_max",
+   "arm": "A",
+   "calls_used": 6,
+   "patches": [
+    {
+     "call_index": 0,
+     "valid": true,
+     "duplicate": false,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 1,
+     "valid": false,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 2,
+     "valid": true,
+     "duplicate": false,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 3,
+     "valid": true,
+     "duplicate": false,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 4,
+     "valid": false,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 5,
+     "valid": true,
+     "duplicate": false,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    }
+   ],
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "final_public_pass": false,
+   "final_hidden_pass": false,
+   "regression": false,
+   "first_try_failed": true,
+   "recovered": false
+  },
+  {
+   "task": "running_max",
+   "arm": "B",
+   "calls_used": 6,
+   "patches": [
+    {
+     "call_index": 0,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 1,
+     "valid": false,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 2,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 3,
+     "valid": false,
+     "duplicate": true,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 4,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 5,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    }
+   ],
+   "rollback_rounds": 2,
+   "duplicates": 5,
+   "final_public_pass": false,
+   "final_hidden_pass": false,
+   "regression": false,
+   "first_try_failed": true,
+   "recovered": false
+  },
+  {
+   "task": "binary_gap",
+   "arm": "A",
+   "calls_used": 6,
+   "patches": [
+    {
+     "call_index": 0,
+     "valid": true,
+     "duplicate": false,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 1,
+     "valid": false,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 2,
+     "valid": true,
+     "duplicate": false,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 3,
+     "valid": true,
+     "duplicate": false,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 4,
+     "valid": false,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 5,
+     "valid": true,
+     "duplicate": false,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    }
+   ],
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "final_public_pass": false,
+   "final_hidden_pass": false,
+   "regression": false,
+   "first_try_failed": true,
+   "recovered": false
+  },
+  {
+   "task": "binary_gap",
+   "arm": "B",
+   "calls_used": 6,
+   "patches": [
+    {
+     "call_index": 0,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 1,
+     "valid": false,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 2,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 3,
+     "valid": false,
+     "duplicate": true,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 4,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 5,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    }
+   ],
+   "rollback_rounds": 2,
+   "duplicates": 5,
+   "final_public_pass": false,
+   "final_hidden_pass": false,
+   "regression": false,
+   "first_try_failed": true,
+   "recovered": false
+  },
+  {
+   "task": "merge_sorted",
+   "arm": "A",
+   "calls_used": 1,
+   "patches": [
+    {
+     "call_index": 0,
+     "valid": true,
+     "duplicate": false,
+     "public_passed": 1,
+     "public_total": 1,
+     "failures": []
+    }
+   ],
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "final_public_pass": true,
+   "final_hidden_pass": false,
+   "regression": true,
+   "first_try_failed": false,
+   "recovered": false
+  },
+  {
+   "task": "merge_sorted",
+   "arm": "B",
+   "calls_used": 6,
+   "patches": [
+    {
+     "call_index": 0,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 1,
+     "public_total": 1,
+     "failures": []
+    },
+    {
+     "call_index": 1,
+     "valid": false,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 2,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 1,
+     "public_total": 1,
+     "failures": []
+    },
+    {
+     "call_index": 3,
+     "valid": false,
+     "duplicate": true,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 4,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 1,
+     "public_total": 1,
+     "failures": []
+    },
+    {
+     "call_index": 5,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 1,
+     "public_total": 1,
+     "failures": []
+    }
+   ],
+   "rollback_rounds": 2,
+   "duplicates": 5,
+   "final_public_pass": false,
+   "final_hidden_pass": false,
+   "regression": false,
+   "first_try_failed": false,
+   "recovered": false
+  },
+  {
+   "task": "caesar",
+   "arm": "A",
+   "calls_used": 6,
+   "patches": [
+    {
+     "call_index": 0,
+     "valid": true,
+     "duplicate": false,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 1,
+     "valid": false,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 2,
+     "valid": true,
+     "duplicate": false,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 3,
+     "valid": true,
+     "duplicate": false,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 4,
+     "valid": false,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 5,
+     "valid": true,
+     "duplicate": false,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    }
+   ],
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "final_public_pass": false,
+   "final_hidden_pass": false,
+   "regression": false,
+   "first_try_failed": true,
+   "recovered": false
+  },
+  {
+   "task": "caesar",
+   "arm": "B",
+   "calls_used": 6,
+   "patches": [
+    {
+     "call_index": 0,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 1,
+     "valid": false,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 2,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 3,
+     "valid": false,
+     "duplicate": true,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 4,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    },
+    {
+     "call_index": 5,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 1,
+     "public_total": 2,
+     "failures": [
+      "test1: AssertionError()"
+     ]
+    }
+   ],
+   "rollback_rounds": 2,
+   "duplicates": 5,
+   "final_public_pass": false,
+   "final_hidden_pass": false,
+   "regression": false,
+   "first_try_failed": true,
+   "recovered": false
+  },
+  {
+   "task": "balanced_parens",
+   "arm": "A",
+   "calls_used": 1,
+   "patches": [
+    {
+     "call_index": 0,
+     "valid": true,
+     "duplicate": false,
+     "public_passed": 2,
+     "public_total": 2,
+     "failures": []
+    }
+   ],
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "final_public_pass": true,
+   "final_hidden_pass": false,
+   "regression": true,
+   "first_try_failed": false,
+   "recovered": false
+  },
+  {
+   "task": "balanced_parens",
+   "arm": "B",
+   "calls_used": 6,
+   "patches": [
+    {
+     "call_index": 0,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 2,
+     "public_total": 2,
+     "failures": []
+    },
+    {
+     "call_index": 1,
+     "valid": false,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 2,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 2,
+     "public_total": 2,
+     "failures": []
+    },
+    {
+     "call_index": 3,
+     "valid": false,
+     "duplicate": true,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 4,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 2,
+     "public_total": 2,
+     "failures": []
+    },
+    {
+     "call_index": 5,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 2,
+     "public_total": 2,
+     "failures": []
+    }
+   ],
+   "rollback_rounds": 2,
+   "duplicates": 5,
+   "final_public_pass": false,
+   "final_hidden_pass": false,
+   "regression": false,
+   "first_try_failed": false,
+   "recovered": false
+  },
+  {
+   "task": "second_largest",
+   "arm": "A",
+   "calls_used": 1,
+   "patches": [
+    {
+     "call_index": 0,
+     "valid": true,
+     "duplicate": false,
+     "public_passed": 1,
+     "public_total": 1,
+     "failures": []
+    }
+   ],
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "final_public_pass": true,
+   "final_hidden_pass": false,
+   "regression": true,
+   "first_try_failed": false,
+   "recovered": false
+  },
+  {
+   "task": "second_largest",
+   "arm": "B",
+   "calls_used": 6,
+   "patches": [
+    {
+     "call_index": 0,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 1,
+     "public_total": 1,
+     "failures": []
+    },
+    {
+     "call_index": 1,
+     "valid": false,
+     "duplicate": false,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 2,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 1,
+     "public_total": 1,
+     "failures": []
+    },
+    {
+     "call_index": 3,
+     "valid": false,
+     "duplicate": true,
+     "public_passed": 0,
+     "public_total": 0,
+     "failures": [
+      "no function definition found"
+     ]
+    },
+    {
+     "call_index": 4,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 1,
+     "public_total": 1,
+     "failures": []
+    },
+    {
+     "call_index": 5,
+     "valid": true,
+     "duplicate": true,
+     "public_passed": 1,
+     "public_total": 1,
+     "failures": []
+    }
+   ],
+   "rollback_rounds": 2,
+   "duplicates": 5,
+   "final_public_pass": false,
+   "final_hidden_pass": false,
+   "regression": false,
+   "first_try_failed": false,
+   "recovered": false
+  }
+ ],
+ "summary": {
+  "A": {
+   "hidden_pass": 0.0,
+   "public_pass": 0.1875,
+   "regression": 0.1875,
+   "mean_calls": 5.0625,
+   "duplicates": 0,
+   "rollback_rounds": 0,
+   "recovery": 0.0
+  },
+  "B": {
+   "hidden_pass": 0.0,
+   "public_pass": 0.0,
+   "regression": 0.0,
+   "mean_calls": 6.0,
+   "duplicates": 79,
+   "rollback_rounds": 32,
+   "recovery": 0.0
+  },
+  "verdicts": [
+   "R1 (B 숨김 통과율 ≥ A+10%p): 미충족 - B 0.00 vs A 0.00",
+   "R2 (B 회귀율 ≤ A): 충족 - B 0.00 vs A 0.19",
+   "R3 (B 회복률 > A): 미충족 - B 0.0 vs A 0.0"
+  ],
+  "elapsed_s": 19,
+  "usage": {}
+ }
+}

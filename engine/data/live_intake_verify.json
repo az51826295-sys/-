@@ -1,0 +1,578 @@
+{
+ "verified_at": "2026-08-20T22:01:20",
+ "mock": false,
+ "n_candidates": 61,
+ "outcomes": {
+  "accepted": 15,
+  "not_reproducible": 10,
+  "invalid": 36
+ },
+ "stage2_yield": 0.2459,
+ "rows": [
+  {
+   "repo": "mahmoud/boltons",
+   "number": 439,
+   "title": "IndexedSet: difference_update/intersection_update are quadratic for large removals",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import time\nimport pytest\nfrom boltons.setutils import IndexedSet\n\n\ndef test_difference_update_performance_is_linear():\n    \"\"\"Test that difference_update has linear time complexity for large scattered removals.\"\"\"\n    measurements = []\n\n    for n in (10_000, 20_000, 40_000):\n        s = IndexedSet(range(n))\n        to_remove = set(range(0, n, 2))  # every other element -> scattered holes\n\n        t0 = time.perf_counter()\n        s.difference_update(to_remove)\n        elapsed_ms = (time.perf_counter() - t0) * 1000\n\n        measurements.append((n, elapsed_ms))\n\n    # Check that scaling is approximately linear, not quadratic\n    # For quadratic: time should roughly quadruple when n doubles\n    # For linear: time should roughly double when n doubles\n\n    n1, t1 = measurements[0]\n    n2, t2 = measurements[1]\n    n3, t3 = measurements[2]\n\n    # Ratio of times when n doubles from 10k to 20k\n    ratio_1_to_2 = t2 / t1\n    # Ratio of times when n doubles from 20k to 40k\n    ratio_2_to_3 = t3 / t2\n\n    # For quadratic scaling: ratio should be ~4\n    # For linear scaling: ratio should be ~2\n    # We allow some variance, but reject clear quadratic behavior\n    # If it's quadratic, both ratios will be significantly > 3\n    assert ratio_1_to_2 < 3.0, f\"Time grew by {ratio_1_to_2:.1f}x when n doubled (quadratic behavior)\"\n    assert ratio_2_to_3 < 3.0, f\"Time grew by {ratio_2_to_3:.1f}x when n doubled (quadratic behavior)\"\n"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 390,
+   "title": "Improve Test Suite Documentation",
+   "class": "A",
+   "labels": [],
+   "outcome": "not_reproducible",
+   "test_src": "def test_multibyte_delim():\n    \"\"\"Primarily tests recv_until with various maxsizes and True/False\n    for with_delimiter.\n    \"\"\"\n    # Clear test purpose\n"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 347,
+   "title": "tracking some ideas",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom boltons.dictutils import get_any\n\n\ndef test_get_any_cascading_get():\n    \"\"\"Test that get_any returns the first key found in the dict\"\"\"\n    test_dict = {'a': 1, 'b': 2, 'c': 3}\n\n    # Should return value of first key found\n    assert get_any(test_dict, 'a', 'b', 'c') == 1\n    assert get_any(test_dict, 'b', 'c') == 2\n    assert get_any(test_dict, 'c') == 3\n\n    # Should return default when no keys found\n    assert get_any(test_dict, 'x', 'y', 'z') is None\n    assert get_any(test_dict, 'x', 'y', 'z', default='not_found') == 'not_found'\n\n    # Should work with empty keys\n    assert get_any(test_dict) is None\n    assert get_any(test_dict, default='empty') == 'empty'\n\n    # Should return first matching key, not last\n    assert get_any(test_dict, 'c', 'b', 'a') == 3\n"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 344,
+   "title": "chunked filter",
+   "class": "B",
+   "labels": [],
+   "outcome": "not_reproducible",
+   "test_src": "import pytest\nfrom boltons.iterutils import chunked\n\n\ndef filter_chunked(iterable, chunk_size, func):\n    \"\"\"Filter items using a function that operates on chunks.\"\"\"\n    for chunk in chunked(iterable, chunk_size):\n        for item, allow in zip(chunk, func(chunk)):\n            if allow:\n                yield item\n\n\ndef test_filter_chunked_basic():\n    \"\"\"Test filter_chunked filters items based on chunk predicate.\"\"\"\n    data = [1, 2, 3, 4, 5, 6, 7, 8, 9]\n    chunk_size = 3\n\n    # Predicate: keep items in chunks where sum > 10\n    def keep_if_sum_gt_10(chunk):\n        total = sum(chunk)\n        return [total > 10] * len(chunk)\n\n    result = list(filter_chunked(data, chunk_size, keep_if_sum_gt_10))\n\n    # First chunk [1,2,3] sum=6 (reject all)\n    # Second chunk [4,5,6] sum=15 (keep all)\n    # Third chunk [7,8,9] sum=24 (keep all)\n    assert result == [4, 5, 6, 7, 8, 9]\n\n\ndef test_filter_chunked_selective():\n    \"\"\"Test filter_chunked with selective filtering per item in chunk.\"\"\"\n    data = [1, 2, 3, 4, 5, 6]\n    chunk_size = 2\n\n    # Predicate: keep even items\n    def keep_evens(chunk):\n        return [item % 2 == 0 for item in chunk]\n\n    result = list(filter_chunked(data, chunk_size, keep_evens))\n\n    # [1,2] -> keep 2\n    # [3,4] -> keep 4\n    # [5,6] -> keep 6\n    assert result == [2, 4, 6]\n\n\ndef test_filter_chunked_empty():\n    \"\"\"Test filter_chunked with empty input.\"\"\"\n    result = list(filter_chunked([], 3, lambda x: []))\n    assert result == []\n\n\ndef test_filter_chunked_uneven_chunk():\n    \"\"\"Test filter_chunked with data size not divisible by chunk_size.\"\"\"\n    data = [1, 2, 3, 4, 5]\n    chunk_size = 2\n\n    def keep_gt_2(chunk):\n        return [item > 2 for item in chunk]\n\n    result = list(filter_chunked(data, chunk_size, keep_gt_2))\n\n    # [1,2] -> keep nothing\n    # [3,4] -> keep both\n    # [5] -> keep it\n    assert result == [3, 4, 5]\n"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 324,
+   "title": "attrs/dataclasses-style decorator helper",
+   "class": "B",
+   "labels": [],
+   "outcome": "not_reproducible",
+   "test_src": "import pytest\nfrom functools import wraps\n\n\ndef maybe_arg_decorator(callable):\n    \"\"\"\n    There's this fun trick that dataclasses.dataclass decorator does,\n    where you can use it both directly as a decorator, or call it with kwargs and use\n    that as the decorator.\n\n    This helper converts a function with 1 positional argument and a bunch of kwargs\n    into one of those.\n    \"\"\"\n    @wraps(callable)\n    def wrapper(decorated=None, /, **kwargs):\n        if decorated:\n            return callable(decorated)\n\n        def double_wrapper(decorated, /):\n            return callable(decorated, **kwargs)\n\n        return double_wrapper\n\n    return wrapper\n\n\ndef test_maybe_arg_decorator():\n    @maybe_arg_decorator\n    def simple_decorator(decorated, a=1, b=2):\n        return f\"{decorated.__name__}(a={a}, b={b})\"\n\n    # Test 1: Direct decorator usage without arguments\n    @simple_decorator\n    def thing():\n        pass\n\n    assert thing == \"thing(a=1, b=2)\"\n\n    # Test 2: Decorator with kwargs\n    @simple_decorator(a=3)\n    def other_thing():\n        pass\n\n    assert other_thing == \"other_thing(a=3, b=2)\"\n\n    # Test 3: Decorator with multiple kwargs\n    @simple_decorator(a=5, b=10)\n    def another_thing():\n        pass\n\n    assert another_thing == \"another_thing(a=5, b=10)\"\n"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 311,
+   "title": "Feature request: intersection and union of lists of ranges",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom boltons.iterutils import intersection, union\n\n\ndef test_range_intersection_and_union():\n    # Test intersection of overlapping ranges\n    ranges = [(1, 5), (2, 6), (1, 4)]\n    assert intersection(ranges) == (2, 4)\n    assert union(ranges) == [(1, 6)]\n\n    # Test intersection and union with non-overlapping ranges\n    ranges = [(1, 5), (6, 8), (7, 9)]\n    assert intersection(ranges) is None\n    assert union(ranges) == [(1, 5), (6, 9)]\n\n    # Test with unordered ranges\n    ranges = [(6, 8), (1, 5), (7, 9)]\n    assert intersection(ranges) is None\n    assert union(ranges) == [(1, 5), (6, 9)]\n"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 310,
+   "title": "windowed with overlap",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import pytest\nimport itertools\nfrom boltons.iterutils import windowed\n\n\ndef test_windowed_with_step_parameter():\n    \"\"\"Test that windowed supports step parameter for overlapping windows\"\"\"\n    # Test case: windows of size 3 with step of 2 should give (0,1,2), (2,3,4), (4,5,6)...\n    g = windowed(itertools.count(), 3, step=2)\n\n    assert next(g) == (0, 1, 2)\n    assert next(g) == (2, 3, 4)\n    assert next(g) == (4, 5, 6)\n    assert next(g) == (6, 7, 8)\n"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 304,
+   "title": "question: how to get `remap` to ignore lists",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import pytest\nfrom boltons.iterutils import remap\n\n\ndef test_remap_ignore_lists():\n    \"\"\"Test that remap can ignore lists entirely without visiting their contents.\"\"\"\n    data = {\n        \"thing1\": \"\",\n        \"thing2\": None,\n        \"thing3\": [\"\", None]\n    }\n\n    def drop_empty_and_none(path, key, value) -> bool:\n        # Return False for empty strings and None to filter them out\n        return value not in [\"\", None]\n\n    result = remap(data, visit=drop_empty_and_none)\n\n    # Expected: only thing3 with its list intact should remain\n    expected = {\"thing3\": [\"\", None]}\n    assert result == expected\n"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 301,
+   "title": "`FunctionBuilder.from_func` not working",
+   "class": "A",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "def test_intake_issue():\n    def foo(a, b=2):\r\n        return a / b\r\n    \r\n    f = FunctionBuilder.from_func(foo).get_func()\r\n    assert f(20) == foo(20) == 10.0  # fails\r\n"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 299,
+   "title": "Proposal: shorten long string by truncate chars (not by words)",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom boltons.strutils import shorten\n\n\ndef test_shorten_truncates_chars_not_words():\n    \"\"\"Test that shorten truncates by characters, not by words.\"\"\"\n    # Basic truncation by characters\n    assert shorten('123456789', width=8) == '12345...'\n\n    # Text shorter than width should not be truncated\n    assert shorten('123456789', width=9) == '123456789'\n\n    # Text exactly at width should not be truncated\n    assert shorten('12345678', width=8) == '12345678'\n\n    # None should return None\n    assert shorten(None, width=8) is None\n\n    # Empty string should return empty string\n    assert shorten('', width=8) == ''\n\n    # Custom placeholder\n    assert shorten('123456789', width=8, placeholder='--') == '123456--'\n\n    # Width smaller than placeholder length\n    assert shorten('123456789', width=2, placeholder='...') == '...'\n\n    # Single character that needs truncation\n    assert shorten('ab', width=4) == 'ab'\n    assert shorten('ab', width=3) == 'a...'\n"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 290,
+   "title": "__version__ field",
+   "class": "B",
+   "labels": [],
+   "outcome": "not_reproducible",
+   "test_src": "import pytest\n\n\ndef test_boltons_has_version_field():\n    \"\"\"Test that boltons module has __version__ field.\"\"\"\n    import boltons\n\n    # Check that __version__ attribute exists\n    assert hasattr(boltons, '__version__'), \"boltons module should have __version__ attribute\"\n\n    # Check that __version__ is a string\n    assert isinstance(boltons.__version__, str), \"__version__ should be a string\"\n\n    # Check that __version__ is not empty\n    assert len(boltons.__version__) > 0, \"__version__ should not be empty\"\n"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 289,
+   "title": "typename",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom boltons.typeutils import typename\n\n\ndef test_typename_basic_types():\n    \"\"\"Test typename function with basic Python types.\"\"\"\n    assert typename(42) == \"int\"\n    assert typename(3.14) == \"float\"\n    assert typename(\"hello\") == \"str\"\n    assert typename(True) == \"bool\"\n    assert typename(None) == \"NoneType\"\n    assert typename([1, 2, 3]) == \"list\"\n    assert typename((1, 2, 3)) == \"tuple\"\n    assert typename({1, 2, 3}) == \"set\"\n    assert typename({\"a\": 1}) == \"dict\"\n\n\ndef test_typename_custom_classes():\n    \"\"\"Test typename function with custom classes.\"\"\"\n    class MyClass:\n        pass\n\n    class AnotherClass:\n        pass\n\n    obj1 = MyClass()\n    obj2 = AnotherClass()\n\n    assert typename(obj1) == \"MyClass\"\n    assert typename(obj2) == \"AnotherClass\"\n\n\ndef test_typename_builtin_objects():\n    \"\"\"Test typename function with builtin objects.\"\"\"\n    assert typename(len) == \"builtin_function_or_method\"\n    assert typename(int) == \"type\"\n    assert typename(Exception) == \"type\"\n    assert typename(Exception(\"test\")) == \"Exception\"\n"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 280,
+   "title": "URL comparison is order-based for query parameters",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import pytest\nfrom boltons.urlutils import URL\n\n\ndef test_url_comparison_ignores_query_parameter_order():\n    \"\"\"\n    URL comparison should be order-agnostic for query parameters.\n    Two URLs with the same query parameters in different orders should be equal.\n    \"\"\"\n    a = URL('http://example.com/foo, bar?foo=bar&bar=foo')\n    b = URL('http://example.com/foo%2C%20bar?bar=foo&foo=bar')\n    assert a == b\n"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 266,
+   "title": "dict get_all()",
+   "class": "B",
+   "labels": [],
+   "outcome": "not_reproducible",
+   "test_src": "import pytest\nfrom boltons.dictutils import OneToOne\n\ndef test_get_all_basic():\n    \"\"\"Test get_all function with basic usage\"\"\"\n    d = {'a': 1, 'b': 2}\n    result = get_all(d, a=None, b=None, c=3)\n    assert result == {'a': 1, 'b': 2, 'c': 3}\n\ndef test_get_all_missing_keys():\n    \"\"\"Test get_all with missing keys that should use defaults\"\"\"\n    d = {'a': 1}\n    result = get_all(d, a=None, b=10, c=20)\n    assert result == {'a': 1, 'b': 10, 'c': 20}\n\ndef test_get_all_empty_dict():\n    \"\"\"Test get_all with empty dict\"\"\"\n    d = {}\n    result = get_all(d, x=5, y=10)\n    assert result == {'x': 5, 'y': 10}\n\ndef test_get_all_all_present():\n    \"\"\"Test get_all when all keys are present\"\"\"\n    d = {'a': 1, 'b': 2, 'c': 3}\n    result = get_all(d, a=99, b=99, c=99)\n    assert result == {'a': 1, 'b': 2, 'c': 3}\n\ndef get_all(map, **defaults):\n    return {key: map.get(key, default) for key, default in defaults.items()}\n"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 256,
+   "title": "auto recursive module importer",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import os\nimport sys\nimport tempfile\nimport shutil\nfrom pathlib import Path\nfrom boltons.tbutils import _import_pkg_modules\n\ndef test_import_pkg_modules_recursive():\n    \"\"\"Test that _import_pkg_modules recursively imports subpackages.\"\"\"\n    # Create temporary package structure\n    with tempfile.TemporaryDirectory() as tmpdir:\n        # Create main package\n        pkg_dir = Path(tmpdir) / \"test_pkg\"\n        pkg_dir.mkdir()\n        (pkg_dir / \"__init__.py\").write_text(\"main_imported = True\")\n\n        # Create subpackage\n        sub_dir = pkg_dir / \"subpkg\"\n        sub_dir.mkdir()\n        (sub_dir / \"__init__.py\").write_text(\"sub_imported = True\")\n\n        # Create nested sub-subpackage\n        subsub_dir = sub_dir / \"subsubpkg\"\n        subsub_dir.mkdir()\n        (subsub_dir / \"__init__.py\").write_text(\"subsub_imported = True\")\n\n        # Add to sys.path and import\n        sys.path.insert(0, tmpdir)\n        try:\n            import test_pkg\n\n            # Call the recursive import function\n            _import_pkg_modules(test_pkg, excluded=[])\n\n            # Verify recursive import happened\n            assert hasattr(test_pkg, \"subpkg\"), \"subpkg should be imported\"\n            assert hasattr(test_pkg.subpkg, \"subsubpkg\"), \"subsubpkg should be recursively imported\"\n\n        finally:\n            sys.path.remove(tmpdir)\n            if \"test_pkg\" in sys.modules:\n                del sys.modules[\"test_pkg\"]\n            if \"test_pkg.subpkg\" in sys.modules:\n                del sys.modules[\"test_pkg.subpkg\"]\n            if \"test_pkg.subpkg.subsubpkg\" in sys.modules:\n                del sys.modules[\"test_pkg.subpkg.subsubpkg\"]\n"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 225,
+   "title": "RFE: enhance IndexedSet to inherit from set",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import pytest\nfrom boltons.setutils import IndexedSet\n\n\ndef test_indexed_set_isinstance_set():\n    \"\"\"Test that IndexedSet is recognized as an instance of set.\"\"\"\n    indexed_set = IndexedSet([1, 2, 3])\n    assert isinstance(indexed_set, set), \"IndexedSet should be recognized as an instance of set\"\n"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 201,
+   "title": "Adding parameters with wraps()",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import pytest\nfrom boltons.funcutils import wraps\n\n\ndef test_wraps_add_parameters():\n    \"\"\"Test that wraps() can add parameters to a wrapped function.\"\"\"\n\n    def add_arg_extra_arg(func):\n        @wraps(func)\n        def wrapper(*args, extra_arg=None, **kwargs):\n            if extra_arg is not None:\n                wrapper.extra_arg_value = extra_arg\n            return func(*args, **kwargs)\n        return wrapper\n\n    @add_arg_extra_arg\n    def myfunc(arg1, arg2, arg3='default'):\n        return f\"arg1={arg1}, arg2={arg2}, arg3={arg3}\"\n\n    # Test that the wrapped function accepts the extra_arg parameter\n    result = myfunc('val1', 'val2', extra_arg='extra!')\n    assert result == \"arg1=val1, arg2=val2, arg3=default\"\n    assert myfunc.extra_arg_value == 'extra!'\n\n    # Test that the signature includes the extra_arg parameter\n    import inspect\n    sig = inspect.signature(myfunc)\n    assert 'extra_arg' in sig.parameters\n\n    # Test that original parameters still work\n    result2 = myfunc('val1', 'val2', arg3='custom')\n    assert result2 == \"arg1=val1, arg2=val2, arg3=custom\"\n"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1548,
+   "title": "Feature request: nth ordinal weekday",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom dateutil.rrule import rrule, MONTHLY, MO, TU, WE, TH, FR, SA, SU\nfrom datetime import datetime\n\n\ndef test_nth_ordinal_weekday():\n    \"\"\"Test getting the nth occurrence of a weekday in a month\"\"\"\n    # Third Friday of October 2024 should be October 18, 2024\n    rule = rrule(MONTHLY, dtstart=datetime(2024, 10, 1), byweekday=FR(3), count=1)\n    result = rule[0]\n    assert result.day == 18\n    assert result.month == 10\n    assert result.year == 2024\n\n    # Second Monday of November 2024 should be November 11, 2024\n    rule = rrule(MONTHLY, dtstart=datetime(2024, 11, 1), byweekday=MO(2), count=1)\n    result = rule[0]\n    assert result.day == 11\n    assert result.month == 11\n    assert result.year == 2024\n\n    # First Wednesday of December 2024 should be December 4, 2024\n    rule = rrule(MONTHLY, dtstart=datetime(2024, 12, 1), byweekday=WE(1), count=1)\n    result = rule[0]\n    assert result.day == 4\n    assert result.month == 12\n    assert result.year == 2024\n"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1546,
+   "title": "parser.parse( ) also silently truncates fractional seconds beyond 6 digits (via _parsems int(f.ljust",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom dateutil import parser\n\n\ndef test_parser_parse_fractional_seconds_rounding():\n    \"\"\"Test that parser.parse correctly rounds fractional seconds beyond 6 digits.\"\"\"\n    # Test case from the issue: 7th digit should cause rounding, not truncation\n    dt = parser.parse(\"2020-01-01 00:00:00.1234567\")\n    # 0.1234567 seconds = 123456.7 microseconds\n    # Should round to 123457, not truncate to 123456\n    assert dt.microsecond == 123457\n\n    # Additional test cases for rounding behavior\n    dt2 = parser.parse(\"2020-01-01 00:00:00.9999999\")\n    # 0.9999999 seconds = 999999.9 microseconds -> should round to 1000000\n    # which means 1 second added and microsecond = 0\n    assert dt2.microsecond == 0\n    assert dt2.second == 1\n\n    dt3 = parser.parse(\"2020-01-01 00:00:00.1234564\")\n    # 0.1234564 seconds = 123456.4 microseconds -> should round down to 123456\n    assert dt3.microsecond == 123456\n"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1545,
+   "title": "isoparse( ) silently truncates fractional seconds beyond 6 digits (0.1234567 -> 123456us, not rounde",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom dateutil.parser.isoparser import isoparse\n\n\ndef test_isoparse_fractional_seconds_rounding():\n    \"\"\"Test that isoparse correctly rounds (not truncates) fractional seconds beyond 6 digits.\"\"\"\n    # Test case from the issue: 0.1234567 should round to 123457us, not truncate to 123456us\n    result = isoparse(\"2020-01-01T00:00:00.1234567\")\n    assert result.microsecond == 123457, f\"Expected 123457, got {result.microsecond}\"\n\n    # Additional test: 0.9999995 should round up to 1000000us (1 second)\n    result = isoparse(\"2020-01-01T00:00:00.9999995\")\n    assert result.microsecond == 0, f\"Expected 0 (carry to next second), got {result.microsecond}\"\n    assert result.second == 1, f\"Expected second=1 after rounding carry, got {result.second}\"\n\n    # Test: 0.1234564 should round down to 123456us\n    result = isoparse(\"2020-01-01T00:00:00.1234564\")\n    assert result.microsecond == 123456, f\"Expected 123456, got {result.microsecond}\"\n\n    # Test: 0.1234565 should round to 123457us (ROUND_HALF_EVEN)\n    result = isoparse(\"2020-01-01T00:00:00.1234565\")\n    assert result.microsecond == 123457, f\"Expected 123457, got {result.microsecond}\"\n"
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1508,
+   "title": "parser.parse() silently accepts invalid timezone offsets (minutes >= 60, hours >= 24); inconsistent ",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom dateutil.parser import parse, ParserError\n\n\ndef test_parse_rejects_invalid_timezone_offsets():\n    \"\"\"Test that parse() rejects invalid timezone offsets (minutes >= 60, hours >= 24).\"\"\"\n\n    # Case 1: minutes >= 60 should be rejected\n    with pytest.raises((ParserError, ValueError)):\n        parse(\"2024-01-15T12:00:00+0060\")\n\n    # Case 2: minutes >= 60 in other formats\n    with pytest.raises((ParserError, ValueError)):\n        parse(\"2024-01-15T12:00:00+0560\")\n\n    with pytest.raises((ParserError, ValueError)):\n        parse(\"2024-01-15T12:00:00+0099\")\n\n    # Case 3: hours >= 24 should be rejected\n    with pytest.raises((ParserError, ValueError)):\n        parse(\"2024-01-15T12:00:00+2400\")\n\n    with pytest.raises((ParserError, ValueError)):\n        parse(\"2024-01-15T12:00:00+9900\")\n\n    # Case 4: valid offsets should still work\n    dt_valid = parse(\"2024-01-15T12:00:00+0530\")\n    assert dt_valid.utcoffset().total_seconds() == 5.5 * 3600\n"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 3019,
+   "title": "[Bug] Negative POSIX timestamps cannot be deserialized after timestamp serialization",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom datetime import datetime, timezone\nfrom marshmallow import fields, ValidationError\n\n\ndef test_negative_posix_timestamp_round_trip():\n    \"\"\"Test that negative POSIX timestamps can be serialized and deserialized round-trip.\"\"\"\n    field = fields.DateTime(format=\"timestamp\")\n\n    # Create a datetime before Unix epoch (1970)\n    pre_epoch_datetime = datetime(1950, 5, 3, tzinfo=timezone.utc)\n\n    # Serialize the datetime\n    serialized = field.serialize(\"date\", {\"date\": pre_epoch_datetime})\n\n    # Verify the serialized value is negative\n    assert serialized < 0, f\"Expected negative timestamp, got {serialized}\"\n\n    # Deserialize the negative timestamp - this should not raise ValidationError\n    deserialized = field.deserialize(serialized)\n\n    # Verify round-trip: the deserialized datetime should match the original\n    assert deserialized == pre_epoch_datetime, \\\n        f\"Round-trip failed: {pre_epoch_datetime} -> {serialized} -> {deserialized}\"\n"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2999,
+   "title": "`test_from_timestamp_with_overflow_value` test failing on Windows because of message mismatch",
+   "class": "A",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "    def test_from_timestamp_with_overflow_value():\n        value = 9223372036854775\n>       with pytest.raises(ValueError, match=r\"out of range|year must be in 1\\.\\.9999\"):\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE       AssertionError: Regex pattern did not match.\nE         Expected regex: 'out of range|year must be in 1\\\\.\\\\.9999'\nE         Actual message: 'Error converting value to datetime'\n"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2961,
+   "title": "Inconsistent value type when validating nested schema fields",
+   "class": "A",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import dataclasses\nimport uuid\n\nimport marshmallow as ma\nimport pytest\n\n\n@dataclasses.dataclass\nclass ChildModel:\n    uuid: uuid.UUID\n    name: str\n\n\nclass Child(ma.Schema):\n    uuid = ma.fields.UUID(required=True)\n    name = ma.fields.String(required=True)\n\n    @ma.post_load\n    def transform(self, data, **_kwargs):\n        return ChildModel(**data)\n\n\nclass Parent(ma.Schema):\n    child = ma.fields.Nested(\"Child\")\n\n    @ma.validates(\"child\")\n    def validate_child(self, value, **_kwargs):\n        if value:\n            # This fails when the child has a validation error as then its @post_load is not called.\n            assert isinstance(value, ChildModel)\n\n\ndef test_load_valid_uuid():\n    data = {\"child\": {\"uuid\": \"c81505b4-258b-4912-b8bc-8ac913d56736\", \"name\": \"test\"}}\n    result = Parent().load(data)\n    assert isinstance(result[\"child\"], ChildModel)\n\n\ndef test_load_invalid_uuid():\n    data = {\"child\": {\"uuid\": \"invalid-uuid\", \"name\": \"test\"}}\n    with pytest.raises(ma.exceptions.ValidationError):\n        result = Parent().load(data)\n"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2893,
+   "title": "`utils.get_value` raise TypeError with out-of-range `int` index",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom marshmallow import utils\n\n\ndef test_get_value_out_of_range_int_index():\n    \"\"\"Test that get_value returns default for out-of-range int indices.\"\"\"\n\n    # Case 1: List with out-of-range index\n    lst = [0, 1, 2, 3, 4, 5]\n    assert utils.get_value(lst, 999, default=3) == 3\n\n    # Case 2: Dictionary with integer keys, key not present\n    dictionary = {1: 'a', 2: 'b', 3: 'c'}\n    assert utils.get_value(dictionary, 4, default='z') == 'z'\n\n    # Case 3: List of objects with out-of-range index\n    class PointClass:\n        def __init__(self, x, y):\n            self.x = x\n            self.y = y\n\n    list_obj = [[PointClass(24, 42), {\"x\": 24, \"y\": 42}]]\n    assert utils.get_value(list_obj, 3, default=None) is None\n"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2872,
+   "title": "Performance impact of Nested with many vs List of Nested.",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nimport timeit\nimport marshmallow\nfrom marshmallow import fields, validate\n\n\nclass PropertySchema(marshmallow.Schema):\n    name = fields.String(validate=[validate.Regexp('^[0-9a-zA-Z -]{1,100}$')], required=True)\n    value = fields.String(validate=[validate.Regexp('^[ -~]{0,255}$')], required=True)\n\n\nclass TrackInteractionActionSchema(marshmallow.Schema):\n    properties = fields.Nested(PropertySchema, many=True, required=False)\n\n\nclass TrackInteractionActionSchemaNew(marshmallow.Schema):\n    properties = fields.List(fields.Nested(PropertySchema), required=False)\n\n\ndef test_nested_many_vs_list_performance():\n    \"\"\"Test that Nested with many=True has comparable performance to List of Nested\"\"\"\n    data = {\n        \"properties\": [\n            {\"name\": \"x0\", \"value\": \"v\"} for x in range(20000)\n        ]\n    }\n\n    def load_nested_many():\n        schema = TrackInteractionActionSchema()\n        try:\n            schema.load(data)\n        except validate.ValidationError:\n            pass\n\n    def load_list_nested():\n        schema = TrackInteractionActionSchemaNew()\n        try:\n            schema.load(data)\n        except validate.ValidationError:\n            pass\n\n    time_nested_many = timeit.timeit(load_nested_many, number=3)\n    time_list_nested = timeit.timeit(load_list_nested, number=3)\n\n    # Nested with many=True should not be significantly slower than List of Nested\n    # Allow up to 1.5x slower (performance regression threshold)\n    assert time_nested_many < time_list_nested * 1.5, \\\n        f\"Nested(many=True) is too slow: {time_nested_many:.3f}s vs List: {time_list_nested:.3f}s\"\n"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2836,
+   "title": "Consistency with allow_none with serialization and deserialization",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nimport marshmallow\n\n\ndef test_allow_none_consistency_dump_load():\n    \"\"\"Test that allow_none=False is consistent between dump and load operations.\"\"\"\n\n    class TransferSchema(marshmallow.Schema):\n        id = marshmallow.fields.Int(allow_none=False)\n        str = marshmallow.fields.Str(allow_none=False)\n\n    schema = TransferSchema()\n\n    # When dumping data with None values and allow_none=False,\n    # the dumped output should be loadable back without validation errors\n    data_with_none = {\n        'id': None,\n        'str': None,\n    }\n\n    dumped = schema.dump(data_with_none)\n\n    # This should not raise ValidationError\n    # The dumped output should be consistent with the schema definition\n    loaded = schema.load(dumped)\n\n    # If allow_none=False, None values should either:\n    # 1. Not appear in dumped output, OR\n    # 2. Be loadable without validation errors\n    assert loaded is not None\n"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2794,
+   "title": "Remove `only`, `exclude`, `many`, and `unknown` parameters of `Nested` and require callables to retu",
+   "class": "B",
+   "labels": [
+    "feedback welcome",
+    "backwards incompat"
+   ],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom marshmallow import Schema, fields\n\n\nclass TestNestedParameterDeprecation:\n    \"\"\"Test that Nested field deprecates only, exclude, many, and unknown parameters.\"\"\"\n\n    def test_nested_with_only_parameter_raises_deprecation_warning(self):\n        \"\"\"Test that using 'only' parameter in Nested raises DeprecationWarning.\"\"\"\n\n        class ChildSchema(Schema):\n            name = fields.Str()\n            age = fields.Int()\n\n        class ParentSchema(Schema):\n            child = fields.Nested(ChildSchema, only=[\"name\"])\n\n        with pytest.warns(DeprecationWarning, match=\"only.*deprecated\"):\n            ParentSchema()\n\n    def test_nested_with_exclude_parameter_raises_deprecation_warning(self):\n        \"\"\"Test that using 'exclude' parameter in Nested raises DeprecationWarning.\"\"\"\n\n        class ChildSchema(Schema):\n            name = fields.Str()\n            age = fields.Int()\n\n        class ParentSchema(Schema):\n            child = fields.Nested(ChildSchema, exclude=[\"age\"])\n\n        with pytest.warns(DeprecationWarning, match=\"exclude.*deprecated\"):\n            ParentSchema()\n\n    def test_nested_with_many_parameter_raises_deprecation_warning(self):\n        \"\"\"Test that using 'many' parameter in Nested raises DeprecationWarning.\"\"\"\n\n        class ChildSchema(Schema):\n            name = fields.Str()\n\n        class ParentSchema(Schema):\n            children = fields.Nested(ChildSchema, many=True)\n\n        with pytest.warns(DeprecationWarning, match=\"many.*deprecated\"):\n            ParentSchema()\n\n    def test_nested_with_unknown_parameter_raises_deprecation_warning(self):\n        \"\"\"Test that using 'unknown' parameter in Nested raises DeprecationWarning.\"\"\"\n\n        class ChildSchema(Schema):\n            name = fields.Str()\n\n        class ParentSchema(Schema):\n            child = fields.Nested(ChildSchema, unknown=\"exclude\")\n\n        with pytest.warns(DeprecationWarning, match=\"unknown.*deprecated\"):\n            ParentSchema()\n\n    def test_nested_with"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2243,
+   "title": "fields.URL validation error should specify \"not a valid FQDN\" if trying to pass hostname without dom",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom marshmallow import Schema, fields, ValidationError\n\n\nclass TestSchema(Schema):\n    url = fields.URL(required=True)\n\n\ndef test_url_validation_error_message_for_missing_tld():\n    \"\"\"Test that URL validation error specifies 'not a valid FQDN' when require_tld=True and hostname lacks TLD\"\"\"\n    schema = TestSchema()\n\n    # This should fail with a more descriptive error message about FQDN\n    with pytest.raises(ValidationError) as exc_info:\n        schema.load({\"url\": \"http://test-url\"})\n\n    error_message = str(exc_info.value.messages['url'][0]).lower()\n\n    # The error message should mention FQDN or TLD, not just \"not a valid URL\"\n    assert \"fqdn\" in error_message or \"tld\" in error_message or \"domain\" in error_message, \\\n        f\"Error message should be more descriptive. Got: {exc_info.value.messages['url'][0]}\"\n"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2194,
+   "title": "Dot in key is not parsed correclty on loads()",
+   "class": "B",
+   "labels": [
+    "docs"
+   ],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom marshmallow import Schema, fields\n\n\ndef test_dot_in_key_loads():\n    \"\"\"Test that dots in dictionary keys are not parsed as nested structures on loads()\"\"\"\n    TestSchema = Schema.from_dict({\n        \"something\": fields.Str(),\n        \"some.thing\": fields.Str()\n    })\n\n    # Test regular key works correctly\n    result1 = TestSchema().loads('{\"something\": \"data\"}')\n    assert result1 == {'something': 'data'}\n\n    # Test key with dot should be treated as a literal key, not nested structure\n    result2 = TestSchema().loads('{\"some.thing\": \"data\"}')\n    assert result2 == {'some.thing': 'data'}, \\\n        f\"Expected {{'some.thing': 'data'}}, but got {result2}\"\n"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2189,
+   "title": "Validation does not occur on serialization documentation issue",
+   "class": "B",
+   "labels": [
+    "docs"
+   ],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom datetime import datetime\nfrom marshmallow import Schema, fields, ValidationError\n\n\ndef test_dump_validation_with_data_key_and_invalid_type():\n    \"\"\"\n    Test that dump() raises AttributeError when given invalid data type\n    even when data_key is specified. This is the documented issue where\n    validation does not occur on serialization in marshmallow 3.x.\n    \"\"\"\n    invalid_data = dict(created_at=\"invalid\")\n\n    class WidgetSchema(Schema):\n        created_at = fields.DateTime(data_key='createdAt')\n\n    schema = WidgetSchema()\n\n    # In marshmallow 2.x, this would raise ValidationError\n    # In marshmallow 3.x, this raises AttributeError because validation doesn't occur\n    # The bug is that there's no proper validation/error handling on dump()\n    with pytest.raises((ValidationError, AttributeError)):\n        schema.dump(invalid_data)\n\n\ndef test_dump_validation_with_data_key_and_valid_datetime():\n    \"\"\"\n    Test that dump() works correctly when passed a valid datetime object\n    with data_key specified. This should serialize properly.\n    \"\"\"\n    valid_data = dict(created_at=datetime.now())\n\n    class WidgetSchema(Schema):\n        created_at = fields.DateTime(data_key='createdAt')\n\n    schema = WidgetSchema()\n\n    # This should work without raising an error\n    result = schema.dump(valid_data)\n    assert 'createdAt' in result\n    assert isinstance(result['createdAt'], str)\n"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2180,
+   "title": "Are nested options applied correctly?",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom marshmallow import fields, Schema\n\n\ndef test_nested_only_option_validation():\n    \"\"\"Test that invalid nested only options raise ValueError.\"\"\"\n\n    class S(Schema):\n        f = fields.Str()\n\n    with pytest.raises(ValueError, match=\"Option: 'only' with value: 'a.b' is not valid for Field: 'f'\"):\n        S(only=['f.a.b'])\n"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2165,
+   "title": "Doubly Nested Schemas instantiated via lambdas cannot be referenced with multiple dot notation with ",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom marshmallow import Schema, fields\n\n\ndef test_doubly_nested_schemas_with_instantiated_lambda_and_dot_notation():\n    \"\"\"Test that doubly nested schemas instantiated via lambdas work with dot notation in only parameter.\"\"\"\n\n    class ASchema(Schema):\n        a = fields.String()\n        a2 = fields.String()\n\n    class BSchema(Schema):\n        b = fields.Nested(lambda: ASchema)\n\n    class CSchema(Schema):\n        c = fields.Nested(lambda: BSchema())  # Instantiated lambda\n\n    class DSchema(Schema):\n        d = fields.Nested(lambda: CSchema, only=(\"c.b.a2\",))\n\n    class A:\n        def __init__(self):\n            self.a = 'Hello from a'\n            self.a2 = 'Hello from a2'\n\n    class B:\n        def __init__(self, a):\n            self.b = a\n\n    class C:\n        def __init__(self, b):\n            self.c = b\n\n    class D:\n        def __init__(self, c):\n            self.d = c\n\n    result = DSchema().dump(D(C(B(A()))))\n\n    # The output should contain the nested a2 field, not be empty\n    assert result == {'d': {'c': {'b': {'a2': 'Hello from a2'}}}}\n    # Ensure it's not the buggy output\n    assert result != {'d': {'c': {}}}\n"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2032,
+   "title": "Format datetime field with millisecond precision",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom marshmallow import Schema, fields\nfrom datetime import datetime\n\n\ndef test_datetime_field_millisecond_precision():\n    \"\"\"Test that DateTime field can format with millisecond precision.\"\"\"\n\n    class TestSchema(Schema):\n        date_time = fields.DateTime(format=\"iso\")\n\n    # Create a datetime with microseconds\n    dt = datetime(2022, 8, 9, 16, 38, 44, 165105)\n\n    # Serialize the datetime\n    result = TestSchema().dump({\"date_time\": dt})\n\n    # The serialized datetime should have exactly 3 decimal places (millisecond precision)\n    # Expected format: \"2022-08-09T16:38:44.165Z\" (not .165105)\n    assert result[\"date_time\"] == \"2022-08-09T16:38:44.165Z\"\n"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2012,
+   "title": "Custom Field Logic Bypass",
+   "class": "B",
+   "labels": [
+    "docs"
+   ],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom marshmallow import Schema, fields\n\n\nclass IntegerWithDefault(fields.Integer):\n    def _deserialize(self, value, attr, data, **kwargs):\n        value = value or 0\n        return super()._deserialize(value, attr, data, **kwargs)\n\n\nclass TestSchema(Schema):\n    foo = IntegerWithDefault(allow_none=True)\n\n\ndef test_custom_field_deserialize_called_with_none():\n    \"\"\"Test that _deserialize is called even when value is None\"\"\"\n    schema = TestSchema()\n    result = schema.load({'foo': None})\n    assert result['foo'] == 0, \"Custom _deserialize logic should transform None to 0\"\n"
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2000,
+   "title": "Object class and schema definition combined, ORM-style",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom datetime import datetime\nfrom typing import Any\nfrom marshmallow import Schema, fields, ValidationError, INCLUDE\n\n\nclass MarshModel:\n    \"\"\"Base class for ORM-style models with marshmallow integration\"\"\"\n\n    def __init_subclass__(cls, **kwargs):\n        super().__init_subclass__(**kwargs)\n        # Create schema from class annotations and fields\n        schema_attrs = {}\n        for key, value in cls.__dict__.items():\n            if isinstance(value, fields.Field):\n                schema_attrs[key] = value\n\n        # Create schema class dynamically\n        schema_class = type(f'{cls.__name__}Schema', (Schema,), schema_attrs)\n\n        # Handle meta_args if defined\n        if hasattr(cls, '__meta_args__'):\n            meta_attrs = {'unknown': cls.__meta_args__.get('unknown', INCLUDE)}\n            schema_class.Meta = type('Meta', (), meta_attrs)\n\n        cls.__schema__ = schema_class()\n\n    @classmethod\n    def load(cls, data):\n        \"\"\"Load data and return instance\"\"\"\n        validated_data = cls.__schema__.load(data)\n        return cls(**validated_data)\n\n    def __init__(self, **kwargs):\n        for key, value in kwargs.items():\n            setattr(self, key, value)\n\n    def dump(self):\n        \"\"\"Serialize instance to dict\"\"\"\n        data = {}\n        for key in self.__schema__.fields:\n            if hasattr(self, key):\n                data[key] = getattr(self, key)\n        return self.__schema__.dump(data)\n\n\ndef test_marsh_model_basic():\n    \"\"\"Test basic MarshModel functionality\"\"\"\n\n    class UserModel(MarshModel):\n        __meta_args__ = {'unknown': INCLUDE}\n\n        name = fields.Str()\n        email = fields.Email()\n        created_at = fields.DateTime()\n\n    class BlogModel(MarshModel):\n        title = fields.Str()\n        author = fields.Nested(UserModel)\n\n    # Test loading user data\n    user_data = {\"name\": \"Ronnie\", \"email\": \"ronnie@stones.com\"}\n    user = UserModel.load(user_data)\n\n    assert user.name == \"Ronnie\"\n    assert user.emai"
+  },
+  {
+   "repo": "more-itertools/more-itertools",
+   "number": 1225,
+   "title": "Propose is_sorted option for O(n**2) detection of pathological data",
+   "class": "A",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "\"Tools to validate that data has been reliably sorted in Python.\"\n# https://discuss.python.org/t/helping-people-with-broken-sorting/103644\n\nfrom typing import Iterable, Any\n\n\ndef test_consistent_rich_comparisons(a: Any, b: Any) -> None:\n    # Verify consistent rich comparison operations\n    # between two values *a* and *b* which may have different types.\n\n    # Assumes that *a* compared to *b* is deterministic,\n    # always giving the same result.\n\n    # All rich comparisons defined and all return booleans\n    assert isinstance(a == b, bool)\n    assert isinstance(a != b, bool)\n    assert isinstance(a > b, bool)\n    assert isinstance(a < b, bool)\n    assert isinstance(a >= b, bool)\n    assert isinstance(a <= b, bool)\n\n    # Total Order Trichotomy\n    eq = (a == b)\n    lt = (a < b)\n    gt = (a > b)\n    assert lt + eq + gt == 1, \"Trichotomy failed (are these partially ordered or NaN?)\"\n\n    # Consistency of Derived Operators (Definitions)\n    assert (a != b) == (not eq)\n    assert (a <= b) == (lt or eq)\n    assert (a >= b) == (gt or eq)\n\n    # Reflexivity (Behavior against itself)\n    assert (a == a) and (b == b)\n    assert (a <= a) and (b <= b)\n    assert (a >= a) and (b >= b)\n\n    # Anti-reflexivity\n    assert not (a != a) and not (b != b)\n    assert not (a < a)  and not (b < b)\n    assert not (a > a)  and not (b > b)\n\n    # Converse / Reflection Properties (Swapping operands)\n    assert (a == b) == (b == a)\n    assert (a != b) == (b != a)\n    assert (a < b)  == (b > a)\n    assert (a > b)  == (b < a)\n    assert (a <= b) == (b >= a)\n    assert (a >= b) == (b <= a)\n\n\ndef test_comparisons_match_equivalence_classes(a: Any, b: Any, p: int, q: int) -> None:\n    assert (a < b) == (p < q), f\"Transitivity failed for < between {a} and {b}\"\n    assert (a == b) == (p == q), f\"Transitivity failed for == between {a} and {b}\"\n    assert (a > b) == (p > q), f\"Transitivity failed for > between {a} and {b}\"\n\n\ndef validate_sort(iterable: Iterable[Any]) -> None:\n    \"\"\"\n    Verify sorti"
+  },
+  {
+   "repo": "more-itertools/more-itertools",
+   "number": 1017,
+   "title": "Faster `sliding_window`?",
+   "class": "A",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "def test_intake_issue():\n    def with_deque(iterable, n):\n        iterator = iter(iterable)\n        window = deque(islice(iterator, n - 1), maxlen=n)\n        for x in iterator:\n            window.append(x)\n            yield tuple(window)\n\n    def with_list(iterable, n):\n        iterator = iter(iterable)\n        window = list(islice(iterator, n - 1))\n        for x in iterator:\n            window.append(x)\n            yield tuple(window)\n            del window[0]\n\n    def with_tees(iterable, n):\n        iterators = tee(iterable, n)\n        for i, iterator in enumerate(iterators):\n            next(islice(iterator, i, i), None)\n        return zip(*iterators)\n\n    funcs = [\n        with_deque,\n        with_list,\n        with_tees,\n    ]\n\n    from time import perf_counter as time\n    from statistics import mean, stdev\n    from itertools import tee, islice\n    from collections import deque\n    import sys\n    import random\n\n    # Correctness\n    for m in range(20):\n        data = range(m)\n        for n in range(1, 30):\n            expect = list(funcs[0](data, n))\n            for f in funcs:\n                result = list(f(data, n))\n                assert result == expect, (data, n, f.__name__, expect, result)\n\n    # Speed\n    data = [None] * 10_000\n    ns = sorted({\n        n\n        for i in range(31)\n        for n in [round(10**(i/10))]\n        if n >= 3\n    })\n    def shuffled(xs):\n        return random.sample(xs, len(xs))\n\n    times = {f: {n: [] for n in ns} for f in funcs}\n    for i in range(30):\n        print(i)\n        for n in shuffled(ns):\n            for f in shuffled(funcs):\n                t0 = time()\n                for w in f(data, n):\n                    pass\n                t = time() - t0\n                times[f][n].append(t)\n\n    # fastest time for each (function,n) pair\n    times = {f.__name__.removeprefix('with_'): [min(times[f][n]) for n in ns]\n        for f in funcs\n    }\n\n    # Times in percent of the deque times\n    times = {\n        name: [t / td * "
+  },
+  {
+   "repo": "grantjenks/python-sortedcontainers",
+   "number": 244,
+   "title": "DefaultSortedDict",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom sortedcontainers import SortedDict\n\n\ndef test_default_sorted_dict_missing_key():\n    \"\"\"Test that DefaultSortedDict is available as a first-class citizen in sortedcontainers.\"\"\"\n\n    # This test checks if DefaultSortedDict exists in the library\n    # If it doesn't exist, the library should provide it\n    assert hasattr(__import__('sortedcontainers'), 'DefaultSortedDict'), \\\n        \"DefaultSortedDict should be a first-class citizen in sortedcontainers library\"\n\n    DefaultSortedDict = getattr(__import__('sortedcontainers'), 'DefaultSortedDict')\n\n    # Test basic functionality\n    d = DefaultSortedDict(int)\n\n    # Accessing missing key should return default value and add it to dict\n    assert d['missing_key'] == 0\n    assert 'missing_key' in d\n    assert d['missing_key'] == 0\n\n    # Test that it maintains sorted order\n    d['z'] = 5\n    d['a'] = 3\n    d['m']  # Should return 0 and add to dict\n\n    keys = list(d.keys())\n    assert keys == sorted(keys), \"DefaultSortedDict should maintain sorted order\"\n"
+  },
+  {
+   "repo": "grantjenks/python-sortedcontainers",
+   "number": 239,
+   "title": "ValueError when discarding values with changing sort value",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom sortedcontainers import SortedSet\nimport random\n\n\ndef test_discard_with_changing_sort_key():\n    \"\"\"Test that discarding values works when the key function returns changing values.\"\"\"\n    random.seed(42)\n\n    def compute_gain(value):\n        return random.randint(1, 100)\n\n    sorted_set = SortedSet(key=compute_gain)\n    sorted_set.update(range(5))\n\n    # This should not raise ValueError even though the key function returns different values\n    sorted_set.discard(sorted_set[-1])\n\n    # Verify the element was actually removed\n    assert len(sorted_set) == 4\n"
+  },
+  {
+   "repo": "grantjenks/python-sortedcontainers",
+   "number": 238,
+   "title": "Discard behavior when iterating over SortedSet",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom sortedcontainers import SortedSet\n\n\ndef test_discard_during_iteration():\n    \"\"\"Test that discarding all elements during iteration leaves an empty SortedSet.\"\"\"\n    sorted_set = SortedSet(range(5))\n\n    # Iterate and discard each element\n    for v in sorted_set:\n        sorted_set.discard(v)\n\n    # After discarding all elements, the set should be empty\n    assert len(sorted_set) == 0\n    assert list(sorted_set) == []\n"
+  },
+  {
+   "repo": "grantjenks/python-sortedcontainers",
+   "number": 219,
+   "title": "Return NotImplemented for SortedSet.__and__",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom sortedcontainers import SortedSet\nfrom typing import Iterable\n\n\nclass Interval:\n    \"\"\"A custom class that is not iterable but supports __and__\"\"\"\n\n    def __init__(self, start, end):\n        self.start = start\n        self.end = end\n\n    def __contains__(self, value):\n        return self.start <= value <= self.end\n\n    def __and__(self, other):\n        if isinstance(other, Interval):\n            return Interval(max(self.start, other.start), min(self.end, other.end))\n        elif isinstance(other, Iterable):\n            return {x for x in other if x in self}\n        else:\n            return NotImplemented\n\n\ndef test_sorted_set_and_returns_not_implemented_for_unsupported_type():\n    \"\"\"Test that SortedSet.__and__ returns NotImplemented for unsupported types\"\"\"\n    sorted_set = SortedSet([1, 2, 3, 4, 5])\n    interval = Interval(2, 4)\n\n    # This should not raise TypeError\n    # Instead, it should allow interval.__and__(sorted_set) to be called\n    result = sorted_set & interval\n\n    # The result should be a set containing elements in both sorted_set and interval\n    assert result == {2, 3, 4}\n"
+  },
+  {
+   "repo": "grantjenks/python-sortedcontainers",
+   "number": 53,
+   "title": "Improve Sorted Set Merge Performance for Disjoint Sets",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom sortedcontainers import SortedSet\n\n\ndef test_sorted_set_merge_disjoint_performance():\n    \"\"\"\n    Test that merging disjoint SortedSets is efficient.\n\n    When two SortedSets have non-overlapping ranges (e.g., [0-5000] and [5000-10000]),\n    the merge operation should be much faster than with interleaved sets, since it\n    can be optimized as a simple concatenation rather than element-by-element merging.\n\n    This test verifies that the merge operation completes in reasonable time,\n    which would fail if the performance bug exists (where disjoint merges are\n    not optimized and run at O(n*m) instead of O(n+m)).\n    \"\"\"\n    import timeit\n\n    # Test disjoint sets (chained) - should be fast\n    chained_time = timeit.timeit(\n        setup='''\nfrom sortedcontainers import SortedSet\na = SortedSet(range(0, 5000))\nb = SortedSet(range(5000, 10000))\n        ''',\n        stmt='c = a | b',\n        number=1000,\n    )\n\n    # Test interleaved sets - expected to be slower\n    interleaved_time = timeit.timeit(\n        setup='''\nfrom sortedcontainers import SortedSet\na = SortedSet(range(0, 10000, 2))\nb = SortedSet(x + 1 for x in range(0, 10000, 2))\n        ''',\n        stmt='c = a | b',\n        number=1000,\n    )\n\n    # For disjoint sets, the merge should be significantly faster\n    # (at least 2x faster, allowing some margin for system variance)\n    # The bug causes both to be slow and similar in time\n    assert chained_time < interleaved_time * 1.5, (\n        f\"Disjoint set merge should be much faster than interleaved merge. \"\n        f\"Chained: {chained_time:.3f}s, Interleaved: {interleaved_time:.3f}s. \"\n        f\"Disjoint merge optimization is not working.\"\n    )\n"
+  },
+  {
+   "repo": "msiemens/tinydb",
+   "number": 631,
+   "title": "CachingMiddleware: operations after close() still succeed in memory",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import os\nimport tempfile\nimport pytest\nfrom tinydb import TinyDB\nfrom tinydb.storages import JSONStorage\nfrom tinydb.middlewares import CachingMiddleware\n\n\ndef test_caching_middleware_operations_after_close_should_fail():\n    \"\"\"\n    After TinyDB.close() with CachingMiddleware(JSONStorage),\n    operations like insert/all should either raise an error or\n    not succeed in a way that appears durable.\n\n    This test verifies that post-close operations don't silently\n    succeed in the in-memory cache while the storage is closed.\n    \"\"\"\n    fd, path = tempfile.mkstemp(suffix='.json')\n    os.close(fd)\n\n    try:\n        # Create DB with CachingMiddleware and insert data\n        db = TinyDB(path, storage=CachingMiddleware(JSONStorage))\n        db.insert({'a': 1})\n        db.close()\n\n        # Read on-disk state after close\n        with open(path, 'r') as f:\n            on_disk_before = f.read()\n\n        # Attempt operation after close - should raise or not appear to succeed\n        with pytest.raises(Exception):\n            # Either this should raise an error\n            db.insert({'b': 2})\n\n        # OR if it doesn't raise, verify data isn't on disk\n        # (but the bug is that it doesn't raise and appears to succeed)\n        try:\n            result = db.insert({'b': 2})\n            # If we got here without exception, the operation appeared to succeed\n            # Verify it's NOT actually on disk\n            with open(path, 'r') as f:\n                on_disk_after = f.read()\n\n            # The on-disk state should be unchanged after close\n            assert on_disk_before == on_disk_after, \\\n                \"Post-close insert appeared to succeed but data should not be on disk\"\n\n            # Also verify all() doesn't return the post-close data\n            all_data = db.all()\n            assert len(all_data) == 1, \\\n                \"Post-close insert should not appear in results\"\n\n            # If we reach here, the bug still exists\n            pytest.fail(\"Post-close"
+  },
+  {
+   "repo": "msiemens/tinydb",
+   "number": 629,
+   "title": "insert_multiple can silently overwrite documents when mixing Document and dict",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import pytest\nfrom tinydb import TinyDB\nfrom tinydb.table import Document\nfrom tinydb.storages import MemoryStorage\n\n\ndef test_insert_multiple_mixed_document_and_dict_no_collision():\n    \"\"\"Test that insert_multiple with mixed Document and dict doesn't create duplicate IDs or overwrite documents.\"\"\"\n    db = TinyDB(storage=MemoryStorage())\n\n    # Test case 1: Document with explicit ID followed by auto-ID dict on empty table\n    ids = db.insert_multiple([\n        Document({'a': 1}, doc_id=1),\n        {'b': 2},\n    ])\n\n    # Should not have duplicate IDs\n    assert ids == [1, 2], f\"Expected [1, 2] but got {ids}\"\n\n    # Both documents should exist\n    all_docs = db.all()\n    assert len(all_docs) == 2, f\"Expected 2 documents but got {len(all_docs)}\"\n    assert any(doc.get('a') == 1 for doc in all_docs), \"Document with 'a': 1 not found\"\n    assert any(doc.get('b') == 2 for doc in all_docs), \"Document with 'b': 2 not found\"\n\n    # Test case 2: After normal insert, mixed Document and dict should not collide\n    db2 = TinyDB(storage=MemoryStorage())\n    db2.insert({'x': 1})  # id=1, _next_id becomes 2\n\n    ids2 = db2.insert_multiple([\n        Document({'a': 1}, doc_id=2),\n        {'b': 2},\n    ])\n\n    # Should not have duplicate IDs\n    assert ids2 == [2, 3], f\"Expected [2, 3] but got {ids2}\"\n\n    # All three documents should exist with correct content\n    all_docs2 = db2.all()\n    assert len(all_docs2) == 3, f\"Expected 3 documents but got {len(all_docs2)}\"\n    assert any(doc.get('x') == 1 for doc in all_docs2), \"Document with 'x': 1 not found\"\n    assert any(doc.get('a') == 1 for doc in all_docs2), \"Document with 'a': 1 not found\"\n    assert any(doc.get('b') == 2 for doc in all_docs2), \"Document with 'b': 2 not found\"\n"
+  },
+  {
+   "repo": "msiemens/tinydb",
+   "number": 354,
+   "title": "Move a document from a certain database to another one error",
+   "class": "B",
+   "labels": [
+    "pinned"
+   ],
+   "outcome": "not_reproducible",
+   "test_src": "import pytest\nfrom tinydb import TinyDB, Query\nimport tempfile\nimport os\n\n\ndef test_move_documents_between_databases():\n    \"\"\"Test that moving multiple documents between databases doesn't cause doc_id conflicts\"\"\"\n    # Create temporary directories for databases\n    with tempfile.TemporaryDirectory() as tmpdir:\n        db1_path = os.path.join(tmpdir, 'db1.json')\n        db2_path = os.path.join(tmpdir, 'db2.json')\n\n        db1 = TinyDB(db1_path)\n        db2 = TinyDB(db2_path)\n\n        try:\n            # Insert first document into db1\n            db1.insert({'id': 1, 'type': 'apple', 'count': 7})\n\n            # Move first document to db2\n            q = Query()\n            doc1 = db1.search(q.id == 1)[0]\n            db2.insert(doc1)\n            db1.remove(q.id == 1)\n\n            # Insert second document into db1\n            db1.insert({'id': 2, 'type': 'peach', 'count': 3})\n\n            # Move second document to db2 - this should not raise AssertionError\n            doc2 = db1.search(q.id == 2)[0]\n            db2.insert(doc2)  # This line should not raise \"doc_id 1 already exists\"\n            db1.remove(q.id == 2)\n\n            # Verify both documents are in db2 with different doc_ids\n            all_docs = db2.all()\n            assert len(all_docs) == 2\n            assert all_docs[0].doc_id != all_docs[1].doc_id\n\n        finally:\n            db1.close()\n            db2.close()\n"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 626,
+   "title": "tail(0, seq) returns the whole sequence instead of empty (and is inconsistent across iterable types)",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import pytest\nfrom toolz import tail\n\n\ndef test_tail_zero_returns_empty():\n    \"\"\"Test that tail(0, seq) returns empty sequence consistently across iterable types.\"\"\"\n    # Test with list (sliceable)\n    assert list(tail(0, [10, 20, 30])) == []\n\n    # Test with tuple (sliceable)\n    assert tuple(tail(0, (10, 20, 30))) == ()\n\n    # Test with iterator (non-sliceable)\n    assert tuple(tail(0, iter([10, 20, 30]))) == ()\n\n    # Test with string (sliceable)\n    assert tail(0, \"abc\") == \"\"\n\n    # Consistency check: all should be empty\n    assert list(tail(0, [1, 2, 3, 4, 5])) == []\n"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 612,
+   "title": "test_has_version fails",
+   "class": "A",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "+ /usr/bin/pytest -v -k 'not test_shakespeare'\n/usr/lib/python3.14/site-packages/pytest_asyncio/plugin.py:211: PytestDeprecationWarning: The configuration option \"asyncio_default_fixture_loop_scope\" is unset.\nThe event loop scope for asynchronous fixtures will default to the fixture caching scope. Future versions of pytest-asyncio will default the loop scope for asynchronous fixtures to function scope. Set the default fixture loop scope explicitly in order to avoid unexpected behavior in the future. Valid fixture loop scopes are: \"function\", \"class\", \"module\", \"package\", \"session\"\n\n  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))\n============================= test session starts ==============================\nplatform linux -- Python 3.14.0, pytest-8.3.5, pluggy-1.6.0 -- /usr/bin/python3\ncachedir: .pytest_cache\nhypothesis profile 'default' -> database=DirectoryBasedExampleDatabase(PosixPath('/home/orion/fedora/python-toolz/python-toolz-1.1.0-build/toolz-1.1.0/.hypothesis/examples'))\nbenchmark: 5.1.0 (defaults: timer=time.perf_counter disable_gc=False min_rounds=5 min_time=0.000005 max_time=1.0 calibration_precision=10 warmup=False warmup_iterations=100000)\nMatplotlib: 3.10.6\nFreetype: 2.14.1\nrootdir: /home/orion/fedora/python-toolz/python-toolz-1.1.0-build/toolz-1.1.0\nconfigfile: pyproject.toml\ntestpaths: toolz\nplugins: typeguard-4.4.3, hypothesis-6.123.0, flaky-3.8.1, xvfb-3.1.1, pyfakefs-5.9.2, openfiles-0.6.0, libtmux-0.42.0, forked-1.6.0, requests-mock-1.12.1, benchmark-5.1.0, mpl-0.13, doctestplus-1.5.0, anyio-4.8.0, arraydiff-0.6.1, mpi-0.6, vcr-1.0.2, xprocess-1.0.2, remotedata-0.4.1, xdist-3.7.0, split-0.10.0, rerunfailures-15.0, mock-3.14.1, asyncio-1.1.0, timeout-2.4.0, localserver-0.9.0.post0\nasyncio: mode=Mode.STRICT, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function\ncollecting ... collected 186 items\n...\n=================================== FAILURES ===================================\n__________"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 606,
+   "title": "can't unpickle `curry`ied function coming from `__main__`",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nimport toolz\nfrom cloudpickle import dumps, loads\nimport tempfile\nimport subprocess\nimport sys\n\n\ndef test_curry_pickle_unpickle_from_main():\n    \"\"\"Test that curried functions from __main__ can be pickled and unpickled.\"\"\"\n\n    # Create a script that pickles a curried function\n    pickle_script = \"\"\"\nimport toolz\nfrom cloudpickle import dumps\n\n@toolz.curry\ndef f(x, *args, **kwargs):\n    return x, args, kwargs\n\ng = f(y=1)\nwith open(\"dumped.pkl\", \"wb\") as fh:\n    fh.write(dumps(g))\n\"\"\"\n\n    # Create a script that unpickles the curried function\n    unpickle_script = \"\"\"\nfrom cloudpickle import loads\n\nwith open(\"dumped.pkl\", \"rb\") as fh:\n    g = loads(fh.read())\n\n# Try to use the unpickled function\nresult = g(42)\nassert result == (42, (), {'y': 1}), f\"Expected (42, (), {{'y': 1}}), got {result}\"\n\"\"\"\n\n    with tempfile.TemporaryDirectory() as tmpdir:\n        # Run the pickle script\n        result1 = subprocess.run(\n            [sys.executable, \"-c\", pickle_script],\n            cwd=tmpdir,\n            capture_output=True,\n            text=True\n        )\n        assert result1.returncode == 0, f\"Pickle script failed: {result1.stderr}\"\n\n        # Run the unpickle script\n        result2 = subprocess.run(\n            [sys.executable, \"-c\", unpickle_script],\n            cwd=tmpdir,\n            capture_output=True,\n            text=True\n        )\n        assert result2.returncode == 0, f\"Unpickle script failed: {result2.stderr}\"\n"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 601,
+   "title": "Thoughts on partialz with ellipsis?",
+   "class": "B",
+   "labels": [],
+   "outcome": "not_reproducible",
+   "test_src": "import pytest\nfrom functools import partial\n\n\nclass partialz(partial):\n    \"\"\"Allow Ellipsis (...) as variable holder.\"\"\"\n    def __call__(self, *args, **keywords):\n        args_i = iter(args)\n        args_0 = (next(args_i) if arg is Ellipsis else arg for arg in self.args)\n        from itertools import chain\n        argz = chain(args_0, args_i)\n        keywordz = {**self.keywords, **keywords}\n        return self.func(*argz, **keywordz)\n\n\ndef test_partialz_with_ellipsis():\n    \"\"\"Test that partialz works with Ellipsis as a placeholder for variable arguments.\"\"\"\n    def add(a, b, c):\n        return a + b + c\n\n    # Create a partialz with Ellipsis as placeholder for first argument\n    f = partialz(add, ..., 10, 20)\n\n    # Call with argument that should fill the Ellipsis placeholder\n    result = f(5)\n    assert result == 35, f\"Expected 35, got {result}\"\n\n    # Test with multiple Ellipsis placeholders\n    def multiply_three(a, b, c):\n        return a * b * c\n\n    g = partialz(multiply_three, ..., 2, ...)\n    result = g(3, 4)\n    assert result == 24, f\"Expected 24, got {result}\"\n\n    # Test with Ellipsis in the middle\n    def concat_strings(a, b, c):\n        return f\"{a}-{b}-{c}\"\n\n    h = partialz(concat_strings, \"hello\", ..., \"world\")\n    result = h(\"beautiful\")\n    assert result == \"hello-beautiful-world\", f\"Expected 'hello-beautiful-world', got {result}\"\n"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 596,
+   "title": "Feature proposal: `raise`/`throws` function",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import pytest\nfrom toolz.functoolz import excepts\n\n\ndef test_raise_function_in_functoolz():\n    \"\"\"Test that a raise/throws function exists in functoolz module\"\"\"\n    from toolz import functoolz\n\n    # The raise function should exist in functoolz\n    assert hasattr(functoolz, 'raise_'), \"raise_ function should exist in functoolz\"\n\n    # Test that it raises the given exception\n    test_exception = ValueError(\"test error\")\n    with pytest.raises(ValueError, match=\"test error\"):\n        functoolz.raise_(test_exception)\n\n    # Test that it works with excepts\n    def throw_custom_error(_):\n        functoolz.raise_(ValueError(\"custom error\"))\n\n    validation_list = ['10', '20', '30', 'invalid']\n\n    with pytest.raises(ValueError, match=\"custom error\"):\n        list(map(excepts(ValueError, int, throw_custom_error), validation_list))\n"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 583,
+   "title": "`toolz.curry` Seems to Cause 50x+ Performance Slowdown in Certain Cases",
+   "class": "A",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "from builtins import map, filter\r\n\r\n\r\nimport toolz\r\nimport cytoolz\r\nimport funcy\r\nimport expression\r\nimport pymonad.tools\r\nimport pydash\r\nimport returns.curry\r\n\r\n\r\nimport time\r\n\r\n\r\ndef process_something(num, curried_fn, lambda_fn):\r\n    def process_iter(i):\r\n        a = [str(i)]\r\n        return list(curried_fn(lambda_fn)(a))\r\n\r\n    return list(map(process_iter, range(num)))\r\n\r\n\r\ndef test_curry(flag, curried_fn, lambda_fn):\r\n    t1 = time.perf_counter()\r\n    num = 100_000\r\n    rslt = process_something(num, curried_fn, lambda_fn)\r\n    t2 = time.perf_counter() - t1\r\n    print(f\"{flag:<25} {t2:.5f}\")\r\n    return [flag, t2, rslt]\r\n\r\n\r\nfn = filter\r\nfn = map\r\nfn_str = fn.__name__\r\nlambda_fn = lambda x: x\r\nargs_num = 2\r\n\r\nf2 = lambda fn, a, b: fn(a, b)\r\n\r\n\r\ncurry_list = {\r\n    \"toolz.curried\": getattr(toolz.curried, fn_str),\r\n    \"cytoolz.curried\": getattr(cytoolz.curried, fn_str),\r\n    \"toolz.curry\": toolz.functoolz.curry(fn),\r\n    \"cytoolz.curry\": cytoolz.functoolz.curry(fn),\r\n    \"lambda_curry\": lambda x: lambda y: fn(x, y),\r\n    \"funcy.curry.seqs\": funcy.curry(getattr(funcy.seqs, fn_str)),\r\n    \"funcy.curry\": funcy.curry(fn),\r\n    \"funcy.autocurry\": funcy.autocurry(fn),\r\n    \"funcy.autocurry.seqs\": funcy.autocurry(getattr(funcy.seqs, fn_str)),\r\n    \"expression.seq\": getattr(expression.collections.seq, fn_str),\r\n    \"expression.curry\": expression.curry(args_num - 1)(fn),\r\n    \"pymonad.tools.curry\": pymonad.tools.curry(args_num)(fn),\r\n    \"pydash.functions.curry\": pydash.functions.curry(f2)(fn),\r\n    \"returns.curry\": returns.curry.curry(f2)(fn),\r\n}\r\n\r\n\r\nprint(f\"{fn_str:<25} time\")\r\nt = curry_list\r\nrslt = []\r\nfor i in t:\r\n    r = test_curry(i, t[i], lambda_fn)\r\n    rslt.append(r[2])\r\n\r\nrslt_set = set(str(i) for i in rslt)\r\nassert len(rslt_set) == 1\r\n\r\n"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 580,
+   "title": "Dictionary chunking / batching (inverting merge_with)",
+   "class": "B",
+   "labels": [],
+   "outcome": "not_reproducible",
+   "test_src": "import pytest\nfrom itertools import starmap, zip_longest\nfrom math import ceil\nfrom tlz import merge, partition_all\n\n\ndef chunk_dict(n: int, d: dict):\n    \"\"\"Chunk a dict of lists into separate dicts with lists of max length `n`.\"\"\"\n    def chunk(k, v):\n        if hasattr(v, '__len__') and hasattr(v, '__getitem__'):\n            try:\n                return ({k: v[i*n:(i+1)*n]} for i in range(ceil(len(v)/n)))\n            except:\n                pass\n        return ({k: part} for part in partition_all(n, v))\n    return list(map(merge, zip_longest(*starmap(chunk, d.items()), fillvalue={})))\n\n\ndef test_chunk_dict_basic():\n    \"\"\"Test chunking a dictionary with list values\"\"\"\n    d = {'a': [1, 3, 5], 'b': [2, 4, 6]}\n    result = chunk_dict(2, d)\n\n    assert len(result) == 2\n    assert result[0] == {'a': [1, 3], 'b': [2, 4]}\n    assert result[1] == {'a': [5], 'b': [6]}\n\n\ndef test_chunk_dict_with_numpy_arrays():\n    \"\"\"Test chunking a dictionary with numpy array values\"\"\"\n    try:\n        import numpy as np\n    except ImportError:\n        pytest.skip(\"numpy not installed\")\n\n    d = {'a': np.array([1, 2, 3, 7]), 'b': np.array([4, 5, 6, 8])}\n    result = chunk_dict(2, d)\n\n    assert len(result) == 2\n    assert np.array_equal(result[0]['a'], np.array([1, 2]))\n    assert np.array_equal(result[0]['b'], np.array([4, 5]))\n    assert np.array_equal(result[1]['a'], np.array([3, 7]))\n    assert np.array_equal(result[1]['b'], np.array([6, 8]))\n"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 569,
+   "title": "Loss of typing information on composed functions",
+   "class": "B",
+   "labels": [],
+   "outcome": "not_reproducible",
+   "test_src": "import pytest\nfrom typing import get_type_hints\nfrom toolz import compose\n\n\ndef test_compose_preserves_type_information():\n    \"\"\"Test that compose() preserves type information of composed functions.\"\"\"\n\n    def f(x: int) -> str:\n        return f\"{x}\"\n\n    # compose f with the identity function\n    g = compose(f)\n\n    # Test runtime behavior\n    assert g(1) == \"1\"\n    assert isinstance(g(1), str)\n\n    # Test that type hints are preserved\n    f_hints = get_type_hints(f)\n    g_hints = get_type_hints(g)\n\n    assert f_hints.get('return') == str, f\"Expected return type str for f, got {f_hints.get('return')}\"\n    assert g_hints.get('return') == str, f\"Expected return type str for g, got {g_hints.get('return')}\"\n    assert 'x' in f_hints, \"Expected parameter 'x' in f hints\"\n    assert 'x' in g_hints, \"Expected parameter 'x' in g hints\"\n    assert f_hints.get('x') == int, f\"Expected parameter type int for f, got {f_hints.get('x')}\"\n    assert g_hints.get('x') == int, f\"Expected parameter type int for g, got {g_hints.get('x')}\"\n"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 567,
+   "title": "Split two lists/iterables of objects \"wanted_state\", \"existing_state\" in 3 lists \"create\", \"update\",",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom toolz import partition_by, join, groupby\nfrom operator import itemgetter\n\n\ndef test_split_iterables_into_create_update_delete():\n    \"\"\"Test splitting two iterables into create, update, and delete lists based on a key.\"\"\"\n\n    class MyModel:\n        def __init__(self, some_id, name):\n            self.id = some_id\n            self.name = name\n\n        def __repr__(self):\n            return f\"MyModel(id={self.id}, name={self.name})\"\n\n        def __eq__(self, other):\n            return self.id == other.id and self.name == other.name\n\n    # Existing state in database (site 1)\n    existing_state = [\n        MyModel(1, \"Alice\"),\n        MyModel(2, \"Bob\"),\n        MyModel(3, \"Charlie\"),\n    ]\n\n    # Wanted state (site 2) - different ids but same names\n    wanted_state = [\n        MyModel(10, \"Alice\"),\n        MyModel(20, \"Bob\"),\n        MyModel(40, \"Diana\"),\n    ]\n\n    # Group by name to find matches\n    existing_by_name = groupby(itemgetter('name'), \n                               [{'name': obj.name, 'obj': obj, 'type': 'existing'} \n                                for obj in existing_state])\n    wanted_by_name = groupby(itemgetter('name'), \n                             [{'name': obj.name, 'obj': obj, 'type': 'wanted'} \n                              for obj in wanted_state])\n\n    # Use join to match by name\n    joined = join(itemgetter('name'), \n                  [{'name': obj.name, 'obj': obj, 'type': 'existing'} \n                   for obj in existing_state],\n                  itemgetter('name'),\n                  [{'name': obj.name, 'obj': obj, 'type': 'wanted'} \n                   for obj in wanted_state])\n\n    create = [item[1][0]['obj'] for item in joined if len(item[1][0]) == 0]\n\n    existing_names = {obj.name for obj in existing_state}\n    wanted_names = {obj.name for obj in wanted_state}\n\n    # Objects to create (in wanted but not in existing by name)\n    create = [obj for obj in wanted_state if obj.name not in existing_names]\n\n    # Objects to "
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 544,
+   "title": "Idea: J-style forks",
+   "class": "A",
+   "labels": [],
+   "outcome": "not_reproducible",
+   "test_src": "def test_intake_issue():\n    from toolz.functoolz import curry, apply\r\n\r\n    def fork(combine, *fns):\r\n        @curry\r\n        def f(*args):\r\n            return combine(*map(apply, fns, args))\r\n        return f\r\n\r\n    # Usage: fork(f, g, h)(x, y) is equivalent to f(g(x), h(y))\r\n    from operator import add\r\n    dup = lambda x: x * 2\r\n    trip = lambda y: y * 3\r\n    fn_2x_plus_3y = fork(add, dup, trip)\r\n    assert fn_2x_plus_3y(1, 2) == 2*1 + 3*2\r\n"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 540,
+   "title": "`thread_as` function ??",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom toolz import thread_as\nimport uuid\n\n\ndef test_thread_as_with_named_variable():\n    \"\"\"Test thread_as function with named variable placeholder\"\"\"\n    v = f\"{uuid.uuid4()}_var\"\n\n    def add(x, y):\n        return x + y\n\n    def pow_func(x, y):\n        return x ** y\n\n    result = thread_as(\n        1, v,\n        (add, 4, v),\n        (pow_func, v, 2),\n    )\n\n    assert result == 25\n"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 529,
+   "title": "Combination of map and accumulate",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import pytest\nfrom toolz import assoc_in\n\n\ndef test_mapacc_combination_of_map_and_accumulate():\n    \"\"\"Test that mapacc function exists and works as expected\"\"\"\n    # Import should fail if mapacc doesn't exist\n    from toolz import mapacc\n\n    data = [{'id': 'a', 'value': 1},\n            {'id': 'b', 'value': 2},\n            {'id': 'c', 'value': 3},\n            {'id': 'd', 'value': 4}]\n\n    result, acc_values = mapacc(\n        mapper=lambda acc, elem: assoc_in(elem, ['value'], max(elem['value'] - acc, 0)),\n        accumulator=lambda acc, elem: max(acc - elem['value'], 0),\n        sequence=data,\n        accumulator_init=4\n    )\n\n    expected_result = (\n        {'id': 'a', 'value': 0},\n        {'id': 'b', 'value': 0},\n        {'id': 'c', 'value': 2},\n        {'id': 'd', 'value': 4}\n    )\n    expected_acc = (3, 1, 0, 0)\n\n    assert result == expected_result\n    assert acc_values == expected_acc\n"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 523,
+   "title": "Idea: compose as an operator",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import pytest\nfrom toolz import compose\n\n\ndef test_compose_operator():\n    \"\"\"Test that compose can be used with the | operator\"\"\"\n    def foo(x):\n        return x + 1\n\n    def bar(x):\n        return x * 2\n\n    # The | operator should work for composition\n    # foo | bar should be equivalent to compose(foo, bar)\n    composed = foo | bar\n\n    # Test the composed function\n    assert composed(5) == (5 + 1) * 2\n    assert composed(5) == compose(foo, bar)(5)\n\n\nif __name__ == \"__main__\":\n    pytest.main([__file__, \"-v\"])\n"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 517,
+   "title": "iget for fetching indexes from a non-sequence iterable",
+   "class": "B",
+   "labels": [],
+   "outcome": "invalid",
+   "test_src": "import pytest\nfrom toolz import iget\n\n\ndef test_iget_with_iterator():\n    \"\"\"Test iget function with non-sequence iterables like iterators\"\"\"\n    # iget should work with iterators (non-indexable iterables)\n    data = iter([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])\n    indices = [2, 5, 8]\n    result = tuple(iget(indices, data))\n    assert result == (2, 5, 8)\n\n\ndef test_iget_with_set():\n    \"\"\"Test iget function with sets\"\"\"\n    data = {0, 1, 2, 3, 4, 5}\n    indices = [0, 2, 4]\n    result = tuple(iget(indices, data))\n    # Should get items at specified positions when iterable is consumed in order\n    assert len(result) == 3\n\n\ndef test_iget_with_file_like():\n    \"\"\"Test iget function with file-like object\"\"\"\n    lines = ['line0\\n', 'line1\\n', 'line2\\n', 'line3\\n', 'line4\\n']\n    data = iter(lines)\n    indices = [1, 3]\n    result = tuple(iget(indices, data))\n    assert result == ('line1\\n', 'line3\\n')\n\n\ndef test_iget_with_generator():\n    \"\"\"Test iget function with generator\"\"\"\n    def gen():\n        for i in range(10):\n            yield i * 2\n\n    indices = [0, 2, 4]\n    result = tuple(iget(indices, gen()))\n    assert result == (0, 4, 8)\n\n\ndef test_iget_unsorted_indices():\n    \"\"\"Test iget with unsorted indices\"\"\"\n    data = iter(range(10))\n    indices = [5, 2, 8]  # unsorted\n    result = tuple(iget(indices, data))\n    assert result == (2, 5, 8)  # should return in sorted order\n"
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 510,
+   "title": "pipe and **kwargs",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import pytest\nimport toolz\n\n\ndef test_pipe_with_kwargs():\n    \"\"\"Test that pipe works with functions that accept **kwargs\"\"\"\n    some_dict = {\"hello\": \"world\", \"foo\": \"bar\", \"number\": 0}\n\n    def first_func(hello, foo, **kwargs):\n        hello = \"John\"\n        foo = \"baz\"\n        kwargs['newvalue'] = True\n        return kwargs\n\n    def second_func(number, **kwargs):\n        number = number + 1\n        kwargs['number'] = number\n        kwargs['anothervalue'] = False\n        return kwargs\n\n    # This should work: piping a dict through functions that use **kwargs\n    result = toolz.pipe(some_dict, lambda d: first_func(**d), second_func)\n\n    # Verify the result contains expected values from both functions\n    assert result['number'] == 1\n    assert result['newvalue'] is True\n    assert result['anothervalue'] is False\n\n    # Original dict should remain untouched\n    assert some_dict == {\"hello\": \"world\", \"foo\": \"bar\", \"number\": 0}\n"
+  }
+ ],
+ "usage": {
+  "calls": 52,
+  "input_tokens": 28894,
+  "output_tokens": 18326
+ }
+}

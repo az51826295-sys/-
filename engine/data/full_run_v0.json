@@ -1,0 +1,100 @@
+{
+  "spec": "full-run-v0",
+  "design": "docs/full-run-v0-design.md",
+  "want": "아이콘 세트 만들어줘",
+  "provider": "mock",
+  "verdict": "stopped",
+  "counts": {
+    "auto": 4,
+    "approval": 1,
+    "choice": 1,
+    "fix": 1,
+    "undefined": 1
+  },
+  "stopped_at": [
+    {
+      "step": 5,
+      "name": "낱개 심판",
+      "status": "fix",
+      "why": "통과 후보가 0 - 다시 생성하거나 스펙을 고쳐야 한다"
+    },
+    {
+      "step": 7,
+      "name": "선별",
+      "status": "choice",
+      "why": "심판은 거를 뿐 고르지 않는다(2026-08-26 규율). 취향 심판이 승격되기 전에는 여기서 항상 멈춘다"
+    }
+  ],
+  "seconds": 5.2,
+  "steps": [
+    {
+      "step": 1,
+      "name": "요청 분해",
+      "status": "auto",
+      "atoms": [
+        "icon_spec_fit"
+      ],
+      "why": null
+    },
+    {
+      "step": 2,
+      "name": "재구성·되묻기",
+      "status": "auto",
+      "keep": [
+        "icon_spec_fit"
+      ],
+      "dropped": [],
+      "question": null
+    },
+    {
+      "step": 3,
+      "name": "설계도·견적",
+      "status": "approval",
+      "checklist": 1,
+      "human_gate": 0,
+      "coins": 30,
+      "won": 30000,
+      "why": "견적 승인은 사람 몫이다(코인이 돈이다)"
+    },
+    {
+      "step": 4,
+      "name": "자산 생성",
+      "status": "auto",
+      "provider": "mock",
+      "candidates": 9,
+      "why": null,
+      "usd": 0.0
+    },
+    {
+      "step": 5,
+      "name": "낱개 심판",
+      "status": "fix",
+      "candidates": 9,
+      "passed": 0,
+      "concepts_with_pass": [],
+      "why": "통과 후보가 0 - 다시 생성하거나 스펙을 고쳐야 한다"
+    },
+    {
+      "step": 6,
+      "name": "세트 심판",
+      "status": "undefined",
+      "why": "세트를 만들 통과 후보가 2개 미만이다"
+    },
+    {
+      "step": 7,
+      "name": "선별",
+      "status": "choice",
+      "pool": {},
+      "why": "심판은 거를 뿐 고르지 않는다(2026-08-26 규율). 취향 심판이 승격되기 전에는 여기서 항상 멈춘다"
+    },
+    {
+      "step": 8,
+      "name": "조립·게임 확인",
+      "status": "auto",
+      "smoke": "PASS",
+      "icons": 8,
+      "characters": 2,
+      "why": null
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "1107a234c5681e54d1345bad1f32dc107a4aa344",
+ "parent_commit": "187560311f868e7eeac76eed30edf69f538c483b",
+ "answer_files": [],
+ "answer_functions": [],
+ "patch_lines": 14,
+ "added_tests": {
+  "tests/test_schema.py::test_dump_resets_errors": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_schema.py::TestSchemaValidator::test_errors_are_cleared_after_loading_collection": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "tests/test_schema.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 7.3,
+ "env_error_tests": 2,
+ "qualified": false
+}

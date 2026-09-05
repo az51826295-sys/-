@@ -1,0 +1,124 @@
+{
+ "repo": "dateutil",
+ "fix_commit": "f42ee4c13c092725f8da650e2272a08a019f17b7",
+ "parent_commit": "8cf9ebcd661844a2493530d93b9f3925c2f17b81",
+ "answer_files": [
+  "dateutil/relativedelta.py"
+ ],
+ "answer_functions": [
+  "dateutil/relativedelta.py::__add__",
+  "dateutil/relativedelta.py::__div__",
+  "dateutil/relativedelta.py::__eq__",
+  "dateutil/relativedelta.py::__mul__",
+  "dateutil/relativedelta.py::__sub__"
+ ],
+ "patch_lines": 19,
+ "added_tests": {
+  "dateutil/test/test_relativedelta.py::RelativeDeltaTest::testAdditionUnsupportedType": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "dateutil/test/test_relativedelta.py::RelativeDeltaTest::testSubtractionUnsupportedType": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "dateutil/test/test_relativedelta.py::RelativeDeltaTest::testMultiplicationUnsupportedType": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "dateutil/test/test_relativedelta.py::RelativeDeltaTest::testDivisionUnsupportedType": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "dateutil/test/test_relativedelta.py::RelativeDeltaTest::testInequalityUnsupportedType": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [
+  "dateutil/test/test_relativedelta.py::RelativeDeltaTest::testAdditionUnsupportedType",
+  "dateutil/test/test_relativedelta.py::RelativeDeltaTest::testSubtractionUnsupportedType",
+  "dateutil/test/test_relativedelta.py::RelativeDeltaTest::testMultiplicationUnsupportedType",
+  "dateutil/test/test_relativedelta.py::RelativeDeltaTest::testDivisionUnsupportedType",
+  "dateutil/test/test_relativedelta.py::RelativeDeltaTest::testInequalityUnsupportedType"
+ ],
+ "test_files": [
+  "dateutil/test/_common.py",
+  "dateutil/test/test_relativedelta.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": true,
+ "partial_fix_probes": [
+  {
+   "applied": "dateutil/relativedelta.py::__add__",
+   "passes_repro": [
+    "dateutil/test/test_relativedelta.py::RelativeDeltaTest::testAdditionUnsupportedType",
+    "dateutil/test/test_relativedelta.py::RelativeDeltaTest::testSubtractionUnsupportedType"
+   ],
+   "still_failing": [
+    "dateutil/test/test_relativedelta.py::RelativeDeltaTest::testMultiplicationUnsupportedType",
+    "dateutil/test/test_relativedelta.py::RelativeDeltaTest::testDivisionUnsupportedType",
+    "dateutil/test/test_relativedelta.py::RelativeDeltaTest::testInequalityUnsupportedType"
+   ],
+   "event": true
+  },
+  {
+   "applied": "dateutil/relativedelta.py::__div__",
+   "passes_repro": [
+    "dateutil/test/test_relativedelta.py::RelativeDeltaTest::testDivisionUnsupportedType"
+   ],
+   "still_failing": [
+    "dateutil/test/test_relativedelta.py::RelativeDeltaTest::testAdditionUnsupportedType",
+    "dateutil/test/test_relativedelta.py::RelativeDeltaTest::testSubtractionUnsupportedType",
+    "dateutil/test/test_relativedelta.py::RelativeDeltaTest::testMultiplicationUnsupportedType",
+    "dateutil/test/test_relativedelta.py::RelativeDeltaTest::testInequalityUnsupportedType"
+   ],
+   "event": true
+  },
+  {
+   "applied": "dateutil/relativedelta.py::__eq__",
+   "passes_repro": [],
+   "still_failing": [
+    "dateutil/test/test_relativedelta.py::RelativeDeltaTest::testAdditionUnsupportedType",
+    "dateutil/test/test_relativedelta.py::RelativeDeltaTest::testSubtractionUnsupportedType",
+    "dateutil/test/test_relativedelta.py::RelativeDeltaTest::testMultiplicationUnsupportedType",
+    "dateutil/test/test_relativedelta.py::RelativeDeltaTest::testDivisionUnsupportedType",
+    "dateutil/test/test_relativedelta.py::RelativeDeltaTest::testInequalityUnsupportedType"
+   ],
+   "event": false
+  },
+  {
+   "applied": "dateutil/relativedelta.py::__mul__",
+   "passes_repro": [
+    "dateutil/test/test_relativedelta.py::RelativeDeltaTest::testMultiplicationUnsupportedType"
+   ],
+   "still_failing": [
+    "dateutil/test/test_relativedelta.py::RelativeDeltaTest::testAdditionUnsupportedType",
+    "dateutil/test/test_relativedelta.py::RelativeDeltaTest::testSubtractionUnsupportedType",
+    "dateutil/test/test_relativedelta.py::RelativeDeltaTest::testDivisionUnsupportedType",
+    "dateutil/test/test_relativedelta.py::RelativeDeltaTest::testInequalityUnsupportedType"
+   ],
+   "event": true
+  },
+  {
+   "applied": "dateutil/relativedelta.py::__sub__",
+   "passes_repro": [],
+   "still_failing": [
+    "dateutil/test/test_relativedelta.py::RelativeDeltaTest::testAdditionUnsupportedType",
+    "dateutil/test/test_relativedelta.py::RelativeDeltaTest::testSubtractionUnsupportedType",
+    "dateutil/test/test_relativedelta.py::RelativeDeltaTest::testMultiplicationUnsupportedType",
+    "dateutil/test/test_relativedelta.py::RelativeDeltaTest::testDivisionUnsupportedType",
+    "dateutil/test/test_relativedelta.py::RelativeDeltaTest::testInequalityUnsupportedType"
+   ],
+   "event": false
+  }
+ ],
+ "env_seconds": 19.4,
+ "env_error_tests": 0,
+ "qualified": true
+}

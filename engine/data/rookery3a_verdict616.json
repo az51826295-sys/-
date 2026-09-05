@@ -1,0 +1,47 @@
+{
+ "BPUB": {
+  "n_runs": 15,
+  "champion_regression_rate": 0.455,
+  "champion_regression_abs": "5/11",
+  "mapping_success_rate": null,
+  "direction_capture_rate": null,
+  "direction_base": 0,
+  "sel_drop_rate_of_public": 0.0,
+  "public_cands": 1,
+  "answer_runs": 0,
+  "answer_picked": 0,
+  "over_conservatism": null,
+  "full_rate": 0.0,
+  "status": {
+   "no_patch": 4,
+   "public_fail": 5,
+   "public_only": 1,
+   "regression": 5
+  },
+  "mean_test_runs": 11.4,
+  "mean_wall_s": 51.3
+ },
+ "BSEL": {
+  "n_runs": 15,
+  "champion_regression_rate": 0.385,
+  "champion_regression_abs": "5/13",
+  "mapping_success_rate": 1.0,
+  "direction_capture_rate": null,
+  "direction_base": 0,
+  "sel_drop_rate_of_public": 0.0,
+  "public_cands": 2,
+  "answer_runs": 1,
+  "answer_picked": 1,
+  "over_conservatism": 0.0,
+  "full_rate": 0.07,
+  "status": {
+   "full": 1,
+   "no_patch": 2,
+   "public_fail": 6,
+   "public_only": 1,
+   "regression": 5
+  },
+  "mean_test_runs": 15.1,
+  "mean_wall_s": 62.8
+ }
+}

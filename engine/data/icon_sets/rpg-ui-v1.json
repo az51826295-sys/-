@@ -1,0 +1,6 @@
+[
+  {"concept": "save", "meaning": "진행 상황 저장"},
+  {"concept": "inventory", "meaning": "소지품 가방 열기"},
+  {"concept": "map", "meaning": "지역 지도 보기"},
+  {"concept": "settings", "meaning": "환경 설정"}
+]

@@ -1,0 +1,15 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "8aab6b655211ecd0887b90eab9f9dfcfa57faaed",
+ "parent_commit": "e0c81924229fb7e38342546ea50fe159abf11a6f",
+ "answer_functions": [
+  "marshmallow/validate.py::__repr__"
+ ],
+ "repro_tests": [],
+ "smoke": [],
+ "baseline_pass_count": 0,
+ "probes": [],
+ "inc_event": false,
+ "regression_event": false,
+ "skipped": "no repro or no answer functions"
+}

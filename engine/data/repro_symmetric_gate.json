@@ -1,0 +1,950 @@
+[
+ {
+  "slug": "mahmoud/boltons",
+  "number": 439,
+  "cat": "bug_assertion",
+  "symbols": [
+   "IndexedSet",
+   "append",
+   "difference_update",
+   "perf_counter"
+  ],
+  "ontopic": true
+ },
+ {
+  "slug": "mahmoud/boltons",
+  "number": 310,
+  "cat": "other_exception",
+  "symbols": [
+   "count",
+   "windowed"
+  ],
+  "ontopic": true
+ },
+ {
+  "slug": "mahmoud/boltons",
+  "number": 304,
+  "cat": "bug_assertion",
+  "symbols": [
+   "remap"
+  ],
+  "ontopic": true
+ },
+ {
+  "slug": "mahmoud/boltons",
+  "number": 280,
+  "cat": "bug_assertion",
+  "symbols": [
+   "URL"
+  ],
+  "ontopic": true
+ },
+ {
+  "slug": "mahmoud/boltons",
+  "number": 225,
+  "cat": "bug_assertion",
+  "symbols": [
+   "IndexedSet"
+  ],
+  "ontopic": true
+ },
+ {
+  "slug": "mahmoud/boltons",
+  "number": 201,
+  "cat": "other_exception",
+  "symbols": [
+   "signature",
+   "wraps"
+  ],
+  "ontopic": true
+ },
+ {
+  "slug": "dateutil/dateutil",
+  "number": 1546,
+  "cat": "bug_assertion",
+  "symbols": [
+   "parse",
+   "parser"
+  ],
+  "ontopic": true
+ },
+ {
+  "slug": "dateutil/dateutil",
+  "number": 1545,
+  "cat": "bug_assertion",
+  "symbols": [
+   "isoparse"
+  ],
+  "ontopic": true
+ },
+ {
+  "slug": "dateutil/dateutil",
+  "number": 1508,
+  "cat": "other_exception",
+  "symbols": [
+   "ParserError",
+   "parse",
+   "raises",
+   "total_seconds",
+   "utcoffset"
+  ],
+  "ontopic": true
+ },
+ {
+  "slug": "marshmallow-code/marshmallow",
+  "number": 3019,
+  "cat": "other_exception",
+  "symbols": [
+   "DateTime",
+   "ValidationError",
+   "deserialize",
+   "fields",
+   "serialize"
+  ],
+  "ontopic": true
+ },
+ {
+  "slug": "marshmallow-code/marshmallow",
+  "number": 2961,
+  "cat": "bug_assertion",
+  "symbols": [
+   "Nested",
+   "String",
+   "UUID",
+   "load",
+   "raises",
+   "validates"
+  ],
+  "ontopic": true
+ },
+ {
+  "slug": "marshmallow-code/marshmallow",
+  "number": 2893,
+  "cat": "other_exception",
+  "symbols": [
+   "get_value",
+   "utils"
+  ],
+  "ontopic": true
+ },
+ {
+  "slug": "marshmallow-code/marshmallow",
+  "number": 2836,
+  "cat": "other_exception",
+  "symbols": [
+   "Int",
+   "Str",
+   "dump",
+   "load"
+  ],
+  "ontopic": true
+ },
+ {
+  "slug": "marshmallow-code/marshmallow",
+  "number": 2243,
+  "cat": "bug_assertion",
+  "symbols": [
+   "Schema",
+   "ValidationError",
+   "fields",
+   "load",
+   "lower",
+   "raises"
+  ],
+  "ontopic": true
+ },
+ {
+  "slug": "marshmallow-code/marshmallow",
+  "number": 2194,
+  "cat": "bug_assertion",
+  "symbols": [
+   "Schema",
+   "fields",
+   "from_dict",
+   "loads"
+  ],
+  "ontopic": true
+ },
+ {
+  "slug": "marshmallow-code/marshmallow",
+  "number": 2189,
+  "cat": "other_exception",
+  "symbols": [
+   "DateTime",
+   "Schema",
+   "ValidationError",
+   "dump",
+   "fields",
+   "raises"
+  ],
+  "ontopic": true
+ },
+ {
+  "slug": "marshmallow-code/marshmallow",
+  "number": 2180,
+  "cat": "other_exception",
+  "symbols": [
+   "Schema",
+   "fields",
+   "raises"
+  ],
+  "ontopic": true
+ },
+ {
+  "slug": "marshmallow-code/marshmallow",
+  "number": 2165,
+  "cat": "bug_assertion",
+  "symbols": [
+   "Nested",
+   "Schema",
+   "String",
+   "dump",
+   "fields"
+  ],
+  "ontopic": true
+ },
+ {
+  "slug": "marshmallow-code/marshmallow",
+  "number": 2032,
+  "cat": "bug_assertion",
+  "symbols": [
+   "DateTime",
+   "Schema",
+   "dump",
+   "fields"
+  ],
+  "ontopic": true
+ },
+ {
+  "slug": "marshmallow-code/marshmallow",
+  "number": 2012,
+  "cat": "bug_assertion",
+  "symbols": [
+   "Schema",
+   "_deserialize",
+   "fields",
+   "load"
+  ],
+  "ontopic": true
+ },
+ {
+  "slug": "marshmallow-code/marshmallow",
+  "number": 2000,
+  "cat": "other_exception",
+  "symbols": [
+   "DateTime",
+   "Email",
+   "INCLUDE",
+   "Nested",
+   "Schema",
+   "ValidationError"
+  ],
+  "ontopic": true
+ },
+ {
+  "slug": "grantjenks/python-sortedcontainers",
+  "number": 239,
+  "cat": "other_exception",
+  "symbols": [
+   "SortedSet",
+   "discard",
+   "randint",
+   "seed",
+   "update"
+  ],
+  "ontopic": true
+ },
+ {
+  "slug": "grantjenks/python-sortedcontainers",
+  "number": 238,
+  "cat": "bug_assertion",
+  "symbols": [
+   "SortedSet",
+   "discard"
+  ],
+  "ontopic": true
+ },
+ {
+  "slug": "grantjenks/python-sortedcontainers",
+  "number": 219,
+  "cat": "other_exception",
+  "symbols": [
+   "SortedSet",
+   "__and__"
+  ],
+  "ontopic": true
+ },
+ {
+  "slug": "msiemens/tinydb",
+  "number": 629,
+  "cat": "other_exception",
+  "symbols": [
+   "Document",
+   "MemoryStorage",
+   "TinyDB",
+   "insert",
+   "insert_multiple"
+  ],
+  "ontopic": true
+ },
+ {
+  "slug": "pytoolz/toolz",
+  "number": 626,
+  "cat": "bug_assertion",
+  "symbols": [
+   "tail"
+  ],
+  "ontopic": true
+ },
+ {
+  "slug": "pytoolz/toolz",
+  "number": 523,
+  "cat": "other_exception",
+  "symbols": [
+   "compose",
+   "main"
+  ],
+  "ontopic": true
+ },
+ {
+  "slug": "pytoolz/toolz",
+  "number": 510,
+  "cat": "other_exception",
+  "symbols": [
+   "pipe"
+  ],
+  "ontopic": true
+ },
+ {
+  "slug": "mahmoud/boltons",
+  "number": 142,
+  "cat": "bug_assertion",
+  "symbols": [
+   "camel2under"
+  ],
+  "ontopic": true
+ },
+ {
+  "slug": "mahmoud/boltons",
+  "number": 141,
+  "cat": "bug_assertion",
+  "symbols": [
+   "Eastern",
+   "LocalTZInfo",
+   "format",
+   "replace",
+   "tzname",
+   "utcoffset"
+  ],
+  "ontopic": true
+ },
+ {
+  "slug": "dateutil/dateutil",
+  "number": 1452,
+  "cat": "bug_assertion",
+  "symbols": [
+   "YEARLY",
+   "date",
+   "rrule"
+  ],
+  "ontopic": true
+ },
+ {
+  "slug": "dateutil/dateutil",
+  "number": 1448,
+  "cat": "bug_assertion",
+  "symbols": [
+   "parse",
+   "parser"
+  ],
+  "ontopic": true
+ },
+ {
+  "slug": "dateutil/dateutil",
+  "number": 1442,
+  "cat": "other_exception",
+  "symbols": [
+   "parse",
+   "parser"
+  ],
+  "ontopic": true
+ },
+ {
+  "slug": "dateutil/dateutil",
+  "number": 1432,
+  "cat": "other_exception",
+  "symbols": [
+   "tzstr"
+  ],
+  "ontopic": true
+ },
+ {
+  "slug": "dateutil/dateutil",
+  "number": 1421,
+  "cat": "bug_assertion",
+  "symbols": [
+   "parse"
+  ],
+  "ontopic": true
+ },
+ {
+  "slug": "dateutil/dateutil",
+  "number": 1414,
+  "cat": "other_exception",
+  "symbols": [
+   "parse",
+   "parser"
+  ],
+  "ontopic": true
+ },
+ {
+  "slug": "dateutil/dateutil",
+  "number": 1410,
+  "cat": "bug_assertion",
+  "symbols": [
+   "parse"
+  ],
+  "ontopic": true
+ },
+ {
+  "slug": "dateutil/dateutil",
+  "number": 1409,
+  "cat": "other_exception",
+  "symbols": [
+   "parse",
+   "parser"
+  ],
+  "ontopic": true
+ },
+ {
+  "slug": "dateutil/dateutil",
+  "number": 1404,
+  "cat": "other_exception",
+  "symbols": [
+   "relativedelta"
+  ],
+  "ontopic": true
+ },
+ {
+  "slug": "dateutil/dateutil",
+  "number": 1400,
+  "cat": "other_exception",
+  "symbols": [
+   "Date",
+   "relativedelta",
+   "skipif"
+  ],
+  "ontopic": true
+ },
+ {
+  "slug": "dateutil/dateutil",
+  "number": 1397,
+  "cat": "bug_assertion",
+  "symbols": [
+   "relativedelta"
+  ],
+  "ontopic": true
+ },
+ {
+  "slug": "dateutil/dateutil",
+  "number": 1393,
+  "cat": "other_exception",
+  "symbols": [
+   "after",
+   "alarm",
+   "exrule",
+   "fail",
+   "rrule",
+   "rruleset"
+  ],
+  "ontopic": true
+ },
+ {
+  "slug": "dateutil/dateutil",
+  "number": 1370,
+  "cat": "other_exception",
+  "symbols": [
+   "_tzicalvtz",
+   "deepcopy",
+   "dumps",
+   "loads",
+   "tzical"
+  ],
+  "ontopic": true
+ },
+ {
+  "slug": "dateutil/dateutil",
+  "number": 1369,
+  "cat": "other_exception",
+  "symbols": [
+   "deepcopy",
+   "dumps",
+   "loads",
+   "rdate",
+   "rrule",
+   "rruleset"
+  ],
+  "ontopic": true
+ },
+ {
+  "slug": "dateutil/dateutil",
+  "number": 1368,
+  "cat": "other_exception",
+  "symbols": [
+   "tzical"
+  ],
+  "ontopic": true
+ },
+ {
+  "slug": "dateutil/dateutil",
+  "number": 1364,
+  "cat": "other_exception",
+  "symbols": [
+   "isoparse"
+  ],
+  "ontopic": true
+ },
+ {
+  "slug": "dateutil/dateutil",
+  "number": 1359,
+  "cat": "bug_assertion",
+  "symbols": [
+   "parse",
+   "raises"
+  ],
+  "ontopic": true
+ },
+ {
+  "slug": "dateutil/dateutil",
+  "number": 1357,
+  "cat": "bug_assertion",
+  "symbols": [
+   "parse",
+   "parser",
+   "timestamp",
+   "total_seconds",
+   "tzoffset",
+   "utcoffset"
+  ],
+  "ontopic": true
+ },
+ {
+  "slug": "dateutil/dateutil",
+  "number": 1341,
+  "cat": "other_exception",
+  "symbols": [
+   "isoparse",
+   "raises"
+  ],
+  "ontopic": true
+ },
+ {
+  "slug": "dateutil/dateutil",
+  "number": 1334,
+  "cat": "other_exception",
+  "symbols": [
+   "ParserError",
+   "parse",
+   "raises"
+  ],
+  "ontopic": true
+ },
+ {
+  "slug": "dateutil/dateutil",
+  "number": 1327,
+  "cat": "bug_assertion",
+  "symbols": [
+   "parse"
+  ],
+  "ontopic": null
+ },
+ {
+  "slug": "dateutil/dateutil",
+  "number": 1321,
+  "cat": "bug_assertion",
+  "symbols": [
+   "du_parse",
+   "parse"
+  ],
+  "ontopic": null
+ },
+ {
+  "slug": "dateutil/dateutil",
+  "number": 1318,
+  "cat": "bug_assertion",
+  "symbols": [
+   "relativedelta"
+  ],
+  "ontopic": null
+ },
+ {
+  "slug": "dateutil/dateutil",
+  "number": 1312,
+  "cat": "bug_assertion",
+  "symbols": [
+   "MONTHLY",
+   "datetime",
+   "rrule"
+  ],
+  "ontopic": null
+ },
+ {
+  "slug": "marshmallow-code/marshmallow",
+  "number": 1971,
+  "cat": "bug_assertion",
+  "symbols": [
+   "MissingType",
+   "Schema",
+   "example_with_missing_annotation",
+   "fail",
+   "fields",
+   "missing"
+  ],
+  "ontopic": null
+ },
+ {
+  "slug": "marshmallow-code/marshmallow",
+  "number": 1964,
+  "cat": "other_exception",
+  "symbols": [
+   "Float",
+   "Schema",
+   "ValidationError",
+   "fail",
+   "fields",
+   "load"
+  ],
+  "ontopic": null
+ },
+ {
+  "slug": "marshmallow-code/marshmallow",
+  "number": 1942,
+  "cat": "other_exception",
+  "symbols": [
+   "List",
+   "Nested",
+   "Schema",
+   "String",
+   "fields",
+   "join"
+  ],
+  "ontopic": null
+ },
+ {
+  "slug": "marshmallow-code/marshmallow",
+  "number": 1895,
+  "cat": "bug_assertion",
+  "symbols": [
+   "OneOf",
+   "Schema",
+   "fields",
+   "load"
+  ],
+  "ontopic": null
+ },
+ {
+  "slug": "marshmallow-code/marshmallow",
+  "number": 1893,
+  "cat": "bug_assertion",
+  "symbols": [
+   "Schema",
+   "dump",
+   "fields",
+   "keys"
+  ],
+  "ontopic": null
+ },
+ {
+  "slug": "marshmallow-code/marshmallow",
+  "number": 1844,
+  "cat": "bug_assertion",
+  "symbols": [
+   "Email",
+   "Schema",
+   "fields",
+   "validate"
+  ],
+  "ontopic": null
+ },
+ {
+  "slug": "marshmallow-code/marshmallow",
+  "number": 1841,
+  "cat": "other_exception",
+  "symbols": [
+   "load",
+   "post_load_h",
+   "raises"
+  ],
+  "ontopic": null
+ },
+ {
+  "slug": "marshmallow-code/marshmallow",
+  "number": 1819,
+  "cat": "other_exception",
+  "symbols": [
+   "Function",
+   "Schema",
+   "dump",
+   "fields",
+   "load"
+  ],
+  "ontopic": null
+ },
+ {
+  "slug": "marshmallow-code/marshmallow",
+  "number": 1801,
+  "cat": "other_exception",
+  "symbols": [
+   "Integer",
+   "List",
+   "Nested",
+   "Schema",
+   "String",
+   "append"
+  ],
+  "ontopic": null
+ },
+ {
+  "slug": "marshmallow-code/marshmallow",
+  "number": 1759,
+  "cat": "other_exception",
+  "symbols": [
+   "Nested",
+   "Schema",
+   "fields",
+   "from_dict",
+   "load"
+  ],
+  "ontopic": null
+ },
+ {
+  "slug": "marshmallow-code/marshmallow",
+  "number": 1758,
+  "cat": "other_exception",
+  "symbols": [
+   "Number",
+   "dump"
+  ],
+  "ontopic": null
+ },
+ {
+  "slug": "marshmallow-code/marshmallow",
+  "number": 1751,
+  "cat": "other_exception",
+  "symbols": [
+   "Constant",
+   "Schema",
+   "ValidationError",
+   "append",
+   "clear",
+   "discriminate_on_dump"
+  ],
+  "ontopic": null
+ },
+ {
+  "slug": "marshmallow-code/marshmallow",
+  "number": 1747,
+  "cat": "bug_assertion",
+  "symbols": [
+   "Email",
+   "Nested",
+   "Schema",
+   "String",
+   "dump",
+   "fields"
+  ],
+  "ontopic": null
+ },
+ {
+  "slug": "marshmallow-code/marshmallow",
+  "number": 1642,
+  "cat": "bug_assertion",
+  "symbols": [
+   "Integer",
+   "Nested",
+   "Schema",
+   "String",
+   "Tuple",
+   "dump"
+  ],
+  "ontopic": null
+ },
+ {
+  "slug": "marshmallow-code/marshmallow",
+  "number": 1622,
+  "cat": "other_exception",
+  "symbols": [
+   "List",
+   "Nested",
+   "Schema",
+   "dump",
+   "fields"
+  ],
+  "ontopic": null
+ },
+ {
+  "slug": "marshmallow-code/marshmallow",
+  "number": 1601,
+  "cat": "other_exception",
+  "symbols": [
+   "Boolean",
+   "Float",
+   "Schema",
+   "ValidationError",
+   "fields",
+   "load"
+  ],
+  "ontopic": null
+ },
+ {
+  "slug": "marshmallow-code/marshmallow",
+  "number": 1559,
+  "cat": "bug_assertion",
+  "symbols": [
+   "Boolean",
+   "Nested",
+   "Schema",
+   "dump",
+   "fields"
+  ],
+  "ontopic": null
+ },
+ {
+  "slug": "marshmallow-code/marshmallow",
+  "number": 1541,
+  "cat": "other_exception",
+  "symbols": [
+   "Boolean",
+   "Dict",
+   "Integer",
+   "Nested",
+   "OneOf",
+   "Schema"
+  ],
+  "ontopic": null
+ },
+ {
+  "slug": "marshmallow-code/marshmallow",
+  "number": 1533,
+  "cat": "other_exception",
+  "symbols": [
+   "Integer",
+   "Method",
+   "Nested",
+   "Schema",
+   "dump",
+   "fields"
+  ],
+  "ontopic": null
+ },
+ {
+  "slug": "marshmallow-code/marshmallow",
+  "number": 1423,
+  "cat": "other_exception",
+  "symbols": [
+   "Schema",
+   "ValidationError",
+   "fields",
+   "load",
+   "raises"
+  ],
+  "ontopic": null
+ },
+ {
+  "slug": "marshmallow-code/marshmallow",
+  "number": 1422,
+  "cat": "other_exception",
+  "symbols": [
+   "parametrize",
+   "validate"
+  ],
+  "ontopic": null
+ },
+ {
+  "slug": "marshmallow-code/marshmallow",
+  "number": 1419,
+  "cat": "other_exception",
+  "symbols": [
+   "Schema",
+   "__init__",
+   "dump",
+   "fields",
+   "load"
+  ],
+  "ontopic": null
+ },
+ {
+  "slug": "marshmallow-code/marshmallow",
+  "number": 1090,
+  "cat": "bug_assertion",
+  "symbols": [
+   "Integer",
+   "Schema",
+   "String",
+   "ValidationError",
+   "fields",
+   "load"
+  ],
+  "ontopic": null
+ },
+ {
+  "slug": "marshmallow-code/marshmallow",
+  "number": 798,
+  "cat": "other_exception",
+  "symbols": [
+   "Integer",
+   "List",
+   "Schema",
+   "String",
+   "dump",
+   "fields"
+  ],
+  "ontopic": null
+ },
+ {
+  "slug": "marshmallow-code/marshmallow",
+  "number": 738,
+  "cat": "other_exception",
+  "symbols": [
+   "Schema",
+   "dump",
+   "fields",
+   "method"
+  ],
+  "ontopic": null
+ },
+ {
+  "slug": "marshmallow-code/marshmallow",
+  "number": 648,
+  "cat": "other_exception",
+  "symbols": [
+   "Schema",
+   "dump",
+   "fields",
+   "startswith"
+  ],
+  "ontopic": null
+ },
+ {
+  "slug": "pytoolz/toolz",
+  "number": 483,
+  "cat": "bug_assertion",
+  "symbols": [
+   "compose",
+   "filter",
+   "groupby",
+   "items",
+   "map"
+  ],
+  "ontopic": null
+ },
+ {
+  "slug": "pytoolz/toolz",
+  "number": 481,
+  "cat": "other_exception",
+  "symbols": [
+   "compose"
+  ],
+  "ontopic": null
+ }
+]

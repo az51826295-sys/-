@@ -1,0 +1,6 @@
+[
+  {"slug": "village_square", "scene": "마을 광장", "meaning": "우물과 노점이 있는 작은 시골 마을의 중앙 광장, 낮"},
+  {"slug": "forest_path", "scene": "숲길", "meaning": "키 큰 나무 사이로 난 흙길, 나뭇잎 사이로 빛이 새어 든다"},
+  {"slug": "harbor", "scene": "항구", "meaning": "작은 목조 부두와 정박한 배들, 바다와 수평선"},
+  {"slug": "cave_entrance", "scene": "동굴 입구", "meaning": "바위 절벽에 난 어두운 동굴 입구, 주변에 이끼와 바위"}
+]

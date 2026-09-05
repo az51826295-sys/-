@@ -1,0 +1,47 @@
+{
+ "repo": "tinydb",
+ "fix_commit": "f959c8cfec35dfe7d8da058e10f5f19c76bf464f",
+ "parent_commit": "55961fc25caf580198e89fd0aca4ddf23f0122a2",
+ "answer_functions": [
+  "tinydb/queries.py::__eq__",
+  "tinydb/utils.py::catch_warning"
+ ],
+ "repro_tests": [
+  "tests/test_utils.py::test_catch_warning_reset_filter"
+ ],
+ "smoke": [
+  "tests/test_utils.py::test_lru_cache",
+  "tests/test_utils.py::test_lru_cache_clear",
+  "tests/test_utils.py::test_lru_cache_delete"
+ ],
+ "baseline_pass_count": 8,
+ "probes": [
+  {
+   "applied": "tinydb/queries.py::__eq__",
+   "a_repro_pass": false,
+   "b_smoke_pass": true,
+   "c_no_regression": true,
+   "regressed": [],
+   "d_unmet": [
+    "tests/test_utils.py::test_catch_warning_reset_filter"
+   ],
+   "inc_event": false
+  },
+  {
+   "applied": "tinydb/utils.py::catch_warning",
+   "a_repro_pass": false,
+   "b_smoke_pass": true,
+   "c_no_regression": false,
+   "regressed": [
+    "tests/test_utils.py::test_catch_warning"
+   ],
+   "d_unmet": [
+    "tests/test_utils.py::test_catch_warning",
+    "tests/test_utils.py::test_catch_warning_reset_filter"
+   ],
+   "inc_event": false
+  }
+ ],
+ "inc_event": false,
+ "regression_event": false
+}

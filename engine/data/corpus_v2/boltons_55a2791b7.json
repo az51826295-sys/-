@@ -1,0 +1,35 @@
+{
+ "repo": "boltons",
+ "fix_commit": "55a2791b77a991bd130af9f1a2298019b318bd4a",
+ "parent_commit": "115cded54814ee5ff0b32d9bf976fd554b0a74dd",
+ "answer_files": [
+  "boltons/ioutils.py"
+ ],
+ "answer_functions": [
+  "boltons/ioutils.py::__iter__",
+  "boltons/ioutils.py::next"
+ ],
+ "patch_lines": 16,
+ "added_tests": {
+  "tests/test_ioutils.py::TestSpooledBytesIO::test_iter": {
+   "parent": "fail",
+   "fix": "fail",
+   "mode": "file"
+  },
+  "tests/test_ioutils.py::TestSpooledStringIO::test_iter": {
+   "parent": "fail",
+   "fix": "fail",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "tests/test_ioutils.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 3.3,
+ "env_error_tests": 0,
+ "qualified": false
+}

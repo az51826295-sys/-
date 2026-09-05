@@ -1,0 +1,36 @@
+[main] sum_range A: hidden PASS
+[main] sum_range B: hidden PASS
+[main] median A: hidden PASS
+[main] median B: hidden PASS
+[main] count_vowels A: hidden PASS
+[main] count_vowels B: hidden PASS
+[main] is_palindrome A: hidden PASS
+[main] is_palindrome B: hidden PASS
+[main] fib A: hidden PASS
+[main] fib B: hidden PASS
+[main] flatten A: hidden PASS
+[main] flatten B: hidden PASS
+[main] clamp A: hidden PASS
+[main] clamp B: hidden PASS
+[main] moving_average A: hidden PASS
+[main] moving_average B: hidden PASS
+[main] dedup_preserve A: hidden PASS
+[main] dedup_preserve B: hidden PASS
+[main] word_count A: hidden PASS
+[main] word_count B: hidden PASS
+[main] running_max A: hidden PASS
+[main] running_max B: hidden PASS
+[main] binary_gap A: hidden PASS
+[main] binary_gap B: hidden PASS
+[main] merge_sorted A: hidden PASS
+[main] merge_sorted B: hidden PASS
+[main] caesar A: hidden PASS
+[main] caesar B: hidden PASS
+[main] balanced_parens A: hidden PASS
+[main] balanced_parens B: hidden PASS
+[main] second_largest A: hidden PASS
+[main] second_largest B: hidden PASS
+R1 (B 숨김 통과율 ≥ A+10%p): 미충족 - B 1.00 vs A 1.00
+R2 (B 회귀율 ≤ A): 충족 - B 0.00 vs A 0.00
+R3 (B 회복률 > A): 판정 불가 (첫 실패 표본 없음) - B None vs A None
+usage: {'calls': 64, 'input_tokens': 9124, 'output_tokens': 3884}

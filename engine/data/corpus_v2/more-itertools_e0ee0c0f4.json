@@ -1,0 +1,54 @@
+{
+ "repo": "more-itertools",
+ "fix_commit": "e0ee0c0f456b94750ca2bfca3b1f20483886494c",
+ "parent_commit": "c29f0bad771fa26c8cd7b7311b7bb97abaa6d9ff",
+ "answer_files": [
+  "more_itertools/more.py"
+ ],
+ "answer_functions": [
+  "more_itertools/more.py::one",
+  "more_itertools/more.py::only"
+ ],
+ "patch_lines": 30,
+ "added_tests": {
+  "more_itertools/tests/test_more.py::OneTests::test_too_long_default_message": {
+   "parent": "fail",
+   "fix": "fail",
+   "mode": "file"
+  },
+  "more_itertools/tests/test_more.py::OnlyTests::test_default_exception_message": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [
+  "more_itertools/tests/test_more.py::OnlyTests::test_default_exception_message"
+ ],
+ "test_files": [
+  "more_itertools/tests/test_more.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [
+  {
+   "applied": "more_itertools/more.py::one",
+   "passes_repro": [],
+   "still_failing": [
+    "more_itertools/tests/test_more.py::OnlyTests::test_default_exception_message"
+   ],
+   "event": false
+  },
+  {
+   "applied": "more_itertools/more.py::only",
+   "passes_repro": [
+    "more_itertools/tests/test_more.py::OnlyTests::test_default_exception_message"
+   ],
+   "still_failing": [],
+   "event": false
+  }
+ ],
+ "env_seconds": 7.7,
+ "env_error_tests": 0,
+ "qualified": true
+}

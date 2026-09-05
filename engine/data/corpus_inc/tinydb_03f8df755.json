@@ -1,0 +1,44 @@
+{
+ "repo": "tinydb",
+ "fix_commit": "03f8df755bd89fadd1b6824ae8b16cdd3664996c",
+ "parent_commit": "f30afef2ecd09f7ec96dbb386bb943b8d3351581",
+ "answer_functions": [
+  "tinydb/database.py::remove",
+  "tinydb/database.py::update"
+ ],
+ "repro_tests": [
+  "tests/test_tables.py::test_smart_query_cache"
+ ],
+ "smoke": [
+  "tests/test_tables.py::test_caching",
+  "tests/test_tables.py::test_multiple_tables",
+  "tests/test_tables.py::test_one_table"
+ ],
+ "baseline_pass_count": 4,
+ "probes": [
+  {
+   "applied": "tinydb/database.py::remove",
+   "a_repro_pass": false,
+   "b_smoke_pass": true,
+   "c_no_regression": true,
+   "regressed": [],
+   "d_unmet": [
+    "tests/test_tables.py::test_smart_query_cache"
+   ],
+   "inc_event": false
+  },
+  {
+   "applied": "tinydb/database.py::update",
+   "a_repro_pass": false,
+   "b_smoke_pass": true,
+   "c_no_regression": true,
+   "regressed": [],
+   "d_unmet": [
+    "tests/test_tables.py::test_smart_query_cache"
+   ],
+   "inc_event": false
+  }
+ ],
+ "inc_event": false,
+ "regression_event": false
+}

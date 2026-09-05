@@ -1,0 +1,199 @@
+{
+  "spec": "diversity-run-v1",
+  "design": "docs/diversity-run-v1-design.md",
+  "tier_used": null,
+  "thresholds": {
+    "flat_lower": 0.8,
+    "saturating_upper": 0.5
+  },
+  "gate": {
+    "min_calls": 10,
+    "min_candidates": 40
+  },
+  "tiers": {
+    "T1": {
+      "duplicates": 0,
+      "has_resolution": false,
+      "candidates": 0,
+      "calls": 6,
+      "per_concept": [
+        {
+          "concept": "save",
+          "calls": 3,
+          "passed": 0,
+          "distinct_total": 0
+        },
+        {
+          "concept": "inventory",
+          "calls": 3,
+          "passed": 0,
+          "distinct_total": 0
+        }
+      ],
+      "u_within": {
+        "verdict": "undefined",
+        "why": "no_values",
+        "mean": null,
+        "ci95": [
+          null,
+          null
+        ]
+      },
+      "u_across": {
+        "verdict": "undefined",
+        "why": "no_values",
+        "mean": null,
+        "ci95": [
+          null,
+          null
+        ]
+      },
+      "novelty_curve": {
+        "save": [],
+        "inventory": []
+      }
+    },
+    "T2": {
+      "duplicates": 0,
+      "has_resolution": false,
+      "candidates": 0,
+      "calls": 6,
+      "per_concept": [
+        {
+          "concept": "save",
+          "calls": 3,
+          "passed": 0,
+          "distinct_total": 0
+        },
+        {
+          "concept": "inventory",
+          "calls": 3,
+          "passed": 0,
+          "distinct_total": 0
+        }
+      ],
+      "u_within": {
+        "verdict": "undefined",
+        "why": "no_values",
+        "mean": null,
+        "ci95": [
+          null,
+          null
+        ]
+      },
+      "u_across": {
+        "verdict": "undefined",
+        "why": "no_values",
+        "mean": null,
+        "ci95": [
+          null,
+          null
+        ]
+      },
+      "novelty_curve": {
+        "save": [],
+        "inventory": []
+      }
+    },
+    "T3": {
+      "duplicates": 0,
+      "has_resolution": false,
+      "candidates": 0,
+      "calls": 6,
+      "per_concept": [
+        {
+          "concept": "save",
+          "calls": 3,
+          "passed": 0,
+          "distinct_total": 0
+        },
+        {
+          "concept": "inventory",
+          "calls": 3,
+          "passed": 0,
+          "distinct_total": 0
+        }
+      ],
+      "u_within": {
+        "verdict": "undefined",
+        "why": "no_values",
+        "mean": null,
+        "ci95": [
+          null,
+          null
+        ]
+      },
+      "u_across": {
+        "verdict": "undefined",
+        "why": "no_values",
+        "mean": null,
+        "ci95": [
+          null,
+          null
+        ]
+      },
+      "novelty_curve": {
+        "save": [],
+        "inventory": []
+      }
+    }
+  },
+  "provider": "mock",
+  "model": "mock",
+  "usd": 0.0,
+  "seconds": 1.7,
+  "fingerprint": {
+    "spec_id": "icon-24-line-v1",
+    "arm": "with_spec",
+    "public_spec_sha": "5c38f9a9f798",
+    "system_prompt_sha": "43b76b8878c5",
+    "initial_prompt_skeleton_sha": "b042fe7d54c8",
+    "retry_prompt_sha": "02bc8528e2f2",
+    "restructure_prompt_sha": "30b7131462f1",
+    "note": "프롬프트 전문이 아니라 지문이다. 회차 간 '같았나 달랐나'를 사후에 답할 수 있게 하는 것이 목적."
+  },
+  "runs": [
+    {
+      "concept": "save",
+      "why": null,
+      "calls": [
+        {
+          "call": 1,
+          "n": 3,
+          "passed": 0
+        },
+        {
+          "call": 2,
+          "n": 3,
+          "passed": 0
+        },
+        {
+          "call": 3,
+          "n": 3,
+          "passed": 0
+        }
+      ]
+    },
+    {
+      "concept": "inventory",
+      "why": null,
+      "calls": [
+        {
+          "call": 1,
+          "n": 3,
+          "passed": 0
+        },
+        {
+          "call": 2,
+          "n": 3,
+          "passed": 0
+        },
+        {
+          "call": 3,
+          "n": 3,
+          "passed": 0
+        }
+      ]
+    }
+  ]
+}

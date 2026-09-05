@@ -1,0 +1,21 @@
+[R_ms4] gen 1: v1 score=0.5058 
+[R_ms4] gen 2: v2 score=0.5204 
+[R_ms4] gen 3: v3 score=0.5294 
+[R_ms4] gen 4: v3 score=0.5294 (rollback)
+[R_ms4] gen 5: v4 score=0.5515 
+[R_ms4] gen 6: v5 score=0.5850 
+[R_ms4] gen 7: v5 score=0.5850 (rollback)
+[R_ms4] gen 8: v5 score=0.5850 (rollback)
+[R_ms4] gen 9: v5 score=0.5850 (rollback)
+[R_ms4] gen 10: v5 score=0.5850 (rollback)
+[R_ms4] gen 11: v5 score=0.5850 (rollback)
+[R_ms4] gen 12: v5 score=0.5850 (rollback)
+[R_ms4] gen 13: v5 score=0.5850 (rollback)
+[R_ms4] gen 14: v5 score=0.5850 (rollback)
+[R_ms4] gen 15: v5 score=0.5850 (rollback)
+[R_ms4] gen 16: v5 score=0.5850 (rollback)
+[R_ms4] gen 17: v5 score=0.5850 (rollback)
+[R_ms4] gen 18: v5 score=0.5850 (rollback)
+[R_ms4] gen 19: v6 score=0.6080 
+[R_ms4] gen 20: v6 score=0.6080 (rollback)
+[R_ms4] 완료 2619s

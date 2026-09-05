@@ -1,0 +1,275 @@
+{
+  "id": "pixellab-v1",
+  "by": "사장님",
+  "ts": "2026-08-26T10:00:51",
+  "note": "PixelLab 자산 선별 1회차. 고양이는 2·3 둘 다, 타일은 전부 채택. merchant/icon은 참고용이라 미판정.",
+  "groups": [
+    {
+      "group": "01_cat",
+      "shown": [
+        {
+          "no": 1,
+          "path": "out\\images\\pixellab-v1\\candidates\\01_cat\\c01.png",
+          "sha1": "0923e38c2d42",
+          "structure_hash": "0923e38c2d42",
+          "picked": false
+        },
+        {
+          "no": 2,
+          "path": "out\\images\\pixellab-v1\\candidates\\01_cat\\c02.png",
+          "sha1": "0be619b84091",
+          "structure_hash": "0be619b84091",
+          "picked": true
+        },
+        {
+          "no": 3,
+          "path": "out\\images\\pixellab-v1\\candidates\\01_cat\\c03.png",
+          "sha1": "0be619b84091",
+          "structure_hash": "0be619b84091",
+          "picked": true
+        },
+        {
+          "no": 4,
+          "path": "out\\images\\pixellab-v1\\candidates\\01_cat\\c04.png",
+          "sha1": "34462a9e5cbb",
+          "structure_hash": "34462a9e5cbb",
+          "picked": false
+        },
+        {
+          "no": 5,
+          "path": "out\\images\\pixellab-v1\\candidates\\01_cat\\c05.png",
+          "sha1": "2e14f7bda5b5",
+          "structure_hash": "2e14f7bda5b5",
+          "picked": false
+        }
+      ],
+      "picked_no": null,
+      "picked_nos": [
+        2,
+        3
+      ]
+    },
+    {
+      "group": "02_tileset",
+      "shown": [
+        {
+          "no": 1,
+          "path": "out\\images\\pixellab-v1\\candidates\\02_tileset\\c01.png",
+          "sha1": "668eae37b5ea",
+          "structure_hash": "668eae37b5ea",
+          "picked": true
+        },
+        {
+          "no": 2,
+          "path": "out\\images\\pixellab-v1\\candidates\\02_tileset\\c02.png",
+          "sha1": "760b8c17488e",
+          "structure_hash": "760b8c17488e",
+          "picked": true
+        },
+        {
+          "no": 3,
+          "path": "out\\images\\pixellab-v1\\candidates\\02_tileset\\c03.png",
+          "sha1": "1b204189cd16",
+          "structure_hash": "1b204189cd16",
+          "picked": true
+        },
+        {
+          "no": 4,
+          "path": "out\\images\\pixellab-v1\\candidates\\02_tileset\\c04.png",
+          "sha1": "51d35400b5cd",
+          "structure_hash": "51d35400b5cd",
+          "picked": true
+        },
+        {
+          "no": 5,
+          "path": "out\\images\\pixellab-v1\\candidates\\02_tileset\\c05.png",
+          "sha1": "3274163bb18d",
+          "structure_hash": "3274163bb18d",
+          "picked": true
+        },
+        {
+          "no": 6,
+          "path": "out\\images\\pixellab-v1\\candidates\\02_tileset\\c06.png",
+          "sha1": "46d99cc59a87",
+          "structure_hash": "46d99cc59a87",
+          "picked": true
+        },
+        {
+          "no": 7,
+          "path": "out\\images\\pixellab-v1\\candidates\\02_tileset\\c07.png",
+          "sha1": "28724afa396b",
+          "structure_hash": "28724afa396b",
+          "picked": true
+        },
+        {
+          "no": 8,
+          "path": "out\\images\\pixellab-v1\\candidates\\02_tileset\\c08.png",
+          "sha1": "5c6f36fccd48",
+          "structure_hash": "5c6f36fccd48",
+          "picked": true
+        },
+        {
+          "no": 9,
+          "path": "out\\images\\pixellab-v1\\candidates\\02_tileset\\c09.png",
+          "sha1": "3fd765134ae7",
+          "structure_hash": "3fd765134ae7",
+          "picked": true
+        },
+        {
+          "no": 10,
+          "path": "out\\images\\pixellab-v1\\candidates\\02_tileset\\c10.png",
+          "sha1": "71a2da32eca9",
+          "structure_hash": "71a2da32eca9",
+          "picked": true
+        },
+        {
+          "no": 11,
+          "path": "out\\images\\pixellab-v1\\candidates\\02_tileset\\c11.png",
+          "sha1": "2e408cde3ff0",
+          "structure_hash": "2e408cde3ff0",
+          "picked": true
+        },
+        {
+          "no": 12,
+          "path": "out\\images\\pixellab-v1\\candidates\\02_tileset\\c12.png",
+          "sha1": "f5c54bbdedfb",
+          "structure_hash": "f5c54bbdedfb",
+          "picked": true
+        },
+        {
+          "no": 13,
+          "path": "out\\images\\pixellab-v1\\candidates\\02_tileset\\c13.png",
+          "sha1": "a38377bfa4cb",
+          "structure_hash": "a38377bfa4cb",
+          "picked": true
+        },
+        {
+          "no": 14,
+          "path": "out\\images\\pixellab-v1\\candidates\\02_tileset\\c14.png",
+          "sha1": "7d7328afe92f",
+          "structure_hash": "7d7328afe92f",
+          "picked": true
+        },
+        {
+          "no": 15,
+          "path": "out\\images\\pixellab-v1\\candidates\\02_tileset\\c15.png",
+          "sha1": "aa4068759945",
+          "structure_hash": "aa4068759945",
+          "picked": true
+        },
+        {
+          "no": 16,
+          "path": "out\\images\\pixellab-v1\\candidates\\02_tileset\\c16.png",
+          "sha1": "d614d6f591ed",
+          "structure_hash": "d614d6f591ed",
+          "picked": true
+        }
+      ],
+      "picked_no": null,
+      "picked_nos": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16
+      ]
+    },
+    {
+      "group": "03_merchant",
+      "shown": [
+        {
+          "no": 1,
+          "path": "out\\images\\pixellab-v1\\candidates\\03_merchant\\c01.png",
+          "sha1": "9739d9b8b362",
+          "structure_hash": "9739d9b8b362",
+          "picked": false
+        },
+        {
+          "no": 2,
+          "path": "out\\images\\pixellab-v1\\candidates\\03_merchant\\c02.png",
+          "sha1": "6e4b5c70d628",
+          "structure_hash": "6e4b5c70d628",
+          "picked": false
+        },
+        {
+          "no": 3,
+          "path": "out\\images\\pixellab-v1\\candidates\\03_merchant\\c03.png",
+          "sha1": "bc21b2665ba4",
+          "structure_hash": "bc21b2665ba4",
+          "picked": false
+        },
+        {
+          "no": 4,
+          "path": "out\\images\\pixellab-v1\\candidates\\03_merchant\\c04.png",
+          "sha1": "fba2326cf6a2",
+          "structure_hash": "fba2326cf6a2",
+          "picked": false
+        }
+      ],
+      "picked_no": null,
+      "picked_nos": []
+    },
+    {
+      "group": "04_icon",
+      "shown": [
+        {
+          "no": 1,
+          "path": "out\\images\\pixellab-v1\\candidates\\04_icon\\c01.png",
+          "sha1": "b9a77ad1b171",
+          "structure_hash": "b9a77ad1b171",
+          "picked": false
+        }
+      ],
+      "picked_no": null,
+      "picked_nos": []
+    }
+  ],
+  "picked": [
+    "out\\images\\pixellab-v1\\candidates\\01_cat\\c02.png",
+    "out\\images\\pixellab-v1\\candidates\\01_cat\\c03.png",
+    "out\\images\\pixellab-v1\\candidates\\02_tileset\\c01.png",
+    "out\\images\\pixellab-v1\\candidates\\02_tileset\\c02.png",
+    "out\\images\\pixellab-v1\\candidates\\02_tileset\\c03.png",
+    "out\\images\\pixellab-v1\\candidates\\02_tileset\\c04.png",
+    "out\\images\\pixellab-v1\\candidates\\02_tileset\\c05.png",
+    "out\\images\\pixellab-v1\\candidates\\02_tileset\\c06.png",
+    "out\\images\\pixellab-v1\\candidates\\02_tileset\\c07.png",
+    "out\\images\\pixellab-v1\\candidates\\02_tileset\\c08.png",
+    "out\\images\\pixellab-v1\\candidates\\02_tileset\\c09.png",
+    "out\\images\\pixellab-v1\\candidates\\02_tileset\\c10.png",
+    "out\\images\\pixellab-v1\\candidates\\02_tileset\\c11.png",
+    "out\\images\\pixellab-v1\\candidates\\02_tileset\\c12.png",
+    "out\\images\\pixellab-v1\\candidates\\02_tileset\\c13.png",
+    "out\\images\\pixellab-v1\\candidates\\02_tileset\\c14.png",
+    "out\\images\\pixellab-v1\\candidates\\02_tileset\\c15.png",
+    "out\\images\\pixellab-v1\\candidates\\02_tileset\\c16.png"
+  ],
+  "rejected": [
+    "out\\images\\pixellab-v1\\candidates\\01_cat\\c01.png",
+    "out\\images\\pixellab-v1\\candidates\\01_cat\\c04.png",
+    "out\\images\\pixellab-v1\\candidates\\01_cat\\c05.png"
+  ],
+  "undecided_items": [
+    "out\\images\\pixellab-v1\\candidates\\03_merchant\\c01.png",
+    "out\\images\\pixellab-v1\\candidates\\03_merchant\\c02.png",
+    "out\\images\\pixellab-v1\\candidates\\03_merchant\\c03.png",
+    "out\\images\\pixellab-v1\\candidates\\03_merchant\\c04.png",
+    "out\\images\\pixellab-v1\\candidates\\04_icon\\c01.png"
+  ],
+  "shown_total": 26,
+  "undecided_groups": [
+    "03_merchant",
+    "04_icon"
+  ]
+}

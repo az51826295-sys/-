@@ -1,0 +1,34 @@
+{
+ "repo": "boltons",
+ "fix_commit": "16a258e3750063d874ec85c5fb5bc21358206c5c",
+ "parent_commit": "3c1d3987a91fe2d48ee723dda6ca0bd3fb7f94a9",
+ "answer_files": [
+  "boltons/typeutils.py"
+ ],
+ "answer_functions": [
+  "boltons/typeutils.py::make_sentinel"
+ ],
+ "patch_lines": 14,
+ "added_tests": {
+  "tests/test_typeutils.py::test_sentinel_falsiness": {
+   "parent": "fail",
+   "fix": "fail",
+   "mode": "file"
+  },
+  "tests/test_typeutils.py::test_sentinel_pickle": {
+   "parent": "fail",
+   "fix": "fail",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "tests/test_typeutils.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 2.9,
+ "env_error_tests": 0,
+ "qualified": false
+}

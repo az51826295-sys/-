@@ -1,0 +1,45 @@
+{
+ "repo": "more-itertools",
+ "fix_commit": "d992be0de9383ddcaae3a24866a2d96b52132b07",
+ "parent_commit": "cb75bb9c55f7ed3e77ce599097e1ba8da411746d",
+ "answer_functions": [
+  "more_itertools/recipes.py::_windowed_running_max",
+  "more_itertools/recipes.py::_windowed_running_min"
+ ],
+ "repro_tests": [
+  "tests/test_more.py::TestRunningMax::test_stability",
+  "tests/test_more.py::TestRunningMin::test_stability"
+ ],
+ "smoke": [
+  "tests/test_more.py::AdjacentTests::test_call_once",
+  "tests/test_more.py::AdjacentTests::test_consecutive_true",
+  "tests/test_more.py::AdjacentTests::test_distance"
+ ],
+ "baseline_pass_count": 587,
+ "probes": [
+  {
+   "applied": "more_itertools/recipes.py::_windowed_running_min",
+   "a_repro_pass": true,
+   "b_smoke_pass": true,
+   "c_no_regression": true,
+   "regressed": [],
+   "d_unmet": [
+    "tests/test_more.py::TestRunningMax::test_stability"
+   ],
+   "inc_event": true
+  },
+  {
+   "applied": "more_itertools/recipes.py::_windowed_running_max",
+   "a_repro_pass": true,
+   "b_smoke_pass": true,
+   "c_no_regression": true,
+   "regressed": [],
+   "d_unmet": [
+    "tests/test_more.py::TestRunningMin::test_stability"
+   ],
+   "inc_event": true
+  }
+ ],
+ "inc_event": true,
+ "regression_event": false
+}

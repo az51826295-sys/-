@@ -1,0 +1,17 @@
+{
+ "repo": "dateutil",
+ "fix_commit": "66d95db3a2363f307565b54166f52f980f030f9e",
+ "parent_commit": "e67407d1c9f670f3d23a18433c3212d0e76b7de7",
+ "answer_functions": [
+  "dateutil/tz/tz.py::_find_comp",
+  "dateutil/tz/tz.py::_find_compdt",
+  "dateutil/tz/tz.py::_find_last_transition"
+ ],
+ "repro_tests": [],
+ "smoke": [],
+ "baseline_pass_count": 0,
+ "probes": [],
+ "inc_event": false,
+ "regression_event": false,
+ "skipped": "no repro or no answer functions"
+}

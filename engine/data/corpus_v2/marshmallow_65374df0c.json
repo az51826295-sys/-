@@ -1,0 +1,32 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "65374df0c31cdc45acc4435741779298201306a2",
+ "parent_commit": "070dde08bad456e743a0d2e1842c142a799a9568",
+ "answer_files": [
+  "src/marshmallow/validate.py"
+ ],
+ "answer_functions": [
+  "src/marshmallow/validate.py::options"
+ ],
+ "patch_lines": 13,
+ "added_tests": {
+  "tests/test_validate.py::test_oneof_options": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [
+  "tests/test_validate.py::test_oneof_options"
+ ],
+ "test_files": [
+  "tests/test_validate.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 3.5,
+ "env_error_tests": 0,
+ "qualified": true,
+ "selector_event_proxy_v1": false
+}

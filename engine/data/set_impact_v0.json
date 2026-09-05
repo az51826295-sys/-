@@ -1,0 +1,108 @@
+{
+  "spec": "set-impact-v0",
+  "design": "docs/pick-weight-spread-v0-design.md",
+  "note": "판정이 아니라 되묻기 재료다. 고르는 것은 사람이다",
+  "concepts": [
+    "01_attack",
+    "02_defend",
+    "03_shop",
+    "04_quest",
+    "05_equipment",
+    "06_stats",
+    "07_dialogue",
+    "08_exit"
+  ],
+  "spread": 0.135711,
+  "limit": 0.15,
+  "over_limit": false,
+  "rows": [
+    {
+      "concept": "06_stats",
+      "chosen": "c01.svg",
+      "chosen_weight": 0.278327,
+      "spread_now": 0.135711,
+      "best_alt": "c02.svg",
+      "best_alt_weight": 0.175004,
+      "spread_if_swapped": 0.06784900000000002,
+      "gain": 0.06786199999999998,
+      "is_current_best": false
+    },
+    {
+      "concept": "05_equipment",
+      "chosen": "c03.svg",
+      "chosen_weight": 0.142616,
+      "spread_now": 0.135711,
+      "best_alt": "c02.svg",
+      "best_alt_weight": 0.183508,
+      "spread_if_swapped": 0.131378,
+      "gain": 0.0043330000000000035,
+      "is_current_best": false
+    },
+    {
+      "concept": "01_attack",
+      "chosen": "c03.svg",
+      "chosen_weight": 0.146949,
+      "spread_now": 0.135711,
+      "best_alt": "c03.svg",
+      "best_alt_weight": 0.146949,
+      "spread_if_swapped": 0.135711,
+      "gain": 0.0,
+      "is_current_best": true
+    },
+    {
+      "concept": "02_defend",
+      "chosen": "c01.svg",
+      "chosen_weight": 0.165802,
+      "spread_now": 0.135711,
+      "best_alt": "c01.svg",
+      "best_alt_weight": 0.165802,
+      "spread_if_swapped": 0.135711,
+      "gain": 0.0,
+      "is_current_best": true
+    },
+    {
+      "concept": "03_shop",
+      "chosen": "c05.svg",
+      "chosen_weight": 0.210465,
+      "spread_now": 0.135711,
+      "best_alt": "c05.svg",
+      "best_alt_weight": 0.210465,
+      "spread_if_swapped": 0.135711,
+      "gain": 0.0,
+      "is_current_best": true
+    },
+    {
+      "concept": "04_quest",
+      "chosen": "c06.svg",
+      "chosen_weight": 0.194145,
+      "spread_now": 0.135711,
+      "best_alt": "c06.svg",
+      "best_alt_weight": 0.194145,
+      "spread_if_swapped": 0.135711,
+      "gain": 0.0,
+      "is_current_best": true
+    },
+    {
+      "concept": "07_dialogue",
+      "chosen": "c04.svg",
+      "chosen_weight": 0.168597,
+      "spread_now": 0.135711,
+      "best_alt": "c04.svg",
+      "best_alt_weight": 0.168597,
+      "spread_if_swapped": 0.135711,
+      "gain": 0.0,
+      "is_current_best": true
+    },
+    {
+      "concept": "08_exit",
+      "chosen": "c02.svg",
+      "chosen_weight": 0.172811,
+      "spread_now": 0.135711,
+      "best_alt": "c02.svg",
+      "best_alt_weight": 0.172811,
+      "spread_if_swapped": 0.135711,
+      "gain": 0.0,
+      "is_current_best": true
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "8d90fb9d67f74a7497437db32b0781f398e8449e",
+ "parent_commit": "2888e6978bc8c409a5fed35da6ece8bdb23384f2",
+ "answer_files": [
+  "marshmallow/marshalling.py",
+  "marshmallow/utils.py"
+ ],
+ "answer_functions": [
+  "marshmallow/marshalling.py::deserialize",
+  "marshmallow/utils.py::set_value"
+ ],
+ "patch_lines": 32,
+ "added_tests": {
+  "tests/test_deserialization.py::TestSchemaDeserialization::test_deserialize_with_attribute_param_symmetry": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_utils.py::test_set_value": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "tests/test_deserialization.py",
+  "tests/test_utils.py"
+ ],
+ "location_hard_proxy": true,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 7.3,
+ "env_error_tests": 2,
+ "qualified": false
+}

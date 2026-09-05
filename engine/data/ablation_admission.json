@@ -1,0 +1,31 @@
+{
+ "admitted": [
+  "abl_boltons_d0a284fc7",
+  "abl_dateutil_15fc1fa8c",
+  "abl_dateutil_5f2052faf",
+  "abl_marshmallow_070dde08b",
+  "abl_marshmallow_382c8cc0b",
+  "abl_marshmallow_9ede1172e",
+  "abl_marshmallow_9f751e1ce",
+  "abl_marshmallow_a66475219",
+  "abl_marshmallow_b0fb60a87",
+  "abl_marshmallow_d057cb976",
+  "abl_marshmallow_d93c4662d",
+  "abl_marshmallow_df636eee7",
+  "abl_sortedcontainers_2b037039b",
+  "abl_tinydb_03f8df755",
+  "abl_tinydb_cca5c2343",
+  "abl_tinydb_f959c8cfe"
+ ],
+ "rejected": [
+  [
+   "abl_marshmallow_ff18e782b",
+   "admission: ['broad_fix_pass']"
+  ],
+  [
+   "abl_more-itertools_e0ee0c0f4",
+   "admission: ['broad_fix_pass']"
+  ]
+ ],
+ "total_frozen": 18
+}

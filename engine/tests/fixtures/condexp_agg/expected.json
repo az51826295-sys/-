@@ -1,0 +1,17 @@
+{
+ "_note": "손 계산 (2026-08-08, 본실험 데이터 생성 전). C1: 총호출 96, 성공 1 -> 96.0; 실패 반복 = seed1의 r3(k2 재실패) 1 + seed2의 r3·r4(k2 재실패 2) = 3. C2: 총호출 32, 성공 1 -> 32.0; 실패 반복 = seed4 r3 1; 잘못 확정 1. 복구 호출은 champion 단조라 전부 0.",
+ "1": {
+  "n_runs": 2, "calls_total": 96, "successes": 1,
+  "success_rate": 0.5, "calls_per_success": 96.0,
+  "failure_repeats": 3, "wrong_confirmed": 0,
+  "recovery_calls": 0, "dup_rate_mean": 0.15,
+  "unique_sigs_mean": 30.0
+ },
+ "2": {
+  "n_runs": 2, "calls_total": 32, "successes": 1,
+  "success_rate": 0.5, "calls_per_success": 32.0,
+  "failure_repeats": 1, "wrong_confirmed": 1,
+  "recovery_calls": 0, "dup_rate_mean": 0.15,
+  "unique_sigs_mean": 10.0
+ }
+}

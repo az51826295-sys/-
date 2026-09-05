@@ -1,0 +1,30 @@
+{
+ "repo": "tinydb",
+ "fix_commit": "8fd08fbf49d03c5d78b5b01100a29c7b9fe89be4",
+ "parent_commit": "429b648391ba03d6bcce65bb10ea45cf8b8ac0a8",
+ "answer_files": [
+  "tinydb/database.py"
+ ],
+ "answer_functions": [
+  "tinydb/database.py::insert"
+ ],
+ "patch_lines": 6,
+ "added_tests": {
+  "tests/tests_tinydb.py::test_bug_repeated_ids": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "tests/tests_tinydb.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 3.8,
+ "env_error_tests": 1,
+ "qualified": false,
+ "selector_event_proxy_v1": false
+}

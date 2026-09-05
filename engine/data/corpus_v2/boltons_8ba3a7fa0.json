@@ -1,0 +1,29 @@
+{
+ "repo": "boltons",
+ "fix_commit": "8ba3a7fa0d99b73f7f43c1aed82c571b941eecea",
+ "parent_commit": "6c7fa3e05659fac6515f661153c89d4ad02df168",
+ "answer_files": [
+  "boltons/timeutils.py"
+ ],
+ "answer_functions": [
+  "boltons/timeutils.py::daterange"
+ ],
+ "patch_lines": 10,
+ "added_tests": {
+  "tests/test_timeutils.py::test_daterange_years_step": {
+   "parent": "fail",
+   "fix": "fail",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "tests/test_timeutils.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 1.5,
+ "env_error_tests": 0,
+ "qualified": false
+}

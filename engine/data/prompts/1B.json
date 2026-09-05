@@ -1,0 +1,20 @@
+{
+  "id": "1B",
+  "author": "openai:gpt-5",
+  "target": "character",
+  "note": "Forest herbalist variant; leaf charms, short capelet, wooden staff",
+  "body": {
+    "description": "Chibi main witch, same person; global key light from upper-left. Use the same shared lamps: indigo cloth (#121427→#dfe3ff) for hat and robe; teal hair ramp (#052a2a→#b9f2f2) for short braid; warm leather/wood (#2a170d→#e7b36a) for boots, belt, satchel, and gnarled staff; brass metal (#3b2a07→#fff2b3) for pins; skin on the warm ramp (#5a3a2c→#ffe1c9). Design: indigo hat with a teal leaf sprig pinned by a brass clasp; cropped indigo capelet over a knee-length robe; small pouches on belt; wooden staff taller than the witch. Shading calls: deep shadow under the hat brim onto forehead and eyes (#121427), bright highlight on the hat crown and leaf edges facing top-left (#dfe3ff on cloth, #b9f2f2 on leaf); occlusion shadow where the capelet overlaps the robe and under the belt pouches (#23274f / #2a170d); bright highlight on the staff’s top-left ridge (#e7b36a) with core shadow spiraling along its right side (#4a2e1a); soft rim light on the braid’s top-left strands (#b9f2f2) and deep shadow at the nape (#052a2a); contact shadow under boots (#2a170d); pinpoint highlight on brass clasp (#fff2b3). Back view emphasizes capelet folds with light on the top-left fold (#7f8ce6) and a deep shadow wedge at the lower-right hem (#23274f)."
+  },
+  "lint": {
+    "ok": true,
+    "fields": {
+      "description": {
+        "ok": true,
+        "banned": [],
+        "missing": [],
+        "words": 192
+      }
+    }
+  }
+}

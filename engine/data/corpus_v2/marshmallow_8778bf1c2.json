@@ -1,0 +1,38 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "8778bf1c282c0e5cdc46fddc488ebd23b76ad89b",
+ "parent_commit": "a867533d53ddbe8cb0ff63c1dc3ca53337ba525c",
+ "answer_files": [
+  "marshmallow/decorators.py",
+  "marshmallow/schema.py"
+ ],
+ "answer_functions": [
+  "marshmallow/decorators.py::post_dump",
+  "marshmallow/decorators.py::post_load",
+  "marshmallow/schema.py::_invoke_processors"
+ ],
+ "patch_lines": 10,
+ "added_tests": {
+  "tests/test_decorators.py::test_decorator_post_dump_with_nested_pass_original_and_pass_many": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "tests/test_decorators.py::test_decorator_post_load_with_nested_pass_original_and_pass_many": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "tests/test_decorators.py"
+ ],
+ "location_hard_proxy": true,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 9.6,
+ "env_error_tests": 2,
+ "qualified": false,
+ "selector_event_proxy_v1": false
+}

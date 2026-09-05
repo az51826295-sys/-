@@ -1,0 +1,2730 @@
+{
+ "scanned_at": "2026-08-22T07:00:58",
+ "protocol": "docs/live-intake-repos.md",
+ "per_repo": {
+  "mahmoud/boltons": {
+   "A": 2,
+   "B": 20,
+   "C": 21,
+   "scanned": 43
+  },
+  "dateutil/dateutil": {
+   "A": 2,
+   "B": 33,
+   "C": 39,
+   "scanned": 74
+  },
+  "marshmallow-code/marshmallow": {
+   "A": 7,
+   "B": 41,
+   "C": 71,
+   "scanned": 119
+  },
+  "more-itertools/more-itertools": {
+   "A": 2,
+   "B": 0,
+   "C": 1,
+   "scanned": 3
+  },
+  "grantjenks/python-sortedcontainers": {
+   "A": 0,
+   "B": 5,
+   "C": 22,
+   "scanned": 27
+  },
+  "msiemens/tinydb": {
+   "A": 0,
+   "B": 3,
+   "C": 4,
+   "scanned": 7
+  },
+  "pytoolz/toolz": {
+   "A": 6,
+   "B": 23,
+   "C": 59,
+   "scanned": 88
+  }
+ },
+ "totals": {
+  "scanned": 361,
+  "A": 19,
+  "B": 125,
+  "C": 217,
+  "stage1_yield": 0.3989
+ },
+ "issues": [
+  {
+   "repo": "mahmoud/boltons",
+   "number": 439,
+   "title": "IndexedSet: difference_update/intersection_update are quadratic for large removals",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 390,
+   "title": "Improve Test Suite Documentation",
+   "class": "A",
+   "labels": []
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 385,
+   "title": "Frozen versions of bolton's data structures",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 373,
+   "title": "Type hints",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 347,
+   "title": "tracking some ideas",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 344,
+   "title": "chunked filter",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 331,
+   "title": "Convert list of dict items to list of string items",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 324,
+   "title": "attrs/dataclasses-style decorator helper",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 311,
+   "title": "Feature request: intersection and union of lists of ranges",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 310,
+   "title": "windowed with overlap",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 309,
+   "title": "boltons.urlutils.URL cannot handle some characters in credentials",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 304,
+   "title": "question: how to get `remap` to ignore lists",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 301,
+   "title": "`FunctionBuilder.from_func` not working",
+   "class": "A",
+   "labels": []
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 299,
+   "title": "Proposal: shorten long string by truncate chars (not by words)",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 296,
+   "title": "21.0.0: sphinx warnings",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 292,
+   "title": "Logging boltons",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 290,
+   "title": "__version__ field",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 289,
+   "title": "typename",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 282,
+   "title": "Allow adding a kwonly arg with \"expected\" in wraps",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 280,
+   "title": "URL comparison is order-based for query parameters",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 266,
+   "title": "dict get_all()",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 256,
+   "title": "auto recursive module importer",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 255,
+   "title": "Python 3 style iterable defaults",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 225,
+   "title": "RFE: enhance IndexedSet to inherit from set",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 214,
+   "title": "Proposal: exponential retry, singleton, http_proxy functions",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 213,
+   "title": "boltons.namedutils.namedlist definition using dataclasses style type annotations.",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 208,
+   "title": "itertools.product with configurable type",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 206,
+   "title": "Copy cd, temp_environ, temp_path from vistir",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 201,
+   "title": "Adding parameters with wraps()",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 190,
+   "title": "Adding type hints",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 186,
+   "title": "Proposal to add a few functions",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 170,
+   "title": "iterutils.replaced -- replace instances of A with B",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 148,
+   "title": "numpy multi-dimensional slices?",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 142,
+   "title": "camel2under possible error",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 141,
+   "title": "Time zones don't support fold",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 138,
+   "title": "funcutils.wraps compile implementation should be done differently [bug]",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 125,
+   "title": "dict rupdate()",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 124,
+   "title": "cacheutils.LRU.on_miss behavior",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 95,
+   "title": "Add lookahead to iterutils",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 92,
+   "title": "debugutils - Try to use ipdb then fall back to pdb",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 91,
+   "title": "Improving documentation of boltons.timeutils.daterange()",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 81,
+   "title": "remerge - dictionaries with arrays as values fail (slightly)",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 48,
+   "title": "Functions to work with json structures",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1548,
+   "title": "Feature request: nth ordinal weekday",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1546,
+   "title": "parser.parse( ) also silently truncates fractional seconds beyond 6 digits (via _parsems int(f.ljust",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1545,
+   "title": "isoparse( ) silently truncates fractional seconds beyond 6 digits (0.1234567 -> 123456us, not rounde",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1519,
+   "title": "Proposal: speed up parser.parse() (ISO-8601 fast-path + tokenizer hot-path) — gauging appetite befor",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1508,
+   "title": "parser.parse() silently accepts invalid timezone offsets (minutes >= 60, hours >= 24); inconsistent ",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1505,
+   "title": "[Que] What are the blockers for next release?",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1478,
+   "title": "UTC-4 parsed to +04:00",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1472,
+   "title": "Issue with Python 3.15 alpha 7 and build of docs",
+   "class": "C",
+   "labels": [
+    "bug",
+    "documentation",
+    "build"
+   ]
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1452,
+   "title": "`FREQ=YEARLY` with `BYMONTHDAY` but no `BYMONTH` expands to every month instead of DTSTART month (RF",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1448,
+   "title": "dayfirst implementation bug",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1447,
+   "title": "parser.parse fails on \"year:month:day h:m:s\"",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1446,
+   "title": "Parser cannot handle common datetime format used in image metadata",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1442,
+   "title": "default parser fails to parse 9-digit time string as HHMMSSmmm format",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1441,
+   "title": "Infinite loop in rrule.py",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1438,
+   "title": "Typeerror while trying to interate over rrule",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1436,
+   "title": "OverflowError: timestamp out of range for platform time_t",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1433,
+   "title": "deadlock in parser.parse()",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1432,
+   "title": "TypeError in tzstr when parsing \"UTC\" or \"GMT\" without offset",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1430,
+   "title": "six version range too loose — breaks on Python 3.13",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1428,
+   "title": "If a mock object reaches parse() during a unit test, unbounded memory allocation occurs",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1425,
+   "title": "rrule generated creates datetimes with non-existent local time (i.e., not respecting DST gaps)",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1421,
+   "title": "\"5pm\" with a default date is not considered \"5:00pm\"",
+   "class": "A",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1419,
+   "title": "`changelog.d/1417.misc.rst` change of EOF break workflows",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1414,
+   "title": "handle and parse date ranges",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1413,
+   "title": "timezone definition inconsistencies in the past",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1411,
+   "title": "Python 3.13 support",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1410,
+   "title": "Fuzzy parser returns wrong year",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1409,
+   "title": "ParserError when parsing a date like `2025-1-10,0:57:17.0,+1:0`",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1405,
+   "title": "No way to detect missing values in the date from dateutil.parser::parse",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1404,
+   "title": "Is this project ACTIVELY maintained?",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1402,
+   "title": "TypeError: unsupported operand type(s) for *=: 'NoneType' and 'int' when calling tz.gettz",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1400,
+   "title": "Open to a DateType support patch?",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1399,
+   "title": "export tzid for all timezones",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1398,
+   "title": "rrule use `freq: weekly`,  `wkst` and `bysetpos` issue",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1397,
+   "title": "Next friday does not work",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1395,
+   "title": "Mention need to run `updatezinfo.py`",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1394,
+   "title": "rrulestr doesn't currently work if no DTSTART is provided",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1393,
+   "title": "ruleset infinite loop",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1391,
+   "title": "[Bug] Incorrect static timezone issue processed from certain date strings",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1390,
+   "title": "[Bug] ValueError: RRULE UNTIL values must be specified in UTC when DTSTART is timezone-aware",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1385,
+   "title": "Request: Round relative delta.",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1383,
+   "title": "[Wrong parsing] fail to interpert 2007年10月10日",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1382,
+   "title": "Request: Support relativedelata comparison operators.",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1372,
+   "title": "dateutil/src/dateutil/tz /win.py: line 59 (user32 = ctypes.WinDLL('user32')) causes crashes",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1371,
+   "title": "2.9.0.post0: dateutil/zoneinfo/__init__.py wants to uses dateutil/zoneinfo/dateutil-zoneinfo.tar.gz",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1370,
+   "title": "pickle  tzical",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1369,
+   "title": "pickling & deepcopy of rruleset and rrule with cache",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1368,
+   "title": "dateutil.tz.tzical fails on X- custom properties in VTIMEZONE component",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1366,
+   "title": "decimal.InvalidOperation exception",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1365,
+   "title": "Discussion - Improvement to Documentation Examples - Difficultly Understanding Imports",
+   "class": "C",
+   "labels": [
+    "enhancement",
+    "documentation"
+   ]
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1364,
+   "title": "port `default` argument from `dateutil.parser.parse` to `dateutil.parser.isoparse`",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1359,
+   "title": "Parser can raise DecimalException",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1358,
+   "title": "Parser can raise UnicodeDecodeError",
+   "class": "C",
+   "labels": [
+    "documentation",
+    "parser"
+   ]
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1357,
+   "title": "dateutil.parser.parse() giving different results for BST in Linux and Windows",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1355,
+   "title": "distutils Version classes and other deprecation warnings on building",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1353,
+   "title": "Error in gettz for Europe/Paris timezone",
+   "class": "A",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1351,
+   "title": "rrule generator skipping window during exit of DST",
+   "class": "B",
+   "labels": [
+    "rrule",
+    "implementation-uncertain"
+   ]
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1347,
+   "title": "Remove setuptools_scm",
+   "class": "C",
+   "labels": [
+    "enhancement",
+    "build"
+   ]
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1341,
+   "title": "parser.isoparse() accepts invalid ISO 8601 timestamps",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1334,
+   "title": "Faulty behavior of \"dayfirst\" or another issue leading to wrong parsing",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1328,
+   "title": "Create a Security Policy",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1327,
+   "title": "Wrong parsing - parse('2023年12月4日10点',fuzzy=True) datetime.datetime(2010, 12, 4, 0, 0)",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1325,
+   "title": "python-dateutil returns \"naive\" datetime objects",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1321,
+   "title": "Wrong parsing - june 15,1987 to datetime.datetime(2023, 6, 15, 0, 0)",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1318,
+   "title": "Multiplying relativedelta with fractional days ends up with truncated values",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1316,
+   "title": "Parser interprets hyphen delimiter as timezone offset",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1312,
+   "title": "rrule return incorrect value with freq=MONTHLY",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1307,
+   "title": "Is it possible to add a holiday calendar for calculating business days?",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1306,
+   "title": "conditional in in _parse_rfc meant to error when \"empty property name\", can't ever trigger",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1305,
+   "title": "doesn't work in: italian, french and spanish",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1301,
+   "title": "Add Python 3.12 to CI",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1299,
+   "title": "Parser displays weird behaviour on dates like \"april2,2021\"",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1298,
+   "title": "Switch to trusted publishing for PyPI/TestPyPI",
+   "class": "C",
+   "labels": [
+    "build"
+   ]
+  },
+  {
+   "repo": "dateutil/dateutil",
+   "number": 1297,
+   "title": "example about Computing of relative deltas between two given date and/or datetime objects;",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 3019,
+   "title": "[Bug] Negative POSIX timestamps cannot be deserialized after timestamp serialization",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2999,
+   "title": "`test_from_timestamp_with_overflow_value` test failing on Windows because of message mismatch",
+   "class": "A",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2961,
+   "title": "Inconsistent value type when validating nested schema fields",
+   "class": "A",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2953,
+   "title": "Dependency Dashboard",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2889,
+   "title": "Feature - allow inheriting load_default from nested schema populated with from_dict",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2836,
+   "title": "Consistency with allow_none with serialization and deserialization",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2834,
+   "title": "SchemaOpts misses partial",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2833,
+   "title": "'NoneType' object is not subscriptable when serializing fields that do not belong to the database is",
+   "class": "C",
+   "labels": [
+    "question"
+   ]
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2832,
+   "title": "Removing Schema context feels like a bad idea!",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2829,
+   "title": "Is there a way to pre-define built-in validators that can be used multiple times?",
+   "class": "C",
+   "labels": [
+    "question"
+   ]
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2824,
+   "title": "Extra documentation for new context implementation?",
+   "class": "C",
+   "labels": [
+    "question",
+    "polymorphism"
+   ]
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2822,
+   "title": "TimeDelta misleading 'precision' argument & v4 breaking change",
+   "class": "C",
+   "labels": [
+    "feedback welcome"
+   ]
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2816,
+   "title": "Dump converts int or bool to float",
+   "class": "C",
+   "labels": [
+    "polymorphism"
+   ]
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2794,
+   "title": "Remove `only`, `exclude`, `many`, and `unknown` parameters of `Nested` and require callables to retu",
+   "class": "B",
+   "labels": [
+    "feedback welcome",
+    "backwards incompat"
+   ]
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2243,
+   "title": "fields.URL validation error should specify \"not a valid FQDN\" if trying to pass hostname without dom",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2194,
+   "title": "Dot in key is not parsed correclty on loads()",
+   "class": "B",
+   "labels": [
+    "docs"
+   ]
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2189,
+   "title": "Validation does not occur on serialization documentation issue",
+   "class": "B",
+   "labels": [
+    "docs"
+   ]
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2182,
+   "title": "[RFC] Add BigInt, SmallInt,... fields.",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2180,
+   "title": "Are nested options applied correctly?",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2165,
+   "title": "Doubly Nested Schemas instantiated via lambdas cannot be referenced with multiple dot notation with ",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2151,
+   "title": "Allow 'load_default' for required fields since they can be used with partial.",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2103,
+   "title": "Add ability to set partial default in Meta class",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2074,
+   "title": "Emit warning when user passes string instead of list to OneOf",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2069,
+   "title": "Include a nested relation to one schema, without modifying the rest of the functions that use it",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2043,
+   "title": "Allow_none in additional parameters",
+   "class": "C",
+   "labels": [
+    "question"
+   ]
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2041,
+   "title": "Bug: several nested partial issues (sequence partial, data key, schema initialized partial)",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2039,
+   "title": "[RFC] Don't pass attr, obj, data to fields (de)serialize methods",
+   "class": "C",
+   "labels": [
+    "feedback welcome",
+    "backwards incompat"
+   ]
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2032,
+   "title": "Format datetime field with millisecond precision",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2012,
+   "title": "Custom Field Logic Bypass",
+   "class": "B",
+   "labels": [
+    "docs"
+   ]
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 2000,
+   "title": "Object class and schema definition combined, ORM-style",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1988,
+   "title": "Can/should marshmallow include pre-built validates_schema methods?",
+   "class": "C",
+   "labels": [
+    "polymorphism"
+   ]
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1985,
+   "title": "To customize the error message for required fields, pass a dict with a required key as the error_mes",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1982,
+   "title": "Non-obvious error when using fields.Nested with schema instance and many",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1975,
+   "title": "be more verbose: marshmallow.exceptions.ValidationError: {'_schema': ['Invalid input type.']}",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1974,
+   "title": "When deserializing/serializing in a spark job _Missing fileds throw TypeErrrors",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1971,
+   "title": "Should the type of `missing` be exposed publicly for use in type annotations?",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1969,
+   "title": "[RFC] Merge child Schema Meta with inherited parent Meta",
+   "class": "C",
+   "labels": [
+    "backwards incompat"
+   ]
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1964,
+   "title": "load many functionality doesn't seem to be of much help",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1961,
+   "title": "pre_validate decorator",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1953,
+   "title": "Allow conditionally disabling fields",
+   "class": "B",
+   "labels": [
+    "polymorphism"
+   ]
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1942,
+   "title": "Different order of pre_load hooks for List(Nested) and Nested(many=True) fields",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1941,
+   "title": "Number fromhex()",
+   "class": "C",
+   "labels": [
+    "docs"
+   ]
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1940,
+   "title": "Convert fields to optional if parent's field has a specific value",
+   "class": "C",
+   "labels": [
+    "question"
+   ]
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1910,
+   "title": "Default error messages not getting overridden",
+   "class": "C",
+   "labels": [
+    "question"
+   ]
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1895,
+   "title": "[validate.oneOf] Returning labels?",
+   "class": "B",
+   "labels": [
+    "backwards incompat"
+   ]
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1893,
+   "title": "Add a \"default_dump_fields\" or similar parameter to the schema definition",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1879,
+   "title": "Meta Decorator",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1864,
+   "title": "Always set data_key",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1857,
+   "title": "Schema.dump_only returns empty set if fields explicitly declared dump_only",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1844,
+   "title": "email validation should support single character TLDs",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1841,
+   "title": "Should marshmallow v4 set required names for hooks?",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1830,
+   "title": "Validating file uploads in Flask Marshmallow",
+   "class": "C",
+   "labels": [
+    "question"
+   ]
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1829,
+   "title": "A better name for validation related module (`marshmallow.validate`), decorator (`@validates`), and ",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1828,
+   "title": "Remove unnecessary field aliases (`Str`, `Int`, `Bool`, etc.)",
+   "class": "C",
+   "labels": [
+    "feedback welcome"
+   ]
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1819,
+   "title": "Default deserialization with Function field",
+   "class": "B",
+   "labels": [
+    "docs"
+   ]
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1818,
+   "title": "Serialize multiple attributes using Pluck",
+   "class": "C",
+   "labels": [
+    "question"
+   ]
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1815,
+   "title": "pathlib.Path support",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1812,
+   "title": "Make customizing Schema behavior with subclasses easier",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1801,
+   "title": "List(Nested()) doesn't use `many` in the nested schema",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1759,
+   "title": "Conveniently generating schema from a nested dict",
+   "class": "B",
+   "labels": [
+    "feedback welcome"
+   ]
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1758,
+   "title": "v3 no longer accepts fields that call class methods ",
+   "class": "B",
+   "labels": [
+    "docs"
+   ]
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1751,
+   "title": "Consider moving `marshmallow-oneofschema` into the core library?",
+   "class": "B",
+   "labels": [
+    "polymorphism"
+   ]
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1747,
+   "title": "only option not working properly for nested fields.",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1726,
+   "title": "Allow customized Schema _serialize and _deserialize to get custom data from load/dump calls",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1699,
+   "title": "Add \"raise_exception\" to Schema.validate()",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1696,
+   "title": "Support streaming dump",
+   "class": "B",
+   "labels": [
+    "help wanted"
+   ]
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1694,
+   "title": "Incorporate marshmallow-toplevel functionality directly into marshmallow",
+   "class": "C",
+   "labels": [
+    "feedback welcome"
+   ]
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1683,
+   "title": "fields.Function's _serialize method passes in obj instead of value",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1642,
+   "title": "Dotted `only` and `exclude` not addressable for nested Tuples",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1629,
+   "title": "Propogate raw input data passed to the `Schema.load` to the List's inner deserialize",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1622,
+   "title": "dumping a dictionary with a schema containing an optional field 'items' ",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1621,
+   "title": "Add a field type that behaves like oneOfType in React proptypes",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1611,
+   "title": "load_only and dump_only validation",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1610,
+   "title": "Can't recursion deserialize in Method Field？",
+   "class": "C",
+   "labels": [
+    "question"
+   ]
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1601,
+   "title": "Option to have strict Float field",
+   "class": "A",
+   "labels": [
+    "feedback welcome"
+   ]
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1579,
+   "title": "Extract value from a List of object",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1578,
+   "title": "Excluding a field using Meta.exclude in a base class",
+   "class": "C",
+   "labels": [
+    "question"
+   ]
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1566,
+   "title": "Inconsistent None items serialization between Nested(…, many=True) and List(Nested(…)) fields",
+   "class": "A",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1559,
+   "title": "Accessing builtin dict's attrs for a missing field",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1549,
+   "title": "Implement a field.Set?",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1545,
+   "title": "Dumping objects with fields unknown to schema in versions >=3.0.0",
+   "class": "C",
+   "labels": [
+    "question"
+   ]
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1541,
+   "title": "Validation for Dynamically Nested Schema doesnt seem to work ",
+   "class": "B",
+   "labels": [
+    "polymorphism"
+   ]
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1533,
+   "title": "How to extract key from schema to place at a different place in response?",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1515,
+   "title": "Epoch time validation in marshmallow",
+   "class": "C",
+   "labels": [
+    "question",
+    "datetime"
+   ]
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1490,
+   "title": "\"unknown\" option should apply to nested fields so that \"exclude\" works",
+   "class": "C",
+   "labels": [
+    "docs"
+   ]
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1475,
+   "title": "Integer field won't accept boolean value when strict is False",
+   "class": "A",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1457,
+   "title": "Type hinting for `load` is too strict",
+   "class": "C",
+   "labels": [
+    "help wanted",
+    "typing"
+   ]
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1428,
+   "title": "unknown parameter passed to load method is not popagated to nested schema field.",
+   "class": "C",
+   "labels": [
+    "backwards incompat"
+   ]
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1423,
+   "title": "URL TLD IP Address Allowed",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1422,
+   "title": "fields.Url ValidationError parsing internationalized domain name",
+   "class": "A",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1419,
+   "title": "@field decorator to allow methods to return a Field object",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1411,
+   "title": "Generate a TypedDict or dataclass from Schema",
+   "class": "B",
+   "labels": [
+    "feedback welcome"
+   ]
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1387,
+   "title": "Accessing previously deserialized field data from a different field",
+   "class": "C",
+   "labels": [
+    "question"
+   ]
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1373,
+   "title": "Simplify field overrides",
+   "class": "C",
+   "labels": [
+    "feedback welcome"
+   ]
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1315,
+   "title": "Reduce confusion around fields.Pluck behavior",
+   "class": "C",
+   "labels": [
+    "feedback welcome"
+   ]
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1281,
+   "title": "Move some fields (exclude, only, etc) to private API in  `Schema.__init__`",
+   "class": "C",
+   "labels": [
+    "backwards incompat"
+   ]
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1263,
+   "title": "Add fields.Iterable as a base class for collection field types",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1244,
+   "title": "Harmonize how modifiers are passed",
+   "class": "C",
+   "labels": [
+    "refactor"
+   ]
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1192,
+   "title": "Allow postprocess to be passed in `Schema.load`",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1190,
+   "title": "Why is post_load called after schema.validate()?",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1090,
+   "title": "Custom error message for unknown when dump only",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1046,
+   "title": "Field: respect single responsability principle, don't access parent object",
+   "class": "C",
+   "labels": [
+    "refactor",
+    "backwards incompat"
+   ]
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 1042,
+   "title": "Object to pass to Nested as missing",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 940,
+   "title": "fields.Nested should optionally pass the parent object to the Nested Schema",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 902,
+   "title": "fields.Boolean should accept only json booleans",
+   "class": "C",
+   "labels": [
+    "feedback welcome"
+   ]
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 879,
+   "title": "How to report errors for container fields?",
+   "class": "A",
+   "labels": [
+    "feedback welcome",
+    "refactor",
+    "backwards incompat"
+   ]
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 853,
+   "title": "Allow specifying output field when using `unknown=INCLUDE`",
+   "class": "C",
+   "labels": [
+    "help wanted",
+    "feedback welcome"
+   ]
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 833,
+   "title": "Passing extra kwargs with ValidationError",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 805,
+   "title": "Investigate Serialization Performance",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 802,
+   "title": "Configuring only, exclude, load_only, and dump_only on fields.Nested()",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 798,
+   "title": "allow for overriding dump’s iteration behavior",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 779,
+   "title": "RFC: Remove Nested(many=True) to keep only the List(Nested()) form",
+   "class": "C",
+   "labels": [
+    "feedback welcome",
+    "backwards incompat"
+   ]
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 760,
+   "title": "Suggestion: Refactor builtin fields to expose validators for re-use",
+   "class": "C",
+   "labels": [
+    "refactor"
+   ]
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 738,
+   "title": "Add decorator syntax for method fields?",
+   "class": "B",
+   "labels": [
+    "feedback welcome"
+   ]
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 727,
+   "title": "Incorrect Integer validation for Floats",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 713,
+   "title": "Empty strings as None (revisited)",
+   "class": "C",
+   "labels": [
+    "feedback welcome"
+   ]
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 648,
+   "title": "Schema fields with dict attribute names return dict attributes when keys missing",
+   "class": "B",
+   "labels": [
+    "feedback welcome",
+    "needs review"
+   ]
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 535,
+   "title": "How is deserialization affected by only and partial?",
+   "class": "C",
+   "labels": [
+    "docs"
+   ]
+  },
+  {
+   "repo": "marshmallow-code/marshmallow",
+   "number": 493,
+   "title": "Can't json encode some validation errors, \"unorderable types: str() < int()\"",
+   "class": "C",
+   "labels": [
+    "feedback welcome",
+    "backwards incompat"
+   ]
+  },
+  {
+   "repo": "more-itertools/more-itertools",
+   "number": 1225,
+   "title": "Propose is_sorted option for O(n**2) detection of pathological data",
+   "class": "A",
+   "labels": []
+  },
+  {
+   "repo": "more-itertools/more-itertools",
+   "number": 1168,
+   "title": "Propose a new itertool: primes",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "more-itertools/more-itertools",
+   "number": 1017,
+   "title": "Faster `sliding_window`?",
+   "class": "A",
+   "labels": []
+  },
+  {
+   "repo": "grantjenks/python-sortedcontainers",
+   "number": 252,
+   "title": "Offer to help with maintenance",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "grantjenks/python-sortedcontainers",
+   "number": 248,
+   "title": "Merge SortedList and SortedKeyList Into a Single Class",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "grantjenks/python-sortedcontainers",
+   "number": 246,
+   "title": "Support container type annotation for classes",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "grantjenks/python-sortedcontainers",
+   "number": 245,
+   "title": "error  occur in SortedList",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "grantjenks/python-sortedcontainers",
+   "number": 244,
+   "title": "DefaultSortedDict",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "grantjenks/python-sortedcontainers",
+   "number": 242,
+   "title": "HelloGitHub Badge",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "grantjenks/python-sortedcontainers",
+   "number": 241,
+   "title": "New PYPI release request",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "grantjenks/python-sortedcontainers",
+   "number": 239,
+   "title": "ValueError when discarding values with changing sort value",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "grantjenks/python-sortedcontainers",
+   "number": 238,
+   "title": "Discard behavior when iterating over SortedSet",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "grantjenks/python-sortedcontainers",
+   "number": 237,
+   "title": "OSS-Fuzz Integration",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "grantjenks/python-sortedcontainers",
+   "number": 236,
+   "title": "Please release a new version",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "grantjenks/python-sortedcontainers",
+   "number": 235,
+   "title": "irange() when used with neg",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "grantjenks/python-sortedcontainers",
+   "number": 234,
+   "title": "Mention sortedcontainers-pydantic for Pydantic support",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "grantjenks/python-sortedcontainers",
+   "number": 232,
+   "title": "Debugpy plugin to display collection content as a list/dict/set",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "grantjenks/python-sortedcontainers",
+   "number": 219,
+   "title": "Return NotImplemented for SortedSet.__and__",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "grantjenks/python-sortedcontainers",
+   "number": 207,
+   "title": "Feature Proposal: Introduce Higher Level APIs like ceil / floor",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "grantjenks/python-sortedcontainers",
+   "number": 204,
+   "title": "Feature request: parameterize SortedList used in SortedDict through inheritance",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "grantjenks/python-sortedcontainers",
+   "number": 203,
+   "title": "unpickling very slow",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "grantjenks/python-sortedcontainers",
+   "number": 181,
+   "title": "Feature request: update element key",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "grantjenks/python-sortedcontainers",
+   "number": 180,
+   "title": "Feature request: SortedDict Range Deletion",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "grantjenks/python-sortedcontainers",
+   "number": 178,
+   "title": "Feature request: SortedList: add_left() + add_right()",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "grantjenks/python-sortedcontainers",
+   "number": 154,
+   "title": "Dependency validation with GitHub action",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "grantjenks/python-sortedcontainers",
+   "number": 138,
+   "title": "SortedList is not actually a MutableSequence",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "grantjenks/python-sortedcontainers",
+   "number": 110,
+   "title": "Mention sortedcollections module in README",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "grantjenks/python-sortedcontainers",
+   "number": 98,
+   "title": "Add astropy to list of project users",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "grantjenks/python-sortedcontainers",
+   "number": 68,
+   "title": "Add mypy type hints?",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "grantjenks/python-sortedcontainers",
+   "number": 53,
+   "title": "Improve Sorted Set Merge Performance for Disjoint Sets",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "msiemens/tinydb",
+   "number": 631,
+   "title": "CachingMiddleware: operations after close() still succeed in memory",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "msiemens/tinydb",
+   "number": 630,
+   "title": "Docs and type hints disagree with runtime for several public APIs",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "msiemens/tinydb",
+   "number": 629,
+   "title": "insert_multiple can silently overwrite documents when mixing Document and dict",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "msiemens/tinydb",
+   "number": 575,
+   "title": "Documentation Ideas - API Reference",
+   "class": "C",
+   "labels": [
+    "contributions-welcome"
+   ]
+  },
+  {
+   "repo": "msiemens/tinydb",
+   "number": 371,
+   "title": "Restructure and extend documentation",
+   "class": "C",
+   "labels": [
+    "enhancement",
+    "pinned"
+   ]
+  },
+  {
+   "repo": "msiemens/tinydb",
+   "number": 354,
+   "title": "Move a document from a certain database to another one error",
+   "class": "B",
+   "labels": [
+    "pinned"
+   ]
+  },
+  {
+   "repo": "msiemens/tinydb",
+   "number": 332,
+   "title": "feat: support `Document` type on update/remove etc",
+   "class": "C",
+   "labels": [
+    "discussion",
+    "pinned"
+   ]
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 626,
+   "title": "tail(0, seq) returns the whole sequence instead of empty (and is inconsistent across iterable types)",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 623,
+   "title": "[heads up] Python 3.15: test_introspect_builtin_modules fails as there's Missing introspection for t",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 622,
+   "title": "Plan: adding type annotations one function at a time",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 612,
+   "title": "test_has_version fails",
+   "class": "A",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 606,
+   "title": "can't unpickle `curry`ied function coming from `__main__`",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 601,
+   "title": "Thoughts on partialz with ellipsis?",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 596,
+   "title": "Feature proposal: `raise`/`throws` function",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 583,
+   "title": "`toolz.curry` Seems to Cause 50x+ Performance Slowdown in Certain Cases",
+   "class": "A",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 580,
+   "title": "Dictionary chunking / batching (inverting merge_with)",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 579,
+   "title": "Should we have dissoc_in ? ",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 569,
+   "title": "Loss of typing information on composed functions",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 567,
+   "title": "Split two lists/iterables of objects \"wanted_state\", \"existing_state\" in 3 lists \"create\", \"update\",",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 564,
+   "title": "0.12.0: pytest is failing in `bench/test_wordcount.py::test_shakespeare` unit because missing bench/",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 560,
+   "title": "include a wrapper for itertools.takewhile in (cy)toolz.curried",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 553,
+   "title": "Idea: Compose class should be iterable",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 548,
+   "title": "get_in function: add example of giving a string to the keys argument",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 544,
+   "title": "Idea: J-style forks",
+   "class": "A",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 543,
+   "title": "Any good article/video/book/anything that shows how to use toolz for software development?",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 540,
+   "title": "`thread_as` function ??",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 529,
+   "title": "Combination of map and accumulate",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 523,
+   "title": "Idea: compose as an operator",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 521,
+   "title": "0.11.1: sphinx 4.x warnings",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 517,
+   "title": "iget for fetching indexes from a non-sequence iterable",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 515,
+   "title": "in update_in(), option to disable upsert",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 510,
+   "title": "pipe and **kwargs",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 496,
+   "title": "optional static typing for toolz",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 495,
+   "title": "`_check_sigspec` is slow",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 486,
+   "title": "Feature request: unpack",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 483,
+   "title": "eager map & filter?",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 481,
+   "title": "Bug in compose introduced in 0.10.0",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 480,
+   "title": "Function `unmerge`",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 465,
+   "title": "StopIteration from first() caught by a generator",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 461,
+   "title": "A shortcut to create Lambdas?",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 459,
+   "title": "`diff` doc is unclear",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 447,
+   "title": "Extract first truthy value",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 445,
+   "title": "consider add \"for_each\" function",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 444,
+   "title": "Extract value from iterable containing exactly one value",
+   "class": "A",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 442,
+   "title": "find function?",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 424,
+   "title": "last indexerror: tuple index out of range",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 413,
+   "title": "define a new zip, iterating with the longest one",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 402,
+   "title": "assoc with multiple keys",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 400,
+   "title": "Adding an optional depth/levelspec to map",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 396,
+   "title": "num_required_args gives unexpected answer on composed methods",
+   "class": "A",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 392,
+   "title": "`select-keys` equivalent",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 382,
+   "title": "if/else ternary iterator operation ",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 377,
+   "title": "Implement function to partition data",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 368,
+   "title": "Feature Request: call function",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 367,
+   "title": "py.test fails on Ubuntu ppc64le",
+   "class": "A",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 363,
+   "title": "`get` returns tuples but only accepts lists",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 362,
+   "title": "Deprecate/remove `toolz.sandbox`",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 360,
+   "title": "strange bug using jupyter notebook",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 356,
+   "title": "Phi",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 347,
+   "title": "Using future for Python 3 compatibility",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 344,
+   "title": "compose instance methods on a class?",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 343,
+   "title": "Sliding window with fill values",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 329,
+   "title": "Full-streaming join acting on sorted input",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 327,
+   "title": "Smarter selects and transforms",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 322,
+   "title": "Adding an update-based sliding_window function",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 317,
+   "title": "toolz.groupby vs itertools.groupby; docs and default behaviour",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 291,
+   "title": "Consider adding a `zipdict()` function",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 290,
+   "title": "Add partition_time function?",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 285,
+   "title": "Consider adding `repeat_each` to itertoolz",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 282,
+   "title": "add const function",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 281,
+   "title": "merge dictionaries recursively",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 280,
+   "title": "No immutability",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 276,
+   "title": "provide distinct function to unify api",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 273,
+   "title": "Keep currying through compose",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 261,
+   "title": "Mutable docstrings on Compose; adding \"__doc__\" to __slots__",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 245,
+   "title": "Serialize memoize with just function and key?",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 243,
+   "title": "Tee function?",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 239,
+   "title": "Add an unzip function?",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 236,
+   "title": "pluck_in",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 233,
+   "title": "Pipe over a sequence",
+   "class": "B",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 229,
+   "title": "Sorted join",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 228,
+   "title": "Ability to clear cache of memoized functions",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 221,
+   "title": "partition_all is inefficient for very large partition sizes",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 211,
+   "title": "ENH: function to split dict over an iterable",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 208,
+   "title": "Add consume recipe",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 204,
+   "title": "\"See also\" links in readthedocs aren't clickable",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 189,
+   "title": "Counterintuitive behavior in take",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 187,
+   "title": "Add step argument to partition and partition-all",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 166,
+   "title": "unique only works for hashables",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 153,
+   "title": "`toolz.merge_with` not lazy, breaks with Clojure interface",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 97,
+   "title": "`get` on iterators",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 91,
+   "title": "Variadic argument conventions",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 88,
+   "title": "Module-level higher-order functions (HOFs)",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 39,
+   "title": "LRU Cache",
+   "class": "C",
+   "labels": []
+  },
+  {
+   "repo": "pytoolz/toolz",
+   "number": 20,
+   "title": "Ideas to publicize pytoolz",
+   "class": "C",
+   "labels": []
+  }
+ ]
+}

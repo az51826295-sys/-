@@ -1,0 +1,41 @@
+{
+ "verified_at": "2026-08-22T07:01:35",
+ "mock": true,
+ "n_candidates": 3,
+ "outcomes": {
+  "accepted": 3
+ },
+ "stage2_yield": 1.0,
+ "rows": [
+  {
+   "repo": "mahmoud/boltons",
+   "number": 170,
+   "title": "iterutils.replaced -- replace instances of A with B",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import boltons\n\ndef test_mock():\n    assert False, '배관 검증'\n"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 148,
+   "title": "numpy multi-dimensional slices?",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import boltons\n\ndef test_mock():\n    assert False, '배관 검증'\n"
+  },
+  {
+   "repo": "mahmoud/boltons",
+   "number": 142,
+   "title": "camel2under possible error",
+   "class": "B",
+   "labels": [],
+   "outcome": "accepted",
+   "test_src": "import boltons\n\ndef test_mock():\n    assert False, '배관 검증'\n"
+  }
+ ],
+ "usage": {
+  "calls": 3
+ }
+}

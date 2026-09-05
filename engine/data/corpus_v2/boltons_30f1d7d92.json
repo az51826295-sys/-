@@ -1,0 +1,37 @@
+{
+ "repo": "boltons",
+ "fix_commit": "30f1d7d929ed48239a6c7c5989454f852a5d7e86",
+ "parent_commit": "405d8b9c1b24d5b68ad1f74fd74f53c6ee78e6fe",
+ "answer_files": [
+  "boltons/urlutils.py"
+ ],
+ "answer_functions": [
+  "boltons/urlutils.py::from_parts",
+  "boltons/urlutils.py::navigate",
+  "boltons/urlutils.py::normalize",
+  "boltons/urlutils.py::register_scheme"
+ ],
+ "patch_lines": 74,
+ "added_tests": {
+  "tests/test_urlutils.py::test_parse_equals_in_qp_value": {
+   "parent": "fail",
+   "fix": "fail",
+   "mode": "file"
+  },
+  "tests/test_urlutils.py::test_rel_navigate": {
+   "parent": "fail",
+   "fix": "fail",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "tests/test_urlutils.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 3.4,
+ "env_error_tests": 0,
+ "qualified": false
+}

@@ -1,0 +1,45 @@
+{
+  "reference": "audition tileset 16",
+  "rows": {
+    "풀·흙 지형(기준)": {
+      "n_files": 16,
+      "n_colors": 40,
+      "palette_distance": 0.0,
+      "palette_distance_max": 0.0,
+      "luma_shift": 2.8,
+      "saturation_shift": 5.0
+    },
+    "자리표시자 5칸": {
+      "n_files": 5,
+      "n_colors": 12,
+      "palette_distance": 0.0622,
+      "palette_distance_max": 0.2606,
+      "luma_shift": 4.6,
+      "saturation_shift": -8.0
+    },
+    "hero": {
+      "n_files": 4,
+      "n_colors": 6,
+      "palette_distance": 0.1144,
+      "palette_distance_max": 0.2275,
+      "luma_shift": -34.9,
+      "saturation_shift": -43.0
+    },
+    "merchant": {
+      "n_files": 4,
+      "n_colors": 22,
+      "palette_distance": 0.1277,
+      "palette_distance_max": 0.3815,
+      "luma_shift": -41.4,
+      "saturation_shift": -40.0
+    },
+    "UI 아이콘 8개": {
+      "n_files": 8,
+      "n_colors": 1,
+      "palette_distance": 0.4569,
+      "palette_distance_max": 0.4569,
+      "luma_shift": 167.9,
+      "saturation_shift": -76.0
+    }
+  }
+}

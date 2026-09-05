@@ -1,0 +1,57 @@
+{
+ "repo": "dateutil",
+ "fix_commit": "5f2052faf7532424203c23f979f1f8f7b2653571",
+ "parent_commit": "372783dcc72e24c42600cdba1f132b9a65f9d4c5",
+ "answer_files": [
+  "dateutil/parser/_parser.py"
+ ],
+ "answer_functions": [
+  "dateutil/parser/_parser.py::_assign_hms",
+  "dateutil/parser/_parser.py::_parse_numeric_token",
+  "dateutil/parser/_parser.py::_to_decimal"
+ ],
+ "patch_lines": 17,
+ "added_tests": {
+  "dateutil/test/test_parser.py::test_decimal_error": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [
+  "dateutil/test/test_parser.py::test_decimal_error"
+ ],
+ "test_files": [
+  "dateutil/test/test_parser.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [
+  {
+   "applied": "dateutil/parser/_parser.py::_assign_hms",
+   "passes_repro": [],
+   "still_failing": [
+    "dateutil/test/test_parser.py::test_decimal_error"
+   ],
+   "event": false,
+   "still_failing_fixpass": [
+    "dateutil/test/test_parser.py::test_decimal_error"
+   ],
+   "event_v2": false
+  },
+  {
+   "applied": "dateutil/parser/_parser.py::_parse_numeric_token",
+   "passes_repro": [
+    "dateutil/test/test_parser.py::test_decimal_error"
+   ],
+   "still_failing": [],
+   "event": false,
+   "still_failing_fixpass": [],
+   "event_v2": false
+  }
+ ],
+ "env_seconds": 2.4,
+ "env_error_tests": 0,
+ "qualified": true,
+ "selector_event_proxy_v1": false
+}

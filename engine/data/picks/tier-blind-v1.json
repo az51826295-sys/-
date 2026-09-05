@@ -1,0 +1,1966 @@
+{
+  "id": "티어 블라인드",
+  "by": "사장님",
+  "ts": "2026-08-27T08:15:48",
+  "note": "블라인드 짝 선별(티어 가림). 사장님이 개념마다 마음에 드는 것을 여러 개 고르셨다. 정답지(data/tier_blind_key.json)는 이 기록을 남긴 뒤에 연다.",
+  "groups": [
+    {
+      "group": "01_dialogue",
+      "shown": [
+        {
+          "no": 1,
+          "path": "out\\icons\\tier-blind\\candidates\\01_dialogue\\c01.svg",
+          "sha1": "cdc7be35bce2",
+          "structure_hash": "74ccc74f9e16f8cf",
+          "picked": false
+        },
+        {
+          "no": 2,
+          "path": "out\\icons\\tier-blind\\candidates\\01_dialogue\\c02.svg",
+          "sha1": "d69c3514623e",
+          "structure_hash": "f0e1d758415f14c3",
+          "picked": false
+        },
+        {
+          "no": 3,
+          "path": "out\\icons\\tier-blind\\candidates\\01_dialogue\\c03.svg",
+          "sha1": "139ff6c4303c",
+          "structure_hash": "eb49a1c81da1342d",
+          "picked": false
+        },
+        {
+          "no": 4,
+          "path": "out\\icons\\tier-blind\\candidates\\01_dialogue\\c04.svg",
+          "sha1": "b2b56b060775",
+          "structure_hash": "e157f59cb42bab50",
+          "picked": false
+        },
+        {
+          "no": 5,
+          "path": "out\\icons\\tier-blind\\candidates\\01_dialogue\\c05.svg",
+          "sha1": "1dd4e2ae5f63",
+          "structure_hash": "4566af777dfbd066",
+          "picked": false
+        },
+        {
+          "no": 6,
+          "path": "out\\icons\\tier-blind\\candidates\\01_dialogue\\c06.svg",
+          "sha1": "411e3982cd38",
+          "structure_hash": "22f76b97de99c3cb",
+          "picked": false
+        },
+        {
+          "no": 7,
+          "path": "out\\icons\\tier-blind\\candidates\\01_dialogue\\c07.svg",
+          "sha1": "1e5981d56f7a",
+          "structure_hash": "6d7a61d4ed8af486",
+          "picked": false
+        },
+        {
+          "no": 8,
+          "path": "out\\icons\\tier-blind\\candidates\\01_dialogue\\c08.svg",
+          "sha1": "284c7852c86d",
+          "structure_hash": "746f54d182324f34",
+          "picked": false
+        },
+        {
+          "no": 9,
+          "path": "out\\icons\\tier-blind\\candidates\\01_dialogue\\c09.svg",
+          "sha1": "a18e6a7781aa",
+          "structure_hash": "64d8131333cd88fc",
+          "picked": false
+        },
+        {
+          "no": 10,
+          "path": "out\\icons\\tier-blind\\candidates\\01_dialogue\\c10.svg",
+          "sha1": "a6ab221f28c1",
+          "structure_hash": "e2f406816b3b824e",
+          "picked": false
+        },
+        {
+          "no": 11,
+          "path": "out\\icons\\tier-blind\\candidates\\01_dialogue\\c11.svg",
+          "sha1": "72107ed284be",
+          "structure_hash": "77f4abd1f9fcb733",
+          "picked": false
+        },
+        {
+          "no": 12,
+          "path": "out\\icons\\tier-blind\\candidates\\01_dialogue\\c12.svg",
+          "sha1": "ef4184278478",
+          "structure_hash": "92780c3c1e3c92da",
+          "picked": false
+        },
+        {
+          "no": 13,
+          "path": "out\\icons\\tier-blind\\candidates\\01_dialogue\\c13.svg",
+          "sha1": "d03c3ec829f3",
+          "structure_hash": "672f129713ace48d",
+          "picked": false
+        },
+        {
+          "no": 14,
+          "path": "out\\icons\\tier-blind\\candidates\\01_dialogue\\c14.svg",
+          "sha1": "262ced42b79e",
+          "structure_hash": "a82879cf61d69083",
+          "picked": false
+        },
+        {
+          "no": 15,
+          "path": "out\\icons\\tier-blind\\candidates\\01_dialogue\\c15.svg",
+          "sha1": "d5169b80a3fd",
+          "structure_hash": "9b2ee1cc25670a7c",
+          "picked": false
+        },
+        {
+          "no": 16,
+          "path": "out\\icons\\tier-blind\\candidates\\01_dialogue\\c16.svg",
+          "sha1": "0f865a8b2e5a",
+          "structure_hash": "14999794e8cb4c19",
+          "picked": false
+        },
+        {
+          "no": 17,
+          "path": "out\\icons\\tier-blind\\candidates\\01_dialogue\\c17.svg",
+          "sha1": "4bd217a411f9",
+          "structure_hash": "fc62cbce1c2954de",
+          "picked": false
+        },
+        {
+          "no": 18,
+          "path": "out\\icons\\tier-blind\\candidates\\01_dialogue\\c18.svg",
+          "sha1": "787a05bb7a5c",
+          "structure_hash": "b81fc7389663d9ed",
+          "picked": false
+        },
+        {
+          "no": 19,
+          "path": "out\\icons\\tier-blind\\candidates\\01_dialogue\\c19.svg",
+          "sha1": "471f05faadb0",
+          "structure_hash": "9f2af9b97837a040",
+          "picked": false
+        },
+        {
+          "no": 20,
+          "path": "out\\icons\\tier-blind\\candidates\\01_dialogue\\c20.svg",
+          "sha1": "b6dd1b21c94c",
+          "structure_hash": "deb0270ab7a07725",
+          "picked": true
+        }
+      ],
+      "picked_no": 20,
+      "picked_nos": [
+        20
+      ]
+    },
+    {
+      "group": "02_equipment",
+      "shown": [
+        {
+          "no": 1,
+          "path": "out\\icons\\tier-blind\\candidates\\02_equipment\\c01.svg",
+          "sha1": "634248edb407",
+          "structure_hash": "9ac658493e34f747",
+          "picked": false
+        },
+        {
+          "no": 2,
+          "path": "out\\icons\\tier-blind\\candidates\\02_equipment\\c02.svg",
+          "sha1": "a396e7759045",
+          "structure_hash": "2a8d77c554eac78a",
+          "picked": false
+        },
+        {
+          "no": 3,
+          "path": "out\\icons\\tier-blind\\candidates\\02_equipment\\c03.svg",
+          "sha1": "2281b6ab8cfe",
+          "structure_hash": "4549cf370793e1e4",
+          "picked": false
+        },
+        {
+          "no": 4,
+          "path": "out\\icons\\tier-blind\\candidates\\02_equipment\\c04.svg",
+          "sha1": "c613e2ee9390",
+          "structure_hash": "4d100be2df49c15f",
+          "picked": false
+        },
+        {
+          "no": 5,
+          "path": "out\\icons\\tier-blind\\candidates\\02_equipment\\c05.svg",
+          "sha1": "12ecadceba86",
+          "structure_hash": "ba65964418b7d6dc",
+          "picked": false
+        },
+        {
+          "no": 6,
+          "path": "out\\icons\\tier-blind\\candidates\\02_equipment\\c06.svg",
+          "sha1": "3bf72f351d97",
+          "structure_hash": "6f8d205036a9fc2c",
+          "picked": false
+        },
+        {
+          "no": 7,
+          "path": "out\\icons\\tier-blind\\candidates\\02_equipment\\c07.svg",
+          "sha1": "3ad01c142969",
+          "structure_hash": "2d9e2c8b31a31fc1",
+          "picked": false
+        },
+        {
+          "no": 8,
+          "path": "out\\icons\\tier-blind\\candidates\\02_equipment\\c08.svg",
+          "sha1": "0596f6827881",
+          "structure_hash": "573f23dbe5d2e5ec",
+          "picked": false
+        },
+        {
+          "no": 9,
+          "path": "out\\icons\\tier-blind\\candidates\\02_equipment\\c09.svg",
+          "sha1": "96d0db6a0a8a",
+          "structure_hash": "fa0e5516ea75d918",
+          "picked": false
+        },
+        {
+          "no": 10,
+          "path": "out\\icons\\tier-blind\\candidates\\02_equipment\\c10.svg",
+          "sha1": "357142a5a852",
+          "structure_hash": "c63c9d8602c2721a",
+          "picked": false
+        },
+        {
+          "no": 11,
+          "path": "out\\icons\\tier-blind\\candidates\\02_equipment\\c11.svg",
+          "sha1": "977a9b048097",
+          "structure_hash": "570193be9c9f77f3",
+          "picked": false
+        },
+        {
+          "no": 12,
+          "path": "out\\icons\\tier-blind\\candidates\\02_equipment\\c12.svg",
+          "sha1": "10fedfcbe690",
+          "structure_hash": "f1211ab8d0b48eee",
+          "picked": false
+        },
+        {
+          "no": 13,
+          "path": "out\\icons\\tier-blind\\candidates\\02_equipment\\c13.svg",
+          "sha1": "9681ceeded68",
+          "structure_hash": "87abca5e6001e798",
+          "picked": false
+        },
+        {
+          "no": 14,
+          "path": "out\\icons\\tier-blind\\candidates\\02_equipment\\c14.svg",
+          "sha1": "7e9140d96862",
+          "structure_hash": "a901c5f9ab6d803c",
+          "picked": false
+        },
+        {
+          "no": 15,
+          "path": "out\\icons\\tier-blind\\candidates\\02_equipment\\c15.svg",
+          "sha1": "9a6a2add06bb",
+          "structure_hash": "0e4d379150cf291a",
+          "picked": false
+        },
+        {
+          "no": 16,
+          "path": "out\\icons\\tier-blind\\candidates\\02_equipment\\c16.svg",
+          "sha1": "853af8659bc6",
+          "structure_hash": "470460b21930540f",
+          "picked": false
+        },
+        {
+          "no": 17,
+          "path": "out\\icons\\tier-blind\\candidates\\02_equipment\\c17.svg",
+          "sha1": "3a29b3696b54",
+          "structure_hash": "c40096dd6e6699bf",
+          "picked": false
+        },
+        {
+          "no": 18,
+          "path": "out\\icons\\tier-blind\\candidates\\02_equipment\\c18.svg",
+          "sha1": "2114f53fd1e6",
+          "structure_hash": "4e4d97c3cc2c8898",
+          "picked": false
+        },
+        {
+          "no": 19,
+          "path": "out\\icons\\tier-blind\\candidates\\02_equipment\\c19.svg",
+          "sha1": "d1f88c383367",
+          "structure_hash": "7767af50eff31e13",
+          "picked": false
+        },
+        {
+          "no": 20,
+          "path": "out\\icons\\tier-blind\\candidates\\02_equipment\\c20.svg",
+          "sha1": "b865a5b60327",
+          "structure_hash": "8a5f8808cbcfda5d",
+          "picked": false
+        },
+        {
+          "no": 21,
+          "path": "out\\icons\\tier-blind\\candidates\\02_equipment\\c21.svg",
+          "sha1": "8a9ebb7c9688",
+          "structure_hash": "9182614e817a879f",
+          "picked": false
+        },
+        {
+          "no": 22,
+          "path": "out\\icons\\tier-blind\\candidates\\02_equipment\\c22.svg",
+          "sha1": "f2a7d3546b77",
+          "structure_hash": "478b7aaddffc3392",
+          "picked": false
+        },
+        {
+          "no": 23,
+          "path": "out\\icons\\tier-blind\\candidates\\02_equipment\\c23.svg",
+          "sha1": "49c9f34ced76",
+          "structure_hash": "105452a0f6d1c983",
+          "picked": false
+        },
+        {
+          "no": 24,
+          "path": "out\\icons\\tier-blind\\candidates\\02_equipment\\c24.svg",
+          "sha1": "d0a7fbda0092",
+          "structure_hash": "315d09b7bddf32d9",
+          "picked": false
+        },
+        {
+          "no": 25,
+          "path": "out\\icons\\tier-blind\\candidates\\02_equipment\\c25.svg",
+          "sha1": "5147d48dac6c",
+          "structure_hash": "caf6f172ea5a9b97",
+          "picked": false
+        },
+        {
+          "no": 26,
+          "path": "out\\icons\\tier-blind\\candidates\\02_equipment\\c26.svg",
+          "sha1": "f281411ac7f9",
+          "structure_hash": "70d7fbdac66a3c49",
+          "picked": true
+        },
+        {
+          "no": 27,
+          "path": "out\\icons\\tier-blind\\candidates\\02_equipment\\c27.svg",
+          "sha1": "ea1bb442ad7e",
+          "structure_hash": "51cbfc5ae2a51e70",
+          "picked": false
+        },
+        {
+          "no": 28,
+          "path": "out\\icons\\tier-blind\\candidates\\02_equipment\\c28.svg",
+          "sha1": "b9df50907643",
+          "structure_hash": "69b8e244aece1860",
+          "picked": false
+        }
+      ],
+      "picked_no": 26,
+      "picked_nos": [
+        26
+      ]
+    },
+    {
+      "group": "03_exit",
+      "shown": [
+        {
+          "no": 1,
+          "path": "out\\icons\\tier-blind\\candidates\\03_exit\\c01.svg",
+          "sha1": "874ce4425cd4",
+          "structure_hash": "6b7dd0e0f8cbb802",
+          "picked": false
+        },
+        {
+          "no": 2,
+          "path": "out\\icons\\tier-blind\\candidates\\03_exit\\c02.svg",
+          "sha1": "89b3eb51a06e",
+          "structure_hash": "ad18a2dc2edfb6ae",
+          "picked": false
+        },
+        {
+          "no": 3,
+          "path": "out\\icons\\tier-blind\\candidates\\03_exit\\c03.svg",
+          "sha1": "0637baa07297",
+          "structure_hash": "328971da79dad4c9",
+          "picked": false
+        },
+        {
+          "no": 4,
+          "path": "out\\icons\\tier-blind\\candidates\\03_exit\\c04.svg",
+          "sha1": "1314d53d29b7",
+          "structure_hash": "fcabf7ec3340d4ce",
+          "picked": false
+        },
+        {
+          "no": 5,
+          "path": "out\\icons\\tier-blind\\candidates\\03_exit\\c05.svg",
+          "sha1": "8d7a4f53c218",
+          "structure_hash": "ac3a9abb1f15d47f",
+          "picked": false
+        },
+        {
+          "no": 6,
+          "path": "out\\icons\\tier-blind\\candidates\\03_exit\\c06.svg",
+          "sha1": "16acd07b60c0",
+          "structure_hash": "597a7e0a12f8e20b",
+          "picked": false
+        },
+        {
+          "no": 7,
+          "path": "out\\icons\\tier-blind\\candidates\\03_exit\\c07.svg",
+          "sha1": "74958d39ce66",
+          "structure_hash": "57e571fbcfafcd2f",
+          "picked": false
+        },
+        {
+          "no": 8,
+          "path": "out\\icons\\tier-blind\\candidates\\03_exit\\c08.svg",
+          "sha1": "18da24be0890",
+          "structure_hash": "0b28e227812befe2",
+          "picked": false
+        },
+        {
+          "no": 9,
+          "path": "out\\icons\\tier-blind\\candidates\\03_exit\\c09.svg",
+          "sha1": "4d032ef5fe87",
+          "structure_hash": "752ade690865f878",
+          "picked": false
+        },
+        {
+          "no": 10,
+          "path": "out\\icons\\tier-blind\\candidates\\03_exit\\c10.svg",
+          "sha1": "e422ee6a24d3",
+          "structure_hash": "35aea591cf155ec1",
+          "picked": false
+        },
+        {
+          "no": 11,
+          "path": "out\\icons\\tier-blind\\candidates\\03_exit\\c11.svg",
+          "sha1": "34b7f3ea2377",
+          "structure_hash": "d257a59de6e3725d",
+          "picked": false
+        },
+        {
+          "no": 12,
+          "path": "out\\icons\\tier-blind\\candidates\\03_exit\\c12.svg",
+          "sha1": "d4a96c72e8e9",
+          "structure_hash": "c1f03a1c0dbd98a3",
+          "picked": false
+        },
+        {
+          "no": 13,
+          "path": "out\\icons\\tier-blind\\candidates\\03_exit\\c13.svg",
+          "sha1": "4fc14711d686",
+          "structure_hash": "b09ed61b1124ce7e",
+          "picked": false
+        },
+        {
+          "no": 14,
+          "path": "out\\icons\\tier-blind\\candidates\\03_exit\\c14.svg",
+          "sha1": "9f313db75fe7",
+          "structure_hash": "6c8df9afcdcabc0e",
+          "picked": false
+        },
+        {
+          "no": 15,
+          "path": "out\\icons\\tier-blind\\candidates\\03_exit\\c15.svg",
+          "sha1": "7850a00e647d",
+          "structure_hash": "4ed9472a46bb1ec2",
+          "picked": false
+        },
+        {
+          "no": 16,
+          "path": "out\\icons\\tier-blind\\candidates\\03_exit\\c16.svg",
+          "sha1": "20d415f352e6",
+          "structure_hash": "c7ec3771223dc5b4",
+          "picked": true
+        },
+        {
+          "no": 17,
+          "path": "out\\icons\\tier-blind\\candidates\\03_exit\\c17.svg",
+          "sha1": "8c3c4f993eeb",
+          "structure_hash": "a406d21270269813",
+          "picked": true
+        },
+        {
+          "no": 18,
+          "path": "out\\icons\\tier-blind\\candidates\\03_exit\\c18.svg",
+          "sha1": "5310f9afe865",
+          "structure_hash": "566e124e003a45db",
+          "picked": false
+        },
+        {
+          "no": 19,
+          "path": "out\\icons\\tier-blind\\candidates\\03_exit\\c19.svg",
+          "sha1": "34e4432661d9",
+          "structure_hash": "84454890e0a227a1",
+          "picked": false
+        },
+        {
+          "no": 20,
+          "path": "out\\icons\\tier-blind\\candidates\\03_exit\\c20.svg",
+          "sha1": "ce80f1e80a69",
+          "structure_hash": "9567df6f2ffff74a",
+          "picked": false
+        },
+        {
+          "no": 21,
+          "path": "out\\icons\\tier-blind\\candidates\\03_exit\\c21.svg",
+          "sha1": "914abf6b702e",
+          "structure_hash": "7a4ef86cfbe368ca",
+          "picked": false
+        },
+        {
+          "no": 22,
+          "path": "out\\icons\\tier-blind\\candidates\\03_exit\\c22.svg",
+          "sha1": "f0453dd1c5cc",
+          "structure_hash": "82dc96ddb4c93360",
+          "picked": false
+        },
+        {
+          "no": 23,
+          "path": "out\\icons\\tier-blind\\candidates\\03_exit\\c23.svg",
+          "sha1": "87c236bef30c",
+          "structure_hash": "9fb7211631a91413",
+          "picked": false
+        },
+        {
+          "no": 24,
+          "path": "out\\icons\\tier-blind\\candidates\\03_exit\\c24.svg",
+          "sha1": "c1833f608711",
+          "structure_hash": "f91403eab266fa48",
+          "picked": true
+        },
+        {
+          "no": 25,
+          "path": "out\\icons\\tier-blind\\candidates\\03_exit\\c25.svg",
+          "sha1": "976f033b896d",
+          "structure_hash": "8dcece417e77daab",
+          "picked": false
+        },
+        {
+          "no": 26,
+          "path": "out\\icons\\tier-blind\\candidates\\03_exit\\c26.svg",
+          "sha1": "ba519080ab80",
+          "structure_hash": "d2c7c3168e708ed4",
+          "picked": false
+        }
+      ],
+      "picked_no": null,
+      "picked_nos": [
+        16,
+        17,
+        24
+      ]
+    },
+    {
+      "group": "04_inventory",
+      "shown": [
+        {
+          "no": 1,
+          "path": "out\\icons\\tier-blind\\candidates\\04_inventory\\c01.svg",
+          "sha1": "0893a100db36",
+          "structure_hash": "e416fdd5d2b4deed",
+          "picked": true
+        },
+        {
+          "no": 2,
+          "path": "out\\icons\\tier-blind\\candidates\\04_inventory\\c02.svg",
+          "sha1": "4492996244bd",
+          "structure_hash": "a656abc4baeaec4d",
+          "picked": false
+        },
+        {
+          "no": 3,
+          "path": "out\\icons\\tier-blind\\candidates\\04_inventory\\c03.svg",
+          "sha1": "a7990942c6cd",
+          "structure_hash": "8ff3ae9e88e5a35d",
+          "picked": false
+        },
+        {
+          "no": 4,
+          "path": "out\\icons\\tier-blind\\candidates\\04_inventory\\c04.svg",
+          "sha1": "bce7c6c9e4ef",
+          "structure_hash": "a5c8cfebe81e13d4",
+          "picked": false
+        },
+        {
+          "no": 5,
+          "path": "out\\icons\\tier-blind\\candidates\\04_inventory\\c05.svg",
+          "sha1": "30b64e0a05e9",
+          "structure_hash": "3b95b20544550f65",
+          "picked": false
+        },
+        {
+          "no": 6,
+          "path": "out\\icons\\tier-blind\\candidates\\04_inventory\\c06.svg",
+          "sha1": "044546e9716e",
+          "structure_hash": "bd73b5c8762d06cb",
+          "picked": true
+        },
+        {
+          "no": 7,
+          "path": "out\\icons\\tier-blind\\candidates\\04_inventory\\c07.svg",
+          "sha1": "e71d9c3eba99",
+          "structure_hash": "4222c86a70c7b5ba",
+          "picked": false
+        },
+        {
+          "no": 8,
+          "path": "out\\icons\\tier-blind\\candidates\\04_inventory\\c08.svg",
+          "sha1": "a077d5c6675e",
+          "structure_hash": "8488722deffe6ff9",
+          "picked": false
+        },
+        {
+          "no": 9,
+          "path": "out\\icons\\tier-blind\\candidates\\04_inventory\\c09.svg",
+          "sha1": "445d459aa6e4",
+          "structure_hash": "c06751917114cd4e",
+          "picked": false
+        },
+        {
+          "no": 10,
+          "path": "out\\icons\\tier-blind\\candidates\\04_inventory\\c10.svg",
+          "sha1": "821e886b61c5",
+          "structure_hash": "9425db759ecd2aab",
+          "picked": false
+        },
+        {
+          "no": 11,
+          "path": "out\\icons\\tier-blind\\candidates\\04_inventory\\c11.svg",
+          "sha1": "6ddf1984e239",
+          "structure_hash": "9fbbaf930bbbbb3a",
+          "picked": false
+        },
+        {
+          "no": 12,
+          "path": "out\\icons\\tier-blind\\candidates\\04_inventory\\c12.svg",
+          "sha1": "289b65c5908b",
+          "structure_hash": "82e473e45aca8f9b",
+          "picked": false
+        },
+        {
+          "no": 13,
+          "path": "out\\icons\\tier-blind\\candidates\\04_inventory\\c13.svg",
+          "sha1": "281c97aaa308",
+          "structure_hash": "07397189b6edc073",
+          "picked": false
+        },
+        {
+          "no": 14,
+          "path": "out\\icons\\tier-blind\\candidates\\04_inventory\\c14.svg",
+          "sha1": "6aa3f9d14315",
+          "structure_hash": "b57c1983dfe3e224",
+          "picked": false
+        },
+        {
+          "no": 15,
+          "path": "out\\icons\\tier-blind\\candidates\\04_inventory\\c15.svg",
+          "sha1": "e14d59163613",
+          "structure_hash": "9880edd4da507c58",
+          "picked": false
+        },
+        {
+          "no": 16,
+          "path": "out\\icons\\tier-blind\\candidates\\04_inventory\\c16.svg",
+          "sha1": "489b05127065",
+          "structure_hash": "afe2cd5f2935b06f",
+          "picked": false
+        },
+        {
+          "no": 17,
+          "path": "out\\icons\\tier-blind\\candidates\\04_inventory\\c17.svg",
+          "sha1": "ed9f7243dc95",
+          "structure_hash": "e75e3b553289f9c4",
+          "picked": false
+        },
+        {
+          "no": 18,
+          "path": "out\\icons\\tier-blind\\candidates\\04_inventory\\c18.svg",
+          "sha1": "98a4e7c48b9a",
+          "structure_hash": "2a0153bdbe909502",
+          "picked": false
+        },
+        {
+          "no": 19,
+          "path": "out\\icons\\tier-blind\\candidates\\04_inventory\\c19.svg",
+          "sha1": "cd6244a5fe7e",
+          "structure_hash": "2c8bf1fcde6164db",
+          "picked": false
+        },
+        {
+          "no": 20,
+          "path": "out\\icons\\tier-blind\\candidates\\04_inventory\\c20.svg",
+          "sha1": "e202b4994ebc",
+          "structure_hash": "5bfba2137c630d96",
+          "picked": false
+        },
+        {
+          "no": 21,
+          "path": "out\\icons\\tier-blind\\candidates\\04_inventory\\c21.svg",
+          "sha1": "34f22b407046",
+          "structure_hash": "74cb4a213372bd9f",
+          "picked": false
+        },
+        {
+          "no": 22,
+          "path": "out\\icons\\tier-blind\\candidates\\04_inventory\\c22.svg",
+          "sha1": "8fb703712585",
+          "structure_hash": "4550efa8b5e10afd",
+          "picked": false
+        },
+        {
+          "no": 23,
+          "path": "out\\icons\\tier-blind\\candidates\\04_inventory\\c23.svg",
+          "sha1": "92a43d546498",
+          "structure_hash": "93c6ad49d4b601d1",
+          "picked": false
+        },
+        {
+          "no": 24,
+          "path": "out\\icons\\tier-blind\\candidates\\04_inventory\\c24.svg",
+          "sha1": "95b32863fe52",
+          "structure_hash": "92922d5e5d2541ca",
+          "picked": false
+        }
+      ],
+      "picked_no": null,
+      "picked_nos": [
+        6,
+        1
+      ]
+    },
+    {
+      "group": "05_map",
+      "shown": [
+        {
+          "no": 1,
+          "path": "out\\icons\\tier-blind\\candidates\\05_map\\c01.svg",
+          "sha1": "82d172ec1314",
+          "structure_hash": "d5da9f6e15dc722c",
+          "picked": false
+        },
+        {
+          "no": 2,
+          "path": "out\\icons\\tier-blind\\candidates\\05_map\\c02.svg",
+          "sha1": "78859ecef05f",
+          "structure_hash": "30370dfe18eacf75",
+          "picked": false
+        },
+        {
+          "no": 3,
+          "path": "out\\icons\\tier-blind\\candidates\\05_map\\c03.svg",
+          "sha1": "b25c29c57ac2",
+          "structure_hash": "82851b24dff600fe",
+          "picked": false
+        },
+        {
+          "no": 4,
+          "path": "out\\icons\\tier-blind\\candidates\\05_map\\c04.svg",
+          "sha1": "e440ebbca1db",
+          "structure_hash": "98213e9024d44f28",
+          "picked": true
+        },
+        {
+          "no": 5,
+          "path": "out\\icons\\tier-blind\\candidates\\05_map\\c05.svg",
+          "sha1": "83953bf917e3",
+          "structure_hash": "4f88c028a655b6e3",
+          "picked": false
+        },
+        {
+          "no": 6,
+          "path": "out\\icons\\tier-blind\\candidates\\05_map\\c06.svg",
+          "sha1": "adcff6dc791e",
+          "structure_hash": "75083a94c0ce0dd5",
+          "picked": false
+        },
+        {
+          "no": 7,
+          "path": "out\\icons\\tier-blind\\candidates\\05_map\\c07.svg",
+          "sha1": "568f42ab92cd",
+          "structure_hash": "f797753872c61caa",
+          "picked": false
+        },
+        {
+          "no": 8,
+          "path": "out\\icons\\tier-blind\\candidates\\05_map\\c08.svg",
+          "sha1": "087481269a7a",
+          "structure_hash": "628ced9d56ed2237",
+          "picked": false
+        },
+        {
+          "no": 9,
+          "path": "out\\icons\\tier-blind\\candidates\\05_map\\c09.svg",
+          "sha1": "0425a1892f04",
+          "structure_hash": "c932f86ec09958a9",
+          "picked": true
+        },
+        {
+          "no": 10,
+          "path": "out\\icons\\tier-blind\\candidates\\05_map\\c10.svg",
+          "sha1": "0a4bb02a6774",
+          "structure_hash": "c709fd4924fb9ad2",
+          "picked": false
+        },
+        {
+          "no": 11,
+          "path": "out\\icons\\tier-blind\\candidates\\05_map\\c11.svg",
+          "sha1": "0afc49b8a484",
+          "structure_hash": "5b8e7c86cff8608e",
+          "picked": true
+        },
+        {
+          "no": 12,
+          "path": "out\\icons\\tier-blind\\candidates\\05_map\\c12.svg",
+          "sha1": "e8280daebe02",
+          "structure_hash": "3ca7e6f5d104a260",
+          "picked": false
+        },
+        {
+          "no": 13,
+          "path": "out\\icons\\tier-blind\\candidates\\05_map\\c13.svg",
+          "sha1": "3e2c821d205e",
+          "structure_hash": "a90ebce5fd023f00",
+          "picked": false
+        },
+        {
+          "no": 14,
+          "path": "out\\icons\\tier-blind\\candidates\\05_map\\c14.svg",
+          "sha1": "806f951b50bf",
+          "structure_hash": "c28f5af4f1cfac31",
+          "picked": true
+        },
+        {
+          "no": 15,
+          "path": "out\\icons\\tier-blind\\candidates\\05_map\\c15.svg",
+          "sha1": "4482883ebc7d",
+          "structure_hash": "afa46ce451023251",
+          "picked": false
+        },
+        {
+          "no": 16,
+          "path": "out\\icons\\tier-blind\\candidates\\05_map\\c16.svg",
+          "sha1": "8573647a7a7a",
+          "structure_hash": "b58b7c0b89ceb07a",
+          "picked": false
+        },
+        {
+          "no": 17,
+          "path": "out\\icons\\tier-blind\\candidates\\05_map\\c17.svg",
+          "sha1": "37098f714fd2",
+          "structure_hash": "9e85a39e9742bfc7",
+          "picked": false
+        },
+        {
+          "no": 18,
+          "path": "out\\icons\\tier-blind\\candidates\\05_map\\c18.svg",
+          "sha1": "0273dfddf21a",
+          "structure_hash": "4f6cdcd6fa1691ae",
+          "picked": false
+        },
+        {
+          "no": 19,
+          "path": "out\\icons\\tier-blind\\candidates\\05_map\\c19.svg",
+          "sha1": "b8137a3f6508",
+          "structure_hash": "a53cce50f6e8ecc1",
+          "picked": false
+        },
+        {
+          "no": 20,
+          "path": "out\\icons\\tier-blind\\candidates\\05_map\\c20.svg",
+          "sha1": "d321fd0e467d",
+          "structure_hash": "93c4d2a905ec2605",
+          "picked": true
+        },
+        {
+          "no": 21,
+          "path": "out\\icons\\tier-blind\\candidates\\05_map\\c21.svg",
+          "sha1": "8b8f542e884c",
+          "structure_hash": "535ffa6a88ecae6c",
+          "picked": false
+        },
+        {
+          "no": 22,
+          "path": "out\\icons\\tier-blind\\candidates\\05_map\\c22.svg",
+          "sha1": "951b275fb56e",
+          "structure_hash": "2311a185c5fa613d",
+          "picked": false
+        },
+        {
+          "no": 23,
+          "path": "out\\icons\\tier-blind\\candidates\\05_map\\c23.svg",
+          "sha1": "466ea341f6dd",
+          "structure_hash": "df81143b75e31e73",
+          "picked": false
+        },
+        {
+          "no": 24,
+          "path": "out\\icons\\tier-blind\\candidates\\05_map\\c24.svg",
+          "sha1": "b312e9d060b7",
+          "structure_hash": "f295f500b90d48df",
+          "picked": false
+        },
+        {
+          "no": 25,
+          "path": "out\\icons\\tier-blind\\candidates\\05_map\\c25.svg",
+          "sha1": "ce3f2e2e093d",
+          "structure_hash": "2e77c48cf8985668",
+          "picked": false
+        },
+        {
+          "no": 26,
+          "path": "out\\icons\\tier-blind\\candidates\\05_map\\c26.svg",
+          "sha1": "0f5c488ed7c7",
+          "structure_hash": "64127f76a5e031a4",
+          "picked": true
+        },
+        {
+          "no": 27,
+          "path": "out\\icons\\tier-blind\\candidates\\05_map\\c27.svg",
+          "sha1": "c52ffea67029",
+          "structure_hash": "b7d1f744042bb7d2",
+          "picked": false
+        },
+        {
+          "no": 28,
+          "path": "out\\icons\\tier-blind\\candidates\\05_map\\c28.svg",
+          "sha1": "40390c0958e0",
+          "structure_hash": "bec3aaa006203def",
+          "picked": false
+        },
+        {
+          "no": 29,
+          "path": "out\\icons\\tier-blind\\candidates\\05_map\\c29.svg",
+          "sha1": "fbb26dc58ec4",
+          "structure_hash": "af69e50f4ceba41e",
+          "picked": false
+        },
+        {
+          "no": 30,
+          "path": "out\\icons\\tier-blind\\candidates\\05_map\\c30.svg",
+          "sha1": "a758759279f7",
+          "structure_hash": "e2900abf68b260b3",
+          "picked": false
+        }
+      ],
+      "picked_no": null,
+      "picked_nos": [
+        4,
+        9,
+        11,
+        14,
+        20,
+        26
+      ]
+    },
+    {
+      "group": "06_quest",
+      "shown": [
+        {
+          "no": 1,
+          "path": "out\\icons\\tier-blind\\candidates\\06_quest\\c01.svg",
+          "sha1": "611e84cf55c5",
+          "structure_hash": "74a14d1cdda4ac2f",
+          "picked": true
+        },
+        {
+          "no": 2,
+          "path": "out\\icons\\tier-blind\\candidates\\06_quest\\c02.svg",
+          "sha1": "96edbb9be94c",
+          "structure_hash": "91c059d2b3203dd2",
+          "picked": true
+        },
+        {
+          "no": 3,
+          "path": "out\\icons\\tier-blind\\candidates\\06_quest\\c03.svg",
+          "sha1": "1c3af35b149b",
+          "structure_hash": "daa3688455818341",
+          "picked": false
+        },
+        {
+          "no": 4,
+          "path": "out\\icons\\tier-blind\\candidates\\06_quest\\c04.svg",
+          "sha1": "20c29ea0d9e6",
+          "structure_hash": "5502a080b4415c38",
+          "picked": false
+        },
+        {
+          "no": 5,
+          "path": "out\\icons\\tier-blind\\candidates\\06_quest\\c05.svg",
+          "sha1": "aca8cb9bec27",
+          "structure_hash": "57952609a065b849",
+          "picked": true
+        },
+        {
+          "no": 6,
+          "path": "out\\icons\\tier-blind\\candidates\\06_quest\\c06.svg",
+          "sha1": "ba209413ff0a",
+          "structure_hash": "b80462ca4226025f",
+          "picked": false
+        },
+        {
+          "no": 7,
+          "path": "out\\icons\\tier-blind\\candidates\\06_quest\\c07.svg",
+          "sha1": "904843a4d0f6",
+          "structure_hash": "9a8f592fdd389584",
+          "picked": false
+        },
+        {
+          "no": 8,
+          "path": "out\\icons\\tier-blind\\candidates\\06_quest\\c08.svg",
+          "sha1": "fdac8239eadb",
+          "structure_hash": "67eeda57c2208cf7",
+          "picked": false
+        },
+        {
+          "no": 9,
+          "path": "out\\icons\\tier-blind\\candidates\\06_quest\\c09.svg",
+          "sha1": "5563b7117abd",
+          "structure_hash": "9d0eb65ce2bc28bb",
+          "picked": false
+        },
+        {
+          "no": 10,
+          "path": "out\\icons\\tier-blind\\candidates\\06_quest\\c10.svg",
+          "sha1": "92d5cc458003",
+          "structure_hash": "0ee9a1aaf7291856",
+          "picked": false
+        },
+        {
+          "no": 11,
+          "path": "out\\icons\\tier-blind\\candidates\\06_quest\\c11.svg",
+          "sha1": "01565b23bead",
+          "structure_hash": "b696b8a7030de49f",
+          "picked": false
+        },
+        {
+          "no": 12,
+          "path": "out\\icons\\tier-blind\\candidates\\06_quest\\c12.svg",
+          "sha1": "f606acc33310",
+          "structure_hash": "ab9779b466ca7659",
+          "picked": false
+        },
+        {
+          "no": 13,
+          "path": "out\\icons\\tier-blind\\candidates\\06_quest\\c13.svg",
+          "sha1": "dea7401ed13e",
+          "structure_hash": "8a3b4da1482c0ef2",
+          "picked": true
+        },
+        {
+          "no": 14,
+          "path": "out\\icons\\tier-blind\\candidates\\06_quest\\c14.svg",
+          "sha1": "ec0d0b7df66d",
+          "structure_hash": "9493407a5dc48c3d",
+          "picked": false
+        },
+        {
+          "no": 15,
+          "path": "out\\icons\\tier-blind\\candidates\\06_quest\\c15.svg",
+          "sha1": "7a54b4852762",
+          "structure_hash": "6553219cef478d21",
+          "picked": false
+        },
+        {
+          "no": 16,
+          "path": "out\\icons\\tier-blind\\candidates\\06_quest\\c16.svg",
+          "sha1": "3f0b46012574",
+          "structure_hash": "97b80dfb633c401e",
+          "picked": false
+        },
+        {
+          "no": 17,
+          "path": "out\\icons\\tier-blind\\candidates\\06_quest\\c17.svg",
+          "sha1": "0e219f3643e9",
+          "structure_hash": "3a82cb1bcc05aa3b",
+          "picked": false
+        },
+        {
+          "no": 18,
+          "path": "out\\icons\\tier-blind\\candidates\\06_quest\\c18.svg",
+          "sha1": "cafb50291c18",
+          "structure_hash": "3aa5240074607bfa",
+          "picked": false
+        },
+        {
+          "no": 19,
+          "path": "out\\icons\\tier-blind\\candidates\\06_quest\\c19.svg",
+          "sha1": "2e1938da3fce",
+          "structure_hash": "a59c51f6fad98148",
+          "picked": true
+        },
+        {
+          "no": 20,
+          "path": "out\\icons\\tier-blind\\candidates\\06_quest\\c20.svg",
+          "sha1": "fef093461708",
+          "structure_hash": "4c7fa7e36837dbbd",
+          "picked": false
+        },
+        {
+          "no": 21,
+          "path": "out\\icons\\tier-blind\\candidates\\06_quest\\c21.svg",
+          "sha1": "e831f96c2f69",
+          "structure_hash": "2a45f80e35a46c69",
+          "picked": false
+        },
+        {
+          "no": 22,
+          "path": "out\\icons\\tier-blind\\candidates\\06_quest\\c22.svg",
+          "sha1": "06c1745185f5",
+          "structure_hash": "59f568003599276f",
+          "picked": false
+        },
+        {
+          "no": 23,
+          "path": "out\\icons\\tier-blind\\candidates\\06_quest\\c23.svg",
+          "sha1": "954393f111eb",
+          "structure_hash": "f0b85914b49d4c63",
+          "picked": false
+        },
+        {
+          "no": 24,
+          "path": "out\\icons\\tier-blind\\candidates\\06_quest\\c24.svg",
+          "sha1": "df14154a4b83",
+          "structure_hash": "72b667eb1febf919",
+          "picked": false
+        }
+      ],
+      "picked_no": null,
+      "picked_nos": [
+        1,
+        2,
+        5,
+        13,
+        19
+      ]
+    },
+    {
+      "group": "07_save",
+      "shown": [
+        {
+          "no": 1,
+          "path": "out\\icons\\tier-blind\\candidates\\07_save\\c01.svg",
+          "sha1": "79ca1e2f94dc",
+          "structure_hash": "74c52d453fa610aa",
+          "picked": true
+        },
+        {
+          "no": 2,
+          "path": "out\\icons\\tier-blind\\candidates\\07_save\\c02.svg",
+          "sha1": "7e7e63c9d045",
+          "structure_hash": "e0a052040481031e",
+          "picked": false
+        },
+        {
+          "no": 3,
+          "path": "out\\icons\\tier-blind\\candidates\\07_save\\c03.svg",
+          "sha1": "88357f640560",
+          "structure_hash": "654447af98651aeb",
+          "picked": true
+        },
+        {
+          "no": 4,
+          "path": "out\\icons\\tier-blind\\candidates\\07_save\\c04.svg",
+          "sha1": "0a28deead982",
+          "structure_hash": "61968620c7662116",
+          "picked": true
+        },
+        {
+          "no": 5,
+          "path": "out\\icons\\tier-blind\\candidates\\07_save\\c05.svg",
+          "sha1": "827343525d0b",
+          "structure_hash": "0feec9d34bd24104",
+          "picked": true
+        },
+        {
+          "no": 6,
+          "path": "out\\icons\\tier-blind\\candidates\\07_save\\c06.svg",
+          "sha1": "050bfd7c1f5d",
+          "structure_hash": "0557c448761cf5d3",
+          "picked": false
+        },
+        {
+          "no": 7,
+          "path": "out\\icons\\tier-blind\\candidates\\07_save\\c07.svg",
+          "sha1": "806ef27eaec6",
+          "structure_hash": "b76603528bdfbe5a",
+          "picked": false
+        },
+        {
+          "no": 8,
+          "path": "out\\icons\\tier-blind\\candidates\\07_save\\c08.svg",
+          "sha1": "782674e1b726",
+          "structure_hash": "ee6a86e4527926e4",
+          "picked": true
+        },
+        {
+          "no": 9,
+          "path": "out\\icons\\tier-blind\\candidates\\07_save\\c09.svg",
+          "sha1": "dfaef7e1f808",
+          "structure_hash": "fdabd121ea2c2f62",
+          "picked": false
+        },
+        {
+          "no": 10,
+          "path": "out\\icons\\tier-blind\\candidates\\07_save\\c10.svg",
+          "sha1": "e91c9687bd39",
+          "structure_hash": "1b35ef0a876f37fd",
+          "picked": false
+        },
+        {
+          "no": 11,
+          "path": "out\\icons\\tier-blind\\candidates\\07_save\\c11.svg",
+          "sha1": "8ff307894d49",
+          "structure_hash": "3d83b8e3c6586cbe",
+          "picked": false
+        },
+        {
+          "no": 12,
+          "path": "out\\icons\\tier-blind\\candidates\\07_save\\c12.svg",
+          "sha1": "936342d50b21",
+          "structure_hash": "871219102da148c5",
+          "picked": false
+        },
+        {
+          "no": 13,
+          "path": "out\\icons\\tier-blind\\candidates\\07_save\\c13.svg",
+          "sha1": "94c6ea7d328a",
+          "structure_hash": "f810e119abda2e5d",
+          "picked": false
+        },
+        {
+          "no": 14,
+          "path": "out\\icons\\tier-blind\\candidates\\07_save\\c14.svg",
+          "sha1": "8d05a794031b",
+          "structure_hash": "e9bd2709fdd188bb",
+          "picked": false
+        },
+        {
+          "no": 15,
+          "path": "out\\icons\\tier-blind\\candidates\\07_save\\c15.svg",
+          "sha1": "ad6fc5827683",
+          "structure_hash": "906a1ff9b4689825",
+          "picked": false
+        },
+        {
+          "no": 16,
+          "path": "out\\icons\\tier-blind\\candidates\\07_save\\c16.svg",
+          "sha1": "545e210bc47d",
+          "structure_hash": "48741dd7d3ca9c53",
+          "picked": true
+        },
+        {
+          "no": 17,
+          "path": "out\\icons\\tier-blind\\candidates\\07_save\\c17.svg",
+          "sha1": "8ae80b5d8d6d",
+          "structure_hash": "dac7e74ea03c99d6",
+          "picked": false
+        },
+        {
+          "no": 18,
+          "path": "out\\icons\\tier-blind\\candidates\\07_save\\c18.svg",
+          "sha1": "00c74598faec",
+          "structure_hash": "efc2fbad4d63fd18",
+          "picked": false
+        },
+        {
+          "no": 19,
+          "path": "out\\icons\\tier-blind\\candidates\\07_save\\c19.svg",
+          "sha1": "279cc590a489",
+          "structure_hash": "5dbde8a105b1b05c",
+          "picked": false
+        },
+        {
+          "no": 20,
+          "path": "out\\icons\\tier-blind\\candidates\\07_save\\c20.svg",
+          "sha1": "10cc447bd3a6",
+          "structure_hash": "c93bffd3e841fa35",
+          "picked": false
+        },
+        {
+          "no": 21,
+          "path": "out\\icons\\tier-blind\\candidates\\07_save\\c21.svg",
+          "sha1": "34c29f7db001",
+          "structure_hash": "5f40d5ac7927a19a",
+          "picked": false
+        },
+        {
+          "no": 22,
+          "path": "out\\icons\\tier-blind\\candidates\\07_save\\c22.svg",
+          "sha1": "934c04574f2e",
+          "structure_hash": "80d289eeee90d94d",
+          "picked": false
+        },
+        {
+          "no": 23,
+          "path": "out\\icons\\tier-blind\\candidates\\07_save\\c23.svg",
+          "sha1": "71087f95067c",
+          "structure_hash": "a592268c651a8ba6",
+          "picked": false
+        }
+      ],
+      "picked_no": null,
+      "picked_nos": [
+        1,
+        3,
+        4,
+        5,
+        8,
+        16
+      ]
+    },
+    {
+      "group": "08_settings",
+      "shown": [
+        {
+          "no": 1,
+          "path": "out\\icons\\tier-blind\\candidates\\08_settings\\c01.svg",
+          "sha1": "7d2848696b78",
+          "structure_hash": "32a0230b6937f95d",
+          "picked": false
+        },
+        {
+          "no": 2,
+          "path": "out\\icons\\tier-blind\\candidates\\08_settings\\c02.svg",
+          "sha1": "d83b98357925",
+          "structure_hash": "7bfe80bf879fb085",
+          "picked": false
+        },
+        {
+          "no": 3,
+          "path": "out\\icons\\tier-blind\\candidates\\08_settings\\c03.svg",
+          "sha1": "09b0ed5eae06",
+          "structure_hash": "5860bc54e375cf82",
+          "picked": false
+        },
+        {
+          "no": 4,
+          "path": "out\\icons\\tier-blind\\candidates\\08_settings\\c04.svg",
+          "sha1": "a27be31a5c21",
+          "structure_hash": "2d90958ab1c70ec6",
+          "picked": false
+        },
+        {
+          "no": 5,
+          "path": "out\\icons\\tier-blind\\candidates\\08_settings\\c05.svg",
+          "sha1": "9400e0f2180c",
+          "structure_hash": "717c1920baeee7ee",
+          "picked": false
+        },
+        {
+          "no": 6,
+          "path": "out\\icons\\tier-blind\\candidates\\08_settings\\c06.svg",
+          "sha1": "01e6c7249410",
+          "structure_hash": "078ef3fcc7959b96",
+          "picked": false
+        },
+        {
+          "no": 7,
+          "path": "out\\icons\\tier-blind\\candidates\\08_settings\\c07.svg",
+          "sha1": "4a3c33acc447",
+          "structure_hash": "cfe011dd25640281",
+          "picked": false
+        },
+        {
+          "no": 8,
+          "path": "out\\icons\\tier-blind\\candidates\\08_settings\\c08.svg",
+          "sha1": "b24332c835f2",
+          "structure_hash": "9849c464f5731a34",
+          "picked": false
+        },
+        {
+          "no": 9,
+          "path": "out\\icons\\tier-blind\\candidates\\08_settings\\c09.svg",
+          "sha1": "9529a2dbb511",
+          "structure_hash": "4fa34d16df8d6832",
+          "picked": false
+        },
+        {
+          "no": 10,
+          "path": "out\\icons\\tier-blind\\candidates\\08_settings\\c10.svg",
+          "sha1": "a4f4fcab5a13",
+          "structure_hash": "5f5691b1757f300c",
+          "picked": false
+        },
+        {
+          "no": 11,
+          "path": "out\\icons\\tier-blind\\candidates\\08_settings\\c11.svg",
+          "sha1": "f16466b32d4c",
+          "structure_hash": "4bf75c9956f38c9a",
+          "picked": false
+        },
+        {
+          "no": 12,
+          "path": "out\\icons\\tier-blind\\candidates\\08_settings\\c12.svg",
+          "sha1": "4a2ea7c7310a",
+          "structure_hash": "dfce57ea00015a8a",
+          "picked": false
+        },
+        {
+          "no": 13,
+          "path": "out\\icons\\tier-blind\\candidates\\08_settings\\c13.svg",
+          "sha1": "d7efd1cec1fe",
+          "structure_hash": "335e90afbd510a3d",
+          "picked": false
+        },
+        {
+          "no": 14,
+          "path": "out\\icons\\tier-blind\\candidates\\08_settings\\c14.svg",
+          "sha1": "6edfb43578a0",
+          "structure_hash": "4a4135fdfd516de7",
+          "picked": false
+        },
+        {
+          "no": 15,
+          "path": "out\\icons\\tier-blind\\candidates\\08_settings\\c15.svg",
+          "sha1": "0c1fff1ad068",
+          "structure_hash": "2383dd3295a78f75",
+          "picked": false
+        },
+        {
+          "no": 16,
+          "path": "out\\icons\\tier-blind\\candidates\\08_settings\\c16.svg",
+          "sha1": "92f16e86d8ae",
+          "structure_hash": "a1cc60cbbda0ef1f",
+          "picked": false
+        },
+        {
+          "no": 17,
+          "path": "out\\icons\\tier-blind\\candidates\\08_settings\\c17.svg",
+          "sha1": "8a51e9baafa7",
+          "structure_hash": "07245210f906d8a6",
+          "picked": false
+        },
+        {
+          "no": 18,
+          "path": "out\\icons\\tier-blind\\candidates\\08_settings\\c18.svg",
+          "sha1": "ae77851d60cb",
+          "structure_hash": "272edd25d2a9305d",
+          "picked": false
+        },
+        {
+          "no": 19,
+          "path": "out\\icons\\tier-blind\\candidates\\08_settings\\c19.svg",
+          "sha1": "8c06bb35c8f6",
+          "structure_hash": "2b5b4a3eb4209e10",
+          "picked": false
+        },
+        {
+          "no": 20,
+          "path": "out\\icons\\tier-blind\\candidates\\08_settings\\c20.svg",
+          "sha1": "279786062f50",
+          "structure_hash": "73467320e915601e",
+          "picked": false
+        },
+        {
+          "no": 21,
+          "path": "out\\icons\\tier-blind\\candidates\\08_settings\\c21.svg",
+          "sha1": "4a960939306c",
+          "structure_hash": "7bae26afbcb66f1f",
+          "picked": false
+        },
+        {
+          "no": 22,
+          "path": "out\\icons\\tier-blind\\candidates\\08_settings\\c22.svg",
+          "sha1": "8c683d31e3a5",
+          "structure_hash": "ef3d26e50713caa1",
+          "picked": false
+        },
+        {
+          "no": 23,
+          "path": "out\\icons\\tier-blind\\candidates\\08_settings\\c23.svg",
+          "sha1": "33625c2da287",
+          "structure_hash": "12d27600dff38512",
+          "picked": false
+        },
+        {
+          "no": 24,
+          "path": "out\\icons\\tier-blind\\candidates\\08_settings\\c24.svg",
+          "sha1": "b498bdbc82a4",
+          "structure_hash": "d82dde0ea6050d42",
+          "picked": true
+        },
+        {
+          "no": 25,
+          "path": "out\\icons\\tier-blind\\candidates\\08_settings\\c25.svg",
+          "sha1": "461ee9d401b1",
+          "structure_hash": "046a4e5db14ff87a",
+          "picked": false
+        },
+        {
+          "no": 26,
+          "path": "out\\icons\\tier-blind\\candidates\\08_settings\\c26.svg",
+          "sha1": "a062d19c701f",
+          "structure_hash": "cfeb7cad731856dc",
+          "picked": true
+        },
+        {
+          "no": 27,
+          "path": "out\\icons\\tier-blind\\candidates\\08_settings\\c27.svg",
+          "sha1": "bfed290fc33e",
+          "structure_hash": "c304eb787582b407",
+          "picked": false
+        },
+        {
+          "no": 28,
+          "path": "out\\icons\\tier-blind\\candidates\\08_settings\\c28.svg",
+          "sha1": "b7c0a901fe45",
+          "structure_hash": "2685415669ec1830",
+          "picked": false
+        }
+      ],
+      "picked_no": null,
+      "picked_nos": [
+        24,
+        26
+      ]
+    },
+    {
+      "group": "09_stats",
+      "shown": [
+        {
+          "no": 1,
+          "path": "out\\icons\\tier-blind\\candidates\\09_stats\\c01.svg",
+          "sha1": "c48b11624b5c",
+          "structure_hash": "cc62933382c5e030",
+          "picked": true
+        },
+        {
+          "no": 2,
+          "path": "out\\icons\\tier-blind\\candidates\\09_stats\\c02.svg",
+          "sha1": "8f8af6cb7663",
+          "structure_hash": "5794f5ab638e2c7c",
+          "picked": false
+        },
+        {
+          "no": 3,
+          "path": "out\\icons\\tier-blind\\candidates\\09_stats\\c03.svg",
+          "sha1": "5fff8dae82fc",
+          "structure_hash": "b55c5a10c0b2f781",
+          "picked": true
+        },
+        {
+          "no": 4,
+          "path": "out\\icons\\tier-blind\\candidates\\09_stats\\c04.svg",
+          "sha1": "8b9cf6ae7f37",
+          "structure_hash": "542ccbacabc50994",
+          "picked": false
+        },
+        {
+          "no": 5,
+          "path": "out\\icons\\tier-blind\\candidates\\09_stats\\c05.svg",
+          "sha1": "31f9c3ee97c7",
+          "structure_hash": "d4e187ac02e8b1bb",
+          "picked": false
+        },
+        {
+          "no": 6,
+          "path": "out\\icons\\tier-blind\\candidates\\09_stats\\c06.svg",
+          "sha1": "e525bb94b9b9",
+          "structure_hash": "8e99fe0a249cf9fe",
+          "picked": false
+        },
+        {
+          "no": 7,
+          "path": "out\\icons\\tier-blind\\candidates\\09_stats\\c07.svg",
+          "sha1": "5f5b8992a9a3",
+          "structure_hash": "554c8931efdfe0c1",
+          "picked": false
+        },
+        {
+          "no": 8,
+          "path": "out\\icons\\tier-blind\\candidates\\09_stats\\c08.svg",
+          "sha1": "f38a102455c9",
+          "structure_hash": "411f26b931a1c72f",
+          "picked": true
+        },
+        {
+          "no": 9,
+          "path": "out\\icons\\tier-blind\\candidates\\09_stats\\c09.svg",
+          "sha1": "29f4ce57156d",
+          "structure_hash": "c85481b932ad8470",
+          "picked": false
+        },
+        {
+          "no": 10,
+          "path": "out\\icons\\tier-blind\\candidates\\09_stats\\c10.svg",
+          "sha1": "ae5165906b91",
+          "structure_hash": "d3d7429e9fb3cc85",
+          "picked": false
+        },
+        {
+          "no": 11,
+          "path": "out\\icons\\tier-blind\\candidates\\09_stats\\c11.svg",
+          "sha1": "10689ed557c3",
+          "structure_hash": "6cd73b2650df1dea",
+          "picked": false
+        },
+        {
+          "no": 12,
+          "path": "out\\icons\\tier-blind\\candidates\\09_stats\\c12.svg",
+          "sha1": "d3cc54d73616",
+          "structure_hash": "e64157613ecd0cc9",
+          "picked": true
+        },
+        {
+          "no": 13,
+          "path": "out\\icons\\tier-blind\\candidates\\09_stats\\c13.svg",
+          "sha1": "9ee2d3aa4516",
+          "structure_hash": "4fddc7c150b9a2db",
+          "picked": true
+        },
+        {
+          "no": 14,
+          "path": "out\\icons\\tier-blind\\candidates\\09_stats\\c14.svg",
+          "sha1": "315b50b98069",
+          "structure_hash": "5d1f693aadc80d86",
+          "picked": false
+        },
+        {
+          "no": 15,
+          "path": "out\\icons\\tier-blind\\candidates\\09_stats\\c15.svg",
+          "sha1": "f7289496331b",
+          "structure_hash": "65fe4e98835b87b6",
+          "picked": false
+        },
+        {
+          "no": 16,
+          "path": "out\\icons\\tier-blind\\candidates\\09_stats\\c16.svg",
+          "sha1": "7cf2dfaffbcf",
+          "structure_hash": "d0385786f25553ce",
+          "picked": false
+        },
+        {
+          "no": 17,
+          "path": "out\\icons\\tier-blind\\candidates\\09_stats\\c17.svg",
+          "sha1": "06c0e069480b",
+          "structure_hash": "d71ed00d77c7c1a9",
+          "picked": false
+        },
+        {
+          "no": 18,
+          "path": "out\\icons\\tier-blind\\candidates\\09_stats\\c18.svg",
+          "sha1": "87bada501fef",
+          "structure_hash": "0afbd3697233bb60",
+          "picked": false
+        },
+        {
+          "no": 19,
+          "path": "out\\icons\\tier-blind\\candidates\\09_stats\\c19.svg",
+          "sha1": "3010a90ef927",
+          "structure_hash": "32d12b1b3f5628fb",
+          "picked": false
+        },
+        {
+          "no": 20,
+          "path": "out\\icons\\tier-blind\\candidates\\09_stats\\c20.svg",
+          "sha1": "ed866813d4dc",
+          "structure_hash": "f5012ba2ceadb966",
+          "picked": false
+        },
+        {
+          "no": 21,
+          "path": "out\\icons\\tier-blind\\candidates\\09_stats\\c21.svg",
+          "sha1": "42d24333690e",
+          "structure_hash": "2bd10ba8e45f3146",
+          "picked": false
+        },
+        {
+          "no": 22,
+          "path": "out\\icons\\tier-blind\\candidates\\09_stats\\c22.svg",
+          "sha1": "a57c33ca8491",
+          "structure_hash": "5796d3863ac9c742",
+          "picked": false
+        },
+        {
+          "no": 23,
+          "path": "out\\icons\\tier-blind\\candidates\\09_stats\\c23.svg",
+          "sha1": "2b530c3deb65",
+          "structure_hash": "36d894530ccee421",
+          "picked": false
+        },
+        {
+          "no": 24,
+          "path": "out\\icons\\tier-blind\\candidates\\09_stats\\c24.svg",
+          "sha1": "a136db2d6b60",
+          "structure_hash": "1bfe1027ad441370",
+          "picked": false
+        },
+        {
+          "no": 25,
+          "path": "out\\icons\\tier-blind\\candidates\\09_stats\\c25.svg",
+          "sha1": "98471bd65dfa",
+          "structure_hash": "71d37cd31c3e8c08",
+          "picked": false
+        },
+        {
+          "no": 26,
+          "path": "out\\icons\\tier-blind\\candidates\\09_stats\\c26.svg",
+          "sha1": "7ebb88635166",
+          "structure_hash": "cb9dcc17dc53c130",
+          "picked": false
+        },
+        {
+          "no": 27,
+          "path": "out\\icons\\tier-blind\\candidates\\09_stats\\c27.svg",
+          "sha1": "f33d1090c399",
+          "structure_hash": "b818e8f972565d4c",
+          "picked": false
+        },
+        {
+          "no": 28,
+          "path": "out\\icons\\tier-blind\\candidates\\09_stats\\c28.svg",
+          "sha1": "59328f328623",
+          "structure_hash": "36cb6b38313413d9",
+          "picked": false
+        }
+      ],
+      "picked_no": null,
+      "picked_nos": [
+        1,
+        3,
+        8,
+        12,
+        13
+      ]
+    }
+  ],
+  "picked": [
+    "out\\icons\\tier-blind\\candidates\\01_dialogue\\c20.svg",
+    "out\\icons\\tier-blind\\candidates\\02_equipment\\c26.svg",
+    "out\\icons\\tier-blind\\candidates\\03_exit\\c16.svg",
+    "out\\icons\\tier-blind\\candidates\\03_exit\\c17.svg",
+    "out\\icons\\tier-blind\\candidates\\03_exit\\c24.svg",
+    "out\\icons\\tier-blind\\candidates\\04_inventory\\c01.svg",
+    "out\\icons\\tier-blind\\candidates\\04_inventory\\c06.svg",
+    "out\\icons\\tier-blind\\candidates\\05_map\\c04.svg",
+    "out\\icons\\tier-blind\\candidates\\05_map\\c09.svg",
+    "out\\icons\\tier-blind\\candidates\\05_map\\c11.svg",
+    "out\\icons\\tier-blind\\candidates\\05_map\\c14.svg",
+    "out\\icons\\tier-blind\\candidates\\05_map\\c20.svg",
+    "out\\icons\\tier-blind\\candidates\\05_map\\c26.svg",
+    "out\\icons\\tier-blind\\candidates\\06_quest\\c01.svg",
+    "out\\icons\\tier-blind\\candidates\\06_quest\\c02.svg",
+    "out\\icons\\tier-blind\\candidates\\06_quest\\c05.svg",
+    "out\\icons\\tier-blind\\candidates\\06_quest\\c13.svg",
+    "out\\icons\\tier-blind\\candidates\\06_quest\\c19.svg",
+    "out\\icons\\tier-blind\\candidates\\07_save\\c01.svg",
+    "out\\icons\\tier-blind\\candidates\\07_save\\c03.svg",
+    "out\\icons\\tier-blind\\candidates\\07_save\\c04.svg",
+    "out\\icons\\tier-blind\\candidates\\07_save\\c05.svg",
+    "out\\icons\\tier-blind\\candidates\\07_save\\c08.svg",
+    "out\\icons\\tier-blind\\candidates\\07_save\\c16.svg",
+    "out\\icons\\tier-blind\\candidates\\08_settings\\c24.svg",
+    "out\\icons\\tier-blind\\candidates\\08_settings\\c26.svg",
+    "out\\icons\\tier-blind\\candidates\\09_stats\\c01.svg",
+    "out\\icons\\tier-blind\\candidates\\09_stats\\c03.svg",
+    "out\\icons\\tier-blind\\candidates\\09_stats\\c08.svg",
+    "out\\icons\\tier-blind\\candidates\\09_stats\\c12.svg",
+    "out\\icons\\tier-blind\\candidates\\09_stats\\c13.svg"
+  ],
+  "rejected": [
+    "out\\icons\\tier-blind\\candidates\\01_dialogue\\c01.svg",
+    "out\\icons\\tier-blind\\candidates\\01_dialogue\\c02.svg",
+    "out\\icons\\tier-blind\\candidates\\01_dialogue\\c03.svg",
+    "out\\icons\\tier-blind\\candidates\\01_dialogue\\c04.svg",
+    "out\\icons\\tier-blind\\candidates\\01_dialogue\\c05.svg",
+    "out\\icons\\tier-blind\\candidates\\01_dialogue\\c06.svg",
+    "out\\icons\\tier-blind\\candidates\\01_dialogue\\c07.svg",
+    "out\\icons\\tier-blind\\candidates\\01_dialogue\\c08.svg",
+    "out\\icons\\tier-blind\\candidates\\01_dialogue\\c09.svg",
+    "out\\icons\\tier-blind\\candidates\\01_dialogue\\c10.svg",
+    "out\\icons\\tier-blind\\candidates\\01_dialogue\\c11.svg",
+    "out\\icons\\tier-blind\\candidates\\01_dialogue\\c12.svg",
+    "out\\icons\\tier-blind\\candidates\\01_dialogue\\c13.svg",
+    "out\\icons\\tier-blind\\candidates\\01_dialogue\\c14.svg",
+    "out\\icons\\tier-blind\\candidates\\01_dialogue\\c15.svg",
+    "out\\icons\\tier-blind\\candidates\\01_dialogue\\c16.svg",
+    "out\\icons\\tier-blind\\candidates\\01_dialogue\\c17.svg",
+    "out\\icons\\tier-blind\\candidates\\01_dialogue\\c18.svg",
+    "out\\icons\\tier-blind\\candidates\\01_dialogue\\c19.svg",
+    "out\\icons\\tier-blind\\candidates\\02_equipment\\c01.svg",
+    "out\\icons\\tier-blind\\candidates\\02_equipment\\c02.svg",
+    "out\\icons\\tier-blind\\candidates\\02_equipment\\c03.svg",
+    "out\\icons\\tier-blind\\candidates\\02_equipment\\c04.svg",
+    "out\\icons\\tier-blind\\candidates\\02_equipment\\c05.svg",
+    "out\\icons\\tier-blind\\candidates\\02_equipment\\c06.svg",
+    "out\\icons\\tier-blind\\candidates\\02_equipment\\c07.svg",
+    "out\\icons\\tier-blind\\candidates\\02_equipment\\c08.svg",
+    "out\\icons\\tier-blind\\candidates\\02_equipment\\c09.svg",
+    "out\\icons\\tier-blind\\candidates\\02_equipment\\c10.svg",
+    "out\\icons\\tier-blind\\candidates\\02_equipment\\c11.svg",
+    "out\\icons\\tier-blind\\candidates\\02_equipment\\c12.svg",
+    "out\\icons\\tier-blind\\candidates\\02_equipment\\c13.svg",
+    "out\\icons\\tier-blind\\candidates\\02_equipment\\c14.svg",
+    "out\\icons\\tier-blind\\candidates\\02_equipment\\c15.svg",
+    "out\\icons\\tier-blind\\candidates\\02_equipment\\c16.svg",
+    "out\\icons\\tier-blind\\candidates\\02_equipment\\c17.svg",
+    "out\\icons\\tier-blind\\candidates\\02_equipment\\c18.svg",
+    "out\\icons\\tier-blind\\candidates\\02_equipment\\c19.svg",
+    "out\\icons\\tier-blind\\candidates\\02_equipment\\c20.svg",
+    "out\\icons\\tier-blind\\candidates\\02_equipment\\c21.svg",
+    "out\\icons\\tier-blind\\candidates\\02_equipment\\c22.svg",
+    "out\\icons\\tier-blind\\candidates\\02_equipment\\c23.svg",
+    "out\\icons\\tier-blind\\candidates\\02_equipment\\c24.svg",
+    "out\\icons\\tier-blind\\candidates\\02_equipment\\c25.svg",
+    "out\\icons\\tier-blind\\candidates\\02_equipment\\c27.svg",
+    "out\\icons\\tier-blind\\candidates\\02_equipment\\c28.svg",
+    "out\\icons\\tier-blind\\candidates\\03_exit\\c01.svg",
+    "out\\icons\\tier-blind\\candidates\\03_exit\\c02.svg",
+    "out\\icons\\tier-blind\\candidates\\03_exit\\c03.svg",
+    "out\\icons\\tier-blind\\candidates\\03_exit\\c04.svg",
+    "out\\icons\\tier-blind\\candidates\\03_exit\\c05.svg",
+    "out\\icons\\tier-blind\\candidates\\03_exit\\c06.svg",
+    "out\\icons\\tier-blind\\candidates\\03_exit\\c07.svg",
+    "out\\icons\\tier-blind\\candidates\\03_exit\\c08.svg",
+    "out\\icons\\tier-blind\\candidates\\03_exit\\c09.svg",
+    "out\\icons\\tier-blind\\candidates\\03_exit\\c10.svg",
+    "out\\icons\\tier-blind\\candidates\\03_exit\\c11.svg",
+    "out\\icons\\tier-blind\\candidates\\03_exit\\c12.svg",
+    "out\\icons\\tier-blind\\candidates\\03_exit\\c13.svg",
+    "out\\icons\\tier-blind\\candidates\\03_exit\\c14.svg",
+    "out\\icons\\tier-blind\\candidates\\03_exit\\c15.svg",
+    "out\\icons\\tier-blind\\candidates\\03_exit\\c18.svg",
+    "out\\icons\\tier-blind\\candidates\\03_exit\\c19.svg",
+    "out\\icons\\tier-blind\\candidates\\03_exit\\c20.svg",
+    "out\\icons\\tier-blind\\candidates\\03_exit\\c21.svg",
+    "out\\icons\\tier-blind\\candidates\\03_exit\\c22.svg",
+    "out\\icons\\tier-blind\\candidates\\03_exit\\c23.svg",
+    "out\\icons\\tier-blind\\candidates\\03_exit\\c25.svg",
+    "out\\icons\\tier-blind\\candidates\\03_exit\\c26.svg",
+    "out\\icons\\tier-blind\\candidates\\04_inventory\\c02.svg",
+    "out\\icons\\tier-blind\\candidates\\04_inventory\\c03.svg",
+    "out\\icons\\tier-blind\\candidates\\04_inventory\\c04.svg",
+    "out\\icons\\tier-blind\\candidates\\04_inventory\\c05.svg",
+    "out\\icons\\tier-blind\\candidates\\04_inventory\\c07.svg",
+    "out\\icons\\tier-blind\\candidates\\04_inventory\\c08.svg",
+    "out\\icons\\tier-blind\\candidates\\04_inventory\\c09.svg",
+    "out\\icons\\tier-blind\\candidates\\04_inventory\\c10.svg",
+    "out\\icons\\tier-blind\\candidates\\04_inventory\\c11.svg",
+    "out\\icons\\tier-blind\\candidates\\04_inventory\\c12.svg",
+    "out\\icons\\tier-blind\\candidates\\04_inventory\\c13.svg",
+    "out\\icons\\tier-blind\\candidates\\04_inventory\\c14.svg",
+    "out\\icons\\tier-blind\\candidates\\04_inventory\\c15.svg",
+    "out\\icons\\tier-blind\\candidates\\04_inventory\\c16.svg",
+    "out\\icons\\tier-blind\\candidates\\04_inventory\\c17.svg",
+    "out\\icons\\tier-blind\\candidates\\04_inventory\\c18.svg",
+    "out\\icons\\tier-blind\\candidates\\04_inventory\\c19.svg",
+    "out\\icons\\tier-blind\\candidates\\04_inventory\\c20.svg",
+    "out\\icons\\tier-blind\\candidates\\04_inventory\\c21.svg",
+    "out\\icons\\tier-blind\\candidates\\04_inventory\\c22.svg",
+    "out\\icons\\tier-blind\\candidates\\04_inventory\\c23.svg",
+    "out\\icons\\tier-blind\\candidates\\04_inventory\\c24.svg",
+    "out\\icons\\tier-blind\\candidates\\05_map\\c01.svg",
+    "out\\icons\\tier-blind\\candidates\\05_map\\c02.svg",
+    "out\\icons\\tier-blind\\candidates\\05_map\\c03.svg",
+    "out\\icons\\tier-blind\\candidates\\05_map\\c05.svg",
+    "out\\icons\\tier-blind\\candidates\\05_map\\c06.svg",
+    "out\\icons\\tier-blind\\candidates\\05_map\\c07.svg",
+    "out\\icons\\tier-blind\\candidates\\05_map\\c08.svg",
+    "out\\icons\\tier-blind\\candidates\\05_map\\c10.svg",
+    "out\\icons\\tier-blind\\candidates\\05_map\\c12.svg",
+    "out\\icons\\tier-blind\\candidates\\05_map\\c13.svg",
+    "out\\icons\\tier-blind\\candidates\\05_map\\c15.svg",
+    "out\\icons\\tier-blind\\candidates\\05_map\\c16.svg",
+    "out\\icons\\tier-blind\\candidates\\05_map\\c17.svg",
+    "out\\icons\\tier-blind\\candidates\\05_map\\c18.svg",
+    "out\\icons\\tier-blind\\candidates\\05_map\\c19.svg",
+    "out\\icons\\tier-blind\\candidates\\05_map\\c21.svg",
+    "out\\icons\\tier-blind\\candidates\\05_map\\c22.svg",
+    "out\\icons\\tier-blind\\candidates\\05_map\\c23.svg",
+    "out\\icons\\tier-blind\\candidates\\05_map\\c24.svg",
+    "out\\icons\\tier-blind\\candidates\\05_map\\c25.svg",
+    "out\\icons\\tier-blind\\candidates\\05_map\\c27.svg",
+    "out\\icons\\tier-blind\\candidates\\05_map\\c28.svg",
+    "out\\icons\\tier-blind\\candidates\\05_map\\c29.svg",
+    "out\\icons\\tier-blind\\candidates\\05_map\\c30.svg",
+    "out\\icons\\tier-blind\\candidates\\06_quest\\c03.svg",
+    "out\\icons\\tier-blind\\candidates\\06_quest\\c04.svg",
+    "out\\icons\\tier-blind\\candidates\\06_quest\\c06.svg",
+    "out\\icons\\tier-blind\\candidates\\06_quest\\c07.svg",
+    "out\\icons\\tier-blind\\candidates\\06_quest\\c08.svg",
+    "out\\icons\\tier-blind\\candidates\\06_quest\\c09.svg",
+    "out\\icons\\tier-blind\\candidates\\06_quest\\c10.svg",
+    "out\\icons\\tier-blind\\candidates\\06_quest\\c11.svg",
+    "out\\icons\\tier-blind\\candidates\\06_quest\\c12.svg",
+    "out\\icons\\tier-blind\\candidates\\06_quest\\c14.svg",
+    "out\\icons\\tier-blind\\candidates\\06_quest\\c15.svg",
+    "out\\icons\\tier-blind\\candidates\\06_quest\\c16.svg",
+    "out\\icons\\tier-blind\\candidates\\06_quest\\c17.svg",
+    "out\\icons\\tier-blind\\candidates\\06_quest\\c18.svg",
+    "out\\icons\\tier-blind\\candidates\\06_quest\\c20.svg",
+    "out\\icons\\tier-blind\\candidates\\06_quest\\c21.svg",
+    "out\\icons\\tier-blind\\candidates\\06_quest\\c22.svg",
+    "out\\icons\\tier-blind\\candidates\\06_quest\\c23.svg",
+    "out\\icons\\tier-blind\\candidates\\06_quest\\c24.svg",
+    "out\\icons\\tier-blind\\candidates\\07_save\\c02.svg",
+    "out\\icons\\tier-blind\\candidates\\07_save\\c06.svg",
+    "out\\icons\\tier-blind\\candidates\\07_save\\c07.svg",
+    "out\\icons\\tier-blind\\candidates\\07_save\\c09.svg",
+    "out\\icons\\tier-blind\\candidates\\07_save\\c10.svg",
+    "out\\icons\\tier-blind\\candidates\\07_save\\c11.svg",
+    "out\\icons\\tier-blind\\candidates\\07_save\\c12.svg",
+    "out\\icons\\tier-blind\\candidates\\07_save\\c13.svg",
+    "out\\icons\\tier-blind\\candidates\\07_save\\c14.svg",
+    "out\\icons\\tier-blind\\candidates\\07_save\\c15.svg",
+    "out\\icons\\tier-blind\\candidates\\07_save\\c17.svg",
+    "out\\icons\\tier-blind\\candidates\\07_save\\c18.svg",
+    "out\\icons\\tier-blind\\candidates\\07_save\\c19.svg",
+    "out\\icons\\tier-blind\\candidates\\07_save\\c20.svg",
+    "out\\icons\\tier-blind\\candidates\\07_save\\c21.svg",
+    "out\\icons\\tier-blind\\candidates\\07_save\\c22.svg",
+    "out\\icons\\tier-blind\\candidates\\07_save\\c23.svg",
+    "out\\icons\\tier-blind\\candidates\\08_settings\\c01.svg",
+    "out\\icons\\tier-blind\\candidates\\08_settings\\c02.svg",
+    "out\\icons\\tier-blind\\candidates\\08_settings\\c03.svg",
+    "out\\icons\\tier-blind\\candidates\\08_settings\\c04.svg",
+    "out\\icons\\tier-blind\\candidates\\08_settings\\c05.svg",
+    "out\\icons\\tier-blind\\candidates\\08_settings\\c06.svg",
+    "out\\icons\\tier-blind\\candidates\\08_settings\\c07.svg",
+    "out\\icons\\tier-blind\\candidates\\08_settings\\c08.svg",
+    "out\\icons\\tier-blind\\candidates\\08_settings\\c09.svg",
+    "out\\icons\\tier-blind\\candidates\\08_settings\\c10.svg",
+    "out\\icons\\tier-blind\\candidates\\08_settings\\c11.svg",
+    "out\\icons\\tier-blind\\candidates\\08_settings\\c12.svg",
+    "out\\icons\\tier-blind\\candidates\\08_settings\\c13.svg",
+    "out\\icons\\tier-blind\\candidates\\08_settings\\c14.svg",
+    "out\\icons\\tier-blind\\candidates\\08_settings\\c15.svg",
+    "out\\icons\\tier-blind\\candidates\\08_settings\\c16.svg",
+    "out\\icons\\tier-blind\\candidates\\08_settings\\c17.svg",
+    "out\\icons\\tier-blind\\candidates\\08_settings\\c18.svg",
+    "out\\icons\\tier-blind\\candidates\\08_settings\\c19.svg",
+    "out\\icons\\tier-blind\\candidates\\08_settings\\c20.svg",
+    "out\\icons\\tier-blind\\candidates\\08_settings\\c21.svg",
+    "out\\icons\\tier-blind\\candidates\\08_settings\\c22.svg",
+    "out\\icons\\tier-blind\\candidates\\08_settings\\c23.svg",
+    "out\\icons\\tier-blind\\candidates\\08_settings\\c25.svg",
+    "out\\icons\\tier-blind\\candidates\\08_settings\\c27.svg",
+    "out\\icons\\tier-blind\\candidates\\08_settings\\c28.svg",
+    "out\\icons\\tier-blind\\candidates\\09_stats\\c02.svg",
+    "out\\icons\\tier-blind\\candidates\\09_stats\\c04.svg",
+    "out\\icons\\tier-blind\\candidates\\09_stats\\c05.svg",
+    "out\\icons\\tier-blind\\candidates\\09_stats\\c06.svg",
+    "out\\icons\\tier-blind\\candidates\\09_stats\\c07.svg",
+    "out\\icons\\tier-blind\\candidates\\09_stats\\c09.svg",
+    "out\\icons\\tier-blind\\candidates\\09_stats\\c10.svg",
+    "out\\icons\\tier-blind\\candidates\\09_stats\\c11.svg",
+    "out\\icons\\tier-blind\\candidates\\09_stats\\c14.svg",
+    "out\\icons\\tier-blind\\candidates\\09_stats\\c15.svg",
+    "out\\icons\\tier-blind\\candidates\\09_stats\\c16.svg",
+    "out\\icons\\tier-blind\\candidates\\09_stats\\c17.svg",
+    "out\\icons\\tier-blind\\candidates\\09_stats\\c18.svg",
+    "out\\icons\\tier-blind\\candidates\\09_stats\\c19.svg",
+    "out\\icons\\tier-blind\\candidates\\09_stats\\c20.svg",
+    "out\\icons\\tier-blind\\candidates\\09_stats\\c21.svg",
+    "out\\icons\\tier-blind\\candidates\\09_stats\\c22.svg",
+    "out\\icons\\tier-blind\\candidates\\09_stats\\c23.svg",
+    "out\\icons\\tier-blind\\candidates\\09_stats\\c24.svg",
+    "out\\icons\\tier-blind\\candidates\\09_stats\\c25.svg",
+    "out\\icons\\tier-blind\\candidates\\09_stats\\c26.svg",
+    "out\\icons\\tier-blind\\candidates\\09_stats\\c27.svg",
+    "out\\icons\\tier-blind\\candidates\\09_stats\\c28.svg"
+  ],
+  "undecided_items": [],
+  "shown_total": 231,
+  "undecided_groups": []
+}

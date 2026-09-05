@@ -1,0 +1,16 @@
+{
+ "repo": "more-itertools",
+ "fix_commit": "a43834e1f985d896888d5bc67e0773d833702845",
+ "parent_commit": "97f501415c5efd96a0a4af56ffdc0a524cca03b6",
+ "answer_functions": [
+  "more_itertools/more.py::_zip_equal_generator",
+  "more_itertools/more.py::zip_equal"
+ ],
+ "repro_tests": [],
+ "smoke": [],
+ "baseline_pass_count": 0,
+ "probes": [],
+ "inc_event": false,
+ "regression_event": false,
+ "skipped": "no repro or no answer functions"
+}

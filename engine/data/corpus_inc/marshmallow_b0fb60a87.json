@@ -1,0 +1,78 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "b0fb60a87f909bffeddcd8cdaac67e530adbcdf2",
+ "parent_commit": "a15b352bf618077b7dccea685cd31f4ae0c9bd2a",
+ "answer_functions": [
+  "marshmallow/utils.py::is_collection",
+  "marshmallow/utils.py::is_indexable_but_not_string",
+  "marshmallow/utils.py::is_iterable_but_not_string",
+  "marshmallow/utils.py::pprint",
+  "marshmallow/utils.py::to_marshallable_type"
+ ],
+ "repro_tests": [
+  "tests/test_marshmallow.py::test_serializing_named_tuple_with_meta"
+ ],
+ "smoke": [
+  "tests/test_marshmallow.py::TestFields::test_bad_list_field",
+  "tests/test_marshmallow.py::TestFields::test_date_field",
+  "tests/test_marshmallow.py::TestFields::test_datetime_field"
+ ],
+ "baseline_pass_count": 154,
+ "probes": [
+  {
+   "applied": "marshmallow/utils.py::is_iterable_but_not_string",
+   "a_repro_pass": false,
+   "b_smoke_pass": true,
+   "c_no_regression": true,
+   "regressed": [],
+   "d_unmet": [
+    "tests/test_marshmallow.py::test_serializing_named_tuple_with_meta"
+   ],
+   "inc_event": false
+  },
+  {
+   "applied": "marshmallow/utils.py::is_indexable_but_not_string",
+   "a_repro_pass": false,
+   "b_smoke_pass": true,
+   "c_no_regression": true,
+   "regressed": [],
+   "d_unmet": [
+    "tests/test_marshmallow.py::test_serializing_named_tuple_with_meta"
+   ],
+   "inc_event": false
+  },
+  {
+   "applied": "marshmallow/utils.py::is_collection",
+   "a_repro_pass": false,
+   "b_smoke_pass": true,
+   "c_no_regression": true,
+   "regressed": [],
+   "d_unmet": [
+    "tests/test_marshmallow.py::test_serializing_named_tuple_with_meta"
+   ],
+   "inc_event": false
+  },
+  {
+   "applied": "marshmallow/utils.py::to_marshallable_type",
+   "a_repro_pass": true,
+   "b_smoke_pass": true,
+   "c_no_regression": true,
+   "regressed": [],
+   "d_unmet": [],
+   "inc_event": false
+  },
+  {
+   "applied": "marshmallow/utils.py::pprint",
+   "a_repro_pass": false,
+   "b_smoke_pass": true,
+   "c_no_regression": true,
+   "regressed": [],
+   "d_unmet": [
+    "tests/test_marshmallow.py::test_serializing_named_tuple_with_meta"
+   ],
+   "inc_event": false
+  }
+ ],
+ "inc_event": false,
+ "regression_event": false
+}

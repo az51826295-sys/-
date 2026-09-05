@@ -1,0 +1,17 @@
+{
+ "repo": "marshmallow",
+ "fix_commit": "82954cb115964ed4c3b51181b30045d74d3679b4",
+ "parent_commit": "5747a4560deff5403d6030e613f0fe516a4fc22a",
+ "answer_functions": [
+  "marshmallow/marshalling.py::_call_and_store",
+  "marshmallow/marshalling.py::deserialize",
+  "marshmallow/marshalling.py::serialize"
+ ],
+ "repro_tests": [],
+ "smoke": [],
+ "baseline_pass_count": 0,
+ "probes": [],
+ "inc_event": false,
+ "regression_event": false,
+ "skipped": "no repro or no answer functions"
+}

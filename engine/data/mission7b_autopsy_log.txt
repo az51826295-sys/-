@@ -1,0 +1,60 @@
+=== TM 고원 돌파 부검 ===
+
+[1] 채택 계보
+=== TM_deadlock_ms2
+  gen 2: v1 채택, score 0.7915
+    g1-agent4-4: IF consecutive_low_gain < 3.0 THEN RAISE_THRESHOLD P8
+    g2-agent4-4: IF my_best_gain >= 0.2 AND remaining_budget_ratio >= 0.25 THEN SHARE_BEST P9
+  gen 7: v2 채택, score 0.8490
+    g1-agent4-4: IF consecutive_low_gain < 3.0 THEN RAISE_THRESHOLD P8
+    g2-agent4-4: IF my_best_gain >= 0.2 AND remaining_budget_ratio >= 0.25 THEN SHARE_BEST P9
+    g7-agent2-2: IF consecutive_all_pass >= 2.0 AND my_best_gain >= 0.1 THEN SHARE_BEST P9
+  gen 9: v3 채택, score 0.8500
+    g1-agent4-4: IF consecutive_low_gain < 3.0 THEN RAISE_THRESHOLD P8
+    g2-agent4-4: IF my_best_gain >= 0.2 AND remaining_budget_ratio >= 0.25 THEN SHARE_BEST P9
+    g7-agent2-2: IF consecutive_all_pass >= 2.0 AND my_best_gain >= 0.1 THEN SHARE_BEST P9
+    g9-agent1-1: IF consecutive_all_pass >= 1.0 AND my_best_gain >= 0.1 THEN SHARE_BEST P9
+  최종: 0.8500
+=== TM_deadlock_ms4
+  gen 1: v1 채택, score 0.7085
+    g1-agent4-4: IF consecutive_low_gain < 3.0 THEN RAISE_THRESHOLD P8
+    g1-agent1-1: IF my_best_gain >= 0.3 AND remaining_budget_ratio >= 0.5 THEN SHARE_BEST P9
+  gen 13: v2 채택, score 0.8859
+    g1-agent4-4: IF consecutive_low_gain < 3.0 THEN RAISE_THRESHOLD P8
+    g1-agent1-1: IF my_best_gain >= 0.3 AND remaining_budget_ratio >= 0.5 THEN SHARE_BEST P9
+    g13-agent0-0: IF consecutive_all_pass >= 2.0 AND my_best_gain >= 0.2 THEN SHARE_BEST P9
+  최종: 0.8859
+=== T_deadlock_ms2
+  gen 1: v1 채택, score 0.7915
+    g1-agent4-4: IF consecutive_low_gain < 3.0 THEN RAISE_THRESHOLD P8
+    g1-agent0-0: IF my_best_gain >= 0.2 AND remaining_budget_ratio >= 0.25 THEN SHARE_BEST P9
+  최종: 0.7915
+=== T_deadlock_ms4
+  gen 1: v1 채택, score 0.7705
+    g1-agent4-4: IF consecutive_low_gain < 3.0 THEN RAISE_THRESHOLD P8
+    g1-agent0-0: IF my_best_gain >= 0.3 AND remaining_budget_ratio >= 0.25 THEN SHARE_BEST P9
+  최종: 0.7705
+
+[2] 완화 구조 제안 빈도 (구조 부재 가설 검증)
+  T ms0: 제안 114회, 최고 score 0.7765, 채택 gen None
+  T ms1: 제안 114회, 최고 score 0.7555, 채택 gen None
+  T ms2: 제안 113회, 최고 score 0.7765, 채택 gen None
+  T ms3: 제안 108회, 최고 score 0.7555, 채택 gen None
+  T ms4: 제안 112회, 최고 score 0.7555, 채택 gen None
+  TM ms0: 제안 90회, 최고 score 0.7913, 채택 gen None
+  TM ms1: 제안 95회, 최고 score 0.7555, 채택 gen None
+  TM ms2: 제안 98회, 최고 score 0.8500, 채택 gen 9
+  TM ms3: 제안 78회, 최고 score 0.7051, 채택 gen None
+  TM ms4: 제안 100회, 최고 score 0.8859, 채택 gen 13
+
+[3] 변형 세부 분포 (분포 이동 가설 검증)
+== T: 완화 변형 561개
+  gain 문턱: {0.1: 13, 0.2: 13, None: 535}
+  우선순위: {7: 340, 9: 221} (P7은 교착 규칙 P8에 가려 발화 불가)
+  추가 조건: [(('remaining_budget_ratio',), 503), ((), 44), (('public_candidate_count',), 14)]
+  score>=0.84 변형: 0개
+== TM: 완화 변형 538개
+  gain 문턱: {0.1: 177, 0.2: 87, None: 274}
+  우선순위: {7: 195, 8: 12, 9: 331} (P7은 교착 규칙 P8에 가려 발화 불가)
+  추가 조건: [((), 313), (('remaining_budget_ratio',), 222), (('public_candidate_count',), 3)]
+  score>=0.84 변형: 61개

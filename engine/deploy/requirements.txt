@@ -1,0 +1,6 @@
+# Rookery Reproduce — 프로덕션 의존성 (엔진은 stdlib + sqlite만 씀)
+fastapi>=0.110
+uvicorn[standard]>=0.27
+PyJWT>=2.8
+cryptography>=42
+# 유도(B형)는 AnthropicProvider가 urllib로 직접 호출 — SDK 불필요

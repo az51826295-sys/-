@@ -1,0 +1,226 @@
+{
+  "spec": "diversity-power-v0",
+  "tier": "T2",
+  "note": "계획 도구다. 판정 문턱은 여기서 바뀌지 않는다.",
+  "usd_per_call": 0.0064,
+  "concepts": {
+    "save": {
+      "observed_mean": 0.4021164021164021,
+      "power": [
+        {
+          "calls": 10,
+          "decided": 0.24,
+          "flat": 0.0,
+          "saturating": 0.24
+        },
+        {
+          "calls": 20,
+          "decided": 0.36,
+          "flat": 0.0,
+          "saturating": 0.36
+        },
+        {
+          "calls": 30,
+          "decided": 0.5,
+          "flat": 0.0,
+          "saturating": 0.5
+        },
+        {
+          "calls": 50,
+          "decided": 0.62,
+          "flat": 0.0,
+          "saturating": 0.62
+        },
+        {
+          "calls": 80,
+          "decided": 0.8266666666666667,
+          "flat": 0.0,
+          "saturating": 0.8266666666666667
+        }
+      ]
+    },
+    "inventory": {
+      "observed_mean": 0.6222222222222222,
+      "power": [
+        {
+          "calls": 10,
+          "decided": 0.02,
+          "flat": 0.013333333333333334,
+          "saturating": 0.006666666666666667
+        },
+        {
+          "calls": 20,
+          "decided": 0.0,
+          "flat": 0.0,
+          "saturating": 0.0
+        },
+        {
+          "calls": 30,
+          "decided": 0.0,
+          "flat": 0.0,
+          "saturating": 0.0
+        },
+        {
+          "calls": 50,
+          "decided": 0.0,
+          "flat": 0.0,
+          "saturating": 0.0
+        },
+        {
+          "calls": 80,
+          "decided": 0.0,
+          "flat": 0.0,
+          "saturating": 0.0
+        }
+      ]
+    },
+    "map": {
+      "observed_mean": 0.5216931216931218,
+      "power": [
+        {
+          "calls": 10,
+          "decided": 0.006666666666666667,
+          "flat": 0.0,
+          "saturating": 0.006666666666666667
+        },
+        {
+          "calls": 20,
+          "decided": 0.02,
+          "flat": 0.0,
+          "saturating": 0.02
+        },
+        {
+          "calls": 30,
+          "decided": 0.0,
+          "flat": 0.0,
+          "saturating": 0.0
+        },
+        {
+          "calls": 50,
+          "decided": 0.013333333333333334,
+          "flat": 0.0,
+          "saturating": 0.013333333333333334
+        },
+        {
+          "calls": 80,
+          "decided": 0.006666666666666667,
+          "flat": 0.0,
+          "saturating": 0.006666666666666667
+        }
+      ]
+    },
+    "settings": {
+      "observed_mean": 0.5317460317460317,
+      "power": [
+        {
+          "calls": 10,
+          "decided": 0.02,
+          "flat": 0.0,
+          "saturating": 0.02
+        },
+        {
+          "calls": 20,
+          "decided": 0.013333333333333334,
+          "flat": 0.0,
+          "saturating": 0.013333333333333334
+        },
+        {
+          "calls": 30,
+          "decided": 0.013333333333333334,
+          "flat": 0.0,
+          "saturating": 0.013333333333333334
+        },
+        {
+          "calls": 50,
+          "decided": 0.006666666666666667,
+          "flat": 0.0,
+          "saturating": 0.006666666666666667
+        },
+        {
+          "calls": 80,
+          "decided": 0.006666666666666667,
+          "flat": 0.0,
+          "saturating": 0.006666666666666667
+        }
+      ]
+    },
+    "quest": {
+      "observed_mean": 0.41269841269841273,
+      "power": [
+        {
+          "calls": 10,
+          "decided": 0.26,
+          "flat": 0.0,
+          "saturating": 0.26
+        },
+        {
+          "calls": 20,
+          "decided": 0.29333333333333333,
+          "flat": 0.0,
+          "saturating": 0.29333333333333333
+        },
+        {
+          "calls": 30,
+          "decided": 0.3933333333333333,
+          "flat": 0.0,
+          "saturating": 0.3933333333333333
+        },
+        {
+          "calls": 50,
+          "decided": 0.6,
+          "flat": 0.0,
+          "saturating": 0.6
+        },
+        {
+          "calls": 80,
+          "decided": 0.74,
+          "flat": 0.0,
+          "saturating": 0.74
+        }
+      ]
+    },
+    "equipment": {
+      "observed_mean": 0.38783068783068786,
+      "power": [
+        {
+          "calls": 10,
+          "decided": 0.26,
+          "flat": 0.0,
+          "saturating": 0.26
+        },
+        {
+          "calls": 20,
+          "decided": 0.42,
+          "flat": 0.0,
+          "saturating": 0.42
+        },
+        {
+          "calls": 30,
+          "decided": 0.6066666666666667,
+          "flat": 0.0,
+          "saturating": 0.6066666666666667
+        },
+        {
+          "calls": 50,
+          "decided": 0.8066666666666666,
+          "flat": 0.0,
+          "saturating": 0.8066666666666666
+        },
+        {
+          "calls": 80,
+          "decided": 0.9533333333333334,
+          "flat": 0.0,
+          "saturating": 0.9533333333333334
+        }
+      ]
+    }
+  },
+  "calls_for_power_0.8": {
+    "save": 80,
+    "inventory": null,
+    "map": null,
+    "settings": null,
+    "quest": null,
+    "equipment": 50
+  }
+}

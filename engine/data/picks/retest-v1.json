@@ -1,0 +1,97 @@
+{
+  "spec": "taste-retest-v0",
+  "verdict": "undefined",
+  "why": "interval_straddles_gate",
+  "repeat_rate": 0.4,
+  "k": 2,
+  "n": 5,
+  "ci95": [
+    0.0527,
+    0.8534
+  ],
+  "gate": 0.75,
+  "chance_single": 0.1667,
+  "inclusive": {
+    "k": 2,
+    "n": 5,
+    "rate": 0.4,
+    "chance": 0.1733,
+    "note": "기술 통계다. 여러 개를 고르면 우연 확률이 올라가므로 판정에 쓰지 않는다"
+  },
+  "skipped": [],
+  "rows": [
+    {
+      "slot": 1,
+      "concept": "01_attack",
+      "answer": [
+        2
+      ],
+      "first_choice": "c03.svg",
+      "second_choice": [
+        "c03.svg"
+      ],
+      "included": true,
+      "pool": 6,
+      "same": true
+    },
+    {
+      "slot": 2,
+      "concept": "03_shop",
+      "answer": [
+        6
+      ],
+      "first_choice": "c05.svg",
+      "second_choice": [
+        "c05.svg"
+      ],
+      "included": true,
+      "pool": 6,
+      "same": true
+    },
+    {
+      "slot": 3,
+      "concept": "05_equipment",
+      "answer": [
+        3
+      ],
+      "first_choice": "c03.svg",
+      "second_choice": [
+        "c01.svg"
+      ],
+      "included": false,
+      "pool": 5,
+      "same": false
+    },
+    {
+      "slot": 4,
+      "concept": "06_stats",
+      "answer": [
+        2
+      ],
+      "first_choice": "c01.svg",
+      "second_choice": [
+        "c03.svg"
+      ],
+      "included": false,
+      "pool": 6,
+      "same": false
+    },
+    {
+      "slot": 5,
+      "concept": "07_dialogue",
+      "answer": [
+        1
+      ],
+      "first_choice": "c04.svg",
+      "second_choice": [
+        "c05.svg"
+      ],
+      "included": false,
+      "pool": 6,
+      "same": false
+    }
+  ],
+  "selection_minutes_upper": 132.8,
+  "selection_slots": 5,
+  "selection_note": "판을 낸 시각과 기록 시각의 차. 사장님이 그 사이 다른 일을 하셨을 수 있어 **상한**이다"
+}

@@ -1,0 +1,987 @@
+{
+ "group": "J",
+ "master_seed": 0,
+ "generations": [
+  {
+   "gen": 1,
+   "incumbent_version_before": 0,
+   "incumbent_version_after": 1,
+   "incumbent_score": 0.42180070546737214,
+   "rolled_back": false,
+   "train": {
+    "mean_accuracy": 0.7281746031746031,
+    "unsolved_rate": 0.3333333333333333,
+    "comm_ratio": 0.8611111111111112,
+    "complexity": 1.0,
+    "score": 0.6392857142857142,
+    "weak_share_rate": 0.1111111111111111,
+    "pass_rate": 0.0,
+    "forced_share_rate": 0.0,
+    "fidelity": 0.3333333333333333,
+    "rule_fires": {
+     "r0": 42
+    }
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "mutate",
+     "slot": 0,
+     "protocol": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "consecutive_low_gain",
+          "op": "<",
+          "value": 1.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "stats": {
+      "mean_accuracy": 0.6861111111111111,
+      "unsolved_rate": 0.5555555555555556,
+      "comm_ratio": 0.9415564373897707,
+      "complexity": 1.1666666666666667,
+      "score": 0.5503355379188711,
+      "weak_share_rate": 0.12124603791270457,
+      "pass_rate": 0.03597883597883597,
+      "forced_share_rate": 0.0,
+      "fidelity": 0.25486457986457983,
+      "rule_fires": {
+       "r0": 138
+      }
+     },
+     "votes": 0,
+     "adopted": true
+    },
+    {
+     "proposer": "agent1",
+     "op": "add",
+     "slot": 1,
+     "protocol": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [],
+        "action": "SHARE_BEST",
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g1-agent1-1",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": "<",
+          "value": 15.0
+         },
+         {
+          "metric": "round_index",
+          "op": "<",
+          "value": 10.0
+         }
+        ],
+        "action": "LOWER_THRESHOLD",
+        "priority": 4,
+        "author_id": "agent1",
+        "created_gen": 1
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "stats": {
+      "mean_accuracy": 0.5944444444444444,
+      "unsolved_rate": 0.6111111111111112,
+      "comm_ratio": 0.9437610229276897,
+      "complexity": 1.5,
+      "score": 0.44584700176366837,
+      "weak_share_rate": 0.11340588423921757,
+      "pass_rate": 0.20463965047298383,
+      "forced_share_rate": 0.0,
+      "fidelity": 0.29572310405643737,
+      "rule_fires": {
+       "r0": 138,
+       "g1-agent1-1": 36
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent2",
+     "op": "mutate",
+     "slot": 2,
+     "protocol": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [],
+        "action": "SHARE_BEST",
+        "priority": 8,
+        "author_id": "founder",
+        "created_gen": 0
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "stats": {
+      "mean_accuracy": 0.6055555555555556,
+      "unsolved_rate": 0.6666666666666666,
+      "comm_ratio": 0.9437610229276897,
+      "complexity": 1.0,
+      "score": 0.4483470017636685,
+      "weak_share_rate": 0.11691317941317941,
+      "pass_rate": 0.0,
+      "forced_share_rate": 0.0,
+      "fidelity": 0.3033569825236492,
+      "rule_fires": {
+       "r0": 138
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent3",
+     "op": "mutate",
+     "slot": 3,
+     "protocol": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "round_index",
+          "op": "<",
+          "value": 15.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "stats": {
+      "mean_accuracy": 0.6055555555555556,
+      "unsolved_rate": 0.6666666666666666,
+      "comm_ratio": 0.9437610229276897,
+      "complexity": 1.1666666666666667,
+      "score": 0.44751366843033513,
+      "weak_share_rate": 0.11691317941317941,
+      "pass_rate": 0.0,
+      "forced_share_rate": 0.0,
+      "fidelity": 0.3033569825236492,
+      "rule_fires": {
+       "r0": 138
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent4",
+     "op": "init_threshold",
+     "slot": 4,
+     "protocol": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [],
+        "action": "SHARE_BEST",
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "stats": {
+      "mean_accuracy": 0.6055555555555556,
+      "unsolved_rate": 0.6666666666666666,
+      "comm_ratio": 0.9437610229276897,
+      "complexity": 1.0,
+      "score": 0.4483470017636685,
+      "weak_share_rate": 0.11691317941317941,
+      "pass_rate": 0.0,
+      "forced_share_rate": 0.0,
+      "fidelity": 0.3033569825236492,
+      "rule_fires": {
+       "r0": 138
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent5",
+     "op": "init_threshold",
+     "slot": 5,
+     "protocol": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [],
+        "action": "SHARE_BEST",
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "stats": {
+      "mean_accuracy": 0.6055555555555556,
+      "unsolved_rate": 0.6666666666666666,
+      "comm_ratio": 0.9437610229276897,
+      "complexity": 1.0,
+      "score": 0.4483470017636685,
+      "weak_share_rate": 0.11691317941317941,
+      "pass_rate": 0.0,
+      "forced_share_rate": 0.0,
+      "fidelity": 0.3033569825236492,
+      "rule_fires": {
+       "r0": 138
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    }
+   ]
+  },
+  {
+   "gen": 2,
+   "incumbent_version_before": 1,
+   "incumbent_version_after": 2,
+   "incumbent_score": 0.5018752204585537,
+   "rolled_back": false,
+   "train": {
+    "mean_accuracy": 0.8461538461538461,
+    "unsolved_rate": 0.16666666666666666,
+    "comm_ratio": 0.8444444444444444,
+    "complexity": 1.1666666666666667,
+    "score": 0.7900982905982906,
+    "weak_share_rate": 0.06944444444444443,
+    "pass_rate": 0.018518518518518517,
+    "forced_share_rate": 0.0,
+    "fidelity": 0.39980158730158727,
+    "rule_fires": {
+     "r0": 41
+    }
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "mutate",
+     "slot": 0,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "consecutive_low_gain",
+          "op": "<",
+          "value": 1.0
+         },
+         {
+          "metric": "round_index",
+          "op": ">=",
+          "value": 2.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.5542328042328042,
+      "unsolved_rate": 0.7222222222222222,
+      "comm_ratio": 0.9425925925925925,
+      "complexity": 1.3333333333333333,
+      "score": 0.38426984126984115,
+      "weak_share_rate": 0.12238255571588905,
+      "pass_rate": 0.06175244508577842,
+      "forced_share_rate": 0.0,
+      "fidelity": 0.2034672118005451,
+      "rule_fires": {
+       "r0": 141
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent1",
+     "op": "mutate",
+     "slot": 1,
+     "protocol": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [],
+        "action": "SHARE_BEST",
+        "priority": 2,
+        "author_id": "founder",
+        "created_gen": 0
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "stats": {
+      "mean_accuracy": 0.5796957671957672,
+      "unsolved_rate": 0.6666666666666666,
+      "comm_ratio": 0.9364197530864197,
+      "complexity": 1.1666666666666667,
+      "score": 0.42180070546737214,
+      "weak_share_rate": 0.10926527176527176,
+      "pass_rate": 0.008754208754208756,
+      "forced_share_rate": 0.0,
+      "fidelity": 0.19343634760301426,
+      "rule_fires": {
+       "r0": 140
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent2",
+     "op": "init_threshold",
+     "slot": 2,
+     "protocol": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [],
+        "action": "SHARE_BEST",
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       }
+      ],
+      "init_threshold": 0.1,
+      "adopted_gen": 0
+     },
+     "stats": {
+      "mean_accuracy": 0.5796957671957672,
+      "unsolved_rate": 0.6666666666666666,
+      "comm_ratio": 0.9364197530864197,
+      "complexity": 1.1666666666666667,
+      "score": 0.42180070546737214,
+      "weak_share_rate": 0.10926527176527176,
+      "pass_rate": 0.008754208754208756,
+      "forced_share_rate": 0.0,
+      "fidelity": 0.19343634760301426,
+      "rule_fires": {
+       "r0": 140
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent3",
+     "op": "mutate",
+     "slot": 3,
+     "protocol": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": "<",
+          "value": 0.1
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "stats": {
+      "mean_accuracy": 0.683862433862434,
+      "unsolved_rate": 0.5,
+      "comm_ratio": 0.8736992945326278,
+      "complexity": 1.3333333333333333,
+      "score": 0.5597217813051147,
+      "weak_share_rate": 0.10593434343434344,
+      "pass_rate": 0.17218602929387244,
+      "forced_share_rate": 0.0,
+      "fidelity": 0.36328162578162576,
+      "rule_fires": {
+       "r0": 130
+      }
+     },
+     "votes": 0,
+     "adopted": true
+    },
+    {
+     "proposer": "agent4",
+     "op": "add",
+     "slot": 4,
+     "protocol": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [],
+        "action": "SHARE_BEST",
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g2-agent4-4",
+        "conditions": [
+         {
+          "metric": "number_of_passes",
+          "op": ">=",
+          "value": 3.0
+         },
+         {
+          "metric": "estimated_slack",
+          "op": ">=",
+          "value": 2.0
+         }
+        ],
+        "action": "PASS",
+        "priority": 8,
+        "author_id": "agent4",
+        "created_gen": 2
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "stats": {
+      "mean_accuracy": 0.5796957671957672,
+      "unsolved_rate": 0.6666666666666666,
+      "comm_ratio": 0.9364197530864197,
+      "complexity": 1.6666666666666667,
+      "score": 0.41930070546737214,
+      "weak_share_rate": 0.10926527176527176,
+      "pass_rate": 0.008754208754208756,
+      "forced_share_rate": 0.0,
+      "fidelity": 0.19343634760301426,
+      "rule_fires": {
+       "r0": 140
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent5",
+     "op": "mutate",
+     "slot": 5,
+     "protocol": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "recent_share_gain",
+          "op": ">=",
+          "value": 0.05
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "stats": {
+      "mean_accuracy": 0.5889550264550265,
+      "unsolved_rate": 0.6666666666666666,
+      "comm_ratio": 0.9364197530864197,
+      "complexity": 1.3333333333333333,
+      "score": 0.43022663139329814,
+      "weak_share_rate": 0.09804192720859388,
+      "pass_rate": 0.02503961180431769,
+      "forced_share_rate": 0.0,
+      "fidelity": 0.19343634760301426,
+      "rule_fires": {
+       "r0": 140
+      }
+     },
+     "votes": 0,
+     "adopted": true
+    }
+   ]
+  },
+  {
+   "gen": 3,
+   "incumbent_version_before": 2,
+   "incumbent_version_after": 3,
+   "incumbent_score": 0.5018752204585537,
+   "rolled_back": true,
+   "train": {
+    "mean_accuracy": 0.6166666666666667,
+    "unsolved_rate": 0.6666666666666666,
+    "comm_ratio": 0.9259259259259259,
+    "complexity": 1.5,
+    "score": 0.4573148148148149,
+    "weak_share_rate": 0.22592592592592595,
+    "pass_rate": 0.23611111111111108,
+    "forced_share_rate": 0.0,
+    "fidelity": 0.29259259259259257,
+    "rule_fires": {
+     "r0": 46
+    }
+   },
+   "candidates": [
+    {
+     "proposer": "agent0",
+     "op": "add",
+     "slot": 0,
+     "protocol": {
+      "version": 1,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "consecutive_low_gain",
+          "op": "<",
+          "value": 1.0
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       },
+       {
+        "rule_id": "g3-agent0-0",
+        "conditions": [],
+        "action": "LOWER_THRESHOLD",
+        "priority": 6,
+        "author_id": "agent0",
+        "created_gen": 3
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 1
+     },
+     "stats": {
+      "mean_accuracy": 0.3657407407407407,
+      "unsolved_rate": 0.9444444444444444,
+      "comm_ratio": 0.9960317460317459,
+      "complexity": 1.6666666666666667,
+      "score": 0.1485978835978836,
+      "weak_share_rate": 0.1852423810757144,
+      "pass_rate": 0.3663735955402622,
+      "forced_share_rate": 0.05555555555555555,
+      "fidelity": 0.1914813581480248,
+      "rule_fires": {
+       "r0": 145,
+       "g3-agent0-0": 47
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent1",
+     "op": "init_threshold",
+     "slot": 1,
+     "protocol": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [],
+        "action": "SHARE_BEST",
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "stats": {
+      "mean_accuracy": 0.6388888888888888,
+      "unsolved_rate": 0.5555555555555556,
+      "comm_ratio": 0.9201278659611992,
+      "complexity": 1.5,
+      "score": 0.5018752204585537,
+      "weak_share_rate": 0.15058120891454224,
+      "pass_rate": 0.21839117672451003,
+      "forced_share_rate": 0.0,
+      "fidelity": 0.3901434984768318,
+      "rule_fires": {
+       "r0": 134
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent2",
+     "op": "mutate",
+     "slot": 2,
+     "protocol": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_threshold",
+          "op": "<",
+          "value": 0.1
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 0
+     },
+     "stats": {
+      "mean_accuracy": 0.6388888888888888,
+      "unsolved_rate": 0.5555555555555556,
+      "comm_ratio": 0.9201278659611992,
+      "complexity": 1.6666666666666667,
+      "score": 0.5010418871252204,
+      "weak_share_rate": 0.15058120891454224,
+      "pass_rate": 0.21839117672451003,
+      "forced_share_rate": 0.0,
+      "fidelity": 0.3901434984768318,
+      "rule_fires": {
+       "r0": 134
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent3",
+     "op": "mutate",
+     "slot": 3,
+     "protocol": {
+      "version": 2,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "my_best_gain",
+          "op": ">=",
+          "value": 0.1
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       }
+      ],
+      "init_threshold": 0.0,
+      "adopted_gen": 2
+     },
+     "stats": {
+      "mean_accuracy": 0.5875661375661375,
+      "unsolved_rate": 0.6111111111111112,
+      "comm_ratio": 0.9680335097001763,
+      "complexity": 1.5,
+      "score": 0.4384832451499117,
+      "weak_share_rate": 0.08122494789161455,
+      "pass_rate": 0.08954271037604371,
+      "forced_share_rate": 0.0,
+      "fidelity": 0.3768718935385602,
+      "rule_fires": {
+       "r0": 142
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent4",
+     "op": "init_threshold",
+     "slot": 4,
+     "protocol": {
+      "version": 0,
+      "parent_version": null,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [],
+        "action": "SHARE_BEST",
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       }
+      ],
+      "init_threshold": 0.1,
+      "adopted_gen": 0
+     },
+     "stats": {
+      "mean_accuracy": 0.6388888888888888,
+      "unsolved_rate": 0.5555555555555556,
+      "comm_ratio": 0.9201278659611992,
+      "complexity": 1.5,
+      "score": 0.5018752204585537,
+      "weak_share_rate": 0.15058120891454224,
+      "pass_rate": 0.21839117672451003,
+      "forced_share_rate": 0.0,
+      "fidelity": 0.3901434984768318,
+      "rule_fires": {
+       "r0": 134
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    },
+    {
+     "proposer": "agent5",
+     "op": "init_threshold",
+     "slot": 5,
+     "protocol": {
+      "version": 3,
+      "parent_version": 0,
+      "rules": [
+       {
+        "rule_id": "r0",
+        "conditions": [
+         {
+          "metric": "recent_share_gain",
+          "op": ">=",
+          "value": 0.05
+         }
+        ],
+        "action": "SHARE_BEST",
+        "priority": 0,
+        "author_id": "founder",
+        "created_gen": 0
+       }
+      ],
+      "init_threshold": 0.1,
+      "adopted_gen": 2
+     },
+     "stats": {
+      "mean_accuracy": 0.6388888888888888,
+      "unsolved_rate": 0.5555555555555556,
+      "comm_ratio": 0.9201278659611992,
+      "complexity": 1.5,
+      "score": 0.5018752204585537,
+      "weak_share_rate": 0.15058120891454224,
+      "pass_rate": 0.21839117672451003,
+      "forced_share_rate": 0.0,
+      "fidelity": 0.3901434984768318,
+      "rule_fires": {
+       "r0": 134
+      }
+     },
+     "votes": 0,
+     "adopted": false
+    }
+   ]
+  }
+ ],
+ "protocols": {
+  "1": {
+   "version": 1,
+   "parent_version": 0,
+   "rules": [],
+   "init_threshold": 0.0,
+   "adopted_gen": 1
+  },
+  "2": {
+   "version": 2,
+   "parent_version": 1,
+   "rules": [],
+   "init_threshold": 0.0,
+   "adopted_gen": 2
+  },
+  "3": {
+   "version": 3,
+   "parent_version": 2,
+   "rules": [],
+   "init_threshold": 0.0,
+   "adopted_gen": 3
+  }
+ },
+ "final_per_agent": [
+  {
+   "version": 1,
+   "parent_version": 0,
+   "rules": [
+    {
+     "rule_id": "r0",
+     "conditions": [
+      {
+       "metric": "consecutive_low_gain",
+       "op": "<",
+       "value": 1.0
+      }
+     ],
+     "action": "SHARE_BEST",
+     "priority": 0,
+     "author_id": "founder",
+     "created_gen": 0
+    }
+   ],
+   "init_threshold": 0.0,
+   "adopted_gen": 1
+  },
+  {
+   "version": 0,
+   "parent_version": null,
+   "rules": [
+    {
+     "rule_id": "r0",
+     "conditions": [],
+     "action": "SHARE_BEST",
+     "priority": 0,
+     "author_id": "founder",
+     "created_gen": 0
+    }
+   ],
+   "init_threshold": 0.0,
+   "adopted_gen": 0
+  },
+  {
+   "version": 0,
+   "parent_version": null,
+   "rules": [
+    {
+     "rule_id": "r0",
+     "conditions": [],
+     "action": "SHARE_BEST",
+     "priority": 0,
+     "author_id": "founder",
+     "created_gen": 0
+    }
+   ],
+   "init_threshold": 0.0,
+   "adopted_gen": 0
+  },
+  {
+   "version": 2,
+   "parent_version": 0,
+   "rules": [
+    {
+     "rule_id": "r0",
+     "conditions": [
+      {
+       "metric": "my_best_gain",
+       "op": "<",
+       "value": 0.1
+      }
+     ],
+     "action": "SHARE_BEST",
+     "priority": 0,
+     "author_id": "founder",
+     "created_gen": 0
+    }
+   ],
+   "init_threshold": 0.0,
+   "adopted_gen": 2
+  },
+  {
+   "version": 0,
+   "parent_version": null,
+   "rules": [
+    {
+     "rule_id": "r0",
+     "conditions": [],
+     "action": "SHARE_BEST",
+     "priority": 0,
+     "author_id": "founder",
+     "created_gen": 0
+    }
+   ],
+   "init_threshold": 0.0,
+   "adopted_gen": 0
+  },
+  {
+   "version": 3,
+   "parent_version": 0,
+   "rules": [
+    {
+     "rule_id": "r0",
+     "conditions": [
+      {
+       "metric": "recent_share_gain",
+       "op": ">=",
+       "value": 0.05
+      }
+     ],
+     "action": "SHARE_BEST",
+     "priority": 0,
+     "author_id": "founder",
+     "created_gen": 0
+    }
+   ],
+   "init_threshold": 0.0,
+   "adopted_gen": 2
+  }
+ ]
+}

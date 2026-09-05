@@ -1,0 +1,61 @@
+{
+ "repo": "dateutil",
+ "fix_commit": "4cc9637390a180a2f295d926ae90602b72223951",
+ "parent_commit": "a7dba7aa167f06bc74a4018149e8021715ff7130",
+ "answer_files": [],
+ "answer_functions": [],
+ "patch_lines": 52,
+ "added_tests": {
+  "dateutil/test/test.py::ParserTest::testSmartDefaultsNoYearFeb29": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "dateutil/test/test.py::ParserTest::testSmartDefaultsNoYearFeb29Y2100": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "dateutil/test/test.py::ParserTest::testSmartDefaultsNoYearFutureFeb29Y2100": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "dateutil/test/test.py::ParserTest::testInvalidDayNoFallback": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "dateutil/test/test.py::ParserTest::testUnspecifiedDayNoFallback": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "dateutil/test/test.py::ParserTest::testUnspecifiedDayUnspecifiedFallback": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "dateutil/test/test.py::ParserTest::testUnspecifiedDayUnspecifiedFallbackFebNoLeapYear": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  },
+  "dateutil/test/test.py::ParserTest::testUnspecifiedDayUnspecifiedFallbackFebLeapYear": {
+   "parent": "env_setup_fail",
+   "fix": "env_setup_fail",
+   "mode": "extract"
+  }
+ },
+ "repro_tests": [],
+ "test_files": [
+  "dateutil/test/test.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": false,
+ "partial_fix_probes": [],
+ "env_seconds": 48.8,
+ "env_error_tests": 9,
+ "qualified": false,
+ "selector_event_proxy_v1": false
+}

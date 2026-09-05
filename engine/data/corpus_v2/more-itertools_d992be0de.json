@@ -1,0 +1,59 @@
+{
+ "repo": "more-itertools",
+ "fix_commit": "d992be0de9383ddcaae3a24866a2d96b52132b07",
+ "parent_commit": "cb75bb9c55f7ed3e77ce599097e1ba8da411746d",
+ "answer_files": [
+  "more_itertools/recipes.py"
+ ],
+ "answer_functions": [
+  "more_itertools/recipes.py::_windowed_running_max",
+  "more_itertools/recipes.py::_windowed_running_min"
+ ],
+ "patch_lines": 50,
+ "added_tests": {
+  "tests/test_more.py::TestRunningMin::test_stability": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  },
+  "tests/test_more.py::TestRunningMax::test_stability": {
+   "parent": "fail",
+   "fix": "pass",
+   "mode": "file"
+  }
+ },
+ "repro_tests": [
+  "tests/test_more.py::TestRunningMin::test_stability",
+  "tests/test_more.py::TestRunningMax::test_stability"
+ ],
+ "test_files": [
+  "tests/test_more.py"
+ ],
+ "location_hard_proxy": false,
+ "selector_event_proxy": true,
+ "partial_fix_probes": [
+  {
+   "applied": "more_itertools/recipes.py::_windowed_running_max",
+   "passes_repro": [
+    "tests/test_more.py::TestRunningMax::test_stability"
+   ],
+   "still_failing": [
+    "tests/test_more.py::TestRunningMin::test_stability"
+   ],
+   "event": true
+  },
+  {
+   "applied": "more_itertools/recipes.py::_windowed_running_min",
+   "passes_repro": [
+    "tests/test_more.py::TestRunningMin::test_stability"
+   ],
+   "still_failing": [
+    "tests/test_more.py::TestRunningMax::test_stability"
+   ],
+   "event": true
+  }
+ ],
+ "env_seconds": 6.2,
+ "env_error_tests": 0,
+ "qualified": true
+}

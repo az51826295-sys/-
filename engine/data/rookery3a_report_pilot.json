@@ -1,0 +1,335 @@
+{
+ "results": [
+  {
+   "task": "mi_sliced_negative",
+   "arm": "A",
+   "rep": 0,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": "patch_parse_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "",
+     "files": [],
+     "sig": ""
+    },
+    {
+     "call": 1,
+     "code_fail": "patch_apply_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "patch_apply_fail: not_a_target.py does not exist",
+     "files": [
+      "not_a_target.py"
+     ],
+     "sig": "aa38bd5cc7e7"
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "tests/test_more.py::SlicedTests: ts\\test_more.py::SlicedTests::test_even - ValueError: rk-mock\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed in 2.66s\n",
+     "files": [
+      "more_itertools/more.py"
+     ],
+     "sig": "dbc3cda9f257"
+    },
+    {
+     "call": 3,
+     "code_fail": "patch_parse_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "",
+     "files": [],
+     "sig": ""
+    },
+    {
+     "call": 4,
+     "code_fail": "patch_apply_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "patch_apply_fail: not_a_target.py does not exist",
+     "files": [
+      "not_a_target.py"
+     ],
+     "sig": "aa38bd5cc7e7"
+    },
+    {
+     "call": 5,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "tests/test_more.py::SlicedTests: ts\\test_more.py::SlicedTests::test_even - ValueError: rk-mock\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed in 2.53s\n",
+     "files": [
+      "more_itertools/more.py"
+     ],
+     "sig": "dbc3cda9f257"
+    }
+   ],
+   "test_runs": 12,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "public_fail",
+   "wall_s": 126.6,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "mi_sliced_negative",
+   "arm": "B",
+   "rep": 0,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": "patch_parse_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "",
+     "files": [],
+     "sig": ""
+    },
+    {
+     "call": 1,
+     "code_fail": "patch_apply_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "patch_apply_fail: not_a_target.py does not exist",
+     "files": [
+      "not_a_target.py"
+     ],
+     "sig": "aa38bd5cc7e7"
+    },
+    {
+     "call": 2,
+     "code_fail": null,
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "tests/test_more.py::SlicedTests: ts\\test_more.py::SlicedTests::test_even - ValueError: rk-mock\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed in 3.27s\n",
+     "files": [
+      "more_itertools/more.py"
+     ],
+     "sig": "dbc3cda9f257"
+    },
+    {
+     "call": 3,
+     "code_fail": "patch_parse_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "",
+     "files": [],
+     "sig": ""
+    },
+    {
+     "call": 4,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": "",
+     "files": [
+      "not_a_target.py"
+     ],
+     "sig": "aa38bd5cc7e7"
+    },
+    {
+     "call": 5,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": "",
+     "files": [
+      "more_itertools/more.py"
+     ],
+     "sig": "dbc3cda9f257"
+    }
+   ],
+   "test_runs": 15,
+   "rollback_rounds": 1,
+   "duplicates": 2,
+   "first_candidate_full": false,
+   "final_status": "public_fail",
+   "wall_s": 178.8,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "tdb_lru_falsy",
+   "arm": "A",
+   "rep": 0,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": "patch_parse_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "",
+     "files": [],
+     "sig": ""
+    },
+    {
+     "call": 1,
+     "code_fail": "patch_apply_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "patch_apply_fail: not_a_target.py does not exist",
+     "files": [
+      "not_a_target.py"
+     ],
+     "sig": "aa38bd5cc7e7"
+    },
+    {
+     "call": 2,
+     "code_fail": "patch_apply_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "patch_apply_fail: test_falsy_update_moves_to_end not found in tinydb/utils.py",
+     "files": [
+      "tinydb/utils.py"
+     ],
+     "sig": "f3537ceb7e06"
+    },
+    {
+     "call": 3,
+     "code_fail": "patch_parse_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "",
+     "files": [],
+     "sig": ""
+    },
+    {
+     "call": 4,
+     "code_fail": "patch_apply_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "patch_apply_fail: not_a_target.py does not exist",
+     "files": [
+      "not_a_target.py"
+     ],
+     "sig": "aa38bd5cc7e7"
+    },
+    {
+     "call": 5,
+     "code_fail": "patch_apply_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "patch_apply_fail: test_falsy_update_moves_to_end not found in tinydb/utils.py",
+     "files": [
+      "tinydb/utils.py"
+     ],
+     "sig": "f3537ceb7e06"
+    }
+   ],
+   "test_runs": 0,
+   "rollback_rounds": 0,
+   "duplicates": 0,
+   "first_candidate_full": false,
+   "final_status": "no_patch",
+   "wall_s": 1.9,
+   "failure_report_chars": 0
+  },
+  {
+   "task": "tdb_lru_falsy",
+   "arm": "B",
+   "rep": 0,
+   "candidates": [
+    {
+     "call": 0,
+     "code_fail": "patch_parse_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "",
+     "files": [],
+     "sig": ""
+    },
+    {
+     "call": 1,
+     "code_fail": "patch_apply_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "patch_apply_fail: not_a_target.py does not exist",
+     "files": [
+      "not_a_target.py"
+     ],
+     "sig": "aa38bd5cc7e7"
+    },
+    {
+     "call": 2,
+     "code_fail": "patch_apply_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "patch_apply_fail: test_falsy_update_moves_to_end not found in tinydb/utils.py",
+     "files": [
+      "tinydb/utils.py"
+     ],
+     "sig": "f3537ceb7e06"
+    },
+    {
+     "call": 3,
+     "code_fail": "patch_parse_fail",
+     "duplicate": false,
+     "public_pass": false,
+     "detail": "",
+     "files": [],
+     "sig": ""
+    },
+    {
+     "call": 4,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": "",
+     "files": [
+      "not_a_target.py"
+     ],
+     "sig": "aa38bd5cc7e7"
+    },
+    {
+     "call": 5,
+     "code_fail": null,
+     "duplicate": true,
+     "public_pass": false,
+     "detail": "",
+     "files": [
+      "tinydb/utils.py"
+     ],
+     "sig": "f3537ceb7e06"
+    }
+   ],
+   "test_runs": 0,
+   "rollback_rounds": 2,
+   "duplicates": 2,
+   "first_candidate_full": false,
+   "final_status": "no_patch",
+   "wall_s": 1.2,
+   "failure_report_chars": 0
+  }
+ ],
+ "summary": {
+  "A": {
+   "n": 2,
+   "full": 0.0,
+   "public_only": 0.0,
+   "regression": 0.0,
+   "first_candidate_full": 0.0,
+   "recovery": 0.0,
+   "mean_test_runs": 6.0,
+   "duplicates": 0,
+   "mean_wall_s": 64.2,
+   "code_fails": 10
+  },
+  "B": {
+   "n": 2,
+   "full": 0.0,
+   "public_only": 0.0,
+   "regression": 0.0,
+   "first_candidate_full": 0.0,
+   "recovery": 0.0,
+   "mean_test_runs": 7.5,
+   "duplicates": 4,
+   "mean_wall_s": 90.0,
+   "code_fails": 7
+  },
+  "usage": {}
+ }
+}

@@ -1,0 +1,310 @@
+{
+  "spec": "conformance-q2-v0",
+  "design": "docs/conformance-cost-q2-v0-design.md",
+  "intake": "data/pixellab_intake.json",
+  "image_spec": "data/image_specs/pixel-sprite-v1.yaml",
+  "thresholds": {
+    "encoding_only_upper": 0.25,
+    "content_loss_lower": 0.5
+  },
+  "bootstrap": {
+    "n": 10000,
+    "seed": 12345
+  },
+  "conformance": {
+    "verdict": "encoding_only",
+    "why": "ci_upper_le_encoding_only",
+    "median_r": 0.09567903574638432,
+    "ci95": [
+      0.024809073391056213,
+      0.13511796791504285
+    ],
+    "axes": [
+      "bbox_fill_ratio",
+      "mean_saturation",
+      "mean_value",
+      "value_spread",
+      "edge_density",
+      "symmetry_x",
+      "dominant_color_share",
+      "outline_ratio"
+    ],
+    "excluded_axes": [
+      "color_count",
+      "opaque_ratio"
+    ],
+    "feature_sd": {
+      "bbox_fill_ratio": 0.33231131628262267,
+      "mean_saturation": 0.2553155073359345,
+      "mean_value": 0.10712200844640524,
+      "value_spread": 0.261429733969761,
+      "edge_density": 0.13390959359186697,
+      "symmetry_x": 0.24488395940377097,
+      "dominant_color_share": 0.11626201470626238,
+      "outline_ratio": 0.1270015350805792
+    },
+    "group_scale": {
+      "01_cat": {
+        "n_originals": 5,
+        "d_between": 1.9431288642205633
+      },
+      "02_tileset": {
+        "n_originals": 16,
+        "d_between": 1.255685005087385
+      },
+      "03_merchant": {
+        "n_originals": 4,
+        "d_between": 1.6634099519561758
+      },
+      "04_icon": {
+        "n_originals": 1,
+        "d_between": null
+      }
+    },
+    "sample": {
+      "assets_used": 25,
+      "groups_used": 3,
+      "gate_ok": true,
+      "min_assets": 20,
+      "min_groups": 2
+    },
+    "assets": [
+      {
+        "source": "audition/pixellab/cat_0.png",
+        "group": "01_cat",
+        "d_conform": 3.929674659810276,
+        "r": 2.0223438250383694,
+        "why": null
+      },
+      {
+        "source": "audition/pixellab/cat_1.png",
+        "group": "01_cat",
+        "d_conform": 4.113921758714768,
+        "r": 2.1171636294770204,
+        "why": null
+      },
+      {
+        "source": "audition/pixellab/cat_final.png",
+        "group": "01_cat",
+        "d_conform": 4.113921758714768,
+        "r": 2.1171636294770204,
+        "why": null
+      },
+      {
+        "source": "audition/pixellab/cat_simple_a.png",
+        "group": "01_cat",
+        "d_conform": 0.0,
+        "r": 0.0,
+        "why": null
+      },
+      {
+        "source": "audition/pixellab/cat_simple_b.png",
+        "group": "01_cat",
+        "d_conform": 0.0029857084661665464,
+        "r": 0.0015365468143381151,
+        "why": null
+      },
+      {
+        "source": "audition/pixellab/tileset_0.png",
+        "group": "02_tileset",
+        "d_conform": 0.031152381447261724,
+        "r": 0.024809073391056213,
+        "why": null
+      },
+      {
+        "source": "audition/pixellab/tileset_1.png",
+        "group": "02_tileset",
+        "d_conform": 0.08959204973532571,
+        "r": 0.071349143592816,
+        "why": null
+      },
+      {
+        "source": "audition/pixellab/tileset_2.png",
+        "group": "02_tileset",
+        "d_conform": 0.015614149909701596,
+        "r": 0.012434766558843303,
+        "why": null
+      },
+      {
+        "source": "audition/pixellab/tileset_3.png",
+        "group": "02_tileset",
+        "d_conform": 0.13077183759492855,
+        "r": 0.10414382354261525,
+        "why": null
+      },
+      {
+        "source": "audition/pixellab/tileset_4.png",
+        "group": "02_tileset",
+        "d_conform": 0.1405932182994827,
+        "r": 0.11196535574596483,
+        "why": null
+      },
+      {
+        "source": "audition/pixellab/tileset_5.png",
+        "group": "02_tileset",
+        "d_conform": 0.031138334089008592,
+        "r": 0.024797886383011822,
+        "why": null
+      },
+      {
+        "source": "audition/pixellab/tileset_6.png",
+        "group": "02_tileset",
+        "d_conform": 0.0,
+        "r": 0.0,
+        "why": null
+      },
+      {
+        "source": "audition/pixellab/tileset_7.png",
+        "group": "02_tileset",
+        "d_conform": 0.09341973681628293,
+        "r": 0.07439742964023188,
+        "why": null
+      },
+      {
+        "source": "audition/pixellab/tileset_8.png",
+        "group": "02_tileset",
+        "d_conform": 0.07549697822509573,
+        "r": 0.06012413775685868,
+        "why": null
+      },
+      {
+        "source": "audition/pixellab/tileset_9.png",
+        "group": "02_tileset",
+        "d_conform": 0.1696656062287977,
+        "r": 0.13511796791504285,
+        "why": null
+      },
+      {
+        "source": "audition/pixellab/tileset_10.png",
+        "group": "02_tileset",
+        "d_conform": 0.00030810671555208356,
+        "r": 0.00024536943126962163,
+        "why": null
+      },
+      {
+        "source": "audition/pixellab/tileset_11.png",
+        "group": "02_tileset",
+        "d_conform": 0.12516290401356117,
+        "r": 0.09967699184625599,
+        "why": null
+      },
+      {
+        "source": "audition/pixellab/tileset_12.png",
+        "group": "02_tileset",
+        "d_conform": 0.0002966790646370436,
+        "r": 0.00023626870069727183,
+        "why": null
+      },
+      {
+        "source": "audition/pixellab/tileset_13.png",
+        "group": "02_tileset",
+        "d_conform": 0.12014273048795468,
+        "r": 0.09567903574638432,
+        "why": null
+      },
+      {
+        "source": "audition/pixellab/tileset_14.png",
+        "group": "02_tileset",
+        "d_conform": 0.12451429167734489,
+        "r": 0.09916045120621614,
+        "why": null
+      },
+      {
+        "source": "audition/pixellab/tileset_15.png",
+        "group": "02_tileset",
+        "d_conform": 0.03892306570915087,
+        "r": 0.030997475920676587,
+        "why": null
+      },
+      {
+        "source": "audition/pixellab/merchant_south.png",
+        "group": "03_merchant",
+        "d_conform": 2.450810495841703,
+        "r": 1.4733652957646077,
+        "why": null
+      },
+      {
+        "source": "audition/pixellab/merchant_north.png",
+        "group": "03_merchant",
+        "d_conform": 2.3887248739160856,
+        "r": 1.4360409898395383,
+        "why": null
+      },
+      {
+        "source": "audition/pixellab/merchant_east.png",
+        "group": "03_merchant",
+        "d_conform": 1.809536298627212,
+        "r": 1.0878474644805336,
+        "why": null
+      },
+      {
+        "source": "audition/pixellab/merchant_west.png",
+        "group": "03_merchant",
+        "d_conform": 1.9416417159011392,
+        "r": 1.1672659007587167,
+        "why": null
+      },
+      {
+        "source": "audition/pixellab/icon_0.png",
+        "group": "04_icon",
+        "d_conform": 4.5625765810355245,
+        "r": null,
+        "why": "no_scale_in_group"
+      }
+    ],
+    "skipped": []
+  },
+  "binding": {
+    "alpha_binary": {
+      "binding_rate": 0.0,
+      "violations": 0,
+      "undefined": 0,
+      "n": 26,
+      "slack_p50": null,
+      "slack_min": null,
+      "dead_letter": false
+    },
+    "color_count": {
+      "binding_rate": 0.6153846153846154,
+      "violations": 16,
+      "undefined": 0,
+      "n": 26,
+      "slack_p50": 9.5,
+      "slack_min": 2,
+      "dead_letter": false
+    },
+    "file_integrity": {
+      "binding_rate": 0.0,
+      "violations": 0,
+      "undefined": 0,
+      "n": 26,
+      "slack_p50": null,
+      "slack_min": null,
+      "dead_letter": false
+    },
+    "logical_height": {
+      "binding_rate": 0.3076923076923077,
+      "violations": 8,
+      "undefined": 0,
+      "n": 26,
+      "slack_p50": 0.0,
+      "slack_min": 0,
+      "dead_letter": false
+    },
+    "logical_width": {
+      "binding_rate": 0.3076923076923077,
+      "violations": 8,
+      "undefined": 0,
+      "n": 26,
+      "slack_p50": 0.0,
+      "slack_min": 0,
+      "dead_letter": false
+    },
+    "_meta": {
+      "judged": 26,
+      "errors": [],
+      "source": "원본 재채점 (기록된 violations는 후처리 후 값)",
+      "note": "alpha_binary처럼 이진인 제약은 여유가 없다 → slack=null이고 사문 판정도 하지 않는다"
+    }
+  }
+}

@@ -1,0 +1,155 @@
+{
+  "spec": "tier-compare-v0-aborted",
+  "note": "07:2x에 중단한 첫 실행. 결과 파일을 쓰기 전에 멈췄으므로 원장에서 뽑은 호출 기록만 남긴다.",
+  "why": "claude-sonnet-5가 매 호출 max_tokens=3000에 정확히 걸려 SVG가 잘렸다",
+  "calls": [
+    {
+      "ts": "2026-08-27T07:19:07",
+      "model": "claude-haiku-4-5",
+      "input_tokens": 542,
+      "output_tokens": 1004,
+      "usd": 0.005562
+    },
+    {
+      "ts": "2026-08-27T07:19:15",
+      "model": "claude-haiku-4-5",
+      "input_tokens": 542,
+      "output_tokens": 1257,
+      "usd": 0.006827
+    },
+    {
+      "ts": "2026-08-27T07:19:25",
+      "model": "claude-haiku-4-5",
+      "input_tokens": 539,
+      "output_tokens": 1558,
+      "usd": 0.008329
+    },
+    {
+      "ts": "2026-08-27T07:19:33",
+      "model": "claude-haiku-4-5",
+      "input_tokens": 539,
+      "output_tokens": 1041,
+      "usd": 0.005744
+    },
+    {
+      "ts": "2026-08-27T07:19:39",
+      "model": "claude-haiku-4-5",
+      "input_tokens": 540,
+      "output_tokens": 1091,
+      "usd": 0.005995
+    },
+    {
+      "ts": "2026-08-27T07:19:45",
+      "model": "claude-haiku-4-5",
+      "input_tokens": 540,
+      "output_tokens": 1066,
+      "usd": 0.00587
+    },
+    {
+      "ts": "2026-08-27T07:19:55",
+      "model": "claude-haiku-4-5",
+      "input_tokens": 538,
+      "output_tokens": 1630,
+      "usd": 0.008688
+    },
+    {
+      "ts": "2026-08-27T07:20:02",
+      "model": "claude-haiku-4-5",
+      "input_tokens": 538,
+      "output_tokens": 962,
+      "usd": 0.005348
+    },
+    {
+      "ts": "2026-08-27T07:20:08",
+      "model": "claude-haiku-4-5",
+      "input_tokens": 537,
+      "output_tokens": 816,
+      "usd": 0.004617
+    },
+    {
+      "ts": "2026-08-27T07:20:14",
+      "model": "claude-haiku-4-5",
+      "input_tokens": 537,
+      "output_tokens": 992,
+      "usd": 0.005497
+    },
+    {
+      "ts": "2026-08-27T07:20:21",
+      "model": "claude-haiku-4-5",
+      "input_tokens": 542,
+      "output_tokens": 922,
+      "usd": 0.005152
+    },
+    {
+      "ts": "2026-08-27T07:20:26",
+      "model": "claude-haiku-4-5",
+      "input_tokens": 542,
+      "output_tokens": 786,
+      "usd": 0.004472
+    },
+    {
+      "ts": "2026-08-27T07:20:33",
+      "model": "claude-haiku-4-5",
+      "input_tokens": 543,
+      "output_tokens": 1158,
+      "usd": 0.006333
+    },
+    {
+      "ts": "2026-08-27T07:20:42",
+      "model": "claude-haiku-4-5",
+      "input_tokens": 543,
+      "output_tokens": 1494,
+      "usd": 0.008013
+    },
+    {
+      "ts": "2026-08-27T07:20:50",
+      "model": "claude-haiku-4-5",
+      "input_tokens": 542,
+      "output_tokens": 1074,
+      "usd": 0.005912
+    },
+    {
+      "ts": "2026-08-27T07:20:59",
+      "model": "claude-haiku-4-5",
+      "input_tokens": 542,
+      "output_tokens": 1373,
+      "usd": 0.007407
+    },
+    {
+      "ts": "2026-08-27T07:21:04",
+      "model": "claude-haiku-4-5",
+      "input_tokens": 539,
+      "output_tokens": 882,
+      "usd": 0.004949
+    },
+    {
+      "ts": "2026-08-27T07:21:11",
+      "model": "claude-haiku-4-5",
+      "input_tokens": 539,
+      "output_tokens": 919,
+      "usd": 0.005134
+    },
+    {
+      "ts": "2026-08-27T07:21:44",
+      "model": "claude-sonnet-5",
+      "input_tokens": 571,
+      "output_tokens": 3000,
+      "usd": 0.046713
+    },
+    {
+      "ts": "2026-08-27T07:22:21",
+      "model": "claude-sonnet-5",
+      "input_tokens": 571,
+      "output_tokens": 3000,
+      "usd": 0.046713
+    },
+    {
+      "ts": "2026-08-27T07:22:53",
+      "model": "claude-sonnet-5",
+      "input_tokens": 569,
+      "output_tokens": 3000,
+      "usd": 0.046707
+    }
+  ],
+  "usd_total": 0.249982
+}

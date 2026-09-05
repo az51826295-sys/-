@@ -1,0 +1,2640 @@
+{
+  "spec": "tier-compare-v0",
+  "design": "docs/tier-compare-v0-design.md",
+  "provider": "mock",
+  "seconds": 1.3,
+  "usd_by_arm": {
+    "haiku": 0.0,
+    "sonnet": 0.0,
+    "opus": 0.0
+  },
+  "usd_total": 0.0,
+  "thresholds": {
+    "tier_helps_lower": 0.2,
+    "irrelevant_band": 0.05
+  },
+  "bootstrap": {
+    "n": 10000,
+    "seed": 12345,
+    "unit": "call"
+  },
+  "arms": {
+    "haiku": {
+      "calls": [
+        {
+          "concept": "quest",
+          "n": 3,
+          "passed": 0,
+          "rate": 0.0
+        },
+        {
+          "concept": "quest",
+          "n": 3,
+          "passed": 0,
+          "rate": 0.0
+        },
+        {
+          "concept": "equipment",
+          "n": 3,
+          "passed": 0,
+          "rate": 0.0
+        },
+        {
+          "concept": "equipment",
+          "n": 3,
+          "passed": 0,
+          "rate": 0.0
+        },
+        {
+          "concept": "stats",
+          "n": 3,
+          "passed": 0,
+          "rate": 0.0
+        },
+        {
+          "concept": "stats",
+          "n": 3,
+          "passed": 0,
+          "rate": 0.0
+        },
+        {
+          "concept": "dialogue",
+          "n": 3,
+          "passed": 0,
+          "rate": 0.0
+        },
+        {
+          "concept": "dialogue",
+          "n": 3,
+          "passed": 0,
+          "rate": 0.0
+        },
+        {
+          "concept": "exit",
+          "n": 3,
+          "passed": 0,
+          "rate": 0.0
+        },
+        {
+          "concept": "exit",
+          "n": 3,
+          "passed": 0,
+          "rate": 0.0
+        },
+        {
+          "concept": "save",
+          "n": 3,
+          "passed": 0,
+          "rate": 0.0
+        },
+        {
+          "concept": "save",
+          "n": 3,
+          "passed": 0,
+          "rate": 0.0
+        },
+        {
+          "concept": "inventory",
+          "n": 3,
+          "passed": 0,
+          "rate": 0.0
+        },
+        {
+          "concept": "inventory",
+          "n": 3,
+          "passed": 0,
+          "rate": 0.0
+        },
+        {
+          "concept": "map",
+          "n": 3,
+          "passed": 0,
+          "rate": 0.0
+        },
+        {
+          "concept": "map",
+          "n": 3,
+          "passed": 0,
+          "rate": 0.0
+        },
+        {
+          "concept": "settings",
+          "n": 3,
+          "passed": 0,
+          "rate": 0.0
+        },
+        {
+          "concept": "settings",
+          "n": 3,
+          "passed": 0,
+          "rate": 0.0
+        }
+      ],
+      "n_calls": 18,
+      "n": 54,
+      "passed": 0,
+      "pass_rate": 0.0,
+      "concepts": [
+        "dialogue",
+        "equipment",
+        "exit",
+        "inventory",
+        "map",
+        "quest",
+        "save",
+        "settings",
+        "stats"
+      ],
+      "why": null,
+      "temperature_dropped": false,
+      "model": "claude-haiku-4-5"
+    },
+    "sonnet": {
+      "calls": [
+        {
+          "concept": "quest",
+          "n": 3,
+          "passed": 0,
+          "rate": 0.0
+        },
+        {
+          "concept": "quest",
+          "n": 3,
+          "passed": 0,
+          "rate": 0.0
+        },
+        {
+          "concept": "equipment",
+          "n": 3,
+          "passed": 0,
+          "rate": 0.0
+        },
+        {
+          "concept": "equipment",
+          "n": 3,
+          "passed": 0,
+          "rate": 0.0
+        },
+        {
+          "concept": "stats",
+          "n": 3,
+          "passed": 0,
+          "rate": 0.0
+        },
+        {
+          "concept": "stats",
+          "n": 3,
+          "passed": 0,
+          "rate": 0.0
+        },
+        {
+          "concept": "dialogue",
+          "n": 3,
+          "passed": 0,
+          "rate": 0.0
+        },
+        {
+          "concept": "dialogue",
+          "n": 3,
+          "passed": 0,
+          "rate": 0.0
+        },
+        {
+          "concept": "exit",
+          "n": 3,
+          "passed": 0,
+          "rate": 0.0
+        },
+        {
+          "concept": "exit",
+          "n": 3,
+          "passed": 0,
+          "rate": 0.0
+        },
+        {
+          "concept": "save",
+          "n": 3,
+          "passed": 0,
+          "rate": 0.0
+        },
+        {
+          "concept": "save",
+          "n": 3,
+          "passed": 0,
+          "rate": 0.0
+        },
+        {
+          "concept": "inventory",
+          "n": 3,
+          "passed": 0,
+          "rate": 0.0
+        },
+        {
+          "concept": "inventory",
+          "n": 3,
+          "passed": 0,
+          "rate": 0.0
+        },
+        {
+          "concept": "map",
+          "n": 3,
+          "passed": 0,
+          "rate": 0.0
+        },
+        {
+          "concept": "map",
+          "n": 3,
+          "passed": 0,
+          "rate": 0.0
+        },
+        {
+          "concept": "settings",
+          "n": 3,
+          "passed": 0,
+          "rate": 0.0
+        },
+        {
+          "concept": "settings",
+          "n": 3,
+          "passed": 0,
+          "rate": 0.0
+        }
+      ],
+      "n_calls": 18,
+      "n": 54,
+      "passed": 0,
+      "pass_rate": 0.0,
+      "concepts": [
+        "dialogue",
+        "equipment",
+        "exit",
+        "inventory",
+        "map",
+        "quest",
+        "save",
+        "settings",
+        "stats"
+      ],
+      "why": null,
+      "temperature_dropped": false,
+      "model": "claude-sonnet-5"
+    },
+    "opus": {
+      "calls": [
+        {
+          "concept": "quest",
+          "n": 3,
+          "passed": 0,
+          "rate": 0.0
+        },
+        {
+          "concept": "quest",
+          "n": 3,
+          "passed": 0,
+          "rate": 0.0
+        },
+        {
+          "concept": "equipment",
+          "n": 3,
+          "passed": 0,
+          "rate": 0.0
+        },
+        {
+          "concept": "equipment",
+          "n": 3,
+          "passed": 0,
+          "rate": 0.0
+        },
+        {
+          "concept": "stats",
+          "n": 3,
+          "passed": 0,
+          "rate": 0.0
+        },
+        {
+          "concept": "stats",
+          "n": 3,
+          "passed": 0,
+          "rate": 0.0
+        },
+        {
+          "concept": "dialogue",
+          "n": 3,
+          "passed": 0,
+          "rate": 0.0
+        },
+        {
+          "concept": "dialogue",
+          "n": 3,
+          "passed": 0,
+          "rate": 0.0
+        },
+        {
+          "concept": "exit",
+          "n": 3,
+          "passed": 0,
+          "rate": 0.0
+        },
+        {
+          "concept": "exit",
+          "n": 3,
+          "passed": 0,
+          "rate": 0.0
+        },
+        {
+          "concept": "save",
+          "n": 3,
+          "passed": 0,
+          "rate": 0.0
+        },
+        {
+          "concept": "save",
+          "n": 3,
+          "passed": 0,
+          "rate": 0.0
+        },
+        {
+          "concept": "inventory",
+          "n": 3,
+          "passed": 0,
+          "rate": 0.0
+        },
+        {
+          "concept": "inventory",
+          "n": 3,
+          "passed": 0,
+          "rate": 0.0
+        },
+        {
+          "concept": "map",
+          "n": 3,
+          "passed": 0,
+          "rate": 0.0
+        },
+        {
+          "concept": "map",
+          "n": 3,
+          "passed": 0,
+          "rate": 0.0
+        },
+        {
+          "concept": "settings",
+          "n": 3,
+          "passed": 0,
+          "rate": 0.0
+        },
+        {
+          "concept": "settings",
+          "n": 3,
+          "passed": 0,
+          "rate": 0.0
+        }
+      ],
+      "n_calls": 18,
+      "n": 54,
+      "passed": 0,
+      "pass_rate": 0.0,
+      "concepts": [
+        "dialogue",
+        "equipment",
+        "exit",
+        "inventory",
+        "map",
+        "quest",
+        "save",
+        "settings",
+        "stats"
+      ],
+      "why": null,
+      "temperature_dropped": false,
+      "model": "claude-opus-5"
+    }
+  },
+  "extras": {
+    "haiku": {
+      "violations": {
+        "grid.snap": 18,
+        "palette": 18,
+        "allowed_elements": 18,
+        "forbidden_elements": 18
+      },
+      "distinct_T2": 0,
+      "passed": 0,
+      "weight_spread": null
+    },
+    "sonnet": {
+      "violations": {
+        "grid.snap": 18,
+        "palette": 18,
+        "allowed_elements": 18,
+        "forbidden_elements": 18
+      },
+      "distinct_T2": 0,
+      "passed": 0,
+      "weight_spread": null
+    },
+    "opus": {
+      "violations": {
+        "grid.snap": 18,
+        "palette": 18,
+        "allowed_elements": 18,
+        "forbidden_elements": 18
+      },
+      "distinct_T2": 0,
+      "passed": 0,
+      "weight_spread": null
+    }
+  },
+  "judgement": {
+    "sonnet": {
+      "verdict": "tier_irrelevant",
+      "why": "ci_within_band",
+      "d": 0.0,
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "gate_ok": true,
+      "n_calls": 18
+    },
+    "opus": {
+      "verdict": "tier_irrelevant",
+      "why": "ci_within_band",
+      "d": 0.0,
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "gate_ok": true,
+      "n_calls": 18
+    }
+  },
+  "rows": {
+    "haiku": [
+      {
+        "concept": "quest",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "signatures": {
+          "T1": "2ff82b9d89b0aa1d",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "quest",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "signatures": {
+          "T1": "69f2438ea9d4d28e",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "quest",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "signatures": {
+          "T1": "15d28fb63dfb758d",
+          "T2": "(('text',), 0, 0)",
+          "T3": "('text',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>"
+      },
+      {
+        "concept": "quest",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "signatures": {
+          "T1": "2ff82b9d89b0aa1d",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "quest",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "signatures": {
+          "T1": "69f2438ea9d4d28e",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "quest",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "signatures": {
+          "T1": "15d28fb63dfb758d",
+          "T2": "(('text',), 0, 0)",
+          "T3": "('text',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>"
+      },
+      {
+        "concept": "equipment",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "signatures": {
+          "T1": "2ff82b9d89b0aa1d",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "equipment",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "signatures": {
+          "T1": "69f2438ea9d4d28e",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "equipment",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "signatures": {
+          "T1": "15d28fb63dfb758d",
+          "T2": "(('text',), 0, 0)",
+          "T3": "('text',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>"
+      },
+      {
+        "concept": "equipment",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "signatures": {
+          "T1": "2ff82b9d89b0aa1d",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "equipment",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "signatures": {
+          "T1": "69f2438ea9d4d28e",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "equipment",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "signatures": {
+          "T1": "15d28fb63dfb758d",
+          "T2": "(('text',), 0, 0)",
+          "T3": "('text',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>"
+      },
+      {
+        "concept": "stats",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "signatures": {
+          "T1": "2ff82b9d89b0aa1d",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "stats",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "signatures": {
+          "T1": "69f2438ea9d4d28e",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "stats",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "signatures": {
+          "T1": "15d28fb63dfb758d",
+          "T2": "(('text',), 0, 0)",
+          "T3": "('text',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>"
+      },
+      {
+        "concept": "stats",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "signatures": {
+          "T1": "2ff82b9d89b0aa1d",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "stats",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "signatures": {
+          "T1": "69f2438ea9d4d28e",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "stats",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "signatures": {
+          "T1": "15d28fb63dfb758d",
+          "T2": "(('text',), 0, 0)",
+          "T3": "('text',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>"
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "signatures": {
+          "T1": "2ff82b9d89b0aa1d",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "signatures": {
+          "T1": "69f2438ea9d4d28e",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "signatures": {
+          "T1": "15d28fb63dfb758d",
+          "T2": "(('text',), 0, 0)",
+          "T3": "('text',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>"
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "signatures": {
+          "T1": "2ff82b9d89b0aa1d",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "signatures": {
+          "T1": "69f2438ea9d4d28e",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "signatures": {
+          "T1": "15d28fb63dfb758d",
+          "T2": "(('text',), 0, 0)",
+          "T3": "('text',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>"
+      },
+      {
+        "concept": "exit",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "signatures": {
+          "T1": "2ff82b9d89b0aa1d",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "exit",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "signatures": {
+          "T1": "69f2438ea9d4d28e",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "exit",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "signatures": {
+          "T1": "15d28fb63dfb758d",
+          "T2": "(('text',), 0, 0)",
+          "T3": "('text',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>"
+      },
+      {
+        "concept": "exit",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "signatures": {
+          "T1": "2ff82b9d89b0aa1d",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "exit",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "signatures": {
+          "T1": "69f2438ea9d4d28e",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "exit",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "signatures": {
+          "T1": "15d28fb63dfb758d",
+          "T2": "(('text',), 0, 0)",
+          "T3": "('text',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>"
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "signatures": {
+          "T1": "2ff82b9d89b0aa1d",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "signatures": {
+          "T1": "69f2438ea9d4d28e",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "save",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "signatures": {
+          "T1": "15d28fb63dfb758d",
+          "T2": "(('text',), 0, 0)",
+          "T3": "('text',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>"
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "signatures": {
+          "T1": "2ff82b9d89b0aa1d",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "signatures": {
+          "T1": "69f2438ea9d4d28e",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "save",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "signatures": {
+          "T1": "15d28fb63dfb758d",
+          "T2": "(('text',), 0, 0)",
+          "T3": "('text',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>"
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "signatures": {
+          "T1": "2ff82b9d89b0aa1d",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "signatures": {
+          "T1": "69f2438ea9d4d28e",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "inventory",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "signatures": {
+          "T1": "15d28fb63dfb758d",
+          "T2": "(('text',), 0, 0)",
+          "T3": "('text',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>"
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "signatures": {
+          "T1": "2ff82b9d89b0aa1d",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "signatures": {
+          "T1": "69f2438ea9d4d28e",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "inventory",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "signatures": {
+          "T1": "15d28fb63dfb758d",
+          "T2": "(('text',), 0, 0)",
+          "T3": "('text',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>"
+      },
+      {
+        "concept": "map",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "signatures": {
+          "T1": "2ff82b9d89b0aa1d",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "map",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "signatures": {
+          "T1": "69f2438ea9d4d28e",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "map",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "signatures": {
+          "T1": "15d28fb63dfb758d",
+          "T2": "(('text',), 0, 0)",
+          "T3": "('text',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>"
+      },
+      {
+        "concept": "map",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "signatures": {
+          "T1": "2ff82b9d89b0aa1d",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "map",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "signatures": {
+          "T1": "69f2438ea9d4d28e",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "map",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "signatures": {
+          "T1": "15d28fb63dfb758d",
+          "T2": "(('text',), 0, 0)",
+          "T3": "('text',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>"
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "signatures": {
+          "T1": "2ff82b9d89b0aa1d",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "signatures": {
+          "T1": "69f2438ea9d4d28e",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "settings",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "signatures": {
+          "T1": "15d28fb63dfb758d",
+          "T2": "(('text',), 0, 0)",
+          "T3": "('text',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>"
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "signatures": {
+          "T1": "2ff82b9d89b0aa1d",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "signatures": {
+          "T1": "69f2438ea9d4d28e",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "settings",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "signatures": {
+          "T1": "15d28fb63dfb758d",
+          "T2": "(('text',), 0, 0)",
+          "T3": "('text',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>"
+      }
+    ],
+    "sonnet": [
+      {
+        "concept": "quest",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "signatures": {
+          "T1": "2ff82b9d89b0aa1d",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "quest",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "signatures": {
+          "T1": "69f2438ea9d4d28e",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "quest",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "signatures": {
+          "T1": "15d28fb63dfb758d",
+          "T2": "(('text',), 0, 0)",
+          "T3": "('text',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>"
+      },
+      {
+        "concept": "quest",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "signatures": {
+          "T1": "2ff82b9d89b0aa1d",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "quest",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "signatures": {
+          "T1": "69f2438ea9d4d28e",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "quest",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "signatures": {
+          "T1": "15d28fb63dfb758d",
+          "T2": "(('text',), 0, 0)",
+          "T3": "('text',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>"
+      },
+      {
+        "concept": "equipment",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "signatures": {
+          "T1": "2ff82b9d89b0aa1d",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "equipment",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "signatures": {
+          "T1": "69f2438ea9d4d28e",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "equipment",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "signatures": {
+          "T1": "15d28fb63dfb758d",
+          "T2": "(('text',), 0, 0)",
+          "T3": "('text',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>"
+      },
+      {
+        "concept": "equipment",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "signatures": {
+          "T1": "2ff82b9d89b0aa1d",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "equipment",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "signatures": {
+          "T1": "69f2438ea9d4d28e",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "equipment",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "signatures": {
+          "T1": "15d28fb63dfb758d",
+          "T2": "(('text',), 0, 0)",
+          "T3": "('text',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>"
+      },
+      {
+        "concept": "stats",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "signatures": {
+          "T1": "2ff82b9d89b0aa1d",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "stats",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "signatures": {
+          "T1": "69f2438ea9d4d28e",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "stats",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "signatures": {
+          "T1": "15d28fb63dfb758d",
+          "T2": "(('text',), 0, 0)",
+          "T3": "('text',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>"
+      },
+      {
+        "concept": "stats",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "signatures": {
+          "T1": "2ff82b9d89b0aa1d",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "stats",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "signatures": {
+          "T1": "69f2438ea9d4d28e",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "stats",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "signatures": {
+          "T1": "15d28fb63dfb758d",
+          "T2": "(('text',), 0, 0)",
+          "T3": "('text',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>"
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "signatures": {
+          "T1": "2ff82b9d89b0aa1d",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "signatures": {
+          "T1": "69f2438ea9d4d28e",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "signatures": {
+          "T1": "15d28fb63dfb758d",
+          "T2": "(('text',), 0, 0)",
+          "T3": "('text',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>"
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "signatures": {
+          "T1": "2ff82b9d89b0aa1d",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "signatures": {
+          "T1": "69f2438ea9d4d28e",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "signatures": {
+          "T1": "15d28fb63dfb758d",
+          "T2": "(('text',), 0, 0)",
+          "T3": "('text',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>"
+      },
+      {
+        "concept": "exit",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "signatures": {
+          "T1": "2ff82b9d89b0aa1d",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "exit",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "signatures": {
+          "T1": "69f2438ea9d4d28e",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "exit",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "signatures": {
+          "T1": "15d28fb63dfb758d",
+          "T2": "(('text',), 0, 0)",
+          "T3": "('text',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>"
+      },
+      {
+        "concept": "exit",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "signatures": {
+          "T1": "2ff82b9d89b0aa1d",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "exit",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "signatures": {
+          "T1": "69f2438ea9d4d28e",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "exit",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "signatures": {
+          "T1": "15d28fb63dfb758d",
+          "T2": "(('text',), 0, 0)",
+          "T3": "('text',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>"
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "signatures": {
+          "T1": "2ff82b9d89b0aa1d",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "signatures": {
+          "T1": "69f2438ea9d4d28e",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "save",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "signatures": {
+          "T1": "15d28fb63dfb758d",
+          "T2": "(('text',), 0, 0)",
+          "T3": "('text',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>"
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "signatures": {
+          "T1": "2ff82b9d89b0aa1d",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "signatures": {
+          "T1": "69f2438ea9d4d28e",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "save",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "signatures": {
+          "T1": "15d28fb63dfb758d",
+          "T2": "(('text',), 0, 0)",
+          "T3": "('text',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>"
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "signatures": {
+          "T1": "2ff82b9d89b0aa1d",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "signatures": {
+          "T1": "69f2438ea9d4d28e",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "inventory",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "signatures": {
+          "T1": "15d28fb63dfb758d",
+          "T2": "(('text',), 0, 0)",
+          "T3": "('text',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>"
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "signatures": {
+          "T1": "2ff82b9d89b0aa1d",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "signatures": {
+          "T1": "69f2438ea9d4d28e",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "inventory",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "signatures": {
+          "T1": "15d28fb63dfb758d",
+          "T2": "(('text',), 0, 0)",
+          "T3": "('text',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>"
+      },
+      {
+        "concept": "map",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "signatures": {
+          "T1": "2ff82b9d89b0aa1d",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "map",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "signatures": {
+          "T1": "69f2438ea9d4d28e",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "map",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "signatures": {
+          "T1": "15d28fb63dfb758d",
+          "T2": "(('text',), 0, 0)",
+          "T3": "('text',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>"
+      },
+      {
+        "concept": "map",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "signatures": {
+          "T1": "2ff82b9d89b0aa1d",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "map",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "signatures": {
+          "T1": "69f2438ea9d4d28e",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "map",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "signatures": {
+          "T1": "15d28fb63dfb758d",
+          "T2": "(('text',), 0, 0)",
+          "T3": "('text',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>"
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "signatures": {
+          "T1": "2ff82b9d89b0aa1d",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "signatures": {
+          "T1": "69f2438ea9d4d28e",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "settings",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "signatures": {
+          "T1": "15d28fb63dfb758d",
+          "T2": "(('text',), 0, 0)",
+          "T3": "('text',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>"
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "signatures": {
+          "T1": "2ff82b9d89b0aa1d",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "signatures": {
+          "T1": "69f2438ea9d4d28e",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "settings",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "signatures": {
+          "T1": "15d28fb63dfb758d",
+          "T2": "(('text',), 0, 0)",
+          "T3": "('text',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>"
+      }
+    ],
+    "opus": [
+      {
+        "concept": "quest",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "signatures": {
+          "T1": "2ff82b9d89b0aa1d",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "quest",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "signatures": {
+          "T1": "69f2438ea9d4d28e",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "quest",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "signatures": {
+          "T1": "15d28fb63dfb758d",
+          "T2": "(('text',), 0, 0)",
+          "T3": "('text',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>"
+      },
+      {
+        "concept": "quest",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "signatures": {
+          "T1": "2ff82b9d89b0aa1d",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "quest",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "signatures": {
+          "T1": "69f2438ea9d4d28e",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "quest",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "signatures": {
+          "T1": "15d28fb63dfb758d",
+          "T2": "(('text',), 0, 0)",
+          "T3": "('text',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>"
+      },
+      {
+        "concept": "equipment",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "signatures": {
+          "T1": "2ff82b9d89b0aa1d",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "equipment",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "signatures": {
+          "T1": "69f2438ea9d4d28e",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "equipment",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "signatures": {
+          "T1": "15d28fb63dfb758d",
+          "T2": "(('text',), 0, 0)",
+          "T3": "('text',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>"
+      },
+      {
+        "concept": "equipment",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "signatures": {
+          "T1": "2ff82b9d89b0aa1d",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "equipment",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "signatures": {
+          "T1": "69f2438ea9d4d28e",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "equipment",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "signatures": {
+          "T1": "15d28fb63dfb758d",
+          "T2": "(('text',), 0, 0)",
+          "T3": "('text',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>"
+      },
+      {
+        "concept": "stats",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "signatures": {
+          "T1": "2ff82b9d89b0aa1d",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "stats",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "signatures": {
+          "T1": "69f2438ea9d4d28e",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "stats",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "signatures": {
+          "T1": "15d28fb63dfb758d",
+          "T2": "(('text',), 0, 0)",
+          "T3": "('text',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>"
+      },
+      {
+        "concept": "stats",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "signatures": {
+          "T1": "2ff82b9d89b0aa1d",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "stats",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "signatures": {
+          "T1": "69f2438ea9d4d28e",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "stats",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "signatures": {
+          "T1": "15d28fb63dfb758d",
+          "T2": "(('text',), 0, 0)",
+          "T3": "('text',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>"
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "signatures": {
+          "T1": "2ff82b9d89b0aa1d",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "signatures": {
+          "T1": "69f2438ea9d4d28e",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "signatures": {
+          "T1": "15d28fb63dfb758d",
+          "T2": "(('text',), 0, 0)",
+          "T3": "('text',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>"
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "signatures": {
+          "T1": "2ff82b9d89b0aa1d",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "signatures": {
+          "T1": "69f2438ea9d4d28e",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "dialogue",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "signatures": {
+          "T1": "15d28fb63dfb758d",
+          "T2": "(('text',), 0, 0)",
+          "T3": "('text',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>"
+      },
+      {
+        "concept": "exit",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "signatures": {
+          "T1": "2ff82b9d89b0aa1d",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "exit",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "signatures": {
+          "T1": "69f2438ea9d4d28e",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "exit",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "signatures": {
+          "T1": "15d28fb63dfb758d",
+          "T2": "(('text',), 0, 0)",
+          "T3": "('text',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>"
+      },
+      {
+        "concept": "exit",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "signatures": {
+          "T1": "2ff82b9d89b0aa1d",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "exit",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "signatures": {
+          "T1": "69f2438ea9d4d28e",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "exit",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "signatures": {
+          "T1": "15d28fb63dfb758d",
+          "T2": "(('text',), 0, 0)",
+          "T3": "('text',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>"
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "signatures": {
+          "T1": "2ff82b9d89b0aa1d",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "signatures": {
+          "T1": "69f2438ea9d4d28e",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "save",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "signatures": {
+          "T1": "15d28fb63dfb758d",
+          "T2": "(('text',), 0, 0)",
+          "T3": "('text',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>"
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "signatures": {
+          "T1": "2ff82b9d89b0aa1d",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "save",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "signatures": {
+          "T1": "69f2438ea9d4d28e",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "save",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "signatures": {
+          "T1": "15d28fb63dfb758d",
+          "T2": "(('text',), 0, 0)",
+          "T3": "('text',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>"
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "signatures": {
+          "T1": "2ff82b9d89b0aa1d",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "signatures": {
+          "T1": "69f2438ea9d4d28e",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "inventory",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "signatures": {
+          "T1": "15d28fb63dfb758d",
+          "T2": "(('text',), 0, 0)",
+          "T3": "('text',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>"
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "signatures": {
+          "T1": "2ff82b9d89b0aa1d",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "inventory",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "signatures": {
+          "T1": "69f2438ea9d4d28e",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "inventory",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "signatures": {
+          "T1": "15d28fb63dfb758d",
+          "T2": "(('text',), 0, 0)",
+          "T3": "('text',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>"
+      },
+      {
+        "concept": "map",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "signatures": {
+          "T1": "2ff82b9d89b0aa1d",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "map",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "signatures": {
+          "T1": "69f2438ea9d4d28e",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "map",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "signatures": {
+          "T1": "15d28fb63dfb758d",
+          "T2": "(('text',), 0, 0)",
+          "T3": "('text',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>"
+      },
+      {
+        "concept": "map",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "signatures": {
+          "T1": "2ff82b9d89b0aa1d",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "map",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "signatures": {
+          "T1": "69f2438ea9d4d28e",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "map",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "signatures": {
+          "T1": "15d28fb63dfb758d",
+          "T2": "(('text',), 0, 0)",
+          "T3": "('text',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>"
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "signatures": {
+          "T1": "2ff82b9d89b0aa1d",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "signatures": {
+          "T1": "69f2438ea9d4d28e",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "settings",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "signatures": {
+          "T1": "15d28fb63dfb758d",
+          "T2": "(('text',), 0, 0)",
+          "T3": "('text',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>"
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "grid.snap"
+        ],
+        "signatures": {
+          "T1": "2ff82b9d89b0aa1d",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4.37 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "settings",
+        "verdict": "FAIL",
+        "violated": [
+          "palette"
+        ],
+        "signatures": {
+          "T1": "69f2438ea9d4d28e",
+          "T2": "(('path',), 1, 1)",
+          "T3": "('path',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff0000\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M 4 6 L 19.5 6\"/></svg>"
+      },
+      {
+        "concept": "settings",
+        "verdict": "UNDEFINED",
+        "violated": [
+          "allowed_elements",
+          "forbidden_elements"
+        ],
+        "signatures": {
+          "T1": "15d28fb63dfb758d",
+          "T2": "(('text',), 0, 0)",
+          "T3": "('text',)"
+        },
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><text x=\"4\" y=\"6\">i</text></svg>"
+      }
+    ]
+  }
+}

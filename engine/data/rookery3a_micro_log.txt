@@ -1,0 +1,55 @@
+[micro] mi_running_minmax_stability B0 rep0: no_patch
+[micro] mi_running_minmax_stability BD rep0: no_patch
+[micro] mi_running_minmax_stability B0 rep1: no_patch
+[micro] mi_running_minmax_stability BD rep1: no_patch
+[micro] mi_running_minmax_stability B0 rep2: no_patch
+[micro] mi_running_minmax_stability BD rep2: no_patch
+[micro] mi_running_minmax_stability B0 rep3: no_patch
+[micro] mi_running_minmax_stability BD rep3: no_patch
+[micro] mi_running_minmax_stability B0 rep4: no_patch
+[micro] mi_running_minmax_stability BD rep4: no_patch
+[micro] du_isotime_midnight B0 rep0: public_fail
+[micro] du_isotime_midnight BD rep0: public_fail
+[micro] du_isotime_midnight B0 rep1: public_fail
+[micro] du_isotime_midnight BD rep1: public_fail
+[micro] du_isotime_midnight B0 rep2: public_fail
+[micro] du_isotime_midnight BD rep2: public_fail
+[micro] du_isotime_midnight B0 rep3: public_fail
+[micro] du_isotime_midnight BD rep3: public_fail
+[micro] du_isotime_midnight B0 rep4: public_fail
+[micro] du_isotime_midnight BD rep4: public_fail
+[micro] du_isoparse_t24_rollover B0 rep0: regression
+[micro] du_isoparse_t24_rollover BD rep0: regression
+[micro] du_isoparse_t24_rollover B0 rep1: regression
+[micro] du_isoparse_t24_rollover BD rep1: regression
+[micro] du_isoparse_t24_rollover B0 rep2: regression
+[micro] du_isoparse_t24_rollover BD rep2: regression
+[micro] du_isoparse_t24_rollover B0 rep3: public_fail
+[micro] du_isoparse_t24_rollover BD rep3: regression
+[micro] du_isoparse_t24_rollover B0 rep4: regression
+[micro] du_isoparse_t24_rollover BD rep4: regression
+{
+ "B0": {
+  "n": 15,
+  "mean_unique_sigs": 1.93,
+  "mean_distinct_files": 0.67,
+  "dup_rate": 0.29,
+  "correct_file_run_rate": 0.67,
+  "public_pass_run_rate": 0.0,
+  "full_rate": 0.0
+ },
+ "BD": {
+  "n": 15,
+  "mean_unique_sigs": 2.2,
+  "mean_distinct_files": 0.67,
+  "dup_rate": 0.254,
+  "correct_file_run_rate": 0.67,
+  "public_pass_run_rate": 0.0,
+  "full_rate": 0.0
+ },
+ "usage": {
+  "calls": 180,
+  "input_tokens": 708080,
+  "output_tokens": 109233
+ }
+}

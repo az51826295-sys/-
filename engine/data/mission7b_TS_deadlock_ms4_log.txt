@@ -1,0 +1,21 @@
+[TS_deadlock_ms4] gen 1: v1 score=0.7705 
+[TS_deadlock_ms4] gen 2: v2 score=0.8488 
+[TS_deadlock_ms4] gen 3: v2 score=0.8488 (rollback)
+[TS_deadlock_ms4] gen 4: v2 score=0.8488 (rollback)
+[TS_deadlock_ms4] gen 5: v2 score=0.8488 (rollback)
+[TS_deadlock_ms4] gen 6: v2 score=0.8488 (rollback)
+[TS_deadlock_ms4] gen 7: v2 score=0.8488 (rollback)
+[TS_deadlock_ms4] gen 8: v2 score=0.8488 (rollback)
+[TS_deadlock_ms4] gen 9: v2 score=0.8488 (rollback)
+[TS_deadlock_ms4] gen 10: v2 score=0.8488 (rollback)
+[TS_deadlock_ms4] gen 11: v2 score=0.8488 (rollback)
+[TS_deadlock_ms4] gen 12: v2 score=0.8488 (rollback)
+[TS_deadlock_ms4] gen 13: v2 score=0.8488 (rollback)
+[TS_deadlock_ms4] gen 14: v2 score=0.8488 (rollback)
+[TS_deadlock_ms4] gen 15: v2 score=0.8488 (rollback)
+[TS_deadlock_ms4] gen 16: v2 score=0.8488 (rollback)
+[TS_deadlock_ms4] gen 17: v2 score=0.8488 (rollback)
+[TS_deadlock_ms4] gen 18: v2 score=0.8488 (rollback)
+[TS_deadlock_ms4] gen 19: v2 score=0.8488 (rollback)
+[TS_deadlock_ms4] gen 20: v2 score=0.8488 (rollback)
+[TS_deadlock_ms4] 완료 2433s
