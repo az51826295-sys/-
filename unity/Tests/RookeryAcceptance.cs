@@ -137,6 +137,14 @@ namespace Rookery.Tests
                     $"불러온 뒤에도 활성 씬이 '{active.name}' 입니다 — '{path}' 가 아닙니다.");
         }
 
+        /// 애니메이터가 붙은 물체의 **아래**(뼈·메시)인가. 애니메이터 물체 자신과 그 부모는 아니다.
+        static bool IsUnderAnimator(Transform t)
+        {
+            for (var p = t.parent; p != null; p = p.parent)
+                if (p.GetComponent<Animator>() != null) return true;
+            return false;
+        }
+
         static IEnumerable<GameObject> Roots() =>
             SceneManager.GetActiveScene().GetRootGameObjects();
 
@@ -282,7 +290,12 @@ namespace Rookery.Tests
             // 흔들리는 풀은 입력과 무관하게 움직인다. 그래서 **먼저 가만히 두고**,
             // 그동안 스스로 움직인 것은 뺀다. 남은 것이 입력을 받고 움직여야
             // "입력에 반응했다"다.
-            var all = Object.FindObjectsByType<Transform>(FindObjectsSortMode.None);
+            // 애니메이터 아래의 뼈(Spine·neck…)는 입력 없이도 움직이는 것이 정상이다 —
+            // 22:24 첫 사람 캐릭터의 뼈가 "스스로 움직인 물체" 로 잡혔다. 뼈는 빼고
+            // 루트(플레이어 물체 자체)는 남긴다. 루트가 저 혼자 움직이면 그건 진짜 결함이다.
+            var all = Object.FindObjectsByType<Transform>(FindObjectsSortMode.None)
+                .Where(t => !IsUnderAnimator(t))
+                .ToArray();
             var start = all.Select(t => t.position).ToArray();
             var idleUntil = Time.time + HoldSeconds;
             while (Time.time < idleUntil) yield return null;
