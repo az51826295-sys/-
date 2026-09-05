@@ -90,7 +90,9 @@ export function createMeshyProvider(apiKey: string): MeshProvider {
         ai_model: model,
         should_remesh: true,
         topology: opts.topology ?? "quad",
-        target_polycount: opts.targetPolycount ?? 20_000,
+        // 쿼드 하나가 삼각형 둘이라, 20,000 을 주니 40,991 삼각형이 와서 규격
+        // T1(≤ 40,000)에 걸렸다(09-05 첫 판). 규격을 늦추지 않고 목표를 내린다.
+        target_polycount: opts.targetPolycount ?? 15_000,
         enable_pbr: opts.enablePbr ?? true,
         target_formats: ["glb", "fbx"],
         pose_mode: opts.poseMode ?? "",
