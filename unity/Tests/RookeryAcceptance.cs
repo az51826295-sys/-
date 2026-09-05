@@ -186,8 +186,11 @@ namespace Rookery.Tests
             var cam = Camera.main;
             if (cam == null) Assert.Inconclusive("Main Camera 가 없어 화면을 못 찍습니다.");
 
-            const int W = 960, H = 540;
+            // 1080p + MSAA. 960×540 에 MSAA 1 로 찍은 사진은 어떤 캐릭터도 계단투성이로
+            // 보인다(23:26 사장님: "화질이 부족해"). 사진은 게임의 얼굴이니 게임 화질대로 찍는다.
+            const int W = 1920, H = 1080;
             var rt = new RenderTexture(W, H, 24);
+            rt.antiAliasing = Mathf.Max(1, QualitySettings.antiAliasing);
             var prev = cam.targetTexture;
             cam.targetTexture = rt;
             cam.Render();
