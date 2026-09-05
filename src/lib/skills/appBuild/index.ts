@@ -196,8 +196,9 @@ export const appBuildSkill: EmployeeSkill = {
         `설명: ${ctx.context.assignment.description ?? ""}\n` +
         `기대 결과: ${ctx.context.assignment.expectedOutcome ?? ""}` +
         (previous
-          ? `\n\n## 고치는 판이다\n지난 판 "${previous.title}" 의 기준을 유지하고, 떨어진 것을 고친다.\n` +
-            `지난 기준:\n${previous.criteria.map((c) => `- [${c.id}] ${c.when} → ${c.then}`).join("\n")}\n` +
+          ? `\n\n## 고치는 판이다\n지난 판 "${previous.title}" 의 기준은 **코드가 자동으로 유지한다 — 되쓰지 마라.** ` +
+            "criteria 에는 이번 판에서 **새로 더할 기준만** 쓴다(없으면 빈 배열). 지난 id 는 쓰지 마라.\n" +
+            `지난 기준(참고):\n${previous.criteria.map((c) => `- [${c.id}] ${c.when} → ${c.then}`).join("\n")}\n` +
             (previous.failedChecks.length
               ? `유니티에서 재 본 결과 떨어진 줄:\n${previous.failedChecks.map((f) => `- ${f}`).join("\n")}\n`
               : "") +
@@ -211,6 +212,14 @@ export const appBuildSkill: EmployeeSkill = {
       maxTokens: 16000,
       tier: "judgment",
     });
+
+    // 고치는 판: 지난 기준은 코드가 그대로 붙인다. 모델이 29개를 되쓰다 두 번 잘렸다
+    // (21:40·22:48, MODEL_OUTPUT_TRUNCATED). 모델은 새 기준만 쓰고, 합치는 것은 여기서.
+    if (previous && previous.criteria.length) {
+      const seen = new Set(previous.criteria.map((c) => c.id));
+      const added = spec.criteria.filter((c) => !seen.has(c.id));
+      spec.criteria = [...previous.criteria, ...added];
+    }
 
     if (spec.criteria.length < MIN_CRITERIA) {
       throw new ExecutionError(
