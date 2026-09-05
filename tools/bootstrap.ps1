@@ -23,8 +23,7 @@
 
 param(
     [switch]$Install,
-    [string]$UnityVersion = "6000.0.82f1",
-    [string]$GenProject = "$env:USERPROFILE\RookeryGen"
+    [string]$UnityVersion = "6000.0.82f1"
 )
 
 $ErrorActionPreference = "Continue"
@@ -232,7 +231,9 @@ foreach ($lp in $licPaths) { if (Test-Path $lp) { $licensed = $true } }
 Step "유니티 라이선스" $licensed $(if ($licensed) { "" } else { "Hub 에서 로그인해야 켜집니다" })
 if (-not $licensed) { Need "Unity Hub 에서 로그인 + 라이선스 활성화" "비밀번호는 사람이 칩니다" }
 
-Need "Unity AI Points 가 있는 요금제" "생성기가 포인트를 씁니다. 결제는 사람이 합니다"
+# 유니티 AI 요금제는 더 이상 세지 않는다 — 09-03 사장님이 유니티 AI 를 안 쓰기로
+# 정했다. 메시·소리는 외부 API(Meshy/Tripo·ElevenLabs)로 가고, 그 열쇠는 위
+# `.env.local` 한 칸에 같이 들어간다.
 
 # 새 기계는 이 코드를 어디서 받는가. 원격이 없으면 받을 데가 없다 —
 # 부트스트랩이 아무리 잘 돌아도 그 앞이 막혀 있으면 소용없다.
@@ -246,18 +247,6 @@ $envFile = Join-Path (Split-Path $PSScriptRoot -Parent) ".env.local"
 $hasEnv = Test-Path $envFile
 Step "열쇠 파일 (.env.local)" $hasEnv $envFile
 if (-not $hasEnv) { Need "열쇠 심기 (.env.local)" "OPENAI / SUPABASE / ROOKERY 열쇠. 사람이 붙여넣습니다" }
-
-# ── 4. 여기부터는 우리 것 ──────────────────────────────────
-$setup = Join-Path $PSScriptRoot "unity_ai_setup.py"
-if ($hasPython -and $hasEditor -and (Test-Path $setup)) {
-    if ($Install) {
-        Write-Host ""
-        Write-Host "생성 전용 프로젝트를 짓습니다: $GenProject"
-        python $setup --at $GenProject
-    } else {
-        Write-Host "  [준비] 생성 프로젝트 만들기 - python tools\unity_ai_setup.py --at `"$GenProject`""
-    }
-}
 
 # ── 마지막: 사람 손을 센다 ─────────────────────────────────
 Write-Host ""
