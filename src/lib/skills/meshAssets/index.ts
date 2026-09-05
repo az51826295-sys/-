@@ -4,6 +4,7 @@ import { createImageProvider } from "@/lib/providers/images";
 import { defaultMeshProvider } from "@/lib/providers/meshy";
 import { judgeMesh, JudgeUnavailable, type MeshVerdict } from "@/lib/providers/judge";
 import { z } from "zod";
+import { storeDeliverableFile } from "@/lib/deliverables/files";
 
 /**
  * 3D 자산 — 이미지 한 장을 메시로 만들고, 규격 v0 로 재고, 대화로 돌려준다.
@@ -42,15 +43,18 @@ function ruleLine(r: MeshVerdict["rules"][number]): string {
   return `- ${mark} **${r.id}**${m} — ${r.why}`;
 }
 
-async function fetchAsDataUrl(url: string, mime: string): Promise<string | null> {
+async function fetchBytes(url: string): Promise<Uint8Array | null> {
   try {
-    const r = await fetch(url, { signal: AbortSignal.timeout(60_000) });
+    const r = await fetch(url, { signal: AbortSignal.timeout(120_000) });
     if (!r.ok) return null;
-    const buf = Buffer.from(await r.arrayBuffer());
-    return `data:${mime};base64,${buf.toString("base64")}`;
+    return new Uint8Array(await r.arrayBuffer());
   } catch {
     return null;
   }
+}
+
+function toDataUrl(bytes: Uint8Array, mime: string): string {
+  return `data:${mime};base64,${Buffer.from(bytes).toString("base64")}`;
 }
 
 export const meshAssetsSkill: EmployeeSkill = {
@@ -140,10 +144,17 @@ export const meshAssetsSkill: EmployeeSkill = {
     }
 
     // ── 4. 본문 ────────────────────────────────────────────────────
-    // 생성기 링크는 서명돼 있어 짧게 산다. 썸네일은 지금 받아 본문에 박고,
-    // GLB 는 링크와 만료 시각을 같이 적는다 — 저장소를 붙이기 전까지는 이렇게.
-    const thumb = mesh.thumbnailUrl ? await fetchAsDataUrl(mesh.thumbnailUrl, "image/png") : null;
-    const expires = mesh.expiresAt ? new Date(mesh.expiresAt).toISOString() : null;
+    // 생성기 링크는 3일이면 죽는다. 지금 바이트를 받아 **우리 저장소**에 둔다 —
+    // 유니티가 며칠 뒤에 가져가는 자리가 거기다. 받기는 여기서, 올리기는 산출물
+    // id 가 생긴 뒤에(아래 5).
+    const glbBytes: Uint8Array | null = mesh.glbUrl
+      ? await fetchBytes(mesh.glbUrl)
+      : mesh.glbBase64
+        ? new Uint8Array(Buffer.from(mesh.glbBase64, "base64"))
+        : null;
+    const fbxBytes = mesh.fbxUrl ? await fetchBytes(mesh.fbxUrl) : null;
+    const thumbBytes = mesh.thumbnailUrl ? await fetchBytes(mesh.thumbnailUrl) : null;
+    const thumb = thumbBytes ? toDataUrl(thumbBytes, "image/png") : null;
 
     const headline =
       verdict.verdict === "PASS"
@@ -166,10 +177,9 @@ export const meshAssetsSkill: EmployeeSkill = {
       `${verdict.rules.filter((r) => r.verdict === "UNDEFINED").length} 못 잼)\n\n` +
       verdict.rules.map(ruleLine).join("\n") +
       "\n\n## 파일\n\n" +
-      (mesh.glbUrl
-        ? `- GLB: ${mesh.glbUrl}\n` + (mesh.fbxUrl ? `- FBX: ${mesh.fbxUrl}\n` : "") +
-          (expires ? `- 링크 만료: ${expires} — 그 전에 받아 두십시오.\n` : "")
-        : "- (목 판이라 파일 링크가 없습니다)\n") +
+      (glbBytes ? `- model.glb (${(glbBytes.byteLength / 1024).toFixed(0)} KB)\n` : "- GLB 를 못 받았습니다.\n") +
+      (fbxBytes ? `- model.fbx (${(fbxBytes.byteLength / 1024).toFixed(0)} KB)\n` : "") +
+      "- 파일은 이 대화 아래 '열기·저장' 과 유니티 창(Window → Rookery)에서 받습니다.\n" +
       `\n- 생성기: ${mesh.model} · 크레딧 ${mesh.consumedCredits}\n\n` +
       "---\n\n" +
       "판정기는 걸렀을 뿐 고르지 않았습니다. 닮았는지·예쁜지·움직임이 자연스러운지는 " +
@@ -200,9 +210,39 @@ export const meshAssetsSkill: EmployeeSkill = {
     if (!rpc.ok && !(rpc.reason === "already_submitted" && rpc.deliverableId)) {
       throw new ExecutionError("DELIVERABLE_SAVE_FAILED", rpc.reason ?? "unknown");
     }
+    const deliverableId = rpc.deliverableId as string;
+
+    // ── 5. 파일을 저장소에 ─────────────────────────────────────────
+    // 산출물은 이미 저장됐다. 파일 하나를 못 올려도 산출물이 실패로 바뀌지는
+    // 않는다 — 다만 못 올린 것은 못 올렸다고 적어야 하는데, 그 자리는 다음 판.
+    const companyId = ctx.execution.company_id as string;
+    const put = async (
+      filename: string,
+      body: Uint8Array | null,
+      mime: string,
+      kind: "document" | "image",
+      title: string,
+    ) => {
+      if (!body) return;
+      await storeDeliverableFile(ctx.supabase, {
+        companyId,
+        deliverableId,
+        filename,
+        body,
+        // 표의 kind 는 audio/image/archive/document 뿐이다(마이그레이션을 안 만든다).
+        // 메시는 document 로 두고 mime 으로 가른다.
+        kind,
+        mimeType: mime,
+        title,
+        producedByBackend: mesh.model,
+      });
+    };
+    await put("model.glb", glbBytes, "model/gltf-binary", "document", `${brief.subject} (GLB)`);
+    await put("model.fbx", fbxBytes, "application/octet-stream", "document", `${brief.subject} (FBX)`);
+    await put("thumbnail.png", thumbBytes, "image/png", "image", `${brief.subject} 미리보기`);
 
     return {
-      deliverableId: rpc.deliverableId as string,
+      deliverableId,
       deliverableType: "mesh_assets",
       metrics: { candidateCount: 1, selectedCount: verdict.verdict === "PASS" ? 1 : 0 },
     };

@@ -29,7 +29,7 @@ export default async function PublicAskPage({
     content: string;
     assignment?: { id: string; title: string; queued: boolean; returned?: boolean } | null;
     returnedWork?: boolean;
-    files?: { path: string; contents: string }[] | null;
+    files?: { path: string; contents?: string; href?: string }[] | null;
   };
   let initial: { id: string; turns: Turn[] } | null = null;
   if (c && user) {
@@ -50,7 +50,7 @@ export default async function PublicAskPage({
           const att = (m.attachments ?? null) as {
             assignment?: { id: string; title: string; queued: boolean } | null;
             returned?: { assignmentId: string } | null;
-            files?: { path: string; contents: string }[] | null;
+            files?: { path: string; contents?: string; href?: string }[] | null;
           } | null;
           return {
             role: m.role === "user" ? ("user" as const) : ("assistant" as const),

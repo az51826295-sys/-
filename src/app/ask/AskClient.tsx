@@ -51,8 +51,8 @@ type Turn = {
   assignment?: { id: string; title: string; queued: boolean; returned?: boolean } | null;
   /** 시킨 일이 끝나서 돌아온 턴. 답이 아니라 **결과**라 조금 다르게 그린다. */
   returnedWork?: boolean;
-  /** 돌아온 일에 딸린 파일. 저장하거나 새 탭에서 연다. */
-  files?: { path: string; contents: string }[] | null;
+  /** 돌아온 일에 딸린 파일. 글 파일(contents)은 브라우저가, 저장소 파일(href)은 서버를 거쳐 연다. */
+  files?: { path: string; contents?: string; href?: string }[] | null;
   needsOnboarding?: { id: string; name: string } | null;
   options?: Option[] | null;
   sources?: Source[] | null;
@@ -105,7 +105,7 @@ export default function AskClient({
         if (!res.ok || !alive) return;
         const data = (await res.json()) as {
           pending: number;
-          posted: { role: "assistant"; content: string; files?: { path: string; contents: string }[] }[];
+          posted: { role: "assistant"; content: string; files?: { path: string; contents?: string; href?: string }[] }[];
         };
         if (!alive) return;
         if (data.posted.length > 0) {
@@ -138,14 +138,14 @@ export default function AskClient({
    * 돌아온 파일을 브라우저에서 연다 / 저장한다. 서버는 파일을 실행하지 않는다 —
    * 여는 것은 사람의 브라우저다. HTML 한 파일짜리 게임이면 새 탭에서 바로 돈다.
    */
-  function blobUrl(f: { path: string; contents: string }): string {
+  function blobUrl(f: { path: string; contents?: string }): string {
     const type = f.path.endsWith(".html") ? "text/html" : "text/plain";
-    return URL.createObjectURL(new Blob([f.contents], { type }));
+    return URL.createObjectURL(new Blob([f.contents ?? ""], { type }));
   }
-  function openFile(f: { path: string; contents: string }) {
+  function openFile(f: { path: string; contents?: string }) {
     window.open(blobUrl(f), "_blank", "noopener");
   }
-  function saveFile(f: { path: string; contents: string }) {
+  function saveFile(f: { path: string; contents?: string }) {
     const a = document.createElement("a");
     a.href = blobUrl(f);
     a.download = f.path.split("/").pop() ?? "file";
@@ -377,22 +377,22 @@ export default function AskClient({
             {t.files && t.files.length > 0 && (
               <div className="mt-1.5 flex flex-wrap gap-2">
                 {t.files.map((f) => (
-                  <span key={f.path} className="flex items-center gap-1 text-xs">
+                  <span key={f.href ?? f.path} className="flex items-center gap-1 text-xs">
                     <code className="px-1">{f.path}</code>
-                    <button
-                      type="button"
-                      className="underline"
-                      onClick={() => openFile(f)}
-                    >
-                      열기
-                    </button>
-                    <button
-                      type="button"
-                      className="underline"
-                      onClick={() => saveFile(f)}
-                    >
-                      저장
-                    </button>
+                    {f.href ? (
+                      <a className="underline" href={f.href} target="_blank" rel="noopener">
+                        받기
+                      </a>
+                    ) : (
+                      <>
+                        <button type="button" className="underline" onClick={() => openFile(f)}>
+                          열기
+                        </button>
+                        <button type="button" className="underline" onClick={() => saveFile(f)}>
+                          저장
+                        </button>
+                      </>
+                    )}
                   </span>
                 ))}
               </div>

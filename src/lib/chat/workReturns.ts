@@ -22,7 +22,8 @@ type Row = {
   created_at: string;
 };
 
-export type ReturnedFile = { path: string; contents: string };
+/** `contents` 가 있으면 글 파일(브라우저가 연다), `href` 가 있으면 저장소 파일(서버를 거쳐 연다). */
+export type ReturnedFile = { path: string; contents?: string; href?: string };
 export type ReturnedTurn = { role: "assistant"; content: string; files?: ReturnedFile[] };
 
 /** 아직 안 끝난 일과, 이번에 새로 붙인 턴. */
@@ -114,9 +115,21 @@ export async function collectWorkReturns(
         const made = (d.content_json as { files?: unknown } | null)?.files;
         if (Array.isArray(made)) {
           files = made
-            .filter((f): f is ReturnedFile =>
+            .filter((f): f is { path: string; contents: string } =>
               !!f && typeof (f as ReturnedFile).path === "string" && typeof (f as ReturnedFile).contents === "string")
             .map((f) => ({ path: f.path, contents: f.contents }));
+        }
+        // 저장소에 둔 파일(메시·썸네일). 링크는 영구 주소 — 열 때 서명한다.
+        const { data: stored } = await db
+          .from("deliverable_files")
+          .select("id, title, storage_path")
+          .eq("deliverable_id", d.id as string)
+          .order("created_at", { ascending: true });
+        for (const f of (stored ?? []) as { id: string; title: string; storage_path: string }[]) {
+          (files ??= []).push({
+            path: f.storage_path.split("/").pop() ?? f.title,
+            href: `/api/files/${f.id}`,
+          });
         }
       } else {
         // 끝났다는데 산출물이 없다. 그것도 말한다 — 없는 것을 있는 것처럼
