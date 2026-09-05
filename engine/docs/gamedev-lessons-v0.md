@@ -280,6 +280,32 @@ URP 가 없는 프로젝트에서도 컴파일되게 리플렉션·SerializedObj
 바뀐 파일만 내고(keep) 나머지는 코드가 이어 붙인다, 감시 40분. 이번 판 7분.
 
 
+## P. 14회차 (09-06 00:35~01:32) — 정면 얼굴 사진, 살아 있는 서 있기, 그리고 두 가지 진짜 원인
+
+유니티 창이 **정면 얼굴 사진**을 한 장 더 찍는다(같은 카메라를 얼굴 앞 1.4 m 로 옮겨,
+후처리 그대로). 이것이 이 회차의 눈이었다 — 뒤통수 사진으론 아래 둘을 못 봤다.
+
+읽은 것: 뼈 덮어쓰기는 LateUpdate(Unity 포럼·DeepMotion), idle 은 호흡 2~4초·무게 이동
+8~12초(MoCap Online), 발 IK 는 발 뼈 아래 레이캐스트(Yarsa Labs·Lem Apperson).
+Dev 판(00:56): BreathMotion(LateUpdate·Chest/Spine/Hips/Head)·FootIK(OnAnimatorIK·
+Raycast)·얼굴 필 Spot 전부 코드에 나타남. P1·P2·P4 확인.
+
+**진짜 원인 둘(실험으로 가름):**
+1. **얼굴·흰 셔츠가 하얗게 탐(00:58).** 조명 합 ≤ 1(P5)로 내려도 그대로, 앞쪽 스팟 둘을
+   0 으로 꺼도 그대로 → 조명이 아니다. 재질을 뜯어 보니 **Meshy FBX 재질은 발광이 켜져
+   있고 발광 맵 = 베이스컬러, 발광색 흰색** — 알베도가 빛으로 한 번 더 더해졌다. Built-in
+   Standard 에선 발광색이 검정이라 안 보였고 URP 변환 뒤 흰색이 됐다. M16 + 창 안전망.
+2. **셔츠의 네모난 얼룩(00:46).** 거칠기 맵을 흐려도 그대로, 노멀 맵을 평평하게 바꿔도
+   그대로, 베이스컬러 텍스처는 균일한 흰색 → 텍스처·맵이 아니다. 임포트 법선을 다시
+   계산(Calculate·180°·용접)하니 사라졌다. **Meshy FBX 의 법선 데이터가 나쁘다.** 읽었던
+   F3("Normals 는 Import")이 AI 메시엔 틀렸다 — F3 정정, 창이 받을 때 자동으로 한다.
+
+교훈의 교훈: 사진을 보고 "조명이다/맵이다" 라고 짚은 첫 두 추측이 다 틀렸다. 변수를
+하나씩 끄는 실험(로컬 빌드+캡처, 서버 반입 없이 2분)이 답을 줬다. 앞으로 화질 문제는
+추측 두 번 전에 실험 한 번.
+
+01:30 최종: 정면 사진에서 얼굴 정상 노출, 셔츠 매끈, 통과 4 · 떨어짐 0.
+
 ## D. 다음에 배울 것 (아직 안 읽음)
 
 - LOD Group 기본(거리별 메시 3단).
@@ -337,3 +363,8 @@ URP 가 없는 프로젝트에서도 컴파일되게 리플렉션·SerializedObj
   [Shaun Codes — materials tips](https://medium.com/@fulton_shaun/mastering-materials-in-unity-10-pro-tips-you-should-know-ac67c10b9a71),
   [Game Developer — third person camera](https://www.gamedeveloper.com/design/third-person-camera-view-in-games-a-record-of-the-most-common-problems-in-modern-games-solutions-taken-from-new-and-retro-games),
   [Little Polygon — cameras](https://blog.littlepolygon.com/posts/cameras/)
+- 14회차: [Unity 포럼 — LateUpdate 뼈 회전](https://forum.unity.com/threads/bones-rotation-from-script-with-lateupdate.482376/),
+  [DeepMotion — procedural animation](https://deepmotion.medium.com/procedural-animation-for-characters-via-scripting-in-c-e60435da9e13),
+  [MoCap Online — idle guide](https://mocaponline.com/blogs/mocap-news/idle-animation-game-dev-guide),
+  [Yarsa Labs — foot placement IK](https://blog.yarsalabs.com/dynamic-foot-placement-in-unity-inverse-kinematic/),
+  [Lem Apperson — IK](https://medium.com/@lemapp09/beginning-game-development-inverse-kinematics-00177650c4b2)

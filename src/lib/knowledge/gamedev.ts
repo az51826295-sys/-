@@ -251,15 +251,15 @@ export const GAMEDEV_LESSONS: Lesson[] = [
   // 읽은 것: 애니메이션 시스템은 Update 뒤 LateUpdate 전에 뼈를 쓴다 — 덮어쓰려면 LateUpdate
   // (Unity 포럼·DeepMotion). idle 은 2~4초 호흡, 8~12초 무게 이동(MoCap Online). 발 IK 는
   // 발 뼈에서 아래로 레이캐스트해 hit.point·hit.normal 로(Yarsa Labs·Lem Apperson).
-  { id: "P1", role: "unity_code", verified: false,
+  { id: "P1", role: "unity_code", verified: true,
     text: "서 있을 때 '얼어 있는' 캐릭터는 죽어 보인다(animator.speed = 0 의 대가, M5). 생성 AI 없이 코드로 살린다 — 휴머노이드 뼈를 **LateUpdate** 에서 살짝 더 돌린다(애니메이터가 쓴 뒤라 덮인다): 숨 = Chest 를 x 축으로 ±1.5° · 주기 3.5초(sin), Spine ±0.7°; 무게 이동 = Hips 를 x 로 ±0.015 m · 주기 8초; 머리 미세 끄덕임 ±0.8° · 주기 5초(위상 다르게). 속도가 0.05 이하일 때만 weight 를 1 로 올리고(0.3초 감쇠), 걸을 때는 0. 뼈는 animator.GetBoneTransform(HumanBodyBones.Chest/Spine/Hips/Head)." },
-  { id: "P2", role: "unity_code", verified: false,
+  { id: "P2", role: "unity_code", verified: true,
     text: "발 IK(휴머노이드, OnAnimatorIK): 컨트롤러 레이어 iKPass 켜기(N5). 각 발 뼈 위치 + 위 0.5 m 에서 아래로 1 m 레이캐스트(바닥 레이어), 맞으면 SetIKPositionWeight/RotationWeight(goal, w); SetIKPosition(goal, hit.point + hit.normal * 0.06f); SetIKRotation(goal, Quaternion.FromToRotation(Vector3.up, hit.normal) * transform.rotation). w 는 서 있을 때 1, 걸을 때 0.3(감쇠). 평평한 바닥에서도 발이 바닥을 정확히 딛는 것이 보인다." },
   { id: "P3", role: "unity_code", verified: true,
     text: "얼굴이 보이는 순간의 조명: 캐릭터 앞(카메라 쪽) 위 45° 에 **캐릭터 전용 필** Spot(range 4 m, 그림자 끔)을 루트의 자식으로. 세기는 **0.12~0.18**. 00:58 얼굴 필 0.3 에 키 1.0·필 0.35 가 겹쳐 흰 셔츠와 얼굴이 하얗게 날아갔다(URP·ACES·블룸)." },
   { id: "P5", role: "unity_code", verified: true,
     text: "**흰 표면에 닿는 빛의 합이 1.0 을 넘지 않게 한다.** URP + ACES 톤매핑 + 블룸에서는 알베도 0.9 짜리 흰 옷이 합 1.3 만 돼도 하얗게 타고 블룸까지 번진다. 기본값: 키 0.75, 필 0.25, 림 0.4(뒤라 앞과 안 겹침), 얼굴 필 0.15. 밝기가 모자라면 앰비언트를 올리지 조명을 더 세게 하지 않는다." },
-  { id: "P4", role: "blueprint", verified: false,
+  { id: "P4", role: "blueprint", verified: true,
     text: "캐릭터 기준엔 정면 사진을 넣는다: '서 있으면 3초 안에 가슴이 오르내린다', '발바닥이 바닥에 닿아 있다(떠 있거나 묻히지 않는다)', '정면 사진에서 얼굴이 검지 않다'. 유니티 창이 정면 얼굴 사진을 같이 찍어 준다." },
 
   // ── C. 범위·설계 (설계도) ──
