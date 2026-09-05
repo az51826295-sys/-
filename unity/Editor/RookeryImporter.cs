@@ -293,7 +293,11 @@ namespace Rookery
             if (File.Exists(path))
             {
                 if (File.ReadAllText(path) == contents) return $"= {path} (같음)";
-                if (!managed.Contains(path)) return $"! {path} 사람이 만든 파일 — 건너뜀";
+                // 시험지(Assets/RookeryTests/)는 언제나 로키 것이다 — 저장소 unity/Tests 가
+                // 원본이고 사람이 고치면 자가 바뀐다. manifest 이전에 놓인 것도 덮는다.
+                // 20:23 사진 시험을 더한 시험지가 "사람이 만든 파일" 로 막혀 옛 자가 돌았다.
+                if (!managed.Contains(path) && !path.StartsWith("Assets/RookeryTests/"))
+                    return $"! {path} 사람이 만든 파일 — 건너뜀";
             }
             File.WriteAllText(path, contents);
             if (!managed.Contains(path))

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/service";
 import { signedUrlFor } from "@/lib/deliverables/files";
 
 /**
@@ -27,7 +28,10 @@ export async function GET(
     .maybeSingle();
   if (!row) return NextResponse.json({ error: "Not found." }, { status: 404 });
 
-  const url = await signedUrlFor(supabase, row.storage_path as string);
+  // 주인인지는 위의 행 조회(RLS)가 이미 가렸다. 서명은 서비스 열쇠로 — 사용자
+  // 열쇠는 저장소 정책에 걸려 서명이 안 되는 경우가 있었다(09-05 20:26, 유니티
+  // 화면 사진이 500 으로 안 열림).
+  const url = await signedUrlFor(createServiceClient(), row.storage_path as string);
   if (!url) return NextResponse.json({ error: "Could not sign." }, { status: 500 });
   return NextResponse.redirect(url, { status: 302 });
 }
