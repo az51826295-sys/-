@@ -31,6 +31,12 @@ export type ChatTurnInput = {
   images?: string[];
   /** 이 대화에서 이 직원이 마지막으로 돌려준 산출물. "고쳐 줘" 가 이것을 바탕으로 간다. */
   previousDeliverableId?: string | null;
+  /**
+   * 이 턴은 이미 "일" 로 판정돼 넘어온 것이다(delegate). 그러면 업무 객체가 비면
+   * 안 된다 — 20:47 Dev 가 "제출할게요" 라고 말만 하고 assignment 를 null 로 내서
+   * 아무 일도 안 생겼다. 비면 한 번 더 요구한다.
+   */
+  requireAssignment?: boolean;
 };
 
 export type ChatOption = { label: string; description: string | null };
@@ -185,14 +191,29 @@ How to behave:
     companyEmployeeId: companyEmployee.id,
   });
 
-  const { output } = await providers.ai.generateStructuredOutput({
-    systemInstructions,
-    input: `# Conversation so far\n\n${transcript}\n\nRespond as ${employee.name}.`,
-    schema: chatOutputSchema,
-    schemaName: "employee_chat_turn",
-    tier: "routine",
-    maxTokens: 1200,
-  });
+  const ask = (extra: string) =>
+    providers.ai.generateStructuredOutput({
+      systemInstructions: systemInstructions + extra,
+      input: `# Conversation so far\n\n${transcript}\n\nRespond as ${employee.name}.`,
+      schema: chatOutputSchema,
+      schemaName: "employee_chat_turn",
+      tier: "routine",
+      maxTokens: 1200,
+    });
+  let { output } = await ask(
+    input.requireAssignment
+      ? "\n- THIS MESSAGE IS WORK. The manager's request was already judged to be a job for you. " +
+        "You MUST fill the \"assignment\" object. A reply that promises to do or submit something " +
+        "with \"assignment\" null is a lie — nothing will happen. Do not ask questions; use defaults."
+      : "",
+  );
+  if (input.requireAssignment && !output.assignment) {
+    // 말만 하고 일을 안 받았다. 한 번 더 — 이번엔 그것만 시킨다.
+    ({ output } = await ask(
+      "\n- Your previous attempt returned \"assignment\": null for a request that is work. " +
+        "Fill \"assignment\" now (title 10+ chars, description 20+ chars). No options, no questions.",
+    ));
+  }
 
   // ── 업무 접수 ────────────────────────────────────────────────────
   if (!output.assignment) {

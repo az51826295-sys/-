@@ -117,7 +117,7 @@ export async function delegate(
   const previousDeliverableId = conversationId
     ? await lastDeliverableInConversation(db, conversationId, hireId)
     : null;
-  const turn = await runChatTurn({ companyEmployeeId: hireId, messages, images, previousDeliverableId });
+  const turn = await runChatTurn({ companyEmployeeId: hireId, messages, images, previousDeliverableId, requireAssignment: true });
   if (!turn.ok) {
     // 접수는 됐고 넘기는 데서 막혔다. 답은 이미 나갔으므로 이유만 싣는다.
     return { ...NOTHING, hired, why: turn.error };
