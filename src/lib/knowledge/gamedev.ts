@@ -175,6 +175,8 @@ export const GAMEDEV_LESSONS: Lesson[] = [
   // 구조에서는 임포트 설정·Animator 컨트롤러도 전부 코드로 만들어야 한다 — 사람 손 0회.
   { id: "M1", role: "unity_code", verified: false,
     text: "리깅된 FBX 는 씬 빌더가 임포트 설정을 코드로 박는다: var imp = AssetImporter.GetAtPath(path) as ModelImporter; imp.animationType = ModelImporterAnimationType.Human; imp.avatarSetup = ModelImporterAvatarSetup.CreateFromThisModel; imp.SaveAndReimport(). walking.fbx·running.fbx 도 같은 설정(같은 뼈대라 각자 아바타를 만들어도 리타깃된다)." },
+  { id: "M1b", role: "unity_code", verified: true,
+    text: "ModelImporterAvatarSetup 의 값은 NoAvatar · CreateFromThisModel · CopyFromOther 셋뿐이다. 'CopyFromOtherAvatar' 는 없다 — 21:50 Dev 가 그 이름으로 컴파일을 깨뜨렸다. 다른 FBX 의 아바타를 쓰려면 imp.avatarSetup = ModelImporterAvatarSetup.CopyFromOther; imp.sourceAvatar = (Avatar)AssetDatabase.LoadAssetAtPath(riggedFbx, typeof(Avatar))." },
   { id: "M2", role: "unity_code", verified: false,
     text: "애니메이션 클립은 제자리(in-place)여야 한다: imp.clipAnimations = imp.defaultClipAnimations 를 받아 각 클립에 loopTime = true, lockRootHeightY = true, lockRootRotation = true, keepOriginalPositionXZ = true(뿌리 이동을 포즈에 굽기) 를 주고 다시 넣는다. 안 그러면 클립이 캐릭터를 끌고 가 컨트롤러와 싸운다(발 미끄러짐의 첫 원인)." },
   { id: "M3", role: "unity_code", verified: false,
