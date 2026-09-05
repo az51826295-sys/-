@@ -183,6 +183,32 @@ Dev 두 번째 유니티 판(규칙 G8~G11 적용 뒤): 컴파일 0 · 씬 빌�
   일도 안 생겼다. delegate 로 넘어온 턴은 업무 객체 필수 + 비면 한 번 더 요구(21:01 배포).
 - verified 로 올린 것: L1~L6. L7·L8(캐릭터)은 6번 회차(걷기)에서.
 
+## M. 11회차 (09-05 21:15~) — 걷는 법 (교과 과정 6번)
+
+사장님: "캐릭터 넣어 줄 수 있어? 실제 사람 같은" → 20~30대 남성 캐주얼(티셔츠·청바지).
+그래서 이 회차는 시험용 마네킹이 아니라 **진짜 첫 캐릭터**로 잰다: Vox → Meshy → 리깅
+→ Dev 가 동전 줍기 씬의 캡슐 자리에 끼워 걷게.
+
+읽은 것:
+- 블렌드 트리(Packt·Medium·GameDev Academy): Idle/Walk/Run 을 Speed 하나로 1D 블렌드,
+  클립은 제자리(in-place), Loop Time 켜고 Humanoid 면 Bake Into Pose·Based Upon Original.
+- 공식 API: ModelImporter.animationType/avatarSetup/clipAnimations/globalScale/
+  SaveAndReimport; AnimatorController.CreateAnimatorControllerAtPath + BlendTree.AddChild +
+  AddMotion + AddObjectToAsset.
+- Mixamo/Meshy 반입: Rig → Humanoid, Avatar Create From This Model, 같은 뼈대면 아바타 재사용.
+- 컨트롤러 글들: CharacterController 는 관성이 없어 즉답, Rigidbody 는 Lerp 로 가속;
+  미끄러움은 피한다; 접지는 스피어캐스트.
+
+우리 생각:
+- 우리 씬은 코드로 짓는다. 그래서 **임포트 설정·클립 루프·Animator 컨트롤러도 코드로**
+  (M1·M2·M4). 사람이 인스펙터를 만지는 순간 "사람 손 0회" 가 깨진다.
+- Meshy 리깅은 idle 이 없다 → animator.speed 0 으로 임시(M5). idle 은 Meshy 애니메이션
+  API 에서 받는 것을 교과 과정에 넣는다.
+- 발 미끄러짐은 루트 모션 끄고 이동 속도를 클립 평균 속도에 맞추는 것으로(M6).
+- 지난 판의 기준 묶기(29→13)는 규칙 M12 로.
+
+엔진에 들어간 것: M1~M10(unity_code), M11·M12(blueprint). 전부 verified: false.
+
 ## D. 다음에 배울 것 (아직 안 읽음)
 
 - LOD Group 기본(거리별 메시 3단).
@@ -223,3 +249,11 @@ Dev 두 번째 유니티 판(규칙 G8~G11 적용 뒤): 컴파일 0 · 씬 빌�
   [Unity Learn — tone mapping](https://learn.unity.com/tutorial/post-processing-effects-tone-mapping-2019-3),
   [LogRocket — post-processing](https://blog.logrocket.com/exploring-post-processing-unity/),
   [Meshy game-asset-pipeline](https://github.com/meshy-dev/game-asset-pipeline)
+
+- 11회차: [Packt — Blend Trees walk/run](https://subscription.packtpub.com/book/game-development/9781785883910/4/ch04lvl1sec38/using-blend-trees-to-blend-walk-and-run-animations),
+  [GameDev Academy — Animator](https://gamedevacademy.org/unity-animator-tutorial/),
+  [Unity — ModelImporter](https://docs.unity3d.com/ScriptReference/ModelImporter.html),
+  [Unity — AnimatorController.CreateAnimatorControllerAtPath](https://docs.unity3d.com/ScriptReference/Animations.AnimatorController.CreateAnimatorControllerAtPath.html),
+  [Unity — ModelImporterClipAnimation.loopTime](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/ModelImporterClipAnimation-loopTime.html),
+  [Unity — Importing humanoid animations](https://docs.unity3d.com/Manual/ConfiguringtheAvatar.html),
+  [Kirwan — Mixamo → Unity](https://danielkirwan.medium.com/download-and-import-mixamo-animations-for-your-humanoid-character-in-unity-a04763203691)

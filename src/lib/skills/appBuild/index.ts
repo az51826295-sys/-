@@ -79,8 +79,11 @@ const UNITY_RULES =
   "EditorBuildSettings.scenes 에 추가. 두 번 불려도 겹치지 않게(있으면 지우고 다시).\n" +
   "- 에디터 스크립트는 Editor 폴더에만 두고 `using UnityEditor;` 를 쓴다.\n" +
   "- 3D 자산이 업무에 이름으로 적혀 있으면 `Assets/Rookery/<제목>/model.fbx`(캐릭터는 " +
-  "`rigged.fbx`)를 AssetDatabase.LoadAssetAtPath 로 읽어 쓰고, **없으면 기본 도형**으로 " +
-  "짓되 어디에 무엇을 끼우면 되는지 주석에 적는다. 없는 파일을 가리키는 코드를 내지 마라.\n" +
+  "`rigged.fbx`, 애니메이션은 `walking.fbx`·`running.fbx`)를 쓴다. 폴더 이름에 판정 접미사" +
+  "(`_FAIL`·`_UNDEFINED`)가 붙어 있을 수 있으니 AssetDatabase.FindAssets 로 찾아 경로에 제목이 " +
+  "든 것을 고른다. **없으면 기본 도형**으로 짓되 어디에 무엇을 끼우면 되는지 주석에 적는다. " +
+  "없는 파일을 가리키는 코드를 내지 마라. 리깅된 캐릭터는 임포트 설정(Humanoid)·클립 루프·" +
+  "Animator 컨트롤러까지 **전부 씬 빌더 코드로** 만든다 — 사람 손 0회.\n" +
   "- 조작은 UnityEngine.InputSystem(Keyboard.current / InputAction). Input.GetAxis 금지.\n" +
   "- 씬에는 Directional Light 하나, Main Camera(태그 MainCamera) 하나를 **반드시** 만든다.\n" +
   "- `Shader.Find(...)` 는 null 일 수 있다(URP 가 없는 프로젝트도 있다). 재질은 기본 도형의 " +
@@ -198,7 +201,7 @@ export const appBuildSkill: EmployeeSkill = {
             (previous.failedChecks.length
               ? `유니티에서 재 본 결과 떨어진 줄:\n${previous.failedChecks.map((f) => `- ${f}`).join("\n")}\n`
               : "") +
-            "target 은 지난 판과 같다."
+            "target 은 지난 판과 같다. **지난 기준은 id 그대로 전부 남기고**(묶지 마라), 새 기준은 뒤에 더한다."
           : ""),
       schema: plan,
       schemaName: "app_plan",
