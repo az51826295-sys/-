@@ -5,3 +5,7 @@ uvicorn==0.52.4
 pillow==12.3.0
 pyyaml==6.0.3
 pydantic==2.13.4
+# 3D 메시 판정(09-05). numpy 는 trimesh 가 끌어온다.
+trimesh==5.1.0
+pygltflib==1.16.5
+numpy==2.5.2

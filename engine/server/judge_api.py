@@ -27,6 +27,7 @@ from fastapi import APIRouter                                  # noqa: E402
 from pydantic import BaseModel                                 # noqa: E402
 
 from genesis import character_judge as cj                      # noqa: E402
+from genesis import mesh_judge as mj                           # noqa: E402
 from genesis import context_view as cv                         # noqa: E402
 from genesis import prompt_book as pb                          # noqa: E402
 from genesis import style_bible as sb                          # noqa: E402
@@ -142,3 +143,32 @@ def thresholds() -> dict:
         },
         "basis": "사장님이 가리킨 레퍼런스 화면 실측 (명암폭 172 · 캐릭터-바닥 대비 99)",
     }
+
+
+class MeshRequest(BaseModel):
+    """GLB 하나. 링크를 주면 판정기가 받아 온다(생성기 링크는 서명돼 있어 짧게 산다),
+    아니면 base64 로 통째로."""
+    glb_url: str | None = None
+    glb_base64: str | None = None
+    want_rig: bool = False
+
+
+@router.post("/mesh")
+def judge_mesh(req: MeshRequest) -> dict:
+    """3D 메시를 `docs/asset-3d-intake-v0-design.md` 표대로 잰다. 거르기만 한다."""
+    import urllib.request
+    if req.glb_base64:
+        data = base64.b64decode(req.glb_base64.split(",")[-1])
+    elif req.glb_url:
+        try:
+            with urllib.request.urlopen(req.glb_url, timeout=120) as r:
+                data = r.read()
+        except Exception as e:  # noqa: BLE001
+            return {"verdict": "UNDEFINED", "rules": [{"id": "fetch", "verdict": "UNDEFINED",
+                    "measured": None, "why": f"GLB 를 못 받았다: {str(e)[:160]}"}], "measured": {},
+                    "thresholds": mj.THRESHOLDS}
+    else:
+        return {"verdict": "UNDEFINED", "rules": [{"id": "input", "verdict": "UNDEFINED",
+                "measured": None, "why": "glb_url 도 glb_base64 도 없다"}], "measured": {},
+                "thresholds": mj.THRESHOLDS}
+    return mj.judge_glb(data, want_rig=req.want_rig).to_dict()
