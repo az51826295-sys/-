@@ -130,8 +130,19 @@ def judge_glb(data: bytes, want_rig: bool = False, profile: str = "character") -
         else:
             h = float(ext[1])  # glTF 는 Y-up
             s = THRESHOLDS["S1"][profile]
-            rules.append(Rule("S1", PASS if s["height_min_m"] <= h <= s["height_max_m"] else FAIL,
-                              round(h, 3), f"높이(Y) {s['height_min_m']}~{s['height_max_m']} m ({profile})"))
+            in_range = lambda v: s["height_min_m"] <= v <= s["height_max_m"]  # noqa: E731
+            if in_range(h):
+                rules.append(Rule("S1", PASS, round(h, 3), f"높이(Y) {s['height_min_m']}~{s['height_max_m']} m ({profile})"))
+            elif in_range(h * 100) or in_range(h / 100):
+                # 리깅 출력은 cm 단위로 온다(09-05 E7: 같은 모델이 메시 1.7 m, 리깅 0.017).
+                # 단위가 다른 것은 크기가 틀린 것이 아니다 — 통과시키고 배율을 적는다.
+                # 21:35 첫 사람 캐릭터가 이것 하나로 FAIL 이 났다.
+                factor = 100 if in_range(h * 100) else 0.01
+                measured["unit_scale_hint"] = factor
+                rules.append(Rule("S1", PASS, round(h, 3),
+                                  f"높이(Y) {s['height_min_m']}~{s['height_max_m']} m ({profile}) — 단위가 {factor}배 다르다(cm). 유니티 Scale Factor {factor}"))
+            else:
+                rules.append(Rule("S1", FAIL, round(h, 3), f"높이(Y) {s['height_min_m']}~{s['height_max_m']} m ({profile})"))
             order = np.argsort(ext)[::-1]
             longest, second = float(ext[order[0]]), float(ext[order[1]])
             tie = (longest - second) / longest <= THRESHOLDS["A1"]["axis_tie_ratio"]

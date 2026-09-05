@@ -95,3 +95,16 @@ def test_rig_not_requested_does_not_count_against_overall():
 def test_garbage_is_undefined():
     v = judge_glb(b"not a glb")
     assert v.verdict == UNDEFINED
+
+
+def test_s1_accepts_cm_unit_with_hint():
+    """리깅 출력은 cm 로 온다(E7). 100배 작은 캐릭터는 크기가 틀린 게 아니라 단위가 다른 것."""
+    import numpy as np, trimesh, io
+    from genesis.mesh_judge import judge_glb
+    m = trimesh.creation.box(extents=(0.006, 0.017, 0.003))  # 1.7 cm 키
+    m.visual = trimesh.visual.TextureVisuals(uv=np.zeros((len(m.vertices), 2)))
+    data = trimesh.Scene(m).export(file_type="glb")
+    v = judge_glb(data, want_rig=False, profile="character")
+    s1 = next(r for r in v.rules if r.id == "S1")
+    assert s1.verdict == "PASS" and "100" in s1.why
+    assert v.measured.get("unit_scale_hint") == 100
