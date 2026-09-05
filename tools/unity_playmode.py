@@ -128,6 +128,34 @@ def unity_running() -> bool:
     return "Unity.exe" in out
 
 
+def suite_reason(root) -> str:
+    """묶음이 통째로 물러났을 때 **그 이유**를 꺼낸다.
+
+    2026-09-03, 엿새 동안 "시험이 0개 돌았습니다" 만 여섯 번 봤다. 그런데 결과
+    파일에는 이렇게 적혀 있었다:
+
+        total="0" testcasecount="6"
+        <reason><message>움직일 수 있는 물체가 없습니다.</message></reason>
+
+    **답이 내내 눈앞에 있었다.** 못 읽은 이유는 이 파서가 `test-case` 만 훑기
+    때문이다 — 준비 단계에서 물러나면 `test-case` 는 하나도 안 생기고, 이유는
+    한 단 위 `test-suite` 에 달린다. 그래서 우리는 판정을 **고장으로** 읽었다.
+
+    이 저장소가 계속 밟는 자리의 뒤집힌 판이다: 여기서는 못 본 것을 없는 것으로
+    읽은 게 아니라, **본 것을 못 본 것으로** 읽었다. 둘 다 값은 같다 — 판정이
+    사라진다.
+    """
+    for suite in root.iter("test-suite"):
+        if (suite.get("total") or "0") != "0":
+            continue
+        node = suite.find("./reason/message")
+        if node is None:
+            node = suite.find("./failure/message")
+        if node is not None and node.text and node.text.strip():
+            return node.text.strip()
+    return ""
+
+
 def parse_results(xml_path: Path) -> dict:
     """NUnit 결과를 읽는다.
 
@@ -136,7 +164,8 @@ def parse_results(xml_path: Path) -> dict:
     """
     root = ET.parse(xml_path).getroot()
     cases = root.iter("test-case")
-    out = {"passed": [], "failed": [], "skipped": [], "inconclusive": []}
+    out = {"passed": [], "failed": [], "skipped": [], "inconclusive": [],
+           "aborted": suite_reason(root)}
     for c in cases:
         name = (c.get("name") or "").strip()
         result = (c.get("result") or "").lower()

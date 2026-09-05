@@ -64,7 +64,19 @@ namespace Rookery.Tests
         /// </summary>
         static string TargetScenePath()
         {
-            var count = SceneManager.sceneCountInBuildSettings;
+            // **러너의 씬은 후보가 아니다.** 테스트 러너는 PlayMode 를 돌릴 때
+            // 자기 `InitTestScene…` 을 빌드 설정에 잠깐 끼워 넣는다. 09-03 에
+            // 그걸 우리 씬으로 골라 Single 로 다시 불러왔고 — 러너 자신이 죽어
+            // 여섯 개가 전부 0으로 찍혔다. 결과 파일에는 그 흔적이 "찾은 것 1,
+            // 사라진 것 1, 활성 씬 InitTestScene" 으로 남아 있었다.
+            var paths = new System.Collections.Generic.List<string>();
+            for (var i = 0; i < SceneManager.sceneCountInBuildSettings; i++)
+            {
+                var candidate = SceneUtility.GetScenePathByBuildIndex(i);
+                if (candidate.Contains("InitTestScene")) continue;
+                paths.Add(candidate);
+            }
+            var count = paths.Count;
             if (count == 0) return null;
 
             var wanted = System.Environment.GetEnvironmentVariable("ROOKERY_SCENE");
@@ -72,22 +84,57 @@ namespace Rookery.Tests
             {
                 for (var i = 0; i < count; i++)
                 {
-                    var path = SceneUtility.GetScenePathByBuildIndex(i);
+                    var path = paths[i];
                     if (path.Contains(wanted)) return path;
                 }
                 return null;
             }
-            return SceneUtility.GetScenePathByBuildIndex(count - 1);
+            return paths[count - 1];
         }
 
+        /// 대조군. 게임 스크립트가 서는 바로 그 자리(Update)에서 키를 읽는다.
+        /// 시험 자신이 `InputSystem.Update()` 직후에 읽는 값은 여기와 다를 수 있다 —
+        /// 09-03 에 그 둘이 실제로 달랐다(시험은 눌림을 봤고 게임은 못 봤다).
+        class InputProbe : MonoBehaviour
+        {
+            public bool Saw;
+            void Update()
+            {
+                var k = Keyboard.current;
+                if (k != null && k.anyKey.isPressed) Saw = true;
+            }
+        }
+
+        // 호출하는 쪽은 `for (var load = LoadTarget(); load.MoveNext();) yield return load.Current;`
+        // 로 안쪽 열거자를 직접 밟는다. 09-03 에 "러너가 넘겨받은 열거자를 안 밟는다"
+        // 고 의심해서 이렇게 바꿨는데, **그 의심은 증명되지 않았다** — 진짜 원인은
+        // `TargetScenePath` 가 러너의 InitTestScene 을 고른 것이었고, 바꾸기 전에도
+        // 이 함수는 돌고 있었다(그래서 검사가 안 울린 것이다: 활성 씬 == 고른 씬).
+        // 직접 밟는 쪽이 러너가 무엇을 지원하든 같게 도니 남겨 둔다. 다만 이것이
+        // 무엇을 고쳤다고 읽지는 말 것.
         IEnumerator LoadTarget()
         {
             var path = TargetScenePath();
             if (path == null)
                 Assert.Inconclusive("빌드 설정에 씬이 없습니다 — 잴 대상이 없습니다.");
 
-            yield return SceneManager.LoadSceneAsync(path, LoadSceneMode.Single);
+            // **끝났는지를 직접 본다.** `yield return op` 에 맡겼더니 09-03 에
+            // 시험이 씬이 바뀌는 도중에 쟀다 — 찾은 물체 1개(러너 씬의 것),
+            // 그것도 재는 사이 사라졌고, 활성 씬은 여전히 InitTestScene 이었다.
+            // 그 상태로 러너까지 죽어 여섯 개가 전부 0으로 찍혔다. 무엇을
+            // 기다리는지 모르는 기다림은 기다림이 아니다.
+            var op = SceneManager.LoadSceneAsync(path, LoadSceneMode.Single);
+            if (op == null)
+                Assert.Inconclusive($"씬을 못 불러왔습니다: {path}");
+            while (!op.isDone) yield return null;
             for (var i = 0; i < SettleFrames; i++) yield return null;
+
+            // 불러온 뒤에 **정말 그 씬인지** 본다. 다른 씬을 잰 결과는 틀린
+            // 결과가 아니라 결과가 아니다 — 이름을 붙여 세운다.
+            var active = SceneManager.GetActiveScene();
+            if (active.path != path)
+                Assert.Inconclusive(
+                    $"불러온 뒤에도 활성 씬이 '{active.name}' 입니다 — '{path}' 가 아닙니다.");
         }
 
         static IEnumerable<GameObject> Roots() =>
@@ -101,7 +148,7 @@ namespace Rookery.Tests
         [UnityTest]
         public IEnumerator 씬이_열리고_예외가_없다()
         {
-            yield return LoadTarget();
+            for (var load = LoadTarget(); load.MoveNext();) yield return load.Current;
             for (var i = 0; i < InputFrames; i++) yield return null;
 
             Assert.IsEmpty(
@@ -113,7 +160,7 @@ namespace Rookery.Tests
         [UnityTest]
         public IEnumerator 카메라와_보이는_것이_있다()
         {
-            yield return LoadTarget();
+            for (var load = LoadTarget(); load.MoveNext();) yield return load.Current;
 
             var cameras = Object.FindObjectsByType<Camera>()
                 .Where(c => c.isActiveAndEnabled).ToArray();
@@ -132,7 +179,7 @@ namespace Rookery.Tests
         [UnityTest]
         public IEnumerator 삼차원이면_조명이_있다()
         {
-            yield return LoadTarget();
+            for (var load = LoadTarget(); load.MoveNext();) yield return load.Current;
 
             var meshes = Object.FindObjectsByType<MeshRenderer>()
                 .Where(r => r.enabled && r.gameObject.activeInHierarchy).ToArray();
@@ -154,7 +201,7 @@ namespace Rookery.Tests
         [UnityTest]
         public IEnumerator 그림이_코드가_아니라_파일에서_온다()
         {
-            yield return LoadTarget();
+            for (var load = LoadTarget(); load.MoveNext();) yield return load.Current;
 
             var sprites = Object.FindObjectsByType<SpriteRenderer>()
                 .Where(s => s.enabled && s.sprite != null)
@@ -175,21 +222,64 @@ namespace Rookery.Tests
         public IEnumerator 입력을_주면_무언가_움직인다()
         {
 #if ENABLE_INPUT_SYSTEM
-            yield return LoadTarget();
+            for (var load = LoadTarget(); load.MoveNext();) yield return load.Current;
 
-            // 2D 든 3D 든 본다. 차원을 알 필요가 없다 — 움직일 수 있는 것이
-            // 무엇이든 움직였는지만 보면 된다.
-            var moving = Object.FindObjectsByType<Rigidbody2D>()
-                .Select(r => r.transform)
-                .Concat(Object.FindObjectsByType<Rigidbody>().Select(r => r.transform))
-                .Distinct()
+            // **씬의 모든 물체를 본다. Rigidbody 만 보지 않는다.**
+            //
+            // 원래 Rigidbody 가 붙은 것만 봤다. 그런데 09-03 에 나온 게임은
+            // Rigidbody 없이 `transform.position` 을 직접 움직였고, 이 시험은
+            // "움직일 수 있는 물체가 없다"며 물러났다. 그 말이 결과 파일에 여섯
+            // 번 적혔는데 고리는 "시험이 0개 돌았다"로만 읽었다. **게임이 아니라
+            // 시험이 좁았다.** 바로 위 주석이 "무엇이든 움직였는지만 보면 된다"고
+            // 해 놓고 코드는 반대였다.
+            //
+            // 다만 아무거나 움직였다고 통과시키면 안 된다. 저 혼자 도는 동전,
+            // 흔들리는 풀은 입력과 무관하게 움직인다. 그래서 **먼저 가만히 두고**,
+            // 그동안 스스로 움직인 것은 뺀다. 남은 것이 입력을 받고 움직여야
+            // "입력에 반응했다"다.
+            var all = Object.FindObjectsByType<Transform>(FindObjectsSortMode.None);
+            var start = all.Select(t => t.position).ToArray();
+            var idleUntil = Time.time + HoldSeconds;
+            while (Time.time < idleUntil) yield return null;
+            var moving = all
+                .Where((t, i) => t != null && Vector3.Distance(start[i], t.position) <= 0.01f)
                 .ToArray();
             if (moving.Length == 0)
-                Assert.Inconclusive("움직일 수 있는 물체(Rigidbody / Rigidbody2D)가 없습니다.");
+            {
+                // 무엇을 봤는지 숫자로 적는다. "하나도 없다"만 남기면 다음 사람이
+                // 또 추측한다 — 사라진 것인지, 정말 다 움직인 것인지, 애초에 못
+                // 찾은 것인지는 셋 다 다른 고장이다.
+                var gone = all.Count(t => t == null);
+                var drifted = all.Where((t, i) => t != null && Vector3.Distance(start[i], t.position) > 0.01f).Count();
+                var names = string.Join(", ", all.Where(t => t != null).Select(t => t.name).Take(8));
+                var scene = SceneManager.GetActiveScene();
+                Assert.Inconclusive(
+                    $"가만히 있는 물체가 없습니다 — 찾은 것 {all.Length}, 그 사이 사라진 것 {gone}, " +
+                    $"입력 없이 움직인 것 {drifted}. 지금 씬 '{scene.name}' (뿌리 {scene.rootCount}개), " +
+                    $"남은 이름: [{names}]. 입력의 효과를 가를 수 없습니다.");
+            }
 
             var before = moving.Select(t => t.position).ToArray();
 
+            // **포커스가 없어도 장치를 켜 둔다.** 기본값(ResetAndDisableNonBackgroundDevices)
+            // 은 `-batchmode` 에서 `Application.isFocused` 가 거짓이라 키보드를 통째로
+            // 끈다. 그러면 이 시험은 `Update()` 직후 자기 눈으로는 눌린 것을 보는데
+            // 게임의 MonoBehaviour 는 끝까지 못 본다 — **어떤 게임도 "안 움직인다"로
+            // 찍힌다.** 09-03 에 깨끗한 프로젝트로 확인했다. 재는 자가 못 보는 것을
+            // 게임 탓으로 적는 자리라, 여기서 켜고 끝나면 되돌린다.
+            var savedBackground = InputSystem.settings.backgroundBehavior;
+            InputSystem.settings.backgroundBehavior = InputSettings.BackgroundBehavior.IgnoreFocus;
             var keyboard = InputSystem.AddDevice<Keyboard>();
+            // 포커스가 없어 꺼진 장치를 명시적으로 켠다. IgnoreFocus 만으로는 09-03 에
+            // 대조군이 여전히 키를 못 봤다.
+            Application.runInBackground = true;
+            InputSystem.EnableDevice(keyboard);
+
+            // **대조군.** 게임과 같은 자리(MonoBehaviour 의 Update)에서 같은 키를
+            // 읽는 물체를 하나 둔다. 이것이 못 봤으면 게임도 못 본 것이고, 그때
+            // "안 움직인다"는 게임의 결함이 아니라 시험의 결함이다. 이것은 봤는데
+            // 게임만 안 움직였을 때에만 게임 탓이라고 적는다.
+            var probe = new GameObject("RookeryInputProbe").AddComponent<InputProbe>();
 
             // **한 조합만 눌러 보면 안 된다.**
             //
@@ -244,7 +334,9 @@ namespace Rookery.Tests
                     yield return null;
                 }
 
-                var now = moving.Select(t => t.position).ToArray();
+                // 그 사이 사라진 물체는 "안 움직인 것"으로 친다. 없어진 것을
+                // 움직인 것으로 세면 부서지는 게임이 잘 움직이는 게임이 된다.
+                var now = moving.Select((t, i) => t == null ? before[i] : t.position).ToArray();
                 moved = before.Where((p, i) => Vector3.Distance(p, now[i]) > 0.01f).Count();
 
                 InputSystem.QueueStateEvent(keyboard, new KeyboardState());
@@ -254,7 +346,16 @@ namespace Rookery.Tests
                 if (moved > 0) break;
             }
 
+            var probeSaw = probe.Saw;
+            var deviceOn = keyboard.enabled;
+            Object.Destroy(probe.gameObject);
             InputSystem.RemoveDevice(keyboard);
+            InputSystem.settings.backgroundBehavior = savedBackground;
+
+            if (moved == 0 && !probeSaw)
+                Assert.Inconclusive(
+                    $"대조군도 키를 못 봤습니다(장치 켜짐: {deviceOn}) — 게임이 아니라 시험이 " +
+                    "못 누른 것입니다. 게임의 조작을 고치지 마십시오.");
 
             if (!pressReached)
             {

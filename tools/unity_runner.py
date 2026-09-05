@@ -1111,6 +1111,47 @@ def find_unity(project: Path) -> Path | None:
     return None
 
 
+def test_compile_errors(log: Path) -> list[str]:
+    """시험지 폴더 안에서 난 컴파일 오류만 뽑는다."""
+    try:
+        text = log.read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return []
+    out = []
+    for line in text.splitlines():
+        m = ERROR_LINE.match(line.strip())
+        if m and "RookeryTests" in m.group("file").replace("\\", "/"):
+            out.append(f"{m.group('file')}({m.group('line')}): {m.group('code')} {m.group('msg')}")
+    return out
+
+
+def wait_until_unity_gone(seconds: int = 180) -> bool:
+    """유니티가 정말로 없어질 때까지 기다린다. **보험이지 원인이 아니었다.**
+
+    09-03 에 "고리가 유니티를 연달아 켜서 앞의 것이 안 죽은 채 충돌한다" 고
+    가설을 세우고 이걸 만들었다. 그리고 재 봤다 — `subprocess.run` 이 돌아온
+    순간부터 60초 내내 유니티는 없었다. **가설은 틀렸다.** 진짜 원인은 시험지가
+    러너의 `InitTestScene` 을 우리 씬으로 골라 다시 불러온 것이었다
+    (`unity/Tests/RookeryAcceptance.cs` 의 `TargetScenePath`).
+
+    그래도 남겨 둔다. 잘못 기다리는 값은 몇 초이고, 남은 핸들이 로그 파일을
+    못 지우게 한 적은 실제로 있었다(위 `run_unity` 주석). 다만 이것이 무엇을
+    고쳤다고 적어 두면 다음 사람이 여기서 또 찾는다 — 그래서 이렇게 적는다.
+    """
+    until = time.monotonic() + seconds
+    while time.monotonic() < until:
+        try:
+            out = subprocess.run(
+                ["tasklist", "/FI", "IMAGENAME eq Unity.exe"],
+                capture_output=True, text=True, timeout=20).stdout
+        except (OSError, subprocess.SubprocessError):
+            return True
+        if "Unity.exe" not in out:
+            return True
+        time.sleep(2)
+    return False
+
+
 def run_playmode(project: Path, timeout: int) -> tuple[list[str], list[str], bool]:
     """게임을 켜서 눌러 본다. **떨어진 것과 못 잰 것을 나눠서** 돌려준다.
 
@@ -1171,6 +1212,9 @@ def run_playmode(project: Path, timeout: int) -> tuple[list[str], list[str], boo
     # **다시 해 봤다는 사실까지 말한다.**
     r = None
     for attempt in (1, 2):
+    # **앞의 유니티가 죽을 때까지 기다린다.** 이게 눈이 안 떠지던 이유다.
+        if not wait_until_unity_gone():
+            return [], ["앞선 유니티가 3분 넘게 안 꺼져 못 쟀습니다."], False
         say("  돌려 봅니다 (PlayMode)…" + ("  [다시]" if attempt == 2 else ""))
         try:
             subprocess.run([
@@ -1185,11 +1229,28 @@ def run_playmode(project: Path, timeout: int) -> tuple[list[str], list[str], boo
 
         if results.exists():
             r = pm.parse_results(results)
-            if sum(len(v) for v in r.values()) > 0:
+            if any(r[k] for k in ("passed", "failed", "skipped", "inconclusive")):
                 break
+            # 한 개도 안 돌았다. **그런데 왜 안 돌았는지가 결과 파일에 적혀 있을
+            # 수 있다.** 09-03 에 여섯 번 "0개 돌았습니다" 로 보고했는데, 그
+            # 파일에는 내내 "움직일 수 있는 물체가 없습니다" 라고 적혀 있었다.
+            #
+            # 이유가 있으면 다시 해 보지 않는다 — 같은 이유로 또 안 돈다. 그
+            # 말을 그대로 올리는 것이 다시 켜는 것보다 낫다.
+            if r["aborted"]:
+                say(f"  시험지가 물러났습니다: {r['aborted']}")
+                return [], [f"시험이 못 돌았습니다 — {r['aborted']}"], False
             r = None
+        # 결과 파일에 이유가 없으면 로그를 본다. 시험지 자신이 컴파일에 실패하면
+        # 결과 파일은 비고 로그에만 `error CS` 가 남는다 — 09-03 에 내가 그렇게
+        # 만들었고(foreach 로 IEnumerator 를 돌림), 고리는 "0개, 이유 없음" 이라고만
+        # 했다. 시험지가 깨진 것과 게임이 깨진 것은 다른 사람이 고친다.
+        broken = test_compile_errors(log)
+        if broken:
+            return [], ["시험지가 컴파일되지 않았습니다 — 게임이 아니라 시험지 탓입니다:\n  "
+                        + "\n  ".join(broken[:5])], False
         if attempt == 2:
-            return [], [f"두 번 해 봤는데 시험이 0개 돌았습니다 — 잰 것이"
+            return [], [f"두 번 해 봤는데 시험이 0개 돌았고 결과 파일에 이유도"
                         f" 없습니다. 로그: {log}"], False
 
     if r is None:
