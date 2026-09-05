@@ -214,6 +214,21 @@ How to behave:
         "Fill \"assignment\" now (title 10+ chars, description 20+ chars). No options, no questions.",
     ));
   }
+  if (input.requireAssignment && !output.assignment) {
+    // 두 번 시켜도 비웠다(22:54 Dev). 모델의 판단이 아니라 규칙이다: 이 턴은 일이다.
+    // 매니저의 말을 그대로 업무로 만든다 — 제목은 첫 문장, 설명은 전문.
+    const last = [...input.messages].reverse().find((m) => m.role === "user")?.content?.trim() ?? "";
+    const first = (last.split(/[\n.。]/)[0] || "매니저의 요청").trim().slice(0, 60);
+    output = {
+      ...output,
+      options: null,
+      assignment: {
+        title: first.length >= 10 ? first : `${first} — 매니저 요청`,
+        description: last.length >= 20 ? last : `${last}\n(매니저가 대화에서 요청한 일)`,
+        expectedOutcome: null,
+      },
+    };
+  }
 
   // ── 업무 접수 ────────────────────────────────────────────────────
   if (!output.assignment) {
