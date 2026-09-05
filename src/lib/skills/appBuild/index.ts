@@ -185,7 +185,9 @@ export const appBuildSkill: EmployeeSkill = {
         "`target`: 게임·3D·유니티·캐릭터·씬 이야기면 **unity**(이 회사의 게임은 유니티 " +
         "안에서 산다 — HTML 게임을 내지 마라). 웹 도구·페이지·스크립트면 web. 모르면 unity.\n" +
         "unity 면 기준은 유니티 안에서 사람이 눌러 볼 수 있는 문장으로: " +
-        "'메뉴 Rookery/… 를 누르면 씬이 생기고 Play 하면 …'.",
+        "'메뉴 Rookery/… 를 누르면 씬이 생기고 Play 하면 …'." +
+        // 설계 단계가 읽는 것은 범위·반응 쪽(blueprint). 코드 쪽 규칙은 짓는 단계에서.
+        renderGamedevLessons("blueprint"),
       input:
         `업무: ${ctx.context.assignment.title}\n` +
         `설명: ${ctx.context.assignment.description ?? ""}\n` +
