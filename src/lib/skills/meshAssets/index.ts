@@ -92,7 +92,8 @@ export const meshAssetsSkill: EmployeeSkill = {
       schema: briefSchema,
       schemaName: "mesh_asset_brief",
       maxTokens: 1500,
-      tier: "judgment",
+      // 제목·콘셉트 문장·리깅 여부를 뽑는 작은 일. 메시를 만드는 것은 Meshy 다.
+      tier: "routine",
     });
 
     // ── 1. 이미지: 받은 것 또는 기계 콘셉트 ─────────────────────────
