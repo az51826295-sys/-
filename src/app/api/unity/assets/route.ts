@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import { signedUrlFor } from "@/lib/deliverables/files";
+import { readFileSync } from "node:fs";
+import path from "node:path";
 
 export const dynamic = "force-dynamic";
 
@@ -52,7 +54,7 @@ export async function GET(request: Request) {
   };
   const deliverables = (rows ?? []) as unknown as Row[];
   if (deliverables.length === 0) {
-    return NextResponse.json({ company: company.name, count: 0, files: [], scripts: [] });
+    return NextResponse.json({ company: company.name, count: 0, files: [], scripts: [], tests: [] });
   }
 
   const ids = deliverables.map((d) => d.id);
@@ -84,20 +86,33 @@ export async function GET(request: Request) {
     });
   }
 
-  // Dev 가 낸 글 파일 중 C# 만. 유니티 프로젝트에 그대로 들어간다.
+  // Dev 가 낸 글 파일. C# 과 유니티가 읽는 글 자산(.inputactions·.asmdef·.json·.txt)만.
+  // 09-05 Dev 가 .inputactions 를 냈는데 .cs 만 보내서 씬 빌더가 못 찾을 뻔했다.
+  const TEXT_OK = [".cs", ".inputactions", ".asmdef", ".json", ".txt", ".shader", ".md"];
   const scripts = deliverables
     .filter((d) => d.deliverable_type === "app_build")
     .flatMap((d) =>
       (d.content_json?.files ?? [])
-        .filter((f) => f.path.endsWith(".cs"))
+        .filter((f) => TEXT_OK.some((ext) => f.path.endsWith(ext)))
         .map((f) => ({ deliverableId: d.id, subject: d.title, path: f.path, contents: f.contents, createdAt: d.created_at })),
     );
+
+  // 합격 시험지. 사람이 쓰고 한 번 쓰고 안 바꾸는 자 — 창이 프로젝트의
+  // Assets/RookeryTests/PlayMode/ 에 넣는다. 저장소의 unity/Tests 가 원본이다.
+  const tests = ["Rookery.Tests.PlayMode.asmdef", "RookeryAcceptance.cs", "RookeryCriteria.cs"].flatMap((name) => {
+    try {
+      return [{ path: `Assets/RookeryTests/PlayMode/${name}`, contents: readFileSync(path.join(process.cwd(), "unity", "Tests", name), "utf8") }];
+    } catch {
+      return [];
+    }
+  });
 
   return NextResponse.json({
     company: company.name,
     count: files.length + scripts.length,
     files,
     scripts,
+    tests,
     note:
       "대화로 돌아온 것이 전부 나갑니다 — 떨어진 것도 판정과 함께. 고르는 것은 유니티 앞의 사람입니다.",
   });

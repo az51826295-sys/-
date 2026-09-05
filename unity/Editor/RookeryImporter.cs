@@ -15,6 +15,8 @@ using System.Text;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEditor.TestTools.TestRunner.Api;
+using System.Reflection;
 
 namespace Rookery
 {
@@ -32,6 +34,13 @@ namespace Rookery
 
         [MenuItem("Window/Rookery/가져오기")]
         static void Open() => GetWindow<RookeryImporter>("Rookery");
+
+        void Remember()
+        {
+            EditorPrefs.SetString(UrlKey, _url);
+            EditorPrefs.SetString(KeyKey, _key);
+            EditorPrefs.SetString(FolderKey, _folder);
+        }
 
         void OnEnable()
         {
@@ -52,10 +61,16 @@ namespace Rookery
             {
                 if (GUILayout.Button("로키에서 가져오기", GUILayout.Height(30)))
                 {
-                    EditorPrefs.SetString(UrlKey, _url);
-                    EditorPrefs.SetString(KeyKey, _key);
-                    EditorPrefs.SetString(FolderKey, _folder);
+                    Remember();
                     Fetch();
+                }
+                EditorGUILayout.Space(4);
+                // 가져온 것으로 씬을 짓고, 합격 시험지로 잰다. 결과는 로키 대화로 돌아간다.
+                // 09-05 저녁까지 이 두 단계는 사람(나)이 배치 명령으로 손으로 돌렸다.
+                if (GUILayout.Button("짓고 재기 → 결과를 로키로", GUILayout.Height(26)))
+                {
+                    Remember();
+                    _status = RookeryCheck.BuildAndTest(_url, _key);
                 }
             }
 
@@ -79,12 +94,14 @@ namespace Rookery
         {
             public string deliverableId, subject, path, contents, createdAt;
         }
+        [Serializable] class TestEntry { public string path, contents; }
         [Serializable] class Payload
         {
             public string company;
             public int count;
             public FileEntry[] files;
             public ScriptEntry[] scripts;
+            public TestEntry[] tests;
             public string note;
         }
 
@@ -168,15 +185,18 @@ namespace Rookery
                                (f.wantRig && f.filename.EndsWith(".fbx") ? "  ← 캐릭터: Rig 를 Humanoid 로" : ""));
             }
 
+            // 스크립트는 **낸 경로 그대로** 놓는다. 씬 빌더가 `Assets/Input/….inputactions` 를
+            // 그 경로로 찾기 때문에, 제목 폴더로 옮기면 못 찾는다(09-05). 로키가 전에 쓴
+            // 파일은 덮어쓰고, 사람이 만든 파일은 건드리지 않는다 — 구분은 manifest.
             foreach (var s in payload.scripts ?? Array.Empty<ScriptEntry>())
             {
-                var dir = Path.Combine(_folder, "Scripts", Safe(s.subject));
-                Directory.CreateDirectory(dir);
-                var dest = Path.Combine(dir, Path.GetFileName(s.path));
-                // 이미 있으면 덮어쓰지 않는다 — 사람이 손댄 파일을 로키가 지우면 안 된다.
-                if (File.Exists(dest)) { log.AppendLine($"  = {s.subject}/{Path.GetFileName(s.path)} 이미 있음, 건너뜀"); continue; }
-                File.WriteAllText(dest, s.contents);
-                log.AppendLine($"  ✓ {s.subject}/{Path.GetFileName(s.path)}");
+                log.AppendLine("  " + RookeryFiles.WriteManaged(s.path, s.contents));
+                RookeryCheck.RememberDeliverable(s.deliverableId);
+                yield return true;
+            }
+            foreach (var t in payload.tests ?? Array.Empty<TestEntry>())
+            {
+                log.AppendLine("  " + RookeryFiles.WriteManaged(t.path, t.contents));
                 yield return true;
             }
 
@@ -194,7 +214,8 @@ namespace Rookery
     {
         [Serializable] class FileEntry { public string id, deliverableId, subject, kind, filename, mime, verdict, createdAt, url; public long size; public bool wantRig; }
         [Serializable] class ScriptEntry { public string deliverableId, subject, path, contents, createdAt; }
-        [Serializable] class Payload { public string company; public int count; public FileEntry[] files; public ScriptEntry[] scripts; public string note; }
+        [Serializable] class TestEntry { public string path, contents; }
+        [Serializable] class Payload { public string company; public int count; public FileEntry[] files; public ScriptEntry[] scripts; public TestEntry[] tests; public string note; }
 
         public static void Import()
         {
@@ -224,14 +245,21 @@ namespace Rookery
             }
             foreach (var s in payload.scripts ?? Array.Empty<ScriptEntry>())
             {
-                var dir = Path.Combine(folder, "Scripts", Safe(s.subject));
-                Directory.CreateDirectory(dir);
-                var dest = Path.Combine(dir, Path.GetFileName(s.path));
-                if (File.Exists(dest)) { Debug.Log($"[Rookery] = {dest} 이미 있음"); continue; }
-                File.WriteAllText(dest, s.contents);
-                Debug.Log($"[Rookery] ✓ {dest}");
+                Debug.Log("[Rookery] " + RookeryFiles.WriteManaged(s.path, s.contents));
+                RookeryCheck.RememberDeliverable(s.deliverableId);
             }
+            foreach (var t in payload.tests ?? Array.Empty<TestEntry>())
+                Debug.Log("[Rookery] " + RookeryFiles.WriteManaged(t.path, t.contents));
             AssetDatabase.Refresh();
+        }
+
+        /// 가져온 뒤 짓고 재기까지. -quit 없이 부른다 — 시험이 끝나면 스스로 나간다.
+        public static void ImportBuildTest()
+        {
+            Import();
+            var url = Environment.GetEnvironmentVariable("ROOKERY_URL") ?? "https://rookery-web-production.up.railway.app";
+            var key = Environment.GetEnvironmentVariable("ROOKERY_KEY") ?? "";
+            Debug.Log("[Rookery] " + RookeryCheck.BuildAndTest(url, key));
         }
 
         static string Safe(string s)
@@ -239,6 +267,152 @@ namespace Rookery
             var sb = new StringBuilder();
             foreach (var c in s) sb.Append(Array.IndexOf(Path.GetInvalidFileNameChars(), c) >= 0 || c == ' ' ? '_' : c);
             return sb.Length == 0 ? "asset" : sb.ToString();
+        }
+    }
+
+    /// 로키가 쓴 파일과 사람이 쓴 파일을 가른다. manifest 에 있는 것만 덮어쓴다.
+    public static class RookeryFiles
+    {
+        const string Manifest = "Assets/Rookery/.rookery-manifest.txt";
+
+        static HashSet<string> Load()
+        {
+            var set = new HashSet<string>();
+            if (File.Exists(Manifest))
+                foreach (var line in File.ReadAllLines(Manifest)) if (line.Length > 0) set.Add(line.Trim());
+            return set;
+        }
+
+        public static string WriteManaged(string relPath, string contents)
+        {
+            var path = relPath.Replace('\\', '/');
+            if (!path.StartsWith("Assets/")) path = "Assets/Rookery/" + path.TrimStart('/');
+            var managed = Load();
+            var dir = Path.GetDirectoryName(path);
+            if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
+            if (File.Exists(path))
+            {
+                if (File.ReadAllText(path) == contents) return $"= {path} (같음)";
+                if (!managed.Contains(path)) return $"! {path} 사람이 만든 파일 — 건너뜀";
+            }
+            File.WriteAllText(path, contents);
+            if (!managed.Contains(path))
+            {
+                managed.Add(path);
+                Directory.CreateDirectory("Assets/Rookery");
+                File.WriteAllLines(Manifest, managed);
+            }
+            return $"✓ {path}";
+        }
+    }
+
+    /// 짓고 재기. Rookery/ 메뉴의 BuildOrRebuild 를 전부 돌린 뒤 PlayMode 시험을 돌리고,
+    /// 결과를 /api/unity/checks 로 보낸다. 콜백은 도메인 리로드에 날아가므로
+    /// [InitializeOnLoad] 에서 매번 다시 건다; 어느 산출물의 시험인지는 SessionState 에.
+    [InitializeOnLoad]
+    public static class RookeryCheck
+    {
+        const string PendingUrl = "Rookery.Check.Url";
+        const string PendingKey = "Rookery.Check.Key";
+        const string PendingDeliverable = "Rookery.Check.Deliverable";
+        const string LastDeliverable = "Rookery.Last.Deliverable";
+
+        static RookeryCheck()
+        {
+            var api = ScriptableObject.CreateInstance<TestRunnerApi>();
+            api.RegisterCallbacks(new Reporter());
+        }
+
+        public static void RememberDeliverable(string id)
+        {
+            if (!string.IsNullOrEmpty(id)) SessionState.SetString(LastDeliverable, id);
+        }
+
+        public static string BuildAndTest(string url, string key)
+        {
+            var built = BuildAll();
+            SessionState.SetString(PendingUrl, url);
+            SessionState.SetString(PendingKey, key);
+            SessionState.SetString(PendingDeliverable, SessionState.GetString(LastDeliverable, ""));
+            var api = ScriptableObject.CreateInstance<TestRunnerApi>();
+            api.Execute(new ExecutionSettings(new Filter
+            {
+                testMode = TestMode.PlayMode,
+                assemblyNames = new[] { "Rookery.Tests.PlayMode" },
+            }));
+            return built + "\n시험을 돌립니다… 끝나면 결과가 로키 대화에 붙습니다.";
+        }
+
+        /// Rookery/ 메뉴에 달린 BuildOrRebuild 를 전부 부른다. 하나가 죽어도 나머지는 돈다.
+        static string BuildAll()
+        {
+            var log = new StringBuilder();
+            var count = 0;
+            foreach (var asm in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                Type[] types;
+                try { types = asm.GetTypes(); } catch { continue; }
+                foreach (var t in types)
+                {
+                    var m = t.GetMethod("BuildOrRebuild", BindingFlags.Public | BindingFlags.Static, null, Type.EmptyTypes, null);
+                    if (m == null) continue;
+                    var menu = m.GetCustomAttribute<MenuItem>();
+                    if (menu == null || !menu.menuItem.StartsWith("Rookery/")) continue;
+                    try { m.Invoke(null, null); log.AppendLine($"✓ 지음: {menu.menuItem}"); count++; }
+                    catch (Exception e) { log.AppendLine($"✗ {menu.menuItem}: {(e.InnerException ?? e).Message}"); }
+                }
+            }
+            if (count == 0) log.AppendLine("Rookery/ 메뉴에 BuildOrRebuild 가 없습니다 — 먼저 가져오십시오.");
+            return log.ToString();
+        }
+
+        static string J(string s) => (s ?? "").Replace("\\", "\\\\").Replace("\"", "\\\"").Replace("\n", " ").Replace("\r", "");
+
+        class Reporter : ICallbacks
+        {
+            public void RunStarted(ITestAdaptor testsToRun) { }
+            public void TestStarted(ITestAdaptor test) { }
+            public void TestFinished(ITestResultAdaptor result) { }
+
+            public void RunFinished(ITestResultAdaptor result)
+            {
+                var url = SessionState.GetString(PendingUrl, "");
+                var key = SessionState.GetString(PendingKey, "");
+                if (string.IsNullOrEmpty(url) || string.IsNullOrEmpty(key)) return; // 우리가 건 시험이 아니다
+                SessionState.EraseString(PendingUrl);
+                SessionState.EraseString(PendingKey);
+                var deliverable = SessionState.GetString(PendingDeliverable, "");
+
+                var cases = new List<string>();
+                int passed = 0, failed = 0, inconclusive = 0;
+                void Walk(ITestResultAdaptor r)
+                {
+                    if (r.HasChildren) { foreach (var c in r.Children) Walk(c); return; }
+                    var status = r.TestStatus.ToString();
+                    if (status == "Passed") passed++;
+                    else if (status == "Failed") failed++;
+                    else inconclusive++;
+                    cases.Add("{\"name\":\"" + J(r.Test.Name) + "\",\"result\":\"" + status + "\",\"message\":\"" + J(r.Message) + "\"}");
+                }
+                Walk(result);
+                var scene = "";
+                var scenes = EditorBuildSettings.scenes;
+                if (scenes.Length > 0) scene = Path.GetFileNameWithoutExtension(scenes[scenes.Length - 1].path);
+                var json = "{\"deliverableId\":\"" + J(deliverable) + "\",\"scene\":\"" + J(scene) + "\",\"passed\":" + passed +
+                           ",\"failed\":" + failed + ",\"inconclusive\":" + inconclusive + ",\"cases\":[" + string.Join(",", cases) + "]}";
+                var req = new UnityWebRequest($"{url.TrimEnd('/')}/api/unity/checks", "POST")
+                {
+                    uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(json)),
+                    downloadHandler = new DownloadHandlerBuffer(),
+                };
+                req.SetRequestHeader("Content-Type", "application/json");
+                req.SetRequestHeader("x-rookery-key", key);
+                req.SendWebRequest().completed += _ =>
+                {
+                    Debug.Log($"[Rookery] 시험 결과 보냄: 통과 {passed} 떨어짐 {failed} 못 잼 {inconclusive} → {req.responseCode} {req.downloadHandler.text}");
+                    if (Application.isBatchMode) EditorApplication.Exit(failed > 0 ? 3 : 0);
+                };
+            }
         }
     }
 
