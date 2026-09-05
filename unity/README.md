@@ -35,3 +35,11 @@ GLB/FBX/썸네일)가 `Assets/Rookery/<제목>_FAIL/` 에 떨어지는 것을 �
 짓고 재기가 돌 때 시험지가 게임 화면을 한 장 찍어 대화에 붙인다(960×540).
 그래픽 장치가 있어야 찍힌다 — 창 버튼은 문제없고, 헤드리스로 돌릴 때는
 `-nographics` 를 **빼고** `-batchmode` 만 준다. 없으면 사진 없이 판정만 간다.
+
+## URP + 후처리 켜기
+
+창 버튼 하나(또는 헤드리스 `-executeMethod Rookery.RookeryRender.EnableUrpHeadless`, 두 번).
+패키지 → URP 자산(MSAA 4·HDR·그림자 50 m/4096/4단) → 후처리 프로필(ACES·블룸·비네트·
+색 보정) → 카메라 후처리·SMAA → 공식 변환기. 짓고 재기가 씬을 새로 지을 때마다 다시
+씌우고, Built-in 재질이 남아 있으면 URP Lit 로 바꾼다. 진단은 `RookeryDiag.DumpScene`.
+

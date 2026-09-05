@@ -224,18 +224,26 @@ export const GAMEDEV_LESSONS: Lesson[] = [
     text: "캐릭터 텍스처 임포트: maxTextureSize 2048, anisoLevel 8, mipmapEnabled true, textureCompression = CompressedHQ. 기본 aniso 1 은 비스듬한 청바지가 뭉개진다." },
   { id: "N3", role: "unity_code", verified: true,
     text: "안티앨리어싱: QualitySettings.antiAliasing = 4 (MSAA 4x, Built-in forward). 캐릭터 윤곽의 계단이 사라진다 — 사진에서 제일 먼저 보이는 싸구려 티." },
-  { id: "N4", role: "unity_code", verified: false,
+  { id: "N4", role: "unity_code", verified: true,
     text: "림(rim) 조명: 캐릭터 뒤-위(카메라 반대쪽, 회전 (35, 180+30, 0))에서 오는 Directional 하나, 세기 0.5~0.7, 색 살짝 차게(0.8, 0.9, 1), 그림자 끔. 윤곽에 얇은 빛이 생겨 배경에서 떨어져 보인다. 키·필·림 = 3점 조명 완성." },
   { id: "N5", role: "unity_code", verified: true,
     text: "머리가 가는 곳을 본다(Humanoid IK): Animator 컨트롤러 레이어에 IK Pass 를 코드로 켠다 — var L = ctrl.layers; L[0].iKPass = true; ctrl.layers = L. 캐릭터 스크립트에 void OnAnimatorIK(int layer) { anim.SetLookAtWeight(0.6f, 0.15f, 0.8f, 0f, 0.5f); anim.SetLookAtPosition(목표); } 목표는 이동 방향 앞 5 m(서 있으면 카메라가 보는 앞점). 사람처럼 보이게 하는 가장 싼 한 줄." },
   { id: "N6", role: "unity_code", verified: false,
     text: "발 IK(읽은 것): OnAnimatorIK 에서 각 발 아래로 0.6 m 레이캐스트 → SetIKPositionWeight(AvatarIKGoal.LeftFoot, w); SetIKPosition(goal, hit.point + up*0.05). 서 있을 때 w=1, 걸을 때 0.3. 평평한 바닥에선 차이가 작으니 첫 판엔 넣지 않아도 된다." },
-  { id: "N7", role: "unity_code", verified: false,
+  { id: "N7", role: "unity_code", verified: true,
     text: "상태 전이는 hasExitTime = false, duration 0.15~0.25초. 0 이면 걷기→달리기가 끊기고, 0.5 이상이면 굼뜨다." },
   { id: "N8", role: "unity_code", verified: true,
     text: "3인칭 카메라 프레이밍(읽은 것): 어깨 높이(1.4~1.6 m), 거리 3.5~4.5 m, FOV 55, 오른쪽으로 0.4 m 비껴서 캐릭터가 화면 중앙 아래 1/3 에. 정면 뒤통수 한가운데는 캐릭터도 앞도 안 보인다." },
   { id: "N9", role: "blueprint", verified: false,
     text: "캐릭터 디테일 기준: '옷 주름·머리결이 빛 방향에 따라 명암이 진다(노멀 맵)', '청바지는 무광이고 피부는 살짝 매끈하다(금속·매끄러움 맵)', '캐릭터 윤곽에 계단이 없다(MSAA)', '캐릭터 뒤쪽 윤곽에 얇은 빛이 있다(림)', '걷는 방향으로 머리가 돈다(IK)'. 전부 사진 한 장으로 확인된다." },
+
+  // ── O. 13회차 (09-05 23:28~00:33) — URP + 후처리를 코드로. 창의 일이지만 Dev 도 알아야 한다 ──
+  { id: "O1", role: "unity_code", verified: true,
+    text: "프로젝트는 URP 일 수 있다(로키 창의 'URP + 후처리 켜기'). URP 에서 Standard·Legacy 셰이더 재질은 **분홍**이다 — 00:00 사진의 바닥·동전이 그랬다. 재질은 반드시 Lit()/Tint()/Surface() 도우미로만 만든다. 씬 빌더뿐 아니라 **런타임 스크립트**(GameManager 등)에서 만드는 재질도 같다 — 창의 안전망은 지은 씬만 바꿀 수 있고 런타임 재질은 못 잡는다." },
+  { id: "O2", role: "unity_code", verified: true,
+    text: "URP 후처리(Volume·카메라 데이터)는 씬을 새로 지으면 사라진다. 창이 지은 뒤마다 다시 씌우지만, 빌더가 카메라를 두 대 만들거나 Volume 을 지우면 깨진다. 카메라는 한 대, 'Rookery Post' 물체는 건드리지 않는다." },
+  { id: "O3", role: "unity_code", verified: true,
+    text: "파티클 렌더러 재질은 URP 에서 'Universal Render Pipeline/Particles/Unlit', Built-in 에서 'Particles/Standard Unlit'. Shader.Find 로 앞을 먼저 찾고 없으면 뒤로." },
 
   // ── C. 범위·설계 (설계도) ──
   { id: "C1", role: "blueprint", verified: true,
