@@ -203,6 +203,8 @@ export const GAMEDEV_LESSONS: Lesson[] = [
     text: "캐릭터가 씬에 있으면 그림자·조명 규칙(L7)이 그대로 적용된다: SkinnedMeshRenderer 의 shadowCastingMode On, receiveShadows true, 키 조명은 얼굴 쪽 앞-위." },
   { id: "M13", role: "unity_code", verified: true,
     text: "Meshy FBX 는 텍스처가 파일 안에 묻혀 있다. 그냥 임포트하면 **캐릭터가 새하얗다**(22:24 첫 사람 캐릭터가 그랬다). 씬 빌더가 코드로 꺼낸다: imp.ExtractTextures(폴더) → AssetDatabase.Refresh() → imp.materialImportMode = ModelImporterMaterialImportMode.ImportStandard; imp.materialLocation = ModelImporterMaterialLocation.External; imp.SearchAndRemapMaterials(ModelImporterMaterialName.BasedOnTextureName, ModelImporterMaterialSearch.Local) → imp.SaveAndReimport(). 꺼낸 재질의 셰이더가 null/분홍이면 Standard 로 바꾸고 _MainTex 에 텍스처를 넣는다." },
+  { id: "M16", role: "unity_code", verified: true,
+    text: "**Meshy FBX 재질은 발광(emission)이 켜져 온다** — 발광 맵 = 베이스컬러 텍스처, 발광색 흰색. 알베도가 빛으로 한 번 더 더해져 얼굴·흰 옷이 하얗게 탄다(09-06 01:15, 조명을 다 꺼도 탔다). 캐릭터 재질을 만질 때 반드시: m.DisableKeyword(\"_EMISSION\"); m.SetTexture(\"_EmissionMap\", null); m.SetColor(\"_EmissionColor\", Color.black)." },
   { id: "M14", role: "unity_code", verified: true,
     text: "캐릭터 루트는 y = 0 에 놓는다(Meshy 는 원점이 발바닥, A8). 캡슐처럼 y = 높이/2 로 올리면 공중에서 떨어지며 시작하고, 자는 '입력 없이 움직인 물체' 로 뺀다 — 22:24 판이 그랬다. CapsuleCollider 는 center (0, 0.9, 0) 높이 1.8 로 루트에." },
   { id: "M15", role: "unity_code", verified: true,

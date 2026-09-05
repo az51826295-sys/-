@@ -210,6 +210,23 @@ namespace Rookery
                     var m = mats[i];
                     if (m == null) { if (r is ParticleSystemRenderer && particle != null) { mats[i] = new Material(particle); changed = true; n++; } continue; }
                     var name = m.shader ? m.shader.name : "";
+                    // Meshy FBX 재질은 베이스컬러 텍스처가 **발광 맵에도** 들어 있고 발광색이
+                    // 흰색이다 — 알베도가 빛으로 한 번 더 더해져 얼굴·흰 옷이 하얗게 탄다
+                    // (09-06 01:15, 조명을 다 꺼도 탔다). 발광 맵이 베이스 맵과 같으면 끈다.
+                    if (m.IsKeywordEnabled("_EMISSION") && m.HasProperty("_EmissionMap"))
+                    {
+                        var em = m.GetTexture("_EmissionMap");
+                        var bm = m.HasProperty("_BaseMap") ? m.GetTexture("_BaseMap") : (m.HasProperty("_MainTex") ? m.GetTexture("_MainTex") : null);
+                        if (em != null && em == bm)
+                        {
+                            m.DisableKeyword("_EMISSION");
+                            m.SetTexture("_EmissionMap", null);
+                            if (m.HasProperty("_EmissionColor")) m.SetColor("_EmissionColor", Color.black);
+                            m.globalIlluminationFlags = MaterialGlobalIlluminationFlags.EmissiveIsBlack;
+                            EditorUtility.SetDirty(m);
+                            n++;
+                        }
+                    }
                     if (name.StartsWith("Universal Render Pipeline/")) continue;
                     if (name == "Hidden/InternalErrorShader" || name == "Standard" || name.StartsWith("Legacy Shaders/") || name.StartsWith("Particles/"))
                     {
