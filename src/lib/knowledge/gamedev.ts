@@ -49,6 +49,11 @@ export const GAMEDEV_LESSONS: Lesson[] = [
   { id: "E7", role: "mesh_assets", verified: true,
     text: "리깅된 출력은 단위가 100배 다를 수 있다 — 같은 모델이 메시 출력 1.7 m, 리깅 출력 0.017 m 로 잡혔다. 유니티에서 rigged.fbx 의 Scale Factor 를 반드시 확인한다(100 또는 0.01)." },
 
+  { id: "F1", role: "mesh_assets", verified: false,
+    text: "폴리 예산은 PC 20~50k 삼각형, 텍스처 2K 가 표준이다. 히어로 자산만 4K. 텍스처가 메시보다 메모리를 더 먹으니 메시를 깎기 전에 텍스처를 줄인다." },
+  { id: "F3", role: "mesh_assets", verified: false,
+    text: "유니티 임포트에서 Normals 는 Import(Calculate 아님), Read/Write 는 끈다. 모델이 안 보이면 Transform 크기 0·뒤집힌 법선·재질 없음 셋 중 하나다." },
+
   // ── B. 유니티 코드 (Dev) ──
   { id: "B1", role: "unity_code", verified: false,
     text: "물리(Rigidbody 속도·힘)는 FixedUpdate 에서, 입력 읽기는 Update 에서. Update 에서 Rigidbody 를 밀면 프레임마다 다르게 움직인다." },
@@ -69,6 +74,13 @@ export const GAMEDEV_LESSONS: Lesson[] = [
 
   { id: "E4", role: "unity_code", verified: false,
     text: "3인칭 조작·카메라는 처음부터 짜지 않는다. 유니티 Starter Assets – ThirdPerson(URP)이 표준형이고 Input System·Cinemachine 이 같이 깔린다. 그 위에 얹는다." },
+
+  { id: "F4", role: "unity_code", verified: false,
+    text: "Starter Assets 에 우리 캐릭터를 끼울 때: FBX Rig → Humanoid, Avatar 'Create From This Model', 플레이어 프리팹의 SkinnedMeshRenderer 와 본을 바꾸고 Animator 에 새 Avatar 를 지정한다. 본 이름이 표준(Hips·Spine·LeftUpLeg…)이어야 한다." },
+  { id: "F5", role: "unity_code", verified: false,
+    text: "PC 텍스처 압축은 RGB DXT1, RGBA BC7. 바닥·벽처럼 반복되는 텍스처는 밉맵을 켜고 Trilinear." },
+  { id: "F6", role: "unity_code", verified: false,
+    text: "Unity 6 URP 프로젝트의 기본 패키지: render-pipelines.universal, inputsystem, cinemachine(3.x), cloud.gltfast(6.x). 버전은 레지스트리에 물어서 고른다." },
 
   // ── C. 범위·설계 (설계도) ──
   { id: "C1", role: "blueprint", verified: true,

@@ -54,11 +54,23 @@
 | E4 | 3인칭 조작 표준형은 유니티 **Starter Assets – ThirdPerson(URP)**: Input System + Cinemachine 이 같이 깔린다. 처음부터 짜지 않는다 | Asset Store · Unity | 미확인 |
 | E5 | 규격은 "무엇을 재는가" 부터 틀릴 수 있다 — v0 M1 이 그랬다. 문턱 숫자보다 규칙 자체를 먼저 의심한다 | 우리 판 | **확인** |
 
+## F. 3회차 (09-05 17:08~17:20) — 예산·세팅·갈아 끼우기
+
+| # | 배운 것 | 출처 | 우리 판 |
+|---|---|---|---|
+| F1 | 폴리 예산: 모바일 <10k, **PC 20~50k**, 히어로 50~100k. 텍스처는 모바일 1K, **PC 2K**, 히어로 4K. 우리 T1 상한 40k·Meshy 기본 2K 는 PC 표준 안이다 | Meshy 유니티 워크플로 | 미확인(우리 값이 그 안에 있다는 것만 확인) |
+| F2 | **텍스처가 메시보다 메모리를 더 먹는다.** 메시를 깎기 전에 텍스처를 줄인다 | 같은 글 | 미확인 |
+| F3 | 유니티 임포트: Normals 는 **Import**(Calculate 아님), Read/Write 는 끔. 모델이 안 보이면 Transform 크기 0·뒤집힌 법선·재질 없음 셋 중 하나 | 같은 글 | 미확인 |
+| F4 | Starter Assets 에 우리 캐릭터 끼우기: FBX Rig → Humanoid → Avatar "Create From This Model" → 플레이어 프리팹의 SkinnedMeshRenderer·본을 바꾸고 Animator 에 새 Avatar 지정. **본 이름이 표준이어야** 한다 — Meshy 리깅이 믹사모식 이름(E2)이라 맞는다 | Unity 매뉴얼·Code Monkey | 미확인 |
+| F5 | PC 텍스처 압축: RGB 는 DXT1, RGBA 는 BC7. 바닥·벽처럼 반복되는 텍스처는 밉맵 켜고 Trilinear | Unity 매뉴얼 | 미확인 |
+| F6 | Unity 6 URP 프로젝트 기본 패키지: `com.unity.render-pipelines.universal`(템플릿), `com.unity.inputsystem`, `com.unity.cinemachine`(3.x), `com.unity.cloud.gltfast`(6.x). 버전은 레지스트리에 물어서 고른다(우리 setup_env 방식) | Unity 문서 | 미확인 |
+
 ## D. 다음에 배울 것 (아직 안 읽음)
 
-- 텍스처 압축·해상도 예산, LOD.
-- Starter Assets 를 Dev 가 어떻게 쓰나(패키지 의존, 프리팹 구조).
-- 유니티 URP 프로젝트 기본 세팅(새 프로젝트 템플릿).
+- LOD Group 기본(거리별 메시 3단).
+- Meshy 입력 그림 규격의 실측(같은 물체를 정면/¾ 로 넣어 비교) — 크레딧 60.
+- 리깅 출력의 단위 100배가 GLB 만인지 FBX 도인지(유니티에서 rigged.fbx 열어 확인).
+- 판정기가 리깅 GLB 단위를 스스로 잡을지(v2 감).
 
 ## 출처
 
@@ -74,3 +86,7 @@
 - https://www.sloyd.ai/blog/image-to-3d-for-games-vs-3d-printing
 - https://docs.meshy.ai/en/api/rigging
 - https://assetstore.unity.com/packages/essentials/starter-assets-thirdperson-urp-196526
+- https://www.meshy.ai/tutorials/3d-model-for-unity-workflow
+- https://docs.unity3d.com/6000.5/Documentation/Manual/Retargeting.html
+- https://unitycodemonkey.com/video.php?v=AO1vw-b8Qzw
+- https://docs.unity3d.com/2023.2/Documentation/Manual/class-TextureImporterOverride.html
