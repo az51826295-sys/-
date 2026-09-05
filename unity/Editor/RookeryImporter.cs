@@ -70,7 +70,7 @@ namespace Rookery
                 if (GUILayout.Button("짓고 재기 → 결과를 로키로", GUILayout.Height(26)))
                 {
                     Remember();
-                    _status = RookeryCheck.BuildAndTest(_url, _key);
+                    _status = RookeryCheck.BuildAndTestWhenReady(_url, _key);
                 }
             }
 
@@ -259,7 +259,7 @@ namespace Rookery
             Import();
             var url = Environment.GetEnvironmentVariable("ROOKERY_URL") ?? "https://rookery-web-production.up.railway.app";
             var key = Environment.GetEnvironmentVariable("ROOKERY_KEY") ?? "";
-            Debug.Log("[Rookery] " + RookeryCheck.BuildAndTest(url, key));
+            Debug.Log("[Rookery] " + RookeryCheck.BuildAndTestWhenReady(url, key));
         }
 
         static string Safe(string s)
@@ -317,10 +317,37 @@ namespace Rookery
         const string PendingDeliverable = "Rookery.Check.Deliverable";
         const string LastDeliverable = "Rookery.Last.Deliverable";
 
+        const string Continue = "Rookery.Check.Continue";
+
         static RookeryCheck()
         {
             var api = ScriptableObject.CreateInstance<TestRunnerApi>();
             api.RegisterCallbacks(new Reporter());
+
+            // 새 스크립트를 넣은 직후에는 컴파일 전이라 씬 빌더가 아직 없다(19:43 에
+            // "BuildOrRebuild 가 없습니다" 로 못 잼 6). 그래서 "짓고 재기" 는 리로드 뒤에
+            // 이어서 돈다 — 리로드 전에 표시를 남기고, 여기(리로드 직후)서 집어 든다.
+            if (SessionState.GetBool(Continue, false))
+            {
+                SessionState.EraseBool(Continue);
+                var url = SessionState.GetString(PendingUrl, "");
+                var key = SessionState.GetString(PendingKey, "");
+                EditorApplication.delayCall += () => Debug.Log("[Rookery] " + BuildAndTest(url, key, afterReload: true));
+            }
+        }
+
+        /// 컴파일이 필요한 상태면 표시만 남기고 리로드에 맡긴다. 아니면 바로 짓고 잰다.
+        public static string BuildAndTestWhenReady(string url, string key)
+        {
+            SessionState.SetString(PendingUrl, url);
+            SessionState.SetString(PendingKey, key);
+            SessionState.SetString(PendingDeliverable, SessionState.GetString(LastDeliverable, ""));
+            if (EditorApplication.isCompiling || EditorApplication.isUpdating)
+            {
+                SessionState.SetBool(Continue, true);
+                return "컴파일이 끝나면 이어서 짓고 잽니다…";
+            }
+            return BuildAndTest(url, key, afterReload: false);
         }
 
         public static void RememberDeliverable(string id)
@@ -328,9 +355,17 @@ namespace Rookery
             if (!string.IsNullOrEmpty(id)) SessionState.SetString(LastDeliverable, id);
         }
 
-        public static string BuildAndTest(string url, string key)
+        public static string BuildAndTest(string url, string key, bool afterReload = false)
         {
             var built = BuildAll();
+            if (!afterReload && built.Contains("BuildOrRebuild 가 없습니다") && !SessionState.GetBool(Continue, false))
+            {
+                // 빌더가 아직 안 보인다 — 방금 넣은 스크립트가 컴파일 전일 수 있다.
+                // 한 번은 리로드 뒤로 미룬다. 두 번째에도 없으면 정말 없는 것이다.
+                SessionState.SetBool(Continue, true);
+                AssetDatabase.Refresh();
+                return built + "\n(방금 넣은 스크립트가 컴파일되면 이어서 잽니다)";
+            }
             SessionState.SetString(PendingUrl, url);
             SessionState.SetString(PendingKey, key);
             SessionState.SetString(PendingDeliverable, SessionState.GetString(LastDeliverable, ""));
