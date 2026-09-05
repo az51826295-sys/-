@@ -173,25 +173,29 @@ export const GAMEDEV_LESSONS: Lesson[] = [
   // 읽은 것: 블렌드 트리 글들(Packt·Medium·GameDev Academy), ModelImporter/AnimatorController
   // 스크립트 API(공식), Mixamo/Meshy 휴머노이드 반입 글. 우리 생각: 씬을 코드로 짓는 우리
   // 구조에서는 임포트 설정·Animator 컨트롤러도 전부 코드로 만들어야 한다 — 사람 손 0회.
-  { id: "M1", role: "unity_code", verified: false,
+  // 22:35 첫 사람 캐릭터(Vox → Meshy 리깅 → Dev 씬 빌더)가 동전 줍기 씬에 섰다: 텍스처 붙고,
+  // 바닥 위, 그림자, 입력에 움직임. 통과 4 · 떨어짐 0. 세 판 걸렸다(없는 enum 이름 → 흰
+  // 캐릭터·공중·분홍 → 통과). M1·M3·M6~M9·M12~M15 확인. M2(클립 굽기)·M4(블렌드 트리)·M5 는 코드에
+  // 안 나타나 읽은 것으로 남김 — Dev 는 상태 전이로 걷기/달리기를 갈랐다.
+  { id: "M1", role: "unity_code", verified: true,
     text: "리깅된 FBX 는 씬 빌더가 임포트 설정을 코드로 박는다: var imp = AssetImporter.GetAtPath(path) as ModelImporter; imp.animationType = ModelImporterAnimationType.Human; imp.avatarSetup = ModelImporterAvatarSetup.CreateFromThisModel; imp.SaveAndReimport(). walking.fbx·running.fbx 도 같은 설정(같은 뼈대라 각자 아바타를 만들어도 리타깃된다)." },
   { id: "M1b", role: "unity_code", verified: true,
     text: "ModelImporterAvatarSetup 의 값은 NoAvatar · CreateFromThisModel · CopyFromOther 셋뿐이다. 'CopyFromOtherAvatar' 는 없다 — 21:50 Dev 가 그 이름으로 컴파일을 깨뜨렸다. 다른 FBX 의 아바타를 쓰려면 imp.avatarSetup = ModelImporterAvatarSetup.CopyFromOther; imp.sourceAvatar = (Avatar)AssetDatabase.LoadAssetAtPath(riggedFbx, typeof(Avatar))." },
   { id: "M2", role: "unity_code", verified: false,
     text: "애니메이션 클립은 제자리(in-place)여야 한다: imp.clipAnimations = imp.defaultClipAnimations 를 받아 각 클립에 loopTime = true, lockRootHeightY = true, lockRootRotation = true, keepOriginalPositionXZ = true(뿌리 이동을 포즈에 굽기) 를 주고 다시 넣는다. 안 그러면 클립이 캐릭터를 끌고 가 컨트롤러와 싸운다(발 미끄러짐의 첫 원인)." },
-  { id: "M3", role: "unity_code", verified: false,
+  { id: "M3", role: "unity_code", verified: true,
     text: "크기: 리깅 출력은 100배 다를 수 있다(E7). 임포트 뒤 모델의 Renderer bounds 높이를 재서 1.6~1.9 m 가 아니면 imp.useFileScale = false; imp.globalScale = 1.75f / 높이 로 맞추고 다시 임포트한다. 씬 인스턴스의 localScale 을 만지지 않는다(A2)." },
   { id: "M4", role: "unity_code", verified: false,
     text: "Animator 컨트롤러도 코드로: UnityEditor.Animations.AnimatorController.CreateAnimatorControllerAtPath(\"Assets/Rookery/<이름>/Player.controller\") → AddParameter(\"Speed\", AnimatorControllerParameterType.Float) → var tree = new BlendTree { name = \"Locomotion\", blendParameter = \"Speed\", blendType = BlendTreeType.Simple1D, useAutomaticThresholds = false } → tree.AddChild(walkClip, 0.5f); tree.AddChild(runClip, 1f) → ctrl.AddMotion(tree) 가 기본 상태. AssetDatabase.AddObjectToAsset(tree, ctrl). 클립은 AssetDatabase.LoadAllAssetRepresentationsAtPath(fbx) 에서 AnimationClip 을 고른다(이름에 __preview__ 가 든 것은 제외)." },
   { id: "M5", role: "unity_code", verified: false,
     text: "Meshy 리깅은 idle 클립을 안 준다(걷기·달리기뿐). 서 있을 때는 animator.speed 를 0 으로 내려 걷기 첫 자세에서 멈추고, 움직이면 1 로 올린다 — 임시. 제대로 된 idle 은 Meshy 애니메이션(600+ 동작)에서 받는다(교과 과정에 추가)." },
-  { id: "M6", role: "unity_code", verified: false,
+  { id: "M6", role: "unity_code", verified: true,
     text: "루트 모션은 끈다(animator.applyRootMotion = false). 이동은 컨트롤러가 한다. 발 미끄러짐을 줄이려면 이동 속도를 클립에 맞춘다: 걷기 1.4~1.8 m/s, 달리기 4~5 m/s. 클립의 AnimationClip.averageSpeed.magnitude 가 0 보다 크면 그 값을 쓴다(굽기 전 클립이면 0)." },
-  { id: "M7", role: "unity_code", verified: false,
+  { id: "M7", role: "unity_code", verified: true,
     text: "Speed 파라미터는 수평 속도 / 달리기 속도(0~1)로, animator.SetFloat(\"Speed\", v, 0.1f, Time.deltaTime) 로 감쇠해서 넣는다. 캐릭터는 움직이는 방향을 본다: transform.rotation = Quaternion.RotateTowards(현재, Quaternion.LookRotation(방향), 720f * Time.deltaTime). 카메라 기준 방향(카메라 forward/right 를 y=0 으로 눕힌 것)으로 입력을 바꾼다." },
-  { id: "M8", role: "unity_code", verified: false,
+  { id: "M8", role: "unity_code", verified: true,
     text: "계층: 루트 GameObject(CapsuleCollider 높이 1.8 중심 y 0.9, Rigidbody freezeRotation, 컨트롤러 스크립트) 아래에 모델 인스턴스를 (0,0,0) 회전 0 으로 자식으로 둔다. 에디터에서는 PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>(fbx)) 으로 만든다. Animator 는 모델 인스턴스에 있다(GetComponentInChildren)." },
-  { id: "M9", role: "unity_code", verified: false,
+  { id: "M9", role: "unity_code", verified: true,
     text: "animator.cullingMode = AnimatorCullingMode.AlwaysAnimate — 헤드리스·화면 밖에서도 돌아야 시험이 잰다. Animator.updateMode 는 기본. 캐릭터 파일을 찾을 때는 AssetDatabase.FindAssets(\"rigged t:Model\") 로 찾아 경로에 제목이 든 것을 고른다 — 폴더 이름이 <제목> 또는 <제목>_FAIL 일 수 있다(판정 접미사)." },
   { id: "M10", role: "unity_code", verified: false,
     text: "캐릭터가 씬에 있으면 그림자·조명 규칙(L7)이 그대로 적용된다: SkinnedMeshRenderer 의 shadowCastingMode On, receiveShadows true, 키 조명은 얼굴 쪽 앞-위." },
@@ -199,11 +203,11 @@ export const GAMEDEV_LESSONS: Lesson[] = [
     text: "Meshy FBX 는 텍스처가 파일 안에 묻혀 있다. 그냥 임포트하면 **캐릭터가 새하얗다**(22:24 첫 사람 캐릭터가 그랬다). 씬 빌더가 코드로 꺼낸다: imp.ExtractTextures(폴더) → AssetDatabase.Refresh() → imp.materialImportMode = ModelImporterMaterialImportMode.ImportStandard; imp.materialLocation = ModelImporterMaterialLocation.External; imp.SearchAndRemapMaterials(ModelImporterMaterialName.BasedOnTextureName, ModelImporterMaterialSearch.Local) → imp.SaveAndReimport(). 꺼낸 재질의 셰이더가 null/분홍이면 Standard 로 바꾸고 _MainTex 에 텍스처를 넣는다." },
   { id: "M14", role: "unity_code", verified: true,
     text: "캐릭터 루트는 y = 0 에 놓는다(Meshy 는 원점이 발바닥, A8). 캡슐처럼 y = 높이/2 로 올리면 공중에서 떨어지며 시작하고, 자는 '입력 없이 움직인 물체' 로 뺀다 — 22:24 판이 그랬다. CapsuleCollider 는 center (0, 0.9, 0) 높이 1.8 로 루트에." },
-  { id: "M15", role: "unity_code", verified: false,
+  { id: "M15", role: "unity_code", verified: true,
     text: "씬 빌더는 짓고 나서 캐릭터의 모든 Renderer 를 돌며 재질의 shader 가 null 이거나 이름에 'InternalErrorShader' 가 들면 Standard 로 바꾼다. 분홍 조각은 이 검사 하나로 없어진다." },
   { id: "M11", role: "blueprint", verified: false,
     text: "걷기 기준을 적는다: 'W 를 누르면 캐릭터가 걷기 애니메이션으로 앞으로 간다', '키를 놓으면 1초 안에 멈춘 자세로 선다', '움직이는 방향을 본다(뒤로 가면 몸이 돈다)', '발이 바닥 아래로 안 들어간다', 'Shift 면 달리기로 바뀐다'. 사진 한 장과 Play 30초로 사람이 확인한다." },
-  { id: "M12", role: "blueprint", verified: false,
+  { id: "M12", role: "blueprint", verified: true,
     text: "고치는 판에서 **지난 기준은 id 그대로 남긴다.** 여러 개를 '핵심 회귀' 한 줄로 묶지 않는다 — 21:08 판에서 29개가 13개로 묶여 무엇이 유지됐는지 볼 수 없게 됐다. 새 기준은 뒤에 더한다." },
 
   // ── C. 범위·설계 (설계도) ──
