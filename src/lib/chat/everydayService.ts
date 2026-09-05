@@ -9,6 +9,8 @@ import { checkAnonymous, recordAnonymous } from "@/lib/chat/anonymous";
 import { saveTurn } from "@/lib/chat/conversations";
 import { capabilityCatalogue } from "@/lib/chat/companyService";
 import { delegate } from "@/lib/chat/delegate";
+import { employeeDefinitions } from "@/lib/employees/definitions";
+import { employeeSkillRegistry } from "@/lib/skills/registry";
 import { learnFromChat } from "@/lib/chat/learnFromChat";
 
 /**
@@ -123,6 +125,20 @@ const MAX_SEARCHES = 3;
 /** 한 턴에 그리는 그림 수. 넘게 그리면 느리고 비싸다. */
 const MAX_DRAWINGS = 2;
 const RESULTS_PER_SEARCH = 5;
+
+/** 메시지 첫머리나 호격에 직원 이름이 있으면 그 직원의 첫 능력 id. 없으면 null. */
+function employeeNamedIn(text: string): string | null {
+  const head = text.slice(0, 40);
+  for (const e of employeeDefinitions) {
+    const re = new RegExp(`(^|[\\s,.!?"'(])${e.name}(아|야|님|,|\\s|$)`, "i");
+    if (re.test(head)) {
+      const skill = employeeSkillRegistry[e.skillId as keyof typeof employeeSkillRegistry];
+      const cap = skill?.capabilities?.[0]?.id;
+      if (cap) return cap;
+    }
+  }
+  return null;
+}
 
 /** 고쳐 달라는 말. 넓게 잡는다 — 못 잡으면 채팅이 코드 조각으로 답하고 끝난다. */
 const FIX_WORDS = /고쳐|고치|수정|다시\s*해|바꿔|추가해|넣어\s*줘|빼\s*줘|늘려|줄여|fix|change/i;
@@ -299,6 +315,21 @@ export async function runEverydayTurn(
   // 찾아 코드 조각을 채팅으로 답했다. 아무것도 유니티에 안 갔다. 이 대화에 돌아온
   // 산출물이 있고 사람이 고쳐 달라고 하면, 그것은 **그 산출물을 낸 직원의 일**이다 —
   // 모델이 판단할 자리가 아니다.
+  // ── 이름을 불렀으면 그 사람이다 ─────────────────────────────────
+  //
+  // 07:46 "Vox, 지난 캐릭터를 4K 로 다시" 가 Nova(2D)에게 갔다. 사람이 이름을 부르면
+  // 모델의 능력 판단은 끝난 것이다 — 그 직원의 첫 능력으로 간다.
+  if (companyId) {
+    const last = [...input.messages].reverse().find((m) => m.role === "user")?.content ?? "";
+    const named = employeeNamedIn(last);
+    if (named && plan.capabilityId !== named) {
+      plan.capabilityId = named;
+      plan.capabilityWhy = "매니저가 이름을 불렀다";
+      plan.searches = [];
+      if (!plan.reply?.trim()) plan.reply = "그 사람에게 맡기겠습니다.";
+    }
+  }
+
   if (companyId && input.conversationId && !plan.capabilityId) {
     const last = [...input.messages].reverse().find((m) => m.role === "user")?.content ?? "";
     if (FIX_WORDS.test(last)) {
