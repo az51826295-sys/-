@@ -204,7 +204,9 @@ export async function runEverydayTurn(
   const say = input.onStatus ?? (() => {});
   say("생각하는 중");
 
-  const { output: plan } = await providers.ai.generateStructuredOutput({
+  // 첫 판이 터지면 날 오류 코드가 화면에 그대로 나갔다("MODEL_OUTPUT_TRUNCATED",
+  // 09-05 13:50). 사람이 읽을 말로 바꾸고, 잘린 것은 잘렸다고 말한다.
+  const firstPassCall = () => providers.ai.generateStructuredOutput({
     systemInstructions:
       "너는 유능한 조수다. 한국어로 답한다.\n\n" +
       "먼저 판단한다: **지금 아는 것으로 제대로 답할 수 있는가?**\n" +
@@ -224,7 +226,11 @@ export async function runEverydayTurn(
       capabilityCatalogue()
         .map((c) => `  - ${c.capabilityId}: ${c.label} → ${c.produces}`)
         .join("\n") +
-      "\n**목록에 있는 id 만 쓴다.** 없는 것을 지어내면 조용히 빗나간다.\n\n" +
+      "\n**목록에 있는 id 만 쓴다.** 없는 것을 지어내면 조용히 빗나간다.\n" +
+      "**코드·앱·게임·프로그램을 만들어 달라는 요청은 답에 코드를 쓰지 않는다.** " +
+      "그건 시간이 드는 일이라 `capabilityId` 로 맡기고, `reply` 는 무엇을 만들 " +
+      "것인지 한두 문장이면 된다. 답에 코드를 쓰기 시작하면 길이 한도에 걸려 " +
+      "답이 통째로 사라진다 — 09-05 에 실제로 그랬다.\n\n" +
       "**그림**: 사용자가 그려 달라고 하면 `drawings` 에 묘사를 쓴다(최대 2개). " +
       "묘사는 영어로, 무엇을 어떤 구도·색·분위기로 그릴지 구체적으로. " +
       "그려 달라고 하지 않았으면 비워 둔다 — 설명으로 될 것을 그림으로 내면 " +
@@ -235,10 +241,25 @@ export async function runEverydayTurn(
     images: seen,
     schema: firstPass,
     schemaName: "everyday_plan",
-    maxTokens: 8000,
+    // 판단 등급은 추론 모델이라 생각하는 데 출력 예산을 먼저 쓴다. 8000 으로
+    // 두니 게임 요청 하나에 잘렸다(09-05). 답은 어차피 몇 문단이다.
+    maxTokens: 16000,
     // 익명은 대화 등급까지만. 보고서를 익명으로 뽑아 가는 길을 열지 않는다.
     tier: user ? "judgment" : "conversation",
   });
+
+  let plan: z.infer<typeof firstPass>;
+  try {
+    plan = (await firstPassCall()).output;
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : String(error);
+    const why =
+      msg === "MODEL_OUTPUT_TRUNCATED"
+        ? "답이 너무 길어져서 끝까지 못 썼습니다. 코드나 긴 문서라면 \"만들어 줘\" 라고 " +
+          "맡겨 주시면 사람을 붙여 파일로 드립니다. 아니면 조금 나눠서 물어봐 주세요."
+        : `답을 만들다 막혔습니다: ${msg}`;
+    return { ok: false, error: why, status: 502 };
+  }
 
   if (!user) {
     await recordAnonymous(input.visitor as string, {
