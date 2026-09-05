@@ -149,19 +149,6 @@ export default function AskShell({
                   )}
                 </section>
 
-                <section className="mt-1 border-t border-[var(--rk-200)] pt-1">
-                  <p className="px-3 py-1.5 text-[11px] uppercase tracking-wide text-[var(--rk-400)]">
-                    회사
-                  </p>
-                  <a
-                    className="block px-3 py-2 text-sm hover:bg-[var(--rk-100)]"
-                    href="/dashboard"
-                  >
-                    <span className="flex items-center gap-2">
-                      <Icon name="company" size={16} />직원과 업무
-                    </span>
-                  </a>
-                </section>
 
                 <section className="mt-1 border-t border-[var(--rk-200)] pt-1">
                   <p className="truncate px-3 py-1.5 text-[11px] text-[var(--rk-400)]">

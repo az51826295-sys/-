@@ -10,8 +10,6 @@ import { saveTurn } from "@/lib/chat/conversations";
 import { capabilityCatalogue } from "@/lib/chat/companyService";
 import { delegate } from "@/lib/chat/delegate";
 import { learnFromChat } from "@/lib/chat/learnFromChat";
-import { planUnitySession } from "@/lib/unity/plan";
-import { createServiceClient } from "@/lib/supabase/service";
 
 /**
  * 대화 한 턴. **모드가 없다.**
@@ -113,7 +111,6 @@ const firstPass = z.object({
    * 물음은 답할 것이지 만들 것이 아니다. 만들어 달라거나 고쳐 달라고 했을
    * 때만 채운다 — 안 그러면 물어본 적 없는 일이 사장님 프로젝트에 쌓인다.
    */
-  unityWant: z.string().nullable(),
 });
 
 const answerPass = z.object({
@@ -215,23 +212,6 @@ export async function runEverydayTurn(
         .map((c) => `  - ${c.capabilityId}: ${c.label} → ${c.produces}`)
         .join("\n") +
       "\n**목록에 있는 id 만 쓴다.** 없는 것을 지어내면 조용히 빗나간다.\n\n" +
-      "**유니티**: 유니티 프로젝트에서 무언가를 **만들거나 고쳐 달라**고 하면 " +
-      "`unityWant` 에 무엇을 만들지 한 문단으로 쓴다. 그러면 설계도와 합격 " +
-      "기준이 만들어지고, 사장님 PC의 심부름꾼이 유니티를 켜서 진행한다. " +
-      "유니티에 대해 **묻기만** 한 것이면 비워 둔다 — 물음에는 답을 하는 것이지 " +
-      "프로젝트에 파일을 쓰는 것이 아니다.\n" +
-      "이때 `reply` 는 **한두 문장**이면 된다. 되묻지 마라 — 2D냐 3D냐, 아트 " +
-      "스타일이 뭐냐, 애니메이션은 뭐가 필요하냐 같은 것을 늘어놓지 마라. " +
-      "안 적힌 것은 네가 정하고, 정한 것은 곧 나올 **설계도에 그대로 적혀 " +
-      "나온다.** 사람은 그걸 보고 틀렸다고 말하면 된다. 질문 목록을 먼저 " +
-      "내미는 것은 시작을 사람에게 떠넘기는 것이고, 답할 것이 여섯 개면 대개 " +
-      "아무도 답하지 않는다. 정하는 사람만 알 수 있는 것 하나에 정말로 막혔을 " +
-      "때만, 그 하나만 묻는다.\n" +
-      "**할 수 없는 것을 하겠다고 말하지 마라.** 새 유니티 프로젝트를 만들거나, " +
-      "렌더 파이프라인을 바꾸거나(URP/HDRP), 패키지를 설치하는 것은 못 한다. " +
-      "네가 하는 일은 이미 있는 프로젝트의 정해진 폴더에 스크립트를 쓰는 것뿐이다. " +
-      "그런 것이 필요하면 사람이 해야 한다고 말해라 — 못 하는 것을 하겠다고 하면 " +
-      "사람은 그게 된 줄 알고 기다리고, 아무 일도 일어나지 않는다.\n\n" +
       "**그림**: 사용자가 그려 달라고 하면 `drawings` 에 묘사를 쓴다(최대 2개). " +
       "묘사는 영어로, 무엇을 어떤 구도·색·분위기로 그릴지 구체적으로. " +
       "그려 달라고 하지 않았으면 비워 둔다 — 설명으로 될 것을 그림으로 내면 " +
@@ -358,65 +338,6 @@ export async function runEverydayTurn(
   }
 
   if (drawFailures.length) reply += "\n\n" + drawFailures.join("\n");
-
-  // ── 유니티에서 만들어 달라고 했으면 세션을 연다 ────────────────
-  //
-  // 여기서 하는 것은 **설계까지**다. 코드를 쓰고 유니티를 켜는 것은 사장님
-  // PC의 심부름꾼이 한다 — 서버가 남의 기계를 여는 통로를 만드는 것은 이
-  // 제품이 하지 않는 일이라, 그 경계가 여기다.
-  if (plan.unityWant && companyId) {
-    say("유니티 일 설계하는 중");
-    try {
-      const made = await planUnitySession({
-        // **사용자 클라이언트가 아니다.** unity_sessions 는 RLS 를 켜고 정책을
-        // 열지 않은 표다 — 유니티 열쇠(서비스 롤)로만 닿게 만들었기 때문이다.
-        // 여기서 사용자 권한으로 넣으면 조용히 막히고, 화면에는 "세션을 열지\n// 못했습니다" 만 남는다. 회사 소유는 위에서 이미 확인했다.
-        db: createServiceClient(),
-        providers,
-        companyId,
-        want: plan.unityWant,
-      });
-      if ("error" in made) {
-        reply += `
-
-(유니티 일을 열지 못했습니다: ${made.error})`;
-      } else {
-        reply +=
-          `
-
-──
-**유니티: ${made.title}**
-` +
-          `설계했습니다 — 파일 ${made.planned.length}개, 합격 기준 ${made.criteria.length}개` +
-          (made.droppedCriteria > 0
-            ? ` (반쪽만 쓰인 ${made.droppedCriteria}개는 뺐습니다).`
-            : ".") + `
-` +
-          made.planned.map((f) => `- ${f.path}`).join("\n") +
-          "\n\n" +
-          // 처음 켜는 사람에게 심부름꾼 줄만 주면, 유니티가 없거나 패키지가
-          // 빠져 있을 때 그 사실이 오류로만 돌아온다. 먼저 재 보는 줄을 같이
-          // 준다 — 재는 것은 아무것도 안 바꾸고, 무엇이 없는지 그 자리에서
-          // 말해 준다.
-          "처음이시면 환경부터 재 보십시오. 아무것도 바꾸지 않습니다:\n" +
-          "`python tools/setup_env.py`\n\n" +
-          "그다음 심부름꾼을 켜십시오. 이미 돌고 있으면 알아서 집어 갑니다:\n" +
-          "`python tools/unity_runner.py --watch`\n\n" +
-          "**합격 기준은 아직 확인되지 않았습니다.** 컴파일과 씬 생성은 기계가 " +
-          "재고, 원하던 것이 됐는지는 켜 보셔야 압니다.";
-      }
-    } catch (error) {
-      // 유니티가 터져도 답은 나간다. 물어본 것에 대한 답은 이미 있다.
-      reply += `
-
-(유니티 일을 열다 막혔습니다: ${
-        error instanceof Error ? error.message : String(error)
-      })`;
-    }
-  } else if (plan.unityWant && !companyId) {
-    reply +=
-      "\n\n(유니티 일은 회사에 쌓입니다 — 로그인하시면 이어서 맡길 수 있습니다.)";
-  }
 
   // ── 시간이 드는 일이면 사람을 붙인다 ──────────────────────────
   //

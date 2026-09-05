@@ -3,9 +3,7 @@
 import { Waiting } from "@/components/Waiting";
 
 import { useRef, useState } from "react";
-import Link from "next/link";
 import Icon from "@/components/Icon";
-import UnityStrip from "@/app/dashboard/chat/UnityStrip";
 import RoutingNotice from "./RoutingNotice";
 
 /**
@@ -273,8 +271,6 @@ export default function AskClient({
       */}
       <RoutingNotice />
 
-      <UnityStrip />
-
       <div className="flex-1 space-y-4 overflow-y-auto py-6">
         {/*
           빈 화면에 다섯을 세워 뒀다가 뺐다(2026-08-31 사장님 지시). 얼굴은
@@ -308,10 +304,7 @@ export default function AskClient({
             {t.assignment && (
               <p className="mt-1.5 text-xs text-[var(--rk-400)]">
                 업무 생성: {t.assignment.title}
-                {t.assignment.queued ? " (대기열에 넣음)" : ""}{" "}
-                <Link className="underline" href={`/dashboard/assignments`}>
-                  보기
-                </Link>
+                {t.assignment.queued ? " (대기열에 넣음)" : ""}
               </p>
             )}
             {t.images && t.images.length > 0 && (
@@ -345,10 +338,7 @@ export default function AskClient({
             )}
             {t.needsOnboarding && (
               <p className="mt-1.5 text-xs text-amber-600">
-                <Link className="underline" href={`/dashboard/employees/${t.needsOnboarding.id}`}>
-                  {t.needsOnboarding.name} 교육 마치기
-                </Link>{" "}
-                — 끝나야 일을 받을 수 있습니다.
+                {t.needsOnboarding.name} 은(는) 아직 교육 전입니다 — 끝나야 일을 받을 수 있습니다.
               </p>
             )}
           </div>

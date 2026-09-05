@@ -1,4 +1,3 @@
-import { mockUnityOutput } from "./mock-unity";
 import type { AIProvider } from "./types";
 
 /**
@@ -18,20 +17,8 @@ export function createMockAIProvider(): AIProvider {
     name: "mock",
     model: "mock-deterministic",
 
-    async generateStructuredOutput({
-      systemInstructions,
-      input,
-      schema,
-      schemaName,
-      tier = "judgment",
-    }) {
-      // The Unity calls are recognised by the **name of the shape they asked
-      // for**, not by a heading in their prompt. Sniffing the text works only
-      // while nobody rewrites it, and prompt text is prose written for a human
-      // to read — it gets rewritten. A schema name changes when the shape
-      // changes, which is the thing that actually has to be matched.
-      const unity = mockUnityOutput(schemaName, input, systemInstructions);
-      const output = unity ?? buildOutput(input);
+    async generateStructuredOutput({ input, schema, tier = "judgment" }) {
+      const output = buildOutput(input);
       // Parsed through the same schema the real provider uses, so a shape the
       // pipeline couldn't handle fails here too.
       const parsed = schema.parse(output);

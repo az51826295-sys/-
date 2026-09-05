@@ -29,16 +29,9 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const protectedPaths = ["/dashboard", "/company/new", "/employees"];
-  const isProtected = protectedPaths.some((path) =>
-    request.nextUrl.pathname.startsWith(path),
-  );
-
-  if (!user && isProtected) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/login";
-    return NextResponse.redirect(url);
-  }
+  // 09-05: 로그인이 있어야 열리는 화면이 없어졌다. /ask 는 로그인 없이 열리고,
+  // 로그인은 "이어서 하시려면" 이다. 세션 갱신만 남긴다.
+  void user;
 
   return supabaseResponse;
 }

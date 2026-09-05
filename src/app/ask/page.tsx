@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import AskClient from "@/app/dashboard/ask/AskClient";
+import AskClient from "./AskClient";
 import AskShell from "./AskShell";
 import { loadConversation } from "@/lib/chat/conversations";
 
