@@ -6,6 +6,7 @@ import { judgeMesh, JudgeUnavailable, type MeshVerdict } from "@/lib/providers/j
 import { z } from "zod";
 import { storeDeliverableFile } from "@/lib/deliverables/files";
 import { renderGamedevLessons } from "@/lib/knowledge/gamedev";
+import { createServiceClient } from "@/lib/supabase/service";
 
 /**
  * 3D 자산 — 이미지 한 장을 메시로 만들고, 규격 v0 로 재고, 대화로 돌려준다.
@@ -224,6 +225,12 @@ export const meshAssetsSkill: EmployeeSkill = {
     // 산출물은 이미 저장됐다. 파일 하나를 못 올려도 산출물이 실패로 바뀌지는
     // 않는다 — 다만 못 올린 것은 못 올렸다고 적어야 하는데, 그 자리는 다음 판.
     const companyId = ctx.execution.company_id as string;
+    // 저장은 서버 열쇠로 한다. 09-05 16:38 첫 판에서 사용자 세션 클라이언트로 올린
+    // 것이 조용히 안 올라갔다(GLB 6MB·FBX 13MB 는 받아 놓고). 이 실행은 응답이
+    // 나간 뒤 서버에서 도는 일이라 사용자 쿠키에 기대는 것 자체가 위태롭다.
+    // 경로는 어차피 회사 id 로 시작하고, 읽기는 주인 확인을 거친다(/api/files).
+    const store = createServiceClient();
+    const storageErrors: string[] = [];
     const put = async (
       filename: string,
       body: Uint8Array | null,
@@ -232,7 +239,7 @@ export const meshAssetsSkill: EmployeeSkill = {
       title: string,
     ) => {
       if (!body) return;
-      await storeDeliverableFile(ctx.supabase, {
+      const r = await storeDeliverableFile(store, {
         companyId,
         deliverableId,
         filename,
@@ -244,10 +251,22 @@ export const meshAssetsSkill: EmployeeSkill = {
         title,
         producedByBackend: mesh.model,
       });
+      if (!r.ok) {
+        // 삼키지 않는다. 못 올린 파일은 없는 파일이고, 그 사실이 어디에도 안 남으면
+        // 유니티 앞의 사람은 "왜 비었지" 만 본다.
+        storageErrors.push(`${filename}: ${r.error}`);
+        console.error("[mesh_assets] 저장 실패", filename, r.error);
+      }
     };
     await put("model.glb", glbBytes, "model/gltf-binary", "document", `${brief.subject} (GLB)`);
     await put("model.fbx", fbxBytes, "application/octet-stream", "document", `${brief.subject} (FBX)`);
     await put("thumbnail.png", thumbBytes, "image/png", "image", `${brief.subject} 미리보기`);
+    if (storageErrors.length) {
+      await store
+        .from("deliverables")
+        .update({ content_json: { ...content, storageErrors } })
+        .eq("id", deliverableId);
+    }
 
     return {
       deliverableId,
