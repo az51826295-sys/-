@@ -113,6 +113,39 @@ const build = z.object({
   ),
 });
 
+type Previous = {
+  title: string;
+  criteria: { id: string; when: string; then: string }[];
+  files: { path: string; language: string; contents: string }[];
+  /** 유니티 창이 재 본 결과 중 떨어진 줄. 없으면 빈 배열. */
+  failedChecks: string[];
+};
+
+async function loadPrevious(ctx: SkillRunContext): Promise<Previous | null> {
+  const id = (ctx.context.roleInput as { previousDeliverableId?: string | null } | null)?.previousDeliverableId;
+  if (!id) return null;
+  const { data } = await ctx.supabase
+    .from("deliverables")
+    .select("title, content_json")
+    .eq("id", id)
+    .maybeSingle();
+  if (!data) return null;
+  const c = (data.content_json ?? {}) as {
+    criteria?: Previous["criteria"];
+    files?: Previous["files"];
+    unityChecks?: { cases?: { name: string; result: string; message?: string | null }[] };
+  };
+  const failed = (c.unityChecks?.cases ?? [])
+    .filter((k) => k.result === "Failed")
+    .map((k) => `${k.name}${k.message ? ` — ${k.message.slice(0, 300)}` : ""}`);
+  return {
+    title: data.title as string,
+    criteria: c.criteria ?? [],
+    files: c.files ?? [],
+    failedChecks: failed,
+  };
+}
+
 export const appBuildSkill: EmployeeSkill = {
   id: "app_build",
   deliverableType: "app_build",
@@ -133,6 +166,12 @@ export const appBuildSkill: EmployeeSkill = {
   acceptsInternalRequests: true,
 
   async run(ctx: SkillRunContext) {
+    // ── 0. 고치는 판인가 ────────────────────────────────────────────
+    // 같은 대화에서 이 직원이 돌려준 지난 산출물이 있으면 이번 판은 그것을 고치는
+    // 판이다. 지난 파일과 유니티 시험에서 떨어진 줄이 같이 간다. 처음부터 다시
+    // 쓰게 두면 지난 판에서 통과한 것까지 새로 깨진다(09-05 저녁).
+    const previous = await loadPrevious(ctx);
+
     // ── 1. 기준을 먼저 쓴다 ─────────────────────────────────────────
     await setStep(ctx.supabase, ctx.executionId, "planning");
 
@@ -150,7 +189,15 @@ export const appBuildSkill: EmployeeSkill = {
       input:
         `업무: ${ctx.context.assignment.title}\n` +
         `설명: ${ctx.context.assignment.description ?? ""}\n` +
-        `기대 결과: ${ctx.context.assignment.expectedOutcome ?? ""}`,
+        `기대 결과: ${ctx.context.assignment.expectedOutcome ?? ""}` +
+        (previous
+          ? `\n\n## 고치는 판이다\n지난 판 "${previous.title}" 의 기준을 유지하고, 떨어진 것을 고친다.\n` +
+            `지난 기준:\n${previous.criteria.map((c) => `- [${c.id}] ${c.when} → ${c.then}`).join("\n")}\n` +
+            (previous.failedChecks.length
+              ? `유니티에서 재 본 결과 떨어진 줄:\n${previous.failedChecks.map((f) => `- ${f}`).join("\n")}\n`
+              : "") +
+            "target 은 지난 판과 같다."
+          : ""),
       schema: plan,
       schemaName: "app_plan",
       maxTokens: 6000,
@@ -182,7 +229,14 @@ export const appBuildSkill: EmployeeSkill = {
         `무엇: ${spec.title}\n\n기준:\n` +
         spec.criteria
           .map((c) => `- [${c.id}] ${c.when} → ${c.then}`)
-          .join("\n"),
+          .join("\n") +
+        (previous
+          ? "\n\n## 지난 판의 파일 — 이것을 바탕으로 고친다. 파일 전체를 다시 낸다.\n" +
+            (previous.failedChecks.length
+              ? `유니티 시험에서 떨어진 줄(이것을 고치는 것이 이번 판이다):\n${previous.failedChecks.map((f) => `- ${f}`).join("\n")}\n\n`
+              : "") +
+            previous.files.map((f) => `--- ${f.path} (${f.language})\n${f.contents}`).join("\n\n")
+          : ""),
       schema: build,
       schemaName: "app_build",
       maxTokens: 32000,

@@ -115,7 +115,11 @@ export type LeadResearchAssignmentInput = z.infer<typeof leadResearchAssignmentS
 export const artBibleAssignmentSchema = z.object({});
 
 export const gameAssetsAssignmentSchema = z.object({});
-export const appBuildAssignmentSchema = z.object({});
+// 고치는 판이면 이전 산출물 id 가 온다. Dev 는 그 파일들과 떨어진 줄을 바탕으로 고친다 —
+// 처음부터 다시 쓰면 지난 판에서 통과한 것까지 새로 깨진다(09-05).
+export const appBuildAssignmentSchema = z.object({
+  previousDeliverableId: z.string().optional().nullable(),
+});
 // 3D 는 이미지 한 장이 입력이다. 대화에 올린 사진이 여기로 온다(data URL).
 export const meshAssetsAssignmentSchema = z.object({
   referenceImage: z.string().optional().nullable(),

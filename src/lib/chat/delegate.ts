@@ -43,6 +43,8 @@ export async function delegate(
   reason: string | null,
   messages: { role: "user" | "assistant"; content: string }[],
   images: string[] = [],
+  /** 이 대화의 id. 있으면 같은 직원의 지난 산출물을 찾아 "고치는 판" 으로 넘긴다. */
+  conversationId: string | null = null,
 ): Promise<Delegation> {
   const matched = capabilityCatalogue().find((c) => c.capabilityId === capabilityId);
   // 모델이 지어낸 id 는 그냥 버린다. 답은 이미 나갔으므로 대화가 끊기지 않는다.
@@ -110,7 +112,12 @@ export async function delegate(
   // 들어가고, 대기열을 꺼내 줄 화면이 없어서 영영 안 시작된다(09-05 14:12).
   await releaseEmployee(db, hireId);
 
-  const turn = await runChatTurn({ companyEmployeeId: hireId, messages, images });
+  // 같은 대화에서 이 직원이 마지막으로 돌려준 산출물. 있으면 이번 판은 그것을
+  // 고치는 판이다 — 떨어진 줄(유니티 시험)과 파일이 같이 간다.
+  const previousDeliverableId = conversationId
+    ? await lastDeliverableInConversation(db, conversationId, hireId)
+    : null;
+  const turn = await runChatTurn({ companyEmployeeId: hireId, messages, images, previousDeliverableId });
   if (!turn.ok) {
     // 접수는 됐고 넘기는 데서 막혔다. 답은 이미 나갔으므로 이유만 싣는다.
     return { ...NOTHING, hired, why: turn.error };
@@ -171,4 +178,32 @@ async function ensureKnowledgeProfile(
     additional_context: null,
     role_knowledge_json: null,
   });
+}
+
+
+/** 이 대화에 돌아온 산출물 중 이 직원 것으로 가장 최근 것. 없으면 null. */
+async function lastDeliverableInConversation(
+  db: Supabase,
+  conversationId: string,
+  companyEmployeeId: string,
+): Promise<string | null> {
+  const { data: rows } = await db
+    .from("conversation_messages")
+    .select("attachments, created_at")
+    .eq("conversation_id", conversationId)
+    .order("created_at", { ascending: false })
+    .limit(50);
+  const ids = ((rows ?? []) as { attachments: { returned?: { deliverableId?: string | null } } | null }[])
+    .map((r) => r.attachments?.returned?.deliverableId)
+    .filter((x): x is string => typeof x === "string");
+  if (ids.length === 0) return null;
+  const { data: mine } = await db
+    .from("deliverables")
+    .select("id, created_at")
+    .in("id", ids)
+    .eq("company_employee_id", companyEmployeeId)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  return (mine?.id as string | undefined) ?? null;
 }

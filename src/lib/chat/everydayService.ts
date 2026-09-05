@@ -400,6 +400,7 @@ export async function runEverydayTurn(
         // 올린 사진은 순수 base64 로 온다. 레퍼런스로 넘길 때는 data URL 로 —
         // 3D 생성기가 그 모양을 받는다.
         seen.map((b64) => `data:image/png;base64,${b64}`),
+        input.conversationId ?? null,
       );
       hired = d.hired;
       assignment = d.assignment;
