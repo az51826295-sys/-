@@ -42,6 +42,11 @@ export const GAMEDEV_LESSONS: Lesson[] = [
   { id: "A9", role: "mesh_assets", verified: false,
     text: "메시에는 콜라이더가 따로 없다. 씬에 놓을 때 Box 또는 Mesh Collider 를 붙여야 바닥을 뚫지 않는다." },
 
+  { id: "E1", role: "mesh_assets", verified: true,
+    text: "닫힘(watertight)은 3D 프린팅 기준이지 게임 기준이 아니다. 열린 메시도 게임에서는 문제없다 — 규격 v1 부터 정보만 남긴다." },
+  { id: "E2", role: "mesh_assets", verified: false,
+    text: "Meshy 리깅은 휴머노이드만 된다(5 크레딧). 텍스처가 있어야 하고 얼굴이 +Z 를 봐야 한다. 걷기·달리기 FBX 가 같이 온다. 비인간형은 사람이 Blender 에서 리깅한다." },
+
   // ── B. 유니티 코드 (Dev) ──
   { id: "B1", role: "unity_code", verified: false,
     text: "물리(Rigidbody 속도·힘)는 FixedUpdate 에서, 입력 읽기는 Update 에서. Update 에서 Rigidbody 를 밀면 프레임마다 다르게 움직인다." },
@@ -60,11 +65,16 @@ export const GAMEDEV_LESSONS: Lesson[] = [
   { id: "B8", role: "unity_code", verified: true,
     text: "Unity 6 에는 Arial.ttf 가 없다. UI 글꼴은 LegacyRuntime.ttf." },
 
+  { id: "E4", role: "unity_code", verified: false,
+    text: "3인칭 조작·카메라는 처음부터 짜지 않는다. 유니티 Starter Assets – ThirdPerson(URP)이 표준형이고 Input System·Cinemachine 이 같이 깔린다. 그 위에 얹는다." },
+
   // ── C. 범위·설계 (설계도) ──
   { id: "C1", role: "blueprint", verified: true,
     text: "첫 조각은 한 화면·한 조작·한 목표. 만들기→시험→다듬기→내보내기를 한 번 끝까지 돌리는 것이 목표다." },
   { id: "C2", role: "blueprint", verified: true,
     text: "합격 기준을 코드보다 먼저 쓴다. '빠르다' 가 아니라 '50개에서도 부드럽다' 처럼 사람이 눌러 볼 수 있는 문장으로." },
+  { id: "E5", role: "blueprint", verified: true,
+    text: "규격은 문턱 숫자보다 '무엇을 재는가' 부터 틀릴 수 있다. 자가 엉뚱한 것을 재면 좋은 것이 떨어진다 — 닫힘 규칙이 그랬다." },
   { id: "C3", role: "blueprint", verified: false,
     text: "자산 목록에는 담당과 형식을 적는다: 캐릭터는 FBX·Humanoid·A-pose(Vox), 소품은 GLB(Vox), 코드·씬은 C#(Dev), 효과음은 나중에." },
 ];

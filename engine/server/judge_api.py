@@ -151,6 +151,7 @@ class MeshRequest(BaseModel):
     glb_url: str | None = None
     glb_base64: str | None = None
     want_rig: bool = False
+    profile: str = "character"
 
 
 @router.post("/mesh")
@@ -171,4 +172,4 @@ def judge_mesh(req: MeshRequest) -> dict:
         return {"verdict": "UNDEFINED", "rules": [{"id": "input", "verdict": "UNDEFINED",
                 "measured": None, "why": "glb_url 도 glb_base64 도 없다"}], "measured": {},
                 "thresholds": mj.THRESHOLDS}
-    return mj.judge_glb(data, want_rig=req.want_rig).to_dict()
+    return mj.judge_glb(data, want_rig=req.want_rig, profile=req.profile).to_dict()

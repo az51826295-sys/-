@@ -92,11 +92,13 @@ export type MeshVerdict = {
  */
 export function judgeMesh(
   input: { glbUrl?: string | null; glbBase64?: string | null },
-  opts: { wantRig?: boolean } = {},
+  opts: { wantRig?: boolean; profile?: "character" | "prop" } = {},
 ): Promise<MeshVerdict> {
   return call<MeshVerdict>("/api/judge/mesh", {
     glb_url: input.glbUrl ?? null,
     glb_base64: input.glbBase64 ?? null,
     want_rig: opts.wantRig ?? false,
+    // 규격 v1: character / prop. 모르면 character(더 엄격한 쪽).
+    profile: opts.profile ?? (opts.wantRig ? "character" : "prop"),
   });
 }

@@ -127,13 +127,28 @@ export const meshAssetsSkill: EmployeeSkill = {
       );
     }
 
+    // ── 2b. 리깅 (캐릭터만) ───────────────────────────────────────
+    // Meshy 리깅은 별도 API(5 크레딧). 휴머노이드만 되고, 안 되면 던진다 — 그때는
+    // 본 0개인 메시를 그대로 판정해 B1 에서 떨어지게 두고, 이유를 본문에 적는다.
+    // 재는 것은 리깅된 GLB 다(본이 거기 있다).
+    let rig = null as Awaited<ReturnType<typeof mesher.rig>> | null;
+    let rigError: string | null = null;
+    if (brief.wantRig && !mesh.mock) {
+      try {
+        rig = await mesher.rig(mesh.taskId, 1.7);
+      } catch (error) {
+        rigError = error instanceof Error ? error.message : String(error);
+      }
+    }
+    const judgeGlbUrl = rig?.riggedGlbUrl ?? mesh.glbUrl;
+
     // ── 3. 판정 ────────────────────────────────────────────────────
     await setStep(ctx.supabase, ctx.executionId, "verifying");
     let verdict: MeshVerdict;
     try {
       verdict = await judgeMesh(
-        { glbUrl: mesh.glbUrl, glbBase64: mesh.glbBase64 },
-        { wantRig: brief.wantRig },
+        { glbUrl: judgeGlbUrl, glbBase64: mesh.glbBase64 },
+        { wantRig: brief.wantRig, profile: brief.wantRig ? "character" : "prop" },
       );
     } catch (error) {
       // 판정기에 못 닿았다. 지어내지 않는다 — 못 쟀다고 적는다.
@@ -157,6 +172,9 @@ export const meshAssetsSkill: EmployeeSkill = {
         : null;
     const fbxBytes = mesh.fbxUrl ? await fetchBytes(mesh.fbxUrl) : null;
     const thumbBytes = mesh.thumbnailUrl ? await fetchBytes(mesh.thumbnailUrl) : null;
+    const riggedFbx = rig?.riggedFbxUrl ? await fetchBytes(rig.riggedFbxUrl) : null;
+    const walkingFbx = rig?.walkingFbxUrl ? await fetchBytes(rig.walkingFbxUrl) : null;
+    const runningFbx = rig?.runningFbxUrl ? await fetchBytes(rig.runningFbxUrl) : null;
     const thumb = thumbBytes ? toDataUrl(thumbBytes, "image/png") : null;
 
     const headline =
@@ -182,8 +200,11 @@ export const meshAssetsSkill: EmployeeSkill = {
       "\n\n## 파일\n\n" +
       (glbBytes ? `- model.glb (${(glbBytes.byteLength / 1024).toFixed(0)} KB)\n` : "- GLB 를 못 받았습니다.\n") +
       (fbxBytes ? `- model.fbx (${(fbxBytes.byteLength / 1024).toFixed(0)} KB)\n` : "") +
-      "- 파일은 이 대화 아래 '열기·저장' 과 유니티 창(Window → Rookery)에서 받습니다.\n" +
-      `\n- 생성기: ${mesh.model} · 크레딧 ${mesh.consumedCredits}\n\n` +
+      (riggedFbx ? `- rigged.fbx (${(riggedFbx.byteLength / 1024).toFixed(0)} KB) — 리깅됨. 유니티에서 Rig → Humanoid\n` : "") +
+      (walkingFbx ? "- walking.fbx · running.fbx — Meshy 가 같이 준 걷기·달리기\n" : "") +
+      (rigError ? `- 리깅 실패: ${rigError} (휴머노이드가 아니거나 얼굴이 +Z 를 안 볼 때 그렇습니다. 크레딧은 돌아옵니다)\n` : "") +
+      "- 파일은 이 대화 아래 '받기' 와 유니티 창(Window → Rookery)에서 받습니다.\n" +
+      `\n- 생성기: ${mesh.model} · 크레딧 ${mesh.consumedCredits + (rig?.consumedCredits ?? 0)}\n\n` +
       "## 유니티에 넣을 때\n\n" +
       (brief.wantRig
         ? "- 캐릭터라 **FBX** 를 쓰십시오. Rig → Humanoid. GLB 는 리타깃 설정이 없습니다.\n"
@@ -199,6 +220,8 @@ export const meshAssetsSkill: EmployeeSkill = {
       conceptByMachine,
       conceptImage: conceptByMachine ? image : null,
       mesh: { ...mesh, glbBase64: mesh.glbBase64 ? "(생략)" : null },
+      rig,
+      rigError,
       verdict,
     };
 
@@ -261,6 +284,9 @@ export const meshAssetsSkill: EmployeeSkill = {
     await put("model.glb", glbBytes, "model/gltf-binary", "document", `${brief.subject} (GLB)`);
     await put("model.fbx", fbxBytes, "application/octet-stream", "document", `${brief.subject} (FBX)`);
     await put("thumbnail.png", thumbBytes, "image/png", "image", `${brief.subject} 미리보기`);
+    await put("rigged.fbx", riggedFbx, "application/octet-stream", "document", `${brief.subject} (리깅 FBX)`);
+    await put("walking.fbx", walkingFbx, "application/octet-stream", "document", `${brief.subject} 걷기`);
+    await put("running.fbx", runningFbx, "application/octet-stream", "document", `${brief.subject} 달리기`);
     if (storageErrors.length) {
       await store
         .from("deliverables")

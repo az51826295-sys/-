@@ -53,9 +53,24 @@ export type MeshOptions = {
   enablePbr?: boolean;
 };
 
+export type RigResult = {
+  taskId: string;
+  riggedGlbUrl: string | null;
+  riggedFbxUrl: string | null;
+  walkingFbxUrl: string | null;
+  runningFbxUrl: string | null;
+  consumedCredits: number;
+  mock: boolean;
+};
+
 export type MeshProvider = {
   name: string;
   imageTo3D(imageDataUrl: string, opts?: MeshOptions): Promise<MeshResult>;
+  /**
+   * 리깅(`POST /openapi/v1/rigging`, 5 크레딧). 휴머노이드만, 텍스처 있어야, 얼굴이
+   * +Z. 걷기·달리기 애니가 같이 온다. 실패는 던진다 — 크레딧은 돌아온다.
+   */
+  rig(inputTaskId: string, heightMeters: number): Promise<RigResult>;
   balance(): Promise<number | null>;
 };
 
@@ -81,6 +96,47 @@ export function createMeshyProvider(apiKey: string): MeshProvider {
       } catch {
         return null;
       }
+    },
+
+    async rig(inputTaskId, heightMeters) {
+      const created = await fetch(BASE + "/rigging", {
+        method: "POST",
+        headers,
+        body: JSON.stringify({ input_task_id: inputTaskId, height_meters: heightMeters }),
+        signal: AbortSignal.timeout(60_000),
+      });
+      if (created.status === 402) throw new Error("MESHY_NO_CREDITS");
+      if (!created.ok) throw new Error(`MESHY_RIG_HTTP_${created.status}: ${(await created.text()).slice(0, 200)}`);
+      const { result: taskId } = (await created.json()) as { result: string };
+
+      type RigTask = MeshyTask & {
+        rigged_character_glb_url?: string;
+        rigged_character_fbx_url?: string;
+        walking_fbx_url?: string;
+        running_fbx_url?: string;
+      };
+      const until = Date.now() + MAX_WAIT_MS;
+      let task: RigTask | null = null;
+      while (Date.now() < until) {
+        await new Promise((r) => setTimeout(r, POLL_MS));
+        const r = await get(`/rigging/${taskId}`);
+        if (!r.ok) continue;
+        task = (await r.json()) as RigTask;
+        if (task.status === "SUCCEEDED" || task.status === "FAILED" || task.status === "CANCELED") break;
+      }
+      if (!task) throw new Error("MESHY_RIG_NO_ANSWER");
+      if (task.status !== "SUCCEEDED") {
+        throw new Error(`MESHY_RIG_${task.status}: ${task.task_error?.message ?? "이유 없음"}`);
+      }
+      return {
+        taskId,
+        riggedGlbUrl: task.rigged_character_glb_url ?? null,
+        riggedFbxUrl: task.rigged_character_fbx_url ?? null,
+        walkingFbxUrl: task.walking_fbx_url ?? null,
+        runningFbxUrl: task.running_fbx_url ?? null,
+        consumedCredits: task.consumed_credits ?? 0,
+        mock: false,
+      };
     },
 
     async imageTo3D(imageDataUrl, opts = {}) {
@@ -150,6 +206,10 @@ export function createMockMeshProvider(): MeshProvider {
     name: "mock-mesh",
     async balance() {
       return 0;
+    },
+    async rig() {
+      // 목은 리깅을 못 한다. 본 0개 그대로 — B1 이 떨어지는 것이 맞다.
+      return { taskId: "mock-rig", riggedGlbUrl: null, riggedFbxUrl: null, walkingFbxUrl: null, runningFbxUrl: null, consumedCredits: 0, mock: true };
     },
     async imageTo3D() {
       return {

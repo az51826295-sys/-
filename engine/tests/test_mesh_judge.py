@@ -51,11 +51,27 @@ def test_tall_box_has_y_up_and_fails_uv_without_texture_coords():
     assert _rule(v, "U1").verdict == FAIL
 
 
-def test_open_mesh_fails_m1():
+def test_open_mesh_is_reported_but_not_counted_v1():
+    # v1: 닫힘은 3D 프린팅 기준이다. 게임 메시는 열려 있어도 된다 — 정보만 남긴다.
     m = trimesh.creation.icosphere(subdivisions=5, radius=0.8)
     m = trimesh.Trimesh(vertices=m.vertices, faces=m.faces[:-50])  # 구멍을 낸다
+    m.visual = trimesh.visual.TextureVisuals(uv=np.zeros((len(m.vertices), 2)))
     v = judge_glb(_glb(m))
-    assert _rule(v, "M1").verdict == FAIL
+    assert _rule(v, "M1").verdict == UNDEFINED
+    assert all(r.verdict != FAIL for r in v.rules)  # 구멍 때문에 떨어지지 않는다
+
+
+def test_prop_profile_accepts_a_low_wide_chest():
+    # 보물상자: 낮고 옆으로 길다. character 로 재면 S1·A1 에서 떨어지고, prop 이면 아니다.
+    m = trimesh.creation.box(extents=(1.0, 0.45, 0.6))
+    m = m.subdivide().subdivide().subdivide().subdivide().subdivide()  # 12 → 12288 면
+    m.visual = trimesh.visual.TextureVisuals(uv=np.zeros((len(m.vertices), 2)))
+    c = judge_glb(_glb(m), profile="character")
+    assert _rule(c, "S1").verdict == FAIL and _rule(c, "A1").verdict == FAIL
+    p = judge_glb(_glb(m), profile="prop")
+    assert _rule(p, "S1").verdict == PASS
+    assert _rule(p, "A1").verdict == UNDEFINED  # 정보만
+    assert p.measured["profile"] == "prop"
 
 
 def test_no_material_is_undefined_not_fail():

@@ -1,4 +1,4 @@
-"""3D 메시 판정 — `docs/asset-3d-intake-v0-design.md` 의 표를 그대로 코드로.
+"""3D 메시 판정 — `docs/asset-3d-intake-v1-design.md`(v0 에서 바뀐 것)를 코드로.
 
 거르기만 한다. 고르지 않는다. 세 값(PASS / FAIL / UNDEFINED)이고 UNDEFINED 는
 통과가 아니다 — 못 잰 것을 통과로 세면 못 잴수록 잘 통과한다.
@@ -16,14 +16,20 @@ import numpy as np
 import trimesh
 from pygltflib import GLTF2
 
+# v1 (2026-09-05 16:55, docs/asset-3d-intake-v1-design.md). v0 와 다른 것:
+# M1(닫힘)은 정보만 — 3D 프린팅 기준이라 게임 메시에는 안 맞는다(두 판이 그것으로
+# 떨어졌다). 프로필 둘: character 는 v0 그대로, prop 은 높이 0.05~10 m, 위 축 정보만.
 THRESHOLDS = {
     "T1": {"tri_min": 2000, "tri_max": 40000},
     "T2": {"mesh_max": 8},
-    "S1": {"height_min_m": 0.5, "height_max_m": 3.0},
-    "A1": {"axis_tie_ratio": 0.10},
+    "S1": {"character": {"height_min_m": 0.5, "height_max_m": 3.0},
+           "prop": {"height_min_m": 0.05, "height_max_m": 10.0}},
+    "A1": {"axis_tie_ratio": 0.10, "counted_for": ["character"]},
+    "M1": {"counted": False},
     "B1": {"bones_min": 10},
-    "basis": "docs/asset-3d-intake-v0-design.md v0 (2026-09-05, 첫 메시 보기 전에 얼림)",
+    "basis": "docs/asset-3d-intake-v1-design.md v1 (2026-09-05; v0 는 그 문서에 그대로)",
 }
+PROFILES = ("character", "prop")
 
 PASS, FAIL, UNDEFINED = "PASS", "FAIL", "UNDEFINED"
 
@@ -59,10 +65,15 @@ def _overall(rules: list[Rule]) -> str:
     return PASS
 
 
-def judge_glb(data: bytes, want_rig: bool = False) -> MeshVerdict:
-    """GLB 바이트를 받아 표대로 잰다. 파일을 안 쓴다 — 임시 파일이 남지 않게."""
+def judge_glb(data: bytes, want_rig: bool = False, profile: str = "character") -> MeshVerdict:
+    """GLB 바이트를 받아 표대로 잰다. 파일을 안 쓴다 — 임시 파일이 남지 않게.
+
+    `profile` 은 character / prop. 모르면 character(더 엄격한 쪽).
+    """
+    if profile not in PROFILES:
+        profile = "character"
     rules: list[Rule] = []
-    measured: dict = {}
+    measured: dict = {"profile": profile}
 
     # ── 형상: trimesh ──
     try:
@@ -91,8 +102,9 @@ def judge_glb(data: bytes, want_rig: bool = False) -> MeshVerdict:
     if geoms:
         watertight = [bool(g.is_watertight) for g in geoms]
         measured["watertight"] = watertight
-        rules.append(Rule("M1", PASS if all(watertight) else FAIL, sum(watertight),
-                          "모든 메시가 닫혀 있어야 한다"))
+        # v1: 정보만. 닫힘은 3D 프린팅 기준이다 — 게임 메시는 열려 있어도 된다.
+        rules.append(Rule("M1", PASS if all(watertight) else UNDEFINED, sum(watertight),
+                          "닫힘(정보만 — 게임 메시에는 규칙이 아니다)"))
 
         winding = [bool(g.is_winding_consistent) for g in geoms]
         measured["winding_consistent"] = winding
@@ -117,13 +129,15 @@ def judge_glb(data: bytes, want_rig: bool = False) -> MeshVerdict:
             rules.append(Rule("A1", UNDEFINED, measured["extents_m"], "바운딩 박스가 0"))
         else:
             h = float(ext[1])  # glTF 는 Y-up
-            s = THRESHOLDS["S1"]
+            s = THRESHOLDS["S1"][profile]
             rules.append(Rule("S1", PASS if s["height_min_m"] <= h <= s["height_max_m"] else FAIL,
-                              round(h, 3), f"높이(Y) {s['height_min_m']}~{s['height_max_m']} m"))
+                              round(h, 3), f"높이(Y) {s['height_min_m']}~{s['height_max_m']} m ({profile})"))
             order = np.argsort(ext)[::-1]
             longest, second = float(ext[order[0]]), float(ext[order[1]])
             tie = (longest - second) / longest <= THRESHOLDS["A1"]["axis_tie_ratio"]
-            if tie:
+            if profile not in THRESHOLDS["A1"]["counted_for"]:
+                rules.append(Rule("A1", UNDEFINED, "XYZ"[order[0]], f"{profile} 에는 위 축 규칙이 없다 — 정보만"))
+            elif tie:
                 rules.append(Rule("A1", UNDEFINED, measured["extents_m"], "가장 긴 축이 둘 이상(±10%)"))
             else:
                 rules.append(Rule("A1", PASS if order[0] == 1 else FAIL, "XYZ"[order[0]],
@@ -166,9 +180,17 @@ def judge_glb(data: bytes, want_rig: bool = False) -> MeshVerdict:
         rules.append(Rule("X1", UNDEFINED, None, f"glTF 구조를 못 읽었다: {str(e)[:120]}"))
         rules.append(Rule("B1", UNDEFINED, None, "glTF 구조를 못 읽었다"))
 
-    # B1 의 UNDEFINED(요청 안 함)는 종합에 안 섞는다 — 안 잰 것이지 못 잰 것이 아니다.
-    counted = [r for r in rules if not (r.id == "B1" and not want_rig)]
-    return MeshVerdict(_overall(counted), rules, measured)
+    # 종합에 안 섞는 것: B1(요청 안 함), M1(정보만), prop 의 A1(정보만).
+    # 안 잰 것·안 세는 것은 못 잰 것이 아니다.
+    def counted(r: Rule) -> bool:
+        if r.id == "B1" and not want_rig:
+            return False
+        if r.id == "M1" and not THRESHOLDS["M1"]["counted"]:
+            return False
+        if r.id == "A1" and profile not in THRESHOLDS["A1"]["counted_for"]:
+            return False
+        return True
+    return MeshVerdict(_overall([r for r in rules if counted(r)]), rules, measured)
 
 
 if __name__ == "__main__":  # python -m genesis.mesh_judge file.glb

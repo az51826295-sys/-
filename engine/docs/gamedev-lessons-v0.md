@@ -42,11 +42,20 @@
 | C2 | 설계도에 **합격 기준을 코드보다 먼저** 쓴다. "빠르다" 가 아니라 "50개에서도 부드럽다" | Dev 의 방식 + 글 | **확인** — 09-05 16/16 |
 | C3 | 자산 목록에 담당·형식을 적는다: 캐릭터(FBX·Humanoid·A-pose), 소품(GLB), 배경 | A1·A7 에서 | 미확인 |
 
+## E. 2회차 (09-05 16:47~17:10) — 우리 판에서 걸린 것들
+
+| # | 배운 것 | 출처 | 우리 판 |
+|---|---|---|---|
+| E1 | **닫힘(watertight)은 3D 프린팅 기준이지 게임 기준이 아니다.** 실시간 메시는 열려 있어도 렌더·콜라이더에 문제없다 | polycount · sloyd · meshlib | **확인** — 두 판(보물상자·마네킹) 모두 안 닫혔고 그것으로 떨어졌다. 규격 v1 에서 정보만으로 |
+| E2 | Meshy 리깅은 별도 API(`POST /openapi/v1/rigging`, `input_task_id`, `height_meters`), **5 크레딧**, 휴머노이드만, 텍스처 있어야, 얼굴 +Z, 30만 면 이하. 걷기·달리기 FBX 가 같이 온다 | Meshy 문서 | 미확인 (붙였음, 다음 캐릭터 판에서 확인) |
+| E3 | 비인간형(Box 같은 관절 상자)은 Meshy 리깅이 안 된다 — 그 경우 리깅은 사람(Blender) 몫 | Meshy 문서 | 미확인 |
+| E4 | 3인칭 조작 표준형은 유니티 **Starter Assets – ThirdPerson(URP)**: Input System + Cinemachine 이 같이 깔린다. 처음부터 짜지 않는다 | Asset Store · Unity | 미확인 |
+| E5 | 규격은 "무엇을 재는가" 부터 틀릴 수 있다 — v0 M1 이 그랬다. 문턱 숫자보다 규칙 자체를 먼저 의심한다 | 우리 판 | **확인** |
+
 ## D. 다음에 배울 것 (아직 안 읽음)
 
-- Meshy 리깅·애니메이션 API(별도 엔드포인트) — 캐릭터 첫 판 전에.
 - 텍스처 압축·해상도 예산, LOD.
-- 카메라·캐릭터 컨트롤러 표준형(3인칭).
+- Starter Assets 를 Dev 가 어떻게 쓰나(패키지 의존, 프리팹 구조).
 - 유니티 URP 프로젝트 기본 세팅(새 프로젝트 템플릿).
 
 ## 출처
@@ -58,3 +67,8 @@
 - https://blog.neural4d.com/user-guide/how-to-import-3d-models-into-unity-6-fbx-glb-ai-workflow/
 - https://game-developers.org/biggest-mistakes-new-developers-make-in-unity
 - https://ithappystudios.com/blog/unity-for-beginners-5-common-mistakes-when-working-with-3d-models/
+
+- https://polycount.com/discussion/213605/is-this-a-problem-when-a-model-is-not-a-watertight-mesh
+- https://www.sloyd.ai/blog/image-to-3d-for-games-vs-3d-printing
+- https://docs.meshy.ai/en/api/rigging
+- https://assetstore.unity.com/packages/essentials/starter-assets-thirdperson-urp-196526
