@@ -65,7 +65,9 @@ export const gameAssetsSkill: EmployeeSkill = {
   capabilities: [
     {
       id: "game_character_art",
-      label: "Make a game character sprite that meets a written spec",
+      // 09-05 16:30 첫 판(딥시크)이 "3D 캐릭터 모델" 을 여기로 보냈다. 2D 인 것을
+      // 이름에 박는다 — 갈라야 하는 것이 바로 그 한 글자다.
+      label: "2D 픽셀 스프라이트(도트 그림) — 3D 모델·메시가 아니다 / 2D pixel sprite, NOT 3D",
       produces:
         "Several candidate sprites, each measured against the spec — colour count, " +
         "contrast, how it reads on the game's own ground — with the failures " +

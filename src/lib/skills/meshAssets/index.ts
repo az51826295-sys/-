@@ -64,7 +64,7 @@ export const meshAssetsSkill: EmployeeSkill = {
   capabilities: [
     {
       id: "mesh_from_image",
-      label: "Make a 3D mesh from one reference image, measured against the intake spec",
+      label: "3D 모델·메시·캐릭터 모델(GLB/FBX, 유니티용) — '3D' 가 들어간 만들기 요청은 여기 / 3D mesh from an image",
       produces:
         "One GLB (and FBX) made from the reference image — or from a machine-drawn " +
         "concept, flagged as such — with the verdict per rule: triangles, closedness, " +
