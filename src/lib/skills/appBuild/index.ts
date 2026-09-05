@@ -82,6 +82,11 @@ const UNITY_RULES =
   "`rigged.fbx`)를 AssetDatabase.LoadAssetAtPath 로 읽어 쓰고, **없으면 기본 도형**으로 " +
   "짓되 어디에 무엇을 끼우면 되는지 주석에 적는다. 없는 파일을 가리키는 코드를 내지 마라.\n" +
   "- 조작은 UnityEngine.InputSystem(Keyboard.current / InputAction). Input.GetAxis 금지.\n" +
+  "- 씬에는 Directional Light 하나, Main Camera(태그 MainCamera) 하나를 **반드시** 만든다.\n" +
+  "- `Shader.Find(...)` 는 null 일 수 있다(URP 가 없는 프로젝트도 있다). 재질은 기본 도형의 " +
+  "것을 그대로 쓰거나, 셰이더를 찾을 때는 `?? Shader.Find(\"Standard\")` 로 물러난다. " +
+  "null 로 Material 을 만들지 마라.\n" +
+  "- 씬 경로는 `Assets/Rookery/Scenes/<이름>.unity`. 다른 곳에 두면 가져오기 창이 못 찾는다.\n" +
   "- UI 글꼴이 필요하면 LegacyRuntime.ttf. Arial.ttf 는 없다.\n" +
   "- `howToRun`: '유니티에서 Window → Rookery → 가져오기 → 메뉴 Rookery/<이름> 짓기 → Play'.\n";
 

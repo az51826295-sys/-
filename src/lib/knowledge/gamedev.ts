@@ -93,6 +93,11 @@ export const GAMEDEV_LESSONS: Lesson[] = [
   { id: "G6", role: "unity_code", verified: true,
     text: "씬 빌더는 두 번 불려도 겹치지 않아야 한다 — 있으면 열어서 지우고 다시 짓는다. 밭이 겹쳐 쌓인 적이 있다." },
 
+  { id: "G8", role: "unity_code", verified: true,
+    text: "Shader.Find 는 없는 셰이더에 null 을 준다. URP 가 안 깔린 프로젝트에서 'Universal Render Pipeline/Lit' 은 없다. new Material(Shader.Find(…)) 을 그대로 쓰면 ArgumentNullException 으로 씬 빌더도 게임도 죽는다 — 결과를 검사하고 'Standard' 로 물러나거나, 기본 도형의 재질을 그대로 둔다." },
+  { id: "G9", role: "unity_code", verified: true,
+    text: "씬 빌더는 Directional Light 를 반드시 하나 만든다. 없으면 3D 물체가 검게 나오고 합격 시험(삼차원이면_조명이_있다)에서 떨어진다 — 09-05 Dev 의 첫 유니티 판이 그랬다." },
+
   // ── C. 범위·설계 (설계도) ──
   { id: "C1", role: "blueprint", verified: true,
     text: "첫 조각은 한 화면·한 조작·한 목표. 만들기→시험→다듬기→내보내기를 한 번 끝까지 돌리는 것이 목표다." },
