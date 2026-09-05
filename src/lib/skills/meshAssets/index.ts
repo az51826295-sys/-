@@ -5,6 +5,7 @@ import { defaultMeshProvider } from "@/lib/providers/meshy";
 import { judgeMesh, JudgeUnavailable, type MeshVerdict } from "@/lib/providers/judge";
 import { z } from "zod";
 import { storeDeliverableFile } from "@/lib/deliverables/files";
+import { renderGamedevLessons } from "@/lib/knowledge/gamedev";
 
 /**
  * 3D 자산 — 이미지 한 장을 메시로 만들고, 규격 v0 로 재고, 대화로 돌려준다.
@@ -88,7 +89,8 @@ export const meshAssetsSkill: EmployeeSkill = {
         "생김새·재질·색을 구체적으로. 배경·바닥·글자는 쓰지 않는다.\n" +
         "- `wantRig`: 걷거나 움직여야 하는 것이면 true.\n" +
         "- `poseMode`: 캐릭터면 \"a-pose\", 아니면 \"\".\n" +
-        (reference ? "레퍼런스 이미지가 **있다**. conceptPrompt 는 그래도 쓴다(기록용)." : ""),
+        (reference ? "레퍼런스 이미지가 **있다**. conceptPrompt 는 그래도 쓴다(기록용)." : "") +
+        renderGamedevLessons("mesh_assets"),
       input:
         `업무: ${ctx.context.assignment.title}\n` +
         `설명: ${ctx.context.assignment.description ?? ""}\n` +
@@ -181,6 +183,12 @@ export const meshAssetsSkill: EmployeeSkill = {
       (fbxBytes ? `- model.fbx (${(fbxBytes.byteLength / 1024).toFixed(0)} KB)\n` : "") +
       "- 파일은 이 대화 아래 '열기·저장' 과 유니티 창(Window → Rookery)에서 받습니다.\n" +
       `\n- 생성기: ${mesh.model} · 크레딧 ${mesh.consumedCredits}\n\n` +
+      "## 유니티에 넣을 때\n\n" +
+      (brief.wantRig
+        ? "- 캐릭터라 **FBX** 를 쓰십시오. Rig → Humanoid. GLB 는 리타깃 설정이 없습니다.\n"
+        : "- 소품이라 GLB(패키지 com.unity.cloud.gltfast 필요) 또는 FBX 둘 다 됩니다.\n") +
+      "- 크기가 100배로 보이면 임포트 Scale Factor 0.01. 분홍이면 URP/Lit 으로, 하얗면 재질 다시 추출.\n" +
+      "- 콜라이더는 따로 붙이십시오. 피벗은 바닥 중앙으로 청했습니다.\n\n" +
       "---\n\n" +
       "판정기는 걸렀을 뿐 고르지 않았습니다. 닮았는지·예쁜지·움직임이 자연스러운지는 " +
       "재지 않습니다 — 그것은 사람 눈입니다. 다시 만들지도 사람이 정합니다(크레딧이 나갑니다).";
