@@ -109,6 +109,11 @@ const build = z.object({
       contents: z.string(),
     }),
   ),
+  /**
+   * 고치는 판에서 **안 바꾸는** 지난 파일의 경로. contents 를 되쓰지 않는다 — 코드가
+   * 지난 판에서 이어 붙인다. 파일 9개를 매번 되쓰다 20분을 넘겨 죽었다(00:19).
+   */
+  keep: z.array(z.string()).optional().nullable(),
   /** 어떻게 돌리는지. 이게 없으면 받은 사람이 시작할 수 없다. */
   howToRun: z.string(),
   /** 기준마다 어디서 충족되는지. 못 지킨 것은 못 지켰다고 적는다. */
@@ -253,7 +258,9 @@ export const appBuildSkill: EmployeeSkill = {
           .map((c) => `- [${c.id}] ${c.when} → ${c.then}`)
           .join("\n") +
         (previous
-          ? "\n\n## 지난 판의 파일 — 이것을 바탕으로 고친다. 파일 전체를 다시 낸다.\n" +
+          ? "\n\n## 지난 판의 파일 — 이것을 바탕으로 고친다.\n" +
+            "**바꾸는 파일만 `files` 에 전체를 낸다.** 안 바꾸는 파일은 `keep` 에 경로만 적어라 — " +
+            "코드가 지난 판에서 그대로 이어 붙인다. 지난 파일을 되쓰지 마라(그러다 20분을 넘겨 죽는다).\n" +
             (previous.failedChecks.length
               ? `유니티 시험에서 떨어진 줄(이것을 고치는 것이 이번 판이다):\n${previous.failedChecks.map((f) => `- ${f}`).join("\n")}\n\n`
               : "") +
@@ -274,6 +281,14 @@ export const appBuildSkill: EmployeeSkill = {
     await setStep(ctx.supabase, ctx.executionId, "verifying");
 
     let files = made.files;
+    // 고치는 판: keep 에 적힌(또는 아예 안 낸) 지난 파일을 이어 붙인다. 새로 낸 경로가
+    // 이기고, 나머지 지난 파일은 그대로 남는다 — 빠뜨려서 게임이 반쪽이 되는 것보다 낫다.
+    if (previous) {
+      const outPaths = new Set(files.map((f) => f.path));
+      const carried = previous.files.filter((f) => !outPaths.has(f.path));
+      files = [...files, ...carried];
+      if (carried.length) console.log(`[app_build] 지난 파일 ${carried.length}개 이어 붙임:`, carried.map((f) => f.path).join(", "));
+    }
     let checks = checkFiles(files);
     let repaired = false;
 

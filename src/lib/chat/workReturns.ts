@@ -246,7 +246,7 @@ async function stepOf(db: Supabase, assignmentId: string, status: string): Promi
 
 
 /** 한 단계가 이보다 오래 안 움직이면 끊긴 것으로 본다. 코드 생성이 제일 길고, 10분을 넘긴 적이 없다. */
-const STALE_MS = 20 * 60_000;
+const STALE_MS = 40 * 60_000; // 00:19 파일 9개 되쓰는 판이 20분에 죽었다 — 서버는 멀쩡했다
 
 async function failIfStale(db: Supabase, assignmentId: string, title: string): Promise<void> {
   const { data: e } = await db
