@@ -2,6 +2,7 @@ import type { Supabase } from "@/lib/execution/shared";
 import { getEmployeeDefinition } from "@/lib/employees/definitions";
 import { capabilityCatalogue } from "@/lib/chat/companyService";
 import { runChatTurn, type ChatOption } from "@/lib/chat/service";
+import { retrieveCompanyKnowledge } from "@/lib/knowledge/retrieval";
 
 /**
  * 능력 하나를 맡을 사람을 찾고, 없으면 뽑고, 일을 넘긴다.
@@ -94,6 +95,15 @@ export async function delegate(
       .eq("id", hireId);
   }
 
+  // **아는 것 없이 일하러 보내지 않는다.** 실행은 시작 전에 "회사가 무엇을 하고
+  // 누구를 위해 어떤 문제를 푸는지" 가 그 사람의 지식 카드에 있는지 본다 —
+  // 없으면 모델을 부르기 전에 멈춘다(CONTEXT_INCOMPLETE). 그 카드는 원래
+  // 교육 설문(대시보드)이 채웠는데, 그 화면은 09-05 에 지웠다. 그러니 여기서
+  // 대화가 가르친 것으로 채운다. 아직 아무것도 못 배웠으면 **모른다고 적는다** —
+  // 그래야 그 사람이 지어내지 않고, 결과가 대화로 돌아왔을 때 매니저가
+  // 한 줄 더 말해 주면 다음 판에는 그것이 실린다.
+  await ensureKnowledgeProfile(db, companyId, hireId);
+
   const turn = await runChatTurn({ companyEmployeeId: hireId, messages });
   if (!turn.ok) {
     // 접수는 됐고 넘기는 데서 막혔다. 답은 이미 나갔으므로 이유만 싣는다.
@@ -108,4 +118,51 @@ export async function delegate(
     tail: turn.reply?.trim() || null,
     why: null,
   };
+}
+
+
+const NOT_TOLD_YET =
+  "매니저가 아직 말하지 않았습니다. 짐작하지 말고, 모르는 것은 모른다고 적고, " +
+  "필요하면 결과에 물음을 남기십시오. 대화에서 알게 되면 다음 일에 반영됩니다.";
+
+/**
+ * 지식 카드가 없으면 대화가 가르친 것으로 만든다. 있으면 손대지 않는다 —
+ * 매니저가 설문으로 채운 카드를 대화 요약이 덮어쓰면 아는 것이 줄어든다.
+ */
+async function ensureKnowledgeProfile(
+  db: Supabase,
+  companyId: string,
+  companyEmployeeId: string,
+): Promise<void> {
+  const { data: have } = await db
+    .from("employee_knowledge_profiles")
+    .select("company_employee_id")
+    .eq("company_employee_id", companyEmployeeId)
+    .maybeSingle();
+  if (have) return;
+
+  const { data: company } = await db
+    .from("companies")
+    .select("name, website")
+    .eq("id", companyId)
+    .maybeSingle();
+  const known = await retrieveCompanyKnowledge(db, companyId);
+  const learned = known.map((k) => `- ${k.title}: ${k.description}`).join("\n");
+
+  const companySummary =
+    `회사 이름: ${company?.name ?? "(없음)"}` +
+    (company?.website ? ` · ${company.website}` : "") +
+    (learned ? `\n\n대화에서 알게 된 것:\n${learned}` : `\n\n${NOT_TOLD_YET}`);
+
+  await db.from("employee_knowledge_profiles").insert({
+    company_employee_id: companyEmployeeId,
+    company_summary: companySummary,
+    customer_summary: NOT_TOLD_YET,
+    problem_summary: NOT_TOLD_YET,
+    differentiation_summary: null,
+    competitors: [],
+    priorities: [],
+    additional_context: null,
+    role_knowledge_json: null,
+  });
 }

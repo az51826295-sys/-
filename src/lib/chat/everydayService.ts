@@ -158,7 +158,20 @@ export async function runEverydayTurn(
         .eq("owner_id", user.id)
         .maybeSingle()
     : { data: null };
-  const companyId = (company?.id as string | undefined) ?? null;
+  let companyId = (company?.id as string | undefined) ?? null;
+
+  // 로그인은 했는데 회사가 없다. 회사 만드는 화면은 09-05 에 지웠으니 여기서
+  // 만든다 — 회사는 한도·장부·직원이 붙는 자리라 없으면 일을 못 맡긴다.
+  // 이름은 이메일 앞부분. 매니저가 대화에서 회사 이름을 말하면 그때 배운다.
+  if (user && !companyId) {
+    const guess = (user.email ?? "").split("@")[0] || "내 회사";
+    const { data: made } = await supabase
+      .from("companies")
+      .insert({ owner_id: user.id, name: guess })
+      .select("id")
+      .maybeSingle();
+    companyId = (made?.id as string | undefined) ?? null;
+  }
 
   if (companyId && (await blockedBySpendLimit(supabase, companyId))) {
     return {
@@ -367,6 +380,8 @@ export async function runEverydayTurn(
       // 위임이 터져도 답은 나간다. 사용자가 물은 것에 대한 답은 이미 있다.
     }
   } else if (plan.capabilityId && !companyId) {
+    // 여기 오는 것은 이제 로그인 안 한 사람뿐이다(로그인했으면 위에서 회사를
+    // 만들었다). 그러니 "로그인하시면" 이 정확한 말이다.
     reply +=
       "\n\n(이건 시간이 드는 일이라 사람을 붙여야 합니다 — " +
       "로그인하시면 이어서 맡길 수 있습니다.)";
