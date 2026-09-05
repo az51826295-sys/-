@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { renderGamedevLessons } from "@/lib/knowledge/gamedev";
 import { ExecutionError, setStep } from "@/lib/execution/shared";
 import type { EmployeeSkill, SkillRunContext } from "@/lib/skills/types";
 import { checkFiles, repairBrief, summarise } from "@/lib/skills/appBuild/verify";
@@ -51,7 +52,38 @@ const plan = z.object({
   ),
   /** 잴 수 없어서 사람 눈에 남기는 것. 숨기지 않고 적는다. */
   humanGate: z.array(z.string()),
+  /**
+   * 어디에 짓는가. 09-05 사장님: "HTML 말고, 엔진에 넣어야지, 유니티로." 게임·3D·
+   * 유니티 이야기면 unity, 웹 도구·페이지면 web. 모르면 unity — 이 회사의 게임은
+   * 유니티 안에서 산다.
+   */
+  target: z.enum(["unity", "web"]),
 });
+
+/**
+ * 유니티로 지을 때의 규칙. 09-05 사장님: "엔진에 넣어야지, 유니티로."
+ *
+ * 파일은 유니티 창(Window → Rookery → 가져오기)이 `Assets/Rookery/Scripts/<제목>/`
+ * 에 그대로 놓는다. 씬은 에디터 스크립트가 짓는다 — 씬 파일(.unity)을 글로 내지
+ * 않는다(생성기가 낸 YAML 은 거의 항상 깨진다).
+ */
+const UNITY_RULES =
+  "\n\n## 유니티로 짓는다 (이 회사의 게임은 유니티 안에서 산다)\n" +
+  "- 언어는 C#. Unity 6, URP, **새 입력 시스템 전용**(activeInputHandler: 1).\n" +
+  "- 파일 경로는 `Assets/Rookery/Scripts/<이름>.cs`(런타임) 와 " +
+  "`Assets/Rookery/Editor/<이름>SceneBuilder.cs`(에디터) 둘로. `language` 는 csharp.\n" +
+  "- **씬 파일(.unity)을 글로 내지 마라.** 대신 에디터 스크립트 하나에 " +
+  "`[MenuItem(\"Rookery/<게임 이름> 짓기\")] public static void BuildOrRebuild()` 를 " +
+  "두고, 거기서 EditorSceneManager.NewScene → 바닥·조명·카메라·플레이어 → " +
+  "EditorSceneManager.SaveScene(scene, \"Assets/Rookery/Scenes/<이름>.unity\") → " +
+  "EditorBuildSettings.scenes 에 추가. 두 번 불려도 겹치지 않게(있으면 지우고 다시).\n" +
+  "- 에디터 스크립트는 Editor 폴더에만 두고 `using UnityEditor;` 를 쓴다.\n" +
+  "- 3D 자산이 업무에 이름으로 적혀 있으면 `Assets/Rookery/<제목>/model.fbx`(캐릭터는 " +
+  "`rigged.fbx`)를 AssetDatabase.LoadAssetAtPath 로 읽어 쓰고, **없으면 기본 도형**으로 " +
+  "짓되 어디에 무엇을 끼우면 되는지 주석에 적는다. 없는 파일을 가리키는 코드를 내지 마라.\n" +
+  "- 조작은 UnityEngine.InputSystem(Keyboard.current / InputAction). Input.GetAxis 금지.\n" +
+  "- UI 글꼴이 필요하면 LegacyRuntime.ttf. Arial.ttf 는 없다.\n" +
+  "- `howToRun`: '유니티에서 Window → Rookery → 가져오기 → 메뉴 Rookery/<이름> 짓기 → Play'.\n";
 
 const build = z.object({
   files: z.array(
@@ -98,7 +130,11 @@ export const appBuildSkill: EmployeeSkill = {
         "먼저 이 앱이 무엇을 해야 하는지를 **사람이 직접 확인할 수 있는 문장**으로 " +
         "적는다. '빠르다'가 아니라 '목록이 50개일 때 스크롤이 끊기지 않는다' 처럼.\n\n" +
         `기준은 ${MIN_CRITERIA}개 이상. 확인할 수 없는 것(예쁨·쓰기 편함)은 ` +
-        "`humanGate` 에 따로 적는다 — 억지로 기준인 척하지 마라.",
+        "`humanGate` 에 따로 적는다 — 억지로 기준인 척하지 마라.\n\n" +
+        "`target`: 게임·3D·유니티·캐릭터·씬 이야기면 **unity**(이 회사의 게임은 유니티 " +
+        "안에서 산다 — HTML 게임을 내지 마라). 웹 도구·페이지·스크립트면 web. 모르면 unity.\n" +
+        "unity 면 기준은 유니티 안에서 사람이 눌러 볼 수 있는 문장으로: " +
+        "'메뉴 Rookery/… 를 누르면 씬이 생기고 Play 하면 …'.",
       input:
         `업무: ${ctx.context.assignment.title}\n` +
         `설명: ${ctx.context.assignment.description ?? ""}\n` +
@@ -120,6 +156,7 @@ export const appBuildSkill: EmployeeSkill = {
     // ── 2. 그 기준을 놓고 만든다 ────────────────────────────────────
     await setStep(ctx.supabase, ctx.executionId, "generating");
 
+    const unity = spec.target === "unity";
     const { output: made } = await ctx.providers.ai.generateStructuredOutput({
       systemInstructions:
         "아래 기준을 만족하는 앱을 만든다.\n\n" +
@@ -127,7 +164,8 @@ export const appBuildSkill: EmployeeSkill = {
         "붙여 넣어 바로 돌릴 수 있어야 한다.\n" +
         "- `howToRun` 에 시작하는 법을 적는다.\n" +
         "- **못 지킨 기준은 `met: false` 로 적는다.** 지킨 척하면 받은 사람이 " +
-        "확인할 때 알게 되고, 그때는 산출물 전체를 못 믿게 된다.",
+        "확인할 때 알게 되고, 그때는 산출물 전체를 못 믿게 된다." +
+        (unity ? UNITY_RULES + renderGamedevLessons("unity_code") : ""),
       input:
         `무엇: ${spec.title}\n\n기준:\n` +
         spec.criteria
@@ -197,6 +235,7 @@ export const appBuildSkill: EmployeeSkill = {
       "위 기준으로 확인해 주십시오 — 기준은 코드보다 먼저 쓰였습니다.";
 
     const content = {
+      target: spec.target,
       criteria: spec.criteria,
       humanGate: spec.humanGate,
       files,

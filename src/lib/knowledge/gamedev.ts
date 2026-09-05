@@ -82,6 +82,17 @@ export const GAMEDEV_LESSONS: Lesson[] = [
   { id: "F6", role: "unity_code", verified: false,
     text: "Unity 6 URP 프로젝트의 기본 패키지: render-pipelines.universal, inputsystem, cinemachine(3.x), cloud.gltfast(6.x). 버전은 레지스트리에 물어서 고른다." },
 
+  { id: "G1", role: "unity_code", verified: true,
+    text: "FindObjectOfType/FindObjectsOfType 은 폐기됐다. FindFirstObjectByType / FindAnyObjectByType / FindObjectsByType(FindObjectsSortMode.None) 을 쓴다." },
+  { id: "G2", role: "unity_code", verified: true,
+    text: "Rigidbody.velocity 는 Unity 6 에서 linearVelocity 다(2D 도). 옛 이름을 쓰면 경고이고 버전에 따라 오류다." },
+  { id: "G3", role: "unity_code", verified: false,
+    text: "AddForceAtPosition 에 ForceMode.Acceleration/VelocityChange 를 주던 코드는 Unity 6 에서 뜻이 바뀌었다 — 질량을 곱해 Force/Impulse 로 쓴다." },
+  { id: "G5", role: "unity_code", verified: true,
+    text: "씬은 에디터 스크립트로 짓는다: EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single) → CreatePrimitive/new GameObject + AddComponent → EditorSceneManager.SaveScene(scene, path) → EditorBuildSettings.scenes 에 추가. [MenuItem] 을 달아 사람도 누를 수 있게." },
+  { id: "G6", role: "unity_code", verified: true,
+    text: "씬 빌더는 두 번 불려도 겹치지 않아야 한다 — 있으면 열어서 지우고 다시 짓는다. 밭이 겹쳐 쌓인 적이 있다." },
+
   // ── C. 범위·설계 (설계도) ──
   { id: "C1", role: "blueprint", verified: true,
     text: "첫 조각은 한 화면·한 조작·한 목표. 만들기→시험→다듬기→내보내기를 한 번 끝까지 돌리는 것이 목표다." },
