@@ -113,17 +113,20 @@ export const GAMEDEV_LESSONS: Lesson[] = [
   // 사장님: "게임에 관련된 디테일 추가하는 법 — 그런 거 있지, 넣으라고."
   // 읽은 것: game feel/juice 글 셋(egmatic·tigerabrodi·GameAnalytics). 숫자는 그 글들의
   // 것이고, '우리 씬에서 어떻게' 는 우리 생각이다. 아직 우리 판에서 안 밟았다.
+  // 20:12 같은 동전 줍기를 다시 시킨 판: 14개 중 13개가 코드에 나타났고(소리 자리만 빠짐)
+  // 컴파일 0 오류·씬 지어짐·시험 통과 4 떨어짐 0. 구조까지 맞은 것(J2·J5·J6·J10·J13)만
+  // verified. 보기에 좋은지는 자가 못 잰다 — 사람 눈이 마지막 칸이다.
   { id: "J1", role: "unity_code", verified: false,
     text: "한 행동에 반응 하나로는 부족하다 — 겹친다. 줍기 하나에 크기 튐 + 알갱이 + 카메라 살짝 흔들림 + 점수 글자 튐(+ 나중에 소리). 글들은 큰 사건에 4~10개를 겹치라 한다. 반응이 하나뿐인 게임은 '아무 일도 안 일어난' 것처럼 읽힌다." },
-  { id: "J2", role: "unity_code", verified: false,
+  { id: "J2", role: "unity_code", verified: true,
     text: "소품에 생명: 동전·열쇠·보석은 제자리에서 돈다(transform.Rotate(0, 90~180 * deltaTime, 0)) 하고 위아래로 뜬다(y = 기준 + Mathf.Sin(time * 2~3) * 0.1~0.2). 가만히 선 소품은 배경으로 읽혀 플레이어가 주우려 하지 않는다." },
   { id: "J3", role: "unity_code", verified: false,
     text: "줍는 순간: 콜라이더를 먼저 끈다(두 번 세어지는 것 방지) → 크기를 1.3배로 튀겼다가 0.15초에 0 으로 줄인다 → SetActive(false). Destroy 는 안 쓴다(R 로 되돌리기가 되게). 숫자는 글의 것: 찌그러짐·늘림은 0.8×1.2 를 2~5 프레임." },
   { id: "J4", role: "unity_code", verified: false,
     text: "**사라지는 물체의 연출은 그 물체가 돌리지 않는다.** 코루틴은 주인이 비활성화·파괴되면 같이 멈춘다 — 동전이 자기 코루틴으로 줄어들다 SetActive(false) 하면 그 뒤 줄은 안 돈다. 매니저(GameManager)나 전용 연출 컴포넌트가 StartCoroutine 한다." },
-  { id: "J5", role: "unity_code", verified: false,
+  { id: "J5", role: "unity_code", verified: true,
     text: "알갱이(파티클)는 자산 없이 코드로 만든다: new GameObject + AddComponent<ParticleSystem>. main.startLifetime 0.3~0.6, startSpeed 2~4, startSize 0.05~0.15, emission.rateOverTime 0, emission.SetBursts(new[]{ new ParticleSystem.Burst(0f, 12~20) }), shape Sphere 반지름 0.1. 터뜨릴 때 transform.position 옮기고 Play(). 하나 만들어 재사용 — 매번 Instantiate 하지 않는다. 렌더러 재질은 Shader.Find 결과를 검사한다(G8)." },
-  { id: "J6", role: "unity_code", verified: false,
+  { id: "J6", role: "unity_code", verified: true,
     text: "카메라 흔들림은 카메라 자신이 아니라 **부모(rig) 의 localPosition** 에 준다. 시작 값을 기억했다가 되돌린다. 글의 수치: 4px·5프레임·감쇠 → 3D 에서는 진폭 0.05~0.1 m, 0.1~0.2초, 매 프레임 진폭 × 0.8. 큰 사건(클리어·맞음)에만. 줍기마다 흔들면 멀미다 — 일정한 흔들림은 금지." },
   { id: "J7", role: "unity_code", verified: false,
     text: "UI 튐: 점수 글자를 0.9 → 1.2 → 1.0 으로 0.1~0.15초(RectTransform.localScale). 클리어 글자는 크기 0 에서 튀어나온다(overshoot: 1.2 찍고 1.0). 글은 2~3 프레임이라 하지만 사람이 보려면 0.1초는 되어야 한다 — 우리 생각." },
@@ -131,7 +134,7 @@ export const GAMEDEV_LESSONS: Lesson[] = [
     text: "움직임에 easing 을 쓴다. Lerp(a, b, t) 의 t 를 그대로 넣지 말고 1 - (1-t)^3(ease-out) 또는 Mathf.SmoothStep 으로. 선형은 기계처럼 보인다. 카메라 따라가기도 SmoothDamp." },
   { id: "J9", role: "unity_code", verified: false,
     text: "시간 정지(hit-stop)는 타격에만 40~80 ms — Time.timeScale = 0 뒤 복귀. 그동안 deltaTime 도 0 이므로 복귀는 WaitForSecondsRealtime, 정지 중 돌아야 할 UI 는 unscaledDeltaTime. 줍기에는 안 쓴다." },
-  { id: "J10", role: "unity_code", verified: false,
+  { id: "J10", role: "unity_code", verified: true,
     text: "3D 첫 씬의 배경 디테일 다섯: 바닥 색과 물체 색 대비(같은 회색 금지), 카메라 배경색(하늘색), Directional Light 그림자 켜기(shadows = LightShadows.Soft), 옅은 안개(RenderSettings.fog = true, fogColor = 배경색, fogDensity 0.01~0.02), 바닥 가장자리가 보이면 벽·울타리. 이 다섯이 없으면 '회색 상자 위의 캡슐' 로 보인다." },
   { id: "J11", role: "unity_code", verified: false,
     text: "소리는 나중이지만 **자리는 지금** 만든다(사장님: 효과음은 나중에). AudioSource 하나와 PlayPickup()/PlayClear() 같은 빈 함수를 두고 clip 이 null 이면 아무것도 안 한다. 나중에 클립만 끼우면 되게." },
@@ -145,7 +148,7 @@ export const GAMEDEV_LESSONS: Lesson[] = [
     text: "합격 기준을 코드보다 먼저 쓴다. '빠르다' 가 아니라 '50개에서도 부드럽다' 처럼 사람이 눌러 볼 수 있는 문장으로." },
   { id: "E5", role: "blueprint", verified: true,
     text: "규격은 문턱 숫자보다 '무엇을 재는가' 부터 틀릴 수 있다. 자가 엉뚱한 것을 재면 좋은 것이 떨어진다 — 닫힘 규칙이 그랬다." },
-  { id: "J13", role: "blueprint", verified: false,
+  { id: "J13", role: "blueprint", verified: true,
     text: "기준에 **반응**을 적는다. '동전을 먹으면 사라진다' 는 기계 기준이다. '동전을 먹으면 사라지고, 그 자리에서 알갱이가 터지고, 점수 글자가 튄다' 처럼 플레이어의 모든 의미 있는 행동(줍기·점프·맞기·클리어)마다 눈에 보이는 반응 하나 이상을 기준으로 둔다. 확인할 수 있는 문장이다 — 사람이 Play 해서 본다." },
   { id: "J14", role: "blueprint", verified: false,
     text: "순서: ① 조작이 즉시 반응한다 ② 세계가 예측 가능하다(바닥을 안 뚫고, 벽이 막는다) ③ 그 다음이 손맛(연출). ①② 가 안 되면 ③ 은 헛것이다. 첫 판은 ①② 로 자를 통과하고, 고치는 판에서 ③ 을 얹는다." },
