@@ -124,6 +124,33 @@ const MAX_SEARCHES = 3;
 const MAX_DRAWINGS = 2;
 const RESULTS_PER_SEARCH = 5;
 
+/** 고쳐 달라는 말. 넓게 잡는다 — 못 잡으면 채팅이 코드 조각으로 답하고 끝난다. */
+const FIX_WORDS = /고쳐|고치|수정|다시\s*해|바꿔|추가해|넣어\s*줘|빼\s*줘|늘려|줄여|fix|change/i;
+
+/** 이 대화에 마지막으로 돌아온 산출물의 종류 → 그것을 낸 능력 id. */
+async function capabilityOfLastReturned(
+  db: Awaited<ReturnType<typeof createClient>>,
+  conversationId: string,
+): Promise<string | null> {
+  const { data: rows } = await db
+    .from("conversation_messages")
+    .select("attachments")
+    .eq("conversation_id", conversationId)
+    .order("created_at", { ascending: false })
+    .limit(50);
+  const id = ((rows ?? []) as { attachments: { returned?: { deliverableId?: string | null } } | null }[])
+    .map((r) => r.attachments?.returned?.deliverableId)
+    .find((x): x is string => typeof x === "string");
+  if (!id) return null;
+  const { data: d } = await db.from("deliverables").select("deliverable_type").eq("id", id).maybeSingle();
+  const type = (d?.deliverable_type as string | undefined) ?? "";
+  const BY_TYPE: Record<string, string> = {
+    app_build: "small_app",
+    mesh_assets: "mesh_from_image",
+  };
+  return BY_TYPE[type] ?? null;
+}
+
 export async function runEverydayTurn(
   input: EverydayInput,
 ): Promise<EverydayResult> {
@@ -264,6 +291,25 @@ export async function runEverydayTurn(
           "맡겨 주시면 사람을 붙여 파일로 드립니다. 아니면 조금 나눠서 물어봐 주세요."
         : `답을 만들다 막혔습니다: ${msg}`;
     return { ok: false, error: why, status: 502 };
+  }
+
+  // ── "고쳐 줘" 는 판단이 아니라 규칙이다 ─────────────────────────
+  //
+  // 22:03 대화 모델이 "고쳐줘, 유니티에서 컴파일이 깨졌어" 를 질문으로 보고 웹을
+  // 찾아 코드 조각을 채팅으로 답했다. 아무것도 유니티에 안 갔다. 이 대화에 돌아온
+  // 산출물이 있고 사람이 고쳐 달라고 하면, 그것은 **그 산출물을 낸 직원의 일**이다 —
+  // 모델이 판단할 자리가 아니다.
+  if (companyId && input.conversationId && !plan.capabilityId) {
+    const last = [...input.messages].reverse().find((m) => m.role === "user")?.content ?? "";
+    if (FIX_WORDS.test(last)) {
+      const cap = await capabilityOfLastReturned(supabase, input.conversationId);
+      if (cap) {
+        plan.capabilityId = cap;
+        plan.capabilityWhy = "이 대화에 돌아온 산출물을 고치는 요청";
+        plan.searches = [];
+        if (!plan.reply?.trim()) plan.reply = "지난 산출물을 바탕으로 고치겠습니다.";
+      }
+    }
   }
 
   if (!user) {
