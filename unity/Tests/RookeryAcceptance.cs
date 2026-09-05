@@ -179,7 +179,6 @@ namespace Rookery.Tests
             for (var load = LoadTarget(); load.MoveNext();) yield return load.Current;
             // 동전이 돌고 뜨는 것이 보이게 조금 기다린다.
             for (var i = 0; i < InputFrames; i++) yield return null;
-            yield return new WaitForEndOfFrame();
 
             if (SystemInfo.graphicsDeviceType == UnityEngine.Rendering.GraphicsDeviceType.Null)
                 Assert.Inconclusive("그래픽 장치가 없어(-nographics) 화면을 못 찍습니다.");
@@ -195,8 +194,10 @@ namespace Rookery.Tests
             // 파이프라인이 그리게 한다 — Built-in 에서도 같은 길로 간다.
             var prev = cam.targetTexture;
             cam.targetTexture = rt;
+            // WaitForEndOfFrame 은 배치 모드에서 안 온다(시험 틀이 예외를 낸다, 23:46).
+            // 프레임 둘을 지나면 파이프라인이 대상 텍스처에 그려 놓았다.
             yield return null;
-            yield return new WaitForEndOfFrame();
+            yield return null;
             cam.targetTexture = prev;
             var tex = new Texture2D(W, H, TextureFormat.RGB24, false);
             var active = RenderTexture.active;
