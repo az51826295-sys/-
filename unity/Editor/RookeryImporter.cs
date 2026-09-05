@@ -75,6 +75,13 @@ namespace Rookery
                     _status = RookeryCheck.BuildAndTestWhenReady(_url, _key);
                 }
             }
+            EditorGUILayout.Space();
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                var label = RookeryRender.UrpActive ? "URP + 후처리 (켜져 있음 — 다시 설정)" : "URP + 후처리 켜기";
+                if (GUILayout.Button(label))
+                    _status = RookeryRender.EnableUrpWithPostProcessing();
+            }
 
             if (!string.IsNullOrEmpty(_status))
             {
@@ -460,7 +467,12 @@ namespace Rookery
                     if (m == null) continue;
                     var menu = m.GetCustomAttribute<MenuItem>();
                     if (menu == null || !menu.menuItem.StartsWith("Rookery/")) continue;
-                    try { m.Invoke(null, null); log.AppendLine($"✓ 지음: {menu.menuItem}"); count++; }
+                    try
+                    {
+                        m.Invoke(null, null); log.AppendLine($"✓ 지음: {menu.menuItem}"); count++;
+                        // 새로 지은 씬에는 후처리가 없다. URP 가 켜져 있으면 다시 씌운다(23:45).
+                        if (RookeryRender.UrpActive) log.AppendLine("  " + RookeryRender.ApplyToOpenScene());
+                    }
                     catch (Exception e) { log.AppendLine($"✗ {menu.menuItem}: {(e.InnerException ?? e).Message}"); }
                 }
             }

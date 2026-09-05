@@ -86,9 +86,14 @@ const UNITY_RULES =
   "Animator 컨트롤러까지 **전부 씬 빌더 코드로** 만든다 — 사람 손 0회.\n" +
   "- 조작은 UnityEngine.InputSystem(Keyboard.current / InputAction). Input.GetAxis 금지.\n" +
   "- 씬에는 Directional Light 하나, Main Camera(태그 MainCamera) 하나를 **반드시** 만든다.\n" +
-  "- `Shader.Find(...)` 는 null 일 수 있다(URP 가 없는 프로젝트도 있다). 재질은 기본 도형의 " +
-  "것을 그대로 쓰거나, 셰이더를 찾을 때는 `?? Shader.Find(\"Standard\")` 로 물러난다. " +
-  "null 로 Material 을 만들지 마라.\n" +
+  "- 재질은 **파이프라인을 가리지 않게** 만든다. 프로젝트는 URP 일 수도 Built-in 일 수도 있다 " +
+  "(로키 창이 URP + 후처리를 켤 수 있다). 씬 빌더에 이 도우미를 두고 그것만 쓴다:\n" +
+  "  `static Shader Lit() => Shader.Find(\"Universal Render Pipeline/Lit\") ?? Shader.Find(\"Standard\");`\n" +
+  "  `static void Tint(Material m, Color c) { if (m.HasProperty(\"_BaseColor\")) m.SetColor(\"_BaseColor\", c); if (m.HasProperty(\"_Color\")) m.SetColor(\"_Color\", c); }`\n" +
+  "  `static void Surface(Material m, float metallic, float smooth) { if (m.HasProperty(\"_Metallic\")) m.SetFloat(\"_Metallic\", metallic); if (m.HasProperty(\"_Smoothness\")) m.SetFloat(\"_Smoothness\", smooth); if (m.HasProperty(\"_Glossiness\")) m.SetFloat(\"_Glossiness\", smooth); }`\n" +
+  "  노멀 맵은 `_BumpMap` + `EnableKeyword(\"_NORMALMAP\")`, 금속 맵은 `_MetallicGlossMap` + " +
+  "`EnableKeyword(\"_METALLICGLOSSMAP\")` 와 `EnableKeyword(\"_METALLICSPECGLOSSMAP\")` 둘 다. " +
+  "`Shader.Find` 결과가 null 이면 Material 을 만들지 마라. `using UnityEngine.Rendering.Universal` 금지.\n" +
   "- 씬 경로는 `Assets/Rookery/Scenes/<이름>.unity`. 다른 곳에 두면 가져오기 창이 못 찾는다.\n" +
   "- UI 글꼴이 필요하면 LegacyRuntime.ttf. Arial.ttf 는 없다.\n" +
   "- MonoBehaviour 의 `Reset()` 은 에디터 콜백이라 씬 빌더의 AddComponent 순간에 불린다. " +

@@ -191,9 +191,12 @@ namespace Rookery.Tests
             const int W = 1920, H = 1080;
             var rt = new RenderTexture(W, H, 24);
             rt.antiAliasing = Mathf.Max(1, QualitySettings.antiAliasing);
+            // Camera.Render() 는 URP 에서 안 돈다. 대상 텍스처를 걸고 한 프레임을 지나
+            // 파이프라인이 그리게 한다 — Built-in 에서도 같은 길로 간다.
             var prev = cam.targetTexture;
             cam.targetTexture = rt;
-            cam.Render();
+            yield return null;
+            yield return new WaitForEndOfFrame();
             cam.targetTexture = prev;
             var tex = new Texture2D(W, H, TextureFormat.RGB24, false);
             var active = RenderTexture.active;
