@@ -51,6 +51,8 @@ export type MeshOptions = {
   targetPolycount?: number;
   poseMode?: "a-pose" | "t-pose" | "";
   enablePbr?: boolean;
+  /** 2k(기본)·4k·8k. 09-06 07:39: 4k 도 30 크레딧 그대로, 피부 고주파가 2배. 캐릭터는 4k. */
+  textureResolution?: "2k" | "4k" | "8k";
 };
 
 export type RigResult = {
@@ -160,6 +162,7 @@ export function createMeshyProvider(apiKey: string): MeshProvider {
         // T1(≤ 40,000)에 걸렸다(09-05 첫 판). 규격을 늦추지 않고 목표를 내린다.
         target_polycount: opts.targetPolycount ?? 15_000,
         enable_pbr: opts.enablePbr ?? true,
+        texture_resolution: opts.textureResolution ?? "2k",
         target_formats: ["glb", "fbx"],
         pose_mode: opts.poseMode ?? "",
         // 규격 S1(높이 0.5~3 m)을 재려면 실제 크기 추정이 있어야 한다. 없으면

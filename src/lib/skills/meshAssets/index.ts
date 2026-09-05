@@ -79,8 +79,20 @@ export const meshAssetsSkill: EmployeeSkill = {
   async run(ctx: SkillRunContext) {
     await setStep(ctx.supabase, ctx.executionId, "planning");
 
-    const roleInput = (ctx.context.roleInput ?? {}) as { referenceImage?: string | null };
-    const reference = typeof roleInput.referenceImage === "string" ? roleInput.referenceImage : null;
+    const roleInput = (ctx.context.roleInput ?? {}) as { referenceImage?: string | null; previousDeliverableId?: string | null };
+    let reference = typeof roleInput.referenceImage === "string" ? roleInput.referenceImage : null;
+    // 그림이 안 왔고 지난 캐릭터가 있으면 그 콘셉트 그림을 다시 쓴다 — "같은 얼굴로 다시"
+    // 가 되게(09-06 17회차: 4K 로 다시 만들 때 얼굴이 바뀌면 안 된다).
+    let reusedConcept = false;
+    if (!reference && roleInput.previousDeliverableId) {
+      const { data: prev } = await ctx.supabase
+        .from("deliverables")
+        .select("content_json")
+        .eq("id", roleInput.previousDeliverableId)
+        .maybeSingle();
+      const ci = (prev?.content_json as { conceptImage?: string } | null)?.conceptImage;
+      if (typeof ci === "string" && ci.startsWith("data:image")) { reference = ci; reusedConcept = true; }
+    }
 
     const { output: brief } = await ctx.providers.ai.generateStructuredOutput({
       systemInstructions:
@@ -118,7 +130,8 @@ export const meshAssetsSkill: EmployeeSkill = {
     const mesher = defaultMeshProvider();
     let mesh;
     try {
-      mesh = await mesher.imageTo3D(image, { poseMode: brief.poseMode });
+      // 캐릭터는 4k — 같은 30 크레딧에 피부 고주파 2배(07:39). 소품은 2k 로 족하다.
+      mesh = await mesher.imageTo3D(image, { poseMode: brief.poseMode, textureResolution: brief.wantRig ? "4k" : "2k" });
     } catch (error) {
       const msg = error instanceof Error ? error.message : String(error);
       throw new ExecutionError(
@@ -218,6 +231,8 @@ export const meshAssetsSkill: EmployeeSkill = {
     const content = {
       brief,
       conceptByMachine,
+      reusedConcept,
+      textureResolution: brief.wantRig ? "4k" : "2k",
       conceptImage: conceptByMachine ? image : null,
       mesh: { ...mesh, glbBase64: mesh.glbBase64 ? "(생략)" : null },
       rig,

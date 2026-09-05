@@ -123,6 +123,8 @@ export const appBuildAssignmentSchema = z.object({
 // 3D 는 이미지 한 장이 입력이다. 대화에 올린 사진이 여기로 온다(data URL).
 export const meshAssetsAssignmentSchema = z.object({
   referenceImage: z.string().optional().nullable(),
+  /** 같은 대화에서 Vox 가 마지막으로 돌려준 산출물. 그림이 없으면 그 콘셉트 그림을 다시 쓴다. */
+  previousDeliverableId: z.string().optional().nullable(),
 });
 
 export const assignmentInputSchemaRegistry = {
