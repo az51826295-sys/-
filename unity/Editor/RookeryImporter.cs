@@ -16,6 +16,8 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEditor.TestTools.TestRunner.Api;
+using UnityEditor.Compilation;
+using System.Linq;
 using System.Reflection;
 
 namespace Rookery
@@ -349,9 +351,70 @@ namespace Rookery
             if (EditorApplication.isCompiling || EditorApplication.isUpdating)
             {
                 SessionState.SetBool(Continue, true);
+                ArmCompileWatch();
                 return "컴파일이 끝나면 이어서 짓고 잽니다…";
             }
             return BuildAndTest(url, key, afterReload: false);
+        }
+
+        // ── 컴파일이 깨지면 리로드가 안 일어나 이어서 짓기가 영영 안 온다 ──
+        // 21:50 Dev 가 없는 이름(CopyFromOtherAvatar)을 써서 컴파일이 깨졌고, 배치
+        // 유니티가 멈춘 채 10분을 넘겼다. 오류는 판정이다: "컴파일" 한 줄 떨어짐으로
+        // 대화에 보내고, 배치면 끝낸다. 그러면 "고쳐 줘" 가 그 줄을 들고 간다.
+        static readonly List<string> _compileErrors = new List<string>();
+
+        static void ArmCompileWatch()
+        {
+            _compileErrors.Clear();
+            CompilationPipeline.assemblyCompilationFinished -= OnAssemblyDone;
+            CompilationPipeline.assemblyCompilationFinished += OnAssemblyDone;
+            CompilationPipeline.compilationFinished -= OnCompilationDone;
+            CompilationPipeline.compilationFinished += OnCompilationDone;
+        }
+
+        static void OnAssemblyDone(string assembly, CompilerMessage[] messages)
+        {
+            foreach (var m in messages)
+                if (m.type == CompilerMessageType.Error)
+                    _compileErrors.Add($"{m.file}({m.line}): {m.message}");
+        }
+
+        static void OnCompilationDone(object _)
+        {
+            if (_compileErrors.Count == 0) return; // 성공이면 리로드가 오고 정적 생성자가 이어 받는다
+            SessionState.EraseBool(Continue);
+            var url = SessionState.GetString(PendingUrl, "");
+            var key = SessionState.GetString(PendingKey, "");
+            var deliverable = SessionState.GetString(PendingDeliverable, "");
+            SessionState.EraseString(PendingUrl);
+            SessionState.EraseString(PendingKey);
+            var errs = _compileErrors.Distinct().Take(10).ToList();
+            var msg = "컴파일 오류 " + _compileErrors.Distinct().Count() + "개:\n" + string.Join("\n", errs);
+            Debug.LogError("[Rookery] " + msg);
+            var cases = new List<string> { "{\"name\":\"컴파일이_된다\",\"result\":\"Failed\",\"message\":\"" + J(msg) + "\"}" };
+            PostChecks(url, key, deliverable, "", 0, 1, 0, cases, "", failedExit: 4);
+        }
+
+        /// 결과를 로키로. 시험 뒤에도, 컴파일이 깨졌을 때도 같은 문으로 간다.
+        static void PostChecks(string url, string key, string deliverable, string scene,
+                               int passed, int failed, int inconclusive, List<string> cases, string shot, int failedExit = 3)
+        {
+            if (string.IsNullOrEmpty(url) || string.IsNullOrEmpty(key)) return;
+            var json = "{\"deliverableId\":\"" + J(deliverable) + "\",\"scene\":\"" + J(scene) + "\",\"passed\":" + passed +
+                       ",\"failed\":" + failed + ",\"inconclusive\":" + inconclusive + ",\"cases\":[" + string.Join(",", cases) + "]" +
+                       (shot.Length > 0 ? ",\"screenshot\":\"" + shot + "\"" : "") + "}";
+            var req = new UnityWebRequest($"{url.TrimEnd('/')}/api/unity/checks", "POST")
+            {
+                uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(json)),
+                downloadHandler = new DownloadHandlerBuffer(),
+            };
+            req.SetRequestHeader("Content-Type", "application/json");
+            req.SetRequestHeader("x-rookery-key", key);
+            req.SendWebRequest().completed += _ =>
+            {
+                Debug.Log($"[Rookery] 시험 결과 보냄: 통과 {passed} 떨어짐 {failed} 못 잼 {inconclusive} → {req.responseCode} {req.downloadHandler.text}");
+                if (Application.isBatchMode) EditorApplication.Exit(failed > 0 ? failedExit : 0);
+            };
         }
 
         public static void RememberDeliverable(string id)
@@ -448,21 +511,7 @@ namespace Rookery
                     try { shot = Convert.ToBase64String(File.ReadAllBytes(shotPath)); File.Delete(shotPath); }
                     catch (Exception e) { Debug.LogWarning("[Rookery] 사진을 못 읽었습니다: " + e.Message); }
                 }
-                var json = "{\"deliverableId\":\"" + J(deliverable) + "\",\"scene\":\"" + J(scene) + "\",\"passed\":" + passed +
-                           ",\"failed\":" + failed + ",\"inconclusive\":" + inconclusive + ",\"cases\":[" + string.Join(",", cases) + "]" +
-                           (shot.Length > 0 ? ",\"screenshot\":\"" + shot + "\"" : "") + "}";
-                var req = new UnityWebRequest($"{url.TrimEnd('/')}/api/unity/checks", "POST")
-                {
-                    uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(json)),
-                    downloadHandler = new DownloadHandlerBuffer(),
-                };
-                req.SetRequestHeader("Content-Type", "application/json");
-                req.SetRequestHeader("x-rookery-key", key);
-                req.SendWebRequest().completed += _ =>
-                {
-                    Debug.Log($"[Rookery] 시험 결과 보냄: 통과 {passed} 떨어짐 {failed} 못 잼 {inconclusive} → {req.responseCode} {req.downloadHandler.text}");
-                    if (Application.isBatchMode) EditorApplication.Exit(failed > 0 ? 3 : 0);
-                };
+                PostChecks(url, key, deliverable, scene, passed, failed, inconclusive, cases, shot);
             }
         }
     }
