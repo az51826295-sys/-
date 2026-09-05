@@ -65,10 +65,19 @@ export const artDirectionKnowledgeSchema = z.object({
 
 export type ArtDirectionKnowledge = z.infer<typeof artDirectionKnowledgeSchema>;
 
+// Nova(게임 아티스트)와 Dev(앱 빌더)는 08-28 에 뽑으면서 여기 등록을 빠뜨렸다.
+// 그래서 09-05 까지 둘은 이 길로 업무를 **한 번도** 받을 수 없었다 — 대화가
+// "Unknown assignment input schema" 로 막혔다. 둘은 업무 문장 자체가 입력이라
+// 따로 묻는 칸이 없다. 빈 객체가 맞다.
+export const gameArtKnowledgeSchema = z.object({});
+export const appBuildKnowledgeSchema = z.object({});
+
 export const roleKnowledgeSchemaRegistry = {
   art_direction_knowledge_v1: artDirectionKnowledgeSchema,
   market_research_knowledge_v1: marketResearchKnowledgeSchema,
   lead_research_knowledge_v1: leadResearchKnowledgeSchema,
+  game_art_knowledge_v1: gameArtKnowledgeSchema,
+  app_build_knowledge_v1: appBuildKnowledgeSchema,
 } as const;
 
 export type RoleKnowledgeSchemaId = keyof typeof roleKnowledgeSchemaRegistry;
@@ -103,10 +112,15 @@ export type LeadResearchAssignmentInput = z.infer<typeof leadResearchAssignmentS
  *  the asset counts inside it are the scale, and those come from the brief. */
 export const artBibleAssignmentSchema = z.object({});
 
+export const gameAssetsAssignmentSchema = z.object({});
+export const appBuildAssignmentSchema = z.object({});
+
 export const assignmentInputSchemaRegistry = {
   art_bible_assignment_v1: artBibleAssignmentSchema,
   market_research_assignment_v1: marketResearchAssignmentSchema,
   lead_research_assignment_v1: leadResearchAssignmentSchema,
+  game_assets_assignment_v1: gameAssetsAssignmentSchema,
+  app_build_assignment_v1: appBuildAssignmentSchema,
 } as const;
 
 export type AssignmentInputSchemaId = keyof typeof assignmentInputSchemaRegistry;
