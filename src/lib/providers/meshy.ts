@@ -109,7 +109,15 @@ export function createMeshyProvider(apiKey: string): MeshProvider {
       if (!created.ok) throw new Error(`MESHY_RIG_HTTP_${created.status}: ${(await created.text()).slice(0, 200)}`);
       const { result: taskId } = (await created.json()) as { result: string };
 
+      // 문서는 평평하게 적어 놨지만 실제 응답은 `result` 아래에, 애니는 그 아래
+      // `basic_animations` 에 온다(09-05 17:00 실측 — 첫 리깅 판이 5 크레딧을 쓰고도
+      // 링크를 못 읽었다). 두 모양을 다 받는다.
       type RigTask = MeshyTask & {
+        result?: {
+          rigged_character_glb_url?: string;
+          rigged_character_fbx_url?: string;
+          basic_animations?: { walking_fbx_url?: string; running_fbx_url?: string };
+        };
         rigged_character_glb_url?: string;
         rigged_character_fbx_url?: string;
         walking_fbx_url?: string;
@@ -128,12 +136,14 @@ export function createMeshyProvider(apiKey: string): MeshProvider {
       if (task.status !== "SUCCEEDED") {
         throw new Error(`MESHY_RIG_${task.status}: ${task.task_error?.message ?? "이유 없음"}`);
       }
+      const res = task.result ?? {};
+      const anim = res.basic_animations ?? {};
       return {
         taskId,
-        riggedGlbUrl: task.rigged_character_glb_url ?? null,
-        riggedFbxUrl: task.rigged_character_fbx_url ?? null,
-        walkingFbxUrl: task.walking_fbx_url ?? null,
-        runningFbxUrl: task.running_fbx_url ?? null,
+        riggedGlbUrl: res.rigged_character_glb_url ?? task.rigged_character_glb_url ?? null,
+        riggedFbxUrl: res.rigged_character_fbx_url ?? task.rigged_character_fbx_url ?? null,
+        walkingFbxUrl: anim.walking_fbx_url ?? task.walking_fbx_url ?? null,
+        runningFbxUrl: anim.running_fbx_url ?? task.running_fbx_url ?? null,
         consumedCredits: task.consumed_credits ?? 0,
         mock: false,
       };

@@ -44,8 +44,10 @@ export const GAMEDEV_LESSONS: Lesson[] = [
 
   { id: "E1", role: "mesh_assets", verified: true,
     text: "닫힘(watertight)은 3D 프린팅 기준이지 게임 기준이 아니다. 열린 메시도 게임에서는 문제없다 — 규격 v1 부터 정보만 남긴다." },
-  { id: "E2", role: "mesh_assets", verified: false,
-    text: "Meshy 리깅은 휴머노이드만 된다(5 크레딧). 텍스처가 있어야 하고 얼굴이 +Z 를 봐야 한다. 걷기·달리기 FBX 가 같이 온다. 비인간형은 사람이 Blender 에서 리깅한다." },
+  { id: "E2", role: "mesh_assets", verified: true,
+    text: "Meshy 리깅은 휴머노이드만 된다(5 크레딧). 본 24개가 Hips·Spine·LeftUpLeg 같은 믹사모식 이름으로 와서 유니티 Humanoid 에 자동 매핑된다. 걷기·달리기 FBX 가 같이 온다. 비인간형은 사람이 Blender 에서 리깅한다." },
+  { id: "E7", role: "mesh_assets", verified: true,
+    text: "리깅된 출력은 단위가 100배 다를 수 있다 — 같은 모델이 메시 출력 1.7 m, 리깅 출력 0.017 m 로 잡혔다. 유니티에서 rigged.fbx 의 Scale Factor 를 반드시 확인한다(100 또는 0.01)." },
 
   // ── B. 유니티 코드 (Dev) ──
   { id: "B1", role: "unity_code", verified: false,
