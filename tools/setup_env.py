@@ -57,10 +57,29 @@ EDITOR_ROOTS = [
 # 자리" 다.** 그 차이가 중요하다 — `com.unity.ugui` 가 빈 프로젝트에 없어서
 # 로키가 낸 UI 코드가 16개 오류를 냈고, 패키지를 깔 수 없어 여섯 판을 돌다
 # 멈췄다. 그렇다고 이것이 모든 프로젝트에 필요하다는 뜻은 아니다.
+# **시험지가 참조하는 것.** 미확인이 아니라 필수다 — 이것이 없으면
+# `unity/Tests/` 의 시험지가 컴파일되지 않아 어떤 게임도 잰 적이 없는 채로 끝난다.
+# 09-05 에 `-createProject` 로 만든 빈 프로젝트에는 둘 다 없었다(RookeryGame 에는
+# 손으로 넣어 두어서 그동안 몰랐다).
+REQUIRED = {
+    "com.unity.inputsystem": "시험지가 키를 누르는 데 쓴다",
+    "com.unity.test-framework": "시험지가 도는 틀",
+}
+
 MAYBE_NEEDED = {
     "com.unity.ugui": "UI(버튼·텍스트)를 쓰면 필요",
     "com.unity.2d.sprite": "2D 스프라이트를 쓰면 필요",
 }
+
+
+# 한국어 윈도우의 콘솔은 cp949 라서 '—' 하나에 print 가 죽는다. 09-05 에 새
+# 프로젝트를 다 만들어 놓고 마지막 줄에서 그렇게 죽었다 — 일은 됐는데 죽은 것으로
+# 보인다. 깨끗한 기계는 전부 그 콘솔이다.
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+    except (AttributeError, ValueError):
+        pass
 
 
 def say(text: str) -> None:
@@ -241,6 +260,29 @@ def add_packages(project: Path, want: dict[str, str]) -> bool:
     return True
 
 
+def use_new_input(project: Path) -> str:
+    """`activeInputHandler` 를 새 입력 시스템 전용(1)으로 맞춘다.
+
+    `-createProject` 는 옛것(0)으로 만든다. 그러면 로키가 새 입력 API 로 낸 조작
+    코드는 컴파일은 되는데 키를 눌러도 아무 일이 없고, 시험지는 "옛 입력만 켜져
+    못 잰다" 로 물러난다. 둘 다(2)로 두지 않는 이유: 어느 쪽을 쓰는지 판마다
+    달라져서 무엇을 잰 것인지 알 수 없게 된다.
+    돌려주는 것: "set" · "already" · "missing".
+    """
+    settings = project / "ProjectSettings" / "ProjectSettings.asset"
+    if not settings.exists():
+        return "missing"
+    text = settings.read_text(encoding="utf-8", errors="replace")
+    found = re.search(r"^(\s*activeInputHandler:\s*)(\d+)", text, re.MULTILINE)
+    if not found:
+        return "missing"
+    if found.group(2) == "1":
+        return "already"
+    text = text[:found.start(2)] + "1" + text[found.end(2):]
+    settings.write_text(text, encoding="utf-8")
+    return "set"
+
+
 def create_project(editor: Path, project: Path) -> bool:
     say(f"  빈 프로젝트를 만듭니다: {project} (몇 분 걸립니다)")
     proc = subprocess.run(
@@ -366,6 +408,24 @@ def main() -> int:
             say("  " + (out.strip().splitlines() or ["(출력 없음)"])[-1])
             if code != 0:
                 say("  받지 못했습니다. Hub 를 열어 직접 받으셔야 할 수 있습니다.")
+
+    # 필수는 --add-packages 와 상관없이 넣는다. 미확인과 달리 근거가 있다.
+    if (project / "Assets").is_dir():
+        have = {}
+        try:
+            have = json.loads((project / "Packages" / "manifest.json")
+                              .read_text(encoding="utf-8")).get("dependencies", {})
+        except Exception:
+            pass
+        need = {k: v for k, v in REQUIRED.items() if k not in have}
+        if need:
+            say("  시험지가 참조하는 패키지를 넣습니다:")
+            add_packages(project, need)
+        how = use_new_input(project)
+        if how == "set":
+            say("  입력 핸들러를 새 입력 시스템 전용(1)으로 맞췄습니다.")
+        elif how == "missing":
+            say("  ProjectSettings 에서 activeInputHandler 를 못 찾았습니다 — 입력 방식은 확인 안 됐습니다.")
 
     if args.add_packages:
         unverified = unverified_packages(project)
