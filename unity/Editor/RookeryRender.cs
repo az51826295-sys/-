@@ -185,9 +185,55 @@ namespace Rookery
                 cam.allowHDR = true;
                 cams++;
             }
+            // Built-in 셰이더로 만든 재질은 URP 에서 분홍이다(23:54 사진 전체가 분홍).
+            // Dev 의 빌더가 지을 때마다 새로 만드니 변환기(자산용)로는 못 잡는다 — 씬의
+            // 렌더러를 돌며 바꾼다. 이름이 다른 속성은 옮긴다.
+            var swapped = UpgradeSceneMaterials();
             var sc = EditorSceneManager.GetActiveScene();
             if (sc.isDirty) EditorSceneManager.SaveScene(sc);
-            return $"✓ 씬 {sc.name}: 전역 Volume + 카메라 {cams}대 후처리·SMAA";
+            return $"✓ 씬 {sc.name}: 전역 Volume + 카메라 {cams}대 후처리·SMAA + 재질 {swapped}개 URP 로";
+        }
+
+        static int UpgradeSceneMaterials()
+        {
+            var lit = Shader.Find("Universal Render Pipeline/Lit");
+            var particle = Shader.Find("Universal Render Pipeline/Particles/Unlit");
+            if (lit == null) return 0;
+            var n = 0;
+            foreach (var r in UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+            {
+                var mats = r.sharedMaterials;
+                var changed = false;
+                for (var i = 0; i < mats.Length; i++)
+                {
+                    var m = mats[i];
+                    if (m == null) { if (r is ParticleSystemRenderer && particle != null) { mats[i] = new Material(particle); changed = true; n++; } continue; }
+                    var name = m.shader ? m.shader.name : "";
+                    if (name.StartsWith("Universal Render Pipeline/")) continue;
+                    if (name == "Hidden/InternalErrorShader" || name == "Standard" || name.StartsWith("Legacy Shaders/") || name.StartsWith("Particles/"))
+                    {
+                        var isParticle = r is ParticleSystemRenderer;
+                        var target = isParticle && particle != null ? particle : lit;
+                        var color = m.HasProperty("_Color") ? m.GetColor("_Color") : Color.white;
+                        var tex = m.HasProperty("_MainTex") ? m.GetTexture("_MainTex") : null;
+                        var metallic = m.HasProperty("_Metallic") ? m.GetFloat("_Metallic") : 0f;
+                        var smooth = m.HasProperty("_Glossiness") ? m.GetFloat("_Glossiness") : 0.3f;
+                        var bump = m.HasProperty("_BumpMap") ? m.GetTexture("_BumpMap") : null;
+                        var mg = m.HasProperty("_MetallicGlossMap") ? m.GetTexture("_MetallicGlossMap") : null;
+                        m.shader = target;
+                        if (m.HasProperty("_BaseColor")) m.SetColor("_BaseColor", color);
+                        if (m.HasProperty("_BaseMap")) m.SetTexture("_BaseMap", tex);
+                        if (m.HasProperty("_Metallic")) m.SetFloat("_Metallic", metallic);
+                        if (m.HasProperty("_Smoothness")) m.SetFloat("_Smoothness", smooth);
+                        if (bump != null && m.HasProperty("_BumpMap")) { m.SetTexture("_BumpMap", bump); m.EnableKeyword("_NORMALMAP"); }
+                        if (mg != null && m.HasProperty("_MetallicGlossMap")) { m.SetTexture("_MetallicGlossMap", mg); m.EnableKeyword("_METALLICSPECGLOSSMAP"); }
+                        EditorUtility.SetDirty(m);
+                        n++;
+                    }
+                }
+                if (changed) r.sharedMaterials = mats;
+            }
+            return n;
         }
 
         static void Set(SerializedObject so, string name, object value)
