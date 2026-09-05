@@ -116,11 +116,15 @@ export const appBuildSkill: EmployeeSkill = {
   capabilities: [
     {
       id: "small_app",
-      label: "Build a small app or tool from a description",
+      // 09-05 18:30 첫 판(딥시크)이 "Build a small app" 만 보고 "유니티 프로젝트 제작은
+      // 목록에 없다" 며 스스로 거절했다. 사람이 쓰는 말(게임·유니티·만들어 줘)이
+      // 이름에 있어야 한다 — 갈라야 하는 것이 바로 그 낱말이다.
+      label:
+        "게임·앱 만들기 — 유니티 게임(C# 스크립트 + 씬 빌더), 웹 도구. " +
+        "'게임 만들어 줘'·'유니티로 …' 는 여기 / Build a Unity game or a small app",
       produces:
-        "Source files with instructions to run them, plus the acceptance criteria " +
-        "written before the code — each one marked met or not, so what was skipped " +
-        "is visible rather than assumed.",
+        "Unity C# scripts and an editor scene builder (or web source files), with " +
+        "acceptance criteria written before the code — each marked met or not.",
     },
   ],
   acceptsInternalRequests: true,
