@@ -41,6 +41,29 @@ function visitorId(): string {
  *  역슬래시가 먹혀 문자열이 끊긴 적이 있다. */
 const NEWLINE = String.fromCharCode(10);
 
+/** 그림 파일인가. href 가 있는 그림은 링크 대신 그림으로 그린다. */
+const IMG_RX = /\.(png|jpe?g|webp)$/i;
+
+/** 빈 대화창의 시작 예시. 글은 칸에 들어갈 뿐, 보내는 것은 사람이다. */
+const STARTERS: { label: string; text: string }[] = [
+  {
+    label: "유니티 3D 동전 줍기",
+    text: "유니티로 간단한 3D 게임 하나 만들어 줘. 바닥 위에서 캡슐 플레이어가 WASD로 걷고, 흩어진 동전을 닿으면 사라지고 점수가 오른다. 다 먹으면 클리어. 기본값으로 바로 시작.",
+  },
+  {
+    label: "장애물 피하기",
+    text: "유니티 3D 게임: 플레이어가 앞으로 계속 달리고 좌우로 피한다. 앞에서 상자가 날아오고 닿으면 게임 오버, 버틴 시간이 점수. 기본 도형으로.",
+  },
+  {
+    label: "3D 캐릭터 만들기",
+    text: "이 그림으로 3D 캐릭터를 만들어 줘. 걷기·달리기 애니메이션까지. (그림을 붙여 주세요)",
+  },
+  {
+    label: "게임에 디테일 얹기",
+    text: "고쳐줘. 게임처럼 느껴지게 디테일을 얹어 줘: 줍는 순간 튀고 알갱이가 터지고 점수 글자가 튄다. 배경색·그림자·안개도. 기존 기준은 그대로.",
+  },
+];
+
 type Source = { title: string; url: string };
 type Option = { label: string; description: string | null };
 type Turn = {
@@ -82,6 +105,17 @@ export default function AskClient({
   const [busy, setBusy] = useState(false);
   /** 지금 뒤에서 무엇을 하는 중인지. 답이 오면 비운다. */
   const [doing, setDoing] = useState<string | null>(null);
+  /** 아직 안 끝난 일이 어느 단계인지(업무 id → "Dev: 코드를 쓰는 중"). */
+  const [steps, setSteps] = useState<Record<string, string>>({});
+  /**
+   * 유니티 창이 결과(사진)를 붙이는 것을 지켜보는 기한. 일이 돌아온 뒤 30분.
+   * 그 안에 사장님이 유니티에서 "짓고 재기" 를 누르면 그 결과가 새로 고침 없이
+   * 여기 붙는다. 기한이 지나면 묻기를 멈춘다 — 영원히 묻는 탭은 지친다.
+   */
+  const [watchUntil, setWatchUntil] = useState<number>(() =>
+    (initial?.turns ?? []).some((t) => t.returnedWork) ? Date.now() + 30 * 60_000 : 0,
+  );
+  const sinceRef = useRef<string>(new Date().toISOString());
   const endRef = useRef<HTMLDivElement>(null);
 
   /**
@@ -96,23 +130,31 @@ export default function AskClient({
    * 먼저 지친다 — 탭이 늘 무언가를 하고 있는 것처럼 보이니까.
    */
   const pendingWork = turns.some((t) => t.assignment && !t.assignment.returned);
+  const watching = watchUntil > Date.now();
   useEffect(() => {
-    if (!conversationId || !pendingWork) return;
+    if (!conversationId || (!pendingWork && !watching)) return;
     let alive = true;
     const tick = async () => {
       try {
-        const res = await fetch(`/api/conversations/${conversationId}/work`);
+        const since = sinceRef.current;
+        const res = await fetch(
+          `/api/conversations/${conversationId}/work?since=${encodeURIComponent(since)}`,
+        );
         if (!res.ok || !alive) return;
         const data = (await res.json()) as {
           pending: number;
           posted: { role: "assistant"; content: string; files?: { path: string; contents?: string; href?: string }[] }[];
+          steps?: { assignmentId: string; who: string; step: string }[];
         };
         if (!alive) return;
+        sinceRef.current = new Date().toISOString();
+        setSteps(Object.fromEntries((data.steps ?? []).map((x) => [x.assignmentId, `${x.who}: ${x.step}`])));
         if (data.posted.length > 0) {
           setTurns((prev) => [
             ...prev,
             ...data.posted.map((m) => ({ ...m, returnedWork: true, files: m.files ?? null })),
           ]);
+          setWatchUntil(Date.now() + 30 * 60_000);
         }
         if (data.pending === 0) {
           // 더 기다릴 것이 없다. 표시를 바꿔 묻기를 멈춘다.
@@ -128,11 +170,18 @@ export default function AskClient({
     };
     void tick();
     const timer = setInterval(tick, 6000);
+    // 감시 기한이 지나면 스스로 멈춘다.
+    const stop =
+      watching && !pendingWork
+        ? setTimeout(() => setWatchUntil(0), Math.max(0, watchUntil - Date.now()))
+        : null;
     return () => {
       alive = false;
       clearInterval(timer);
+      if (stop) clearTimeout(stop);
     };
-  }, [conversationId, pendingWork]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [conversationId, pendingWork, watching]);
 
   /**
    * 돌아온 파일을 브라우저에서 연다 / 저장한다. 서버는 파일을 실행하지 않는다 —
@@ -352,11 +401,30 @@ export default function AskClient({
           장식이고, 장식은 매번 봐야 하는 자리에서 제일 먼저 지겨워진다.
         */}
         {turns.length === 0 && (
-          <p className="text-sm text-[var(--rk-600)]">
-            {task
-              ? `"${task.title}" 안에서 나눈 이야기만 여기 모입니다.`
-              : "무엇이든 물어보세요. 찾아봐야 할 것은 찾아보고, 시간이 드는 일은 사람을 붙여 업무로 만듭니다."}
-          </p>
+          <div className="space-y-3">
+            <p className="text-sm text-[var(--rk-600)]">
+              {task
+                ? `"${task.title}" 안에서 나눈 이야기만 여기 모입니다.`
+                : "무엇이든 물어보세요. 찾아봐야 할 것은 찾아보고, 시간이 드는 일은 사람을 붙여 업무로 만듭니다."}
+            </p>
+            {!task && (
+              // 시작 예시. Rosebud 의 첫 화면은 만들 수 있는 것의 예가 늘 보인다 —
+              // 빈 칸 앞에서 "뭐라고 말하지" 가 첫 벽이다. 누르면 칸에 들어가고,
+              // 고쳐서 보내면 된다. 보내지는 않는다.
+              <div className="flex flex-wrap gap-2">
+                {STARTERS.map((s) => (
+                  <button
+                    key={s.label}
+                    type="button"
+                    onClick={() => setText(s.text)}
+                    className="border-2 border-[var(--rk-ink)] bg-[var(--rk-paper)] px-3 py-1.5 text-xs hover:bg-[var(--rk-100)]"
+                  >
+                    {s.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         )}
         {turns.map((t, i) => (
           <div key={i} className={t.role === "user" ? "text-right" : ""}>
@@ -374,6 +442,23 @@ export default function AskClient({
             >
               {t.role === "assistant" ? <ChatMarkdown>{t.content}</ChatMarkdown> : t.content}
             </div>
+            {t.files?.some((f) => f.href && IMG_RX.test(f.path)) && (
+              // 그림은 링크가 아니라 **그림**으로. 유니티가 찍은 게임 화면이 여기 온다 —
+              // 사장님은 유니티를 안 열고도 무엇이 만들어졌는지 본다.
+              <div className="mt-2 flex flex-wrap gap-2">
+                {t.files
+                  .filter((f) => f.href && IMG_RX.test(f.path))
+                  .map((f) => (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      key={f.href}
+                      src={f.href}
+                      alt={f.path}
+                      className="max-h-80 rounded-xl border-2 border-[var(--rk-ink)]"
+                    />
+                  ))}
+              </div>
+            )}
             {t.files && t.files.length > 0 && (
               <div className="mt-1.5 flex flex-wrap gap-2">
                 {t.files.map((f) => (
@@ -408,7 +493,9 @@ export default function AskClient({
                 {t.assignment.queued ? " (대기열에 넣음)" : ""}
                 {t.assignment.returned
                   ? " — 결과가 아래에 있습니다"
-                  : " — 끝나면 이 대화에 붙습니다"}
+                  : steps[t.assignment.id]
+                    ? ` — ${steps[t.assignment.id]}…`
+                    : " — 끝나면 이 대화에 붙습니다"}
               </p>
             )}
             {t.images && t.images.length > 0 && (

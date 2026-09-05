@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { collectWorkReturns } from "@/lib/chat/workReturns";
+import { collectUnityChecks, collectWorkReturns } from "@/lib/chat/workReturns";
 
 /**
  * 이 대화에서 시킨 일 중 끝난 것을 대화에 붙이고, 아직 안 끝난 것의 수를 준다.
@@ -9,7 +9,7 @@ import { collectWorkReturns } from "@/lib/chat/workReturns";
  * 대화 id 를 넣으면 행이 안 보여서(RLS) 빈 답이 간다.
  */
 export async function GET(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
@@ -27,5 +27,9 @@ export async function GET(
     .maybeSingle();
   if (!owned) return NextResponse.json({ error: "Not found." }, { status: 404 });
 
-  return NextResponse.json(await collectWorkReturns(supabase, id));
+  const since = new URL(request.url).searchParams.get("since");
+  const returns = await collectWorkReturns(supabase, id);
+  // 유니티 창이 그 사이에 붙인 결과(사진 포함)도 같이. since 가 없으면 안 본다.
+  const checks = since ? await collectUnityChecks(supabase, id, since) : [];
+  return NextResponse.json({ ...returns, posted: [...returns.posted, ...checks] });
 }

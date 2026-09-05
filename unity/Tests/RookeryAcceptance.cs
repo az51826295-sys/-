@@ -156,6 +156,51 @@ namespace Rookery.Tests
                 "씬이 도는 동안 오류가 났습니다:\n  " + string.Join("\n  ", _problems));
         }
 
+        // ── 0. 화면을 찍는다 ─────────────────────────────────────
+        //
+        // 판정이 아니라 **사진**이다. 09-05 저녁 사장님이 "비슷한 앱을 찾아 고치자"
+        // 해서 본 것: Rosebud 는 대화 옆에 게임 화면이 늘 보인다. 우리 게임은 유니티
+        // 안에 살아서 브라우저가 못 그리니, 자가 돌 때 한 장 찍어 대화에 붙인다.
+        // 못 찍으면(그래픽 장치가 없는 -nographics) 못 찍었다고 낸다 — 검은 사진을
+        // 보내지 않는다.
+        public const string ScreenshotPath = "Library/Rookery/screenshot.png";
+
+        [UnityTest]
+        public IEnumerator 화면을_찍는다()
+        {
+            for (var load = LoadTarget(); load.MoveNext();) yield return load.Current;
+            // 동전이 돌고 뜨는 것이 보이게 조금 기다린다.
+            for (var i = 0; i < InputFrames; i++) yield return null;
+            yield return new WaitForEndOfFrame();
+
+            if (SystemInfo.graphicsDeviceType == UnityEngine.Rendering.GraphicsDeviceType.Null)
+                Assert.Inconclusive("그래픽 장치가 없어(-nographics) 화면을 못 찍습니다.");
+            var cam = Camera.main;
+            if (cam == null) Assert.Inconclusive("Main Camera 가 없어 화면을 못 찍습니다.");
+
+            const int W = 960, H = 540;
+            var rt = new RenderTexture(W, H, 24);
+            var prev = cam.targetTexture;
+            cam.targetTexture = rt;
+            cam.Render();
+            cam.targetTexture = prev;
+            var tex = new Texture2D(W, H, TextureFormat.RGB24, false);
+            var active = RenderTexture.active;
+            RenderTexture.active = rt;
+            tex.ReadPixels(new Rect(0, 0, W, H), 0, 0);
+            tex.Apply();
+            RenderTexture.active = active;
+            var png = tex.EncodeToPNG();
+            Object.Destroy(tex);
+            rt.Release();
+            Object.Destroy(rt);
+
+            var full = System.IO.Path.GetFullPath(ScreenshotPath);
+            System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(full));
+            System.IO.File.WriteAllBytes(full, png);
+            Assert.Greater(png.Length, 0, "빈 사진이 나왔습니다.");
+        }
+
         // ── 2. 화면에 보이는 것이 있는가 ─────────────────────────
         [UnityTest]
         public IEnumerator 카메라와_보이는_것이_있다()

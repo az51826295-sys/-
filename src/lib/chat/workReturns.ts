@@ -27,7 +27,52 @@ export type ReturnedFile = { path: string; contents?: string; href?: string };
 export type ReturnedTurn = { role: "assistant"; content: string; files?: ReturnedFile[] };
 
 /** 아직 안 끝난 일과, 이번에 새로 붙인 턴. */
-export type WorkReturns = { pending: number; posted: ReturnedTurn[] };
+/** 아직 안 끝난 일이 지금 어느 단계인지. 사람 말로 — 화면이 그대로 보여 준다. */
+export type WorkStep = { assignmentId: string; who: string; step: string };
+export type WorkReturns = {
+  pending: number;
+  posted: ReturnedTurn[];
+  /** 09-05 저녁: Rosebud 는 AI 가 코드를 쓰는 것이 보인다. 우리는 "끝나면 붙습니다"
+   *  뿐이었다. 어느 단계인지라도 보인다. */
+  steps: WorkStep[];
+};
+
+/** 실행 단계 이름을 사람 말로. 모르는 이름은 그대로 낸다 — 숨기면 더 모른다. */
+const STEP_LABEL: Record<string, string> = {
+  planning: "기준을 쓰는 중",
+  generating: "코드를 쓰는 중",
+  briefing: "요청을 정리하는 중",
+  concept: "콘셉트 그림을 그리는 중",
+  meshing: "3D 메시를 만드는 중",
+  rigging: "뼈대를 넣는 중",
+  judging: "자로 재는 중",
+  storing: "파일을 저장하는 중",
+  queued: "차례를 기다리는 중",
+};
+
+/**
+ * 유니티 창이 붙인 턴(`attachments.unityChecks`) 중 `since` 뒤의 것. 그 턴은
+ * 이 폴링이 아니라 /api/unity/checks 가 직접 넣어서, 화면이 열려 있어도 새로
+ * 고치기 전엔 안 보였다. 이제 폴링이 집어 온다.
+ */
+export async function collectUnityChecks(
+  db: Supabase,
+  conversationId: string,
+  since: string,
+): Promise<ReturnedTurn[]> {
+  const { data } = await db
+    .from("conversation_messages")
+    .select("content, attachments, created_at")
+    .eq("conversation_id", conversationId)
+    .gt("created_at", since)
+    .not("attachments->unityChecks", "is", null)
+    .order("created_at", { ascending: true });
+  return ((data ?? []) as { content: string; attachments: { files?: ReturnedFile[] | null } | null }[]).map((m) => ({
+    role: "assistant" as const,
+    content: m.content,
+    files: m.attachments?.files ?? undefined,
+  }));
+}
 
 function assignmentIdOf(row: Row): string | null {
   const a = (row.attachments as { assignment?: { id?: unknown } } | null)?.assignment;
@@ -69,7 +114,7 @@ export async function collectWorkReturns(
     .map(assignmentIdOf)
     .filter((x): x is string => !!x && !returned.has(x));
 
-  if (waiting.length === 0) return { pending: 0, posted: [] };
+  if (waiting.length === 0) return { pending: 0, posted: [], steps: [] };
 
   const { data: assignments } = await db
     .from("assignments")
@@ -91,6 +136,7 @@ export async function collectWorkReturns(
   };
 
   const posted: ReturnedTurn[] = [];
+  const steps: WorkStep[] = [];
   let pending = 0;
 
   for (const a of (assignments ?? []) as unknown as A[]) {
@@ -153,6 +199,7 @@ export async function collectWorkReturns(
 
     if (text === null) {
       pending += 1;
+      steps.push({ assignmentId: a.id, who: name, step: await stepOf(db, a.id, a.status) });
       // **죽은 실행을 죽었다고 적는다.** 서버가 배포로 재시작되면 그 안에서 돌던
       // 실행은 그냥 사라진다 — 행은 'running' 인 채로(09-05 17:57 에 실제로 그랬다:
       // Dev 의 유니티 판이 18분째 '생성 중'). 그러면 사람은 영영 기다리고 그 직원은
@@ -181,7 +228,20 @@ export async function collectWorkReturns(
     } else pending += 1;
   }
 
-  return { pending, posted };
+  return { pending, posted, steps };
+}
+
+async function stepOf(db: Supabase, assignmentId: string, status: string): Promise<string> {
+  if (status === "waiting") return STEP_LABEL.queued;
+  const { data } = await db
+    .from("work_executions")
+    .select("current_step, status")
+    .eq("assignment_id", assignmentId)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  const raw = (data?.current_step as string | null) ?? (data ? "running" : "queued");
+  return STEP_LABEL[raw] ?? raw;
 }
 
 

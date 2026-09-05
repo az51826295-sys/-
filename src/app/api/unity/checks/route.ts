@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createServiceClient } from "@/lib/supabase/service";
+import { storeDeliverableFile } from "@/lib/deliverables/files";
 
 export const dynamic = "force-dynamic";
 
@@ -13,7 +14,17 @@ export const dynamic = "force-dynamic";
  * 결과는 판정이지 통과가 아니다: 떨어진 줄과 못 잰 줄을 그대로 적는다.
  */
 type Case = { name: string; result: "Passed" | "Failed" | "Inconclusive" | "Skipped" | string; message?: string | null };
-type Body = { deliverableId?: string; scene?: string; passed: number; failed: number; inconclusive: number; cases: Case[] };
+type Body = {
+  deliverableId?: string;
+  scene?: string;
+  passed: number;
+  failed: number;
+  inconclusive: number;
+  cases: Case[];
+  /** 시험지가 찍은 화면(PNG, base64). 사장님은 게임을 유니티에서만 볼 수 있어서,
+   *  대화에는 이 한 장이 게임의 얼굴이다(09-05 저녁, Rosebud 의 게임 창을 보고). */
+  screenshot?: string;
+};
 
 export async function POST(request: Request) {
   const key = request.headers.get("x-rookery-key");
@@ -43,6 +54,7 @@ export async function POST(request: Request) {
 
   // 어느 대화에 붙일까: 그 산출물이 돌아온 턴이 있는 대화. 없으면 기록만 남긴다.
   let conversationId: string | null = null;
+  let files: { path: string; href: string }[] | null = null;
   if (body.deliverableId) {
     const { data: msg } = await db
       .from("conversation_messages")
@@ -55,10 +67,32 @@ export async function POST(request: Request) {
 
     const { data: d } = await db.from("deliverables").select("content_json").eq("id", body.deliverableId).eq("company_id", company.id).maybeSingle();
     if (d) {
+      const { screenshot: _omit, ...rest } = body;
+      void _omit;
       await db
         .from("deliverables")
-        .update({ content_json: { ...(d.content_json as object), unityChecks: { ...body, at: new Date().toISOString() } } })
+        .update({ content_json: { ...(d.content_json as object), unityChecks: { ...rest, at: new Date().toISOString() } } })
         .eq("id", body.deliverableId);
+    }
+    if (d && body.screenshot) {
+      try {
+        const bytes = Buffer.from(body.screenshot, "base64");
+        const r = await storeDeliverableFile(db, {
+          companyId: company.id as string,
+          deliverableId: body.deliverableId,
+          filename: "unity-screenshot.png",
+          body: new Uint8Array(bytes),
+          kind: "image",
+          mimeType: "image/png",
+          title: "유니티 화면",
+          description: "합격 시험이 도는 동안 찍은 게임 화면",
+          producedByBackend: "unity",
+        });
+        if (r.ok) files = [{ path: "유니티 화면.png", href: `/api/files/${r.file.id}` }];
+        else console.warn("[unity/checks] 사진 저장 실패:", r.error);
+      } catch (e) {
+        console.warn("[unity/checks] 사진 처리 실패:", e);
+      }
     }
   }
   if (conversationId) {
@@ -66,7 +100,7 @@ export async function POST(request: Request) {
       conversation_id: conversationId,
       role: "assistant",
       content: text,
-      attachments: { unityChecks: { deliverableId: body.deliverableId } },
+      attachments: { unityChecks: { deliverableId: body.deliverableId }, files },
     });
   }
   return NextResponse.json({ ok: true, postedTo: conversationId });

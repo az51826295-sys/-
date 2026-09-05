@@ -424,6 +424,8 @@ namespace Rookery
                 {
                     if (r.HasChildren) { foreach (var c in r.Children) Walk(c); return; }
                     var status = r.TestStatus.ToString();
+                    // 사진 찍기는 판정이 아니다. 세지 않고 목록에도 안 넣는다.
+                    if (r.Test.Name == "화면을_찍는다") return;
                     if (status == "Passed") passed++;
                     else if (status == "Failed") failed++;
                     else inconclusive++;
@@ -433,8 +435,18 @@ namespace Rookery
                 var scene = "";
                 var scenes = EditorBuildSettings.scenes;
                 if (scenes.Length > 0) scene = Path.GetFileNameWithoutExtension(scenes[scenes.Length - 1].path);
+                // 시험지가 찍어 둔 화면 한 장. 있으면 같이 보내고 지운다 — 다음 판의
+                // 사진이 이번 판 것으로 오해되지 않게.
+                var shot = "";
+                var shotPath = Path.GetFullPath("Library/Rookery/screenshot.png");
+                if (File.Exists(shotPath))
+                {
+                    try { shot = Convert.ToBase64String(File.ReadAllBytes(shotPath)); File.Delete(shotPath); }
+                    catch (Exception e) { Debug.LogWarning("[Rookery] 사진을 못 읽었습니다: " + e.Message); }
+                }
                 var json = "{\"deliverableId\":\"" + J(deliverable) + "\",\"scene\":\"" + J(scene) + "\",\"passed\":" + passed +
-                           ",\"failed\":" + failed + ",\"inconclusive\":" + inconclusive + ",\"cases\":[" + string.Join(",", cases) + "]}";
+                           ",\"failed\":" + failed + ",\"inconclusive\":" + inconclusive + ",\"cases\":[" + string.Join(",", cases) + "]" +
+                           (shot.Length > 0 ? ",\"screenshot\":\"" + shot + "\"" : "") + "}";
                 var req = new UnityWebRequest($"{url.TrimEnd('/')}/api/unity/checks", "POST")
                 {
                     uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(json)),
