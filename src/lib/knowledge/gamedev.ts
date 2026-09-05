@@ -242,6 +242,10 @@ export const GAMEDEV_LESSONS: Lesson[] = [
     text: "흰 옷이 푸르스름하면 필·앰비언트 색이 너무 차다. 필 (0.8, 0.85, 1) 은 흰 천에서 파랗게 읽힌다 — 필은 (0.9, 0.92, 1), 앰비언트는 회색 쪽으로. 얼굴 사진에서 셔츠가 흰색으로 읽혀야 한다." },
   { id: "N12", role: "mesh_assets", verified: true,
     text: "피부 질감(16회차): 자가 코드로 타일 모공 노멀(detail_normal.png, 1024, 값 노이즈 + 둥근 움푹)과 피부 마스크(detail_mask.png, 알파)를 만들고, 유니티 창이 URP Lit 의 Detail 슬롯에 얹는다(_DetailNormalMap·_DetailMask, 세기 0.6, 타일 22, 키워드 _DETAIL_MULX2). 09-06 07:21 전후 비교: 플라스틱 같던 얼굴에 은은한 결·모공. 텍스처가 흐린 것(얼굴에 150 px)은 생성 해상도의 한계라 이 방법으로는 안 된다." },
+  { id: "N13", role: "mesh_assets", verified: true,
+    text: "Meshy Retexture 는 '다시 칠하기' 지 확대가 아니다 — 4K 로 재텍스처해도 원본 2048 보다 흐렸다(09-06 07:35, 텍스트·이미지 스타일 둘 다). 해상도는 **생성 시점**에: image-to-3D texture_resolution 4k(같은 30 크레딧, 피부 고주파 2배). 캐릭터는 4k 기본." },
+  { id: "N14", role: "mesh_assets", verified: false,
+    text: "얼굴 화질의 원천은 콘셉트 그림의 얼굴 픽셀이다. 1024 전신 그림에서 얼굴은 120 px — 4K 로 칠해도 원천이 그것이다. 콘셉트를 1536 이상으로 그리고 얼굴 클로즈업을 한 장 더 넣어 multi-image-to-3d(meshy-7, 최대 4장)로 만든다(다음 회차)." },
   { id: "N9", role: "blueprint", verified: false,
     text: "캐릭터 디테일 기준: '옷 주름·머리결이 빛 방향에 따라 명암이 진다(노멀 맵)', '청바지는 무광이고 피부는 살짝 매끈하다(금속·매끄러움 맵)', '캐릭터 윤곽에 계단이 없다(MSAA)', '캐릭터 뒤쪽 윤곽에 얇은 빛이 있다(림)', '걷는 방향으로 머리가 돈다(IK)'. 전부 사진 한 장으로 확인된다." },
 

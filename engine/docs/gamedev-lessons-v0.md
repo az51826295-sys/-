@@ -328,6 +328,27 @@ N12 확인. 첫 시도는 모공이 네모났다(가우시안 창을 3σ 보다 
 여기까지다. 다음 캐릭터 회차 후보: 눈 하이라이트(눈 영역 매끄러움 0.9·마스크), 머리카락
 결(머리 영역 이방성 대신 디테일 노멀 방향성), 입술 매끄러움 0.55, 옆 45° 키 조명.
 
+## S. 17회차 (09-06 07:29~08:40) — 생성 AI 허가 뒤 첫 판: 4K 텍스처
+
+사장님 07:30 "생성 AI 써도 된다". 병목은 얼굴 텍스처 해상도(전신 2048 에서 얼굴 150 px).
+
+시도 셋(전부 같은 콘셉트 그림):
+1. **Retexture 4K(텍스트 프롬프트, 10 크레딧)** — UV 는 유지되지만 "다시 칠하기" 라 얼굴이
+   조금 달라지고 원본(2048)보다 오히려 흐렸다. ✗
+2. **Retexture 4K(이미지 스타일, 10 크레딧)** — 마찬가지로 흐림. ✗ 재텍스처는 확대가 아니다.
+3. **image-to-3D 를 4K 로 다시 생성(30 크레딧, 2K 와 같은 값)** — 피부 고주파 에너지 2배
+   (4.0 → 8.6). 리깅·유니티까지 돌려 정면 얼굴 비교: 같은 얼굴에 결이 조금 더 산다.
+   차이는 은은하다. ✓ 캐릭터는 4K 를 기본으로(Vox).
+
+**진짜 병목(우리 생각):** Meshy 는 콘셉트 그림을 보고 칠한다. 1024 전신 그림에서 얼굴은
+120 px 남짓 — 4K 로 칠해도 원천이 120 px 이다. 다음 회차: 콘셉트 그림을 크게(1536+)
+그리고 **얼굴 클로즈업을 한 장 더** 넣어 meshy-7 의 multi-image-to-3d(최대 4장)로 만든다.
+
+배관에서 고친 것: 이름을 부르면 그 직원(Vox → Nova 로 갔었다), 접수 답이 잘려도 업무를
+만든다(3000 토큰), 위임 실패를 대화에 알린다, PBR 맵은 GLB 링크로(4K base64 는 시간 초과),
+지난 산출물 찾기 200개·돌아온 턴만. Vox 는 그림이 없으면 지난 캐릭터의 콘셉트 그림을 쓴다
+(이번엔 못 찾아 새로 그렸는데 얼굴이 거의 같았다 — 다음 판에서 확인).
+
 ## D. 다음에 배울 것 (아직 안 읽음)
 
 - LOD Group 기본(거리별 메시 3단).
@@ -390,3 +411,6 @@ N12 확인. 첫 시도는 모공이 네모났다(가우시안 창을 3σ 보다 
   [MoCap Online — idle guide](https://mocaponline.com/blogs/mocap-news/idle-animation-game-dev-guide),
   [Yarsa Labs — foot placement IK](https://blog.yarsalabs.com/dynamic-foot-placement-in-unity-inverse-kinematic/),
   [Lem Apperson — IK](https://medium.com/@lemapp09/beginning-game-development-inverse-kinematics-00177650c4b2)
+- 17회차: [Meshy — Retexture API](https://docs.meshy.ai/en/api/retexture),
+  [Meshy — Image to 3D API](https://docs.meshy.ai/en/api/image-to-3d),
+  [Meshy — Multi-Image to 3D](https://docs.meshy.ai/en/api/multi-image-to-3d)
