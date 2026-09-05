@@ -76,6 +76,25 @@ def _png(im: Image.Image | None) -> bytes | None:
     return buf.getvalue()
 
 
+def _smoothness_from_base(base: Image.Image) -> np.ndarray | None:
+    """베이스컬러의 색으로 재질 종류를 어림해 매끄러움을 준다. 어림이다 — 사람 캐릭터
+    (피부·천·청바지·머리) 에 맞춘 규칙이고, 색이 그 범위 밖이면 0.25 다."""
+    from PIL import ImageFilter
+    hsv = np.asarray(base.convert("RGB").convert("HSV")).astype(np.float32) / 255.0
+    h, sat, val = hsv[..., 0] * 360.0, hsv[..., 1], hsv[..., 2]
+    out = np.full(h.shape, 0.25, dtype=np.float32)
+    skin = (h < 40) & (sat > 0.12) & (sat < 0.65) & (val > 0.35) & (val < 0.97)
+    denim = (h > 190) & (h < 250) & (sat > 0.2)
+    white = (sat < 0.12) & (val > 0.72)
+    hair = (val < 0.36) & (h < 45)
+    out[skin] = 0.45
+    out[denim] = 0.20
+    out[white] = 0.12
+    out[hair] = 0.30
+    img = Image.fromarray((out * 255).astype(np.uint8), "L").filter(ImageFilter.GaussianBlur(max(1, base.size[0] // 512)))
+    return np.asarray(img).astype(np.float32) / 255.0
+
+
 def extract_pbr_maps(data: bytes, material_index: int = 0) -> PbrMaps:
     gltf, binary = _parse_glb(data)
     mats = gltf.get("materials") or []
@@ -102,6 +121,13 @@ def extract_pbr_maps(data: bytes, material_index: int = 0) -> PbrMaps:
         rough = arr[..., 1] * float(pbr.get("roughnessFactor", 1.0))
         metal = arr[..., 2] * float(pbr.get("metallicFactor", 1.0))
         smooth = 0.10 + 0.45 * (1.0 - rough)
+        # 재질이 한 장이라 피부·옷·청바지·머리가 같은 광택이었다(09-06 15회차). 베이스컬러
+        # 색으로 갈라 표준값을 준다: 피부 0.45, 흰 천 0.12, 청바지 0.2, 머리 0.3, 그 외 0.25.
+        # Meshy 의 (흐린) 거칠기는 1/4 만 섞는다 — 얼룩은 줄이고 결은 남긴다. 생성 AI 없음.
+        if base is not None and base.size == mr.size:
+            cls = _smoothness_from_base(base)
+            if cls is not None:
+                smooth = 0.75 * cls + 0.25 * smooth
         out = np.zeros((*arr.shape[:2], 4), dtype=np.uint8)
         out[..., 0] = np.clip(metal * 255, 0, 255)
         out[..., 1] = out[..., 0]
