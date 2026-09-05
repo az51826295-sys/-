@@ -198,15 +198,25 @@ How to behave:
       schema: chatOutputSchema,
       schemaName: "employee_chat_turn",
       tier: "routine",
-      maxTokens: 1200,
+      // 1200 에서 Dev 의 접수 답이 잘려 위임이 통째로 실패했다(08:16). 답은 짧아야 하지만
+      // 잘린 것을 실패로 만들지는 않는다 — 아래에서 업무를 코드가 만든다.
+      maxTokens: 3000,
     });
-  let { output } = await ask(
+  let output: z.infer<typeof chatOutputSchema>;
+  try {
+    ({ output } = await ask(
     input.requireAssignment
       ? "\n- THIS MESSAGE IS WORK. The manager's request was already judged to be a job for you. " +
         "You MUST fill the \"assignment\" object. A reply that promises to do or submit something " +
-        "with \"assignment\" null is a lie — nothing will happen. Do not ask questions; use defaults."
+        "with \"assignment\" null is a lie — nothing will happen. Do not ask questions; use defaults. Keep the reply under 3 sentences."
       : "",
-  );
+  ));
+  } catch (e) {
+    if (!input.requireAssignment) throw e;
+    // 잘렸거나 못 읽었다. 일로 넘어온 턴이니 빈 답으로 두고 아래에서 업무를 만든다.
+    console.warn("[chat] 접수 답을 못 받음 — 코드가 업무를 만든다:", e instanceof Error ? e.message : e);
+    output = { reply: "", assignment: null, options: null } as z.infer<typeof chatOutputSchema>;
+  }
   if (input.requireAssignment && !output.assignment) {
     // 말만 하고 일을 안 받았다. 한 번 더 — 이번엔 그것만 시킨다.
     ({ output } = await ask(
