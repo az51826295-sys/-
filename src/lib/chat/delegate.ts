@@ -191,8 +191,10 @@ async function lastDeliverableInConversation(
     .from("conversation_messages")
     .select("attachments, created_at")
     .eq("conversation_id", conversationId)
+    // 돌아온 턴만. 50개 제한에 유니티 판정 턴이 쌓여 지난 캐릭터를 못 찾았다(07:56).
+    .not("attachments->returned", "is", null)
     .order("created_at", { ascending: false })
-    .limit(50);
+    .limit(200);
   const ids = ((rows ?? []) as { attachments: { returned?: { deliverableId?: string | null } } | null }[])
     .map((r) => r.attachments?.returned?.deliverableId)
     .filter((x): x is string => typeof x === "string");

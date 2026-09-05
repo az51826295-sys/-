@@ -4,7 +4,7 @@ import { createImageProvider } from "@/lib/providers/images";
 import { defaultMeshProvider } from "@/lib/providers/meshy";
 import { meshTextures, judgeMesh, JudgeUnavailable, type MeshVerdict } from "@/lib/providers/judge";
 import { z } from "zod";
-import { storeDeliverableFile } from "@/lib/deliverables/files";
+import { storeDeliverableFile, signedUrlFor, pathFor } from "@/lib/deliverables/files";
 import { renderGamedevLessons } from "@/lib/knowledge/gamedev";
 import { createServiceClient } from "@/lib/supabase/service";
 
@@ -309,7 +309,9 @@ export const meshAssetsSkill: EmployeeSkill = {
     // 붙인다. 생성 AI 를 다시 돌리지 않고 디테일을 올리는 자리(사장님 22:37).
     if (glbBytes) {
       try {
-        const maps = await meshTextures({ glbBase64: Buffer.from(glbBytes).toString("base64") });
+        // 저장소에 올린 model.glb 의 서명 링크로 — base64 는 4K 에서 시간이 넘는다(07:56 판).
+        const glbUrl = await signedUrlFor(store, pathFor(companyId, deliverableId, "model.glb"));
+        const maps = await meshTextures(glbUrl ? { glbUrl } : { glbBase64: Buffer.from(glbBytes).toString("base64") });
         if (maps.ok) {
           const dec = (b64: string | null | undefined) => (b64 ? new Uint8Array(Buffer.from(b64, "base64")) : null);
           await put("normal.png", dec(maps.normal_png), "image/png", "image", `${brief.subject} 노멀 맵`);

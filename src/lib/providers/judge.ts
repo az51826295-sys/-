@@ -37,14 +37,14 @@ export class JudgeUnavailable extends Error {
   }
 }
 
-async function call<T>(path: string, body: unknown): Promise<T> {
+async function call<T>(path: string, body: unknown, timeoutMs = 120_000): Promise<T> {
   let res: Response;
   try {
     res = await fetch(BASE + path, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
-      signal: AbortSignal.timeout(120_000),
+      signal: AbortSignal.timeout(timeoutMs),
     });
   } catch (error) {
     throw new JudgeUnavailable(
@@ -122,8 +122,10 @@ export type PbrMaps = {
  * 생성 AI 를 다시 돌리지 않고 디테일을 올리는 길.
  */
 export function meshTextures(input: { glbUrl?: string | null; glbBase64?: string | null }): Promise<PbrMaps> {
+  // 4K 캐릭터는 GLB 18 MB·응답 48 MB·85초(09-06 07:58). base64 로 보내면 시간이 넘는다 —
+  // 링크로 보내고 넉넉히 기다린다.
   return call<PbrMaps>("/api/judge/mesh/textures", {
     glb_url: input.glbUrl ?? null,
     glb_base64: input.glbBase64 ?? null,
-  });
+  }, 300_000);
 }
