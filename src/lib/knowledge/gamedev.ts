@@ -246,6 +246,8 @@ export const GAMEDEV_LESSONS: Lesson[] = [
     text: "Meshy Retexture 는 '다시 칠하기' 지 확대가 아니다 — 4K 로 재텍스처해도 원본 2048 보다 흐렸다(09-06 07:35, 텍스트·이미지 스타일 둘 다). 해상도는 **생성 시점**에: image-to-3D texture_resolution 4k(같은 30 크레딧, 피부 고주파 2배). 캐릭터는 4k 기본." },
   { id: "N14", role: "mesh_assets", verified: true,
     text: "얼굴 화질의 원천은 콘셉트 그림의 얼굴 픽셀이다. 1024 전신 그림에서 얼굴은 120 px — 4K 로 칠해도 원천이 그것이다. 콘셉트를 1536 이상으로 그리고 얼굴 클로즈업을 한 장 더 넣어 multi-image-to-3d(meshy-7, 최대 4장)로 만든다(다음 회차)." },
+  { id: "N16", role: "mesh_assets", verified: false,
+    text: "옆모습 그림이 없으면 코·턱이 납작하다(사장님 09-06 10:49, 걷기 줄에서). 생성기는 본 각도만 안다. 캐릭터는 정면·뒷모습·**옆모습(프로필) 전신**·얼굴 클로즈업 네 장으로 만든다 — 옆모습이 얼굴과 몸의 두께를 준다." },
   { id: "N15", role: "blueprint", verified: true,
     text: "캐릭터 판정은 사진 셋으로 본다: 3인칭 게임 화면, 정면 얼굴, **옆에서 걷는 넉 장**. 유니티 창이 셋 다 찍어 대화에 붙인다. 걷기 줄에서 보는 것: 발이 바닥을 딛는가(미끄러짐), 어깨·팔꿈치가 뒤틀리지 않는가(스키닝), 옷이 몸을 따라오는가." },
   { id: "N9", role: "blueprint", verified: false,

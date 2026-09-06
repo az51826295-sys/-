@@ -127,7 +127,7 @@ export const meshAssetsSkill: EmployeeSkill = {
     // 캐릭터는 세 장(정면 전신 1024×1536 · 뒷모습 · 얼굴 클로즈업)으로 만든다(18회차).
     // 얼굴 화질의 원천은 콘셉트 그림의 얼굴 픽셀이라, 전신 한 장(얼굴 120 px)으로는
     // 4K 로 칠해도 흐렸다. 클로즈업은 전신 그림을 참조로 편집해 같은 사람을 유지한다.
-    const views: { back?: string; face?: string } = {};
+    const views: { back?: string; face?: string; side?: string } = {};
     const drawer = createImageProvider();
     if (!image) {
       const made = brief.wantRig
@@ -144,6 +144,11 @@ export const meshAssetsSkill: EmployeeSkill = {
         views.back = (await drawer.edit(image,
           "The SAME person shown in this image seen from directly behind, full body head to toe, same pose, same clothes and hair, even studio lighting, plain background",
           "1024x1536")).dataUrl;
+        // 옆모습이 없으면 코·턱이 납작하다(사장님 09-06 10:49 "옆에서 보니까 얼굴 입체감이
+        // 없네"). 생성기는 본 각도만 안다 — 옆모습 전신을 네 번째로 준다.
+        views.side = (await drawer.edit(image,
+          "The SAME person shown in this image seen exactly from the left side (true profile view), full body head to toe, same A-pose, same clothes and hair, nose and chin clearly in profile, even studio lighting, plain background",
+          "1024x1536")).dataUrl;
       } catch (e) {
         console.warn("[mesh_assets] 추가 뷰 실패 — 한 장으로 간다:", e instanceof Error ? e.message : e);
       }
@@ -155,7 +160,7 @@ export const meshAssetsSkill: EmployeeSkill = {
     try {
       // 캐릭터는 4k — 같은 30 크레딧에 피부 고주파 2배(07:39). 소품은 2k 로 족하다.
       mesh = views.face && views.back
-        ? await mesher.multiImageTo3D([image, views.back, views.face], { poseMode: brief.poseMode, textureResolution: "4k", aiModel: "meshy-7" })
+        ? await mesher.multiImageTo3D([image, views.back, ...(views.side ? [views.side] : []), views.face], { poseMode: brief.poseMode, textureResolution: "4k", aiModel: "meshy-7" })
         : await mesher.imageTo3D(image, { poseMode: brief.poseMode, textureResolution: brief.wantRig ? "4k" : "2k" });
     } catch (error) {
       const msg = error instanceof Error ? error.message : String(error);
@@ -330,6 +335,7 @@ export const meshAssetsSkill: EmployeeSkill = {
     const b64bytes = (d?: string) => (d ? new Uint8Array(Buffer.from(d.split(",")[1] ?? "", "base64")) : null);
     if (views.face) await put("concept_face.png", b64bytes(views.face), "image/png", "image", `${brief.subject} 콘셉트 얼굴`);
     if (views.back) await put("concept_back.png", b64bytes(views.back), "image/png", "image", `${brief.subject} 콘셉트 뒷모습`);
+    if (views.side) await put("concept_side.png", b64bytes(views.side), "image/png", "image", `${brief.subject} 콘셉트 옆모습`);
     await put("rigged.fbx", riggedFbx, "application/octet-stream", "document", `${brief.subject} (리깅 FBX)`);
     await put("walking.fbx", walkingFbx, "application/octet-stream", "document", `${brief.subject} 걷기`);
     await put("running.fbx", runningFbx, "application/octet-stream", "document", `${brief.subject} 달리기`);
