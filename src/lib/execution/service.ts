@@ -107,7 +107,7 @@ export async function startExecution(
     .eq("id", companyEmployee.id);
 
   // 계획 2 "안 죽는 실행"(09-06): 워커 서비스가 있으면 웹은 접수만 한다. 웹 프로세스 안에서
-  // 돌리면 배포·DB 정지마다 죽었다(오늘 두 번). 워커(`engine/tools/worker.mts`)가 queued 를 집어
+  // 돌리면 배포·DB 정지마다 죽었다(오늘 두 번). 워커(`src/worker/worker.mts`)가 queued 를 집어
   // 돌리고, 죽은 running 은 저장된 단계부터 잇는다.
   if (process.env.ROOKERY_WORKER === "1") {
     return { executionId };

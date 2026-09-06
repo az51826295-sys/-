@@ -6,7 +6,7 @@
 //      (`work_executions.metrics_json.steps`)가 있으니 비싼 값(계획·코드·그림·메시)은 다시 안 산다.
 //   3. 워커 자신이 죽어도 다음 워커가 2 로 잇는다. 배포는 일을 안 죽인다.
 //
-// 실행: ROOKERY_ROLE=worker (scripts/start.mjs) 또는 npx tsx engine/tools/worker.mts
+// 실행: ROOKERY_ROLE=worker (scripts/start.mjs) 또는 npx tsx src/worker/worker.mts
 import fs from "node:fs";
 
 const NL = String.fromCharCode(10), CR = String.fromCharCode(13);
