@@ -39,7 +39,9 @@ export async function GET(request: Request) {
   // 대화로 돌아온 산출물만. assignments.status = completed 가 그 표시다.
   const { data: rows } = await db
     .from("deliverables")
-    .select("id, title, deliverable_type, content_json, created_at, assignment_id, assignments!inner(status)")
+    // content_json 전체를 100행 끌면 MB 단위 행이 딸려와 DB 가 시간 초과를 낸다(09-06 13:55,
+    // 고양이 판의 파일 기록이 두 개 빠졌다). 필요한 칸만.
+    .select("id, title, deliverable_type, created_at, assignment_id, verdict:content_json->verdict->>verdict, wantRig:content_json->brief->wantRig, assignments!inner(status)")
     .eq("company_id", companyId)
     .eq("assignments.status", "completed")
     .order("created_at", { ascending: false })
@@ -49,7 +51,8 @@ export async function GET(request: Request) {
     id: string;
     title: string;
     deliverable_type: string;
-    content_json: { verdict?: { verdict?: string }; brief?: { wantRig?: boolean }; files?: { path: string; contents: string; language?: string }[] } | null;
+    verdict: string | null;
+    wantRig: boolean | null;
     created_at: string;
   };
   const deliverables = (rows ?? []) as unknown as Row[];
@@ -69,6 +72,9 @@ export async function GET(request: Request) {
   for (const f of (stored ?? []) as { id: string; deliverable_id: string; title: string; storage_path: string; mime_type: string; size_bytes: number }[]) {
     const d = byId.get(f.deliverable_id);
     if (!d) continue;
+    // 유니티가 찍은 사진(unity-*.png)과 코드 산출물의 그림은 자산이 아니다 — 프로젝트에
+    // 폴더만 늘린다(09-06 11:17 폴더 12개가 사진 하나씩 들고 있었다).
+    if (d.deliverable_type === "app_build" || /\/unity-[a-z]+\.png$/.test(f.storage_path)) continue;
     const url = await signedUrlFor(db, f.storage_path);
     if (!url) continue;
     files.push({
@@ -79,8 +85,8 @@ export async function GET(request: Request) {
       filename: f.storage_path.split("/").pop() ?? f.title,
       mime: f.mime_type,
       size: f.size_bytes,
-      verdict: d.content_json?.verdict?.verdict ?? "UNDEFINED",
-      wantRig: !!d.content_json?.brief?.wantRig,
+      verdict: d.verdict ?? "UNDEFINED",
+      wantRig: !!d.wantRig,
       createdAt: d.created_at,
       url,
     });
@@ -93,12 +99,15 @@ export async function GET(request: Request) {
   // 셋이 났고, 그 상태로 시험을 걸자 유니티가 죽었다. 두 판이 같은 파일 이름을 쓰면
   // 어느 것이 이기는지는 순서 문제일 뿐이다. 옛 판이 필요하면 대화에서 다시 시킨다.
   const latestBuild = deliverables.find((d) => d.deliverable_type === "app_build");
-  const scripts = (latestBuild ? [latestBuild] : [])
-    .flatMap((d) =>
-      (d.content_json?.files ?? [])
-        .filter((f) => TEXT_OK.some((ext) => f.path.endsWith(ext)))
-        .map((f) => ({ deliverableId: d.id, subject: d.title, path: f.path, contents: f.contents, createdAt: d.created_at })),
-    );
+  let scripts: { deliverableId: string; subject: string; path: string; contents: string; createdAt: string }[] = [];
+  if (latestBuild) {
+    // 코드 파일은 최신 판 한 행만 따로 읽는다.
+    const { data: one } = await db.from("deliverables").select("content_json").eq("id", latestBuild.id).maybeSingle();
+    const made = ((one?.content_json as { files?: { path: string; contents: string }[] } | null)?.files ?? []);
+    scripts = made
+      .filter((f) => TEXT_OK.some((ext) => f.path.endsWith(ext)))
+      .map((f) => ({ deliverableId: latestBuild.id, subject: latestBuild.title, path: f.path, contents: f.contents, createdAt: latestBuild.created_at }));
+  }
 
   // 합격 시험지. 사람이 쓰고 한 번 쓰고 안 바꾸는 자 — 창이 프로젝트의
   // Assets/RookeryTests/PlayMode/ 에 넣는다. 저장소의 unity/Tests 가 원본이다.
