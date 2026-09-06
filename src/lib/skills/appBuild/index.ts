@@ -297,6 +297,16 @@ export const appBuildSkill: EmployeeSkill = {
       files = [...files, ...carried];
       if (carried.length) console.log(`[app_build] 지난 파일 ${carried.length}개 이어 붙임:`, carried.map((f) => f.path).join(", "));
     }
+    // 기계 교정. 말로 세 번 실패한 것은 코드가 고친다(09-06 14:23): 캐릭터 폴더 필터에
+    // 슬래시를 붙인 `Contains("/고양이/")` 는 폴더 이름이 '의인화_고양이_…' 라 절대 안 맞는다.
+    const slashFilter = /Contains\("\/([^\/"]+)\/"\)/g;
+    let autoFixed = 0;
+    files = files.map((f) => {
+      if (!f.path.endsWith(".cs")) return f;
+      const fixed = f.contents.replace(slashFilter, (_m, word: string) => { autoFixed++; return `Contains("${word}")`; });
+      return fixed === f.contents ? f : { ...f, contents: fixed };
+    });
+    if (autoFixed) console.log(`[app_build] 슬래시 필터 ${autoFixed}곳 교정`);
     let checks = checkFiles(files);
     let repaired = false;
 
