@@ -219,7 +219,8 @@ export const appBuildSkill: EmployeeSkill = {
       // 고치는 판은 지난 기준(29개)을 다 되쓰고 새 것을 더한다 — 6000 에서 잘려
       // 21:40 캐릭터 판이 설계 단계에서 죽었다(MODEL_OUTPUT_TRUNCATED). gpt-5 는 추론
       // 토큰도 여기서 센다.
-      maxTokens: 16000,
+      // 16000 도 잘렸다(09-06 10:47, 기준 52개 판). 추론 모델은 생각에 먼저 쓴다.
+      maxTokens: 32000,
       tier: "judgment",
     });
 
