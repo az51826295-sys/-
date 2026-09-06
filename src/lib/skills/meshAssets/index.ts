@@ -204,21 +204,25 @@ export const meshAssetsSkill: EmployeeSkill = {
       }
     }
     if (brief.wantRig && image) {
-      try {
-        views.face = (await drawer.edit(image,
+      // 셋을 **동시에** 그린다. 차례로 그리면 한 장에 40초씩 두 장 값의 시간이 그냥 흘렀다(09-06 22:10 효율 회차).
+      // 셋은 서로를 안 보니(전부 정면 그림에서 나온다) 동시에 그려도 결과가 같다.
+      const [face, back, side] = await Promise.allSettled([
+        drawer.edit(image,
           "Close-up portrait of the SAME person shown in this image: identical face, hair, and skin, head and shoulders, facing the camera straight, neutral expression, sharp focus on skin and hair, even studio lighting, plain background",
-          "1024x1024")).dataUrl;
-        views.back = (await drawer.edit(image,
+          "1024x1024"),
+        drawer.edit(image,
           "The SAME person shown in this image seen from directly behind, full body head to toe, same pose, same clothes and hair, even studio lighting, plain background",
-          "1024x1536")).dataUrl;
+          "1024x1536"),
         // 옆모습이 없으면 코·턱이 납작하다(사장님 09-06 10:49 "옆에서 보니까 얼굴 입체감이
         // 없네"). 생성기는 본 각도만 안다 — 옆모습 전신을 네 번째로 준다.
-        views.side = (await drawer.edit(image,
+        drawer.edit(image,
           "The SAME person shown in this image seen exactly from the left side (true profile view), full body head to toe, same A-pose, same clothes and hair, nose and chin clearly in profile, even studio lighting, plain background",
-          "1024x1536")).dataUrl;
-      } catch (e) {
-        console.warn("[mesh_assets] 추가 뷰 실패 — 한 장으로 간다:", e instanceof Error ? e.message : e);
-      }
+          "1024x1536"),
+      ]);
+      if (face.status === "fulfilled") views.face = face.value.dataUrl;
+      if (back.status === "fulfilled") views.back = back.value.dataUrl;
+      if (side.status === "fulfilled") views.side = side.value.dataUrl;
+      for (const r of [face, back, side]) if (r.status === "rejected") console.warn("[mesh_assets] 추가 뷰 실패 — 있는 것으로 간다:", r.reason instanceof Error ? r.reason.message : r.reason);
     }
 
     // ── 2. 메시 ────────────────────────────────────────────────────
