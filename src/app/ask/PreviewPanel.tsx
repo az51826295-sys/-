@@ -157,7 +157,7 @@ export default function PreviewPanel({
           <button
             type="button"
             onClick={() => setOpen(true)}
-            className="fixed inset-x-3 bottom-[4.6rem] z-30 flex items-center justify-between border-2 border-[#E0703A] bg-[var(--rk-paper)] px-3 py-2 text-left text-xs text-[var(--rk-ink)] lg:hidden"
+            className="fixed inset-x-4 bottom-[5.2rem] z-30 flex items-center justify-between border-2 border-[#E0703A] bg-[var(--rk-paper)] px-3 py-2 text-left text-xs text-[var(--rk-ink)] lg:hidden"
           >
             <span className="truncate">{summary}</span>
             <span>▲</span>

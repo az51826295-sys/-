@@ -120,6 +120,10 @@ export default function AskClient({
   /** 미리보기가 다시 읽을 때(일이 돌아왔을 때 +1). */
   const [panelKey, setPanelKey] = useState(0);
   const endRef = useRef<HTMLDivElement>(null);
+  // 열 때와 일이 돌아왔을 때 끝으로. 지난 대화가 길면 첫 줄이 아니라 마지막 줄이 보여야 한다(09-07).
+  useEffect(() => {
+    requestAnimationFrame(() => endRef.current?.scrollIntoView({ block: "end" }));
+  }, [turns.length]);
 
   /**
    * 시킨 일이 끝나면 **여기로** 돌아온다.
@@ -367,7 +371,7 @@ export default function AskClient({
     // `pixel` 은 globals.css 에 있다 — 폰트·종이색·픽셀 보간을 한 번에 켠다.
     // 이 화면에만 붙인다: 대시보드는 표가 빽빽해서 픽셀 폰트가 오히려 나쁘다.
     <div className="pixel mx-auto flex h-[calc(100vh-4rem)] max-w-2xl flex-col px-4 pt-9 lg:max-w-[1180px] lg:flex-row lg:gap-6">
-    <div className="flex min-w-0 flex-1 flex-col lg:max-w-2xl">
+    <div className="flex h-full min-h-0 min-w-0 flex-1 flex-col lg:max-w-2xl">
       {task && (
         <p className="pt-2 text-center text-xs text-[var(--rk-400)]">
           과제 · {task.title}
