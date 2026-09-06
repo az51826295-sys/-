@@ -40,11 +40,17 @@ const briefSchema = z.object({
   mustHave: z.array(z.string()),
 });
 
+// 빛은 유니티 후처리 몫이다(사장님 09-06 17:52 "빛은 후처리해야지"). 콘셉트에 후광·림
+// 라이트·어두운 배경이 들어가면 Meshy 가 그 빛을 텍스처에 구워 게임 조명에서 틀리게 보인다.
 const CONCEPT_FORM =
   "Concept art for a 3D game asset, to be converted to a 3D model. ONE single " +
   "subject alone, centered, full body, front view, neutral A-pose if it is a " +
-  "character, evenly lit, no harsh shadows, plain flat light-grey background, " +
+  "character. FLAT, EVEN, DIFFUSE studio lighting like a product photo: no rim light, " +
+  "no glow, no halo, no bloom, no dramatic or cinematic lighting, no specular hotspots, " +
+  "no cast shadows, no dark or black background — plain flat light-grey background, " +
   "nothing else: no ground, no text, no frame, no second object.";
+/** 검수에 항상 붙는 조건. 매니저가 말하지 않아도 3D 변환에는 필수다. */
+const ALWAYS_MUST_HAVE = ["flat even lighting with no glow, rim light, halo or dramatic lighting; plain light background"];
 
 function ruleLine(r: MeshVerdict["rules"][number]): string {
   const mark = r.verdict === "PASS" ? "✅" : r.verdict === "FAIL" ? "❌" : "◻︎";
@@ -191,8 +197,7 @@ export const meshAssetsSkill: EmployeeSkill = {
           : await drawer.draw(emphasis + CONCEPT_FORM + " " + brief.conceptPrompt, "medium");
         image = made.dataUrl;
         conceptByMachine = true;
-        if (!brief.mustHave.length) break;
-        const failed = await checkConcept(ctx, image, brief.mustHave);
+        const failed = await checkConcept(ctx, image, [...brief.mustHave, ...ALWAYS_MUST_HAVE]);
         conceptChecks.push({ attempt, failed });
         if (failed.length === 0) break;
         emphasis = "STRICT REQUIREMENTS (the previous attempt violated these, they are NOT optional): " + failed.map((f) => f.toUpperCase()).join("; ") + ". ";
