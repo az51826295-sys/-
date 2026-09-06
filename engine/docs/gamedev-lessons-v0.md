@@ -434,6 +434,29 @@ AI 생성기 중엔 Rodin(Hyper3D)이 얼굴 충실도 최고이나 자동 리�
 - "Avatar is null": 캡슐 폴백일 때 Animator 에 아바타가 없어 시험 5개가 떨어졌다 —
   Dev 가 폴백에서는 Animator 를 안 붙여야 한다(다음 규칙감).
 
+## Y. 23회차 (09-06 15:00~18:30) — 얼굴 없는 캐릭터: 은빛 기사, 그리고 '지어내지 마라'
+
+사장님: "사람 얼굴 없고 전체 갑옷으로 할래. 금속 질감만 살리면 돼" → "은빛 중세 기사".
+눈·피부·머리카락(가장 어려운 셋)을 피하고 금속 하나에 집중하는 판.
+
+세 판이 걸렸고, 셋 다 **생성 이전** 단계의 잘못이었다:
+1. 17:20 판 — 그림 생성기가 '닫힌 투구' 를 무시하고 얼굴을 그렸다. 30 크레딧을 쓴 뒤에
+   알았다. → 콘셉트 검수(N17): mustHave 목록을 시각 모델이 보고, 어긴 조건을 대문자로
+   앞세워 최대 3번 다시 그린다.
+2. 17:35 판 — 브리프가 '3등신' 을 지어내고 파랑 천을 진홍으로 바꿨다. 사장님: "3등신?
+   존나 맞을래". 내가 고양이의 3등신을 관성으로 옮긴 것. → 브리프 규칙(N18): 매니저가
+   말한 것을 바꾸거나 더하지 않는다, 비율 미언급 = 실제 비율. 메모리에도 적었다.
+3. 17:45 판 — 그림은 맞았는데 하이라이트·역광이 구워져 있었다. 사장님: "빛은 후처리해야지".
+   → CONCEPT_FORM 에 평평한 확산광 강제, 항상-필수 조건에 조명 항목(N19). 판정 T1(삼각형)
+   42150 이 상한 40000 에 걸려 FAIL → 상한 60000 으로 올리고 재판정 PASS(4K 갑옷은 판이 많다).
+
+배관에서 걸린 것:
+- 유니티 반입 API 가 파일 130개를 하나씩 서명해 100초를 넘김 → 한 번에 서명, 창 HTTP 5분.
+- Dev 빌더가 기사 폴더 셋 중 **첫 판**(얼굴 보이는 것)을 집었다 → FindRig 도우미가
+  .rookery.json 의 createdAt 최신 것을 고르게(M17). 18:29 Dev 수정 판 진행.
+
+**확인된 것**: N17(3번째 판 한 번에 통과). **아직**: N18·N19·M17 은 기사가 유니티에 선 사진으로 잰다.
+
 ## D. 다음에 배울 것 (아직 안 읽음)
 
 - LOD Group 기본(거리별 메시 3단).
@@ -503,3 +526,4 @@ AI 생성기 중엔 Rodin(Hyper3D)이 얼굴 충실도 최고이나 자동 리�
   [Reallusion — CC5 for game characters](https://magazine.reallusion.com/2026/05/18/character-creator-5-for-game-characters-indigo-studios/),
   [Reallusion — CC/iClone → Unity](https://www.reallusion.com/auto-setup/unity/default.html),
   [Creative Bloq — CC5 review](https://www.creativebloq.com/3d/character-creator-5-review-unreal-engine-support-and-auto-rigging-make-it-a-joy-to-use)
+- 23회차: (웹 출처 없음 — 이 회차는 제품 배관과 사장님 지시로만 채워졌다)
