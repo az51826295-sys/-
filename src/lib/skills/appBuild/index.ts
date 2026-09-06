@@ -103,6 +103,10 @@ const UNITY_RULES =
   "  `static Shader Lit() => Shader.Find(\"Universal Render Pipeline/Lit\") ?? Shader.Find(\"Standard\");`\n" +
   "  `static void Tint(Material m, Color c) { if (m.HasProperty(\"_BaseColor\")) m.SetColor(\"_BaseColor\", c); if (m.HasProperty(\"_Color\")) m.SetColor(\"_Color\", c); }`\n" +
   "  `static void Surface(Material m, float metallic, float smooth) { if (m.HasProperty(\"_Metallic\")) m.SetFloat(\"_Metallic\", metallic); if (m.HasProperty(\"_Smoothness\")) m.SetFloat(\"_Smoothness\", smooth); if (m.HasProperty(\"_Glossiness\")) m.SetFloat(\"_Glossiness\", smooth); }`\n" +
+  "- **매트 강제(metallic 0 · smoothness 0.15)는 맵이 없는 재질에만.** 폴더에 metallic_smoothness.png 가 있으면 " +
+  "그 맵을 믿고 `_Metallic` 은 건드리지 않으며 `_Smoothness`(URP 에서 맵 배율)=1, `_GlossMapScale`=1 로 둔다. " +
+  "09-06 20:19 은빛 기사를 매트로 덮어 회색 돌처럼 나왔다 — 사람 피부·흰 셔츠 판의 버릇이다.
+" +
   "  노멀 맵은 `_BumpMap` + `EnableKeyword(\"_NORMALMAP\")`, 금속 맵은 `_MetallicGlossMap` + " +
   "`EnableKeyword(\"_METALLICGLOSSMAP\")` 와 `EnableKeyword(\"_METALLICSPECGLOSSMAP\")` 둘 다. " +
   "`Shader.Find` 결과가 null 이면 Material 을 만들지 마라. `using UnityEngine.Rendering.Universal` 금지.\n" +
