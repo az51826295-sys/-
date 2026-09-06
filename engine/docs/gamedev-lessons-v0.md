@@ -388,6 +388,18 @@ Vox 의 캐릭터 기본 경로로 넣었다(정면 1536 → 얼굴·뒷모습 �
 배관: Vox 의 지난 콘셉트 재사용은 매니저가 "같은/지난 그림" 이라고 했을 때만(09:42 옷이
 바뀐 원인). 사장님 사양(흰 티셔츠·청바지·한국 남성 20대 후반)으로 세 장 방식 재생성 중.
 
+## V. 20회차 (09-06 10:49~11:25) — 옆모습 한 장이 얼굴 두께를 준다; 점토 문제
+
+사장님 10:49 "옆에서 보니까 얼굴 입체감이 없네" → 옆모습(프로필) 전신을 네 번째 그림으로.
+11:21 걷기 줄: 옆에서 코·턱이 선다(N16 확인). 사장님 11:11 "여전히 점토 같네 — 최신 기술은?"
+— 맞다. 남은 점토 티는 생성기의 한계다: 재질 한 장, 머리카락이 덩어리, 피부에 SSS 없음,
+눈이 텍스처. 조사(3DAI Studio·Reallusion): 사실적 사람은 **전용 도구**(Character Creator 5
++ Headshot: 사진→사람, 피부·머리·눈 셰이더 포함, 유니티 자동 세팅, 일회성 $299)가 표준이고,
+AI 생성기 중엔 Rodin(Hyper3D)이 얼굴 충실도 최고이나 자동 리깅이 없다.
+새로 걸린 것: 4장 캐릭터가 걸을 때 **허리가 45° 굽는다**(리타깃/아바타 휴식 자세). 다음 회차.
+배관: Dev 가 캐릭터를 못 찾으면 폴백으로 옛 것을 집어 두 판이 헛돌았다 → M9b. 대화가 길어
+문맥 초과 → 기록 자르기. 설계 토큰 32000.
+
 ## D. 다음에 배울 것 (아직 안 읽음)
 
 - LOD Group 기본(거리별 메시 3단).
@@ -453,3 +465,7 @@ Vox 의 캐릭터 기본 경로로 넣었다(정면 1536 → 얼굴·뒷모습 �
 - 17회차: [Meshy — Retexture API](https://docs.meshy.ai/en/api/retexture),
   [Meshy — Image to 3D API](https://docs.meshy.ai/en/api/image-to-3d),
   [Meshy — Multi-Image to 3D](https://docs.meshy.ai/en/api/multi-image-to-3d)
+- 20회차: [3DAI Studio — AI 3D character generators 2026](https://www.3daistudio.com/blog/best-ai-3d-character-and-avatar-generators-2026),
+  [Reallusion — CC5 for game characters](https://magazine.reallusion.com/2026/05/18/character-creator-5-for-game-characters-indigo-studios/),
+  [Reallusion — CC/iClone → Unity](https://www.reallusion.com/auto-setup/unity/default.html),
+  [Creative Bloq — CC5 review](https://www.creativebloq.com/3d/character-creator-5-review-unreal-engine-support-and-auto-rigging-make-it-a-joy-to-use)
