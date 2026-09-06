@@ -160,18 +160,52 @@ async function loadPrevious(ctx: SkillRunContext): Promise<Previous | null> {
   if (!data) return null;
   const c = (data.content_json ?? {}) as {
     criteria?: Previous["criteria"];
+    coverage?: { criterionId: string; met: boolean }[];
     files?: Previous["files"];
     unityChecks?: { cases?: { name: string; result: string; message?: string | null }[] };
   };
   const failed = (c.unityChecks?.cases ?? [])
     .filter((k) => k.result === "Failed")
     .map((k) => `${k.name}${k.message ? ` — ${k.message.slice(0, 300)}` : ""}`);
+  const ask = `${ctx.context.assignment.title} ${ctx.context.assignment.description ?? ""}`;
   return {
     title: data.title as string,
-    criteria: c.criteria ?? [],
+    criteria: pruneCriteria(c.criteria ?? [], c.coverage ?? [], ask),
     files: c.files ?? [],
     failedChecks: failed,
   };
+}
+
+/**
+ * 지난 기준을 **살아 있는 것만** 이어 받는다.
+ *
+ * 판마다 기준이 쌓여 09-06 밤에 183개가 됐다(E4). 이번 주문과 무관한 기준까지 계획·코드·검수
+ * 프롬프트에 매번 들어가 계획 입력의 대부분(17k 토큰)이 그것이었고, 모델은 전부를 다시 평가했다.
+ * 남기는 것: 지난 판에서 못 지킨 것(아직 열린 숙제) + 이번 주문의 낱말이 든 것(관련) + 가장 최근 것
+ * 열다섯(지금의 관심사). 합쳐 마흔을 넘지 않는다. 지운 기준은 없어진 것이 아니라 지난 판 행에 그대로 있다.
+ */
+const CRITERIA_RECENT = 15;
+const CRITERIA_CAP = 40;
+function pruneCriteria(
+  all: Previous["criteria"],
+  coverage: { criterionId: string; met: boolean }[],
+  ask: string,
+): Previous["criteria"] {
+  if (all.length <= CRITERIA_CAP) return all;
+  const unmet = new Set(coverage.filter((c) => c.met === false).map((c) => c.criterionId));
+  const words = ask.toLowerCase().match(/[\p{L}\p{N}]{2,}/gu) ?? [];
+  const related = (c: Previous["criteria"][number]) => {
+    const t = `${c.when} ${c.then}`.toLowerCase();
+    return words.some((w) => t.includes(w));
+  };
+  const keep = new Set<string>();
+  for (const c of all) if (unmet.has(c.id) || related(c)) keep.add(c.id);
+  for (const c of all.slice(-CRITERIA_RECENT)) keep.add(c.id);
+  const kept = all.filter((c) => keep.has(c.id));
+  // 그래도 넘치면 최근 것부터.
+  const out = kept.length > CRITERIA_CAP ? kept.slice(-CRITERIA_CAP) : kept;
+  console.log(`[app_build] 기준 ${all.length} → ${out.length} (못 지킨 것 ${unmet.size}, 주문 낱말 ${words.length})`);
+  return out;
 }
 
 export const appBuildSkill: EmployeeSkill = {
