@@ -177,10 +177,16 @@ def extract_pbr_maps(data: bytes, material_index: int = 0) -> PbrMaps:
         rough = arr[..., 1] * float(pbr.get("roughnessFactor", 1.0))
         metal = arr[..., 2] * float(pbr.get("metallicFactor", 1.0))
         smooth = 0.10 + 0.45 * (1.0 - rough)
+        # 금속 캐릭터(갑옷 등, 09-06 23회차): 색으로 가르면 강철을 '천' 으로 본다. 금속 맵의
+        # 평균이 0.25 를 넘으면 Meshy 의 금속·거칠기를 그대로 쓰되 매끄러움을 금속답게
+        # 0.2~0.85 로 편다. 반사 환경(창)이 있어야 살아난다.
+        metal_mean = float(metal.mean())
+        if metal_mean > 0.25:
+            smooth = 0.20 + 0.65 * (1.0 - rough)
         # 재질이 한 장이라 피부·옷·청바지·머리가 같은 광택이었다(09-06 15회차). 베이스컬러
         # 색으로 갈라 표준값을 준다: 피부 0.45, 흰 천 0.12, 청바지 0.2, 머리 0.3, 그 외 0.25.
         # Meshy 의 (흐린) 거칠기는 1/4 만 섞는다 — 얼룩은 줄이고 결은 남긴다. 생성 AI 없음.
-        if base is not None and base.size == mr.size:
+        elif base is not None and base.size == mr.size:
             cls = _smoothness_from_base(base)
             if cls is not None:
                 smooth = 0.75 * cls + 0.25 * smooth
@@ -192,6 +198,7 @@ def extract_pbr_maps(data: bytes, material_index: int = 0) -> PbrMaps:
         packed = Image.fromarray(out, "RGBA")
 
     note = (
+        (f"metal_mean={float(np.asarray(mr.convert('RGB'))[..., 2].mean() / 255.0):.2f}; " if mr is not None else "") +
         f"base={'있음' if base else '없음'} normal={'있음' if normal else '없음'} "
         f"metallicRoughness={'있음' if mr else '없음'} occlusion={'있음' if occ else '없음'}; "
         "metallic_smoothness 는 유니티 묶음(R=metallic, A=1−roughness)"

@@ -219,8 +219,8 @@ namespace Rookery
             RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Skybox;
             RenderSettings.ambientIntensity = 1.0f;
             RenderSettings.defaultReflectionMode = UnityEngine.Rendering.DefaultReflectionMode.Skybox;
-            RenderSettings.defaultReflectionResolution = 256;
-            RenderSettings.reflectionIntensity = 0.6f;
+            RenderSettings.defaultReflectionResolution = 512;
+            RenderSettings.reflectionIntensity = 1.0f; // 금속(갑옷)은 반사가 곧 질감이다(23회차)
             // 태양은 씬의 키 조명 — 스카이박스가 해 위치를 거기서 읽는다.
             var key = UnityEngine.Object.FindObjectsByType<Light>(FindObjectsSortMode.None)
                 .Where(l => l.type == LightType.Directional).OrderByDescending(l => l.intensity).FirstOrDefault();
