@@ -137,6 +137,7 @@ export function createDeepSeekProvider(): AIProvider {
         output: checked.data,
         inputTokens: response.usage?.prompt_tokens ?? 0,
         outputTokens: response.usage?.completion_tokens ?? 0,
+        cachedInputTokens: (response.usage as { prompt_cache_hit_tokens?: number } | undefined)?.prompt_cache_hit_tokens ?? 0,
         model,
       };
     },

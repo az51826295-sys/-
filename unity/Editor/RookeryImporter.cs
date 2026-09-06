@@ -176,6 +176,12 @@ namespace Rookery
                 var dest = Path.Combine(dir, f.filename);
                 _status = $"받는 중: {f.subject}/{f.filename}";
                 Repaint();
+                // 이미 같은 크기로 있으면 안 받는다(헤드리스와 같은 규칙, 22:35).
+                if (File.Exists(dest) && new FileInfo(dest).Length == f.size && File.Exists(dest + ".rookery.json"))
+                {
+                    log.AppendLine($"  = {f.subject}/{f.filename} (있음)");
+                    continue;
+                }
 
                 var req = UnityWebRequest.Get(f.url);
                 req.downloadHandler = new DownloadHandlerFile(dest);
@@ -240,19 +246,29 @@ namespace Rookery
             var payload = JsonUtility.FromJson<Payload>(json);
             Debug.Log($"[Rookery] {payload.company}: 파일 {payload.files?.Length ?? 0}, 스크립트 {payload.scripts?.Length ?? 0}");
             Directory.CreateDirectory(folder);
+            var skipped = 0;
 
             foreach (var f in payload.files ?? Array.Empty<FileEntry>())
             {
                 var dir = Path.Combine(folder, Safe(f.subject) + (f.verdict == "PASS" ? "" : "_" + f.verdict));
                 Directory.CreateDirectory(dir);
                 var dest = Path.Combine(dir, f.filename);
+                var side = "{\"deliverableId\":\"" + f.deliverableId + "\",\"verdict\":\"" + f.verdict +
+                    "\",\"wantRig\":" + (f.wantRig ? "true" : "false") + ",\"createdAt\":\"" + f.createdAt + "\"}";
+                // 이미 같은 크기로 있으면 안 받는다. 매 바퀴 131개 1 GB 를 다시 받느라 8분 중 5분이 갔다(09-06 22:35).
+                // 산출물 파일은 한 번 저장되면 안 바뀐다(같은 경로에 다시 쓰지 않는다) — 크기가 같으면 같은 파일이다.
+                if (File.Exists(dest) && new FileInfo(dest).Length == f.size && File.Exists(dest + ".rookery.json"))
+                {
+                    File.WriteAllText(dest + ".rookery.json", side);
+                    skipped++;
+                    continue;
+                }
                 var bytes = http.GetByteArrayAsync(f.url).GetAwaiter().GetResult();
                 File.WriteAllBytes(dest, bytes);
-                File.WriteAllText(dest + ".rookery.json",
-                    "{\"deliverableId\":\"" + f.deliverableId + "\",\"verdict\":\"" + f.verdict +
-                    "\",\"wantRig\":" + (f.wantRig ? "true" : "false") + ",\"createdAt\":\"" + f.createdAt + "\"}");
+                File.WriteAllText(dest + ".rookery.json", side);
                 Debug.Log($"[Rookery] ✓ {dest} ({bytes.Length / 1024} KB, {f.verdict})");
             }
+            if (skipped > 0) Debug.Log($"[Rookery] 이미 있는 파일 {skipped}개는 안 받았다");
             foreach (var s in payload.scripts ?? Array.Empty<ScriptEntry>())
             {
                 Debug.Log("[Rookery] " + RookeryFiles.WriteManaged(s.path, s.contents));

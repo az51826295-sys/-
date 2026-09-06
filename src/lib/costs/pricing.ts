@@ -23,7 +23,7 @@ export type BillingUnit =
 
 type Rate =
   /** Per million tokens, in US dollars. */
-  | { unit: "tokens"; input: number; output: number }
+  | { unit: "tokens"; input: number; output: number; /** 캐시에 맞은 입력의 값(1M당). 없으면 input 값. */ cachedInput?: number }
   /** Per one unit, in US dollars. */
   | { unit: "images"; per: number }
   | { unit: "seconds"; per: number };
@@ -59,8 +59,10 @@ const RATES: Record<string, Rate> = {
   // because a saving that costs the company a deliverable is not a saving.
   "deepseek-chat": { unit: "tokens", input: 0.27, output: 1.1 },
   // V4 (09-06). 피크 값으로 적는다(비피크는 절반) — 장부는 비싸게 틀리는 쪽이 낫다.
-  "deepseek-v4-flash": { unit: "tokens", input: 0.44, output: 1.32 },
-  "deepseek-v4-pro": { unit: "tokens", input: 1.32, output: 3.96 },
+  // 캐시: 딥시크는 같은 앞부분(시스템 프롬프트)을 자동으로 캐시해 30배 싸게 판다(피크 flash $0.014, pro $0.044).
+  // Dev 의 규칙 프롬프트가 그 앞부분이다 — usage.prompt_cache_hit_tokens 로 온다(22:40).
+  "deepseek-v4-flash": { unit: "tokens", input: 0.44, output: 1.32, cachedInput: 0.014 },
+  "deepseek-v4-pro": { unit: "tokens", input: 1.32, output: 3.96, cachedInput: 0.044 },
 };
 
 /**
@@ -111,6 +113,8 @@ export interface Usage {
   /** Language models. */
   inputTokens?: number;
   outputTokens?: number;
+  /** inputTokens 중 캐시에 맞은 수. 값이 다르다. */
+  cachedInputTokens?: number;
   /** Everything else: how many pictures, how many seconds. */
   quantity?: number;
 }
@@ -120,9 +124,10 @@ export function costOf(usage: Usage): number {
   if (!rate) return 0;
 
   if (rate.unit === "tokens") {
-    const input = usage.inputTokens ?? 0;
+    const cached = Math.min(usage.cachedInputTokens ?? 0, usage.inputTokens ?? 0);
+    const input = (usage.inputTokens ?? 0) - cached;
     const output = usage.outputTokens ?? 0;
-    return (input * rate.input + output * rate.output) / 1_000_000;
+    return (input * rate.input + cached * (rate.cachedInput ?? rate.input) + output * rate.output) / 1_000_000;
   }
 
   return (usage.quantity ?? 0) * rate.per;

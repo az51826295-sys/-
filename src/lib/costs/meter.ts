@@ -82,6 +82,7 @@ function meterAi(ai: AIProvider, db: Db, scope: UsageScope): AIProvider {
         purpose: params.schemaName,
         inputTokens: result.inputTokens,
         outputTokens: result.outputTokens,
+        cachedInputTokens: result.cachedInputTokens,
         // 부른 쪽이 이 일을 무엇이라고 불렀는지. 모델 이름만 남기면 "싼 일이
         // 비싼 모델로 돌았다"를 나중에 물어볼 수가 없다 — 무엇이 쌌어야 하는지가
         // 원장에 없기 때문이다. 기본값은 호출 쪽과 같은 이유로 `judgment` 다.
@@ -119,6 +120,7 @@ async function record(
     purpose: string;
     inputTokens: number;
     outputTokens: number;
+    cachedInputTokens?: number;
     /** 부른 쪽이 이 일을 무엇이라고 불렀는지. */
     tier?: WorkTier;
     /** 라우터가 왜 그 자리를 골랐는지. 라우터를 안 거쳤으면 없다. */
@@ -136,6 +138,7 @@ async function record(
     backend: call.model,
     inputTokens: call.inputTokens,
     outputTokens: call.outputTokens,
+    cachedInputTokens: call.cachedInputTokens,
     quantity: call.quantity,
   });
 

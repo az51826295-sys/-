@@ -84,6 +84,8 @@ export interface AIProvider {
     output: T;
     inputTokens: number;
     outputTokens: number;
+    /** inputTokens 중 공급자 캐시에 맞은 수(있는 공급자만). */
+    cachedInputTokens?: number;
     /** Which model actually ran. Returned rather than read off the provider,
      *  because the provider no longer has one answer — and a ledger that
      *  records the wrong model prices every run wrongly, which is worse than
