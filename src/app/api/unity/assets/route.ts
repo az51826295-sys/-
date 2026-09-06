@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createServiceClient } from "@/lib/supabase/service";
-import { signedUrlFor } from "@/lib/deliverables/files";
+import { BUCKET } from "@/lib/deliverables/files";
 import { readFileSync } from "node:fs";
 import path from "node:path";
 
@@ -69,13 +69,20 @@ export async function GET(request: Request) {
 
   const byId = new Map(deliverables.map((d) => [d.id, d]));
   const files = [];
-  for (const f of (stored ?? []) as { id: string; deliverable_id: string; title: string; storage_path: string; mime_type: string; size_bytes: number }[]) {
+  type Stored = { id: string; deliverable_id: string; title: string; storage_path: string; mime_type: string; size_bytes: number };
+  const wanted = ((stored ?? []) as Stored[]).filter((f) => {
     const d = byId.get(f.deliverable_id);
-    if (!d) continue;
+    if (!d) return false;
     // 유니티가 찍은 사진(unity-*.png)과 코드 산출물의 그림은 자산이 아니다 — 프로젝트에
     // 폴더만 늘린다(09-06 11:17 폴더 12개가 사진 하나씩 들고 있었다).
-    if (d.deliverable_type === "app_build" || /\/unity-[a-z]+\.png$/.test(f.storage_path)) continue;
-    const url = await signedUrlFor(db, f.storage_path);
+    return !(d.deliverable_type === "app_build" || /\/unity-[a-z]+\.png$/.test(f.storage_path));
+  });
+  // 서명은 한 번에. 파일 130개를 하나씩 서명하니 100초를 넘겨 창의 HTTP 가 끊겼다(18:08).
+  const { data: signedList } = await db.storage.from(BUCKET).createSignedUrls(wanted.map((f) => f.storage_path), 60 * 60);
+  const signed = new Map((signedList ?? []).map((x) => [x.path, x.signedUrl]));
+  for (const f of wanted) {
+    const d = byId.get(f.deliverable_id)!;
+    const url = signed.get(f.storage_path);
     if (!url) continue;
     files.push({
       id: f.id,

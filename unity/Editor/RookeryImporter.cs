@@ -234,7 +234,7 @@ namespace Rookery
             var folder = Environment.GetEnvironmentVariable("ROOKERY_FOLDER") ?? "Assets/Rookery";
             if (string.IsNullOrEmpty(key)) { Debug.LogError("[Rookery] ROOKERY_KEY 가 없습니다."); return; }
 
-            using var http = new System.Net.Http.HttpClient();
+            using var http = new System.Net.Http.HttpClient { Timeout = TimeSpan.FromMinutes(5) }; // 기본 100초에 끊겼다(18:08)
             http.DefaultRequestHeaders.Add("x-rookery-key", key);
             var json = http.GetStringAsync($"{url.TrimEnd('/')}/api/unity/assets").GetAwaiter().GetResult();
             var payload = JsonUtility.FromJson<Payload>(json);
