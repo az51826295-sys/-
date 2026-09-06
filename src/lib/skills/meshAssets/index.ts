@@ -1,5 +1,6 @@
 import { ExecutionError, setStep } from "@/lib/execution/shared";
 import { step } from "@/lib/execution/steps";
+import { recordUsage } from "@/lib/costs/meter";
 import type { EmployeeSkill, SkillRunContext } from "@/lib/skills/types";
 import { createImageProvider } from "@/lib/providers/images";
 import { defaultMeshProvider } from "@/lib/providers/meshy";
@@ -205,6 +206,12 @@ export const meshAssetsSkill: EmployeeSkill = {
     const drawer = createImageProvider();
     const conceptChecks: { attempt: number; failed: string[] }[] = [];
     const execCompanyId = ctx.execution.company_id as string;
+    // 장부(09-07): 그림·Meshy 도 적는다. 09-06 하루 그림 32장·크레딧 315 가 장부 밖이었다(실제 지출의 절반 이상).
+    const scope = { companyId: execCompanyId, workExecutionId: ctx.executionId, companyEmployeeId: ctx.execution.company_employee_id as string };
+    const book = (purpose: string, r: { model?: string; inputTokens: number; outputTokens: number }) =>
+      recordUsage(ctx.supabase, scope, { model: r.model ?? "gpt-image-2", purpose, inputTokens: r.inputTokens, outputTokens: r.outputTokens });
+    const bookMeshy = (purpose: string, credits: number) =>
+      recordUsage(ctx.supabase, scope, { model: "meshy-credit", purpose, inputTokens: 0, outputTokens: 0, quantity: credits });
     // 그림은 base64 라 행에 못 넣는다 — 저장소 `<회사>/exec/<실행>/…` 에 두고 단계엔 경로만.
     const drawn = await step(ctx.supabase, ctx.executionId, "concept", async () => {
       const out: { front?: string; face?: string; back?: string; side?: string; byMachine: boolean; checks: typeof conceptChecks } = { byMachine: false, checks: [] };
@@ -218,6 +225,7 @@ export const meshAssetsSkill: EmployeeSkill = {
             : await drawer.draw(emphasis + CONCEPT_FORM + " " + brief.conceptPrompt, "medium");
           image = made.dataUrl;
           out.byMachine = true;
+          await book("concept_draw", made);
           const failed = await checkConcept(ctx, image, [...brief.mustHave, ...ALWAYS_MUST_HAVE]);
           out.checks.push({ attempt, failed });
           if (failed.length === 0) break;
@@ -240,9 +248,9 @@ export const meshAssetsSkill: EmployeeSkill = {
             "The SAME person shown in this image seen exactly from the left side (true profile view), full body head to toe, same A-pose, same clothes and hair, nose and chin clearly in profile, even studio lighting, plain background",
             "1024x1536"),
         ]);
-        if (face.status === "fulfilled") views.face = face.value.dataUrl;
-        if (back.status === "fulfilled") views.back = back.value.dataUrl;
-        if (side.status === "fulfilled") views.side = side.value.dataUrl;
+        if (face.status === "fulfilled") { views.face = face.value.dataUrl; await book("concept_view", face.value); }
+        if (back.status === "fulfilled") { views.back = back.value.dataUrl; await book("concept_view", back.value); }
+        if (side.status === "fulfilled") { views.side = side.value.dataUrl; await book("concept_view", side.value); }
         for (const r of [face, back, side]) if (r.status === "rejected") console.warn("[mesh_assets] 추가 뷰 실패 — 있는 것으로 간다:", r.reason instanceof Error ? r.reason.message : r.reason);
       }
       if (image) out.front = await stashExecImage(execCompanyId, ctx.executionId, "concept_front.png", image);
@@ -266,9 +274,9 @@ export const meshAssetsSkill: EmployeeSkill = {
     try {
       // 캐릭터는 4k — 같은 30 크레딧에 피부 고주파 2배(07:39). 소품은 2k 로 족하다.
       const front = image;
-      mesh = await step(ctx.supabase, ctx.executionId, "mesh", () => views.face && views.back
+      mesh = await step(ctx.supabase, ctx.executionId, "mesh", async () => { const r = await (views.face && views.back
         ? mesher.multiImageTo3D([front, views.back!, ...(views.side ? [views.side] : []), views.face!], { poseMode: brief.poseMode, textureResolution: "4k", aiModel: "meshy-7" })
-        : mesher.imageTo3D(front, { poseMode: brief.poseMode, textureResolution: brief.wantRig ? "4k" : "2k" }));
+        : mesher.imageTo3D(front, { poseMode: brief.poseMode, textureResolution: brief.wantRig ? "4k" : "2k" })); if (!r.mock) await bookMeshy("mesh_generate", 30); return r; });
     } catch (error) {
       const msg = error instanceof Error ? error.message : String(error);
       throw new ExecutionError(
@@ -285,7 +293,7 @@ export const meshAssetsSkill: EmployeeSkill = {
     let rigError: string | null = null;
     if (brief.wantRig && !mesh.mock) {
       try {
-        rig = await step(ctx.supabase, ctx.executionId, "rig", () => mesher.rig(mesh.taskId, 1.7));
+        rig = await step(ctx.supabase, ctx.executionId, "rig", async () => { const r = await mesher.rig(mesh.taskId, 1.7); await bookMeshy("mesh_rig", 5); return r; });
       } catch (error) {
         rigError = error instanceof Error ? error.message : String(error);
       }

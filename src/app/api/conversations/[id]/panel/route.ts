@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { listVersions } from "@/lib/chat/versions";
 import { kindOf, proofOf, type ProofFile } from "@/lib/work/kinds";
+import { defaultMeshProvider } from "@/lib/providers/meshy";
 
 export const dynamic = "force-dynamic";
 
@@ -79,6 +80,10 @@ export async function GET(
     monthUsd = ((usage ?? []) as { cost_usd: number | string }[]).reduce((s, u) => s + Number(u.cost_usd ?? 0), 0);
   }
 
+  // Meshy 잔액. 못 읽으면 null — 화면은 "—" 로.
+  let meshyCredits: number | null = null;
+  try { meshyCredits = await defaultMeshProvider().balance(); } catch { /* 없으면 없는 대로 */ }
+
   return NextResponse.json({
     versions: versions.map((v) => {
       const r = byId.get(v.deliverableId);
@@ -100,6 +105,6 @@ export async function GET(
           files: rest.map((f) => ({ name: f.storage_path.split("/").pop() ?? f.title, href: `/api/files/${f.id}` })),
         }
       : null,
-    spend: { monthUsd: Math.round(monthUsd * 100) / 100, note: "글 모델만 — 그림·Meshy 는 아직 장부 밖" },
+    spend: { monthUsd: Math.round(monthUsd * 100) / 100, meshyCredits, note: "글 모델 + 그림 + Meshy(09-07 부터). 공표 단가 기준, 청구서와 대조 전" },
   });
 }

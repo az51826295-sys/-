@@ -53,6 +53,10 @@ const RATES: Record<string, Rate> = {
   // 공표가이고 아직 청구서와 대조되지 않았다.
   "gpt-image-2": { unit: "tokens", input: 5, output: 40 },
 
+  // Meshy. 크레딧 단위인데 장부의 단위 칸이 tokens/images/seconds 뿐이라(표 제약) images 로 적고
+  // quantity = 크레딧 수. Pro 플랜 $20/1,000 크레딧 = $0.02 (실제 플랜 확인 전, 09-07). 모델 30 · 리깅 5.
+  "meshy-credit": { unit: "images", per: 0.02 },
+
   // DeepSeek. Published list prices, not yet reconciled against an invoice.
   // An order of magnitude under the others, which is the entire reason the
   // cheap tiers exist — and also the reason to keep it out of `judgment`,

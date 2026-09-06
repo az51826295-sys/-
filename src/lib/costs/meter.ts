@@ -112,6 +112,9 @@ function meterAi(ai: AIProvider, db: Db, scope: UsageScope): AIProvider {
   return metered;
 }
 
+/** 글 모델 밖의 지출(그림·Meshy)도 같은 장부에 적는다 — 09-07 계획 '장부 구멍'. */
+export async function recordUsage(db: Db, scope: UsageScope, call: Parameters<typeof record>[2]) { return record(db, scope, call); }
+
 async function record(
   db: Db,
   scope: UsageScope,

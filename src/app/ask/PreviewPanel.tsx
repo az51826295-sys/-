@@ -17,7 +17,7 @@ type Panel = {
     verdict: string | null; checks: { name: string; result: string; message: string }[]; checkedAt: string | null;
     photos: { title: string; href: string }[]; files: { name: string; href: string }[];
   } | null;
-  spend: { monthUsd: number; note: string };
+  spend: { monthUsd: number; meshyCredits: number | null; note: string };
 };
 
 /** 미리보기 자료. 대화 화면이 들고 있다가 띠(폰)와 칸(PC) 둘에 준다. */
@@ -169,7 +169,7 @@ export default function PreviewPanel({
       {data && (
         <div className="flex justify-between border-t-2 border-[var(--rk-ink)] px-3.5 py-2 text-[11px] text-[var(--rk-600)]" title={data.spend.note}>
           <span>이번 달 사용 <b className="text-[var(--rk-ink)]">${data.spend.monthUsd.toFixed(2)}</b></span>
-          {cur && <span>검사: {cur.ruler.split("(")[0]}</span>}
+          <span>Meshy 크레딧 <b className="text-[var(--rk-ink)]">{data.spend.meshyCredits === null ? "—" : data.spend.meshyCredits.toLocaleString()}</b></span>
         </div>
       )}
     </div>
