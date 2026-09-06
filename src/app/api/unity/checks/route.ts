@@ -80,7 +80,7 @@ export async function POST(request: Request) {
     }
     const shots: [string | undefined, string, string, string][] = [
       [body.screenshot, "unity-screenshot.png", "유니티 화면", "합격 시험이 도는 동안 찍은 게임 화면"],
-      [body.portrait, "unity-portrait.png", "유니티 얼굴", "같은 카메라를 얼굴 앞으로 옮겨 찍은 정면 사진"],
+      [body.portrait, "unity-portrait.png", "유니티 얼굴", "같은 카메라를 얼굴 앞으로 옮겨 찍은 정면 사진 — 씬의 캐릭터 전부, 플레이어부터 나란히"],
       [body.walk, "unity-walk.png", "유니티 걷기", "키를 누르는 동안 옆에서 넉 장 — 스키닝·발·팔을 사람이 본다"],
     ];
     for (const [b64, filename, title, description] of shots) {

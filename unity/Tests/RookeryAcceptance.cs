@@ -218,29 +218,45 @@ namespace Rookery.Tests
             // ── 정면 얼굴 사진 ──
             // 3인칭 화면은 뒤통수뿐이라 "사람 같은가" 를 못 본다(09-06 00:34). 휴머노이드가
             // 있으면 같은 카메라(후처리 그대로)를 얼굴 앞으로 옮겨 한 장 더 찍고 되돌린다.
-            var human = Object.FindObjectsByType<Animator>(FindObjectsSortMode.None).FirstOrDefault(a => a.isHuman);
-            var head = human != null ? human.GetBoneTransform(HumanBodyBones.Head) : null;
-            if (head != null)
+            // **씬의 휴머노이드 전부**를 한 장에 나란히(최대 4, 플레이어 먼저). 09-06 20:52
+            // 기사를 고양이 앞에 세웠는데 사진 틀이 플레이어뿐이라 기사가 안 나왔다.
+            var humans = Object.FindObjectsByType<Animator>(FindObjectsSortMode.None)
+                .Where(a => a.isHuman && a.GetBoneTransform(HumanBodyBones.Head) != null)
+                .OrderByDescending(a => a.GetComponentInParent<CharacterController>() != null || a.transform.root.CompareTag("Player"))
+                .ThenBy(a => a.transform.root.name)
+                .Take(4).ToList();
+            if (humans.Count > 0)
             {
-                var root = human.transform;
+                const int P = 1080;
+                var sheet = new Texture2D(P * humans.Count, P, TextureFormat.RGB24, false);
                 var savedPos = cam.transform.position; var savedRot = cam.transform.rotation; var savedFov = cam.fieldOfView;
-                var target = head.position + Vector3.down * 0.12f;           // 머리와 어깨가 같이 들어오게
-                cam.transform.position = target + root.forward * 1.4f + Vector3.up * 0.05f;
-                cam.transform.rotation = Quaternion.LookRotation(target - cam.transform.position, Vector3.up);
-                cam.fieldOfView = 28f;
-                var prt = new RenderTexture(1080, 1080, 24) { antiAliasing = Mathf.Max(1, QualitySettings.antiAliasing) };
-                cam.targetTexture = prt;
-                yield return null;
-                yield return null;
-                cam.targetTexture = prev;
+                var prt = new RenderTexture(P, P, 24) { antiAliasing = Mathf.Max(1, QualitySettings.antiAliasing) };
+                for (var k = 0; k < humans.Count; k++)
+                {
+                    var human = humans[k];
+                    var head = human.GetBoneTransform(HumanBodyBones.Head);
+                    var root = human.transform;
+                    var target = head.position + Vector3.down * 0.12f;           // 머리와 어깨가 같이 들어오게
+                    cam.transform.position = target + root.forward * 1.4f + Vector3.up * 0.05f;
+                    cam.transform.rotation = Quaternion.LookRotation(target - cam.transform.position, Vector3.up);
+                    cam.fieldOfView = 28f;
+                    cam.targetTexture = prt;
+                    yield return null;
+                    yield return null;
+                    cam.targetTexture = prev;
+                    var ptex = new Texture2D(P, P, TextureFormat.RGB24, false);
+                    RenderTexture.active = prt;
+                    ptex.ReadPixels(new Rect(0, 0, P, P), 0, 0);
+                    ptex.Apply();
+                    RenderTexture.active = active;
+                    sheet.SetPixels(k * P, 0, P, P, ptex.GetPixels());
+                    Object.Destroy(ptex);
+                    Debug.Log($"[Rookery] 얼굴 사진 {k + 1}/{humans.Count}: {root.root.name}");
+                }
+                sheet.Apply();
                 cam.transform.position = savedPos; cam.transform.rotation = savedRot; cam.fieldOfView = savedFov;
-                var ptex = new Texture2D(1080, 1080, TextureFormat.RGB24, false);
-                RenderTexture.active = prt;
-                ptex.ReadPixels(new Rect(0, 0, 1080, 1080), 0, 0);
-                ptex.Apply();
-                RenderTexture.active = active;
-                System.IO.File.WriteAllBytes(System.IO.Path.GetFullPath(PortraitPath), ptex.EncodeToPNG());
-                Object.Destroy(ptex); prt.Release(); Object.Destroy(prt);
+                System.IO.File.WriteAllBytes(System.IO.Path.GetFullPath(PortraitPath), sheet.EncodeToPNG());
+                Object.Destroy(sheet); prt.Release(); Object.Destroy(prt);
             }
         }
         public const string PortraitPath = "Library/Rookery/portrait.png";
