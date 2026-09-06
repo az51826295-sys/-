@@ -15,13 +15,6 @@ import { releaseEmployee } from "@/lib/assignments/service";
  * 함수의 반이다. 실패도 같은 자리로 온다. 조용히 없어지는 일은 없다.
  */
 
-type Row = {
-  role: string;
-  content: string;
-  attachments: unknown;
-  created_at: string;
-};
-
 /** `contents` 가 있으면 글 파일(브라우저가 연다), `href` 가 있으면 저장소 파일(서버를 거쳐 연다). */
 export type ReturnedFile = { path: string; contents?: string; href?: string };
 export type ReturnedTurn = { role: "assistant"; content: string; files?: ReturnedFile[] };
@@ -74,16 +67,6 @@ export async function collectUnityChecks(
   }));
 }
 
-function assignmentIdOf(row: Row): string | null {
-  const a = (row.attachments as { assignment?: { id?: unknown } } | null)?.assignment;
-  return a && typeof a.id === "string" ? a.id : null;
-}
-
-function returnedIdOf(row: Row): string | null {
-  const r = (row.attachments as { returned?: { assignmentId?: unknown } } | null)?.returned;
-  return r && typeof r.assignmentId === "string" ? r.assignmentId : null;
-}
-
 /** 붙일 글. 사람 이름을 앞에 둔다 — 누가 한 일인지가 첫 줄이다. */
 function finishedText(name: string, title: string, body: string): string {
   return `**${name}가 끝냈습니다 — ${title}**\n\n${body.trim()}`;
@@ -102,16 +85,19 @@ export async function collectWorkReturns(
   db: Supabase,
   conversationId: string,
 ): Promise<WorkReturns> {
+  // 6초마다 도는 조회다. **필요한 두 칸만** 꺼낸다 — attachments 전체를 끌면 파일
+  // 본문·그림이 딸려와 대화 하나에 수 MB 가 매 폴링마다 오갔고, 09-06 19:30 그 IO 로
+  // DB 가 25분씩 두 번 멈췄다(images.ts).
   const { data: rows } = await db
     .from("conversation_messages")
-    .select("role, content, attachments, created_at")
+    .select("assignmentId:attachments->assignment->>id, returnedId:attachments->returned->>assignmentId")
     .eq("conversation_id", conversationId)
     .order("created_at", { ascending: true });
 
-  const messages = (rows ?? []) as Row[];
-  const returned = new Set(messages.map(returnedIdOf).filter((x): x is string => !!x));
-  const waiting = messages
-    .map(assignmentIdOf)
+  const slim = (rows ?? []) as unknown as { assignmentId: string | null; returnedId: string | null }[];
+  const returned = new Set(slim.map((r) => r.returnedId).filter((x): x is string => !!x));
+  const waiting = slim
+    .map((r) => r.assignmentId)
     .filter((x): x is string => !!x && !returned.has(x));
 
   if (waiting.length === 0) return { pending: 0, posted: [], steps: [] };

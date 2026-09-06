@@ -5,6 +5,7 @@ import { meterProviders } from "@/lib/costs/meter";
 import { defaultProviders } from "@/lib/execution/shared";
 import { selfNote, speakerFor, speakerNote } from "@/lib/chat/persona";
 import { createImageProvider } from "@/lib/providers/images";
+import { stashChatImages } from "@/lib/chat/images";
 import { checkAnonymous, recordAnonymous } from "@/lib/chat/anonymous";
 import { saveTurn } from "@/lib/chat/conversations";
 import { capabilityCatalogue } from "@/lib/chat/companyService";
@@ -171,12 +172,13 @@ async function capabilityOfLastReturned(
 ): Promise<string | null> {
   const { data: rows } = await db
     .from("conversation_messages")
-    .select("attachments")
+    .select("deliverableId:attachments->returned->>deliverableId")
     .eq("conversation_id", conversationId)
+    .not("attachments->returned", "is", null)
     .order("created_at", { ascending: false })
     .limit(50);
-  const id = ((rows ?? []) as { attachments: { returned?: { deliverableId?: string | null } } | null }[])
-    .map((r) => r.attachments?.returned?.deliverableId)
+  const id = ((rows ?? []) as unknown as { deliverableId: string | null }[])
+    .map((r) => r.deliverableId)
     .find((x): x is string => typeof x === "string");
   if (!id) return null;
   const { data: d } = await db.from("deliverables").select("deliverable_type").eq("id", id).maybeSingle();
@@ -539,7 +541,8 @@ export async function runEverydayTurn(
           // 사람을 붙였으면 그 업무 id 를 턴에 남긴다. 결과가 돌아올 자리가
           // **이 대화**뿐이라(업무 화면은 09-05 에 지웠다), 어느 턴이 어느 일을
           // 시켰는지 여기 없으면 끝난 일을 어디에 붙일지 알 수 없다.
-          attachments: { images, sources, searched: queries, assignment },
+          // 그림은 저장소로(images.ts 에 왜인지 적어 뒀다). 화면에는 dataUrl 그대로 간다.
+          attachments: { images: companyId ? await stashChatImages(companyId, images) : [], sources, searched: queries, assignment },
         },
       })
     : null;

@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import AskClient from "./AskClient";
 import AskShell from "./AskShell";
 import { loadConversation } from "@/lib/chat/conversations";
+import { signChatImages } from "@/lib/chat/images";
 
 /**
  * 로그인 없이 열리는 대화.
@@ -42,17 +43,19 @@ export default async function PublicAskPage({
       );
       initial = {
         id: found.conversation.id as string,
-        turns: (
+        turns: await Promise.all((
           found.messages as { role: string; content: string; attachments: unknown }[]
-        ).map((m) => {
+        ).map(async (m) => {
           // 그 턴이 일을 시켰으면 같이 싣는다. 화면이 그것을 보고 "끝났나" 를
           // 묻고, 결과 턴(`returned`)이 이미 뒤에 있으면 더 묻지 않는다.
           const att = (m.attachments ?? null) as {
             assignment?: { id: string; title: string; queued: boolean } | null;
             returned?: { assignmentId: string } | null;
             files?: { path: string; contents?: string; href?: string }[] | null;
+            images?: { path?: string; dataUrl?: string; prompt: string }[] | null;
           } | null;
           return {
+            images: att?.images?.length ? await signChatImages(att.images) : null,
             role: m.role === "user" ? ("user" as const) : ("assistant" as const),
             content: m.content,
             assignment: att?.assignment
@@ -61,7 +64,7 @@ export default async function PublicAskPage({
             returnedWork: !!att?.returned,
             files: att?.files ?? null,
           };
-        }),
+        })),
       };
     }
   }
