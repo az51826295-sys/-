@@ -46,6 +46,9 @@ const ECONOMY_TIERS: ReadonlySet<WorkTier> = new Set<WorkTier>([
   "conversation",
   "routine",
   "verification",
+  // 09-06 사장님 지시로 판단 자리도 싼 쪽이 먼저. 실패하면 아래 재시도가 primary 로 올린다.
+  // 그림이 붙은 호출은 여전히 primary(시각 모델)다.
+  "judgment",
 ]);
 
 /**

@@ -58,6 +58,9 @@ const RATES: Record<string, Rate> = {
   // cheap tiers exist — and also the reason to keep it out of `judgment`,
   // because a saving that costs the company a deliverable is not a saving.
   "deepseek-chat": { unit: "tokens", input: 0.27, output: 1.1 },
+  // V4 (09-06). 피크 값으로 적는다(비피크는 절반) — 장부는 비싸게 틀리는 쪽이 낫다.
+  "deepseek-v4-flash": { unit: "tokens", input: 0.44, output: 1.32 },
+  "deepseek-v4-pro": { unit: "tokens", input: 1.32, output: 3.96 },
 };
 
 /**

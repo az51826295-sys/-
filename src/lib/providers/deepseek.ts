@@ -29,10 +29,14 @@ const MODELS: Partial<Record<
   "judgment" | "verification" | "conversation" | "routine",
   string
 >> = {
-  conversation: "deepseek-chat",
-  routine: "deepseek-chat",
-  verification: "deepseek-chat",
-  // judgment is deliberately absent. See the router.
+  // 09-06 20:45 사장님: "딥시크 좀 써라, OpenAI 너무 비싸다." 지난 29시간 $4.71 중 $3.75 가
+  // Dev 의 코드 생성(gpt-5, judgment)이었다. V4 부터 판단 자리도 여기가 **먼저** 받는다
+  // (pro, 생각 모드) — 모양이 어긋나거나 잘리면 라우터가 gpt-5 로 올린다. 값(1M 토큰,
+  // 피크): flash 입력 $0.44·출력 $1.32, pro 입력 $1.32·출력 $3.96. gpt-5 는 $1.25·$10.
+  conversation: "deepseek-v4-flash",
+  routine: "deepseek-v4-flash",
+  verification: "deepseek-v4-flash",
+  judgment: "deepseek-v4-pro",
 };
 
 export function createDeepSeekProvider(): AIProvider {
@@ -75,10 +79,16 @@ export function createDeepSeekProvider(): AIProvider {
       //
       // 프롬프트에 "json" 이라는 낱말이 없으면 이 모드 자체가 거절당한다.
       const shape = JSON.stringify(z.toJSONSchema(schema));
+      // 생각 모드는 판단 자리(pro)에만. 싼 자리는 빠르게, 코드는 생각하고 쓴다.
+      // 생각 토큰도 출력값으로 청구되지만 gpt-5 출력값의 1/2.5 다.
+      const thinking = tier === "judgment";
       const response = await client.chat.completions.create({
         model,
         max_tokens: maxTokens,
         response_format: { type: "json_object" },
+        ...(thinking ? { reasoning_effort: "high" as const } : {}),
+        // @ts-expect-error DeepSeek 확장 매개변수 — OpenAI SDK 타입에 없다.
+        thinking: { type: thinking ? "enabled" : "disabled" },
         messages: [
           {
             role: "system",
