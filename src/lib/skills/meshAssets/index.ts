@@ -31,6 +31,13 @@ const briefSchema = z.object({
   wantRig: z.boolean(),
   /** 캐릭터면 a-pose 가 리깅에 유리하다. 소품이면 빈 문자열. */
   poseMode: z.enum(["a-pose", "t-pose", ""]),
+  /**
+   * 그림에서 눈으로 확인할 수 있는 **필수 조건**(영어, 3~6개). 예: "closed helmet, no face
+   * visible", "3-head-tall chibi proportions", "silver plate armor". 09-06 16:47 그림 생성기가
+   * '닫힌 투구·3등신' 을 무시하고 얼굴 있는 실제 비율 기사를 그렸다 — 30 크레딧 쓰기 전에
+   * 이 목록으로 그림을 검수한다.
+   */
+  mustHave: z.array(z.string()),
 });
 
 const CONCEPT_FORM =
@@ -57,6 +64,32 @@ async function fetchBytes(url: string): Promise<Uint8Array | null> {
 
 function toDataUrl(bytes: Uint8Array, mime: string): string {
   return `data:${mime};base64,${Buffer.from(bytes).toString("base64")}`;
+}
+
+/** 그림이 필수 조건을 지켰는지 시각 모델이 본다. 어긴 조건 목록을 돌려준다(비면 통과). */
+async function checkConcept(ctx: SkillRunContext, imageDataUrl: string, mustHave: string[]): Promise<string[]> {
+  const verdict = z.object({
+    results: z.array(z.object({ condition: z.string(), satisfied: z.boolean(), why: z.string() })),
+  });
+  try {
+    const { output } = await ctx.providers.ai.generateStructuredOutput({
+      systemInstructions:
+        "You are checking a concept image against a list of required visual conditions. " +
+        "For EACH condition say whether the image satisfies it. Be strict and literal: " +
+        "'closed helmet, no face visible' fails if any face skin, eyes or mouth is visible; " +
+        "'3-head-tall chibi proportions' fails if the body is 5+ heads tall.",
+      input: "Conditions:\n" + mustHave.map((m, i) => `${i + 1}. ${m}`).join("\n"),
+      images: [imageDataUrl.split(",")[1] ?? imageDataUrl],
+      schema: verdict,
+      schemaName: "concept_check",
+      maxTokens: 1500,
+      tier: "judgment",
+    });
+    return output.results.filter((r) => !r.satisfied).map((r) => `${r.condition} (${r.why})`);
+  } catch (e) {
+    console.warn("[mesh_assets] 콘셉트 검수 실패 — 통과로 본다:", e instanceof Error ? e.message : e);
+    return [];
+  }
 }
 
 export const meshAssetsSkill: EmployeeSkill = {
@@ -119,6 +152,9 @@ export const meshAssetsSkill: EmployeeSkill = {
         "생김새·재질·색을 구체적으로. 배경·바닥·글자는 쓰지 않는다.\n" +
         "- `wantRig`: 걷거나 움직여야 하는 것이면 true.\n" +
         "- `poseMode`: 캐릭터면 \"a-pose\", 아니면 \"\".\n" +
+        "- `mustHave`: 매니저가 적은 것 중 그림에서 눈으로 확인되는 조건 3~6개(영어 짧게). " +
+        "비율(예: 3-head-tall chibi), 얼굴 가림(closed helmet, no face), 색·재질, 옷. " +
+        "그림 생성기는 이런 조건을 자주 무시한다 — 여기 적힌 것만 검수한다.\n" +
         (reference ? "레퍼런스 이미지가 **있다**. conceptPrompt 는 그래도 쓴다(기록용)." : "") +
         renderGamedevLessons("mesh_assets"),
       input:
@@ -141,14 +177,25 @@ export const meshAssetsSkill: EmployeeSkill = {
     // 4K 로 칠해도 흐렸다. 클로즈업은 전신 그림을 참조로 편집해 같은 사람을 유지한다.
     const views: { back?: string; face?: string; side?: string } = {};
     const drawer = createImageProvider();
+    const conceptChecks: { attempt: number; failed: string[] }[] = [];
     if (!image) {
-      const made = brief.wantRig
-        ? await drawer.draw(CONCEPT_FORM + " " + brief.conceptPrompt + ", full body head to toe, facing the camera, even studio lighting", "high", "1024x1536")
-        : await drawer.draw(CONCEPT_FORM + " " + brief.conceptPrompt, "medium");
-      image = made.dataUrl;
-      conceptByMachine = true;
+      // 그리고 → 검수하고 → 틀린 조건을 강조해 다시(최대 3번). 생성기가 무시한 조건을
+      // 30 크레딧 쓴 뒤에 알면 늦다(09-06 16:47).
+      let emphasis = "";
+      for (let attempt = 1; attempt <= 3; attempt++) {
+        const made = brief.wantRig
+          ? await drawer.draw(emphasis + CONCEPT_FORM + " " + brief.conceptPrompt + ", full body head to toe, facing the camera, even studio lighting", "high", "1024x1536")
+          : await drawer.draw(emphasis + CONCEPT_FORM + " " + brief.conceptPrompt, "medium");
+        image = made.dataUrl;
+        conceptByMachine = true;
+        if (!brief.mustHave.length) break;
+        const failed = await checkConcept(ctx, image, brief.mustHave);
+        conceptChecks.push({ attempt, failed });
+        if (failed.length === 0) break;
+        emphasis = "STRICT REQUIREMENTS (the previous attempt violated these, they are NOT optional): " + failed.map((f) => f.toUpperCase()).join("; ") + ". ";
+      }
     }
-    if (brief.wantRig) {
+    if (brief.wantRig && image) {
       try {
         views.face = (await drawer.edit(image,
           "Close-up portrait of the SAME person shown in this image: identical face, hair, and skin, head and shoulders, facing the camera straight, neutral expression, sharp focus on skin and hair, even studio lighting, plain background",
@@ -167,6 +214,7 @@ export const meshAssetsSkill: EmployeeSkill = {
     }
 
     // ── 2. 메시 ────────────────────────────────────────────────────
+    if (!image) throw new ExecutionError("UNKNOWN_ERROR", "콘셉트 그림이 없다 — 그리기가 전부 실패했다.");
     const mesher = defaultMeshProvider();
     let mesh;
     try {
@@ -276,6 +324,8 @@ export const meshAssetsSkill: EmployeeSkill = {
       reusedConcept,
       textureResolution: brief.wantRig ? "4k" : "2k",
       views: Object.keys(views),
+      conceptChecks,
+      mustHave: brief.mustHave,
       // 그림 자체는 파일 concept_front.png. 행에는 "있다" 만.
       conceptImage: null,
       conceptFront: conceptByMachine ? "concept_front.png" : "(레퍼런스 받음)",
