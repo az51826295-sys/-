@@ -4,6 +4,7 @@ import { Waiting } from "@/components/Waiting";
 
 import { useEffect, useRef, useState } from "react";
 import Icon from "@/components/Icon";
+import PreviewPanel from "@/app/ask/PreviewPanel";
 import { ChatMarkdown } from "@/components/ChatMarkdown";
 import RoutingNotice from "./RoutingNotice";
 
@@ -116,6 +117,8 @@ export default function AskClient({
     (initial?.turns ?? []).some((t) => t.returnedWork) ? Date.now() + 30 * 60_000 : 0,
   );
   const sinceRef = useRef<string>(new Date().toISOString());
+  /** 미리보기가 다시 읽을 때(일이 돌아왔을 때 +1). */
+  const [panelKey, setPanelKey] = useState(0);
   const endRef = useRef<HTMLDivElement>(null);
 
   /**
@@ -155,6 +158,7 @@ export default function AskClient({
             ...data.posted.map((m) => ({ ...m, returnedWork: true, files: m.files ?? null })),
           ]);
           setWatchUntil(Date.now() + 30 * 60_000);
+          setPanelKey((k) => k + 1);
         }
         if (data.pending === 0) {
           // 더 기다릴 것이 없다. 표시를 바꿔 묻기를 멈춘다.
@@ -362,7 +366,8 @@ export default function AskClient({
     // 이만큼 내리지 않으면 첫 줄이 버튼 밑에 깔린다.
     // `pixel` 은 globals.css 에 있다 — 폰트·종이색·픽셀 보간을 한 번에 켠다.
     // 이 화면에만 붙인다: 대시보드는 표가 빽빽해서 픽셀 폰트가 오히려 나쁘다.
-    <div className="pixel mx-auto flex h-[calc(100vh-4rem)] max-w-2xl flex-col px-4 pt-9">
+    <div className="pixel mx-auto flex h-[calc(100vh-4rem)] max-w-2xl flex-col px-4 pt-9 lg:max-w-[1180px] lg:flex-row lg:gap-6">
+    <div className="flex min-w-0 flex-1 flex-col lg:max-w-2xl">
       {task && (
         <p className="pt-2 text-center text-xs text-[var(--rk-400)]">
           과제 · {task.title}
@@ -617,6 +622,13 @@ export default function AskClient({
           보내기
         </button>
       </form>
+    </div>
+    <PreviewPanel
+      conversationId={conversationId}
+      refreshKey={panelKey + turns.length}
+      steps={steps}
+      onReverted={() => { setPanelKey((k) => k + 1); }}
+    />
     </div>
   );
 }
