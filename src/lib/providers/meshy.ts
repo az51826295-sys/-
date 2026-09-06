@@ -69,6 +69,11 @@ export type MeshProvider = {
   name: string;
   imageTo3D(imageDataUrl: string, opts?: MeshOptions): Promise<MeshResult>;
   /**
+   * 여러 장(1~4, 첫 장이 정면) → 3D. 09-06 18회차: 전신 + 뒷모습 + **얼굴 클로즈업**을
+   * meshy-7 에 주니 얼굴이 사람에 가까워졌다 — 화질의 원천은 콘셉트 그림의 얼굴 픽셀이다.
+   */
+  multiImageTo3D(imageDataUrls: string[], opts?: MeshOptions): Promise<MeshResult>;
+  /**
    * 리깅(`POST /openapi/v1/rigging`, 5 크레딧). 휴머노이드만, 텍스처 있어야, 얼굴이
    * +Z. 걷기·달리기 애니가 같이 온다. 실패는 던진다 — 크레딧은 돌아온다.
    */
@@ -151,10 +156,20 @@ export function createMeshyProvider(apiKey: string): MeshProvider {
       };
     },
 
+    async multiImageTo3D(imageDataUrls, opts = {}) {
+      return runTo3D("/multi-image-to-3d", { image_urls: imageDataUrls }, { aiModel: "meshy-7", ...opts });
+    },
+
     async imageTo3D(imageDataUrl, opts = {}) {
+      return runTo3D("/image-to-3d", { image_url: imageDataUrl }, opts);
+    },
+  };
+
+  async function runTo3D(path: string, imageField: Record<string, unknown>, opts: MeshOptions): Promise<MeshResult> {
+    {
       const model = opts.aiModel ?? "meshy-6";
       const body = {
-        image_url: imageDataUrl,
+        ...imageField,
         ai_model: model,
         should_remesh: true,
         topology: opts.topology ?? "quad",
@@ -170,7 +185,7 @@ export function createMeshyProvider(apiKey: string): MeshProvider {
         auto_size: true,
         origin_at: "bottom",
       };
-      const created = await fetch(BASE + "/image-to-3d", {
+      const created = await fetch(BASE + path, {
         method: "POST",
         headers,
         body: JSON.stringify(body),
@@ -184,7 +199,7 @@ export function createMeshyProvider(apiKey: string): MeshProvider {
       let task: MeshyTask | null = null;
       while (Date.now() < until) {
         await new Promise((r) => setTimeout(r, POLL_MS));
-        const r = await get(`/image-to-3d/${taskId}`);
+        const r = await get(`${path}/${taskId}`);
         if (!r.ok) continue; // 한 번 못 물어본 것은 다음에 또 묻는다
         task = (await r.json()) as MeshyTask;
         if (task.status === "SUCCEEDED" || task.status === "FAILED" || task.status === "CANCELED") break;
@@ -206,8 +221,8 @@ export function createMeshyProvider(apiKey: string): MeshProvider {
         mock: false,
         model,
       };
-    },
-  };
+    }
+  }
 }
 
 /**
@@ -223,6 +238,9 @@ export function createMockMeshProvider(): MeshProvider {
     async rig() {
       // 목은 리깅을 못 한다. 본 0개 그대로 — B1 이 떨어지는 것이 맞다.
       return { taskId: "mock-rig", riggedGlbUrl: null, riggedFbxUrl: null, walkingFbxUrl: null, runningFbxUrl: null, consumedCredits: 0, mock: true };
+    },
+    async multiImageTo3D() {
+      return this.imageTo3D("", {});
     },
     async imageTo3D() {
       return {

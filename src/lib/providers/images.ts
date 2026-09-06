@@ -14,6 +14,7 @@ import { isPriced, UnpricedBackendError } from "@/lib/costs/pricing";
 const MODEL = "gpt-image-2";
 /** 이 모델이 내는 가장 작은 정사각형. 대화창에 얹기엔 이걸로 충분하다. */
 const SIZE = "1024x1024";
+export type ImageSize = "1024x1024" | "1024x1536" | "1536x1024";
 
 export type MadeImage = {
   /** data: URL. 파일 저장소를 붙이기 전까지는 이대로 대화에 실린다. */
@@ -32,7 +33,22 @@ export function createImageProvider() {
     name: "openai-images",
     model: MODEL,
 
-    async draw(prompt: string, quality: "low" | "medium" | "high" = "low"): Promise<MadeImage> {
+    /**
+     * 있는 그림을 참조로 새 그림. 같은 사람의 얼굴 클로즈업·뒷모습을 만들 때 쓴다
+     * (09-06 18회차). 생성기가 참조를 보고 그리니 얼굴이 유지된다.
+     */
+    async edit(imageDataUrl: string, prompt: string, size: ImageSize = "1024x1024", quality: "low" | "medium" | "high" = "high"): Promise<MadeImage> {
+      if (!isPriced(MODEL)) throw new UnpricedBackendError(MODEL);
+      const { toFile } = await import("openai");
+      const b64 = imageDataUrl.split(",")[1] ?? imageDataUrl;
+      const file = await toFile(Buffer.from(b64, "base64"), "reference.png", { type: "image/png" });
+      const res = await client.images.edit({ model: MODEL, image: file, prompt, n: 1, size, quality, output_format: "png" });
+      const out = res.data?.[0]?.b64_json;
+      if (!out) throw new Error("IMAGE_EMPTY");
+      return { dataUrl: `data:image/png;base64,${out}`, model: MODEL, inputTokens: res.usage?.input_tokens ?? 0, outputTokens: res.usage?.output_tokens ?? 0 };
+    },
+
+    async draw(prompt: string, quality: "low" | "medium" | "high" = "low", size: ImageSize = SIZE): Promise<MadeImage> {
       // 값이 안 매겨진 백엔드는 요청 전에 막는다. 회사 한도가 볼 수 없는 돈을
       // 쓰는 것이 이 규칙이 막는 유일한 실패다.
       if (!isPriced(MODEL)) throw new UnpricedBackendError(MODEL);
@@ -41,7 +57,7 @@ export function createImageProvider() {
         model: MODEL,
         prompt,
         n: 1,
-        size: SIZE,
+        size,
         quality,
         background: "transparent",
         output_format: "png",

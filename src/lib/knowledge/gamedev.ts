@@ -198,7 +198,7 @@ export const GAMEDEV_LESSONS: Lesson[] = [
   { id: "M8", role: "unity_code", verified: true,
     text: "계층: 루트 GameObject(CapsuleCollider 높이 1.8 중심 y 0.9, Rigidbody freezeRotation, 컨트롤러 스크립트) 아래에 모델 인스턴스를 (0,0,0) 회전 0 으로 자식으로 둔다. 에디터에서는 PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>(fbx)) 으로 만든다. Animator 는 모델 인스턴스에 있다(GetComponentInChildren)." },
   { id: "M9", role: "unity_code", verified: true,
-    text: "animator.cullingMode = AnimatorCullingMode.AlwaysAnimate — 헤드리스·화면 밖에서도 돌아야 시험이 잰다. Animator.updateMode 는 기본. 캐릭터 파일을 찾을 때는 AssetDatabase.FindAssets(\"rigged t:Model\") 로 찾아 경로에 제목이 든 것을 고른다 — 폴더 이름이 <제목> 또는 <제목>_FAIL 일 수 있다(판정 접미사)." },
+    text: "animator.cullingMode = AnimatorCullingMode.AlwaysAnimate — 헤드리스·화면 밖에서도 돌아야 시험이 잰다. Animator.updateMode 는 기본. 캐릭터 파일을 찾을 때는 AssetDatabase.FindAssets(\"rigged t:Model\") 로 찾아 **경로 문자열**에 제목이 든 것을 고른다 — 폴더 이름이 <제목> 또는 <제목>_FAIL 일 수 있다(판정 접미사). **검색어에 한글을 넣지 마라**: FindAssets(\"t:Model 사실적인\") 은 빈 배열을 돌려주고, 그 뒤의 '아무 rigged.fbx' 폴백이 옛 캐릭터를 집었다(09-06 09:07 — 새 캐릭터로 바꿨다고 믿은 두 판이 전부 옛 모델이었다). 후보가 여럿이면 제목이 든 경로 중 가장 최근 폴더를 고르고, 무엇을 골랐는지 Debug.Log 로 남긴다." },
   { id: "M10", role: "unity_code", verified: false,
     text: "캐릭터가 씬에 있으면 그림자·조명 규칙(L7)이 그대로 적용된다: SkinnedMeshRenderer 의 shadowCastingMode On, receiveShadows true, 키 조명은 얼굴 쪽 앞-위." },
   { id: "M13", role: "unity_code", verified: true,

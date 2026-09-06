@@ -119,11 +119,29 @@ export const meshAssetsSkill: EmployeeSkill = {
     await setStep(ctx.supabase, ctx.executionId, "generating");
     let image = reference;
     let conceptByMachine = false;
+    // 캐릭터는 세 장(정면 전신 1024×1536 · 뒷모습 · 얼굴 클로즈업)으로 만든다(18회차).
+    // 얼굴 화질의 원천은 콘셉트 그림의 얼굴 픽셀이라, 전신 한 장(얼굴 120 px)으로는
+    // 4K 로 칠해도 흐렸다. 클로즈업은 전신 그림을 참조로 편집해 같은 사람을 유지한다.
+    const views: { back?: string; face?: string } = {};
+    const drawer = createImageProvider();
     if (!image) {
-      const drawer = createImageProvider();
-      const made = await drawer.draw(CONCEPT_FORM + " " + brief.conceptPrompt, "medium");
+      const made = brief.wantRig
+        ? await drawer.draw(CONCEPT_FORM + " " + brief.conceptPrompt + ", full body head to toe, facing the camera, even studio lighting", "high", "1024x1536")
+        : await drawer.draw(CONCEPT_FORM + " " + brief.conceptPrompt, "medium");
       image = made.dataUrl;
       conceptByMachine = true;
+    }
+    if (brief.wantRig) {
+      try {
+        views.face = (await drawer.edit(image,
+          "Close-up portrait of the SAME person shown in this image: identical face, hair, and skin, head and shoulders, facing the camera straight, neutral expression, sharp focus on skin and hair, even studio lighting, plain background",
+          "1024x1024")).dataUrl;
+        views.back = (await drawer.edit(image,
+          "The SAME person shown in this image seen from directly behind, full body head to toe, same pose, same clothes and hair, even studio lighting, plain background",
+          "1024x1536")).dataUrl;
+      } catch (e) {
+        console.warn("[mesh_assets] 추가 뷰 실패 — 한 장으로 간다:", e instanceof Error ? e.message : e);
+      }
     }
 
     // ── 2. 메시 ────────────────────────────────────────────────────
@@ -131,7 +149,9 @@ export const meshAssetsSkill: EmployeeSkill = {
     let mesh;
     try {
       // 캐릭터는 4k — 같은 30 크레딧에 피부 고주파 2배(07:39). 소품은 2k 로 족하다.
-      mesh = await mesher.imageTo3D(image, { poseMode: brief.poseMode, textureResolution: brief.wantRig ? "4k" : "2k" });
+      mesh = views.face && views.back
+        ? await mesher.multiImageTo3D([image, views.back, views.face], { poseMode: brief.poseMode, textureResolution: "4k", aiModel: "meshy-7" })
+        : await mesher.imageTo3D(image, { poseMode: brief.poseMode, textureResolution: brief.wantRig ? "4k" : "2k" });
     } catch (error) {
       const msg = error instanceof Error ? error.message : String(error);
       throw new ExecutionError(
@@ -233,6 +253,7 @@ export const meshAssetsSkill: EmployeeSkill = {
       conceptByMachine,
       reusedConcept,
       textureResolution: brief.wantRig ? "4k" : "2k",
+      views: Object.keys(views),
       conceptImage: conceptByMachine ? image : null,
       mesh: { ...mesh, glbBase64: mesh.glbBase64 ? "(생략)" : null },
       rig,
@@ -299,6 +320,9 @@ export const meshAssetsSkill: EmployeeSkill = {
     await put("model.glb", glbBytes, "model/gltf-binary", "document", `${brief.subject} (GLB)`);
     await put("model.fbx", fbxBytes, "application/octet-stream", "document", `${brief.subject} (FBX)`);
     await put("thumbnail.png", thumbBytes, "image/png", "image", `${brief.subject} 미리보기`);
+    const b64bytes = (d?: string) => (d ? new Uint8Array(Buffer.from(d.split(",")[1] ?? "", "base64")) : null);
+    if (views.face) await put("concept_face.png", b64bytes(views.face), "image/png", "image", `${brief.subject} 콘셉트 얼굴`);
+    if (views.back) await put("concept_back.png", b64bytes(views.back), "image/png", "image", `${brief.subject} 콘셉트 뒷모습`);
     await put("rigged.fbx", riggedFbx, "application/octet-stream", "document", `${brief.subject} (리깅 FBX)`);
     await put("walking.fbx", walkingFbx, "application/octet-stream", "document", `${brief.subject} 걷기`);
     await put("running.fbx", runningFbx, "application/octet-stream", "document", `${brief.subject} 달리기`);
