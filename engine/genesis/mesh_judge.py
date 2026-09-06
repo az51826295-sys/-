@@ -20,7 +20,7 @@ from pygltflib import GLTF2
 # M1(닫힘)은 정보만 — 3D 프린팅 기준이라 게임 메시에는 안 맞는다(두 판이 그것으로
 # 떨어졌다). 프로필 둘: character 는 v0 그대로, prop 은 높이 0.05~10 m, 위 축 정보만.
 THRESHOLDS = {
-    "T1": {"tri_min": 2000, "tri_max": 40000},
+    "T1": {"tri_min": 2000, "tri_max": 60000},  # 09-06 17:40: meshy-7 쿼드 15k 가 42k 삼각형으로 온다. 주인공급은 6만까지
     "T2": {"mesh_max": 8},
     "S1": {"character": {"height_min_m": 0.5, "height_max_m": 3.0},
            "prop": {"height_min_m": 0.05, "height_max_m": 10.0}},
