@@ -190,9 +190,46 @@ namespace Rookery
             // Dev 의 빌더가 지을 때마다 새로 만드니 변환기(자산용)로는 못 잡는다 — 씬의
             // 렌더러를 돌며 바꾼다. 이름이 다른 속성은 옮긴다.
             var swapped = UpgradeSceneMaterials();
+            var env = ApplyEnvironment();
             var sc = EditorSceneManager.GetActiveScene();
             if (sc.isDirty) EditorSceneManager.SaveScene(sc);
-            return $"✓ 씬 {sc.name}: 전역 Volume + 카메라 {cams}대 후처리·SMAA + 재질 {swapped}개 URP 로";
+            return $"✓ 씬 {sc.name}: 전역 Volume + 카메라 {cams}대 후처리·SMAA + 재질 {swapped}개 URP 로 + {env}";
+        }
+
+        /// 환경광. 09-06 12:45 같은 모델을 Meshy 미리보기와 나란히 놓으니 우리 쪽 셔츠가
+        /// 회색, 얼굴이 창백했다 — 씬의 앰비언트가 파란 단색뿐이고 반사가 없어서다.
+        /// 스카이박스(프로시저럴)를 깔고 앰비언트·반사를 거기서 받게 한다. 빛의 합(P5)은
+        /// 그대로: 앰비언트 세기 1.0, 반사 세기 0.6.
+        static string ApplyEnvironment()
+        {
+            var sky = AssetDatabase.LoadAssetAtPath<Material>($"{Folder}/RookerySky.mat");
+            if (sky == null)
+            {
+                var sh = Shader.Find("Skybox/Procedural");
+                if (sh == null) return "스카이박스 셰이더 없음";
+                sky = new Material(sh);
+                sky.SetFloat("_SunSize", 0.04f);
+                sky.SetFloat("_AtmosphereThickness", 0.55f);
+                sky.SetColor("_SkyTint", new Color(0.55f, 0.7f, 0.95f));
+                sky.SetColor("_GroundColor", new Color(0.42f, 0.4f, 0.38f));
+                sky.SetFloat("_Exposure", 1.0f);
+                AssetDatabase.CreateAsset(sky, $"{Folder}/RookerySky.mat");
+            }
+            RenderSettings.skybox = sky;
+            RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Skybox;
+            RenderSettings.ambientIntensity = 1.0f;
+            RenderSettings.defaultReflectionMode = UnityEngine.Rendering.DefaultReflectionMode.Skybox;
+            RenderSettings.defaultReflectionResolution = 256;
+            RenderSettings.reflectionIntensity = 0.6f;
+            // 태양은 씬의 키 조명 — 스카이박스가 해 위치를 거기서 읽는다.
+            var key = UnityEngine.Object.FindObjectsByType<Light>(FindObjectsSortMode.None)
+                .Where(l => l.type == LightType.Directional).OrderByDescending(l => l.intensity).FirstOrDefault();
+            if (key != null) { RenderSettings.sun = key; key.color = new Color(1f, 0.96f, 0.9f); }
+            // 카메라가 단색 배경이면 스카이박스로.
+            foreach (var cam in UnityEngine.Object.FindObjectsByType<Camera>(FindObjectsSortMode.None))
+                if (cam.clearFlags == CameraClearFlags.SolidColor) cam.clearFlags = CameraClearFlags.Skybox;
+            DynamicGI.UpdateEnvironment();
+            return "하늘 환경광·반사";
         }
 
         static bool ApplySkinDetail(Material m)
