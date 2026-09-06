@@ -4,7 +4,7 @@ import { Waiting } from "@/components/Waiting";
 
 import { useEffect, useRef, useState } from "react";
 import Icon from "@/components/Icon";
-import PreviewPanel from "@/app/ask/PreviewPanel";
+import PreviewPanel, { PreviewStrip, previewSummary, usePreview } from "@/app/ask/PreviewPanel";
 import { ChatMarkdown } from "@/components/ChatMarkdown";
 import RoutingNotice from "./RoutingNotice";
 
@@ -119,6 +119,8 @@ export default function AskClient({
   const sinceRef = useRef<string>(new Date().toISOString());
   /** 미리보기가 다시 읽을 때(일이 돌아왔을 때 +1). */
   const [panelKey, setPanelKey] = useState(0);
+  const preview = usePreview(conversationId, panelKey + turns.length);
+  const [previewOpen, setPreviewOpen] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
   // 열 때와 일이 돌아왔을 때 끝으로. 지난 대화가 길면 첫 줄이 아니라 마지막 줄이 보여야 한다(09-07).
   useEffect(() => {
@@ -593,6 +595,7 @@ export default function AskClient({
         </div>
       )}
 
+      {conversationId && <PreviewStrip summary={previewSummary(preview.data, steps)} onOpen={() => setPreviewOpen(true)} />}
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -629,8 +632,10 @@ export default function AskClient({
     </div>
     <PreviewPanel
       conversationId={conversationId}
-      refreshKey={panelKey + turns.length}
+      preview={preview}
       steps={steps}
+      open={previewOpen}
+      onOpenChange={setPreviewOpen}
       onReverted={() => { setPanelKey((k) => k + 1); }}
     />
     </div>

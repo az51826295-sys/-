@@ -20,23 +20,9 @@ type Panel = {
   spend: { monthUsd: number; note: string };
 };
 
-export default function PreviewPanel({
-  conversationId,
-  refreshKey,
-  steps,
-  onReverted,
-}: {
-  conversationId: string | null;
-  /** 바뀔 때마다 다시 읽는다(일이 돌아왔을 때 등). */
-  refreshKey: number;
-  /** 지금 도는 일의 단계(있으면). */
-  steps: Record<string, string>;
-  onReverted?: () => void;
-}) {
+/** 미리보기 자료. 대화 화면이 들고 있다가 띠(폰)와 칸(PC) 둘에 준다. */
+export function usePreview(conversationId: string | null, refreshKey: number) {
   const [data, setData] = useState<Panel | null>(null);
-  const [open, setOpen] = useState(false); // 폰에서 올라온 상태
-  const [busy, setBusy] = useState<string | null>(null);
-
   const load = useCallback(async () => {
     if (!conversationId) return null;
     try {
@@ -49,6 +35,51 @@ export default function PreviewPanel({
     void load().then((d) => { if (alive) setData(d); });
     return () => { alive = false; };
   }, [load, refreshKey]);
+  return { data, setData, load };
+}
+
+export function previewSummary(data: Panel | null, steps: Record<string, string>): string {
+  const working = Object.values(steps)[0];
+  const cur = data?.current ?? null;
+  return cur
+    ? `미리보기 · v${cur.n} ${cur.title}` + (cur.checks.length ? ` · 통과 ${cur.checks.filter((c) => c.result === "통과").length}` : "")
+    : working ? `작업 중 · ${working}` : "미리보기 · 아직 결과가 없어요";
+}
+
+/** 폰: 입력창 바로 위의 한 줄. 누르면 판이 올라온다. */
+export function PreviewStrip({ summary, onOpen }: { summary: string; onOpen: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onOpen}
+      className="mb-2 flex w-full items-center justify-between border-2 border-[#E0703A] bg-[var(--rk-paper)] px-3 py-2 text-left text-xs text-[var(--rk-ink)] lg:hidden"
+    >
+      <span className="truncate">{summary}</span>
+      <span>▲</span>
+    </button>
+  );
+}
+
+export default function PreviewPanel({
+  conversationId,
+  preview,
+  steps,
+  open,
+  onOpenChange,
+  onReverted,
+}: {
+  conversationId: string | null;
+  preview: ReturnType<typeof usePreview>;
+  /** 지금 도는 일의 단계(있으면). */
+  steps: Record<string, string>;
+  /** 폰에서 판이 올라온 상태. */
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onReverted?: () => void;
+}) {
+  const { data, setData, load } = preview;
+  const setOpen = onOpenChange;
+  const [busy, setBusy] = useState<string | null>(null);
 
   async function revert(deliverableId: string, n: number) {
     if (!conversationId || busy) return;
@@ -64,9 +95,6 @@ export default function PreviewPanel({
 
   const working = Object.values(steps)[0];
   const cur = data?.current ?? null;
-  const summary = cur
-    ? `미리보기 · v${cur.n} ${cur.title}` + (cur.checks.length ? ` · 통과 ${cur.checks.filter((c) => c.result === "통과").length}` : "")
-    : working ? `작업 중 · ${working}` : "미리보기 · 아직 결과가 없어요";
 
   const body = (
     <div className="flex h-full flex-col text-sm">
@@ -151,26 +179,14 @@ export default function PreviewPanel({
     <>
       {/* PC: 오른쪽 칸 */}
       <aside className="hidden h-[calc(100vh-4rem)] w-[400px] shrink-0 border-l-2 border-[var(--rk-ink)] lg:block">{body}</aside>
-      {/* 폰: 입력창 위 띠 + 아래에서 올라오는 판 */}
-      {conversationId && (
-        <>
-          <button
-            type="button"
-            onClick={() => setOpen(true)}
-            className="fixed inset-x-4 bottom-[5.2rem] z-30 flex items-center justify-between border-2 border-[#E0703A] bg-[var(--rk-paper)] px-3 py-2 text-left text-xs text-[var(--rk-ink)] lg:hidden"
-          >
-            <span className="truncate">{summary}</span>
-            <span>▲</span>
-          </button>
-          {open && (
-            <div className="fixed inset-0 z-40 lg:hidden" onClick={() => setOpen(false)}>
-              <div className="absolute inset-0 bg-black/55" />
-              <div className="absolute inset-x-0 bottom-0 top-[14%] border-t-[3px] border-[var(--rk-ink)] bg-[var(--rk-paper)]" onClick={(e) => e.stopPropagation()}>
-                {body}
-              </div>
-            </div>
-          )}
-        </>
+      {/* 폰: 아래에서 올라오는 판 (띠는 대화 화면이 입력창 위에 그린다) */}
+      {conversationId && open && (
+        <div className="fixed inset-0 z-40 lg:hidden" onClick={() => setOpen(false)}>
+          <div className="absolute inset-0 bg-black/55" />
+          <div className="absolute inset-x-0 bottom-0 top-[14%] border-t-[3px] border-[var(--rk-ink)] bg-[var(--rk-paper)]" onClick={(e) => e.stopPropagation()}>
+            {body}
+          </div>
+        </div>
       )}
     </>
   );
