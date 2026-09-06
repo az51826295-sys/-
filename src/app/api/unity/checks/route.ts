@@ -50,12 +50,12 @@ export async function POST(request: Request) {
     .map((c) => `- ${mark(c.result)} ${c.name}` + (c.message ? ` — ${c.message.slice(0, 200)}` : ""))
     .join("\n");
   const text =
-    `**유니티에서 재 봤습니다** — 통과 ${body.passed} · 떨어짐 ${body.failed} · 못 잼 ${body.inconclusive}` +
+    `**유니티 검사 결과** — 통과 ${body.passed} · 실패 ${body.failed} · 해당 없음 ${body.inconclusive}` +
     (body.scene ? ` (씬 ${body.scene})` : "") +
     `\n\n${lines}\n\n` +
     (body.failed > 0
-      ? "떨어진 줄이 게임의 결함입니다. Dev 가 그 줄을 스스로 고칩니다(세 번까지). 그래도 안 되면 말씀이 필요합니다."
-      : "기계가 잴 수 있는 것은 다 통과했습니다. 재미와 손맛은 사람이 봅니다.");
+      ? "실패한 줄은 Dev 가 스스로 고쳐요(세 번까지). 그래도 안 되면 말씀이 필요해요."
+      : "기계가 잴 수 있는 건 다 통과했어요. 재미와 손맛은 사람이 봐요.");
 
   // 어느 대화에 붙일까: 그 산출물이 돌아온 턴이 있는 대화. 없으면 기록만 남긴다.
   let conversationId: string | null = null;

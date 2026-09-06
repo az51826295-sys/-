@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import { BUCKET } from "@/lib/deliverables/files";
+import { currentBuildForCompany } from "@/lib/chat/versions";
 import { readFileSync } from "node:fs";
 import path from "node:path";
 
@@ -105,7 +106,9 @@ export async function GET(request: Request) {
   // **최신 판 하나만.** 19:15 에 옛 판의 씬 빌더가 새 판 스크립트와 섞여 컴파일 오류
   // 셋이 났고, 그 상태로 시험을 걸자 유니티가 죽었다. 두 판이 같은 파일 이름을 쓰면
   // 어느 것이 이기는지는 순서 문제일 뿐이다. 옛 판이 필요하면 대화에서 다시 시킨다.
-  const latestBuild = deliverables.find((d) => d.deliverable_type === "app_build");
+  // 만든 순서가 아니라 대화의 **현재 버전**(복원 포함, 09-07 UI B). 없으면 만든 순서.
+  const current = await currentBuildForCompany(db, companyId);
+  const latestBuild = (current ? deliverables.find((d) => d.id === current.id) : undefined) ?? deliverables.find((d) => d.deliverable_type === "app_build");
   let scripts: { deliverableId: string; subject: string; path: string; contents: string; createdAt: string }[] = [];
   if (latestBuild) {
     // 코드 파일은 최신 판 한 행만 따로 읽는다.

@@ -32,7 +32,7 @@ while ($true) {
   if (Test-Path $stopFile) { Remove-Item $stopFile; Write-Host "멈춤 파일을 봤다. 끝."; break }
   try {
     $latest = Invoke-RestMethod -Uri "$url/api/unity/latest" -Headers @{ "x-rookery-key" = $key } -UserAgent "rookery-unity-watch" -TimeoutSec 30
-    if ($latest.id -and $latest.id -ne $last.Trim() -and -not $latest.checked) {
+    if ($latest.id -and $latest.id -ne $last.Trim()) {  # 복원한 옛 버전도 다시 가져와 재검사한다(09-07)
       $stamp = Get-Date -Format "HHmm"
       $log = Join-Path $dataDir ("unity_watch_{0}.log" -f $stamp)
       Write-Host ("{0} 새 판 {1} ({2}) — 검사 시작, 로그 {3}" -f (Get-Date -Format "HH:mm"), $latest.id.Substring(0,8), $latest.title, $log)

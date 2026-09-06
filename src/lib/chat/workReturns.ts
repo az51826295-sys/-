@@ -69,11 +69,11 @@ export async function collectUnityChecks(
 
 /** 붙일 글. 사람 이름을 앞에 둔다 — 누가 한 일인지가 첫 줄이다. */
 function finishedText(name: string, title: string, body: string): string {
-  return `**${name}가 끝냈습니다 — ${title}**\n\n${body.trim()}`;
+  return `**${name} · 작업 완료 · ${title}**\n\n${body.trim()}`;
 }
 
 function failedText(name: string, title: string, why: string | null): string {
-  return `**${name}가 못 했습니다 — ${title}**\n\n${why?.trim() || "이유가 기록되지 않았습니다. 다시 시켜 보십시오."}`;
+  return `**${name} · 작업 실패 · ${title}**\n\n${why?.trim() || "이유가 남지 않았어요. 다시 시켜 주세요."}`;
 }
 
 // 끝난 것으로 치는 상태. `submitted` 는 산출물이 나온 것이고, 승인은 사람이
@@ -176,7 +176,7 @@ export async function collectWorkReturns(
       } else {
         // 끝났다는데 산출물이 없다. 그것도 말한다 — 없는 것을 있는 것처럼
         // 기다리게 두면 사람은 영영 기다린다.
-        text = failedText(name, a.title, "끝났다고 적혀 있는데 산출물이 없습니다.");
+        text = failedText(name, a.title, "끝났다고 적혀 있는데 결과물이 없어요.");
       }
     } else if (DEAD.has(a.status)) {
       // failure_reason 은 코드(UNKNOWN_ERROR)뿐이라 사람이 읽을 게 없다. 실행 행의

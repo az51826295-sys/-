@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createServiceClient } from "@/lib/supabase/service";
+import { currentBuildForCompany } from "@/lib/chat/versions";
 
 export const dynamic = "force-dynamic";
 
@@ -18,14 +19,12 @@ export async function GET(request: Request) {
   const { data: company } = await db.from("companies").select("id").eq("unity_key", key).maybeSingle();
   if (!company) return NextResponse.json({ error: "열쇠가 맞지 않습니다." }, { status: 403 });
 
-  const { data: rows } = await db
-    .from("deliverables")
-    .select("id, title, created_at, checked:content_json->unityChecks->>at, assignments!inner(status)")
-    .eq("company_id", company.id)
-    .eq("deliverable_type", "app_build")
-    .eq("assignments.status", "completed")
-    .order("created_at", { ascending: false })
-    .limit(1);
-  const latest = (rows ?? [])[0] as { id: string; title: string; created_at: string; checked: string | null } | undefined;
+  // 대화의 현재 버전(복원 포함). 검사했는지는 그 산출물의 unityChecks 로.
+  const cur = await currentBuildForCompany(db, company.id as string);
+  let latest: { id: string; title: string; created_at: string; checked: string | null } | undefined;
+  if (cur) {
+    const { data: d } = await db.from("deliverables").select("checked:content_json->unityChecks->>at").eq("id", cur.id).maybeSingle();
+    latest = { ...cur, checked: ((d as { checked?: string | null } | null)?.checked) ?? null };
+  }
   return NextResponse.json(latest ? { id: latest.id, title: latest.title, at: latest.created_at, checked: latest.checked } : { id: null });
 }

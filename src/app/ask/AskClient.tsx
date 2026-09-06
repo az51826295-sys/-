@@ -489,13 +489,13 @@ export default function AskClient({
             )}
             {t.assignment && (
               <p className="mt-1.5 text-xs text-[var(--rk-400)]">
-                업무 생성: {t.assignment.title}
-                {t.assignment.queued ? " (대기열에 넣음)" : ""}
+                작업 시작 · {t.assignment.title}
+                {t.assignment.queued ? " (차례 기다리는 중)" : ""}
                 {t.assignment.returned
-                  ? " — 결과가 아래에 있습니다"
+                  ? " — 작업 완료"
                   : steps[t.assignment.id]
                     ? ` — ${steps[t.assignment.id]}…`
-                    : " — 끝나면 이 대화에 붙습니다"}
+                    : " — 끝나면 여기 붙어요"}
               </p>
             )}
             {t.images && t.images.length > 0 && (
