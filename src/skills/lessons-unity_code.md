@@ -1,0 +1,83 @@
+# 게임 제작에서 배운 것 — unity_code
+
+<!-- 출처와 회차는 engine/docs/gamedev-lessons-v0.md. 확인된 것과 읽은 것을 갈라 둔다 — 섞으면 둘 다 값을 잃는다.
+     우리 판에서 확인되면 줄을 '확인된 것' 으로 옮긴다. 배포 없이: npx tsx engine/tools/skill_push.mts lessons-unity_code -->
+
+## 확인된 것
+- [B6] 행동 하나를 더하면 바로 돌려 본다. 컴파일 통과는 작동이 아니다 — 08-29~09-03 에 '컴파일만 통과하고 안 움직이는' 게임을 여러 번 냈다.
+- [B7] 새 입력 시스템 전용 프로젝트(activeInputHandler: 1)에서 Input.GetAxis 는 조용히 0 이다. UnityEngine.InputSystem 의 Keyboard.current 또는 InputAction 을 쓴다.
+- [B8] Unity 6 에는 Arial.ttf 가 없다. UI 글꼴은 LegacyRuntime.ttf.
+- [G1] FindObjectOfType/FindObjectsOfType 은 폐기됐다. FindFirstObjectByType / FindAnyObjectByType / FindObjectsByType(FindObjectsSortMode.None) 을 쓴다.
+- [G2] Rigidbody.velocity 는 Unity 6 에서 linearVelocity 다(2D 도). 옛 이름을 쓰면 경고이고 버전에 따라 오류다.
+- [G5] 씬은 에디터 스크립트로 짓는다: EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single) → CreatePrimitive/new GameObject + AddComponent → EditorSceneManager.SaveScene(scene, path) → EditorBuildSettings.scenes 에 추가. [MenuItem] 을 달아 사람도 누를 수 있게.
+- [G6] 씬 빌더는 두 번 불려도 겹치지 않아야 한다 — 있으면 열어서 지우고 다시 짓는다. 밭이 겹쳐 쌓인 적이 있다.
+- [G8] Shader.Find 는 없는 셰이더에 null 을 준다. URP 가 안 깔린 프로젝트에서 'Universal Render Pipeline/Lit' 은 없다. new Material(Shader.Find(…)) 을 그대로 쓰면 ArgumentNullException 으로 씬 빌더도 게임도 죽는다 — 결과를 검사하고 'Standard' 로 물러나거나, 기본 도형의 재질을 그대로 둔다.
+- [G9] 씬 빌더는 Directional Light 를 반드시 하나 만든다. 없으면 3D 물체가 검게 나오고 합격 시험(삼차원이면_조명이_있다)에서 떨어진다 — 09-05 Dev 의 첫 유니티 판이 그랬다.
+- [G12] MonoBehaviour.Reset() 은 에디터 콜백이다 — 씬 빌더가 AddComponent 하는 순간 불려 transform 을 덮어쓴다. 09-05 Dev 가 거기서 position = 0 을 해서 플레이어가 바닥에 묻힌 채 저장됐고, 시작하자마자 물리가 밀어 올려 자가 '입력 없이 움직인 물체' 로 빼 버렸다. Reset 에 transform 을 두지 않는다.
+- [J2] 소품에 생명: 동전·열쇠·보석은 제자리에서 돈다(transform.Rotate(0, 90~180 * deltaTime, 0)) 하고 위아래로 뜬다(y = 기준 + Mathf.Sin(time * 2~3) * 0.1~0.2). 가만히 선 소품은 배경으로 읽혀 플레이어가 주우려 하지 않는다.
+- [J5] 알갱이(파티클)는 자산 없이 코드로 만든다: new GameObject + AddComponent<ParticleSystem>. main.startLifetime 0.3~0.6, startSpeed 2~4, startSize 0.05~0.15, emission.rateOverTime 0, emission.SetBursts(new[]{ new ParticleSystem.Burst(0f, 12~20) }), shape Sphere 반지름 0.1. 터뜨릴 때 transform.position 옮기고 Play(). 하나 만들어 재사용 — 매번 Instantiate 하지 않는다. 렌더러 재질은 Shader.Find 결과를 검사한다(G8).
+- [J5b] **AddComponent<ParticleSystem>() 은 붙는 순간 재생을 시작하고(playOnAwake 기본 true), 렌더러에 재질이 없어 분홍 사각형이 원점에 터진다** — 23:26 사진의 '발밑 분홍 조각' 이 이것이었다(캐릭터 문제가 아니었다). 붙인 직후 ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear) 하고 설정한 뒤, 렌더러에 new Material(Shader.Find("Particles/Standard Unlit") ?? Shader.Find("Sprites/Default") ?? Shader.Find("Standard")) 을 넣는다.
+- [J6] 카메라 흔들림은 카메라 자신이 아니라 **부모(rig) 의 localPosition** 에 준다. 시작 값을 기억했다가 되돌린다. 글의 수치: 4px·5프레임·감쇠 → 3D 에서는 진폭 0.05~0.1 m, 0.1~0.2초, 매 프레임 진폭 × 0.8. 큰 사건(클리어·맞음)에만. 줍기마다 흔들면 멀미다 — 일정한 흔들림은 금지.
+- [J10] 3D 첫 씬의 배경 디테일 다섯: 바닥 색과 물체 색 대비(같은 회색 금지), 카메라 배경색(하늘색), Directional Light 그림자 켜기(shadows = LightShadows.Soft), 옅은 안개(RenderSettings.fog = true, fogColor = 배경색, fogDensity 0.01~0.02), 바닥 가장자리가 보이면 벽·울타리. 이 다섯이 없으면 '회색 상자 위의 캡슐' 로 보인다.
+- [L1] 조명은 셋으로 짓는다(3점 조명의 게임판). ① 키(key): Directional, 회전 (50, -30, 0), 세기 0.75(URP·후처리에서는 1.0 이면 흰 옷이 탄다 — P5), 색은 살짝 따뜻하게(1, 0.96, 0.9), 그림자 Soft. ② 필(fill): Directional 하나 더, 키의 반대쪽(회전 (30, 150, 0)), 세기 0.25, 색은 살짝 차게(0.8, 0.85, 1), **그림자 끔**. ③ 앰비언트: RenderSettings.ambientMode = Trilight, skyColor 하늘색 0.5 배, equatorColor 회색 0.4, groundColor 어두운 0.2. 키 하나만 있으면 그림자 쪽 얼굴이 검다 — 09-05 동전 판이 그랬다.
+- [L2] 그림자 품질은 코드로 박는다: QualitySettings.shadows = ShadowQuality.All, shadowResolution = ShadowResolution.High, shadowDistance = 40(가까운 게임은 30~50 — 150 이상이면 텍셀이 늘어나 계단이 진다), shadowCascades = 4. 키 조명에 light.shadowBias = 0.03, light.shadowNormalBias = 0.6 (줄무늬(acne)면 normalBias 를 먼저 올리고, 그림자가 발에서 떨어지면(peter-panning) bias 를 내린다). shadowStrength 0.8 — 1.0 은 검정 구멍처럼 보인다.
+- [L3] 재질은 Standard 기본값(smoothness 0.5)이 플라스틱처럼 보인다. 바닥·벽·소품은 smoothness 0.15~0.3, metallic 0. 금속(동전·갑옷)만 metallic 0.8~1, smoothness 0.6~0.8. 순색(1,1,0)은 쓰지 않는다 — (0.95, 0.8, 0.2) 처럼 한 단계 죽인 색이 조명을 받는다. material.SetFloat("_Glossiness", …) / ("_Metallic", …).
+- [L4] 바닥은 순백이 아니다. 알베도 0.35~0.55 의 회색이나 옅은 색이어야 그림자가 읽힌다 — 흰 바닥은 그림자 대비가 죽고 화면 전체가 날아간다(20:28 사진의 바닥이 그랬다). 바닥 색은 배경(하늘)색과 달라야 지평선이 보인다.
+- [L5] 카메라 near 는 0.3, far 는 100. near 0.01 은 깊이 정밀도를 버려 그림자·z-fighting 이 나빠진다. 3인칭이면 FOV 50~60.
+- [L6] **`using UnityEngine.Rendering.Universal;` 을 쓰지 않는다.** URP 가 없는 프로젝트에서 컴파일이 깨져 시험이 0개가 된다. 포스트 프로세싱(Tonemapping ACES·Bloom 0.2·Vignette 0.2)은 코드로 만들지 말고 howToRun 에 'URP 프로젝트면 Volume 을 추가해 …' 로 사람 손 한 줄로 적는다. 파이프라인이 있는지는 UnityEngine.Rendering.GraphicsSettings.currentRenderPipeline != null 로 안다(이건 어디서나 컴파일된다).
+- [M1] 리깅된 FBX 는 씬 빌더가 임포트 설정을 코드로 박는다: var imp = AssetImporter.GetAtPath(path) as ModelImporter; imp.animationType = ModelImporterAnimationType.Human; imp.avatarSetup = ModelImporterAvatarSetup.CreateFromThisModel; imp.SaveAndReimport(). walking.fbx·running.fbx 도 같은 설정(같은 뼈대라 각자 아바타를 만들어도 리타깃된다).
+- [M1b] ModelImporterAvatarSetup 의 값은 NoAvatar · CreateFromThisModel · CopyFromOther 셋뿐이다. 'CopyFromOtherAvatar' 는 없다 — 21:50 Dev 가 그 이름으로 컴파일을 깨뜨렸다. 다른 FBX 의 아바타를 쓰려면 imp.avatarSetup = ModelImporterAvatarSetup.CopyFromOther; imp.sourceAvatar = (Avatar)AssetDatabase.LoadAssetAtPath(riggedFbx, typeof(Avatar)).
+- [M3] 크기: 리깅 출력은 100배 다를 수 있다(E7). 임포트 뒤 모델의 Renderer bounds 높이를 재서 1.6~1.9 m 가 아니면 imp.useFileScale = false; imp.globalScale = 1.75f / 높이 로 맞추고 다시 임포트한다. 씬 인스턴스의 localScale 을 만지지 않는다(A2).
+- [M6] 루트 모션은 끈다(animator.applyRootMotion = false). 이동은 컨트롤러가 한다. 발 미끄러짐을 줄이려면 이동 속도를 클립에 맞춘다: 걷기 1.4~1.8 m/s, 달리기 4~5 m/s. 클립의 AnimationClip.averageSpeed.magnitude 가 0 보다 크면 그 값을 쓴다(굽기 전 클립이면 0).
+- [M7] Speed 파라미터는 수평 속도 / 달리기 속도(0~1)로, animator.SetFloat("Speed", v, 0.1f, Time.deltaTime) 로 감쇠해서 넣는다. 캐릭터는 움직이는 방향을 본다: transform.rotation = Quaternion.RotateTowards(현재, Quaternion.LookRotation(방향), 720f * Time.deltaTime). 카메라 기준 방향(카메라 forward/right 를 y=0 으로 눕힌 것)으로 입력을 바꾼다.
+- [M8] 계층: 루트 GameObject(CapsuleCollider 높이 1.8 중심 y 0.9, Rigidbody freezeRotation, 컨트롤러 스크립트) 아래에 모델 인스턴스를 (0,0,0) 회전 0 으로 자식으로 둔다. 에디터에서는 PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>(fbx)) 으로 만든다. Animator 는 모델 인스턴스에 있다(GetComponentInChildren).
+- [M9] animator.cullingMode = AnimatorCullingMode.AlwaysAnimate — 헤드리스·화면 밖에서도 돌아야 시험이 잰다. Animator.updateMode 는 기본. 캐릭터 파일을 찾을 때는 AssetDatabase.FindAssets("rigged t:Model") 로 찾아 **경로 문자열**에 제목이 든 것을 고른다 — 폴더 이름이 <제목> 또는 <제목>_FAIL 일 수 있다(판정 접미사). **검색어에 한글을 넣지 마라**: FindAssets("t:Model 사실적인") 은 빈 배열을 돌려주고, 그 뒤의 '아무 rigged.fbx' 폴백이 옛 캐릭터를 집었다(09-06 09:07 — 새 캐릭터로 바꿨다고 믿은 두 판이 전부 옛 모델이었다). 후보가 여럿이면 제목이 든 경로 중 가장 최근 폴더를 고르고, 무엇을 골랐는지 Debug.Log 로 남긴다.
+- [M13] Meshy FBX 는 텍스처가 파일 안에 묻혀 있다. 그냥 임포트하면 **캐릭터가 새하얗다**(22:24 첫 사람 캐릭터가 그랬다). 씬 빌더가 코드로 꺼낸다 — **그 FBX 가 있는 폴더 안**(예: <캐릭터 폴더>/textures)에. 공용 폴더에 같은 이름(texture_0.png)으로 꺼내면 다른 캐릭터의 옛 텍스처가 남아 얼굴이 안 바뀐다(09-06 09:04). imp.ExtractTextures(폴더) → AssetDatabase.Refresh() → imp.materialImportMode = ModelImporterMaterialImportMode.ImportStandard; imp.materialLocation = ModelImporterMaterialLocation.External; imp.SearchAndRemapMaterials(ModelImporterMaterialName.BasedOnTextureName, ModelImporterMaterialSearch.Local) → imp.SaveAndReimport(). 꺼낸 재질의 셰이더가 null/분홍이면 Standard 로 바꾸고 _MainTex 에 텍스처를 넣는다.
+- [M16] **Meshy FBX 재질은 발광(emission)이 켜져 온다** — 발광 맵 = 베이스컬러 텍스처, 발광색 흰색. 알베도가 빛으로 한 번 더 더해져 얼굴·흰 옷이 하얗게 탄다(09-06 01:15, 조명을 다 꺼도 탔다). 캐릭터 재질을 만질 때 반드시: m.DisableKeyword("_EMISSION"); m.SetTexture("_EmissionMap", null); m.SetColor("_EmissionColor", Color.black).
+- [M14] 캐릭터 루트는 y = 0 에 놓는다(Meshy 는 원점이 발바닥, A8). 캡슐처럼 y = 높이/2 로 올리면 공중에서 떨어지며 시작하고, 자는 '입력 없이 움직인 물체' 로 뺀다 — 22:24 판이 그랬다. CapsuleCollider 는 center (0, 0.9, 0) 높이 1.8 로 루트에.
+- [M15] 씬 빌더는 짓고 나서 캐릭터의 모든 Renderer 를 돌며 재질의 shader 가 null 이거나 이름에 'InternalErrorShader' 가 들면 Standard 로 바꾼다. 분홍 조각은 이 검사 하나로 없어진다.
+- [N1] 캐릭터 폴더에 normal.png 와 metallic_smoothness.png 가 있으면(원본 GLB 에서 되찾은 것, R=metallic·A=smoothness 유니티 묶음) 씬 빌더가 리깅 재질에 붙인다: 노멀은 TextureImporter.textureType = TextureImporterType.NormalMap 으로 바꿔 SaveAndReimport 한 뒤 mat.SetTexture("_BumpMap", t); mat.EnableKeyword("_NORMALMAP"). 금속 맵은 ti.sRGBTexture = false 로 두고 mat.SetTexture("_MetallicGlossMap", t); mat.EnableKeyword("_METALLICGLOSSMAP"); mat.SetFloat("_GlossMapScale", 1f). 재질은 캐릭터 인스턴스의 SkinnedMeshRenderer.sharedMaterial(꺼낸 .mat).
+- [N2] 캐릭터 텍스처 임포트: maxTextureSize 2048, anisoLevel 8, mipmapEnabled true, textureCompression = CompressedHQ. 기본 aniso 1 은 비스듬한 청바지가 뭉개진다.
+- [N3] 안티앨리어싱: QualitySettings.antiAliasing = 4 (MSAA 4x, Built-in forward). 캐릭터 윤곽의 계단이 사라진다 — 사진에서 제일 먼저 보이는 싸구려 티.
+- [N4] 림(rim) 조명: 캐릭터 뒤-위(카메라 반대쪽, 회전 (35, 180+30, 0))에서 오는 Directional 하나, 세기 0.5~0.7, 색 살짝 차게(0.8, 0.9, 1), 그림자 끔. 윤곽에 얇은 빛이 생겨 배경에서 떨어져 보인다. 키·필·림 = 3점 조명 완성.
+- [N5] 머리가 가는 곳을 본다(Humanoid IK): Animator 컨트롤러 레이어에 IK Pass 를 코드로 켠다 — var L = ctrl.layers; L[0].iKPass = true; ctrl.layers = L. 캐릭터 스크립트에 void OnAnimatorIK(int layer) { anim.SetLookAtWeight(0.6f, 0.15f, 0.8f, 0f, 0.5f); anim.SetLookAtPosition(목표); } 목표는 이동 방향 앞 5 m(서 있으면 카메라가 보는 앞점). 사람처럼 보이게 하는 가장 싼 한 줄.
+- [N7] 상태 전이는 hasExitTime = false, duration 0.15~0.25초. 0 이면 걷기→달리기가 끊기고, 0.5 이상이면 굼뜨다.
+- [N8] 3인칭 카메라 프레이밍(읽은 것): 어깨 높이(1.4~1.6 m), 거리 3.5~4.5 m, FOV 55, 오른쪽으로 0.4 m 비껴서 캐릭터가 화면 중앙 아래 1/3 에. 정면 뒤통수 한가운데는 캐릭터도 앞도 안 보인다.
+- [M9b] 캐릭터를 못 찾으면 **캡슐로 떨어지고 로그에 '못 찾음: 찾은 경로 목록' 을 남긴다.** 다른 캐릭터 폴더로 조용히 대체하지 마라 — 09-06 11:17 '짧은_검은_머리' 필터에 슬래시를 붙여("/짧은_검은_머리/") 못 찾고, 스스로 만든 폴백이 옛 레인저를 골라 두 판이 헛돌았다. 필터는 슬래시 없이 부분 문자열로.
+- [O1] 프로젝트는 URP 일 수 있다(로키 창의 'URP + 후처리 켜기'). URP 에서 Standard·Legacy 셰이더 재질은 **분홍**이다 — 00:00 사진의 바닥·동전이 그랬다. 재질은 반드시 Lit()/Tint()/Surface() 도우미로만 만든다. 씬 빌더뿐 아니라 **런타임 스크립트**(GameManager 등)에서 만드는 재질도 같다 — 창의 안전망은 지은 씬만 바꿀 수 있고 런타임 재질은 못 잡는다.
+- [O2] URP 후처리(Volume·카메라 데이터)는 씬을 새로 지으면 사라진다. 창이 지은 뒤마다 다시 씌우지만, 빌더가 카메라를 두 대 만들거나 Volume 을 지우면 깨진다. 카메라는 한 대, 'Rookery Post' 물체는 건드리지 않는다.
+- [O3] 파티클 렌더러 재질은 URP 에서 'Universal Render Pipeline/Particles/Unlit', Built-in 에서 'Particles/Standard Unlit'. Shader.Find 로 앞을 먼저 찾고 없으면 뒤로.
+- [P1] 서 있을 때 '얼어 있는' 캐릭터는 죽어 보인다(animator.speed = 0 의 대가, M5). 생성 AI 없이 코드로 살린다 — 휴머노이드 뼈를 **LateUpdate** 에서 살짝 더 돌린다(애니메이터가 쓴 뒤라 덮인다): 숨 = Chest 를 x 축으로 ±1.5° · 주기 3.5초(sin), Spine ±0.7°; 무게 이동 = Hips 를 x 로 ±0.015 m · 주기 8초; 머리 미세 끄덕임 ±0.8° · 주기 5초(위상 다르게). 속도가 0.05 이하일 때만 weight 를 1 로 올리고(0.3초 감쇠), 걸을 때는 0. 뼈는 animator.GetBoneTransform(HumanBodyBones.Chest/Spine/Hips/Head).
+- [P2] 발 IK(휴머노이드, OnAnimatorIK): 컨트롤러 레이어 iKPass 켜기(N5). 각 발 뼈 위치 + 위 0.5 m 에서 아래로 1 m 레이캐스트(바닥 레이어), 맞으면 SetIKPositionWeight/RotationWeight(goal, w); SetIKPosition(goal, hit.point + hit.normal * 0.06f); SetIKRotation(goal, Quaternion.FromToRotation(Vector3.up, hit.normal) * transform.rotation). w 는 서 있을 때 1, 걸을 때 0.3(감쇠). 평평한 바닥에서도 발이 바닥을 정확히 딛는 것이 보인다.
+- [P3] 얼굴이 보이는 순간의 조명: 캐릭터 앞(카메라 쪽) 위 45° 에 **캐릭터 전용 필** Spot(range 4 m, 그림자 끔)을 루트의 자식으로. 세기는 **0.12~0.18**. 00:58 얼굴 필 0.3 에 키 1.0·필 0.35 가 겹쳐 흰 셔츠와 얼굴이 하얗게 날아갔다(URP·ACES·블룸).
+- [P5] **흰 표면에 닿는 빛의 합이 1.0 을 넘지 않게 한다.** URP + ACES 톤매핑 + 블룸에서는 알베도 0.9 짜리 흰 옷이 합 1.3 만 돼도 하얗게 타고 블룸까지 번진다. 기본값: 키 0.75, 필 0.25, 림 0.4(뒤라 앞과 안 겹침), 얼굴 필 0.15. 밝기가 모자라면 앰비언트를 올리지 조명을 더 세게 하지 않는다.
+
+## 읽은 것
+- [B1] 물리(Rigidbody 속도·힘)는 FixedUpdate 에서, 입력 읽기는 Update 에서. Update 에서 Rigidbody 를 밀면 프레임마다 다르게 움직인다.
+- [B2] FindObjectOfType·GetComponent 를 매 프레임 부르지 않는다. Start 에서 한 번 찾아 필드에 둔다.
+- [B3] 한 클래스가 다 하지 않는다. 이동·체력·입력·카메라는 각각 컴포넌트다. 이름에 And 가 필요하면 둘로 나눈다.
+- [B4] 새 물체의 Transform 은 Reset 부터. 루트는 위치 0·회전 0·크기 1 로 두고 조정은 자식에서.
+- [B5] 폴더는 Assets/Scenes·Scripts·Prefabs·Art·Audio. 두 번 이상 놓는 물체는 프리팹으로.
+- [E4] 3인칭 조작·카메라는 처음부터 짜지 않는다. 유니티 Starter Assets – ThirdPerson(URP)이 표준형이고 Input System·Cinemachine 이 같이 깔린다. 그 위에 얹는다.
+- [F4] Starter Assets 에 우리 캐릭터를 끼울 때: FBX Rig → Humanoid, Avatar 'Create From This Model', 플레이어 프리팹의 SkinnedMeshRenderer 와 본을 바꾸고 Animator 에 새 Avatar 를 지정한다. 본 이름이 표준(Hips·Spine·LeftUpLeg…)이어야 한다.
+- [F5] PC 텍스처 압축은 RGB DXT1, RGBA BC7. 바닥·벽처럼 반복되는 텍스처는 밉맵을 켜고 Trilinear.
+- [F6] Unity 6 URP 프로젝트의 기본 패키지: render-pipelines.universal, inputsystem, cinemachine(3.x), cloud.gltfast(6.x). 버전은 레지스트리에 물어서 고른다.
+- [G3] AddForceAtPosition 에 ForceMode.Acceleration/VelocityChange 를 주던 코드는 Unity 6 에서 뜻이 바뀌었다 — 질량을 곱해 Force/Impulse 로 쓴다.
+- [J1] 한 행동에 반응 하나로는 부족하다 — 겹친다. 줍기 하나에 크기 튐 + 알갱이 + 카메라 살짝 흔들림 + 점수 글자 튐(+ 나중에 소리). 글들은 큰 사건에 4~10개를 겹치라 한다. 반응이 하나뿐인 게임은 '아무 일도 안 일어난' 것처럼 읽힌다.
+- [J3] 줍는 순간: 콜라이더를 먼저 끈다(두 번 세어지는 것 방지) → 크기를 1.3배로 튀겼다가 0.15초에 0 으로 줄인다 → SetActive(false). Destroy 는 안 쓴다(R 로 되돌리기가 되게). 숫자는 글의 것: 찌그러짐·늘림은 0.8×1.2 를 2~5 프레임.
+- [J4] **사라지는 물체의 연출은 그 물체가 돌리지 않는다.** 코루틴은 주인이 비활성화·파괴되면 같이 멈춘다 — 동전이 자기 코루틴으로 줄어들다 SetActive(false) 하면 그 뒤 줄은 안 돈다. 매니저(GameManager)나 전용 연출 컴포넌트가 StartCoroutine 한다.
+- [J7] UI 튐: 점수 글자를 0.9 → 1.2 → 1.0 으로 0.1~0.15초(RectTransform.localScale). 클리어 글자는 크기 0 에서 튀어나온다(overshoot: 1.2 찍고 1.0). 글은 2~3 프레임이라 하지만 사람이 보려면 0.1초는 되어야 한다 — 우리 생각.
+- [J8] 움직임에 easing 을 쓴다. Lerp(a, b, t) 의 t 를 그대로 넣지 말고 1 - (1-t)^3(ease-out) 또는 Mathf.SmoothStep 으로. 선형은 기계처럼 보인다. 카메라 따라가기도 SmoothDamp.
+- [J9] 시간 정지(hit-stop)는 타격에만 40~80 ms — Time.timeScale = 0 뒤 복귀. 그동안 deltaTime 도 0 이므로 복귀는 WaitForSecondsRealtime, 정지 중 돌아야 할 UI 는 unscaledDeltaTime. 줍기에는 안 쓴다.
+- [J11] 소리는 나중이지만 **자리는 지금** 만든다(사장님: 효과음은 나중에). AudioSource 하나와 PlayPickup()/PlayClear() 같은 빈 함수를 두고 clip 이 null 이면 아무것도 안 한다. 나중에 클립만 끼우면 되게.
+- [J12] 플레이어 조작 반응이 먼저다. 입력 지연은 어떤 연출로도 못 살린다(글들의 첫 번째 규칙). 이동은 Update 에서 입력 읽어 Rigidbody 는 FixedUpdate 에서(B1), 점프가 있으면 coyote time·input buffer 100~150 ms.
+- [L7] 캐릭터(rigged.fbx 등)를 놓을 때: 키 조명이 얼굴 쪽 앞-위에서 오게(캐릭터가 카메라를 보면 키는 카메라 쪽 위), 캐릭터의 MeshRenderer/SkinnedMeshRenderer 는 shadowCastingMode On + receiveShadows true, 바닥은 그림자를 받는다. 얼굴이 검으면 필 조명이 없는 것이고, 발이 떠 보이면 그림자가 없는 것이다.
+- [L8] 동적 물체(플레이어·소품)마다 lightProbes 는 기본값(Blend Probes)으로 둔다. 라이트맵을 굽지 않는 첫 판에서는 실시간 조명만으로 간다 — Lightmapping.Bake 를 코드에서 부르지 않는다(헤드리스에서 멈추거나 오래 걸린다).
+- [M2] 애니메이션 클립은 제자리(in-place)여야 한다: imp.clipAnimations = imp.defaultClipAnimations 를 받아 각 클립에 loopTime = true, lockRootHeightY = true, lockRootRotation = true, keepOriginalPositionXZ = true(뿌리 이동을 포즈에 굽기) 를 주고 다시 넣는다. 안 그러면 클립이 캐릭터를 끌고 가 컨트롤러와 싸운다(발 미끄러짐의 첫 원인).
+- [M4] Animator 컨트롤러도 코드로: UnityEditor.Animations.AnimatorController.CreateAnimatorControllerAtPath("Assets/Rookery/<이름>/Player.controller") → AddParameter("Speed", AnimatorControllerParameterType.Float) → var tree = new BlendTree { name = "Locomotion", blendParameter = "Speed", blendType = BlendTreeType.Simple1D, useAutomaticThresholds = false } → tree.AddChild(walkClip, 0.5f); tree.AddChild(runClip, 1f) → ctrl.AddMotion(tree) 가 기본 상태. AssetDatabase.AddObjectToAsset(tree, ctrl). 클립은 AssetDatabase.LoadAllAssetRepresentationsAtPath(fbx) 에서 AnimationClip 을 고른다(이름에 __preview__ 가 든 것은 제외).
+- [M5] Meshy 리깅은 idle 클립을 안 준다(걷기·달리기뿐). 서 있을 때는 animator.speed 를 0 으로 내려 걷기 첫 자세에서 멈추고, 움직이면 1 로 올린다 — 임시. 제대로 된 idle 은 Meshy 애니메이션(600+ 동작)에서 받는다(교과 과정에 추가).
+- [M10] 캐릭터가 씬에 있으면 그림자·조명 규칙(L7)이 그대로 적용된다: SkinnedMeshRenderer 의 shadowCastingMode On, receiveShadows true, 키 조명은 얼굴 쪽 앞-위.
+- [N6] 발 IK(읽은 것): OnAnimatorIK 에서 각 발 아래로 0.6 m 레이캐스트 → SetIKPositionWeight(AvatarIKGoal.LeftFoot, w); SetIKPosition(goal, hit.point + up*0.05). 서 있을 때 w=1, 걸을 때 0.3. 평평한 바닥에선 차이가 작으니 첫 판엔 넣지 않아도 된다.
+- [N11] 흰 옷이 푸르스름하면 필·앰비언트 색이 너무 차다. 필 (0.8, 0.85, 1) 은 흰 천에서 파랗게 읽힌다 — 필은 (0.9, 0.92, 1), 앰비언트는 회색 쪽으로. 얼굴 사진에서 셔츠가 흰색으로 읽혀야 한다.
+- [M17] FindRig 후보가 여럿이면(같은 낱말 폴더 세 개) **옆의 .rookery.json 의 createdAt 이 최신인 것** 하나를 쓴다 — 매니저가 다시 만들게 한 판이 뒤에 온다. 09-06 17:52 기사 세 판 중 첫 판(얼굴 보이는 것)을 집었다. 후보 경로와 createdAt 을 전부 로그에.
+- [M18] 매트 강제(metallic 0 · smoothness 0.15)는 **맵이 없는 재질**에만 한다. metallic_smoothness.png 가 있으면 그 맵이 답이다: `_Metallic` 은 안 건드리고 `_Smoothness`(URP 에선 맵 배율)=1. 09-06 20:19 은빛 기사를 사람 판의 매트 버릇으로 덮어 회색 돌처럼 나왔다.

@@ -6,7 +6,7 @@ import { defaultMeshProvider } from "@/lib/providers/meshy";
 import { meshTextures, judgeMesh, JudgeUnavailable, type MeshVerdict } from "@/lib/providers/judge";
 import { z } from "zod";
 import { storeDeliverableFile, signedUrlFor, pathFor, BUCKET } from "@/lib/deliverables/files";
-import { renderGamedevLessons } from "@/lib/knowledge/gamedev";
+import { renderGamedevLessons } from "@/lib/knowledge/skillFiles";
 import { createServiceClient } from "@/lib/supabase/service";
 
 /**
@@ -182,7 +182,7 @@ export const meshAssetsSkill: EmployeeSkill = {
         "비율(예: 3-head-tall chibi), 얼굴 가림(closed helmet, no face), 색·재질, 옷. " +
         "그림 생성기는 이런 조건을 자주 무시한다 — 여기 적힌 것만 검수한다.\n" +
         (reference ? "레퍼런스 이미지가 **있다**. conceptPrompt 는 그래도 쓴다(기록용)." : "") +
-        renderGamedevLessons("mesh_assets"),
+        (await renderGamedevLessons("mesh_assets")),
       input:
         `업무: ${ctx.context.assignment.title}\n` +
         `설명: ${ctx.context.assignment.description ?? ""}\n` +
