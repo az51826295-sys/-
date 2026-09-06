@@ -76,6 +76,8 @@ export async function GET(request: Request) {
     if (!d) return false;
     // 유니티가 찍은 사진(unity-*.png)과 코드 산출물의 그림은 자산이 아니다 — 프로젝트에
     // 폴더만 늘린다(09-06 11:17 폴더 12개가 사진 하나씩 들고 있었다).
+    // 초안(그림 한 장)은 유니티에 갈 것이 없다(09-07 초안 먼저).
+    if (d.verdict === "DRAFT") return false;
     return !(d.deliverable_type === "app_build" || /\/unity-[a-z]+\.png$/.test(f.storage_path));
   });
   // 서명은 한 번에. 파일 130개를 하나씩 서명하니 100초를 넘겨 창의 HTTP 가 끊겼다(18:08).

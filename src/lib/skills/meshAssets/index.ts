@@ -40,6 +40,13 @@ const briefSchema = z.object({
    * 이 목록으로 그림을 검수한다.
    */
   mustHave: z.array(z.string()),
+  /**
+   * 초안 먼저(09-07, 갓오브워의 보라색 캐릭터). 매니저가 "고화질·최종·3D 로·진짜로·만들어 버려" 처럼
+   * 완성을 분명히 말했으면 true. 처음 시키는 것이면 false — 콘셉트 그림 한 장(초안)만 내고 크레딧은
+   * 안 쓴다. 매니저가 초안을 보고 "고화질로 만들어" 하면 그 그림으로 3D 를 만든다. 09-06 기사 다섯 판
+   * 중 셋은 초안에서 끝났어야 했다(크레딧 105·그림 $3).
+   */
+  wantFinal: z.boolean(),
 });
 
 // 빛은 유니티 후처리 몫이다(사장님 09-06 17:52 "빛은 후처리해야지"). 콘셉트에 후광·림
@@ -142,7 +149,7 @@ export const meshAssetsSkill: EmployeeSkill = {
     let reusedConcept = false;
     // 재사용은 매니저가 그렇게 말했을 때만 — "새로 그려" 를 무시하고 지난 그림을
     // 집으면 옷이 바뀐 채 나온다(09-06 09:42 판타지 레인저).
-    const wantsReuse = /같은\s*그림|지난\s*그림|그대로|그\s*사람|같은\s*얼굴|지난\s*캐릭터|same (face|person|image)/i.test(
+    const wantsReuse = /같은\s*그림|지난\s*그림|그대로|그\s*사람|같은\s*얼굴|지난\s*캐릭터|고화질|최종|이\s*그림|그\s*그림|same (face|person|image)/i.test(
       `${ctx.context.assignment.title} ${ctx.context.assignment.description ?? ""}`,
     );
     if (!reference && roleInput.previousDeliverableId && wantsReuse) {
@@ -182,6 +189,8 @@ export const meshAssetsSkill: EmployeeSkill = {
         "- `mustHave`: 매니저가 적은 것 중 그림에서 눈으로 확인되는 조건 3~6개(영어 짧게). " +
         "비율(예: 3-head-tall chibi), 얼굴 가림(closed helmet, no face), 색·재질, 옷. " +
         "그림 생성기는 이런 조건을 자주 무시한다 — 여기 적힌 것만 검수한다.\n" +
+        "- `wantFinal`: 매니저가 '고화질로·최종·3D 로 만들어·진짜로·그대로 만들어' 처럼 **완성을 분명히** 말했으면 true. " +
+        "처음 시키는 것이거나 그런 말이 없으면 false(초안: 그림 한 장만, 크레딧 0).\n" +
         (reference ? "레퍼런스 이미지가 **있다**. conceptPrompt 는 그래도 쓴다(기록용)." : "") +
         (await renderGamedevLessons("mesh_assets")),
       input:
@@ -232,7 +241,7 @@ export const meshAssetsSkill: EmployeeSkill = {
           emphasis = "STRICT REQUIREMENTS (the previous attempt violated these, they are NOT optional): " + failed.map((f) => f.toUpperCase()).join("; ") + ". ";
         }
       }
-      if (brief.wantRig && image) {
+      if (brief.wantRig && image && (brief.wantFinal || reusedConcept)) {
         // 셋을 **동시에** 그린다. 차례로 그리면 한 장에 40초씩 두 장 값의 시간이 그냥 흘렀다(09-06 22:10 효율 회차).
         // 셋은 서로를 안 보니(전부 정면 그림에서 나온다) 동시에 그려도 결과가 같다.
         const [face, back, side] = await Promise.allSettled([
@@ -267,8 +276,54 @@ export const meshAssetsSkill: EmployeeSkill = {
     conceptByMachine = drawn.byMachine;
     conceptChecks.push(...drawn.checks);
 
-    // ── 2. 메시 ────────────────────────────────────────────────────
     if (!image) throw new ExecutionError("UNKNOWN_ERROR", "콘셉트 그림이 없다 — 그리기가 전부 실패했다.");
+
+    // ── 1b. 초안이면 여기서 끝 ──────────────────────────────────────
+    // 그림 한 장을 대화에 붙이고 묻는다. 3D(크레딧 35)는 매니저가 "고화질로 만들어" 할 때.
+    // 레퍼런스를 받았거나 지난 그림을 다시 쓰는 판은 이미 사람이 고른 것이니 초안이 아니다.
+    if (!brief.wantFinal && !reusedConcept && conceptByMachine) {
+      await setStep(ctx.supabase, ctx.executionId, "storing");
+      const draftContent = {
+        draft: true,
+        brief,
+        conceptChecks,
+        mustHave: brief.mustHave,
+        conceptFront: "concept_front.png",
+        conceptImage: null,
+        verdict: { verdict: "DRAFT", rules: [] },
+      };
+      const draftMarkdown =
+        `**${brief.subject}** — 초안이에요
+
+` +
+        "콘셉트 그림 한 장만 그렸어요(크레딧 0). 이 그림대로 3D 로 만들까요? " +
+        "**\"고화질로 만들어\"** 라고 하시면 이 그림으로 앞·뒤·옆·얼굴을 그려 3D 와 뼈대를 만들어요(크레딧 35, 약 10분). " +
+        "고칠 게 있으면 말씀해 주세요 — 그림만 다시 그려요.\n" +
+        (conceptChecks.length ? `
+검수: ${conceptChecks.length}번 그려서 필수 조건 ${brief.mustHave.length}개를 맞췄어요.
+` : "");
+      const { data: savedDraft, error: draftErr } = await ctx.supabase.rpc("submit_generated_deliverable", {
+        p_execution_id: ctx.executionId, p_title: brief.subject, p_deliverable_type: "mesh_assets",
+        p_content_markdown: draftMarkdown, p_content_json: draftContent,
+        p_generation_model: `${ctx.providers.ai.model} + gpt-image-2 (초안)`, p_citations: [],
+      });
+      if (draftErr) throw new ExecutionError("DELIVERABLE_SAVE_FAILED", draftErr.message);
+      const dr = savedDraft as { ok: boolean; reason?: string; deliverableId?: string };
+      if (!dr.ok && !(dr.reason === "already_submitted" && dr.deliverableId)) throw new ExecutionError("DELIVERABLE_SAVE_FAILED", dr.reason ?? "unknown");
+      const draftId = dr.deliverableId as string;
+      const store = createServiceClient();
+      await store.from("deliverables").update({ content_json: { ...draftContent, filesPending: true } }).eq("id", draftId);
+      const r = await storeDeliverableFile(store, {
+        companyId: execCompanyId, deliverableId: draftId, filename: "concept_front.png",
+        body: new Uint8Array(Buffer.from(image.split(",")[1] ?? "", "base64")), kind: "image", mimeType: "image/png",
+        title: `${brief.subject} 초안`, description: "콘셉트 그림(초안). 고화질로 만들면 이 그림으로 3D 를 만든다.", producedByBackend: "gpt-image-2",
+      });
+      if (!r.ok) console.warn("[mesh_assets] 초안 그림 저장 실패:", r.error);
+      await store.from("deliverables").update({ content_json: { ...draftContent, filesPending: false } }).eq("id", draftId);
+      return { deliverableId: draftId, deliverableType: "mesh_assets", metrics: { candidateCount: 1, selectedCount: 0 } };
+    }
+
+    // ── 2. 메시 ────────────────────────────────────────────────────
     const mesher = defaultMeshProvider();
     let mesh;
     try {
