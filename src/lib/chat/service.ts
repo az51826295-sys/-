@@ -181,7 +181,8 @@ How to behave:
 
   const transcript = input.messages
     .slice(-HISTORY_LIMIT)
-    .map((m) => `${m.role === "user" ? "Manager" : employee.name}: ${m.content}`)
+    // 긴 턴(돌아온 산출물 본문)은 앞부분만 — 접수 답에 코드 전체는 필요 없다(10:35 문맥 초과).
+    .map((m) => `${m.role === "user" ? "Manager" : employee.name}: ${m.content.length > 2500 ? m.content.slice(0, 2500) + "\n…(잘림)" : m.content}`)
     .join("\n\n");
 
   // 계량은 서비스 클라이언트로 — 장부(model_usage)는 사용자 세션이

@@ -140,6 +140,27 @@ function employeeNamedIn(text: string): string | null {
   return null;
 }
 
+/**
+ * 대화 기록을 모델의 창 안으로. 09-06 10:35 한 대화가 산출물 본문·코드·유니티 판정으로
+ * 불어 "input exceeds the context window" 로 답을 못 했다. 최근 것을 우선하고, 긴 턴
+ * (돌아온 산출물)은 앞부분만 남긴다. 전체 6만 자, 한 턴 3천 자.
+ */
+function clipTranscript(messages: { role: string; content: string }[]): string {
+  const PER_TURN = 3000;
+  const TOTAL = 60_000;
+  const lines: string[] = [];
+  let used = 0;
+  for (let i = messages.length - 1; i >= 0; i--) {
+    const m = messages[i];
+    const body = m.content.length > PER_TURN ? m.content.slice(0, PER_TURN) + "\n…(잘림)" : m.content;
+    const line = `${m.role}: ${body}`;
+    if (used + line.length > TOTAL) break;
+    lines.push(line);
+    used += line.length;
+  }
+  return lines.reverse().join("\n");
+}
+
 /** 고쳐 달라는 말. 넓게 잡는다 — 못 잡으면 채팅이 코드 조각으로 답하고 끝난다. */
 const FIX_WORDS = /고쳐|고치|수정|다시\s*해|바꿔|추가해|넣어\s*줘|빼\s*줘|늘려|줄여|fix|change/i;
 
@@ -238,9 +259,7 @@ export async function runEverydayTurn(
 
   const speaker = user ? await speakerFor(supabase) : null;
 
-  const transcript = input.messages
-    .map((m) => `${m.role}: ${m.content}`)
-    .join("\n");
+  const transcript = clipTranscript(input.messages);
 
   // 사진은 로그인한 사람만 올릴 수 있다. 비전 호출은 글보다 비싸고, 익명 하루
   // 상한이 사진 몇 장에 다 쓰이면 그날 나머지 사람이 대화를 못 한다.
