@@ -84,7 +84,12 @@ export const meshAssetsSkill: EmployeeSkill = {
     // 그림이 안 왔고 지난 캐릭터가 있으면 그 콘셉트 그림을 다시 쓴다 — "같은 얼굴로 다시"
     // 가 되게(09-06 17회차: 4K 로 다시 만들 때 얼굴이 바뀌면 안 된다).
     let reusedConcept = false;
-    if (!reference && roleInput.previousDeliverableId) {
+    // 재사용은 매니저가 그렇게 말했을 때만 — "새로 그려" 를 무시하고 지난 그림을
+    // 집으면 옷이 바뀐 채 나온다(09-06 09:42 판타지 레인저).
+    const wantsReuse = /같은\s*그림|지난\s*그림|그대로|그\s*사람|같은\s*얼굴|지난\s*캐릭터|same (face|person|image)/i.test(
+      `${ctx.context.assignment.title} ${ctx.context.assignment.description ?? ""}`,
+    );
+    if (!reference && roleInput.previousDeliverableId && wantsReuse) {
       const { data: prev } = await ctx.supabase
         .from("deliverables")
         .select("content_json")
