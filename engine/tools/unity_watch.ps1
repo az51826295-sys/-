@@ -13,8 +13,12 @@ $vars = @{}
 Get-Content $envFile | ForEach-Object { if ($_ -match '^\s*([A-Z0-9_]+)=(.*)$') { $vars[$matches[1]] = $matches[2].Trim() } }
 $url = if ($vars["ROOKERY_URL"]) { $vars["ROOKERY_URL"] } else { "https://rookery-web-production.up.railway.app" }
 $sb = $vars["NEXT_PUBLIC_SUPABASE_URL"]; $sk = $vars["SUPABASE_SECRET_KEY"]
-$company = Invoke-RestMethod -Uri "$sb/rest/v1/companies?select=unity_key&limit=1" -Headers @{ apikey = $sk; Authorization = "Bearer $sk" }
-$key = $company[0].unity_key
+# Supabase 는 브라우저 UA 로 온 비밀키 호출을 거절한다 — PowerShell 의 기본 UA 가 브라우저처럼 보인다(23:50).
+$key = $vars["ROOKERY_KEY"]
+if (-not $key) {
+  $company = Invoke-RestMethod -Uri "$sb/rest/v1/companies?select=unity_key&limit=1" -Headers @{ apikey = $sk; Authorization = "Bearer $sk" } -UserAgent "rookery-unity-watch"
+  $key = $company[0].unity_key
+}
 $unity = "C:\Program Files\Unity\Hub\Editor\6000.5.10f1\Editor\Unity.exe"
 $project = "C:\Users\az518\RookeryFarm"
 $dataDir = Join-Path $root "data"; New-Item -ItemType Directory -Force $dataDir | Out-Null
@@ -27,7 +31,7 @@ Write-Host ("{0} 감시 시작 — 마지막으로 검사한 판: {1}" -f (Get-D
 while ($true) {
   if (Test-Path $stopFile) { Remove-Item $stopFile; Write-Host "멈춤 파일을 봤다. 끝."; break }
   try {
-    $latest = Invoke-RestMethod -Uri "$url/api/unity/latest" -Headers @{ "x-rookery-key" = $key } -TimeoutSec 30
+    $latest = Invoke-RestMethod -Uri "$url/api/unity/latest" -Headers @{ "x-rookery-key" = $key } -UserAgent "rookery-unity-watch" -TimeoutSec 30
     if ($latest.id -and $latest.id -ne $last.Trim() -and -not $latest.checked) {
       $stamp = Get-Date -Format "HHmm"
       $log = Join-Path $dataDir ("unity_watch_{0}.log" -f $stamp)
