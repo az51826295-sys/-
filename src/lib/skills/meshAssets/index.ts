@@ -279,6 +279,8 @@ export const meshAssetsSkill: EmployeeSkill = {
       throw new ExecutionError("DELIVERABLE_SAVE_FAILED", rpc.reason ?? "unknown");
     }
     const deliverableId = rpc.deliverableId as string;
+    // 파일이 다 올라갈 때까지 대화에 붙지 않게 표시한다(workReturns 가 본다).
+    await createServiceClient().from("deliverables").update({ content_json: { ...content, filesPending: true } }).eq("id", deliverableId);
 
     // ── 5. 파일을 저장소에 ─────────────────────────────────────────
     // 산출물은 이미 저장됐다. 파일 하나를 못 올려도 산출물이 실패로 바뀌지는
@@ -353,12 +355,10 @@ export const meshAssetsSkill: EmployeeSkill = {
         storageErrors.push(`pbr maps: ${e instanceof Error ? e.message : String(e)}`);
       }
     }
-    if (storageErrors.length) {
-      await store
-        .from("deliverables")
-        .update({ content_json: { ...content, storageErrors } })
-        .eq("id", deliverableId);
-    }
+    await store
+      .from("deliverables")
+      .update({ content_json: { ...content, filesPending: false, ...(storageErrors.length ? { storageErrors } : {}) } })
+      .eq("id", deliverableId);
 
     return {
       deliverableId,

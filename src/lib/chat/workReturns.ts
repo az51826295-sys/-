@@ -150,11 +150,21 @@ export async function collectWorkReturns(
     if (DONE.has(a.status)) {
       const { data: d } = await db
         .from("deliverables")
-        .select("id, title, content_markdown, content_json")
+        .select("id, title, content_markdown, content_json, created_at")
         .eq("assignment_id", a.id)
         .order("version", { ascending: false })
         .limit(1)
         .maybeSingle();
+      // 파일이 아직 올라가는 중이면 붙이지 않는다. 산출물 행은 파일보다 먼저 생기고
+      // 4K 캐릭터의 맵은 2분 더 걸린다(09-06 09:29) — 그 사이에 붙이면 반쪽 목록이고,
+      // 유니티 창이 반쪽을 가져간다. 10분이 넘으면 끊긴 것으로 보고 있는 만큼 붙인다.
+      const pendingFiles = !!(d?.content_json as { filesPending?: boolean } | null)?.filesPending;
+      const startedAgo = d ? Date.now() - new Date((d as { created_at?: string }).created_at ?? 0).getTime() : 0;
+      if (d && pendingFiles && startedAgo < 10 * 60_000) {
+        pending += 1;
+        steps.push({ assignmentId: a.id, who: name, step: "파일을 저장하는 중" });
+        continue;
+      }
       if (d) {
         deliverableId = d.id as string;
         text = finishedText(name, (d.title as string) || a.title, d.content_markdown as string);
