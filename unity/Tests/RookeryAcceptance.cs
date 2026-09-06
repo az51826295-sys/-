@@ -244,6 +244,51 @@ namespace Rookery.Tests
             }
         }
         public const string PortraitPath = "Library/Rookery/portrait.png";
+        public const string WalkPath = "Library/Rookery/walk.png";
+
+        /// 키를 계속 누르며 옆(오른쪽 3 m)에서 넉 장을 찍어 가로로 붙인다. 휴머노이드가 없으면 건너뛴다.
+        static IEnumerator CaptureWalkStrip(Keyboard keyboard, Key[] combo)
+        {
+            if (SystemInfo.graphicsDeviceType == UnityEngine.Rendering.GraphicsDeviceType.Null) yield break;
+            var human = Object.FindObjectsByType<Animator>(FindObjectsSortMode.None).FirstOrDefault(a => a.isHuman);
+            var cam = Camera.main;
+            if (human == null || cam == null) yield break;
+            var root = human.transform;
+            const int W = 480, H = 1080, N = 4;
+            var strip = new Texture2D(W * N, H, TextureFormat.RGB24, false);
+            var rt = new RenderTexture(W, H, 24) { antiAliasing = Mathf.Max(1, QualitySettings.antiAliasing) };
+            var savedPos = cam.transform.position; var savedRot = cam.transform.rotation; var savedFov = cam.fieldOfView;
+            var prev = cam.targetTexture;
+            var active = RenderTexture.active;
+            for (var i = 0; i < N; i++)
+            {
+                // 0.22초씩 누르며 간다 — 걷기 한 주기(~1초)의 네 자리.
+                var until = Time.time + 0.22f;
+                while (Time.time < until)
+                {
+                    InputSystem.QueueStateEvent(keyboard, new KeyboardState(combo));
+                    InputSystem.Update();
+                    yield return null;
+                }
+                // 발까지 나와야 미끄러짐을 본다(10:12 첫 줄은 발이 잘렸다). 거리 3.8 m·시야각 45°
+                // 면 세로 3.1 m 가 들어온다.
+                var look = root.position + Vector3.up * 0.9f;
+                cam.transform.position = look + root.right * 3.8f;
+                cam.transform.rotation = Quaternion.LookRotation(look - cam.transform.position, Vector3.up);
+                cam.fieldOfView = 45f;
+                cam.targetTexture = rt;
+                InputSystem.QueueStateEvent(keyboard, new KeyboardState(combo)); InputSystem.Update(); yield return null;
+                InputSystem.QueueStateEvent(keyboard, new KeyboardState(combo)); InputSystem.Update(); yield return null;
+                RenderTexture.active = rt;
+                strip.ReadPixels(new Rect(0, 0, W, H), W * i, 0);
+                RenderTexture.active = active;
+                cam.targetTexture = prev;
+            }
+            strip.Apply();
+            cam.transform.position = savedPos; cam.transform.rotation = savedRot; cam.fieldOfView = savedFov;
+            System.IO.File.WriteAllBytes(System.IO.Path.GetFullPath(WalkPath), strip.EncodeToPNG());
+            Object.Destroy(strip); rt.Release(); Object.Destroy(rt);
+        }
 
         // ── 2. 화면에 보이는 것이 있는가 ─────────────────────────
         [UnityTest]
@@ -457,7 +502,13 @@ namespace Rookery.Tests
                 InputSystem.Update();
                 yield return null;
 
-                if (moved > 0) break;
+                if (moved > 0)
+                {
+                    // 걷는 모습 한 줄(19회차). 서 있는 사진만으론 스키닝·발 미끄러짐·팔
+                    // 흔들림을 못 본다. 방금 먹힌 키를 계속 누르며 옆에서 넉 장을 찍는다.
+                    for (var walk = CaptureWalkStrip(keyboard, combo); walk.MoveNext();) yield return walk.Current;
+                    break;
+                }
             }
 
             var probeSaw = probe.Saw;

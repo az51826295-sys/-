@@ -434,13 +434,14 @@ namespace Rookery
 
         /// 결과를 로키로. 시험 뒤에도, 컴파일이 깨졌을 때도 같은 문으로 간다.
         static void PostChecks(string url, string key, string deliverable, string scene,
-                               int passed, int failed, int inconclusive, List<string> cases, string shot, int failedExit = 3, string portrait = "")
+                               int passed, int failed, int inconclusive, List<string> cases, string shot, int failedExit = 3, string portrait = "", string walk = "")
         {
             if (string.IsNullOrEmpty(url) || string.IsNullOrEmpty(key)) return;
             var json = "{\"deliverableId\":\"" + J(deliverable) + "\",\"scene\":\"" + J(scene) + "\",\"passed\":" + passed +
                        ",\"failed\":" + failed + ",\"inconclusive\":" + inconclusive + ",\"cases\":[" + string.Join(",", cases) + "]" +
                        (shot.Length > 0 ? ",\"screenshot\":\"" + shot + "\"" : "") +
-                       (portrait.Length > 0 ? ",\"portrait\":\"" + portrait + "\"" : "") + "}";
+                       (portrait.Length > 0 ? ",\"portrait\":\"" + portrait + "\"" : "") +
+                       (walk.Length > 0 ? ",\"walk\":\"" + walk + "\"" : "") + "}";
             var req = new UnityWebRequest($"{url.TrimEnd('/')}/api/unity/checks", "POST")
             {
                 uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(json)),
@@ -561,7 +562,14 @@ namespace Rookery
                     try { portrait = Convert.ToBase64String(File.ReadAllBytes(portraitPath)); File.Delete(portraitPath); }
                     catch (Exception e) { Debug.LogWarning("[Rookery] 얼굴 사진을 못 읽었습니다: " + e.Message); }
                 }
-                PostChecks(url, key, deliverable, scene, passed, failed, inconclusive, cases, shot, portrait: portrait);
+                var walk = "";
+                var walkPath = Path.GetFullPath("Library/Rookery/walk.png");
+                if (File.Exists(walkPath))
+                {
+                    try { walk = Convert.ToBase64String(File.ReadAllBytes(walkPath)); File.Delete(walkPath); }
+                    catch (Exception e) { Debug.LogWarning("[Rookery] 걷기 사진을 못 읽었습니다: " + e.Message); }
+                }
+                PostChecks(url, key, deliverable, scene, passed, failed, inconclusive, cases, shot, portrait: portrait, walk: walk);
             }
         }
     }

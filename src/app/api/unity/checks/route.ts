@@ -26,6 +26,8 @@ type Body = {
   screenshot?: string;
   /** 정면 얼굴 사진(PNG, base64). 휴머노이드가 씬에 있을 때만 온다. */
   portrait?: string;
+  /** 걷는 모습 넉 장을 가로로 붙인 것(옆에서). 휴머노이드가 움직였을 때만 온다. */
+  walk?: string;
 };
 
 export async function POST(request: Request) {
@@ -69,8 +71,8 @@ export async function POST(request: Request) {
 
     const { data: d } = await db.from("deliverables").select("content_json").eq("id", body.deliverableId).eq("company_id", company.id).maybeSingle();
     if (d) {
-      const { screenshot: _omit, portrait: _omit2, ...rest } = body;
-      void _omit; void _omit2;
+      const { screenshot: _omit, portrait: _omit2, walk: _omit3, ...rest } = body;
+      void _omit; void _omit2; void _omit3;
       await db
         .from("deliverables")
         .update({ content_json: { ...(d.content_json as object), unityChecks: { ...rest, at: new Date().toISOString() } } })
@@ -79,6 +81,7 @@ export async function POST(request: Request) {
     const shots: [string | undefined, string, string, string][] = [
       [body.screenshot, "unity-screenshot.png", "유니티 화면", "합격 시험이 도는 동안 찍은 게임 화면"],
       [body.portrait, "unity-portrait.png", "유니티 얼굴", "같은 카메라를 얼굴 앞으로 옮겨 찍은 정면 사진"],
+      [body.walk, "unity-walk.png", "유니티 걷기", "키를 누르는 동안 옆에서 넉 장 — 스키닝·발·팔을 사람이 본다"],
     ];
     for (const [b64, filename, title, description] of shots) {
       if (!d || !b64) continue;
