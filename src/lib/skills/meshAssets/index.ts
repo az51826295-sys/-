@@ -147,6 +147,9 @@ export const meshAssetsSkill: EmployeeSkill = {
     const { output: brief } = await ctx.providers.ai.generateStructuredOutput({
       systemInstructions:
         "너는 3D 아티스트다. 업무 문장에서 **무엇을 만들지 하나**를 뽑는다.\n" +
+        "- **매니저가 말한 색·비율·재질·옷을 바꾸거나 더하지 마라.** 09-06 브리프가 '파란 천' 을 " +
+        "'진홍색' 으로 바꾸고 없던 '3등신' 을 넣어 매니저가 화를 냈다. 매니저가 비율을 말하지 않았으면 " +
+        "실제 비율(realistic proportions)이다. 매니저의 낱말이 conceptPrompt 와 mustHave 에 그대로 들어간다.\n" +
         "- `subject`: 그 물체가 무엇인지 한 줄(한국어).\n" +
         "- `conceptPrompt`: 레퍼런스가 없을 때 콘셉트 그림 생성기에 갈 영어 문장. " +
         "생김새·재질·색을 구체적으로. 배경·바닥·글자는 쓰지 않는다.\n" +
