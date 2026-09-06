@@ -84,6 +84,13 @@ const UNITY_RULES =
   "든 것을 고른다. **없으면 기본 도형**으로 짓되 어디에 무엇을 끼우면 되는지 주석에 적는다. " +
   "없는 파일을 가리키는 코드를 내지 마라. 리깅된 캐릭터는 임포트 설정(Humanoid)·클립 루프·" +
   "Animator 컨트롤러까지 **전부 씬 빌더 코드로** 만든다 — 사람 손 0회.\n" +
+  "- 캐릭터 파일 찾기는 **이 도우미를 그대로** 쓴다(슬래시를 붙인 \"/치비/\" 는 폴더 이름이 " +
+  "'치비_스타일_…' 이라 절대 안 맞는다 — 두 판이 여기서 헛돌았다):\n" +
+  "  static string FindRig(string keyword) { foreach (var g in AssetDatabase.FindAssets(\"rigged t:Model\")) { " +
+  "var p = AssetDatabase.GUIDToAssetPath(g).Replace('\\\\', '/'); if (p.EndsWith(\"/rigged.fbx\") && p.Contains(keyword) " +
+  "&& !p.Contains(\"_FAIL\") && !p.Contains(\"_UNDEFINED\")) { Debug.Log(\"[Rookery] rig: \" + p); return p; } } " +
+  "Debug.Log(\"[Rookery] rig 못 찾음: \" + keyword); return null; }\n" +
+  "  keyword 는 업무에 적힌 낱말 하나(예: \"치비\")를 슬래시 없이. null 이면 캡슐로 짓고 다른 캐릭터로 대체하지 않는다.\n" +
   "- 조작은 UnityEngine.InputSystem(Keyboard.current / InputAction). Input.GetAxis 금지.\n" +
   "- 씬에는 Directional Light 하나, Main Camera(태그 MainCamera) 하나를 **반드시** 만든다.\n" +
   "- 재질은 **파이프라인을 가리지 않게** 만든다. 프로젝트는 URP 일 수도 Built-in 일 수도 있다 " +
