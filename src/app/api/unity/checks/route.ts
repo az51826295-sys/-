@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createServiceClient } from "@/lib/supabase/service";
+import { scheduleAutoRetry } from "@/lib/execution/autoRetry";
 import { storeDeliverableFile } from "@/lib/deliverables/files";
 
 export const dynamic = "force-dynamic";
@@ -53,7 +54,7 @@ export async function POST(request: Request) {
     (body.scene ? ` (씬 ${body.scene})` : "") +
     `\n\n${lines}\n\n` +
     (body.failed > 0
-      ? "떨어진 줄이 게임의 결함입니다. 고쳐 달라고 말씀하시면 그 줄이 다음 판의 입력이 됩니다."
+      ? "떨어진 줄이 게임의 결함입니다. Dev 가 그 줄을 스스로 고칩니다(세 번까지). 그래도 안 되면 말씀이 필요합니다."
       : "기계가 잴 수 있는 것은 다 통과했습니다. 재미와 손맛은 사람이 봅니다.");
 
   // 어느 대화에 붙일까: 그 산출물이 돌아온 턴이 있는 대화. 없으면 기록만 남긴다.
@@ -112,5 +113,14 @@ export async function POST(request: Request) {
       attachments: { unityChecks: { deliverableId: body.deliverableId }, files },
     });
   }
-  return NextResponse.json({ ok: true, postedTo: conversationId });
+  // 계획 3 "스스로 다시": 떨어진 줄이 있으면 사람이 말하기 전에 같은 직원이 고친다(최대 3번).
+  let retry: unknown = null;
+  if (conversationId && body.deliverableId && body.failed > 0) {
+    const failedLines = (body.cases ?? [])
+      .filter((c) => c.result === "Failed")
+      .map((c) => `${c.name}${c.message ? ` — ${c.message.slice(0, 300)}` : ""}`);
+    retry = await scheduleAutoRetry(db, body.deliverableId, failedLines, conversationId);
+    console.log("[unity/checks] 스스로 다시:", JSON.stringify(retry));
+  }
+  return NextResponse.json({ ok: true, postedTo: conversationId, retry });
 }
