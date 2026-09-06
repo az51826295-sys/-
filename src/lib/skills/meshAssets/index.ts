@@ -1,10 +1,11 @@
 import { ExecutionError, setStep } from "@/lib/execution/shared";
+import { step } from "@/lib/execution/steps";
 import type { EmployeeSkill, SkillRunContext } from "@/lib/skills/types";
 import { createImageProvider } from "@/lib/providers/images";
 import { defaultMeshProvider } from "@/lib/providers/meshy";
 import { meshTextures, judgeMesh, JudgeUnavailable, type MeshVerdict } from "@/lib/providers/judge";
 import { z } from "zod";
-import { storeDeliverableFile, signedUrlFor, pathFor } from "@/lib/deliverables/files";
+import { storeDeliverableFile, signedUrlFor, pathFor, BUCKET } from "@/lib/deliverables/files";
 import { renderGamedevLessons } from "@/lib/knowledge/gamedev";
 import { createServiceClient } from "@/lib/supabase/service";
 
@@ -98,6 +99,21 @@ async function checkConcept(ctx: SkillRunContext, imageDataUrl: string, mustHave
   }
 }
 
+/** 실행 중 그림을 저장소에 둔다(`<회사>/exec/<실행>/이름`). 단계 저장이 경로만 들고 있게. */
+async function stashExecImage(companyId: string, executionId: string, name: string, dataUrl: string): Promise<string> {
+  const path = `${companyId}/exec/${executionId}/${name}`;
+  const bytes = Buffer.from(dataUrl.split(",")[1] ?? "", "base64");
+  const { error } = await createServiceClient().storage.from(BUCKET).upload(path, bytes, { contentType: "image/png", upsert: true });
+  if (error) throw new ExecutionError("UNKNOWN_ERROR", `그림 저장 실패: ${error.message}`);
+  return path;
+}
+async function loadExecImage(path: string): Promise<string> {
+  const url = await signedUrlFor(createServiceClient(), path);
+  if (!url) throw new ExecutionError("UNKNOWN_ERROR", `그림을 못 되읽었다: ${path}`);
+  const bytes = Buffer.from(await (await fetch(url)).arrayBuffer());
+  return `data:image/png;base64,${bytes.toString("base64")}`;
+}
+
 export const meshAssetsSkill: EmployeeSkill = {
   id: "mesh_assets",
   deliverableType: "mesh_assets",
@@ -150,7 +166,8 @@ export const meshAssetsSkill: EmployeeSkill = {
       }
     }
 
-    const { output: brief } = await ctx.providers.ai.generateStructuredOutput({
+    // 단계 저장(계획 2 "안 죽는 실행"): 죽었다 다시 돌면 브리프·그림·메시·리깅을 다시 사지 않는다.
+    const brief = await step(ctx.supabase, ctx.executionId, "brief", async () => (await ctx.providers.ai.generateStructuredOutput({
       systemInstructions:
         "너는 3D 아티스트다. 업무 문장에서 **무엇을 만들지 하나**를 뽑는다.\n" +
         "- **매니저가 말한 색·비율·재질·옷을 바꾸거나 더하지 마라.** 09-06 브리프가 '파란 천' 을 " +
@@ -175,7 +192,7 @@ export const meshAssetsSkill: EmployeeSkill = {
       maxTokens: 1500,
       // 제목·콘셉트 문장·리깅 여부를 뽑는 작은 일. 메시를 만드는 것은 Meshy 다.
       tier: "routine",
-    });
+    })).output);
 
     // ── 1. 이미지: 받은 것 또는 기계 콘셉트 ─────────────────────────
     await setStep(ctx.supabase, ctx.executionId, "generating");
@@ -187,43 +204,60 @@ export const meshAssetsSkill: EmployeeSkill = {
     const views: { back?: string; face?: string; side?: string } = {};
     const drawer = createImageProvider();
     const conceptChecks: { attempt: number; failed: string[] }[] = [];
-    if (!image) {
-      // 그리고 → 검수하고 → 틀린 조건을 강조해 다시(최대 3번). 생성기가 무시한 조건을
-      // 30 크레딧 쓴 뒤에 알면 늦다(09-06 16:47).
-      let emphasis = "";
-      for (let attempt = 1; attempt <= 3; attempt++) {
-        const made = brief.wantRig
-          ? await drawer.draw(emphasis + CONCEPT_FORM + " " + brief.conceptPrompt + ", full body head to toe, facing the camera, even studio lighting", "high", "1024x1536")
-          : await drawer.draw(emphasis + CONCEPT_FORM + " " + brief.conceptPrompt, "medium");
-        image = made.dataUrl;
-        conceptByMachine = true;
-        const failed = await checkConcept(ctx, image, [...brief.mustHave, ...ALWAYS_MUST_HAVE]);
-        conceptChecks.push({ attempt, failed });
-        if (failed.length === 0) break;
-        emphasis = "STRICT REQUIREMENTS (the previous attempt violated these, they are NOT optional): " + failed.map((f) => f.toUpperCase()).join("; ") + ". ";
+    const execCompanyId = ctx.execution.company_id as string;
+    // 그림은 base64 라 행에 못 넣는다 — 저장소 `<회사>/exec/<실행>/…` 에 두고 단계엔 경로만.
+    const drawn = await step(ctx.supabase, ctx.executionId, "concept", async () => {
+      const out: { front?: string; face?: string; back?: string; side?: string; byMachine: boolean; checks: typeof conceptChecks } = { byMachine: false, checks: [] };
+      if (!image) {
+        // 그리고 → 검수하고 → 틀린 조건을 강조해 다시(최대 3번). 생성기가 무시한 조건을
+        // 30 크레딧 쓴 뒤에 알면 늦다(09-06 16:47).
+        let emphasis = "";
+        for (let attempt = 1; attempt <= 3; attempt++) {
+          const made = brief.wantRig
+            ? await drawer.draw(emphasis + CONCEPT_FORM + " " + brief.conceptPrompt + ", full body head to toe, facing the camera, even studio lighting", "high", "1024x1536")
+            : await drawer.draw(emphasis + CONCEPT_FORM + " " + brief.conceptPrompt, "medium");
+          image = made.dataUrl;
+          out.byMachine = true;
+          const failed = await checkConcept(ctx, image, [...brief.mustHave, ...ALWAYS_MUST_HAVE]);
+          out.checks.push({ attempt, failed });
+          if (failed.length === 0) break;
+          emphasis = "STRICT REQUIREMENTS (the previous attempt violated these, they are NOT optional): " + failed.map((f) => f.toUpperCase()).join("; ") + ". ";
+        }
       }
-    }
-    if (brief.wantRig && image) {
-      // 셋을 **동시에** 그린다. 차례로 그리면 한 장에 40초씩 두 장 값의 시간이 그냥 흘렀다(09-06 22:10 효율 회차).
-      // 셋은 서로를 안 보니(전부 정면 그림에서 나온다) 동시에 그려도 결과가 같다.
-      const [face, back, side] = await Promise.allSettled([
-        drawer.edit(image,
-          "Close-up portrait of the SAME person shown in this image: identical face, hair, and skin, head and shoulders, facing the camera straight, neutral expression, sharp focus on skin and hair, even studio lighting, plain background",
-          "1024x1024"),
-        drawer.edit(image,
-          "The SAME person shown in this image seen from directly behind, full body head to toe, same pose, same clothes and hair, even studio lighting, plain background",
-          "1024x1536"),
-        // 옆모습이 없으면 코·턱이 납작하다(사장님 09-06 10:49 "옆에서 보니까 얼굴 입체감이
-        // 없네"). 생성기는 본 각도만 안다 — 옆모습 전신을 네 번째로 준다.
-        drawer.edit(image,
-          "The SAME person shown in this image seen exactly from the left side (true profile view), full body head to toe, same A-pose, same clothes and hair, nose and chin clearly in profile, even studio lighting, plain background",
-          "1024x1536"),
-      ]);
-      if (face.status === "fulfilled") views.face = face.value.dataUrl;
-      if (back.status === "fulfilled") views.back = back.value.dataUrl;
-      if (side.status === "fulfilled") views.side = side.value.dataUrl;
-      for (const r of [face, back, side]) if (r.status === "rejected") console.warn("[mesh_assets] 추가 뷰 실패 — 있는 것으로 간다:", r.reason instanceof Error ? r.reason.message : r.reason);
-    }
+      if (brief.wantRig && image) {
+        // 셋을 **동시에** 그린다. 차례로 그리면 한 장에 40초씩 두 장 값의 시간이 그냥 흘렀다(09-06 22:10 효율 회차).
+        // 셋은 서로를 안 보니(전부 정면 그림에서 나온다) 동시에 그려도 결과가 같다.
+        const [face, back, side] = await Promise.allSettled([
+          drawer.edit(image,
+            "Close-up portrait of the SAME person shown in this image: identical face, hair, and skin, head and shoulders, facing the camera straight, neutral expression, sharp focus on skin and hair, even studio lighting, plain background",
+            "1024x1024"),
+          drawer.edit(image,
+            "The SAME person shown in this image seen from directly behind, full body head to toe, same pose, same clothes and hair, even studio lighting, plain background",
+            "1024x1536"),
+          // 옆모습이 없으면 코·턱이 납작하다(사장님 09-06 10:49 "옆에서 보니까 얼굴 입체감이
+          // 없네"). 생성기는 본 각도만 안다 — 옆모습 전신을 네 번째로 준다.
+          drawer.edit(image,
+            "The SAME person shown in this image seen exactly from the left side (true profile view), full body head to toe, same A-pose, same clothes and hair, nose and chin clearly in profile, even studio lighting, plain background",
+            "1024x1536"),
+        ]);
+        if (face.status === "fulfilled") views.face = face.value.dataUrl;
+        if (back.status === "fulfilled") views.back = back.value.dataUrl;
+        if (side.status === "fulfilled") views.side = side.value.dataUrl;
+        for (const r of [face, back, side]) if (r.status === "rejected") console.warn("[mesh_assets] 추가 뷰 실패 — 있는 것으로 간다:", r.reason instanceof Error ? r.reason.message : r.reason);
+      }
+      if (image) out.front = await stashExecImage(execCompanyId, ctx.executionId, "concept_front.png", image);
+      if (views.face) out.face = await stashExecImage(execCompanyId, ctx.executionId, "concept_face.png", views.face);
+      if (views.back) out.back = await stashExecImage(execCompanyId, ctx.executionId, "concept_back.png", views.back);
+      if (views.side) out.side = await stashExecImage(execCompanyId, ctx.executionId, "concept_side.png", views.side);
+      return out;
+    });
+    // 다시 도는 판이면 저장소에서 되읽는다(그림은 단계에 경로만 있다).
+    if (!image && drawn.front) image = await loadExecImage(drawn.front);
+    if (!views.face && drawn.face) views.face = await loadExecImage(drawn.face);
+    if (!views.back && drawn.back) views.back = await loadExecImage(drawn.back);
+    if (!views.side && drawn.side) views.side = await loadExecImage(drawn.side);
+    conceptByMachine = drawn.byMachine;
+    conceptChecks.push(...drawn.checks);
 
     // ── 2. 메시 ────────────────────────────────────────────────────
     if (!image) throw new ExecutionError("UNKNOWN_ERROR", "콘셉트 그림이 없다 — 그리기가 전부 실패했다.");
@@ -231,9 +265,10 @@ export const meshAssetsSkill: EmployeeSkill = {
     let mesh;
     try {
       // 캐릭터는 4k — 같은 30 크레딧에 피부 고주파 2배(07:39). 소품은 2k 로 족하다.
-      mesh = views.face && views.back
-        ? await mesher.multiImageTo3D([image, views.back, ...(views.side ? [views.side] : []), views.face], { poseMode: brief.poseMode, textureResolution: "4k", aiModel: "meshy-7" })
-        : await mesher.imageTo3D(image, { poseMode: brief.poseMode, textureResolution: brief.wantRig ? "4k" : "2k" });
+      const front = image;
+      mesh = await step(ctx.supabase, ctx.executionId, "mesh", () => views.face && views.back
+        ? mesher.multiImageTo3D([front, views.back!, ...(views.side ? [views.side] : []), views.face!], { poseMode: brief.poseMode, textureResolution: "4k", aiModel: "meshy-7" })
+        : mesher.imageTo3D(front, { poseMode: brief.poseMode, textureResolution: brief.wantRig ? "4k" : "2k" }));
     } catch (error) {
       const msg = error instanceof Error ? error.message : String(error);
       throw new ExecutionError(
@@ -250,7 +285,7 @@ export const meshAssetsSkill: EmployeeSkill = {
     let rigError: string | null = null;
     if (brief.wantRig && !mesh.mock) {
       try {
-        rig = await mesher.rig(mesh.taskId, 1.7);
+        rig = await step(ctx.supabase, ctx.executionId, "rig", () => mesher.rig(mesh.taskId, 1.7));
       } catch (error) {
         rigError = error instanceof Error ? error.message : String(error);
       }

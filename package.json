@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start -p ${PORT:-3000}",
+    "start": "node scripts/start.mjs",
     "lint": "eslint"
   },
   "dependencies": {
@@ -19,6 +19,7 @@
     "react-markdown": "^10.1.0",
     "rehype-sanitize": "^6.0.0",
     "remark-gfm": "^4.0.1",
+    "tsx": "^4.23.13",
     "zod": "^4.4.3",
     "zod-to-json-schema": "^3.25.2"
   },

@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { renderGamedevLessons } from "@/lib/knowledge/gamedev";
 import { ExecutionError, setStep } from "@/lib/execution/shared";
+import { step } from "@/lib/execution/steps";
 import type { EmployeeSkill, SkillRunContext } from "@/lib/skills/types";
 import { checkFiles, repairBrief, summarise } from "@/lib/skills/appBuild/verify";
 
@@ -237,7 +238,8 @@ export const appBuildSkill: EmployeeSkill = {
     // ── 1. 기준을 먼저 쓴다 ─────────────────────────────────────────
     await setStep(ctx.supabase, ctx.executionId, "planning");
 
-    const { output: spec } = await ctx.providers.ai.generateStructuredOutput({
+    // 단계 저장(계획 2 "안 죽는 실행"): 죽었다 다시 돌면 계획·코드를 다시 사지 않는다.
+    const spec = await step(ctx.supabase, ctx.executionId, "plan", async () => (await ctx.providers.ai.generateStructuredOutput({
       systemInstructions:
         "너는 이 회사의 개발자다. **아직 코드를 쓰지 마라.**\n\n" +
         "먼저 이 앱이 무엇을 해야 하는지를 **사람이 직접 확인할 수 있는 문장**으로 " +
@@ -271,7 +273,7 @@ export const appBuildSkill: EmployeeSkill = {
       // 16000 도 잘렸다(09-06 10:47, 기준 52개 판). 추론 모델은 생각에 먼저 쓴다.
       maxTokens: 32000,
       tier: "judgment",
-    });
+    })).output);
 
     // 고치는 판: 지난 기준은 코드가 그대로 붙인다. 모델이 29개를 되쓰다 두 번 잘렸다
     // (21:40·22:48, MODEL_OUTPUT_TRUNCATED). 모델은 새 기준만 쓰고, 합치는 것은 여기서.
@@ -293,7 +295,7 @@ export const appBuildSkill: EmployeeSkill = {
     await setStep(ctx.supabase, ctx.executionId, "generating");
 
     const unity = spec.target === "unity";
-    const { output: made } = await ctx.providers.ai.generateStructuredOutput({
+    const made = await step(ctx.supabase, ctx.executionId, "build", async () => (await ctx.providers.ai.generateStructuredOutput({
       systemInstructions:
         "아래 기준을 만족하는 앱을 만든다.\n\n" +
         "- 파일 전체를 낸다. `// ...` 로 생략하지 마라 — 받은 사람이 " +
@@ -320,7 +322,7 @@ export const appBuildSkill: EmployeeSkill = {
       schemaName: "app_build",
       maxTokens: 32000,
       tier: "judgment",
-    });
+    })).output);
 
     // ── 3. 문법이 깨졌으면 고친다 ───────────────────────────────────
     //
