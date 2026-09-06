@@ -90,13 +90,25 @@ export const meshAssetsSkill: EmployeeSkill = {
       `${ctx.context.assignment.title} ${ctx.context.assignment.description ?? ""}`,
     );
     if (!reference && roleInput.previousDeliverableId && wantsReuse) {
+      // 콘셉트 그림은 파일(concept_front.png)로 둔다. 행 안에 1.8 MB base64 를 넣었더니
+      // 저장 문장이 시간 제한에 걸렸다(09-06 13:38 "statement timeout"). 옛 산출물은 행에
+      // 있을 수 있어 둘 다 본다.
       const { data: prev } = await ctx.supabase
         .from("deliverables")
-        .select("content_json")
+        .select("content_json, company_id")
         .eq("id", roleInput.previousDeliverableId)
         .maybeSingle();
       const ci = (prev?.content_json as { conceptImage?: string } | null)?.conceptImage;
       if (typeof ci === "string" && ci.startsWith("data:image")) { reference = ci; reusedConcept = true; }
+      else if (prev) {
+        const url = await signedUrlFor(createServiceClient(), pathFor(prev.company_id as string, roleInput.previousDeliverableId, "concept_front.png"));
+        if (url) {
+          try {
+            const bytes = Buffer.from(await (await fetch(url)).arrayBuffer());
+            reference = `data:image/png;base64,${bytes.toString("base64")}`; reusedConcept = true;
+          } catch { /* 없으면 새로 그린다 */ }
+        }
+      }
     }
 
     const { output: brief } = await ctx.providers.ai.generateStructuredOutput({
@@ -264,14 +276,16 @@ export const meshAssetsSkill: EmployeeSkill = {
       reusedConcept,
       textureResolution: brief.wantRig ? "4k" : "2k",
       views: Object.keys(views),
-      conceptImage: conceptByMachine ? image : null,
+      // 그림 자체는 파일 concept_front.png. 행에는 "있다" 만.
+      conceptImage: null,
+      conceptFront: conceptByMachine ? "concept_front.png" : "(레퍼런스 받음)",
       mesh: { ...mesh, glbBase64: mesh.glbBase64 ? "(생략)" : null },
       rig,
       rigError,
       verdict,
     };
 
-    const { data: saved, error: saveError } = await ctx.supabase.rpc(
+    let { data: saved, error: saveError } = await ctx.supabase.rpc(
       "submit_generated_deliverable",
       {
         p_execution_id: ctx.executionId,
@@ -283,6 +297,14 @@ export const meshAssetsSkill: EmployeeSkill = {
         p_citations: [],
       },
     );
+    if (saveError && /timeout/i.test(saveError.message)) {
+      // 한 번 더. 잠깐의 DB 혼잡이면 두 번째는 들어간다.
+      ({ data: saved, error: saveError } = await ctx.supabase.rpc("submit_generated_deliverable", {
+        p_execution_id: ctx.executionId, p_title: brief.subject, p_deliverable_type: "mesh_assets",
+        p_content_markdown: markdown, p_content_json: content,
+        p_generation_model: `${ctx.providers.ai.model} + ${mesh.model}`, p_citations: [],
+      }));
+    }
     if (saveError) throw new ExecutionError("DELIVERABLE_SAVE_FAILED", saveError.message);
     const rpc = saved as { ok: boolean; reason?: string; deliverableId?: string };
     if (!rpc.ok && !(rpc.reason === "already_submitted" && rpc.deliverableId)) {
@@ -333,6 +355,7 @@ export const meshAssetsSkill: EmployeeSkill = {
     await put("model.fbx", fbxBytes, "application/octet-stream", "document", `${brief.subject} (FBX)`);
     await put("thumbnail.png", thumbBytes, "image/png", "image", `${brief.subject} 미리보기`);
     const b64bytes = (d?: string) => (d ? new Uint8Array(Buffer.from(d.split(",")[1] ?? "", "base64")) : null);
+    await put("concept_front.png", b64bytes(image), "image/png", "image", `${brief.subject} 콘셉트 정면`);
     if (views.face) await put("concept_face.png", b64bytes(views.face), "image/png", "image", `${brief.subject} 콘셉트 얼굴`);
     if (views.back) await put("concept_back.png", b64bytes(views.back), "image/png", "image", `${brief.subject} 콘셉트 뒷모습`);
     if (views.side) await put("concept_side.png", b64bytes(views.side), "image/png", "image", `${brief.subject} 콘셉트 옆모습`);
