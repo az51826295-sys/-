@@ -230,6 +230,7 @@ namespace Rookery.Tests
                 const int P = 1080;
                 var sheet = new Texture2D(P * humans.Count, P, TextureFormat.RGB24, false);
                 var savedPos = cam.transform.position; var savedRot = cam.transform.rotation; var savedFov = cam.fieldOfView;
+                var mutedP = MuteCameraScripts(cam);
                 var prt = new RenderTexture(P, P, 24) { antiAliasing = Mathf.Max(1, QualitySettings.antiAliasing) };
                 for (var k = 0; k < humans.Count; k++)
                 {
@@ -255,6 +256,7 @@ namespace Rookery.Tests
                 }
                 sheet.Apply();
                 cam.transform.position = savedPos; cam.transform.rotation = savedRot; cam.fieldOfView = savedFov;
+                Unmute(mutedP);
                 System.IO.File.WriteAllBytes(System.IO.Path.GetFullPath(PortraitPath), sheet.EncodeToPNG());
                 Object.Destroy(sheet); prt.Release(); Object.Destroy(prt);
             }
@@ -263,6 +265,18 @@ namespace Rookery.Tests
         public const string WalkPath = "Library/Rookery/walk.png";
 
         /// 키를 계속 누르며 옆(오른쪽 3 m)에서 넉 장을 찍어 가로로 붙인다. 휴머노이드가 없으면 건너뛴다.
+        /// 카메라를 자가 잡는 동안 게임의 카메라 스크립트(FollowCamera 등)를 잠깐 끈다. 30회차: LateUpdate 카메라가
+        /// 자가 옮긴 자리를 매 프레임 되돌려 걷기·점프 줄이 전부 뒤통수가 됐다. 끈 것은 반드시 되켠다.
+        static List<Behaviour> MuteCameraScripts(Camera cam)
+        {
+            var muted = new List<Behaviour>();
+            for (var t = cam.transform; t != null; t = t.parent)
+                foreach (var b in t.GetComponents<MonoBehaviour>())
+                    if (b != null && b.enabled) { b.enabled = false; muted.Add(b); }
+            return muted;
+        }
+        static void Unmute(List<Behaviour> muted) { foreach (var b in muted) if (b != null) b.enabled = true; }
+
         public const string JumpPath = "Library/Rookery/jump.png";
 
         /// 걷기 줄: 키를 계속 누르며 넉 장. 점프 줄(30회차): 첫 칸에서 Space 를 두 프레임만 누르고 떼어 0.25초 간격 넉 장 —
@@ -283,6 +297,7 @@ namespace Rookery.Tests
             var savedPos = cam.transform.position; var savedRot = cam.transform.rotation; var savedFov = cam.fieldOfView;
             var prev = cam.targetTexture;
             var active = RenderTexture.active;
+            var muted = MuteCameraScripts(cam);
             for (var i = 0; i < N; i++)
             {
                 // 걷기: 0.22초씩 누르며 간다 — 한 주기(~1초)의 네 자리. 점프: 첫 칸만 두 프레임 누르고 뗀 뒤 0.25초씩 기다린다.
@@ -311,6 +326,7 @@ namespace Rookery.Tests
             }
             strip.Apply();
             cam.transform.position = savedPos; cam.transform.rotation = savedRot; cam.fieldOfView = savedFov;
+            Unmute(muted);
             System.IO.File.WriteAllBytes(System.IO.Path.GetFullPath(path), strip.EncodeToPNG());
             Object.Destroy(strip); rt.Release(); Object.Destroy(rt);
         }
