@@ -298,6 +298,7 @@ namespace Rookery.Tests
             var prev = cam.targetTexture;
             var active = RenderTexture.active;
             var muted = MuteCameraScripts(cam);
+            var baseY = root.position.y; var peakY = baseY;
             for (var i = 0; i < N; i++)
             {
                 // 걷기: 0.22초씩 누르며 간다 — 한 주기(~1초)의 네 자리. 점프: 첫 칸만 두 프레임 누르고 뗀 뒤 0.25초씩 기다린다.
@@ -307,8 +308,11 @@ namespace Rookery.Tests
                 while (Time.time < until)
                 {
                     InputSystem.QueueStateEvent(keyboard, pressFrames-- > 0 ? new KeyboardState(combo) : new KeyboardState());
-                    InputSystem.Update();
+                    // 걷기는 여기서 InputSystem.Update() 를 불러도 된다(isPressed). 점프는 부르면 안 된다 — 코루틴은 Update 뒤에
+                    // 도는데 여기서 처리해 버리면 다음 프레임 자동 갱신에서 wasPressedThisFrame 이 이미 꺼져 플레이어가 못 본다(30회차 3판).
+                    if (holdKey) InputSystem.Update();
                     yield return null;
+                    if (!holdKey) { var y = root.position.y; if (y > peakY) peakY = y; }
                 }
                 // 발까지 나와야 미끄러짐을 본다(10:12 첫 줄은 발이 잘렸다). 거리 3.8 m·시야각 45°
                 // 면 세로 3.1 m 가 들어온다.
@@ -328,6 +332,7 @@ namespace Rookery.Tests
             strip.Apply();
             cam.transform.position = savedPos; cam.transform.rotation = savedRot; cam.fieldOfView = savedFov;
             Unmute(muted);
+            if (!holdKey) Debug.Log($"[Rookery] 점프 높이 {peakY - baseY:0.00} m (0 이면 안 뜬 것)");
             System.IO.File.WriteAllBytes(System.IO.Path.GetFullPath(path), strip.EncodeToPNG());
             Object.Destroy(strip); rt.Release(); Object.Destroy(rt);
         }

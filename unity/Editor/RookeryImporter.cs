@@ -428,7 +428,11 @@ namespace Rookery
                 http.DefaultRequestHeaders.Add("x-rookery-key", key);
                 var json = http.GetStringAsync($"{url.TrimEnd('/')}/api/unity/latest").GetAwaiter().GetResult();
                 var latest = JsonUtility.FromJson<Latest>(json);
-                if (latest == null || string.IsNullOrEmpty(latest.id) || latest.id == SessionState.GetString(LastKey, "")) return;
+                // 다시 재기 신호(ai-workforce/data/unity_recheck 파일): 같은 버전이라도 한 번 더 가져와 검사한다(자를 고쳤을 때).
+                var recheck = @"C:\Users\az518\Desktop\ai-workforce\data\unity_recheck";
+                var forced = File.Exists(recheck);
+                if (forced) File.Delete(recheck);
+                if (latest == null || string.IsNullOrEmpty(latest.id) || (!forced && latest.id == SessionState.GetString(LastKey, ""))) return;
                 SessionState.SetBool(BusyKey, true);
                 SessionState.SetFloat(BusySinceKey, (float)EditorApplication.timeSinceStartup);
                 SessionState.SetString(LastKey, latest.id);
