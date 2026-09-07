@@ -289,6 +289,14 @@ namespace Rookery
             Debug.Log("[Rookery] " + RookeryCheck.BuildAndTestWhenReady(url, key));
         }
 
+        /// 따뜻한 유니티(09-07 E2): 에디터를 켜 둔 채 30초마다 최신 버전을 묻고, 새 버전이면 가져와 검사한다.
+        /// 실행: Unity -batchmode -projectPath … -executeMethod Rookery.RookeryHeadless.Watch (-quit 없이).
+        public static void Watch()
+        {
+            SessionState.SetBool(RookeryWatch.ModeKey, true);
+            RookeryWatch.Arm();
+        }
+
         static string Safe(string s)
         {
             var sb = new StringBuilder();
@@ -369,6 +377,72 @@ namespace Rookery
     /// 결과를 /api/unity/checks 로 보낸다. 콜백은 도메인 리로드에 날아가므로
     /// [InitializeOnLoad] 에서 매번 다시 건다; 어느 산출물의 시험인지는 SessionState 에.
     [InitializeOnLoad]
+    /// 켜 둔 에디터가 스스로 새 버전을 집는다. 리로드가 나도 [InitializeOnLoad] 가 다시 건다.
+    [InitializeOnLoad]
+    public static class RookeryWatch
+    {
+        public const string ModeKey = "Rookery.Watch.Mode";
+        const string LastKey = "Rookery.Watch.Last";
+        const string BusyKey = "Rookery.Watch.Busy";
+        const string BusySinceKey = "Rookery.Watch.BusySince";
+        static double _next;
+        [Serializable] class Latest { public string id, title, at, @checked; }
+
+        public static bool Active => SessionState.GetBool(ModeKey, false);
+
+        static RookeryWatch()
+        {
+            if (Active) Arm();
+        }
+
+        public static void Arm()
+        {
+            EditorApplication.update -= Tick;
+            EditorApplication.update += Tick;
+            _next = EditorApplication.timeSinceStartup + 3;
+            Debug.Log("[Rookery] 감시 중(따뜻한 유니티) — 마지막: " + SessionState.GetString(LastKey, "(없음)"));
+        }
+
+        public static void Done()
+        {
+            SessionState.SetBool(BusyKey, false);
+            _next = EditorApplication.timeSinceStartup + 5;
+            Debug.Log("[Rookery] 검사 끝, 다시 감시");
+        }
+
+        static void Tick()
+        {
+            if (EditorApplication.timeSinceStartup < _next) return;
+            _next = EditorApplication.timeSinceStartup + 30;
+            if (EditorApplication.isCompiling || EditorApplication.isUpdating || EditorApplication.isPlaying) return;
+            if (SessionState.GetBool(BusyKey, false))
+            {
+                // 15분 넘게 바쁘면 죽은 것으로 보고 푼다.
+                if (EditorApplication.timeSinceStartup - SessionState.GetFloat(BusySinceKey, 0f) > 900) { Debug.LogWarning("[Rookery] 15분째 바쁨 — 푼다"); SessionState.SetBool(BusyKey, false); }
+                return;
+            }
+            try
+            {
+                var url = Environment.GetEnvironmentVariable("ROOKERY_URL") ?? "https://rookery-web-production.up.railway.app";
+                var key = Environment.GetEnvironmentVariable("ROOKERY_KEY") ?? "";
+                using var http = new System.Net.Http.HttpClient { Timeout = TimeSpan.FromSeconds(30) };
+                http.DefaultRequestHeaders.Add("x-rookery-key", key);
+                var json = http.GetStringAsync($"{url.TrimEnd('/')}/api/unity/latest").GetAwaiter().GetResult();
+                var latest = JsonUtility.FromJson<Latest>(json);
+                if (latest == null || string.IsNullOrEmpty(latest.id) || latest.id == SessionState.GetString(LastKey, "")) return;
+                SessionState.SetBool(BusyKey, true);
+                SessionState.SetFloat(BusySinceKey, (float)EditorApplication.timeSinceStartup);
+                SessionState.SetString(LastKey, latest.id);
+                Debug.Log($"[Rookery] 새 버전 {latest.id.Substring(0, 8)} ({latest.title}) — 가져와 검사");
+                RookeryHeadless.ImportBuildTest();
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning("[Rookery] 감시 묻기 실패: " + e.Message);
+            }
+        }
+    }
+
     public static class RookeryCheck
     {
         const string PendingUrl = "Rookery.Check.Url";
@@ -468,7 +542,11 @@ namespace Rookery
             req.SendWebRequest().completed += _ =>
             {
                 Debug.Log($"[Rookery] 시험 결과 보냄: 통과 {passed} 떨어짐 {failed} 못 잼 {inconclusive} → {req.responseCode} {req.downloadHandler.text}");
-                if (Application.isBatchMode) EditorApplication.Exit(failed > 0 ? failedExit : 0);
+                if (Application.isBatchMode)
+                {
+                    // 따뜻한 유니티(09-07 E2): 감시 모드면 나가지 않고 다음 버전을 기다린다. 시작 87초가 0 이 된다.
+                    if (RookeryWatch.Active) RookeryWatch.Done(); else EditorApplication.Exit(failed > 0 ? failedExit : 0);
+                }
             };
         }
 
