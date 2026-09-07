@@ -301,8 +301,9 @@ namespace Rookery.Tests
             for (var i = 0; i < N; i++)
             {
                 // 걷기: 0.22초씩 누르며 간다 — 한 주기(~1초)의 네 자리. 점프: 첫 칸만 두 프레임 누르고 뗀 뒤 0.25초씩 기다린다.
-                var until = Time.time + (holdKey ? 0.22f : 0.25f);
-                var pressFrames = holdKey ? int.MaxValue : (i == 0 ? 2 : 0);
+                var until = Time.time + (holdKey ? 0.22f : 0.3f);
+                // 점프: 두 프레임은 wasPressedThisFrame 의 가장자리를 놓쳤다(30회차 2판). 0.1초(≈6프레임) 누른다.
+                var pressFrames = holdKey ? int.MaxValue : (i == 0 ? 6 : 0);
                 while (Time.time < until)
                 {
                     InputSystem.QueueStateEvent(keyboard, pressFrames-- > 0 ? new KeyboardState(combo) : new KeyboardState());
