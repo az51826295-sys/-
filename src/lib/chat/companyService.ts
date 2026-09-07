@@ -7,6 +7,7 @@ import { meterProviders } from "@/lib/costs/meter";
 import { defaultProviders } from "@/lib/execution/shared";
 import { runChatTurn, type ChatOption } from "@/lib/chat/service";
 import { selfNote, speakerFor, speakerNote } from "@/lib/chat/persona";
+import { capabilityCatalogue } from "@/lib/chat/routing";
 import { learnFromChat } from "@/lib/chat/learnFromChat";
 
 /**
@@ -72,16 +73,9 @@ const routeSchema = z.object({
 });
 
 /** 지금 회사가 부릴 수 있는 능력 전부. 레지스트리에서 그때그때 읽는다. */
-export function capabilityCatalogue() {
-  return Object.values(employeeSkillRegistry).flatMap((skill) =>
-    skill.capabilities.map((c) => ({
-      capabilityId: c.id,
-      skillId: skill.id,
-      label: c.label,
-      produces: c.produces,
-    })),
-  );
-}
+// 40회차: 이름표는 `chat/routing.ts` 한 곳에서. 여기서는 이어서 내보내기만 한다(부르는 곳이 많다).
+export { capabilityCatalogue } from "@/lib/chat/routing";
+
 
 export async function runCompanyChatTurn(
   input: CompanyChatInput,

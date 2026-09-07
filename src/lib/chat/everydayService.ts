@@ -3,12 +3,13 @@ import { createClient } from "@/lib/supabase/server";
 import { blockedBySpendLimit } from "@/lib/costs/allowance";
 import { meterProviders } from "@/lib/costs/meter";
 import { defaultProviders } from "@/lib/execution/shared";
-import { selfNote, speakerFor, speakerNote } from "@/lib/chat/persona";
+import { speakerFor } from "@/lib/chat/persona";
+import { intakeInstructions } from "@/lib/chat/routing";
 import { createImageProvider } from "@/lib/providers/images";
 import { stashChatImages } from "@/lib/chat/images";
 import { checkAnonymous, recordAnonymous } from "@/lib/chat/anonymous";
 import { saveTurn } from "@/lib/chat/conversations";
-import { capabilityCatalogue } from "@/lib/chat/companyService";
+
 import { delegate } from "@/lib/chat/delegate";
 import { employeeDefinitions } from "@/lib/employees/definitions";
 import { employeeSkillRegistry } from "@/lib/skills/registry";
@@ -308,36 +309,7 @@ export async function runEverydayTurn(
   // 첫 판이 터지면 날 오류 코드가 화면에 그대로 나갔다("MODEL_OUTPUT_TRUNCATED",
   // 09-05 13:50). 사람이 읽을 말로 바꾸고, 잘린 것은 잘렸다고 말한다.
   const firstPassCall = () => providers.ai.generateStructuredOutput({
-    systemInstructions:
-      "너는 유능한 조수다. 한국어로 답한다.\n\n" +
-      "먼저 판단한다: **지금 아는 것으로 제대로 답할 수 있는가?**\n" +
-      "- 그렇다면 `reply` 에 답을 쓰고 `searches` 는 비운다. " +
-      "짧게 자르지 말고 물은 만큼 답한다.\n" +
-      "- 최신 사실·가격·뉴스·특정 문서처럼 **찾아봐야 정확한 것**이면 " +
-      "`reply` 를 비우고 `searches` 에 검색어를 최대 3개 쓴다.\n\n" +
-      (seen.length > 0
-        ? "사용자가 사진을 같이 올렸다. **보이는 것만 말하라** — 안 보이는 것을 " +
-          "있는 것처럼 말하면 사용자는 자기 사진을 잘못 읽었다는 사실조차 모른다. " +
-          "흐리거나 잘려서 못 읽는 부분은 못 읽겠다고 말한다.\n\n"
-        : "") +
-      "확실하지 않은데 아는 척하지 마라. 그럴 때가 검색할 때다.\n\n" +
-      "**일 맡기기**: 조사·검증·문서·그림 제작처럼 **시간이 드는 일**이면 " +
-      "`capabilityId` 에 아래 목록의 id 를 쓴다. 한 번 답하고 끝날 질문이면 " +
-      "비운다 — 잡담에 사람을 붙이면 매니저가 안 시킨 일이 쌓인다.\n" +
-      capabilityCatalogue()
-        .map((c) => `  - ${c.capabilityId}: ${c.label} → ${c.produces}`)
-        .join("\n") +
-      "\n**목록에 있는 id 만 쓴다.** 없는 것을 지어내면 조용히 빗나간다.\n" +
-      "**코드·앱·게임·프로그램을 만들어 달라는 요청은 답에 코드를 쓰지 않는다.** " +
-      "그건 시간이 드는 일이라 `capabilityId` 로 맡기고, `reply` 는 무엇을 만들 " +
-      "것인지 한두 문장이면 된다. 답에 코드를 쓰기 시작하면 길이 한도에 걸려 " +
-      "답이 통째로 사라진다 — 09-05 에 실제로 그랬다.\n\n" +
-      "**그림**: 사용자가 그려 달라고 하면 `drawings` 에 묘사를 쓴다(최대 2개). " +
-      "묘사는 영어로, 무엇을 어떤 구도·색·분위기로 그릴지 구체적으로. " +
-      "그려 달라고 하지 않았으면 비워 둔다 — 설명으로 될 것을 그림으로 내면 " +
-      "느리기만 하다." +
-      selfNote() +
-      speakerNote(speaker),
+    systemInstructions: intakeInstructions({ hasImages: seen.length > 0, speaker }),
     input: transcript,
     images: seen,
     schema: firstPass,
