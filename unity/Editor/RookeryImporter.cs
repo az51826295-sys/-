@@ -528,7 +528,7 @@ namespace Rookery
 
         /// 결과를 로키로. 시험 뒤에도, 컴파일이 깨졌을 때도 같은 문으로 간다.
         static void PostChecks(string url, string key, string deliverable, string scene,
-                               int passed, int failed, int inconclusive, List<string> cases, string shot, int failedExit = 3, string portrait = "", string walk = "", string jump = "")
+                               int passed, int failed, int inconclusive, List<string> cases, string shot, int failedExit = 3, string portrait = "", string walk = "", string jump = "", string measures = "")
         {
             if (string.IsNullOrEmpty(url) || string.IsNullOrEmpty(key)) return;
             var json = "{\"deliverableId\":\"" + J(deliverable) + "\",\"scene\":\"" + J(scene) + "\",\"passed\":" + passed +
@@ -536,7 +536,8 @@ namespace Rookery
                        (shot.Length > 0 ? ",\"screenshot\":\"" + shot + "\"" : "") +
                        (portrait.Length > 0 ? ",\"portrait\":\"" + portrait + "\"" : "") +
                        (walk.Length > 0 ? ",\"walk\":\"" + walk + "\"" : "") +
-                       (jump.Length > 0 ? ",\"jump\":\"" + jump + "\"" : "") + "}";
+                       (jump.Length > 0 ? ",\"jump\":\"" + jump + "\"" : "") +
+                       (measures.Length > 0 ? ",\"measures\":" + measures : "") + "}";
             var req = new UnityWebRequest($"{url.TrimEnd('/')}/api/unity/checks", "POST")
             {
                 uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(json)),
@@ -675,7 +676,14 @@ namespace Rookery
                     try { jump = Convert.ToBase64String(File.ReadAllBytes(jumpPath)); File.Delete(jumpPath); }
                     catch (Exception e) { Debug.LogWarning("[Rookery] 점프 사진을 못 읽었습니다: " + e.Message); }
                 }
-                PostChecks(url, key, deliverable, scene, passed, failed, inconclusive, cases, shot, portrait: portrait, walk: walk, jump: jump);
+                var measures = "";
+                var measuresPath = Path.GetFullPath("Library/Rookery/measures.json");
+                if (File.Exists(measuresPath))
+                {
+                    try { measures = File.ReadAllText(measuresPath); File.Delete(measuresPath); }
+                    catch (Exception e) { Debug.LogWarning("[Rookery] 측정값을 못 읽었습니다: " + e.Message); }
+                }
+                PostChecks(url, key, deliverable, scene, passed, failed, inconclusive, cases, shot, portrait: portrait, walk: walk, jump: jump, measures: measures);
             }
         }
     }

@@ -37,6 +37,12 @@ const plan = z.object({
   /** 무엇을 만드는지 한 줄. 산출물 제목이 된다. */
   title: z.string(),
   /**
+   * 자가 숫자로 재는 기대치(32회차 09-07). 자가 재는 값: player_viewport_x(0~1, 화면 가로 위치), player_viewport_y,
+   * jump_height_m, hud_score_visible(true/false), coin_count. 이번 주문에 걸리는 것만 적는다 — 어긋나면 실패 줄이 되어
+   * 스스로 다시 고친다. 없으면 빈 배열.
+   */
+  expectations: z.array(z.object({ measure: z.string(), min: z.number().nullable(), max: z.number().nullable(), equals: z.boolean().nullable(), why: z.string() })),
+  /**
    * 받아들임 기준. **코드보다 먼저 쓴다.**
    *
    * 사람이 직접 확인할 수 있는 문장이어야 한다 — "빠르다"가 아니라
@@ -354,6 +360,7 @@ export const appBuildSkill: EmployeeSkill = {
 
     const content = {
       target: spec.target,
+      expectations: spec.expectations ?? [],
       criteria: spec.criteria,
       humanGate: spec.humanGate,
       files,

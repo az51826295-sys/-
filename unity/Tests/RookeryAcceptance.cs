@@ -171,6 +171,23 @@ namespace Rookery.Tests
         // 안에 살아서 브라우저가 못 그리니, 자가 돌 때 한 장 찍어 대화에 붙인다.
         // 못 찍으면(그래픽 장치가 없는 -nographics) 못 찍었다고 낸다 — 검은 사진을
         // 보내지 않는다.
+        /// 숫자로 재는 것(32회차 09-07): 자가 사진만 내면 사람이 해석해야 하고, 그러면 "스스로 다시" 가 못 돈다.
+        /// 여기 적힌 값은 Library/Rookery/measures.json 으로 나가고, 서버가 계획의 기대치(expectations)와 비교해 실패 줄을 만든다.
+        public const string MeasuresPath = "Library/Rookery/measures.json";
+        static readonly Dictionary<string, string> _measures = new Dictionary<string, string>();
+        public static void Measure(string key, double v) { _measures[key] = v.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture); Flush(); }
+        public static void Measure(string key, bool v) { _measures[key] = v ? "true" : "false"; Flush(); }
+        static void Flush()
+        {
+            var sb = new System.Text.StringBuilder("{");
+            var first = true;
+            foreach (var kv in _measures) { if (!first) sb.Append(","); first = false; sb.Append("\"").Append(kv.Key).Append("\":").Append(kv.Value); }
+            sb.Append("}");
+            var full = System.IO.Path.GetFullPath(MeasuresPath);
+            System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(full));
+            System.IO.File.WriteAllText(full, sb.ToString());
+        }
+
         public const string ScreenshotPath = "Library/Rookery/screenshot.png";
 
         [UnityTest]
@@ -206,6 +223,20 @@ namespace Rookery.Tests
             tex.Apply();
             RenderTexture.active = active;
             var png = tex.EncodeToPNG();
+            // ── 재기: 플레이어의 화면 위치, 점수 글자, 동전 수 ──
+            {
+                var player = Object.FindObjectsByType<Animator>(FindObjectsSortMode.None)
+                    .FirstOrDefault(a => a.isHuman && (a.GetComponentInParent<CharacterController>() != null || a.transform.root.CompareTag("Player")));
+                if (player != null)
+                {
+                    var vp = cam.WorldToViewportPoint(player.transform.position + Vector3.up * 0.9f);
+                    Measure("player_viewport_x", vp.x); Measure("player_viewport_y", vp.y);
+                }
+                var texts = Object.FindObjectsByType<UnityEngine.UI.Text>(FindObjectsSortMode.None);
+                var score = texts.FirstOrDefault(t => t.text != null && t.text.Contains("점수"));
+                Measure("hud_score_visible", score != null && score.isActiveAndEnabled && score.canvas != null && score.canvas.renderMode != RenderMode.ScreenSpaceOverlay);
+                Measure("coin_count", Object.FindObjectsByType<Transform>(FindObjectsSortMode.None).Count(t => t.name.StartsWith("Coin") && t.GetComponent<Collider>() != null));
+            }
             Object.Destroy(tex);
             rt.Release();
             Object.Destroy(rt);
@@ -332,7 +363,7 @@ namespace Rookery.Tests
             strip.Apply();
             cam.transform.position = savedPos; cam.transform.rotation = savedRot; cam.fieldOfView = savedFov;
             Unmute(muted);
-            if (!holdKey) Debug.Log($"[Rookery] 점프 높이 {peakY - baseY:0.00} m (0 이면 안 뜬 것)");
+            if (!holdKey) { Debug.Log($"[Rookery] 점프 높이 {peakY - baseY:0.00} m (0 이면 안 뜬 것)"); Measure("jump_height_m", peakY - baseY); }
             System.IO.File.WriteAllBytes(System.IO.Path.GetFullPath(path), strip.EncodeToPNG());
             Object.Destroy(strip); rt.Release(); Object.Destroy(rt);
         }

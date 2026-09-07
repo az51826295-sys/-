@@ -31,6 +31,8 @@ type Body = {
   walk?: string;
   /** 점프 넉 장(30회차). */
   jump?: string;
+  /** 자가 잰 숫자(32회차): player_viewport_x, jump_height_m, hud_score_visible, coin_count … */
+  measures?: Record<string, number | boolean | string>;
 };
 
 export async function POST(request: Request) {
@@ -45,6 +47,23 @@ export async function POST(request: Request) {
     body = (await request.json()) as Body;
   } catch {
     return NextResponse.json({ error: "JSON 이 아닙니다." }, { status: 400 });
+  }
+
+  // ── 32회차: 계획의 기대치(expectations)와 측정값을 맞춰 본다. 어긋나면 실패 줄이 되고, 그 줄이 Dev 에게 간다(스스로 다시). ──
+  if (body.deliverableId && body.measures) {
+    const { data: d0 } = await db.from("deliverables").select("exp:content_json->expectations").eq("id", body.deliverableId).eq("company_id", company.id).maybeSingle();
+    const expectations = ((d0 as { exp?: unknown } | null)?.exp ?? []) as { measure: string; min?: number | null; max?: number | null; equals?: boolean | null; why?: string }[];
+    for (const e of expectations) {
+      const v = body.measures[e.measure];
+      const label = e.why ? `${e.why} (${e.measure})` : e.measure;
+      if (v === undefined) { body.cases.push({ name: `기대_${e.measure}`, result: "Inconclusive", message: `${label}: 자가 안 쟀다` }); body.inconclusive += 1; continue; }
+      let ok: boolean;
+      if (typeof e.equals === "boolean") ok = v === e.equals;
+      else { const n = Number(v); ok = Number.isFinite(n) && (e.min == null || n >= e.min) && (e.max == null || n <= e.max); }
+      const range = typeof e.equals === "boolean" ? String(e.equals) : `${e.min ?? "-∞"}~${e.max ?? "∞"}`;
+      body.cases.push({ name: `기대_${e.measure}`, result: ok ? "Passed" : "Failed", message: `${label}: 실측 ${String(v)}, 기대 ${range}` });
+      if (ok) body.passed += 1; else body.failed += 1;
+    }
   }
 
   const mark = (r: string) => (r === "Passed" ? "✅" : r === "Failed" ? "❌" : "◻︎");
