@@ -59,9 +59,8 @@ export const WORK_KINDS: Record<string, WorkKind> = {
   },
   analysis: {
     type: "analysis", family: "analysis", label: "분석(자료·영상)",
-    proofOrder: ["summary"],
-    ruler: "출처·수치 검사",
-    notYet: "직원 없음 — 필요한 것: 자료 읽기(문서·유튜브 자막) · 표 만들기 · 출처 자.",
+    proofOrder: [],
+    ruler: "출처 자(인용이 원문에 있는가 · 시각이 길이 안인가)",
   },
 };
 

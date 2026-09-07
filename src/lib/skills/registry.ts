@@ -4,6 +4,7 @@ import { gameAssetsSkill } from "@/lib/skills/gameAssets";
 import { meshAssetsSkill } from "@/lib/skills/meshAssets";
 import { leadResearchSkill } from "@/lib/skills/leadResearch";
 import { marketResearchSkill } from "@/lib/skills/marketResearch";
+import { analysisSkill } from "@/lib/skills/analysis";
 import { SkillNotFoundError, type EmployeeSkill } from "@/lib/skills/types";
 
 /**
@@ -18,6 +19,7 @@ export const employeeSkillRegistry: Record<string, EmployeeSkill> = {
   app_build: appBuildSkill,
   mesh_assets: meshAssetsSkill,
   lead_research: leadResearchSkill,
+  analysis: analysisSkill,
 };
 
 export function getEmployeeSkill(skillId: string): EmployeeSkill {

@@ -72,6 +72,8 @@ export type ArtDirectionKnowledge = z.infer<typeof artDirectionKnowledgeSchema>;
 export const gameArtKnowledgeSchema = z.object({});
 export const appBuildKnowledgeSchema = z.object({});
 export const meshAssetsKnowledgeSchema = z.object({});
+// 분석(Ana, 36회차): 링크와 물음이 업무 문장에 있다. 따로 묻는 칸 없음.
+export const analysisKnowledgeSchema = z.object({});
 
 export const roleKnowledgeSchemaRegistry = {
   art_direction_knowledge_v1: artDirectionKnowledgeSchema,
@@ -80,6 +82,7 @@ export const roleKnowledgeSchemaRegistry = {
   game_art_knowledge_v1: gameArtKnowledgeSchema,
   app_build_knowledge_v1: appBuildKnowledgeSchema,
   mesh_assets_knowledge_v1: meshAssetsKnowledgeSchema,
+  analysis_knowledge_v1: analysisKnowledgeSchema,
 } as const;
 
 export type RoleKnowledgeSchemaId = keyof typeof roleKnowledgeSchemaRegistry;
@@ -127,6 +130,8 @@ export const meshAssetsAssignmentSchema = z.object({
   previousDeliverableId: z.string().optional().nullable(),
 });
 
+export const analysisAssignmentSchema = z.object({ urls: z.array(z.string()).optional().nullable() });
+
 export const assignmentInputSchemaRegistry = {
   art_bible_assignment_v1: artBibleAssignmentSchema,
   market_research_assignment_v1: marketResearchAssignmentSchema,
@@ -134,6 +139,7 @@ export const assignmentInputSchemaRegistry = {
   game_assets_assignment_v1: gameAssetsAssignmentSchema,
   app_build_assignment_v1: appBuildAssignmentSchema,
   mesh_assets_assignment_v1: meshAssetsAssignmentSchema,
+  analysis_assignment_v1: analysisAssignmentSchema,
 } as const;
 
 export type AssignmentInputSchemaId = keyof typeof assignmentInputSchemaRegistry;
