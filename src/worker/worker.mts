@@ -54,6 +54,16 @@ async function tick() {
     .limit(20);
   for (const q of queued ?? []) {
     if (busy.has(q.company_employee_id as string)) continue;
+    // 43회차: 집을 때 **자리를 잡는다**. 프로세스 안의 집합만으로는 워커가 둘이거나 배포 중 옛 워커가
+    // 살아 있으면 같은 실행을 둘이 돌린다(돈 두 배·파일 두 벌). 조건부 갱신이 성공한 쪽만 돌린다.
+    const { data: claimed } = await db
+      .from("work_executions")
+      .update({ status: "running", updated_at: new Date().toISOString() })
+      .eq("id", q.id as string)
+      .eq("status", "queued")
+      .select("id")
+      .maybeSingle();
+    if (!claimed) continue;
     void runOne(q.id as string, q.company_employee_id as string, "대기열");
   }
   const cutoff = new Date(Date.now() - DEAD_MS).toISOString();
@@ -66,6 +76,16 @@ async function tick() {
     .limit(10);
   for (const d of dead ?? []) {
     if (busy.has(d.company_employee_id as string)) continue;
+    // 죽은 것을 잇는 쪽도 같은 자리잡기 — updated_at 을 지금으로 밀어 다른 워커가 또 집지 못하게.
+    const { data: taken } = await db
+      .from("work_executions")
+      .update({ updated_at: new Date().toISOString() })
+      .eq("id", d.id as string)
+      .eq("status", "running")
+      .lt("updated_at", cutoff)
+      .select("id")
+      .maybeSingle();
+    if (!taken) continue;
     void runOne(d.id as string, d.company_employee_id as string, `'${d.current_step}' 에서 ${Math.round((Date.now() - new Date(d.updated_at as string).getTime()) / 60_000)}분 소식 없음 → 이어서`);
   }
 }

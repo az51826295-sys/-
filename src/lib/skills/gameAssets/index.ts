@@ -1,4 +1,6 @@
 import { ExecutionError, setStep } from "@/lib/execution/shared";
+import { recordUsage } from "@/lib/costs/meter";
+import { storeDeliverableFile } from "@/lib/deliverables/files";
 import type { EmployeeSkill, SkillRunContext } from "@/lib/skills/types";
 import { createImageProvider } from "@/lib/providers/images";
 import {
@@ -124,11 +126,15 @@ export const gameAssetsSkill: EmployeeSkill = {
     // ── 3. 여러 개 뽑는다 ───────────────────────────────────────────
     await setStep(ctx.supabase, ctx.executionId, "generating");
     const drawer = createImageProvider();
+    // 43회차: 그림 값이 장부 밖이었다(3D·영상은 09-07 에 고쳤는데 2D 만 남았다). 판마다 적는다.
+    const scope = { companyId: ctx.execution.company_id, workExecutionId: ctx.executionId, companyEmployeeId: ctx.execution.company_employee_id };
+    let drawTokens = { input: 0, output: 0 };
     const made: { dataUrl: string; index: number }[] = [];
     const drawFailures: string[] = [];
     for (let i = 0; i < CANDIDATES; i++) {
       try {
         const img = await drawer.draw(FORM + " " + brief.prompt);
+        drawTokens = { input: drawTokens.input + img.inputTokens, output: drawTokens.output + img.outputTokens };
         made.push({ dataUrl: img.dataUrl, index: i });
       } catch (error) {
         // 한 장이 실패해도 나머지로 계속한다. 넉 장 중 셋이면 아직 고를 수 있다.
@@ -136,6 +142,9 @@ export const gameAssetsSkill: EmployeeSkill = {
           `${i + 1}번: ${error instanceof Error ? error.message : String(error)}`,
         );
       }
+    }
+    if (drawTokens.input || drawTokens.output) {
+      await recordUsage(ctx.supabase, scope, { model: "gpt-image-2", purpose: "game_asset_candidates", inputTokens: drawTokens.input, outputTokens: drawTokens.output });
     }
     if (made.length === 0) {
       throw new ExecutionError(
@@ -162,7 +171,6 @@ export const gameAssetsSkill: EmployeeSkill = {
       "사람이 정합니다 — 순위는 매기지 않았습니다.";
     const candidates = judged.map((j) => ({
       index: j.index,
-      image: j.dataUrl,
       verdict: j.verdict.verdict,
       // 왜 떨어졌는지 없이 탈락만 보여 주면 다음 주문을 못 고친다.
       why: j.verdict.fail ?? j.verdict.undefined ?? [],
@@ -181,6 +189,8 @@ export const gameAssetsSkill: EmployeeSkill = {
       summary: { passed: passed.length, rejected: rejected.length, unmeasured: unmeasured.length },
       drawFailures,
       note,
+      // 43회차: 그림은 파일로. 행에 base64 를 넣으면 3D 에서 겪은 statement timeout 을 그대로 겪는다 — 22:55 에 실제로 겪었다.
+      filesPending: true,
     };
     // 대화 한 칸에 돌아올 본문. 그림은 데이터 URL 이라 마크다운 이미지로 그대로 뜬다.
     const markdown =
@@ -188,7 +198,7 @@ export const gameAssetsSkill: EmployeeSkill = {
       candidates
         .map(
           (c) =>
-            `### #${c.index} ${c.verdict}\n\n![후보 ${c.index}](${c.image})\n\n` +
+            `### #${c.index} ${c.verdict}\n\n` +
             (c.why.length ? c.why.map((w: string) => `- ${w}`).join("\n") : "(지적 없음)"),
         )
         .join("\n\n") +
@@ -217,6 +227,24 @@ export const gameAssetsSkill: EmployeeSkill = {
       throw new ExecutionError("DELIVERABLE_SAVE_FAILED", rpc.reason ?? "unknown");
     }
     const deliverable = { id: rpc.deliverableId as string };
+    // 후보 그림을 파일로. 화면(kinds.game_assets.proofOrder)이 sprite 를 찾으므로 그 이름으로 둔다.
+    for (const j of judged) {
+      const b64 = j.dataUrl.split(",")[1] ?? "";
+      if (!b64) continue;
+      const stored = await storeDeliverableFile(ctx.supabase, {
+        companyId: ctx.execution.company_id,
+        deliverableId: deliverable.id as string,
+        filename: `sprite-${j.index}-${j.verdict.verdict}.png`,
+        body: new Uint8Array(Buffer.from(b64, "base64")),
+        kind: "image",
+        mimeType: "image/png",
+        title: `후보 ${j.index} (${j.verdict.verdict})`,
+        producedByBackend: "gpt-image-2",
+      });
+      if (!stored.ok) console.warn(`[gameAssets] 파일 저장 실패 ${j.index}: ${stored.error}`);
+    }
+    await ctx.supabase.from("deliverables").update({ content_json: { ...content, filesPending: false } }).eq("id", deliverable.id as string);
+
 
     return {
       deliverableId: deliverable.id as string,
