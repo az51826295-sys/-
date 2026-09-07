@@ -1,5 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { conversationOfAssignment } from "@/lib/execution/approval";
+import { releaseEmployee } from "@/lib/assignments/service";
 
 type Supabase = SupabaseClient;
 
@@ -60,6 +61,11 @@ export async function scheduleAutoRetry(
     .eq("id", d.company_employee_id)
     .maybeSingle();
   const who = ((emp as { employees?: { name?: string } | null } | null)?.employees?.name) ?? "담당자";
+
+  // 직원 한 명당 살아 있는 업무는 하나다(`assignments_one_active_per_employee`). 방금 낸 판은 아직 `submitted` 라
+  // 그대로 새 업무를 넣으면 409 로 튕긴다 — 41회차에 엔진에서 부르면서 처음 걸렸다(유니티 길은 결과를 붙이며
+  // 이미 풀고 왔다). 대화가 일을 맡길 때와 같은 문으로 지난 판을 닫고 시작한다.
+  await releaseEmployee(db, d.company_employee_id as string, d.assignment_id as string);
 
   const { data: made, error } = await db
     .from("assignments")
