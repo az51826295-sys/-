@@ -61,7 +61,7 @@ export async function collectUnityChecks(
     .select("content, attachments, created_at")
     .eq("conversation_id", conversationId)
     .gt("created_at", since)
-    .not("attachments->unityChecks", "is", null)
+    .or("attachments->unityChecks.not.is.null,attachments->approval.not.is.null,attachments->autoRetryExhausted.not.is.null")
     .order("created_at", { ascending: true });
   return ((data ?? []) as { content: string; attachments: { files?: ReturnedFile[] | null } | null }[]).map((m) => ({
     role: "assistant" as const,

@@ -48,8 +48,9 @@ export const WORK_KINDS: Record<string, WorkKind> = {
     ruler: "그림 판정",
   },
   art_bible: { type: "art_bible", family: "document", label: "아트 바이블", proofOrder: [], ruler: "없음(사람이 읽는다)" },
-  market_research: { type: "market_research", family: "analysis", label: "시장 조사", proofOrder: [], ruler: "출처 검사" },
-  lead_research: { type: "lead_research", family: "analysis", label: "리드 조사", proofOrder: [], ruler: "출처 검사" },
+  // 43회차: 조사 산출물은 실제로 이 이름으로 저장된다(market_research/lead_research 는 죽은 칸이었다 — 화면이 "자 없음" 이라 적었다).
+  market_research_report: { type: "market_research_report", family: "analysis", label: "시장 조사", proofOrder: [], ruler: "출처 검사(인용이 실제 출처에 있는가)" },
+  lead_list: { type: "lead_list", family: "analysis", label: "리드 목록", proofOrder: [], ruler: "출처 검사 + 자격 점수" },
   // ── 아직 직원이 없는 종류. 구조만 먼저 둔다(09-06). ──
   video: {
     type: "video", family: "video", label: "영상(설명·쇼츠)",

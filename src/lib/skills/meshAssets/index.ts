@@ -343,7 +343,7 @@ export const meshAssetsSkill: EmployeeSkill = {
       const front = image;
       mesh = await step(ctx.supabase, ctx.executionId, "mesh", async () => { const r = await (views.face && views.back
         ? mesher.multiImageTo3D([front, views.back!, ...(views.side ? [views.side] : []), views.face!], { poseMode: brief.poseMode, textureResolution: "4k", aiModel: "meshy-7" })
-        : mesher.imageTo3D(front, { poseMode: brief.poseMode, textureResolution: brief.wantRig ? "4k" : "2k" })); if (!r.mock) await bookMeshy("mesh_generate", 30); return r; });
+        : mesher.imageTo3D(front, { poseMode: brief.poseMode, textureResolution: brief.wantRig ? "4k" : "2k" })); if (!r.mock) await bookMeshy("mesh_generate", r.consumedCredits || 30); return r; });
     } catch (error) {
       const msg = error instanceof Error ? error.message : String(error);
       throw new ExecutionError(
@@ -360,7 +360,7 @@ export const meshAssetsSkill: EmployeeSkill = {
     let rigError: string | null = null;
     if (brief.wantRig && !mesh.mock) {
       try {
-        rig = await step(ctx.supabase, ctx.executionId, "rig", async () => { const r = await mesher.rig(mesh.taskId, 1.7); await bookMeshy("mesh_rig", 5); return r; });
+        rig = await step(ctx.supabase, ctx.executionId, "rig", async () => { const r = await mesher.rig(mesh.taskId, 1.7); await bookMeshy("mesh_rig", r.consumedCredits || 5); return r; });
       } catch (error) {
         rigError = error instanceof Error ? error.message : String(error);
       }

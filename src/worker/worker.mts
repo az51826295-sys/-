@@ -24,7 +24,10 @@ const [{ createServiceClient }, { executeEmployeeAssignment }, { defaultProvider
 
 const db = createServiceClient();
 const TICK_MS = 15_000;
-const DEAD_MS = 4 * 60_000;
+// 43회차: 4분은 너무 짧다. 3D 한 판은 메시 생성만 몇 분을 기다리는데 그 사이 아무것도 안 쓴다 —
+// 살아 있는 실행을 '죽었다' 고 보고 같은 것을 또 돌릴 뻔했다. `heartbeat()` 는 만들어 놓고 아무도 안 부른다(호출 0).
+// 부르는 자리를 제대로 놓기 전까지는 시간을 늘려 둔다.
+const DEAD_MS = 20 * 60_000;
 const busy = new Set<string>(); // company_employee_id — 한 사람은 한 번에 하나
 const stamp = () => new Date().toISOString().slice(11, 19);
 console.log(`${stamp()} 워커 시작 (tick ${TICK_MS / 1000}s, 죽음 판정 ${DEAD_MS / 60_000}분)`);
