@@ -65,7 +65,9 @@ export async function scheduleAutoRetry(
   // 직원 한 명당 살아 있는 업무는 하나다(`assignments_one_active_per_employee`). 방금 낸 판은 아직 `submitted` 라
   // 그대로 새 업무를 넣으면 409 로 튕긴다 — 41회차에 엔진에서 부르면서 처음 걸렸다(유니티 길은 결과를 붙이며
   // 이미 풀고 왔다). 대화가 일을 맡길 때와 같은 문으로 지난 판을 닫고 시작한다.
-  await releaseEmployee(db, d.company_employee_id as string, d.assignment_id as string);
+  // 이 판만이 아니라 그 사람의 **막힌 것 전부**를 푼다(대화가 일을 맡길 때와 같다). 이 판만 풀면 그 사이에 끝난
+  // 다른 판이 여전히 자리를 잡고 있어 또 409 다 — 21:17 에 그렇게 한 번 더 튕겼다.
+  await releaseEmployee(db, d.company_employee_id as string);
 
   const { data: made, error } = await db
     .from("assignments")
