@@ -582,3 +582,13 @@ LateUpdate 에서 매 프레임 자리를 되돌려 걷기·점프 줄이 전부
 덤: 켜 둔 배치 에디터는 로컬 스크립트 변경을 스스로 안 읽는다(가져오기 때만 Refresh) → 자·창을 고치면 에디터를 다시 켠다. `data/unity_recheck` 로 같은 버전 재검사.
 **교훈(M21)**: 판이 세 번 실패하면 만드는 쪽이 아니라 **재는 쪽**을 먼저 의심한다. 자가 숫자를 내게 하면(높이 0.81 m) 사진 해석 논쟁이 사라진다.
 **교과 7 상태**: 카메라 거리·충돌·점프 확인 ✅, 가로 1/3 배치는 사진에서 아직 가운데(Dev 3판 모두) — 규칙 숫자를 앞에 둔 뒤 첫 판이라 다음에 잰다.
+
+## AB. 31회차 (09-07 12:40~) — UI/HUD (교과 10) + 교과 7 마무리
+
+**의심 → 확인**: 지금까지 검사 사진에 점수 글자가 한 번도 안 보였다. 원인은 Canvas `Screen Space-Overlay` 가 카메라 렌더텍스처에 안 찍히는 것
+([Unity 이슈](https://issuetracker.unity3d.com/issues/rendertextures-do-not-include-canvas-ui-elements), [해법](https://discussions.unity.com/t/capture-screenshots-and-the-ui/666607)):
+`Screen Space-Camera`(worldCamera = Main Camera) 로 두면 찍힌다. 즉 **자가 못 보는 것은 게임에도 없는 것처럼 취급됐다** — HUD 는 규칙에서 빠져 있었다.
+**읽은 것/판단**: UI Toolkit 은 런타임 HUD 도 되지만 카메라 캡처·폰트 자산이 또 다른 변수라, 첫 판은 UGUI Text + OS 글꼴(Malgun Gothic)로 간다.
+기본 글꼴은 한글이 네모. TextMeshPro 는 한글 폰트 자산이 필요해 나중에.
+**규칙에 박은 것**: Canvas 는 ScreenSpaceCamera·planeDistance 1, OS 한글 글꼴, CanvasScaler 1920×1080, 점수 오른쪽 위·안내 가운데, 글자 크기 화면 세로 4~6%.
+**판정(얼릴 것)**: 게임 사진에 '점수: N' 한글이 오른쪽 위에 읽히는가, 캐릭터가 가로 1/3 에 있는가. 둘 다 사진.
