@@ -433,6 +433,13 @@ namespace Rookery
                 var forced = File.Exists(recheck);
                 if (forced) File.Delete(recheck);
                 if (latest == null || string.IsNullOrEmpty(latest.id) || (!forced && latest.id == SessionState.GetString(LastKey, ""))) return;
+                // 다시 켠 직후: 서버가 "이미 검사했다"(checked) 고 하면 되풀이하지 않는다 — 32회차 2판에서 옛 판을 한 번 더 재느라 3분을 썼다.
+                if (!forced && string.IsNullOrEmpty(SessionState.GetString(LastKey, "")) && !string.IsNullOrEmpty(latest.@checked))
+                {
+                    SessionState.SetString(LastKey, latest.id);
+                    Debug.Log($"[Rookery] 버전 {latest.id.Substring(0, 8)} 은 이미 검사됨({latest.@checked}) — 건너뛰고 감시");
+                    return;
+                }
                 SessionState.SetBool(BusyKey, true);
                 SessionState.SetFloat(BusySinceKey, (float)EditorApplication.timeSinceStartup);
                 SessionState.SetString(LastKey, latest.id);
