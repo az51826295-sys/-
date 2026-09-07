@@ -254,6 +254,17 @@ namespace Rookery.Tests
                 var score = texts.FirstOrDefault(t => t.text != null && t.text.Contains("점수"));
                 Measure("hud_score_visible", score != null && score.isActiveAndEnabled && score.canvas != null && score.canvas.renderMode != RenderMode.ScreenSpaceOverlay);
                 Measure("coin_count", Object.FindObjectsByType<Transform>(FindObjectsSortMode.None).Count(t => t.name.StartsWith("Coin") && t.GetComponent<Collider>() != null));
+                // ── 레벨(33회차): 바닥을 뺀 정적 물체의 XZ 크기, 높이 6 m 이상 랜드마크 수 ──
+                {
+                    var playerRoot = player != null ? player.transform.root : null;
+                    var cols = Object.FindObjectsByType<Collider>(FindObjectsSortMode.None)
+                        .Where(c => c.enabled && !c.isTrigger && (playerRoot == null || !c.transform.IsChildOf(playerRoot)) && c.GetComponentInParent<Animator>() == null).ToList();
+                    var ground = cols.Where(c => c.bounds.size.y < 1f).OrderByDescending(c => c.bounds.size.x * c.bounds.size.z).FirstOrDefault();
+                    var rest = cols.Where(c => c != ground).ToList();
+                    if (rest.Count > 0) { var b = rest[0].bounds; foreach (var c in rest) b.Encapsulate(c.bounds); Measure("level_extent_m", Mathf.Max(b.size.x, b.size.z)); }
+                    else Measure("level_extent_m", 0);
+                    Measure("landmark_count", rest.Count(c => c.bounds.size.y >= 6f));
+                }
             }
             Object.Destroy(tex);
             rt.Release();
