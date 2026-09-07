@@ -48,8 +48,15 @@ function mmss(ms: number): string {
 
 /** 자막을 30초마다 [mm:ss] 표시를 넣은 글로. 모델은 이 표시로 `at` 을 적고, 자는 그 표시가 길이 안에 있는지 본다. */
 async function readYoutube(url: string, id: string): Promise<Source> {
-  const segs = await YoutubeTranscript.fetchTranscript(id);
+  // 36회차 1판: 기본 자막이 아랍어로 왔다(라이브러리는 첫 트랙을 집는다). 영어 → 한국어 → 아무거나 순으로 청한다.
+  let segs: Awaited<ReturnType<typeof YoutubeTranscript.fetchTranscript>> = [];
+  let lang = "";
+  for (const want of ["en", "ko"]) {
+    try { segs = await YoutubeTranscript.fetchTranscript(id, { lang: want }); if (segs.length) { lang = want; break; } } catch { /* 다음 언어 */ }
+  }
+  if (!segs.length) { segs = await YoutubeTranscript.fetchTranscript(id); lang = segs[0]?.lang ?? "?"; }
   if (!segs.length) throw new Error("자막이 없다");
+  console.log(`[analysis] 자막 ${id} lang=${lang} segments=${segs.length}`);
   let text = ""; let mark = -1;
   for (const s of segs) {
     const bucket = Math.floor(s.offset / 30_000);
@@ -57,7 +64,7 @@ async function readYoutube(url: string, id: string): Promise<Source> {
     text += s.text.replace(/\s+/g, " ") + " ";
   }
   const last = segs[segs.length - 1];
-  return { url, kind: "youtube", title: `YouTube ${id}`, text: text.trim(), durationSec: Math.ceil((last.offset + last.duration) / 1000), chars: text.length };
+  return { url, kind: "youtube", title: `YouTube ${id} (자막 ${lang})`, text: text.trim(), durationSec: Math.ceil((last.offset + last.duration) / 1000), chars: text.length };
 }
 
 async function readWeb(url: string): Promise<Source> {
