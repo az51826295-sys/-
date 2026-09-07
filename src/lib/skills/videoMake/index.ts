@@ -105,7 +105,7 @@ export const videoMakeSkill: EmployeeSkill = {
     cases.push({ name: "자막_수_대본과_같다", result: srtCount === plan.scenes.length ? "Passed" : "Failed", message: `자막 ${srtCount} · 장면 ${plan.scenes.length}` });
     const longest = Math.max(...plan.scenes.map((s) => s.narration.length));
     cases.push({ name: "말_길이", result: longest <= 220 ? "Passed" : "Failed", message: `가장 긴 장면 ${longest}자 (≤220)` });
-    cases.push({ name: "첫장면_3초안", result: a.durations[0] <= 6 ? "Passed" : "Failed", message: `첫 장면 ${a.durations[0].toFixed(1)}s` });
+    cases.push({ name: "첫장면_6초안", result: a.durations[0] <= 6 ? "Passed" : "Failed", message: `첫 장면 ${a.durations[0].toFixed(1)}s` });
     const passed = cases.filter((c) => c.result === "Passed").length;
     const verdict = { verdict: passed === cases.length ? "PASS" : "FAIL", passed, failed: cases.length - passed, cases };
 

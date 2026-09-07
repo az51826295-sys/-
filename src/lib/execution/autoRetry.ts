@@ -43,7 +43,19 @@ export async function scheduleAutoRetry(
     .maybeSingle();
   if (!a) return { scheduled: false, why: "업무 없음" };
   const prevN = Number((a.role_input_json as { autoRetry?: number } | null)?.autoRetry ?? 0);
-  if (prevN >= MAX_AUTO_RETRIES) return { scheduled: false, why: `이미 ${prevN}번 스스로 다시 했다` };
+  if (prevN >= MAX_AUTO_RETRIES) {
+    // 42회차: 조용히 그만두면 사장님은 세 판이 돌았다는 것도, 멈췄다는 것도 모른다.
+    const convoDone = await conversationOfAssignment(db, d.assignment_id as string);
+    if (convoDone) {
+      await db.from("conversation_messages").insert({
+        conversation_id: convoDone,
+        role: "assistant",
+        content: `스스로 ${MAX_AUTO_RETRIES}번 고쳐 봤는데 아직 떨어진 줄이 남았어요:\n${failedLines.map((f) => `- ${f}`).join("\n")}\n\n여기서 멈출게요. 어떻게 할지 말씀해 주세요.`,
+        attachments: { autoRetryExhausted: MAX_AUTO_RETRIES },
+      });
+    }
+    return { scheduled: false, why: `이미 ${prevN}번 스스로 다시 했다` };
+  }
 
   // 같은 직원이 지금 다른 일을 하고 있으면 대기열에 선다(워커가 차례로 집는다).
   const n = prevN + 1;

@@ -3,6 +3,15 @@ import { createServiceClient } from "@/lib/supabase/service";
 import { scheduleAutoRetry } from "@/lib/execution/autoRetry";
 import { storeDeliverableFile } from "@/lib/deliverables/files";
 
+/** 이 회사 주인의 대화들. 유니티 열쇠는 회사 것이므로 그 회사의 대화에만 글을 붙인다(42회차). */
+async function conversationIdsOf(db: ReturnType<typeof createServiceClient>, companyId: string): Promise<string[]> {
+  const { data: c } = await db.from("companies").select("owner_id").eq("id", companyId).maybeSingle();
+  const owner = (c as { owner_id?: string } | null)?.owner_id;
+  if (!owner) return [];
+  const { data } = await db.from("conversations").select("id").eq("owner_id", owner);
+  return ((data ?? []) as { id: string }[]).map((r) => r.id);
+}
+
 export const dynamic = "force-dynamic";
 
 /**
@@ -83,6 +92,11 @@ export async function POST(request: Request) {
       if (v === undefined) { body.cases.push({ name: `기대_${e.measure}`, result: "Inconclusive", message: `${label}: 자가 안 쟀다` }); body.inconclusive += 1; continue; }
       let ok: boolean;
       if (typeof e.equals === "boolean") ok = v === e.equals;
+      else if (e.min == null && e.max == null) {
+        // 42회차: 위도 아래도 없는 기대치는 아무 값이나 통과한다 — 잰 것이 아니라 적어 둔 것이다.
+        body.cases.push({ name: `기대_${e.measure}`, result: "Inconclusive", message: `${label}: 실측 ${String(v)} — 기대 범위가 비어 있어 재지 못했다` });
+        body.inconclusive += 1; continue;
+      }
       else { const n = Number(v); ok = Number.isFinite(n) && (e.min == null || n >= e.min) && (e.max == null || n <= e.max); }
       const range = typeof e.equals === "boolean" ? String(e.equals) : `${e.min ?? "-∞"}~${e.max ?? "∞"}`;
       body.cases.push({ name: `기대_${e.measure}`, result: ok ? "Passed" : "Failed", message: `${label}: 실측 ${String(v)}, 기대 ${range}` });
@@ -110,6 +124,8 @@ export async function POST(request: Request) {
       .from("conversation_messages")
       .select("conversation_id")
       .contains("attachments", { returned: { deliverableId: body.deliverableId } })
+      // 42회차: 열쇠의 회사가 가진 산출물일 때만. 없으면 남의 대화에 글을 붙이고 남의 회사에 재시도를 태울 수 있다.
+      .in("conversation_id", await conversationIdsOf(db, company.id as string))
       .order("created_at", { ascending: false })
       .limit(1)
       .maybeSingle();

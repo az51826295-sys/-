@@ -39,16 +39,27 @@ export async function checkAllowance(
 
   const since = new Date(Date.now() - windowDays * DAY_MS).toISOString();
 
-  const { data: rows } = await db
-    .from("model_usage")
-    .select("cost_usd")
-    .eq("company_id", companyId)
-    .gte("created_at", since);
-
-  const spentUsd = ((rows ?? []) as { cost_usd: number | string }[]).reduce(
-    (sum, row) => sum + Number(row.cost_usd ?? 0),
-    0,
-  );
+  // 42회차 점검: ① 못 읽으면 0 으로 치고 **열어 줬다**(한도가 사라진다). 한도는 못 읽을 때 닫는 쪽이 맞다.
+  // ② PostgREST 는 한 번에 최대 몇 백~천 행만 준다 — 장부가 그만큼 쌓이면 합계가 거기서 멈춘다. 쪽을 넘겨 가며 다 센다.
+  let spentUsd = 0;
+  const PAGE = 1000;
+  for (let from = 0; ; from += PAGE) {
+    const { data: rows, error } = await db
+      .from("model_usage")
+      .select("cost_usd")
+      .eq("company_id", companyId)
+      .gte("created_at", since)
+      .order("created_at", { ascending: true })
+      .range(from, from + PAGE - 1);
+    if (error) {
+      // 못 읽었다 = 얼마 썼는지 모른다. 모르면 멈춘다.
+      console.error("[allowance] 장부를 못 읽었다 — 한도에 걸린 것으로 본다:", error.message);
+      return { limitUsd, spentUsd: limitUsd, remainingUsd: 0, windowDays, exhausted: true };
+    }
+    const page = (rows ?? []) as { cost_usd: number | string }[];
+    spentUsd += page.reduce((sum, row) => sum + Number(row.cost_usd ?? 0), 0);
+    if (page.length < PAGE) break;
+  }
 
   return {
     limitUsd,

@@ -38,7 +38,7 @@ const analysis = z.object({
 });
 type Analysis = z.infer<typeof analysis>;
 
-type Source = { url: string; kind: "youtube" | "web" | "pdf"; title: string; text: string; durationSec: number | null; pages: number | null; chars: number };
+type Source = { url: string; kind: "youtube" | "web" | "pdf"; title: string; text: string; durationSec: number | null; pages: number | null; chars: number; truncated?: boolean };
 
 const URL_RE = /https?:\/\/[^\s)\]>"']+/g;
 const YT_RE = /(?:youtube\.com\/(?:watch\?v=|shorts\/|live\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/;
@@ -199,7 +199,7 @@ function render(a: Analysis, sources: Source[], v: ReturnType<typeof judge>): st
     ...(a.numbers.length ? [`## 숫자 (${a.numbers.length})`, "", `| 자 | 무엇 | 값 | 원문 인용 | 어디서 |`, `|---|---|---|---|---|`, ...a.numbers.map((n, i) => row("숫자", i, [n.what, n.value, `"${n.quote}"`, n.at ?? "글"])), ""] : []),
     `## 우리에게 (원문에 없는 판단)`, "", ...a.forUs.map((s) => `- ${s}`), "",
     ...(a.unanswered.length ? [`## 자료가 답하지 않은 것`, "", ...a.unanswered.map((s) => `- ${s}`), ""] : []),
-    `## 자료`, "", ...sources.map((s) => `- ${s.kind === "youtube" ? "영상" : s.kind === "pdf" ? "PDF" : "글"} ${s.url} — ${s.chars.toLocaleString()}자${s.durationSec ? ` · ${mmss(s.durationSec * 1000)}` : ""}${s.pages ? ` · ${s.pages}쪽` : ""}${s.chars === 0 ? " · **못 읽음**" : ""}`), "",
+    `## 자료`, "", ...sources.map((s) => `- ${s.kind === "youtube" ? "영상" : s.kind === "pdf" ? "PDF" : "글"} ${s.url} — ${s.chars.toLocaleString()}자${s.durationSec ? ` · ${mmss(s.durationSec * 1000)}` : ""}${s.pages ? ` · ${s.pages}쪽` : ""}${s.chars === 0 ? " · **못 읽음**" : ""}${s.truncated ? " · **앞부분만 읽음(12만 자)**" : ""}`), "",
     `---`, "", `**출처 자**: 인용 ${v.cases.length}개 중 원문에서 찾음 ${v.passed} · 못 찾음 ${v.failed}. 못 찾은 줄은 믿지 마세요 — 그 줄만 지어낸 것일 수 있어요.`,
   ].join("\n");
 }
@@ -231,7 +231,9 @@ export const analysisSkill: EmployeeSkill = {
         const yt = YT_RE.exec(url);
         try {
           const s = yt ? await readYoutube(url, yt[1]) : isPdfUrl(url) ? await readPdf(url) : await readWeb(url);
-          out.push({ ...s, text: s.text.slice(0, 120_000) });
+          // 42회차: 자른 뒤의 길이를 적는다. 자르기 전 길이를 적으면 "40만 자를 읽었다" 고 말하면서 앞 30% 만 본 판이 된다.
+          const text = s.text.slice(0, 120_000);
+          out.push({ ...s, text, chars: text.length, truncated: text.length < s.chars });
         } catch (e) {
           out.push({ url, kind: yt ? "youtube" : isPdfUrl(url) ? "pdf" : "web", title: url, text: "", durationSec: null, pages: null, chars: 0 });
           console.warn(`[analysis] 못 읽음 ${url}: ${e instanceof Error ? e.message : e}`);
@@ -282,7 +284,7 @@ export const analysisSkill: EmployeeSkill = {
     const content = {
       sources: sources.map(({ url, kind, title, durationSec, pages, chars }) => ({ url, kind, title, durationSec, pages, chars })),
       claims: out.claims, numbers: out.numbers, forUs: out.forUs, unanswered: out.unanswered,
-      verdict: { verdict: verdict.failed === 0 ? "PASS" : verdict.passed >= verdict.failed ? "PARTIAL" : "FAIL", passed: verdict.passed, failed: verdict.failed, cases: verdict.cases },
+      verdict: { verdict: verdict.cases.length === 0 ? "UNMEASURED" : verdict.failed === 0 ? "PASS" : verdict.passed >= verdict.failed ? "PARTIAL" : "FAIL", passed: verdict.passed, failed: verdict.failed, cases: verdict.cases },
     };
     const { data: saved, error } = await ctx.supabase.rpc("submit_generated_deliverable", {
       p_execution_id: ctx.executionId,

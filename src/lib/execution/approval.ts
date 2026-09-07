@@ -127,7 +127,7 @@ export async function resumeApproved(
     ? `${(a.description as string | null) ?? ""}\n\n## 사장님 수정 (계획 확인 뒤, ${round}번째)\n- ${correction.trim()}`
     : (a.description as string | null);
 
-  await db.from("assignments").update({ description, role_input_json: roleInput, status: "queued" }).eq("id", a.id);
+  await db.from("assignments").update({ description, role_input_json: { ...roleInput, awaitingApproval: null }, status: "queued" }).eq("id", a.id);
   await db.from("work_executions").insert({
     company_id: a.company_id,
     assignment_id: a.id,

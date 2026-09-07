@@ -37,5 +37,12 @@ export async function selfRetryFromVerdict(
     .map((c) => `${c.name}${c.message ? ` — ${String(c.message).slice(0, 300)}` : ""}`);
   if (!failed.length) return { scheduled: false, why: "떨어진 줄 없음" };
 
+  // 42회차 점검: 열두 줄 중 한 줄이 떨어졌다고 **판 전체를 세 번 다시 사면** 그게 헛도는 판이다.
+  // 다시 만드는 값이 아까우려면 떨어진 쪽이 통과한 쪽만큼은 돼야 한다(분석 skill 이 스스로 쓰는 기준과 같다).
+  const passed = (verdict.cases ?? []).filter((c) => c.result === "Passed").length;
+  if (failed.length < Math.max(1, passed)) {
+    return { scheduled: false, why: `떨어진 줄 ${failed.length} < 통과 ${passed} — 사람이 보고 정한다` };
+  }
+
   return scheduleAutoRetry(db, deliverableId, failed, null);
 }

@@ -201,6 +201,12 @@ export async function executeEmployeeAssignment(
       .from("work_executions")
       .update({
         metrics_json: {
+          // 42회차: 여기서 통째로 덮어써 단계 저장(steps)이 사라졌다 — 계획 카드도 같이 사라진다.
+          ...(await (async () => {
+            const { data } = await supabase.from("work_executions").select("metrics_json").eq("id", executionId).maybeSingle();
+            const m = (data?.metrics_json ?? {}) as Record<string, unknown>;
+            return m.steps ? { steps: m.steps } : {};
+          })()),
           ...result.metrics,
           selection: {
             kind: selection.kind,
@@ -244,7 +250,14 @@ export async function executeEmployeeAssignment(
         p_error_code: "WAITING_APPROVAL",
         p_error_message: "계획을 보이고 사장님 확인을 기다린다",
       });
-      await supabase.from("assignments").update({ status: "waiting" }).eq("id", execution.assignment_id);
+      // 42회차: 대기열(`startNextQueued`)도 'waiting' 을 "차례를 기다리는 일" 로 알고 집어간다. 표시가 없으면
+      // 화면이 6초마다 부르는 폴링이 확인 대기 판을 꺼내 **승인 없이** 돌리고 계획을 다시 산다($0.2/판).
+      // 그래서 업무에 "이건 사람 답을 기다리는 것" 이라고 적어 둔다 — 대기열과 폴링이 둘 다 이 표시를 본다.
+      const { data: cur } = await supabase.from("assignments").select("role_input_json").eq("id", execution.assignment_id).maybeSingle();
+      await supabase
+        .from("assignments")
+        .update({ status: "waiting", role_input_json: { ...((cur?.role_input_json as Record<string, unknown> | null) ?? {}), awaitingApproval: true } })
+        .eq("id", execution.assignment_id);
       await supabase.from("company_employees").update({ work_status: "ready" }).eq("id", execution.company_employee_id);
       return { ok: false, code: "WAITING_APPROVAL" };
     }

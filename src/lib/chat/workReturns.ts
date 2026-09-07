@@ -110,7 +110,7 @@ export async function collectWorkReturns(
     // 관계 이름을 박는다. assignments ↔ company_employees 는 길이 둘이라
     // (담당자 / 지금 하는 일) 이름 없이 부르면 PostgREST 가 거절한다(PGRST201).
     .select(
-      "id, title, status, failure_reason, company_employee_id, " +
+      "id, title, status, failure_reason, company_employee_id, role_input_json, " +
         "company_employees!assignments_company_employee_id_fkey(employees(name))",
     )
     .in("id", waiting);
@@ -121,6 +121,7 @@ export async function collectWorkReturns(
     status: string;
     failure_reason: string | null;
     company_employee_id: string;
+    role_input_json: { awaitingApproval?: boolean } | null;
     company_employees: { employees: { name: string } | null } | null;
   };
 
@@ -211,7 +212,10 @@ export async function collectWorkReturns(
       // 대기열에 있는 것은 누가 꺼내 줘야 시작된다. 그 사람이 실패한 일이나
       // 넘긴 일에 막혀 있으면 여기서 풀어 준다 — 화면이 열려 있는 한 대기열은
       // 저절로 움직인다.
-      if (a.status === "waiting") await releaseEmployee(db, a.company_employee_id);
+      // 42회차: 사람 답을 기다리는 판(계획 확인)은 풀지 않는다 — 풀면 대기열이 집어가 승인 없이 돈다.
+      if (a.status === "waiting" && !(a.role_input_json as { awaitingApproval?: boolean } | null)?.awaitingApproval) {
+        await releaseEmployee(db, a.company_employee_id);
+      }
       continue;
     }
 

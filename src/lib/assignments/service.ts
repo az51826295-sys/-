@@ -206,6 +206,7 @@ export async function startNextQueued(
     .select("id")
     .eq("company_employee_id", companyEmployeeId)
     .eq("status", "waiting")
+    .is("role_input_json->awaitingApproval", null) // 42회차: 사람 답을 기다리는 판은 대기열이 집지 않는다
     // First in, first out. Priority decides what the manager should look at,
     // not what an employee picks up — a high-priority item added later
     // jumping the queue would quietly delay work already promised.
@@ -224,6 +225,7 @@ export async function startNextQueued(
     .update({ status: "assigned", current_progress_step: "assignment_received" })
     .eq("id", assignmentId)
     .eq("status", "waiting")
+    .is("role_input_json->awaitingApproval", null) // 42회차: 사람 답을 기다리는 판은 대기열이 집지 않는다
     .select("id")
     .maybeSingle();
 
