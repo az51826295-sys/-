@@ -263,7 +263,14 @@ namespace Rookery.Tests
         public const string WalkPath = "Library/Rookery/walk.png";
 
         /// 키를 계속 누르며 옆(오른쪽 3 m)에서 넉 장을 찍어 가로로 붙인다. 휴머노이드가 없으면 건너뛴다.
-        static IEnumerator CaptureWalkStrip(Keyboard keyboard, Key[] combo)
+        public const string JumpPath = "Library/Rookery/jump.png";
+
+        /// 걷기 줄: 키를 계속 누르며 넉 장. 점프 줄(30회차): 첫 칸에서 Space 를 두 프레임만 누르고 떼어 0.25초 간격 넉 장 —
+        /// 뜨는가, 착지가 발로 오는가, 클립이 idle 로 돌아오는가를 사람이 본다.
+        static IEnumerator CaptureWalkStrip(Keyboard keyboard, Key[] combo) { for (var it = CaptureStrip(keyboard, combo, WalkPath, holdKey: true); it.MoveNext();) yield return it.Current; }
+        static IEnumerator CaptureJumpStrip(Keyboard keyboard) { for (var it = CaptureStrip(keyboard, new[] { Key.Space }, JumpPath, holdKey: false); it.MoveNext();) yield return it.Current; }
+
+        static IEnumerator CaptureStrip(Keyboard keyboard, Key[] combo, string path, bool holdKey)
         {
             if (SystemInfo.graphicsDeviceType == UnityEngine.Rendering.GraphicsDeviceType.Null) yield break;
             var human = Object.FindObjectsByType<Animator>(FindObjectsSortMode.None).FirstOrDefault(a => a.isHuman);
@@ -278,11 +285,12 @@ namespace Rookery.Tests
             var active = RenderTexture.active;
             for (var i = 0; i < N; i++)
             {
-                // 0.22초씩 누르며 간다 — 걷기 한 주기(~1초)의 네 자리.
-                var until = Time.time + 0.22f;
+                // 걷기: 0.22초씩 누르며 간다 — 한 주기(~1초)의 네 자리. 점프: 첫 칸만 두 프레임 누르고 뗀 뒤 0.25초씩 기다린다.
+                var until = Time.time + (holdKey ? 0.22f : 0.25f);
+                var pressFrames = holdKey ? int.MaxValue : (i == 0 ? 2 : 0);
                 while (Time.time < until)
                 {
-                    InputSystem.QueueStateEvent(keyboard, new KeyboardState(combo));
+                    InputSystem.QueueStateEvent(keyboard, pressFrames-- > 0 ? new KeyboardState(combo) : new KeyboardState());
                     InputSystem.Update();
                     yield return null;
                 }
@@ -293,8 +301,9 @@ namespace Rookery.Tests
                 cam.transform.rotation = Quaternion.LookRotation(look - cam.transform.position, Vector3.up);
                 cam.fieldOfView = 45f;
                 cam.targetTexture = rt;
-                InputSystem.QueueStateEvent(keyboard, new KeyboardState(combo)); InputSystem.Update(); yield return null;
-                InputSystem.QueueStateEvent(keyboard, new KeyboardState(combo)); InputSystem.Update(); yield return null;
+                var held = holdKey ? new KeyboardState(combo) : new KeyboardState();
+                InputSystem.QueueStateEvent(keyboard, held); InputSystem.Update(); yield return null;
+                InputSystem.QueueStateEvent(keyboard, held); InputSystem.Update(); yield return null;
                 RenderTexture.active = rt;
                 strip.ReadPixels(new Rect(0, 0, W, H), W * i, 0);
                 RenderTexture.active = active;
@@ -302,7 +311,7 @@ namespace Rookery.Tests
             }
             strip.Apply();
             cam.transform.position = savedPos; cam.transform.rotation = savedRot; cam.fieldOfView = savedFov;
-            System.IO.File.WriteAllBytes(System.IO.Path.GetFullPath(WalkPath), strip.EncodeToPNG());
+            System.IO.File.WriteAllBytes(System.IO.Path.GetFullPath(path), strip.EncodeToPNG());
             Object.Destroy(strip); rt.Release(); Object.Destroy(rt);
         }
 
@@ -523,6 +532,7 @@ namespace Rookery.Tests
                     // 걷는 모습 한 줄(19회차). 서 있는 사진만으론 스키닝·발 미끄러짐·팔
                     // 흔들림을 못 본다. 방금 먹힌 키를 계속 누르며 옆에서 넉 장을 찍는다.
                     for (var walk = CaptureWalkStrip(keyboard, combo); walk.MoveNext();) yield return walk.Current;
+                    for (var jump = CaptureJumpStrip(keyboard); jump.MoveNext();) yield return jump.Current;
                     break;
                 }
             }

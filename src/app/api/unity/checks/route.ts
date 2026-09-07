@@ -29,6 +29,8 @@ type Body = {
   portrait?: string;
   /** 걷는 모습 넉 장을 가로로 붙인 것(옆에서). 휴머노이드가 움직였을 때만 온다. */
   walk?: string;
+  /** 점프 넉 장(30회차). */
+  jump?: string;
 };
 
 export async function POST(request: Request) {
@@ -72,8 +74,8 @@ export async function POST(request: Request) {
 
     const { data: d } = await db.from("deliverables").select("content_json").eq("id", body.deliverableId).eq("company_id", company.id).maybeSingle();
     if (d) {
-      const { screenshot: _omit, portrait: _omit2, walk: _omit3, ...rest } = body;
-      void _omit; void _omit2; void _omit3;
+      const { screenshot: _omit, portrait: _omit2, walk: _omit3, jump: _omit4, ...rest } = body;
+      void _omit; void _omit2; void _omit3; void _omit4;
       await db
         .from("deliverables")
         .update({ content_json: { ...(d.content_json as object), unityChecks: { ...rest, at: new Date().toISOString() } } })
@@ -83,6 +85,7 @@ export async function POST(request: Request) {
       [body.screenshot, "unity-screenshot.png", "유니티 화면", "합격 시험이 도는 동안 찍은 게임 화면"],
       [body.portrait, "unity-portrait.png", "유니티 얼굴", "같은 카메라를 얼굴 앞으로 옮겨 찍은 정면 사진 — 씬의 캐릭터 전부, 플레이어부터 나란히"],
       [body.walk, "unity-walk.png", "유니티 걷기", "키를 누르는 동안 옆에서 넉 장 — 스키닝·발·팔을 사람이 본다"],
+      [body.jump, "unity-jump.png", "유니티 점프", "Space 한 번 뒤 옆에서 넉 장 — 뜨는가, 착지가 발로 오는가, idle 로 돌아오는가"],
     ];
     for (const [b64, filename, title, description] of shots) {
       if (!d || !b64) continue;
