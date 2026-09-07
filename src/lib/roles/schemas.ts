@@ -134,7 +134,11 @@ export const meshAssetsAssignmentSchema = z.object({
 
 export const analysisAssignmentSchema = z.object({ urls: z.array(z.string()).optional().nullable() });
 
-export const videoAssignmentSchema = z.object({ previousDeliverableId: z.string().optional().nullable() });
+export const videoAssignmentSchema = z.object({
+  previousDeliverableId: z.string().optional().nullable(),
+  /** 재료로 쓸 산출물(44회차): 이 대화의 분석·조사 결과를 영상으로 옮길 때. */
+  sourceDeliverableId: z.string().optional().nullable(),
+});
 
 export const assignmentInputSchemaRegistry = {
   art_bible_assignment_v1: artBibleAssignmentSchema,

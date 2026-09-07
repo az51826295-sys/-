@@ -55,6 +55,22 @@ export const videoMakeSkill: EmployeeSkill = {
     const scope = { companyId: ctx.execution.company_id, workExecutionId: ctx.executionId, companyEmployeeId: ctx.execution.company_employee_id };
     const ask = `업무: ${ctx.context.assignment.title}\n설명: ${ctx.context.assignment.description ?? ""}\n기대: ${ctx.context.assignment.expectedOutcome ?? ""}`;
 
+    // ── 재료(44회차): 다른 직원이 만든 것을 이어받는다. 있으면 **그 안의 사실만** 쓰고, 숫자는 자가 대조한다. ──
+    const sourceId = (ctx.context.roleInput as { sourceDeliverableId?: string | null } | null)?.sourceDeliverableId ?? null;
+    let source: { id: string; title: string; text: string } | null = null;
+    if (sourceId) {
+      const { data: sd } = await ctx.supabase
+        .from("deliverables")
+        .select("id, title, content_markdown")
+        .eq("id", sourceId)
+        .eq("company_id", ctx.execution.company_id)
+        .maybeSingle();
+      if (sd?.content_markdown) {
+        source = { id: sd.id as string, title: (sd.title as string) ?? "", text: (sd.content_markdown as string).slice(0, 40_000) };
+        console.log(`[video] 재료: ${source.title.slice(0, 40)} (${source.text.length}자)`);
+      }
+    }
+
     // ── 1. 대본 (단계 저장) ──
     await setStep(ctx.supabase, ctx.executionId, "planning");
     const plan = (await step(ctx.supabase, ctx.executionId, "script", async () => (await ctx.providers.ai.generateStructuredOutput({
@@ -63,8 +79,9 @@ export const videoMakeSkill: EmployeeSkill = {
         "- 장면 4~6개. 장면마다 `heading`(자막 한 줄, 40자 이하), `narration`(읽을 말 1~2문장, 60~120자, 해요체), `visual`(그림 지시, 영어, 글자·로고 넣지 말 것, 한 장면에 한 대상).\n" +
         "- `targetSec` 는 45~75. 말하기 속도는 초당 5자쯤이니 narration 글자 수 합 ÷ 5 ≈ 길이가 되게 맞춘다.\n" +
         "- **첫 장면은 짧게**: narration 40자 이하, 무엇인지 한 문장(1판은 첫 장면이 9.8초라 떨어졌다). 마지막 장면은 한 줄로 맺는다.\n" +
-        "- 업무에 없는 사실을 지어내지 마라. 모르는 숫자는 쓰지 않는다.",
-      input: ask,
+        "- 업무에 없는 사실을 지어내지 마라. 모르는 숫자는 쓰지 않는다." +
+        (source ? "\n- **아래 '재료' 안의 사실만 쓴다.** 재료에 없는 숫자·이름·주장을 넣지 마라 — 기계가 숫자를 재료와 대조한다." : ""),
+      input: ask + (source ? `\n\n## 재료 — ${source.title}\n${source.text}` : ""),
       schema: script,
       schemaName: "video_script",
       // 1판(18:31) 6000 에서 잘렸다(MODEL_OUTPUT_TRUNCATED) — 추론 모델은 생각에 먼저 쓴다. Dev 계획과 같은 값.
@@ -106,6 +123,18 @@ export const videoMakeSkill: EmployeeSkill = {
     const longest = Math.max(...plan.scenes.map((s) => s.narration.length));
     cases.push({ name: "말_길이", result: longest <= 220 ? "Passed" : "Failed", message: `가장 긴 장면 ${longest}자 (≤220)` });
     cases.push({ name: "첫장면_6초안", result: a.durations[0] <= 6 ? "Passed" : "Failed", message: `첫 장면 ${a.durations[0].toFixed(1)}s` });
+    // 재료가 있으면 **숫자가 재료에 있는지** 잰다(44회차). 지어낸 숫자는 사람이 원문을 안 읽으면 못 잡는다.
+    if (source) {
+      const inSource = (n: string) => source.text.includes(n);
+      const numbers = Array.from(new Set(plan.scenes.flatMap((sc) => (sc.narration.match(/\d+(?:[.,]\d+)?/g) ?? []))))
+        .filter((n) => n.replace(/[.,]/g, "").length >= 2); // 한 자리(하나·둘)는 세지 않는다
+      const missing = numbers.filter((n) => !inSource(n));
+      cases.push({
+        name: "숫자가_재료에_있다",
+        result: missing.length === 0 ? "Passed" : "Failed",
+        message: numbers.length === 0 ? "대본에 숫자가 없다" : `숫자 ${numbers.length}개 중 재료에 없는 것 ${missing.length}${missing.length ? ": " + missing.slice(0, 5).join(", ") : ""}`,
+      });
+    }
     const passed = cases.filter((c) => c.result === "Passed").length;
     const verdict = { verdict: passed === cases.length ? "PASS" : "FAIL", passed, failed: cases.length - passed, cases };
 
@@ -114,13 +143,14 @@ export const videoMakeSkill: EmployeeSkill = {
     const markdown = [
       `## ${plan.title}`, "", plan.description, "",
       `길이 ${a.total.toFixed(1)}초 · 장면 ${plan.scenes.length} · 1280×720 · 소리 ${a.hasAudio ? "있음" : "없음"}`, "",
+      ...(source ? [`재료: ${source.title} — 이 영상의 사실은 여기서 왔어요.`, ""] : []),
       `## 대본`, "", `| # | 자막 | 읽은 말 | 초 |`, `|---|---|---|---|`,
       ...plan.scenes.map((s, i) => `| ${i + 1} | ${s.heading} | ${s.narration} | ${a.durations[i].toFixed(1)} |`), "",
       `## 검사 결과 — 통과 ${verdict.passed} · 실패 ${verdict.failed}`, "",
       ...cases.map((c) => `- ${c.result === "Passed" ? "✅" : "❌"} ${c.name} — ${c.message}`), "",
       `재미와 말맛은 사람이 봐요. 첫 5초·중간 사진이 붙어 있어요. 고칠 장면을 말해 주면 그 장면만 다시 만들어요.`,
     ].join("\n");
-    const content = { script: plan, durations: a.durations, total: a.total, verdict, filesPending: true };
+    const content = { script: plan, durations: a.durations, total: a.total, verdict, source: source ? { id: source.id, title: source.title } : null, filesPending: true };
     const { data: saved, error } = await ctx.supabase.rpc("submit_generated_deliverable", {
       p_execution_id: ctx.executionId, p_title: plan.title, p_deliverable_type: "video",
       p_content_markdown: markdown, p_content_json: content, p_generation_model: ctx.providers.ai.model, p_citations: [],

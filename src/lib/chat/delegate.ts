@@ -117,7 +117,13 @@ export async function delegate(
   const previousDeliverableId = conversationId
     ? await lastDeliverableInConversation(db, conversationId, hireId)
     : null;
-  const turn = await runChatTurn({ companyEmployeeId: hireId, messages, images, previousDeliverableId, requireAssignment: true });
+  // 44회차: **직원끼리 이어받기.** 지금까지 넘어가는 것은 "그 직원이 지난번에 낸 것" 뿐이었다. 그래서
+  // "이 분석으로 영상 만들어 줘" 처럼 **다른 사람이 만든 것**을 재료로 쓰는 일은 아예 못 했다(협업 배관은
+  // 조사 한 곳에만 붙어 있었고 74판 내내 한 번도 안 돌았다). 대화의 마지막 산출물을 재료 후보로 같이 넘긴다.
+  const sourceDeliverableId = conversationId
+    ? await lastDeliverableInConversation(db, conversationId, null)
+    : null;
+  const turn = await runChatTurn({ companyEmployeeId: hireId, messages, images, previousDeliverableId, sourceDeliverableId, requireAssignment: true });
   if (!turn.ok) {
     // 접수는 됐고 넘기는 데서 막혔다. 답은 이미 나갔으므로 이유만 싣는다.
     return { ...NOTHING, hired, why: turn.error };
@@ -182,10 +188,11 @@ async function ensureKnowledgeProfile(
 
 
 /** 이 대화에 돌아온 산출물 중 이 직원 것으로 가장 최근 것. 없으면 null. */
+/** 대화에서 마지막으로 돌아온 산출물. `companyEmployeeId` 를 주면 그 사람 것만, null 이면 누구 것이든. */
 async function lastDeliverableInConversation(
   db: Supabase,
   conversationId: string,
-  companyEmployeeId: string,
+  companyEmployeeId: string | null,
 ): Promise<string | null> {
   const { data: rows } = await db
     .from("conversation_messages")
@@ -199,13 +206,8 @@ async function lastDeliverableInConversation(
     .map((r) => r.deliverableId)
     .filter((x): x is string => typeof x === "string");
   if (ids.length === 0) return null;
-  const { data: mine } = await db
-    .from("deliverables")
-    .select("id, created_at")
-    .in("id", ids)
-    .eq("company_employee_id", companyEmployeeId)
-    .order("created_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
+  let q = db.from("deliverables").select("id, created_at").in("id", ids);
+  if (companyEmployeeId) q = q.eq("company_employee_id", companyEmployeeId);
+  const { data: mine } = await q.order("created_at", { ascending: false }).limit(1).maybeSingle();
   return (mine?.id as string | undefined) ?? null;
 }

@@ -31,6 +31,8 @@ export type ChatTurnInput = {
   images?: string[];
   /** 이 대화에서 이 직원이 마지막으로 돌려준 산출물. "고쳐 줘" 가 이것을 바탕으로 간다. */
   previousDeliverableId?: string | null;
+  /** 이 대화의 마지막 산출물(누가 냈든). 다른 사람이 만든 것을 재료로 쓰는 일에 간다(44회차: Ana 분석 → Vid 영상). */
+  sourceDeliverableId?: string | null;
   /**
    * 이 턴은 이미 "일" 로 판정돼 넘어온 것이다(delegate). 그러면 업무 객체가 비면
    * 안 된다 — 20:47 Dev 가 "제출할게요" 라고 말만 하고 assignment 를 null 로 내서
@@ -260,6 +262,7 @@ How to behave:
     roleInput: {
       ...(input.images?.[0] ? { referenceImage: input.images[0] } : {}),
       ...(input.previousDeliverableId ? { previousDeliverableId: input.previousDeliverableId } : {}),
+      ...(input.sourceDeliverableId ? { sourceDeliverableId: input.sourceDeliverableId } : {}),
     },
   });
 
