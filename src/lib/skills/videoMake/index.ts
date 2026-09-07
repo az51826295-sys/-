@@ -35,7 +35,7 @@ const script = z.object({
 });
 type Script = z.infer<typeof script>;
 
-type Case = { name: string; result: "Passed" | "Failed"; message: string };
+type Case = { name: string; result: "Passed" | "Failed" | "Inconclusive"; message: string };
 
 export const videoMakeSkill: EmployeeSkill = {
   id: "video_make",
@@ -129,14 +129,17 @@ export const videoMakeSkill: EmployeeSkill = {
       const numbers = Array.from(new Set(plan.scenes.flatMap((sc) => (sc.narration.match(/\d+(?:[.,]\d+)?/g) ?? []))))
         .filter((n) => n.replace(/[.,]/g, "").length >= 2); // 한 자리(하나·둘)는 세지 않는다
       const missing = numbers.filter((n) => !inSource(n));
+      // 44회차 1판: 대본이 "네 가지" 처럼 한글로만 써서 대조할 숫자가 0개였는데 **통과**로 찍혔다 —
+      // 재지 못한 것을 통과로 적는 것이 오늘 계속 잡은 병이다. 잴 게 없으면 잴 게 없었다고 적는다.
       cases.push({
         name: "숫자가_재료에_있다",
-        result: missing.length === 0 ? "Passed" : "Failed",
-        message: numbers.length === 0 ? "대본에 숫자가 없다" : `숫자 ${numbers.length}개 중 재료에 없는 것 ${missing.length}${missing.length ? ": " + missing.slice(0, 5).join(", ") : ""}`,
+        result: numbers.length === 0 ? "Inconclusive" : missing.length === 0 ? "Passed" : "Failed",
+        message: numbers.length === 0 ? "대본에 아라비아 숫자가 없어 대조하지 못했다" : `숫자 ${numbers.length}개 중 재료에 없는 것 ${missing.length}${missing.length ? ": " + missing.slice(0, 5).join(", ") : ""}`,
       });
     }
     const passed = cases.filter((c) => c.result === "Passed").length;
-    const verdict = { verdict: passed === cases.length ? "PASS" : "FAIL", passed, failed: cases.length - passed, cases };
+    const failedN = cases.filter((c) => c.result === "Failed").length;
+    const verdict = { verdict: failedN === 0 ? "PASS" : "FAIL", passed, failed: failedN, inconclusive: cases.length - passed - failedN, cases };
 
     // ── 4. 산출물 + 파일 ──
     await setStep(ctx.supabase, ctx.executionId, "storing");
@@ -146,8 +149,8 @@ export const videoMakeSkill: EmployeeSkill = {
       ...(source ? [`재료: ${source.title} — 이 영상의 사실은 여기서 왔어요.`, ""] : []),
       `## 대본`, "", `| # | 자막 | 읽은 말 | 초 |`, `|---|---|---|---|`,
       ...plan.scenes.map((s, i) => `| ${i + 1} | ${s.heading} | ${s.narration} | ${a.durations[i].toFixed(1)} |`), "",
-      `## 검사 결과 — 통과 ${verdict.passed} · 실패 ${verdict.failed}`, "",
-      ...cases.map((c) => `- ${c.result === "Passed" ? "✅" : "❌"} ${c.name} — ${c.message}`), "",
+      `## 검사 결과 — 통과 ${verdict.passed} · 실패 ${verdict.failed} · 해당 없음 ${verdict.inconclusive}`, "",
+      ...cases.map((c) => `- ${c.result === "Passed" ? "✅" : c.result === "Failed" ? "❌" : "◻︎"} ${c.name} — ${c.message}`), "",
       `재미와 말맛은 사람이 봐요. 첫 5초·중간 사진이 붙어 있어요. 고칠 장면을 말해 주면 그 장면만 다시 만들어요.`,
     ].join("\n");
     const content = { script: plan, durations: a.durations, total: a.total, verdict, source: source ? { id: source.id, title: source.title } : null, filesPending: true };
