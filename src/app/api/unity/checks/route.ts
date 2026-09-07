@@ -49,6 +49,28 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "JSON 이 아닙니다." }, { status: 400 });
   }
 
+  // ── 32회차 2판: 퇴보 지킴이. 지난 판에서 재어진 값이 이번 판에서 0(또는 false)이면 실패 줄 — 이번 주문과 상관없이.
+  // (9fdf487e: 카메라만 고쳤는데 점프가 0 — 기대치는 이번 주문만 적으니 아무도 안 잡았다.)
+  if (body.deliverableId && body.measures) {
+    const { data: cur } = await db.from("deliverables").select("assignment_id").eq("id", body.deliverableId).eq("company_id", company.id).maybeSingle();
+    const { data: asg } = cur?.assignment_id
+      ? await db.from("assignments").select("prev:role_input_json->>previousDeliverableId").eq("id", cur.assignment_id).maybeSingle()
+      : { data: null };
+    const prevId = (asg as { prev?: string | null } | null)?.prev ?? null;
+    const { data: prevRow } = prevId
+      ? await db.from("deliverables").select("m:content_json->unityChecks->measures").eq("id", prevId).maybeSingle()
+      : { data: null };
+    const prevMeasures = ((prevRow as { m?: Record<string, unknown> | null } | null)?.m ?? {}) as Record<string, unknown>;
+    for (const [k, was] of Object.entries(prevMeasures)) {
+      const now = body.measures[k];
+      if (now === undefined) continue;
+      const regressed = (typeof was === "number" && was > 0 && Number(now) === 0) || (was === true && now === false);
+      if (!regressed) continue;
+      body.cases.push({ name: `퇴보_${k}`, result: "Failed", message: `지난 판엔 ${String(was)} 였는데 이번 판엔 ${String(now)} — 되던 것이 안 된다(${k})` });
+      body.failed += 1;
+    }
+  }
+
   // ── 32회차: 계획의 기대치(expectations)와 측정값을 맞춰 본다. 어긋나면 실패 줄이 되고, 그 줄이 Dev 에게 간다(스스로 다시). ──
   if (body.deliverableId && body.measures) {
     const { data: d0 } = await db.from("deliverables").select("exp:content_json->expectations").eq("id", body.deliverableId).eq("company_id", company.id).maybeSingle();

@@ -173,6 +173,25 @@ namespace Rookery.Tests
         // 보내지 않는다.
         /// 숫자로 재는 것(32회차 09-07): 자가 사진만 내면 사람이 해석해야 하고, 그러면 "스스로 다시" 가 못 돈다.
         /// 여기 적힌 값은 Library/Rookery/measures.json 으로 나가고, 서버가 계획의 기대치(expectations)와 비교해 실패 줄을 만든다.
+        /// 플레이어 찾기(32회차 2판). FindObjectsByType 의 차례는 판마다 다르다 — "첫 휴머노이드" 는 어떤 판엔 고양이,
+        /// 어떤 판엔 기사(NPC)였고, 그래서 점프 높이가 0.81 ↔ 0 으로 흔들렸다. 조종 받는 쪽을 먼저 고른다:
+        /// Player 태그 → CharacterController → 움직이는 Rigidbody → 이름에 Player 가 든 스크립트 → 그래도 없으면 첫 휴머노이드.
+        public static Animator FindPlayer()
+        {
+            var humans = Object.FindObjectsByType<Animator>(FindObjectsSortMode.InstanceID).Where(a => a.isHuman).ToList();
+            System.Func<Animator, int> score = a =>
+            {
+                var root = a.transform.root;
+                var n = 0;
+                if (root.CompareTag("Player")) n += 8;
+                if (a.GetComponentInParent<CharacterController>() != null) n += 4;
+                var rb = a.GetComponentInParent<Rigidbody>(); if (rb != null && !rb.isKinematic) n += 2;
+                if (a.GetComponentsInParent<MonoBehaviour>(true).Any(m => m != null && m.GetType().Name.Contains("Player"))) n += 1;
+                return n;
+            };
+            return humans.OrderByDescending(score).FirstOrDefault();
+        }
+
         public const string MeasuresPath = "Library/Rookery/measures.json";
         static readonly Dictionary<string, string> _measures = new Dictionary<string, string>();
         public static void Measure(string key, double v) { _measures[key] = v.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture); Flush(); }
@@ -225,9 +244,7 @@ namespace Rookery.Tests
             var png = tex.EncodeToPNG();
             // ── 재기: 플레이어의 화면 위치, 점수 글자, 동전 수 ──
             {
-                var humansAll = Object.FindObjectsByType<Animator>(FindObjectsSortMode.None).Where(a => a.isHuman).ToList();
-                // 플레이어 먼저(CharacterController 나 Player 태그), 없으면 첫 휴머노이드 — 32회차 1판에서 못 찾아 player_viewport_x 가 비었다.
-                var player = humansAll.FirstOrDefault(a => a.GetComponentInParent<CharacterController>() != null || a.transform.root.CompareTag("Player")) ?? humansAll.FirstOrDefault();
+                var player = FindPlayer();
                 if (player != null)
                 {
                     var vp = cam.WorldToViewportPoint(player.transform.position + Vector3.up * 0.9f);
@@ -319,7 +336,7 @@ namespace Rookery.Tests
         static IEnumerator CaptureStrip(Keyboard keyboard, Key[] combo, string path, bool holdKey)
         {
             if (SystemInfo.graphicsDeviceType == UnityEngine.Rendering.GraphicsDeviceType.Null) yield break;
-            var human = Object.FindObjectsByType<Animator>(FindObjectsSortMode.None).FirstOrDefault(a => a.isHuman);
+            var human = FindPlayer();
             var cam = Camera.main;
             if (human == null || cam == null) yield break;
             var root = human.transform;
