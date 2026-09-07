@@ -376,7 +376,6 @@ namespace Rookery
     /// 짓고 재기. Rookery/ 메뉴의 BuildOrRebuild 를 전부 돌린 뒤 PlayMode 시험을 돌리고,
     /// 결과를 /api/unity/checks 로 보낸다. 콜백은 도메인 리로드에 날아가므로
     /// [InitializeOnLoad] 에서 매번 다시 건다; 어느 산출물의 시험인지는 SessionState 에.
-    [InitializeOnLoad]
     /// 켜 둔 에디터가 스스로 새 버전을 집는다. 리로드가 나도 [InitializeOnLoad] 가 다시 건다.
     [InitializeOnLoad]
     public static class RookeryWatch
@@ -443,6 +442,7 @@ namespace Rookery
         }
     }
 
+    [InitializeOnLoad]
     public static class RookeryCheck
     {
         const string PendingUrl = "Rookery.Check.Url";
