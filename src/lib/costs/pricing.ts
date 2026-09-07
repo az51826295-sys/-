@@ -57,6 +57,9 @@ const RATES: Record<string, Rate> = {
   // quantity = 크레딧 수. Pro 플랜 $20/1,000 크레딧 = $0.02 (실제 플랜 확인 전, 09-07). 모델 30 · 리깅 5.
   "meshy-credit": { unit: "images", per: 0.02 },
 
+  // 목소리(TTS, 39회차). gpt-4o-mini-tts 는 글자+오디오 토큰으로 매기는데(약 $0.015/분) 장부 단위가 없어 초로 적는다: $0.00025/초.
+  "gpt-4o-mini-tts": { unit: "seconds", per: 0.00025 },
+
   // DeepSeek. Published list prices, not yet reconciled against an invoice.
   // An order of magnitude under the others, which is the entire reason the
   // cheap tiers exist — and also the reason to keep it out of `judgment`,

@@ -52,10 +52,9 @@ export const WORK_KINDS: Record<string, WorkKind> = {
   lead_research: { type: "lead_research", family: "analysis", label: "리드 조사", proofOrder: [], ruler: "출처 검사" },
   // ── 아직 직원이 없는 종류. 구조만 먼저 둔다(09-06). ──
   video: {
-    type: "video", family: "video", label: "영상(유튜브)",
+    type: "video", family: "video", label: "영상(설명·쇼츠)",
     proofOrder: ["thumbnail", "first5s", "mid"],
-    ruler: "영상 검사(길이·소리 끊김·자막 일치·첫 5초)",
-    notYet: "직원 없음 — 필요한 것: 대본(지금 모델) · 목소리(TTS) · 화면(영상 생성 또는 그림+ffmpeg) · 자.",
+    ruler: "영상 검사(ffprobe: 길이·소리·장면 수·자막 수·첫 장면)",
   },
   analysis: {
     type: "analysis", family: "analysis", label: "분석(자료·영상)",
