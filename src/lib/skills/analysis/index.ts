@@ -3,6 +3,7 @@ import { YoutubeTranscript } from "youtube-transcript";
 import { ExecutionError, setStep } from "@/lib/execution/shared";
 import { step } from "@/lib/execution/steps";
 import { createHttpContentFetcher } from "@/lib/providers/fetcher";
+import { extractText, getDocumentProxy } from "unpdf";
 import type { EmployeeSkill, SkillRunContext } from "@/lib/skills/types";
 
 /**
@@ -36,7 +37,7 @@ const analysis = z.object({
 });
 type Analysis = z.infer<typeof analysis>;
 
-type Source = { url: string; kind: "youtube" | "web"; title: string; text: string; durationSec: number | null; chars: number };
+type Source = { url: string; kind: "youtube" | "web" | "pdf"; title: string; text: string; durationSec: number | null; pages: number | null; chars: number };
 
 const URL_RE = /https?:\/\/[^\s)\]>"']+/g;
 const YT_RE = /(?:youtube\.com\/(?:watch\?v=|shorts\/|live\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/;
@@ -64,17 +65,31 @@ async function readYoutube(url: string, id: string): Promise<Source> {
     text += s.text.replace(/\s+/g, " ") + " ";
   }
   const last = segs[segs.length - 1];
-  return { url, kind: "youtube", title: `YouTube ${id} (자막 ${lang})`, text: text.trim(), durationSec: Math.ceil((last.offset + last.duration) / 1000), chars: text.length };
+  return { url, kind: "youtube", title: `YouTube ${id} (자막 ${lang})`, text: text.trim(), durationSec: Math.ceil((last.offset + last.duration) / 1000), pages: null, chars: text.length };
 }
 
 async function readWeb(url: string): Promise<Source> {
   const got = await createHttpContentFetcher().fetch(url);
-  return { url, kind: "web", title: got.title ?? url, text: got.text, durationSec: null, chars: got.text.length };
+  return { url, kind: "web", title: got.title ?? url, text: got.text, durationSec: null, pages: null, chars: got.text.length };
 }
+
+/** PDF(37회차): 쪽마다 [p.N] 표시. 모델은 `at` 에 p.N 을 적고, 자는 그 쪽이 있는지 본다. */
+async function readPdf(url: string): Promise<Source> {
+  const r = await fetch(url, { redirect: "follow", headers: { "user-agent": "Mozilla/5.0 (Rookery analysis)" } });
+  if (!r.ok) throw new Error(`HTTP ${r.status}`);
+  const buf = new Uint8Array(await r.arrayBuffer());
+  const pdf = await getDocumentProxy(buf);
+  const { totalPages, text } = await extractText(pdf, { mergePages: false });
+  const pages = (text as string[]).map((t, i) => `[p.${i + 1}] ${t.replace(/\s+/g, " ").trim()}`).filter((t) => t.length > 8);
+  const joined = pages.join("\n");
+  return { url, kind: "pdf", title: `PDF ${url.split("/").pop() ?? url} (${totalPages}쪽)`, text: joined, durationSec: null, pages: totalPages, chars: joined.length };
+}
+
+function isPdfUrl(url: string): boolean { return /\.pdf(\?|#|$)/i.test(url); }
 
 /** 글자 비교용. 대소문자·공백·따옴표·문장부호를 지운다 — 인용이 "그대로" 인지 보는 것이지 띄어쓰기를 보는 게 아니다. */
 function norm(s: string): string {
-  return s.toLowerCase().replace(/\[\d\d:\d\d\]/g, "").replace(/[\s"'“”‘’,.\-—–…:;!?()[\]]/g, "");
+  return s.toLowerCase().replace(/\[\d\d:\d\d\]/g, "").replace(/\[p\.\d+\]/g, "").replace(/[\s"'“”‘’,.\-—–…:;!?()[\]]/g, "");
 }
 
 function secondsOf(at: string | null): number | null {
@@ -99,6 +114,13 @@ function judge(a: Analysis, sources: Source[]): { cases: Case[]; passed: number;
     if (!nt.includes(q)) { cases.push({ name, result: "Failed", message: `${label}: 인용이 원문에 없다 — "${quote.slice(0, 60)}"` }); return; }
     const sec = secondsOf(at);
     if (src?.durationSec != null && sec != null && sec > src.durationSec) { cases.push({ name, result: "Failed", message: `${label}: ${at} 는 영상 길이(${mmss(src.durationSec * 1000)}) 밖` }); return; }
+    const pg = at ? /^p\.(\d+)$/.exec(at.trim()) : null;
+    if (src?.pages != null && pg && Number(pg[1]) > src.pages) { cases.push({ name, result: "Failed", message: `${label}: ${at} 는 ${src.pages}쪽 밖` }); return; }
+    // 쪽 표시가 있으면 인용이 그 쪽에 있는지도 본다 — 쪽만 지어내는 것도 지어내는 것이다.
+    if (src?.pages != null && pg) {
+      const pageText = src.text.split("\n").find((l) => l.startsWith(`[p.${pg[1]}]`)) ?? "";
+      if (!norm(pageText).includes(q)) { cases.push({ name, result: "Failed", message: `${label}: 인용은 있지만 ${at} 쪽이 아니다` }); return; }
+    }
     cases.push({ name, result: "Passed", message: `${label}: 원문에 있음${at ? ` (${at})` : ""}` });
   };
   a.claims.forEach((c, i) => check("근거", i, c.quote, c.at, c.source, c.claim.slice(0, 50)));
@@ -107,17 +129,23 @@ function judge(a: Analysis, sources: Source[]): { cases: Case[]; passed: number;
   return { cases, passed, failed: cases.length - passed };
 }
 
+function shortSrc(url: string): string {
+  const yt = YT_RE.exec(url); if (yt) return "영상";
+  if (isPdfUrl(url)) return "PDF";
+  try { return new URL(url).hostname.replace(/^www\./, ""); } catch { return "글"; }
+}
+
 function render(a: Analysis, sources: Source[], v: ReturnType<typeof judge>): string {
   const ok = new Set(v.cases.filter((c) => c.result === "Passed").map((c) => c.name));
   const row = (kind: string, i: number, cols: string[]) => `| ${ok.has(`${kind}_${i + 1}`) ? "✅" : "❌ 근거 못 찾음"} | ${cols.map((c) => c.replace(/\|/g, "／").replace(/\n/g, " ")).join(" | ")} |`;
   return [
     `## 요약`, "", ...a.summary.map((s) => `- ${s}`), "",
     `## 핵심 주장 (${a.claims.length})`, "", `| 자 | 주장 | 원문 인용 | 어디서 |`, `|---|---|---|---|`,
-    ...a.claims.map((c, i) => row("근거", i, [c.claim, `"${c.quote}"`, c.at ?? "글"])), "",
+    ...a.claims.map((c, i) => row("근거", i, [c.claim, `"${c.quote}"`, (c.at ?? "글") + (sources.length > 1 ? ` · ${shortSrc(c.source)}` : "")])), "",
     ...(a.numbers.length ? [`## 숫자 (${a.numbers.length})`, "", `| 자 | 무엇 | 값 | 원문 인용 | 어디서 |`, `|---|---|---|---|---|`, ...a.numbers.map((n, i) => row("숫자", i, [n.what, n.value, `"${n.quote}"`, n.at ?? "글"])), ""] : []),
     `## 우리에게 (원문에 없는 판단)`, "", ...a.forUs.map((s) => `- ${s}`), "",
     ...(a.unanswered.length ? [`## 자료가 답하지 않은 것`, "", ...a.unanswered.map((s) => `- ${s}`), ""] : []),
-    `## 자료`, "", ...sources.map((s) => `- ${s.kind === "youtube" ? "영상" : "글"} ${s.url} — ${s.chars.toLocaleString()}자${s.durationSec ? ` · ${mmss(s.durationSec * 1000)}` : ""}`), "",
+    `## 자료`, "", ...sources.map((s) => `- ${s.kind === "youtube" ? "영상" : s.kind === "pdf" ? "PDF" : "글"} ${s.url} — ${s.chars.toLocaleString()}자${s.durationSec ? ` · ${mmss(s.durationSec * 1000)}` : ""}${s.pages ? ` · ${s.pages}쪽` : ""}${s.chars === 0 ? " · **못 읽음**" : ""}`), "",
     `---`, "", `**출처 자**: 인용 ${v.cases.length}개 중 원문에서 찾음 ${v.passed} · 못 찾음 ${v.failed}. 못 찾은 줄은 믿지 마세요 — 그 줄만 지어낸 것일 수 있어요.`,
   ].join("\n");
 }
@@ -148,10 +176,10 @@ export const analysisSkill: EmployeeSkill = {
       for (const url of urls) {
         const yt = YT_RE.exec(url);
         try {
-          const s = yt ? await readYoutube(url, yt[1]) : await readWeb(url);
+          const s = yt ? await readYoutube(url, yt[1]) : isPdfUrl(url) ? await readPdf(url) : await readWeb(url);
           out.push({ ...s, text: s.text.slice(0, 120_000) });
         } catch (e) {
-          out.push({ url, kind: yt ? "youtube" : "web", title: url, text: "", durationSec: null, chars: 0 });
+          out.push({ url, kind: yt ? "youtube" : isPdfUrl(url) ? "pdf" : "web", title: url, text: "", durationSec: null, pages: null, chars: 0 });
           console.warn(`[analysis] 못 읽음 ${url}: ${e instanceof Error ? e.message : e}`);
         }
       }
@@ -170,14 +198,15 @@ export const analysisSkill: EmployeeSkill = {
         "- `summary` 3~6줄. 한 줄에 한 가지. 자료에 없는 말을 넣지 마라.\n" +
         "- `claims` 6~12개. 자료가 실제로 말한 것만. **`quote` 는 원문 글자 그대로 20~200자** — 기계가 원문에서 그 글자를 찾는다. " +
         "요약하거나 번역하거나 고쳐 쓰면 떨어진다. 영어 자료면 영어 그대로 인용하고 `claim` 만 한국어로.\n" +
-        "- 영상이면 `at` 은 인용이 나오는 자리의 [mm:ss] 표시(그 인용 바로 앞의 표시). 글이면 null.\n" +
+        "- 영상이면 `at` 은 인용이 나오는 자리의 [mm:ss] 표시(그 인용 바로 앞의 표시). PDF 면 그 인용이 있는 쪽의 [p.N] 표시를 `p.N` 으로. 글이면 null.\n" +
+        "- 자료가 여럿이면 `source` 에 그 인용이 나온 자료의 주소를 정확히 적는다. 여러 자료가 같은 말을 하면 자료마다 한 줄씩(인용은 각자 원문에서).\n" +
         "- `numbers`: 자료의 숫자(값·단위)를 인용과 함께. 없으면 빈 배열.\n" +
         "- `forUs`: 이 회사(게임 만드는 작은 팀)에 뜻하는 것 2~4줄 — 원문에 없는 네 판단이라고 알고 쓴다.\n" +
         "- `unanswered`: 업무가 물었는데 자료가 답하지 않은 것.\n" +
         (failedBefore.length ? `\n지난 판에서 기계가 원문에서 못 찾은 인용(고쳐서 다시 — 원문 글자 그대로):\n${failedBefore.map((f) => `- ${f}`).join("\n")}\n` : ""),
       input:
         `업무: ${ctx.context.assignment.title}\n설명: ${ctx.context.assignment.description ?? ""}\n\n` +
-        readable.map((s) => `## 자료 ${s.url} (${s.kind === "youtube" ? `영상 ${s.durationSec ? mmss(s.durationSec * 1000) : ""}` : "글"})\n${s.text}`).join("\n\n"),
+        readable.map((s) => `## 자료 ${s.url} (${s.kind === "youtube" ? `영상 ${s.durationSec ? mmss(s.durationSec * 1000) : ""}` : s.kind === "pdf" ? `PDF ${s.pages}쪽` : "글"})\n${s.text}`).join("\n\n"),
       schema: analysis,
       schemaName: "source_analysis",
       maxTokens: 16000,
@@ -196,7 +225,7 @@ export const analysisSkill: EmployeeSkill = {
 
     const markdown = render(out, sources, verdict);
     const content = {
-      sources: sources.map(({ url, kind, title, durationSec, chars }) => ({ url, kind, title, durationSec, chars })),
+      sources: sources.map(({ url, kind, title, durationSec, pages, chars }) => ({ url, kind, title, durationSec, pages, chars })),
       claims: out.claims, numbers: out.numbers, forUs: out.forUs, unanswered: out.unanswered,
       verdict: { verdict: verdict.failed === 0 ? "PASS" : verdict.passed >= verdict.failed ? "PARTIAL" : "FAIL", passed: verdict.passed, failed: verdict.failed, cases: verdict.cases },
     };
