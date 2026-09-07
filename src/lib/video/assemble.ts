@@ -49,7 +49,7 @@ export async function assemble(scenes: Scene[], opts: { width?: number; height?:
       durations.push(d);
       await run(FFMPEG, [
         "-y", "-loop", "1", "-framerate", "30", "-i", img, "-i", aud,
-        "-vf", `scale=${W}:${H}:force_original_aspect_ratio=decrease,pad=${W}:${H}:(ow-iw)/2:(oh-ih)/2:color=black,format=yuv420p`,
+        "-vf", `scale=${W}:${H}:force_original_aspect_ratio=increase,crop=${W}:${H},format=yuv420p`,
         "-c:v", "libx264", "-tune", "stillimage", "-preset", "veryfast", "-r", "30",
         "-af", "apad", "-c:a", "aac", "-ar", "44100", "-ac", "2", "-b:a", "128k",
         "-t", d.toFixed(2), "-movflags", "+faststart", seg,
