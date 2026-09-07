@@ -183,9 +183,6 @@ export const appBuildSkill: EmployeeSkill = {
       produces:
         "Unity C# scripts and an editor scene builder (or web source files), with " +
         "acceptance criteria written before the code — each marked met or not.",
-        "- `expectations`: 자(유니티 시험)가 **숫자로 재는** 기대치. 잴 수 있는 값은 딱 다섯 — player_viewport_x(플레이어의 화면 가로 위치 0~1, 왼쪽 0), " +
-        "player_viewport_y, jump_height_m(스페이스 점프 높이 m), hud_score_visible(점수 글자가 카메라 캔버스에 보이는가), coin_count(동전 수). " +
-        "이번 주문에 걸리는 것만 min/max(또는 equals) 로 적는다(예: 가로 1/3 → player_viewport_x 0.25~0.41). 다른 이름은 못 잰다 — 지어내지 마라.",
     },
   ],
   acceptsInternalRequests: true,
@@ -211,7 +208,13 @@ export const appBuildSkill: EmployeeSkill = {
         "`target`: 게임·3D·유니티·캐릭터·씬 이야기면 **unity**(이 회사의 게임은 유니티 " +
         "안에서 산다 — HTML 게임을 내지 마라). 웹 도구·페이지·스크립트면 web. 모르면 unity.\n" +
         "unity 면 기준은 유니티 안에서 사람이 눌러 볼 수 있는 문장으로: " +
-        "'메뉴 Rookery/… 를 누르면 씬이 생기고 Play 하면 …'." +
+        "'메뉴 Rookery/… 를 누르면 씬이 생기고 Play 하면 …'.
+
+" +
+        "`expectations`: 자(유니티 시험)가 **숫자로 재는** 기대치. 잴 수 있는 값은 딱 다섯 — " +
+        "player_viewport_x(플레이어의 화면 가로 위치 0~1, 왼쪽이 0), player_viewport_y, jump_height_m(스페이스 점프 높이 m), " +
+        "hud_score_visible(점수 글자가 카메라 캔버스에 보이는가), coin_count(동전 수). 이번 주문에 걸리는 것만 min/max(또는 equals) 로 " +
+        "적는다(예: '가로 1/3' → player_viewport_x min 0.25 max 0.41). 안 걸리면 빈 배열. 다른 이름은 못 잰다." +
         // 설계 단계가 읽는 것은 범위·반응 쪽(blueprint). 코드 쪽 규칙은 짓는 단계에서.
         (await renderGamedevLessons("blueprint")),
       input:
