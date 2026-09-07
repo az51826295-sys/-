@@ -181,6 +181,9 @@ export async function collectWorkReturns(
         // 기다리게 두면 사람은 영영 기다린다.
         text = failedText(name, a.title, "끝났다고 적혀 있는데 결과물이 없어요.");
       }
+    } else if (a.status === "cancelled") {
+      // 사장님이 접은 계획(되묻기에서 '취소'). 실패가 아니다.
+      text = `**${name} · 접었어요 · ${a.title}**\n\n다시 시키실 때 말씀해 주세요.`;
     } else if (DEAD.has(a.status)) {
       // failure_reason 은 코드(UNKNOWN_ERROR)뿐이라 사람이 읽을 게 없다. 실행 행의
       // 오류 문장을 같이 보여 준다 — 09-05 에 "UNKNOWN_ERROR" 만 보고 아무도 무엇이
