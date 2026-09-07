@@ -78,7 +78,26 @@ export type MeshProvider = {
    * +Z. 걷기·달리기 애니가 같이 온다. 실패는 던진다 — 크레딧은 돌아온다.
    */
   rig(inputTaskId: string, heightMeters: number): Promise<RigResult>;
+  /**
+   * 동작 클립(`POST /openapi/v1/animations`, 3 크레딧쯤). 리깅 task id 와 라이브러리 action_id 로
+   * idle·점프·공격 같은 클립을 FBX 로 받는다(29회차 09-07). 걷기·뛰기는 리깅이 주니 여기선 그 밖의 것.
+   */
+  animate(rigTaskId: string, actionId: number): Promise<AnimResult>;
   balance(): Promise<number | null>;
+};
+
+export type AnimResult = { taskId: string; fbxUrl: string | null; glbUrl: string | null; consumedCredits: number; mock: boolean };
+
+/** Meshy 동작 라이브러리에서 우리가 이름으로 부르는 것들(docs.meshy.ai/en/api/animation-library, 09-07). */
+export const MESHY_ACTIONS: Record<string, number> = {
+  idle: 0, idle2: 11, idle3: 12,
+  walk: 30, run: 14, run_fast: 16, jump_run: 13,
+  jump: 466, jump_open: 460, backflip: 462,
+  attack: 4, combo2: 92, combo3: 105, boxing: 87,
+  wave: 290, wave_big: 28, wave_help: 291,
+  dead: 8, knock_down: 187, shot: 182,
+  dance: 22, dance_night: 64, gangnam: 74,
+  sit: 33, sit_f: 32, sit_cross: 362,
 };
 
 const BASE = "https://api.meshy.ai/openapi/v1";
@@ -95,6 +114,37 @@ export function createMeshyProvider(apiKey: string): MeshProvider {
   return {
     name: "meshy",
 
+    async animate(rigTaskId, actionId) {
+      const created = await fetch(BASE + "/animations", {
+        method: "POST",
+        headers,
+        body: JSON.stringify({ rig_task_id: rigTaskId, action_id: actionId }),
+        signal: AbortSignal.timeout(60_000),
+      });
+      if (created.status === 402) throw new Error("MESHY_NO_CREDITS");
+      if (!created.ok) throw new Error(`MESHY_ANIM_HTTP_${created.status}: ${(await created.text()).slice(0, 200)}`);
+      const { result: taskId } = (await created.json()) as { result: string };
+      type AnimTask = MeshyTask & { result?: { animation_fbx_url?: string; animation_glb_url?: string }; animation_fbx_url?: string; animation_glb_url?: string; consumed_credits?: number };
+      const until = Date.now() + MAX_WAIT_MS;
+      let task: AnimTask | null = null;
+      while (Date.now() < until) {
+        await new Promise((r) => setTimeout(r, POLL_MS));
+        const r = await get(`/animations/${taskId}`);
+        if (!r.ok) continue;
+        task = (await r.json()) as AnimTask;
+        if (task.status === "SUCCEEDED" || task.status === "FAILED" || task.status === "CANCELED") break;
+      }
+      if (!task) throw new Error("MESHY_ANIM_NO_ANSWER");
+      if (task.status !== "SUCCEEDED") throw new Error(`MESHY_ANIM_${task.status}: ${task.task_error?.message ?? "이유 없음"}`);
+      const res = task.result ?? {};
+      return {
+        taskId,
+        fbxUrl: res.animation_fbx_url ?? task.animation_fbx_url ?? null,
+        glbUrl: res.animation_glb_url ?? task.animation_glb_url ?? null,
+        consumedCredits: task.consumed_credits ?? 0,
+        mock: false,
+      };
+    },
     async balance() {
       try {
         const r = await get("/balance");
@@ -238,6 +288,9 @@ export function createMockMeshProvider(): MeshProvider {
     async rig() {
       // 목은 리깅을 못 한다. 본 0개 그대로 — B1 이 떨어지는 것이 맞다.
       return { taskId: "mock-rig", riggedGlbUrl: null, riggedFbxUrl: null, walkingFbxUrl: null, runningFbxUrl: null, consumedCredits: 0, mock: true };
+    },
+    async animate() {
+      return { taskId: "mock-anim", fbxUrl: null, glbUrl: null, consumedCredits: 0, mock: true };
     },
     async multiImageTo3D() {
       return this.imageTo3D("", {});

@@ -3,7 +3,7 @@ import { step } from "@/lib/execution/steps";
 import { recordUsage } from "@/lib/costs/meter";
 import type { EmployeeSkill, SkillRunContext } from "@/lib/skills/types";
 import { createImageProvider } from "@/lib/providers/images";
-import { defaultMeshProvider } from "@/lib/providers/meshy";
+import { defaultMeshProvider, MESHY_ACTIONS } from "@/lib/providers/meshy";
 import { meshTextures, judgeMesh, JudgeUnavailable, type MeshVerdict } from "@/lib/providers/judge";
 import { z } from "zod";
 import { storeDeliverableFile, signedUrlFor, pathFor, BUCKET } from "@/lib/deliverables/files";
@@ -47,6 +47,11 @@ const briefSchema = z.object({
    * 중 셋은 초안에서 끝났어야 했다(크레딧 105·그림 $3).
    */
   wantFinal: z.boolean(),
+  /**
+   * 동작 클립(29회차 09-07, Meshy 동작 라이브러리·3 크레딧/개). 매니저가 말한 동작을 이름으로: idle·jump·attack·wave·
+   * dead·dance·sit·run_fast 중에서. 걷기·뛰기는 리깅이 그냥 준다. 캐릭터면 idle 은 항상 넣는다(서 있을 때 숨 쉬는 것).
+   */
+  actions: z.array(z.string()),
 });
 
 // 빛은 유니티 후처리 몫이다(사장님 09-06 17:52 "빛은 후처리해야지"). 콘셉트에 후광·림
@@ -196,6 +201,8 @@ export const meshAssetsSkill: EmployeeSkill = {
         "그림 생성기는 이런 조건을 자주 무시한다 — 여기 적힌 것만 검수한다.\n" +
         "- `wantFinal`: 매니저가 '고화질로·최종·3D 로 만들어·진짜로·그대로 만들어' 처럼 **완성을 분명히** 말했으면 true. " +
         "처음 시키는 것이거나 그런 말이 없으면 false(초안: 그림 한 장만, 크레딧 0).\n" +
+        "- `actions`: 캐릭터(wantRig)면 매니저가 말한 동작을 idle·jump·attack·wave·dead·dance·sit·run_fast 이름으로. " +
+        "말이 없으면 [\"idle\"]. 소품이면 []. 걷기·뛰기는 적지 마라(리깅이 준다).\n" +
         (reference ? "레퍼런스 이미지가 **있다**. conceptPrompt 는 그래도 쓴다(기록용)." : "") +
         (await renderGamedevLessons("mesh_assets")),
       input:
@@ -358,6 +365,27 @@ export const meshAssetsSkill: EmployeeSkill = {
         rigError = error instanceof Error ? error.message : String(error);
       }
     }
+    // ── 2c. 동작 클립 (29회차) ────────────────────────────────────────
+    // idle·점프·공격… 을 라이브러리에서 리타깃(3 크레딧/개, 20초). 못 받은 건 적고 넘어간다.
+    const clips: { name: string; fbxUrl: string }[] = [];
+    const clipErrors: string[] = [];
+    if (rig && !rig.mock) {
+      const wanted = Array.from(new Set(["idle", ...brief.actions.map((a) => a.toLowerCase().trim())]));
+      for (const name of wanted) {
+        const actionId = MESHY_ACTIONS[name];
+        if (actionId === undefined) { clipErrors.push(`${name}: 라이브러리에 없음`); continue; }
+        try {
+          const r = await step(ctx.supabase, ctx.executionId, `anim:${name}`, async () => {
+            const a = await mesher.animate(rig!.taskId, actionId);
+            await bookMeshy("mesh_animate", a.consumedCredits || 3);
+            return a;
+          });
+          if (r.fbxUrl) clips.push({ name, fbxUrl: r.fbxUrl });
+        } catch (error) {
+          clipErrors.push(`${name}: ${error instanceof Error ? error.message : String(error)}`);
+        }
+      }
+    }
     const judgeGlbUrl = rig?.riggedGlbUrl ?? mesh.glbUrl;
 
     // ── 3. 판정 ────────────────────────────────────────────────────
@@ -419,6 +447,8 @@ export const meshAssetsSkill: EmployeeSkill = {
       (glbBytes ? `- model.glb (${(glbBytes.byteLength / 1024).toFixed(0)} KB)\n` : "- GLB 를 못 받았습니다.\n") +
       (fbxBytes ? `- model.fbx (${(fbxBytes.byteLength / 1024).toFixed(0)} KB)\n` : "") +
       (riggedFbx ? `- rigged.fbx (${(riggedFbx.byteLength / 1024).toFixed(0)} KB) — 리깅됨. 유니티에서 Rig → Humanoid\n` : "") +
+      (clips.length ? `- 동작 클립: ${clips.map((c) => c.name + ".fbx").join(", ")}\n` : "") +
+      (clipErrors.length ? `- 못 받은 동작: ${clipErrors.join("; ")}\n` : "") +
       (walkingFbx ? "- walking.fbx · running.fbx — Meshy 가 같이 준 걷기·달리기\n" : "") +
       (rigError ? `- 리깅 실패: ${rigError} (휴머노이드가 아니거나 얼굴이 +Z 를 안 볼 때 그렇습니다. 크레딧은 돌아옵니다)\n` : "") +
       "- 파일은 이 대화 아래 '받기' 와 유니티 창(Window → Rookery)에서 받습니다.\n" +
@@ -447,6 +477,8 @@ export const meshAssetsSkill: EmployeeSkill = {
       mesh: { ...mesh, glbBase64: mesh.glbBase64 ? "(생략)" : null },
       rig,
       rigError,
+      clips: clips.map((c) => c.name),
+      clipErrors,
       verdict,
     };
 
@@ -527,6 +559,10 @@ export const meshAssetsSkill: EmployeeSkill = {
     await put("rigged.fbx", riggedFbx, "application/octet-stream", "document", `${brief.subject} (리깅 FBX)`);
     await put("walking.fbx", walkingFbx, "application/octet-stream", "document", `${brief.subject} 걷기`);
     await put("running.fbx", runningFbx, "application/octet-stream", "document", `${brief.subject} 달리기`);
+    for (const c of clips) {
+      const bytes = await fetchBytes(c.fbxUrl);
+      await put(`${c.name}.fbx`, bytes, "application/octet-stream", "document", `${brief.subject} 동작 ${c.name}`);
+    }
 
     // ── PBR 맵 되찾기 ─────────────────────────────────────────────
     // 리깅 FBX 에는 베이스컬러 하나만 온다(22:40 확인). 원본 GLB 의 노멀·금속거칠기
