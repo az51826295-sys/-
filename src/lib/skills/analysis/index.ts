@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { YoutubeTranscript } from "youtube-transcript";
+import { Innertube, ClientType, Log as YtLog } from "youtubei.js";
 import { ExecutionError, setStep } from "@/lib/execution/shared";
 import { step } from "@/lib/execution/steps";
 import { createHttpContentFetcher } from "@/lib/providers/fetcher";
@@ -47,8 +48,43 @@ function mmss(ms: number): string {
   return `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
 }
 
+type Seg = { text: string; offset: number; duration: number };
+
+/**
+ * 38회차: 서버(Railway)에선 watch 페이지 긁기(youtube-transcript)가 봇으로 찍혀 "Transcript is disabled" 를 받는다.
+ * 안드로이드·iOS 앱이 쓰는 Innertube 로 자막 트랙 주소(서명 포함)를 받아 json3 로 읽는다 — 로컬 실측: ANDROID en 1트랙, IOS 21트랙.
+ */
+async function readViaInnertube(id: string): Promise<{ segs: Seg[]; lang: string; via: string } | null> {
+  YtLog.setLevel(YtLog.Level.NONE);
+  for (const client of [ClientType.ANDROID, ClientType.IOS]) {
+    try {
+      const yt = await Innertube.create({ client_type: client });
+      const info = await yt.getBasicInfo(id, { client: client === ClientType.ANDROID ? "ANDROID" : "IOS" });
+      const tracks = (info.captions?.caption_tracks ?? []) as { language_code: string; base_url: string; kind?: string }[];
+      if (!tracks.length) continue;
+      const pick = tracks.find((t) => t.language_code === "en") ?? tracks.find((t) => t.language_code === "ko") ?? tracks[0];
+      const r = await fetch(pick.base_url + "&fmt=json3");
+      if (!r.ok) continue;
+      const j = (await r.json()) as { events?: { tStartMs: number; dDurationMs?: number; segs?: { utf8: string }[] }[] };
+      const segs: Seg[] = (j.events ?? [])
+        .filter((e) => e.segs && e.segs.length)
+        .map((e) => ({ text: e.segs!.map((x) => x.utf8).join("").replace(/\n/g, " "), offset: e.tStartMs, duration: e.dDurationMs ?? 0 }))
+        .filter((e) => e.text.trim().length > 0);
+      if (segs.length) return { segs, lang: pick.language_code, via: `innertube-${String(client).toLowerCase()}` };
+    } catch (e) {
+      console.warn(`[analysis] innertube ${client} 실패: ${e instanceof Error ? e.message.slice(0, 120) : e}`);
+    }
+  }
+  return null;
+}
+
 /** 자막을 30초마다 [mm:ss] 표시를 넣은 글로. 모델은 이 표시로 `at` 을 적고, 자는 그 표시가 길이 안에 있는지 본다. */
 async function readYoutube(url: string, id: string): Promise<Source> {
+  const inner = await readViaInnertube(id);
+  if (inner) {
+    console.log(`[analysis] 자막 ${id} via ${inner.via} lang=${inner.lang} segments=${inner.segs.length}`);
+    return fromSegs(url, id, inner.segs, `${inner.lang}·${inner.via}`);
+  }
   // 36회차 1판: 기본 자막이 아랍어로 왔다(라이브러리는 첫 트랙을 집는다). 영어 → 한국어 → 아무거나 순으로 청한다.
   // 37회차: 서버(Railway)에서는 같은 영상이 "Transcript is disabled" 로 거절되기도 한다(로컬은 됨 — 유튜브가 데이터센터 IP 를 막는 것).
   // 세 번까지 3·6·9초 쉬고 다시 청한다. 그래도 안 되면 못 읽은 것으로 적는다 — 지어내지 않는다.
@@ -66,8 +102,12 @@ async function readYoutube(url: string, id: string): Promise<Source> {
       catch (e) { lastError = e instanceof Error ? e.message : String(e); }
     }
   }
-  if (!segs.length) throw new Error(`자막을 못 받았다(3번 시도): ${lastError.slice(0, 120)}`);
-  console.log(`[analysis] 자막 ${id} lang=${lang} segments=${segs.length}`);
+  if (!segs.length) throw new Error(`자막을 못 받았다(innertube 둘 + 긁기 3번): ${lastError.slice(0, 120)}`);
+  console.log(`[analysis] 자막 ${id} via scrape lang=${lang} segments=${segs.length}`);
+  return fromSegs(url, id, segs.map((x) => ({ text: x.text, offset: x.offset, duration: x.duration })), `${lang}·scrape`);
+}
+
+function fromSegs(url: string, id: string, segs: Seg[], lang: string): Source {
   let text = ""; let mark = -1;
   for (const s of segs) {
     const bucket = Math.floor(s.offset / 30_000);
