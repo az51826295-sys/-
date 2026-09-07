@@ -75,6 +75,10 @@ type Turn = {
   assignment?: { id: string; title: string; queued: boolean; returned?: boolean } | null;
   /** 시킨 일이 끝나서 돌아온 턴. 답이 아니라 **결과**라 조금 다르게 그린다. */
   returnedWork?: boolean;
+  /** 이 턴이 무엇인가(45회차): 결과·검사·계획 확인. 서버가 정한다. */
+  kind?: "result" | "checks" | "approval" | "exhausted";
+  /** 이 턴에 대고 누를 수 있는 것. 사장님: "예시 버튼은 편의가 아니다" — 편의는 눈앞의 것에 대고 누르는 것. */
+  actions?: { label: string; text: string }[];
   /** 돌아온 일에 딸린 파일. 글 파일(contents)은 브라우저가, 저장소 파일(href)은 서버를 거쳐 연다. */
   files?: { path: string; contents?: string; href?: string }[] | null;
   needsOnboarding?: { id: string; name: string } | null;
@@ -124,6 +128,8 @@ export default function AskClient({
   const preview = usePreview(conversationId, panelKey + turns.length);
   const [previewOpen, setPreviewOpen] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
+  /** 45회차: "고칠게요"·"수정 요청" 은 무엇을 고칠지 사람이 쓴다 — 커서만 보낸다. */
+  const inputRef = useRef<HTMLInputElement>(null);
   // 열 때와 일이 돌아왔을 때 끝으로. 지난 대화가 길면 첫 줄이 아니라 마지막 줄이 보여야 한다(09-07).
   useEffect(() => {
     requestAnimationFrame(() => endRef.current?.scrollIntoView({ block: "end" }));
@@ -421,7 +427,7 @@ export default function AskClient({
                 ? `"${task.title}" 안에서 나눈 이야기만 여기 모입니다.`
                 : "무엇이든 물어보세요. 찾아봐야 할 것은 찾아보고, 시간이 드는 일은 사람을 붙여 업무로 만듭니다."}
             </p>
-            {!task && (
+            {!task && turns.length === 0 && (
               // 시작 예시. Rosebud 의 첫 화면은 만들 수 있는 것의 예가 늘 보인다 —
               // 빈 칸 앞에서 "뭐라고 말하지" 가 첫 벽이다. 누르면 칸에 들어가고,
               // 고쳐서 보내면 된다. 보내지는 않는다.
@@ -493,6 +499,31 @@ export default function AskClient({
                       </>
                     )}
                   </span>
+                ))}
+              </div>
+            )}
+            {t.actions && t.actions.length > 0 && (
+              // 45회차: 계획 확인은 눌러서 답하고, 결과에는 다음 일을 대고 누른다.
+              // `text` 가 비면 입력칸으로 커서만 보낸다 — 무엇을 고칠지는 사람이 쓴다.
+              <div className="mt-1.5 flex flex-wrap gap-1.5">
+                {t.actions.map((b) => (
+                  <button
+                    key={b.label}
+                    type="button"
+                    disabled={busy}
+                    onClick={() => {
+                      if (b.text) void send(b.text);
+                      else inputRef.current?.focus();
+                    }}
+                    className={
+                      "border-2 px-2.5 py-1 text-xs disabled:opacity-40 " +
+                      (b.label === "시작"
+                        ? "border-[#E0703A] bg-[#E0703A] text-[var(--rk-paper)]"
+                        : "border-[var(--rk-ink)] bg-[var(--rk-paper)] text-[var(--rk-ink)] hover:bg-[var(--rk-100)]")
+                    }
+                  >
+                    {b.label}
+                  </button>
                 ))}
               </div>
             )}
@@ -620,6 +651,7 @@ export default function AskClient({
           />
         </label>
         <input
+          ref={inputRef}
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder="무엇이든 물어보세요"

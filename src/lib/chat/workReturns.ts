@@ -17,7 +17,18 @@ import { releaseEmployee } from "@/lib/assignments/service";
 
 /** `contents` 가 있으면 글 파일(브라우저가 연다), `href` 가 있으면 저장소 파일(서버를 거쳐 연다). */
 export type ReturnedFile = { path: string; contents?: string; href?: string };
-export type ReturnedTurn = { role: "assistant"; content: string; files?: ReturnedFile[] };
+export type ReturnedTurn = {
+  role: "assistant";
+  content: string;
+  files?: ReturnedFile[];
+  /**
+   * 이 턴이 무엇인가 (45회차). 화면이 단추를 그릴 때 쓴다 — 결과인지, 계획 확인인지, 검사 결과인지.
+   * 판단은 서버가 한다: 종류와 판정을 아는 쪽이 여기다.
+   */
+  kind?: "result" | "checks" | "approval" | "exhausted";
+  /** 그 턴에 대고 누를 수 있는 것. `text` 를 그대로 보내면 되고, 빈 문자열이면 입력칸으로 커서만 간다. */
+  actions?: { label: string; text: string }[];
+};
 
 /** 아직 안 끝난 일과, 이번에 새로 붙인 턴. */
 /** 아직 안 끝난 일이 지금 어느 단계인지. 사람 말로 — 화면이 그대로 보여 준다. */
@@ -63,9 +74,18 @@ export async function collectUnityChecks(
     .gt("created_at", since)
     .or("attachments->unityChecks.not.is.null,attachments->approval.not.is.null,attachments->autoRetryExhausted.not.is.null")
     .order("created_at", { ascending: true });
-  return ((data ?? []) as { content: string; attachments: { files?: ReturnedFile[] | null } | null }[]).map((m) => ({
+  return ((data ?? []) as { content: string; attachments: { files?: ReturnedFile[] | null; approval?: unknown; autoRetryExhausted?: unknown } | null }[]).map((m) => ({
     role: "assistant" as const,
     content: m.content,
+    kind: (m.attachments?.approval ? "approval" : m.attachments?.autoRetryExhausted ? "exhausted" : "checks") as ReturnedTurn["kind"],
+    // 계획 확인 턴은 눌러서 답한다. 35회차에 되묻기를 만들어 놓고 '시작' 을 타자로 쳐야 했다.
+    actions: m.attachments?.approval
+      ? [
+          { label: "시작", text: "시작" },
+          { label: "고칠게요", text: "" },
+          { label: "취소", text: "취소" },
+        ]
+      : undefined,
     files: m.attachments?.files ?? undefined,
   }));
 }
@@ -136,11 +156,13 @@ export async function collectWorkReturns(
     // Dev 가 만든 파일. 본문에도 코드 블록으로 있지만, 사람이 쓰는 것은 파일이다
     // — 저장해서 열어야 게임이 돈다. 그래서 따로 싣는다.
     let files: ReturnedFile[] | undefined;
+    let kindOfTurn: ReturnedTurn["kind"];
+    let actions: ReturnedTurn["actions"];
 
     if (DONE.has(a.status)) {
       const { data: d } = await db
         .from("deliverables")
-        .select("id, title, content_markdown, content_json, created_at")
+        .select("id, title, content_markdown, content_json, created_at, deliverable_type")
         .eq("assignment_id", a.id)
         .order("version", { ascending: false })
         .limit(1)
@@ -158,6 +180,14 @@ export async function collectWorkReturns(
       if (d) {
         deliverableId = d.id as string;
         text = finishedText(name, (d.title as string) || a.title, d.content_markdown as string);
+        // 45회차: 결과에 대고 바로 시킬 수 있는 것. 사장님: "예시 버튼은 편의가 아니다" — 편의는 눈앞의 것에 대고 누르는 것이다.
+        const dtype = ((d as { deliverable_type?: string }).deliverable_type) ?? "";
+        const dverdict = ((d.content_json as { verdict?: { verdict?: string } } | null)?.verdict?.verdict) ?? "";
+        kindOfTurn = "result";
+        actions = [];
+        if (dtype === "mesh_assets" && dverdict === "DRAFT") actions.push({ label: "고화질로 만들기", text: "고화질로 만들어 줘" });
+        if (dtype === "analysis" || dtype === "market_research_report") actions.push({ label: "이걸로 영상 만들기", text: "이걸로 60초 영상 만들어 줘" });
+        actions.push({ label: "수정 요청", text: "" });
         const made = (d.content_json as { files?: unknown } | null)?.files;
         if (Array.isArray(made)) {
           files = made
@@ -227,7 +257,7 @@ export async function collectWorkReturns(
     });
     // 못 붙였으면 다음에 다시 시도한다 — 표시가 안 남았으니 다시 잡힌다.
     if (!error) {
-      posted.push({ role: "assistant", content: text, files });
+      posted.push({ role: "assistant", content: text, files, kind: kindOfTurn, actions });
       // 대화에 붙은 것이 곧 승인이다(끝난 것) / 접는 것이다(실패). 그래야 그
       // 사람이 다음 일을 받는다. 기다리던 일이 있으면 여기서 시작된다.
       await releaseEmployee(db, a.company_employee_id, a.id);

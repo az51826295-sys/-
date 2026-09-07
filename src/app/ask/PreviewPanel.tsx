@@ -85,6 +85,7 @@ export default function PreviewPanel({
   const { data, setData, load } = preview;
   const setOpen = onOpenChange;
   const [busy, setBusy] = useState<string | null>(null);
+  const [showPassed, setShowPassed] = useState(false);
 
   async function revert(deliverableId: string, n: number) {
     if (!conversationId || busy) return;
@@ -145,11 +146,19 @@ export default function PreviewPanel({
             <div className="mb-1.5 text-[11px] text-[var(--rk-600)]">
               검사 결과 — 통과 {cur.checks.filter((c) => c.result === "통과").length} · 실패 {cur.checks.filter((c) => c.result === "실패").length} · 해당 없음 {cur.checks.filter((c) => c.result === "해당 없음").length}
             </div>
-            {cur.checks.map((c) => (
-              <div key={c.name} className={"text-xs " + (c.result === "통과" ? "text-[#7ED9A0]" : c.result === "실패" ? "text-[#E07070]" : "text-[var(--rk-400)]")} title={c.message}>
-                {c.result === "통과" ? "✓" : c.result === "실패" ? "✗" : "–"} {c.name}{c.message && c.result !== "통과" ? ` (${c.message.slice(0, 60)})` : ""}
-              </div>
-            ))}
+            {/* 45회차: 통과한 줄은 접는다. 여덟 줄이 다 펴져 있으면 실패 한 줄이 안 보인다. */}
+            {cur.checks
+              .filter((c) => showPassed || c.result !== "통과")
+              .map((c) => (
+                <div key={c.name} className={"text-xs " + (c.result === "통과" ? "text-[#7ED9A0]" : c.result === "실패" ? "text-[#E07070]" : "text-[var(--rk-400)]")} title={c.message}>
+                  {c.result === "통과" ? "✓" : c.result === "실패" ? "✗" : "–"} {c.name}{c.message && c.result !== "통과" ? ` (${c.message.slice(0, 60)})` : ""}
+                </div>
+              ))}
+            {cur.checks.some((c) => c.result === "통과") && (
+              <button type="button" className="mt-1 text-[11px] text-[var(--rk-600)] underline" onClick={() => setShowPassed((v) => !v)}>
+                {showPassed ? "통과한 줄 접기" : `통과한 줄 ${cur.checks.filter((c) => c.result === "통과").length}개 보기`}
+              </button>
+            )}
           </section>
         )}
         {cur && cur.files.length > 0 && (
