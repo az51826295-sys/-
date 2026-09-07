@@ -542,3 +542,14 @@ createdAt 을 찍고 최신 판(08:38)을 골랐다 — M17 확인. 사진에서
   [Reallusion — CC/iClone → Unity](https://www.reallusion.com/auto-setup/unity/default.html),
   [Creative Bloq — CC5 review](https://www.creativebloq.com/3d/character-creator-5-review-unreal-engine-support-and-auto-rigging-make-it-a-joy-to-use)
 - 23회차: (웹 출처 없음 — 이 회차는 제품 배관과 사장님 지시로만 채워졌다)
+
+## Z. 29회차 (09-07 09:58~10:30) — 동작 클립: Meshy 동작 라이브러리 (교과 16)
+
+캐릭터는 걷기·뛰기뿐이었다(리깅이 주는 둘). 서 있을 때 숨 쉬는 idle 과 점프·공격이 없으면 게임이 아니다.
+**읽은 것**: Meshy `POST /openapi/v1/animations` — `rig_task_id` + `action_id`(라이브러리 566개, idle 0·jump 466·attack 4·wave 290·dead 8·dance 22·sit 33)
+또는 `motion_task_id`(생성 모션). 결과 `animation_fbx_url`/`animation_glb_url`, 3 크레딧, 리깅 자산은 3일 뒤 만료.
+**잰 것**: 기사 리그에 idle 한 개 = 22초·3 크레딧·FBX 17.9 MB(메시 포함). 제품 경로(초안 재사용 → 고화질 + idle·jump) = 12분·$1.57.
+**엔진에 박은 것**: 공급자 `animate()` + 이름표(`MESHY_ACTIONS`), Vox 브리프 `actions`(캐릭터면 idle 기본), 파일 `<이름>.fbx`, 장부 3크레딧/개,
+Dev 규칙(Idle 기본 상태·Space 점프·클립은 rig 폴더에서 이름으로·없으면 만들지 마라).
+**남긴 것**: 각 클립 FBX 가 메시를 통째로 다시 담아 18 MB — 유니티 창은 같은 크기면 안 받으니 괜찮지만 저장소는 캐릭터당 +36 MB/클립 2개.
+`motion_task_id`(글로 동작 생성)는 안 해 봤다.
