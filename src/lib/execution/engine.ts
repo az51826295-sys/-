@@ -25,6 +25,7 @@ import { recordPolicyFindings } from "@/lib/policies/validation";
 import { commitPrediction } from "@/lib/genesis/predict";
 import { judgeSelection, selectionNote } from "@/lib/execution/selection";
 import { WaitingForApproval } from "@/lib/execution/approval";
+import { selfRetryFromVerdict } from "@/lib/execution/selfRetry";
 
 export { defaultProviders };
 export type { Providers };
@@ -222,6 +223,15 @@ export async function executeEmployeeAssignment(
       );
     } catch {
       // The deliverable stands. An unchecked one is better than a lost one.
+    }
+
+    // 자가 떨어뜨린 줄이 있으면 스스로 다시(41회차). 게임(app_build)은 유니티 검사 문이 따로 부른다 —
+    // 그쪽 판정은 여기서가 아니라 사장님 PC 의 유니티가 낸 뒤에 나온다.
+    try {
+      await selfRetryFromVerdict(supabase, result.deliverableId, result.deliverableType);
+    } catch (e) {
+      // 스스로 다시가 안 걸려도 산출물은 산출물이다. 조용히 삼키지는 않는다.
+      console.warn("[selfRetry] 못 걸었다:", e instanceof Error ? e.message : e);
     }
 
     return { ok: true, deliverableId: result.deliverableId };
