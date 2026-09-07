@@ -225,8 +225,9 @@ namespace Rookery.Tests
             var png = tex.EncodeToPNG();
             // ── 재기: 플레이어의 화면 위치, 점수 글자, 동전 수 ──
             {
-                var player = Object.FindObjectsByType<Animator>(FindObjectsSortMode.None)
-                    .FirstOrDefault(a => a.isHuman && (a.GetComponentInParent<CharacterController>() != null || a.transform.root.CompareTag("Player")));
+                var humansAll = Object.FindObjectsByType<Animator>(FindObjectsSortMode.None).Where(a => a.isHuman).ToList();
+                // 플레이어 먼저(CharacterController 나 Player 태그), 없으면 첫 휴머노이드 — 32회차 1판에서 못 찾아 player_viewport_x 가 비었다.
+                var player = humansAll.FirstOrDefault(a => a.GetComponentInParent<CharacterController>() != null || a.transform.root.CompareTag("Player")) ?? humansAll.FirstOrDefault();
                 if (player != null)
                 {
                     var vp = cam.WorldToViewportPoint(player.transform.position + Vector3.up * 0.9f);

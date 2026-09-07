@@ -41,7 +41,7 @@ const plan = z.object({
    * jump_height_m, hud_score_visible(true/false), coin_count. 이번 주문에 걸리는 것만 적는다 — 어긋나면 실패 줄이 되어
    * 스스로 다시 고친다. 없으면 빈 배열.
    */
-  expectations: z.array(z.object({ measure: z.string(), min: z.number().nullable(), max: z.number().nullable(), equals: z.boolean().nullable(), why: z.string() })),
+  expectations: z.array(z.object({ measure: z.enum(["player_viewport_x", "player_viewport_y", "jump_height_m", "hud_score_visible", "coin_count"]), min: z.number().nullable(), max: z.number().nullable(), equals: z.boolean().nullable(), why: z.string() })),
   /**
    * 받아들임 기준. **코드보다 먼저 쓴다.**
    *
@@ -183,6 +183,9 @@ export const appBuildSkill: EmployeeSkill = {
       produces:
         "Unity C# scripts and an editor scene builder (or web source files), with " +
         "acceptance criteria written before the code — each marked met or not.",
+        "- `expectations`: 자(유니티 시험)가 **숫자로 재는** 기대치. 잴 수 있는 값은 딱 다섯 — player_viewport_x(플레이어의 화면 가로 위치 0~1, 왼쪽 0), " +
+        "player_viewport_y, jump_height_m(스페이스 점프 높이 m), hud_score_visible(점수 글자가 카메라 캔버스에 보이는가), coin_count(동전 수). " +
+        "이번 주문에 걸리는 것만 min/max(또는 equals) 로 적는다(예: 가로 1/3 → player_viewport_x 0.25~0.41). 다른 이름은 못 잰다 — 지어내지 마라.",
     },
   ],
   acceptsInternalRequests: true,
