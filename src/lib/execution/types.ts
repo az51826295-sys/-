@@ -172,6 +172,8 @@ export interface ResearchSourceForPrompt {
 }
 
 export type ExecutionErrorCode =
+  /** 실패가 아니다 — 계획을 보이고 사장님 확인을 기다린다(되묻기, 35회차). 상태표가 잠겨 있어 이 칸을 빌린다. */
+  | "WAITING_APPROVAL"
   | "CONTEXT_INCOMPLETE"
   | "MODEL_PLAN_FAILED"
   | "INVALID_RESEARCH_PLAN"
@@ -192,6 +194,7 @@ export type ExecutionErrorCode =
 
 /** What the user reads when an execution fails. Never a stack trace. */
 export const executionErrorCopy: Record<ExecutionErrorCode, string> = {
+  WAITING_APPROVAL: "is showing the plan and waiting for the manager's go-ahead.",
   CONTEXT_INCOMPLETE:
     "needs more company information before starting this assignment.",
   MODEL_PLAN_FAILED: "couldn't plan the research for this assignment.",

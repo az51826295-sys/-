@@ -13,6 +13,7 @@ import { delegate } from "@/lib/chat/delegate";
 import { employeeDefinitions } from "@/lib/employees/definitions";
 import { employeeSkillRegistry } from "@/lib/skills/registry";
 import { learnFromChat } from "@/lib/chat/learnFromChat";
+import { pendingApproval, classifyApprovalReply, resumeApproved, cancelPending } from "@/lib/execution/approval";
 
 /**
  * 대화 한 턴. **모드가 없다.**
@@ -268,6 +269,40 @@ export async function runEverydayTurn(
   const seen = user ? (input.images ?? []).slice(0, 4) : [];
 
   const say = input.onStatus ?? (() => {});
+
+  // ── 되묻기(35회차): 이 대화에 확인을 기다리는 계획이 있으면, 이 말은 그 계획에 대한 답이다 ──
+  // '시작' 이면 이어서 만들고, 고칠 말이면 계획을 다시 쓰고, '취소' 면 접는다. 모델을 부르지 않는다.
+  if (user && companyId && input.conversationId) {
+    const pending = await pendingApproval(supabase, input.conversationId);
+    if (pending) {
+      const said = [...input.messages].reverse().find((m) => m.role === "user")?.content ?? "";
+      const kind = classifyApprovalReply(said);
+      let reply: string;
+      let assignment: { id: string; title: string; queued: boolean } | null = { id: pending.assignmentId, title: pending.title, queued: true };
+      if (kind === "cancel") {
+        await cancelPending(supabase, pending);
+        reply = "네, 접을게요. 다시 시키실 때 말씀해 주세요.";
+        assignment = null;
+      } else if (kind === "yes") {
+        await resumeApproved(supabase, pending, null);
+        reply = "네, 그대로 시작할게요. 끝나면 여기 붙고, 유니티가 재요.";
+      } else {
+        const r = await resumeApproved(supabase, pending, said);
+        reply = r.mode === "replan"
+          ? "네, 그 말을 얹어서 계획을 다시 써 볼게요. 곧 다시 보여 드려요."
+          : "네, 그 말을 얹어서 이번엔 바로 만들게요(계획은 두 번까지만 다시 써요).";
+      }
+      const conversationId = await saveTurn(supabase, user.id, {
+        conversationId: input.conversationId,
+        taskId: input.taskId ?? null,
+        mode: "everyday",
+        user: { role: "user", content: said },
+        assistant: { role: "assistant", content: reply, attachments: { images: [], sources: [], searched: [], assignment } },
+      });
+      return { ok: true, reply, sources: [], searched: [], images: [], turnsLeft, conversationId, hired: null, assignment };
+    }
+  }
+
   say("생각하는 중");
 
   // 첫 판이 터지면 날 오류 코드가 화면에 그대로 나갔다("MODEL_OUTPUT_TRUNCATED",

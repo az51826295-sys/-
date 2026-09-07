@@ -24,6 +24,7 @@ import { getEmployeeDefinition } from "@/lib/employees/definitions";
 import { recordPolicyFindings } from "@/lib/policies/validation";
 import { commitPrediction } from "@/lib/genesis/predict";
 import { judgeSelection, selectionNote } from "@/lib/execution/selection";
+import { WaitingForApproval } from "@/lib/execution/approval";
 
 export { defaultProviders };
 export type { Providers };
@@ -225,6 +226,18 @@ export async function executeEmployeeAssignment(
 
     return { ok: true, deliverableId: result.deliverableId };
   } catch (error) {
+    // 되묻기(35회차): 실패가 아니라 멈춤. 실행은 WAITING_APPROVAL 로 적고, 업무는 waiting — 사장님이 '시작' 하면
+    // approval.resumeApproved 가 새 실행(단계 저장 복사)을 만든다.
+    if (error instanceof WaitingForApproval) {
+      await supabase.rpc("fail_work_execution", {
+        p_execution_id: executionId,
+        p_error_code: "WAITING_APPROVAL",
+        p_error_message: "계획을 보이고 사장님 확인을 기다린다",
+      });
+      await supabase.from("assignments").update({ status: "waiting" }).eq("id", execution.assignment_id);
+      await supabase.from("company_employees").update({ work_status: "ready" }).eq("id", execution.company_employee_id);
+      return { ok: false, code: "WAITING_APPROVAL" };
+    }
     const code =
       error instanceof ExecutionError
         ? error.code

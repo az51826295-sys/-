@@ -2,6 +2,7 @@ import { z } from "zod";
 import { renderGamedevLessons, unityRules } from "@/lib/knowledge/skillFiles";
 import { ExecutionError, setStep } from "@/lib/execution/shared";
 import { step } from "@/lib/execution/steps";
+import { askApproval } from "@/lib/execution/approval";
 import type { EmployeeSkill, SkillRunContext } from "@/lib/skills/types";
 import { checkFiles, repairBrief, summarise } from "@/lib/skills/appBuild/verify";
 
@@ -256,6 +257,30 @@ export const appBuildSkill: EmployeeSkill = {
       const named = new Set(spec.expectations.map((e) => e.measure as string));
       const kept = previous.expectations.filter((e) => !named.has(e.measure)) as typeof spec.expectations;
       spec.expectations = [...spec.expectations, ...kept];
+    }
+
+    // ── 되묻기(35회차): 코드를 쓰기 전에 계획을 보이고 멈춘다 ──
+    // 사장님이 '시작' 하면 approved 가 붙어 다시 돌고(계획은 저장된 값), 고칠 말을 하면 계획을 다시 쓴다.
+    // 스스로 다시(autoRetry) 판은 이미 승인된 계획의 떨어진 줄을 고치는 것이라 묻지 않는다.
+    {
+      const ri = (ctx.context.roleInput as { approved?: boolean; autoRetry?: number; approvalRound?: number } | null) ?? {};
+      if (!ri.approved && !ri.autoRetry) {
+        const fmt = (e: { measure: string; min: number | null; max: number | null; equals: boolean | null; why: string }) => {
+          const range = typeof e.equals === "boolean" ? (e.equals ? "예" : "아니오") : `${e.min ?? ""}~${e.max ?? ""}`;
+          return `${e.why} — ${e.measure} ${range}`;
+        };
+        const lines = [
+          ...spec.expectations.map(fmt),
+          `합격 기준 ${spec.criteria.length}개` + (spec.humanGate?.length ? ` · 사람이 볼 것 ${spec.humanGate.length}개` : ""),
+        ];
+        await askApproval(ctx.supabase, {
+          assignmentId: ctx.execution.assignment_id,
+          executionId: ctx.executionId,
+          who: "Dev",
+          card: { title: spec.title, lines, estimate: "약 $0.2 · 5분 · 크레딧 0 (그 뒤 유니티 검사 2~3분)" },
+          round: ri.approvalRound ?? 0,
+        });
+      }
     }
 
     if (spec.criteria.length < MIN_CRITERIA) {

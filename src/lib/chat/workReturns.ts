@@ -43,6 +43,7 @@ const STEP_LABEL: Record<string, string> = {
   judging: "자로 재는 중",
   storing: "파일을 저장하는 중",
   queued: "차례를 기다리는 중",
+  waiting: "사장님 확인을 기다리는 중 — '시작' 이라고 하면 시작해요",
 };
 
 /**
@@ -230,7 +231,6 @@ export async function collectWorkReturns(
 }
 
 async function stepOf(db: Supabase, assignmentId: string, status: string): Promise<{ step: string; plan?: PlanCard }> {
-  if (status === "waiting") return { step: STEP_LABEL.queued };
   const { data } = await db
     .from("work_executions")
     .select("current_step, status, steps:metrics_json->steps")
@@ -238,6 +238,8 @@ async function stepOf(db: Supabase, assignmentId: string, status: string): Promi
     .order("created_at", { ascending: false })
     .limit(1)
     .maybeSingle();
+  // 되묻기(35회차): 계획을 보이고 멈춘 업무. 카드는 그 실행의 저장된 계획에서.
+  if (status === "waiting") return { step: STEP_LABEL.waiting, plan: planCardOf((data as { steps?: unknown } | null)?.steps) };
   const raw = (data?.current_step as string | null) ?? (data ? "running" : "queued");
   return { step: STEP_LABEL[raw] ?? raw, plan: planCardOf((data as { steps?: unknown } | null)?.steps) };
 }
@@ -245,15 +247,17 @@ async function stepOf(db: Supabase, assignmentId: string, status: string): Promi
 /** 저장된 단계에서 계획 카드를 만든다. Dev 는 plan(제목·기준), Vox 는 brief(대상·초안/고화질·필수 조건). */
 function planCardOf(steps: unknown): PlanCard | undefined {
   const s = (steps ?? {}) as {
-    plan?: { title?: string; target?: string; criteria?: { when: string; then: string }[] };
+    plan?: { title?: string; target?: string; criteria?: { when: string; then: string }[]; expectations?: { measure: string; min: number | null; max: number | null; equals: boolean | null; why: string }[] };
     brief?: { subject?: string; wantFinal?: boolean; wantRig?: boolean; mustHave?: string[] };
   };
   if (s.plan?.title) {
     const c = s.plan.criteria ?? [];
+    // 숫자 기대치가 먼저(되묻기의 알맹이), 그 다음 기준 몇 줄.
+    const ex = (s.plan.expectations ?? []).map((e) => `${e.why} — ${e.measure} ${typeof e.equals === "boolean" ? (e.equals ? "예" : "아니오") : `${e.min ?? ""}~${e.max ?? ""}`}`);
     return {
       title: s.plan.title,
       kind: s.plan.target === "unity" ? "게임(유니티)" : "앱",
-      lines: c.slice(0, 4).map((x) => `${x.when} → ${x.then}`).concat(c.length > 4 ? [`… 기준 ${c.length}개`] : []),
+      lines: ex.concat(c.slice(0, Math.max(1, 4 - ex.length)).map((x) => `${x.when} → ${x.then}`)).concat(c.length > 4 ? [`… 기준 ${c.length}개`] : []),
       estimate: "약 $0.2 · 5분 · 크레딧 0",
     };
   }
