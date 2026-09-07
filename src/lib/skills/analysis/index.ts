@@ -50,13 +50,23 @@ function mmss(ms: number): string {
 /** 자막을 30초마다 [mm:ss] 표시를 넣은 글로. 모델은 이 표시로 `at` 을 적고, 자는 그 표시가 길이 안에 있는지 본다. */
 async function readYoutube(url: string, id: string): Promise<Source> {
   // 36회차 1판: 기본 자막이 아랍어로 왔다(라이브러리는 첫 트랙을 집는다). 영어 → 한국어 → 아무거나 순으로 청한다.
+  // 37회차: 서버(Railway)에서는 같은 영상이 "Transcript is disabled" 로 거절되기도 한다(로컬은 됨 — 유튜브가 데이터센터 IP 를 막는 것).
+  // 세 번까지 3·6·9초 쉬고 다시 청한다. 그래도 안 되면 못 읽은 것으로 적는다 — 지어내지 않는다.
   let segs: Awaited<ReturnType<typeof YoutubeTranscript.fetchTranscript>> = [];
   let lang = "";
-  for (const want of ["en", "ko"]) {
-    try { segs = await YoutubeTranscript.fetchTranscript(id, { lang: want }); if (segs.length) { lang = want; break; } } catch { /* 다음 언어 */ }
+  let lastError = "";
+  for (let attempt = 0; attempt < 3 && !segs.length; attempt++) {
+    if (attempt) await new Promise((r) => setTimeout(r, 3000 * attempt));
+    for (const want of ["en", "ko"]) {
+      try { segs = await YoutubeTranscript.fetchTranscript(id, { lang: want }); if (segs.length) { lang = want; break; } }
+      catch (e) { lastError = e instanceof Error ? e.message : String(e); }
+    }
+    if (!segs.length) {
+      try { segs = await YoutubeTranscript.fetchTranscript(id); lang = segs[0]?.lang ?? "?"; }
+      catch (e) { lastError = e instanceof Error ? e.message : String(e); }
+    }
   }
-  if (!segs.length) { segs = await YoutubeTranscript.fetchTranscript(id); lang = segs[0]?.lang ?? "?"; }
-  if (!segs.length) throw new Error("자막이 없다");
+  if (!segs.length) throw new Error(`자막을 못 받았다(3번 시도): ${lastError.slice(0, 120)}`);
   console.log(`[analysis] 자막 ${id} lang=${lang} segments=${segs.length}`);
   let text = ""; let mark = -1;
   for (const s of segs) {
@@ -106,10 +116,12 @@ function judge(a: Analysis, sources: Source[]): { cases: Case[]; passed: number;
   const normText = new Map(sources.map((s) => [s.url, norm(s.text)]));
   const cases: Case[] = [];
   const check = (kind: string, i: number, quote: string, at: string | null, source: string, label: string) => {
-    const src = bySrc.get(source) ?? sources[0];
-    const nt = src ? normText.get(src.url) ?? "" : "";
     const q = norm(quote);
     const name = `${kind}_${i + 1}`;
+    // 37회차 1판의 구멍: 못 읽은 영상을 출처로 적은 인용이 다른 자료(PDF)에서 발견돼 통과했다. 출처는 읽은 자료 중 하나여야 한다.
+    const src = bySrc.get(source);
+    if (!src) { cases.push({ name, result: "Failed", message: `${label}: 출처 "${source.slice(0, 60)}" 는 읽은 자료가 아니다 — 인용을 어디서 가져왔나` }); return; }
+    const nt = normText.get(src.url) ?? "";
     if (q.length < 8) { cases.push({ name, result: "Failed", message: `${label}: 인용이 너무 짧다(${quote.length}자)` }); return; }
     if (!nt.includes(q)) { cases.push({ name, result: "Failed", message: `${label}: 인용이 원문에 없다 — "${quote.slice(0, 60)}"` }); return; }
     const sec = secondsOf(at);
@@ -138,7 +150,9 @@ function shortSrc(url: string): string {
 function render(a: Analysis, sources: Source[], v: ReturnType<typeof judge>): string {
   const ok = new Set(v.cases.filter((c) => c.result === "Passed").map((c) => c.name));
   const row = (kind: string, i: number, cols: string[]) => `| ${ok.has(`${kind}_${i + 1}`) ? "✅" : "❌ 근거 못 찾음"} | ${cols.map((c) => c.replace(/\|/g, "／").replace(/\n/g, " ")).join(" | ")} |`;
+  const unread = sources.filter((s) => s.chars === 0);
   return [
+    ...(unread.length ? [`> **못 읽은 자료 ${unread.length}개**: ${unread.map((s) => s.url).join(", ")} — 아래는 읽은 자료만으로 쓴 것이에요. 다시 시키면 다시 받아 봐요.`, ""] : []),
     `## 요약`, "", ...a.summary.map((s) => `- ${s}`), "",
     `## 핵심 주장 (${a.claims.length})`, "", `| 자 | 주장 | 원문 인용 | 어디서 |`, `|---|---|---|---|`,
     ...a.claims.map((c, i) => row("근거", i, [c.claim, `"${c.quote}"`, (c.at ?? "글") + (sources.length > 1 ? ` · ${shortSrc(c.source)}` : "")])), "",
@@ -205,7 +219,8 @@ export const analysisSkill: EmployeeSkill = {
         "- `unanswered`: 업무가 물었는데 자료가 답하지 않은 것.\n" +
         (failedBefore.length ? `\n지난 판에서 기계가 원문에서 못 찾은 인용(고쳐서 다시 — 원문 글자 그대로):\n${failedBefore.map((f) => `- ${f}`).join("\n")}\n` : ""),
       input:
-        `업무: ${ctx.context.assignment.title}\n설명: ${ctx.context.assignment.description ?? ""}\n\n` +
+        `업무: ${ctx.context.assignment.title}\n설명: ${ctx.context.assignment.description ?? ""}\n` +
+        (sources.some((s) => s.chars === 0) ? `\n**못 읽은 자료(인용 금지, 출처로 적지 마라)**: ${sources.filter((s) => s.chars === 0).map((s) => s.url).join(", ")}\n` : "") + "\n" +
         readable.map((s) => `## 자료 ${s.url} (${s.kind === "youtube" ? `영상 ${s.durationSec ? mmss(s.durationSec * 1000) : ""}` : s.kind === "pdf" ? `PDF ${s.pages}쪽` : "글"})\n${s.text}`).join("\n\n"),
       schema: analysis,
       schemaName: "source_analysis",
