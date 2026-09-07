@@ -67,7 +67,8 @@ export const videoMakeSkill: EmployeeSkill = {
       input: ask,
       schema: script,
       schemaName: "video_script",
-      maxTokens: 6000,
+      // 1판(18:31) 6000 에서 잘렸다(MODEL_OUTPUT_TRUNCATED) — 추론 모델은 생각에 먼저 쓴다. Dev 계획과 같은 값.
+      maxTokens: 24000,
       tier: "judgment",
     })).output)) as Script;
     if (plan.scenes.length < 3) throw new ExecutionError("INVALID_DELIVERABLE_OUTPUT", `장면이 ${plan.scenes.length}개뿐이다`);
