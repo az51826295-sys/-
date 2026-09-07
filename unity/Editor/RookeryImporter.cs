@@ -535,7 +535,7 @@ namespace Rookery
 
         /// 결과를 로키로. 시험 뒤에도, 컴파일이 깨졌을 때도 같은 문으로 간다.
         static void PostChecks(string url, string key, string deliverable, string scene,
-                               int passed, int failed, int inconclusive, List<string> cases, string shot, int failedExit = 3, string portrait = "", string walk = "", string jump = "", string measures = "")
+                               int passed, int failed, int inconclusive, List<string> cases, string shot, int failedExit = 3, string portrait = "", string walk = "", string jump = "", string measures = "", string map = "")
         {
             if (string.IsNullOrEmpty(url) || string.IsNullOrEmpty(key)) return;
             var json = "{\"deliverableId\":\"" + J(deliverable) + "\",\"scene\":\"" + J(scene) + "\",\"passed\":" + passed +
@@ -544,6 +544,7 @@ namespace Rookery
                        (portrait.Length > 0 ? ",\"portrait\":\"" + portrait + "\"" : "") +
                        (walk.Length > 0 ? ",\"walk\":\"" + walk + "\"" : "") +
                        (jump.Length > 0 ? ",\"jump\":\"" + jump + "\"" : "") +
+                       (map.Length > 0 ? ",\"map\":\"" + map + "\"" : "") +
                        (measures.Length > 0 ? ",\"measures\":" + measures : "") + "}";
             var req = new UnityWebRequest($"{url.TrimEnd('/')}/api/unity/checks", "POST")
             {
@@ -683,6 +684,13 @@ namespace Rookery
                     try { jump = Convert.ToBase64String(File.ReadAllBytes(jumpPath)); File.Delete(jumpPath); }
                     catch (Exception e) { Debug.LogWarning("[Rookery] 점프 사진을 못 읽었습니다: " + e.Message); }
                 }
+                var map = "";
+                var mapPath = Path.GetFullPath("Library/Rookery/map.png");
+                if (File.Exists(mapPath))
+                {
+                    try { map = Convert.ToBase64String(File.ReadAllBytes(mapPath)); File.Delete(mapPath); }
+                    catch (Exception e) { Debug.LogWarning("[Rookery] 지도 사진을 못 읽었습니다: " + e.Message); }
+                }
                 var measures = "";
                 var measuresPath = Path.GetFullPath("Library/Rookery/measures.json");
                 if (File.Exists(measuresPath))
@@ -690,7 +698,7 @@ namespace Rookery
                     try { measures = File.ReadAllText(measuresPath); File.Delete(measuresPath); }
                     catch (Exception e) { Debug.LogWarning("[Rookery] 측정값을 못 읽었습니다: " + e.Message); }
                 }
-                PostChecks(url, key, deliverable, scene, passed, failed, inconclusive, cases, shot, portrait: portrait, walk: walk, jump: jump, measures: measures);
+                PostChecks(url, key, deliverable, scene, passed, failed, inconclusive, cases, shot, portrait: portrait, walk: walk, jump: jump, measures: measures, map: map);
             }
         }
     }

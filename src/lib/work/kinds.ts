@@ -34,7 +34,7 @@ export type WorkKind = {
 export const WORK_KINDS: Record<string, WorkKind> = {
   app_build: {
     type: "app_build", family: "game", label: "게임(유니티)",
-    proofOrder: ["unity-screenshot", "unity-portrait", "unity-walk", "unity-jump"],
+    proofOrder: ["unity-screenshot", "unity-map", "unity-portrait", "unity-walk", "unity-jump"],
     ruler: "유니티 합격 시험(RookeryAcceptance)",
   },
   mesh_assets: {

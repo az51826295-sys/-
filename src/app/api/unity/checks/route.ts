@@ -31,6 +31,8 @@ type Body = {
   walk?: string;
   /** 점프 넉 장(30회차). */
   jump?: string;
+  /** 위에서 내려다본 지도(34회차). */
+  map?: string;
   /** 자가 잰 숫자(32회차): player_viewport_x, jump_height_m, hud_score_visible, coin_count … */
   measures?: Record<string, number | boolean | string>;
 };
@@ -115,8 +117,8 @@ export async function POST(request: Request) {
 
     const { data: d } = await db.from("deliverables").select("content_json").eq("id", body.deliverableId).eq("company_id", company.id).maybeSingle();
     if (d) {
-      const { screenshot: _omit, portrait: _omit2, walk: _omit3, jump: _omit4, ...rest } = body;
-      void _omit; void _omit2; void _omit3; void _omit4;
+      const { screenshot: _omit, portrait: _omit2, walk: _omit3, jump: _omit4, map: _omit5, ...rest } = body;
+      void _omit; void _omit2; void _omit3; void _omit4; void _omit5;
       await db
         .from("deliverables")
         .update({ content_json: { ...(d.content_json as object), unityChecks: { ...rest, at: new Date().toISOString() } } })
@@ -127,6 +129,7 @@ export async function POST(request: Request) {
       [body.portrait, "unity-portrait.png", "유니티 얼굴", "같은 카메라를 얼굴 앞으로 옮겨 찍은 정면 사진 — 씬의 캐릭터 전부, 플레이어부터 나란히"],
       [body.walk, "unity-walk.png", "유니티 걷기", "키를 누르는 동안 옆에서 넉 장 — 스키닝·발·팔을 사람이 본다"],
       [body.jump, "unity-jump.png", "유니티 점프", "Space 한 번 뒤 옆에서 넉 장 — 뜨는가, 착지가 발로 오는가, idle 로 돌아오는가"],
+      [body.map, "unity-map.png", "유니티 지도", "위에서 내려다본 레벨 전체 — 구역·동선·랜드마크·동전 자리"],
     ];
     for (const [b64, filename, title, description] of shots) {
       if (!d || !b64) continue;

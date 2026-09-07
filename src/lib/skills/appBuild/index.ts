@@ -41,7 +41,7 @@ const plan = z.object({
    * jump_height_m, hud_score_visible(true/false), coin_count. 이번 주문에 걸리는 것만 적는다 — 어긋나면 실패 줄이 되어
    * 스스로 다시 고친다. 없으면 빈 배열.
    */
-  expectations: z.array(z.object({ measure: z.enum(["player_viewport_x", "player_viewport_y", "jump_height_m", "hud_score_visible", "coin_count", "level_extent_m", "landmark_count"]), min: z.number().nullable(), max: z.number().nullable(), equals: z.boolean().nullable(), why: z.string() })),
+  expectations: z.array(z.object({ measure: z.enum(["player_viewport_x", "player_viewport_y", "jump_height_m", "hud_score_visible", "coin_count", "level_extent_m", "landmark_count", "camera_distance_m", "ground_color_count"]), min: z.number().nullable(), max: z.number().nullable(), equals: z.boolean().nullable(), why: z.string() })),
   /**
    * 받아들임 기준. **코드보다 먼저 쓴다.**
    *
@@ -213,10 +213,10 @@ export const appBuildSkill: EmployeeSkill = {
         "안에서 산다 — HTML 게임을 내지 마라). 웹 도구·페이지·스크립트면 web. 모르면 unity.\n" +
         "unity 면 기준은 유니티 안에서 사람이 눌러 볼 수 있는 문장으로: " +
         "'메뉴 Rookery/… 를 누르면 씬이 생기고 Play 하면 …'.\n\n" +
-        "`expectations`: 자(유니티 시험)가 **숫자로 재는** 기대치. 잴 수 있는 값은 딱 일곱 — " +
+        "`expectations`: 자(유니티 시험)가 **숫자로 재는** 기대치. 잴 수 있는 값은 딱 아홉 — " +
         "player_viewport_x(플레이어의 화면 가로 위치 0~1, 왼쪽이 0), player_viewport_y, jump_height_m(스페이스 점프 높이 m), " +
         "hud_score_visible(점수 글자가 카메라 캔버스에 보이는가), coin_count(동전 수), level_extent_m(바닥을 뺀 정적 물체들이 차지하는 가로·세로 중 큰 쪽 m), " +
-        "landmark_count(높이 6 m 이상인 정적 물체 수). 이번 주문에 걸리는 것만 min/max(또는 equals) 로 " +
+        "landmark_count(높이 6 m 이상인 정적 물체 수), camera_distance_m(카메라에서 플레이어 가슴까지 m), ground_color_count(넓이 4 m² 이상 납작한 정적 물체의 바탕색 가짓수). 이번 주문에 걸리는 것만 min/max(또는 equals) 로 " +
         "적는다(예: '가로 1/3' → player_viewport_x min 0.25 max 0.41). 안 걸리면 빈 배열. 다른 이름은 못 잰다." +
         // 설계 단계가 읽는 것은 범위·반응 쪽(blueprint). 코드 쪽 규칙은 짓는 단계에서.
         (await renderGamedevLessons("blueprint")),

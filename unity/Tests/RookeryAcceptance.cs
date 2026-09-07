@@ -192,6 +192,7 @@ namespace Rookery.Tests
             return humans.OrderByDescending(score).FirstOrDefault();
         }
 
+        public const string MapPath = "Library/Rookery/map.png";
         public const string MeasuresPath = "Library/Rookery/measures.json";
         static readonly Dictionary<string, string> _measures = new Dictionary<string, string>();
         public static void Measure(string key, double v) { _measures[key] = v.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture); Flush(); }
@@ -249,6 +250,7 @@ namespace Rookery.Tests
                 {
                     var vp = cam.WorldToViewportPoint(player.transform.position + Vector3.up * 0.9f);
                     Measure("player_viewport_x", vp.x); Measure("player_viewport_y", vp.y);
+                    Measure("camera_distance_m", Vector3.Distance(cam.transform.position, player.transform.position + Vector3.up * 0.9f));
                 }
                 var texts = Object.FindObjectsByType<UnityEngine.UI.Text>(FindObjectsSortMode.None);
                 var score = texts.FirstOrDefault(t => t.text != null && t.text.Contains("점수"));
@@ -261,9 +263,37 @@ namespace Rookery.Tests
                         .Where(c => c.enabled && !c.isTrigger && (playerRoot == null || !c.transform.IsChildOf(playerRoot)) && c.GetComponentInParent<Animator>() == null).ToList();
                     var ground = cols.Where(c => c.bounds.size.y < 1f).OrderByDescending(c => c.bounds.size.x * c.bounds.size.z).FirstOrDefault();
                     var rest = cols.Where(c => c != ground).ToList();
-                    if (rest.Count > 0) { var b = rest[0].bounds; foreach (var c in rest) b.Encapsulate(c.bounds); Measure("level_extent_m", Mathf.Max(b.size.x, b.size.z)); }
-                    else Measure("level_extent_m", 0);
+                    var levelBounds = new Bounds(Vector3.zero, new Vector3(40f, 1f, 40f));
+                    if (rest.Count > 0) { var b = rest[0].bounds; foreach (var c in rest) b.Encapsulate(c.bounds); Measure("level_extent_m", Mathf.Max(b.size.x, b.size.z)); levelBounds = b; }
+                    else { Measure("level_extent_m", 0); if (ground != null) levelBounds = ground.bounds; }
                     Measure("landmark_count", rest.Count(c => c.bounds.size.y >= 6f));
+                    // 구역 색(34회차): 넓이 4 m² 이상인 납작한 정적 물체의 바탕색 가짓수 — 구역 셋이면 셋 이상이어야 한다.
+                    var colors = new HashSet<string>();
+                    foreach (var c in cols.Where(c => c.bounds.size.y < 1f && c.bounds.size.x * c.bounds.size.z >= 4f))
+                    {
+                        var r = c.GetComponent<Renderer>(); if (r == null || r.sharedMaterial == null) continue;
+                        var m = r.sharedMaterial; var col = m.HasProperty("_BaseColor") ? m.GetColor("_BaseColor") : (m.HasProperty("_Color") ? m.color : Color.white);
+                        colors.Add($"{Mathf.Round(col.r * 10)}-{Mathf.Round(col.g * 10)}-{Mathf.Round(col.b * 10)}");
+                    }
+                    Measure("ground_color_count", colors.Count);
+                    // 지도(34회차): 위에서 내려다본 레벨 전체 — 구역·동선·랜드마크를 한 장으로 본다.
+                    try
+                    {
+                        var mapGo = new GameObject("RookeryMapCam");
+                        var mc = mapGo.AddComponent<Camera>();
+                        mc.orthographic = true; mc.clearFlags = CameraClearFlags.SolidColor; mc.backgroundColor = new Color(0.12f, 0.12f, 0.14f);
+                        mc.orthographicSize = Mathf.Max(levelBounds.size.x, levelBounds.size.z) * 0.5f + 3f;
+                        mc.nearClipPlane = 1f; mc.farClipPlane = 300f;
+                        mc.transform.position = new Vector3(levelBounds.center.x, levelBounds.max.y + 80f, levelBounds.center.z);
+                        mc.transform.rotation = Quaternion.Euler(90f, 0f, 0f);
+                        var mrt = new RenderTexture(1024, 1024, 24); mc.targetTexture = mrt; mc.Render();
+                        var prevActive = RenderTexture.active; RenderTexture.active = mrt;
+                        var mtex = new Texture2D(1024, 1024, TextureFormat.RGB24, false); mtex.ReadPixels(new Rect(0, 0, 1024, 1024), 0, 0); mtex.Apply();
+                        RenderTexture.active = prevActive; mc.targetTexture = null;
+                        System.IO.File.WriteAllBytes(System.IO.Path.GetFullPath(MapPath), mtex.EncodeToPNG());
+                        Object.Destroy(mtex); mrt.Release(); Object.Destroy(mapGo);
+                    }
+                    catch (System.Exception e) { Debug.LogWarning("[Rookery] 지도 사진 실패: " + e.Message); }
                 }
             }
             Object.Destroy(tex);
