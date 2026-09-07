@@ -284,9 +284,12 @@ namespace Rookery.Tests
                         mc.orthographic = true; mc.clearFlags = CameraClearFlags.SolidColor; mc.backgroundColor = new Color(0.12f, 0.12f, 0.14f);
                         mc.orthographicSize = Mathf.Max(levelBounds.size.x, levelBounds.size.z) * 0.5f + 3f;
                         mc.nearClipPlane = 1f; mc.farClipPlane = 300f;
-                        mc.transform.position = new Vector3(levelBounds.center.x, levelBounds.max.y + 80f, levelBounds.center.z);
+                        // 34회차 1판: 80 m 위에서 찍으니 안개(RenderSettings.fog)가 전부 파랗게 덮었다 — 안개를 잠깐 끄고 30 m 위에서.
+                        mc.transform.position = new Vector3(levelBounds.center.x, levelBounds.max.y + 30f, levelBounds.center.z);
                         mc.transform.rotation = Quaternion.Euler(90f, 0f, 0f);
+                        var fogWas = RenderSettings.fog; RenderSettings.fog = false;
                         var mrt = new RenderTexture(1024, 1024, 24); mc.targetTexture = mrt; mc.Render();
+                        RenderSettings.fog = fogWas;
                         var prevActive = RenderTexture.active; RenderTexture.active = mrt;
                         var mtex = new Texture2D(1024, 1024, TextureFormat.RGB24, false); mtex.ReadPixels(new Rect(0, 0, 1024, 1024), 0, 0); mtex.Apply();
                         RenderTexture.active = prevActive; mc.targetTexture = null;
