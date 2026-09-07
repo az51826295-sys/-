@@ -59,7 +59,11 @@ const CONCEPT_FORM =
   "no cast shadows, no dark or black background — plain flat light-grey background, " +
   "nothing else: no ground, no text, no frame, no second object.";
 /** 검수에 항상 붙는 조건. 매니저가 말하지 않아도 3D 변환에는 필수다. */
-const ALWAYS_MUST_HAVE = ["flat even lighting with no glow, rim light, halo or dramatic lighting; plain light background"];
+// 09-07 07:50 초안 검수가 검은 배경 + 흰 글로우를 통과시켰다. 조건을 둘로 갈라 각각 따진다.
+const ALWAYS_MUST_HAVE = [
+  "background is a plain LIGHT solid color (white or light gray) — a black or dark background, a vignette, or a glowing halo around the subject FAILS this",
+  "flat even diffuse lighting on the subject — no rim light, no glow, no bloom, no dramatic shadows",
+];
 
 function ruleLine(r: MeshVerdict["rules"][number]): string {
   const mark = r.verdict === "PASS" ? "✅" : r.verdict === "FAIL" ? "❌" : "◻︎";
@@ -92,7 +96,8 @@ async function checkConcept(ctx: SkillRunContext, imageDataUrl: string, mustHave
         "You are checking a concept image against a list of required visual conditions. " +
         "For EACH condition say whether the image satisfies it. Be strict and literal: " +
         "'closed helmet, no face visible' fails if any face skin, eyes or mouth is visible; " +
-        "'3-head-tall chibi proportions' fails if the body is 5+ heads tall.",
+        "'3-head-tall chibi proportions' fails if the body is 5+ heads tall; " +
+        "a background condition asking for a plain light background fails if the background is black, dark, gradient-to-dark, or has a glow/halo/vignette.",
       input: "Conditions:\n" + mustHave.map((m, i) => `${i + 1}. ${m}`).join("\n"),
       images: [imageDataUrl.split(",")[1] ?? imageDataUrl],
       schema: verdict,

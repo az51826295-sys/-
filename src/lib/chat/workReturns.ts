@@ -21,7 +21,9 @@ export type ReturnedTurn = { role: "assistant"; content: string; files?: Returne
 
 /** 아직 안 끝난 일과, 이번에 새로 붙인 턴. */
 /** 아직 안 끝난 일이 지금 어느 단계인지. 사람 말로 — 화면이 그대로 보여 준다. */
-export type WorkStep = { assignmentId: string; who: string; step: string };
+/** 계획 카드(UI B): 도는 동안 오른쪽 칸에 "무엇을, 기준 몇 개, 얼마쯤" 을 보인다. 단계 저장(steps.plan / steps.brief)에서 읽는다. */
+export type PlanCard = { title: string; kind: string; lines: string[]; estimate: string };
+export type WorkStep = { assignmentId: string; who: string; step: string; plan?: PlanCard };
 export type WorkReturns = {
   pending: number;
   posted: ReturnedTurn[];
@@ -195,7 +197,7 @@ export async function collectWorkReturns(
 
     if (text === null) {
       pending += 1;
-      steps.push({ assignmentId: a.id, who: name, step: await stepOf(db, a.id, a.status) });
+      steps.push({ assignmentId: a.id, who: name, ...(await stepOf(db, a.id, a.status)) });
       // **죽은 실행을 죽었다고 적는다.** 서버가 배포로 재시작되면 그 안에서 돌던
       // 실행은 그냥 사라진다 — 행은 'running' 인 채로(09-05 17:57 에 실제로 그랬다:
       // Dev 의 유니티 판이 18분째 '생성 중'). 그러면 사람은 영영 기다리고 그 직원은
@@ -227,17 +229,44 @@ export async function collectWorkReturns(
   return { pending, posted, steps };
 }
 
-async function stepOf(db: Supabase, assignmentId: string, status: string): Promise<string> {
-  if (status === "waiting") return STEP_LABEL.queued;
+async function stepOf(db: Supabase, assignmentId: string, status: string): Promise<{ step: string; plan?: PlanCard }> {
+  if (status === "waiting") return { step: STEP_LABEL.queued };
   const { data } = await db
     .from("work_executions")
-    .select("current_step, status")
+    .select("current_step, status, steps:metrics_json->steps")
     .eq("assignment_id", assignmentId)
     .order("created_at", { ascending: false })
     .limit(1)
     .maybeSingle();
   const raw = (data?.current_step as string | null) ?? (data ? "running" : "queued");
-  return STEP_LABEL[raw] ?? raw;
+  return { step: STEP_LABEL[raw] ?? raw, plan: planCardOf((data as { steps?: unknown } | null)?.steps) };
+}
+
+/** 저장된 단계에서 계획 카드를 만든다. Dev 는 plan(제목·기준), Vox 는 brief(대상·초안/고화질·필수 조건). */
+function planCardOf(steps: unknown): PlanCard | undefined {
+  const s = (steps ?? {}) as {
+    plan?: { title?: string; target?: string; criteria?: { when: string; then: string }[] };
+    brief?: { subject?: string; wantFinal?: boolean; wantRig?: boolean; mustHave?: string[] };
+  };
+  if (s.plan?.title) {
+    const c = s.plan.criteria ?? [];
+    return {
+      title: s.plan.title,
+      kind: s.plan.target === "unity" ? "게임(유니티)" : "앱",
+      lines: c.slice(0, 4).map((x) => `${x.when} → ${x.then}`).concat(c.length > 4 ? [`… 기준 ${c.length}개`] : []),
+      estimate: "약 $0.2 · 5분 · 크레딧 0",
+    };
+  }
+  if (s.brief?.subject) {
+    const final = !!s.brief.wantFinal;
+    return {
+      title: s.brief.subject,
+      kind: final ? "3D 자산(고화질)" : "3D 자산(초안)",
+      lines: (s.brief.mustHave ?? []).slice(0, 5),
+      estimate: final ? `약 $1.5 · 10분 · 크레딧 ${s.brief.wantRig ? 35 : 30}` : "약 $0.25 · 2분 · 크레딧 0 — 그림 한 장만",
+    };
+  }
+  return undefined;
 }
 
 

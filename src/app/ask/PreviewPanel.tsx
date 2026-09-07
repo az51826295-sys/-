@@ -20,6 +20,9 @@ type Panel = {
   spend: { monthUsd: number; meshyCredits: number | null; note: string };
 };
 
+/** 계획 카드: 도는 동안 "무엇을, 기준 몇 개, 얼마쯤". 서버(workReturns)가 저장된 단계에서 만든다. */
+export type PlanCard = { title: string; kind: string; lines: string[]; estimate: string; who?: string };
+
 /** 미리보기 자료. 대화 화면이 들고 있다가 띠(폰)와 칸(PC) 둘에 준다. */
 export function usePreview(conversationId: string | null, refreshKey: number) {
   const [data, setData] = useState<Panel | null>(null);
@@ -64,6 +67,7 @@ export default function PreviewPanel({
   conversationId,
   preview,
   steps,
+  plans = {},
   open,
   onOpenChange,
   onReverted,
@@ -72,6 +76,7 @@ export default function PreviewPanel({
   preview: ReturnType<typeof usePreview>;
   /** 지금 도는 일의 단계(있으면). */
   steps: Record<string, string>;
+  plans?: Record<string, PlanCard>;
   /** 폰에서 판이 올라온 상태. */
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -106,6 +111,18 @@ export default function PreviewPanel({
         </span>
       </div>
       <div className="flex-1 overflow-y-auto">
+        {Object.entries(plans).map(([id, pl]) => (
+          <section key={id} className="border-b-2 border-[#E0703A] bg-[var(--rk-100)] px-3.5 py-2.5">
+            <div className="mb-1 text-[11px] text-[var(--rk-600)]">계획 — {pl.kind}{pl.who ? ` · ${pl.who}` : ""} · {steps[id]?.split(": ")[1] ?? "진행 중"}</div>
+            <div className="text-sm font-bold">{pl.title}</div>
+            {pl.lines.length > 0 && (
+              <ul className="mt-1 space-y-0.5 text-[11.5px] text-[var(--rk-600)]">
+                {pl.lines.map((l, i) => <li key={i}>· {l}</li>)}
+              </ul>
+            )}
+            <div className="mt-1.5 text-[11px] text-[var(--rk-600)]">{pl.estimate}</div>
+          </section>
+        ))}
         {!cur && (
           <p className="px-3.5 py-6 text-xs text-[var(--rk-600)]">
             {working ? `${working}… 끝나면 여기 나타나요.` : "일을 시키면 결과가 여기 나타나요. 화면, 검사 결과, 버전 기록."}

@@ -4,7 +4,7 @@ import { Waiting } from "@/components/Waiting";
 
 import { useEffect, useRef, useState } from "react";
 import Icon from "@/components/Icon";
-import PreviewPanel, { PreviewStrip, previewSummary, usePreview } from "@/app/ask/PreviewPanel";
+import PreviewPanel, { PreviewStrip, previewSummary, usePreview, type PlanCard } from "@/app/ask/PreviewPanel";
 import { ChatMarkdown } from "@/components/ChatMarkdown";
 import RoutingNotice from "./RoutingNotice";
 
@@ -108,6 +108,8 @@ export default function AskClient({
   const [doing, setDoing] = useState<string | null>(null);
   /** 아직 안 끝난 일이 어느 단계인지(업무 id → "Dev: 코드를 쓰는 중"). */
   const [steps, setSteps] = useState<Record<string, string>>({});
+  /** 도는 일의 계획 카드(업무 id → 카드). 오른쪽 칸 맨 위에 보인다. */
+  const [plans, setPlans] = useState<Record<string, PlanCard>>({});
   /**
    * 유니티 창이 결과(사진)를 붙이는 것을 지켜보는 기한. 일이 돌아온 뒤 30분.
    * 그 안에 사장님이 유니티에서 "짓고 재기" 를 누르면 그 결과가 새로 고침 없이
@@ -153,11 +155,12 @@ export default function AskClient({
         const data = (await res.json()) as {
           pending: number;
           posted: { role: "assistant"; content: string; files?: { path: string; contents?: string; href?: string }[] }[];
-          steps?: { assignmentId: string; who: string; step: string }[];
+          steps?: { assignmentId: string; who: string; step: string; plan?: PlanCard }[];
         };
         if (!alive) return;
         sinceRef.current = new Date().toISOString();
         setSteps(Object.fromEntries((data.steps ?? []).map((x) => [x.assignmentId, `${x.who}: ${x.step}`])));
+        setPlans(Object.fromEntries((data.steps ?? []).filter((x) => x.plan).map((x) => [x.assignmentId, { ...x.plan!, who: x.who }])));
         if (data.posted.length > 0) {
           setTurns((prev) => [
             ...prev,
@@ -634,6 +637,7 @@ export default function AskClient({
       conversationId={conversationId}
       preview={preview}
       steps={steps}
+      plans={plans}
       open={previewOpen}
       onOpenChange={setPreviewOpen}
       onReverted={() => { setPanelKey((k) => k + 1); }}
