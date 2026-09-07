@@ -557,3 +557,12 @@ Dev 규칙(Idle 기본 상태·Space 점프·클립은 rig 폴더에서 이름�
 없으면 빼고 로그에 적게 짰다(규칙대로). 유니티 검사 통과 4, 정면 사진에서 기사(초안 재사용 판)는 찢어진 판 없이 은빛 그대로 idle 자세.
 따뜻한 유니티가 스스로 집어 검사(10:26 붙음 → 10:29 결과). 기사 폴더는 다섯 개가 됐고 FindRig 가 최신을 골랐다.
 **정직하게**: 점프가 실제로 재생되는지는 자가 안 잰다(걷기만 찍는다). 다음 자: 점프 키를 눌러 넉 장.
+
+## AA. 30회차 (09-07 10:35~) — 3인칭 카메라 (교과 7) + 자에 점프 줄
+
+**읽은 것**: Cinemachine 3 Third Person Follow([문서](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachineThirdPersonFollow.html)):
+어깨 피벗(shoulder offset x0.7 y0.3 z-0.5) → 손(vertical arm) → 카메라 거리; 축별 damping(따라잡는 데 걸리는 시간);
+충돌은 카메라 반지름으로 막힘을 재고 "부딪힐 땐 빨리, 되돌아올 땐 천천히"(damping into/from collision); 대상 태그는 무시.
+커뮤니티([1](https://discussions.unity.com/t/how-to-add-damping-to-3rd-person-follow-collision/831273)): 가려지면 튀는 게 남은 불만.
+**판단**: 패키지를 안 넣는다(배치 컴파일에 변수 하나 더). 같은 모양을 손으로 — 규칙 파일 한 문단으로 Dev 에게. `SmoothDamp` 는 LateUpdate 에서만.
+**자**: 지난 회차 구멍(점프 안 잼) — Space 한 번 뒤 옆에서 넉 장(`unity-jump.png`). 시험지·창·검사 문·종류표 넷을 고쳤다.
