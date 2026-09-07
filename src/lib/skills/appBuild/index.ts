@@ -107,6 +107,8 @@ type Previous = {
   files: { path: string; language: string; contents: string }[];
   /** 유니티 창이 재 본 결과 중 떨어진 줄. 없으면 빈 배열. */
   failedChecks: string[];
+  /** 지난 판의 기대치(33회차). 재시도 판의 계획은 떨어진 줄만 적어 레벨 기대치 셋이 사라졌다 — 기준처럼 코드가 이어 붙인다. */
+  expectations: { measure: string; min: number | null; max: number | null; equals: boolean | null; why: string }[];
 };
 
 async function loadPrevious(ctx: SkillRunContext): Promise<Previous | null> {
@@ -122,6 +124,7 @@ async function loadPrevious(ctx: SkillRunContext): Promise<Previous | null> {
     criteria?: Previous["criteria"];
     coverage?: { criterionId: string; met: boolean }[];
     files?: Previous["files"];
+    expectations?: Previous["expectations"];
     unityChecks?: { cases?: { name: string; result: string; message?: string | null }[] };
   };
   const failed = (c.unityChecks?.cases ?? [])
@@ -133,6 +136,7 @@ async function loadPrevious(ctx: SkillRunContext): Promise<Previous | null> {
     criteria: pruneCriteria(c.criteria ?? [], c.coverage ?? [], ask),
     files: c.files ?? [],
     failedChecks: failed,
+    expectations: c.expectations ?? [],
   };
 }
 
@@ -245,6 +249,13 @@ export const appBuildSkill: EmployeeSkill = {
       const seen = new Set(previous.criteria.map((c) => c.id));
       const added = spec.criteria.filter((c) => !seen.has(c.id));
       spec.criteria = [...previous.criteria, ...added];
+    }
+    // 기대치도 같다(33회차): 이번 판이 같은 이름을 다시 적으면 이번 것이 이기고, 안 적은 지난 기대치는 그대로 남는다 —
+    // 안 그러면 카메라를 고치는 재시도 판에서 레벨 기대치(크기·랜드마크)가 사라져 퇴보를 못 본다.
+    if (previous && previous.expectations.length) {
+      const named = new Set(spec.expectations.map((e) => e.measure as string));
+      const kept = previous.expectations.filter((e) => !named.has(e.measure)) as typeof spec.expectations;
+      spec.expectations = [...spec.expectations, ...kept];
     }
 
     if (spec.criteria.length < MIN_CRITERIA) {
