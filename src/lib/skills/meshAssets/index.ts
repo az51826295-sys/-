@@ -221,7 +221,8 @@ export const meshAssetsSkill: EmployeeSkill = {
         `기대 결과: ${ctx.context.assignment.expectedOutcome ?? ""}`,
       schema: briefSchema,
       schemaName: "mesh_asset_brief",
-      maxTokens: 1500,
+      // 47회차: 주문서에 attachTo 가 늘면서 1500 에서 잘렸다(09:31). 추론 모델은 생각에 먼저 쓴다.
+      maxTokens: 8000,
       // 제목·콘셉트 문장·리깅 여부를 뽑는 작은 일. 메시를 만드는 것은 Meshy 다.
       tier: "routine",
     })).output);
