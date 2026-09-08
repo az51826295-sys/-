@@ -295,7 +295,7 @@ namespace Rookery.Tests
                                        : (mf != null && mf.sharedMesh != null ? mf.sharedMesh.name : "");
                                 if (mn == "Capsule" || mn == "Cube" || mn == "Sphere" || mn == "Cylinder" || mn == "Plane" || mn == "Quad") continue;
                                 parts++;
-                                Debug.Log($"[Rookery] 조각 {mr.name} ({(smr != null ? "skinned" : "mesh")}) 크기 {Mathf.Max(mr.bounds.size.x, Mathf.Max(mr.bounds.size.y, mr.bounds.size.z)):0.###} m, 붙은 곳 {mr.transform.parent.name}");
+                                Debug.Log($"[Rookery] 조각 {mr.name} 뼈배율 {mr.transform.parent.lossyScale.x:0.####} ({(smr != null ? "skinned" : "mesh")}) 크기 {Mathf.Max(mr.bounds.size.x, Mathf.Max(mr.bounds.size.y, mr.bounds.size.z)):0.###} m, 붙은 곳 {mr.transform.parent.name}");
                                 var d = Vector3.Distance(mr.bounds.center, mr.transform.parent.position);
                                 if (d > worst) worst = d;
                                 // 48회차 3판: 몸 전체 키로 나눴더니 3등신 기사(머리가 키의 1/3)에서 **머리를 삼킨 투구도 정상**으로 나왔다.
