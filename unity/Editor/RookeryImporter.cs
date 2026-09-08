@@ -320,7 +320,13 @@ namespace Rookery
                 if (!path.EndsWith(".fbx", StringComparison.OrdinalIgnoreCase)) continue;
                 var imp = AssetImporter.GetAtPath(path) as ModelImporter;
                 if (imp == null) continue;
-                if (imp.importNormals == ModelImporterNormals.Calculate && Math.Abs(imp.normalSmoothingAngle - 180f) < 0.5f && imp.weldVertices) continue;
+                // 53회차: 들어오는 크기도 여기서 잡는다. Meshy 가 낸 FBX 는 파일 안의 단위가 제각각이라
+                // 유니티에서 1/100 로 들어오기도 한다 — 그러면 씬 빌더가 아무리 계산해도 투구가 5 mm 로 그려진다
+                // (48~52회차, 일곱 판을 여기서 날렸다). 자산이 **들어올 때 한 번** 맞추는 것이 맞는 자리다.
+                var scaleOk = !imp.useFileScale && Math.Abs(imp.globalScale - 1f) < 0.001f;
+                if (imp.importNormals == ModelImporterNormals.Calculate && Math.Abs(imp.normalSmoothingAngle - 180f) < 0.5f && imp.weldVertices && scaleOk) continue;
+                imp.useFileScale = false;   // 파일 안의 단위를 믿지 않는다 — 1 유닛 = 1 m
+                imp.globalScale = 1f;
                 imp.importNormals = ModelImporterNormals.Calculate;
                 imp.normalCalculationMode = ModelImporterNormalCalculationMode.AreaAndAngleWeighted;
                 imp.normalSmoothingAngle = 180f;
@@ -329,7 +335,7 @@ namespace Rookery
                 imp.SaveAndReimport();
                 n++;
             }
-            return n == 0 ? "FBX 법선: 이미 정리됨" : $"✓ FBX {n}개 법선 다시 계산(180°·용접)";
+            return n == 0 ? "FBX 법선·크기: 이미 정리됨" : $"✓ FBX {n}개 정리(법선 180°·용접, 파일 단위 무시하고 1유닛=1m)";
         }
     }
 
