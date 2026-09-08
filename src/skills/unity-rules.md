@@ -54,6 +54,8 @@
 - character 단계에서 사장님이 정한 진짜 캐릭터로 갈아 끼운다. 그때도 자가 재는 값(카메라 거리·화면 위치·점프 높이)은 그대로 이어진다.
 
 ## 조각 붙이기 (47회차) — 유니티 쪽
+- **조각 파일은 여기 있다**: `Assets/Rookery/<산출물 제목>/model.fbx`. 제목은 한글이고 공백이 밑줄로 바뀐다(예: `기사용_은색_판금_투구_조각_(머리에_부착)/model.fbx`).
+  `parts/helmet.fbx` 같은 경로를 먼저 찾지 마라 — 자산은 **산출물 제목 폴더**로 들어온다. 못 찾으면 `AssetDatabase.FindAssets("t:Model")` 로 훑고, 그래도 없으면 오류로 적고 기준을 미충족으로 표시한다(임시 도형으로 때우지 마라).
 - 딱딱한 조각은 **뼈의 자식**으로 놓는다: `var bone = animator.GetBoneTransform(HumanBodyBones.Head); piece.transform.SetParent(bone, false);` 그다음 로컬 위치·회전만 맞춘다.
   씬 빌더는 조각 프리팹을 `Assets/Rookery/<제목>/parts/<이름>.fbx` 에서 찾는다.
 - 휘는 조각은 `SkinnedMeshRenderer` 를 몸과 **같은 배열**로 채운다: `piece.bones = body.bones; piece.rootBone = body.rootBone;` — 조각 자신의 뼈대를 쓰면 애니메이션에서 따로 논다.

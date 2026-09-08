@@ -267,26 +267,28 @@ namespace Rookery.Tests
                     if (rest.Count > 0) { var b = rest[0].bounds; foreach (var c in rest) b.Encapsulate(c.bounds); Measure("level_extent_m", Mathf.Max(b.size.x, b.size.z)); levelBounds = b; }
                     else { Measure("level_extent_m", 0); if (ground != null) levelBounds = ground.bounds; }
                     Measure("landmark_count", rest.Count(c => c.bounds.size.y >= 6f));
-                    // ── 조각 붙이기(48회차): 몸에 얹은 갑옷·투구가 **뼈에 붙어 있나**. 사장님 방식(맨몸 + 조각)의 자다.
-                    // 붙은 조각 = 사람 뼈 아래에 있는, 스키닝 안 된 렌더러(딱딱한 조각). 뼈에서 멀면 허공에 뜬 것이다.
-                    if (player != null)
+// ── 조각 붙이기(48회차): 몸에 얹은 갑옷·투구가 **뼈에 붙어 있나**.
+                    // 1판은 플레이어 아래만 셌다 — 투구는 기사 NPC 머리에 붙었으니 0 이 나왔다(자가 틀렸다).
+                    // 씬의 **사람 형태 전부**를 본다: 뼈 아래에 있고 스키닝 안 된 렌더러 = 매단 조각.
                     {
-                        var bones = player.GetComponentsInChildren<Transform>(true);
-                        var parts = new List<Renderer>();
+                        var parts = 0;
                         var worst = 0f;
-                        foreach (var mr in player.GetComponentsInChildren<MeshRenderer>(true))
+                        foreach (var h in Object.FindObjectsByType<Animator>(FindObjectsSortMode.None).Where(a => a.isHuman))
                         {
-                            if (mr.GetComponent<SkinnedMeshRenderer>() != null) continue;
-                            var t = mr.transform.parent;
-                            var onBone = false;
-                            while (t != null && t != player.transform.parent) { if (bones.Contains(t)) { onBone = true; break; } t = t.parent; }
-                            if (!onBone) continue;
-                            parts.Add(mr);
-                            var d = Vector3.Distance(mr.bounds.center, mr.transform.parent.position);
-                            if (d > worst) worst = d;
+                            var bones = h.GetComponentsInChildren<Transform>(true);
+                            foreach (var mr in h.GetComponentsInChildren<MeshRenderer>(true))
+                            {
+                                var t = mr.transform.parent;
+                                var onBone = false;
+                                while (t != null && t != h.transform.parent) { if (bones.Contains(t)) { onBone = true; break; } t = t.parent; }
+                                if (!onBone) continue;
+                                parts++;
+                                var d = Vector3.Distance(mr.bounds.center, mr.transform.parent.position);
+                                if (d > worst) worst = d;
+                            }
                         }
-                        Measure("parts_attached", parts.Count);
-                        if (parts.Count > 0) Measure("part_offset_m", worst);
+                        Measure("parts_attached", parts);
+                        if (parts > 0) Measure("part_offset_m", worst);
                     }
                     // 구역 색(34회차): 넓이 4 m² 이상인 납작한 정적 물체의 바탕색 가짓수 — 구역 셋이면 셋 이상이어야 한다.
                     var colors = new HashSet<string>();
