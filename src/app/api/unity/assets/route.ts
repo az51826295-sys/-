@@ -44,7 +44,9 @@ export async function GET(request: Request) {
     // 고양이 판의 파일 기록이 두 개 빠졌다). 필요한 칸만.
     .select("id, title, deliverable_type, created_at, assignment_id, verdict:content_json->verdict->>verdict, wantRig:content_json->brief->wantRig, assignments!inner(status)")
     .eq("company_id", companyId)
-    .eq("assignments.status", "completed")
+    // 48회차: "completed 만" 이면 **제출됐지만 아직 대화에 안 붙은** 자산이 유니티에 영영 안 간다.
+    // 투구 조각이 그래서 안 들어갔고, Dev 는 붙일 파일이 없으니 조용히 건너뛰었다(자는 0 을 정확히 쟀다).
+    .in("assignments.status", ["completed", "submitted"])
     .order("created_at", { ascending: false })
     .limit(100);
 
