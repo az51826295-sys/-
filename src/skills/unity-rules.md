@@ -61,3 +61,32 @@
 - 휘는 조각은 `SkinnedMeshRenderer` 를 몸과 **같은 배열**로 채운다: `piece.bones = body.bones; piece.rootBone = body.rootBone;` — 조각 자신의 뼈대를 쓰면 애니메이션에서 따로 논다.
 - 조각을 붙였으면 **가려지는 몸 부분을 끄지 마라**(첫 판). 뚫고 나오는지 자가 봐야 한다.
 - 자에 재는 값: `parts_attached`(붙은 조각 수) · `part_offset_m`(조각과 붙은 뼈 사이 거리, 0.15 m 이하여야 한다 — 크면 허공에 뜬 것).
+
+## 조각 크기는 손으로 넣지 말고 **계산해서** 맞춘다 (49회차 09-08)
+
+**왜**: 생성기(Meshy)가 만든 조각에는 **실제 크기라는 게 없다.** 단위도 비율도 그때그때 다르다. 그걸 그대로 씌우면 투구가 머리를 삼킨다(48회차: 세 판을 돌며 눈대중으로 줄였지만 사진이 안 바뀌었다).
+숫자를 프롬프트로 정해 주는 것도 틀렸다 — 다음 조각은 또 다른 크기로 온다.
+
+**방법**: 붙이는 코드가 **재서 나눈다.**
+```csharp
+// 1) 뼈 자리의 크기: 머리면 머리뼈에서 머리 꼭대기까지
+var head = animator.GetBoneTransform(HumanBodyBones.Head);
+float top = 0f; foreach (var r in animator.GetComponentsInChildren<Renderer>(true)) top = Mathf.Max(top, r.bounds.max.y);
+float headSize = Mathf.Max(0.05f, top - head.position.y);
+
+// 2) 조각의 크기: 스케일 1 일 때의 경계
+var piece = (GameObject)PrefabUtility.InstantiatePrefab(model);
+piece.transform.SetParent(head, false);
+piece.transform.localScale = Vector3.one;
+var b = new Bounds(piece.transform.position, Vector3.zero);
+foreach (var r in piece.GetComponentsInChildren<Renderer>(true)) b.Encapsulate(r.bounds);
+float pieceMax = Mathf.Max(b.size.x, Mathf.Max(b.size.y, b.size.z));
+
+// 3) 목표 비율로 나눈다 — 투구는 머리 크기의 1.15 배쯤(머리를 감싸되 삼키지 않는다)
+piece.transform.localScale = Vector3.one * (headSize * 1.15f / Mathf.Max(0.0001f, pieceMax));
+
+// 4) 중심을 머리 중심에 맞춘다(경계 중심과 머리 중심의 차이만큼 옮긴다)
+```
+**자리별 목표 비율**(붙는 뼈 크기 대비 조각의 가장 긴 변): head 1.0~1.3 · shoulder 0.5~0.8 · hand(무기) 1.5~3.0 · chest 1.0~1.5 · foot 0.8~1.2.
+**자가 재는 것**: `part_size_ratio`(조각 ÷ 머리 크기) · `part_covers_bone`(조각이 붙은 뼈를 감싸는가) · `part_offset_m`.
+숫자를 코드에 박지 마라 — 새 조각이 오면 그 숫자가 또 틀린다.
