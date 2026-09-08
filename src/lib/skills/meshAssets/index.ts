@@ -34,6 +34,12 @@ const briefSchema = z.object({
   /** 캐릭터면 a-pose 가 리깅에 유리하다. 소품이면 빈 문자열. */
   poseMode: z.enum(["a-pose", "t-pose", ""]),
   /**
+   * 조각인가, 몸인가 (47회차 09-08, 사장님이 알려 준 방식).
+   * 캐릭터는 **맨몸을 먼저** 만들고 갑옷을 하나씩 얹는다. 조각이면 어디에 붙는지 적는다 — 뼈 이름 하나.
+   * "" 면 몸(또는 소품 하나). 조각이면 리깅을 사지 않는다: 딱딱한 조각은 뼈에 매달면 되고, 그게 5 크레딧을 아낀다.
+   */
+  attachTo: z.enum(["", "head", "chest", "shoulder_l", "shoulder_r", "hand_l", "hand_r", "hip", "foot_l", "foot_r"]),
+  /**
    * 그림에서 눈으로 확인할 수 있는 **필수 조건**(영어, 3~6개). 예: "closed helmet, no face
    * visible", "3-head-tall chibi proportions", "silver plate armor". 09-06 16:47 그림 생성기가
    * '닫힌 투구·3등신' 을 무시하고 얼굴 있는 실제 비율 기사를 그렸다 — 30 크레딧 쓰기 전에
@@ -186,6 +192,7 @@ export const meshAssetsSkill: EmployeeSkill = {
 
     // 단계 저장(계획 2 "안 죽는 실행"): 죽었다 다시 돌면 브리프·그림·메시·리깅을 다시 사지 않는다.
     const brief = await step(ctx.supabase, ctx.executionId, "brief", async () => (await ctx.providers.ai.generateStructuredOutput({
+
       systemInstructions:
         "너는 3D 아티스트다. 업무 문장에서 **무엇을 만들지 하나**를 뽑는다.\n" +
         "- **매니저가 말한 색·비율·재질·옷을 바꾸거나 더하지 마라.** 09-06 브리프가 '파란 천' 을 " +
@@ -196,6 +203,9 @@ export const meshAssetsSkill: EmployeeSkill = {
         "생김새·재질·색을 구체적으로. 배경·바닥·글자는 쓰지 않는다.\n" +
         "- `wantRig`: 걷거나 움직여야 하는 것이면 true.\n" +
         "- `poseMode`: 캐릭터면 \"a-pose\", 아니면 \"\".\n" +
+        "- `attachTo`: **갑옷·투구·무기처럼 몸에 얹는 조각**이면 붙는 뼈를 적는다(head·chest·shoulder_l/r·hand_l/r·hip·foot_l/r). " +
+        "맨몸·통짜 캐릭터·소품이면 \"\". 캐릭터는 맨몸을 먼저 만들고 갑옷을 조각으로 얹는 것이 이 회사 방식이다 — " +
+        "주문이 \"갑옷 입은 기사\" 라도 갑옷 조각을 따로 시킬 수 있으면 그렇게 나눠 적는다.\n" +
         "- `mustHave`: 매니저가 적은 것 중 그림에서 눈으로 확인되는 조건 3~6개(영어 짧게). " +
         "비율(예: 3-head-tall chibi), 얼굴 가림(closed helmet, no face), 색·재질, 옷. " +
         "그림 생성기는 이런 조건을 자주 무시한다 — 여기 적힌 것만 검수한다.\n" +
@@ -215,6 +225,10 @@ export const meshAssetsSkill: EmployeeSkill = {
       // 제목·콘셉트 문장·리깅 여부를 뽑는 작은 일. 메시를 만드는 것은 Meshy 다.
       tier: "routine",
     })).output);
+
+    // 47회차(사장님 방식): 조각은 뼈에 매다는 것이라 리깅이 필요 없다 — 딱딱한 조각은 5 크레딧을 안 쓴다.
+    // 몸은 한 번만 리깅하고, 갑옷은 조각으로 얹는다.
+    if (brief.attachTo) brief.wantRig = false;
 
     // ── 1. 이미지: 받은 것 또는 기계 콘셉트 ─────────────────────────
     await setStep(ctx.supabase, ctx.executionId, "generating");

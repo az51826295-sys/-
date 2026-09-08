@@ -52,3 +52,10 @@
   왜: 프로토타입에서 보는 것은 조작·카메라·규칙이다. 캐릭터가 그럴듯하면 "재미없는데 예뻐서 괜찮아 보이는" 착시가 생긴다.
 - NPC 도 같은 회색으로. 색으로 구분해야 하면 **명도만** 다르게(0.45 / 0.62 / 0.8).
 - character 단계에서 사장님이 정한 진짜 캐릭터로 갈아 끼운다. 그때도 자가 재는 값(카메라 거리·화면 위치·점프 높이)은 그대로 이어진다.
+
+## 조각 붙이기 (47회차) — 유니티 쪽
+- 딱딱한 조각은 **뼈의 자식**으로 놓는다: `var bone = animator.GetBoneTransform(HumanBodyBones.Head); piece.transform.SetParent(bone, false);` 그다음 로컬 위치·회전만 맞춘다.
+  씬 빌더는 조각 프리팹을 `Assets/Rookery/<제목>/parts/<이름>.fbx` 에서 찾는다.
+- 휘는 조각은 `SkinnedMeshRenderer` 를 몸과 **같은 배열**로 채운다: `piece.bones = body.bones; piece.rootBone = body.rootBone;` — 조각 자신의 뼈대를 쓰면 애니메이션에서 따로 논다.
+- 조각을 붙였으면 **가려지는 몸 부분을 끄지 마라**(첫 판). 뚫고 나오는지 자가 봐야 한다.
+- 자에 재는 값: `parts_attached`(붙은 조각 수) · `part_offset_m`(조각과 붙은 뼈 사이 거리, 0.15 m 이하여야 한다 — 크면 허공에 뜬 것).
