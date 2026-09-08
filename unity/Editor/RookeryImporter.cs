@@ -95,7 +95,7 @@ namespace Rookery
         // ── 응답 모양. JsonUtility 는 필드 이름이 같아야 읽는다. ──
         [Serializable] class FileEntry
         {
-            public string id, deliverableId, subject, kind, filename, mime, verdict, createdAt, url;
+            public string id, deliverableId, subject, kind, filename, mime, verdict, createdAt, url, attachTo;
             public long size;
             public bool wantRig;
         }
@@ -196,7 +196,7 @@ namespace Rookery
                 // 어디서 왔고 무엇으로 판정됐는지. 반년 뒤에 물을 사람이 반드시 생긴다.
                 File.WriteAllText(dest + ".rookery.json",
                     "{\"deliverableId\":\"" + f.deliverableId + "\",\"verdict\":\"" + f.verdict +
-                    "\",\"wantRig\":" + (f.wantRig ? "true" : "false") + ",\"createdAt\":\"" + f.createdAt + "\"}");
+                    "\",\"wantRig\":" + (f.wantRig ? "true" : "false") + ",\"attachTo\":\"" + (f.attachTo ?? "") + "\",\"createdAt\":\"" + f.createdAt + "\"}");
                 log.AppendLine($"  ✓ {f.subject}/{f.filename} ({f.size / 1024} KB, {f.verdict})" +
                                (f.wantRig && f.filename.EndsWith(".fbx") ? "  ← 캐릭터: Rig 를 Humanoid 로" : ""));
             }
@@ -228,7 +228,7 @@ namespace Rookery
     /// 환경변수 ROOKERY_URL, ROOKERY_KEY, ROOKERY_FOLDER(기본 Assets/Rookery).
     public static class RookeryHeadless
     {
-        [Serializable] class FileEntry { public string id, deliverableId, subject, kind, filename, mime, verdict, createdAt, url; public long size; public bool wantRig; }
+        [Serializable] class FileEntry { public string id, deliverableId, subject, kind, filename, mime, verdict, createdAt, url, attachTo; public long size; public bool wantRig; }
         [Serializable] class ScriptEntry { public string deliverableId, subject, path, contents, createdAt; }
         [Serializable] class TestEntry { public string path, contents; }
         [Serializable] class Payload { public string company; public int count; public FileEntry[] files; public ScriptEntry[] scripts; public TestEntry[] tests; public string note; }
@@ -254,7 +254,7 @@ namespace Rookery
                 Directory.CreateDirectory(dir);
                 var dest = Path.Combine(dir, f.filename);
                 var side = "{\"deliverableId\":\"" + f.deliverableId + "\",\"verdict\":\"" + f.verdict +
-                    "\",\"wantRig\":" + (f.wantRig ? "true" : "false") + ",\"createdAt\":\"" + f.createdAt + "\"}";
+                    "\",\"wantRig\":" + (f.wantRig ? "true" : "false") + ",\"attachTo\":\"" + (f.attachTo ?? "") + "\",\"createdAt\":\"" + f.createdAt + "\"}";
                 // 이미 같은 크기로 있으면 안 받는다. 매 바퀴 131개 1 GB 를 다시 받느라 8분 중 5분이 갔다(09-06 22:35).
                 // 산출물 파일은 한 번 저장되면 안 바뀐다(같은 경로에 다시 쓰지 않는다) — 크기가 같으면 같은 파일이다.
                 if (File.Exists(dest) && new FileInfo(dest).Length == f.size && File.Exists(dest + ".rookery.json"))
@@ -325,11 +325,17 @@ namespace Rookery
                 // (48~52회차, 일곱 판을 여기서 날렸다). 자산이 **들어올 때 한 번** 맞추는 것이 맞는 자리다.
                 // 54회차: 되돌림이 안 먹었다 — 이 조건이 "이미 정리됨" 이라며 건너뛰어서 53개가 100배인 채 남았다.
                 // 크기 설정도 조건에 넣는다: 파일 단위를 쓰는 상태(useFileScale=true)가 우리 기준이다.
-                var scaleOk = imp.useFileScale && Math.Abs(imp.globalScale - 1f) < 0.001f;
+                // 55회차: **조각만** 단위를 고정한다. 53회차에 전부 바꿨더니 캐릭터가 100배가 됐다.
+                // 조각인지는 가져올 때 남긴 사이드카(.rookery.json)의 attachTo 로 안다.
+                var side = path + ".rookery.json";
+                var isPart = File.Exists(side) && File.ReadAllText(side).Contains("\"attachTo\":\"") &&
+                             !File.ReadAllText(side).Contains("\"attachTo\":\"\"");
+                var wantFileScale = !isPart;   // 캐릭터는 파일 단위 그대로, 조각은 1유닛=1m
+                var scaleOk = imp.useFileScale == wantFileScale && Math.Abs(imp.globalScale - 1f) < 0.001f;
                 if (imp.importNormals == ModelImporterNormals.Calculate && Math.Abs(imp.normalSmoothingAngle - 180f) < 0.5f && imp.weldVertices && scaleOk) continue;
                 // 53회차 되돌림: 여기서 파일 단위를 무시했더니 **캐릭터 53개가 전부 100배**가 되어 화면에서 사라졌다.
                 // 크기는 자산마다 다르므로 통째로 바꾸면 안 된다 — 붙이는 쪽이 세상 좌표로 재서 맞춘다.
-                imp.useFileScale = true;
+                imp.useFileScale = wantFileScale;
                 imp.globalScale = 1f;
                 imp.importNormals = ModelImporterNormals.Calculate;
                 imp.normalCalculationMode = ModelImporterNormalCalculationMode.AreaAndAngleWeighted;

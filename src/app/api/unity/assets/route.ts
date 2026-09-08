@@ -42,7 +42,7 @@ export async function GET(request: Request) {
     .from("deliverables")
     // content_json 전체를 100행 끌면 MB 단위 행이 딸려와 DB 가 시간 초과를 낸다(09-06 13:55,
     // 고양이 판의 파일 기록이 두 개 빠졌다). 필요한 칸만.
-    .select("id, title, deliverable_type, created_at, assignment_id, verdict:content_json->verdict->>verdict, wantRig:content_json->brief->wantRig, assignments!inner(status)")
+    .select("id, title, deliverable_type, created_at, assignment_id, verdict:content_json->verdict->>verdict, wantRig:content_json->brief->wantRig, attachTo:content_json->brief->>attachTo, assignments!inner(status)")
     .eq("company_id", companyId)
     // 48회차: "completed 만" 이면 **제출됐지만 아직 대화에 안 붙은** 자산이 유니티에 영영 안 간다.
     // 투구 조각이 그래서 안 들어갔고, Dev 는 붙일 파일이 없으니 조용히 건너뛰었다(자는 0 을 정확히 쟀다).
@@ -56,6 +56,7 @@ export async function GET(request: Request) {
     deliverable_type: string;
     verdict: string | null;
     wantRig: boolean | null;
+    attachTo: string | null;
     created_at: string;
   };
   const deliverables = (rows ?? []) as unknown as Row[];
@@ -99,6 +100,8 @@ export async function GET(request: Request) {
       size: f.size_bytes,
       verdict: d.verdict ?? "UNDEFINED",
       wantRig: !!d.wantRig,
+      // 55회차: 조각(몸에 얹는 것)은 유니티에서 단위를 잡아 줘야 한다 — 캐릭터는 건드리지 않는다.
+      attachTo: d.attachTo ?? "",
       createdAt: d.created_at,
       url,
     });
