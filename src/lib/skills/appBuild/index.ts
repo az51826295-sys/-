@@ -50,7 +50,7 @@ const plan = z.object({
    * 주문에 단계가 드러나면 그것을, 아니면 지난 판 다음 단계를, 처음이면 prototype.
    */
   stage: z.enum(["prototype", "map", "character", "polish"]),
-  expectations: z.array(z.object({ measure: z.enum(["player_viewport_x", "player_viewport_y", "jump_height_m", "hud_score_visible", "coin_count", "level_extent_m", "landmark_count", "camera_distance_m", "ground_color_count", "parts_attached", "part_offset_m", "part_size_ratio"]), min: z.number().nullable(), max: z.number().nullable(), equals: z.boolean().nullable(), why: z.string() })),
+  expectations: z.array(z.object({ measure: z.enum(["player_viewport_x", "player_viewport_y", "jump_height_m", "hud_score_visible", "coin_count", "level_extent_m", "landmark_count", "camera_distance_m", "ground_color_count", "parts_attached", "part_offset_m", "part_size_ratio", "part_covers_bone"]), min: z.number().nullable(), max: z.number().nullable(), equals: z.boolean().nullable(), why: z.string() })),
   /**
    * 받아들임 기준. **코드보다 먼저 쓴다.**
    *
@@ -227,7 +227,7 @@ export const appBuildSkill: EmployeeSkill = {
         "`expectations`: 자(유니티 시험)가 **숫자로 재는** 기대치. 잴 수 있는 값은 딱 열둘 — " +
         "player_viewport_x(플레이어의 화면 가로 위치 0~1, 왼쪽이 0), player_viewport_y, jump_height_m(스페이스 점프 높이 m), " +
         "hud_score_visible(점수 글자가 카메라 캔버스에 보이는가), coin_count(동전 수), level_extent_m(바닥을 뺀 정적 물체들이 차지하는 가로·세로 중 큰 쪽 m), " +
-        "landmark_count(높이 6 m 이상인 정적 물체 수), camera_distance_m(카메라에서 플레이어 가슴까지 m), ground_color_count(넓이 4 m² 이상 납작한 정적 물체의 바탕색 가짓수), parts_attached(플레이어 뼈에 매단 조각 수), part_offset_m(조각과 뼈 사이 거리 m — 0.15 이하), part_size_ratio(조각의 가장 긴 변 ÷ 그 사람의 키 — 투구는 0.2~0.4). 이번 주문에 걸리는 것만 min/max(또는 equals) 로 " +
+        "landmark_count(높이 6 m 이상인 정적 물체 수), camera_distance_m(카메라에서 플레이어 가슴까지 m), ground_color_count(넓이 4 m² 이상 납작한 정적 물체의 바탕색 가짓수), parts_attached(플레이어 뼈에 매단 조각 수), part_offset_m(조각과 뼈 사이 거리 m — 0.15 이하), part_size_ratio(조각의 가장 긴 변 ÷ **머리 크기** — 투구는 1.0~1.6 이 맞다), part_covers_bone(조각이 붙은 뼈를 감싸는가). 이번 주문에 걸리는 것만 min/max(또는 equals) 로 " +
         "적는다(예: '가로 1/3' → player_viewport_x min 0.25 max 0.41). 안 걸리면 빈 배열. 다른 이름은 못 잰다." +
         // 설계 단계가 읽는 것은 범위·반응 쪽(blueprint). 코드 쪽 규칙은 짓는 단계에서.
         (await renderGamedevLessons("blueprint")),
