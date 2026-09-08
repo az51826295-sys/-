@@ -282,6 +282,11 @@ namespace Rookery.Tests
                                 var onBone = false;
                                 while (t != null && t != h.transform.parent) { if (bones.Contains(t)) { onBone = true; break; } t = t.parent; }
                                 if (!onBone) continue;
+                                // 48회차: 기본 도형(캡슐·큐브…)으로 때운 것은 조각이 아니다. Dev 가 파일을 못 찾아 캡슐을 씌웠는데
+                                // 자가 그것을 "붙었다" 로 세면, 때운 판과 진짜 붙인 판이 같은 점수가 된다.
+                                var mf = mr.GetComponent<MeshFilter>();
+                                var mn = mf != null && mf.sharedMesh != null ? mf.sharedMesh.name : "";
+                                if (mn == "Capsule" || mn == "Cube" || mn == "Sphere" || mn == "Cylinder" || mn == "Plane" || mn == "Quad") continue;
                                 parts++;
                                 var d = Vector3.Distance(mr.bounds.center, mr.transform.parent.position);
                                 if (d > worst) worst = d;
