@@ -187,7 +187,42 @@ export async function collectWorkReturns(
         actions = [];
         if (dtype === "mesh_assets" && dverdict === "DRAFT") actions.push({ label: "고화질로 만들기", text: "고화질로 만들어 줘" });
         if (dtype === "analysis" || dtype === "market_research_report") actions.push({ label: "이걸로 영상 만들기", text: "이걸로 60초 영상 만들어 줘" });
-        actions.push({ label: "수정 요청", text: "" });
+        // 46회차(사장님 지시): 게임은 단계로 간다 — 프로토타입 → 맵 → 캐릭터 → 다듬기.
+        // 판이 붙을 때마다 **다음 단계를 묻고**, 사장님이 눌러야 다음으로 간다. 체험은 유니티에서 Play.
+        if (dtype === "app_build") {
+          const stage = ((d.content_json as { stage?: string } | null)?.stage) ?? "prototype";
+          const NEXT: Record<string, { ask: string; buttons: { label: string; text: string }[] }> = {
+            prototype: {
+              ask: "유니티에서 Play 로 한 번 해 보세요. 이대로 가도 될까요?",
+              buttons: [
+                { label: "맵 구성하기", text: "이 프로토타입으로 확정. 이제 맵을 구성해 줘 — 지형·구역·동선." },
+                { label: "캐릭터 넣기", text: "이 프로토타입으로 확정. 캐릭터를 넣어 줘." },
+              ],
+            },
+            map: {
+              ask: "맵을 둘러보세요. 이대로 확정할까요?",
+              buttons: [
+                { label: "캐릭터 넣기", text: "맵 확정. 캐릭터를 넣어 줘." },
+                { label: "맵 더 다듬기", text: "" },
+              ],
+            },
+            character: {
+              ask: "캐릭터를 움직여 보세요. 다음은 뭘 할까요?",
+              buttons: [
+                { label: "다듬기(소리·연출)", text: "캐릭터 확정. 이제 다듬어 줘 — 소리·연출·손맛." },
+                { label: "맵 더 손보기", text: "" },
+              ],
+            },
+            polish: {
+              ask: "해 보시고 더 손댈 곳을 말씀해 주세요.",
+              buttons: [{ label: "이겼다·졌다 넣기", text: "이기고 지는 조건을 넣어 줘." }],
+            },
+          };
+          const step = NEXT[stage] ?? NEXT.prototype;
+          text += `\n\n---\n\n**${step.ask}**`;
+          actions.push(...step.buttons);
+        }
+        actions.push({ label: "고칠 게 있어요", text: "" });
         const made = (d.content_json as { files?: unknown } | null)?.files;
         if (Array.isArray(made)) {
           files = made
