@@ -327,6 +327,17 @@ namespace Rookery
                 // 크기 설정도 조건에 넣는다: 파일 단위를 쓰는 상태(useFileScale=true)가 우리 기준이다.
                 // 55회차: **조각만** 단위를 고정한다. 53회차에 전부 바꿨더니 캐릭터가 100배가 됐다.
                 // 조각인지는 가져올 때 남긴 사이드카(.rookery.json)의 attachTo 로 안다.
+                // 56회차: 마네킹(_mannequin)은 **사람 형태(Humanoid)** 로 들여온다. Generic 으로 들어오면
+                // 자가 사람을 못 찾아 아무것도 못 잰다(카메라 위치·점프·조각 전부). 이 폴더에만 건다.
+                var isMannequin = path.Replace('\\', '/').Contains("/_mannequin/");
+                if (isMannequin && imp.animationType != ModelImporterAnimationType.Human)
+                {
+                    imp.animationType = ModelImporterAnimationType.Human;
+                    imp.avatarSetup = ModelImporterAvatarSetup.CreateFromThisModel;
+                    imp.SaveAndReimport();
+                    n++;
+                    continue;
+                }
                 var side = path + ".rookery.json";
                 var isPart = File.Exists(side) && File.ReadAllText(side).Contains("\"attachTo\":\"") &&
                              !File.ReadAllText(side).Contains("\"attachTo\":\"\"");
