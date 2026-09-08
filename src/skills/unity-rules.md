@@ -90,3 +90,26 @@ piece.transform.localScale = Vector3.one * (headSize * 1.15f / Mathf.Max(0.0001f
 **자리별 목표 비율**(붙는 뼈 크기 대비 조각의 가장 긴 변): head 1.0~1.3 · shoulder 0.5~0.8 · hand(무기) 1.5~3.0 · chest 1.0~1.5 · foot 0.8~1.2.
 **자가 재는 것**: `part_size_ratio`(조각 ÷ 머리 크기) · `part_covers_bone`(조각이 붙은 뼈를 감싸는가) · `part_offset_m`.
 숫자를 코드에 박지 마라 — 새 조각이 오면 그 숫자가 또 틀린다.
+
+### 준 뒤에 **다시 재서 보정한다** (50회차 09-08 — 이것 때문에 네 판을 헛돌았다)
+계산이 맞아도 그려지는 크기는 다를 수 있다. 뼈가 이미 축소·확대돼 있으면 **로컬 스케일에 그 배율이 한 번 더 곱해진다**.
+실측: Dev 가 머리 0.327 m, 조각 0.2 m 를 재서 스케일 1.88 을 줬는데 화면에 그려진 투구는 **4 mm** 였다(뼈 배율 탓).
+
+그래서 한 줄을 더 한다 — **주고 나서 다시 재고, 어긋난 만큼 곱한다.**
+```csharp
+void Fit(Transform bone, GameObject piece, float target)   // target = 원하는 세상 크기(m)
+{
+    for (int i = 0; i < 3; i++)
+    {
+        var b = new Bounds(piece.transform.position, Vector3.zero);
+        foreach (var r in piece.GetComponentsInChildren<Renderer>(true)) b.Encapsulate(r.bounds);   // 세상 좌표
+        float now = Mathf.Max(b.size.x, Mathf.Max(b.size.y, b.size.z));
+        if (now < 1e-5f) break;
+        float k = target / now;
+        if (Mathf.Abs(k - 1f) < 0.02f) break;               // 2% 안이면 됐다
+        piece.transform.localScale *= k;                     // 어긋난 만큼만 곱한다
+    }
+}
+```
+로컬 스케일 숫자를 계산해서 **한 번에 끝내려 하지 마라.** 재고 → 곱하고 → 다시 재는 것이 배율·단위·부모 스케일을 전부 흡수한다.
+같은 방식으로 위치도 맞춘다: 조각 경계 중심과 목표 지점의 차이를 **세상 좌표에서** 구해 `piece.transform.position += diff` 로 옮긴다.
