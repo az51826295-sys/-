@@ -45,25 +45,6 @@ const NEWLINE = String.fromCharCode(10);
 /** 그림 파일인가. href 가 있는 그림은 링크 대신 그림으로 그린다. */
 const IMG_RX = /\.(png|jpe?g|webp)$/i;
 
-/** 빈 대화창의 시작 예시. 글은 칸에 들어갈 뿐, 보내는 것은 사람이다. */
-const STARTERS: { label: string; text: string }[] = [
-  {
-    label: "유니티 3D 동전 줍기",
-    text: "유니티로 간단한 3D 게임 하나 만들어 줘. 바닥 위에서 캡슐 플레이어가 WASD로 걷고, 흩어진 동전을 닿으면 사라지고 점수가 오른다. 다 먹으면 클리어. 기본값으로 바로 시작.",
-  },
-  {
-    label: "장애물 피하기",
-    text: "유니티 3D 게임: 플레이어가 앞으로 계속 달리고 좌우로 피한다. 앞에서 상자가 날아오고 닿으면 게임 오버, 버틴 시간이 점수. 기본 도형으로.",
-  },
-  {
-    label: "3D 캐릭터 만들기",
-    text: "이 그림으로 3D 캐릭터를 만들어 줘. 걷기·달리기 애니메이션까지. (그림을 붙여 주세요)",
-  },
-  {
-    label: "게임에 디테일 얹기",
-    text: "고쳐줘. 게임처럼 느껴지게 디테일을 얹어 줘: 줍는 순간 튀고 알갱이가 터지고 점수 글자가 튄다. 배경색·그림자·안개도. 기존 기준은 그대로.",
-  },
-];
 
 type Source = { title: string; url: string };
 type Option = { label: string; description: string | null };
@@ -427,23 +408,6 @@ export default function AskClient({
                 ? `"${task.title}" 안에서 나눈 이야기만 여기 모입니다.`
                 : "무엇이든 물어보세요. 찾아봐야 할 것은 찾아보고, 시간이 드는 일은 사람을 붙여 업무로 만듭니다."}
             </p>
-            {!task && turns.length === 0 && (
-              // 시작 예시. Rosebud 의 첫 화면은 만들 수 있는 것의 예가 늘 보인다 —
-              // 빈 칸 앞에서 "뭐라고 말하지" 가 첫 벽이다. 누르면 칸에 들어가고,
-              // 고쳐서 보내면 된다. 보내지는 않는다.
-              <div className="flex flex-wrap gap-2">
-                {STARTERS.map((s) => (
-                  <button
-                    key={s.label}
-                    type="button"
-                    onClick={() => setText(s.text)}
-                    className="border-2 border-[var(--rk-ink)] bg-[var(--rk-paper)] px-3 py-1.5 text-xs hover:bg-[var(--rk-100)]"
-                  >
-                    {s.label}
-                  </button>
-                ))}
-              </div>
-            )}
           </div>
         )}
         {turns.map((t, i) => (
