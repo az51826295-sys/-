@@ -60,6 +60,31 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "JSON 이 아닙니다." }, { status: 400 });
   }
 
+  // ── 50회차: **회사가 늘 재는 줄.** 계획이 스스로 쓴 기대치만으로는 못 잡는 것이 있다 —
+  // 49회차에 투구가 머리의 1.3% 로 쪼그라들었는데 검사는 10개 다 통과했다(계획이 "붙어 있다" 만 적었으니까).
+  // 종류를 막론하고 이 회사가 늘 참이라고 보는 것은 여기서 잰다. 계획이 뭘 적든 이 줄은 붙는다.
+  if (body.measures) {
+    const m = body.measures;
+    const num = (k: string) => (typeof m[k] === "number" ? (m[k] as number) : null);
+    const parts = num("parts_attached") ?? 0;
+    if (parts > 0) {
+      const ratio = num("part_size_ratio");
+      if (ratio != null) {
+        const ok = ratio >= 0.3 && ratio <= 3;
+        body.cases.push({
+          name: "규격_조각_크기",
+          result: ok ? "Passed" : "Failed",
+          message: `조각이 붙은 자리 크기의 ${ratio.toFixed(2)}배 (0.3~3.0 이어야 한다 — 너무 작으면 안 보이고 너무 크면 삼킨다)`,
+        });
+        if (ok) body.passed += 1; else body.failed += 1;
+      }
+      if (m.part_covers_bone === false) {
+        body.cases.push({ name: "규격_조각_감싸기", result: "Failed", message: "조각이 붙은 뼈를 감싸지 않는다 — 옆에 떠 있다" });
+        body.failed += 1;
+      }
+    }
+  }
+
   // ── 32회차 2판: 퇴보 지킴이. 지난 판에서 재어진 값이 이번 판에서 0(또는 false)이면 실패 줄 — 이번 주문과 상관없이.
   // (9fdf487e: 카메라만 고쳤는데 점프가 0 — 기대치는 이번 주문만 적으니 아무도 안 잡았다.)
   if (body.deliverableId && body.measures) {
