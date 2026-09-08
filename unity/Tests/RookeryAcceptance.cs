@@ -278,8 +278,12 @@ namespace Rookery.Tests
                         foreach (var h in Object.FindObjectsByType<Animator>(FindObjectsSortMode.None).Where(a => a.isHuman))
                         {
                             var bones = h.GetComponentsInChildren<Transform>(true);
-                            foreach (var mr in h.GetComponentsInChildren<MeshRenderer>(true))
+                            // 50회차: MeshRenderer 만 보면 스키닝된 조각(Meshy FBX 가 뼈 하나를 달고 들어온다)을 아예 못 본다.
+                            // 몸(뼈가 많은 스킨)만 빼고 나머지는 다 본다.
+                            foreach (var mr in h.GetComponentsInChildren<Renderer>(true))
                             {
+                                var smr = mr as SkinnedMeshRenderer;
+                                if (smr != null && smr.bones != null && smr.bones.Length > 4) continue;
                                 var t = mr.transform.parent;
                                 var onBone = false;
                                 while (t != null && t != h.transform.parent) { if (bones.Contains(t)) { onBone = true; break; } t = t.parent; }
@@ -287,9 +291,11 @@ namespace Rookery.Tests
                                 // 48회차: 기본 도형(캡슐·큐브…)으로 때운 것은 조각이 아니다. Dev 가 파일을 못 찾아 캡슐을 씌웠는데
                                 // 자가 그것을 "붙었다" 로 세면, 때운 판과 진짜 붙인 판이 같은 점수가 된다.
                                 var mf = mr.GetComponent<MeshFilter>();
-                                var mn = mf != null && mf.sharedMesh != null ? mf.sharedMesh.name : "";
+                                var mn = smr != null && smr.sharedMesh != null ? smr.sharedMesh.name
+                                       : (mf != null && mf.sharedMesh != null ? mf.sharedMesh.name : "");
                                 if (mn == "Capsule" || mn == "Cube" || mn == "Sphere" || mn == "Cylinder" || mn == "Plane" || mn == "Quad") continue;
                                 parts++;
+                                Debug.Log($"[Rookery] 조각 {mr.name} ({(smr != null ? "skinned" : "mesh")}) 크기 {Mathf.Max(mr.bounds.size.x, Mathf.Max(mr.bounds.size.y, mr.bounds.size.z)):0.###} m, 붙은 곳 {mr.transform.parent.name}");
                                 var d = Vector3.Distance(mr.bounds.center, mr.transform.parent.position);
                                 if (d > worst) worst = d;
                                 // 48회차 3판: 몸 전체 키로 나눴더니 3등신 기사(머리가 키의 1/3)에서 **머리를 삼킨 투구도 정상**으로 나왔다.
