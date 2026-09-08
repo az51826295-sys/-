@@ -273,6 +273,7 @@ namespace Rookery.Tests
                     {
                         var parts = 0;
                         var worst = 0f;
+                        var biggest = 0f;
                         foreach (var h in Object.FindObjectsByType<Animator>(FindObjectsSortMode.None).Where(a => a.isHuman))
                         {
                             var bones = h.GetComponentsInChildren<Transform>(true);
@@ -290,10 +291,17 @@ namespace Rookery.Tests
                                 parts++;
                                 var d = Vector3.Distance(mr.bounds.center, mr.transform.parent.position);
                                 if (d > worst) worst = d;
+                                var bodyH = 0f;
+                                foreach (var r2 in h.GetComponentsInChildren<Renderer>(true)) bodyH = Mathf.Max(bodyH, r2.bounds.size.y);
+                                var partMax = Mathf.Max(mr.bounds.size.x, Mathf.Max(mr.bounds.size.y, mr.bounds.size.z));
+                                if (bodyH > 0.01f) biggest = Mathf.Max(biggest, partMax / bodyH);
                             }
                         }
                         Measure("parts_attached", parts);
                         if (parts > 0) Measure("part_offset_m", worst);
+                        // 48회차: 자리보다 **크기**가 문제였다(사진: 투구가 머리를 통째로 삼켰다. 위치를 0.32→0.2 로 줄여도 여전히 컸다).
+                        // 조각의 가장 긴 변 ÷ 그 사람의 키. 3등신 기사의 머리는 키의 1/3 쯤이니 투구는 0.2~0.4 가 맞다.
+                        if (parts > 0) Measure("part_size_ratio", biggest);
                     }
                     // 구역 색(34회차): 넓이 4 m² 이상인 납작한 정적 물체의 바탕색 가짓수 — 구역 셋이면 셋 이상이어야 한다.
                     var colors = new HashSet<string>();
