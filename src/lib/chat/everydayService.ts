@@ -559,7 +559,11 @@ export async function runEverydayTurn(
       );
       hired = d.hired;
       assignment = d.assignment;
-      if (d.tail && d.tail !== reply) reply += `\n\n${d.tail}`;
+      // 170회차 09-18, 사장님: "왜 두 번 말해?" — 한 턴에 답이 둘이었다: 접수(말을 받는 자리)의 답 + 일을 받은 직원의 접수 답을 그대로 이어 붙였다.
+      // 같은 말을 두 번 하는 것보다 나쁜 건 **서로 어긋나는 것**이다: 앞 답은 "어느 쪽으로 갈까요?" 라고 묻는데 뒤 답은 이미 시작했다고 한다 —
+      // 일은 실제로 시작됐으니 앞의 물음은 대답할 곳이 없는 물음이다. 일이 생겼으면 **그 일을 받은 쪽의 말 하나만** 남긴다.
+      // (찾아본 답이나 그림이 앞 답에 실려 있을 때만 둘 다 둔다 — 그건 접수 확인이 아니라 내용이다.)
+      if (d.tail && d.tail !== reply) reply = d.assignment && queries.length === 0 && images.length === 0 ? d.tail : `${reply}\n\n${d.tail}`;
       if (d.why) reply += `\n\n(맡기지 못했습니다: ${d.why})`;
     } catch (e) {
       // 위임이 터져도 답은 나간다. 사용자가 물은 것에 대한 답은 이미 있다.
