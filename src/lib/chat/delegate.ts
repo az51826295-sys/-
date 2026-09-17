@@ -144,7 +144,14 @@ export async function delegate(
   const sourceDeliverableId = conversationId
     ? await lastDeliverableInConversation(db, conversationId, null)
     : null;
-  const turn = await runChatTurn({ companyEmployeeId: hireId, messages, images, previousDeliverableId, sourceDeliverableId, requireAssignment: true });
+  // 169회차: 1단계 시험이 첫 판에 잡은 구멍. 결과물이 DB 엔 생겼지만 대화에 붙기 전(약 30초), 또는 일이 **도는 중**에 "이것도 고쳐 줘" 라고
+  // 하면 돌아온 산출물이 없어서 고칠 대상을 못 찾았다 — 로키는 "반영해서 다시 돌릴게" 라고 답하고 **아무 일도 안 만들었다.**
+  // 돌아온 것이 없으면 이 대화에서 이 직원이 맡은 마지막 일을 가리킨다: 그 일이 끝나 있으면 실행 때 그 결과물 위에서 고친다
+  // (새 일은 그 직원의 대기열에서 앞 일 뒤에 선다 — 도는 일을 끊지 않는다).
+  const previousAssignmentId = !previousDeliverableId && conversationId
+    ? await lastAssignmentInConversation(db, conversationId, hireId)
+    : null;
+  const turn = await runChatTurn({ companyEmployeeId: hireId, messages, images, previousDeliverableId, previousAssignmentId, sourceDeliverableId, requireAssignment: true });
   if (!turn.ok) {
     // 접수는 됐고 넘기는 데서 막혔다. 답은 이미 나갔으므로 이유만 싣는다.
     return { ...NOTHING, hired, why: turn.error };
@@ -207,6 +214,23 @@ async function ensureKnowledgeProfile(
   });
 }
 
+
+/** 이 대화의 턴에 붙은 업무(`attachments.assignment.id`) 중 이 직원의 가장 최근 것 — 아직 도는 중이어도, 끝났지만 대화에 안 붙었어도. */
+export async function lastAssignmentInConversation(db: Supabase, conversationId: string, companyEmployeeId: string | null): Promise<string | null> {
+  const { data: rows } = await db
+    .from("conversation_messages")
+    .select("assignmentId:attachments->assignment->>id")
+    .eq("conversation_id", conversationId)
+    .not("attachments->assignment", "is", null)
+    .order("created_at", { ascending: false })
+    .limit(50);
+  const ids = [...new Set(((rows ?? []) as unknown as { assignmentId: string | null }[]).map((r) => r.assignmentId).filter((x): x is string => typeof x === "string"))];
+  if (!ids.length) return null;
+  let q = db.from("assignments").select("id, created_at, status").in("id", ids).not("status", "in", "(cancelled,failed)");
+  if (companyEmployeeId) q = q.eq("company_employee_id", companyEmployeeId);
+  const { data: a } = await q.order("created_at", { ascending: false }).limit(1).maybeSingle();
+  return (a?.id as string | undefined) ?? null;
+}
 
 /** 이 대화에 돌아온 산출물 중 이 직원 것으로 가장 최근 것. 없으면 null. */
 /** 대화에서 마지막으로 돌아온 산출물. `companyEmployeeId` 를 주면 그 사람 것만, null 이면 누구 것이든. */

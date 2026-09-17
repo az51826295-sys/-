@@ -123,6 +123,8 @@ export const gameAssetsAssignmentSchema = z.object({});
 // 고치는 판이면 이전 산출물 id 가 온다. Dev 는 그 파일들과 떨어진 줄을 바탕으로 고친다 —
 // 처음부터 다시 쓰면 지난 판에서 통과한 것까지 새로 깨진다(09-05).
 export const appBuildAssignmentSchema = z.object({
+  /** 169회차: 고칠 대상이 접수 때 아직 안 돌아왔으면(도는 중·방금 끝남) 그 업무 id. 실행 때 그 업무의 결과물을 찾는다. */
+  previousAssignmentId: z.string().optional().nullable(),
   previousDeliverableId: z.string().optional().nullable(),
 });
 // 3D 는 이미지 한 장이 입력이다. 대화에 올린 사진이 여기로 온다(data URL).

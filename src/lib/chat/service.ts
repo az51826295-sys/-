@@ -31,6 +31,8 @@ export type ChatTurnInput = {
   images?: string[];
   /** 이 대화에서 이 직원이 마지막으로 돌려준 산출물. "고쳐 줘" 가 이것을 바탕으로 간다. */
   previousDeliverableId?: string | null;
+  /** 169회차: 고칠 대상이 아직 대화에 안 돌아왔을 때(도는 중·방금 끝남) — 그 업무. 실행 때 그 업무의 결과물을 찾는다. */
+  previousAssignmentId?: string | null;
   /** 이 대화의 마지막 산출물(누가 냈든). 다른 사람이 만든 것을 재료로 쓰는 일에 간다(44회차: Ana 분석 → Vid 영상). */
   sourceDeliverableId?: string | null;
   /**
@@ -208,7 +210,7 @@ How to behave:
   // 165회차 09-17: 사장님이 "오른쪽 눌렀는데 왼쪽으로 가" 라고 했는데 접수가 업무 설명에 "각 지점을 로그로 계측 …
   // 재현 테스트 결과를 첨부" 를 **스스로 덧붙였고**, 그 덧붙인 말이 기준이 되고 새 파일(검증 도구)이 됐다.
   // 고치는 턴의 업무는 사람이 말한 고장의 크기를 넘지 않는다.
-  const fixTurn = input.previousDeliverableId
+  const fixTurn = input.previousDeliverableId || input.previousAssignmentId
     ? "\n- THIS IS A FIX to something you already delivered in this conversation. The assignment describes ONLY what the manager said is wrong, in their words, " +
       "and says everything else must stay exactly as it is. Do NOT add instrumentation, logging, debug screens, test tables, reports, refactors or 'while we're at it' improvements " +
       "to the description or expectedOutcome — whatever you write there WILL be built. Do not promise to 'remake' or 'rebuild' it; you are changing the broken part only."
@@ -262,7 +264,7 @@ How to behave:
 
   // 165회차: 고치는 턴이면 사장님 말을 **원문 그대로** 업무에 싣는다 — 접수가 풀어 쓴 말만 가면 개발자는
   // 사람이 실제로 뭐라고 했는지 모른 채 풀어 쓴 쪽(늘 더 크다)을 만든다.
-  const said = input.previousDeliverableId
+  const said = input.previousDeliverableId || input.previousAssignmentId
     ? ([...input.messages].reverse().find((m) => m.role === "user")?.content ?? "").trim().slice(0, 1500)
     : "";
   const created = await createAssignment(owned, {
@@ -275,6 +277,7 @@ How to behave:
     roleInput: {
       ...(input.images?.[0] ? { referenceImage: input.images[0] } : {}),
       ...(input.previousDeliverableId ? { previousDeliverableId: input.previousDeliverableId } : {}),
+      ...(input.previousAssignmentId ? { previousAssignmentId: input.previousAssignmentId } : {}),
       ...(input.sourceDeliverableId ? { sourceDeliverableId: input.sourceDeliverableId } : {}),
     },
   });

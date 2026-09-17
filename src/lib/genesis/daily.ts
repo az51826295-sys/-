@@ -100,6 +100,15 @@ export async function runDaily(
     } catch (e) {
       entry.rulers = { error: e instanceof Error ? e.message : String(e) };
     }
+    // 169회차: **행동에서 판정 읽기.** 결과를 받고 사장님이 한 말을 싼 모델로 읽어 그 말에 붙여 둔다(읽은 말은 다시 안 읽는다).
+    // 승인 단추가 0건이어도 사람 판정이 쌓인다 — 계기판·예측기는 붙여 둔 것만 읽는다(모델 0).
+    try {
+      const { loadImplicit } = await import("./implicit");
+      const im = await loadImplicit(db, co.id, ai);
+      entry.implicit = { returned: im.returned, withReply: im.withReply, read: im.read, verdicts: im.verdicts.length, approved: im.verdicts.filter((v) => v.approved === 1).length };
+    } catch (e) {
+      entry.implicit = { error: e instanceof Error ? e.message : String(e) };
+    }
     // 168회차: **맥박.** 최초 계획(Existence Drive)의 계기판을 매일 읽어 그날 줄에 남긴다 — 모델 없음, 돈 0.
     // 이게 없어서 "진화가 도는가 굶는가" 를 50일 동안 사람이 손으로 셌고, 그동안 예측은 0.700 상수였다.
     try {

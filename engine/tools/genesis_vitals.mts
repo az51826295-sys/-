@@ -61,7 +61,7 @@ for (const id of ids) {
   const v = await loadVitals(db, id);
   if (v.committed < 5) continue;
   console.log(`━━ 회사 ${id.slice(0, 8)} ━━  **${v.alive.verdict}** — ${v.alive.why}`);
-  console.log(`   예측 ${v.committed} · 바깥 채점 ${v.scored} (Grounding ${Math.round(v.grounding * 100)}%) = 사람 ${v.bySource.human} · 현실(유니티) ${v.bySource.reality} · 기계 판정 ${v.bySource.machine}`);
+  console.log(`   예측 ${v.committed} · 바깥 채점 ${v.scored} (Grounding ${Math.round(v.grounding * 100)}%) = 누른 판정 ${v.bySource.human} · 행동에서 읽은 판정 ${v.bySource.implicit} · 현실(유니티) ${v.bySource.reality} · 기계 판정 ${v.bySource.machine}`);
   console.log(`   Brier ${v.brier ?? "못 잼"} · 서로 다른 확률값 ${v.distinctP}가지`);
   for (const b of v.calibration) console.log(`     "${b.bucket}" 라고 말한 ${b.n}건: 말한 평균 ${b.said} → 실제 ${b.got}`);
   for (const d of v.domains) {

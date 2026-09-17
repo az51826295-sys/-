@@ -27,7 +27,8 @@ export const MIN_SCORED_FOR_LP = 8;
 /** |LP| 가 이보다 작으면 "멈춤"이다(예측오차 0~1 눈금에서 2%p). */
 export const LP_FLAT = 0.02;
 
-export type Source = "human" | "reality" | "machine";
+/** human = 단추로 누른 판정 · implicit = 결과를 받고 한 말·행동에서 읽은 판정(`implicit.ts`, 169회차) · reality = 유니티 검사 · machine = 결과물 자동 판정 */
+export type Source = "human" | "implicit" | "reality" | "machine";
 export type Scored = { skill: string; p: number; y: 0 | 1; at: string; source: Source; executionId: string | null; costUsd: number };
 
 export type DomainVitals = {
@@ -59,7 +60,7 @@ const r3 = (n: number) => Math.round(n * 1000) / 1000;
 
 /** 순수 계산. 기록 → 계기판. (자 `genesis_vitals.mts` 가 고장을 넣어 시험한다.) */
 export function computeVitals(committedBySkill: Record<string, { n: number; ps: number[] }>, scored: Scored[], hyp: { verified: number; rejected: number; pending: number }, now = new Date()): Vitals {
-  const bySourceOf = (rows: Scored[]) => ({ human: rows.filter((r) => r.source === "human").length, reality: rows.filter((r) => r.source === "reality").length, machine: rows.filter((r) => r.source === "machine").length });
+  const bySourceOf = (rows: Scored[]) => ({ human: rows.filter((r) => r.source === "human").length, implicit: rows.filter((r) => r.source === "implicit").length, reality: rows.filter((r) => r.source === "reality").length, machine: rows.filter((r) => r.source === "machine").length });
   const domains: DomainVitals[] = Object.entries(committedBySkill).map(([skill, c]) => {
     const rows = scored.filter((r) => r.skill === skill).sort((a, b) => (a.at < b.at ? -1 : 1));
     let lp: DomainVitals["lp"] = null, second: DomainVitals["secondEncounter"] = null;
@@ -148,11 +149,18 @@ export async function loadVitals(db: Supabase, companyId: string): Promise<Vital
     }
   }
 
-  // 한 예측에 채점이 여럿이면: 사람 > 현실 > 기계.
+  // 채점 1.5 — 사람의 행동(169회차): 결과를 받고 한 말·버리기에서 읽은 판정. 여기서는 **이미 읽어 둔 것만** 쓴다(모델 0) — 읽는 것은 매일 실행이 한다.
+  const implicitY = new Map<string, 0 | 1>();
+  try {
+    const { loadImplicit } = await import("./implicit");
+    for (const v of (await loadImplicit(db, companyId, null)).verdicts) { const e = execOfDel.get(v.deliverableId); if (e) implicitY.set(e, v.approved); }
+  } catch { /* 못 읽으면 그 칸은 비운다 */ }
+
+  // 한 예측에 채점이 여럿이면: 누른 판정 > 행동에서 읽은 판정 > 현실 > 기계. (기계가 통과라 해도 사장님이 물렸으면 그 판은 실패다.)
   const scored: Scored[] = [];
   for (const p of P) {
     const e = p.work_execution_id;
-    const pick: [Source, number | undefined][] = [["human", humanY.get(p.assignment_id)], ["reality", e ? realityY.get(e) : undefined], ["machine", e ? machineY.get(e) : undefined]];
+    const pick: [Source, number | undefined][] = [["human", humanY.get(p.assignment_id)], ["implicit", e ? implicitY.get(e) : undefined], ["reality", e ? realityY.get(e) : undefined], ["machine", e ? machineY.get(e) : undefined]];
     const got = pick.find(([, y]) => y !== undefined);
     if (got) scored.push({ skill: p.skill_id, p: Number(p.p_approved), y: got[1] ? 1 : 0, at: p.committed_at, source: got[0], executionId: e, costUsd: e ? cost.get(e) ?? 0 : 0 });
   }

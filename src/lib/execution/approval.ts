@@ -58,13 +58,14 @@ export async function askApproval(
       conversation_id: conversationId,
       role: "assistant",
       content,
-      attachments: { assignment: { id: args.assignmentId, title: args.card.title, queued: false }, approval: { assignmentId: args.assignmentId, executionId: args.executionId, round: args.round } },
+      attachments: { assignment: { id: args.assignmentId, title: args.card.title, queued: false }, approval: { assignmentId: args.assignmentId, executionId: args.executionId, round: args.round, unity: /유니티/.test(args.card.estimate) } },
     });
   }
   throw new WaitingForApproval(args.assignmentId, args.executionId);
 }
 
-export type PendingApproval = { assignmentId: string; executionId: string; title: string; round: number; companyEmployeeId: string };
+/** `unity`: 이 일이 끝난 뒤 유니티가 재는가(169회차). 웹 판에 "유니티가 재요" 라고 답하던 것을 걷으려고 — 모르면(옛 턴) false. */
+export type PendingApproval = { assignmentId: string; executionId: string; title: string; round: number; companyEmployeeId: string; unity: boolean };
 
 /** 이 대화에서 확인을 기다리는 계획이 있나. 마지막 되묻기 턴의 업무가 아직 waiting 이면 그것. */
 export async function pendingApproval(db: Supabase, conversationId: string): Promise<PendingApproval | null> {
@@ -76,7 +77,7 @@ export async function pendingApproval(db: Supabase, conversationId: string): Pro
     .order("created_at", { ascending: false })
     .limit(1)
     .maybeSingle();
-  const ap = (m?.attachments as { approval?: { assignmentId: string; executionId: string; round?: number } } | null)?.approval;
+  const ap = (m?.attachments as { approval?: { assignmentId: string; executionId: string; round?: number; unity?: boolean } } | null)?.approval;
   if (!ap) return null;
   const { data: a } = await db
     .from("assignments")
@@ -84,7 +85,7 @@ export async function pendingApproval(db: Supabase, conversationId: string): Pro
     .eq("id", ap.assignmentId)
     .maybeSingle();
   if (!a || a.status !== "waiting") return null;
-  return { assignmentId: a.id as string, executionId: ap.executionId, title: a.title as string, round: ap.round ?? 0, companyEmployeeId: a.company_employee_id as string };
+  return { assignmentId: a.id as string, executionId: ap.executionId, title: a.title as string, round: ap.round ?? 0, companyEmployeeId: a.company_employee_id as string, unity: ap.unity === true };
 }
 
 const YES = /^\s*(시작|시작해|시작해요|시작하자|응|네|예|넵|맞아|맞아요|좋아|좋아요|그래|그래요|그대로|그렇게|ㅇㅇ|ㅇ|ok|okay|go|가자|진행|진행해|해|해줘|해 줘|고)\s*[.!~]*\s*$/i;

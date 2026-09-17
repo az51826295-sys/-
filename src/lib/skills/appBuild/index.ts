@@ -142,7 +142,14 @@ type Previous = {
 };
 
 async function loadPrevious(ctx: SkillRunContext): Promise<Previous | null> {
-  const id = (ctx.context.roleInput as { previousDeliverableId?: string | null } | null)?.previousDeliverableId;
+  const ri = ctx.context.roleInput as { previousDeliverableId?: string | null; previousAssignmentId?: string | null } | null;
+  let id = ri?.previousDeliverableId ?? null;
+  // 169회차: 접수 때 아직 안 돌아왔던 일의 결과물을 이제 찾는다(이 일은 그 일 뒤에 섰으므로 지금은 끝나 있다).
+  if (!id && ri?.previousAssignmentId) {
+    const { data: d } = await ctx.supabase.from("deliverables").select("id").eq("assignment_id", ri.previousAssignmentId).order("created_at", { ascending: false }).limit(1).maybeSingle();
+    id = (d?.id as string | undefined) ?? null;
+    if (!id) console.warn(`[app_build] 고칠 대상 업무 ${ri.previousAssignmentId} 의 결과물이 아직 없다 — 처음 판으로 만든다`);
+  }
   if (!id) return null;
   const { data } = await ctx.supabase
     .from("deliverables")

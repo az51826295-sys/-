@@ -172,6 +172,9 @@ function clipTranscript(messages: { role: string; content: string }[]): string {
 /** 고쳐 달라는 말. 넓게 잡는다 — 못 잡으면 채팅이 코드 조각으로 답하고 끝난다. */
 export const FIX_WORDS = /고쳐|고치|수정|다시\s*해|바꿔|추가해|넣어\s*줘|빼\s*줘|늘려|줄여|fix|change/i;
 
+/** 로키의 답이 일을 **약속**하는 말(169회차). 약속했는데 업무가 안 생기면 아무 일도 안 일어난다 — 그때 고치는 일로 넘긴다. */
+export const PROMISE_WORDS = /고칠게|고치겠|고쳐서|반영(해서|할게|하겠)|다시 (돌릴|만들|올릴|짤)|수정(할게|하겠|해서)|바꿀게|바꾸겠|줄일게|늘릴게|넣을게|추가할게|손볼게/;
+
 /** 이 대화에 마지막으로 돌아온 산출물의 종류 → 그것을 낸 능력 id. */
 async function capabilityOfLastReturned(
   db: Awaited<ReturnType<typeof createClient>>,
@@ -187,13 +190,22 @@ async function capabilityOfLastReturned(
   const id = ((rows ?? []) as unknown as { deliverableId: string | null }[])
     .map((r) => r.deliverableId)
     .find((x): x is string => typeof x === "string");
-  if (!id) return null;
-  const { data: d } = await db.from("deliverables").select("deliverable_type").eq("id", id).maybeSingle();
-  const type = (d?.deliverable_type as string | undefined) ?? "";
   const BY_TYPE: Record<string, string> = {
     app_build: "small_app",
     mesh_assets: "mesh_from_image",
   };
+  if (!id) {
+    // 169회차: 돌아온 것이 아직 없어도(일이 도는 중이거나 방금 끝나 대화에 안 붙었어도) "고쳐 줘" 는 그 일을 맡은 직원의 일이다.
+    // 이게 없어서 로키가 "반영해서 다시 돌릴게" 라고 **말만 하고 아무 일도 안 만들었다**(1단계 시험 첫 판).
+    const { lastAssignmentInConversation } = await import("@/lib/chat/delegate");
+    const aid = await lastAssignmentInConversation(db, conversationId, null);
+    if (!aid) return null;
+    const { data: a } = await db.from("assignments").select("role_input_schema_id").eq("id", aid).maybeSingle();
+    const schema = ((a?.role_input_schema_id as string | undefined) ?? "").replace(/_assignment_v\d+$/, "");
+    return BY_TYPE[schema] ?? null;
+  }
+  const { data: d } = await db.from("deliverables").select("deliverable_type").eq("id", id).maybeSingle();
+  const type = (d?.deliverable_type as string | undefined) ?? "";
   return BY_TYPE[type] ?? null;
 }
 
@@ -303,7 +315,8 @@ export async function runEverydayTurn(
         assignment = null;
       } else if (kind === "yes") {
         await resumeApproved(supabase, pending, null);
-        reply = "네, 그대로 시작할게요. 끝나면 여기 붙고, 유니티가 재요.";
+        // 169회차: HTML 게임에도 "유니티가 재요" 라고 답했다(사장님 화면 09-17). 재는 판에만 그 말을 한다.
+        reply = pending.unity ? "네, 그대로 시작할게요. 끝나면 여기 붙고, 유니티가 재요." : "네, 그대로 시작할게요. 끝나면 여기 붙어요.";
       } else {
         const r = await resumeApproved(supabase, pending, said);
         reply = r.mode === "replan"
@@ -383,7 +396,10 @@ export async function runEverydayTurn(
 
   if (companyId && input.conversationId && !plan.capabilityId) {
     const last = [...input.messages].reverse().find((m) => m.role === "user")?.content ?? "";
-    if (FIX_WORDS.test(last)) {
+    // 169회차: **말만 하고 일을 안 만드는 것**을 막는다. 사람 말에 고치기 낱말이 없어도("오른쪽 눌렀는데 왼쪽으로 가"), 로키 자신의 답이
+    // "고칠게·반영할게·다시 돌릴게" 라고 **약속**했으면 그건 일이다 — 약속해 놓고 업무가 없으면 거짓말이 된다. (사람 말이 아니라 로키 말을 읽는다.)
+    const promised = PROMISE_WORDS.test(plan.reply ?? "");
+    if (FIX_WORDS.test(last) || promised) {
       const cap = await capabilityOfLastReturned(supabase, input.conversationId);
       if (cap) {
         plan.capabilityId = cap;
