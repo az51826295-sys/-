@@ -137,6 +137,20 @@ export async function runDaily(
     result.video = { ok: false, error: e instanceof Error ? e.message : String(e) };
   }
 
+  // 171회차(2단계 첫 조각): **지금 어떤 AI 들이 있는가.** 공급자의 모델 목록을 읽어 어제 장부와 견준다 — 돈 0, 모델 0.
+  // 첫 판독(09-18)이 찾은 것: 로키의 주력 `gpt-5` 는 2025-08 모델이고 그 뒤로 5.1~5.6 과 코드 전용 판이 나와 있었다. 아무도 몰랐다.
+  // 여기선 파악만 한다. 갈아타는 것은 시험판에 대 본 뒤다(소문이 아니라 우리 일에서 나은지).
+  try {
+    const { watchModels } = await import("@/lib/providers/modelWatch");
+    const { data: last } = await db.from("genesis_runs").select("result").eq("kind", "daily").not("result->models", "is", null).order("run_date", { ascending: false }).limit(1).maybeSingle();
+    const prev = ((last?.result as { models?: { snapshot?: unknown } } | null)?.models?.snapshot ?? null) as Parameters<typeof watchModels>[0];
+    const { report, snapshot } = await watchModels(prev);
+    result.models = { report, snapshot };
+    log(`AI 목록: ${Object.entries(report.vendors).map(([v, s]) => `${v} ${s.ok ? s.count : "못 읽음"}`).join(" · ")} · 새로 생김 ${report.fresh.length}${report.fresh.length ? `(${report.fresh.slice(0, 5).map((m) => m.id).join(", ")})` : ""} · 부르는데 없는 것 ${report.missingInUse.length}`);
+  } catch (e) {
+    result.models = { error: e instanceof Error ? e.message : String(e) };
+  }
+
   await db.from("genesis_runs").update({ finished_at: new Date().toISOString(), status: failed ? "failed" : "done", result }).eq("id", claimed.id);
   return { ran: true, date, result };
 }

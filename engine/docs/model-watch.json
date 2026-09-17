@@ -1,0 +1,720 @@
+{
+ "takenAt": "2026-09-17T17:56:48.828Z",
+ "models": [
+  {
+   "id": "claude-fable-5",
+   "vendor": "anthropic",
+   "created": 1780790400
+  },
+  {
+   "id": "claude-fable-5-1",
+   "vendor": "anthropic",
+   "created": 1787875200
+  },
+  {
+   "id": "claude-haiku-4-5-20251001",
+   "vendor": "anthropic",
+   "created": 1760486400
+  },
+  {
+   "id": "claude-opus-4-5-20251101",
+   "vendor": "anthropic",
+   "created": 1763942400
+  },
+  {
+   "id": "claude-opus-4-6",
+   "vendor": "anthropic",
+   "created": 1770163200
+  },
+  {
+   "id": "claude-opus-4-7",
+   "vendor": "anthropic",
+   "created": 1776124800
+  },
+  {
+   "id": "claude-opus-4-8",
+   "vendor": "anthropic",
+   "created": 1779926400
+  },
+  {
+   "id": "claude-opus-5",
+   "vendor": "anthropic",
+   "created": 1784851200
+  },
+  {
+   "id": "claude-sonnet-4-5-20250929",
+   "vendor": "anthropic",
+   "created": 1759104000
+  },
+  {
+   "id": "claude-sonnet-4-6",
+   "vendor": "anthropic",
+   "created": 1771286400
+  },
+  {
+   "id": "claude-sonnet-5",
+   "vendor": "anthropic",
+   "created": 1782691200
+  },
+  {
+   "id": "deepseek-flash",
+   "vendor": "deepseek",
+   "created": null
+  },
+  {
+   "id": "deepseek-v4-pro",
+   "vendor": "deepseek",
+   "created": null
+  },
+  {
+   "id": "babbage-002",
+   "vendor": "openai",
+   "created": 1692634615
+  },
+  {
+   "id": "chat-latest",
+   "vendor": "openai",
+   "created": 1777704602
+  },
+  {
+   "id": "chatgpt-image-latest",
+   "vendor": "openai",
+   "created": 1765925279
+  },
+  {
+   "id": "davinci-002",
+   "vendor": "openai",
+   "created": 1692634301
+  },
+  {
+   "id": "gpt-3.5-turbo",
+   "vendor": "openai",
+   "created": 1677610602
+  },
+  {
+   "id": "gpt-3.5-turbo-0125",
+   "vendor": "openai",
+   "created": 1706048358
+  },
+  {
+   "id": "gpt-3.5-turbo-1106",
+   "vendor": "openai",
+   "created": 1698959748
+  },
+  {
+   "id": "gpt-3.5-turbo-16k",
+   "vendor": "openai",
+   "created": 1683758102
+  },
+  {
+   "id": "gpt-3.5-turbo-instruct",
+   "vendor": "openai",
+   "created": 1692901427
+  },
+  {
+   "id": "gpt-3.5-turbo-instruct-0914",
+   "vendor": "openai",
+   "created": 1694122472
+  },
+  {
+   "id": "gpt-4",
+   "vendor": "openai",
+   "created": 1687882411
+  },
+  {
+   "id": "gpt-4-0613",
+   "vendor": "openai",
+   "created": 1686588896
+  },
+  {
+   "id": "gpt-4-turbo",
+   "vendor": "openai",
+   "created": 1712361441
+  },
+  {
+   "id": "gpt-4-turbo-2024-04-09",
+   "vendor": "openai",
+   "created": 1712601677
+  },
+  {
+   "id": "gpt-4.1",
+   "vendor": "openai",
+   "created": 1744316542
+  },
+  {
+   "id": "gpt-4.1-2025-04-14",
+   "vendor": "openai",
+   "created": 1744315746
+  },
+  {
+   "id": "gpt-4.1-mini",
+   "vendor": "openai",
+   "created": 1744318173
+  },
+  {
+   "id": "gpt-4.1-mini-2025-04-14",
+   "vendor": "openai",
+   "created": 1744317547
+  },
+  {
+   "id": "gpt-4.1-nano",
+   "vendor": "openai",
+   "created": 1744321707
+  },
+  {
+   "id": "gpt-4.1-nano-2025-04-14",
+   "vendor": "openai",
+   "created": 1744321025
+  },
+  {
+   "id": "gpt-4o",
+   "vendor": "openai",
+   "created": 1715367049
+  },
+  {
+   "id": "gpt-4o-2024-05-13",
+   "vendor": "openai",
+   "created": 1715368132
+  },
+  {
+   "id": "gpt-4o-2024-08-06",
+   "vendor": "openai",
+   "created": 1722814719
+  },
+  {
+   "id": "gpt-4o-2024-11-20",
+   "vendor": "openai",
+   "created": 1739331543
+  },
+  {
+   "id": "gpt-4o-mini",
+   "vendor": "openai",
+   "created": 1721172741
+  },
+  {
+   "id": "gpt-4o-mini-2024-07-18",
+   "vendor": "openai",
+   "created": 1721172717
+  },
+  {
+   "id": "gpt-4o-mini-search-preview",
+   "vendor": "openai",
+   "created": 1741391161
+  },
+  {
+   "id": "gpt-4o-mini-search-preview-2025-03-11",
+   "vendor": "openai",
+   "created": 1741390858
+  },
+  {
+   "id": "gpt-4o-mini-transcribe",
+   "vendor": "openai",
+   "created": 1742068596
+  },
+  {
+   "id": "gpt-4o-mini-transcribe-2025-03-20",
+   "vendor": "openai",
+   "created": 1765610545
+  },
+  {
+   "id": "gpt-4o-mini-transcribe-2025-12-15",
+   "vendor": "openai",
+   "created": 1765610407
+  },
+  {
+   "id": "gpt-4o-mini-tts",
+   "vendor": "openai",
+   "created": 1742403959
+  },
+  {
+   "id": "gpt-4o-mini-tts-2025-03-20",
+   "vendor": "openai",
+   "created": 1765610731
+  },
+  {
+   "id": "gpt-4o-mini-tts-2025-12-15",
+   "vendor": "openai",
+   "created": 1765610837
+  },
+  {
+   "id": "gpt-4o-search-preview",
+   "vendor": "openai",
+   "created": 1771905534
+  },
+  {
+   "id": "gpt-4o-search-preview-2025-03-11",
+   "vendor": "openai",
+   "created": 1771905621
+  },
+  {
+   "id": "gpt-4o-transcribe",
+   "vendor": "openai",
+   "created": 1742068463
+  },
+  {
+   "id": "gpt-4o-transcribe-diarize",
+   "vendor": "openai",
+   "created": 1750798887
+  },
+  {
+   "id": "gpt-5",
+   "vendor": "openai",
+   "created": 1754425777
+  },
+  {
+   "id": "gpt-5-2025-08-07",
+   "vendor": "openai",
+   "created": 1754075360
+  },
+  {
+   "id": "gpt-5-chat-latest",
+   "vendor": "openai",
+   "created": 1754073306
+  },
+  {
+   "id": "gpt-5-codex",
+   "vendor": "openai",
+   "created": 1757527818
+  },
+  {
+   "id": "gpt-5-mini",
+   "vendor": "openai",
+   "created": 1754425928
+  },
+  {
+   "id": "gpt-5-mini-2025-08-07",
+   "vendor": "openai",
+   "created": 1754425867
+  },
+  {
+   "id": "gpt-5-nano",
+   "vendor": "openai",
+   "created": 1754426384
+  },
+  {
+   "id": "gpt-5-nano-2025-08-07",
+   "vendor": "openai",
+   "created": 1754426303
+  },
+  {
+   "id": "gpt-5-pro",
+   "vendor": "openai",
+   "created": 1759469822
+  },
+  {
+   "id": "gpt-5-pro-2025-10-06",
+   "vendor": "openai",
+   "created": 1759469707
+  },
+  {
+   "id": "gpt-5-search-api",
+   "vendor": "openai",
+   "created": 1759514629
+  },
+  {
+   "id": "gpt-5-search-api-2025-10-14",
+   "vendor": "openai",
+   "created": 1760043960
+  },
+  {
+   "id": "gpt-5.1",
+   "vendor": "openai",
+   "created": 1762800673
+  },
+  {
+   "id": "gpt-5.1-2025-11-13",
+   "vendor": "openai",
+   "created": 1762800353
+  },
+  {
+   "id": "gpt-5.1-chat-latest",
+   "vendor": "openai",
+   "created": 1762547951
+  },
+  {
+   "id": "gpt-5.1-codex",
+   "vendor": "openai",
+   "created": 1762988221
+  },
+  {
+   "id": "gpt-5.1-codex-max",
+   "vendor": "openai",
+   "created": 1763671532
+  },
+  {
+   "id": "gpt-5.1-codex-mini",
+   "vendor": "openai",
+   "created": 1763007109
+  },
+  {
+   "id": "gpt-5.2",
+   "vendor": "openai",
+   "created": 1765313051
+  },
+  {
+   "id": "gpt-5.2-2025-12-11",
+   "vendor": "openai",
+   "created": 1765313028
+  },
+  {
+   "id": "gpt-5.2-chat-latest",
+   "vendor": "openai",
+   "created": 1765344352
+  },
+  {
+   "id": "gpt-5.2-codex",
+   "vendor": "openai",
+   "created": 1766164985
+  },
+  {
+   "id": "gpt-5.2-pro",
+   "vendor": "openai",
+   "created": 1765343983
+  },
+  {
+   "id": "gpt-5.2-pro-2025-12-11",
+   "vendor": "openai",
+   "created": 1765343959
+  },
+  {
+   "id": "gpt-5.3-chat-latest",
+   "vendor": "openai",
+   "created": 1772236571
+  },
+  {
+   "id": "gpt-5.3-codex",
+   "vendor": "openai",
+   "created": 1770537915
+  },
+  {
+   "id": "gpt-5.4",
+   "vendor": "openai",
+   "created": 1772691852
+  },
+  {
+   "id": "gpt-5.4-2026-03-05",
+   "vendor": "openai",
+   "created": 1772654062
+  },
+  {
+   "id": "gpt-5.4-mini",
+   "vendor": "openai",
+   "created": 1773451123
+  },
+  {
+   "id": "gpt-5.4-mini-2026-03-17",
+   "vendor": "openai",
+   "created": 1773451076
+  },
+  {
+   "id": "gpt-5.4-nano",
+   "vendor": "openai",
+   "created": 1773450870
+  },
+  {
+   "id": "gpt-5.4-nano-2026-03-17",
+   "vendor": "openai",
+   "created": 1773450837
+  },
+  {
+   "id": "gpt-5.4-pro",
+   "vendor": "openai",
+   "created": 1772659601
+  },
+  {
+   "id": "gpt-5.4-pro-2026-03-05",
+   "vendor": "openai",
+   "created": 1772659657
+  },
+  {
+   "id": "gpt-5.5",
+   "vendor": "openai",
+   "created": 1776824847
+  },
+  {
+   "id": "gpt-5.5-2026-04-23",
+   "vendor": "openai",
+   "created": 1776839241
+  },
+  {
+   "id": "gpt-5.5-pro",
+   "vendor": "openai",
+   "created": 1776894349
+  },
+  {
+   "id": "gpt-5.5-pro-2026-04-23",
+   "vendor": "openai",
+   "created": 1776894470
+  },
+  {
+   "id": "gpt-5.6-luna",
+   "vendor": "openai",
+   "created": 1782228658
+  },
+  {
+   "id": "gpt-5.6-sol",
+   "vendor": "openai",
+   "created": 1782228018
+  },
+  {
+   "id": "gpt-5.6-terra",
+   "vendor": "openai",
+   "created": 1782228459
+  },
+  {
+   "id": "gpt-6-astra",
+   "vendor": "openai",
+   "created": 1787853604
+  },
+  {
+   "id": "gpt-audio",
+   "vendor": "openai",
+   "created": 1756339249
+  },
+  {
+   "id": "gpt-audio-1.5",
+   "vendor": "openai",
+   "created": 1771550885
+  },
+  {
+   "id": "gpt-audio-2025-08-28",
+   "vendor": "openai",
+   "created": 1756256146
+  },
+  {
+   "id": "gpt-audio-mini",
+   "vendor": "openai",
+   "created": 1759512027
+  },
+  {
+   "id": "gpt-audio-mini-2025-10-06",
+   "vendor": "openai",
+   "created": 1759512137
+  },
+  {
+   "id": "gpt-audio-mini-2025-12-15",
+   "vendor": "openai",
+   "created": 1765760008
+  },
+  {
+   "id": "gpt-image-1",
+   "vendor": "openai",
+   "created": 1745517030
+  },
+  {
+   "id": "gpt-image-1-mini",
+   "vendor": "openai",
+   "created": 1758845821
+  },
+  {
+   "id": "gpt-image-1.5",
+   "vendor": "openai",
+   "created": 1764030620
+  },
+  {
+   "id": "gpt-image-2",
+   "vendor": "openai",
+   "created": 1776399795
+  },
+  {
+   "id": "gpt-image-2-2026-04-21",
+   "vendor": "openai",
+   "created": 1776399994
+  },
+  {
+   "id": "gpt-image-2.5-flare",
+   "vendor": "openai",
+   "created": 1788563147
+  },
+  {
+   "id": "gpt-image-2.5-flare-2026-09-08",
+   "vendor": "openai",
+   "created": 1788851006
+  },
+  {
+   "id": "gpt-image-2.5-sunburst",
+   "vendor": "openai",
+   "created": 1788563162
+  },
+  {
+   "id": "gpt-image-2.5-sunburst-2026-09-08",
+   "vendor": "openai",
+   "created": 1788851010
+  },
+  {
+   "id": "gpt-live-1",
+   "vendor": "openai",
+   "created": 1788889407
+  },
+  {
+   "id": "gpt-live-transcribe",
+   "vendor": "openai",
+   "created": 1785168034
+  },
+  {
+   "id": "gpt-realtime",
+   "vendor": "openai",
+   "created": 1756271701
+  },
+  {
+   "id": "gpt-realtime-1.5",
+   "vendor": "openai",
+   "created": 1771461469
+  },
+  {
+   "id": "gpt-realtime-2",
+   "vendor": "openai",
+   "created": 1778006032
+  },
+  {
+   "id": "gpt-realtime-2.1",
+   "vendor": "openai",
+   "created": 1782254687
+  },
+  {
+   "id": "gpt-realtime-2.1-mini",
+   "vendor": "openai",
+   "created": 1782254706
+  },
+  {
+   "id": "gpt-realtime-2025-08-28",
+   "vendor": "openai",
+   "created": 1756271773
+  },
+  {
+   "id": "gpt-realtime-mini",
+   "vendor": "openai",
+   "created": 1759517133
+  },
+  {
+   "id": "gpt-realtime-mini-2025-12-15",
+   "vendor": "openai",
+   "created": 1765612007
+  },
+  {
+   "id": "gpt-realtime-translate",
+   "vendor": "openai",
+   "created": 1777950216
+  },
+  {
+   "id": "gpt-realtime-whisper",
+   "vendor": "openai",
+   "created": 1778012060
+  },
+  {
+   "id": "gpt-transcribe",
+   "vendor": "openai",
+   "created": 1785168027
+  },
+  {
+   "id": "o1",
+   "vendor": "openai",
+   "created": 1734375816
+  },
+  {
+   "id": "o1-2024-12-17",
+   "vendor": "openai",
+   "created": 1734326976
+  },
+  {
+   "id": "o1-pro",
+   "vendor": "openai",
+   "created": 1742251791
+  },
+  {
+   "id": "o1-pro-2025-03-19",
+   "vendor": "openai",
+   "created": 1742251504
+  },
+  {
+   "id": "o3",
+   "vendor": "openai",
+   "created": 1744225308
+  },
+  {
+   "id": "o3-2025-04-16",
+   "vendor": "openai",
+   "created": 1744133301
+  },
+  {
+   "id": "o3-mini",
+   "vendor": "openai",
+   "created": 1737146383
+  },
+  {
+   "id": "o3-mini-2025-01-31",
+   "vendor": "openai",
+   "created": 1738010200
+  },
+  {
+   "id": "o4-mini",
+   "vendor": "openai",
+   "created": 1744225351
+  },
+  {
+   "id": "o4-mini-2025-04-16",
+   "vendor": "openai",
+   "created": 1744133506
+  },
+  {
+   "id": "omni-moderation-2024-09-26",
+   "vendor": "openai",
+   "created": 1732734466
+  },
+  {
+   "id": "omni-moderation-latest",
+   "vendor": "openai",
+   "created": 1731689265
+  },
+  {
+   "id": "sora-2",
+   "vendor": "openai",
+   "created": 1759708615
+  },
+  {
+   "id": "sora-2-pro",
+   "vendor": "openai",
+   "created": 1759708663
+  },
+  {
+   "id": "text-embedding-3-large",
+   "vendor": "openai",
+   "created": 1705953180
+  },
+  {
+   "id": "text-embedding-3-small",
+   "vendor": "openai",
+   "created": 1705948997
+  },
+  {
+   "id": "text-embedding-ada-002",
+   "vendor": "openai",
+   "created": 1671217299
+  },
+  {
+   "id": "tts-1",
+   "vendor": "openai",
+   "created": 1681940951
+  },
+  {
+   "id": "tts-1-1106",
+   "vendor": "openai",
+   "created": 1699053241
+  },
+  {
+   "id": "tts-1-hd",
+   "vendor": "openai",
+   "created": 1699046015
+  },
+  {
+   "id": "tts-1-hd-1106",
+   "vendor": "openai",
+   "created": 1699053533
+  },
+  {
+   "id": "whisper-1",
+   "vendor": "openai",
+   "created": 1677532384
+  }
+ ]
+}
