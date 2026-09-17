@@ -305,15 +305,31 @@ export async function collectWorkReturns(
 async function stepOf(db: Supabase, assignmentId: string, status: string): Promise<{ step: string; plan?: PlanCard }> {
   const { data } = await db
     .from("work_executions")
-    .select("current_step, status, steps:metrics_json->steps")
+    .select("current_step, status, steps:metrics_json->steps, decision:metrics_json->decision")
     .eq("assignment_id", assignmentId)
     .order("created_at", { ascending: false })
     .limit(1)
     .maybeSingle();
   // 되묻기(35회차): 계획을 보이고 멈춘 업무. 카드는 그 실행의 저장된 계획에서.
-  if (status === "waiting") return { step: STEP_LABEL.waiting, plan: planCardOf((data as { steps?: unknown } | null)?.steps) };
+  const row = data as { steps?: unknown; decision?: HeadDecision | null } | null;
+  if (status === "waiting") return { step: STEP_LABEL.waiting, plan: withHead(planCardOf(row?.steps), row?.decision) };
   const raw = (data?.current_step as string | null) ?? (data ? "running" : "queued");
-  return { step: STEP_LABEL[raw] ?? raw, plan: planCardOf((data as { steps?: unknown } | null)?.steps) };
+  return { step: STEP_LABEL[raw] ?? raw, plan: withHead(planCardOf(row?.steps), row?.decision) };
+}
+
+type HeadDecision = { title?: string; kind?: string; showToPerson?: string; estimate?: string; machine?: string; setup?: string; size?: string; materials?: string };
+
+/**
+ * **머리가 정한 것을 카드 맨 위에** (161회차). 사장님: "판단자 ai 만들자" · "기계가 아닌 AI 여야 돼".
+ * 일이 시작되기 전에 AI 가 정한 한 줄이 사람 눈앞에 온다 — 여기 대고 한 말이 반응 읽기(156회차)로 학습 재료가 된다.
+ * 카드가 없던 일(영상·조사)도 머리의 말만으로 카드가 생긴다.
+ */
+function withHead(card: PlanCard | undefined, d: HeadDecision | null | undefined): PlanCard | undefined {
+  if (!d?.showToPerson) return card;
+  const head = `머리: ${d.showToPerson}`;
+  const tail = [d.machine && d.machine !== "기계 무관" ? `기계 ${d.machine}${d.setup && d.setup !== "없음" ? ` (먼저 ${d.setup})` : ""}` : "", d.size ? `크기 ${d.size}` : "", d.materials ? `재료 ${d.materials}` : ""].filter(Boolean).join(" · ");
+  if (card) return { ...card, lines: [head, ...(tail ? [tail] : []), ...card.lines].slice(0, 6), estimate: d.estimate && d.estimate !== "모르겠다" ? d.estimate : card.estimate };
+  return { title: d.title || "일", kind: d.kind || "일", lines: [head, ...(tail ? [tail] : [])], estimate: d.estimate && d.estimate !== "모르겠다" ? d.estimate : "모르겠다" };
 }
 
 /** 저장된 단계에서 계획 카드를 만든다. Dev 는 plan(제목·기준), Vox 는 brief(대상·초안/고화질·필수 조건). */

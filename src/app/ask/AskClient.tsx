@@ -6,7 +6,6 @@ import { useEffect, useRef, useState } from "react";
 import Icon from "@/components/Icon";
 import PreviewPanel, { PreviewStrip, previewSummary, usePreview, type PlanCard } from "@/app/ask/PreviewPanel";
 import { ChatMarkdown } from "@/components/ChatMarkdown";
-import RoutingNotice from "./RoutingNotice";
 
 /**
  * 회사에게 말을 거는 화면.
@@ -390,10 +389,10 @@ export default function AskClient({
         360px 칸을 떼면 정작 대화가 반으로 줄어든다.
       */}
       {/*
-        판단이 계획한 자리에서 안 돌고 있을 때만 뜨는 줄. 평소에는 아무것도
-        안 그린다 — 계획대로일 때 초록불을 켜면 그 불은 곧 안 보게 된다.
+        "판단이 N건 계획한 자리 밖에서 돌았습니다" 줄은 09-17 사장님 지시로 대화 화면에서 뺐다 —
+        운영 신호지 쓰는 사람이 볼 말이 아니다. 신호는 그대로 남아 있다: `/api/routing/health`,
+        `RoutingNotice.tsx`(안 붙였을 뿐), 자가진단(`selfcheck.mts` 7번 줄).
       */}
-      <RoutingNotice />
 
       <div className="flex-1 space-y-4 overflow-y-auto py-6">
         {/*
@@ -406,8 +405,24 @@ export default function AskClient({
             <p className="text-sm text-[var(--rk-600)]">
               {task
                 ? `"${task.title}" 안에서 나눈 이야기만 여기 모입니다.`
-                : "무엇이든 물어보세요. 찾아봐야 할 것은 찾아보고, 시간이 드는 일은 사람을 붙여 업무로 만듭니다."}
+                : "무엇이든 물어보세요. 찾아봐야 할 것은 찾아보고, 시간이 드는 일은 AI가 업무로 맡아 자동으로 만들어요."}
             </p>
+            {/* 100회차: Paddle 심사가 "사람을 붙여"를 번역기로 읽고 사람 용역으로 보고 거절했다(09-13). 소프트웨어라는 것을 영어로도 적는다. */}
+            {!task && (
+              <p className="text-[11px] text-[var(--rk-400)]">Rookery is AI software (SaaS). All results are generated automatically by AI models and delivered digitally in the app. We do not sell physical goods or human-performed services.</p>
+            )}
+            {/* 100회차: Paddle 판매자 심사는 첫 화면에서 약관·개인정보·환불로 가는 길을 본다(루트 / 가 여기로 온다). */}
+            {!task && (
+              <p className="text-[11px] text-[var(--rk-400)]">
+                <a href="/pricing" className="underline">요금</a>
+                <span className="mx-1.5">·</span>
+                <a href="/terms" className="underline">이용약관</a>
+                <span className="mx-1.5">·</span>
+                <a href="/refund" className="underline">환불 정책</a>
+                <span className="mx-1.5">·</span>
+                <a href="/privacy" className="underline">개인정보 처리방침</a>
+              </p>
+            )}
           </div>
         )}
         {turns.map((t, i) => (
@@ -426,6 +441,16 @@ export default function AskClient({
             >
               {t.role === "assistant" ? <ChatMarkdown>{t.content}</ChatMarkdown> : t.content}
             </div>
+            {t.role === "assistant" && (
+              // 100회차: 구글 플레이 AI 생성 콘텐츠 정책 — 앱을 나가지 않고 AI 결과를 신고할 수 있어야 한다.
+              // 두근도트와 같은 방식(메일 앱으로, 무엇을 신고하는지 미리 채워서). 표를 새로 만들지 않았다.
+              <a
+                href={`mailto:az51826295@gmail.com?subject=${encodeURIComponent("로키 신고: AI 답변")}&body=${encodeURIComponent(`대화: ${conversationId ?? "(저장 전)"}\n답변 앞부분: ${t.content.slice(0, 200)}\n\n무엇이 문제인지 적어 주세요:\n`)}`}
+                className="mt-0.5 block text-[10.5px] text-[var(--rk-400)] hover:text-[var(--rk-ink)]"
+              >
+                신고
+              </a>
+            )}
             {t.files?.some((f) => f.href && IMG_RX.test(f.path)) && (
               // 그림은 링크가 아니라 **그림**으로. 유니티가 찍은 게임 화면이 여기 온다 —
               // 사장님은 유니티를 안 열고도 무엇이 만들어졌는지 본다.
@@ -601,7 +626,7 @@ export default function AskClient({
         }}
         className="flex gap-2 border-t border-[var(--rk-200)] py-3"
       >
-        <label className="flex cursor-pointer items-center border-2 border-[var(--rk-ink)] bg-transparent px-3 text-[var(--rk-ink)] hover:bg-[var(--rk-100)]">
+        <label className="flex shrink-0 cursor-pointer items-center border-2 border-[var(--rk-ink)] bg-transparent px-3 text-[var(--rk-ink)] hover:bg-[var(--rk-100)]">
           <Icon name="attach" size={20} />
           <input
             type="file"
@@ -619,11 +644,11 @@ export default function AskClient({
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder="무엇이든 물어보세요"
-          className="flex-1 border-2 border-[var(--rk-ink)] bg-transparent px-4 py-3 text-sm text-[var(--rk-ink)] outline-none placeholder:text-[var(--rk-400)] focus:bg-[var(--rk-100)]"
+          className="min-w-0 flex-1 border-2 border-[var(--rk-ink)] bg-transparent px-4 py-3 text-sm text-[var(--rk-ink)] outline-none placeholder:text-[var(--rk-400)] focus:bg-[var(--rk-100)]"
         />
         <button
           disabled={busy || !text.trim()}
-          className="border-2 border-[var(--rk-ink)] bg-[var(--rk-ink)] px-5 text-sm font-medium text-[var(--rk-paper)] disabled:opacity-30"
+          className="shrink-0 whitespace-nowrap border-2 border-[var(--rk-ink)] bg-[var(--rk-ink)] px-5 text-sm font-medium text-[var(--rk-paper)] disabled:opacity-30"
         >
           보내기
         </button>
@@ -637,6 +662,7 @@ export default function AskClient({
       open={previewOpen}
       onOpenChange={setPreviewOpen}
       onReverted={() => { setPanelKey((k) => k + 1); }}
+      onFix={(feedback) => { setPreviewOpen(false); void send(`수정 요청: ${feedback}`); }}
     />
     </div>
   );

@@ -1,0 +1,97 @@
+{
+  "runId": "202609141512-rules-on",
+  "label": "rules-on",
+  "rules": "on",
+  "at": "2026-09-14T15:23:21.409Z",
+  "version": "v0",
+  "rows": [
+    {
+      "id": "b0-01",
+      "employee": "ana",
+      "title": "GDC 레벨 디자인 워크숍(블록메시·조명) 영상 분석",
+      "historical": "PASS",
+      "verdict": "PASS",
+      "passed": 16,
+      "total": 16,
+      "costUsd": 0.039,
+      "ms": 133379
+    },
+    {
+      "id": "b0-02",
+      "employee": "ana",
+      "title": "GDC 레벨 디자인 자료 셋 비교 — 영상·PDF 슬라이드·80.lv 기사",
+      "historical": "PASS",
+      "verdict": "PASS",
+      "passed": 30,
+      "total": 30,
+      "costUsd": 0.056,
+      "ms": 173817
+    },
+    {
+      "id": "b0-03",
+      "employee": "ana",
+      "title": "GDC 레벨 디자인 자료 셋 비교 — 영상·PDF 슬라이드·80.lv 기사",
+      "historical": "PARTIAL",
+      "verdict": "PASS",
+      "passed": 25,
+      "total": 25,
+      "costUsd": 0.058,
+      "ms": 173773
+    },
+    {
+      "id": "b0-04",
+      "employee": "ana",
+      "title": "GDC 영상 다시 읽기 — 조명 파트(로버트 양) 규칙만",
+      "historical": "PASS",
+      "verdict": "PASS",
+      "passed": 14,
+      "total": 14,
+      "costUsd": 0.056,
+      "ms": 173752
+    },
+    {
+      "id": "b0-05",
+      "employee": "vid",
+      "title": "첫 3D 레벨 규칙 다섯 가지 — 60초 설명 영상",
+      "historical": "FAIL",
+      "verdict": "PASS",
+      "passed": 8,
+      "total": 8,
+      "costUsd": 0.054,
+      "ms": 143473
+    },
+    {
+      "id": "b0-06",
+      "employee": "vid",
+      "title": "로키가 무엇인지 40초 소개 영상",
+      "historical": "PASS",
+      "verdict": "PASS",
+      "passed": 8,
+      "total": 8,
+      "costUsd": 0.057,
+      "ms": 143414
+    },
+    {
+      "id": "b0-07",
+      "employee": "vid",
+      "title": "Ana 의 조명 분석을 60초 영상으로",
+      "historical": "PASS",
+      "verdict": "FAIL",
+      "passed": 7,
+      "total": 8,
+      "costUsd": 0.032,
+      "ms": 92594
+    },
+    {
+      "id": "b0-08",
+      "employee": "vid",
+      "title": "검사 떨어진 줄 고치기 (1/3) — 첫 3D 레벨 규칙 다섯 가지, 60초",
+      "historical": "PASS",
+      "verdict": "PASS",
+      "passed": 8,
+      "total": 8,
+      "costUsd": 0.057,
+      "ms": 143153
+    }
+  ]
+}

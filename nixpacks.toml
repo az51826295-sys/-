@@ -3,4 +3,5 @@
 # 이걸 안 적으면 빌더가 기본값(18)을 쓰고, Next 16 이 ">=20.9.0" 이라 빌드가
 # 죽는다. 로컬에서는 새 Node 를 쓰고 있어서 이 차이가 배포 때까지 안 보였다.
 [phases.setup]
-nixPkgs = ["nodejs_22"]
+# 111회차 09-14: ffmpeg-static 리눅스 바이너리엔 drawtext(글자 굽기)가 없어 영상이 전부 죽었다 → 시스템 ffmpeg(full 빌드, libfreetype 포함).
+nixPkgs = ["nodejs_22", "ffmpeg-full"]

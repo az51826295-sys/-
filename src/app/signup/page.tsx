@@ -1,5 +1,11 @@
-import Link from "next/link";
+import RookeryAuth from "../login/RookeryAuth";
 import { signup } from "./actions";
+import DotAuth from "../login/DotAuth";
+import { googleLogin } from "../login/actions";
+import { headers } from "next/headers";
+
+// 두근도트 서비스에서는 탭 제목도 두근도트. 루트 레이아웃의 "Rookery" 가 앱 안에 뜨면 딴 회사 페이지가 된다.
+export const metadata = process.env.PRODUCT === "dot" ? { title: "두근도트 — 가입" } : { title: "로키 — 가입" };
 
 export default async function SignupPage({
   searchParams,
@@ -8,63 +14,11 @@ export default async function SignupPage({
 }) {
   const { error } = await searchParams;
 
-  return (
-    <div className="flex flex-1 items-center justify-center px-4 py-16">
-      <div className="w-full max-w-sm">
-        <h1 className="text-2xl font-semibold text-zinc-900">
-          Hire your first employee
-        </h1>
-        <p className="mt-1 text-sm text-zinc-500">
-          Create an account to get started.
-        </p>
+  if (process.env.PRODUCT === "dot") {
+    const h = await headers();
+    const origin = `${h.get("x-forwarded-proto") ?? "https"}://${h.get("host") ?? ""}`;
+    return <DotAuth mode="signup" error={error} action={signup} google={process.env.GOOGLE_LOGIN === "1" ? googleLogin : undefined} origin={origin} />;
+  }
 
-        {error && (
-          <p className="mt-4 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">
-            {error}
-          </p>
-        )}
-
-        <form action={signup} className="mt-6 flex flex-col gap-4">
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-zinc-700">
-              Email
-            </label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              required
-              className="mt-1 w-full rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-900 focus:outline-none"
-            />
-          </div>
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-zinc-700">
-              Password
-            </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              required
-              minLength={6}
-              className="mt-1 w-full rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-900 focus:outline-none"
-            />
-          </div>
-          <button
-            type="submit"
-            className="mt-2 rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800"
-          >
-            Sign up
-          </button>
-        </form>
-
-        <p className="mt-6 text-sm text-zinc-500">
-          Already have an account?{" "}
-          <Link href="/login" className="font-medium text-zinc-900 underline">
-            Log in
-          </Link>
-        </p>
-      </div>
-    </div>
-  );
+  return <RookeryAuth mode="signup" action={signup} error={error} />;
 }

@@ -134,3 +134,23 @@ export interface ContentFetcher {
   readonly name: string;
   fetch(url: string): Promise<FetchedContent>;
 }
+
+/**
+ * 실패했지만 **돈은 나간** 호출.
+ *
+ * 09-09: 잘림(`MODEL_OUTPUT_TRUNCATED`)·거절·파싱실패는 토큰을 다 쓰고 청구까지 된 뒤에 던져지는데,
+ * 장부 기록이 그 아래에 있어서 **한 줄도 안 남았다.** 어제만 잘림이 다섯 번이고, 출력 예산을 10만으로
+ * 올린 뒤로는 한 번에 최대 $1 가 기록 없이 샌다. 사장님 청구서와 우리 장부가 벌어지는 자리다.
+ * 던질 때 쓴 토큰을 같이 실어 보내서 **실패도 장부에 남긴다.**
+ */
+export class SpentError extends Error {
+  constructor(
+    message: string,
+    readonly model: string,
+    readonly inputTokens: number,
+    readonly outputTokens: number,
+  ) {
+    super(message);
+    this.name = "SpentError";
+  }
+}

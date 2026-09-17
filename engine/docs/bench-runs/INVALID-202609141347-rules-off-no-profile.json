@@ -1,0 +1,97 @@
+{
+  "runId": "202609141347-rules-off",
+  "label": "rules-off",
+  "rules": "off",
+  "at": "2026-09-14T13:48:52.745Z",
+  "version": "v0",
+  "rows": [
+    {
+      "id": "b0-01",
+      "employee": "ana",
+      "title": "GDC 레벨 디자인 워크숍(블록메시·조명) 영상 분석",
+      "historical": "PASS",
+      "verdict": "failed",
+      "passed": 0,
+      "total": 0,
+      "costUsd": 0,
+      "ms": 22521
+    },
+    {
+      "id": "b0-02",
+      "employee": "ana",
+      "title": "GDC 레벨 디자인 자료 셋 비교 — 영상·PDF 슬라이드·80.lv 기사",
+      "historical": "PASS",
+      "verdict": "failed",
+      "passed": 0,
+      "total": 0,
+      "costUsd": 0,
+      "ms": 22305
+    },
+    {
+      "id": "b0-03",
+      "employee": "ana",
+      "title": "GDC 레벨 디자인 자료 셋 비교 — 영상·PDF 슬라이드·80.lv 기사",
+      "historical": "PARTIAL",
+      "verdict": "failed",
+      "passed": 0,
+      "total": 0,
+      "costUsd": 0,
+      "ms": 11930
+    },
+    {
+      "id": "b0-04",
+      "employee": "ana",
+      "title": "GDC 영상 다시 읽기 — 조명 파트(로버트 양) 규칙만",
+      "historical": "PASS",
+      "verdict": "failed",
+      "passed": 0,
+      "total": 0,
+      "costUsd": 0,
+      "ms": 12601
+    },
+    {
+      "id": "b0-05",
+      "employee": "vid",
+      "title": "첫 3D 레벨 규칙 다섯 가지 — 60초 설명 영상",
+      "historical": "FAIL",
+      "verdict": "failed",
+      "passed": 0,
+      "total": 0,
+      "costUsd": 0,
+      "ms": 22092
+    },
+    {
+      "id": "b0-06",
+      "employee": "vid",
+      "title": "로키가 무엇인지 40초 소개 영상",
+      "historical": "PASS",
+      "verdict": "failed",
+      "passed": 0,
+      "total": 0,
+      "costUsd": 0,
+      "ms": 22530
+    },
+    {
+      "id": "b0-07",
+      "employee": "vid",
+      "title": "Ana 의 조명 분석을 60초 영상으로",
+      "historical": "PASS",
+      "verdict": "failed",
+      "passed": 0,
+      "total": 0,
+      "costUsd": 0,
+      "ms": 12087
+    },
+    {
+      "id": "b0-08",
+      "employee": "vid",
+      "title": "검사 떨어진 줄 고치기 (1/3) — 첫 3D 레벨 규칙 다섯 가지, 60초",
+      "historical": "PASS",
+      "verdict": "failed",
+      "passed": 0,
+      "total": 0,
+      "costUsd": 0,
+      "ms": 12541
+    }
+  ]
+}

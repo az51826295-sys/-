@@ -54,6 +54,41 @@ function extractCompetitors(input: string): string[] {
 }
 
 function buildOutput(input: string): unknown {
+  // 100회차: 검증된 규칙 고리(genesis/ruleLoop.ts)의 목 — 파이프라인 모양만 시험한다(판정은 일부러 기계적).
+  if (input.includes("## Failure cases to learn from")) {
+    // 151회차: 제안자는 이제 **어긴 사례 번호**를 대야 한다. 목도 진짜처럼 실패 사례의 번호를 읽어서 댄다 —
+    // 첫 규칙은 충분히(3건 이상) 대고, 둘째는 일부러 1건만 댄다. 그래야 새 낭비 막이가 실제로 무는지 한 바퀴에 둘 다 보인다.
+    const failSection = input.split("## Successful cases for contrast")[0];
+    const failIdx = [...failSection.matchAll(/^### case (\d+)/gm)].map((m) => Number(m[1]));
+    return {
+      rules: [
+        { title: "목: 결과물 없이 끝나는 요청 되묻기", rule: "요청이 모호하면 만들기 전에 한 번 되묻는다.", violation_test: "결과물이 '(결과물 없음' 으로 시작하면 어긴 것", violating_cases: failIdx.slice(0, 3) },
+        { title: "목: 짧은 답 금지", rule: "답은 요청에 필요한 만큼 충분히 쓴다.", violation_test: "결과물이 40자보다 짧으면 어긴 것", violating_cases: failIdx.slice(0, 1) },
+      ],
+    };
+  }
+  // 156회차: 사람 반응 읽기(genesis/reaction.ts)의 목 — 뜻은 못 읽으니 예전 정규식과 같은 답을 낸다(모양만 시험).
+  if (input.includes("## 사람의 말을 읽는다")) {
+    const blocks = input.split(/^### turn /m).slice(1);
+    const re = /다시 ?(해|만들|내|봐|하|돌|고|짜|그려|시작)|^다시|아니[,.! ]|아니야|아니요|틀렸|잘못|안 ?돼|이상해/;
+    return {
+      reactions: blocks.map((b, n) => {
+        const said = /사람이 한 말: ([^*]*)/.exec(b)?.[1] ?? "";
+        return { n, rejected: re.test(said), why: "목: 정규식과 같게" };
+      }),
+    };
+  }
+  if (input.includes("## Cases to judge against the rule")) {
+    const blocks = input.split(/^### case /m).slice(1);
+    const short = input.includes("40자보다 짧으면");
+    return {
+      judgments: blocks.map((b) => {
+        const n = Number(b.match(/^(\d+)/)?.[1] ?? -1);
+        const out = b.match(/결과물: (.*)/)?.[1] ?? "";
+        return { case: n, violates: short ? out.length < 40 : out.startsWith("(결과물 없음") };
+      }),
+    };
+  }
   // Each call is recognised by a heading only that prompt writes. Checked
   // before the source-count branches, which are specific to market research.
   if (input.includes("## Reference ids you may cite")) {

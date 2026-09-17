@@ -3,6 +3,9 @@ import { createClient } from "@/lib/supabase/server";
 import { listVersions } from "@/lib/chat/versions";
 import { kindOf, proofOf, type ProofFile } from "@/lib/work/kinds";
 import { defaultMeshProvider } from "@/lib/providers/meshy";
+import { billingOpen } from "@/lib/billing/plans";
+import { creditBalance } from "@/lib/billing/ledger";
+import { latestFrame } from "@/lib/hand/screen";
 
 export const dynamic = "force-dynamic";
 
@@ -41,6 +44,7 @@ export async function GET(
     created_at: string;
     verdict: string | null;
     checks: { cases?: { name: string; result: string; message?: string }[]; at?: string } | null;
+    judge: { firstGlance?: string; wouldStop?: string; awkward?: string; soulless?: string; oneChange?: string } | null;
     company_employees: { employees: { name: string } | null } | null;
   };
   const { data: rows } = ids.length
@@ -48,6 +52,7 @@ export async function GET(
         .from("deliverables")
         .select(
           "id, title, deliverable_type, created_at, verdict:content_json->verdict->>verdict, checks:content_json->unityChecks, " +
+            "judge:content_json->judge, " +
             "company_employees!deliverables_company_employee_id_fkey(employees(name))",
         )
         .in("id", ids)
@@ -65,9 +70,19 @@ export async function GET(
         .order("created_at", { ascending: true })
     : { data: [] };
   const { photos, rest } = proofOf(cur?.deliverable_type, (files ?? []) as ProofFile[]);
-  const RESULT: Record<string, string> = { Passed: "통과", Failed: "실패", Inconclusive: "해당 없음" };
+  // 157회차: 딱지를 뗐다 — 통과/실패가 아니라 **맞음/어긋남/못 잼**. 잰 값이지 판정이 아니다(판정은 심판자와 사장님).
+  const RESULT: Record<string, string> = { Passed: "맞음", Failed: "어긋남", Inconclusive: "못 잼" };
 
   const { data: company } = await supabase.from("companies").select("id").eq("owner_id", user.id).maybeSingle();
+  // 100회차: 충전식 회사에게는 달러·Meshy 잔액(우리 내부 거래처 잔고) 대신 자기 크레딧을 보여 준다.
+  let credits: number | null = null;
+  if (company && billingOpen()) {
+    const { data: bm } = await supabase.from("companies").select("billing_mode, credits_started_at").eq("id", company.id).maybeSingle();
+    if (bm?.billing_mode === "prepaid") {
+      const b = await creditBalance(supabase, company.id as string, (bm.credits_started_at as string | null) ?? null);
+      credits = b.readable ? b.credits : null;
+    }
+  }
   let monthUsd = 0;
   if (company) {
     const from = new Date();
@@ -80,11 +95,28 @@ export async function GET(
     monthUsd = ((usage ?? []) as { cost_usd: number | string }[]).reduce((s, u) => s + Number(u.cost_usd ?? 0), 0);
   }
 
+  // 매니저 판정(98회차): 현재 판의 **업무**에 대한 첫 판정. 판정은 업무 단위다 — 고친 판이 같은 업무면 같은 판정 아래 있다.
+  let review: { decision: string; at: string; feedback: string | null } | null = null;
+  if (current) {
+    const { data: sib } = await supabase.from("deliverables").select("id").eq("assignment_id", current.assignmentId);
+    const sibIds = ((sib ?? []) as { id: string }[]).map((s) => s.id);
+    const { data: rv } = sibIds.length
+      ? await supabase.from("deliverable_reviews").select("decision, created_at, feedback").in("deliverable_id", sibIds).order("created_at", { ascending: true }).limit(1).maybeSingle()
+      : { data: null };
+    if (rv) review = { decision: rv.decision as string, at: rv.created_at as string, feedback: (rv.feedback as string | null) ?? null };
+  }
+
   // Meshy 잔액. 못 읽으면 null — 화면은 "—" 로.
   let meshyCredits: number | null = null;
-  try { meshyCredits = await defaultMeshProvider().balance(); } catch { /* 없으면 없는 대로 */ }
+  const prepaid = billingOpen() && credits !== null;
+  if (!prepaid) { try { meshyCredits = await defaultMeshProvider().balance(); } catch { /* 없으면 없는 대로 */ } }
+
+  // 163회차 같이 보기: 손이 20초 안에 보낸 화면이 있으면 미리보기 맨 위에 띄운다. 그림 자체는 /api/hand/screen 이 준다.
+  let screen: { host: string; at: string } | null = null;
+  if (company) { const f = latestFrame(company.id as string); if (f) screen = { host: f.host, at: f.at }; }
 
   return NextResponse.json({
+    screen,
     versions: versions.map((v) => {
       const r = byId.get(v.deliverableId);
       return { ...v, title: r?.title ?? "(지워진 결과물)", kind: kindOf(r?.deliverable_type).label, who: r?.company_employees?.employees?.name ?? null };
@@ -101,10 +133,19 @@ export async function GET(
           verdict: cur.verdict,
           checks: (cur.checks?.cases ?? []).map((c) => ({ name: c.name.replace(/_/g, " "), result: RESULT[c.result] ?? c.result, message: c.message ?? "" })),
           checkedAt: cur.checks?.at ?? null,
+          // 150회차: **심판자의 말**. 문이 아니라 말하는 자리다 — 아무것도 막지 않고, 사람이 읽고 정한다.
+          // 여기 없으면 심판자는 결과물 본문 안에만 있고, 사장님은 열어 보지 않는 한 못 본다(=지금까지의 상태).
+          judge: cur.judge?.oneChange
+            ? {
+                firstGlance: cur.judge.firstGlance ?? "", wouldStop: cur.judge.wouldStop ?? "",
+                awkward: cur.judge.awkward ?? "", soulless: cur.judge.soulless ?? "", oneChange: cur.judge.oneChange,
+              }
+            : null,
           photos: photos.map((f) => ({ title: f.title, href: `/api/files/${f.id}` })),
           files: rest.map((f) => ({ name: f.storage_path.split("/").pop() ?? f.title, href: `/api/files/${f.id}` })),
+          review,
         }
       : null,
-    spend: { monthUsd: Math.round(monthUsd * 100) / 100, meshyCredits, note: "글 모델 + 그림 + Meshy(09-07 부터). 공표 단가 기준, 청구서와 대조 전" },
+    spend: { monthUsd: Math.round(monthUsd * 100) / 100, meshyCredits, credits: prepaid ? credits : null, note: "글 모델 + 그림 + Meshy(09-07 부터). 공표 단가 기준, 청구서와 대조 전" },
   });
 }

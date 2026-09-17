@@ -194,7 +194,7 @@ export const gameAssetsSkill: EmployeeSkill = {
     };
     // 대화 한 칸에 돌아올 본문. 그림은 데이터 URL 이라 마크다운 이미지로 그대로 뜬다.
     const markdown =
-      `**${brief.subject}** — 통과 ${passed.length} · 떨어짐 ${rejected.length} · 못 잼 ${unmeasured.length}\n\n` +
+      `**${brief.subject}** — 규격에 맞음 ${passed.length} · 어긋남 ${rejected.length} · 못 잼 ${unmeasured.length}\n\n` +
       candidates
         .map(
           (c) =>

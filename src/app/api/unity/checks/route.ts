@@ -1,3 +1,5 @@
+import { standingChecks, expectationChecks } from "@/lib/skills/appBuild/standing";
+import type { Expectation } from "@/lib/skills/appBuild/measures";
 import { NextResponse } from "next/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import { scheduleAutoRetry } from "@/lib/execution/autoRetry";
@@ -60,31 +62,50 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "JSON 이 아닙니다." }, { status: 400 });
   }
 
-  // ── 50회차: **회사가 늘 재는 줄.** 계획이 스스로 쓴 기대치만으로는 못 잡는 것이 있다 —
-  // 49회차에 투구가 머리의 1.3% 로 쪼그라들었는데 검사는 10개 다 통과했다(계획이 "붙어 있다" 만 적었으니까).
-  // 종류를 막론하고 이 회사가 늘 참이라고 보는 것은 여기서 잰다. 계획이 뭘 적든 이 줄은 붙는다.
-  if (body.measures) {
-    const m = body.measures;
-    const num = (k: string) => (typeof m[k] === "number" ? (m[k] as number) : null);
-    const parts = num("parts_attached") ?? 0;
-    if (parts > 0) {
-      const ratio = num("part_size_ratio");
-      if (ratio != null) {
-        const ok = ratio >= 0.3 && ratio <= 3;
-        body.cases.push({
-          name: "규격_조각_크기",
-          result: ok ? "Passed" : "Failed",
-          message: `조각이 붙은 자리 크기의 ${ratio.toFixed(2)}배 (0.3~3.0 이어야 한다 — 너무 작으면 안 보이고 너무 크면 삼킨다)`,
-        });
-        if (ok) body.passed += 1; else body.failed += 1;
+  // ── 122회차 09-15: **예외 하나가 검사 여러 줄을 동시에 떨어뜨린다.** 유니티 시험 러너는 실행 중 처리 안 된
+  // 예외가 나면 **그 판의 검사 전부**에 같은 글을 달아 실패로 적는다. 09-15 감사: `InvalidOperationException:
+  // Avatar is null.` 하나가 서로 다른 검사 4줄(그림·조명·씬 열림·카메라)을 떨어뜨렸고, 그런 줄이 13건이었다.
+  //
+  // 그대로 두면 셋이 망가진다: (1) 통과율이 실제보다 낮게 나오고 (2) '스스로 다시' 가 Dev 에게 떨어진 줄 4개를
+  // 보내 네 군데를 고치라 하고 (3) 규칙 고리가 사례를 부풀려 센다(103회차에 대화에서 겪은 것과 같은 모양).
+  //
+  // 접는다: 같은 예외 글을 단 실패가 둘 이상이면 **첫 줄만 진짜 실패**로 두고 나머지는 '못 잼' 으로 적는다 —
+  // 그 검사들은 떨어진 게 아니라 **재지 못한** 것이다(예외가 먼저 났으니까). 자를 느슨하게 하는 게 아니라 원인을 하나로 적는 것이다.
+  {
+    const rootOf = (c: Case): string | null => {
+      const t = (c.message ?? "").trim();
+      if (c.result !== "Failed") return null;
+      const m = t.match(/Unhandled log message:\s*'?\[(?:Exception|Error)\]\s*([^']{10,160}?)\s*(?:\.|')/);
+      return m ? m[1].trim() : null;
+    };
+    const seen = new Map<string, number>();
+    for (const c of body.cases ?? []) { const r = rootOf(c); if (r) seen.set(r, (seen.get(r) ?? 0) + 1); }
+    const shared = new Set([...seen.entries()].filter(([, n]) => n > 1).map(([r]) => r));
+    if (shared.size) {
+      const kept = new Set<string>();
+      for (const c of body.cases) {
+        const r = rootOf(c);
+        if (!r || !shared.has(r)) continue;
+        if (!kept.has(r)) { kept.add(r); continue; } // 첫 줄은 진짜 실패로 남긴다
+        c.result = "Inconclusive";
+        c.message = `앞의 예외(${r.slice(0, 80)}) 때문에 재지 못했다 — 그 예외를 고치면 이 줄은 다시 잰다`;
+        body.failed = Math.max(0, body.failed - 1);
+        body.inconclusive += 1;
       }
-      if (m.part_covers_bone === false) {
-        body.cases.push({ name: "규격_조각_감싸기", result: "Failed", message: "조각이 붙은 뼈를 감싸지 않는다 — 옆에 떠 있다" });
-        body.failed += 1;
-      }
+      console.log(`[유니티 검사] 예외 ${shared.size}개가 검사 여러 줄을 덮었다 — 원인 하나당 실패 1줄로 접었다`);
     }
   }
 
+  // ── 50회차: **회사가 늘 재는 줄.** 계획이 스스로 쓴 기대치만으로는 못 잡는 것이 있다 —
+  // 49회차에 투구가 머리의 1.3% 로 쪼그라들었는데 검사는 10개 다 통과했다(계획이 "붙어 있다" 만 적었으니까).
+  // 130회차: 문턱과 글은 그대로 두고 `skills/appBuild/standing.ts` 로 꺼냈다 — 순수 함수여야 **고장을 넣어 시험**할 수 있다
+  // (124회차 자 감사가 "22번 재서 한 번도 안 떨어진 자" 를 찾았는데, 이빨이 없는 건지 고장이 안 난 건지 가르려면 그게 필요했다).
+  if (body.measures) {
+    for (const c of standingChecks(body.measures)) {
+      body.cases.push(c);
+      if (c.result === "Passed") body.passed += 1; else if (c.result === "Failed") body.failed += 1; else body.inconclusive += 1;
+    }
+  }
   // ── 32회차 2판: 퇴보 지킴이. 지난 판에서 재어진 값이 이번 판에서 0(또는 false)이면 실패 줄 — 이번 주문과 상관없이.
   // (9fdf487e: 카메라만 고쳤는데 점프가 0 — 기대치는 이번 주문만 적으니 아무도 안 잡았다.)
   if (body.deliverableId && body.measures) {
@@ -107,27 +128,18 @@ export async function POST(request: Request) {
     }
   }
 
-  // ── 32회차: 계획의 기대치(expectations)와 측정값을 맞춰 본다. 어긋나면 실패 줄이 되고, 그 줄이 Dev 에게 간다(스스로 다시). ──
+  // ── 32회차: 계획의 기대치(expectations)와 측정값을 맞춰 본다. 어긋나면 실패 줄이 되고, 그 줄이 Dev 에게 간다(스스로 다시).
+  // 130회차: 재는 셈은 `skills/appBuild/standing.ts` 로 꺼냈다(고장을 넣어 시험할 수 있게). 못 재는 기대치를
+  // '실패' 가 아니라 '못 잼' 으로 적는 세 자리(42·57·119회차)도 그 안에 그대로 있다.
   if (body.deliverableId && body.measures) {
     const { data: d0 } = await db.from("deliverables").select("exp:content_json->expectations").eq("id", body.deliverableId).eq("company_id", company.id).maybeSingle();
-    const expectations = ((d0 as { exp?: unknown } | null)?.exp ?? []) as { measure: string; min?: number | null; max?: number | null; equals?: boolean | null; why?: string }[];
-    for (const e of expectations) {
-      const v = body.measures[e.measure];
-      const label = e.why ? `${e.why} (${e.measure})` : e.measure;
-      if (v === undefined) { body.cases.push({ name: `기대_${e.measure}`, result: "Inconclusive", message: `${label}: 자가 안 쟀다` }); body.inconclusive += 1; continue; }
-      let ok: boolean;
-      if (typeof e.equals === "boolean") ok = v === e.equals;
-      else if (e.min == null && e.max == null) {
-        // 42회차: 위도 아래도 없는 기대치는 아무 값이나 통과한다 — 잰 것이 아니라 적어 둔 것이다.
-        body.cases.push({ name: `기대_${e.measure}`, result: "Inconclusive", message: `${label}: 실측 ${String(v)} — 기대 범위가 비어 있어 재지 못했다` });
-        body.inconclusive += 1; continue;
-      }
-      else { const n = Number(v); ok = Number.isFinite(n) && (e.min == null || n >= e.min) && (e.max == null || n <= e.max); }
-      const range = typeof e.equals === "boolean" ? String(e.equals) : `${e.min ?? "-∞"}~${e.max ?? "∞"}`;
-      body.cases.push({ name: `기대_${e.measure}`, result: ok ? "Passed" : "Failed", message: `${label}: 실측 ${String(v)}, 기대 ${range}` });
-      if (ok) body.passed += 1; else body.failed += 1;
+    const expectations = ((d0 as { exp?: unknown } | null)?.exp ?? []) as Expectation[];
+    for (const c of expectationChecks(expectations, body.measures)) {
+      body.cases.push(c);
+      if (c.result === "Passed") body.passed += 1; else if (c.result === "Failed") body.failed += 1; else body.inconclusive += 1;
     }
   }
+
 
   const mark = (r: string) => (r === "Passed" ? "✅" : r === "Failed" ? "❌" : "◻︎");
   const lines = (body.cases ?? [])

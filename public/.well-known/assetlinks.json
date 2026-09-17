@@ -1,0 +1,40 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "azcom.example.myapp",
+      "sha256_cert_fingerprints": [
+        "12:27:E5:96:24:0D:BD:4A:EF:01:25:60:7A:D1:3C:2A:E8:AD:63:B1:C9:9E:9D:FD:7D:C1:D4:98:35:CB:42:A6",
+        "64:57:F9:5D:D3:27:7F:64:DB:35:B7:92:5E:83:A5:6A:73:5D:B5:EC:8B:DF:0C:C9:BF:1B:D9:0F:0D:80:9E:46"
+      ]
+    }
+  },
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "app.rookery.dot",
+      "sha256_cert_fingerprints": [
+        "12:27:E5:96:24:0D:BD:4A:EF:01:25:60:7A:D1:3C:2A:E8:AD:63:B1:C9:9E:9D:FD:7D:C1:D4:98:35:CB:42:A6"
+      ]
+    }
+  },
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.rookery.ai",
+      "sha256_cert_fingerprints": [
+        "AC:5B:A1:9D:AF:0E:45:BA:92:D9:01:42:39:83:A4:2B:C9:DD:90:79:27:D7:61:31:4D:4E:10:3C:8A:6C:32:EA",
+        "41:DC:D2:72:40:E8:5B:7C:D0:F6:FD:2E:06:F2:CF:DF:CF:BD:BA:87:11:7A:0D:75:57:B0:2D:8A:34:46:BE:9D"
+      ]
+    }
+  }
+]

@@ -1,4 +1,5 @@
 import ts from "typescript";
+import { checkCSharpSyntax } from "./csharp";
 
 /**
  * 낸 코드를 **돌리지 않고** 확인한다.
@@ -45,6 +46,19 @@ export function checkFiles(
   files: { path: string; language: string; contents: string }[],
 ): FileCheck[] {
   return files.map((f) => {
+    // 59회차: **C# 을 검사한다.** 여태 이 그물은 ts·js·json 만 봤고, 우리가 실제로 내는 언어는
+    // 한 번도 걸린 적이 없었다. 그래서 문자열이 일찍 닫힌 씬 빌더가 그대로 유니티까지 갔다.
+    const ext = f.path.split(".").pop()?.toLowerCase() ?? "";
+    if (ext === "cs" || f.language.toLowerCase() === "csharp" || f.language.toLowerCase() === "c#") {
+      const errors = checkCSharpSyntax(f.contents);
+      return {
+        path: f.path,
+        language: f.language,
+        checked: true,
+        ok: errors.length === 0,
+        errors,
+      };
+    }
     const kind = kindFor(f.path, f.language);
     if (!kind) {
       return {

@@ -29,7 +29,8 @@ export type Version = {
 
 type ReturnedRow = {
   created_at: string;
-  returned: { deliverableId?: string; assignmentId?: string } | null;
+  /** 136회차: `discarded` 는 사장님이 "버리기" 를 누른 판. 지우지 않고 목록에서만 내린다. */
+  returned: { deliverableId?: string; assignmentId?: string; discarded?: boolean } | null;
   revert: boolean | null;
 };
 
@@ -44,10 +45,14 @@ export async function listVersions(db: Supabase, conversationId: string): Promis
   const rows = (data ?? []) as unknown as ReturnedRow[];
   const versions: Version[] = [];
   let currentId: string | null = null;
+  // 버린 판은 아예 없던 것처럼 센다 — 목록에도 안 뜨고 **현재 판도 되지 않는다**.
+  // (버린 판이 current 로 남으면 다음 "고쳐 줘" 가 버린 것 위에서 고친다.)
+  const discarded = new Set(rows.filter((r) => r.returned?.discarded).map((r) => r.returned?.deliverableId).filter((x): x is string => !!x));
   for (const r of rows) {
     const d = r.returned?.deliverableId;
     const a = r.returned?.assignmentId;
     if (typeof d !== "string" || typeof a !== "string") continue;
+    if (discarded.has(d)) continue;
     currentId = d;
     if (versions.some((v) => v.deliverableId === d)) continue; // 되돌리기 턴은 새 판이 아니다
     versions.push({ n: versions.length + 1, deliverableId: d, assignmentId: a, at: r.created_at, current: false });

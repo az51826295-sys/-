@@ -46,6 +46,10 @@ const RATES: Record<string, Rate> = {
   // specific to check them against. If they are wrong the error is silent, so
   // the reconciliation is worth doing rather than assuming.
   "gpt-5": { unit: "tokens", input: 1.25, output: 10 },
+  // 61회차 09-09: 사장님이 물어서 확인 — GPT-6 Astra 는 우리 키로 열려 있다.
+  // 값은 **입력 8배·출력 5배**($10/$50). 09-08 처럼 판 32개를 돌리면 하루에 $50~60 이다.
+  // (272k 입력을 넘기면 입력 2배·출력 1.5배로 또 뛴다.) 갈아타는 것은 재 보고 정한다.
+  "gpt-6-astra": { unit: "tokens", input: 10, output: 50 },
   "gpt-5-mini": { unit: "tokens", input: 0.25, output: 2 },
 
   // 이미지. 이 모델은 **이미지 토큰**으로 값을 매기므로 단위가 토큰인 것이 맞다 —
@@ -59,6 +63,12 @@ const RATES: Record<string, Rate> = {
 
   // 목소리(TTS, 39회차). gpt-4o-mini-tts 는 글자+오디오 토큰으로 매기는데(약 $0.015/분) 장부 단위가 없어 초로 적는다: $0.00025/초.
   "gpt-4o-mini-tts": { unit: "seconds", per: 0.00025 },
+  // 154회차 09-16 — **영상을 만드는 모델.** 사장님: "그냥 지피티한테 시키기만 해도 멋진 광고 하나 나오는데
+  // 이런 쓰레기 연출이 왜 계속 나와?" 답은 하나였다: 로키에 영상 만드는 모델이 **하나도 안 붙어 있었다.**
+  // 영상 배관 전체가 ffmpeg 으로 글자를 그리는 것이었고, 나는 그 위에 조판·움직임만 얹었다(슬라이드쇼에 연출을 발랐다).
+  // 값은 09-16 공표 단가(developers.openai.com/api/docs/pricing): 초당. 15초 광고 한 판이면 sora-2 로 $1.50.
+  "sora-2": { unit: "seconds", per: 0.10 },
+  "sora-2-pro": { unit: "seconds", per: 0.30 },
 
   // DeepSeek. Published list prices, not yet reconciled against an invoice.
   // An order of magnitude under the others, which is the entire reason the

@@ -59,3 +59,9 @@ engine/data/tunnel*.log
 engine/.secrets/
 engine/out/
 engine/tools/bin/
+
+# 09-18: 커밋에서 빼는 것 — 돌 때마다 생기는 로그, 시험 영상, 스토어 묶음
+/data/*.log
+/data/unity_watch.last
+/test.mp4
+/engine/docs/store/*.zip

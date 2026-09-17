@@ -14,7 +14,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Rookery",
-  description: "Hire AI employees for your company.",
+  // Paddle 심사(09-14, 5번째 거절 "not a digital product or service"): "Hire AI employees" 가 사람 고용 서비스로 읽힐 수 있다 → 소프트웨어라고 말한다.
+  description: "AI software (SaaS) that turns requests into finished digital work — research, documents, small web apps and short explainer videos.",
 };
 
 export default function RootLayout({

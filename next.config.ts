@@ -14,7 +14,10 @@ const nextConfig: NextConfig = {
    */
   allowedDevOrigins: ["*.trycloudflare.com", "172.30.1.54"],
 
-  /* config options here */
+  /* 스토어 그림(/store/*)은 다른 출처(Play 콘솔 페이지)에서 fetch 해서 올릴 수 있게 CORS 를 연다 (09-12). 공개 그림뿐이다. */
+  async headers() {
+    return [{ source: "/store/:path*", headers: [{ key: "Access-Control-Allow-Origin", value: "*" }] }];
+  },
 };
 
 export default nextConfig;

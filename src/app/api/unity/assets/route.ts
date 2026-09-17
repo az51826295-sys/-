@@ -46,7 +46,11 @@ export async function GET(request: Request) {
     .eq("company_id", companyId)
     // 48회차: "completed 만" 이면 **제출됐지만 아직 대화에 안 붙은** 자산이 유니티에 영영 안 간다.
     // 투구 조각이 그래서 안 들어갔고, Dev 는 붙일 파일이 없으니 조용히 건너뛰었다(자는 0 을 정확히 쟀다).
-    .in("assignments.status", ["completed", "submitted"])
+    // 57회차: **cancelled 도 넣는다.** 취소는 "이 일을 그만한다" 이지 "낸 물건을 회수한다" 가 아니다.
+    // 투구가 5 mm 로 남은 마지막 이유가 이것이었다 — 막힌 직원을 풀려고 그 업무를 취소했더니,
+    // 이미 만들어 판정까지 통과한 투구가 유니티에서 사라져 크기 고치기가 영영 안 걸렸다.
+    // 낸 것이 없는 취소 업무는 산출물이 없으니 여기 걸리지 않는다.
+    .in("assignments.status", ["completed", "submitted", "cancelled"])
     .order("created_at", { ascending: false })
     .limit(100);
 

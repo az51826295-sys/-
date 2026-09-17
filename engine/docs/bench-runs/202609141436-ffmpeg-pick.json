@@ -1,0 +1,20 @@
+{
+  "runId": "202609141436-ffmpeg-pick",
+  "label": "ffmpeg-pick",
+  "rules": "off",
+  "at": "2026-09-14T14:38:22.629Z",
+  "version": "v0",
+  "rows": [
+    {
+      "id": "b0-06",
+      "employee": "vid",
+      "title": "로키가 무엇인지 40초 소개 영상",
+      "historical": "PASS",
+      "verdict": "failed",
+      "passed": 0,
+      "total": 0,
+      "costUsd": 0.034,
+      "ms": 124157
+    }
+  ]
+}

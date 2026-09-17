@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import Icon from "@/components/Icon";
+import BuyCredits from "./BuyCredits";
+import Learned from "./Learned";
 
 type Saved = { id: string; title: string | null; mode: string; updated_at: string };
 /**
@@ -26,6 +28,42 @@ export default function AskShell({
   const box = useRef<HTMLDivElement>(null);
   /** 지우려고 한 번 누른 대화. 두 번째 눌러야 지워진다. */
   const [killing, setKilling] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
+  /** 폰으로 이어하기(99회차): 서버가 만든 QR 과 만료 시각. */
+  const [handoff, setHandoff] = useState<{ svg: string; until: number } | null>(null);
+  const [handoffErr, setHandoffErr] = useState<string | null>(null);
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    if (!handoff) return;
+    const t = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(t);
+  }, [handoff]);
+
+  /** QR 을 새로 받는다. 지금 보고 있는 대화가 있으면 폰에서도 그 대화로 열린다. */
+  async function openHandoff() {
+    setHandoffErr(null);
+    const conversationId = new URLSearchParams(window.location.search).get("c");
+    try {
+      const r = await fetch("/api/handoff", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ conversationId }) });
+      const j = (await r.json().catch(() => ({}))) as { svg?: string; expiresInSec?: number; error?: string };
+      if (!r.ok || !j.svg) { setHandoffErr(j.error ?? "QR 을 만들지 못했어요."); return; }
+      setNow(Date.now());
+      setHandoff({ svg: j.svg, until: Date.now() + (j.expiresInSec ?? 120) * 1000 });
+    } catch { setHandoffErr("QR 을 만들지 못했어요."); }
+  }
+
+  /** 계정 삭제 — 구글 플레이 등록 필수(97회차). 되돌릴 수 없다. 두 번 묻고, 문구를 치게 한다. */
+  async function deleteAccount() {
+    if (!window.confirm("계정을 지우면 회사·직원·대화·산출물이 전부 사라지고 되돌릴 수 없어요. 계속할까요?")) return;
+    const typed = window.prompt("정말 지우려면 '삭제' 라고 적어 주세요.");
+    if (typed !== "삭제") return;
+    setDeleting(true);
+    try {
+      const res = await fetch("/api/account", { method: "DELETE", headers: { "content-type": "application/json" }, body: JSON.stringify({ confirm: "삭제" }) });
+      if (res.ok) window.location.href = "/login?message=" + encodeURIComponent("계정이 지워졌어요. 그동안 고마웠어요.");
+      else setDeleting(false);
+    } catch { setDeleting(false); }
+  }
 
   /**
    * 대화를 지운다. **두 번 눌러야** 지워진다.
@@ -154,6 +192,43 @@ export default function AskShell({
                   <p className="truncate px-3 py-1.5 text-[11px] text-[var(--rk-400)]">
                     {me.email}
                   </p>
+                  <BuyCredits />
+                  <Learned />
+                  <button
+                    type="button"
+                    onClick={() => void openHandoff()}
+                    className="w-full px-3 py-2 text-left text-sm hover:bg-[var(--rk-100)]"
+                  >
+                    폰으로 이어하기
+                    <span className="block text-[11px] text-[var(--rk-400)]">QR 을 찍으면 폰 앱이 이 계정으로 열려요</span>
+                  </button>
+                  {(handoff || handoffErr) && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4" onClick={() => { setHandoff(null); setHandoffErr(null); }} role="dialog" aria-label="폰으로 이어하기">
+                      <div className="w-full max-w-xs border-2 border-[#E0703A] bg-[var(--rk-paper)] p-4 text-[var(--rk-ink)]" onClick={(e) => e.stopPropagation()}>
+                        <div className="mb-1 text-sm font-bold">폰으로 이어하기</div>
+                        {handoffErr ? (
+                          <p className="text-xs text-[#E07070]">{handoffErr}</p>
+                        ) : handoff && now < handoff.until ? (
+                          <>
+                            <p className="mb-3 text-[11.5px] leading-relaxed text-[var(--rk-600)]">
+                              폰 카메라로 찍으면 비밀번호 없이 이 계정으로 로키 앱이 열려요.
+                              <b className="text-[var(--rk-ink)]"> 한 번만, {Math.ceil((handoff.until - now) / 1000)}초 안에</b> 쓸 수 있어요. 남에게 보여 주지 마세요.
+                            </p>
+                            {/* 서버가 우리 주소로만 만든 SVG(qrcode 라이브러리). 흰 바탕이어야 카메라가 읽는다. */}
+                            <div className="mx-auto w-56 bg-white p-2" dangerouslySetInnerHTML={{ __html: handoff.svg }} />
+                          </>
+                        ) : (
+                          <p className="text-xs text-[var(--rk-600)]">QR 이 만료됐어요.</p>
+                        )}
+                        <div className="mt-3 flex justify-end gap-2">
+                          {(!handoff || now >= handoff.until || handoffErr) && (
+                            <button type="button" onClick={() => void openHandoff()} className="border-2 border-[#E0703A] bg-[#E0703A] px-2.5 py-1 text-xs font-bold text-[var(--rk-paper)]">새로 만들기</button>
+                          )}
+                          <button type="button" onClick={() => { setHandoff(null); setHandoffErr(null); }} className="border-2 border-[var(--rk-ink)] px-2.5 py-1 text-xs">닫기</button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                   <form action="/api/auth/signout" method="post">
                     <button
                       type="submit"
@@ -164,6 +239,14 @@ export default function AskShell({
                       </span>
                     </button>
                   </form>
+                  <button
+                    type="button"
+                    disabled={deleting}
+                    onClick={() => void deleteAccount()}
+                    className="w-full px-3 py-2 text-left text-sm text-[#E07070] hover:bg-[var(--rk-100)] disabled:opacity-50"
+                  >
+                    {deleting ? "지우는 중…" : "계정 삭제"}
+                  </button>
                 </section>
               </>
             ) : (

@@ -4,6 +4,7 @@ import { capabilityCatalogue } from "@/lib/chat/companyService";
 import { runChatTurn, type ChatOption } from "@/lib/chat/service";
 import { retrieveCompanyKnowledge } from "@/lib/knowledge/retrieval";
 import { releaseEmployee } from "@/lib/assignments/service";
+import { billingOpen } from "@/lib/billing/plans";
 
 /**
  * 능력 하나를 맡을 사람을 찾고, 없으면 뽑고, 일을 넘긴다.
@@ -27,6 +28,18 @@ export type Delegation = {
   why: string | null;
 };
 
+/** 유료 요금제가 안 파는 능력 — 그림 생성·3D 모델 생성(114회차 09-15). 화면 글(첫 화면·요금·약관)과 같은 범위다. */
+const PAID_SCOPE_OUT = new Set(["game_character_art", "mesh_from_image"]);
+const NOT_IN_PLAN =
+  "그림 생성과 3D 모델 만들기는 지금 요금제에 들어 있지 않아요. 조사·문서·웹 앱·설명 영상은 그대로 맡기실 수 있어요.";
+
+/** 돈 내는 회사인가(충전식). 결제를 아직 안 켰으면 늘 false — 켜기 전엔 그 열을 아예 안 읽는다(100회차 규칙). */
+async function isPaidPlan(db: Supabase, companyId: string): Promise<boolean> {
+  if (!billingOpen()) return false;
+  const { data } = await db.from("companies").select("billing_mode").eq("id", companyId).maybeSingle();
+  return (data as { billing_mode?: string } | null)?.billing_mode === "prepaid";
+}
+
 const NOTHING: Delegation = {
   hired: null,
   routedTo: null,
@@ -49,6 +62,14 @@ export async function delegate(
   const matched = capabilityCatalogue().find((c) => c.capabilityId === capabilityId);
   // 모델이 지어낸 id 는 그냥 버린다. 답은 이미 나갔으므로 대화가 끊기지 않는다.
   if (!matched) return NOTHING;
+
+  // 114회차 09-15: **파는 범위 밖**은 유료 요금제에서 돌지 않는다.
+  // Paddle 이용 정책은 사람 얼굴을 만드는 생성 AI 를 금지하는데, 우리 그림·3D 직원이 하는 일이 정확히 그것이다
+  // (일곱 번 거절의 가장 유력한 원인). 사이트에서 "유료 요금제에 그림·3D 생성은 없다" 고 적었으니 코드도 같아야 한다 —
+  // 말과 실제가 다르면 그건 결제사에 거짓말이다. 돈 안 내는 회사(사장님 회사, billing_mode='limit')는 그대로 쓴다.
+  if (PAID_SCOPE_OUT.has(capabilityId) && (await isPaidPlan(db, companyId))) {
+    return { ...NOTHING, why: NOT_IN_PLAN };
+  }
 
   const { data: hires } = await db
     .from("company_employees")

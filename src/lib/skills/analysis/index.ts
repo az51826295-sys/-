@@ -189,7 +189,7 @@ function shortSrc(url: string): string {
 
 function render(a: Analysis, sources: Source[], v: ReturnType<typeof judge>): string {
   const ok = new Set(v.cases.filter((c) => c.result === "Passed").map((c) => c.name));
-  const row = (kind: string, i: number, cols: string[]) => `| ${ok.has(`${kind}_${i + 1}`) ? "✅" : "❌ 근거 못 찾음"} | ${cols.map((c) => c.replace(/\|/g, "／").replace(/\n/g, " ")).join(" | ")} |`;
+  const row = (kind: string, i: number, cols: string[]) => `| ${ok.has(`${kind}_${i + 1}`) ? "·" : "❌ 근거 못 찾음"} | ${cols.map((c) => c.replace(/\|/g, "／").replace(/\n/g, " ")).join(" | ")} |`;
   const unread = sources.filter((s) => s.chars === 0);
   return [
     ...(unread.length ? [`> **못 읽은 자료 ${unread.length}개**: ${unread.map((s) => s.url).join(", ")} — 아래는 읽은 자료만으로 쓴 것이에요. 다시 시키면 다시 받아 봐요.`, ""] : []),
@@ -284,7 +284,14 @@ export const analysisSkill: EmployeeSkill = {
     const content = {
       sources: sources.map(({ url, kind, title, durationSec, pages, chars }) => ({ url, kind, title, durationSec, pages, chars })),
       claims: out.claims, numbers: out.numbers, forUs: out.forUs, unanswered: out.unanswered,
-      verdict: { verdict: verdict.cases.length === 0 ? "UNMEASURED" : verdict.failed === 0 ? "PASS" : verdict.passed >= verdict.failed ? "PARTIAL" : "FAIL", passed: verdict.passed, failed: verdict.failed, cases: verdict.cases },
+      // 129회차: 분석의 검사는 **주장 하나에 하나**라 말한 양만큼 늘어난다(근거_N·숫자_N).
+      // 합격 문턱(PASS=흠 없음)은 그대로 두고, 맞힌 비율을 같이 싣는다 — 학습 라벨이 '많이 말하면 불리'로 기울지 않게.
+      verdict: {
+        verdict: verdict.cases.length === 0 ? "UNMEASURED" : verdict.failed === 0 ? "PASS" : verdict.passed >= verdict.failed ? "PARTIAL" : "FAIL",
+        passed: verdict.passed, failed: verdict.failed, cases: verdict.cases,
+        scales: true,
+        rate: verdict.passed + verdict.failed > 0 ? Number((verdict.passed / (verdict.passed + verdict.failed)).toFixed(4)) : null,
+      },
     };
     const { data: saved, error } = await ctx.supabase.rpc("submit_generated_deliverable", {
       p_execution_id: ctx.executionId,

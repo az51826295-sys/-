@@ -9,6 +9,8 @@ import { z } from "zod";
 import { storeDeliverableFile, signedUrlFor, pathFor, BUCKET } from "@/lib/deliverables/files";
 import { renderGamedevLessons } from "@/lib/knowledge/skillFiles";
 import { createServiceClient } from "@/lib/supabase/service";
+import { checkBackgroundIsLight } from "./background";
+import { splitPanels } from "./panels";
 
 /**
  * 3D 자산 — 이미지 한 장을 메시로 만들고, 규격 v0 로 재고, 대화로 돌려준다.
@@ -63,12 +65,19 @@ const briefSchema = z.object({
 // 빛은 유니티 후처리 몫이다(사장님 09-06 17:52 "빛은 후처리해야지"). 콘셉트에 후광·림
 // 라이트·어두운 배경이 들어가면 Meshy 가 그 빛을 텍스처에 구워 게임 조명에서 틀리게 보인다.
 const CONCEPT_FORM =
-  "Concept art for a 3D game asset, to be converted to a 3D model. ONE single " +
-  "subject alone, centered, full body, front view, neutral A-pose if it is a " +
-  "character. FLAT, EVEN, DIFFUSE studio lighting like a product photo: no rim light, " +
-  "no glow, no halo, no bloom, no dramatic or cinematic lighting, no specular hotspots, " +
-  "no cast shadows, no dark or black background — plain flat light-grey background, " +
-  "nothing else: no ground, no text, no frame, no second object.";
+  // 09-09 3판: "Concept art for a 3D game asset" 이라는 말 자체가 **회전 시트**(한 장에 앞·옆·뒤)를 부른다.
+  // 세 번 내리 그렇게 나왔고, 그걸 3D 변환기에 주면 물건 **세 개**짜리 덩어리를 만들려 든다.
+  // 그래서 콘셉트 아트를 시키지 않는다 — **물건 사진 한 장**을 시킨다.
+  // 배경도 같은 이유다: 은색 금속은 어두운 스튜디오 배경이 이 모델의 기본값이라, 카탈로그 컷아웃으로 못 박는다.
+  "A single catalogue product photo of ONE object, cut out on a pure white background " +
+  "(#ffffff), the white filling the whole frame to every edge — no studio backdrop, no " +
+  "gradient, no vignette, no dark corners, no glow. ONE object only, ONE viewpoint only: " +
+  "this is NOT a turnaround sheet and NOT a multi-view reference — do not show the same " +
+  "object from several angles and do not place two or three copies in the frame. " +
+  "The object is centered and fully visible, lit by flat even light like a product listing " +
+  "photo: no rim light, no bloom, no dramatic shadows, no cast shadow on the ground. " +
+  "Nothing else in frame: no text, no ruler, no frame, no second object, no ground plane.";
+
 /** 검수에 항상 붙는 조건. 매니저가 말하지 않아도 3D 변환에는 필수다. */
 // 09-07 07:50 초안 검수가 검은 배경 + 흰 글로우를 통과시켰다. 조건을 둘로 갈라 각각 따진다.
 const ALWAYS_MUST_HAVE = [
@@ -77,7 +86,8 @@ const ALWAYS_MUST_HAVE = [
 ];
 
 function ruleLine(r: MeshVerdict["rules"][number]): string {
-  const mark = r.verdict === "PASS" ? "✅" : r.verdict === "FAIL" ? "❌" : "◻︎";
+  // 157회차: 딱지(✅❌) 대신 사실 — 맞음(·) · 어긋남(≠) · 못 잼(–). 규격은 계약이라 어긋남은 사실이지 취향이 아니다.
+  const mark = r.verdict === "PASS" ? "·" : r.verdict === "FAIL" ? "≠" : "–";
   const m = r.measured === null || r.measured === undefined ? "" : ` \`${JSON.stringify(r.measured)}\``;
   return `- ${mark} **${r.id}**${m} — ${r.why}`;
 }
@@ -163,6 +173,7 @@ export const meshAssetsSkill: EmployeeSkill = {
     // 그림이 안 왔고 지난 캐릭터가 있으면 그 콘셉트 그림을 다시 쓴다 — "같은 얼굴로 다시"
     // 가 되게(09-06 17회차: 4K 로 다시 만들 때 얼굴이 바뀌면 안 된다).
     let reusedConcept = false;
+    let sheet: string[] = [];   // 회전 시트를 자른 칸들(앞·옆·뒤)
     // 재사용은 매니저가 그렇게 말했을 때만 — "새로 그려" 를 무시하고 지난 그림을
     // 집으면 옷이 바뀐 채 나온다(09-06 09:42 판타지 레인저).
     const wantsReuse = /같은\s*그림|지난\s*그림|그대로|그\s*사람|같은\s*얼굴|지난\s*캐릭터|고화질|최종|이\s*그림|그\s*그림|same (face|person|image)/i.test(
@@ -260,28 +271,72 @@ export const meshAssetsSkill: EmployeeSkill = {
             ? await drawer.draw(emphasis + CONCEPT_FORM + " " + brief.conceptPrompt + ", full body head to toe, facing the camera, even studio lighting", "high", "1024x1536")
             : await drawer.draw(emphasis + CONCEPT_FORM + " " + brief.conceptPrompt, "medium");
           image = made.dataUrl;
-          out.byMachine = true;
-          await book("concept_draw", made);
-          const failed = await checkConcept(ctx, image, [...brief.mustHave, ...ALWAYS_MUST_HAVE]);
+          // 09-09: **치수는 그림 검수에서 뺀다.** 규격의 cm 를 mustHave 에 넣었더니 검수가 매번
+          // "그림으로는 치수를 확인할 수 없다" 며 떨어뜨렸다 — 맞는 말이다. 치수는 3D 가 나온 뒤 블렌더로 잰다.
+          const drawable = brief.mustHave.filter((m) => !/\d\s*(cm|mm|m)|크기|치수|폭|깊이|높이/.test(m));
+          const failed = await checkConcept(ctx, image, [...drawable, ...ALWAYS_MUST_HAVE]);
+          // 09-09: 배경은 **모델에게 묻지 않고 픽셀로 잰다.** 검수가 새까만 배경을 첫 판에 통과시켰다
+          // (자기 필수 조건에 "어두운 배경은 실패" 라고 적어 두고도). 잴 수 있는 것을 의견에 맡기면 이렇게 된다.
+          try {
+            const bg = await checkBackgroundIsLight(image);
+            if (!bg.ok) failed.push(`배경이 어둡다(테두리 밝기 ${bg.luma}, 0.62 이상이어야 한다) — 밝은 단색 배경으로 다시 그린다`);
+          } catch (e) {
+            console.warn("[mesh_assets] 배경 재기 실패 — 넘어간다:", e instanceof Error ? e.message : e);
+          }
           out.checks.push({ attempt, failed });
           if (failed.length === 0) break;
           emphasis = "STRICT REQUIREMENTS (the previous attempt violated these, they are NOT optional): " + failed.map((f) => f.toUpperCase()).join("; ") + ". ";
         }
       }
-      if (brief.wantRig && image && (brief.wantFinal || reusedConcept)) {
+      // 68회차 09-09: **조각도 뒤·옆을 그린다.** 여태 `wantRig` 인 캐릭터만 여러 장을 줬고 조각은 정면 한 장이었다.
+      // 생성기는 **본 각도만 안다** — 그래서 투구 뒤통수가 뚫린 채로 나왔고, 나는 그걸 이틀 동안
+      // 유니티에서 밀고 당겼다(렌더로 확인: 앞으로 밀면 뒤가 비고 뒤로 밀면 앞이 빈다).
+      // 몸에 쓰는 조각(`attachTo`)은 뒤가 반드시 있어야 하므로 캐릭터와 같이 여러 장을 준다.
+      const wantViews = brief.wantRig || !!brief.attachTo;
+      // 09-09 3판: 자르기를 **편집 호출보다 앞**에 둔다. 두 번 뒤에 뒀다가 편집값 $0.74 를 그대로 냈다.
+      // 자른 칸이 곧 여러 각도이므로, 여기서 갈라 두면 아래 편집은 아예 건너뛴다.
+      // 09-09 2판: 자르기를 **그리는 자리**에만 뒀더니 지난 그림을 이어받는 판에서는 안 걸렸다.
+      // 그 판은 회전 시트를 통째로 편집시켜 "뒤에서 본 시트" 를 만들었고, 서로 안 맞는 참조 셋을
+      // Meshy 에 줘서 **너덜너덜한 껍데기**가 나왔다($1.34). 블렌더 미리보기가 몇 초에 잡았다.
+      // 그림이 새로 그린 것이든 이어받은 것이든 **여기 한 곳에서** 자른다.
+      if (image) {
+        try {
+          const panels = await splitPanels(image);
+          if (panels.length >= 2) {
+            sheet = panels.map((x) => x.dataUrl);
+            image = sheet[0];
+            console.log(`[mesh_assets] 회전 시트를 칸 ${panels.length}개로 잘랐다 — 따로 그리지 않는다`);
+          }
+        } catch (e) {
+          console.warn("[mesh_assets] 칸 자르기 실패 — 원본으로 간다:", e instanceof Error ? e.message : e);
+        }
+      }
+      if (sheet.length >= 2) {
+        // 잘라 낸 칸이 곧 여러 각도다. 돈 들여 다시 그릴 이유가 없다.
+        if (sheet[1]) views.side = sheet[1];
+        if (sheet[2]) views.back = sheet[2];
+        if (!views.back && sheet[1]) views.back = sheet[1];
+      } else if (wantViews && image && (brief.wantFinal || reusedConcept)) {
         // 셋을 **동시에** 그린다. 차례로 그리면 한 장에 40초씩 두 장 값의 시간이 그냥 흘렀다(09-06 22:10 효율 회차).
         // 셋은 서로를 안 보니(전부 정면 그림에서 나온다) 동시에 그려도 결과가 같다.
+        const isPart = !brief.wantRig && !!brief.attachTo;
         const [face, back, side] = await Promise.allSettled([
           drawer.edit(image,
-            "Close-up portrait of the SAME person shown in this image: identical face, hair, and skin, head and shoulders, facing the camera straight, neutral expression, sharp focus on skin and hair, even studio lighting, plain background",
+            isPart
+              ? "The SAME object shown in this image seen from a three-quarter view, entire object visible, same shape and materials, even studio lighting, plain white background"
+              : "Close-up portrait of the SAME person shown in this image: identical face, hair, and skin, head and shoulders, facing the camera straight, neutral expression, sharp focus on skin and hair, even studio lighting, plain background",
             "1024x1024"),
           drawer.edit(image,
-            "The SAME person shown in this image seen from directly behind, full body head to toe, same pose, same clothes and hair, even studio lighting, plain background",
+            isPart
+              ? "The SAME object shown in this image seen from directly BEHIND, showing its back surface, which is CLOSED and fully formed (not hollow, not open, no missing shell), same shape and materials, even studio lighting, plain white background"
+              : "The SAME person shown in this image seen from directly behind, full body head to toe, same pose, same clothes and hair, even studio lighting, plain background",
             "1024x1536"),
           // 옆모습이 없으면 코·턱이 납작하다(사장님 09-06 10:49 "옆에서 보니까 얼굴 입체감이
           // 없네"). 생성기는 본 각도만 안다 — 옆모습 전신을 네 번째로 준다.
           drawer.edit(image,
-            "The SAME person shown in this image seen exactly from the left side (true profile view), full body head to toe, same A-pose, same clothes and hair, nose and chin clearly in profile, even studio lighting, plain background",
+            isPart
+              ? "The SAME object shown in this image seen exactly from the left side (true profile view), entire silhouette visible, same shape and materials, even studio lighting, plain white background"
+              : "The SAME person shown in this image seen exactly from the left side (true profile view), full body head to toe, same A-pose, same clothes and hair, nose and chin clearly in profile, even studio lighting, plain background",
             "1024x1536"),
         ]);
         if (face.status === "fulfilled") { views.face = face.value.dataUrl; await book("concept_view", face.value); }
@@ -303,12 +358,14 @@ export const meshAssetsSkill: EmployeeSkill = {
     conceptByMachine = drawn.byMachine;
     conceptChecks.push(...drawn.checks);
 
+
     if (!image) throw new ExecutionError("UNKNOWN_ERROR", "콘셉트 그림이 없다 — 그리기가 전부 실패했다.");
 
     // ── 1b. 초안이면 여기서 끝 ──────────────────────────────────────
     // 그림 한 장을 대화에 붙이고 묻는다. 3D(크레딧 35)는 매니저가 "고화질로 만들어" 할 때.
     // 레퍼런스를 받았거나 지난 그림을 다시 쓰는 판은 이미 사람이 고른 것이니 초안이 아니다.
     if (!brief.wantFinal && !reusedConcept && conceptByMachine) {
+      const lastMisses = conceptChecks.length ? (conceptChecks[conceptChecks.length - 1].failed ?? []) : [];
       await setStep(ctx.supabase, ctx.executionId, "storing");
       const draftContent = {
         draft: true,
@@ -317,7 +374,13 @@ export const meshAssetsSkill: EmployeeSkill = {
         mustHave: brief.mustHave,
         conceptFront: "concept_front.png",
         conceptImage: null,
-        verdict: { verdict: "DRAFT", rules: [] },
+        verdict: {
+          // 57회차: 다시 그리기 한도를 다 쓰고도 못 맞춘 조건은 **판정문에 적는다.**
+          // 기준 맨몸 초안이 세 판 내리 검은 배경으로 나왔는데, 판정은 "DRAFT, 규칙 없음" 이었고
+          // 대화에는 "필수 조건을 맞췄어요" 라고 나갔다 — 자기가 떨어뜨린 것을 맞췄다고 말한 셈이다.
+          verdict: "DRAFT",
+          rules: lastMisses.map((m, i) => ({ id: `C${i + 1}`, why: m, verdict: "FAIL" as const, measured: 0 })),
+        },
       };
       const draftMarkdown =
         `**${brief.subject}** — 초안이에요
@@ -327,7 +390,11 @@ export const meshAssetsSkill: EmployeeSkill = {
         "**\"고화질로 만들어\"** 라고 하시면 이 그림으로 앞·뒤·옆·얼굴을 그려 3D 와 뼈대를 만들어요(크레딧 35, 약 10분). " +
         "고칠 게 있으면 말씀해 주세요 — 그림만 다시 그려요.\n" +
         (conceptChecks.length ? `
-검수: ${conceptChecks.length}번 그려서 필수 조건 ${brief.mustHave.length}개를 맞췄어요.
+검수: ${conceptChecks.length}번 그렸어요.${
+          lastMisses.length
+            ? ` 아직 못 맞춘 것이 ${lastMisses.length}개 있어요 — ${lastMisses.join(" / ")}`
+            : ` 필수 조건 ${brief.mustHave.length}개를 다 맞췄어요.`
+        }
 ` : "");
       const { data: savedDraft, error: draftErr } = await ctx.supabase.rpc("submit_generated_deliverable", {
         p_execution_id: ctx.executionId, p_title: brief.subject, p_deliverable_type: "mesh_assets",
@@ -356,8 +423,11 @@ export const meshAssetsSkill: EmployeeSkill = {
     try {
       // 캐릭터는 4k — 같은 30 크레딧에 피부 고주파 2배(07:39). 소품은 2k 로 족하다.
       const front = image;
-      mesh = await step(ctx.supabase, ctx.executionId, "mesh", async () => { const r = await (views.face && views.back
-        ? mesher.multiImageTo3D([front, views.back!, ...(views.side ? [views.side] : []), views.face!], { poseMode: brief.poseMode, textureResolution: "4k", aiModel: "meshy-7" })
+      // 09-09: 얼굴 그림이 있어야만 멀티뷰로 가던 조건이었다. 조각은 얼굴이 없다 —
+      // 회전 시트를 자른 칸(앞·옆·뒤)만으로도 멀티뷰가 훨씬 낫다(정면 한 장이면 뒤를 지어낸다).
+      const extraViews = [views.back, views.side, views.face].filter((v): v is string => !!v);
+      mesh = await step(ctx.supabase, ctx.executionId, "mesh", async () => { const r = await (extraViews.length >= 1
+        ? mesher.multiImageTo3D([front, ...extraViews], { poseMode: brief.poseMode, textureResolution: "4k", aiModel: "meshy-7" })
         : mesher.imageTo3D(front, { poseMode: brief.poseMode, textureResolution: brief.wantRig ? "4k" : "2k" })); if (!r.mock) await bookMeshy("mesh_generate", r.consumedCredits || 30); return r; });
     } catch (error) {
       const msg = error instanceof Error ? error.message : String(error);
@@ -438,12 +508,14 @@ export const meshAssetsSkill: EmployeeSkill = {
     const runningFbx = rig?.runningFbxUrl ? await fetchBytes(rig.runningFbxUrl) : null;
     const thumb = thumbBytes ? toDataUrl(thumbBytes, "image/png") : null;
 
+    // 157회차: "통과/떨어짐" 딱지를 뗐다. 규격에 댄 결과는 **어긋난 개수**로 말한다 — 판정은 사장님 몫이다.
+    const misfit = verdict.rules.filter((r) => r.verdict === "FAIL").length;
     const headline =
-      verdict.verdict === "PASS"
-        ? "규격 v0 통과"
-        : verdict.verdict === "FAIL"
-          ? "규격 v0 **떨어짐**"
-          : "규격 v0 **못 잼**(통과 아님)";
+      verdict.verdict === "UNDEFINED"
+        ? "규격 v0 에 **못 댐**"
+        : misfit === 0
+          ? "규격 v0 에 다 맞음"
+          : `규격 v0 에서 **${misfit}개 어긋남**`;
 
     const markdown =
       `**${brief.subject}** — ${headline}\n\n` +
@@ -454,8 +526,8 @@ export const meshAssetsSkill: EmployeeSkill = {
         ? "> 레퍼런스 이미지가 없어서 **콘셉트 그림을 기계가 그려** 썼습니다. 생김새는 사장님이 정하신 것이 아닙니다.\n\n"
         : "> 사장님이 주신 레퍼런스 이미지로 만들었습니다.\n\n") +
       (thumb ? `![미리보기](${thumb})\n\n` : "") +
-      `## 판정 (${verdict.rules.filter((r) => r.verdict === "PASS").length} PASS · ` +
-      `${verdict.rules.filter((r) => r.verdict === "FAIL").length} FAIL · ` +
+      `## 규격 v0 에 댄 것 (${verdict.rules.filter((r) => r.verdict !== "UNDEFINED").length}개 · ` +
+      `${verdict.rules.filter((r) => r.verdict === "FAIL").length} 어긋남 · ` +
       `${verdict.rules.filter((r) => r.verdict === "UNDEFINED").length} 못 잼)\n\n` +
       verdict.rules.map(ruleLine).join("\n") +
       "\n\n## 파일\n\n" +

@@ -192,6 +192,23 @@ namespace Rookery.Tests
             return humans.OrderByDescending(score).FirstOrDefault();
         }
 
+        /// 57회차: 몸 렌더러 — 스키닝된 살(뼈 4개 초과)만. 얹은 조각은 몸이 아니다.
+        /// 조각까지 넣으면 투구 하나에 키가 늘어나 "몇 등신"이 흔들린다.
+        static System.Collections.Generic.IEnumerable<Renderer> BodyRenderers(Animator h)
+        {
+            var body = h.GetComponentsInChildren<Renderer>(true)
+                .Where(r => { var s = r as SkinnedMeshRenderer; return s != null && s.bones != null && s.bones.Length > 4; }).ToList();
+            return body.Count > 0 ? body : h.GetComponentsInChildren<Renderer>(true).ToList();
+        }
+
+        /// 발끝에서 정수리까지, **세상 좌표**로. 로컬 bounds 는 스케일을 안 담아서 쓰면 안 된다(52회차).
+        static float HumanHeight(Animator h)
+        {
+            var top = float.MinValue; var bot = float.MaxValue;
+            foreach (var r in BodyRenderers(h)) { top = Mathf.Max(top, r.bounds.max.y); bot = Mathf.Min(bot, r.bounds.min.y); }
+            return top <= bot ? 0f : top - bot;
+        }
+
         public const string MapPath = "Library/Rookery/map.png";
         public const string MeasuresPath = "Library/Rookery/measures.json";
         static readonly Dictionary<string, string> _measures = new Dictionary<string, string>();
@@ -275,6 +292,8 @@ namespace Rookery.Tests
                         var worst = 0f;
                         var biggest = 0f;
                         var covers = true;
+                        var worstHead = 0f;   // 59회차: 어긋남을 나눌 기준(그 사람의 머리 크기)
+                        var partTris = 0;     // 66회차: 얹은 조각들의 삼각형 합
                         foreach (var h in Object.FindObjectsByType<Animator>(FindObjectsSortMode.None).Where(a => a.isHuman))
                         {
                             var bones = h.GetComponentsInChildren<Transform>(true);
@@ -295,15 +314,38 @@ namespace Rookery.Tests
                                        : (mf != null && mf.sharedMesh != null ? mf.sharedMesh.name : "");
                                 if (mn == "Capsule" || mn == "Cube" || mn == "Sphere" || mn == "Cylinder" || mn == "Plane" || mn == "Quad") continue;
                                 parts++;
+                                {
+                                    // 66회차 2판: `mesh.triangles` 는 **읽기 가능(Read/Write)** 이 아니면 빈 배열이라 0 이 나왔다.
+                                    // 인덱스 수로 세고, 가져오기에서 조각만 읽기 가능으로 켠다.
+                                    var pm = smr != null ? smr.sharedMesh : (mf != null ? mf.sharedMesh : null);
+                                    if (pm != null)
+                                    {
+                                        var n = 0;
+                                        for (var sm = 0; sm < pm.subMeshCount; sm++) n += (int)pm.GetIndexCount(sm);
+                                        partTris += n / 3;
+                                    }
+                                }
                                 Debug.Log($"[Rookery] 조각 {mr.name} 뼈배율 {mr.transform.parent.lossyScale.x:0.####} ({(smr != null ? "skinned" : "mesh")}) 크기 {Mathf.Max(mr.bounds.size.x, Mathf.Max(mr.bounds.size.y, mr.bounds.size.z)):0.###} m, 붙은 곳 {mr.transform.parent.name}");
-                                var d = Vector3.Distance(mr.bounds.center, mr.transform.parent.position);
-                                if (d > worst) worst = d;
                                 // 48회차 3판: 몸 전체 키로 나눴더니 3등신 기사(머리가 키의 1/3)에서 **머리를 삼킨 투구도 정상**으로 나왔다.
                                 // 숫자는 범위 안인데 사진은 그대로 — 자가 재는 것과 사람이 보는 것이 달랐다. 붙은 **뼈 자리의 크기**로 나눈다.
+                                // 59회차: **자가 자기 눈을 가리고 있었다.** 여기 top 을 '모든 렌더러의 꼭대기'로 잡았는데,
+                                // 그 안에 **얹은 조각 자신**이 들어간다. 그래서 투구가 커질수록 '머리'도 같이 커지고
+                                // 비율은 1 근처로 돌아온다 — 삼킨 투구가 1.29 로 통과했다(사진은 개판이었다).
+                                // 머리 크기는 **몸(살)만** 보고 잰다. 얹은 것은 재는 대상이지 자가 아니다.
                                 var headBone = h.GetBoneTransform(HumanBodyBones.Head);
                                 var top = 0f;
-                                foreach (var r2 in h.GetComponentsInChildren<Renderer>(true)) top = Mathf.Max(top, r2.bounds.max.y);
+                                foreach (var r2 in BodyRenderers(h)) top = Mathf.Max(top, r2.bounds.max.y);
                                 var headSize = headBone != null ? Mathf.Max(0.05f, top - headBone.position.y) : 0.3f;
+                                worstHead = Mathf.Max(worstHead, headSize);
+                                // 60회차: **뼈 점이 아니라 머리 덩어리에 맞춘다.**
+                                // 이 리그의 Head 뼈는 목 밑동에 있고 보이는 머리는 그 위로 올라간다.
+                                // 뼈 점에 정확히 맞추면 `part_offset_ratio` 는 0(만점)인데 투구는 **목에 걸린다** — 사진으로 확인했다.
+                                // 머리에 쓰는 것은 뼈에서 머리 높이의 절반쯤 위, 그 자리가 앉을 곳이다.
+                                var seat = (headBone != null && mr.transform.parent == headBone)
+                                    ? headBone.position + Vector3.up * (headSize * 0.5f)
+                                    : mr.transform.parent.position;
+                                var d = Vector3.Distance(mr.bounds.center, seat);
+                                if (d > worst) worst = d;
                                 var partMax = Mathf.Max(mr.bounds.size.x, Mathf.Max(mr.bounds.size.y, mr.bounds.size.z));
                                 biggest = Mathf.Max(biggest, partMax / headSize);
                                 // 머리에 쓴 것이면 뼈를 감싸야 한다. 옆에 떠 있으면 감싸지 못한다.
@@ -315,6 +357,40 @@ namespace Rookery.Tests
                         // 48회차: 자리보다 **크기**가 문제였다(사진: 투구가 머리를 통째로 삼켰다. 위치를 0.32→0.2 로 줄여도 여전히 컸다).
                         // 조각의 가장 긴 변 ÷ 그 사람의 키. 3등신 기사의 머리는 키의 1/3 쯤이니 투구는 0.2~0.4 가 맞다.
                         if (parts > 0) { Measure("part_size_ratio", biggest); Measure("part_covers_bone", covers); }
+                        // 66회차 09-09: **삼각형도 잰다.** 규격표에 "조각은 3,000 이하" 라고 적어 놓고
+                        // 그걸 재는 줄이 없었다 — 자가 없는 규격은 소원일 뿐이다.
+                        // (09-09 실측: 산 투구가 30,356개로 몸 전체보다 많았다.)
+                        if (parts > 0) Measure("part_triangles", partTris);
+                        // 59회차: 어긋남도 **뼈 자리 크기로 나눠서** 잰다. 절대 미터(0.15 m)는 캐릭터가 커지면 뜻이 달라지고,
+                        // 문턱에 딱 맞춰 깎는 일이 실제로 있었다(58회차에 정확히 0.15 가 나왔다).
+                        if (parts > 0 && worstHead > 0f) Measure("part_offset_ratio", worst / worstHead);
+                    }
+                    // ── 사람 비율(57회차 09-08): **키**와 **머리 몇 개**.
+                    // 캐릭터 만드는 법을 읽고 넣은 자다. 업계는 비율을 미터가 아니라 "몇 등신"으로 잰다
+                    // (리얼 7~8, 스타일라이즈 5~6, 데포르메 3). 우리는 그 숫자를 재서 기준 맨몸과 맞춰 본다.
+                    // 53회차에 파일 단위를 전부 바꿔 캐릭터가 100배가 됐을 때, 이 줄이 있었으면 첫 판에 잡혔다.
+                    {
+                        Animator who = null; var bestH = 0f; var bestIsPlayer = false;
+                        foreach (var h in Object.FindObjectsByType<Animator>(FindObjectsSortMode.None).Where(a => a.isHuman))
+                        {
+                            var isPlayer = playerRoot != null && h.transform.IsChildOf(playerRoot);
+                            var hh = HumanHeight(h);
+                            if (hh <= 0f) continue;
+                            if ((isPlayer && !bestIsPlayer) || ((isPlayer == bestIsPlayer) && hh > bestH)) { who = h; bestH = hh; bestIsPlayer = isPlayer; }
+                        }
+                        if (who != null)
+                        {
+                            Measure("body_height_m", bestH);
+                            var headBone = who.GetBoneTransform(HumanBodyBones.Head);
+                            if (headBone != null)
+                            {
+                                var top = 0f;
+                                foreach (var r2 in BodyRenderers(who)) top = Mathf.Max(top, r2.bounds.max.y);
+                                var headSize = Mathf.Max(0.02f, top - headBone.position.y);
+                                Measure("head_count", bestH / headSize);
+                                Debug.Log($"[Rookery] 사람 {who.name} 키 {bestH:0.###} m, 머리 {headSize:0.###} m, {(bestH / headSize):0.0} 등신 (플레이어 {bestIsPlayer})");
+                            }
+                        }
                     }
                     // 구역 색(34회차): 넓이 4 m² 이상인 납작한 정적 물체의 바탕색 가짓수 — 구역 셋이면 셋 이상이어야 한다.
                     var colors = new HashSet<string>();

@@ -18,8 +18,8 @@ if (fs.existsSync(".env.local")) {
   }
 }
 
-const [{ createServiceClient }, { executeEmployeeAssignment }, { defaultProviders }] = await Promise.all([
-  import("@/lib/supabase/service"), import("@/lib/execution/engine"), import("@/lib/execution/shared"),
+const [{ createServiceClient }, { executeEmployeeAssignment }, { defaultProviders }, { collectWorkReturns }] = await Promise.all([
+  import("@/lib/supabase/service"), import("@/lib/execution/engine"), import("@/lib/execution/shared"), import("@/lib/chat/workReturns"),
 ]);
 
 const db = createServiceClient();
@@ -42,6 +42,89 @@ async function runOne(id: string, employee: string, why: string) {
     console.error(`${stamp()} ✗ ${id.slice(0, 8)}`, e instanceof Error ? e.message : e);
   } finally {
     busy.delete(employee);
+  }
+}
+
+
+// ── 57회차: **끝난 일을 대화로 돌려놓는 것도 워커가 한다.**
+// 여태 이 일은 화면(`/api/conversations/:id/work`)이 폴링할 때만 돌았다. 그래서 사장님이
+// 창을 안 열어 두면: 결과 턴이 안 붙고 → 그 판이 "현재 판"이 아니고 → 유니티가 새 판을
+// 못 보고 → 검사가 안 돌고 → 다음 일이 안 풀린다. 09-08 에 판 셋(16:23·16:27·16:39)이
+// 그렇게 멈춰 있었다. 사람이 보고 있어야만 회사가 돈다면 그것은 자동이 아니다.
+// 화면이 열려 있어도 같은 함수가 돌지만, 이미 붙은 것은 다시 안 붙는다(붙은 표시를 보고 거른다).
+const RETURNS_EVERY = 4;   // 15초 × 4 = 1분
+const WALLET_EVERY = 40;   // 15초 × 40 = 10분
+const PING_EVERY = 20;     // 15초 × 20 = 5분 — 뽑은 시각에서 최대 5분 늦는다. 그 정도는 랜덤에 묻힌다.
+let tickN = 0;
+
+/**
+ * 두근도트 — 캐릭터가 먼저 말 건다(09-10).
+ * 규칙·문장·보내기는 전부 `dot/push.ts` 에 있다. 여기는 5분마다 부르기만 한다.
+ * 아무도 구독하지 않았으면 0 을 돌려주고 조용히 있는다.
+ */
+async function pingTick() {
+  const { pingTick: run, pushConfigured } = await import("@/lib/dot/push");
+  if (!pushConfigured()) return;
+  const r = await run(db, (m) => console.log(`${stamp()} ${m}`));
+  if (r.drawn || r.sent || r.dead) console.log(`${stamp()} [먼저말걸기] 시각 뽑음 ${r.drawn} · 보냄 ${r.sent} · 죽은 주소 ${r.dead}`);
+}
+/** 게시물 — 캐릭터가 하루 한 장. 규칙은 dot/posts.ts. */
+async function postTick() {
+  const { postTick: run } = await import("@/lib/dot/posts");
+  const r = await run(db, (m) => console.log(`${stamp()} ${m}`));
+  if (r.posted) console.log(`${stamp()} [게시물] 올림 ${r.posted}`);
+}
+let lastWallet = -1;
+
+/**
+ * 싼 자리 지갑을 들여다본다.
+ *
+ * 09-09: DeepSeek 잔액이 09-07 저녁에 0이 됐고 사흘간 싼 자리 일이 전부 gpt-5 로
+ * 갔다($17.9). 라우터가 **살려 놓기 때문에** 오류도 안 남고 답도 안 나빠져서
+ * 아무도 몰랐다. 그리고 DeepSeek 은 **자동 충전이 없다** — 잔액 0은 사고가 아니라
+ * 예정된 일이고, 사람이 넣을 때까지 계속 샌다.
+ *
+ * 그래서 쓰기 **전에** 본다. 원장은 이미 쓴 뒤에만 알려 준다.
+ *
+ * 값이 안 바뀌면 조용히 있는다 — 10분마다 같은 줄이 찍히면 아무도 안 읽는다.
+ */
+async function walletTick() {
+  const { deepSeekWallet, LOW_USD } = await import("@/lib/providers/balance");
+  const w = await deepSeekWallet();
+  if (w.usd === null) {
+    console.warn(`${stamp()} [지갑] ${w.vendor} ${w.note}`);
+    return;
+  }
+  const low = !w.available || w.usd < LOW_USD;
+  const changed = Math.abs(w.usd - lastWallet) >= 0.01;
+  lastWallet = w.usd;
+  if (low) {
+    // 이건 매번 외친다. 낮은 상태가 계속되는 것 자체가 계속 새고 있다는 뜻이다.
+    console.error(
+      `${stamp()} [돈샘] ${w.vendor} 잔액 ${w.note} — 바닥나면 싼 자리 일이 비싼 자리로 간다. ` +
+        `자동 충전이 없으니 사람이 넣어야 한다.`,
+    );
+  } else if (changed) {
+    console.log(`${stamp()} [지갑] ${w.vendor} ${w.note}`);
+  }
+}
+async function returnsTick() {
+  const since = new Date(Date.now() - 24 * 3600_000).toISOString();
+  const { data: rows } = await db
+    .from("conversation_messages")
+    .select("conversation_id")
+    .not("attachments->assignment->>id", "is", null)
+    .gte("created_at", since)
+    .order("created_at", { ascending: false })
+    .limit(200);
+  const ids = [...new Set((rows ?? []).map((r) => r.conversation_id as string))].slice(0, 20);
+  for (const id of ids) {
+    try {
+      const r = await collectWorkReturns(db, id);
+      if (r.posted.length) console.log(`${stamp()} ↩ 대화 ${id.slice(0, 8)} 에 결과 ${r.posted.length}개 붙임`);
+    } catch (e) {
+      console.error(`${stamp()} ↩ 실패 ${id.slice(0, 8)}`, e instanceof Error ? e.message : e);
+    }
   }
 }
 
@@ -90,7 +173,51 @@ async function tick() {
   }
 }
 
+// 100회차 09-14 (사장님 "2,3"): 자가진화 하루 한 번. 한 시간마다 들여다보고, 한국 새벽 4시 이후 그날 첫 번째만 돈다.
+// 하루 한 번은 genesis_runs 표의 unique 가 지킨다(워커가 둘이어도). 규칙 고리는 GENESIS_SPEND=i-approve 없으면 스스로 건너뛴다.
+const DAILY_EVERY = 240;   // 15초 × 240 = 1시간
+async function dailyTick() {
+  const kstHour = new Date(Date.now() + 9 * 3600_000).getUTCHours();
+  if (kstHour < 4) return;
+  const { runDaily } = await import("@/lib/genesis/daily");
+  const r = await runDaily(db, defaultProviders().ai, (m) => console.log(`${stamp()} [자가진화] ${m}`));
+  if (r.ran) console.log(`${stamp()} [자가진화] ${r.date} 끝`);
+}
+
+// 09-11: 워커도 제품별로 하나씩. PRODUCT=dot 이면 먼저말걸기·지갑만, rookery 면 업무 실행·돌려놓기·지갑.
+// 비어 있으면 다 한다(로컬). 두근도트 워커가 로키 DB 에 업무를 찾으러 가면 표가 없어 매 틱 오류다.
+const PRODUCT = process.env.PRODUCT ?? "";
+const doesCompany = PRODUCT !== "dot";
+const doesDot = PRODUCT !== "rookery";
+console.log(`${stamp()} 제품: ${PRODUCT || "(전부)"} · 회사 업무 ${doesCompany ? "함" : "안 함"} · 먼저말걸기 ${doesDot ? "함" : "안 함"}`);
+
+// 112회차 09-15: 뜰 때 영상 배관을 모델 없이 한 바퀴(몇 초, 돈 0). 111회차에 일주일 넘게 죽어 있던 영상을 시험판이 잡았다 —
+// 이제 워커가 뜰 때마다 스스로 잰다. 고장이면 로그에 크게 남기고, 업무는 그대로 받는다(영상 아닌 일까지 멈출 이유는 없다).
+if (doesCompany) {
+  try {
+    const { videoSelfcheck } = await import("@/lib/video/selfcheck");
+    const v = await videoSelfcheck();
+    console.log(`${stamp()} [영상 점검] ${v.ok ? "정상" : "고장!"} · ${v.ffmpeg} · ${v.ms}ms${v.error ? ` · ${v.error}` : ""}`);
+  } catch (e) { console.error(`${stamp()} [영상 점검] 고장! ${e instanceof Error ? e.message : e}`); }
+}
+
 for (;;) {
-  try { await tick(); } catch (e) { console.error(`${stamp()} tick 실패`, e instanceof Error ? e.message : e); }
+  if (doesCompany) {
+    try { await tick(); } catch (e) { console.error(`${stamp()} tick 실패`, e instanceof Error ? e.message : e); }
+    if (tickN % RETURNS_EVERY === 0) {
+      try { await returnsTick(); } catch (e) { console.error(`${stamp()} 돌려놓기 실패`, e instanceof Error ? e.message : e); }
+    }
+    if (tickN % DAILY_EVERY === 0) {
+      try { await dailyTick(); } catch (e) { console.error(`${stamp()} 자가진화 실패`, e instanceof Error ? e.message : e); }
+    }
+  }
+  if (tickN % WALLET_EVERY === 0) {
+    try { await walletTick(); } catch (e) { console.error(`${stamp()} 지갑 확인 실패`, e instanceof Error ? e.message : e); }
+  }
+  if (doesDot && tickN % PING_EVERY === 0) {
+    try { await pingTick(); } catch (e) { console.error(`${stamp()} 먼저말걸기 실패`, e instanceof Error ? e.message : e); }
+    try { await postTick(); } catch (e) { console.error(`${stamp()} 게시물 실패`, e instanceof Error ? e.message : e); }
+  }
+  tickN++;
   await new Promise((r) => setTimeout(r, TICK_MS));
 }

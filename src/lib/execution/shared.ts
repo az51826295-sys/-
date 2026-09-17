@@ -7,6 +7,7 @@ import { createMockAIProvider } from "@/lib/providers/mock";
 import { createTavilySearchProvider } from "@/lib/providers/tavily";
 import { createHttpContentFetcher } from "@/lib/providers/fetcher";
 import type { AIProvider, ContentFetcher, SearchProvider } from "@/lib/providers/types";
+import type { Place } from "@/lib/providers/place";
 import type { ExecutionErrorCode } from "@/lib/execution/types";
 
 /**
@@ -33,7 +34,11 @@ export interface Providers {
  * whose work stops because a second, optional vendor was misconfigured is worse
  * off than one that quietly keeps using the first.
  */
-function selectAI(): AIProvider {
+/** @param place 152회차: 배치 담당이 정한 자리. 없으면 지금까지의 기본 배치. */
+function selectAI(place?: Place | null): AIProvider {
+  // 152회차: 배치 담당이 이 일을 **주 벤더의 특정 모델**에 앉히기로 했으면, 판단 자리는 싼 쪽으로 안 내려간다.
+  // 딥시크 자리를 골랐거나 아무것도 안 골랐으면 지금까지 하던 그대로다.
+  const openaiPlace = place && place !== "deepseek-v4-pro" ? place : null;
   const named = process.env.AI_PROVIDER;
   if (named === "mock") return createMockAIProvider();
 
@@ -43,7 +48,7 @@ function selectAI(): AIProvider {
   let primary: AIProvider;
   if (named === "openai") {
     if (process.env.OPENAI_API_KEY) {
-      primary = createOpenAIProvider();
+      primary = createOpenAIProvider(openaiPlace ? { judgmentModel: openaiPlace } : {});
     } else {
       console.warn("AI_PROVIDER=openai but OPENAI_API_KEY is unset — using anthropic.");
       primary = createAnthropicProvider();
@@ -56,6 +61,7 @@ function selectAI(): AIProvider {
   // Absent by default: a company that has not configured it keeps the exact
   // behaviour it had before, on one vendor.
   const economy = process.env.DEEPSEEK_API_KEY ? createDeepSeekProvider() : undefined;
+
 
   // 같은 등급의 옆자리.
   //
@@ -72,12 +78,12 @@ function selectAI(): AIProvider {
   // 옆자리만 있어도 라우터를 쓴다. 예전에는 싼 자리가 있을 때만 라우터를
   // 거쳤는데, 그러면 옆자리를 붙여 놓고도 아무 데도 안 쓰이게 된다.
   return economy || standby
-    ? createRoutedProvider({ primary, economy, standby })
+    ? createRoutedProvider({ primary, economy, standby, judgmentToEconomy: !openaiPlace })
     : primary;
 }
 
-export function defaultProviders(): Providers {
-  const ai = selectAI();
+export function defaultProviders(place?: Place | null): Providers {
+  const ai = selectAI(place);
 
   return {
     ai,

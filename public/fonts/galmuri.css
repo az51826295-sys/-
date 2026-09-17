@@ -1,0 +1,5 @@
+/* 갈무리(OFL) — 한국어 채팅에 필요한 글자만 남긴 판. 원본 1MB → 이 둘. subset_font.py 로 만든다. */
+@font-face { font-family: Galmuri11; font-style: normal; font-weight: 400; font-display: swap;
+  src: url('/fonts/Galmuri11-ko.woff2') format('woff2'); }
+@font-face { font-family: Galmuri14; font-style: normal; font-weight: 400; font-display: swap;
+  src: url('/fonts/Galmuri14-ko.woff2') format('woff2'); }

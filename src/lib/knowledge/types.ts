@@ -49,8 +49,12 @@ export const KNOWLEDGE_SUMMARY_HARD_MAX = 700;
 /** Per approved deliverable. Two is a good outcome; most produce none. */
 export const MAX_ORGANIZATION_CANDIDATES = 3;
 
-/** How much of the company's knowledge reaches one piece of work. */
-export const MAX_KNOWLEDGE_PER_EXECUTION = 8;
+/**
+ * How much of the company's knowledge reaches one piece of work.
+ * 8 → 16 (102회차 09-14): 활성 지식이 13개가 되자 최신순 상한 8이 확인된 규칙(LegacyRuntime.ttf, 09-05 '(규칙)' 셋)을 조용히
+ * 잘라 내고 있었다. 한 줄이 100~200자라 16개여도 실행당 1,500자 안팎 — 일 하나 값에 비하면 작다. 자르는 순서는 retrieval.ts.
+ */
+export const MAX_KNOWLEDGE_PER_EXECUTION = 16;
 
 export const knowledgeCategoryLabel: Record<KnowledgeCategory, string> = {
   best_practice: "Best Practice",

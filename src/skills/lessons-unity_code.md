@@ -86,3 +86,16 @@
 - [N11] 흰 옷이 푸르스름하면 필·앰비언트 색이 너무 차다. 필 (0.8, 0.85, 1) 은 흰 천에서 파랗게 읽힌다 — 필은 (0.9, 0.92, 1), 앰비언트는 회색 쪽으로. 얼굴 사진에서 셔츠가 흰색으로 읽혀야 한다.
 - [M17] FindRig 후보가 여럿이면(같은 낱말 폴더 세 개) **옆의 .rookery.json 의 createdAt 이 최신인 것** 하나를 쓴다 — 매니저가 다시 만들게 한 판이 뒤에 온다. 09-06 17:52 기사 세 판 중 첫 판(얼굴 보이는 것)을 집었다. 후보 경로와 createdAt 을 전부 로그에.
 - [M18] 매트 강제(metallic 0 · smoothness 0.15)는 **맵이 없는 재질**에만 한다. metallic_smoothness.png 가 있으면 그 맵이 답이다: `_Metallic` 은 안 건드리고 `_Smoothness`(URP 에선 맵 배율)=1. 09-06 20:19 은빛 기사를 사람 판의 매트 버릇으로 덮어 회색 돌처럼 나왔다.
+
+### 문법 그물이 못 잡는 것 (09-09)
+`csharp.ts` 는 **괄호와 문자열만** 본다. 그래서 이런 것은 그대로 유니티까지 간다:
+- `FindAnyObjectByType(a, b)` — 그런 오버로드가 없다
+- `transform.scene` — `Transform` 에 그런 멤버가 없다
+
+**API 오용은 컴파일러만 잡는다.** 문법 그물이 통과했다고 "코드가 맞다"는 뜻이 아니다 —
+"이게 C# 문장이긴 하다"는 뜻뿐이다. 유니티의 `컴파일이_된다` 검사가 그다음 문이고, 거기서 걸리면 스스로 다시가 돈다.
+
+**그러니 유니티 API 는 기억에 의존하지 마라.** 특히 Unity 6 에서 이름이 바뀐 것들:
+`FindObjectOfType` → `FindAnyObjectByType()` / `FindFirstObjectByType()` (인자 하나: `FindObjectsInactive`),
+`FindObjectsOfType` → `FindObjectsByType(FindObjectsSortMode)`.
+씬을 알고 싶으면 `Transform` 이 아니라 `gameObject.scene` 이다.

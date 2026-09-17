@@ -1,0 +1,42 @@
+{
+  "runId": "202609141506-rules-off-video",
+  "label": "rules-off-video",
+  "rules": "off",
+  "at": "2026-09-14T15:12:15.142Z",
+  "version": "v0",
+  "rows": [
+    {
+      "id": "b0-05",
+      "employee": "vid",
+      "title": "첫 3D 레벨 규칙 다섯 가지 — 60초 설명 영상",
+      "historical": "FAIL",
+      "verdict": "PASS",
+      "passed": 8,
+      "total": 8,
+      "costUsd": 0.048,
+      "ms": 133450
+    },
+    {
+      "id": "b0-07",
+      "employee": "vid",
+      "title": "Ana 의 조명 분석을 60초 영상으로",
+      "historical": "PASS",
+      "verdict": "PASS",
+      "passed": 8,
+      "total": 8,
+      "costUsd": 0.044,
+      "ms": 113498
+    },
+    {
+      "id": "b0-08",
+      "employee": "vid",
+      "title": "검사 떨어진 줄 고치기 (1/3) — 첫 3D 레벨 규칙 다섯 가지, 60초",
+      "historical": "PASS",
+      "verdict": "PASS",
+      "passed": 8,
+      "total": 8,
+      "costUsd": 0.041,
+      "ms": 113556
+    }
+  ]
+}

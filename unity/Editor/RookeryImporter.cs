@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEditor.TestTools.TestRunner.Api;
@@ -236,7 +237,7 @@ namespace Rookery
         public static void Import()
         {
             var url = Environment.GetEnvironmentVariable("ROOKERY_URL") ?? "https://rookery-web-production.up.railway.app";
-            var key = Environment.GetEnvironmentVariable("ROOKERY_KEY") ?? "";
+            var key = RookeryKey.Get();
             var folder = Environment.GetEnvironmentVariable("ROOKERY_FOLDER") ?? "Assets/Rookery";
             if (string.IsNullOrEmpty(key)) { Debug.LogError("[Rookery] ROOKERY_KEY 가 없습니다."); return; }
 
@@ -285,7 +286,7 @@ namespace Rookery
         {
             Import();
             var url = Environment.GetEnvironmentVariable("ROOKERY_URL") ?? "https://rookery-web-production.up.railway.app";
-            var key = Environment.GetEnvironmentVariable("ROOKERY_KEY") ?? "";
+            var key = RookeryKey.Get();
             Debug.Log("[Rookery] " + RookeryCheck.BuildAndTestWhenReady(url, key));
         }
 
@@ -305,12 +306,38 @@ namespace Rookery
         }
     }
 
+    /// 열쇠. 57회차: 감시자를 환경 변수 없이 손으로 켰더니 **한 시간 동안 401** 만 찍고 아무것도 안 했다.
+    /// 켜는 방법에 기대지 않는다 — 환경 변수가 없으면 프로젝트의 .env.local 에서 읽는다.
+    public static class RookeryKey
+    {
+        const string EnvPath = @"C:\Users\az518\Desktop\ai-workforce\.env.local";
+        public static string Get()
+        {
+            var k = Environment.GetEnvironmentVariable("ROOKERY_KEY");
+            if (!string.IsNullOrEmpty(k)) return k;
+            try
+            {
+                foreach (var line in File.ReadAllLines(EnvPath))
+                {
+                    var t = line.Trim();
+                    if (!t.StartsWith("ROOKERY_KEY=")) continue;
+                    var v = t.Substring("ROOKERY_KEY=".Length).Trim();
+                    if (!string.IsNullOrEmpty(v)) return v;
+                }
+            }
+            catch { }
+            return "";
+        }
+    }
+
     /// 받은 FBX 의 임포트 설정. Meshy FBX 는 법선 데이터가 나빠서 그대로 들이면 옷에
     /// 네모난 얼룩이 진다(09-06 01:24 실험: 노멀 맵도 텍스처도 아니었고, 법선을 다시
     /// 계산하니 사라졌다). 그리고 재질의 발광(베이스컬러가 발광 맵에도 들어감)은
     /// 씬 재질 정리에서 끈다(RookeryRender). 여기는 임포터만.
     public static class RookeryModels
     {
+
+
         public static string PrepareAll()
         {
             var n = 0;
@@ -329,24 +356,36 @@ namespace Rookery
                 // 조각인지는 가져올 때 남긴 사이드카(.rookery.json)의 attachTo 로 안다.
                 // 56회차: 마네킹(_mannequin)은 **사람 형태(Humanoid)** 로 들여온다. Generic 으로 들어오면
                 // 자가 사람을 못 찾아 아무것도 못 잰다(카메라 위치·점프·조각 전부). 이 폴더에만 건다.
-                var isMannequin = path.Replace('\\', '/').Contains("/_mannequin/");
-                if (isMannequin && imp.animationType != ModelImporterAnimationType.Human)
-                {
-                    imp.animationType = ModelImporterAnimationType.Human;
-                    imp.avatarSetup = ModelImporterAvatarSetup.CreateFromThisModel;
-                    imp.SaveAndReimport();
-                    n++;
-                    continue;
-                }
-                var side = path + ".rookery.json";
-                var isPart = File.Exists(side) && File.ReadAllText(side).Contains("\"attachTo\":\"") &&
-                             !File.ReadAllText(side).Contains("\"attachTo\":\"\"");
+                // 57회차: 마네킹 폴더만이 아니라 **리깅된 캐릭터 전부**를 사람 형태로 들인다.
+                // 우리 자는 키·등신·조각 붙음을 전부 Animator.isHuman 기준으로 재기 때문에,
+                // Generic 으로 들어온 몸은 **아무것도 못 잰다**(56회차 막대 마네킹에서 확인).
+                // 다만 뼈가 모자란 파일은 Humanoid 가 안 된다(막대 인형: LeftLowerLeg 없음) —
+                // 그래서 걸어 보고, 아바타가 안 서면 **스스로 Generic 으로 되돌린다.**
+                // 57회차: Humanoid 강제 변환은 **뺐다.** 리깅된 몸만 골라 걸 생각이었는데 사이드카는
+                // 폴더 단위라 리깅 안 된 model.fbx·동작 클립까지 걸려 'Hips 없음' 이 반복됐고, FBX 40개를
+                // 다시 들이며 갈렸다. 게다가 씬 빌더가 이미 아바타를 세우고 있었다 — 없어도 되던 규칙이다.
+                // 자가 사람을 못 찾으면 그것은 자산 문제로 드러난다(규격_사람_키가 아예 안 나온다).
+                // 57회차: 사이드카를 **폴더 단위**로 본다. 투구 폴더의 model.fbx 에는 사이드카가 없었고
+                // (glb 만 있었다) 그래서 조각인 줄 몰라 단위 고정이 걸리지 않았다 — 투구가 5 mm 로 남은 진짜 마지막 이유다.
+                // 한 폴더 = 한 산출물이니, 그 폴더의 사이드카 중 하나라도 attachTo 가 있으면 그 폴더는 조각이다.
+                var isPart = false;
+                var dirOf = Path.GetDirectoryName(path);
+                if (!string.IsNullOrEmpty(dirOf))
+                    foreach (var sc in Directory.GetFiles(dirOf, "*.rookery.json"))
+                    {
+                        var txt = File.ReadAllText(sc);
+                        var k = txt.IndexOf("\"attachTo\":\"", StringComparison.Ordinal);
+                        if (k >= 0 && txt.Length > k + 12 && txt[k + 12] != '"') { isPart = true; break; }
+                    }
                 var wantFileScale = !isPart;   // 캐릭터는 파일 단위 그대로, 조각은 1유닛=1m
                 var scaleOk = imp.useFileScale == wantFileScale && Math.Abs(imp.globalScale - 1f) < 0.001f;
                 if (imp.importNormals == ModelImporterNormals.Calculate && Math.Abs(imp.normalSmoothingAngle - 180f) < 0.5f && imp.weldVertices && scaleOk) continue;
                 // 53회차 되돌림: 여기서 파일 단위를 무시했더니 **캐릭터 53개가 전부 100배**가 되어 화면에서 사라졌다.
                 // 크기는 자산마다 다르므로 통째로 바꾸면 안 된다 — 붙이는 쪽이 세상 좌표로 재서 맞춘다.
                 imp.useFileScale = wantFileScale;
+                // 66회차: 조각만 **읽기 가능**으로. 자가 삼각형을 세려면 CPU 에서 메시를 읽어야 하는데
+                // 유니티는 기본으로 막아 둔다(그래서 처음 잰 값이 0 이었다). 몸에는 안 건다 — 메모리를 두 배로 쓴다.
+                if (isPart) imp.isReadable = true;
                 imp.globalScale = 1f;
                 imp.importNormals = ModelImporterNormals.Calculate;
                 imp.normalCalculationMode = ModelImporterNormalCalculationMode.AreaAndAngleWeighted;
@@ -450,7 +489,7 @@ namespace Rookery
             try
             {
                 var url = Environment.GetEnvironmentVariable("ROOKERY_URL") ?? "https://rookery-web-production.up.railway.app";
-                var key = Environment.GetEnvironmentVariable("ROOKERY_KEY") ?? "";
+                var key = RookeryKey.Get();
                 using var http = new System.Net.Http.HttpClient { Timeout = TimeSpan.FromSeconds(30) };
                 http.DefaultRequestHeaders.Add("x-rookery-key", key);
                 var json = http.GetStringAsync($"{url.TrimEnd('/')}/api/unity/latest").GetAwaiter().GetResult();
@@ -508,6 +547,10 @@ namespace Rookery
         }
 
         /// 컴파일이 필요한 상태면 표시만 남기고 리로드에 맡긴다. 아니면 바로 짓고 잰다.
+        const string BuildFail = "Rookery.BuildFail";
+        const string SceneUnsaved = "Rookery.SceneUnsaved";
+        static readonly char NewlineChar = (char)10;
+
         public static string BuildAndTestWhenReady(string url, string key)
         {
             SessionState.SetString(PendingUrl, url);
@@ -599,6 +642,12 @@ namespace Rookery
         public static string BuildAndTest(string url, string key, bool afterReload = false)
         {
             var built = BuildAll();
+            // 58회차: **씬을 못 지었으면 그 판은 초록일 수 없다.** Dev 가 낸 씬 빌더가 정규식 하나 때문에
+            // 통째로 죽었는데(`Not enough )'s`), 자는 **지난 판 씬**을 재고 "통과 14 실패 0" 을 냈다.
+            // 안 지어진 게임이 합격한 것이다. 지음이 실패하면 그 줄을 판정에 넣는다.
+            SessionState.SetString(BuildFail, "");
+            foreach (var line in (built ?? "").Split(NewlineChar))
+                if (line.TrimStart().StartsWith("✗")) SessionState.SetString(BuildFail, line.Trim());
             if (!afterReload && built.Contains("BuildOrRebuild 가 없습니다") && !SessionState.GetBool(Continue, false))
             {
                 // 빌더가 아직 안 보인다 — 방금 넣은 스크립트가 컴파일 전일 수 있다.
@@ -607,6 +656,56 @@ namespace Rookery
                 AssetDatabase.Refresh();
                 return built + "\n(방금 넣은 스크립트가 컴파일되면 이어서 잽니다)";
             }
+            // 60회차: **창 하나에 15분이 굳었다.** 시험 러너가 시작 전에 "바뀐 씬을 저장할까요?" 를 묻는데,
+            // 씬이 이름 없이(Untitled) 열려 있으면 batchmode 에서 그 창에 답할 수가 없다
+            // (`DisplayDialog … This should not be called in batch mode`). 결과가 아예 안 나오니
+            // 대화에도 DB 에도 흔적이 남지 않는다 — **조용한 고장 중 제일 나쁜 종류다.**
+            // 우리가 먼저 저장해서 창이 뜰 일을 없앤다. 이름이 없다는 것은 빌더가 저장을 빠뜨린 것이니 판정에도 적는다.
+            SessionState.SetString(SceneUnsaved, "");
+            // 60회차 2판: 활성 씬 하나만 저장했더니 **또 굳었다.** 창이 씬 이름을 하나도 안 적고 떴다 —
+            // 열린 씬이 하나가 아니었다는 뜻이다. **열린 것을 전부** 본다.
+            try
+            {
+                Directory.CreateDirectory("Assets/Scenes");
+                for (var si = 0; si < EditorSceneManager.sceneCount; si++)
+                {
+                    var open = EditorSceneManager.GetSceneAt(si);
+                    if (!open.isDirty) continue;
+                    if (string.IsNullOrEmpty(open.path))
+                    {
+                        var fallback = "Assets/Scenes/CoinPickup" + (si == 0 ? "" : si.ToString()) + ".unity";
+                        EditorSceneManager.SaveScene(open, fallback);
+                        SessionState.SetString(SceneUnsaved, fallback);
+                        Debug.Log("[Rookery] 씬이 이름 없이 열려 있었다 — " + fallback + " 로 저장하고 이어간다");
+                    }
+                    else
+                    {
+                        EditorSceneManager.SaveScene(open);
+                        Debug.Log("[Rookery] 바뀐 씬 저장: " + open.path);
+                    }
+                }
+            }
+            catch (Exception e) { Debug.LogWarning("[Rookery] 씬 저장 실패: " + e.Message); }
+            // 60회차 3판: 저장했는데도 러너가 또 물었다(창에 씬 이름이 하나도 없다).
+            // 저장만으로는 상태가 안 접힌다 — **저장한 씬 하나만 다시 연다.** 그러면 열린 씬은 하나,
+            // 경로 있음, 안 더러움이 확실해지고 러너가 물을 것이 없다.
+            try
+            {
+                var act = EditorSceneManager.GetActiveScene();
+                var path = act.path;
+                if (string.IsNullOrEmpty(path))
+                    for (var si = 0; si < EditorSceneManager.sceneCount; si++)
+                    {
+                        var s2 = EditorSceneManager.GetSceneAt(si);
+                        if (!string.IsNullOrEmpty(s2.path)) { path = s2.path; break; }
+                    }
+                if (!string.IsNullOrEmpty(path) && (EditorSceneManager.sceneCount > 1 || act.isDirty || string.IsNullOrEmpty(act.path)))
+                {
+                    EditorSceneManager.OpenScene(path, OpenSceneMode.Single);
+                    Debug.Log("[Rookery] 시험 전에 씬을 하나로 접었다: " + path);
+                }
+            }
+            catch (Exception e) { Debug.LogWarning("[Rookery] 씬 접기 실패: " + e.Message); }
             SessionState.SetString(PendingUrl, url);
             SessionState.SetString(PendingKey, key);
             SessionState.SetString(PendingDeliverable, SessionState.GetString(LastDeliverable, ""));
@@ -666,6 +765,23 @@ namespace Rookery
 
                 var cases = new List<string>();
                 int passed = 0, failed = 0, inconclusive = 0;
+                // 58회차: 씬을 못 지었으면 맨 앞에 실패 줄로 박는다 — 나머지 값은 지난 판 씬을 잰 것이다.
+                var unsaved = SessionState.GetString(SceneUnsaved, "");
+                if (!string.IsNullOrEmpty(unsaved))
+                {
+                    cases.Add("{\"name\":\"씬을_저장했다\",\"result\":\"Failed\",\"message\":\"" +
+                              J("씬 빌더가 씬을 저장하지 않아 이름 없이(Untitled) 열려 있었습니다. 그대로 두면 시험 러너가 저장 여부를 묻는 창을 띄우고 batchmode 에서 굳습니다(15분). " + unsaved + " 로 대신 저장했습니다 — 빌더가 저장하도록 고쳐야 합니다.") + "\"}");
+                    failed++;
+                    SessionState.EraseString(SceneUnsaved);
+                }
+                var buildFail = SessionState.GetString(BuildFail, "");
+                if (!string.IsNullOrEmpty(buildFail))
+                {
+                    cases.Add("{\"name\":\"씬을_다시_지었다\",\"result\":\"Failed\",\"message\":\"" +
+                              J("씬 빌더가 죽어서 이번 판이 씬에 반영되지 않았습니다. 아래 값들은 지난 판 씬을 잰 것입니다 — " + buildFail) + "\"}");
+                    failed++;
+                    SessionState.EraseString(BuildFail);
+                }
                 void Walk(ITestResultAdaptor r)
                 {
                     if (r.HasChildren) { foreach (var c in r.Children) Walk(c); return; }

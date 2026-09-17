@@ -1,0 +1,20 @@
+{
+  "runId": "202609141502-ffmpeg-apt",
+  "label": "ffmpeg-apt",
+  "rules": "off",
+  "at": "2026-09-14T15:05:35.258Z",
+  "version": "v0",
+  "rows": [
+    {
+      "id": "b0-06",
+      "employee": "vid",
+      "title": "로키가 무엇인지 40초 소개 영상",
+      "historical": "PASS",
+      "verdict": "PASS",
+      "passed": 8,
+      "total": 8,
+      "costUsd": 0.071,
+      "ms": 204769
+    }
+  ]
+}

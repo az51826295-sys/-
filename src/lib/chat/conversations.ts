@@ -122,7 +122,10 @@ export async function loadConversation(
     .from("conversation_messages")
     .select("role, content, attachments, created_at")
     .eq("conversation_id", id)
-    .order("created_at", { ascending: true });
+    .order("created_at", { ascending: true })
+    // 한 턴의 사람 말과 답은 `saveTurn` 이 한 번에 넣어 created_at 이 **같다**. 시각만으로 세우면 답이 질문 위로
+    // 올라올 수 있다(103회차 09-14: 실제 DB 에서 그렇게 저장된 턴이 있었다). 같은 시각이면 사람 말 먼저.
+    .order("role", { ascending: false });
 
   return { conversation: conv, messages: rows ?? [] };
 }

@@ -22,6 +22,20 @@ export function capabilityCatalogue() {
   );
 }
 
+/**
+ * 답에서 내부 이름표를 걷는다(100회차 09-13). 목록을 프롬프트에 id 로 주니 "뭘 할 수 있어?" 에
+ * 모델이 "(small_app)" 처럼 id 를 괄호로 붙여 답했다 — 스토어 스크린샷에 그대로 찍혔다.
+ * 프롬프트로 막고, 그래도 새면 여기서 지운다. **목록에 있는 id 만** 지운다(다른 괄호는 안 건드림).
+ */
+export function scrubCapabilityIds(text: string): string {
+  const ids = capabilityCatalogue().map((c) => c.capabilityId.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+  if (!ids.length) return text;
+  const alt = ids.join("|");
+  return text
+    .replace(new RegExp(`\\s*[(（]\\s*\`?(?:${alt})\`?\\s*[)）]`, "g"), "")
+    .replace(new RegExp(`\`(?:${alt})\``, "g"), "");
+}
+
 /** 접수 프롬프트. 화면(everydayService)과 시험이 같은 것을 쓴다. */
 export function intakeInstructions(opts: { hasImages: boolean; speaker: Speaker | null }): string {
   const seenLen = opts.hasImages ? 1 : 0;
@@ -29,7 +43,9 @@ export function intakeInstructions(opts: { hasImages: boolean; speaker: Speaker 
   "너는 유능한 조수다. 한국어로 답한다.\n\n" +
         "먼저 판단한다: **지금 아는 것으로 제대로 답할 수 있는가?**\n" +
         "- 그렇다면 `reply` 에 답을 쓰고 `searches` 는 비운다. " +
-        "짧게 자르지 말고 물은 만큼 답한다.\n" +
+        // 137회차: 여기 "짧게 자르지 말고 물은 만큼 답한다" 가 있었다. 그 한 줄이 페르소나의 정직 규칙과
+        // 겹쳐 답을 장문 보고서로 만들었다(사장님: "앞에서 다 말하지 말고 필요한 말만 해").
+        "**물은 것만** 답한다 — 안 물은 것을 덧붙이지 마라.\n" +
         "- 최신 사실·가격·뉴스·특정 문서처럼 **찾아봐야 정확한 것**이면 " +
         "`reply` 를 비우고 `searches` 에 검색어를 최대 3개 쓴다.\n\n" +
         (seenLen > 0
@@ -44,7 +60,8 @@ export function intakeInstructions(opts: { hasImages: boolean; speaker: Speaker 
         capabilityCatalogue()
           .map((c) => `  - ${c.capabilityId}: ${c.label} → ${c.produces}`)
           .join("\n") +
-        "\n**목록에 있는 id 만 쓴다.** 없는 것을 지어내면 조용히 빗나간다.\n" +
+        "\n**목록에 있는 id 만 쓴다.** 없는 것을 지어내면 조용히 빗나간다. " +
+        "id 는 내부 이름표다 — `reply` 에는 절대 쓰지 말고, 사람에게는 이름(→ 앞의 말)으로만 말한다.\n" +
         "**코드·앱·게임·프로그램을 만들어 달라는 요청은 답에 코드를 쓰지 않는다.** " +
         "그건 시간이 드는 일이라 `capabilityId` 로 맡기고, `reply` 는 무엇을 만들 " +
         "것인지 한두 문장이면 된다. 답에 코드를 쓰기 시작하면 길이 한도에 걸려 " +

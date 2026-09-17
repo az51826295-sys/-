@@ -2,6 +2,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Providers } from "@/lib/execution/shared";
 import type { AIProvider, Routing, WorkTier } from "@/lib/providers/types";
 import { costOf, unitFor } from "@/lib/costs/pricing";
+import { SpentError } from "@/lib/providers/types";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 type Db = SupabaseClient<any, any, any>;
@@ -66,6 +67,17 @@ function meterAi(ai: AIProvider, db: Db, scope: UsageScope): AIProvider {
           ms: Date.now() - startedAt,
           error,
         });
+        // 09-09: **실패해도 쓴 토큰은 청구된다.** 잘림·거절·파싱실패가 그렇다 —
+        // 어제만 잘림이 다섯 번이었고 장부에는 한 줄도 없었다(사장님 청구서와 벌어지는 자리).
+        // 이제 공급자가 쓴 토큰을 들고 던지므로, 실패한 판도 값을 남긴다.
+        if (error instanceof SpentError && (error.inputTokens > 0 || error.outputTokens > 0)) {
+          await record(db, scope, {
+            model: error.model,
+            purpose: params.schemaName + "_failed",
+            inputTokens: error.inputTokens,
+            outputTokens: error.outputTokens,
+          });
+        }
         throw error;
       }
 

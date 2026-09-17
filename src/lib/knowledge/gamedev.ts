@@ -33,8 +33,10 @@ export const GAMEDEV_LESSONS: Lesson[] = [
   // ── A. Meshy → 유니티 반입 (Vox) ──
   { id: "A1", role: "mesh_assets", verified: false,
     text: "캐릭터(리깅·애니메이션이 필요한 것)는 FBX 를 유니티에 넣는다. Humanoid 리그와 리타깃은 FBX 임포터에만 있고 GLB(glTFast)에는 없다. 소품은 GLB 도 된다." },
-  { id: "A2", role: "mesh_assets", verified: false,
-    text: "Meshy 출력은 cm 단위일 수 있다. 유니티에서 크기가 100배면 임포트 설정 Scale Factor 0.01 — 씬 인스턴스를 늘리지 않는다. 우리 호출은 auto_size 로 m 단위를 청한다; 실제 높이는 판정표 S1 에 있다." },
+  { id: "A2", role: "mesh_assets", verified: true,
+    text: "임포트 Scale Factor 는 **재 보고 정한다.** 넣은 뒤 Renderer.bounds 로 실제 높이를 재서 기대 높이와 견준다: 약 100배면 0.01, 약 1배면 **1 그대로 둔다**. " +
+      "무조건 0.01 을 넣지 마라 — 09-15 감사: 조각 크기가 붙는 자리의 **0.01배**로 나온 판이 13건이고(통과한 판은 1.2~1.3배), 전부 m 단위로 온 모델에 0.01 을 또 먹인 것이다. " +
+      "Meshy 출력이 cm 일 수 있다는 것은 맞지만 '있다' 는 조건이지 기본값이 아니다. 씬 인스턴스의 Transform 은 늘리지 않는다(임포터에서 고친다)." },
   { id: "A3", role: "mesh_assets", verified: false,
     text: "GLB 를 유니티가 열려면 패키지 com.unity.cloud.gltfast 가 있어야 한다. 없으면 파일이 프로젝트에 들어가도 아무것도 안 뜬다." },
   { id: "A4", role: "mesh_assets", verified: false,

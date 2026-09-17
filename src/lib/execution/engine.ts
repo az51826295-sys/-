@@ -17,6 +17,8 @@ import { loadRecurringHistory } from "@/lib/recurring/history";
 import { SkillNotFoundError } from "@/lib/skills/types";
 import { executionStepLabel, type ExecutionErrorCode } from "@/lib/execution/types";
 import { meterProviders } from "@/lib/costs/meter";
+import { placeLine, DEFAULT_PLACE, type Placement } from "@/lib/providers/place";
+import { decide, headFacts, decisionLines, type Decision } from "@/lib/genesis/head";
 import { blockedBySpendLimit } from "@/lib/costs/allowance";
 import { ensureAssignmentPolicySnapshot } from "@/lib/policies/resolve";
 import { ensureAssignmentPlaybookSnapshot } from "@/lib/playbooks/resolve";
@@ -26,6 +28,7 @@ import { commitPrediction } from "@/lib/genesis/predict";
 import { judgeSelection, selectionNote } from "@/lib/execution/selection";
 import { WaitingForApproval } from "@/lib/execution/approval";
 import { selfRetryFromVerdict } from "@/lib/execution/selfRetry";
+import { scheduleMechanicalRetry } from "@/lib/execution/mechanicalRetry";
 
 export { defaultProviders };
 export type { Providers };
@@ -73,6 +76,15 @@ export async function executeEmployeeAssignment(
     return { ok: false, code: "SPEND_LIMIT_REACHED" };
   }
 
+  /**
+   * **어느 AI를 이 일에 앉힐 것인가 — 판단이 정한다** (152회차 09-16).
+   *
+   * 사장님 09-16: *"판단자 ai 잘 만들면 모든 에이아이를 적재적소에 쓰며 더 높은 효율을 낼 수 있다."*
+   * 여기까지는 자리가 내가 손으로 적은 집합 하나였다. 이제 일마다 한 번, **싼 자리에서** 골라 놓고 시작한다.
+   *
+   * 문이 아니다 — 고르기가 안 되면 하던 자리로 간다. 고른 것은 실행 기록에 남겨서 나중에 되물을 수 있게 한다.
+   * 켜는 스위치를 따로 두지 않는다: 어느 자리를 골라도 일은 나오고(값과 성질만 다르다), 깨질 선택은 난간이 막는다.
+   */
   // Every model call this run makes — whatever skill makes it, and whether or
   // not the skill knows it is being counted — is recorded against this run.
   providers = meterProviders(providers, supabase, {
@@ -80,6 +92,37 @@ export async function executeEmployeeAssignment(
     workExecutionId: executionId,
     companyEmployeeId: execution.company_employee_id,
   });
+
+  /**
+   * **머리** (161회차) — 판단자 AI 의 한 자리. 배치(152)만 따로 돌던 자리를 머리가 이어받는다:
+   * 어느 모델·어느 기계·얼마나 크게·진짜 재료가 필요한지 + **사장님이 시작 전에 보는 한 줄**을 한 번에 정한다.
+   * 정하지 못하면 하던 대로 간다(문이 아니다). 정한 것은 실행 기록에 남고 계획 카드 맨 위에 뜬다.
+   */
+  let placement: Placement | null = null;
+  let decision: Decision | null = null;
+  {
+    const { data: asg } = await supabase
+      .from("assignments").select("title, description").eq("id", execution.assignment_id).maybeSingle();
+    const order = `${(asg?.title as string | null) ?? ""}\n${(asg?.description as string | null) ?? ""}`.trim();
+    // 목(mock)으로 도는 판에는 손대지 않는다. 자리를 갈아 끼우면 **목 파일럿이 진짜 모델을 부르게 된다** —
+    // 목 먼저라는 계약이 바로 그 자리에서 깨진다.
+    if (order && providers.ai.name !== "mock") {
+      const facts = await headFacts(supabase, execution.company_id);
+      decision = await decide(providers.ai, { order, kind: String(execution.current_step ?? "work"), facts });
+      placement = decision.placement;
+      if (placement.place !== DEFAULT_PLACE) {
+        // 자리를 갈아 끼우면 **계량도 다시 씌운다.** 152회차에 이 한 줄이 없어서 배치 호출의 값이
+        // 원장에 안 남았다 — "회복된 고장은 원장에만 남는다" 의 반대편: 원장에 없으면 없는 일이 된다.
+        providers = meterProviders(defaultProviders(placement.place), supabase, {
+          companyId: execution.company_id,
+          workExecutionId: executionId,
+          companyEmployeeId: execution.company_employee_id,
+        });
+      }
+      console.log(`[배치] ${placeLine(placement)}`);
+      for (const l of decisionLines(decision)) console.log(`[머리] ${l}`);
+    }
+  }
 
   try {
     await supabase
@@ -89,6 +132,10 @@ export async function executeEmployeeAssignment(
         started_at: new Date().toISOString(),
         model_provider: providers.ai.name,
         model_name: providers.ai.model,
+        // 152회차: 왜 이 모델이었나를 같이 남긴다. 값만 남기면 나중에 "왜 비싼 자리로 갔나" 를 못 되묻는다.
+        ...(placement
+          ? { metrics_json: { ...((execution.metrics_json as Record<string, unknown> | null) ?? {}), placement, decision } }
+          : {}),
       })
       .eq("id", executionId);
 
@@ -202,10 +249,11 @@ export async function executeEmployeeAssignment(
       .update({
         metrics_json: {
           // 42회차: 여기서 통째로 덮어써 단계 저장(steps)이 사라졌다 — 계획 카드도 같이 사라진다.
+          // 152회차: 그때 **steps 만** 골라 살린 것이 화근이었다. 새로 넣은 배치 기록(placement)이 같은 자리에서
+          // 또 지워졌다 — 같은 고장을 두 번 겪었다. 이제 **있던 것을 다 살리고** 이번 것만 위에 덮는다.
           ...(await (async () => {
             const { data } = await supabase.from("work_executions").select("metrics_json").eq("id", executionId).maybeSingle();
-            const m = (data?.metrics_json ?? {}) as Record<string, unknown>;
-            return m.steps ? { steps: m.steps } : {};
+            return (data?.metrics_json ?? {}) as Record<string, unknown>;
           })()),
           ...result.metrics,
           selection: {
@@ -275,6 +323,11 @@ export async function executeEmployeeAssignment(
       // Kept server-side for debugging; never rendered to the user.
       p_error_message: message.slice(0, 500),
     });
+
+    // 117회차: 기계적인 고장(출력 잘림·저장 시간 초과)이면 한 번은 조용히 다시 — 65회차에 "싸게 실패하고 다시 한다" 고
+    // 정해 놓고 다시 하는 쪽을 안 만들었었다. 뜻이 있는 실패는 그대로 사람에게 간다.
+    const again = await scheduleMechanicalRetry(supabase, execution, code, message);
+    if (again.retried) console.log(`[다시] ${executionId.slice(0, 8)} ${code} — 기계적인 고장이라 한 번 더 돌린다`);
 
     return { ok: false, code };
   }

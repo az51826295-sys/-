@@ -1,0 +1,745 @@
+{
+  "version": "v0",
+  "frozenAt": "2026-09-14T13:37:49.508Z",
+  "note": "서버가 스스로 검사하는 과제만. 얼린 뒤 손대지 않는다. 바꾸면 v1.",
+  "tasks": [
+    {
+      "id": "b0-01",
+      "employee": "ana",
+      "type": "analysis",
+      "title": "GDC 레벨 디자인 워크숍(블록메시·조명) 영상 분석",
+      "description": "이 영상을 분석해 줘: https://www.youtube.com/watch?v=09r1B9cVEQY\n궁금한 것: 플레이어를 HUD 표시 없이 자연스럽게 안내하는 기법이 무엇무엇인지, 조명으로 길을 만드는 규칙이 있는지, 숫자로 말한 것(거리·비율·시간)이 있으면 전부. 우리는 유니티로 첫 3D 레벨(시작·도전·목표 세 구역)을 만드는 중이라, 우리 레벨에 바로 적용할 것 2~3개.",
+      "assignment": {
+        "priority": "normal",
+        "role_input_json": {},
+        "role_input_schema_id": "analysis_assignment_v1",
+        "source_type": "manual",
+        "assignment_type": "manager",
+        "assignment_scope": "manager"
+      },
+      "historical": {
+        "deliverableId": "b9cb8c43-3e2c-4df7-9786-9b07a4519db4",
+        "at": "2026-09-07T08:25:51.829807+00:00",
+        "verdict": "PASS",
+        "checks": [
+          {
+            "name": "근거_1",
+            "result": "Passed"
+          },
+          {
+            "name": "근거_2",
+            "result": "Passed"
+          },
+          {
+            "name": "근거_3",
+            "result": "Passed"
+          },
+          {
+            "name": "근거_4",
+            "result": "Passed"
+          },
+          {
+            "name": "근거_5",
+            "result": "Passed"
+          },
+          {
+            "name": "근거_6",
+            "result": "Passed"
+          },
+          {
+            "name": "근거_7",
+            "result": "Passed"
+          },
+          {
+            "name": "근거_8",
+            "result": "Passed"
+          },
+          {
+            "name": "근거_9",
+            "result": "Passed"
+          },
+          {
+            "name": "근거_10",
+            "result": "Passed"
+          },
+          {
+            "name": "근거_11",
+            "result": "Passed"
+          },
+          {
+            "name": "근거_12",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자_1",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자_2",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자_3",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자_4",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자_5",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자_6",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자_7",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자_8",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자_9",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자_10",
+            "result": "Passed"
+          }
+        ],
+        "costUsd": 0
+      }
+    },
+    {
+      "id": "b0-02",
+      "employee": "ana",
+      "type": "analysis",
+      "title": "GDC 레벨 디자인 자료 셋 비교 — 영상·PDF 슬라이드·80.lv 기사",
+      "description": "자료 셋을 같이 읽고 비교해 줘.\n- 영상: https://www.youtube.com/watch?v=09r1B9cVEQY\n- 발표자 PDF(디렉터스 컷 슬라이드): http://www.davidshaver.net/DShaver_Invisible_Intuition_DirectorsCut.pdf\n- 80.lv 기사: https://80.lv/articles/level-design-workshop-blockmesh-and-lighting-tips\n궁금한 것: ① 셋이 같이 말하는 기법(자료마다 인용), ② PDF 에만 있는 것(영상에서 빠진 것), ③ 기사가 영상과 다르게 적은 것, ④ 숫자로 말한 것 전부(어디에). 우리는 유니티로 시작·도전·목표 세 구역 첫 레벨을 만드는 중 — 바로 적용할 것 셋.",
+      "assignment": {
+        "priority": "normal",
+        "role_input_json": {},
+        "role_input_schema_id": "analysis_assignment_v1",
+        "source_type": "manual",
+        "assignment_type": "manager",
+        "assignment_scope": "manager"
+      },
+      "historical": {
+        "deliverableId": "701621cc-bd2d-48b1-a12d-5700cc15e473",
+        "at": "2026-09-07T08:38:40.721894+00:00",
+        "verdict": "PASS",
+        "checks": [
+          {
+            "name": "근거_1",
+            "result": "Passed"
+          },
+          {
+            "name": "근거_2",
+            "result": "Passed"
+          },
+          {
+            "name": "근거_3",
+            "result": "Passed"
+          },
+          {
+            "name": "근거_4",
+            "result": "Passed"
+          },
+          {
+            "name": "근거_5",
+            "result": "Passed"
+          },
+          {
+            "name": "근거_6",
+            "result": "Passed"
+          },
+          {
+            "name": "근거_7",
+            "result": "Passed"
+          },
+          {
+            "name": "근거_8",
+            "result": "Passed"
+          },
+          {
+            "name": "근거_9",
+            "result": "Passed"
+          },
+          {
+            "name": "근거_10",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자_1",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자_2",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자_3",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자_4",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자_5",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자_6",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자_7",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자_8",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자_9",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자_10",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자_11",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자_12",
+            "result": "Passed"
+          }
+        ],
+        "costUsd": 0.123
+      }
+    },
+    {
+      "id": "b0-03",
+      "employee": "ana",
+      "type": "analysis",
+      "title": "GDC 레벨 디자인 자료 셋 비교 — 영상·PDF 슬라이드·80.lv 기사",
+      "description": "자료 셋을 같이 읽고 비교해 줘.\n- 영상: https://www.youtube.com/watch?v=09r1B9cVEQY\n- 발표자 PDF(디렉터스 컷 슬라이드): http://www.davidshaver.net/DShaver_Invisible_Intuition_DirectorsCut.pdf\n- 80.lv 기사: https://80.lv/articles/level-design-workshop-blockmesh-and-lighting-tips\n궁금한 것: ① 셋이 같이 말하는 기법(자료마다 인용), ② PDF 에만 있는 것(영상에서 빠진 것), ③ 기사가 영상과 다르게 적은 것, ④ 숫자로 말한 것 전부(어디에). 우리는 유니티로 시작·도전·목표 세 구역 첫 레벨을 만드는 중 — 바로 적용할 것 셋.",
+      "assignment": {
+        "priority": "normal",
+        "role_input_json": {},
+        "role_input_schema_id": "analysis_assignment_v1",
+        "source_type": "manual",
+        "assignment_type": "manager",
+        "assignment_scope": "manager"
+      },
+      "historical": {
+        "deliverableId": "b8253e22-462c-454f-83a2-2823f21e0752",
+        "at": "2026-09-07T08:45:02.006583+00:00",
+        "verdict": "PARTIAL",
+        "checks": [
+          {
+            "name": "근거_1",
+            "result": "Passed"
+          },
+          {
+            "name": "근거_2",
+            "result": "Passed"
+          },
+          {
+            "name": "근거_3",
+            "result": "Passed"
+          },
+          {
+            "name": "근거_4",
+            "result": "Passed"
+          },
+          {
+            "name": "근거_5",
+            "result": "Passed"
+          },
+          {
+            "name": "근거_6",
+            "result": "Passed"
+          },
+          {
+            "name": "근거_7",
+            "result": "Passed"
+          },
+          {
+            "name": "근거_8",
+            "result": "Passed"
+          },
+          {
+            "name": "근거_9",
+            "result": "Passed"
+          },
+          {
+            "name": "근거_10",
+            "result": "Passed"
+          },
+          {
+            "name": "근거_11",
+            "result": "Passed"
+          },
+          {
+            "name": "근거_12",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자_1",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자_2",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자_3",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자_4",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자_5",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자_6",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자_7",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자_8",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자_9",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자_10",
+            "result": "Failed"
+          },
+          {
+            "name": "숫자_11",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자_12",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자_13",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자_14",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자_15",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자_16",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자_17",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자_18",
+            "result": "Failed"
+          },
+          {
+            "name": "숫자_19",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자_20",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자_21",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자_22",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자_23",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자_24",
+            "result": "Failed"
+          },
+          {
+            "name": "숫자_25",
+            "result": "Failed"
+          },
+          {
+            "name": "숫자_26",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자_27",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자_28",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자_29",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자_30",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자_31",
+            "result": "Passed"
+          }
+        ],
+        "costUsd": 0.159
+      }
+    },
+    {
+      "id": "b0-04",
+      "employee": "ana",
+      "type": "analysis",
+      "title": "GDC 영상 다시 읽기 — 조명 파트(로버트 양) 규칙만",
+      "description": "이 영상의 뒷부분(조명, 약 30분 이후)을 분석해 줘: https://www.youtube.com/watch?v=09r1B9cVEQY\n궁금한 것: 조명으로 길을 만드는 규칙(무엇을 먼저 하고 무엇을 나중에 하는지), 광원 종류별 쓰임, 숫자·순서로 말한 것. 유니티 첫 레벨에 바로 적용할 것 셋.",
+      "assignment": {
+        "priority": "normal",
+        "role_input_json": {},
+        "role_input_schema_id": "analysis_assignment_v1",
+        "source_type": "manual",
+        "assignment_type": "manager",
+        "assignment_scope": "manager"
+      },
+      "historical": {
+        "deliverableId": "bc41e29b-e4cf-4946-a289-b0303a32879b",
+        "at": "2026-09-07T09:01:59.644967+00:00",
+        "verdict": "PASS",
+        "checks": [
+          {
+            "name": "근거_1",
+            "result": "Passed"
+          },
+          {
+            "name": "근거_2",
+            "result": "Passed"
+          },
+          {
+            "name": "근거_3",
+            "result": "Passed"
+          },
+          {
+            "name": "근거_4",
+            "result": "Passed"
+          },
+          {
+            "name": "근거_5",
+            "result": "Passed"
+          },
+          {
+            "name": "근거_6",
+            "result": "Passed"
+          },
+          {
+            "name": "근거_7",
+            "result": "Passed"
+          },
+          {
+            "name": "근거_8",
+            "result": "Passed"
+          },
+          {
+            "name": "근거_9",
+            "result": "Passed"
+          },
+          {
+            "name": "근거_10",
+            "result": "Passed"
+          },
+          {
+            "name": "근거_11",
+            "result": "Passed"
+          },
+          {
+            "name": "근거_12",
+            "result": "Passed"
+          },
+          {
+            "name": "근거_13",
+            "result": "Passed"
+          },
+          {
+            "name": "근거_14",
+            "result": "Passed"
+          },
+          {
+            "name": "근거_15",
+            "result": "Passed"
+          },
+          {
+            "name": "근거_16",
+            "result": "Passed"
+          },
+          {
+            "name": "근거_17",
+            "result": "Passed"
+          },
+          {
+            "name": "근거_18",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자_1",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자_2",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자_3",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자_4",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자_5",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자_6",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자_7",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자_8",
+            "result": "Passed"
+          }
+        ],
+        "costUsd": 0.099
+      }
+    },
+    {
+      "id": "b0-05",
+      "employee": "vid",
+      "type": "video",
+      "title": "첫 3D 레벨 규칙 다섯 가지 — 60초 설명 영상",
+      "description": "우리 게임의 첫 3D 레벨을 만드는 규칙 다섯 가지를 60초 설명 영상으로. 이 사실만 쓴다(지어내지 말 것):\n1) 바닥은 40×40 m 안. 2) 시작·도전·목표 세 구역, 구역마다 바닥 색이 다르다. 3) 시작점에서 보이는 높이 6 m 랜드마크 하나(주변과 색 대비). 4) 동선은 고리로 시작점에 돌아온다. 5) 동전은 길을 따라 3~5 m 간격, 다음 동전이 늘 보이게.\n말투는 해요체, 시청자는 게임을 처음 만드는 사람. 마지막 장면은 '숫자로 적으면 기계가 잴 수 있어요' 로 맺는다.",
+      "assignment": {
+        "priority": "normal",
+        "role_input_json": {},
+        "role_input_schema_id": "video_assignment_v1",
+        "source_type": "manual",
+        "assignment_type": "manager",
+        "assignment_scope": "manager"
+      },
+      "historical": {
+        "deliverableId": "0d249928-1f6d-4f5c-9c19-f19f2197bee8",
+        "at": "2026-09-07T09:40:02.230185+00:00",
+        "verdict": "FAIL",
+        "checks": [
+          {
+            "name": "길이_목표안",
+            "result": "Passed"
+          },
+          {
+            "name": "소리_있음",
+            "result": "Passed"
+          },
+          {
+            "name": "장면_수",
+            "result": "Passed"
+          },
+          {
+            "name": "자막_수_대본과_같다",
+            "result": "Passed"
+          },
+          {
+            "name": "말_길이",
+            "result": "Passed"
+          },
+          {
+            "name": "첫장면_3초안",
+            "result": "Failed"
+          }
+        ],
+        "costUsd": 0.1
+      }
+    },
+    {
+      "id": "b0-06",
+      "employee": "vid",
+      "type": "video",
+      "title": "로키가 무엇인지 40초 소개 영상",
+      "description": "로키(Rookery)가 무엇인지 40초 영상으로. 이 사실만 쓴다(지어내지 말 것):\n1) 대화창 하나에 말하면 직원들이 일한다. 2) 직원은 게임 코드(Dev), 3D(Vox), 2D(Nova), 자료·영상 분석(Ana), 영상 만들기(Vid).\n3) 만든 것은 기계가 잰다 — 게임은 유니티가 숫자로, 분석은 인용이 원문에 있는지, 영상은 길이와 소리를.\n4) 떨어진 줄이 있으면 직원이 스스로 다시 고친다.\n시청자는 처음 듣는 사람, 해요체. 마지막은 '재는 것까지가 일이에요' 로 맺는다.",
+      "assignment": {
+        "priority": "normal",
+        "role_input_json": {},
+        "role_input_schema_id": "video_assignment_v1",
+        "source_type": "manual",
+        "assignment_type": "manager",
+        "assignment_scope": "manager"
+      },
+      "historical": {
+        "deliverableId": "d9d2f1b6-1e36-4f59-bcd3-568c87c80f9d",
+        "at": "2026-09-07T12:16:08.555225+00:00",
+        "verdict": "PASS",
+        "checks": [
+          {
+            "name": "길이_목표안",
+            "result": "Passed"
+          },
+          {
+            "name": "소리_있음",
+            "result": "Passed"
+          },
+          {
+            "name": "장면_수",
+            "result": "Passed"
+          },
+          {
+            "name": "자막_수_대본과_같다",
+            "result": "Passed"
+          },
+          {
+            "name": "말_길이",
+            "result": "Passed"
+          },
+          {
+            "name": "첫장면_3초안",
+            "result": "Passed"
+          }
+        ],
+        "costUsd": 0.148
+      }
+    },
+    {
+      "id": "b0-07",
+      "employee": "vid",
+      "type": "video",
+      "title": "Ana 의 조명 분석을 60초 영상으로",
+      "description": "Ana 가 정리한 GDC 조명 파트 분석을 60초 설명 영상으로 만들어 줘. 재료에 있는 내용만 쓴다 — 재료에 없는 숫자나 이름을 넣지 마라. 시청자는 유니티로 첫 레벨을 만드는 사람, 해요체.",
+      "assignment": {
+        "priority": "normal",
+        "role_input_json": {
+          "sourceDeliverableId": "bc41e29b-e4cf-4946-a289-b0303a32879b"
+        },
+        "role_input_schema_id": "video_assignment_v1",
+        "source_type": "manual",
+        "assignment_type": "manager",
+        "assignment_scope": "manager"
+      },
+      "historical": {
+        "deliverableId": "aa8878c6-ee23-46a7-b0d6-aa226631ee1d",
+        "at": "2026-09-07T22:31:01.208584+00:00",
+        "verdict": "PASS",
+        "checks": [
+          {
+            "name": "길이_목표안",
+            "result": "Passed"
+          },
+          {
+            "name": "소리_있음",
+            "result": "Passed"
+          },
+          {
+            "name": "장면_수",
+            "result": "Passed"
+          },
+          {
+            "name": "자막_수_대본과_같다",
+            "result": "Passed"
+          },
+          {
+            "name": "말_길이",
+            "result": "Passed"
+          },
+          {
+            "name": "첫장면_6초안",
+            "result": "Passed"
+          },
+          {
+            "name": "숫자가_재료에_있다",
+            "result": "Passed"
+          }
+        ],
+        "costUsd": 0.118
+      }
+    },
+    {
+      "id": "b0-08",
+      "employee": "vid",
+      "type": "video",
+      "title": "검사 떨어진 줄 고치기 (1/3) — 첫 3D 레벨 규칙 다섯 가지, 60초",
+      "description": "검사에서 아래 줄이 떨어졌다. **이 줄만** 고친다. 다른 것은 건드리지 않는다.\n- 첫장면_3초안 — 첫 장면 9.8s\n\n지난 판과 **같은 일**을 다시 한다(같은 링크·같은 주제). 위 줄만 고쳐서.\n\n## 지난 판의 업무\n우리 게임의 첫 3D 레벨을 만드는 규칙 다섯 가지를 60초 설명 영상으로. 이 사실만 쓴다(지어내지 말 것):\n1) 바닥은 40×40 m 안. 2) 시작·도전·목표 세 구역, 구역마다 바닥 색이 다르다. 3) 시작점에서 보이는 높이 6 m 랜드마크 하나(주변과 색 대비). 4) 동선은 고리로 시작점에 돌아온다. 5) 동전은 길을 따라 3~5 m 간격, 다음 동전이 늘 보이게.\n말투는 해요체, 시청자는 게임을 처음 만드는 사람. 마지막 장면은 '숫자로 적으면 기계가 잴 수 있어요' 로 맺는다.",
+      "assignment": {
+        "priority": "normal",
+        "role_input_json": {},
+        "role_input_schema_id": "video_assignment_v1",
+        "source_type": "manual",
+        "assignment_type": "manager",
+        "assignment_scope": "manager"
+      },
+      "historical": {
+        "deliverableId": "2daaf9c7-9eb6-416a-8a6c-9a18c6af7181",
+        "at": "2026-09-07T12:26:56.932402+00:00",
+        "verdict": "PASS",
+        "checks": [
+          {
+            "name": "길이_목표안",
+            "result": "Passed"
+          },
+          {
+            "name": "소리_있음",
+            "result": "Passed"
+          },
+          {
+            "name": "장면_수",
+            "result": "Passed"
+          },
+          {
+            "name": "자막_수_대본과_같다",
+            "result": "Passed"
+          },
+          {
+            "name": "말_길이",
+            "result": "Passed"
+          },
+          {
+            "name": "첫장면_3초안",
+            "result": "Passed"
+          }
+        ],
+        "costUsd": 0.118
+      }
+    }
+  ]
+}

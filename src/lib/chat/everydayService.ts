@@ -1,10 +1,15 @@
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { blockedBySpendLimit } from "@/lib/costs/allowance";
+import { billingOpen } from "@/lib/billing/plans";
+import { startPrepaid } from "@/lib/billing/ledger";
+import { createServiceClient } from "@/lib/supabase/service";
 import { meterProviders } from "@/lib/costs/meter";
 import { defaultProviders } from "@/lib/execution/shared";
 import { speakerFor } from "@/lib/chat/persona";
-import { intakeInstructions } from "@/lib/chat/routing";
+import { intakeInstructions, scrubCapabilityIds } from "@/lib/chat/routing";
+import { workStateText } from "@/lib/chat/workState";
+import { latestFrame } from "@/lib/hand/screen";
 import { createImageProvider } from "@/lib/providers/images";
 import { stashChatImages } from "@/lib/chat/images";
 import { checkAnonymous, recordAnonymous } from "@/lib/chat/anonymous";
@@ -165,7 +170,7 @@ function clipTranscript(messages: { role: string; content: string }[]): string {
 }
 
 /** 고쳐 달라는 말. 넓게 잡는다 — 못 잡으면 채팅이 코드 조각으로 답하고 끝난다. */
-const FIX_WORDS = /고쳐|고치|수정|다시\s*해|바꿔|추가해|넣어\s*줘|빼\s*줘|늘려|줄여|fix|change/i;
+export const FIX_WORDS = /고쳐|고치|수정|다시\s*해|바꿔|추가해|넣어\s*줘|빼\s*줘|늘려|줄여|fix|change/i;
 
 /** 이 대화에 마지막으로 돌아온 산출물의 종류 → 그것을 낸 능력 id. */
 async function capabilityOfLastReturned(
@@ -241,12 +246,15 @@ export async function runEverydayTurn(
       .select("id")
       .maybeSingle();
     companyId = (made?.id as string | undefined) ?? null;
+    // 100회차: 결제가 열려 있으면 새 회사는 충전식 + 체험 크레딧으로 시작한다.
+    if (companyId && billingOpen()) await startPrepaid(createServiceClient(), companyId);
   }
 
-  if (companyId && (await blockedBySpendLimit(supabase, companyId))) {
+  const blocked = companyId ? await blockedBySpendLimit(supabase, companyId) : null;
+  if (blocked) {
     return {
       ok: true,
-      reply: "이번 기간 지출 한도에 걸려 있습니다. 한도가 리셋되면 이어서 하겠습니다.",
+      reply: blocked.startsWith("크레딧") ? blocked : "이번 기간 지출 한도에 걸려 있습니다. 한도가 리셋되면 이어서 하겠습니다.",
       sources: [],
       searched: [],
       images: [],
@@ -268,6 +276,15 @@ export async function runEverydayTurn(
   // 사진은 로그인한 사람만 올릴 수 있다. 비전 호출은 글보다 비싸고, 익명 하루
   // 상한이 사진 몇 장에 다 쓰이면 그날 나머지 사람이 대화를 못 한다.
   const seen = user ? (input.images ?? []).slice(0, 4) : [];
+  // 163회차 같이 보기: 손이 20초 안에 보낸 사장님 화면이 있으면 **그 한 장을 같이 본다.** 사장님이 올린 사진 뒤에 붙인다.
+  // 사장님 "로키가 같이 보는 거 해줄 수 있어?" — 이게 그것이다. 화면이 없으면 아무것도 안 붙는다(옛 화면을 지금인 척하지 않는다).
+  let liveScreen: { host: string; ageMs: number } | null = null;
+  if (user && companyId) {
+    try {
+      const f = latestFrame(companyId);
+      if (f) { seen.push(f.jpg.toString("base64")); liveScreen = { host: f.host, ageMs: f.ageMs }; }
+    } catch { /* 못 읽으면 안 붙인다 */ }
+  }
 
   const say = input.onStatus ?? (() => {});
 
@@ -308,9 +325,15 @@ export async function runEverydayTurn(
 
   // 첫 판이 터지면 날 오류 코드가 화면에 그대로 나갔다("MODEL_OUTPUT_TRUNCATED",
   // 09-05 13:50). 사람이 읽을 말로 바꾸고, 잘린 것은 잘렸다고 말한다.
+  // 136회차: **자기가 뭘 만들고 있는지**를 프롬프트에 넣는다. 이게 없어서 로키가 실제로 있는 v2 를
+  // "제 쪽에 없습니다" 라고 단언했다(사장님이 쓰다가 잡음). 대화 글만 보면 맞춰 볼 대상이 없다.
+  const work = await workStateText(supabase, companyId, input.conversationId ?? null, input.messages[input.messages.length - 1]?.content ?? "");
+  const liveNote = liveScreen ? `## 사장님의 지금 화면 (마지막 그림, ${liveScreen.host}, ${Math.round(liveScreen.ageMs / 1000)}초 전)\n로키 손이 방금 찍어 보낸 사장님 노트북 화면이다. 사장님이 화면에 대해 물으면 **이 그림을 보고** 답한다. 보이는 것만 말한다.\n\n` : "";
+  const withWork = liveNote + (work.hasAny ? `${work.text}\n\n## 대화\n${transcript}` : transcript);
+
   const firstPassCall = () => providers.ai.generateStructuredOutput({
     systemInstructions: intakeInstructions({ hasImages: seen.length > 0, speaker }),
-    input: transcript,
+    input: withWork,
     images: seen,
     schema: firstPass,
     schemaName: "everyday_plan",
@@ -431,7 +454,17 @@ export async function runEverydayTurn(
   let sources: EverydaySource[] = [];
 
   if (queries.length === 0) {
-    reply = plan.reply ?? (images.length ? "그렸습니다." : "무엇을 도와드릴까요?");
+    // 136회차: 빈 답을 "무엇을 도와드릴까요?" 로 때우던 자리. 사장님이 일이 다 끝난 뒤 "완료되었으면
+    // 보여줘" 라고 쳤는데 바로 이 문장이 나왔다 — 멍한 눈빛이다. 모델이 답을 못 냈으면 **그 사실을 말하고**,
+    // 지금 무엇이 있는지라도 알려 준다. 빈손으로 되묻는 것이 제일 나쁘다.
+    reply =
+      plan.reply ??
+      (images.length
+        ? "그렸습니다."
+        : work.hasAny
+          ? "방금 건 제가 답을 제대로 못 만들었어요. 다시 말씀해 주시겠어요?\n\n지금 이 회사에 있는 것은 이렇습니다:\n" +
+            work.text.split("\n").filter((l) => l.startsWith("- ")).slice(0, 6).join("\n")
+          : "방금 건 제가 답을 제대로 못 만들었어요. 다시 말씀해 주시겠어요?");
   } else {
     // 검색이 실패해도 대화는 계속된다. 찾아보려던 것이 안 됐다는 사실만 남긴다 —
     // 조용히 모델의 기억으로 답하면 사용자는 그것이 검색 결과인 줄 안다.
@@ -466,7 +499,7 @@ export async function runEverydayTurn(
         "- 사실마다 어디서 왔는지 알 수 있게 쓰고, 실제로 쓴 출처만 `usedUrls` 에 담는다.",
         "- 검색이 실패했다고 적힌 항목이 있으면 그 사실을 답에 밝힌다.",
       ].join("\n"),
-      input: `대화:\n${transcript}\n\n검색 결과:\n${notes.join("\n\n")}`,
+      input: (work.hasAny ? `${work.text}\n\n` : "") + `대화:\n${transcript}\n\n검색 결과:\n${notes.join("\n\n")}`,
       // 답을 쓸 때도 사진을 다시 보여 준다. 검색 결과만 주고 사진을 빼면,
       // 사진에 대해 물은 것을 검색 결과로만 답하게 된다.
       images: seen,
@@ -481,6 +514,7 @@ export async function runEverydayTurn(
     reply = answer.reply;
   }
 
+  reply = scrubCapabilityIds(reply);
   if (drawFailures.length) reply += "\n\n" + drawFailures.join("\n");
 
   // ── 시간이 드는 일이면 사람을 붙인다 ──────────────────────────

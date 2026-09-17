@@ -1,0 +1,20 @@
+{
+  "runId": "202609141413-ffmpeg-probe",
+  "label": "ffmpeg-probe",
+  "rules": "off",
+  "at": "2026-09-14T14:15:18.643Z",
+  "version": "v0",
+  "rows": [
+    {
+      "id": "b0-06",
+      "employee": "vid",
+      "title": "로키가 무엇인지 40초 소개 영상",
+      "historical": "PASS",
+      "verdict": "failed",
+      "passed": 0,
+      "total": 0,
+      "costUsd": 0.025,
+      "ms": 103430
+    }
+  ]
+}

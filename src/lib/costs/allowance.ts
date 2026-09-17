@@ -1,5 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { formatUsd } from "@/lib/costs/pricing";
+import { billingOpen } from "@/lib/billing/plans";
+import { creditBalance } from "@/lib/billing/ledger";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 type Db = SupabaseClient<any, any, any>;
@@ -11,6 +13,8 @@ export interface SpendAllowance {
   windowDays: number;
   /** True when no new work may start. */
   exhausted: boolean;
+  /** 100회차: 충전식 회사면 true — 한도가 기간이 아니라 잔고다. */
+  prepaid?: boolean;
 }
 
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -28,6 +32,20 @@ export async function checkAllowance(
   db: Db,
   companyId: string,
 ): Promise<SpendAllowance> {
+  // 100회차: 충전식(billing_mode='prepaid')은 BILLING_OPEN=1 일 때만 읽는다 — 켜기 전엔 그 열이 없을 수도 있고,
+  // 없는 열을 고르면 오류 → 아래 규칙대로 "한도에 걸림"이 되어 모든 회사가 멈춘다.
+  if (billingOpen()) {
+    const { data: co, error: coErr } = await db.from("companies").select("billing_mode, credits_started_at").eq("id", companyId).maybeSingle();
+    if (coErr) {
+      console.error("[allowance] 회사 결제 방식을 못 읽었다 — 한도에 걸린 것으로 본다:", coErr.message);
+      return { limitUsd: 0, spentUsd: 0, remainingUsd: 0, windowDays: 0, exhausted: true };
+    }
+    if (co?.billing_mode === "prepaid") {
+      const b = await creditBalance(db, companyId, (co.credits_started_at as string | null) ?? null);
+      return { limitUsd: b.paidUsd, spentUsd: b.spentUsd, remainingUsd: Math.max(0, b.usd), windowDays: 0, exhausted: !b.readable || b.usd <= 0, prepaid: true };
+    }
+  }
+
   const { data: company } = await db
     .from("companies")
     .select("spend_limit_usd, spend_window_days")
@@ -89,6 +107,7 @@ export async function blockedBySpendLimit(
   const allowance = await checkAllowance(db, companyId);
 
   if (!allowance.exhausted) return null;
+  if (allowance.prepaid) return "크레딧이 다 떨어졌어요. 하던 일은 끝까지 하지만, 새 일은 충전한 뒤에 시작할 수 있어요.";
 
   return `This account has used its ${formatUsd(allowance.limitUsd)} allowance for the last ${allowance.windowDays} days. Work already under way will finish, but nothing new can start.`;
 }
