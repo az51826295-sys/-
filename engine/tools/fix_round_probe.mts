@@ -75,9 +75,14 @@ if (mode === "sabotage") {
 
 if (mode === "live") {
   const { defaultProviders } = await import("../../src/lib/execution/shared");
+  // 171회차: `--model <이름>` 이면 그 OpenAI 모델로(새 모델 시험용). 없으면 지금 쓰는 자리(라우터).
+  const mi = process.argv.indexOf("--model");
+  const modelName = mi > 0 ? process.argv[mi + 1] : null;
+  const ai = modelName ? (await import("../../src/lib/providers/openai")).createOpenAIProvider({ judgmentModel: modelName }) : defaultProviders().ai;
+  console.log("모델:", modelName ?? "지금 자리(라우터)");
   const v2 = html(path.join(dir, "v2-fps_prototype_singlefile.html"));
   const t0 = Date.now();
-  const r = await buildPatch(defaultProviders().ai, {
+  const r = await buildPatch(ai, {
     title: "WASD 좌우 반전 수정",
     ask: '매니저가 한 말(원문 — 이것이 고칠 범위다): "아니 오른쪽 눌렀는 데 왼쪽으로 가고 왼"',
     criteria: [{ id: "move_lr", when: "D(또는 →)를 누르면", then: "보는 방향 기준 오른쪽으로, A(또는 ←)는 왼쪽으로 간다" }],

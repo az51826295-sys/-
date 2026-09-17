@@ -33,6 +33,10 @@ export const PLACES = {
   "gpt-5": { vendor: "openai", out: 10, sees: true, note: "그림을 본다. 형식을 잘 지킨다." },
   "gpt-5-mini": { vendor: "openai", out: 2, sees: true, note: "제일 싸다. 지금까지 판단 자리로 불린 적은 없다(성적 기록도 없다)." },
   "gpt-6-astra": { vendor: "openai", out: 50, sees: true, note: "제일 비싸다(기본의 12배). 126회차: 실속 4~5배, 형식은 덜 미덥다." },
+  // 171회차 09-18 모델 파악이 찾은 새 판들. 09-17 실제 고장(부호 두 줄)에서 셋 다 gpt-5 와 같은 답, 10배 빠름. 성적 기록은 그 한 판뿐.
+  "gpt-5.6-luna": { vendor: "openai", out: 1.2, sees: true, note: "gpt-5 의 1/8 값. 고치는 판은 여기가 기본(172회차). 다른 일 성적은 아직 없다." },
+  "gpt-5.6-terra": { vendor: "openai", out: 12, sees: true, note: "gpt-5 와 값이 비슷한 새 판(2026-06). 성적 기록 한 판." },
+  "gpt-5.3-codex": { vendor: "openai", out: 14, sees: false, note: "코드 전용 판. 성적 기록 한 판(3초)." },
 } as const;
 export type Place = keyof typeof PLACES;
 export const DEFAULT_PLACE: Place = "deepseek-v4-pro";

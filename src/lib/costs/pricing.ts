@@ -46,6 +46,15 @@ const RATES: Record<string, Rate> = {
   // specific to check them against. If they are wrong the error is silent, so
   // the reconciliation is worth doing rather than assuming.
   "gpt-5": { unit: "tokens", input: 1.25, output: 10 },
+  // 171회차 09-18 모델 파악(model watch)이 찾은 새 판들. 값은 developers.openai.com/api/docs/pricing (09-18 읽음).
+  // 아직 자리(place.ts)에 앉히지 않았다 — 시험판에서 이겨야 앉는다. 여기 적는 건 시험 호출이 장부에 적히게 하려는 것.
+  "gpt-5.6-luna": { unit: "tokens", input: 0.2, output: 1.2 },
+  "gpt-5.6-terra": { unit: "tokens", input: 2, output: 12 },
+  "gpt-5.6-sol": { unit: "tokens", input: 4, output: 20 },
+  "gpt-5.5": { unit: "tokens", input: 5, output: 30 },
+  "gpt-5.4": { unit: "tokens", input: 2.5, output: 15 },
+  "gpt-5.4-mini": { unit: "tokens", input: 0.75, output: 4.5 },
+  "gpt-5.3-codex": { unit: "tokens", input: 1.75, output: 14 },
   // 61회차 09-09: 사장님이 물어서 확인 — GPT-6 Astra 는 우리 키로 열려 있다.
   // 값은 **입력 8배·출력 5배**($10/$50). 09-08 처럼 판 32개를 돌리면 하루에 $50~60 이다.
   // (272k 입력을 넘기면 입력 2배·출력 1.5배로 또 뛴다.) 갈아타는 것은 재 보고 정한다.

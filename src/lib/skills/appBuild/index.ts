@@ -7,6 +7,28 @@ import { askApproval } from "@/lib/execution/approval";
 import type { EmployeeSkill, SkillRunContext } from "@/lib/skills/types";
 import { checkFiles, repairBrief, summarise } from "@/lib/skills/appBuild/verify";
 import { buildPatch } from "@/lib/skills/appBuild/patch";
+
+/**
+ * **고치는 자리** (172회차 09-18, 사장님 "A로 가"). 조각 고침은 gpt-5 가 아니라 `FIX_SEAT_MODEL`(기본 gpt-5.6-luna)에 앉힌다.
+ * 근거: 09-17 실제 고장(부호 두 줄, 859줄 파일)을 gpt-5 · 5.6-luna · 5.6-terra · 5.3-codex 에 시켰더니 **넷 다 같은 두 줄**을 고쳤고
+ * luna 는 57초 → 6초, 값은 gpt-5 의 1/8 이다. 문제 하나로 잰 것이라 "같은 실력" 이 아니라 "이 일에선 같았다" 다 — 심판자가 매 판 본다.
+ * 처음 만드는 판(buildWhole)은 아직 안 재 봐서 그대로 둔다. 되돌리기: 환경변수 `FIX_SEAT_MODEL=gpt-5`.
+ */
+async function fixSeat(ctx: SkillRunContext) {
+  const model = process.env.FIX_SEAT_MODEL ?? "gpt-5.6-luna";
+  if (!model || ctx.providers.ai.name === "mock" || !process.env.OPENAI_API_KEY) return ctx.providers.ai;
+  try {
+    const { createOpenAIProvider } = await import("@/lib/providers/openai");
+    const { meterProviders } = await import("@/lib/costs/meter");
+    // 계량을 다시 씌운다 — 자리를 갈아 끼우고 장부에 안 남으면 그 돈은 없는 돈이 된다(152회차의 교훈).
+    return meterProviders({ ...ctx.providers, ai: createOpenAIProvider({ judgmentModel: model }) }, ctx.supabase, {
+      companyId: ctx.execution.company_id, workExecutionId: ctx.executionId, companyEmployeeId: ctx.execution.company_employee_id,
+    }).ai;
+  } catch (e) {
+    console.warn("[app_build] 고치는 자리를 못 앉혔다 — 하던 자리로:", e instanceof Error ? e.message : e);
+    return ctx.providers.ai;
+  }
+}
 import { changeFacts, judgeAsk, type AskVerdict } from "@/lib/genesis/askJudge";
 
 /**
@@ -403,7 +425,7 @@ export const appBuildSkill: EmployeeSkill = {
         const touch = new Set(spec.touch ?? []);
         const full = touch.size === 0 ? previous.files : previous.files.filter((f) => touch.has(f.path));
         const rest = previous.files.filter((f) => !full.includes(f));
-        const p = await buildPatch(ctx.providers.ai, {
+        const p = await buildPatch(await fixSeat(ctx), {
           title: spec.title,
           ask: askText + extra,
           criteria: spec.criteria,
