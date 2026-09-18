@@ -77,6 +77,10 @@ const RATES: Record<string, Rate> = {
   // 영상 배관 전체가 ffmpeg 으로 글자를 그리는 것이었고, 나는 그 위에 조판·움직임만 얹었다(슬라이드쇼에 연출을 발랐다).
   // 값은 09-16 공표 단가(developers.openai.com/api/docs/pricing): 초당. 15초 광고 한 판이면 sora-2 로 $1.50.
   "sora-2": { unit: "seconds", per: 0.10 },
+  // 182회차 09-18: Sora 2 API 폐기(9/24) → Veo 3.1. 720p·무음 기준 근사(lite $0.05 · fast $0.15 · full $0.40). 소리를 켜면 오른다.
+  "veo-3.1-lite-generate-preview": { unit: "seconds", per: 0.05 },
+  "veo-3.1-fast-generate-preview": { unit: "seconds", per: 0.15 },
+  "veo-3.1-generate-preview": { unit: "seconds", per: 0.40 },
   "sora-2-pro": { unit: "seconds", per: 0.30 },
 
   // DeepSeek. Published list prices, not yet reconciled against an invoice.

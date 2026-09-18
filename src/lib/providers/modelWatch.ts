@@ -69,7 +69,7 @@ export const IN_USE: { id: string; vendor: Vendor; where: string }[] = [
   { id: "gpt-5-mini", vendor: "openai", where: "싼 자리" },
   { id: "gpt-6-astra", vendor: "openai", where: "제일 비싼 자리" },
   { id: "gpt-image-2", vendor: "openai", where: "그림" },
-  { id: "sora-2", vendor: "openai", where: "영상" },
+  { id: "sora-2", vendor: "openai", where: "영상(9/24 폐기 — Veo 로 갈아탐)" },
   { id: "sora-2-pro", vendor: "openai", where: "영상(고급)" },
   { id: "gpt-4o-mini-tts", vendor: "openai", where: "목소리" },
   { id: "deepseek-v4-flash", vendor: "deepseek", where: "대화·읽기" },

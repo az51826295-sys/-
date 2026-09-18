@@ -9,6 +9,7 @@ import { judgeAppeal, JUDGE_MAX_IMAGES, type Appeal } from "@/lib/genesis/judge"
 import { frameStyle, styleLine } from "@/lib/video/style";
 import { lookSchema, safeLook, lookLine } from "@/lib/video/look";
 import { makeClip } from "@/lib/providers/sora";
+import { makeVeoClip, veoConfigured, VEO_USD_PER_SECOND, type VeoTier } from "@/lib/providers/veo";
 import { speechRate, speechLine } from "@/lib/video/speechRate";
 import type { EmployeeSkill, SkillRunContext } from "@/lib/skills/types";
 
@@ -148,6 +149,12 @@ export const videoMakeSkill: EmployeeSkill = {
     // 검사로 잡지 않고 **구조로 막는다**: 대본의 글자를 ffmpeg 이 직접 그린다 → 없을 수가 없다. 그림값도 0이 된다.
     const scenes: Scene[] = [];
     let soraSeconds = 0;
+    // 182회차: Sora 2 API 는 2026-09-24 에 사라진다(OpenAI 폐기표). 열쇠가 있으면 Veo 3.1(초당 ≈$0.05)로, 없으면 그날까지는 Sora 로.
+    // `VIDEO_PROVIDER=sora` 로 되돌릴 수 있다(9/24 뒤엔 소용없다).
+    const useVeo = veoConfigured() && process.env.VIDEO_PROVIDER !== "sora";
+    const veoTier = ((process.env.VEO_TIER as VeoTier | undefined) ?? "lite");
+    let footageModel = useVeo ? `veo-3.1-${veoTier}` : "sora-2";
+    let footageUsd = 0;
     for (const [i, sc] of plan.scenes.entries()) {
       const speech = await openai.audio.speech.create({ model: "gpt-4o-mini-tts", voice: "alloy", input: sc.narration, response_format: "mp3" });
       const audio = new Uint8Array(await speech.arrayBuffer());
@@ -165,9 +172,11 @@ export const videoMakeSkill: EmployeeSkill = {
       const wantsFootage = sc.footage.trim().length > 0;
       if (wantsFootage && process.env.GENESIS_SPEND === "i-approve") {
         try {
-          const made = await makeClip({ prompt: sc.footage.trim(), seconds: 4 });
+          const made = useVeo ? await makeVeoClip({ prompt: sc.footage.trim(), seconds: 4, tier: veoTier }) : await makeClip({ prompt: sc.footage.trim(), seconds: 4 });
           clip = made.mp4;
           soraSeconds += made.seconds;
+          footageModel = made.model;
+          footageUsd += made.seconds * (useVeo ? VEO_USD_PER_SECOND[veoTier] : 0.1);
           await recordUsage(
             ctx.supabase,
             { companyId: ctx.execution.company_id, workExecutionId: ctx.executionId, companyEmployeeId: ctx.execution.company_employee_id },
@@ -309,7 +318,7 @@ export const videoMakeSkill: EmployeeSkill = {
       // 154회차: 화면을 샀으면 **얼마를 썼는지 결과물에 적는다.** 값이 글자 카드의 열 배가 넘는다 —
       // 원장에만 있으면 사장님은 다음 달에야 안다.
       ...(soraSeconds > 0
-        ? [`화면: 영상 모델이 만든 ${soraSeconds}초 (sora-2, 초당 $0.10 → 약 $${(soraSeconds * 0.1).toFixed(2)})`, ""]
+        ? [`화면: 영상 모델이 만든 ${soraSeconds}초 (${footageModel}, 약 $${footageUsd.toFixed(2)})`, ""]
         : ["화면: 글자 카드 (영상 모델 안 씀, 화면값 $0)", ""]),
       ...(source ? [`재료: ${source.title} — 이 영상의 사실은 여기서 왔어요.`, ""] : []),
       `## 대본`, "", `| # | 화면 글자 | 읽은 말 | 출처 | 초(계획→실측) |`, `|---|---|---|---|---|`,
