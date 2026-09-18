@@ -54,9 +54,9 @@ async function say(text: string): Promise<{ reply: string; assignment: { id: str
   return { reply, assignment: (done.assignment as { id: string; title: string } | null) ?? null };
 }
 
-type Del = { id: string; created_at: string; content_json: { files?: { path: string; contents: string }[]; patched?: unknown; askJudge?: Record<string, unknown> | null; target?: string } };
+type Del = { id: string; created_at: string; work_execution_id?: string | null; content_json: { files?: { path: string; contents: string }[]; patched?: unknown; askJudge?: Record<string, unknown> | null; target?: string } };
 async function deliverables(): Promise<Del[]> {
-  const { data } = await db.from("deliverables").select("id, created_at, content_json").eq("company_id", companyId).eq("deliverable_type", "app_build").order("created_at", { ascending: true });
+  const { data } = await db.from("deliverables").select("id, created_at, work_execution_id, content_json").eq("company_id", companyId).eq("deliverable_type", "app_build").order("created_at", { ascending: true });
   return (data ?? []) as Del[];
 }
 /** 새 산출물이 생길 때까지 기다린다. 도중에 계획 카드가 '시작' 을 기다리면 알려 준다. */
@@ -79,18 +79,27 @@ async function waitForNew(before: number, assignmentId: string | null, maxMin = 
 let bad = 0, seen = 0;
 const check = (n: string, ok: boolean, got?: unknown) => { seen++; if (!ok) bad++; console.log(ok ? "맞음  " : "어긋남", n, ok ? "" : JSON.stringify(got)); };
 
-// ── 만든다 ──
-const n0 = (await deliverables()).length;
-const first = await say("브라우저에서 바로 열리는 벽돌깨기 게임을 HTML 파일 하나로 만들어 줘. 방향키로 막대를 움직이고, 점수가 보이고, 공을 놓치면 다시 시작할 수 있게.");
-check("접수: 일이 생겼다", !!first.assignment, first.reply.slice(0, 120));
-const made = await waitForNew(n0, first.assignment?.id ?? null);
-check(`첫 판이 돌아왔다 (${made.minutes}분)`, !!made.del);
-if (!made.del) { console.log(`\n본 줄 ${seen} · 어긋남 ${bad}`); process.exit(1); }
-let prev = made.del;
+// ── 만든다 (또는 `--conversation <id>` 로 지난 대화의 마지막 판 위에서 바로 고친다 — 만드는 값 $0.2 를 아낀다) ──
+const ci = process.argv.indexOf("--conversation");
+let prev: Del;
+if (ci > 0) {
+  conversationId = process.argv[ci + 1];
+  const list = await deliverables();
+  prev = list[list.length - 1];
+  console.log(`지난 대화 ${conversationId.slice(0, 8)} 의 마지막 판 위에서 고친다`);
+} else {
+  const n0 = (await deliverables()).length;
+  const first = await say("브라우저에서 바로 열리는 벽돌깨기 게임을 HTML 파일 하나로 만들어 줘. 방향키로 막대를 움직이고, 점수가 보이고, 공을 놓치면 다시 시작할 수 있게.");
+  check("접수: 일이 생겼다", !!first.assignment, first.reply.slice(0, 120));
+  const made = await waitForNew(n0, first.assignment?.id ?? null);
+  check(`첫 판이 돌아왔다 (${made.minutes}분)`, !!made.del);
+  if (!made.del) { console.log(`\n본 줄 ${seen} · 어긋남 ${bad}`); process.exit(1); }
+  prev = made.del;
+}
 console.log(`   첫 판: ${(prev.content_json.files ?? []).map((f) => `${f.path} ${f.contents.split("\n").length}줄`).join(", ")} · target ${prev.content_json.target}`);
 
 // ── 고친다 ──
-const FIXES = ["공이 너무 빨라. 속도를 절반으로 줄여 줘.", "막대가 너무 짧아. 1.5배로 길게.", "점수 글자가 작아서 안 보여. 두 배로 키워 줘.", "벽돌 색을 줄마다 다르게 해 줘.", "게임이 끝나면 '다시 하기' 단추가 화면 가운데 뜨게 해 줘."];
+const FIXES = ["공이 너무 빨라. 속도를 절반으로 줄여 줘.", "막대가 너무 짧아. 1.5배로 길게.", "점수 글자가 작아서 안 보여. 두 배로 키워 줘.", "공 색을 노란색으로 바꿔 줘.", "게임이 끝나면 '다시 하기' 단추가 화면 가운데 뜨게 해 줘."];
 const want = Math.max(1, Math.min(FIXES.length, Number(process.argv[process.argv.indexOf("--fixes") + 1]) || 1));
 for (let i = 0; i < want; i++) {
   console.log(`\n── 고침 ${i + 1}/${want}`);
@@ -109,6 +118,8 @@ for (let i = 0; i < want; i++) {
   check("지난 파일을 안 없앴다", facts.gonePaths.length === 0, facts.gonePaths);
   check(`바뀐 줄이 10% 이하 (${changed}/${total})`, total > 0 && changed / total <= 0.1);
   check("조각으로 고쳤다(patched 기록)", !!w.del.content_json.patched, w.del.content_json.patched ?? null);
+  const { data: used } = await db.from("model_usage").select("model, purpose, cost_usd").eq("work_execution_id", w.del.work_execution_id ?? "").eq("purpose", "app_patch");
+  if (used?.length) console.log(`   고친 자리: ${used.map((u) => `${u.model} $${Number(u.cost_usd).toFixed(3)}`).join(", ")}`);
   const j = w.del.content_json.askJudge;
   check("부탁 심판자가 봤다", !!j);
   if (j) console.log(`   심판자: [${j.verdict} · ${j.sizeMatch} · ${j.fixedTheThing}${j.sentBack ? " · 한 번 되돌림" : ""}] ${j.toPerson}`);
