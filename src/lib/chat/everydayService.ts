@@ -177,6 +177,16 @@ export const FIX_WORDS = /고쳐|고치|수정|다시\s*해|바꿔|추가해|넣
 /** 로키의 답이 일을 **약속**하는 말(169회차). 약속했는데 업무가 안 생기면 아무 일도 안 일어난다 — 그때 고치는 일로 넘긴다. */
 export const PROMISE_WORDS = /고칠게|고치겠|고쳐서|반영(해서|할게|하겠)|다시 (돌릴|만들|올릴|짤)|수정(할게|하겠|해서)|바꿀게|바꾸겠|줄일게|늘릴게|넣을게|추가할게|손볼게/;
 
+/** 물음표로 끝나거나 묻는 낱말이 있고, 시키는 동사가 없으면 **물음**이다(174회차). 물음은 답할 것이지 맡길 것이 아니다. */
+export function isPureQuestion(text: string): boolean {
+  const last = text.trim();
+  // 물음표 뒤에 짧은 꼬리("그런가? 안돼")가 붙어도 물음이다.
+  const isQuestion = /[?？]\s*\S{0,6}$/.test(last) || /뭔\s?뜻|무슨 뜻|뭐야|뭐예요|왜\s|어떻게\s|알 수 있어|되는 거야|그런가/.test(last);
+  // "만들었어?"(지난 일을 묻는 것)는 시키는 게 아니다 — 지난 꼴(었/았)은 뺀다.
+  const asksWork = /만들(?!었)|해\s?줘|해줘|고쳐|고치|고칠|바꿔|바꿀|넣어|추가|빼\s?줘|조사|찾아\s?줘|써\s?줘|그려|다시\s?(해|돌)|시작|진행/.test(last);
+  return isQuestion && !asksWork;
+}
+
 /** 이 대화에 마지막으로 돌아온 산출물의 종류 → 그것을 낸 능력 id. */
 async function capabilityOfLastReturned(
   db: Awaited<ReturnType<typeof createClient>>,
@@ -404,6 +414,18 @@ export async function runEverydayTurn(
       plan.capabilityWhy = "매니저가 이름을 불렀다";
       plan.searches = [];
       if (!plan.reply?.trim()) plan.reply = "그 사람에게 맡기겠습니다.";
+    }
+  }
+
+  // 174회차: **물음은 일이 아니다.** 사장님이 아이패드에서 "유니티가 잰다는게 뭔뜻이야?" 라고 물었더니 접수가 그 물음을 Dev 의 일로
+  // 넘겼고, Dev 는 게임 파일을 10줄 고쳐서 "설명" 이라며 돌려줬다. 접수 모델이 "방금 만든 것에 대한 물음" 을 일로 읽은 것이다.
+  // 사람 말이 물음표로 끝나고 시키는 동사(만들·해 줘·고쳐·바꿔·넣어·추가·조사·써 줘)가 없으면 답만 한다 — 일로 넘기지 않는다.
+  if (plan.capabilityId) {
+    const last = [...input.messages].reverse().find((m) => m.role === "user")?.content?.trim() ?? "";
+    if (isPureQuestion(last)) {
+      console.log(`[접수] 물음이라 일로 안 넘긴다: "${last.slice(0, 60)}" (접수는 ${plan.capabilityId} 라 했다)`);
+      plan.capabilityId = null;
+      plan.capabilityWhy = null;
     }
   }
 

@@ -153,6 +153,34 @@ const build = z.object({
   ),
 });
 
+/** 처음 만드는 판의 프롬프트 (174회차에 밖으로 뺌 — 자리 시험 `build_seat_probe.mts` 가 같은 글로 여러 모델을 잰다). */
+export const WHOLE_BUILD_SYSTEM =
+  "아래 기준을 만족하는 앱을 만든다.\n\n" +
+  "- 파일 전체를 낸다. `// ...` 로 생략하지 마라 — 받은 사람이 " +
+  "붙여 넣어 바로 돌릴 수 있어야 한다.\n" +
+  "- `howToRun` 에 시작하는 법을 적는다.\n" +
+  "- **못 지킨 기준은 `met: false` 로 적는다.** 지킨 척하면 받은 사람이 " +
+  "확인할 때 알게 되고, 그때는 산출물 전체를 못 믿게 된다.";
+export const buildSchema = build;
+
+export function wholeBuildInput(spec: { title: string; criteria: { id: string; when: string; then: string }[]; touch?: string[] | null }, deviceNote: string, previous: Previous | null): string {
+  const criteria = spec.criteria.map((c) => `- [${c.id}] ${c.when} → ${c.then}`).join("\n");
+  let prev = "";
+  if (previous) {
+    // 09-09: 지난 파일을 **전부** 붙이던 자리. 이제 계획이 고른 것만 전문으로 주고, 나머지는 경로와 크기만 알려 준다.
+    const touch = new Set(spec.touch ?? []);
+    const full = touch.size === 0 ? previous.files : previous.files.filter((f) => touch.has(f.path));
+    const rest = previous.files.filter((f) => !full.includes(f));
+    const failed = previous.failedChecks.length ? "유니티 시험에서 떨어진 줄(이것을 고치는 것이 이번 판이다):\n" + previous.failedChecks.map((f) => `- ${f}`).join("\n") + "\n\n" : "";
+    const head = full.map((f) => `--- ${f.path} (${f.language})\n${f.contents}`).join("\n\n");
+    const tail = rest.length ? "\n\n## 손대지 않는 파일 (그대로 이어 붙는다 — 내지 마라)\n" + rest.map((f) => `- ${f.path} (${Math.round(f.contents.length / 1024)} KB)`).join("\n") : "";
+    prev = "\n\n## 지난 판의 파일 — 이것을 바탕으로 고친다.\n" +
+      "**계획이 고른 파일만 `files` 에 전체를 낸다.** 아래 '손대지 않는 파일' 은 내지 마라 — " +
+      "코드가 지난 판에서 그대로 이어 붙인다. 지난 파일을 되쓰지 마라(그러다 20분을 넘겨 죽는다).\n" + failed + head + tail;
+  }
+  return `무엇: ${spec.title}${deviceNote}\n\n기준:\n` + criteria + prev;
+}
+
 type Previous = {
   title: string;
   criteria: { id: string; when: string; then: string }[];
@@ -364,6 +392,13 @@ export const appBuildSkill: EmployeeSkill = {
     }
     // 165회차: 웹(HTML) 판에 유니티 자의 기대치가 붙어 계획 카드가 "점수 HUD는 카메라 HUD 계층에… 유니티가 재요" 라고 했다.
     // 웹 판은 유니티가 재지 않는다 — 못 재는 기대치는 싣지 않는다.
+    // 174회차: **사장님이 폰·태블릿에서 시켰으면 유니티 판을 내지 않는다.** 아이패드에서 "터치로 하는 간단한 게임" 을 시켰더니
+    // 유니티 프로젝트(C# 6개)가 나왔고 아이패드에선 열 수도 없었다("아이패드라서 그런가? 안돼"). 주문에 유니티라고 명시했을 때만 예외.
+    const firstDeviceLine = deviceNote.split(String.fromCharCode(10))[3] ?? "";
+    if (spec.target === "unity" && /태블릿|폰/.test(firstDeviceLine) && !/유니티|unity/i.test(`${ctx.context.assignment.title} ${ctx.context.assignment.description ?? ""}`)) {
+      console.log("[계획] 사장님 기기가 폰·태블릿이라 유니티 판 대신 웹(HTML) 판으로 바꾼다");
+      spec.target = "web";
+    }
     if (spec.target === "web" && spec.expectations.length) {
       console.log(`[계획] 웹 판이라 유니티 기대치 ${spec.expectations.length}개를 뺀다`);
       spec.expectations = [];
@@ -497,40 +532,8 @@ export const appBuildSkill: EmployeeSkill = {
     }
 
     async function buildWhole() { return (await ctx.providers.ai.generateStructuredOutput({
-      systemInstructions:
-        "아래 기준을 만족하는 앱을 만든다.\n\n" +
-        "- 파일 전체를 낸다. `// ...` 로 생략하지 마라 — 받은 사람이 " +
-        "붙여 넣어 바로 돌릴 수 있어야 한다.\n" +
-        "- `howToRun` 에 시작하는 법을 적는다.\n" +
-        "- **못 지킨 기준은 `met: false` 로 적는다.** 지킨 척하면 받은 사람이 " +
-        "확인할 때 알게 되고, 그때는 산출물 전체를 못 믿게 된다." +
-        (unity ? (await unityRules()) + (await renderGamedevLessons("unity_code")) : ""),
-      input:
-        `무엇: ${spec.title}${deviceNote}\n\n기준:\n` +
-        spec.criteria
-          .map((c) => `- [${c.id}] ${c.when} → ${c.then}`)
-          .join("\n") +
-        (previous
-          ? "\n\n## 지난 판의 파일 — 이것을 바탕으로 고친다.\n" +
-            "**계획이 고른 파일만 `files` 에 전체를 낸다.** 아래 '손대지 않는 파일' 은 내지 마라 — " +
-            "코드가 지난 판에서 그대로 이어 붙인다. 지난 파일을 되쓰지 마라(그러다 20분을 넘겨 죽는다).\n" +
-            (previous.failedChecks.length
-              ? `유니티 시험에서 떨어진 줄(이것을 고치는 것이 이번 판이다):\n${previous.failedChecks.map((f) => `- ${f}`).join("\n")}\n\n`
-              : "") +
-            (() => {
-              // 09-09: 지난 파일을 **전부** 붙이던 자리. 이제 계획이 고른 것만 전문으로 주고,
-              // 나머지는 경로와 크기만 알려 준다 — 볼 수 없으면 다시 쓸 수도 없다.
-              const touch = new Set(spec.touch ?? []);
-              const full = touch.size === 0 ? previous.files : previous.files.filter((f) => touch.has(f.path));
-              const rest = previous.files.filter((f) => !full.includes(f));
-              const head = full.map((f) => `--- ${f.path} (${f.language})\n${f.contents}`).join("\n\n");
-              const tail = rest.length
-                ? "\n\n## 손대지 않는 파일 (그대로 이어 붙는다 — 내지 마라)\n" +
-                  rest.map((f) => `- ${f.path} (${Math.round(f.contents.length / 1024)} KB)`).join("\n")
-                : "";
-              return head + tail;
-            })()
-          : ""),
+      systemInstructions: WHOLE_BUILD_SYSTEM + (unity ? (await unityRules()) + (await renderGamedevLessons("unity_code")) : ""),
+      input: wholeBuildInput(spec, deviceNote, previous),
       schema: build,
       schemaName: "app_build",
       // 59회차 09-08: 32000 에서 잘렸다(MODEL_OUTPUT_TRUNCATED). 씬 빌더 한 파일이 74 KB(≈2만 토큰)라
