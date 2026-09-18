@@ -7,6 +7,8 @@ import { askApproval } from "@/lib/execution/approval";
 import type { EmployeeSkill, SkillRunContext } from "@/lib/skills/types";
 import { checkFiles, repairBrief, summarise } from "@/lib/skills/appBuild/verify";
 import { buildPatch } from "@/lib/skills/appBuild/patch";
+import { improveLoop, roundsFor, type LoopResult } from "@/lib/skills/appBuild/loop";
+import { factLines } from "@/lib/skills/appBuild/run";
 
 /**
  * **고치는 자리** (172회차 09-18, 사장님 "A로 가"). 조각 고침은 gpt-5 가 아니라 `FIX_SEAT_MODEL`(기본 gpt-5.6-luna)에 앉힌다.
@@ -21,6 +23,8 @@ async function fixSeat(ctx: SkillRunContext) { return seat(ctx, process.env.FIX_
  * 표본 하나. 되돌리기: `BUILD_SEAT_MODEL=gpt-5`. 심판자가 매 판 본다.
  */
 async function buildSeat(ctx: SkillRunContext) { return seat(ctx, process.env.BUILD_SEAT_MODEL ?? "gpt-5.6-luna", "만드는"); }
+/** 고리의 심판 자리(179회차). luna 가 그림을 본다(시험: 파랑 바탕·노랑 네모·왼쪽 맞춤, 1.8초 vs gpt-5 10초). 바퀴값이 $0.04 → $0.005. 되돌리기: `LOOP_JUDGE_MODEL=router`. */
+async function loopJudgeSeat(ctx: SkillRunContext) { return seat(ctx, process.env.LOOP_JUDGE_MODEL ?? "gpt-5.6-luna", "심판"); }
 async function seat(ctx: SkillRunContext, model: string, what: string) {
   if (!model || model === "router" || ctx.providers.ai.name === "mock" || !process.env.OPENAI_API_KEY) return ctx.providers.ai;
   try {
@@ -634,14 +638,51 @@ export const appBuildSkill: EmployeeSkill = {
 
     const verify = summarise(checks);
 
+    // ── 3.5 돌려 보고 고치는 고리 (179회차 09-18) — 웹 판만 ─────────────────
+    // 사장님: "지피티는 발로란트 만들어줘 하면 1시간 동안 만들더라." 그건 긴 답이 아니라 만들기→돌려 보기→고치기를 수십 바퀴 도는 것이다.
+    // 헤드리스 브라우저의 빈 창에서 실제로 돌려 보고(run.ts), 심판자가 확인 목록에 대 보고, 조각으로 고치기를 예산 안에서 반복한다(loop.ts).
+    // 제일 좋은 판을 내보낸다. 바퀴 수는 주문("고퀄")과 `BUILD_LOOP_ROUNDS`, 돈 상한은 `BUILD_LOOP_USD`(기본 $0.5). `BUILD_LOOP=0` 이면 안 돈다.
+    let loop: LoopResult | null = null;
+    if (!unity && process.env.BUILD_LOOP !== "0" && roundsFor(askText) > 0) {
+      await setStep(ctx.supabase, ctx.executionId, "looping");
+      const mobile = /태블릿|폰/.test(deviceNote.split(String.fromCharCode(10))[3] ?? "");
+      const startFiles = files;
+      loop = await step(ctx.supabase, ctx.executionId, "loop", async () => {
+        const r = await improveLoop({
+          db: ctx.supabase, executionId: ctx.executionId, judgeAi: await loopJudgeSeat(ctx), fixAi: await fixSeat(ctx),
+          title: spec.title, ask: askText, criteria: spec.criteria, files: startFiles, mobile,
+          rounds: roundsFor(askText), usdCap: Number(process.env.BUILD_LOOP_USD ?? "0.5") || 0.5,
+          onRound: async (rec, total) => {
+            // 화면의 "N바퀴째 · 확인 목록 x/y". 단계 저장과 같은 칸(metrics_json)에 읽고-합쳐-쓴다.
+            const { data: cur } = await ctx.supabase.from("work_executions").select("metrics_json").eq("id", ctx.executionId).maybeSingle();
+            const m = ((cur?.metrics_json as Record<string, unknown> | null) ?? {});
+            await ctx.supabase.from("work_executions").update({ metrics_json: { ...m, loop: { round: rec.n, met: rec.met, total } }, updated_at: new Date().toISOString() }).eq("id", ctx.executionId);
+          },
+        });
+        // 그림(base64)은 저장하지 않는다 — 행이 뚱뚱해지면 DB 가 멈춘다(09-06).
+        if (r.facts) r.facts = { ...r.facts, shots: { start: "", mid: "", after: "" } };
+        return r;
+      });
+      if (loop.rounds.length) {
+        files = loop.files;
+        checks = checkFiles(files);
+        console.log(`[app_build] 고리 ${loop.rounds.length}바퀴 · 제일 좋은 판 ${loop.bestRound}바퀴째 · 멈춘 이유 ${loop.stoppedBy} · $${loop.usd.toFixed(3)}`);
+      }
+    }
+
     // ── 4. 기준과 함께 넘긴다 ───────────────────────────────────────
-    const met = made.coverage.filter((c) => c.met).length;
+    // 고리가 돌았으면 "됨" 은 심판자가 실제로 돌려 보고 센 것이고, 아니면 직원의 자기 보고(coverage)다 — 둘을 섞지 않는다.
+    const judgeMet = loop?.verdict ? new Set(loop.verdict.met) : null;
+    const judgeUnmet = loop?.verdict ? new Map(loop.verdict.unmet.map((u) => [u.id, u.why])) : null;
+    const met = judgeMet ? judgeMet.size : made.coverage.filter((c) => c.met).length;
 
     const note =
       // 175회차: 사장님 "말투 좀 바꿔야 돼" — 파서·임의 코드 실행·열쇠 이야기는 사람이 읽을 말이 아니다.
       `코드 문법만 확인했어요(${verify.parsed}개 확인, ${verify.broken}개 문제${verify.unchecked ? `, ${verify.unchecked}개는 확인 못 함` : ""})` +
       (repaired ? " · 한 번 고쳤어요" : "") +
-      ". 서버에서 실제로 실행해 보지는 않아요 — 위 '확인한 것' 목록을 보고 직접 열어서 해 보세요.";
+      (loop?.rounds.length
+        ? `. 브라우저에서 실제로 ${loop.rounds.length}번 돌려 보고 고쳤어요(제일 잘 된 ${loop.bestRound}번째 판이에요).`
+        : ". 서버에서 실제로 실행해 보지는 않아요 — 위 '확인한 것' 목록을 보고 직접 열어서 해 보세요.");
 
     const content = {
       target: spec.target,
@@ -659,6 +700,8 @@ export const appBuildSkill: EmployeeSkill = {
       patched,
       // 166회차: 부탁 심판자의 판정(고치는 판만). 사장님 판정과 나란히 놓고 맞는지 세려면 남겨야 한다.
       askJudge: judged ? { ...judged, sentBack } : null,
+      // 179회차: 돌려 보고 고친 고리의 기록 — 바퀴마다 맞음/안 맞음/고장/오류/돈. 이것으로 "몇 바퀴가 값어치 있나" 를 잰다.
+      loop: loop ? { rounds: loop.rounds, bestRound: loop.bestRound, stoppedBy: loop.stoppedBy, usd: loop.usd, verdict: loop.verdict, facts: loop.facts } : null,
       summary: { criteria: spec.criteria.length, met },
       note,
     };
@@ -669,12 +712,18 @@ export const appBuildSkill: EmployeeSkill = {
     const markdown =
       patchNote +
       `## 실행 방법\n\n${made.howToRun.trim()}\n\n` +
-      `## 확인한 것 (${spec.criteria.length}가지 중 ${met}가지 됨)\n\n` +
+      (loop?.rounds.length
+        ? `## 돌려 본 결과\n\n${loop.verdict?.toPerson ?? ""}\n\n` +
+          loop.rounds.map((r) => `- ${r.n}바퀴: 맞음 ${r.met}/${spec.criteria.length} · 안 맞음 ${r.unmet} · 오류 ${r.errors}${r.best ? " ★" : ""}${r.edits ? ` → ${r.edits}군데 고침` : ""}`).join("\n") +
+          (loop.facts ? `\n\n${factLines(loop.facts).map((l) => `- ${l}`).join("\n")}` : "") + "\n\n"
+        : "") +
+      `## 확인한 것 (${spec.criteria.length}가지 중 ${met}가지 ${judgeMet ? "됨 — 실제로 돌려 보고 확인" : "됨"})\n\n` +
       spec.criteria
         .map((c) => {
           const cov = made.coverage.find((x) => x.criterionId === c.id);
-          const mark = cov?.met ? "✅" : "❌";
-          return `- ${mark} **${c.when}** → ${c.then}` + (cov?.where ? ` _(${cov.where})_` : "");
+          const mark = judgeMet ? (judgeMet.has(c.id) ? "✅" : judgeUnmet?.has(c.id) ? "❌" : "❔") : cov?.met ? "✅" : "❌";
+          const why = judgeUnmet?.get(c.id);
+          return `- ${mark} **${c.when}** → ${c.then}` + (why ? ` _(${why})_` : cov?.where && !judgeMet ? ` _(${cov.where})_` : "");
         })
         .join("\n") +
       (spec.humanGate.length

@@ -316,17 +316,19 @@ export async function collectWorkReturns(
 async function stepOf(db: Supabase, assignmentId: string, status: string, awaitingApproval = false): Promise<{ step: string; plan?: PlanCard }> {
   const { data } = await db
     .from("work_executions")
-    .select("current_step, status, steps:metrics_json->steps, decision:metrics_json->decision")
+    .select("current_step, status, steps:metrics_json->steps, decision:metrics_json->decision, loop:metrics_json->loop")
     .eq("assignment_id", assignmentId)
     .order("created_at", { ascending: false })
     .limit(1)
     .maybeSingle();
   // 되묻기(35회차): 계획을 보이고 멈춘 업무. 카드는 그 실행의 저장된 계획에서.
-  const row = data as { steps?: unknown; decision?: HeadDecision | null } | null;
+  const row = data as { steps?: unknown; decision?: HeadDecision | null; loop?: { round: number; met: number; total: number } | null } | null;
   // 177회차: waiting 은 "사람 답 대기" 와 "차례 대기" 둘 다다. 표시가 있는 것만 "확인을 기다리는 중" — 차례를 기다리는 일에까지
   // "'시작' 이라고 하면 시작해요" 라고 적혀 사장님이 '시작' 을 세 번 쳤다(09-18 13:01).
   if (status === "waiting") return { step: awaitingApproval ? STEP_LABEL.waiting : STEP_LABEL.queued, plan: withHead(planCardOf(row?.steps), row?.decision) };
   const raw = (data?.current_step as string | null) ?? (data ? "running" : "queued");
+  // 179회차: 돌려 보며 고치는 고리는 몇 바퀴째인지·확인 목록이 몇 개 맞는지를 보인다.
+  if (raw === "looping") { const l = row?.loop; return { step: l ? `실제로 돌려 보며 고치는 중 · ${l.round}바퀴째 · 확인 목록 ${l.met}/${l.total}` : "실제로 돌려 보며 고치는 중 · 1바퀴째", plan: withHead(planCardOf(row?.steps), row?.decision) }; }
   return { step: STEP_LABEL[raw] ?? raw, plan: withHead(planCardOf(row?.steps), row?.decision) };
 }
 
