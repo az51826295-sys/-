@@ -450,7 +450,9 @@ export const appBuildSkill: EmployeeSkill = {
           return `${e.why} — ${e.measure} ${range}`;
         };
         const { showPlan } = await import("@/lib/execution/approval");
-        await showPlan(ctx.supabase, { assignmentId: ctx.execution.assignment_id, who: "Dev", card: { title: spec.title, lines: [...spec.expectations.map(fmt), `확인할 것 ${spec.criteria.length}가지` + (spec.humanGate?.length ? ` · 직접 보실 것 ${spec.humanGate.length}가지` : "")], estimate: "약 $0.01 · 30초~1분" } });
+        await showPlan(ctx.supabase, { assignmentId: ctx.execution.assignment_id, who: "Dev", card: { title: spec.title, lines: [...spec.expectations.map(fmt), `확인할 것 ${spec.criteria.length}가지` + (spec.humanGate?.length ? ` · 직접 보실 것 ${spec.humanGate.length}가지` : "")], estimate: roundsFor(`${ctx.context.assignment.title}
+${ctx.context.assignment.description ?? ""}`) > 0 ? `약 $0.02 · 2~4분 (만든 뒤 브라우저에서 ${roundsFor(`${ctx.context.assignment.title}
+${ctx.context.assignment.description ?? ""}`)}번까지 돌려 보고 고쳐요)` : "약 $0.01 · 30초~1분" } });
       }
       if (!ri.approved && !ri.autoRetry && !smallFix && needsGate) {
         const fmt = (e: { measure: string; min: number | null; max: number | null; equals: boolean | null; why: string }) => {
@@ -465,7 +467,7 @@ export const appBuildSkill: EmployeeSkill = {
           assignmentId: ctx.execution.assignment_id,
           executionId: ctx.executionId,
           who: "Dev",
-          card: { title: spec.title, lines, estimate: "약 $0.2 · 5분 (그 뒤 유니티에서 확인 2~3분)" },
+          card: { title: spec.title, lines, estimate: "약 $0.2 · 5분 (그 뒤 사장님 컴퓨터의 유니티에서 확인 2~3분)" },
           round: ri.approvalRound ?? 0,
         });
       }

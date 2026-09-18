@@ -359,7 +359,7 @@ export async function runEverydayTurn(
         // 177회차: 다른 일 뒤에 줄 섰으면 "시작할게요" 라고 하면 거짓말이다 — 그 일이 끝나면 이어서 한다고 말한다.
         reply = r.behind
           ? "네. 지금 앞에 하던 일이 하나 있어서, 그게 끝나면 바로 이어서 만들어요. 다 되면 여기에 올라와요."
-          : pending.unity ? "네, 그대로 시작할게요. 다 되면 여기에 결과가 올라오고, 유니티에서 자동으로 한 번 확인해요." : "네, 그대로 시작할게요. 다 되면 여기에 결과가 올라와요.";
+          : pending.unity ? "네, 그대로 시작할게요. 다 되면 여기에 결과가 올라오고, 사장님 컴퓨터의 유니티에서 자동으로 한 번 확인해요." : "네, 그대로 시작할게요. 다 되면 여기에 결과가 올라와요 — 올리기 전에 브라우저에서 돌려 보고 확인해요.";
       } else {
         const r = await resumeApproved(supabase, pending, said);
         reply = r.mode === "replan"
