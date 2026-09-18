@@ -117,7 +117,7 @@ export async function scheduleAutoRetry(
   await db.from("conversation_messages").insert({
     conversation_id: convo,
     role: "assistant",
-    content: `실패한 줄 ${failedLines.length}개를 ${who} 가 스스로 고쳐요 (${n}/${MAX_AUTO_RETRIES}). 끝나면 여기 붙고, 다시 재요.`,
+    content: `확인에서 걸린 ${failedLines.length}가지를 ${who}가 스스로 고쳐요 (${n}/${MAX_AUTO_RETRIES}). 다 되면 여기에 올라오고 다시 확인해요.`,
     attachments: { assignment: { id: made.id, title, queued: true }, autoRetry: n },
   });
   return { scheduled: true, n, assignmentId: made.id as string };

@@ -52,7 +52,7 @@ export function previewSummary(data: Panel | null, steps: Record<string, string>
   const working = Object.values(steps)[0];
   const cur = data?.current ?? null;
   return cur
-    ? `미리보기 · v${cur.n} ${cur.title}` + (cur.checks.length ? ` · 어긋남 ${cur.checks.filter((c) => c.result === "어긋남").length}` : "")
+    ? `미리보기 · v${cur.n} ${cur.title}` + (cur.checks.length ? ` · 걸린 것 ${cur.checks.filter((c) => c.result === "어긋남").length}` : "")
     : working ? `작업 중 · ${working}` : "미리보기 · 아직 결과가 없어요";
 }
 
@@ -310,7 +310,7 @@ export default function PreviewPanel({
           <section className="border-b border-[var(--rk-200)] px-3.5 py-2.5">
             <div className="mb-1.5 text-[11px] text-[var(--rk-600)]">
               {/* 157회차: 딱지를 뗐다. "통과 N · 실패 M · 해당 없음 K" 는 판정처럼 읽히는데 센 것이지 판단이 아니다. 못 잼은 세지 않는다. */}
-              잰 것 {cur.checks.filter((c) => c.result !== "못 잼").length} · 어긋난 것 {cur.checks.filter((c) => c.result === "어긋남").length} <span className="text-[var(--rk-400)]">(잰 값이에요 — 판정은 아래 심판자와 사장님이)</span>
+              자동 확인 {cur.checks.filter((c) => c.result !== "못 잼").length}가지 · 걸린 것 {cur.checks.filter((c) => c.result === "어긋남").length}가지 <span className="text-[var(--rk-400)]">(기계가 잰 값이에요 — 좋고 나쁨은 사장님이 정해요)</span>
             </div>
             {/* 45회차: 통과한 줄은 접는다. 여덟 줄이 다 펴져 있으면 실패 한 줄이 안 보인다. */}
             {cur.checks

@@ -442,13 +442,13 @@ export const appBuildSkill: EmployeeSkill = {
         };
         const lines = [
           ...spec.expectations.map(fmt),
-          `합격 기준 ${spec.criteria.length}개` + (spec.humanGate?.length ? ` · 사람이 볼 것 ${spec.humanGate.length}개` : ""),
+          `확인할 것 ${spec.criteria.length}가지` + (spec.humanGate?.length ? ` · 직접 보실 것 ${spec.humanGate.length}가지` : ""),
         ];
         await askApproval(ctx.supabase, {
           assignmentId: ctx.execution.assignment_id,
           executionId: ctx.executionId,
           who: "Dev",
-          card: { title: spec.title, lines, estimate: "약 $0.2 · 5분 · 크레딧 0" + (spec.target === "unity" ? " (그 뒤 유니티 검사 2~3분)" : "") },
+          card: { title: spec.title, lines, estimate: "약 $0.2 · 5분" + (spec.target === "unity" ? " (그 뒤 유니티에서 확인 2~3분)" : "") },
           round: ri.approvalRound ?? 0,
         });
       }
@@ -524,15 +524,15 @@ export const appBuildSkill: EmployeeSkill = {
     const patched = made.patched ?? null;
     if (previous && previous.files.length > 0) {
       patchNote = patched
-        ? `**고친 자리 ${patched.edits.length}곳 · 바뀐 줄 ${patched.changedLines}/${patched.totalLines}** — 나머지는 지난 판 그대로입니다.\n` +
+        ? `**고친 곳 ${patched.edits.length}군데 (전체 ${patched.totalLines}줄 중 ${patched.changedLines}줄)** — 나머지는 이전 그대로예요.\n` +
           patched.edits.map((e) => `- \`${e.path}\`: ${e.why}`).join("\n") + "\n\n"
-        : "**이번 판은 조각으로 못 고쳐 파일을 다시 썼습니다** — 지난 판에서 멀쩡하던 곳이 바뀌었을 수 있습니다.\n\n";
+        : "**이번엔 부분만 고치지 못해서 파일을 다시 썼어요** — 이전에 잘 되던 곳이 바뀌었을 수 있어요.\n\n";
       // 심판자의 한 줄은 맨 위다. 딱지(통과/실패)가 아니라 말이다 — 읽고 사장님이 정한다.
       if (judged) {
         patchNote =
-          `**심판자**${sentBack ? "(한 번 되돌려 다시 고친 판)" : ""}: ${judged.toPerson}` +
-          (judged.verdict === "되돌린다" ? " — **심판자는 이 판도 부탁과 다르다고 봅니다.**" : "") +
-          (judged.uninvited.length ? `\n부탁받지 않았는데 생긴 것: ${judged.uninvited.slice(0, 5).join(" / ")}` : "") +
+          `**검토**${sentBack ? "(한 번 되돌려 다시 고침)" : ""}: ${judged.toPerson}` +
+          (judged.verdict === "되돌린다" ? " — **검토 결과 이번 것도 부탁과 다르다고 봐요.**" : "") +
+          (judged.uninvited.length ? `\n부탁하지 않으셨는데 들어간 것: ${judged.uninvited.slice(0, 5).join(" / ")}` : "") +
           "\n\n" + patchNote;
       }
     }
@@ -624,13 +624,10 @@ export const appBuildSkill: EmployeeSkill = {
     const met = made.coverage.filter((c) => c.met).length;
 
     const note =
-      `문법 검사: ${verify.parsed}개 파싱됨 · ${verify.broken}개 깨짐 · ` +
-      `${verify.unchecked}개는 파서가 없어 **미검사**` +
-      (repaired ? " (한 번 고쳤습니다)" : "") +
-      ". **돌려 보지는 않았습니다** — 생성된 코드를 서버에서 실행하면 " +
-      "그건 임의 코드 실행이고, 그 문을 열면 이 회사의 모든 열쇠가 그 " +
-      "코드 안에 있습니다. 파싱 통과는 작동을 뜻하지 않습니다. " +
-      "위 기준으로 확인해 주십시오 — 기준은 코드보다 먼저 쓰였습니다.";
+      // 175회차: 사장님 "말투 좀 바꿔야 돼" — 파서·임의 코드 실행·열쇠 이야기는 사람이 읽을 말이 아니다.
+      `코드 문법만 확인했어요(${verify.parsed}개 확인, ${verify.broken}개 문제${verify.unchecked ? `, ${verify.unchecked}개는 확인 못 함` : ""})` +
+      (repaired ? " · 한 번 고쳤어요" : "") +
+      ". 서버에서 실제로 실행해 보지는 않아요 — 위 '확인한 것' 목록을 보고 직접 열어서 해 보세요.";
 
     const content = {
       target: spec.target,
@@ -658,7 +655,7 @@ export const appBuildSkill: EmployeeSkill = {
     const markdown =
       patchNote +
       `## 실행 방법\n\n${made.howToRun.trim()}\n\n` +
-      `## 합격 기준 (${met}/${spec.criteria.length} 지킴)\n\n` +
+      `## 확인한 것 (${spec.criteria.length}가지 중 ${met}가지 됨)\n\n` +
       spec.criteria
         .map((c) => {
           const cov = made.coverage.find((x) => x.criterionId === c.id);
@@ -667,7 +664,7 @@ export const appBuildSkill: EmployeeSkill = {
         })
         .join("\n") +
       (spec.humanGate.length
-        ? `\n\n## 사람이 봐야 하는 것\n\n${spec.humanGate.map((h) => `- ${h}`).join("\n")}`
+        ? `\n\n## 직접 보셔야 하는 것\n\n${spec.humanGate.map((h) => `- ${h}`).join("\n")}`
         : "") +
       `\n\n## 파일 ${files.length}개\n\n` +
       files

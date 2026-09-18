@@ -339,7 +339,8 @@ export async function runEverydayTurn(
       } else if (kind === "yes") {
         await resumeApproved(supabase, pending, null);
         // 169회차: HTML 게임에도 "유니티가 재요" 라고 답했다(사장님 화면 09-17). 재는 판에만 그 말을 한다.
-        reply = pending.unity ? "네, 그대로 시작할게요. 끝나면 여기 붙고, 유니티가 재요." : "네, 그대로 시작할게요. 끝나면 여기 붙어요.";
+        // 175회차 사장님 "말투 좀 바꿔야 돼, 유니티가 잰다 그런 거" — 안쪽 낱말(재다·붙다)을 사람 말로.
+        reply = pending.unity ? "네, 그대로 시작할게요. 다 되면 여기에 결과가 올라오고, 유니티에서 자동으로 한 번 확인해요." : "네, 그대로 시작할게요. 다 되면 여기에 결과가 올라와요.";
       } else {
         const r = await resumeApproved(supabase, pending, said);
         reply = r.mode === "replan"

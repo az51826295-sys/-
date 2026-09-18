@@ -48,7 +48,7 @@ export async function askApproval(
   const conversationId = await conversationOfAssignment(db, args.assignmentId);
   if (conversationId) {
     const content =
-      `**${args.who} · 계획 확인** — 이렇게 이해했어요.\n\n` +
+      `**${args.who} · 이렇게 만들게요** — 맞는지 봐 주세요.\n\n` +
       `**${args.card.title}**\n` +
       args.card.lines.map((l) => `- ${l}`).join("\n") +
       `\n\n${args.card.estimate}\n\n` +
