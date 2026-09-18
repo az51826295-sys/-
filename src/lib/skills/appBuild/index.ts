@@ -14,9 +14,15 @@ import { buildPatch } from "@/lib/skills/appBuild/patch";
  * luna 는 57초 → 6초, 값은 gpt-5 의 1/8 이다. 문제 하나로 잰 것이라 "같은 실력" 이 아니라 "이 일에선 같았다" 다 — 심판자가 매 판 본다.
  * 처음 만드는 판(buildWhole)은 아직 안 재 봐서 그대로 둔다. 되돌리기: 환경변수 `FIX_SEAT_MODEL=gpt-5`.
  */
-async function fixSeat(ctx: SkillRunContext) {
-  const model = process.env.FIX_SEAT_MODEL ?? "gpt-5.6-luna";
-  if (!model || ctx.providers.ai.name === "mock" || !process.env.OPENAI_API_KEY) return ctx.providers.ai;
+async function fixSeat(ctx: SkillRunContext) { return seat(ctx, process.env.FIX_SEAT_MODEL ?? "gpt-5.6-luna", "고치는"); }
+/**
+ * **만드는 자리** (174회차 09-18). 같은 계획(데모 회사 벽돌깨기, 기준 10개, 아이패드 기기 줄)을 셋에 시켜 브라우저(태블릿 화면)에서 돌렸다:
+ * gpt-5 328초·출력 13,393토큰(≈$0.13)·759줄 / **luna 25초·4,594토큰(≈$0.006)·306줄** / terra 39초·4,230토큰(≈$0.05)·190줄 — 셋 다 콘솔 오류 0, 터치 조작 됨.
+ * 표본 하나. 되돌리기: `BUILD_SEAT_MODEL=gpt-5`. 심판자가 매 판 본다.
+ */
+async function buildSeat(ctx: SkillRunContext) { return seat(ctx, process.env.BUILD_SEAT_MODEL ?? "gpt-5.6-luna", "만드는"); }
+async function seat(ctx: SkillRunContext, model: string, what: string) {
+  if (!model || model === "router" || ctx.providers.ai.name === "mock" || !process.env.OPENAI_API_KEY) return ctx.providers.ai;
   try {
     const { createOpenAIProvider } = await import("@/lib/providers/openai");
     const { meterProviders } = await import("@/lib/costs/meter");
@@ -25,7 +31,7 @@ async function fixSeat(ctx: SkillRunContext) {
       companyId: ctx.execution.company_id, workExecutionId: ctx.executionId, companyEmployeeId: ctx.execution.company_employee_id,
     }).ai;
   } catch (e) {
-    console.warn("[app_build] 고치는 자리를 못 앉혔다 — 하던 자리로:", e instanceof Error ? e.message : e);
+    console.warn(`[app_build] ${what} 자리를 못 앉혔다 — 하던 자리로:`, e instanceof Error ? e.message : e);
     return ctx.providers.ai;
   }
 }
@@ -531,7 +537,7 @@ export const appBuildSkill: EmployeeSkill = {
       }
     }
 
-    async function buildWhole() { return (await ctx.providers.ai.generateStructuredOutput({
+    async function buildWhole() { return (await (await buildSeat(ctx)).generateStructuredOutput({
       systemInstructions: WHOLE_BUILD_SYSTEM + (unity ? (await unityRules()) + (await renderGamedevLessons("unity_code")) : ""),
       input: wholeBuildInput(spec, deviceNote, previous),
       schema: build,
