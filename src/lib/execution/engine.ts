@@ -317,12 +317,23 @@ export async function executeEmployeeAssignment(
           : ("UNKNOWN_ERROR" as const);
     const message = error instanceof Error ? error.message : String(error);
 
-    await supabase.rpc("fail_work_execution", {
+    const { data: failed, error: failErr } = await supabase.rpc("fail_work_execution", {
       p_execution_id: executionId,
       p_error_code: code,
       // Kept server-side for debugging; never rendered to the user.
       p_error_message: message.slice(0, 500),
     });
+    // 177회차: 실패 기록 자체가 막힐 수 있다 — 그 RPC 는 업무를 failed 로도 올리는데, 같은 사람에게 다른 일이 살아 있으면
+    // "한 사람 한 일" 인덱스가 거부하고 **실행 갱신까지 함께 되돌아간다**. 그러면 실행은 'running' 인 채 좀비가 되어 워커가
+    // 20분마다 되돌린다(09-18 12:21~13:07 실제로 세 번). 실행만이라도 failed 로 적는다 — 그 판은 어쨌든 죽은 것이다.
+    if (failErr || (failed as { ok?: boolean } | null)?.ok === false) {
+      await supabase
+        .from("work_executions")
+        .update({ status: "failed", error_code: code, error_message: message.slice(0, 500), failed_at: new Date().toISOString(), updated_at: new Date().toISOString() })
+        .eq("id", executionId)
+        .in("status", ["queued", "running"]);
+      console.warn(`[실행] ${executionId.slice(0, 8)} 실패 기록이 막혀(${failErr?.message ?? "not ok"}) 실행만 failed 로 적었다`);
+    }
 
     // 117회차: 기계적인 고장(출력 잘림·저장 시간 초과)이면 한 번은 조용히 다시 — 65회차에 "싸게 실패하고 다시 한다" 고
     // 정해 놓고 다시 하는 쪽을 안 만들었었다. 뜻이 있는 실패는 그대로 사람에게 간다.

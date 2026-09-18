@@ -187,6 +187,22 @@ export function isPureQuestion(text: string): boolean {
   return isQuestion && !asksWork;
 }
 
+/** 재촉·맞장구 한마디 — 새 내용이 없는 말(177회차). 이 말은 도는 일이 있으면 그 일에 대한 것이다. */
+export const GO_WORDS = /^\s*(만들어|만들어\s*줘|만들자|만들어요|해\s*줘|해|시작|시작해|시작하자|시작해요|고|가자|ㄱ|ㄱㄱ|ㄱㄱㄱ|응|네|넵|예|ㅇㅇ|ㅇ|ok|okay|go|진행|진행해|그래|좋아|좋아요|빨리|빨리해|얼른)\s*[.!~]*\s*$/i;
+
+/** 이 대화에서 아직 결과가 안 돌아온 일(돌고 있거나 차례·확인을 기다리거나 방금 끝나 안 붙은 것). 없으면 null. */
+export async function inProgressAssignment(
+  db: Awaited<ReturnType<typeof createClient>>,
+  conversationId: string,
+): Promise<{ id: string; title: string; minutes: number } | null> {
+  const { lastAssignmentInConversation } = await import("@/lib/chat/delegate");
+  const aid = await lastAssignmentInConversation(db, conversationId, null);
+  if (!aid) return null;
+  const { data: a } = await db.from("assignments").select("id, title, status, created_at").eq("id", aid).maybeSingle();
+  if (!a || !["assigned", "queued", "working", "waiting", "submitted", "revision_queued", "revising"].includes(a.status as string)) return null;
+  return { id: a.id as string, title: a.title as string, minutes: Math.max(0, Math.round((Date.now() - new Date(a.created_at as string).getTime()) / 60_000)) };
+}
+
 /** 이 대화에 마지막으로 돌아온 산출물의 종류 → 그것을 낸 능력 id. */
 async function capabilityOfLastReturned(
   db: Awaited<ReturnType<typeof createClient>>,
@@ -337,15 +353,20 @@ export async function runEverydayTurn(
         reply = "네, 접을게요. 다시 시키실 때 말씀해 주세요.";
         assignment = null;
       } else if (kind === "yes") {
-        await resumeApproved(supabase, pending, null);
+        const r = await resumeApproved(supabase, pending, null);
         // 169회차: HTML 게임에도 "유니티가 재요" 라고 답했다(사장님 화면 09-17). 재는 판에만 그 말을 한다.
         // 175회차 사장님 "말투 좀 바꿔야 돼, 유니티가 잰다 그런 거" — 안쪽 낱말(재다·붙다)을 사람 말로.
-        reply = pending.unity ? "네, 그대로 시작할게요. 다 되면 여기에 결과가 올라오고, 유니티에서 자동으로 한 번 확인해요." : "네, 그대로 시작할게요. 다 되면 여기에 결과가 올라와요.";
+        // 177회차: 다른 일 뒤에 줄 섰으면 "시작할게요" 라고 하면 거짓말이다 — 그 일이 끝나면 이어서 한다고 말한다.
+        reply = r.behind
+          ? "네. 지금 앞에 하던 일이 하나 있어서, 그게 끝나면 바로 이어서 만들어요. 다 되면 여기에 올라와요."
+          : pending.unity ? "네, 그대로 시작할게요. 다 되면 여기에 결과가 올라오고, 유니티에서 자동으로 한 번 확인해요." : "네, 그대로 시작할게요. 다 되면 여기에 결과가 올라와요.";
       } else {
         const r = await resumeApproved(supabase, pending, said);
         reply = r.mode === "replan"
           ? "네, 그 말을 얹어서 계획을 다시 써 볼게요. 곧 다시 보여 드려요."
-          : "네, 그 말을 얹어서 이번엔 바로 만들게요(계획은 두 번까지만 다시 써요).";
+          : r.behind
+            ? "네, 그 말을 얹어서 만들게요. 앞에 하던 일이 끝나면 바로 이어서 해요."
+            : "네, 그 말을 얹어서 이번엔 바로 만들게요(계획은 두 번까지만 다시 써요).";
       }
       const conversationId = await saveTurn(supabase, user.id, {
         conversationId: input.conversationId,
@@ -427,6 +448,22 @@ export async function runEverydayTurn(
       console.log(`[접수] 물음이라 일로 안 넘긴다: "${last.slice(0, 60)}" (접수는 ${plan.capabilityId} 라 했다)`);
       plan.capabilityId = null;
       plan.capabilityWhy = null;
+    }
+  }
+
+  // 177회차 09-18: **이미 시킨 일이 돌고 있으면 "만들어·시작" 은 새 일이 아니다.** 사장님이 아이패드에서 12:16 "아니 유니티 말고 html로"
+  // 로 일을 시킨 뒤 40초 뒤 "만들어", 다시 "시작" 이라고 했더니 접수가 **같은 일을 셋** 만들었다(Dev 한 명에게). 재촉은 진행 상황으로 답한다.
+  if (plan.capabilityId && companyId && input.conversationId) {
+    const last = [...input.messages].reverse().find((m) => m.role === "user")?.content?.trim() ?? "";
+    if (GO_WORDS.test(last)) {
+      const busy = await inProgressAssignment(supabase, input.conversationId);
+      if (busy) {
+        console.log(`[접수] 재촉이라 일로 안 넘긴다: "${last.slice(0, 30)}" — 진행 중 ${busy.id.slice(0, 8)} ${busy.minutes}분째`);
+        plan.capabilityId = null;
+        plan.capabilityWhy = null;
+        plan.searches = [];
+        plan.reply = `지금 "${busy.title}" 을(를) 만들고 있어요 — ${busy.minutes}분째예요. 다 되면 여기에 올라와요. 고칠 게 있으면 그냥 말씀하세요.`;
+      }
     }
   }
 

@@ -425,10 +425,64 @@ export async function releaseEmployee(
 
   const started = await startNextQueued(db, companyEmployeeId);
   if (started) {
-    // 기다리지 않는다 — 실행은 몇 분이고 이 호출은 지금 답해야 한다.
-    void import("@/lib/execution/service")
-      .then(({ startExecution }) => startExecution(started))
-      .catch(() => {});
+    // 177회차 09-18: 전에는 `execution/service.startExecution` 을 불렀는데 그것은 **쿠키(로그인) 클라이언트**로 업무를 찾는다.
+    // 워커(57회차부터 결과를 돌려놓는 쪽)엔 쿠키가 없어 조용히 실패했고, 차례에서 꺼낸 일은 `assigned` 인 채 실행 없이 영영 섰다
+    // (13:01 사장님 화면의 두 번째 일). 실행 행은 받은 클라이언트로 바로 넣는다 — 워커가 15초 안에 집는다.
+    const q = await queueExecution(db, started);
+    if (!q.ok) console.warn(`[대기열] ${started.slice(0, 8)} 실행 못 넣음: ${q.why}`);
+    else if (process.env.ROOKERY_WORKER !== "1") {
+      // 워커가 없는 곳(로컬)에서는 여기서 돌린다. 기다리지 않는다 — 실행은 몇 분이고 이 호출은 지금 답해야 한다.
+      void import("@/lib/execution/engine")
+        .then(({ executeEmployeeAssignment }) => executeEmployeeAssignment(q.executionId))
+        .catch(() => {});
+    }
   }
   return { released, started };
+}
+
+/**
+ * 차례에서 꺼낸 업무에 실행 행을 넣는다(워커가 집는다). `startExecution` 과 같은 상태 전이를 쿠키 없이 한다.
+ * 이미 살아 있는 실행이 있으면 그것을 돌려준다.
+ */
+export async function queueExecution(
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  db: any,
+  assignmentId: string,
+): Promise<{ ok: true; executionId: string } | { ok: false; why: string }> {
+  const { data: a } = await db
+    .from("assignments")
+    .select("id, company_id, company_employee_id, status")
+    .eq("id", assignmentId)
+    .maybeSingle();
+  if (!a) return { ok: false, why: "업무 없음" };
+  const { data: live } = await db
+    .from("work_executions")
+    .select("id")
+    .eq("assignment_id", assignmentId)
+    .in("status", ["queued", "running"])
+    .maybeSingle();
+  if (live) return { ok: true, executionId: live.id as string };
+  const { data: prev } = await db
+    .from("work_executions")
+    .select("attempt_number")
+    .eq("assignment_id", assignmentId)
+    .order("attempt_number", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  const { data: made, error } = await db
+    .from("work_executions")
+    .insert({
+      company_id: a.company_id,
+      assignment_id: assignmentId,
+      company_employee_id: a.company_employee_id,
+      status: "queued",
+      current_step: "context_loaded",
+      attempt_number: ((prev?.attempt_number as number | undefined) ?? 0) + 1,
+    })
+    .select("id")
+    .single();
+  if (error || !made) return { ok: false, why: error?.message ?? "실행 못 넣음" };
+  await db.from("assignments").update({ status: "queued", last_execution_id: made.id, failure_reason: null }).eq("id", assignmentId);
+  await db.from("company_employees").update({ work_status: "working", current_assignment_id: assignmentId }).eq("id", a.company_employee_id);
+  return { ok: true, executionId: made.id as string };
 }

@@ -103,10 +103,13 @@ export async function pendingApproval(db: Supabase, conversationId: string): Pro
   if (!ap) return null;
   const { data: a } = await db
     .from("assignments")
-    .select("id, title, status, company_employee_id")
+    .select("id, title, status, company_employee_id, role_input_json")
     .eq("id", ap.assignmentId)
     .maybeSingle();
   if (!a || a.status !== "waiting") return null;
+  // 177회차: 'waiting' 은 "차례를 기다리는 일" 에도 쓰인다. '시작' 을 받은 뒤 다른 일 뒤에 줄 선 판(awaitingApproval 이 지워진 것)을
+  // 또 확인 대기로 보면 그다음 말이 전부 '시작' 답으로 먹힌다. 사람 답을 기다린다는 표시가 있는 것만.
+  if ((a.role_input_json as { awaitingApproval?: boolean } | null)?.awaitingApproval !== true) return null;
   return { assignmentId: a.id as string, executionId: ap.executionId, title: a.title as string, round: ap.round ?? 0, companyEmployeeId: a.company_employee_id as string, unity: ap.unity === true };
 }
 
@@ -127,13 +130,13 @@ export async function resumeApproved(
   db: Supabase,
   pending: PendingApproval,
   correction: string | null,
-): Promise<{ mode: "start" | "replan" }> {
+): Promise<{ mode: "start" | "replan"; /** 같은 사람이 다른 일을 하는 중이라 그 뒤에 줄 섰다(177회차). */ behind: boolean }> {
   const { data: a } = await db
     .from("assignments")
     .select("id, company_id, company_employee_id, description, role_input_json")
     .eq("id", pending.assignmentId)
     .maybeSingle();
-  if (!a) return { mode: "start" };
+  if (!a) return { mode: "start", behind: false };
   const { data: ex } = await db
     .from("work_executions")
     .select("metrics_json")
@@ -150,8 +153,21 @@ export async function resumeApproved(
     ? `${(a.description as string | null) ?? ""}\n\n## 사장님 수정 (계획 확인 뒤, ${round}번째)\n- ${correction.trim()}`
     : (a.description as string | null);
 
-  await db.from("assignments").update({ description, role_input_json: { ...roleInput, awaitingApproval: null }, status: "queued" }).eq("id", a.id);
-  await db.from("work_executions").insert({
+  // 177회차 09-18 13:01 사장님 "왜 시작을 계속 안 해?": 확인을 기다리는 동안(waiting 은 "한 사람 한 일" 인덱스 밖이다) 같은 사람에게
+  // 다른 일이 시작되면, 여기서 queued 로 올리는 갱신이 인덱스에 막힌다. 전에는 오류를 안 보고 실행 행만 넣어서 **한 사람이 둘을 동시에**
+  // 돌렸고, 그 판은 결과 저장(업무를 submitted 로 올리는 것)마저 같은 인덱스에 막혀 영영 'running' 인 좀비가 됐다(20분마다 되돌며 카드만 찍음).
+  // 이제 갱신이 막히면 실행을 만들지 않는다. 사람 답 표시만 지우고 waiting 에 둔다 — 대기열(startNextQueued)이 차례에 꺼내고,
+  // approved 가 남아 있어 그때 다시 되묻지 않는다.
+  const { error: up } = await db
+    .from("assignments")
+    .update({ description, role_input_json: { ...roleInput, awaitingApproval: null }, status: "queued" })
+    .eq("id", a.id);
+  if (up) {
+    await db.from("assignments").update({ description, role_input_json: { ...roleInput, awaitingApproval: null } }).eq("id", a.id);
+    console.log(`[되묻기] ${String(a.id).slice(0, 8)} 시작 못 올림(${up.code ?? up.message}) → 차례에 줄 세움`);
+    return { mode: replan ? "replan" : "start", behind: true };
+  }
+  const { error: ins } = await db.from("work_executions").insert({
     company_id: a.company_id,
     assignment_id: a.id,
     company_employee_id: a.company_employee_id,
@@ -160,7 +176,13 @@ export async function resumeApproved(
     attempt_number: round + 2,
     metrics_json: { steps },
   });
-  return { mode: replan ? "replan" : "start" };
+  if (ins) {
+    // 실행을 못 넣었으면 업무를 queued 로 두면 안 된다 — 아무도 집지 않는 채로 그 사람을 막는다. 다시 차례로.
+    await db.from("assignments").update({ status: "waiting" }).eq("id", a.id);
+    console.log(`[되묻기] ${String(a.id).slice(0, 8)} 실행 못 넣음(${ins.code ?? ins.message}) → 차례에 줄 세움`);
+    return { mode: replan ? "replan" : "start", behind: true };
+  }
+  return { mode: replan ? "replan" : "start", behind: false };
 }
 
 /** 사장님이 접었다. 업무는 cancelled — 직원은 다음 일을 받을 수 있게. */

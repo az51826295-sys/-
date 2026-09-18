@@ -267,7 +267,7 @@ export async function collectWorkReturns(
 
     if (text === null) {
       pending += 1;
-      steps.push({ assignmentId: a.id, who: name, ...(await stepOf(db, a.id, a.status)) });
+      steps.push({ assignmentId: a.id, who: name, ...(await stepOf(db, a.id, a.status, (a.role_input_json as { awaitingApproval?: boolean } | null)?.awaitingApproval === true)) });
       // **죽은 실행을 죽었다고 적는다.** 서버가 배포로 재시작되면 그 안에서 돌던
       // 실행은 그냥 사라진다 — 행은 'running' 인 채로(09-05 17:57 에 실제로 그랬다:
       // Dev 의 유니티 판이 18분째 '생성 중'). 그러면 사람은 영영 기다리고 그 직원은
@@ -302,7 +302,7 @@ export async function collectWorkReturns(
   return { pending, posted, steps };
 }
 
-async function stepOf(db: Supabase, assignmentId: string, status: string): Promise<{ step: string; plan?: PlanCard }> {
+async function stepOf(db: Supabase, assignmentId: string, status: string, awaitingApproval = false): Promise<{ step: string; plan?: PlanCard }> {
   const { data } = await db
     .from("work_executions")
     .select("current_step, status, steps:metrics_json->steps, decision:metrics_json->decision")
@@ -312,7 +312,9 @@ async function stepOf(db: Supabase, assignmentId: string, status: string): Promi
     .maybeSingle();
   // 되묻기(35회차): 계획을 보이고 멈춘 업무. 카드는 그 실행의 저장된 계획에서.
   const row = data as { steps?: unknown; decision?: HeadDecision | null } | null;
-  if (status === "waiting") return { step: STEP_LABEL.waiting, plan: withHead(planCardOf(row?.steps), row?.decision) };
+  // 177회차: waiting 은 "사람 답 대기" 와 "차례 대기" 둘 다다. 표시가 있는 것만 "확인을 기다리는 중" — 차례를 기다리는 일에까지
+  // "'시작' 이라고 하면 시작해요" 라고 적혀 사장님이 '시작' 을 세 번 쳤다(09-18 13:01).
+  if (status === "waiting") return { step: awaitingApproval ? STEP_LABEL.waiting : STEP_LABEL.queued, plan: withHead(planCardOf(row?.steps), row?.decision) };
   const raw = (data?.current_step as string | null) ?? (data ? "running" : "queued");
   return { step: STEP_LABEL[raw] ?? raw, plan: withHead(planCardOf(row?.steps), row?.decision) };
 }
