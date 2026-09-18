@@ -199,3 +199,30 @@ img.pixelated {
 .chat-md hr { border: 0; border-top: 1px solid var(--rk-200); }
 .chat-md table { border-collapse: collapse; }
 .chat-md th, .chat-md td { border: 1px solid var(--rk-200); padding: 0.25rem 0.5rem; }
+
+/* 177회차: 일이 도는 동안 움직이는 막대. 사장님 "진행하는지 잘 모르겠어" — 글자만으로는 멈춘 것과 구분이 안 된다. */
+.rk-progress {
+  position: relative;
+  display: inline-block;
+  width: 96px;
+  height: 10px;
+  border: 2px solid var(--rk-ink);
+  overflow: hidden;
+  vertical-align: middle;
+}
+.rk-progress > span {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 30%;
+  background: #E0703A;
+  animation: rk-slide 1.2s steps(8, end) infinite;
+}
+@keyframes rk-slide {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(340%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rk-progress > span { animation-duration: 3s; }
+}

@@ -34,7 +34,7 @@ export type ReturnedTurn = {
 /** 아직 안 끝난 일이 지금 어느 단계인지. 사람 말로 — 화면이 그대로 보여 준다. */
 /** 계획 카드(UI B): 도는 동안 오른쪽 칸에 "무엇을, 기준 몇 개, 얼마쯤" 을 보인다. 단계 저장(steps.plan / steps.brief)에서 읽는다. */
 export type PlanCard = { title: string; kind: string; lines: string[]; estimate: string };
-export type WorkStep = { assignmentId: string; who: string; step: string; plan?: PlanCard };
+export type WorkStep = { assignmentId: string; who: string; step: string; plan?: PlanCard; /** 일을 받은 시각 — 화면이 "N분째" 를 센다(177회차). */ startedAt?: string };
 export type WorkReturns = {
   pending: number;
   posted: ReturnedTurn[];
@@ -54,6 +54,17 @@ const STEP_LABEL: Record<string, string> = {
   judging: "자로 재는 중",
   storing: "파일을 저장하는 중",
   queued: "차례를 기다리는 중",
+  // 177회차 사장님 화면에 "Dev: context_loaded…" 가 그대로 나갔다.
+  context_loaded: "준비하는 중",
+  running: "만드는 중",
+  verifying: "확인하는 중",
+  submitting: "결과를 올리는 중",
+  searching: "찾아보는 중",
+  drafting: "글을 쓰는 중",
+  analyzing: "분석하는 중",
+  fetching_sources: "출처를 읽는 중",
+  validating_citations: "인용을 맞춰 보는 중",
+  research_planning: "조사 계획을 짜는 중",
   waiting: "사장님 확인을 기다리는 중 — '시작' 이라고 하면 시작해요",
 };
 
@@ -130,7 +141,7 @@ export async function collectWorkReturns(
     // 관계 이름을 박는다. assignments ↔ company_employees 는 길이 둘이라
     // (담당자 / 지금 하는 일) 이름 없이 부르면 PostgREST 가 거절한다(PGRST201).
     .select(
-      "id, title, status, failure_reason, company_employee_id, role_input_json, " +
+      "id, title, status, failure_reason, company_employee_id, role_input_json, created_at, " +
         "company_employees!assignments_company_employee_id_fkey(employees(name))",
     )
     .in("id", waiting);
@@ -267,7 +278,7 @@ export async function collectWorkReturns(
 
     if (text === null) {
       pending += 1;
-      steps.push({ assignmentId: a.id, who: name, ...(await stepOf(db, a.id, a.status, (a.role_input_json as { awaitingApproval?: boolean } | null)?.awaitingApproval === true)) });
+      steps.push({ assignmentId: a.id, who: name, startedAt: (a as { created_at?: string }).created_at, ...(await stepOf(db, a.id, a.status, (a.role_input_json as { awaitingApproval?: boolean } | null)?.awaitingApproval === true)) });
       // **죽은 실행을 죽었다고 적는다.** 서버가 배포로 재시작되면 그 안에서 돌던
       // 실행은 그냥 사라진다 — 행은 'running' 인 채로(09-05 17:57 에 실제로 그랬다:
       // Dev 의 유니티 판이 18분째 '생성 중'). 그러면 사람은 영영 기다리고 그 직원은

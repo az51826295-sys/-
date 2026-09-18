@@ -123,6 +123,14 @@ export default function AskClient({
   const [doing, setDoing] = useState<string | null>(null);
   /** 아직 안 끝난 일이 어느 단계인지(업무 id → "Dev: 코드를 쓰는 중"). */
   const [steps, setSteps] = useState<Record<string, string>>({});
+  // 177회차 사장님 "이거 진행하는지 잘 모르겠어, 애니메이션 추가해": 일이 도는 동안 몇 분째인지 세고 막대를 움직인다.
+  const [startedAt, setStartedAt] = useState<Record<string, string>>({});
+  const [, setClock] = useState(0);
+  useEffect(() => {
+    if (!Object.keys(steps).length) return;
+    const id = setInterval(() => setClock((c) => c + 1), 30_000);
+    return () => clearInterval(id);
+  }, [steps]);
   /** 도는 일의 계획 카드(업무 id → 카드). 오른쪽 칸 맨 위에 보인다. */
   const [plans, setPlans] = useState<Record<string, PlanCard>>({});
   /**
@@ -172,11 +180,12 @@ export default function AskClient({
         const data = (await res.json()) as {
           pending: number;
           posted: { role: "assistant"; content: string; files?: { path: string; contents?: string; href?: string }[] }[];
-          steps?: { assignmentId: string; who: string; step: string; plan?: PlanCard }[];
+          steps?: { assignmentId: string; who: string; step: string; plan?: PlanCard; startedAt?: string }[];
         };
         if (!alive) return;
         sinceRef.current = new Date().toISOString();
         setSteps(Object.fromEntries((data.steps ?? []).map((x) => [x.assignmentId, `${x.who}: ${x.step}`])));
+        setStartedAt(Object.fromEntries((data.steps ?? []).filter((x) => x.startedAt).map((x) => [x.assignmentId, x.startedAt!])));
         setPlans(Object.fromEntries((data.steps ?? []).filter((x) => x.plan).map((x) => [x.assignmentId, { ...x.plan!, who: x.who }])));
         if (data.posted.length > 0) {
           setTurns((prev) => [
@@ -554,15 +563,27 @@ export default function AskClient({
               </p>
             )}
             {t.assignment && (
-              <p className="mt-1.5 text-xs text-[var(--rk-400)]">
-                작업 시작 · {t.assignment.title}
-                {t.assignment.queued ? " (차례 기다리는 중)" : ""}
-                {t.assignment.returned
-                  ? " — 작업 완료"
-                  : steps[t.assignment.id]
-                    ? ` — ${steps[t.assignment.id]}…`
-                    : " — 끝나면 여기 붙어요"}
-              </p>
+              <div className="mt-1.5 text-xs text-[var(--rk-400)]">
+                <p>
+                  작업 시작 · {t.assignment.title}
+                  {t.assignment.queued && !steps[t.assignment.id] && !t.assignment.returned ? " (차례 기다리는 중)" : ""}
+                  {t.assignment.returned
+                    ? " — 작업 완료"
+                    : steps[t.assignment.id]
+                      ? ` — ${steps[t.assignment.id]}…`
+                      : " — 끝나면 여기 붙어요"}
+                </p>
+                {!t.assignment.returned && steps[t.assignment.id] && (
+                  <p className="mt-1 flex items-center gap-2" aria-live="polite">
+                    <span className="rk-progress" aria-hidden="true"><span /></span>
+                    <span>
+                      {startedAt[t.assignment.id]
+                        ? `${Math.max(0, Math.round((Date.now() - new Date(startedAt[t.assignment.id]).getTime()) / 60_000))}분째`
+                        : "돌아가는 중"}
+                    </span>
+                  </p>
+                )}
+              </div>
             )}
             {t.images && t.images.length > 0 && (
               <div className="mt-2 flex flex-wrap gap-2">
