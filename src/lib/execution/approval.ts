@@ -40,6 +40,28 @@ export async function conversationOfAssignment(db: Supabase, assignmentId: strin
   return (data?.conversation_id as string | undefined) ?? null;
 }
 
+/**
+ * 계획을 대화에 보이되 **멈추지 않는다** (176회차 09-18, 사장님 "승인을 어느 정도 자동화하고 빼도 된다").
+ * 만드는 값이 $0.01·30초(luna)가 된 뒤로는 '시작' 을 기다리는 값(어제는 다섯 시간)이 틀린 판을 하나 더 만드는 값보다 크다.
+ * 그래서 웹 판은 바로 만들고 카드는 알림으로만 띄운다. 만드는 중에 "이것도" 라고 하면 그 뒤에 고치는 일이 선다(169회차).
+ */
+export async function showPlan(db: Supabase, args: { assignmentId: string; who: string; card: ApprovalCard }): Promise<void> {
+  const conversationId = await conversationOfAssignment(db, args.assignmentId);
+  if (!conversationId) return;
+  const content =
+    `**${args.who} · 이렇게 만들고 있어요**\n\n` +
+    `**${args.card.title}**\n` +
+    args.card.lines.map((l) => `- ${l}`).join("\n") +
+    `\n\n${args.card.estimate}\n\n` +
+    `고칠 게 있으면 그냥 말씀하세요 — 만드는 중이어도 그다음에 바로 고쳐요.`;
+  await db.from("conversation_messages").insert({
+    conversation_id: conversationId,
+    role: "assistant",
+    content,
+    attachments: { assignment: { id: args.assignmentId, title: args.card.title, queued: true } },
+  });
+}
+
 /** 계획을 대화에 보이고 멈춘다. 실행은 WaitingForApproval 을 던져 엔진이 상태를 적는다. */
 export async function askApproval(
   db: Supabase,

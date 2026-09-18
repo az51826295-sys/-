@@ -435,7 +435,20 @@ export const appBuildSkill: EmployeeSkill = {
       // 165회차: 작은 고침은 묻지 않는다 — 고쳐 달라는 말이 이미 지시다(`small` 설명 참고). 큰 일은 그대로 묻는다.
       const smallFix = !!previous && previous.files.length > 0 && spec.small === true;
       if (smallFix) console.log("[계획] 작은 고침 — 계획 확인을 건너뛰고 바로 고친다");
-      if (!ri.approved && !ri.autoRetry && !smallFix) {
+      // 176회차 09-18, 사장님: "승인을 어느 정도 자동화하고 빼도 된다." 웹 판은 만드는 값이 $0.01·30초라 기다리는 값이 더 크다 —
+      // 카드는 알림으로만 띄우고 바로 만든다. 유니티 판(몇 분·사장님 PC 에서 열어야 함)만 여전히 '시작' 을 묻는다. `APPROVAL_GATE=always` 로 되돌린다.
+      const gate = process.env.APPROVAL_GATE ?? "unity";
+      const needsGate = gate === "always" || (gate === "unity" && spec.target === "unity");
+      if (!ri.approved && !ri.autoRetry && !smallFix && !needsGate) {
+        console.log("[계획] 웹 판 — '시작' 을 기다리지 않고 바로 만든다(카드는 알림)");
+        const fmt = (e: { measure: string; min: number | null; max: number | null; equals: boolean | null; why: string }) => {
+          const range = typeof e.equals === "boolean" ? (e.equals ? "예" : "아니오") : `${e.min ?? ""}~${e.max ?? ""}`;
+          return `${e.why} — ${e.measure} ${range}`;
+        };
+        const { showPlan } = await import("@/lib/execution/approval");
+        await showPlan(ctx.supabase, { assignmentId: ctx.execution.assignment_id, who: "Dev", card: { title: spec.title, lines: [...spec.expectations.map(fmt), `확인할 것 ${spec.criteria.length}가지` + (spec.humanGate?.length ? ` · 직접 보실 것 ${spec.humanGate.length}가지` : "")], estimate: "약 $0.01 · 30초~1분" } });
+      }
+      if (!ri.approved && !ri.autoRetry && !smallFix && needsGate) {
         const fmt = (e: { measure: string; min: number | null; max: number | null; equals: boolean | null; why: string }) => {
           const range = typeof e.equals === "boolean" ? (e.equals ? "예" : "아니오") : `${e.min ?? ""}~${e.max ?? ""}`;
           return `${e.why} — ${e.measure} ${range}`;
@@ -448,7 +461,7 @@ export const appBuildSkill: EmployeeSkill = {
           assignmentId: ctx.execution.assignment_id,
           executionId: ctx.executionId,
           who: "Dev",
-          card: { title: spec.title, lines, estimate: "약 $0.2 · 5분" + (spec.target === "unity" ? " (그 뒤 유니티에서 확인 2~3분)" : "") },
+          card: { title: spec.title, lines, estimate: "약 $0.2 · 5분 (그 뒤 유니티에서 확인 2~3분)" },
           round: ri.approvalRound ?? 0,
         });
       }
@@ -537,7 +550,8 @@ export const appBuildSkill: EmployeeSkill = {
       }
     }
 
-    async function buildWhole() { return (await (await buildSeat(ctx)).generateStructuredOutput({
+    // 유니티 판(C#·씬 빌더)에서의 luna 는 아직 안 재 봤다 — 웹 판만 새 자리로, 유니티는 하던 자리로.
+    async function buildWhole() { return (await (unity ? ctx.providers.ai : await buildSeat(ctx)).generateStructuredOutput({
       systemInstructions: WHOLE_BUILD_SYSTEM + (unity ? (await unityRules()) + (await renderGamedevLessons("unity_code")) : ""),
       input: wholeBuildInput(spec, deviceNote, previous),
       schema: build,
