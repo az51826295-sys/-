@@ -681,7 +681,9 @@ export const appBuildSkill: EmployeeSkill = {
       `코드 문법만 확인했어요(${verify.parsed}개 확인, ${verify.broken}개 문제${verify.unchecked ? `, ${verify.unchecked}개는 확인 못 함` : ""})` +
       (repaired ? " · 한 번 고쳤어요" : "") +
       (loop?.rounds.length
-        ? `. 브라우저에서 실제로 ${loop.rounds.length}번 돌려 보고 고쳤어요(제일 잘 된 ${loop.bestRound}번째 판이에요).`
+        ? (loop.rounds.reduce((n, r) => n + r.edits, 0)
+          ? `. 브라우저에서 실제로 ${loop.rounds.length}번 돌려 보고 ${loop.rounds.reduce((n, r) => n + r.edits, 0)}군데 고쳤어요(제일 잘 된 ${loop.bestRound}번째 판이에요).`
+          : `. 브라우저에서 실제로 ${loop.rounds.length}번 돌려 보고 확인했어요 — 고칠 게 안 나왔어요.`)
         : ". 서버에서 실제로 실행해 보지는 않아요 — 위 '확인한 것' 목록을 보고 직접 열어서 해 보세요.");
 
     const content = {
