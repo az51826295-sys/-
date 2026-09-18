@@ -68,6 +68,37 @@ type Turn = {
   images?: { dataUrl: string; prompt: string }[] | null;
 };
 
+/**
+ * 173회차: **지금 말하는 기기**를 브라우저가 스스로 알려 주는 대로 모은다(지어내지 않는다 — 없는 값은 null).
+ * 사장님이 아이패드에서 "내가 무슨 기종인지 알 수 있어?" → 로키 "못 봐" → "첫번째 실패". 손이 없어도 이건 안다.
+ * 게임을 어느 방식으로 만들지에 필요한 건 모델명이 아니라 화면·터치·포인터 락·GPU 다.
+ */
+function deviceFacts() {
+  try {
+    const n = navigator as Navigator & { deviceMemory?: number; standalone?: boolean };
+    let gpu: string | null = null;
+    try {
+      const c = document.createElement("canvas");
+      const gl = (c.getContext("webgl") ?? c.getContext("experimental-webgl")) as WebGLRenderingContext | null;
+      const ext = gl?.getExtension("WEBGL_debug_renderer_info");
+      if (gl && ext) gpu = String(gl.getParameter(ext.UNMASKED_RENDERER_WEBGL)).slice(0, 200);
+    } catch { /* 안 알려 주면 null */ }
+    return {
+      ua: navigator.userAgent.slice(0, 400),
+      platform: n.platform ? String(n.platform).slice(0, 80) : null,
+      touchPoints: Math.max(0, Math.min(40, n.maxTouchPoints ?? 0)),
+      screen: { w: Math.round(screen.width), h: Math.round(screen.height), dpr: Math.round((window.devicePixelRatio || 1) * 100) / 100 },
+      viewport: { w: Math.round(window.innerWidth), h: Math.round(window.innerHeight) },
+      cores: n.hardwareConcurrency ?? null,
+      memoryGB: typeof n.deviceMemory === "number" ? n.deviceMemory : null,
+      gpu,
+      pointerLock: "pointerLockElement" in document && typeof (document.body as HTMLElement & { requestPointerLock?: unknown }).requestPointerLock === "function",
+      standalone: n.standalone === true || window.matchMedia?.("(display-mode: standalone)")?.matches === true,
+      lang: navigator.language?.slice(0, 20) ?? null,
+    };
+  } catch { return null; }
+}
+
 export default function AskClient({
   initial,
   task,
@@ -257,6 +288,7 @@ export default function AskClient({
           conversationId,
           taskId: task?.id ?? null,
           images: attached.map((a) => a.b64),
+          device: deviceFacts(),
         }),
       });
 

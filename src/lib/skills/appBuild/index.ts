@@ -278,6 +278,15 @@ export const appBuildSkill: EmployeeSkill = {
     // 판이다. 지난 파일과 유니티 시험에서 떨어진 줄이 같이 간다. 처음부터 다시
     // 쓰게 두면 지난 판에서 통과한 것까지 새로 깨진다(09-05 저녁).
     const previous = await loadPrevious(ctx);
+    // 173회차: **사장님이 쓰는 기기.** 아이패드에서 시킨 FPS 에 마우스 시점(포인터 락)을 넣었다 — 그 기기에선 안 돈다.
+    // 브라우저가 알려 준 기기 사실(`hand/device.ts`)을 계획·만들기 프롬프트에 댄다. 없으면 빈 줄(지어내지 않는다).
+    let deviceNote = "";
+    try {
+      const { loadDevices, deviceLine } = await import("@/lib/hand/device");
+      const devs = (await loadDevices(ctx.supabase, ctx.execution.company_id)).slice(0, 3);
+      if (devs.length) deviceNote = "\n\n## 사장님이 로키를 쓰는 기기(최근, 브라우저가 알려 준 것)\n" + devs.map((d) => `- ${deviceLine(d)} (${d.at.slice(0, 10)})`).join("\n") +
+        "\n웹(HTML) 판이면 **첫 줄의 기기에서 그대로 돌아야 한다**: 터치 기기면 방향키·마우스 대신 터치 조작(가상 패드·드래그·탭)을 기본으로, 포인터 락이 안 되면 마우스 시점 회전을 쓰지 않는다. 컴퓨터면 키보드·마우스.";
+    } catch { /* 못 읽으면 없는 대로 */ }
 
     // ── 1. 기준을 먼저 쓴다 ─────────────────────────────────────────
     await setStep(ctx.supabase, ctx.executionId, "planning");
@@ -306,6 +315,7 @@ export const appBuildSkill: EmployeeSkill = {
         // 설계 단계가 읽는 것은 범위·반응 쪽(blueprint). 코드 쪽 규칙은 짓는 단계에서.
         (await renderGamedevLessons("blueprint")),
       input:
+        deviceNote + "\n\n" +
         `업무: ${ctx.context.assignment.title}\n` +
         `설명: ${ctx.context.assignment.description ?? ""}\n` +
         `기대 결과: ${ctx.context.assignment.expectedOutcome ?? ""}` +
@@ -427,7 +437,7 @@ export const appBuildSkill: EmployeeSkill = {
         const rest = previous.files.filter((f) => !full.includes(f));
         const p = await buildPatch(await fixSeat(ctx), {
           title: spec.title,
-          ask: askText + extra,
+          ask: askText + deviceNote + extra,
           criteria: spec.criteria,
           failedChecks: previous.failedChecks,
           full: full.length ? full : previous.files,
@@ -496,7 +506,7 @@ export const appBuildSkill: EmployeeSkill = {
         "확인할 때 알게 되고, 그때는 산출물 전체를 못 믿게 된다." +
         (unity ? (await unityRules()) + (await renderGamedevLessons("unity_code")) : ""),
       input:
-        `무엇: ${spec.title}\n\n기준:\n` +
+        `무엇: ${spec.title}${deviceNote}\n\n기준:\n` +
         spec.criteria
           .map((c) => `- [${c.id}] ${c.when} → ${c.then}`)
           .join("\n") +

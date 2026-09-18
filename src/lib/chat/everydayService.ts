@@ -49,6 +49,8 @@ export type EverydayInput = {
   taskId?: string | null;
   /** 이번 턴에 올린 사진. base64(데이터 URL 접두사 없이). */
   images?: string[];
+  /** 173회차: 브라우저가 스스로 알려 준 기기 사실. 프롬프트에 한 줄로 실리고, 회사의 기기 기록에 적힌다. */
+  device?: Record<string, unknown>;
   /**
    * 지금 무엇을 하는 중인지 알린다.
    *
@@ -288,6 +290,17 @@ export async function runEverydayTurn(
   // 사진은 로그인한 사람만 올릴 수 있다. 비전 호출은 글보다 비싸고, 익명 하루
   // 상한이 사진 몇 장에 다 쓰이면 그날 나머지 사람이 대화를 못 한다.
   const seen = user ? (input.images ?? []).slice(0, 4) : [];
+  // 173회차: 지금 말하는 기기. 사장님이 아이패드에서 "내가 무슨 기종인지 알 수 있어?" 라고 물었을 때 로키는 "못 봐" 라고 했다 —
+  // 브라우저가 알려 주는 것을 안 읽고 있었을 뿐이다. 값을 검사해서(지어낸 모양은 버린다) 적어 두고, 아래 프롬프트에 한 줄 싣는다.
+  let deviceNote = "";
+  if (input.device) {
+    try {
+      const { deviceFactsSchema, deviceLine, saveDevice } = await import("@/lib/hand/device");
+      const d = deviceFactsSchema.parse(input.device);
+      deviceNote = `## 지금 말하는 기기 (브라우저가 알려 준 것 — 모델명은 안 알려 준다)\n${deviceLine(d)}\n사람이 기종·성능을 물으면 이 줄을 근거로 답한다. 모델명은 모른다고 말하고, 화면·터치·GPU 로 답한다.\n\n`;
+      if (user && companyId) void saveDevice(supabase, companyId, d);
+    } catch { /* 모양이 안 맞으면 없는 것으로 */ }
+  }
   // 163회차 같이 보기: 손이 20초 안에 보낸 사장님 화면이 있으면 **그 한 장을 같이 본다.** 사장님이 올린 사진 뒤에 붙인다.
   // 사장님 "로키가 같이 보는 거 해줄 수 있어?" — 이게 그것이다. 화면이 없으면 아무것도 안 붙는다(옛 화면을 지금인 척하지 않는다).
   let liveScreen: { host: string; ageMs: number } | null = null;
@@ -342,7 +355,7 @@ export async function runEverydayTurn(
   // "제 쪽에 없습니다" 라고 단언했다(사장님이 쓰다가 잡음). 대화 글만 보면 맞춰 볼 대상이 없다.
   const work = await workStateText(supabase, companyId, input.conversationId ?? null, input.messages[input.messages.length - 1]?.content ?? "");
   const liveNote = liveScreen ? `## 사장님의 지금 화면 (마지막 그림, ${liveScreen.host}, ${Math.round(liveScreen.ageMs / 1000)}초 전)\n로키 손이 방금 찍어 보낸 사장님 노트북 화면이다. 사장님이 화면에 대해 물으면 **이 그림을 보고** 답한다. 보이는 것만 말한다.\n\n` : "";
-  const withWork = liveNote + (work.hasAny ? `${work.text}\n\n## 대화\n${transcript}` : transcript);
+  const withWork = deviceNote + liveNote + (work.hasAny ? `${work.text}\n\n## 대화\n${transcript}` : transcript);
 
   const firstPassCall = () => providers.ai.generateStructuredOutput({
     systemInstructions: intakeInstructions({ hasImages: seen.length > 0, speaker }),

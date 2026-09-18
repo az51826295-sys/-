@@ -31,6 +31,7 @@ export async function POST(request: Request) {
   const conversationId = (body as { conversationId?: unknown })?.conversationId;
   const images = (body as { images?: unknown })?.images;
   const taskId = (body as { taskId?: unknown })?.taskId;
+  const device = (body as { device?: unknown })?.device; // 173회차: 브라우저가 알려 준 기기 사실(없으면 undefined)
 
   const encoder = new TextEncoder();
   const stream = new ReadableStream<Uint8Array>({
@@ -60,6 +61,7 @@ export async function POST(request: Request) {
             ? (images.filter((v) => typeof v === "string") as string[])
             : undefined,
           onStatus: (text) => send({ type: "status", text }),
+          device: device && typeof device === "object" ? (device as Record<string, unknown>) : undefined,
         });
 
         if (!result.ok) {
