@@ -24,6 +24,16 @@ export async function weeklyLines(db: Supabase, days = 7): Promise<{ lines: stri
     for (const x of m?.report?.missingInUse ?? []) missing.add(x);
     for (const t of m?.trials ?? []) trials.push(t);
   }
+  // 지난 날들의 기록이 헛경보였을 수 있다(별칭) — 마지막 스냅샷에 같은 가족이 남아 있으면 없어진 게 아니다.
+  try {
+    const { family } = await import("@/lib/providers/modelWatch");
+    const last = [...(runs ?? [])].reverse().map((r) => (r.result as { models?: { snapshot?: { models?: { id: string }[] } } } | null)?.models?.snapshot?.models).find((x) => Array.isArray(x));
+    if (last) {
+      const fams = new Set(last.map((m) => family(m.id)));
+      for (const id of [...gone.keys()]) if (fams.has(family(id))) gone.delete(id);
+      for (const id of [...missing]) if (fams.has(family(id))) missing.delete(id);
+    }
+  } catch { /* 감시 모듈이 없으면 그대로 */ }
   const lines: string[] = [];
   lines.push(fresh.size ? `이번 주 새로 나온 AI ${fresh.size}개: ${[...fresh.keys()].slice(0, 8).join(", ")}${fresh.size > 8 ? " …" : ""}` : "이번 주 새로 나온 AI: 없음");
   if (gone.size || missing.size) lines.push(`없어진 것: ${[...gone.keys(), ...missing].slice(0, 6).join(", ")}${missing.size ? " (우리가 쓰는 것 포함 — 확인 필요)" : ""}`);
