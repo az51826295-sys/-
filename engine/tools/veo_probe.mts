@@ -10,7 +10,7 @@ import { spawnSync } from "node:child_process";
 const file = `${process.env.LOCALAPPDATA}/rookery-dot/gemini.json`;
 if (!process.env.GEMINI_API_KEY && existsSync(file)) process.env.GEMINI_API_KEY = (JSON.parse(readFileSync(file, "utf8")) as { apiKey?: string }).apiKey ?? "";
 const key = process.env.GEMINI_API_KEY ?? "";
-if (!/^AIza[0-9A-Za-z_-]{20,}$/.test(key)) { console.error(`열쇠가 없거나 모양이 이상하다. ${file} 에 { "apiKey": "AIza..." } 로 넣어 주세요.`); process.exit(2); }
+if (!/^(AIza[0-9A-Za-z_-]{20,}|AQ.[0-9A-Za-z_-]{20,})$/.test(key)) { console.error(`열쇠가 없거나 모양이 이상하다. ${file} 에 { "apiKey": "AIza..." } 로 넣어 주세요.`); process.exit(2); }
 console.log("열쇠: 있음 (모양 맞음)");
 if (process.argv.includes("--push")) {
   const r = spawnSync("railway", ["variables", "--service", "rookery-worker", "--skip-deploys", "--set", `"GEMINI_API_KEY=${key}"`], { shell: process.platform === "win32", stdio: ["ignore", "ignore", "ignore"] });

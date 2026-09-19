@@ -50,7 +50,8 @@ export async function makeVeoClip(opts: {
     method: "POST", headers, signal: opts.signal,
     body: JSON.stringify({
       instances: [{ prompt: opts.prompt }],
-      parameters: { aspectRatio: opts.aspect ?? "16:9", durationSeconds: String(seconds), resolution: "720p", numberOfVideos: 1, generateAudio: opts.audio === true },
+      // lite 는 generateAudio 를 받지 않는다(넣으면 400). 소리를 켤 때만 보낸다.
+      parameters: { aspectRatio: opts.aspect ?? "16:9", durationSeconds: seconds, resolution: "720p", ...(opts.audio ? { generateAudio: true } : {}) },
     }),
   });
   if (!start.ok) throw new Error(`영상 주문 거절(${start.status}): ${(await start.text()).slice(0, 300)}`);
