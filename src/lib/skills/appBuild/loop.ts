@@ -205,10 +205,14 @@ export async function improveLoop(o: {
 }
 
 /** 주문에서 바퀴 수를 읽는다. "고퀄·꼼꼼히·제대로" 면 많이, 아니면 기본. 환경변수가 이긴다. */
-export function roundsFor(order: string): number {
+export function roundsFor(order: string, effort?: string | null): number {
   const env = Number(process.env.BUILD_LOOP_ROUNDS ?? "");
   if (Number.isFinite(env) && env >= 0 && process.env.BUILD_LOOP_ROUNDS !== undefined) return env;
-  return isThorough(order) ? 8 : 3;
+  // 187회차: 머리가 정한 effort 가 먼저. 주문에 '고퀄' 이 있으면 꼼꼼히 쪽으로만 올린다(내리진 않는다).
+  if (isThorough(order)) return 8;
+  if (effort === "가볍게") return 1;
+  if (effort === "꼼꼼히") return 8;
+  return 3;
 }
 /** "고퀄·꼼꼼히·제대로" — 시간을 더 써도 되는 주문. */
 export function isThorough(order: string): boolean { return /고퀄|꼼꼼|제대로|완성도|정성/.test(order); }

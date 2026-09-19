@@ -29,6 +29,8 @@ export const decisionSchema = z.object({
   materials: z.string().describe("진짜 재료가 필요한가(영상 모델로 찍는 화면, 실제 화면 녹화, 자료 원문…). 글자만으로 되는 일이면 '글자면 된다'."),
   showToPerson: z.string().describe("**사장님이 일 시작 전에 보는 한 줄.** 무엇을 어떻게 만들지, 왜 그렇게 정했는지. **모델 이름(gpt·deepseek·sora 같은 것)과 내부 id 는 절대 쓰지 마라** — 사장님은 그걸 모른다. 틀렸으면 사장님이 여기 대고 말한다."),
   estimate: z.string().describe("값과 시간의 감. 예: '약 $1.5 · 6분'. 장부의 판당 값을 근거로. 모르면 '모르겠다'."),
+  /** 187회차 09-19 사장님 "루프를 몇 번 할지 판별하는 AI가 없어서 그런가?" — 이제 머리가 정한다. */
+  effort: z.enum(["가볍게", "보통", "꼼꼼히"]).describe("만든 뒤 **돌려 보고 고치기를 몇 바퀴 돌 것인가**. 가볍게=1바퀴(간단한 게임·작은 고침·글자 하나 바꾸기), 보통=3바퀴, 꼼꼼히=8바퀴(주문에 '고퀄·꼼꼼히·완성도' 가 있거나 규칙이 많은 게임). 시간은 바퀴당 30~50초다 — 간단한 일에 바퀴를 쓰면 사람이 기다린다."),
   why: z.string().describe("이 결정의 근거 두어 줄 — 잰 값을 대라."),
   risk: z.string().describe("틀린다면 어디서. 모르면 '모르겠다'."),
 });
@@ -43,6 +45,7 @@ const SYS = [
   "- 광고·홍보처럼 보여 줘야 하는 일은 글자만으로 안 된다(어제 광고 세 판이 글자 카드라 쓰레기였다). 차분한 설명·자료 정리는 글자면 된다.",
   "- 주문에 숫자(초·장·개)가 있으면 그 숫자다. 네가 편한 값으로 옮기지 마라.",
   "- `showToPerson` 은 사장님이 읽는다. 짧고, 무엇을·어떻게·왜. 내부 이름(모델 id·직원 id)을 쓰지 마라.",
+  "- `effort` 는 시간이다. 간단한 게임·작은 고침은 '가볍게'(1바퀴, 만들기 2분 안). 주문이 '고퀄·꼼꼼히' 라고 하면 '꼼꼼히'. 모르면 '보통'.",
   "- 막는 자리가 아니다. 안 된다고 끝내지 말고 되게 하려면 뭐가 필요한지 말해라.",
 ].join("\n");
 
@@ -113,7 +116,7 @@ export async function decide(ai: AIProvider, input: { order: string; kind: strin
   } catch (e) {
     const why = `머리가 정하지 못했다(${e instanceof Error ? e.message.slice(0, 80) : e}) — 하던 대로 간다`;
     return {
-      title: "", kind: input.kind, place: "", machine: "기계 무관", setup: "없음", size: "", materials: "", showToPerson: "", estimate: "모르겠다", why, risk: "",
+      title: "", kind: input.kind, place: "", machine: "기계 무관", setup: "없음", size: "", materials: "", showToPerson: "", estimate: "모르겠다", effort: "보통", why, risk: "",
       placement: safePlace(null, { needsEyes: input.needsEyes }), decidedBy: "none", at,
     };
   }

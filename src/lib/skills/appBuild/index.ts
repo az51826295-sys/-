@@ -684,7 +684,16 @@ ${ctx.context.assignment.description ?? ""}`)}번까지 돌려 보고 고쳐요)
     // 헤드리스 브라우저의 빈 창에서 실제로 돌려 보고(run.ts), 심판자가 확인 목록에 대 보고, 조각으로 고치기를 예산 안에서 반복한다(loop.ts).
     // 제일 좋은 판을 내보낸다. 바퀴 수는 주문("고퀄")과 `BUILD_LOOP_ROUNDS`, 돈 상한은 `BUILD_LOOP_USD`(기본 $0.5). `BUILD_LOOP=0` 이면 안 돈다.
     let loop: LoopResult | null = null;
-    if (!unity && process.env.BUILD_LOOP !== "0" && roundsFor(askText) > 0) {
+    // 187회차: 바퀴 수는 머리(decision.effort)가 정한다 — 사장님 "루프를 몇 번 할지 판별하는 AI가 없어서 그런가?"
+    const effortOfHead = await (async () => {
+      try {
+        const { data } = await ctx.supabase.from("work_executions").select("effort:metrics_json->decision->>effort").eq("id", ctx.executionId).maybeSingle();
+        return (data as { effort?: string | null } | null)?.effort ?? null;
+      } catch { return null; }
+    })();
+    const loopRounds = roundsFor(askText, effortOfHead);
+    if (effortOfHead) console.log(`[머리] 바퀴: ${effortOfHead} → ${loopRounds}바퀴`);
+    if (!unity && process.env.BUILD_LOOP !== "0" && loopRounds > 0) {
       await setStep(ctx.supabase, ctx.executionId, "looping");
       const mobile = /태블릿|폰/.test(deviceNote.split(String.fromCharCode(10))[3] ?? "");
       const startFiles = files;
@@ -692,7 +701,7 @@ ${ctx.context.assignment.description ?? ""}`)}번까지 돌려 보고 고쳐요)
         const r = await improveLoop({
           db: ctx.supabase, executionId: ctx.executionId, judgeAi: await loopJudgeSeat(ctx), fixAi: await fixSeat(ctx),
           title: spec.title, ask: askText, criteria: spec.criteria, files: startFiles, mobile,
-          rounds: roundsFor(askText), usdCap: Number(process.env.BUILD_LOOP_USD ?? "0.5") || 0.5, thorough: isThorough(askText),
+          rounds: loopRounds, usdCap: Number(process.env.BUILD_LOOP_USD ?? "0.5") || 0.5, thorough: isThorough(askText) || effortOfHead === "꼼꼼히",
           onRound: async (rec, total) => {
             // 화면의 "N바퀴째 · 확인 목록 x/y". 단계 저장과 같은 칸(metrics_json)에 읽고-합쳐-쓴다.
             const { data: cur } = await ctx.supabase.from("work_executions").select("metrics_json").eq("id", ctx.executionId).maybeSingle();
