@@ -107,6 +107,21 @@ export async function seatProvider(model: string): Promise<AIProvider | null> {
   } catch { return null; }
 }
 
+/**
+ * 사장님이 읽는 "왜 이 AI인가" 한 줄 (184회차, 2단계 1번). **모델 이름을 쓰지 않는다** — 사장님은 그걸 모르고(머리 규칙), 이름이 새면 판단이 아니라 광고가 된다.
+ * 말하는 것은 근거뿐: 몇 판 봤고, 얼마나 통과했고, 값이 얼마였는지.
+ */
+export function whyForPerson(pick: SeatPick): string {
+  const me = pick.records.find((r) => r.model === pick.model);
+  const others = pick.records.filter((r) => r.model !== pick.model);
+  if (!me) return pick.why.includes("박아") ? "고치는 자리는 지정된 곳 하나로 갑니다." : "고치는 자리를 정하는 성적표가 아직 없어 기본 자리로 갑니다.";
+  const passed = me.judged + me.loopSeen ? `지난 ${me.n}판 중 검토 통과 ${me.ok}/${me.judged}, 돌려 본 확인 통과 ${me.loopClean}/${me.loopSeen}` : `지난 ${me.n}판`;
+  if (me.n < MIN_N) return `고치는 자리 후보 ${pick.records.length}곳을 번갈아 보내며 성적표를 채우는 중이에요(이 자리는 ${me.n}판째, ${MIN_N}판까지). 값은 판당 약 $${me.usd.toFixed(3)}.`;
+  if (pick.explored) return `이번엔 성적 비교를 위해 다른 자리에도 보내 봤어요(10판 중 3판꼴). 이 자리는 ${passed}, 판당 약 $${me.usd.toFixed(3)}.`;
+  const vs = others.length ? ` 다른 자리(${others.map((o) => `${Math.round(o.score * 100)}%·$${o.usd.toFixed(3)}`).join(", ")})보다 나았어요.` : "";
+  return `${passed}로 성적 ${Math.round(me.score * 100)}%, 판당 약 $${me.usd.toFixed(3)} — 후보 중 제일 좋았던 자리예요.${vs}`;
+}
+
 export function recordLine(r: SeatRecord): string {
   return `${r.model}: ${r.n}판 · 부탁 심판 통과 ${r.ok}/${r.judged} · 고리 깨끗 ${r.loopClean}/${r.loopSeen} · 판당 $${r.usd.toFixed(3)} · 성적 ${Math.round(r.score * 100)}%`;
 }

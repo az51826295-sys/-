@@ -34,7 +34,7 @@ for (const seat of seats) {
     const broken = { ...html, contents: b.plant(html.contents) };
     const t0 = Date.now();
     let usd = 0;
-    const metered = { ...ai, async generateStructuredOutput(a: Parameters<typeof ai.generateStructuredOutput>[0]) { const r = await ai.generateStructuredOutput(a); usd += costOf({ backend: r.model, inputTokens: r.inputTokens, outputTokens: r.outputTokens, cachedInputTokens: r.cachedInputTokens }); return r; } };
+    const metered = { ...ai, async generateStructuredOutput<T>(a: Parameters<typeof ai.generateStructuredOutput<T>>[0]) { const r = await ai.generateStructuredOutput(a); usd += costOf({ backend: r.model, inputTokens: r.inputTokens, outputTokens: r.outputTokens, cachedInputTokens: r.cachedInputTokens }); return r; } };
     let line: string;
     try {
       const p = await buildPatch(metered, { title: d.title as string, ask: b.ask, criteria: c.criteria, failedChecks: [], full: [broken], rest: [] });

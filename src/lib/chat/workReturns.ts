@@ -332,7 +332,7 @@ async function stepOf(db: Supabase, assignmentId: string, status: string, awaiti
   return { step: STEP_LABEL[raw] ?? raw, plan: withHead(planCardOf(row?.steps), row?.decision) };
 }
 
-type HeadDecision = { title?: string; kind?: string; showToPerson?: string; estimate?: string; machine?: string; setup?: string; size?: string; materials?: string };
+type HeadDecision = { title?: string; kind?: string; showToPerson?: string; estimate?: string; machine?: string; setup?: string; size?: string; materials?: string; /** 184회차: 왜 이 AI인가(모델 이름 없이). */ whyAi?: string };
 
 /**
  * **머리가 정한 것을 카드 맨 위에** (161회차). 사장님: "판단자 ai 만들자" · "기계가 아닌 AI 여야 돼".
@@ -340,11 +340,13 @@ type HeadDecision = { title?: string; kind?: string; showToPerson?: string; esti
  * 카드가 없던 일(영상·조사)도 머리의 말만으로 카드가 생긴다.
  */
 function withHead(card: PlanCard | undefined, d: HeadDecision | null | undefined): PlanCard | undefined {
-  if (!d?.showToPerson) return card;
+  // 184회차: 머리 한 줄이 없어도 "왜 이 AI인가" 는 보인다(고치는 판은 머리가 안 돌 때가 있다).
+  if (!d?.showToPerson) return d?.whyAi && card ? { ...card, lines: [`AI 고른 이유: ${d.whyAi}`, ...card.lines].slice(0, 6) } : card;
   const head = `머리: ${d.showToPerson}`;
   const tail = [d.machine && d.machine !== "기계 무관" ? `기계 ${d.machine}${d.setup && d.setup !== "없음" ? ` (먼저 ${d.setup})` : ""}` : "", d.size ? `크기 ${d.size}` : "", d.materials ? `재료 ${d.materials}` : ""].filter(Boolean).join(" · ");
-  if (card) return { ...card, lines: [head, ...(tail ? [tail] : []), ...card.lines].slice(0, 6), estimate: d.estimate && d.estimate !== "모르겠다" ? d.estimate : card.estimate };
-  return { title: d.title || "일", kind: d.kind || "일", lines: [head, ...(tail ? [tail] : [])], estimate: d.estimate && d.estimate !== "모르겠다" ? d.estimate : "모르겠다" };
+  const why = d.whyAi ? [`AI 고른 이유: ${d.whyAi}`] : [];
+  if (card) return { ...card, lines: [head, ...(tail ? [tail] : []), ...why, ...card.lines].slice(0, 7), estimate: d.estimate && d.estimate !== "모르겠다" ? d.estimate : card.estimate };
+  return { title: d.title || "일", kind: d.kind || "일", lines: [head, ...(tail ? [tail] : []), ...why], estimate: d.estimate && d.estimate !== "모르겠다" ? d.estimate : "모르겠다" };
 }
 
 /** 저장된 단계에서 계획 카드를 만든다. Dev 는 plan(제목·기준), Vox 는 brief(대상·초안/고화질·필수 조건). */

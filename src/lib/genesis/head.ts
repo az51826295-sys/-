@@ -52,6 +52,13 @@ export async function headFacts(db: Supabase, companyId: string): Promise<string
   parts.push("### 모델 자리 (장부에서 센 것)");
   parts.push(await placeFacts(db, companyId));
   parts.push(Object.entries(PLACES).map(([id, v]) => `- ${id}: 출력 100만 토큰 $${v.out}${v.sees ? " · 그림을 본다" : " · 그림을 못 본다"} · ${v.note}`).join("\n"));
+  // 184회차 09-19 (2단계 1번): 섞어 보내기 성적표 — 같은 심판이 같은 종류의 일(조각 고침)을 본 기록. 회사 전체, 최근 30일.
+  try {
+    const { seatRecords, fixCandidates, recordLine } = await import("@/lib/skills/appBuild/seats");
+    const rec = await seatRecords(db, fixCandidates());
+    parts.push("### 고치는 자리 성적표 (섞어 보내기 — 같은 심판이 본 것, 30일)");
+    parts.push(rec.length ? rec.map((r) => `- ${recordLine(r)}`).join(String.fromCharCode(10)) : "- (아직 없다)");
+  } catch { /* 성적표를 못 읽으면 없는 대로 */ }
 
   parts.push("### 일은 어디서 도나 (사실)");
   parts.push([

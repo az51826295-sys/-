@@ -26,8 +26,17 @@ const fixPicks = new WeakMap<SkillRunContext, { model: string; why: string; prov
 async function pickedFixSeat(ctx: SkillRunContext) {
   const had = fixPicks.get(ctx);
   if (had) return had;
-  const { pickFixSeat, seatProvider, recordLine } = await import("@/lib/skills/appBuild/seats");
+  const { pickFixSeat, seatProvider, recordLine, whyForPerson } = await import("@/lib/skills/appBuild/seats");
   const pick = await pickFixSeat(ctx.supabase);
+  // 184회차 (2단계 1번): "왜 이 AI인가" 를 사람 말로 계획 카드에 — 머리의 결정 칸(metrics_json.decision.whyAi)에 얹는다. 모델 이름은 없다.
+  try {
+    const whyAi = whyForPerson(pick);
+    const { data: cur } = await ctx.supabase.from("work_executions").select("metrics_json").eq("id", ctx.executionId).maybeSingle();
+    const m = ((cur?.metrics_json as Record<string, unknown> | null) ?? {});
+    const decision = { ...((m.decision as Record<string, unknown> | null) ?? {}), whyAi };
+    await ctx.supabase.from("work_executions").update({ metrics_json: { ...m, decision } }).eq("id", ctx.executionId);
+    console.log(`[자리] 사장님 줄: ${whyAi}`);
+  } catch { /* 못 적어도 일은 간다 */ }
   let provider: import("@/lib/providers/types").AIProvider | null = null;
   if (ctx.providers.ai.name !== "mock" && pick.model !== "router") {
     const raw = await seatProvider(pick.model);
@@ -454,6 +463,9 @@ export const appBuildSkill: EmployeeSkill = {
       const kept = previous.expectations.filter((e) => !named.has(e.measure)) as typeof spec.expectations;
       spec.expectations = [...spec.expectations, ...kept];
     }
+
+    // 184회차: 고치는 판이면 여기서 자리를 미리 고른다 — 계획 카드(오른쪽 칸)에 "왜 이 AI인가" 가 실리게.
+    if (previous && previous.files.length > 0) { try { await pickedFixSeat(ctx); } catch { /* 자리는 고칠 때 다시 고른다 */ } }
 
     // ── 되묻기(35회차): 코드를 쓰기 전에 계획을 보이고 멈춘다 ──
     // 사장님이 '시작' 하면 approved 가 붙어 다시 돌고(계획은 저장된 값), 고칠 말을 하면 계획을 다시 쓴다.
