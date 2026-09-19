@@ -85,6 +85,9 @@ for (let i = 0; i < fixes; i++) {
     const n = (await db.from("deliverables").select("id", { count: "exact", head: true }).eq("company_id", companyId)).count ?? 0;
     if (n > before) break;
   }
+  // 184회차: 오른쪽 계획 카드에 "AI 고른 이유" 가 실렸나 — 실행의 decision.whyAi
+  const { data: exq } = await db.from("work_executions").select("metrics_json").eq("assignment_id", f.assignment.id).order("created_at", { ascending: false }).limit(1).maybeSingle();
+  console.log(`${hm()} 카드 줄: ${((exq?.metrics_json as { decision?: { whyAi?: string } } | null)?.decision?.whyAi) ?? "(없음)"}`);
   const { data: dd } = await db.from("deliverables").select("content_json").eq("assignment_id", f.assignment.id).maybeSingle();
   const cj = dd?.content_json as { seats?: { fix?: string; fixWhy?: string }; patched?: { changedLines: number; totalLines: number }; askJudge?: { verdict?: string }; loop?: { rounds: { met: number; unmet: number }[] } } | null;
   console.log(`${hm()} 고치기 ${i + 1}: 자리 ${cj?.seats?.fix ?? "?"} (${cj?.seats?.fixWhy ?? "?"}) · 바뀐 줄 ${cj?.patched ? `${cj.patched.changedLines}/${cj.patched.totalLines}` : "통째"} · 부탁 심판 ${cj?.askJudge?.verdict ?? "?"} · 고리 ${cj?.loop ? cj.loop.rounds.map((r) => `${r.met}/${r.met + r.unmet}`).join("→") : "-"} · ${Math.round((Date.now() - t1) / 1000)}초`);
