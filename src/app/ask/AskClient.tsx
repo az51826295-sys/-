@@ -354,6 +354,7 @@ export default function AskClient({
               sources?: Source[] | null;
               searched?: string[] | null;
               images?: { dataUrl: string; prompt: string }[] | null;
+              files?: Turn["files"];
               turnsLeft?: number;
               conversationId?: string;
             };
@@ -369,6 +370,7 @@ export default function AskClient({
                 sources: data.sources,
                 searched: data.searched,
                 images: data.images,
+                files: data.files ?? null,
               },
             ]);
             if (typeof data.turnsLeft === "number") setTurnsLeft(data.turnsLeft);

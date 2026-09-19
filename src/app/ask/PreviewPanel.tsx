@@ -18,6 +18,8 @@ type Panel = {
     n: number; deliverableId: string; title: string; kind: string; ruler: string; who: string | null; at: string;
     verdict: string | null; checks: { name: string; result: string; message: string }[]; checkedAt: string | null;
     photos: { title: string; href: string }[]; files: { name: string; href: string }[];
+    /** 185회차: 브라우저에서 바로 여는 문(웹 게임). 없으면 null. */
+    play: string | null;
     /** 심판자가 처음 보는 사람처럼 한 말(150회차). 점수도 통과/실패도 없다 — 읽고 사장님이 정한다. */
     judge: { firstGlance: string; wouldStop: string; awkward: string; soulless: string; oneChange: string } | null;
     /** 이 업무의 첫 판정. 없으면 아직 안 봤다는 뜻 — 단추가 뜬다. */
@@ -126,6 +128,9 @@ export default function PreviewPanel({
   const setOpen = onOpenChange;
   const [busy, setBusy] = useState<string | null>(null);
   const [showPassed, setShowPassed] = useState(false);
+  // 185회차 사장님: "v7 눌러도 아무 반응이 없는데" — 버전 단추는 **그 버전을 보여 주는** 것이고, 복원은 따로 누른다.
+  const [viewing, setViewing] = useState<string | null>(null);
+  const [playKey, setPlayKey] = useState(0);
   const shot = useSharedScreen(data?.screen ?? null);
 
   async function revert(deliverableId: string, n: number) {
@@ -136,7 +141,7 @@ export default function PreviewPanel({
       const r = await fetch(`/api/conversations/${conversationId}/revert`, {
         method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ deliverableId }),
       });
-      if (r.ok) { setData(await load()); onReverted?.(); }
+      if (r.ok) { setData(await load()); setViewing(null); onReverted?.(); }
     } finally { setBusy(null); }
   }
 
@@ -338,22 +343,50 @@ export default function PreviewPanel({
             </div>
           </section>
         )}
+        {cur && (cur.play || viewing) && (() => {
+          // 185회차: 게임을 여기서 바로 한다. 보는 판(viewing)이 있으면 그 판, 아니면 현재 판.
+          const id = viewing ?? cur.deliverableId;
+          const src = `/api/deliverables/${id}/play/`;
+          const v = data?.versions.find((x) => x.deliverableId === id);
+          return (
+            <section className="border-b border-[var(--rk-200)] px-3.5 py-2.5">
+              <div className="mb-1.5 flex items-center gap-2 text-[11px] text-[var(--rk-600)]">
+                <span className="mr-auto">{viewing && viewing !== cur.deliverableId ? `v${v?.n ?? "?"} 보는 중 · 현재는 v${cur.n}` : "바로 해 보기 — 창 안을 한 번 누르면 키가 먹어요"}</span>
+                {viewing && viewing !== cur.deliverableId && (
+                  <button type="button" disabled={busy !== null} onClick={() => void revert(id, v?.n ?? 0)} className="border border-[#E0703A] px-1.5 py-0.5 text-[#E0703A]">이 버전으로 복원</button>
+                )}
+                <button type="button" onClick={() => setPlayKey((k) => k + 1)} className="border border-[var(--rk-200)] px-1.5 py-0.5 hover:border-[var(--rk-ink)]">다시 시작</button>
+                <a href={src} target="_blank" rel="noopener" className="border border-[var(--rk-200)] px-1.5 py-0.5 hover:border-[var(--rk-ink)]">새 창에서 열기</a>
+              </div>
+              <iframe
+                key={`${id}-${playKey}`}
+                src={src}
+                title={`v${v?.n ?? ""} 미리보기`}
+                sandbox="allow-scripts allow-pointer-lock allow-popups allow-forms"
+                className="h-[360px] w-full border-2 border-[var(--rk-ink)] bg-black"
+              />
+            </section>
+          );
+        })()}
         {data && data.versions.length > 0 && (
           <section className="border-b border-[var(--rk-200)] px-3.5 py-2.5">
-            <div className="mb-1.5 text-[11px] text-[var(--rk-600)]">버전 기록 — 누르면 그 버전으로 복원해요</div>
+            <div className="mb-1.5 text-[11px] text-[var(--rk-600)]">버전 기록 — 누르면 그 버전이 위에 보여요. 복원은 위의 단추로.</div>
             <div className="flex flex-wrap gap-1.5">
-              {data.versions.map((v) => (
-                <button
-                  key={v.deliverableId}
-                  type="button"
-                  disabled={v.current || busy !== null}
-                  onClick={() => void revert(v.deliverableId, v.n)}
-                  title={`${v.kind} · ${v.who ?? ""} · ${v.title}`}
-                  className={"border-2 px-2 py-0.5 text-xs " + (v.current ? "border-[#E0703A] text-[var(--rk-ink)]" : "border-[var(--rk-200)] text-[var(--rk-600)] hover:border-[var(--rk-ink)] hover:text-[var(--rk-ink)]")}
-                >
-                  v{v.n} {v.title.slice(0, 14)}{v.title.length > 14 ? "…" : ""}
-                </button>
-              ))}
+              {data.versions.map((v) => {
+                const shown = (viewing ?? cur?.deliverableId) === v.deliverableId;
+                return (
+                  <button
+                    key={v.deliverableId}
+                    type="button"
+                    disabled={busy !== null}
+                    onClick={() => setViewing(v.current ? null : v.deliverableId)}
+                    title={`${v.kind} · ${v.who ?? ""} · ${v.title}${v.current ? " · 현재 판" : ""}`}
+                    className={"border-2 px-2 py-0.5 text-xs " + (shown ? "border-[#E0703A] text-[var(--rk-ink)]" : v.current ? "border-[var(--rk-ink)] text-[var(--rk-ink)]" : "border-[var(--rk-200)] text-[var(--rk-600)] hover:border-[var(--rk-ink)] hover:text-[var(--rk-ink)]")}
+                  >
+                    v{v.n} {v.title.slice(0, 14)}{v.title.length > 14 ? "…" : ""}{v.current ? " ●" : ""}
+                  </button>
+                );
+              })}
             </div>
           </section>
         )}

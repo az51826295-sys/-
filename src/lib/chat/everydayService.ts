@@ -81,6 +81,8 @@ export type EverydayResult =
       /** 이번 턴에 사람을 붙였으면. 아니면 null. */
       hired: { name: string; why: string } | null;
       assignment: { id: string; title: string; queued: boolean } | null;
+      /** 185회차: 답에 붙는 파일(지난 결과물을 다시 내줄 때). */
+      files?: { path: string; contents?: string; href?: string }[] | null;
     }
   | { ok: false; error: string; status: number };
 
@@ -185,6 +187,29 @@ export function isPureQuestion(text: string): boolean {
   // "만들었어?"(지난 일을 묻는 것)는 시키는 게 아니다 — 지난 꼴(었/았)은 뺀다.
   const asksWork = /만들(?!었)|해\s?줘|해줘|고쳐|고치|고칠|바꿔|바꿀|넣어|추가|빼\s?줘|조사|찾아\s?줘|써\s?줘|그려|다시\s?(해|돌)|시작|진행/.test(last);
   return isQuestion && !asksWork;
+}
+
+/** "파일 줘·올려 줘·다운로드" — 지난 결과물의 파일을 달라는 말(185회차). 고치는 말이 섞여 있으면 아니다. */
+export const FILE_WORDS = /(파일|html|압축|zip)\s*(로|을|를|은|는)?\s*(올려|줘|주세요|보내|내놔|다시|다운|받)|다운로드|파일\s*(어디|없)|링크\s*(줘|보내)/i;
+
+/** 이 대화에 마지막으로 돌아온 결과물의 파일(글 파일만). 없으면 null. */
+async function lastReturnedFiles(
+  db: Awaited<ReturnType<typeof createClient>>,
+  conversationId: string,
+): Promise<{ title: string; deliverableId: string; files: { path: string; contents: string }[] } | null> {
+  const { data: rows } = await db
+    .from("conversation_messages")
+    .select("deliverableId:attachments->returned->>deliverableId")
+    .eq("conversation_id", conversationId)
+    .not("attachments->returned", "is", null)
+    .order("created_at", { ascending: false })
+    .limit(20);
+  const id = ((rows ?? []) as unknown as { deliverableId: string | null }[]).map((r) => r.deliverableId).find((x): x is string => typeof x === "string");
+  if (!id) return null;
+  const { data: d } = await db.from("deliverables").select("id, title, files:content_json->files").eq("id", id).maybeSingle();
+  if (!d) return null;
+  const files = ((d.files as { path?: string; contents?: string }[] | null) ?? []).filter((f): f is { path: string; contents: string } => typeof f.path === "string" && typeof f.contents === "string");
+  return { title: d.title as string, deliverableId: d.id as string, files };
 }
 
 /** 재촉·맞장구 한마디 — 새 내용이 없는 말(177회차). 이 말은 도는 일이 있으면 그 일에 대한 것이다. */
@@ -376,6 +401,30 @@ export async function runEverydayTurn(
         assistant: { role: "assistant", content: reply, attachments: { images: [], sources: [], searched: [], assignment } },
       });
       return { ok: true, reply, sources: [], searched: [], images: [], turnsLeft, conversationId, hired: null, assignment };
+    }
+  }
+
+  // ── 185회차: "파일로 올려 줘" 는 판단이 아니라 규칙이다 ──
+  // 09-18 새벽 사장님 "아니 여기 파일로 올려줘" 에 로키가 "v7 파일이요 — 방금 올렸어요" 라고 **말만** 했다(일도, 파일도 없이).
+  // 지난 결과물의 파일이 있으면 그것을 이 답에 그대로 붙인다. 모델을 부르지 않는다.
+  if (user && companyId && input.conversationId) {
+    const said = [...input.messages].reverse().find((m) => m.role === "user")?.content?.trim() ?? "";
+    if (FILE_WORDS.test(said) && !FIX_WORDS.test(said)) {
+      const last = await lastReturnedFiles(supabase, input.conversationId);
+      if (last && last.files.length) {
+        const html = last.files.find((f) => /\.html?$/i.test(f.path));
+        const reply = `파일은 여기예요 — "${last.title}" (${last.files.length}개). ` +
+          (html ? `"${html.path}" 을 열기 로 누르면 브라우저에서 바로 돌아요. 오른쪽 미리보기 안에서도 바로 해 볼 수 있어요.` : `열기 · 저장 으로 받으세요.`);
+        const files = last.files.map((f) => ({ path: f.path, contents: f.contents }));
+        const conversationId = await saveTurn(supabase, user.id, {
+          conversationId: input.conversationId,
+          taskId: input.taskId ?? null,
+          mode: "everyday",
+          user: { role: "user", content: said },
+          assistant: { role: "assistant", content: reply, attachments: { images: [], sources: [], searched: [], assignment: null, files, refile: last.deliverableId } },
+        });
+        return { ok: true, reply, sources: [], searched: [], images: [], turnsLeft, conversationId, hired: null, assignment: null, files };
+      }
     }
   }
 

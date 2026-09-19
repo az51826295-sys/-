@@ -70,6 +70,13 @@ export async function GET(
         .order("created_at", { ascending: true })
     : { data: [] };
   const { photos, rest } = proofOf(cur?.deliverable_type, (files ?? []) as ProofFile[]);
+  // 185회차: 웹 게임(HTML 한 파일)은 미리보기 안에서 바로 돈다 — content_json.files 에 html 이 있으면 play 문을 준다.
+  let play: string | null = null;
+  if (current) {
+    const { data: cj } = await supabase.from("deliverables").select("paths:content_json->files").eq("id", current.deliverableId).maybeSingle();
+    const paths = ((cj?.paths as { path?: string; contents?: string }[] | null) ?? []);
+    if (paths.some((f) => typeof f.path === "string" && /\.html?$/i.test(f.path) && typeof f.contents === "string")) play = `/api/deliverables/${current.deliverableId}/play/`;
+  }
   // 157회차: 딱지를 뗐다 — 통과/실패가 아니라 **맞음/어긋남/못 잼**. 잰 값이지 판정이 아니다(판정은 심판자와 사장님).
   const RESULT: Record<string, string> = { Passed: "맞음", Failed: "어긋남", Inconclusive: "못 잼" };
 
@@ -143,6 +150,7 @@ export async function GET(
             : null,
           photos: photos.map((f) => ({ title: f.title, href: `/api/files/${f.id}` })),
           files: rest.map((f) => ({ name: f.storage_path.split("/").pop() ?? f.title, href: `/api/files/${f.id}` })),
+          play,
           review,
         }
       : null,
