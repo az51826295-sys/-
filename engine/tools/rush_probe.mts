@@ -47,19 +47,45 @@ async function say(text: string): Promise<{ reply: string; assignment: { id: str
 }
 const t0iso = new Date().toISOString();
 const countJobs = async () => (await db.from("assignments").select("id", { count: "exact", head: true }).eq("company_id", companyId).gte("created_at", t0iso)).count ?? 0;
-const a1 = await say("터치로 하는 두더지 잡기 게임 HTML 한 파일로 만들어 줘. 20초 제한, 점수 표시.");
+const a1 = await say(process.env.ORDER ?? "터치로 하는 두더지 잡기 게임 HTML 한 파일로 만들어 줘. 20초 제한, 점수 표시.");
 console.log(`${hm()} 업무:`, a1.assignment?.id?.slice(0, 8) ?? "없음");
 const a2 = await say("시작");
 const a3 = await say("만들어");
 console.log(`${hm()} 업무 수(기대 1):`, await countJobs(), "| 업무 붙음?", !!a2.assignment, !!a3.assignment);
 const t0 = Date.now();
 let finished = false;
-while (Date.now() - t0 < 6 * 60_000) {
+while (Date.now() - t0 < 12 * 60_000) {
   await new Promise((r) => setTimeout(r, 15_000));
   const { data: a } = await db.from("assignments").select("status").eq("id", a1.assignment!.id).single();
   if (["completed", "submitted"].includes(a!.status)) { finished = true; break; }
   if (["failed", "cancelled"].includes(a!.status)) { console.log("업무 실패:", a!.status); break; }
 }
 console.log(`${hm()} 결과 ${finished ? "나옴" : "안 나옴"} · ${Math.round((Date.now() - t0) / 6000) / 10}분 · 업무 수 최종`, await countJobs());
-const { data: ex } = await db.from("work_executions").select("status, current_step").eq("assignment_id", a1.assignment!.id);
-console.log("실행:", JSON.stringify(ex));
+const { data: ex } = await db.from("work_executions").select("status, current_step, metrics_json").eq("assignment_id", a1.assignment!.id);
+console.log("실행:", JSON.stringify(ex?.map((e) => [e.status, e.current_step, (e.metrics_json as any)?.loop])));
+const { data: dl } = await db.from("deliverables").select("content_json, content_markdown").eq("assignment_id", a1.assignment!.id).maybeSingle();
+const cj = dl?.content_json as any;
+console.log("고리:", JSON.stringify(cj?.loop ? { rounds: cj.loop.rounds.map((r: any) => [r.n, r.met, r.unmet, r.errors, r.edits, r.usd]), best: cj.loop.bestRound, by: cj.loop.stoppedBy, usd: cj.loop.usd } : null));
+console.log((dl?.content_markdown as string ?? "").split("## 확인한 것")[0].slice(0, 900));
+
+// --fixes N: 결과가 온 뒤 "고쳐 줘" 를 N 번 보내고 매번 어느 자리가 고쳤는지(seats.fix) 본다(183회차 섞어 보내기).
+const fi = process.argv.indexOf("--fixes");
+const fixes = fi > 0 ? Number(process.argv[fi + 1]) : 0;
+const asks = ["공이 너무 빨라. 속도를 절반으로 줄여 줘.", "패들을 조금 더 넓게 해 줘.", "점수 글자를 더 크게 해 줘."];
+for (let i = 0; i < fixes; i++) {
+  // 결과 턴이 대화에 붙을 때까지(워커가 1분마다 붙인다)
+  for (let w = 0; w < 20; w++) { await new Promise((r) => setTimeout(r, 10_000)); const r = await fetch(`${SITE}/api/conversations/${conversationId}/work?since=1970-01-01`, { headers: { cookie } }); const j = (await r.json()) as { pending: number }; if (j.pending === 0) break; }
+  const before = (await db.from("deliverables").select("id", { count: "exact", head: true }).eq("company_id", companyId)).count ?? 0;
+  const t1 = Date.now();
+  const f = await say(asks[i % asks.length]);
+  console.log(`${hm()} 고치기 ${i + 1} 업무:`, f.assignment?.id?.slice(0, 8) ?? "없음");
+  if (!f.assignment) break;
+  while (Date.now() - t1 < 10 * 60_000) {
+    await new Promise((r) => setTimeout(r, 15_000));
+    const n = (await db.from("deliverables").select("id", { count: "exact", head: true }).eq("company_id", companyId)).count ?? 0;
+    if (n > before) break;
+  }
+  const { data: dd } = await db.from("deliverables").select("content_json").eq("assignment_id", f.assignment.id).maybeSingle();
+  const cj = dd?.content_json as { seats?: { fix?: string; fixWhy?: string }; patched?: { changedLines: number; totalLines: number }; askJudge?: { verdict?: string }; loop?: { rounds: { met: number; unmet: number }[] } } | null;
+  console.log(`${hm()} 고치기 ${i + 1}: 자리 ${cj?.seats?.fix ?? "?"} (${cj?.seats?.fixWhy ?? "?"}) · 바뀐 줄 ${cj?.patched ? `${cj.patched.changedLines}/${cj.patched.totalLines}` : "통째"} · 부탁 심판 ${cj?.askJudge?.verdict ?? "?"} · 고리 ${cj?.loop ? cj.loop.rounds.map((r) => `${r.met}/${r.met + r.unmet}`).join("→") : "-"} · ${Math.round((Date.now() - t1) / 1000)}초`);
+}
