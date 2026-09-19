@@ -43,15 +43,17 @@ export default async function PublicAskPage({
       );
       initial = {
         id: found.conversation.id as string,
+        // 188회차: 대화 하나가 455턴·19.6MB 였다. 화면엔 최근 80턴만 싣고, 오래된 턴의 파일 전문은 링크로 바꾼다(열기·저장은 그대로 된다).
         turns: await Promise.all((
-          found.messages as { role: string; content: string; attachments: unknown }[]
-        ).map(async (m) => {
+          (found.messages as { role: string; content: string; attachments: unknown }[]).slice(-80)
+        ).map(async (m, i, all) => {
           // 그 턴이 일을 시켰으면 같이 싣는다. 화면이 그것을 보고 "끝났나" 를
           // 묻고, 결과 턴(`returned`)이 이미 뒤에 있으면 더 묻지 않는다.
           const att = (m.attachments ?? null) as {
             assignment?: { id: string; title: string; queued: boolean } | null;
-            returned?: { assignmentId: string } | null;
+            returned?: { assignmentId: string; deliverableId?: string } | null;
             files?: { path: string; contents?: string; href?: string }[] | null;
+            refile?: string | null;
             images?: { path?: string; dataUrl?: string; prompt: string }[] | null;
           } | null;
           return {
@@ -62,7 +64,14 @@ export default async function PublicAskPage({
               ? { ...att.assignment, returned: returnedIds.has(att.assignment.id) }
               : null,
             returnedWork: !!att?.returned,
-            files: att?.files ?? null,
+            files: (() => {
+              const fs = att?.files ?? null;
+              if (!fs) return null;
+              const did = att?.returned?.deliverableId ?? att?.refile ?? null;
+              const recent = i >= all.length - 6;
+              if (recent || !did) return fs;
+              return fs.map((f) => (typeof f.contents === "string" ? { path: f.path, href: `/api/deliverables/${did}/play/${encodeURIComponent(f.path)}?dl=1` } : f));
+            })(),
           };
         })),
       };

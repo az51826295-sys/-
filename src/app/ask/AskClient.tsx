@@ -24,6 +24,18 @@ import { ChatMarkdown } from "@/components/ChatMarkdown";
  * 초기화된다 — 그래서 이것은 편의이지 방어가 아니며, 진짜 벽은 서버의 일일
  * 총액이다.
  */
+/** 결과 본문의 "## 파일 N개" 아래 코드 전문을 목록 한 줄로 바꾼다(옛 턴용). */
+function stripFileBodies(md: string): string {
+  const i = md.indexOf("\n## 파일 ");
+  if (i < 0) return md;
+  const head = md.slice(0, i);
+  const rest = md.slice(i);
+  if (!/```/.test(rest)) return md;
+  const names = [...rest.matchAll(/### `([^`]+)`/g)].map((m) => "- `" + m[1] + "`");
+  const tail = rest.split(/\n---\n/).slice(1).join("\n---\n");
+  return head + "\n## 파일 " + names.length + "개\n\n" + names.join("\n") + "\n(아래 열기 · 저장, 또는 오른쪽 미리보기)" + (tail ? "\n\n---\n" + tail : "");
+}
+
 function visitorId(): string {
   const KEY = "rookery.visitor";
   try {
@@ -292,7 +304,8 @@ export default function AskClient({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          messages: history.map((t) => ({ role: t.role, content: t.content })),
+          // 188회차: 대화 전체(455턴·10MB)를 매번 보내고 있었다. 서버는 어차피 턴당 3천 자·전체 6만 자만 읽는다(clipTranscript).
+          messages: history.slice(-30).map((t) => ({ role: t.role, content: t.content.length > 3000 ? t.content.slice(0, 3000) + " …(잘림)" : t.content })),
           visitor: visitorId(),
           conversationId,
           taskId: task?.id ?? null,
@@ -482,7 +495,8 @@ export default function AskClient({
                 (t.returnedWork ? " border-l-8 border-l-[#E0703A]" : "")
               }
             >
-              {t.role === "assistant" ? <ChatMarkdown>{t.content}</ChatMarkdown> : t.content}
+              {/* 188회차: 옛 결과 턴엔 파일 전문이 본문에 실려 있다(새 결과는 목록만). 그리는 쪽에서 "## 파일" 아래를 자른다 — 파일은 아래 열기·저장으로. */}
+              {t.role === "assistant" ? <ChatMarkdown>{t.returnedWork ? stripFileBodies(t.content) : t.content}</ChatMarkdown> : t.content}
             </div>
             {t.role === "assistant" && (
               // 100회차: 구글 플레이 AI 생성 콘텐츠 정책 — 앱을 나가지 않고 AI 결과를 신고할 수 있어야 한다.

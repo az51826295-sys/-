@@ -15,8 +15,9 @@ export const dynamic = "force-dynamic";
  */
 const MIME: Record<string, string> = { html: "text/html", htm: "text/html", js: "text/javascript", mjs: "text/javascript", css: "text/css", json: "application/json", svg: "image/svg+xml", txt: "text/plain", md: "text/markdown" };
 
-export async function GET(_req: Request, { params }: { params: Promise<{ id: string; path?: string[] }> }) {
+export async function GET(req: Request, { params }: { params: Promise<{ id: string; path?: string[] }> }) {
   const { id, path } = await params;
+  const dl = new URL(req.url).searchParams.get("dl") === "1";
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return new NextResponse("로그인이 필요해요.", { status: 401 });
@@ -41,6 +42,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
       "content-security-policy": "sandbox allow-scripts allow-pointer-lock allow-popups allow-forms; frame-ancestors 'self'",
       "cache-control": "private, no-store",
       "x-content-type-options": "nosniff",
+      ...(dl ? { "content-disposition": `attachment; filename*=UTF-8''${encodeURIComponent(file.path.split("/").pop() ?? "file")}` } : {}),
     },
   });
 }

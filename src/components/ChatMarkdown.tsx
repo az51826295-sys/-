@@ -1,3 +1,4 @@
+import { memo } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
@@ -21,7 +22,11 @@ const schema = {
   },
 };
 
-export function ChatMarkdown({ children }: { children: string }) {
+/**
+ * 188회차 09-19 사장님 "프로토타입을 뽑을수록 채팅이 느려진다": 화면이 6초마다 진행 상황을 물으며 상태를 바꾸는데, 그때마다 턴 전부의
+ * 마크다운을 다시 파싱하고 있었다(결과 턴엔 30KB 코드 블록). 글이 같으면 다시 안 그린다.
+ */
+export const ChatMarkdown = memo(function ChatMarkdown({ children }: { children: string }) {
   return (
     <div className="chat-md">
       <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[[rehypeSanitize, schema]]}>
@@ -29,4 +34,4 @@ export function ChatMarkdown({ children }: { children: string }) {
       </ReactMarkdown>
     </div>
   );
-}
+});

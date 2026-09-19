@@ -783,10 +783,10 @@ ${ctx.context.assignment.description ?? ""}`)}번까지 돌려 보고 고쳐요)
       (spec.humanGate.length
         ? `\n\n## 직접 보셔야 하는 것\n\n${spec.humanGate.map((h) => `- ${h}`).join("\n")}`
         : "") +
+      // 188회차 09-19 사장님 "프로토타입을 뽑을수록 채팅이 느려진다": 결과 턴마다 파일 **전문**(30KB+)이 본문에 또 실려
+      // 대화 하나가 19.6MB 까지 갔다(455턴). 파일은 붙임(files)과 미리보기로 열린다 — 본문엔 목록만.
       `\n\n## 파일 ${files.length}개\n\n` +
-      files
-        .map((f) => `### \`${f.path}\`\n\n\`\`\`${f.language}\n${f.contents}\n\`\`\``)
-        .join("\n\n") +
+      files.map((f) => `- \`${f.path}\` (${f.language}, ${f.contents.split("\n").length}줄) — 아래 열기 · 저장, 또는 오른쪽 미리보기`).join("\n") +
       `\n\n---\n\n${note}`;
 
     // 다른 직원들과 같은 문으로 넘긴다. 처음(08-28)에는 표에 없는 열(type·content)
