@@ -39,7 +39,8 @@ const MODELS: Partial<Record<
   judgment: "deepseek-v4-pro",
 };
 
-export function createDeepSeekProvider(): AIProvider {
+/** `judgmentModel` 로 판단 자리의 모델을 바꿔 앉힐 수 있다(183회차 섞어 보내기 — flash 를 고치는 자리에). 나머지 등급은 그대로. */
+export function createDeepSeekProvider(opts: { judgmentModel?: string } = {}): AIProvider {
   const apiKey = process.env.DEEPSEEK_API_KEY;
   if (!apiKey) {
     throw new Error("DEEPSEEK_API_KEY is not set.");
@@ -53,7 +54,7 @@ export function createDeepSeekProvider(): AIProvider {
 
   return {
     name: "deepseek",
-    model: MODELS.conversation as string,
+    model: (opts.judgmentModel ?? MODELS.conversation) as string,
 
     async generateStructuredOutput({
       systemInstructions,
@@ -63,7 +64,7 @@ export function createDeepSeekProvider(): AIProvider {
       maxTokens = 8000,
       tier = "conversation",
     }) {
-      const model = MODELS[tier];
+      const model = tier === "judgment" && opts.judgmentModel ? opts.judgmentModel : MODELS[tier];
       if (!model) {
         // Reached only if the router sends work here that was never meant for
         // it. Named loudly rather than silently downgraded: quietly answering

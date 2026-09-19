@@ -16,7 +16,31 @@ import { factLines } from "@/lib/skills/appBuild/run";
  * luna 는 57초 → 6초, 값은 gpt-5 의 1/8 이다. 문제 하나로 잰 것이라 "같은 실력" 이 아니라 "이 일에선 같았다" 다 — 심판자가 매 판 본다.
  * 처음 만드는 판(buildWhole)은 아직 안 재 봐서 그대로 둔다. 되돌리기: 환경변수 `FIX_SEAT_MODEL=gpt-5`.
  */
-async function fixSeat(ctx: SkillRunContext) { return seat(ctx, process.env.FIX_SEAT_MODEL ?? "gpt-5.6-luna", "고치는"); }
+async function fixSeat(ctx: SkillRunContext) {
+  // 183회차 섞어 보내기: 환경변수가 없으면 후보(luna·deepseek-v4-flash) 중 성적표로 고른다(seats.ts). 한 판 안에서는 한 자리.
+  const picked = await pickedFixSeat(ctx);
+  if (picked.provider) return picked.provider;
+  return seat(ctx, "gpt-5.6-luna", "고치는");
+}
+const fixPicks = new WeakMap<SkillRunContext, { model: string; why: string; provider: import("@/lib/providers/types").AIProvider | null }>();
+async function pickedFixSeat(ctx: SkillRunContext) {
+  const had = fixPicks.get(ctx);
+  if (had) return had;
+  const { pickFixSeat, seatProvider, recordLine } = await import("@/lib/skills/appBuild/seats");
+  const pick = await pickFixSeat(ctx.supabase);
+  let provider: import("@/lib/providers/types").AIProvider | null = null;
+  if (ctx.providers.ai.name !== "mock" && pick.model !== "router") {
+    const raw = await seatProvider(pick.model);
+    if (raw) {
+      const { meterProviders } = await import("@/lib/costs/meter");
+      provider = meterProviders({ ...ctx.providers, ai: raw }, ctx.supabase, { companyId: ctx.execution.company_id, workExecutionId: ctx.executionId, companyEmployeeId: ctx.execution.company_employee_id }).ai;
+    }
+  }
+  console.log(`[자리] 고치는 자리 → ${pick.model} (${pick.why})` + (pick.records.length ? String.fromCharCode(10) + pick.records.map((r) => "  " + recordLine(r)).join(String.fromCharCode(10)) : ""));
+  const out = { model: provider ? pick.model : ctx.providers.ai.model, why: pick.why, provider };
+  fixPicks.set(ctx, out);
+  return out;
+}
 /**
  * **만드는 자리** (174회차 09-18). 같은 계획(데모 회사 벽돌깨기, 기준 10개, 아이패드 기기 줄)을 셋에 시켜 브라우저(태블릿 화면)에서 돌렸다:
  * gpt-5 328초·출력 13,393토큰(≈$0.13)·759줄 / **luna 25초·4,594토큰(≈$0.006)·306줄** / terra 39초·4,230토큰(≈$0.05)·190줄 — 셋 다 콘솔 오류 0, 터치 조작 됨.
@@ -704,6 +728,8 @@ ${ctx.context.assignment.description ?? ""}`)}번까지 돌려 보고 고쳐요)
       patched,
       // 166회차: 부탁 심판자의 판정(고치는 판만). 사장님 판정과 나란히 놓고 맞는지 세려면 남겨야 한다.
       askJudge: judged ? { ...judged, sentBack } : null,
+      // 183회차: 어느 자리가 고쳤는가 — 섞어 보내기의 성적표는 이 칸에서 센다(seats.ts). 처음 판이면 fix 는 null.
+      seats: { fix: previous && previous.files.length > 0 ? (fixPicks.get(ctx)?.model ?? null) : null, fixWhy: fixPicks.get(ctx)?.why ?? null, build: unity ? ctx.providers.ai.model : (process.env.BUILD_SEAT_MODEL ?? "gpt-5.6-luna"), judge: process.env.LOOP_JUDGE_MODEL ?? "gpt-5.6-luna" },
       // 179회차: 돌려 보고 고친 고리의 기록 — 바퀴마다 맞음/안 맞음/고장/오류/돈. 이것으로 "몇 바퀴가 값어치 있나" 를 잰다.
       loop: loop ? { rounds: loop.rounds, bestRound: loop.bestRound, stoppedBy: loop.stoppedBy, usd: loop.usd, verdict: loop.verdict, facts: loop.facts } : null,
       summary: { criteria: spec.criteria.length, met },
