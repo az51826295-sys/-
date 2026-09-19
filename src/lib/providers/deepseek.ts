@@ -40,7 +40,7 @@ const MODELS: Partial<Record<
 };
 
 /** `judgmentModel` 로 판단 자리의 모델을 바꿔 앉힐 수 있다(183회차 섞어 보내기 — flash 를 고치는 자리에). 나머지 등급은 그대로. */
-export function createDeepSeekProvider(opts: { judgmentModel?: string } = {}): AIProvider {
+export function createDeepSeekProvider(opts: { judgmentModel?: string; /** 191회차: 자리로 앉힐 때 생각 모드(reasoning_effort high)를 끈다 — 70KB 파일 조각 고침에 생각 토큰 3만 6천·수 분이 들었다. */ thinking?: boolean } = {}): AIProvider {
   const apiKey = process.env.DEEPSEEK_API_KEY;
   if (!apiKey) {
     throw new Error("DEEPSEEK_API_KEY is not set.");
@@ -82,7 +82,7 @@ export function createDeepSeekProvider(opts: { judgmentModel?: string } = {}): A
       const shape = JSON.stringify(z.toJSONSchema(schema));
       // 생각 모드는 판단 자리(pro)에만. 싼 자리는 빠르게, 코드는 생각하고 쓴다.
       // 생각 토큰도 출력값으로 청구되지만 gpt-5 출력값의 1/2.5 다.
-      const thinking = tier === "judgment";
+      const thinking = tier === "judgment" && opts.thinking !== false;
       const response = await client.chat.completions.create({
         model,
         max_tokens: maxTokens,

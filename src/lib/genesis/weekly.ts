@@ -1,6 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { trialLine, type SeatTrial } from "@/lib/genesis/seatBench";
-import { seatRecords, fixCandidates, recordLine } from "@/lib/skills/appBuild/seats";
+import { seatRecords, fixCandidates, recordLine, headWins } from "@/lib/skills/appBuild/seats";
 
 type Supabase = SupabaseClient;
 
@@ -43,6 +43,8 @@ export async function weeklyLines(db: Supabase, days = 7): Promise<{ lines: stri
     const best = [...rec].sort((a, b) => b.score - a.score || a.usd - b.usd)[0];
     lines.push(`고치는 자리 성적표(${days}일): ${rec.map(recordLine).join(" / ")}` + (best && best.n >= 5 ? ` → 지금 제일 좋은 자리: ${best.model}` : " → 아직 채우는 중(5판까지)"));
   } catch { /* 성적표 없으면 그 줄은 뺀다 */ }
+  // 192회차(2단계 끝 조건): 머리가 고른 쪽이 더 자주 이겼나.
+  try { lines.push((await headWins(db, days)).line); } catch { /* 없으면 뺀다 */ }
   return { lines, fresh: [...fresh.keys()], gone: [...gone.keys()], trials };
 }
 

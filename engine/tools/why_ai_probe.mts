@@ -5,10 +5,10 @@ const db = createServiceClient();
 const rec = await seatRecords(db, fixCandidates());
 const fat = rec.map((r, i) => ({ ...r, n: 8, judged: 8, ok: 7 - i, loopSeen: 8, loopClean: 8 - i, usd: 0.005 + i * 0.002, score: (7 - i) / 8 }));
 const cases = [
-  ["채우는 중", whyForPerson({ model: rec[0].model, why: "기록", records: rec, explored: true })],
-  ["탐색", whyForPerson({ model: fat[1].model, why: "섞어", records: fat, explored: true })],
-  ["최고", whyForPerson({ model: fat[0].model, why: "성적", records: fat, explored: false })],
-  ["박아 둠", whyForPerson({ model: "gpt-5.6-luna", why: "FIX_SEAT_MODEL 로 박아 둔 자리", records: [], explored: false })],
+  ["채우는 중", whyForPerson({ model: rec[0].model, why: "기록", records: rec, explored: true, mode: "fill" as const })],
+  ["탐색", whyForPerson({ model: fat[1].model, why: "섞어", records: fat, explored: true, mode: "explore" as const })],
+  ["최고", whyForPerson({ model: fat[0].model, why: "성적", records: fat, explored: false, mode: "best" as const })],
+  ["박아 둠", whyForPerson({ model: "gpt-5.6-luna", why: "FIX_SEAT_MODEL 로 박아 둔 자리", records: [], explored: false, mode: "fixed" as const })],
   ["실제 지금", whyForPerson(await pickFixSeat(db))],
 ] as const;
 const leak = /gpt|deepseek|luna|flash|claude|gemini|openai|v4/i;

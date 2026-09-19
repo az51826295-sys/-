@@ -22,7 +22,7 @@ async function fixSeat(ctx: SkillRunContext) {
   if (picked.provider) return picked.provider;
   return seat(ctx, "gpt-5.6-luna", "고치는");
 }
-const fixPicks = new WeakMap<SkillRunContext, { model: string; why: string; provider: import("@/lib/providers/types").AIProvider | null }>();
+const fixPicks = new WeakMap<SkillRunContext, { model: string; why: string; mode: string; provider: import("@/lib/providers/types").AIProvider | null }>();
 async function pickedFixSeat(ctx: SkillRunContext) {
   const had = fixPicks.get(ctx);
   if (had) return had;
@@ -46,7 +46,7 @@ async function pickedFixSeat(ctx: SkillRunContext) {
     }
   }
   console.log(`[자리] 고치는 자리 → ${pick.model} (${pick.why})` + (pick.records.length ? String.fromCharCode(10) + pick.records.map((r) => "  " + recordLine(r)).join(String.fromCharCode(10)) : ""));
-  const out = { model: provider ? pick.model : ctx.providers.ai.model, why: pick.why, provider };
+  const out = { model: provider ? pick.model : ctx.providers.ai.model, why: pick.why, mode: pick.mode, provider };
   fixPicks.set(ctx, out);
   return out;
 }
@@ -548,6 +548,7 @@ ${ctx.context.assignment.description ?? ""}`)}번까지 돌려 보고 고쳐요)
     /** 조각으로 고쳐 본다. 처음 판이거나 조각이 두 번 안 붙으면 null. `extra` 는 심판자가 되돌리며 준 말. */
     const tryPatch = async (extra: string) => {
       if (previous && previous.files.length > 0) {
+        const tPatch = Date.now();
         const touch = new Set(spec.touch ?? []);
         const full = touch.size === 0 ? previous.files : previous.files.filter((f) => touch.has(f.path));
         const rest = previous.files.filter((f) => !full.includes(f));
@@ -564,13 +565,13 @@ ${ctx.context.assignment.description ?? ""}`)}번까지 돌려 보고 고쳐요)
           const before = new Map(previous.files.map((f) => [f.path, f.contents]));
           const changed = p.files.filter((f) => before.get(f.path) !== f.contents);
           console.log(`[app_build] 조각 고침: 조각 ${p.patch.edits.length}개 · 바뀐 줄 ${p.changedLines}/${p.totalLines} · 새 파일 ${p.patch.newFiles.length}개 · 물은 횟수 ${p.asked}`);
-          return { files: changed, keep: null, howToRun: p.patch.howToRun, coverage: p.patch.coverage, patched: { edits: p.patch.edits.map((e) => ({ path: e.path, why: e.why })), changedLines: p.changedLines, totalLines: p.totalLines, asked: p.asked } };
+          return { files: changed, keep: null, howToRun: p.patch.howToRun, coverage: p.patch.coverage, patched: { edits: p.patch.edits.map((e) => ({ path: e.path, why: e.why })), changedLines: p.changedLines, totalLines: p.totalLines, asked: p.asked, ms: Date.now() - tPatch } };
         }
         console.warn(`[app_build] 조각이 두 번 안 붙었다:`, p.failures.map((f) => `${f.path}:${f.reason}`).join(", "));
       }
       return null;
     };
-    type Made = { files: { path: string; language: string; contents: string }[]; howToRun: string; coverage: { criterionId: string; met: boolean; where: string }[]; patched?: { edits: { path: string; why: string }[]; changedLines: number; totalLines: number; asked: number } };
+    type Made = { files: { path: string; language: string; contents: string }[]; howToRun: string; coverage: { criterionId: string; met: boolean; where: string }[]; patched?: { edits: { path: string; why: string }[]; changedLines: number; totalLines: number; asked: number; /** 191회차: 조각 고침에 걸린 시간. "적은 시간" 도 성적이다. */ ms?: number } };
     let made: Made = await step(ctx.supabase, ctx.executionId, "build", async () => (await tryPatch("")) ?? (await buildWhole()));
 
     // ── 2.5 부탁 심판자(166회차): 시킨 것을, 시킨 만큼 했는가 ─────────────
@@ -770,7 +771,7 @@ ${ctx.context.assignment.description ?? ""}`)}번까지 돌려 보고 고쳐요)
       // 166회차: 부탁 심판자의 판정(고치는 판만). 사장님 판정과 나란히 놓고 맞는지 세려면 남겨야 한다.
       askJudge: judged ? { ...judged, sentBack } : null,
       // 183회차: 어느 자리가 고쳤는가 — 섞어 보내기의 성적표는 이 칸에서 센다(seats.ts). 처음 판이면 fix 는 null.
-      seats: { fix: previous && previous.files.length > 0 ? (fixPicks.get(ctx)?.model ?? null) : null, fixWhy: fixPicks.get(ctx)?.why ?? null, build: unity ? ctx.providers.ai.model : (process.env.BUILD_SEAT_MODEL ?? "gpt-5.6-luna"), judge: process.env.LOOP_JUDGE_MODEL ?? "gpt-5.6-luna" },
+      seats: { fix: previous && previous.files.length > 0 ? (fixPicks.get(ctx)?.model ?? null) : null, fixWhy: fixPicks.get(ctx)?.why ?? null, fixMode: previous && previous.files.length > 0 ? (fixPicks.get(ctx)?.mode ?? null) : null, build: unity ? ctx.providers.ai.model : (process.env.BUILD_SEAT_MODEL ?? "gpt-5.6-luna"), judge: process.env.LOOP_JUDGE_MODEL ?? "gpt-5.6-luna" },
       // 179회차: 돌려 보고 고친 고리의 기록 — 바퀴마다 맞음/안 맞음/고장/오류/돈. 이것으로 "몇 바퀴가 값어치 있나" 를 잰다.
       loop: loop ? { rounds: loop.rounds, bestRound: loop.bestRound, stoppedBy: loop.stoppedBy, usd: loop.usd, verdict: loop.verdict, facts: loop.facts } : null,
       summary: { criteria: spec.criteria.length, met },
