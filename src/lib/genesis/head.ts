@@ -29,6 +29,9 @@ export const decisionSchema = z.object({
   materials: z.string().describe("진짜 재료가 필요한가(영상 모델로 찍는 화면, 실제 화면 녹화, 자료 원문…). 글자만으로 되는 일이면 '글자면 된다'."),
   showToPerson: z.string().describe("**사장님이 일 시작 전에 보는 한 줄.** 무엇을 어떻게 만들지, 왜 그렇게 정했는지. **모델 이름(gpt·deepseek·sora 같은 것)과 내부 id 는 절대 쓰지 마라** — 사장님은 그걸 모른다. 틀렸으면 사장님이 여기 대고 말한다."),
   estimate: z.string().describe("값과 시간의 감. 예: '약 $1.5 · 6분'. 장부의 판당 값을 근거로. 모르면 '모르겠다'."),
+  /** 189회차 09-19 사장님 "유니티로 바로 가는 건 문제가 있어 — 엔진은 여러 개 있고 장단점이 다르잖아". 게임·앱이면 엔진을 머리가 고른다. */
+  engine: z.enum(["web", "unity", "해당 없음"]).describe("게임·앱을 **어디에 짓는가**. web=브라우저(HTML 한 파일: 바로 돌고 어디서나 열림, 2D·간단한 3D, 폰·태블릿 OK, 만들기 2분) / unity=유니티 프로젝트(3D·물리·큰 게임, 사장님 PC 에 유니티가 있어야 열리고 확인도 거기서만, '시작' 을 묻고 5분+) / 해당 없음=영상·문서·조사·3D 자산. 주문이 엔진을 콕 집으면 그것. 아니면 **일의 성질과 기기**로 고른다 — 간단한 2D·터치·'빨리' 는 web, FPS·3D 물리·기존 유니티 프로젝트 이어가기는 unity. 고도·언리얼은 아직 로키가 못 짓는다(설치만 도울 수 있다)."),
+  engineWhy: z.string().describe("사장님이 읽는 한 줄: 왜 이 엔진인가(장단점 근거). 게임·앱이 아니면 빈 문자열. 내부 이름 금지."),
   /** 187회차 09-19 사장님 "루프를 몇 번 할지 판별하는 AI가 없어서 그런가?" — 이제 머리가 정한다. */
   effort: z.enum(["가볍게", "보통", "꼼꼼히"]).describe("만든 뒤 **돌려 보고 고치기를 몇 바퀴 돌 것인가**. 가볍게=1바퀴(간단한 게임·작은 고침·글자 하나 바꾸기), 보통=3바퀴, 꼼꼼히=8바퀴(주문에 '고퀄·꼼꼼히·완성도' 가 있거나 규칙이 많은 게임). 시간은 바퀴당 30~50초다 — 간단한 일에 바퀴를 쓰면 사람이 기다린다."),
   why: z.string().describe("이 결정의 근거 두어 줄 — 잰 값을 대라."),
@@ -63,6 +66,13 @@ export async function headFacts(db: Supabase, companyId: string): Promise<string
     parts.push(rec.length ? rec.map((r) => `- ${recordLine(r)}`).join(String.fromCharCode(10)) : "- (아직 없다)");
   } catch { /* 성적표를 못 읽으면 없는 대로 */ }
 
+  parts.push("### 지을 수 있는 엔진 (사실, 189회차)");
+  parts.push([
+    "- **web(브라우저)**: HTML 한 파일. 서버가 만들고 브라우저에서 실제로 돌려 보고 고친 뒤 올린다(2~3분). 폰·태블릿·PC 어디서나 바로 열린다. 2D·터치·간단한 3D(캔버스/WebGL)에 맞다. '시작' 을 안 묻는다.",
+    "- **unity(유니티)**: C# 스크립트+씬 빌더. 3D·물리·큰 게임에 맞다. 사장님 PC 에 유니티가 있어야 열리고 확인도 거기서만 된다(폰·태블릿에선 못 연다). '시작' 을 묻고 5분+.",
+    "- godot · unreal: 로키 손이 설치는 도울 수 있지만 **아직 짓지 못한다**. 필요하면 그렇게 말하고 web 이나 unity 로 간다.",
+    "- 기존 판을 이어 고치는 일이면 그 판의 엔진을 따른다(엔진을 바꾸면 처음부터 다시 만드는 일이다).",
+  ].join("\n"));
   parts.push("### 일은 어디서 도나 (사실)");
   parts.push([
     "- 만드는 것은 **로키 서버**에서 한다 — ffmpeg·목소리(TTS)·영상 모델(sora-2)·그림 모델이 거기 있다. 아래 기계는 **결과물이 돌아갈 곳**이지 만드는 곳이 아니다.",
@@ -116,7 +126,7 @@ export async function decide(ai: AIProvider, input: { order: string; kind: strin
   } catch (e) {
     const why = `머리가 정하지 못했다(${e instanceof Error ? e.message.slice(0, 80) : e}) — 하던 대로 간다`;
     return {
-      title: "", kind: input.kind, place: "", machine: "기계 무관", setup: "없음", size: "", materials: "", showToPerson: "", estimate: "모르겠다", effort: "보통", why, risk: "",
+      title: "", kind: input.kind, place: "", machine: "기계 무관", setup: "없음", size: "", materials: "", showToPerson: "", estimate: "모르겠다", effort: "보통", engine: "해당 없음", engineWhy: "", why, risk: "",
       placement: safePlace(null, { needsEyes: input.needsEyes }), decidedBy: "none", at,
     };
   }
@@ -127,7 +137,7 @@ export function decisionLines(d: Decision): string[] {
   if (!d.showToPerson) return [`머리: ${d.why}`];
   return [
     `**머리가 정한 것** — ${d.showToPerson}`,
-    `  자리 ${d.placement.place}${d.placement.picked ? "" : "(기본값)"} · 기계 ${d.machine}${d.setup !== "없음" ? ` · 먼저 ${d.setup}` : ""} · 크기 ${d.size} · 재료 ${d.materials} · ${d.estimate}`,
+    `  자리 ${d.placement.place}${d.placement.picked ? "" : "(기본값)"} · 기계 ${d.machine}${d.setup !== "없음" ? ` · 먼저 ${d.setup}` : ""} · 크기 ${d.size} · 재료 ${d.materials} · ${d.estimate}${d.engine && d.engine !== "해당 없음" ? ` · 엔진 ${d.engine}(${d.engineWhy})` : ""}`,
     `  왜: ${d.why}`,
     ...(d.risk && d.risk !== "모르겠다" ? [`  틀린다면: ${d.risk}`] : []),
   ];

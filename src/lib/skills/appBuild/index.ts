@@ -155,9 +155,9 @@ const plan = z.object({
   /** 잴 수 없어서 사람 눈에 남기는 것. 숨기지 않고 적는다. */
   humanGate: z.array(z.string()),
   /**
-   * 어디에 짓는가. 09-05 사장님: "HTML 말고, 엔진에 넣어야지, 유니티로." 게임·3D·
-   * 유니티 이야기면 unity, 웹 도구·페이지면 web. 모르면 unity — 이 회사의 게임은
-   * 유니티 안에서 산다.
+   * 어디에 짓는가. 09-05 엔 "모르면 유니티" 였지만 189회차(09-19) 사장님: "유니티로 바로 가는 건 문제가 있어" —
+   * 이제 **머리(head.ts)가 고른 엔진**이 위에서 덮어쓴다. 여기 값은 주문에 엔진이 드러났을 때의 첫 판단일 뿐이다.
+   * 유니티라고 했으면 unity, HTML·브라우저라고 했으면 web, 아니면 web.
    */
   target: z.enum(["unity", "web"]),
 });
@@ -441,7 +441,24 @@ export const appBuildSkill: EmployeeSkill = {
     // 174회차: **사장님이 폰·태블릿에서 시켰으면 유니티 판을 내지 않는다.** 아이패드에서 "터치로 하는 간단한 게임" 을 시켰더니
     // 유니티 프로젝트(C# 6개)가 나왔고 아이패드에선 열 수도 없었다("아이패드라서 그런가? 안돼"). 주문에 유니티라고 명시했을 때만 예외.
     const firstDeviceLine = deviceNote.split(String.fromCharCode(10))[3] ?? "";
-    if (spec.target === "unity" && /태블릿|폰/.test(firstDeviceLine) && !/유니티|unity/i.test(`${ctx.context.assignment.title} ${ctx.context.assignment.description ?? ""}`)) {
+    const orderText = `${ctx.context.assignment.title} ${ctx.context.assignment.description ?? ""}`;
+    // 189회차 09-19 사장님 "유니티로 바로 가는 건 문제가 있어 — 엔진은 여러 개 있고 장단점이 다르잖아": 엔진은 **머리**가 일의 성질과 기기로 고른다.
+    // 주문이 '유니티'·'HTML' 을 콕 집으면 그것이 이기고, 고치는 판은 지난 판의 엔진을 따른다(엔진을 바꾸면 새로 만드는 일이다).
+    {
+      const said = /유니티|unity/i.test(orderText) ? "unity" : /html|브라우저|웹/i.test(orderText) ? "web" : null;
+      let head: string | null = null;
+      try {
+        const { data } = await ctx.supabase.from("work_executions").select("engine:metrics_json->decision->>engine").eq("id", ctx.executionId).maybeSingle();
+        head = (data as { engine?: string | null } | null)?.engine ?? null;
+      } catch { /* 머리가 없으면 계획대로 */ }
+      const prevEngine = previous && previous.files.length > 0 ? (previous.files.some((f) => /\.cs$/i.test(f.path)) ? "unity" : "web") : null;
+      const pick = said ?? prevEngine ?? (head === "web" || head === "unity" ? head : null);
+      if (pick && pick !== spec.target) {
+        console.log(`[계획] 엔진 ${spec.target} → ${pick} (${said ? "주문이 집음" : prevEngine ? "지난 판의 엔진" : "머리가 고름"})`);
+        spec.target = pick;
+      }
+    }
+    if (spec.target === "unity" && /태블릿|폰/.test(firstDeviceLine) && !/유니티|unity/i.test(orderText)) {
       console.log("[계획] 사장님 기기가 폰·태블릿이라 유니티 판 대신 웹(HTML) 판으로 바꾼다");
       spec.target = "web";
     }

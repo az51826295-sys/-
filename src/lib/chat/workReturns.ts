@@ -332,7 +332,7 @@ async function stepOf(db: Supabase, assignmentId: string, status: string, awaiti
   return { step: STEP_LABEL[raw] ?? raw, plan: withHead(planCardOf(row?.steps), row?.decision) };
 }
 
-type HeadDecision = { title?: string; kind?: string; showToPerson?: string; estimate?: string; machine?: string; setup?: string; size?: string; materials?: string; /** 184회차: 왜 이 AI인가(모델 이름 없이). */ whyAi?: string };
+type HeadDecision = { title?: string; kind?: string; showToPerson?: string; estimate?: string; machine?: string; setup?: string; size?: string; materials?: string; /** 184회차: 왜 이 AI인가(모델 이름 없이). */ whyAi?: string; /** 189회차: 어디에 짓나와 이유. */ engine?: string; engineWhy?: string };
 
 /**
  * **머리가 정한 것을 카드 맨 위에** (161회차). 사장님: "판단자 ai 만들자" · "기계가 아닌 AI 여야 돼".
@@ -345,6 +345,7 @@ function withHead(card: PlanCard | undefined, d: HeadDecision | null | undefined
   const head = `머리: ${d.showToPerson}`;
   const tail = [d.machine && d.machine !== "기계 무관" ? `기계 ${d.machine}${d.setup && d.setup !== "없음" ? ` (먼저 ${d.setup})` : ""}` : "", d.size ? `크기 ${d.size}` : "", d.materials ? `재료 ${d.materials}` : ""].filter(Boolean).join(" · ");
   const why = d.whyAi ? [`AI 고른 이유: ${d.whyAi}`] : [];
+  if (d.engine && d.engine !== "해당 없음") why.unshift(`엔진: ${d.engine === "web" ? "브라우저(HTML)" : "유니티"}${d.engineWhy ? ` — ${d.engineWhy}` : ""}`);
   if (card) return { ...card, lines: [head, ...(tail ? [tail] : []), ...why, ...card.lines].slice(0, 7), estimate: d.estimate && d.estimate !== "모르겠다" ? d.estimate : card.estimate };
   return { title: d.title || "일", kind: d.kind || "일", lines: [head, ...(tail ? [tail] : []), ...why], estimate: d.estimate && d.estimate !== "모르겠다" ? d.estimate : "모르겠다" };
 }
