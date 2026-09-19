@@ -28,7 +28,7 @@ const history: Msg[] = [];
 let conversationId: string | null = null;
 const hm = () => new Date().toLocaleTimeString("ko-KR", { hour12: false });
 
-async function say(text: string): Promise<{ reply: string; assignment: { id: string; title: string } | null }> {
+async function say(text: string): Promise<{ reply: string; assignment: { id: string; title: string } | null; files: unknown[] | null }> {
   history.push({ role: "user", content: text });
   const r = await fetch(`${SITE}/api/chat`, { method: "POST", headers: { "content-type": "application/json", cookie }, body: JSON.stringify({ messages: history, conversationId }) });
   if (!r.ok || !r.body) throw new Error(`/api/chat ${r.status}`);

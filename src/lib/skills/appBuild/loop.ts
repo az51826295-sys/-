@@ -120,6 +120,11 @@ export async function improveLoop(o: {
   usdCap: number;
   /** 바퀴마다 부른다 — 화면의 "N바퀴째 · 확인 목록 x/y" 가 여기서 나온다. */
   onRound?: (r: RoundRecord, total: number) => Promise<void>;
+  /**
+   * 꼼꼼 모드("고퀄"). 186회차 사장님 "시간이 왜 이렇게 많이 걸리지? 억지로 루프 돌고 있나, 간단한 게임인데" — 실측: 고장이 하나도 없는 판을
+   * "못 본 것" 을 보러 두 바퀴 더 돌았고(각 30~47초) 얻은 것은 0~1개였다. 기본 모드는 **고칠 게 없으면 바로 끝**, 꼼꼼 모드만 못 본 것을 더 본다.
+   */
+  thorough?: boolean;
 }): Promise<LoopResult> {
   const rounds: RoundRecord[] = [];
   let files = o.files;
@@ -166,14 +171,16 @@ export async function improveLoop(o: {
       if (a.do === "taps") return { do: "taps", n: Math.min(20, Math.max(1, a.n ?? 8)) };
       if (a.do === "taps_moving") return { do: "taps_moving", n: Math.min(12, Math.max(1, a.n ?? 6)) };
       if (a.do === "key" && a.key) return { do: "key", key: a.key.slice(0, 20), ms: Math.min(1500, a.ms ?? 120) };
-      if (a.do === "wait") return { do: "wait", ms: Math.min(25_000, Math.max(100, a.ms ?? 1000)) };
+      if (a.do === "wait") return { do: "wait", ms: Math.min(o.thorough ? 25_000 : 8_000, Math.max(100, a.ms ?? 1000)) };
       return null;
     }).filter((a): a is RunAction => !!a);
     // 심판자의 대본에 "움직이는 것 누르기" 가 없으면 붙인다 — 두더지·떨어지는 것은 그것으로만 맞는다(두 번째 시험에서 점수 고장을 이것 없이는 못 봤다).
     if (next.length) actions = next.some((a) => a.do === "taps_moving" || a.do === "taps") ? next : [...next, { do: "taps_moving", n: 6 }, { do: "wait", ms: 800 }];
     // 멈춤: 더 고칠 게 없다고 했고 못 본 것도 없으면. 못 본 것만 남았으면 새 대본으로 **한 번 더 보기만** 한다(고치지 않는다).
     const onlyUnknown = verdict.unmet.length === 0 && verdict.broken.length === 0;
-    if (onlyUnknown && (verdict.unknown.length === 0 || !next.length || n === o.rounds)) { stoppedBy = "done"; break; }
+    const prevUnknown = rounds.length >= 2 ? rounds[rounds.length - 2].unknown : Infinity;
+    // 못 본 것만 남았을 때: 기본 모드는 여기서 끝. 꼼꼼 모드는 새 대본이 있고 **지난 바퀴보다 못 본 것이 줄었을 때만** 한 번 더 본다.
+    if (onlyUnknown && (!o.thorough || verdict.unknown.length === 0 || !next.length || n === o.rounds || verdict.unknown.length >= prevUnknown)) { stoppedBy = "done"; break; }
     if (onlyUnknown) { rounds[rounds.length - 1].toPerson += " (못 본 것을 보러 한 번 더 돌려 봄)"; continue; }
     if (n === o.rounds) { stoppedBy = "rounds"; break; }
     if (usdNow - usd0 >= o.usdCap) { stoppedBy = "usd"; console.log(`[고리] 돈 상한 $${o.usdCap} 에 닿아 멈춘다`); break; }
@@ -201,5 +208,7 @@ export async function improveLoop(o: {
 export function roundsFor(order: string): number {
   const env = Number(process.env.BUILD_LOOP_ROUNDS ?? "");
   if (Number.isFinite(env) && env >= 0 && process.env.BUILD_LOOP_ROUNDS !== undefined) return env;
-  return /고퀄|꼼꼼|제대로|완성도|정성/.test(order) ? 8 : 3;
+  return isThorough(order) ? 8 : 3;
 }
+/** "고퀄·꼼꼼히·제대로" — 시간을 더 써도 되는 주문. */
+export function isThorough(order: string): boolean { return /고퀄|꼼꼼|제대로|완성도|정성/.test(order); }

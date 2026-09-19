@@ -7,7 +7,7 @@ import { askApproval } from "@/lib/execution/approval";
 import type { EmployeeSkill, SkillRunContext } from "@/lib/skills/types";
 import { checkFiles, repairBrief, summarise } from "@/lib/skills/appBuild/verify";
 import { buildPatch } from "@/lib/skills/appBuild/patch";
-import { improveLoop, roundsFor, type LoopResult } from "@/lib/skills/appBuild/loop";
+import { improveLoop, roundsFor, isThorough, type LoopResult } from "@/lib/skills/appBuild/loop";
 import { factLines } from "@/lib/skills/appBuild/run";
 
 /**
@@ -363,7 +363,10 @@ export const appBuildSkill: EmployeeSkill = {
     await setStep(ctx.supabase, ctx.executionId, "planning");
 
     // 단계 저장(계획 2 "안 죽는 실행"): 죽었다 다시 돌면 계획·코드를 다시 사지 않는다.
-    const spec = await step(ctx.supabase, ctx.executionId, "plan", async () => (await ctx.providers.ai.generateStructuredOutput({
+    // 186회차: 고치는 판의 계획(제목·기준 이어받기·손댈 파일·작은 고침인가)은 생각 모드 자리(deepseek-v4-pro, 40초쯤)에 앉힐 일이 아니다 —
+    // 고치는 자리(luna, 5초)로. 처음 만드는 판의 계획은 그대로(기준을 처음 쓰는 자리라 판단이 더 든다). 되돌리기: PLAN_SEAT_FIX=router.
+    const planAi = previous && previous.files.length > 0 && (process.env.PLAN_SEAT_FIX ?? "fix") !== "router" ? await fixSeat(ctx) : ctx.providers.ai;
+    const spec = await step(ctx.supabase, ctx.executionId, "plan", async () => (await planAi.generateStructuredOutput({
       systemInstructions:
         "너는 이 회사의 개발자다. **아직 코드를 쓰지 마라.**\n\n" +
         "먼저 이 앱이 무엇을 해야 하는지를 **사람이 직접 확인할 수 있는 문장**으로 " +
@@ -689,7 +692,7 @@ ${ctx.context.assignment.description ?? ""}`)}번까지 돌려 보고 고쳐요)
         const r = await improveLoop({
           db: ctx.supabase, executionId: ctx.executionId, judgeAi: await loopJudgeSeat(ctx), fixAi: await fixSeat(ctx),
           title: spec.title, ask: askText, criteria: spec.criteria, files: startFiles, mobile,
-          rounds: roundsFor(askText), usdCap: Number(process.env.BUILD_LOOP_USD ?? "0.5") || 0.5,
+          rounds: roundsFor(askText), usdCap: Number(process.env.BUILD_LOOP_USD ?? "0.5") || 0.5, thorough: isThorough(askText),
           onRound: async (rec, total) => {
             // 화면의 "N바퀴째 · 확인 목록 x/y". 단계 저장과 같은 칸(metrics_json)에 읽고-합쳐-쓴다.
             const { data: cur } = await ctx.supabase.from("work_executions").select("metrics_json").eq("id", ctx.executionId).maybeSingle();
