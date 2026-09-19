@@ -176,6 +176,11 @@ async function tick() {
 // 100회차 09-14 (사장님 "2,3"): 자가진화 하루 한 번. 한 시간마다 들여다보고, 한국 새벽 4시 이후 그날 첫 번째만 돈다.
 // 하루 한 번은 genesis_runs 표의 unique 가 지킨다(워커가 둘이어도). 규칙 고리는 GENESIS_SPEND=i-approve 없으면 스스로 건너뛴다.
 const DAILY_EVERY = 240;   // 15초 × 240 = 1시간
+// 190회차: 토요일 아침 한 번 "이번 주 AI 보고" 세 줄을 사장님 대화에 붙인다(주 1회는 genesis_runs weekly unique).
+async function weeklyTick() {
+  const { postWeekly } = await import("@/lib/genesis/weekly");
+  await postWeekly(db, (m) => console.log(`${stamp()} [주간] ${m}`));
+}
 async function dailyTick() {
   const kstHour = new Date(Date.now() + 9 * 3600_000).getUTCHours();
   if (kstHour < 4) return;
@@ -209,6 +214,7 @@ for (;;) {
     }
     if (tickN % DAILY_EVERY === 0) {
       try { await dailyTick(); } catch (e) { console.error(`${stamp()} 자가진화 실패`, e instanceof Error ? e.message : e); }
+      try { await weeklyTick(); } catch (e) { console.error(`${stamp()} 주간 보고 실패`, e instanceof Error ? e.message : e); }
     }
   }
   if (tickN % WALLET_EVERY === 0) {

@@ -145,7 +145,14 @@ export async function runDaily(
     const { data: last } = await db.from("genesis_runs").select("result").eq("kind", "daily").not("result->models", "is", null).order("run_date", { ascending: false }).limit(1).maybeSingle();
     const prev = ((last?.result as { models?: { snapshot?: unknown } } | null)?.models?.snapshot ?? null) as Parameters<typeof watchModels>[0];
     const { report, snapshot } = await watchModels(prev);
-    result.models = { report, snapshot };
+    // 190회차(2단계 3번): 새로 생긴 글 모델은 **그날 바로 자리 시험판에 댄다**(모델당 ≈$0.01·30초, 하루 3개까지). 단가 없는 건 "단가 필요" 로 남는다.
+    const trials: import("@/lib/genesis/seatBench").SeatTrial[] = [];
+    try {
+      const { runSeatBench, trialLine } = await import("@/lib/genesis/seatBench");
+      const textish = report.fresh.filter((m) => (m.vendor === "openai" || m.vendor === "deepseek") && !/image|sora|video|gpt-image|chatgpt|chat-latest|-pro$|codex-mini|nano/i.test(m.id)).slice(0, 3);
+      for (const m of textish) { const t = await runSeatBench(m.id); trials.push(t); log(`새 모델 시험: ${trialLine(t)}`); }
+    } catch (e) { log(`새 모델 시험 실패: ${e instanceof Error ? e.message : String(e)}`); }
+    result.models = { report, snapshot, trials };
     log(`AI 목록: ${Object.entries(report.vendors).map(([v, s]) => `${v} ${s.ok ? s.count : "못 읽음"}`).join(" · ")} · 새로 생김 ${report.fresh.length}${report.fresh.length ? `(${report.fresh.slice(0, 5).map((m) => m.id).join(", ")})` : ""} · 부르는데 없는 것 ${report.missingInUse.length}`);
   } catch (e) {
     result.models = { error: e instanceof Error ? e.message : String(e) };
