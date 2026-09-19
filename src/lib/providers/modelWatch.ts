@@ -40,7 +40,8 @@ export async function listVendor(vendor: Vendor, env: Record<string, string | un
 export const isWorkModel = (id: string) => !/embedding|whisper|moderation|tts|transcribe|realtime|audio|^ft:|davinci|babbage|search|instruct|dall-e/i.test(id);
 
 /** 집안: 날짜·판 꼬리를 뗀 이름. gpt-5-2026-03-01 → gpt-5 · claude-sonnet-5-20260601 → claude-sonnet-5 */
-export const family = (id: string) => id.replace(/-\d{4}-\d{2}-\d{2}$/, "").replace(/-\d{8}$/, "").replace(/-(latest|preview)$/, "");
+// 190회차: DeepSeek 은 목록에 `deepseek-flash` 로 적고 우리는 `deepseek-v4-flash` 로 부른다(별칭이 먹는다) — 판 번호를 빼고 같은 것으로 본다. 첫 주간 보고가 "없어진 것: deepseek-v4-flash" 라고 헛경보를 냈다.
+export const family = (id: string) => id.replace(/-\d{4}-\d{2}-\d{2}$/, "").replace(/-\d{8}$/, "").replace(/-(latest|preview)$/, "").replace(/^deepseek-v\d+(\.\d+)?-/, "deepseek-");
 
 export type WatchReport = {
   vendors: Record<Vendor, { ok: boolean; count: number; why?: string }>;
@@ -56,7 +57,8 @@ export function compareWatch(prev: WatchSnapshot | null, now: ModelEntry[], okVe
   const prevModels = (prev?.models ?? []).filter((m) => okVendors.has(m.vendor));
   const prevIds = new Set(prevModels.map((m) => m.id));
   const fresh = prev ? now.filter((m) => !prevIds.has(m.id) && isWorkModel(m.id)) : [];
-  const gone = prevModels.filter((m) => !nowIds.has(m.id) && isWorkModel(m.id));
+  const nowFam = new Set(now.map((m) => family(m.id)));
+  const gone = prevModels.filter((m) => !nowIds.has(m.id) && !nowFam.has(family(m.id)) && isWorkModel(m.id));
   // 날짜 꼬리가 붙은 판만 목록에 있을 수 있어 집안 이름으로도 찾는다.
   const nowFamilies = new Set(now.map((m) => family(m.id)));
   const missingInUse = inUse.filter((u) => okVendors.has(u.vendor) && !nowIds.has(u.id) && !nowFamilies.has(family(u.id))).map((u) => u.id);
@@ -74,7 +76,6 @@ export const IN_USE: { id: string; vendor: Vendor; where: string }[] = [
   { id: "gpt-4o-mini-tts", vendor: "openai", where: "목소리" },
   { id: "deepseek-v4-flash", vendor: "deepseek", where: "대화·읽기" },
   { id: "deepseek-v4-pro", vendor: "deepseek", where: "판단 기본 자리" },
-  { id: "deepseek-chat", vendor: "deepseek", where: "옛 이름" },
   { id: "claude-haiku-4-5", vendor: "anthropic", where: "옆자리" },
   { id: "claude-sonnet-5", vendor: "anthropic", where: "옆자리" },
   { id: "claude-opus-5", vendor: "anthropic", where: "옆자리" },
