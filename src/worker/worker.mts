@@ -70,6 +70,19 @@ async function sweepTick() {
     const r = await releaseEmployee(db, a.company_employee_id as string, a.id as string);
     if (r.released.length) console.log(`${stamp()} [쓸기] 대화에 안 붙은 일을 풀었다: ${String(a.title).slice(0, 28)}${r.started ? ` → 다음 일 시작 ${r.started.slice(0, 8)}` : ""}`);
   }
+  // **업무가 아예 안 붙은 채 묶인 직원** (203회차 09-21). 09-20 밤 대기열 8개를 다 비운 뒤
+  // Dev 가 `working` 인 채 15시간 남아 있었다 — `current_assignment_id` 는 비어 있었다.
+  // 위 쒸기는 **일에서 직원을 찾아가므로** 일이 아예 없는 이 모양을 못 본다.
+  // 그대로 무인 판을 열었으면 1회차처럼 아무것도 안 돌았다.
+  const { data: orphan } = await db.from("company_employees").select("id").neq("work_status", "ready").is("current_assignment_id", null).limit(20);
+  for (const e of orphan ?? []) {
+    // 돌고 있는 실행이 하나라도 있으면 건드리지 않는다(실험을 끄지 않는다).
+    const { count: live } = await db.from("work_executions").select("id", { count: "exact", head: true })
+      .eq("company_employee_id", e.id as string).in("status", ["queued", "running"]);
+    if (live) continue;
+    await db.from("company_employees").update({ work_status: "ready" }).eq("id", e.id as string);
+    console.log(`${stamp()} [쒸기] 업무 없이 묶여 있던 직원을 풀었다: ${String(e.id).slice(0, 8)}`);
+  }
 }
 
 const RETURNS_EVERY = 4;   // 15초 × 4 = 1분
