@@ -135,6 +135,12 @@ async function tick() {
     .eq("status", "queued")
     .order("created_at", { ascending: true })
     .limit(20);
+  // 200회차: 무인 판의 깃발. 바깥 문지기가 멈췄으면 아무것도 집지 않는다 — 로키는 세지 않고 복종만 한다.
+  if (queued?.length) {
+    const { blockedByUnattended } = await import("@/lib/genesis/unattended");
+    const why = await blockedByUnattended(db);
+    if (why) { if (tickN % 20 === 0) console.log(`${stamp()} [무인] 멈춤 깃발 — 일을 안 집는다: ${why}`); return; }
+  }
   for (const q of queued ?? []) {
     if (busy.has(q.company_employee_id as string)) continue;
     // 43회차: 집을 때 **자리를 잡는다**. 프로세스 안의 집합만으로는 워커가 둘이거나 배포 중 옛 워커가

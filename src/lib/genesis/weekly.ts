@@ -81,8 +81,16 @@ export async function postWeekly(db: Supabase, log: (m: string) => void, opts?: 
   const kst = new Date(Date.now() + 9 * 3600_000);
   if (!opts?.force && !(kst.getUTCDay() === 6 && kst.getUTCHours() >= 9 && kst.getUTCHours() < 12)) return false;
   const key = weekKey();
-  const { data: claimed, error } = await db.from("genesis_runs").insert({ kind: "weekly", run_date: key }).select("id").single();
-  if (error || !claimed) { if (!opts?.force) return false; }
+  // 200회차 버그: `genesis_runs.kind` 는 CHECK 로 'daily' 만 허용한다 — `weekly` insert 가 **매번 조용히 실패**했고,
+  // 그래서 자동 주간 보고는 한 번도 붙은 적이 없다(내가 --post 로 강제한 09-20 한 번만 붙었다).
+  // 한 주 한 번은 **이미 쓰고 있는 표시**로 잠근다: 붙인 턴의 `attachments.weekly`. 새 표도 마이그레이션도 필요 없다.
+  const { data: already } = await db
+    .from("conversation_messages")
+    .select("id")
+    .eq("attachments->>weekly", key)
+    .limit(1)
+    .maybeSingle();
+  if (already && !opts?.force) { log(`주간 보고: ${key} 주는 이미 붙었다`); return false; }
   const { lines } = await weeklyLines(db);
   const { data: co } = opts?.companyId
     ? await db.from("companies").select("id, owner_id").eq("id", opts.companyId).maybeSingle()
@@ -93,7 +101,6 @@ export async function postWeekly(db: Supabase, log: (m: string) => void, opts?: 
   const content = `**이번 주 AI 보고** (${key} 주)\n\n${lines.map((l) => `- ${l}`).join("\n")}\n\n갈아타기는 자동으로 하지 않아요 — 시험 성적이 지금 자리보다 좋고 값이 싸면 여기에 "갈아탈까요?" 라고 물을게요.`;
   const { error: e2 } = await db.from("conversation_messages").insert({ conversation_id: conv.id, role: "assistant", content, attachments: { weekly: key } });
   if (e2) { log(`주간 보고 못 붙임: ${e2.message}`); return false; }
-  if (claimed) await db.from("genesis_runs").update({ finished_at: new Date().toISOString(), status: "done", result: { lines } }).eq("id", claimed.id);
   log(`주간 보고 붙임(${key} 주) → 대화 ${String(conv.id).slice(0, 8)}`);
   return true;
 }
