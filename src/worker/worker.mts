@@ -245,6 +245,12 @@ for (;;) {
     if (tickN % RETURNS_EVERY === 0) {
       try { await returnsTick(); } catch (e) { console.error(`${stamp()} 돌려놓기 실패`, e instanceof Error ? e.message : e); }
       try { await sweepTick(); } catch (e) { console.error(`${stamp()} 쓸기 실패`, e instanceof Error ? e.message : e); }
+      // 202회차: 무인 판 결과를 볼 자리에 붙인다. **일의 완료와 무관한 경로다** — attachments.assignment 를 안 써서
+      // 쓸기·결과 붙이기 어느 쪽과도 얽히지 않는다(사장님 조건 2).
+      try {
+        const { postUnattendedFeed } = await import("@/lib/genesis/unattendedFeed");
+        await postUnattendedFeed(db, (m) => console.log(`${stamp()} [무인결과] ${m}`));
+      } catch (e) { console.error(`${stamp()} 무인 결과 붙이기 실패`, e instanceof Error ? e.message : e); }
     }
     if (tickN % DAILY_EVERY === 0) {
       try { await dailyTick(); } catch (e) { console.error(`${stamp()} 자가진화 실패`, e instanceof Error ? e.message : e); }

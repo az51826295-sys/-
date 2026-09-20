@@ -47,7 +47,7 @@ export type UnattendedRun = {
   stopReason?: string;
   stoppedAt?: string;
   /** 문지기가 본 마지막 값들 — 사람이 읽는 자리. */
-  seen?: { at: string; usd: number; usdToday: number; failStreak: number; needHuman: number };
+  seen?: { at: string; usd: number; usdToday: number; failStreak: number; needHuman: number; /** 202회차: **그물이 본 것도 신호에 얹는다** — 그물이 조용히 죽으면 '아무 일도 안 일어남' 과 구별이 안 된다(사장님). */ hasWork?: boolean; stallMin?: number };
   /**
    * **생존 신호** (사장님 09-20). 문지기가 1분마다 남긴다.
    * *"문지기가 창에 매여 있으면 '바깥' 이 아니에요 — 문지기가 죽으면 로키가 제한 없이 돌아요."*

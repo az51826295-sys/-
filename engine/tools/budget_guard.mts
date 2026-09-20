@@ -69,7 +69,8 @@ async function look() {
   const endsAt = new Date(new Date(run.startedAt).getTime() + run.hours * 3600_000);
   const left = Math.max(0, Math.round((endsAt.getTime() - Date.now()) / 60000));
   console.log(`${hm()} 무인 ${run.hours}h · 남은 ${Math.floor(left / 60)}시간 ${left % 60}분 · $${usd.toFixed(3)}/${run.usdCap} (오늘 $${usdToday.toFixed(3)}/${run.usdPerDayCap}) · 같은 실패 연속 ${failStreak}${lastCode ? `(${lastCode})` : ""} · 사장님 볼 것 ${needHuman ?? 0}/${run.humanReviewCap} · ${hasWork ? `할 일 ${(liveEx ?? 0) + (liveAs ?? 0)}개·묶인 직원 ${held ?? 0}명·진행없음 ${stallMin}/${run.stallMinutes ?? 30}분` : "할 일 없음"}${run.stopped ? ` · **멈춤: ${run.stopReason}**` : ""}`);
-  const seen = { at: new Date().toISOString(), usd, usdToday, failStreak, needHuman: needHuman ?? 0 };
+  // 그물이 본 것도 신호에 얹는다 — 그물이 던지면 이 줄까지 못 와서 신호가 낡고, 로키가 5분 뒤 스스로 멈춘다(사장님 09-21).
+  const seen = { at: new Date().toISOString(), usd, usdToday, failStreak, needHuman: needHuman ?? 0, hasWork, stallMin };
   if (run.stopped) return null;
   let reason: string | null = null;
   if (usd >= run.usdCap) reason = `전체 상한 $${run.usdCap} 도달($${usd.toFixed(3)})`;
