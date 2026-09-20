@@ -45,6 +45,15 @@ export async function weeklyLines(db: Supabase, days = 7): Promise<{ lines: stri
   } catch { /* 성적표 없으면 그 줄은 뺀다 */ }
   // 192회차(2단계 끝 조건): 머리가 고른 쪽이 더 자주 이겼나.
   try { lines.push((await headWins(db, days)).line); } catch { /* 없으면 뺀다 */ }
+  // 193회차(제네시스 본령): 기술 나무 — 지금 열릴 준비가 된 칸과 잠긴 예측의 성적.
+  try {
+    const { loadTree, ready, loadLocked, grade } = await import("@/lib/genesis/techTree");
+    const tree = loadTree();
+    const r = ready(tree).filter((x) => !x.missing.length);
+    const g = grade(tree, loadLocked());
+    const tot = g.reduce((a, x) => ({ hit: a.hit + x.hit, miss: a.miss + x.miss, pending: a.pending + x.pending }), { hit: 0, miss: 0, pending: 0 });
+    lines.push(`기술 나무: 열릴 준비가 된 칸 ${r.length}개(${r.map((x) => x.node.name).slice(0, 3).join(", ")}${r.length > 3 ? " …" : ""}) · 잠긴 예측 맞음 ${tot.hit}·틀림 ${tot.miss}·아직 ${tot.pending}`);
+  } catch { /* 나무를 못 읽으면 뺀다 */ }
   return { lines, fresh: [...fresh.keys()], gone: [...gone.keys()], trials };
 }
 
