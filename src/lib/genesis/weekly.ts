@@ -26,7 +26,11 @@ export async function weeklyLines(db: Supabase, days = 7): Promise<{ lines: stri
   }
   // 지난 날들의 기록이 헛경보였을 수 있다(별칭) — 마지막 스냅샷에 같은 가족이 남아 있으면 없어진 게 아니다.
   try {
-    const { family } = await import("@/lib/providers/modelWatch");
+    const { family, IN_USE } = await import("@/lib/providers/modelWatch");
+    // 195회차: "우리가 쓰는 것 포함" 은 **지금** 쓰는 목록으로 다시 본다. 옛 기록엔 이미 뺀 모델(deepseek-chat)이 남아 있어
+    // 첫 보고가 헛경보를 냈다 — 알림의 신뢰를 갉는 종류다.
+    const inUseNow = new Set(IN_USE.map((u) => u.id));
+    for (const id of [...missing]) if (!inUseNow.has(id)) { missing.delete(id); gone.set(id, gone.get(id) ?? "(옛 기록)"); }
     const last = [...(runs ?? [])].reverse().map((r) => (r.result as { models?: { snapshot?: { models?: { id: string }[] } } } | null)?.models?.snapshot?.models).find((x) => Array.isArray(x));
     if (last) {
       const fams = new Set(last.map((m) => family(m.id)));
