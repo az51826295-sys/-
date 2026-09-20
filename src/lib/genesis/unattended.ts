@@ -32,6 +32,13 @@ export type UnattendedRun = {
   /** 사장님이 봐야 할 산출물 상한. 넘으면 스스로 멈추고 기다린다(사장님 제약 2). */
   humanReviewCap: number;
   /**
+   * **진행 없음 감시** (201회차 09-21). 할 일이 있는데 이만큼 아무 진행이 없으면 깃발을 꽂고 판을 끝낸다.
+   * 09-20 판이 5시간 58분 동안 아무 일도 안 하고 '성공' 으로 끝난 구멍을 막는 그물.
+   * 사장님: *"한 자원이 오래 묶여 있거나 일정 시간 아무 진행이 없으면 깃발을 꽂고 판을 끝내는 장치가 있어야 해요."*
+   * **할 일이 없을 때는 안 센다** — 대기열이 빈 것은 고장이 아니다.
+   */
+  stallMinutes: number;
+  /**
    * **72시간 칸(`agent-days`)의 실측인가.** 48시간 이하 판은 **무조건 false** —
    * 나중에 "48시간이면 사실상 열림" 으로 고치면 오늘 막은 사후 기준을 스스로 여는 것이다(사장님 제약 1).
    */
@@ -64,6 +71,7 @@ export function planFor(hours: number, opts?: Partial<UnattendedRun>): Unattende
     usdPerDayCap: 5,
     maxSameFailStreak: 3,
     humanReviewCap: 3,
+    stallMinutes: 30,
     // 72시간 미만은 칸 실측이 아니다 — 여기서 구조로 막는다.
     nodeMeasurement: hours >= 72,
     stopped: false,

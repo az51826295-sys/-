@@ -46,6 +46,21 @@ async function look() {
     else if (lastCode !== ((e.error_code as string) ?? "?")) break;
     failStreak++;
   }
+  // ── 진행 없음 감시 (201회차) ──────────────────────────────────
+  // **할 일이 있는데** 아무 진행이 없으면 막힌 것이다. 할 일이 없으면 조용한 게 정상이라 안 센다.
+  // 진행의 정의: 모델 호출이 있었거나, 실행 행이 움직였거나(시작·끝·심장박동).
+  const { count: liveEx } = await db.from("work_executions").select("id", { count: "exact", head: true }).in("status", ["queued", "running"]);
+  const { count: liveAs } = await db.from("assignments").select("id", { count: "exact", head: true }).in("status", ["waiting", "assigned", "queued", "working"]);
+  // **묶인 자원도 센다** (사장님: "한 자원이 오래 묶여 있거나 ... 아무 진행이 없으면"). 이것 없이는 Vid 의 38시간 같은
+  // 경우 — 할 일은 없는데 직원만 묶여 있는 상태 — 가 영영 안 잡힌다. 자 시험이 이 구멍을 짚었다(201회차).
+  const { count: held } = await db.from("company_employees").select("id", { count: "exact", head: true }).neq("work_status", "ready");
+  const hasWork = (liveEx ?? 0) + (liveAs ?? 0) + (held ?? 0) > 0;
+  const { data: lastU } = await db.from("model_usage").select("created_at").gte("created_at", since).order("created_at", { ascending: false }).limit(1).maybeSingle();
+  const { data: lastE } = await db.from("work_executions").select("updated_at").gte("created_at", since).order("updated_at", { ascending: false }).limit(1).maybeSingle();
+  const marks = [lastU?.created_at, lastE?.updated_at, run.startedAt].filter(Boolean).map((t) => Date.parse(t as string));
+  const lastProgress = Math.max(...marks);
+  const stallMin = Math.round((Date.now() - lastProgress) / 60000);
+
   // 사장님이 봐야 할 산출물 = **기계가 판정 못 한 것**(사장님 09-20: "'검증된 산출물' 은 심판이 기계로 판정한 것만 세야").
   // 내 첫 설계는 askJudge(고치는 판 전용)만 봐서 **처음 만드는 판을 전부 '사람이 봐야 할 것' 으로 셌다** — 상한 3개가 첫 세 판에 차 버린다.
   // 고리 심판(content_json.loop)도 기계 판정이다. 둘 다 없는 것만 사람 몫이다.
@@ -53,7 +68,7 @@ async function look() {
     .gte("created_at", since).is("content_json->>askJudge", null).is("content_json->>loop", null);
   const endsAt = new Date(new Date(run.startedAt).getTime() + run.hours * 3600_000);
   const left = Math.max(0, Math.round((endsAt.getTime() - Date.now()) / 60000));
-  console.log(`${hm()} 무인 ${run.hours}h · 남은 ${Math.floor(left / 60)}시간 ${left % 60}분 · $${usd.toFixed(3)}/${run.usdCap} (오늘 $${usdToday.toFixed(3)}/${run.usdPerDayCap}) · 같은 실패 연속 ${failStreak}${lastCode ? `(${lastCode})` : ""} · 사장님 볼 것 ${needHuman ?? 0}/${run.humanReviewCap}${run.stopped ? ` · **멈춤: ${run.stopReason}**` : ""}`);
+  console.log(`${hm()} 무인 ${run.hours}h · 남은 ${Math.floor(left / 60)}시간 ${left % 60}분 · $${usd.toFixed(3)}/${run.usdCap} (오늘 $${usdToday.toFixed(3)}/${run.usdPerDayCap}) · 같은 실패 연속 ${failStreak}${lastCode ? `(${lastCode})` : ""} · 사장님 볼 것 ${needHuman ?? 0}/${run.humanReviewCap} · ${hasWork ? `할 일 ${(liveEx ?? 0) + (liveAs ?? 0)}개·묶인 직원 ${held ?? 0}명·진행없음 ${stallMin}/${run.stallMinutes ?? 30}분` : "할 일 없음"}${run.stopped ? ` · **멈춤: ${run.stopReason}**` : ""}`);
   const seen = { at: new Date().toISOString(), usd, usdToday, failStreak, needHuman: needHuman ?? 0 };
   if (run.stopped) return null;
   let reason: string | null = null;
@@ -61,6 +76,7 @@ async function look() {
   else if (usdToday >= run.usdPerDayCap) reason = `하루 상한 $${run.usdPerDayCap} 도달($${usdToday.toFixed(3)})`;
   else if (failStreak >= run.maxSameFailStreak) reason = `같은 실패 ${failStreak}번 연속(${lastCode}) — 고장에 돈을 태우고 있다`;
   else if ((needHuman ?? 0) >= run.humanReviewCap) reason = `사장님이 볼 산출물 ${needHuman}개 — 상한 ${run.humanReviewCap}. 더 쌓으면 검토가 일요일 밤을 다 먹는다`;
+  else if (hasWork && stallMin >= (run.stallMinutes ?? 30)) reason = `**진행 없음 ${stallMin}분** — 할 일 ${(liveEx ?? 0) + (liveAs ?? 0)}개·묶인 직원 ${held ?? 0}명 인데 아무것도 안 움직인다(막혔다)`;
   else if (Date.now() > endsAt.getTime()) reason = "계획한 시간이 다 됐다";
   if (reason) { await stopRun(db, id, run, reason); console.log(`  → **멈춤**: ${reason}`); return null; }
   await noteSeen(db, id, run, seen);
