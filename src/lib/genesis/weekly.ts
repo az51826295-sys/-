@@ -45,6 +45,11 @@ export async function weeklyLines(db: Supabase, days = 7): Promise<{ lines: stri
   } catch { /* 성적표 없으면 그 줄은 뺀다 */ }
   // 192회차(2단계 끝 조건): 머리가 고른 쪽이 더 자주 이겼나.
   try { lines.push((await headWins(db, days)).line); } catch { /* 없으면 뺀다 */ }
+  // 195회차 (ㄴ) 트랙의 성적표 — 오경보율.
+  try {
+    const { recentAlerts, falseAlarmLine } = await import("@/lib/genesis/eye");
+    lines.push(falseAlarmLine(await recentAlerts(db, days)));
+  } catch { /* 없으면 뺀다 */ }
   // 193회차(제네시스 본령): 기술 나무 — 지금 열릴 준비가 된 칸과 잠긴 예측의 성적.
   try {
     const { loadTree, ready, loadLocked, grade } = await import("@/lib/genesis/techTree");

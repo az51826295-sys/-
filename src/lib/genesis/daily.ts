@@ -153,6 +153,14 @@ export async function runDaily(
       for (const m of textish) { const t = await runSeatBench(m.id); trials.push(t); log(`새 모델 시험: ${trialLine(t)}`); }
     } catch (e) { log(`새 모델 시험 실패: ${e instanceof Error ? e.message : String(e)}`); }
     result.models = { report, snapshot, trials };
+    // 195회차 (ㄴ) 트랙: 본 것을 **배달한다.** gpt-live-1 은 09-08 에 목록에 떴는데(공표 09-10) 아무도 안 봤다 — 눈이 아니라 알림이 없었다.
+    try {
+      const { buildAlerts, postUrgent } = await import("@/lib/genesis/eye");
+      const alerts = buildAlerts(report);
+      result.eye = alerts;
+      const posted = await postUrgent(db, alerts, log);
+      log(`눈: 알림 ${alerts.length}건(급한 것 ${alerts.filter((a) => a.urgent).length}건, 붙임 ${posted})`);
+    } catch (e) { log(`눈 실패: ${e instanceof Error ? e.message : String(e)}`); }
     log(`AI 목록: ${Object.entries(report.vendors).map(([v, s]) => `${v} ${s.ok ? s.count : "못 읽음"}`).join(" · ")} · 새로 생김 ${report.fresh.length}${report.fresh.length ? `(${report.fresh.slice(0, 5).map((m) => m.id).join(", ")})` : ""} · 부르는데 없는 것 ${report.missingInUse.length}`);
   } catch (e) {
     result.models = { error: e instanceof Error ? e.message : String(e) };

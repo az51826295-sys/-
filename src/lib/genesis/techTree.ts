@@ -32,7 +32,11 @@ export type TechNode = {
   unlocks: string;
   needs: string[];
   state: "open" | "closed";
+  /** **채점 기준 날** — 공개 API 로 지을 수 있게 된 날. 기계가 확인할 수 있어서 이것으로만 채점한다(09-20 확정). */
   openedAt?: string;
+  /** 능력이 세상에 먼저 나온 날(앱·데모). 채점엔 안 쓴다 — '발명 → 지을 수 있음' 시차를 재는 재료. */
+  capableAt?: string;
+  capableNote?: string;
   evidence?: string[];
   confidence: number;
   ourUse?: string;
