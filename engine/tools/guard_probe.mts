@@ -1,6 +1,6 @@
 // 예산 문지기 자 시험 (200회차) — 고장을 심어 잡히는지. 모델 0, 돈 0.
 const { createServiceClient } = await import("../../src/lib/supabase/service");
-const { planFor, startRun, stopRun, activeRun, blockedByUnattended, clearUnattendedQueue } = await import("../../src/lib/genesis/unattended");
+const { planFor, startRun, stopRun, activeRun, blockedByUnattended, clearUnattendedQueue, noteSeen, loadRatio } = await import("../../src/lib/genesis/unattended");
 const db = createServiceClient();
 let bad = 0, seen = 0;
 const check = (n: string, ok: boolean, got?: unknown) => { seen++; if (!ok) bad++; console.log(ok ? "맞음  " : "어긋남", n, ok ? "" : JSON.stringify(got)); };
@@ -112,6 +112,33 @@ check("판이 없으면 평소대로 안 막힌다", (await blockedByUnattended(
   } finally {
     if (made.length) await db.from("assignments").delete().in("id", made);
     await db.from("genesis_runs").delete().eq("kind", "unattended").eq("run_date", day4);
+  }
+}
+
+// ── **부하 하한을 재는 도구가 있는가** (203회차 09-21, 사장님이 잡아낸 구멍).
+// 잠근 조건은 "`seen` 중 hasWork 비율 ≥ 50%" 였는데 `noteSeen` 은 같은 칸을 덤어썼다 —
+// 끝나고 나서 계산할 방법이 없었다. 누적 칸을 넣었으니 진짜로 쌀이는지 본다.
+{
+  const day5 = new Date(Date.now() + 9 * 3600_000).toISOString().slice(0, 10);
+  await db.from("genesis_runs").delete().eq("kind", "unattended").eq("run_date", day5);
+  const op = await startRun(db, planFor(6));
+  try {
+    if (!op.ok) throw new Error(op.why);
+    const mk = (hasWork: boolean, unposted = 0, stallMin = 0) => ({ at: new Date().toISOString(), usd: 0, usdToday: 0, failStreak: 0, needHuman: 0, hasWork, stallMin, unposted });
+    // 10분: 일한 분 6 · 멈췄던 분 4  → 60%
+    for (let i = 0; i < 10; i++) {
+      const cur = (await activeRun(db))!.run;
+      await noteSeen(db, (await activeRun(db))!.id, cur, mk(i < 6, i === 3 ? 2 : 0, i === 7 ? 12 : 0));
+    }
+    const fin = (await activeRun(db))!.run;
+    check("분모가 쌀인다(10분)", fin.tally?.minutes === 10, fin.tally);
+    check("분자가 쌀인다(6분)", fin.tally?.workMinutes === 6, fin.tally);
+    check("**부하 비율이 나온다 60%**", Math.round((loadRatio(fin) ?? 0) * 100) === 60, loadRatio(fin));
+    check("관찰 항목도 최대값으로 남는다", fin.tally?.maxUnposted === 2 && fin.tally?.maxStall === 12, fin.tally);
+    // 분모는 **판 창 6시간이 아니다** — 6시간(360분)이었다면 6/360 = 2% 가 된다
+    check("**분모는 판 창이 아니라 본 분 수**", (loadRatio(fin) ?? 0) > 0.5, { ratio: loadRatio(fin), 잡으면: "창 분모로 재고 있다" });
+  } finally {
+    await db.from("genesis_runs").delete().eq("kind", "unattended").eq("run_date", day5);
   }
 }
 

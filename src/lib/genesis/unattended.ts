@@ -61,6 +61,16 @@ export type UnattendedRun = {
    * 적히면 로키는 평소 운영으로 돌아간다 — 치울 것이 남아 있으면 안 적히고, 창은 닫힌 채로 있다(안전 쪽이 기본).
    */
   closedAt?: string;
+  /**
+   * **누적** (203회차 09-21). 사장님이 잡아낸 구멍: 성공 조건 2번은 *"문지기가 1분마다 남긴 `seen` 중
+   * `hasWork === true` 인 비율 ≥ 50%"* 인데, `noteSeen` 은 **같은 칸을 덤어쓴다.** 기록이 안 쌀이므로
+   * 끝나고 나서 그 비율을 계산할 방법이 없었다 — **잠그긴 했지만 재는 도구가 없는 조건**이었다.
+   * 그래서 분자·분모를 도는 동안 더해 둘다.
+   * - `minutes` — 문지기가 **실제로 본** 분 수(= 분모). 판 창 6시간이 아니라 **멈출 때까지**다.
+   * - `workMinutes` — 그중 `hasWork === true` 였던 분 수(= 분자).
+   * - `maxUnposted`·`maxStall` — 관찰 항목(성공 조건이 아니다).
+   */
+  tally?: { minutes: number; workMinutes: number; maxUnposted: number; maxStall: number; firstAt: string; lastAt: string };
 };
 
 /** 생존 신호가 이만큼 낡으면 로키는 일을 안 집는다. 문지기는 1분마다 남긴다 — 5분이면 확실히 죽은 것. */
@@ -158,5 +168,22 @@ export async function clearUnattendedQueue(db: Supabase): Promise<{ cancelled: n
 
 /** 문지기가 본 것 + **생존 신호**를 적는다(멈추진 않는다). 이걸 못 적으면 5분 뒤 로키가 스스로 멈춘다. */
 export async function noteSeen(db: Supabase, id: string, run: UnattendedRun, seen: NonNullable<UnattendedRun["seen"]>): Promise<void> {
-  await db.from("genesis_runs").update({ result: { ...run, seen, heartbeat: new Date().toISOString() } }).eq("id", id);
+  const now = new Date().toISOString();
+  const t = run.tally;
+  const tally = {
+    minutes: (t?.minutes ?? 0) + 1,
+    workMinutes: (t?.workMinutes ?? 0) + (seen.hasWork ? 1 : 0),
+    maxUnposted: Math.max(t?.maxUnposted ?? 0, (seen as { unposted?: number }).unposted ?? 0),
+    maxStall: Math.max(t?.maxStall ?? 0, seen.stallMin ?? 0),
+    firstAt: t?.firstAt ?? now,
+    lastAt: now,
+  };
+  await db.from("genesis_runs").update({ result: { ...run, seen, tally, heartbeat: now } }).eq("id", id);
+}
+
+/** 부하 비율. 분모는 **문지기가 실제로 본 분 수**다(판 창 6시간이 아니라 멈출 때까지). 분자가 없으면 null. */
+export function loadRatio(run: UnattendedRun): number | null {
+  const t = run.tally;
+  if (!t || t.minutes === 0) return null;
+  return t.workMinutes / t.minutes;
 }

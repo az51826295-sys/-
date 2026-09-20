@@ -19,7 +19,10 @@ if (arg("--open")) {
   if (!(hours > 0)) { console.error("시간을 숫자로"); process.exit(2); }
   const cur = await activeRun(db);
   if (cur && !cur.run.stopped) { console.error(`이미 도는 판이 있다(${cur.run.hours}시간, ${cur.run.startedAt})`); process.exit(1); }
-  const run = planFor(hours);
+  // **잠그긴 상한을 그대로 쓴다** (203회차 09-21). `planFor(6)` 은 $1.25 를 내는데
+  // 무인 판 2 의 잠근 조건은 $2.00 이다. 안 맞추면 도구가 잠근 문서를 조용히 어긴다.
+  const capArg = arg("--cap");
+  const run = planFor(hours, capArg ? { usdCap: Number(capArg) } : undefined);
   const r = await startRun(db, run);
   if (!r.ok) { console.error("못 열었다:", r.why); process.exit(1); }
   console.log(`무인 판 열림 — ${hours}시간 · 전체 상한 $${run.usdCap} · 하루 $${run.usdPerDayCap} · 같은 실패 ${run.maxSameFailStreak}번이면 정지 · 사장님 볼 것 ${run.humanReviewCap}개 상한`);
@@ -80,7 +83,9 @@ async function look() {
     unposted = (uD ?? []).filter((x) => !postedSet.has(x.id as string)).length;
   }
 
-  console.log(`${hm()} 무인 ${run.hours}h · 남은 ${Math.floor(left / 60)}시간 ${left % 60}분 · $${usd.toFixed(3)}/${run.usdCap} (오늘 $${usdToday.toFixed(3)}/${run.usdPerDayCap}) · 같은 실패 연속 ${failStreak}${lastCode ? `(${lastCode})` : ""} · 사장님 볼 것 ${needHuman ?? 0}/${run.humanReviewCap} · ${hasWork ? `할 일 ${(liveEx ?? 0) + (liveAs ?? 0)}개·묶인 직원 ${held ?? 0}명·진행없음 ${stallMin}/${run.stallMinutes ?? 30}분` : "할 일 없음"}${unposted ? ` · **못 붙인 결과 ${unposted}개**` : ""}${run.stopped ? ` · **멈춤: ${run.stopReason}**` : ""}`);
+  // 누적은 **지난 바퀴까지**의 값이다(이번 분은 아래 noteSeen 에서 더해진다).
+  const tl = run.tally ?? { minutes: 0, workMinutes: 0 };
+  console.log(`${hm()} 무인 ${run.hours}h · 남은 ${Math.floor(left / 60)}시간 ${left % 60}분 · $${usd.toFixed(3)}/${run.usdCap} (오늘 $${usdToday.toFixed(3)}/${run.usdPerDayCap}) · 같은 실패 연속 ${failStreak}${lastCode ? `(${lastCode})` : ""} · 사장님 볼 것 ${needHuman ?? 0}/${run.humanReviewCap} · 부하 ${tl.workMinutes}/${tl.minutes}분(${tl.minutes ? Math.round((tl.workMinutes / tl.minutes) * 100) : 0}%) · ${hasWork ? `할 일 ${(liveEx ?? 0) + (liveAs ?? 0)}개·묶인 직원 ${held ?? 0}명·진행없음 ${stallMin}/${run.stallMinutes ?? 30}분` : "할 일 없음"}${unposted ? ` · **못 붙인 결과 ${unposted}개**` : ""}${run.stopped ? ` · **멈춤: ${run.stopReason}**` : ""}`);
   // 그물이 본 것도 신호에 얹는다 — 그물이 던지면 이 줄까지 못 와서 신호가 낡고, 로키가 5분 뒤 스스로 멈춘다(사장님 09-21).
   const seen = { at: new Date().toISOString(), usd, usdToday, failStreak, needHuman: needHuman ?? 0, hasWork, stallMin, unposted };
   if (run.stopped) return null;
@@ -99,6 +104,8 @@ async function look() {
     const close = left === 0;
     await stopRun(db, id, run, reason, close);
     console.log(`  → **멈춤**: ${reason}`);
+    const fin = (await activeRun(db))?.run.tally;
+    if (fin) console.log(`  → 부하 ${fin.workMinutes}/${fin.minutes}분 = ${Math.round((fin.workMinutes / Math.max(1, fin.minutes)) * 100)}% (분모는 문지기가 본 분 수) · 못 붙인 결과 최대 ${fin.maxUnposted}개 · 진행없음 최대 ${fin.maxStall}분`);
     console.log(`  → 남은 대기열 ${cancelled}개 치움 · ${close ? "창을 열었다 — 로키는 평소 운영으로 돌아간다" : `**창은 닫은 채로 둔다** — 안 치워진 무인 일이 ${left}개 남았다`}`);
     return null;
   }

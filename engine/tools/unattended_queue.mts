@@ -35,6 +35,15 @@ if (process.argv.includes("--clear")) {
   const { data } = await db.from("assignments").update({ status: "cancelled", cancelled_at: new Date().toISOString() }).eq("company_id", CO).eq("status", "waiting").select("id");
   console.log(`치움 ${data?.length ?? 0}개`); await show(); process.exit(0);
 }
+// **넣기 전에 뭐가 들어가는지 본다** (203회차 09-21, 사장님: *"`--fill 60` 이 앞서 말한 구성대로 채우는지 확인하세요"*).
+if (process.argv.includes("--dry")) {
+  const n = Number(arg("--dry-n") ?? frozen.items.length);
+  const w = (k: string) => frozen.items.slice(0, n).filter((x) => x.weight === k).length;
+  console.log(`얼린 목록에서 ${n}개 — 가벼움 ${w("가벼움")} · 중간 ${w("중간")} · 무거움 ${w("무거움")} · 깨지는 것 ${frozen.items.slice(0, n).filter((x) => x.expectFail).length}`);
+  console.log(`깨지는 과제 자리: ${frozen.items.filter((x) => x.expectFail).map((x) => x.n).join(", ")}번`);
+  for (const x of frozen.items.slice(0, n)) console.log(`  ${String(x.n).padStart(2)} [${x.weight}]${x.expectFail ? " ⚠" : ""} ${x.title}`);
+  process.exit(0);
+}
 if (!arg("--fill")) { await show(); process.exit(0); }
 
 const n = Math.min(Number(arg("--fill")), TASKS.length);
