@@ -90,9 +90,12 @@ export async function blockedByUnattended(db: Supabase): Promise<string | null> 
   try {
     const a = await activeRun(db);
     if (!a) return null;
-    if (a.run.stopped) return `무인 판이 멈춤: ${a.run.stopReason ?? "이유 없음"}`;
+    // **판의 창 안에서만 막는다** (201회차 09-21 버그). 전에는 멈춘 판이 24시간 동안 계속 막아서,
+    // 09-20 판이 02:02 에 끝난 뒤 로키가 **사장님 일까지** 못 집고 있었다(대기 중 실행 1개가 영영 대기).
+    // 깃발의 목적은 "도는 동안 문지기 말을 듣는 것" 이지 "끝난 뒤에도 잠그는 것" 이 아니다.
     const endsAt = new Date(a.run.startedAt).getTime() + a.run.hours * 3600_000;
-    if (Date.now() > endsAt) return "무인 판의 시간이 다 됐다";
+    if (Date.now() > endsAt) return null; // 판이 끝났다 — 평소 운영으로 돌아간다
+    if (a.run.stopped) return `무인 판이 멈춤: ${a.run.stopReason ?? "이유 없음"}`;
     // **꺼지면 멈춘다.** 신호가 없거나 낡았으면 문지기가 죽은 것이다 — 그때 로키가 계속 도는 것이 제일 위험하다.
     const beat = a.run.heartbeat ? Date.parse(a.run.heartbeat) : 0;
     const age = Date.now() - beat;

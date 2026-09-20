@@ -29,8 +29,10 @@ try {
   check("막힌 이유가 전해진다", typeof why === "string" && /하루 상한/.test(why), why);
   // 시간이 다 된 판도 막혀야 한다
   await db.from("genesis_runs").update({ result: { ...planFor(6), startedAt: new Date(Date.now() - 7*3600_000).toISOString() } }).eq("id", a.id);
+  // 201회차: 동작을 **일부러 바꿨다** — 판의 창이 끝나면 안 막는다(끝난 판이 사장님 일까지 막던 버그).
+  // 옛 시험은 그 옛 동작을 적어 둔 것이라 같이 고친다. 이건 측정 기준이 아니라 동작 명세다.
   const why2 = await blockedByUnattended(db);
-  check("시간이 다 되면 막힌다", typeof why2 === "string" && /시간이 다/.test(why2), why2);
+  check("시간이 다 되면 **안** 막는다(판이 끝난 것)", why2 === null, why2);
 } finally {
   await db.from("genesis_runs").delete().eq("kind","unattended").eq("run_date", day);
   console.log("치움");
@@ -64,6 +66,19 @@ check("판이 없으면 평소대로 안 막힌다", (await blockedByUnattended(
   const { count: oldWay } = await db.from("deliverables").select("id",{count:"exact",head:true}).gte("created_at", since).is("content_json->>askJudge", null);
   const { count: newWay } = await db.from("deliverables").select("id",{count:"exact",head:true}).gte("created_at", since).is("content_json->>askJudge", null).is("content_json->>loop", null);
   check(`고리 통과한 판을 사람 몫에서 뺀다 (옛 셈 ${oldWay} → 새 셈 ${newWay})`, (newWay ?? 0) < (oldWay ?? 0), { oldWay, newWay });
+}
+
+// ── 판이 끝난 뒤엔 안 막아야 한다 (201회차 버그) ──────────────────
+{
+  const { planFor: pf3, blockedByUnattended: bu3 } = await import("../../src/lib/genesis/unattended");
+  const day3 = new Date(Date.now() + 9*3600_000).toISOString().slice(0,10);
+  await db.from("genesis_runs").delete().eq("kind","unattended").eq("run_date", day3);
+  // 6시간 판이 7시간 전에 시작해서 이미 끝났고, 멈춤으로 적혀 있다
+  const ended = { ...pf3(6), startedAt: new Date(Date.now() - 7*3600_000).toISOString(), stopped: true, stopReason: "계획한 시간이 다 됐다", heartbeat: new Date(Date.now() - 6*3600_000).toISOString() };
+  const { data: ins } = await db.from("genesis_runs").insert({ kind: "unattended", run_date: day3, status: "done", result: ended }).select("id").single();
+  try {
+    check("**끝난 판은 로키를 안 막는다**", (await bu3(db)) === null, await bu3(db));
+  } finally { if (ins?.id) await db.from("genesis_runs").delete().eq("id", ins.id as string); }
 }
 console.log(`\n최종: ${bad ? `어긋남 ${bad}/${seen}` : `전부 맞음 ${seen}/${seen}`}`);
 process.exit(bad ? 1 : 0);
