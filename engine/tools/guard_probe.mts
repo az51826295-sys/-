@@ -36,5 +36,34 @@ try {
   console.log("치움");
 }
 check("판이 없으면 평소대로 안 막힌다", (await blockedByUnattended(db)) === null);
-console.log(`\n${bad ? `어긋남 ${bad}/${seen}` : `전부 맞음 ${seen}/${seen}`}`);
+
+// ── 생존 신호(꺼지면 멈춘다) 시험 — 사장님 09-20 ──────────────────
+{
+  const { planFor: pf, startRun: sr, activeRun: ar, blockedByUnattended: bu } = await import("../../src/lib/genesis/unattended");
+  const day2 = new Date(Date.now() + 9*3600_000).toISOString().slice(0,10);
+  await db.from("genesis_runs").delete().eq("kind","unattended").eq("run_date", day2);
+  const o = await sr(db, pf(6));
+  if (o.ok) {
+    try {
+      check("연 직후엔 신호가 신선해 안 막힌다", (await bu(db)) === null, await bu(db));
+      const a2 = (await ar(db))!;
+      // 신호를 10분 전으로 돌린다 = 문지기가 죽은 상황
+      await db.from("genesis_runs").update({ result: { ...a2.run, heartbeat: new Date(Date.now() - 10*60_000).toISOString() } }).eq("id", a2.id);
+      const w = (await bu(db)) ?? "";
+      check("**문지기가 죽으면 로키가 멈춘다**", /생존 신호/.test(w), w);
+      // 신호가 아예 없으면(옛 판) 도 막혀야 한다 — 기본이 거부
+      await db.from("genesis_runs").update({ result: { ...a2.run, heartbeat: undefined } }).eq("id", a2.id);
+      const w2 = (await bu(db)) ?? "";
+      check("신호가 아예 없어도 막힌다(기본 거부)", /생존 신호/.test(w2), w2);
+    } finally { await db.from("genesis_runs").delete().eq("kind","unattended").eq("run_date", day2); }
+  } else check("신호 시험용 판 열기", false, o);
+}
+// ── 사장님 볼 산출물 셈이 고쳐졌나 — 실제 데이터로 ──────────────
+{
+  const since = new Date(Date.now() - 3*86400_000).toISOString();
+  const { count: oldWay } = await db.from("deliverables").select("id",{count:"exact",head:true}).gte("created_at", since).is("content_json->>askJudge", null);
+  const { count: newWay } = await db.from("deliverables").select("id",{count:"exact",head:true}).gte("created_at", since).is("content_json->>askJudge", null).is("content_json->>loop", null);
+  check(`고리 통과한 판을 사람 몫에서 뺀다 (옛 셈 ${oldWay} → 새 셈 ${newWay})`, (newWay ?? 0) < (oldWay ?? 0), { oldWay, newWay });
+}
+console.log(`\n최종: ${bad ? `어긋남 ${bad}/${seen}` : `전부 맞음 ${seen}/${seen}`}`);
 process.exit(bad ? 1 : 0);

@@ -50,7 +50,7 @@ async function look() {
   // 내 첫 설계는 askJudge(고치는 판 전용)만 봐서 **처음 만드는 판을 전부 '사람이 봐야 할 것' 으로 셌다** — 상한 3개가 첫 세 판에 차 버린다.
   // 고리 심판(content_json.loop)도 기계 판정이다. 둘 다 없는 것만 사람 몫이다.
   const { count: needHuman } = await db.from("deliverables").select("id", { count: "exact", head: true })
-    .gte("created_at", since).is("content_json->askJudge", null).is("content_json->loop", null);
+    .gte("created_at", since).is("content_json->>askJudge", null).is("content_json->>loop", null);
   const endsAt = new Date(new Date(run.startedAt).getTime() + run.hours * 3600_000);
   const left = Math.max(0, Math.round((endsAt.getTime() - Date.now()) / 60000));
   console.log(`${hm()} 무인 ${run.hours}h · 남은 ${Math.floor(left / 60)}시간 ${left % 60}분 · $${usd.toFixed(3)}/${run.usdCap} (오늘 $${usdToday.toFixed(3)}/${run.usdPerDayCap}) · 같은 실패 연속 ${failStreak}${lastCode ? `(${lastCode})` : ""} · 사장님 볼 것 ${needHuman ?? 0}/${run.humanReviewCap}${run.stopped ? ` · **멈춤: ${run.stopReason}**` : ""}`);

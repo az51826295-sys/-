@@ -41,7 +41,16 @@ export type UnattendedRun = {
   stoppedAt?: string;
   /** 문지기가 본 마지막 값들 — 사람이 읽는 자리. */
   seen?: { at: string; usd: number; usdToday: number; failStreak: number; needHuman: number };
+  /**
+   * **생존 신호** (사장님 09-20). 문지기가 1분마다 남긴다.
+   * *"문지기가 창에 매여 있으면 '바깥' 이 아니에요 — 문지기가 죽으면 로키가 제한 없이 돌아요."*
+   * 그래서 **꺼지면 멈추는 쪽**으로 뒤집었다: 로키는 이 신호가 오래됐으면 일을 안 집는다(기본이 거부).
+   */
+  heartbeat?: string;
 };
+
+/** 생존 신호가 이만큼 낡으면 로키는 일을 안 집는다. 문지기는 1분마다 남긴다 — 5분이면 확실히 죽은 것. */
+export const HEARTBEAT_STALE_MS = 5 * 60_000;
 
 const KIND = "unattended";
 
@@ -84,6 +93,10 @@ export async function blockedByUnattended(db: Supabase): Promise<string | null> 
     if (a.run.stopped) return `무인 판이 멈춤: ${a.run.stopReason ?? "이유 없음"}`;
     const endsAt = new Date(a.run.startedAt).getTime() + a.run.hours * 3600_000;
     if (Date.now() > endsAt) return "무인 판의 시간이 다 됐다";
+    // **꺼지면 멈춘다.** 신호가 없거나 낡았으면 문지기가 죽은 것이다 — 그때 로키가 계속 도는 것이 제일 위험하다.
+    const beat = a.run.heartbeat ? Date.parse(a.run.heartbeat) : 0;
+    const age = Date.now() - beat;
+    if (!beat || age > HEARTBEAT_STALE_MS) return `문지기의 생존 신호가 ${beat ? `${Math.round(age / 60000)}분째 없다` : "아예 없다"} — 지키는 사람이 없으면 일하지 않는다`;
     return null;
   } catch { return null; } // 깃발을 못 읽으면 평소대로 — 문지기가 바깥에서 또 본다
 }
@@ -91,7 +104,8 @@ export async function blockedByUnattended(db: Supabase): Promise<string | null> 
 /** 판을 연다. 같은 날 두 판은 못 연다(genesis_runs unique). */
 export async function startRun(db: Supabase, run: UnattendedRun): Promise<{ ok: true; id: string } | { ok: false; why: string }> {
   const day = new Date(Date.now() + 9 * 3600_000).toISOString().slice(0, 10);
-  const { data, error } = await db.from("genesis_runs").insert({ kind: KIND, run_date: day, status: "running", result: run }).select("id").single();
+  // 첫 신호를 같이 남긴다 — 안 그러면 문지기가 첫 바퀴를 돌기 전까지 로키가 막혀 있다.
+  const { data, error } = await db.from("genesis_runs").insert({ kind: KIND, run_date: day, status: "running", result: { ...run, heartbeat: new Date().toISOString() } }).select("id").single();
   if (error || !data) return { ok: false, why: error?.message ?? "못 열었다" };
   return { ok: true, id: data.id as string };
 }
@@ -104,7 +118,7 @@ export async function stopRun(db: Supabase, id: string, run: UnattendedRun, reas
   }).eq("id", id);
 }
 
-/** 문지기가 본 것을 적는다(멈추진 않는다). */
+/** 문지기가 본 것 + **생존 신호**를 적는다(멈추진 않는다). 이걸 못 적으면 5분 뒤 로키가 스스로 멈춘다. */
 export async function noteSeen(db: Supabase, id: string, run: UnattendedRun, seen: NonNullable<UnattendedRun["seen"]>): Promise<void> {
-  await db.from("genesis_runs").update({ result: { ...run, seen } }).eq("id", id);
+  await db.from("genesis_runs").update({ result: { ...run, seen, heartbeat: new Date().toISOString() } }).eq("id", id);
 }
