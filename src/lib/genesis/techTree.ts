@@ -48,7 +48,7 @@ export type TechNode = {
   /** 칸의 신원 = id + opensWhen 의 해시. 조건을 고치면 **새 칸**이 된다. */
   condHash?: string;
   /** 선(선행조건)마다 근거와 출처. `src: null` 은 추측 — 따로 센다. */
-  needsEvidence?: { need: string; why: string; src: string | null }[];
+  needsEvidence?: { need: string; why: string; src: string | null; weak?: boolean; verdict?: string }[];
 };
 export type TechTree = { version: string; seededAt: string; note: string; nodes: TechNode[] };
 
@@ -90,12 +90,14 @@ export function predictable(tree: TechTree): TechNode[] {
  * **독립 묶음 수** (사장님 09-20). 예측 여러 개가 같은 선행 칸/가정에 기대면 그건 예측 여러 개가 아니라 사실상 하나다.
  * 선행 칸을 공유하면 같은 묶음으로 잇는다(합치기). 성적을 낼 때 개수와 **묶음 수**를 같이 보고한다.
  */
-export function independentGroups(tree: TechTree, nodeIds: string[]): { groups: string[][]; count: number } {
+export function independentGroups(tree: TechTree, nodeIds: string[], opts?: { dropWeak?: boolean }): { groups: string[][]; count: number } {
   const by = new Map(tree.nodes.map((n) => [n.id, n]));
+  const weakOf = (id: string) => new Set((by.get(id)?.needsEvidence ?? []).filter((e) => e.weak).map((e) => e.need));
   const parent = new Map<string, string>(nodeIds.map((id) => [id, id]));
   const find = (x: string): string => (parent.get(x) === x ? x : (parent.set(x, find(parent.get(x)!)), parent.get(x)!));
   const union = (a: string, b: string) => { const ra = find(a), rb = find(b); if (ra !== rb) parent.set(ra, rb); };
-  const needsOf = (id: string) => new Set(by.get(id)?.needs ?? []);
+  // 약한 선을 뺀 쪽과 넣은 쪽을 **둘 다** 봐야 한다(09-20 규칙) — 하나만 보고하면 유리한 쪽을 고르게 된다.
+  const needsOf = (id: string) => { const w = opts?.dropWeak ? weakOf(id) : new Set<string>(); return new Set((by.get(id)?.needs ?? []).filter((n) => !w.has(n))); };
   for (let i = 0; i < nodeIds.length; i++) {
     for (let j = i + 1; j < nodeIds.length; j++) {
       const a = needsOf(nodeIds[i]);

@@ -35,8 +35,11 @@ const guessed = guessedEdges(view);
 console.log(`
 선행조건 주장 ${view.nodes.reduce((a, n) => a + n.needs.length, 0)}개 중 **출처 없는 추측 ${guessed.length}개**`);
 if (process.argv.includes("--guesses")) for (const g of guessed) console.log(`  ${g.node} ← ${g.need}: ${g.why}`);
-const grp = independentGroups(view, pick.map((n) => n.id));
-console.log(`독립 묶음: ${grp.count}개 — ${grp.groups.map((g) => g.join("+")).join(" / ")}`);
+const ids = pick.map((n) => n.id);
+const withWeak = independentGroups(view, ids);
+const noWeak = independentGroups(view, ids, { dropWeak: true });
+console.log(`독립 묶음 — 약한 선 넣으면 ${withWeak.count}개: ${withWeak.groups.map((g) => g.join("+")).join(" / ")}`);
+console.log(`           약한 선 빼면 ${noWeak.count}개: ${noWeak.groups.map((g) => g.join("+")).join(" / ")}`);
 const unused = unusedOpen(view);
 if (unused.length) { console.log("\n열렸는데 우리가 안 줍는 것:"); for (const n of unused) console.log(`  · [${n.id}] ${n.name} — ${n.ourUse}`); }
 
