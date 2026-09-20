@@ -40,6 +40,15 @@ export type TechNode = {
   evidence?: string[];
   confidence: number;
   ourUse?: string;
+  /** '가정' 이면 연속량 주장 — 켜짐/꺼짐이 아니라 "기한까지 측정값이 X 이하" 로 박는다. */
+  kind?: string;
+  /** **열렸다고 할 조건.** 칸을 만들 때 한 번 쓴다. 예측기는 '언제' 만 말하고 이 선은 못 건드린다. */
+  opensWhen?: Record<string, unknown>;
+  condLockedAt?: string;
+  /** 칸의 신원 = id + opensWhen 의 해시. 조건을 고치면 **새 칸**이 된다. */
+  condHash?: string;
+  /** 선(선행조건)마다 근거와 출처. `src: null` 은 추측 — 따로 센다. */
+  needsEvidence?: { need: string; why: string; src: string | null }[];
 };
 export type TechTree = { version: string; seededAt: string; note: string; nodes: TechNode[] };
 
@@ -69,6 +78,43 @@ export function ready(tree: TechTree): { node: TechNode; missing: string[] }[] {
     .sort((a, b) => a.missing.length - b.missing.length);
 }
 
+/**
+ * **예측을 받을 수 있는 칸** — 열림 조건이 잠긴 닫힌 칸만(09-20 규칙: 조건이 잠긴 뒤에야 그 칸 예측을 받는다).
+ * 조건 없는 칸에 예측을 받으면 예측기가 자기 합격선을 같이 쓰게 된다 — 그게 파일럿 판을 버린 이유다.
+ */
+export function predictable(tree: TechTree): TechNode[] {
+  return tree.nodes.filter((n) => n.state === "closed" && !!n.condHash);
+}
+
+/**
+ * **독립 묶음 수** (사장님 09-20). 예측 여러 개가 같은 선행 칸/가정에 기대면 그건 예측 여러 개가 아니라 사실상 하나다.
+ * 선행 칸을 공유하면 같은 묶음으로 잇는다(합치기). 성적을 낼 때 개수와 **묶음 수**를 같이 보고한다.
+ */
+export function independentGroups(tree: TechTree, nodeIds: string[]): { groups: string[][]; count: number } {
+  const by = new Map(tree.nodes.map((n) => [n.id, n]));
+  const parent = new Map<string, string>(nodeIds.map((id) => [id, id]));
+  const find = (x: string): string => (parent.get(x) === x ? x : (parent.set(x, find(parent.get(x)!)), parent.get(x)!));
+  const union = (a: string, b: string) => { const ra = find(a), rb = find(b); if (ra !== rb) parent.set(ra, rb); };
+  const needsOf = (id: string) => new Set(by.get(id)?.needs ?? []);
+  for (let i = 0; i < nodeIds.length; i++) {
+    for (let j = i + 1; j < nodeIds.length; j++) {
+      const a = needsOf(nodeIds[i]);
+      if ([...needsOf(nodeIds[j])].some((n) => a.has(n))) union(nodeIds[i], nodeIds[j]);
+    }
+  }
+  const g = new Map<string, string[]>();
+  for (const id of nodeIds) { const r = find(id); g.set(r, [...(g.get(r) ?? []), id]); }
+  const groups = [...g.values()];
+  return { groups, count: groups.length };
+}
+
+/** 선행조건 주장 중 출처 없는 것(추측) — AI 가 나무를 키울 때 제일 흔한 오류가 여기다. */
+export function guessedEdges(tree: TechTree): { node: string; need: string; why: string }[] {
+  const out: { node: string; need: string; why: string }[] = [];
+  for (const n of tree.nodes) for (const e of n.needsEvidence ?? []) if (!e.src) out.push({ node: n.id, need: e.need, why: e.why });
+  return out;
+}
+
 /** 열린 칸인데 우리가 안 쓰는 것 — "열렸는데 안 줍는 것" 도 사실이다. */
 export function unusedOpen(tree: TechTree): TechNode[] {
   return tree.nodes.filter((n) => n.state === "open" && /안 쓴다|모름|반쯤/.test(n.ourUse ?? ""));
@@ -96,7 +142,7 @@ const SYS = [
   "규칙:",
   "- 나무에 있는 **닫힌 칸** 중에서 고른다. 선행조건이 이미 다 찬 칸이 1순위다(계산은 이미 되어 있다 — `지금 열릴 준비` 목록).",
   "- `why` 에는 **선행조건 칸 이름과 그게 찬 날**을 대라. '요즘 추세' 같은 말은 근거가 아니다.",
-  "- `evidenceWouldBe` 와 `wouldFalsify` 는 **다른 사람이 채점할 수 있게** 적어라. 값·날짜·목록에 뜰 이름처럼.",
+  "- **합격선은 이미 칸에 박혀 있다(`열림 조건`). 너는 '언제' 와 '왜' 만 말한다** — `evidenceWouldBe` 에는 그 조건을 네 말로 옮겨 적기만 해라. 조건을 무르게 바꾸면 안 된다.",
   "- 확률은 정직하게. 다 열린다고 하면 아무 말도 안 한 것이고, 다 안 열린다고 해도 같다.",
   "- 나무에 없는 칸이 곧 열릴 것 같으면 `newNode` 로 제안해라 — 나무가 틀린 것도 배울 거리다.",
 ].join("\n");
@@ -105,8 +151,10 @@ export async function predict(ai: AIProvider, tree: TechTree, o: { horizon: stri
   const r = ready(tree);
   const nl = String.fromCharCode(10);
   const open = tree.nodes.filter((n) => n.state === "open").map((n) => `- [${n.id}] ${n.name} — ${n.openedAt ?? "?"} 열림 · ${n.unlocks}`).join(nl);
-  const closed = tree.nodes.filter((n) => n.state === "closed").map((n) => `- [${n.id}] ${n.name} — 필요: ${n.needs.join(", ") || "(없음)"} · ${n.unlocks}`).join(nl);
-  const readyLines = r.filter((x) => x.missing.length === 0).map((x) => `- [${x.node.id}] ${x.node.name}`).join(nl) || "(없음)";
+  // 09-20 규칙: 조건이 잠긴 칸만 예측을 받는다. 조건도 같이 보여 준다 — 예측기가 합격선을 다시 쓰지 못하게.
+  const closed = predictable(tree).map((n) => `- [${n.id}] ${n.name} — 필요: ${n.needs.join(", ") || "(없음)"} · ${n.unlocks}${nl}    열림 조건(고칠 수 없음): ${JSON.stringify(n.opensWhen)}`).join(nl);
+  const pick = new Set(predictable(tree).map((n) => n.id));
+  const readyLines = r.filter((x) => x.missing.length === 0 && pick.has(x.node.id)).map((x) => `- [${x.node.id}] ${x.node.name}`).join(nl) || "(없음)";
   const input = [
     `## 열린 칸 (언제 열렸나)`, open, "",
     `## 닫힌 칸`, closed, "",

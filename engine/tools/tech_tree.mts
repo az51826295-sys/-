@@ -5,7 +5,7 @@
  *   npx tsx engine/tools/rookery_env.mts engine/tools/tech_tree.mts --predict --as-of 2026-05-31 --horizon 2026-09 --label back1   — 후향(오염 표시)
  *   npx tsx engine/tools/tech_tree.mts --grade             — 잠긴 예측을 지금 나무에 대 본다. 돈 0.
  */
-const { loadTree, treeAt, ready, unusedOpen, predict, lock, loadLocked, grade } = await import("../../src/lib/genesis/techTree");
+const { loadTree, treeAt, ready, unusedOpen, predict, lock, loadLocked, grade, predictable, independentGroups, guessedEdges } = await import("../../src/lib/genesis/techTree");
 const arg = (k: string) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : undefined; };
 const tree = loadTree();
 const today = new Date().toISOString().slice(0, 10);
@@ -26,6 +26,17 @@ console.log("\n지금 열릴 준비가 된 칸 (선행조건이 다 찼다 — �
 for (const x of r.filter((y) => !y.missing.length)) console.log(`  ● [${x.node.id}] ${x.node.name} — ${x.node.unlocks}`);
 console.log("\n아직 막힌 칸 (무엇이 모자란가):");
 for (const x of r.filter((y) => y.missing.length)) console.log(`  ○ [${x.node.id}] ${x.node.name} ← 모자람: ${x.missing.join(", ")}`);
+// 09-20 나무 1: 조건이 잠긴 칸만 예측을 받는다 · 출처 없는 선은 추측
+const pick = predictable(view);
+console.log(`
+예측을 받을 수 있는 칸(열림 조건이 잠긴 것): ${pick.length}/${view.nodes.filter((n) => n.state === "closed").length}`);
+for (const n of pick) console.log(`  ${n.condHash} [${n.id}] ${n.name}${n.kind === "가정" ? " (가정)" : ""}`);
+const guessed = guessedEdges(view);
+console.log(`
+선행조건 주장 ${view.nodes.reduce((a, n) => a + n.needs.length, 0)}개 중 **출처 없는 추측 ${guessed.length}개**`);
+if (process.argv.includes("--guesses")) for (const g of guessed) console.log(`  ${g.node} ← ${g.need}: ${g.why}`);
+const grp = independentGroups(view, pick.map((n) => n.id));
+console.log(`독립 묶음: ${grp.count}개 — ${grp.groups.map((g) => g.join("+")).join(" / ")}`);
 const unused = unusedOpen(view);
 if (unused.length) { console.log("\n열렸는데 우리가 안 줍는 것:"); for (const n of unused) console.log(`  · [${n.id}] ${n.name} — ${n.ourUse}`); }
 

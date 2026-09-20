@@ -1,7 +1,7 @@
 {
   "version": "ai-v0",
   "seededAt": "2026-09-20",
-  "note": "제네시스 첫 기술 나무 — AI 모델 (193회차 09-20, 사장님 '아이 모델을 첫 기술 나무로 하자'). 사장님의 전제: 발명은 없다, 선행 조건이 차면 칸이 열리고 열리면 누군가는 반드시 도달한다. 그러면 '언제 열리나'는 계산 가능하다. **노드는 모델 이름이 아니라 능력 칸이다** — 'gpt-5.6 나왔다'는 해금이 아니고 '최전선 성능이 100만 토큰당 $1.2가 됐다'가 해금이다. 증거는 우리 모델 감시 장부(engine/docs/model-watch.json, 날짜 141개)와 공표 자료. 신뢰도는 그 증거가 얼마나 단단한가다 — 우리가 직접 재 본 것이 제일 높다. **날짜는 둘이다(09-20 확정)**: `capableAt`(능력이 나온 날)과 `openedAt`(공개 API 로 지을 수 있게 된 날). **채점은 openedAt 으로만** 한다.",
+  "note": "제네시스 첫 기술 나무 — AI 모델 (193회차 09-20, 사장님 '아이 모델을 첫 기술 나무로 하자'). 사장님의 전제: 발명은 없다, 선행 조건이 차면 칸이 열리고 열리면 누군가는 반드시 도달한다. 그러면 '언제 열리나'는 계산 가능하다. **노드는 모델 이름이 아니라 능력 칸이다** — 'gpt-5.6 나왔다'는 해금이 아니고 '최전선 성능이 100만 토큰당 $1.2가 됐다'가 해금이다. 증거는 우리 모델 감시 장부(engine/docs/model-watch.json, 날짜 141개)와 공표 자료. 신뢰도는 그 증거가 얼마나 단단한가다 — 우리가 직접 재 본 것이 제일 높다. **날짜는 둘이다(09-20 확정)**: `capableAt`(능력이 나온 날)과 `openedAt`(공개 API 로 지을 수 있게 된 날). **채점은 openedAt 으로만** 한다. **09-20 나무 1**: 닫힌 칸에 열림 조건을 박고(예측보다 먼저), 선마다 출처를 달고, 숨은 가정(`token-price-halving`)을 칸으로 올렸다.",
   "fields": {
     "id": "칸 이름(영문 짧게)",
     "name": "사람 말",
@@ -12,7 +12,11 @@
     "evidence": "무엇이 그날 나왔나 (모델 id·출처)",
     "confidence": "이 칸과 선행조건 주장을 얼마나 믿나 0~1. 우리가 직접 재 본 것 0.9+, 공표만 본 것 0.6~0.8, 내 추측 0.4~0.5",
     "ourUse": "로키가 실제로 쓰고 있나 — 열린 칸을 우리가 안 쓰면 그것도 사실이다",
-    "capableAt": "능력이 세상에 먼저 나온 날(앱·데모 등). 있으면 적는다 — 채점엔 안 쓰지만 '발명 → 지을 수 있음' 시차를 따로 잴 재료다. 출처가 들쭉날쭉해서 채점 기준으로는 못 쓴다."
+    "capableAt": "능력이 세상에 먼저 나온 날(앱·데모 등). 있으면 적는다 — 채점엔 안 쓰지만 '발명 → 지을 수 있음' 시차를 따로 잴 재료다. 출처가 들쭉날쭉해서 채점 기준으로는 못 쓴다.",
+    "opensWhen": "**열렸다고 할 조건** — 칸을 만들 때 한 번 쓴다. 예측기는 '언제' 만 말하고 이 선은 못 건드린다(09-20 규칙). 이게 잠긴 뒤에야 그 칸 예측을 받는다.",
+    "condHash": "칸의 신원 = id + opensWhen 의 해시. **조건을 고치면 새 칸**이 되고, 옛 칸에 걸린 예측은 옛 조건으로 채점한다(09-20 규칙).",
+    "needsEvidence": "선(선행조건)마다 근거와 출처. `src: null` 은 **추측**이고 따로 센다 — AI 가 나무를 키울 때 제일 흔한 오류가 그럴듯한 선행관계를 지어내는 것이라서(사장님 09-20).",
+    "kind": "'가정' 이면 연속량에 대한 주장이다 — 켜짐/꺼짐이 아니라 '기한까지 측정값이 X 이하' 로 박는다."
   },
   "nodes": [
     {
@@ -41,7 +45,14 @@
         "gpt-4-0613 함수 호출 (2023-06, 모델 감시)"
       ],
       "confidence": 0.9,
-      "ourUse": "쓴다(검색·파일)"
+      "ourUse": "쓴다(검색·파일)",
+      "needsEvidence": [
+        {
+          "need": "chat-instruct",
+          "why": "(근거 안 적음 — 추측)",
+          "src": null
+        }
+      ]
     },
     {
       "id": "struct-out",
@@ -57,7 +68,14 @@
         "구조화 출력 (2024-08)"
       ],
       "confidence": 0.9,
-      "ourUse": "로키의 모든 호출이 이것이다(generateStructuredOutput)"
+      "ourUse": "로키의 모든 호출이 이것이다(generateStructuredOutput)",
+      "needsEvidence": [
+        {
+          "need": "fn-call",
+          "why": "함수 호출의 인자 스키마가 구조화 출력의 앞 판이다 — 같은 배관",
+          "src": null
+        }
+      ]
     },
     {
       "id": "ctx-128k",
@@ -72,7 +90,14 @@
         "gpt-4-turbo (2024-04, 모델 감시)"
       ],
       "confidence": 0.85,
-      "ourUse": "쓴다 — 70KB 게임 파일을 통째로 넣는다"
+      "ourUse": "쓴다 — 70KB 게임 파일을 통째로 넣는다",
+      "needsEvidence": [
+        {
+          "need": "chat-instruct",
+          "why": "(근거 안 적음 — 추측)",
+          "src": null
+        }
+      ]
     },
     {
       "id": "vision-in",
@@ -87,7 +112,14 @@
         "gpt-4o (2024-05-13, 모델 감시)"
       ],
       "confidence": 0.95,
-      "ourUse": "쓴다 — 고리 심판자가 화면 석 장을 본다(179회차)"
+      "ourUse": "쓴다 — 고리 심판자가 화면 석 장을 본다(179회차)",
+      "needsEvidence": [
+        {
+          "need": "chat-instruct",
+          "why": "(근거 안 적음 — 추측)",
+          "src": null
+        }
+      ]
     },
     {
       "id": "cheap-decent",
@@ -102,7 +134,14 @@
         "gpt-4o-mini (2024-07, 모델 감시)"
       ],
       "confidence": 0.9,
-      "ourUse": "쓴다"
+      "ourUse": "쓴다",
+      "needsEvidence": [
+        {
+          "need": "chat-instruct",
+          "why": "(근거 안 적음 — 추측)",
+          "src": null
+        }
+      ]
     },
     {
       "id": "reason-rl",
@@ -118,7 +157,14 @@
         "o3-mini (2025-01-17, 모델 감시)"
       ],
       "confidence": 0.9,
-      "ourUse": "쓴다(판단 자리) — 다만 작은 고침엔 껐다(191회차: 시간 반)"
+      "ourUse": "쓴다(판단 자리) — 다만 작은 고침엔 껐다(191회차: 시간 반)",
+      "needsEvidence": [
+        {
+          "need": "chat-instruct",
+          "why": "(근거 안 적음 — 추측)",
+          "src": null
+        }
+      ]
     },
     {
       "id": "ctx-1m",
@@ -133,7 +179,14 @@
         "gpt-4.1 (2025-04-10, 모델 감시)"
       ],
       "confidence": 0.85,
-      "ourUse": "안 쓴다 — 우리는 손댈 파일만 골라 넣는다(값 때문에)"
+      "ourUse": "안 쓴다 — 우리는 손댈 파일만 골라 넣는다(값 때문에)",
+      "needsEvidence": [
+        {
+          "need": "ctx-128k",
+          "why": "(근거 안 적음 — 추측)",
+          "src": null
+        }
+      ]
     },
     {
       "id": "img-gen-api",
@@ -148,7 +201,14 @@
         "gpt-image-1 (2025-04-24, 모델 감시)"
       ],
       "confidence": 0.95,
-      "ourUse": "쓴다(Nova)"
+      "ourUse": "쓴다(Nova)",
+      "needsEvidence": [
+        {
+          "need": "chat-instruct",
+          "why": "(근거 안 적음 — 추측)",
+          "src": null
+        }
+      ]
     },
     {
       "id": "agentic-code",
@@ -166,7 +226,24 @@
         "claude 계열 코딩 에이전트"
       ],
       "confidence": 0.85,
-      "ourUse": "쓴다 — 조각 고침(patch.ts)이 이 칸 위에 있다"
+      "ourUse": "쓴다 — 조각 고침(patch.ts)이 이 칸 위에 있다",
+      "needsEvidence": [
+        {
+          "need": "fn-call",
+          "why": "파일 읽기·쓰기·실행이 전부 도구 호출이다",
+          "src": null
+        },
+        {
+          "need": "ctx-128k",
+          "why": "저장소를 고치려면 파일이 맥락에 들어가야 한다",
+          "src": null
+        },
+        {
+          "need": "reason-rl",
+          "why": "여러 파일을 고치려면 여러 단계 계획이 필요하다",
+          "src": null
+        }
+      ]
     },
     {
       "id": "realtime-voice",
@@ -182,7 +259,19 @@
         "gpt-realtime (2025-08-27, 모델 감시)"
       ],
       "confidence": 0.9,
-      "ourUse": "안 쓴다"
+      "ourUse": "안 쓴다",
+      "needsEvidence": [
+        {
+          "need": "chat-instruct",
+          "why": "(근거 안 적음 — 추측)",
+          "src": null
+        },
+        {
+          "need": "cheap-decent",
+          "why": "(근거 안 적음 — 추측)",
+          "src": null
+        }
+      ]
     },
     {
       "id": "video-gen-api",
@@ -198,7 +287,14 @@
         "veo-3.1 (2026, 우리가 씀)"
       ],
       "confidence": 0.95,
-      "ourUse": "쓴다 — 단 sora-2 는 2026-09-24 폐기, Veo 3.1 로 갈아탐(182회차)"
+      "ourUse": "쓴다 — 단 sora-2 는 2026-09-24 폐기, Veo 3.1 로 갈아탐(182회차)",
+      "needsEvidence": [
+        {
+          "need": "img-gen-api",
+          "why": "영상은 프레임의 연속 — 그림 생성이 앞 판",
+          "src": null
+        }
+      ]
     },
     {
       "id": "long-agent-hours",
@@ -214,7 +310,19 @@
         "gpt-5.1-codex-max (2025-11-20, 모델 감시)"
       ],
       "confidence": 0.7,
-      "ourUse": "반쯤 — 우리 고리는 몇 분이다"
+      "ourUse": "반쯤 — 우리 고리는 몇 분이다",
+      "needsEvidence": [
+        {
+          "need": "agentic-code",
+          "why": "오래 돌려면 먼저 스스로 코드를 고칠 수 있어야 한다",
+          "src": null
+        },
+        {
+          "need": "ctx-1m",
+          "why": "긴 작업의 기록이 맥락에 들어가야 한다",
+          "src": null
+        }
+      ]
     },
     {
       "id": "img-edit-keep",
@@ -230,7 +338,19 @@
         "gpt-image-2.5-sunburst '정밀 편집' (2026-09-04, 모델 감시)"
       ],
       "confidence": 0.6,
-      "ourUse": "안 쓴다 — 시장조사에서 '한 판 시험' 으로 남겨 둠(181회차)"
+      "ourUse": "안 쓴다 — 시장조사에서 '한 판 시험' 으로 남겨 둠(181회차)",
+      "needsEvidence": [
+        {
+          "need": "img-gen-api",
+          "why": "그림을 만드는 것이 먼저",
+          "src": null
+        },
+        {
+          "need": "vision-in",
+          "why": "원본을 보고 고치려면 그림을 읽어야 한다",
+          "src": null
+        }
+      ]
     },
     {
       "id": "cheap-frontier",
@@ -248,7 +368,19 @@
         "우리 실측: 고장 셋 3/3·13초·$0.0036 (190회차)"
       ],
       "confidence": 0.95,
-      "ourUse": "쓴다 — 로키 주력 자리"
+      "ourUse": "쓴다 — 로키 주력 자리",
+      "needsEvidence": [
+        {
+          "need": "reason-rl",
+          "why": "최전선 = 생각하는 모델. 그게 싸지는 것이 이 칸",
+          "src": null
+        },
+        {
+          "need": "cheap-decent",
+          "why": "싼 모델을 만드는 기술 자체가 앞 판",
+          "src": null
+        }
+      ]
     },
     {
       "id": "cheap-vision",
@@ -264,7 +396,19 @@
         "우리 실측: luna 가 파랑 바탕·노랑 네모·왼쪽을 1.8초에 맞힘 (190회차)"
       ],
       "confidence": 0.95,
-      "ourUse": "쓴다 — 고리 심판 바퀴당 $0.001~0.003"
+      "ourUse": "쓴다 — 고리 심판 바퀴당 $0.001~0.003",
+      "needsEvidence": [
+        {
+          "need": "vision-in",
+          "why": "그림을 보는 능력이 먼저",
+          "src": null
+        },
+        {
+          "need": "cheap-frontier",
+          "why": "우리 실측: luna 가 그림을 1.8초에 맞힘 · 바퀴당 $0.001~0.003 (190회차)",
+          "src": "engine/docs/learning-curriculum.md 교과 152"
+        }
+      ]
     },
     {
       "id": "full-duplex-voice",
@@ -284,7 +428,14 @@
       "confidence": 0.85,
       "ourUse": "안 쓴다 — 로키는 타자뿐. 아이패드에서 말로 시키는 길이 열려 있다",
       "capableAt": "2026-07-08",
-      "capableNote": "ChatGPT 에 먼저 열림. API 는 두 달 뒤 — 시차 64일."
+      "capableNote": "ChatGPT 에 먼저 열림. API 는 두 달 뒤 — 시차 64일.",
+      "needsEvidence": [
+        {
+          "need": "realtime-voice",
+          "why": "차례를 주고받는 실시간 음성이 먼저, 동시에 말하기가 다음",
+          "src": "https://openai.com/index/introducing-gpt-live-1-in-the-api/"
+        }
+      ]
     },
     {
       "id": "cheap-video",
@@ -292,14 +443,40 @@
       "unlocks": "광고·컷신을 여러 판 돌려 고른다 — 지금은 한 판에 $0.4 라 못 고른다",
       "needs": [
         "video-gen-api",
-        "cheap-frontier"
+        "cheap-frontier",
+        "token-price-halving"
       ],
       "state": "closed",
       "evidence": [
         "지금: Veo 3.1 lite 초당 $0.05 (우리 실측 182회차), Sora 2 는 $0.10 이었고 폐기"
       ],
       "confidence": 0.6,
-      "ourUse": "-"
+      "ourUse": "-",
+      "opensWhen": {
+        "잰다": "품질 선 `video-q1`(글자→영상·공개 API·720p+·한 번에 8초+·무음 허용)을 통과하는 모델의 공표 단가(초당 USD).",
+        "열렸다고 할 조건": "통과 모델의 공표가가 초당 $0.01 이하이고, 그 값으로 우리가 실제로 한 번 불러 확인된다.",
+        "틀렸다고 할 것": "기한까지 통과 모델 최저 공표가가 $0.01 초과이거나, $0.01 이하 값이 품질 선을 못 넘는다.",
+        "출처": "engine/docs/genesis/rules/20260920-baseline-and-conditions.json"
+      },
+      "condLockedAt": "2026-09-20",
+      "condHash": "81db98e7058f",
+      "needsEvidence": [
+        {
+          "need": "video-gen-api",
+          "why": "영상을 만드는 칸이 먼저",
+          "src": null
+        },
+        {
+          "need": "cheap-frontier",
+          "why": "추론이 싸져야 영상도 싸진다는 주장 — **약한 고리**",
+          "src": null
+        },
+        {
+          "need": "token-price-halving",
+          "why": "(근거 안 적음 — 추측)",
+          "src": null
+        }
+      ]
     },
     {
       "id": "video-long-consistent",
@@ -313,7 +490,22 @@
         "지금 한 번에 4·6·8초 (Veo 3.1 규격, 우리가 직접 붙여 봄)"
       ],
       "confidence": 0.7,
-      "ourUse": "-"
+      "ourUse": "-",
+      "opensWhen": {
+        "잰다": "한 번 호출로 나오는 영상의 길이와, 시작·중간·끝 프레임의 인물/배경 유지 여부.",
+        "열렸다고 할 조건": "공개 API 가 **한 번 호출로 60초 초과** 영상을 내고, 같은 인물·같은 배경이 시작·중간·끝에서 유지된다(우리가 한 판 불러 눈으로 확인).",
+        "틀렸다고 할 것": "기한까지 한 번 호출 최대 길이가 60초 이하이거나, 60초 초과가 되더라도 컷 단위로만 제공되어 한 장면 유지가 안 된다.",
+        "출처": "193회차에 처음 박음(예측보다 먼저)"
+      },
+      "condLockedAt": "2026-09-20",
+      "condHash": "f5ebbf587a37",
+      "needsEvidence": [
+        {
+          "need": "video-gen-api",
+          "why": "짧은 영상이 먼저, 긴 일관성이 다음",
+          "src": null
+        }
+      ]
     },
     {
       "id": "3d-native-rigged",
@@ -327,7 +519,22 @@
         "지금: Meshy·Tripo 가 메시는 내지만 토폴로지가 약점 (시장조사 181회차)"
       ],
       "confidence": 0.6,
-      "ourUse": "반쯤(Meshy)"
+      "ourUse": "반쯤(Meshy)",
+      "opensWhen": {
+        "잰다": "공개 API/모델이 내는 3D 파일을 게임 엔진에 바로 넣을 수 있는가 — 메시 토폴로지와 자동 스켈레톤(리그)이 함께 오는가.",
+        "열렸다고 할 조건": "공개 API 가 리그(뼈대)가 포함된 3D 파일을 내고, 우리가 받아서 엔진에 넣어 움직이는 것을 확인한다.",
+        "틀렸다고 할 것": "기한까지 결과가 리깅 없는 메시뿐이거나, 리그가 와도 사람 손 없이는 엔진에서 안 움직인다.",
+        "출처": "193회차에 처음 박음(예측보다 먼저)"
+      },
+      "condLockedAt": "2026-09-20",
+      "condHash": "03eb1332eaef",
+      "needsEvidence": [
+        {
+          "need": "img-gen-api",
+          "why": "2D 생성이 3D 생성의 앞 판이라는 주장 — **약한 고리**(리깅은 별개 기술)",
+          "src": null
+        }
+      ]
     },
     {
       "id": "agent-days",
@@ -335,26 +542,74 @@
       "unlocks": "주말에 맡겨 두면 월요일에 큰 게 끝나 있다",
       "needs": [
         "long-agent-hours",
-        "cheap-frontier"
+        "cheap-frontier",
+        "token-price-halving"
       ],
       "state": "closed",
       "evidence": [],
       "confidence": 0.5,
-      "ourUse": "-"
+      "ourUse": "-",
+      "opensWhen": {
+        "잰다": "72시간 연속 실행 · 사람의 승인·재지시·재시작 0회 · 그 기간에 판정을 통과한 산출물 1개 이상. 프로세스가 스스로 죽었다 다시 뜨는 건 허용, 사람이 만지면 실패.",
+        "열렸다고 할 조건": "위 조건을 만족한 사례가 공개 서비스 또는 우리(Alpha)에게서 나온다.",
+        "틀렸다고 할 것": "기한까지 72시간 무개입 사례가 공개로도 우리로도 없다.",
+        "누가 열든": "공개=예측력 / 우리=길잡이(적중률 제외)",
+        "출처": "engine/docs/genesis/rules/20260920-baseline-and-conditions.json"
+      },
+      "condLockedAt": "2026-09-20",
+      "condHash": "42d507148f83",
+      "needsEvidence": [
+        {
+          "need": "long-agent-hours",
+          "why": "몇 시간이 먼저, 며칠이 다음",
+          "src": null
+        },
+        {
+          "need": "cheap-frontier",
+          "why": "오래 돌수록 호출이 많아 값이 문제가 된다",
+          "src": null
+        },
+        {
+          "need": "token-price-halving",
+          "why": "(근거 안 적음 — 추측)",
+          "src": null
+        }
+      ]
     },
     {
       "id": "on-device-frontier",
       "name": "노트북에서 도는 최전선급",
       "unlocks": "값이 0 이 된다 — 고리를 무한히 돈다",
       "needs": [
-        "cheap-frontier"
+        "cheap-frontier",
+        "token-price-halving"
       ],
       "state": "closed",
       "evidence": [
         "오픈 모델 GLM-5.2 가 SWE-bench Pro 62.1% 로 gpt-5.5 를 넘음 — 단 GPU 필요 (시장조사 181회차)"
       ],
       "confidence": 0.4,
-      "ourUse": "-"
+      "ourUse": "-",
+      "opensWhen": {
+        "잰다": "노트북(사장님 기계 기준 램 16GB 이하)에서 **네트워크 없이** 도는 모델을 자리 시험판에 댄다.",
+        "열렸다고 할 조건": "오프라인으로 도는 모델이 자리 시험판에서 고장 3/3 을 통과한다(그때 최전선급 자리와 같은 자로 잰 것).",
+        "틀렸다고 할 것": "기한까지 오프라인 모델이 3/3 을 못 넘거나, 16GB 안에 안 들어간다.",
+        "출처": "193회차에 처음 박음(예측보다 먼저)"
+      },
+      "condLockedAt": "2026-09-20",
+      "condHash": "d169861794f4",
+      "needsEvidence": [
+        {
+          "need": "cheap-frontier",
+          "why": "싸진다는 것과 작아진다는 것은 다른 주장 — **약한 고리**",
+          "src": null
+        },
+        {
+          "need": "token-price-halving",
+          "why": "(근거 안 적음 — 추측)",
+          "src": null
+        }
+      ]
     },
     {
       "id": "game-from-one-order",
@@ -371,7 +626,38 @@
         "지금: 웹 2D 는 2~3분에 나오고 돌려 보고 고친다(179회차). 3D·긴 게임은 못 한다."
       ],
       "confidence": 0.5,
-      "ourUse": "이게 로키가 가는 곳"
+      "ourUse": "이게 로키가 가는 곳",
+      "opensWhen": {
+        "잰다": "주문 한 문장으로 만든 결과물을 **사장님이** 판정한다 — 기계 판정이 아니다(이 칸은 '해 볼 만한가' 라서).",
+        "열렸다고 할 조건": "사장님이 한 문장으로 시킨 게임이 사람 손 0회로 나오고, 사장님이 '이건 해 볼 만하다' 고 판정한다.",
+        "틀렸다고 할 것": "기한까지 사장님 판정이 안 나오거나, 나와도 중간에 사람이 고쳐 줘야 했다.",
+        "누가 열든": "우리가 연다 = 길잡이(적중률 제외)",
+        "출처": "193회차에 처음 박음(예측보다 먼저)"
+      },
+      "condLockedAt": "2026-09-20",
+      "condHash": "aabdd22f1993",
+      "needsEvidence": [
+        {
+          "need": "agentic-code",
+          "why": "게임 코드를 스스로 써야 한다",
+          "src": null
+        },
+        {
+          "need": "cheap-vision",
+          "why": "돌려 보고 고치려면 화면을 봐야 한다 — 우리가 실제로 그렇게 만들었다(179회차)",
+          "src": "engine/docs/learning-curriculum.md 교과 152"
+        },
+        {
+          "need": "3d-native-rigged",
+          "why": "'해 볼 만한' 게임에 3D 가 꼭 필요한가는 **사장님 확인 필요**",
+          "src": null
+        },
+        {
+          "need": "agent-days",
+          "why": "한 문장으로 끝까지 가려면 오래 혼자 돌아야 한다",
+          "src": null
+        }
+      ]
     },
     {
       "id": "voice-thinking-split",
@@ -386,7 +672,46 @@
         "gpt-live-1 은 음성 층만 과금하고 뒤에 세울 생각 모델(astra/luna/terra·타사)을 고르게 한다 — 공표 (https://openai.com/index/introducing-gpt-live-1-in-the-api/)"
       ],
       "confidence": 0.75,
-      "ourUse": "안 쓴다 — 쓰면 섞어 보내기가 음성까지 덮는다"
+      "ourUse": "안 쓴다 — 쓰면 섞어 보내기가 음성까지 덮는다",
+      "needsEvidence": [
+        {
+          "need": "full-duplex-voice",
+          "why": "gpt-live-1 이 음성 층만 과금하고 뒤에 세울 생각 모델을 고르게 한다",
+          "src": "https://openai.com/index/introducing-gpt-live-1-in-the-api/"
+        }
+      ]
+    },
+    {
+      "id": "token-price-halving",
+      "name": "쓸 만한 자리의 값이 계속 반으로 떨어진다",
+      "kind": "가정",
+      "unlocks": "이 가정이 참이면 그 위의 칸들(싼 영상·며칠 에이전트·노트북 최전선)의 시점이 앞당겨진다. **거짓이면 그 칸들이 한꺼번에 늦어진다** — 그래서 따로 잰다",
+      "needs": [
+        "cheap-frontier"
+      ],
+      "needsEvidence": [
+        {
+          "need": "cheap-frontier",
+          "why": "값이 떨어지려면 먼저 '최전선이 싸다' 는 칸이 열려 있어야 한다",
+          "src": "engine/docs/genesis/tech-tree-ai-v0.json (cheap-frontier 증거)"
+        }
+      ],
+      "state": "closed",
+      "opensWhen": {
+        "잰다": "**자리 시험판**(genesis/seatBench.ts — 얼린 두더지 게임에 고장 셋, 3/3 고쳐야 통과)을 통과하는 모델 중 **최저 판당 값**(USD). 통과 조건이 급을 고정한다 — 값만 싼 모델은 3/3 을 못 넘어 점이 안 된다.",
+        "열렸다고 할 조건": "기한까지 **측정 반감기 ≤ 8개월** (두 점 이상, 로그 선형). 즉 8개월마다 최저 통과 값이 반으로.",
+        "틀렸다고 할 것": "기한까지 측정 반감기 > 8개월 이거나, 통과 모델이 둘 미만이라 반감기를 못 잰다(그때는 '못 잼').",
+        "지금 점": [
+          "2026-09-20 · gpt-5.6-luna $0.0036 (고침 3/3·13초)",
+          "2026-09-20 · deepseek-v4-flash $0.0067 (고침 3/3·17초)"
+        ],
+        "지금 상태": "**못 잼** — 같은 날 두 점뿐이라 시간축이 없다. 매일 실행이 새 모델을 시험판에 대면서 점이 쌓인다(190회차)."
+      },
+      "condLockedAt": "2026-09-20",
+      "evidence": [],
+      "confidence": 0.5,
+      "ourUse": "이 가정 위에 우리 자리 배치가 통째로 서 있다",
+      "condHash": "503d14b33d14"
     }
   ]
 }
