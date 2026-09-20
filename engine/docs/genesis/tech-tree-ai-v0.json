@@ -21,7 +21,9 @@
       "needs": [],
       "state": "open",
       "openedAt": "2023-03-01",
-      "evidence": ["gpt-3.5-turbo (2023-03-01, 모델 감시)"],
+      "evidence": [
+        "gpt-3.5-turbo (2023-03-01, 모델 감시)"
+      ],
       "confidence": 0.95,
       "ourUse": "로키 전체의 바닥"
     },
@@ -29,10 +31,14 @@
       "id": "fn-call",
       "name": "도구를 부른다",
       "unlocks": "모델이 말만 하지 않고 함수·API 를 실제로 호출한다 → 에이전트의 씨앗",
-      "needs": ["chat-instruct"],
+      "needs": [
+        "chat-instruct"
+      ],
       "state": "open",
       "openedAt": "2023-06-13",
-      "evidence": ["gpt-4-0613 함수 호출 (2023-06, 모델 감시)"],
+      "evidence": [
+        "gpt-4-0613 함수 호출 (2023-06, 모델 감시)"
+      ],
       "confidence": 0.9,
       "ourUse": "쓴다(검색·파일)"
     },
@@ -40,10 +46,15 @@
       "id": "struct-out",
       "name": "모양이 보장된 출력",
       "unlocks": "코드가 모델 답을 믿고 파싱한다 — 배관이 가능해진다",
-      "needs": ["fn-call"],
+      "needs": [
+        "fn-call"
+      ],
       "state": "open",
       "openedAt": "2023-11-06",
-      "evidence": ["JSON 모드 (2023-11)", "구조화 출력 (2024-08)"],
+      "evidence": [
+        "JSON 모드 (2023-11)",
+        "구조화 출력 (2024-08)"
+      ],
       "confidence": 0.9,
       "ourUse": "로키의 모든 호출이 이것이다(generateStructuredOutput)"
     },
@@ -51,10 +62,14 @@
       "id": "ctx-128k",
       "name": "긴 맥락 (10만 토큰대)",
       "unlocks": "파일 하나를 통째로 넣고 고친다",
-      "needs": ["chat-instruct"],
+      "needs": [
+        "chat-instruct"
+      ],
       "state": "open",
       "openedAt": "2023-11-06",
-      "evidence": ["gpt-4-turbo (2024-04, 모델 감시)"],
+      "evidence": [
+        "gpt-4-turbo (2024-04, 모델 감시)"
+      ],
       "confidence": 0.85,
       "ourUse": "쓴다 — 70KB 게임 파일을 통째로 넣는다"
     },
@@ -62,10 +77,14 @@
       "id": "vision-in",
       "name": "그림을 읽는다",
       "unlocks": "화면을 보고 판정한다 — 심판자가 가능해진다",
-      "needs": ["chat-instruct"],
+      "needs": [
+        "chat-instruct"
+      ],
       "state": "open",
       "openedAt": "2024-05-13",
-      "evidence": ["gpt-4o (2024-05-13, 모델 감시)"],
+      "evidence": [
+        "gpt-4o (2024-05-13, 모델 감시)"
+      ],
       "confidence": 0.95,
       "ourUse": "쓴다 — 고리 심판자가 화면 석 장을 본다(179회차)"
     },
@@ -73,10 +92,14 @@
       "id": "cheap-decent",
       "name": "싼 값에 쓸 만함",
       "unlocks": "판마다 여러 번 불러도 값이 견딘다 → 고리·재시도가 가능",
-      "needs": ["chat-instruct"],
+      "needs": [
+        "chat-instruct"
+      ],
       "state": "open",
       "openedAt": "2024-07-18",
-      "evidence": ["gpt-4o-mini (2024-07, 모델 감시)"],
+      "evidence": [
+        "gpt-4o-mini (2024-07, 모델 감시)"
+      ],
       "confidence": 0.9,
       "ourUse": "쓴다"
     },
@@ -84,10 +107,15 @@
       "id": "reason-rl",
       "name": "생각하고 답한다 (추론 모델)",
       "unlocks": "여러 단계 문제를 한 번에 푼다",
-      "needs": ["chat-instruct"],
+      "needs": [
+        "chat-instruct"
+      ],
       "state": "open",
       "openedAt": "2024-09-12",
-      "evidence": ["o1 (2024-09)", "o3-mini (2025-01-17, 모델 감시)"],
+      "evidence": [
+        "o1 (2024-09)",
+        "o3-mini (2025-01-17, 모델 감시)"
+      ],
       "confidence": 0.9,
       "ourUse": "쓴다(판단 자리) — 다만 작은 고침엔 껐다(191회차: 시간 반)"
     },
@@ -95,10 +123,14 @@
       "id": "ctx-1m",
       "name": "100만 토큰 맥락",
       "unlocks": "저장소 전체·긴 기록을 한 번에 본다",
-      "needs": ["ctx-128k"],
+      "needs": [
+        "ctx-128k"
+      ],
       "state": "open",
       "openedAt": "2025-04-10",
-      "evidence": ["gpt-4.1 (2025-04-10, 모델 감시)"],
+      "evidence": [
+        "gpt-4.1 (2025-04-10, 모델 감시)"
+      ],
       "confidence": 0.85,
       "ourUse": "안 쓴다 — 우리는 손댈 파일만 골라 넣는다(값 때문에)"
     },
@@ -106,10 +138,14 @@
       "id": "img-gen-api",
       "name": "그림을 만든다 (API)",
       "unlocks": "게임·영상의 재료를 만든다",
-      "needs": ["chat-instruct"],
+      "needs": [
+        "chat-instruct"
+      ],
       "state": "open",
       "openedAt": "2025-04-24",
-      "evidence": ["gpt-image-1 (2025-04-24, 모델 감시)"],
+      "evidence": [
+        "gpt-image-1 (2025-04-24, 모델 감시)"
+      ],
       "confidence": 0.95,
       "ourUse": "쓴다(Nova)"
     },
@@ -117,10 +153,17 @@
       "id": "agentic-code",
       "name": "저장소를 스스로 고친다",
       "unlocks": "사람이 줄 단위로 안 짚어도 코드가 고쳐진다",
-      "needs": ["fn-call", "ctx-128k", "reason-rl"],
+      "needs": [
+        "fn-call",
+        "ctx-128k",
+        "reason-rl"
+      ],
       "state": "open",
       "openedAt": "2025-09-10",
-      "evidence": ["gpt-5-codex (2025-09-10, 모델 감시)", "claude 계열 코딩 에이전트"],
+      "evidence": [
+        "gpt-5-codex (2025-09-10, 모델 감시)",
+        "claude 계열 코딩 에이전트"
+      ],
       "confidence": 0.85,
       "ourUse": "쓴다 — 조각 고침(patch.ts)이 이 칸 위에 있다"
     },
@@ -128,10 +171,15 @@
       "id": "realtime-voice",
       "name": "실시간 음성 대화",
       "unlocks": "말로 주고받는다 — 타자 없이",
-      "needs": ["chat-instruct", "cheap-decent"],
+      "needs": [
+        "chat-instruct",
+        "cheap-decent"
+      ],
       "state": "open",
       "openedAt": "2025-08-27",
-      "evidence": ["gpt-realtime (2025-08-27, 모델 감시)"],
+      "evidence": [
+        "gpt-realtime (2025-08-27, 모델 감시)"
+      ],
       "confidence": 0.9,
       "ourUse": "안 쓴다"
     },
@@ -139,10 +187,15 @@
       "id": "video-gen-api",
       "name": "영상을 만든다 (API)",
       "unlocks": "글자 카드가 아니라 진짜 장면",
-      "needs": ["img-gen-api"],
+      "needs": [
+        "img-gen-api"
+      ],
       "state": "open",
       "openedAt": "2025-10-05",
-      "evidence": ["sora-2 (2025-10-05, 모델 감시)", "veo-3.1 (2026, 우리가 씀)"],
+      "evidence": [
+        "sora-2 (2025-10-05, 모델 감시)",
+        "veo-3.1 (2026, 우리가 씀)"
+      ],
       "confidence": 0.95,
       "ourUse": "쓴다 — 단 sora-2 는 2026-09-24 폐기, Veo 3.1 로 갈아탐(182회차)"
     },
@@ -150,10 +203,15 @@
       "id": "long-agent-hours",
       "name": "몇 시간 혼자 도는 에이전트",
       "unlocks": "사람이 지켜보지 않아도 큰 일이 끝난다",
-      "needs": ["agentic-code", "ctx-1m"],
+      "needs": [
+        "agentic-code",
+        "ctx-1m"
+      ],
       "state": "open",
       "openedAt": "2025-11-20",
-      "evidence": ["gpt-5.1-codex-max (2025-11-20, 모델 감시)"],
+      "evidence": [
+        "gpt-5.1-codex-max (2025-11-20, 모델 감시)"
+      ],
       "confidence": 0.7,
       "ourUse": "반쯤 — 우리 고리는 몇 분이다"
     },
@@ -161,10 +219,15 @@
       "id": "img-edit-keep",
       "name": "같은 것을 유지한 채 고친다 (그림)",
       "unlocks": "같은 캐릭터의 옷만 바꾼다 — 자산 일관성",
-      "needs": ["img-gen-api", "vision-in"],
+      "needs": [
+        "img-gen-api",
+        "vision-in"
+      ],
       "state": "open",
       "openedAt": "2026-09-04",
-      "evidence": ["gpt-image-2.5-sunburst '정밀 편집' (2026-09-04, 모델 감시)"],
+      "evidence": [
+        "gpt-image-2.5-sunburst '정밀 편집' (2026-09-04, 모델 감시)"
+      ],
       "confidence": 0.6,
       "ourUse": "안 쓴다 — 시장조사에서 '한 판 시험' 으로 남겨 둠(181회차)"
     },
@@ -172,10 +235,17 @@
       "id": "cheap-frontier",
       "name": "최전선 성능이 싸진다",
       "unlocks": "판마다 여러 번, 여러 자리에 보낸다 → 섞어 보내기·고리가 값을 견딘다",
-      "needs": ["reason-rl", "cheap-decent"],
+      "needs": [
+        "reason-rl",
+        "cheap-decent"
+      ],
       "state": "open",
       "openedAt": "2026-06-23",
-      "evidence": ["gpt-5.6-luna $0.2/$1.2 (2026-06-23, 모델 감시)", "7/30 80% 인하 (공표)", "우리 실측: 고장 셋 3/3·13초·$0.0036 (190회차)"],
+      "evidence": [
+        "gpt-5.6-luna $0.2/$1.2 (2026-06-23, 모델 감시)",
+        "7/30 80% 인하 (공표)",
+        "우리 실측: 고장 셋 3/3·13초·$0.0036 (190회차)"
+      ],
       "confidence": 0.95,
       "ourUse": "쓴다 — 로키 주력 자리"
     },
@@ -183,32 +253,48 @@
       "id": "cheap-vision",
       "name": "싼 자리가 그림을 본다",
       "unlocks": "심판자를 매 바퀴 돌려도 값이 안 든다",
-      "needs": ["vision-in", "cheap-frontier"],
+      "needs": [
+        "vision-in",
+        "cheap-frontier"
+      ],
       "state": "open",
       "openedAt": "2026-06-23",
-      "evidence": ["우리 실측: luna 가 파랑 바탕·노랑 네모·왼쪽을 1.8초에 맞힘 (190회차)"],
+      "evidence": [
+        "우리 실측: luna 가 파랑 바탕·노랑 네모·왼쪽을 1.8초에 맞힘 (190회차)"
+      ],
       "confidence": 0.95,
       "ourUse": "쓴다 — 고리 심판 바퀴당 $0.001~0.003"
     },
     {
-      "id": "live-1",
-      "name": "??? (gpt-live-1)",
-      "unlocks": "모른다 — 2026-09-08 에 목록에 나타났는데 우리가 무엇인지 확인 안 했다",
-      "needs": ["realtime-voice"],
+      "id": "full-duplex-voice",
+      "name": "동시에 듣고 말한다 (full-duplex 음성)",
+      "unlocks": "차례를 기다리지 않는 대화 — 말을 끊고 끼어들 수 있다. 타자 대신 말로 시킨다",
+      "needs": [
+        "realtime-voice"
+      ],
       "state": "open",
-      "openedAt": "2026-09-08",
-      "evidence": ["gpt-live-1 (2026-09-08, 모델 감시)"],
-      "confidence": 0.3,
-      "ourUse": "모름 — **확인할 것**"
+      "openedAt": "2026-09-10",
+      "evidence": [
+        "gpt-live-1 이 우리 모델 감시 목록에 2026-09-08 등장 — **공표(09-10)보다 이틀 빨랐는데 우리가 안 봤다**",
+        "OpenAI 공표: API 2026-09-10, 분당 $0.05(음성 층만), 목소리 12개, Full Duplex Bench 에서 gpt-realtime-2.1 대비 +30점",
+        "ChatGPT 쪽 먼저 열림 2026-07-08 — 능력이 열린 날과 **지을 수 있게 된 날**이 다르다",
+        "출처: https://openai.com/index/introducing-gpt-live-1-in-the-api/"
+      ],
+      "confidence": 0.85,
+      "ourUse": "안 쓴다 — 로키는 타자뿐. 아이패드에서 말로 시키는 길이 열려 있다"
     },
-
     {
       "id": "cheap-video",
       "name": "영상이 싸진다 (초당 $0.01 이하)",
       "unlocks": "광고·컷신을 여러 판 돌려 고른다 — 지금은 한 판에 $0.4 라 못 고른다",
-      "needs": ["video-gen-api", "cheap-frontier"],
+      "needs": [
+        "video-gen-api",
+        "cheap-frontier"
+      ],
       "state": "closed",
-      "evidence": ["지금: Veo 3.1 lite 초당 $0.05 (우리 실측 182회차), Sora 2 는 $0.10 이었고 폐기"],
+      "evidence": [
+        "지금: Veo 3.1 lite 초당 $0.05 (우리 실측 182회차), Sora 2 는 $0.10 이었고 폐기"
+      ],
       "confidence": 0.6,
       "ourUse": "-"
     },
@@ -216,9 +302,13 @@
       "id": "video-long-consistent",
       "name": "1분 넘게 인물·장면이 안 흔들리는 영상",
       "unlocks": "컷신·짧은 애니메이션을 AI 가 낸다",
-      "needs": ["video-gen-api"],
+      "needs": [
+        "video-gen-api"
+      ],
       "state": "closed",
-      "evidence": ["지금 한 번에 4·6·8초 (Veo 3.1 규격, 우리가 직접 붙여 봄)"],
+      "evidence": [
+        "지금 한 번에 4·6·8초 (Veo 3.1 규격, 우리가 직접 붙여 봄)"
+      ],
       "confidence": 0.7,
       "ourUse": "-"
     },
@@ -226,9 +316,13 @@
       "id": "3d-native-rigged",
       "name": "게임에 바로 쓰는 3D (토폴로지·리깅까지)",
       "unlocks": "3D 게임 자산을 사람 손 없이",
-      "needs": ["img-gen-api"],
+      "needs": [
+        "img-gen-api"
+      ],
       "state": "closed",
-      "evidence": ["지금: Meshy·Tripo 가 메시는 내지만 토폴로지가 약점 (시장조사 181회차)"],
+      "evidence": [
+        "지금: Meshy·Tripo 가 메시는 내지만 토폴로지가 약점 (시장조사 181회차)"
+      ],
       "confidence": 0.6,
       "ourUse": "반쯤(Meshy)"
     },
@@ -236,7 +330,10 @@
       "id": "agent-days",
       "name": "며칠 혼자 도는 에이전트",
       "unlocks": "주말에 맡겨 두면 월요일에 큰 게 끝나 있다",
-      "needs": ["long-agent-hours", "cheap-frontier"],
+      "needs": [
+        "long-agent-hours",
+        "cheap-frontier"
+      ],
       "state": "closed",
       "evidence": [],
       "confidence": 0.5,
@@ -246,9 +343,13 @@
       "id": "on-device-frontier",
       "name": "노트북에서 도는 최전선급",
       "unlocks": "값이 0 이 된다 — 고리를 무한히 돈다",
-      "needs": ["cheap-frontier"],
+      "needs": [
+        "cheap-frontier"
+      ],
       "state": "closed",
-      "evidence": ["오픈 모델 GLM-5.2 가 SWE-bench Pro 62.1% 로 gpt-5.5 를 넘음 — 단 GPU 필요 (시장조사 181회차)"],
+      "evidence": [
+        "오픈 모델 GLM-5.2 가 SWE-bench Pro 62.1% 로 gpt-5.5 를 넘음 — 단 GPU 필요 (시장조사 181회차)"
+      ],
       "confidence": 0.4,
       "ourUse": "-"
     },
@@ -256,11 +357,33 @@
       "id": "game-from-one-order",
       "name": "주문 하나로 '해 볼 만한' 게임이 나온다",
       "unlocks": "사장님의 최종 목표 — 말하면 게임이 된다",
-      "needs": ["agentic-code", "cheap-vision", "3d-native-rigged", "agent-days"],
+      "needs": [
+        "agentic-code",
+        "cheap-vision",
+        "3d-native-rigged",
+        "agent-days"
+      ],
       "state": "closed",
-      "evidence": ["지금: 웹 2D 는 2~3분에 나오고 돌려 보고 고친다(179회차). 3D·긴 게임은 못 한다."],
+      "evidence": [
+        "지금: 웹 2D 는 2~3분에 나오고 돌려 보고 고친다(179회차). 3D·긴 게임은 못 한다."
+      ],
       "confidence": 0.5,
       "ourUse": "이게 로키가 가는 곳"
+    },
+    {
+      "id": "voice-thinking-split",
+      "name": "음성 층과 생각 층이 갈린다",
+      "unlocks": "목소리는 싼 층이 맡고 생각은 우리가 고른 모델이 한다 — 음성에 우리 자리 배치가 그대로 들어간다",
+      "needs": [
+        "full-duplex-voice"
+      ],
+      "state": "open",
+      "openedAt": "2026-09-10",
+      "evidence": [
+        "gpt-live-1 은 음성 층만 과금하고 뒤에 세울 생각 모델(astra/luna/terra·타사)을 고르게 한다 — 공표 (https://openai.com/index/introducing-gpt-live-1-in-the-api/)"
+      ],
+      "confidence": 0.75,
+      "ourUse": "안 쓴다 — 쓰면 섞어 보내기가 음성까지 덮는다"
     }
   ]
 }
