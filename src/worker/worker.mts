@@ -52,6 +52,26 @@ async function runOne(id: string, employee: string, why: string) {
 // 못 보고 → 검사가 안 돌고 → 다음 일이 안 풀린다. 09-08 에 판 셋(16:23·16:27·16:39)이
 // 그렇게 멈춰 있었다. 사람이 보고 있어야만 회사가 돈다면 그것은 자동이 아니다.
 // 화면이 열려 있어도 같은 함수가 돌지만, 이미 붙은 것은 다시 안 붙는다(붙은 표시를 보고 거른다).
+/**
+ * **대화에 안 붙은 일을 쓸어 준다** (201회차 09-21). 사장님: *"대화에 안 붙은 일이 또 어디서 사람 손을 기다리는지 훑어보는 게 좋겠어요."*
+ *
+ * 연장통·무인 판이 만든 업무는 대화 턴이 없다. 그러면 `collectWorkReturns` 가 못 찾고 → `releaseEmployee` 가 영영 안 불리고
+ * → 그 직원이 영영 묶인다. 09-20 무인 판이 과제 8개 중 1개만 한 이유이고, Vid 는 09-19 부터 38시간 묶여 있었다.
+ *
+ * **대화에 붙은 일은 손대지 않는다** — 그건 결과를 먼저 붙이고 나서 풀어야 한다(안 그러면 사장님이 결과를 영영 못 본다).
+ * 여기서 푸는 것은 **아무도 기다리지 않는 일**뿐이다.
+ */
+async function sweepTick() {
+  const { releaseEmployee } = await import("@/lib/assignments/service");
+  const { data: stuckA } = await db.from("assignments").select("id, title, company_employee_id").in("status", ["submitted", "failed"]).limit(50);
+  for (const a of stuckA ?? []) {
+    const { data: m } = await db.from("conversation_messages").select("id").eq("attachments->assignment->>id", a.id as string).limit(1).maybeSingle();
+    if (m) continue; // 대화에 붙은 일 — 결과 붙이기가 맡는다
+    const r = await releaseEmployee(db, a.company_employee_id as string, a.id as string);
+    if (r.released.length) console.log(`${stamp()} [쓸기] 대화에 안 붙은 일을 풀었다: ${String(a.title).slice(0, 28)}${r.started ? ` → 다음 일 시작 ${r.started.slice(0, 8)}` : ""}`);
+  }
+}
+
 const RETURNS_EVERY = 4;   // 15초 × 4 = 1분
 const WALLET_EVERY = 40;   // 15초 × 40 = 10분
 const PING_EVERY = 20;     // 15초 × 20 = 5분 — 뽑은 시각에서 최대 5분 늦는다. 그 정도는 랜덤에 묻힌다.
@@ -108,16 +128,23 @@ async function walletTick() {
     console.log(`${stamp()} [지갑] ${w.vendor} ${w.note}`);
   }
 }
+/**
+ * 201회차 09-21: **살아 있는 업무에서 출발한다.** 전에는 "최근 24시간 안에 업무가 실린 메시지" 에서 출발했다 —
+ * 그러면 ① 대화가 24시간보다 오래되면 그 일은 영영 안 풀리고 ② 메시지 200개·대화 20개 상한 밖으로 밀리면 또 안 풀린다.
+ * 점검(autonomy_audit.mts) 실측: 지금 닿는 대화 **0개**, 살아 있는 업무 **9개 전부 영영 안 풀림**.
+ * 살아 있는 업무는 몇 개 안 되므로 거기서 출발하는 것이 싸고 확실하다.
+ */
 async function returnsTick() {
-  const since = new Date(Date.now() - 24 * 3600_000).toISOString();
-  const { data: rows } = await db
-    .from("conversation_messages")
-    .select("conversation_id")
-    .not("attachments->assignment->>id", "is", null)
-    .gte("created_at", since)
-    .order("created_at", { ascending: false })
-    .limit(200);
-  const ids = [...new Set((rows ?? []).map((r) => r.conversation_id as string))].slice(0, 20);
+  const LIVE = ["assigned", "queued", "working", "waiting", "submitted", "failed", "needs_changes", "revision_queued", "revising"];
+  const { data: liveA } = await db.from("assignments").select("id").in("status", LIVE).limit(200);
+  const liveIds = (liveA ?? []).map((a) => a.id as string);
+  const convIds = new Set<string>();
+  for (let i = 0; i < liveIds.length; i += 25) {
+    const chunk = liveIds.slice(i, i + 25);
+    const { data: ms } = await db.from("conversation_messages").select("conversation_id, aid:attachments->assignment->>id").in("attachments->assignment->>id", chunk);
+    for (const m of ms ?? []) convIds.add(m.conversation_id as string);
+  }
+  const ids = [...convIds].slice(0, 40);
   for (const id of ids) {
     try {
       const r = await collectWorkReturns(db, id);
@@ -217,6 +244,7 @@ for (;;) {
     try { await tick(); } catch (e) { console.error(`${stamp()} tick 실패`, e instanceof Error ? e.message : e); }
     if (tickN % RETURNS_EVERY === 0) {
       try { await returnsTick(); } catch (e) { console.error(`${stamp()} 돌려놓기 실패`, e instanceof Error ? e.message : e); }
+      try { await sweepTick(); } catch (e) { console.error(`${stamp()} 쓸기 실패`, e instanceof Error ? e.message : e); }
     }
     if (tickN % DAILY_EVERY === 0) {
       try { await dailyTick(); } catch (e) { console.error(`${stamp()} 자가진화 실패`, e instanceof Error ? e.message : e); }
