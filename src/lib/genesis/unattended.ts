@@ -54,6 +54,13 @@ export type UnattendedRun = {
    * 그래서 **꺼지면 멈추는 쪽**으로 뒤집었다: 로키는 이 신호가 오래됐으면 일을 안 집는다(기본이 거부).
    */
   heartbeat?: string;
+  /**
+   * **창을 닫은 시각** (203회차 09-21). 판이 멈춘 뒤에도 깃발이 계획한 시간 내내 로키를 막으면,
+   * 상한에 1시간 만에 닿은 판이 **사장님의 남은 5시간까지 잠근다**(09-21 에 한 번 당한 그 모양이다).
+   * 그래서 문지기는 멈출 때 **남은 무인 대기열을 먼저 치우고**, 치운 것이 확인되면 이 값을 적는다.
+   * 적히면 로키는 평소 운영으로 돌아간다 — 치울 것이 남아 있으면 안 적히고, 창은 닫힌 채로 있다(안전 쪽이 기본).
+   */
+  closedAt?: string;
 };
 
 /** 생존 신호가 이만큼 낡으면 로키는 일을 안 집는다. 문지기는 1분마다 남긴다 — 5분이면 확실히 죽은 것. */
@@ -103,6 +110,8 @@ export async function blockedByUnattended(db: Supabase): Promise<string | null> 
     // 깃발의 목적은 "도는 동안 문지기 말을 듣는 것" 이지 "끝난 뒤에도 잠그는 것" 이 아니다.
     const endsAt = new Date(a.run.startedAt).getTime() + a.run.hours * 3600_000;
     if (Date.now() > endsAt) return null; // 판이 끝났다 — 평소 운영으로 돌아간다
+    // 문지기가 남은 대기열을 치우고 창을 닫았다 → 더 막을 이유가 없다(무인 일이 안 남아 있다).
+    if (a.run.closedAt) return null;
     if (a.run.stopped) return `무인 판이 멈춤: ${a.run.stopReason ?? "이유 없음"}`;
     // **꺼지면 멈춘다.** 신호가 없거나 낡았으면 문지기가 죽은 것이다 — 그때 로키가 계속 도는 것이 제일 위험하다.
     const beat = a.run.heartbeat ? Date.parse(a.run.heartbeat) : 0;
@@ -121,12 +130,30 @@ export async function startRun(db: Supabase, run: UnattendedRun): Promise<{ ok: 
   return { ok: true, id: data.id as string };
 }
 
-/** 문지기가 멈춘다. 로키는 다음에 일을 집을 때 이 깃발을 본다. */
-export async function stopRun(db: Supabase, id: string, run: UnattendedRun, reason: string): Promise<void> {
+/**
+ * 문지기가 멈춘다. 로키는 다음에 일을 집을 때 이 깃발을 본다.
+ * `closeWindow` 는 **남은 무인 대기열을 치운 것이 확인됐을 때만** 참이어야 한다 — 남겨 둔 채 창을 열면
+ * 로키가 그 일을 계속 집어 상한을 넘긴다. 판단은 문지기(`budget_guard.mts`)가 하고, 여기선 적기만 한다.
+ */
+export async function stopRun(db: Supabase, id: string, run: UnattendedRun, reason: string, closeWindow = false): Promise<void> {
   await db.from("genesis_runs").update({
     status: "done", finished_at: new Date().toISOString(),
-    result: { ...run, stopped: true, stopReason: reason, stoppedAt: new Date().toISOString() },
+    result: { ...run, stopped: true, stopReason: reason, stoppedAt: new Date().toISOString(), ...(closeWindow ? { closedAt: new Date().toISOString() } : {}) },
   }).eq("id", id);
+}
+
+/**
+ * **남은 무인 대기열을 치운다.** 판이 멈추면 그 판의 일도 끝이다 — 안 치우면 창을 열 수 없고,
+ * 창을 못 열면 사장님이 학교에서 돌아와도 로키가 안 움직인다.
+ * 돌고 있는 것은 **건드리지 않는다**(실험을 끄지 않는다 — 09-21 상시 규칙). 안 시작한 것만 치운다.
+ * 돌려주는 값: `{ cancelled, left }`. `left === 0` 일 때만 창을 열어도 안전하다.
+ */
+export async function clearUnattendedQueue(db: Supabase): Promise<{ cancelled: number; left: number }> {
+  const { data: done } = await db.from("assignments").update({ status: "cancelled", cancelled_at: new Date().toISOString() })
+    .eq("role_input_json->>unattended", "true").eq("status", "waiting").select("id");
+  const { count: left } = await db.from("assignments").select("id", { count: "exact", head: true })
+    .eq("role_input_json->>unattended", "true").eq("status", "waiting");
+  return { cancelled: done?.length ?? 0, left: left ?? 0 };
 }
 
 /** 문지기가 본 것 + **생존 신호**를 적는다(멈추진 않는다). 이걸 못 적으면 5분 뒤 로키가 스스로 멈춘다. */

@@ -9,7 +9,7 @@
  * 이 프로세스는 **세고 정한다**. 로키는 깃발에 복종만 한다(src/lib/genesis/unattended.ts).
  */
 const { createServiceClient } = await import("../../src/lib/supabase/service");
-const { planFor, activeRun, startRun, stopRun, noteSeen } = await import("../../src/lib/genesis/unattended");
+const { planFor, activeRun, startRun, stopRun, noteSeen, clearUnattendedQueue } = await import("../../src/lib/genesis/unattended");
 const db = createServiceClient();
 const arg = (k: string) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : undefined; };
 const hm = () => new Date().toLocaleTimeString("ko-KR", { hour12: false });
@@ -91,7 +91,17 @@ async function look() {
   else if ((needHuman ?? 0) >= run.humanReviewCap) reason = `사장님이 볼 산출물 ${needHuman}개 — 상한 ${run.humanReviewCap}. 더 쌓으면 검토가 일요일 밤을 다 먹는다`;
   else if (hasWork && stallMin >= (run.stallMinutes ?? 30)) reason = `**진행 없음 ${stallMin}분** — 할 일 ${(liveEx ?? 0) + (liveAs ?? 0)}개·묶인 직원 ${held ?? 0}명 인데 아무것도 안 움직인다(막혔다)`;
   else if (Date.now() > endsAt.getTime()) reason = "계획한 시간이 다 됐다";
-  if (reason) { await stopRun(db, id, run, reason); console.log(`  → **멈춤**: ${reason}`); return null; }
+  if (reason) {
+    // **먼저 치우고, 그다음에 창을 연다** (203회차 09-21). 판이 멈췄는데 깃발이 계획한 6시간 내내 살아 있으면
+    // 상한에 1시간 만에 닿은 판이 사장님의 남은 5시간까지 잠근다. 그렇다고 그냥 열면 남은 대기열을 계속 집어 상한을 넘긴다.
+    // 그래서 순서가 있다: 안 시작한 무인 일을 치운다 → **남은 게 0인지 확인한다** → 그때만 창을 연다.
+    const { cancelled, left } = await clearUnattendedQueue(db);
+    const close = left === 0;
+    await stopRun(db, id, run, reason, close);
+    console.log(`  → **멈춤**: ${reason}`);
+    console.log(`  → 남은 대기열 ${cancelled}개 치움 · ${close ? "창을 열었다 — 로키는 평소 운영으로 돌아간다" : `**창은 닫은 채로 둔다** — 안 치워진 무인 일이 ${left}개 남았다`}`);
+    return null;
+  }
   await noteSeen(db, id, run, seen);
   return run;
 }

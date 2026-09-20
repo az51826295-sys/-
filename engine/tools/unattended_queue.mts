@@ -14,17 +14,15 @@ const CO = "00add05a-e81d-4e04-9980-34bb412a8780";
 const DEV = "e660c68b-5cdf-47ba-9673-5dded5cb8d83";
 const arg = (k: string) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : undefined; };
 
-/** 얼린 과제 — 작고, 웹이고, 고리가 스스로 판정할 수 있는 것들. */
-const TASKS = [
-  ["터치로 하는 풍선 터뜨리기", "30초 제한, 점수 표시, 풍선이 아래에서 위로 떠오른다. HTML 한 파일."],
-  ["숫자 맞추기 게임", "1~100 중 하나를 맞춘다. 위/아래 힌트, 시도 횟수 표시. HTML 한 파일."],
-  ["반응속도 시험기", "초록으로 바뀌면 누른다. 5번 재고 평균을 보여 준다. HTML 한 파일."],
-  ["기억력 카드 짝 맞추기", "카드 12장(6쌍), 뒤집어서 짝 맞추기, 남은 시간 60초. HTML 한 파일."],
-  ["떨어지는 블록 피하기", "좌우 방향키로 피한다, 목숨 3개, 점수 표시. HTML 한 파일."],
-  ["단어 타자 연습", "단어가 떨어지면 타자로 쳐서 없앤다, 30초, 정확도 표시. HTML 한 파일."],
-  ["간단한 그림판", "마우스로 그리고 색 5가지, 지우개, 전체 지우기. HTML 한 파일."],
-  ["타이머와 스톱워치", "탭 두 개, 시작·정지·초기화, 큰 숫자. HTML 한 파일."],
-];
+/**
+ * 얼린 과제 — **파일에서 읽는다**(203회차 09-21). 손으로 적지 않는다:
+ * 로키가 비율만 받아 낸 뒤(`queue_gen.mts`) 무게를 엇갈려 깔고 순서까지 얼였다(`queue_freeze.mts`).
+ * **순서를 바꾸면 다음 판과 못 견준다** — 그래서 파일 그대로, 적힌 순서대로 넣는다.
+ */
+type Frozen = { items: { n: number; weight: string; title: string; description: string; expectFail: boolean }[]; mix: Record<string, number>; estimate: Record<string, unknown> };
+const { readFileSync } = await import("node:fs");
+const frozen = JSON.parse(readFileSync("engine/docs/genesis/unattended-queue-2.json", "utf8")) as Frozen;
+const TASKS: [string, string][] = frozen.items.map((x) => [x.title, x.description]);
 
 async function show() {
   const { data } = await db.from("assignments").select("id, title, status, created_at").eq("company_id", CO).in("status", ["waiting", "assigned", "queued", "working"]).order("created_at");
@@ -39,12 +37,12 @@ if (process.argv.includes("--clear")) {
 }
 if (!arg("--fill")) { await show(); process.exit(0); }
 
-const n = Math.min(Number(arg("--fill")), TASKS.length * 3);
+const n = Math.min(Number(arg("--fill")), TASKS.length);
 const live = await show();
 if (live.length) { console.error("이미 대기열에 있다 — --clear 먼저"); process.exit(1); }
 for (let i = 0; i < n; i++) {
-  const [title, desc] = TASKS[i % TASKS.length];
-  const suffix = i >= TASKS.length ? ` (${Math.floor(i / TASKS.length) + 1}판)` : "";
+  const [title, desc] = TASKS[i];
+  const suffix = "";
   // 첫 개만 바로 시작, 나머지는 waiting — releaseEmployee 가 차례로 꺼낸다(177회차에 고친 길).
   const first = i === 0;
   const { data: a, error } = await db.from("assignments").insert({
