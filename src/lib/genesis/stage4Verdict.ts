@@ -88,10 +88,13 @@ export function judgeStage4(run: Stage4Run): Stage4Verdict {
   if (byMachine.length) return { kind: "못 잼", why: `${byMachine.length}번은 사람이 안 봤다 — 2·3번은 사람 칸이다` };
 
   // ── 통과·실패
-  const ratio = (r: FixRound) => (r.totalLines > 0 ? r.changedLines / r.totalLines : 1);
+  // **분모는 원본 줄 수의 두 배**다 (4판). numstat 은 한 줄 수정을 삭제1+추가1=2 로 세므로,
+  // 분모를 원본 그대로 두면 "절반" 이 실효로는 4분의 1 이 된다(사장님 09-21). 두 배로 잡으면
+  // **통째로 다시 쓰기가 정확히 1.0** 이고 0.5 는 "파일의 절반을 다시 썼다" 가 된다.
+  const ratio = (r: FixRound) => (r.totalLines > 0 ? r.changedLines / (2 * r.totalLines) : 1);
   const whole = rounds.filter((r) => !r.patched || ratio(r) >= WHOLE_REWRITE);
   const broke = rounds.filter((r) => r.broke === true);
-  const cum = cumulative.originalLines > 0 ? cumulative.changedLines / cumulative.originalLines : 1;
+  const cum = cumulative.originalLines > 0 ? cumulative.changedLines / (2 * cumulative.originalLines) : 1;
   const base = { rounds: rounds.length, wholeRewrites: whole.length, broke: broke.length, cumulativeRatio: Number(cum.toFixed(3)) };
   const why = [
     !ownerSaidDone ? "사장님이 아직 됐다고 안 하셨다" : null,
