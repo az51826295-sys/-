@@ -91,14 +91,11 @@ function meterAi(ai: AIProvider, db: Db, scope: UsageScope): AIProvider {
         // field would price every routine call at the judgment rate — the
         // ledger would still balance and every number in it would be wrong.
         model: result.model,
-        /**
-         * **아직 안 적는다 — 원장에 그 칸이 없다** (205회차 09-22).
-         *
-         * `result.answeredBy` 가 공급자에서 여기까지 오고 있다. 그걸 `model_usage` 에 남기려면
-         * 칸을 더해야 하고, 그건 마이그레이션이다. **09-21 에 접근 토큰을 폐기해서 지금은 못 올린다.**
-         * 새 토큰이 생기면 `answered_by text` 한 칸과 이 줄 하나면 된다.
-         * 그전까지는 **안 적힌다는 사실을 적어 둔다** — 적히는 줄 알고 나중에 빈 칸을 보는 것보다 낫다.
-         */
+           // **응답이 스스로 말한 이름**(205회차 09-22). 위의 `model` 은 우리가 부른 이름이라
+        // 별칭이 어디로 넘어가는지를 못 본다. 09-21 에 deepseek-v4-flash 가 deepseek-flash 로
+        // 넘어가는 걸 찾고도 **언제** 바뀜는지를 못 알아낸 이유가 이 칸이 없어서였다.
+        // 값은 여전히 위의 `model` 로 매긴다 — 이 칸은 보기 위한 것이지 썰에 쓰는 것이 아니다.
+        answeredBy: result.answeredBy ?? null,
         purpose: params.schemaName,
         inputTokens: result.inputTokens,
         outputTokens: result.outputTokens,
@@ -150,6 +147,8 @@ async function record(
     routing?: Routing;
     /** Pictures, seconds — whatever a non-token backend counts. */
     quantity?: number;
+    /** 응답이 스스로 말한 이름. 공급자가 안 주면 null. */
+    answeredBy?: string | null;
   },
 ) {
   // Priced outside the try on purpose. Everything below swallows its errors so
@@ -175,6 +174,7 @@ async function record(
     output_tokens: call.outputTokens,
     unit: unitFor(call.model),
     quantity: call.quantity ?? null,
+    answered_by: call.answeredBy ?? null,
     cost_usd: cost,
     work_execution_id: scope.workExecutionId ?? null,
     project_id: scope.projectId ?? null,
