@@ -32,6 +32,18 @@ export type FixRound = {
   brokeBy: Eyes;
   /** 이 회차를 **다시 했나**. 한 번이라도 참이면 그 판은 무효다. */
   redone: boolean;
+  /**
+   * **고친 시각**과 **사장님이 확인한 시각** (5판, 2026-09-22).
+   *
+   * 3판에 *"확인은 그 회차 안에서 끝낸다"* 라고 적었는데 **회차가 어디서 끝나는지를 안 정했다.**
+   * 아침에 고치고 저녁에 확인하는 것이 "그 회차 안" 인가? 둘 다 말이 됐다(사장님 09-22).
+   *
+   * **정한다: 회차는 사장님 확인까지다.** 며칠이 걸려도 된다.
+   * 대신 **다음 회차는 앞 회차 확인이 끝난 뒤에만 시작한다** — 그러면 확인 안 된 회차를
+   * 뒤에 두고 앞서 갈 수가 없어서 "나중에 채운 확인" 이 구조적으로 불가능해진다.
+   */
+  fixedAt: string;
+  confirmedAt: string | null;
 };
 
 /** 통째로 다시 쓴 것으로 치는 선. 재량이 아니라 "절반" 이라는 자연스러운 경계다. */
@@ -72,6 +84,13 @@ export function judgeStage4(run: Stage4Run): Stage4Verdict {
   // ── 무효: 안 된 회차를 다시 해서 통과로 만드는 길을 먼저 막는다 (사장님 09-21)
   const redone = rounds.filter((r) => r.redone);
   if (redone.length) return { kind: "무효", why: `다시 한 회차가 ${redone.length}번 있다 — 다섯 번은 **연속된 다섯 번**이다. 이 판은 무효이고 새 판을 연다` };
+
+  // ── **순서**: 다음 회차는 앞 회차 확인 뒤에만 시작한다 (5판)
+  for (let i = 1; i < rounds.length; i++) {
+    const prev = rounds[i - 1], cur = rounds[i];
+    if (!prev.confirmedAt) return { kind: "무효", why: `${i}번째 회차가 확인 안 된 채 ${i + 1}번째를 시작했다 — 확인 안 된 회차를 뒤에 두면 나중에 채울 수 있다` };
+    if (cur.fixedAt < prev.confirmedAt) return { kind: "무효", why: `${i + 1}번째 고침이 ${i}번째 확인보다 먼저다 — 순서가 어긋난다` };
+  }
 
   if (rounds.length < TARGET_ROUNDS) return { kind: "못 잼", why: `고침이 ${rounds.length}/${TARGET_ROUNDS} 번` };
   if (ownerSaidDone === null) return { kind: "못 잼", why: "사장님이 '이제 됐다' 고 하셨는지 아직 모른다" };

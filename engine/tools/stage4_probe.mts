@@ -4,7 +4,9 @@ type FixRound = import("../../src/lib/genesis/stage4Verdict").FixRound;
 type Stage4Run = import("../../src/lib/genesis/stage4Verdict").Stage4Run;
 let bad = 0, seen = 0;
 const check = (n: string, ok: boolean, got?: unknown) => { seen++; if (!ok) bad++; console.log(ok ? "맞음  " : "어긋남", n, ok ? "" : JSON.stringify(got)); };
-const r = (o: Partial<FixRound> = {}): FixRound => ({ n: 1, request: "여기 점프가 안 돼", patched: true, changedLines: 5, totalLines: 300, asked: true, askedBy: "사람", broke: false, brokeBy: "사람", redone: false, ...o });
+// 회차마다 고친 시각과 확인 시각을 순서대로 준다(5판: 다음 회차는 앞 회차 확인 뒤에만).
+const t = (n: number, kind: "fix" | "ok") => new Date(Date.UTC(2026, 8, 22, 9 + n * 2, kind === "fix" ? 0 : 30)).toISOString();
+const r = (o: Partial<FixRound> = {}): FixRound => ({ n: 1, request: "여기 점프가 안 돼", patched: true, changedLines: 5, totalLines: 300, asked: true, askedBy: "사람", broke: false, brokeBy: "사람", redone: false, fixedAt: t(o.n ?? 1, "fix"), confirmedAt: t(o.n ?? 1, "ok"), ...o });
 const run = (o: Partial<Stage4Run> = {}): Stage4Run => ({ rounds: Array.from({ length: 5 }, (_, i) => r({ n: i + 1 })), cumulative: { changedLines: 25, originalLines: 300 }, ownerSaidDone: true, ...o });
 const swap = (i: number, o: Partial<FixRound>) => { const rs = run().rounds.slice(); rs[i] = r({ n: i + 1, ...o }); return rs; };
 
@@ -50,6 +52,17 @@ check("실패 이유가 여럿이면 다 적는다", (judgeStage4(run({ ownerSai
   check("**덧붙이기 100줄은 통과**(옛 셈이면 걸렸다)", judgeStage4(added).kind === "통과");
   const cumWhole = run({ cumulative: { changedLines: 400, originalLines: 200 } });
   check("누적도 통째로면 실패", judgeStage4(cumWhole).kind === "실패");
+}
+
+// ── **회차는 어디서 끝나나** (5판, 사장님 09-22): 확인까지다. 다만 순서를 지켜야 한다.
+{
+  const rs = run().rounds.slice();
+  rs[2] = r({ n: 3, confirmedAt: null });
+  check("**확인 안 된 회차를 뒤에 두고 앞서 가면 무효**", judgeStage4(run({ rounds: rs })).kind === "무효", judgeStage4(run({ rounds: rs })));
+  const rs2 = run().rounds.slice();
+  rs2[3] = r({ n: 4, fixedAt: t(1, "fix") });   // 4번째 고침이 3번째 확인보다 먼저
+  check("**순서가 어긋나면 무효**", judgeStage4(run({ rounds: rs2 })).kind === "무효", judgeStage4(run({ rounds: rs2 })));
+  check("아침에 고치고 저녁에 확인해도 된다(같은 회차다)", judgeStage4(run()).kind === "통과");
 }
 
 console.log(`\n최종: ${bad ? `어긋남 ${bad}/${seen}` : `전부 맞음 ${seen}/${seen}`}`);
