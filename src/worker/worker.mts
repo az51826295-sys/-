@@ -171,7 +171,7 @@ async function returnsTick() {
 async function tick() {
   const { data: queued } = await db
     .from("work_executions")
-    .select("id, company_employee_id, created_at")
+    .select("id, company_employee_id, company_id, assignment_id, created_at")
     .eq("status", "queued")
     .order("created_at", { ascending: true })
     .limit(20);
@@ -180,6 +180,21 @@ async function tick() {
     const { blockedByUnattended } = await import("@/lib/genesis/unattended");
     const why = await blockedByUnattended(db);
     if (why) { if (tickN % 20 === 0) console.log(`${stamp()} [무인] 멈춤 깃발 — 일을 안 집는다: ${why}`); return; }
+    // **검토 대기열 문** (204회차 09-21, 사장님 지적 3). 병목은 만드는 시간이 아니라 **읽는 시간**이다.
+    // 안 본 결과물이 쌓이면 더 만들지 않고 기다린다 — 하나라도 보시면 다시 돌아간다.
+    // **사장님이 직접 시킨 일은 안 막는다.** 사장님의 말은 그 자체로 우선순위다 —
+    // 상한은 *로키가 스스로 더 만드는 것*을 멈추려는 것이지 도구를 잠그려는 것이 아니다.
+    // (09-21 실측: 사장님 회사는 이미 26/10 이라, 안 가르면 오늘 저녁부터 로키가 아무것도 안 한다.)
+    const { blockedByReviewQueue } = await import("@/lib/genesis/reviewQueue");
+    const { data: asgRows } = await db.from("assignments").select("id, company_id, role_input_json")
+      .in("id", (queued ?? []).map((q) => q.assignment_id as string).filter(Boolean));
+    const autoCos = [...new Set((asgRows ?? [])
+      .filter((a) => { const r = a.role_input_json as Record<string, unknown> | null; return r?.unattended === true || r?.unattended === "true" || r?.autonomous === true; })
+      .map((a) => a.company_id as string))];
+    for (const c of autoCos) {
+      const w = await blockedByReviewQueue(db, c);
+      if (w) { if (tickN % 20 === 0) console.log(`${stamp()} [검토] 로키가 스스로 만드는 일을 멈춤 — ${w}`); return; }
+    }
   }
   for (const q of queued ?? []) {
     if (busy.has(q.company_employee_id as string)) continue;
