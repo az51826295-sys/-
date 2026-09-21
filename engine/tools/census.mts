@@ -23,12 +23,12 @@ const { data } = await db.from("deliverables").select("id, title, created_at, as
 // 심은 과제 표시는 **업무의 칸**에서 읽는다. 그 칸이 생기기 전에 들어간 둘은 제목으로 뒤를 받친다.
 const { data: asgs } = await db.from("assignments").select("id, role_input_json");
 const plantedIds = new Set((asgs ?? []).filter((a) => (a.role_input_json as { planted?: boolean } | null)?.planted).map((a) => a.id as string));
-type R = { title: string; day: string; at: string; html: boolean; engine: string; loop: boolean; rounds: number; doc: boolean; planted: boolean };
+type R = { id: string; title: string; day: string; at: string; html: boolean; engine: string; loop: boolean; rounds: number; doc: boolean; planted: boolean };
 const R: R[] = (data ?? []).map((a) => {
   const cj = a.content_json as Record<string, unknown> | null;
   const files = ((cj?.files ?? []) as { path?: string }[]);
   const loop = cj?.loop as { rounds?: unknown[] } | null;
-  return { title: String(a.title), day: String(a.created_at).slice(0, 10), at: String(a.created_at).slice(5, 16),
+  return { id: String(a.id), title: String(a.title), day: String(a.created_at).slice(0, 10), at: String(a.created_at).slice(5, 16),
     html: files.some((f) => /\.html?$/i.test(String(f.path))), engine: String((cj?.stage as { engine?: string } | null)?.engine ?? cj?.target ?? "(없음)"),
     loop: !!loop, rounds: loop?.rounds?.length ?? 0, doc: DOC.test(String(a.title)), planted: plantedIds.has(String(a.assignment_id)) || isPlanted(String(a.title)) };
 });
@@ -51,7 +51,7 @@ table("웹 시절 — 검사 상태", web, [
   ["안 잼 — HTML 은 있는데 고리 기록 없음", (r) => !r.loop && r.html],
   ["대상 아님 — HTML 이 없다", (r) => !r.loop && !r.html],
 ]);
-table("웹 시절 · HTML 없는 것", web.filter((r) => !r.html), [
+table("**웹 시절** · HTML 없는 것 (전체로는 102개)", web.filter((r) => !r.html), [
   ["**엔진 어긋남** — 엔진=web 인데 HTML 없음", (r) => r.engine === "web"],
   ["분류 어긋남 — 문서", (r) => r.engine !== "web" && r.doc],
   ["일부러 깨뜨린 과제(얼린 대기열)", (r) => r.engine !== "web" && !r.doc && r.planted],
@@ -61,21 +61,27 @@ console.log(`\n분류 어긋남 — 제목에 "조사·설계·설명·요구사
 for (const r of R.filter((r) => r.doc)) console.log(`  ${r.at} ${r.title.slice(0, 28).padEnd(30)} ${r.day < WEB_FROM ? "유니티 시절" : "웹 시절"} · HTML ${r.html ? "있음" : "없음"} · 엔진 ${r.engine}`);
 
 // ── **거르는 규칙은 반대쪽을 재야 근거가 된다** (사장님 09-21)
-// 넷에서 뽑은 규칙이 넷을 잡는 것은 당연하다. 멀짱한 게임이 몇 개 걸리는지를 센다.
+// 넷에서 뽑은 규칙이 넷을 잡는 것은 당연하다. 멀쩡한 게임이 몇 개 걸리는지를 센다.
 const hit = R.filter((r) => r.doc);
 const falseHit = hit.filter((r) => r.html);   // HTML 이 나왔으면 실제로 돌아가는 것 — 문서가 아니다
 console.log(`
 거르는 규칙 시험 — 제목에 "조사·설계·설명·요구사항" 이 들어간 것을 거른다면`);
 console.log(`  192개 중 걸리는 것 ${hit.length}개`);
-console.log(`  그중 **HTML 이 있는 것(= 멀짱한 게임이 걸린다) ${falseHit.length}개**`);
+console.log(`  그중 **HTML 이 있는 것(= 멀쩡한 게임이 걸린다) ${falseHit.length}개**`);
 for (const r of falseHit) console.log(`    ${r.at} ${r.title.slice(0, 40)}`);
 console.log(`  잘못 걸린 것이 ${falseHit.length === 0 ? "**0 개 — 이 규칙은 단순해도 된다**" : `${falseHit.length}개 있다 — 규칙을 좀 더 좀혀야 한다`}`);
 
-// **잡는 잣대를 바꿈** (사장님 09-21): "HTML 이 있으면 멀짱한 게임" 은 유니티 시절엔 안 맞는다 —
+// **잡는 잣대를 바꿈** (사장님 09-21): "HTML 이 있으면 멀쩡한 게임" 은 유니티 시절엔 안 맞는다 —
 // 진짜 게임 88개도 HTML 이 없다. 필요한 문장은 **"걸린 넷이 알려진 문서 넷과 정확히 같다"** 이다.
-const KNOWN = ["자가학습 API 교체", "엔진 교체 구조 설계", "의 의미 설명", "요구사항 정의"];
-const hitTitles = hit.map((r) => r.title);
-const matched = KNOWN.filter((k) => hitTitles.some((t) => t.includes(k)));
-console.log(`  알려진 문서 ${KNOWN.length}개 중 걸린 것 ${matched.length}개 · 걸렸는데 알려진 문서가 아닌 것 ${hit.length - matched.length}개`);
-console.log(`  → ${matched.length === KNOWN.length && hit.length === KNOWN.length ? "**걸린 넷이 알려진 문서 넷과 정확히 같다**" : "**같지 않다 — 다시 봐야 한다**"}`);
-
+// **알려진 문서는 아이디로 적는다** (사장님 09-21). 오늘 오타 세 번이 전부 손으로 친 한글 제목에서 나왔다 —
+// 따옴표 모양, 유니코드 이스케이프. 아이디로 대조하면 그 문제가 아예 생길 수 없다.
+// 심은 과제를 제목에서 칸으로 옮긴 것과 같은 이유다.
+const KNOWN_DOC_IDS = new Set([
+  "343e1a21-49a4-46f4-b071-0e831ce4c08f", // 자가학습 API 교체 구조 조사 및 설계안
+  "0cea59c0-68af-4db4-8341-c84990ac60f3", // "유니티가 잰다"의 의미 설명
+  "e960620b-5122-414e-a176-03f5b41cdd16", // 로키 자가학습 엔진 교체 구조 설계·구현
+  "d57969c2-7518-40ee-bd2f-c35b3220368c", // 벽돌깨기 게임 요구사항 정의 및 인수 기준 v2
+]);
+const matched = hit.filter((r) => KNOWN_DOC_IDS.has(r.id));
+console.log(`  알려진 문서 ${KNOWN_DOC_IDS.size}개 중 걸린 것 ${matched.length}개 · 걸렸는데 알려진 문서가 아닌 것 ${hit.length - matched.length}개`);
+console.log(`  → ${matched.length === KNOWN_DOC_IDS.size && hit.length === KNOWN_DOC_IDS.size ? "**걸린 넷이 알려진 문서 넷과 정확히 같다**" : "**같지 않다 — 다시 봐야 한다**"}`);
