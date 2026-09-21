@@ -44,7 +44,7 @@ table("전체 app_build", R, [[`유니티 시절(~${WEB_FROM} 전)`, (r) => r.da
 table("유니티 시절", uni, [["HTML 있음(첫 웹 게임)", (r) => r.html], ["분류 어긋남 — 문서", (r) => !r.html && r.doc], ["진짜 유니티 결과물", (r) => !r.html && !r.doc]]);
 table("웹 시절 — 검사 상태", web, [
   ["고리가 돌았다(바퀴≥1)", (r) => r.rounds >= 1],
-  ["**못 잼** — 고리가 멈췄다(바퀴 0)", (r) => r.loop && r.rounds === 0],
+  ["**못 잼** — 고리가 안 돌았다(no_run)", (r) => r.loop && r.rounds === 0],
   ["안 잼 — HTML 은 있는데 고리 기록 없음", (r) => !r.loop && r.html],
   ["대상 아님 — HTML 이 없다", (r) => !r.loop && !r.html],
 ]);
@@ -58,13 +58,13 @@ console.log(`\n분류 어긋남 — 제목에 "조사·설계·설명·요구사
 for (const r of R.filter((r) => r.doc)) console.log(`  ${r.at} ${r.title.slice(0, 28).padEnd(30)} ${r.day < WEB_FROM ? "유니티 시절" : "웹 시절"} · HTML ${r.html ? "있음" : "없음"} · 엔진 ${r.engine}`);
 
 // ── **거르는 규칙은 반대쪽을 재야 근거가 된다** (사장님 09-21)
-// 넷에서 뽑은 규칙이 넷을 잡는 것은 당연하다. 멀줦한 게임이 몇 개 걸리는지를 센다.
+// 넷에서 뽑은 규칙이 넷을 잡는 것은 당연하다. 멀짱한 게임이 몇 개 걸리는지를 센다.
 const hit = R.filter((r) => r.doc);
 const falseHit = hit.filter((r) => r.html);   // HTML 이 나왔으면 실제로 돌아가는 것 — 문서가 아니다
 console.log(`
 거르는 규칙 시험 — 제목에 "조사·설계·설명·요구사항" 이 들어간 것을 거른다면`);
 console.log(`  192개 중 걸리는 것 ${hit.length}개`);
-console.log(`  그중 **HTML 이 있는 것(= 멀짱한 게임을 거른다) ${falseHit.length}개**`);
+console.log(`  그중 **HTML 이 있는 것(= 멀짱한 게임이 걸린다) ${falseHit.length}개**`);
 for (const r of falseHit) console.log(`    ${r.at} ${r.title.slice(0, 40)}`);
 console.log(`  잘못 걸린 것이 ${falseHit.length === 0 ? "**0 개 — 이 규칙은 단순해도 된다**" : `${falseHit.length}개 있다 — 규칙을 좀 더 좀혀야 한다`}`);
 
