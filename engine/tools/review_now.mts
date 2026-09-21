@@ -6,7 +6,7 @@ const { data: cos } = await db.from("companies").select("id, name");
 for (const c of cos ?? []) {
   const r = await pendingReview(db, c.id as string);
   if (!r.n) continue;
-  console.log(`${String(c.name).padEnd(14)} 판정된 것 ${r.judged} · **안 본 것 ${r.n}**/${REVIEW_CAP}${r.n >= REVIEW_CAP ? "  막힘" : ""}`);
+  console.log(`${String(c.name).padEnd(14)} AI가 판정으로 읽은 것 ${r.judged} · **안 본 것 ${r.n}**/${REVIEW_CAP}${r.n >= REVIEW_CAP ? "  막힘" : ""}`);
   console.log(`   ${r.titles.slice(0, 4).join(" · ")}${r.titles.length > 4 ? ` … 외 ${r.titles.length - 4}개` : ""}`);
   // 그중 **기계가 이미 판정한 것**이 몇이나 되나 — 사람 눈이 꼭 필요한 것과 가른다(사장님 09-20 제약 2).
   const since = new Date(Date.now() - 30 * 86400_000).toISOString();
