@@ -91,6 +91,14 @@ function meterAi(ai: AIProvider, db: Db, scope: UsageScope): AIProvider {
         // field would price every routine call at the judgment rate — the
         // ledger would still balance and every number in it would be wrong.
         model: result.model,
+        /**
+         * **아직 안 적는다 — 원장에 그 칸이 없다** (205회차 09-22).
+         *
+         * `result.answeredBy` 가 공급자에서 여기까지 오고 있다. 그걸 `model_usage` 에 남기려면
+         * 칸을 더해야 하고, 그건 마이그레이션이다. **09-21 에 접근 토큰을 폐기해서 지금은 못 올린다.**
+         * 새 토큰이 생기면 `answered_by text` 한 칸과 이 줄 하나면 된다.
+         * 그전까지는 **안 적힌다는 사실을 적어 둔다** — 적히는 줄 알고 나중에 빈 칸을 보는 것보다 낫다.
+         */
         purpose: params.schemaName,
         inputTokens: result.inputTokens,
         outputTokens: result.outputTokens,

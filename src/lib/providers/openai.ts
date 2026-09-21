@@ -134,6 +134,13 @@ export function createOpenAIProvider(opts: { judgmentModel?: string } = {}): AIP
         inputTokens: response.usage?.input_tokens ?? 0,
         outputTokens: response.usage?.output_tokens ?? 0,
         model,
+        /**
+         * **응답이 스스로 말한 이름** (205회차 09-22).
+         * `model` 은 우리가 부른 이름이다. 둘은 같지 않을 수 있다 — 09-21 에 확인했다:
+         * `deepseek-v4-flash` 와 `deepseek-chat` 은 둘 다 `deepseek-flash` 로 넘어가는 **별칭**이었다.
+         * 그때 별칭이 **언제** 바뀜는지 못 알아낸 이유가 바로 이 칸이 없어서였다.
+         */
+        answeredBy: (response as { model?: string }).model ?? null,
       };
     },
   };
