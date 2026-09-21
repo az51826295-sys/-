@@ -21,6 +21,14 @@ type Supabase = SupabaseClient;
 export const REVIEW_CAP = 10;
 
 /**
+ * **미판정 보관 선** (사장님 09-21). 이 시각 이전에 붙은 것은 안 센다.
+ * > *"밀린 127개를 갚을 빚으로 두지 마세요. … 오늘로 자르세요. 날짜를 고르는 기준이 따로 있을 필요가 없어요.
+ * >  오늘 이전 것은 보관, 상한은 내일부터 셈."*
+ * 그래서 2026-09-22 00:00 (한국 시간) 부터 센다. 그 전 것은 없어진 게 아니라 **보관**이다.
+ */
+export const REVIEW_SINCE = "2026-09-21T15:00:00.000Z";
+
+/**
  * 붙었는데 **명시적 판정이 없는** 일의 수. 회사 하나 기준.
  *
  * **처음엔 "그 뒤에 사장님 말이 있었나" 로 쌀다 — 틀렸다** (사장님 09-21):
@@ -45,7 +53,7 @@ export async function pendingReview(db: Supabase, companyId: string, days = 30):
   if (!ids.length) return { n: 0, titles: [], judged: 0 };
   const { data: att } = await db.from("conversation_messages")
     .select("conversation_id, created_at, aid:attachments->assignment->>id, title:attachments->assignment->>title")
-    .in("conversation_id", ids).gte("created_at", since).not("attachments->assignment->>id", "is", null)
+    .in("conversation_id", ids).gte("created_at", since > REVIEW_SINCE ? since : REVIEW_SINCE).not("attachments->assignment->>id", "is", null)
     .order("created_at", { ascending: false }).limit(1000);
   if (!att?.length) return { n: 0, titles: [], judged: 0 };
   // 사장님 말 + 그 말에 붙은 딱지
@@ -58,6 +66,15 @@ export async function pendingReview(db: Supabase, companyId: string, days = 30):
   for (const m of (says ?? []) as unknown as S[]) {
     const l = byConv.get(m.conversation_id); if (l) l.push(m); else byConv.set(m.conversation_id, [m]);
   }
+  // **기계가 판정한 것은 상한에서 뺀다** (사장님 09-20 제약 2, 09-21 승인).
+  // 고리 심판(`loop`)이나 검토 심판(`askJudge`)이 붙은 산출물은 사람 눈이 꼭 필요하지 않다.
+  // 다만 **심판이 후한지는 아무도 안 보게 되므로**, 주말마다 통과시킨 것 중 무작위 3개를 본다(사장님).
+  const aids = [...new Set((att as unknown as { aid: string }[]).map((m) => m.aid))];
+  const machine = new Set<string>();
+  for (let i = 0; i < aids.length; i += 100) {
+    const { data: dls } = await db.from("deliverables").select("assignment_id, loop:content_json->loop, askJudge:content_json->askJudge").in("assignment_id", aids.slice(i, i + 100));
+    for (const d of (dls ?? []) as unknown as { assignment_id: string; loop: unknown; askJudge: unknown }[]) if (d.loop || d.askJudge) machine.add(d.assignment_id);
+  }
   const titles: string[] = [];
   const seen = new Set<string>();
   let judged = 0;
@@ -66,6 +83,7 @@ export async function pendingReview(db: Supabase, companyId: string, days = 30):
     seen.add(m.aid);
     // **바로 다음** 사장님 말 하나만 본다(그 뒤 아무 말이 아니라).
     const next = (byConv.get(m.conversation_id) ?? []).find((x) => x.created_at > m.created_at);
+    if (machine.has(m.aid)) { judged++; continue; } // 기계가 판정함 — 사람 눈 못이 아니다
     const ok = next ? next.acc === "true" || next.rej === "true" : false;
     if (ok) judged++; else titles.push(m.title ?? m.aid.slice(0, 8));
   }
