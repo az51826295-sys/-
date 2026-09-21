@@ -1,0 +1,27 @@
+#!/bin/sh
+# 올리려는 커밋 범위를 통째로 훑어 비밀이 있으면 푸시를 멈춘다 (204회차 2026-09-21).
+# pre-commit 은 **새로 만드는 커밋만** 본다 — 이미 만들어진 커밋을 올리는 건 그대로 통과한다(사장님).
+# 저장소가 공개이므로 한 번 올라가면 되돌릴 수 없다.
+PATTERNS='sbp_[A-Za-z0-9]{20,}|sk-ant-api03-[A-Za-z0-9_-]{20,}|sk-proj-[A-Za-z0-9_-]{20,}|AIza[A-Za-z0-9_-]{30,}|tvly-[A-Za-z0-9]{20,}|eyJhbGciOi[A-Za-z0-9_-]{20,}'
+FOUND=""
+while read -r _local_ref local_sha _remote_ref remote_sha; do
+  [ "$local_sha" = "0000000000000000000000000000000000000000" ] && continue
+  if [ "$remote_sha" = "0000000000000000000000000000000000000000" ]; then
+    RANGE=$(git rev-list "$local_sha" --not --remotes 2>/dev/null)
+  else
+    RANGE=$(git rev-list "$remote_sha".."$local_sha" 2>/dev/null)
+  fi
+  [ -z "$RANGE" ] && continue
+  HIT=$(echo "$RANGE" | head -300 | xargs -r git grep -nE "$PATTERNS" 2>/dev/null | head -10)
+  [ -n "$HIT" ] && FOUND="$FOUND$HIT
+"
+done
+if [ -n "$FOUND" ]; then
+  echo "푸시를 멈춥니다 — 올리려는 커밋에 비밀로 보이는 값이 있습니다:"
+  echo "$FOUND" | sed -E 's/(sbp_|sk-ant-api03-|sk-proj-|AIza|tvly-|eyJhbGciOi)[A-Za-z0-9_-]*/\1***/g' | head -10
+  echo ""
+  echo "이 저장소는 공개입니다. 한 번 올라가면 되돌릴 수 없습니다."
+  echo "값을 이력에서 걷어낸 뒤 올리세요. 정말 필요하면: git push --no-verify"
+  exit 1
+fi
+exit 0
