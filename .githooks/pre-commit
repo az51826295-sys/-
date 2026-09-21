@@ -1,0 +1,19 @@
+#!/bin/sh
+# 비밀이 들어가면 커밋을 멈춘다 (204회차 2026-09-21).
+# 사장님: "사람이 조심하는 대신, 비밀이 들어가면 커밋이 멈추게 구조로 막는 겁니다."
+# 09-21 에 접근 토큰이 주석의 사용 예시에 박힌 채로 커밋돼 있었다. 한 번 들어가면 이력에 남는다.
+PATTERNS='sbp_[A-Za-z0-9]{20,}|sk-ant-api03-[A-Za-z0-9_-]{20,}|sk-proj-[A-Za-z0-9_-]{20,}|AIza[A-Za-z0-9_-]{30,}|tvly-[A-Za-z0-9]{20,}|eyJhbGciOi[A-Za-z0-9_-]{20,}'
+HIT=$(git diff --cached --name-only --diff-filter=ACM | while read -r f; do
+  [ -f "$f" ] || continue
+  case "$f" in .env*|*/.env*) continue;; esac
+  git show ":$f" 2>/dev/null | grep -nE "$PATTERNS" | sed "s|^|$f:|"
+done)
+if [ -n "$HIT" ]; then
+  echo "커밋을 멈춥니다 — 비밀로 보이는 값이 들어 있습니다:"
+  echo "$HIT" | sed -E 's/(sbp_|sk-ant-api03-|sk-proj-|AIza|tvly-|eyJhbGciOi)[A-Za-z0-9_-]*/\1***/g' | head -20
+  echo ""
+  echo "값을 지우고 환경변수(.env.local)로 옮기세요."
+  echo "정말 필요하면: git commit --no-verify"
+  exit 1
+fi
+exit 0
