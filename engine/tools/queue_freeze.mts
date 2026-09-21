@@ -53,7 +53,7 @@ const reachMin = order.slice(0, reach).reduce((a, x) => a + EST[x.weight].min, 0
 const out = {
   version: "unattended-queue-2",
   frozenAt: new Date().toISOString(),
-  rule: "20260921-unattended-run-2 (e0697bd6e711e45c)",
+  rule: "20260921-unattended-run-2 (bb871db253b091d8)",
   note: [
     "무인 판 2 의 **얼린 대기열 — 순서까지 고정**. 무작위로 뽑으면 다음 판과 못 견준다(사장님 09-21).",
     "무게를 엇갈려 깔았다 — 가벼운 것부터 몰아 두면 상한에 닿을 때까지 가벼운 것만 돌아 섞은 의미가 없어진다.",

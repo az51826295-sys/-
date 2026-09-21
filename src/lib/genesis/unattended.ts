@@ -70,7 +70,12 @@ export type UnattendedRun = {
    * - `workMinutes` — 그중 `hasWork === true` 였던 분 수(= 분자).
    * - `maxUnposted`·`maxStall` — 관찰 항목(성공 조건이 아니다).
    */
-  tally?: { minutes: number; workMinutes: number; maxUnposted: number; maxStall: number; firstAt: string; lastAt: string };
+  /**
+   * `maxGapSec` — 문지기가 두 번 적는 사이의 **제일 긴 공백**(초). 성공 조건 1번("생존 신호가
+   * 5분 넘게 비지 않는다")을 끝나고 재려면 이게 있어야 한다. 203회차에 판정 함수를 먼저 써 보니
+   * 이 칸이 없어서 "못 잼" 이 나왔다 — 사장님 규칙("잠그기 전에 가짜 판으로 판정을 끝까지 돌려 보라")이 바로 잡았다.
+   */
+  tally?: { minutes: number; workMinutes: number; maxUnposted: number; maxStall: number; maxGapSec: number; firstAt: string; lastAt: string };
 };
 
 /** 생존 신호가 이만큼 낡으면 로키는 일을 안 집는다. 문지기는 1분마다 남긴다 — 5분이면 확실히 죽은 것. */
@@ -175,6 +180,8 @@ export async function noteSeen(db: Supabase, id: string, run: UnattendedRun, see
     workMinutes: (t?.workMinutes ?? 0) + (seen.hasWork ? 1 : 0),
     maxUnposted: Math.max(t?.maxUnposted ?? 0, (seen as { unposted?: number }).unposted ?? 0),
     maxStall: Math.max(t?.maxStall ?? 0, seen.stallMin ?? 0),
+    // 직전에 적은 때부터 지금까지의 공백. 문지기가 1분마다 적으므로 평소엔 60초쯤이다.
+    maxGapSec: Math.max(t?.maxGapSec ?? 0, t?.lastAt ? Math.round((Date.now() - Date.parse(t.lastAt)) / 1000) : 0),
     firstAt: t?.firstAt ?? now,
     lastAt: now,
   };
