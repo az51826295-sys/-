@@ -9,9 +9,11 @@
  * 이 프로세스는 **세고 정한다**. 로키는 깃발에 복종만 한다(src/lib/genesis/unattended.ts).
  */
 const { createServiceClient } = await import("../../src/lib/supabase/service");
-const { planFor, activeRun, startRun, stopRun, noteSeen, clearUnattendedQueue } = await import("../../src/lib/genesis/unattended");
+const { planFor, activeRun, startRun, stopRun, noteSeen, clearUnattendedQueue, budgetBoundary } = await import("../../src/lib/genesis/unattended");
 const db = createServiceClient();
 const arg = (k: string) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : undefined; };
+// 무인 판이 도는 회사(데모). 사장님 대화를 안 채우려고 여기서 돌린다 — 한도도 이 회사 것을 본다.
+const CO = "00add05a-e81d-4e04-9980-34bb412a8780";
 const hm = () => new Date().toLocaleTimeString("ko-KR", { hour12: false });
 
 if (arg("--open")) {
@@ -23,6 +25,20 @@ if (arg("--open")) {
   // 무인 판 2 의 잠근 조건은 $2.00 이다. 안 맞추면 도구가 잠근 문서를 조용히 어긴다.
   const capArg = arg("--cap");
   const run = planFor(hours, capArg ? { usdCap: Number(capArg) } : undefined);
+  // **여는 시점에 두 한도를 견준다** (204회차 09-21). 무인 판 2는 문지기 상한에 닿기도 전에
+  // 회사 30일 한도가 차서 끝났다. 두 예산이 서로를 모르면 늘 작은 쪽이 이긴다.
+  const b = await budgetBoundary(db, CO);
+  const smaller = Math.min(run.usdCap, Math.max(0, b.left));
+  console.log(`한도 둘: 문지기 $${run.usdCap.toFixed(2)} · 회사 ${b.windowDays}일 $${b.limitUsd.toFixed(2)} 중 남은 것 $${b.left.toFixed(3)}(쓴 것 $${b.used.toFixed(3)})`);
+  console.log(`→ **작은 쪽은 $${smaller.toFixed(3)}** ${b.left < run.usdCap ? "— 회사 한도가 먼저 닿는다" : "— 문지기 상한이 먼저 닿는다"}`);
+  if (b.left <= 0) {
+    console.error(`**안 열었다** — 회사 ${b.windowDays}일 한도가 이미 찼다($${b.used.toFixed(3)}/$${b.limitUsd.toFixed(2)}). 열어도 첫 판부터 튀긴다.`);
+    console.error(`진행하려면 회사 한도를 올리거나, 다른 회사에서 돌리거나, 한도가 리셋될 때까지 기다려야 한다(돈 문제라 사장님 몴).`);
+    process.exit(1);
+  }
+  if (b.left < run.usdCap) run.usdCap = Math.round(b.left * 100) / 100; // 작은 쪽으로 연다 — 문지기가 못 재는 벍에 부딪히지 않게
+
+  run.criteriaLock = arg("--lock") ?? "없음"; // 잠근 조건 문서의 해시. 판정을 어느 규칙으로 할지가 여기서 정해진다.
   const r = await startRun(db, run);
   if (!r.ok) { console.error("못 열었다:", r.why); process.exit(1); }
   console.log(`무인 판 열림 — ${hours}시간 · 전체 상한 $${run.usdCap} · 하루 $${run.usdPerDayCap} · 같은 실패 ${run.maxSameFailStreak}번이면 정지 · 사장님 볼 것 ${run.humanReviewCap}개 상한`);

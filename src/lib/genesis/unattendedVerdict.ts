@@ -23,6 +23,12 @@ export function endVerdict(run: UnattendedRun): { kind: "성공" | "실패" | "�
   const r = run.stopReason ?? "";
   if (!run.stopped) return { kind: "못 잼", why: "아직 안 끝났다" };
   if (/전체 상한|하루 상한/.test(r)) return { kind: "성공", why: "부하가 실제로 걸렸고 문지기가 제때 막았다(기본 시나리오)" };
+  // **한도에 닿아 더 못 감**은 고장이 아니다 (204회차, 사장님 09-21).
+  // "같은 실패 3연속" 은 원래 **고장 난 채 돈을 태우는 것**(소켓 고갈 같은)을 막으려고 넣은 조건이다.
+  // 한도에 닿아 튀긴 것은 그 반대다 — 돈을 안 쓰고 멈췄다. 예산 상한 도달과 **같은 종류**로 둔다.
+  // 이 갈래는 **새 잠금을 달고 연 판에만** 적용한다. 무인 판 2는 이 갈래 없이 돌았고,
+  // 그 판을 지금 규칙으로 다시 재면 사후 기준이 된다(사장님: *"판정은 잠근 표대로 실패로 남기는 게 맞아요"*).
+  if (run.criteriaLock && /한도에 닿아 더 못 감|SPEND_LIMIT_REACHED/.test(r)) return { kind: "성공", why: "한도에 닿아 더 못 간다 — 고장이 아니라 상한 도달과 같은 종류다" };
   if (/대기열/.test(r)) return { kind: "성공", why: "대기열을 다 비웠다" };
   if (/진행 없음/.test(r)) return { kind: "실패", why: "막혔다" };
   if (/연속/.test(r)) return { kind: "실패", why: "고장에 돈을 태우고 있었다" };

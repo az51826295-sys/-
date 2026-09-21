@@ -75,6 +75,12 @@ export type UnattendedRun = {
    * 5분 넘게 비지 않는다")을 끝나고 재려면 이게 있어야 한다. 203회차에 판정 함수를 먼저 써 보니
    * 이 칸이 없어서 "못 잼" 이 나왔다 — 사장님 규칙("잠그기 전에 가짜 판으로 판정을 끝까지 돌려 보라")이 바로 잡았다.
    */
+  /**
+   * **이 판을 어느 잠금으로 재는가** (204회차 09-21). 판정 규칙을 고치면 **이미 끝난 판이
+   * 소급해서 다른 점수를 받는다** — 그게 사후 기준이다. 그래서 열 때 박아 둔다.
+   * 없으면 그 판은 이 칸이 생기기 전(무인 판 1·2)이므로 **옛 규칙**으로 재다.
+   */
+  criteriaLock?: string;
   tally?: { minutes: number; workMinutes: number; maxUnposted: number; maxStall: number; maxGapSec: number; firstAt: string; lastAt: string };
 };
 
@@ -135,6 +141,24 @@ export async function blockedByUnattended(db: Supabase): Promise<string | null> 
     return null;
   } catch { return null; } // 깃발을 못 읽으면 평소대로 — 문지기가 바깥에서 또 본다
 }
+
+/**
+ * **한도를 한자리에 모은다** (204회차 09-21). 무인 판 2가 여기서 죽었다:
+ * 문지기를 로키 **바깥**에 세웠는데, 로키 **안**에도 회사별 30일 한도가 따로 있었다.
+ * 문지기 상한 $2.00 에 닿기 한참 전($1.044)에 회사 한도 $3.00 이 먼저 찼다.
+ * 사장님: *"바깥에 또 하나가 있었던 거죠. 여는 시점에 둘을 비교해서 작은 쪽을 알려 주게 하세요."*
+ * **두 예산이 서로를 모르면 늘 작은 쪽이 이긴다.**
+ */
+export async function budgetBoundary(db: Supabase, companyId: string): Promise<{ limitUsd: number; windowDays: number; used: number; left: number }> {
+  const { data: co } = await db.from("companies").select("spend_limit_usd, spend_window_days").eq("id", companyId).maybeSingle();
+  const limitUsd = Number(co?.spend_limit_usd ?? 0);
+  const windowDays = Number(co?.spend_window_days ?? 30);
+  const since = new Date(Date.now() - windowDays * 86400_000).toISOString();
+  const { data: mu } = await db.from("model_usage").select("cost_usd").eq("company_id", companyId).gte("created_at", since);
+  const used = (mu ?? []).reduce((a, x) => a + Number(x.cost_usd ?? 0), 0);
+  return { limitUsd, windowDays, used, left: limitUsd - used };
+}
+
 
 /** 판을 연다. 같은 날 두 판은 못 연다(genesis_runs unique). */
 export async function startRun(db: Supabase, run: UnattendedRun): Promise<{ ok: true; id: string } | { ok: false; why: string }> {

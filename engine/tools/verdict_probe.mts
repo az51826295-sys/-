@@ -51,5 +51,19 @@ check("⑥ 사람이 로키에 말을 걸었으면 실패", judgeRun(capHit, { u
 // ⑦ 표에 없는 이유로 끝나면 고르지 않고 '못 잼'
 check("⑦ 표에 없는 끝맺음은 '못 잼'", judgeRun(base({ stopReason: "그냥 껐다", tally: tally(61, 58), seen: { at: "", usd: 0, usdToday: 0, failStreak: 0, needHuman: 0, hasWork: true, unposted: 0 } as Run["seen"] }), ok0).conds[2].verdict === "못 잼");
 
+// ① **한도에 닿아 더 못 감** — 고장과 가른다 (204회차, 사장님 09-21)
+const limitHit = { stopReason: "같은 실패 3번 연속(SPEND_LIMIT_REACHED) — 고장에 돈을 태우고 있다", tally: tally(84, 83),
+  seen: { at: "", usd: 1.04, usdToday: 1.04, failStreak: 3, needHuman: 2, hasWork: true, stallMin: 2, unposted: 0 } as Run["seen"] };
+check("① 새 잠금에서는 한도 도달이 **성공**",
+  judgeRun(base({ ...limitHit, criteriaLock: "abc123" }), ok0).conds[2].verdict === "통과",
+  judgeRun(base({ ...limitHit, criteriaLock: "abc123" }), ok0).conds[2]);
+check("① **옛 판(잠금 도장 없음)은 그대로 실패** — 소급해서 점수가 바뀌면 사후 기준이다",
+  judgeRun(base(limitHit), ok0).conds[2].verdict === "실패",
+  judgeRun(base(limitHit), ok0).conds[2]);
+check("① 진짜 고장의 연속 실패는 새 잠금에서도 실패",
+  judgeRun(base({ stopReason: "같은 실패 3번 연속(ECONNRESET) — 고장에 돈을 태우고 있다", criteriaLock: "abc123", tally: tally(84, 83),
+    seen: { at: "", usd: 1, usdToday: 1, failStreak: 3, needHuman: 0, hasWork: true, unposted: 0 } as Run["seen"] }), ok0).conds[2].verdict === "실패");
+
+
 console.log(`\n최종: ${bad ? `어긋남 ${bad}/${seen}` : `전부 맞음 ${seen}/${seen}`}`);
 process.exit(bad ? 1 : 0);
