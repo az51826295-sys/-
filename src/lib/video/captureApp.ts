@@ -108,3 +108,26 @@ export function cropToAspect(c: CaptureResult["crop"], aspect = 16 / 9): { crop:
   const crop = { x: c.x + Math.round((c.w - w) / 2), y: c.y + Math.round((c.h - h) / 2), w, h };
   return { crop, cutRatio: area > 0 ? Number((1 - (w * h) / area).toFixed(3)) : 0 };
 }
+
+/**
+ * **너무 많이 잘릴 바엔 여백을 채운다** (사장님 09-21).
+ *
+ * 잘라 난 몴을 기록만 하면 **절반 잘린 영상도 그대로 나간다.** 그래서 문턱을 둔다:
+ * 잘라 내는 몫이 `maxCut` 을 넘으면 **안 자르고 여백을 채운다**(pad).
+ *
+ * 기본값 **0.25** — 재량으로 고른 숫자가 아니라 "앱 화면의 네 중 하나" 라는 자연스러운 경계다.
+ * **첫 판을 돌리기 전에 잠근다.**
+ */
+export const MAX_CUT = 0.25;
+
+export function fitToAspect(
+  c: CaptureResult["crop"],
+  aspect = 16 / 9,
+  maxCut = MAX_CUT,
+): { mode: "crop" | "pad"; crop: CaptureResult["crop"]; cutRatio: number } {
+  const t = cropToAspect(c, aspect);
+  if (!t.crop) return { mode: "pad", crop: null, cutRatio: 0 };
+  if (t.cutRatio > maxCut) return { mode: "pad", crop: c, cutRatio: 0 }; // 원본 그대로 — 여백은 ffmpeg 이 채운다
+  return { mode: "crop", crop: t.crop, cutRatio: t.cutRatio };
+}
+

@@ -1,6 +1,6 @@
 /** 자기 결과물 녹화 자 — 진짜로 찍히는지. 모델 0, 돈 0. */
 const { createServiceClient } = await import("../../src/lib/supabase/service");
-const { captureApp, cropToAspect } = await import("../../src/lib/video/captureApp");
+const { captureApp, cropToAspect, fitToAspect, MAX_CUT } = await import("../../src/lib/video/captureApp");
 const { existsSync, statSync, unlinkSync } = await import("node:fs");
 const db = createServiceClient();
 let bad = 0, seen = 0;
@@ -25,5 +25,14 @@ check("**잘라 낸 몫을 돌려준다**", typeof cutRatio === "number" && cutR
 const r2 = await captureApp("<p>글자만 있는 쪽지</p>", "C:/Users/az518/AppData/Local/Temp/capture_probe2.webm", { seconds: 1, drive: "none" });
 check("**잴 것이 없으면 자리를 null 로 준다**", r2.crop === null || (r2.crop.w < 300 || r2.crop.h < 200), r2.crop);
 for (const f of [r.path, r2.path]) { try { unlinkSync(f); } catch { /* 없으면 넘어간다 */ } }
+// ── **너무 많이 잘릴 바엔 여백** (사장님 09-21). 기록만 하면 절반 잘린 영상이 그대로 나간다.
+{
+  const w = fitToAspect(r.crop, 16 / 9);
+  check("가로는 조금만 잘리므로 자른다", w.mode === "crop" && w.cutRatio <= MAX_CUT, w);
+  const v = fitToAspect(r.crop, 9 / 16);
+  check("**세로는 너무 잘려서 여백을 채운다**", v.mode === "pad" && v.cutRatio === 0, v);
+  check("문턱이 0.25 로 잠겨 있다", MAX_CUT === 0.25);
+}
+
 console.log(`\n최종: ${bad ? `어긋남 ${bad}/${seen}` : `전부 맞음 ${seen}/${seen}`}`);
 process.exit(bad ? 1 : 0);
