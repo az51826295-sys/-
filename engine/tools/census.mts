@@ -8,6 +8,7 @@
  *   npx tsx engine/tools/rookery_env.mts engine/tools/census.mts
  */
 const { createServiceClient } = await import("../../src/lib/supabase/service");
+const { assertComplete } = await import("../../src/lib/db/readAll");
 const db = createServiceClient();
 const WEB_FROM = "2026-09-17"; // 웹으로 겨냥을 바꾼 날. 그 전 결과물은 유니티가 맞다.
 const DOC = /조사|설계|설명|요구사항/;  // 게임이 아닌 문서 — 분류 어긋남 후보
@@ -20,6 +21,8 @@ const PLANTED = new Set<string>((() => {
 const isPlanted = (t: string) => [...PLANTED].some((p) => t.includes(p)) || /아무것도 없는 빈 유니티/.test(t);
 
 const { data } = await db.from("deliverables").select("id, title, created_at, assignment_id, content_json").eq("deliverable_type", "app_build");
+// **다 읽었는지 기계가 본다**(09-22). 1000줄에서 잘린 채 더하면 결산이 조용히 틀린다.
+await assertComplete(db, "deliverables", (data ?? []).length);
 // 심은 과제 표시는 **업무의 칸**에서 읽는다. 그 칸이 생기기 전에 들어간 둘은 제목으로 뒤를 받친다.
 const { data: asgs } = await db.from("assignments").select("id, role_input_json");
 const plantedIds = new Set((asgs ?? []).filter((a) => (a.role_input_json as { planted?: boolean } | null)?.planted).map((a) => a.id as string));
