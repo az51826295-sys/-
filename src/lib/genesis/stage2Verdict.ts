@@ -66,3 +66,31 @@ export const FIX_KINDS = [
   { kind: "고장 고치기", ask: "화면 끝에서 조작이 안 먹는 것 같아. 끝까지 움직이게 고쳐 줘.", 난이도: "어려움" },
   { kind: "되돌리기", ask: "방금 바꾼 걸 되돌리고, 대신 색만 어둡게 해 줘.", 난이도: "보통" },
 ] as const;
+
+/**
+ * **이 시험이 "모름" 말고 다른 답을 낼 수 있나** (204회차 09-21, 사장님).
+ *
+ * > *"이 시험은 설계상 거의 항상 '모름' 이 나오게 되어 있었어요. 한쪽이 5판이면 통과율이 20%p 단위로만
+ * >  움직이고, ±40%p 띠를 넘으려면 90% 대 40% 같은 큰 차이가 나야 해요. 그러니 이번 결과는
+ * >  '둘이 비슷하다' 는 증거가 아니라 **'이 크기의 시험으로는 원래 말할 수 없었다'** 예요."*
+ *
+ * 그래서 **잠그기 전에** 묻는다: *그럴듯한 차이가 진짜로 있을 때, 이 시험이 그걸 잡아낼 확률은 얼마인가.*
+ * 낮으면 판 수를 늘리든지 시험을 미룬다. 자가 값을 내는 것만으로는 부족하다 — **말할 수 있어야** 한다.
+ *
+ * 이항분포로 **정확히** 센다(표본이 작아 다 세도 금방이다).
+ *
+ * **넣자마자 내 가정을 뒤집었다** (09-21): 나는 "판을 늘리면 된다" 고 적었는데, 띄를 40%p 로 둔 채
+ * 각 30판으로 늘리면 힘이 24% → **5%** 로 떨어진다. 판이 많아질수록 관측된 차이가 참값 근처로 모여서
+ * **띄를 넘길 일이 줄기** 때문이다. 즉 이 시험이 무엇을 잡는지를 정하는 것은 **판 수가 아니라 띄**다.
+ * 20%p 를 잡으려면 띄를 같이 좁혀야 하고, 띄를 좁히면 거짓 양성이 늘어 판이 더 필요하다.
+ */
+export function detectPower(trueBest: number, trueExplore: number, nBest: number, nExplore: number, band: number = STAGE2.band): number {
+  const C = (n: number, k: number) => { let r = 1; for (let i = 0; i < k; i++) r = (r * (n - i)) / (i + 1); return r; };
+  const pmf = (n: number, p: number) => Array.from({ length: n + 1 }, (_, k) => C(n, k) * p ** k * (1 - p) ** (n - k));
+  const pb = pmf(nBest, trueBest), pe = pmf(nExplore, trueExplore);
+  let hit = 0;
+  for (let b = 0; b <= nBest; b++) for (let e = 0; e <= nExplore; e++) {
+    if (Math.abs(b / nBest - e / nExplore) >= band) hit += pb[b] * pe[e];
+  }
+  return hit;
+}
