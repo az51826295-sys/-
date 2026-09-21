@@ -101,7 +101,7 @@ export async function pickFixSeat(db: SupabaseClient, rnd: () => number = Math.r
  * **머리가 고른 쪽이 더 자주 이겼나** (192회차, 2단계의 끝 조건). 성적표로 고른 판(best)과 섞어 보낸 판(explore)의 통과율을 나란히 센다.
  * 통과 = 부탁 심판이 되돌리지 않았고, 고리가 봤다면 안 맞음·고장 0. 채우는 중(fill)은 셈에서 뺀다 — 그건 고른 게 아니다.
  */
-export async function headWins(db: SupabaseClient, days = 30): Promise<{ best: { n: number; ok: number }; explore: { n: number; ok: number }; fill: { n: number; ok: number }; line: string }> {
+export async function headWins(db: SupabaseClient, days = 30): Promise<{ best: { n: number; ok: number }; explore: { n: number; ok: number }; fill: { n: number; ok: number }; unmeasured: number; line: string }> {
   const since = new Date(Date.now() - days * 86400_000).toISOString();
   const { data } = await db
     .from("deliverables")
@@ -109,6 +109,10 @@ export async function headWins(db: SupabaseClient, days = 30): Promise<{ best: {
     .eq("deliverable_type", "app_build").gte("created_at", since).not("content_json->seats->>fixMode", "is", null).limit(500);
   type R = { seats: { fixMode?: string } | null; askJudge: { verdict?: string } | null; loop: { rounds?: { unmet: number; broken: number }[] } | null };
   const tally = { best: { n: 0, ok: 0 }, explore: { n: 0, ok: 0 }, fill: { n: 0, ok: 0 } };
+  // **못 재 개수를 따로 센다** (204회차 09-21, 사장님):
+  // *"안 돌 판을 통과에서도 분모에서도 빼면 통과율은 정직해지지만, 그 판들이 결산에서 사라질 수 있어요.
+  //  오늘 고친 고장이 '조용히 건너뜀' 이었으니, 통과율 옆에 항상 '못 잼 N' 을 같이 찍게 해야 합니다."*
+  let unmeasured = 0;
   for (const r of (data ?? []) as unknown as R[]) {
     const mode = r.seats?.fixMode as keyof typeof tally | undefined;
     if (!mode || !(mode in tally)) continue;
@@ -116,14 +120,14 @@ export async function headWins(db: SupabaseClient, days = 30): Promise<{ best: {
     // **검사가 못 돌았으면 통과가 아니다** (204회차 09-21). 전에는 `!last` 일 때 통과로 쌀다 —
     // 그러면 고리가 `no_run` 으로 멈춘 판(HTML 이 없어 돌려 보지도 못한 판)이 성적표에 통과로 들어간다.
     // 어젠밤 무인 판에서 실제로 6판이 그렇게 들어갔다. **못 잼은 통과 쪽으로 반올림하지 않는다.**
-    if (!last) continue; // 재지 못한 판은 분모에도 안 들어간다
+    if (!last) { unmeasured++; continue; } // 재지 못한 판 — 분모에도 안 들어가지만 **세서 같이 보인다**
     const ok = r.askJudge?.verdict !== "되돌린다" && last.unmet === 0 && last.broken === 0;
     tally[mode].n++; if (ok) tally[mode].ok++;
   }
   const pct = (t: { n: number; ok: number }) => (t.n ? `${t.ok}/${t.n}` : "0/0");
   const enough = tally.best.n >= 5 && tally.explore.n >= 5;
   const verdict = !enough ? "아직 판이 모자라 못 센다(각 5판까지)" : tally.best.ok / tally.best.n > tally.explore.ok / tally.explore.n ? "성적표로 고른 쪽이 더 자주 이겼다" : tally.best.ok / tally.best.n < tally.explore.ok / tally.explore.n ? "섞어 보낸 쪽이 더 자주 이겼다 — 성적표가 틀렸거나 판이 쉽다" : "같다";
-  return { ...tally, line: `머리가 고른 판 ${pct(tally.best)} · 섞어 본 판 ${pct(tally.explore)} · 채우는 판 ${pct(tally.fill)} → ${verdict}` };
+  return { ...tally, unmeasured, line: `머리가 고른 판 ${pct(tally.best)} · 섞어 본 판 ${pct(tally.explore)} · 채우는 판 ${pct(tally.fill)} · **못 잼 ${unmeasured}** → ${verdict}` };
 }
 
 /** 고른 자리를 실제 모델 자리로. openai 는 이름으로, deepseek 는 `deepseek-` 접두로 안다. 못 앉히면 null. */

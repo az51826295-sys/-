@@ -31,6 +31,7 @@ try {
   const after = await headWins(db, 1);
   check("**안 돈 판은 채점표 통과로 안 센다**", after.best.ok === before.best.ok, { 전: before.best, 후: after.best });
   check("**분모에도 안 들어간다**", after.best.n === before.best.n, { 전: before.best.n, 후: after.best.n });
+  check("**못 잼 수가 하나 올라간다**(사라지지 않는다)", after.unmeasured === before.unmeasured + 1, { 전: before.unmeasured, 후: after.unmeasured });
   const rev = await pendingReview(db, CO);
   check("**안 돈 판은 '기계가 판정함' 에서 빠진다(사람 몫으로 남는다)**", rev.n === beforeRev.n + 1, { 전: beforeRev.n, 후: rev.n });
   // (나) 진짜로 돈 판은 그대로 통과로 센다

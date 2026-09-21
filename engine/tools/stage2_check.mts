@@ -9,7 +9,7 @@ const db = createServiceClient();
 
 // 채점표가 세는 것은 **고치는 판**뿐이다 — `content_json.seats.fixMode` 가 있는 산출물.
 const wins = await headWins(db, 60);
-console.log(`섞어 보내기 채점표 (60일): best ${wins.best.ok}/${wins.best.n} · explore ${wins.explore.ok}/${wins.explore.n} · fill ${wins.fill.ok}/${wins.fill.n}`);
+console.log(`섞어 보내기 채점표 (60일): best ${wins.best.ok}/${wins.best.n} · explore ${wins.explore.ok}/${wins.explore.n} · fill ${wins.fill.ok}/${wins.fill.n} · **못 잼 ${wins.unmeasured}**`);
 const v = judgeStage2(wins);
 console.log(`판정: **${v.kind}** — ${v.why}`);
 console.log(`잰 것은 ${stage2Done(v) ? "끝났다" : "**아직 안 끝났다**"}`);
