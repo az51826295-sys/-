@@ -1,0 +1,52 @@
+{
+  "note": "3단계 시험의 **정답 출처**. 우리 의견이 아니다. 버전·받은 날짜·페이지 사본까지 얼린다(사장님 09-21) — 링크만 두면 나중에 그 페이지가 바뀌었을 때 정답이 조용히 달라진다.",
+  "fetchedAt": "2026-09-21",
+  "engines": {
+    "godot": {
+      "version": "Godot Engine 4.7",
+      "source": "https://docs.godotengine.org/en/stable/about/system_requirements.html",
+      "pageDateShown": null,
+      "minimum": {
+        "os": "Windows 10 / macOS 10.15+ (Forward+·Mobile) 또는 10.13 (Compatibility) / 2018년 이후 Linux",
+        "cpu": "x86_64 with SSE4.2, x86_32 with SSE2, 또는 ARMv8",
+        "ramGB": 4,
+        "gpu": "Vulkan 1.0 전체 지원 내장그래픽 (Forward+·Mobile) 또는 OpenGL 3.3 (Compatibility)",
+        "vramGB": null,
+        "diskGB": 1.5
+      },
+      "copy": "Minimum: CPU 'x86_32 CPU with SSE2 support, x86_64 CPU with SSE4.2 support, ARMv8 CPU' (Windows). RAM 4 GB for native editor; 8 GB for web editor. GPU 'Integrated graphics with full Vulkan 1.0 support (Forward+/Mobile renderers) or OpenGL 3.3 support (Compatibility renderer)'. Storage '200 MB (used for the executable, project files and cache)' plus 1.3 GB for export templates. OS Windows 10, macOS 10.13 (Compatibility) or 10.15+ (Forward+/Mobile), or Linux distributions released after 2018."
+    },
+    "unity": {
+      "version": "Unity 6.6 (6000.6)",
+      "source": "https://docs.unity3d.com/Manual/system-requirements.html",
+      "pageDateShown": null,
+      "minimum": {
+        "os": "Windows 10 21H1(build 19043) 이상 (x64) 또는 Windows 11 21H2 (Arm64)",
+        "cpu": "x64 with SSE2, 또는 Arm64",
+        "ramGB": 8,
+        "gpu": "DX10·DX11·DX12 또는 Vulkan 지원 GPU (벤더 공식 드라이버)",
+        "vramGB": null,
+        "diskGB": null
+      },
+      "copy": "OS 'Windows 10 version 21H1 (build 19043) or newer (X64), Windows 11 21H2 (build 22000) or newer (Arm64)'. CPU 'X64 architecture with SSE2 instruction set support, Arm64'. Graphics 'DX10, DX11, DX12 or Vulkan capable GPUs' with 'Hardware vendor officially supported drivers'. RAM: a minimum of 8 GB is recommended. Disk: no specific minimum stated.",
+      "caveat": "램 8GB 는 **권장(recommended)** 으로 적혀 있다. 공식 '최소' 가 아니다 — 판정에 쓸 때 이 점을 그대로 표시한다."
+    },
+    "unreal": {
+      "version": "Unreal Engine 5.8",
+      "source": "https://dev.epicgames.com/documentation/en-us/unreal-engine/hardware-and-software-specifications-for-unreal-engine",
+      "pageDateShown": null,
+      "minimum": {
+        "os": "Windows 10 22H2 (64-bit) 또는 Windows 10 Enterprise 21H2",
+        "cpu": null,
+        "ramGB": null,
+        "gpu": null,
+        "vramGB": null,
+        "diskGB": null
+      },
+      "recommended": { "os": "Windows 11", "cpu": "쿼드코어 Intel/AMD 2.5GHz 이상", "ramGB": 32, "vramGB": 8, "gpu": "DirectX 12 호환" },
+      "copy": "Recommended: OS 'Windows 11'; Processor 'Quad-core Intel or AMD, 2.5 GHz or faster'; RAM '32 GB RAM'; Video RAM '8 GB or more'; Graphics Card 'DirectX 12 compatible graphics card with the latest drivers'. Minimum software: OS 'Windows 10 Version 22H2 (64-bit) or Windows 10 Enterprise Version 21H2'.",
+      "caveat": "**Unreal 은 최소 하드웨어를 공표하지 않는다** — OS·DirectX 만 최소로 적혀 있고 CPU·램·VRAM 은 '권장' 뿐이다. 그러므로 '최소 사양 미달로 탈락' 판정을 Unreal 에는 **적용할 수 없다.** 이건 우리 시험의 한계이지 Unreal 이 가볍다는 뜻이 아니다."
+    }
+  },
+  "그래서 무엇이 드러났나": "셋 중 **최소 하드웨어를 숫자로 공표한 것은 Godot(램 4GB) 하나뿐**이다. Unity 8GB 는 권장이고, Unreal 은 최소 하드웨어가 아예 없다. 즉 '공개된 최소 사양으로 탈락시킨다' 는 설계는 **출처를 받아 보니 거의 작동하지 않는다.**"
+}
