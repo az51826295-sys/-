@@ -19,7 +19,10 @@ const PLANTED = new Set<string>((() => {
 })());
 const isPlanted = (t: string) => [...PLANTED].some((p) => t.includes(p)) || /아무것도 없는 빈 유니티/.test(t);
 
-const { data } = await db.from("deliverables").select("id, title, created_at, content_json").eq("deliverable_type", "app_build");
+const { data } = await db.from("deliverables").select("id, title, created_at, assignment_id, content_json").eq("deliverable_type", "app_build");
+// 심은 과제 표시는 **업무의 칸**에서 읽는다. 그 칸이 생기기 전에 들어간 둘은 제목으로 뒤를 받친다.
+const { data: asgs } = await db.from("assignments").select("id, role_input_json");
+const plantedIds = new Set((asgs ?? []).filter((a) => (a.role_input_json as { planted?: boolean } | null)?.planted).map((a) => a.id as string));
 type R = { title: string; day: string; at: string; html: boolean; engine: string; loop: boolean; rounds: number; doc: boolean; planted: boolean };
 const R: R[] = (data ?? []).map((a) => {
   const cj = a.content_json as Record<string, unknown> | null;
@@ -27,7 +30,7 @@ const R: R[] = (data ?? []).map((a) => {
   const loop = cj?.loop as { rounds?: unknown[] } | null;
   return { title: String(a.title), day: String(a.created_at).slice(0, 10), at: String(a.created_at).slice(5, 16),
     html: files.some((f) => /\.html?$/i.test(String(f.path))), engine: String((cj?.stage as { engine?: string } | null)?.engine ?? cj?.target ?? "(없음)"),
-    loop: !!loop, rounds: loop?.rounds?.length ?? 0, doc: DOC.test(String(a.title)), planted: isPlanted(String(a.title)) };
+    loop: !!loop, rounds: loop?.rounds?.length ?? 0, doc: DOC.test(String(a.title)), planted: plantedIds.has(String(a.assignment_id)) || isPlanted(String(a.title)) };
 });
 const web = R.filter((r) => r.day >= WEB_FROM), uni = R.filter((r) => r.day < WEB_FROM);
 
@@ -67,4 +70,12 @@ console.log(`  192개 중 걸리는 것 ${hit.length}개`);
 console.log(`  그중 **HTML 이 있는 것(= 멀짱한 게임이 걸린다) ${falseHit.length}개**`);
 for (const r of falseHit) console.log(`    ${r.at} ${r.title.slice(0, 40)}`);
 console.log(`  잘못 걸린 것이 ${falseHit.length === 0 ? "**0 개 — 이 규칙은 단순해도 된다**" : `${falseHit.length}개 있다 — 규칙을 좀 더 좀혀야 한다`}`);
+
+// **잡는 잣대를 바꿈** (사장님 09-21): "HTML 이 있으면 멀짱한 게임" 은 유니티 시절엔 안 맞는다 —
+// 진짜 게임 88개도 HTML 이 없다. 필요한 문장은 **"걸린 넷이 알려진 문서 넷과 정확히 같다"** 이다.
+const KNOWN = ["자가학습 API 교체 구조 조사", "로키 자가학습 엔진 교체 구조 설계", "유니티가 재다", "벽돌깨기 게임 요구사항 정의"];
+const hitTitles = hit.map((r) => r.title);
+const matched = KNOWN.filter((k) => hitTitles.some((t) => t.includes(k)));
+console.log(`  알려진 문서 ${KNOWN.length}개 중 걸린 것 ${matched.length}개 · 걸렸는데 알려진 문서가 아닌 것 ${hit.length - matched.length}개`);
+console.log(`  → ${matched.length === KNOWN.length && hit.length === KNOWN.length ? "**걸린 넷이 알려진 문서 넷과 정확히 같다**" : "**같지 않다 — 다시 봐야 한다**"}`);
 

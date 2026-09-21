@@ -22,7 +22,7 @@ const arg = (k: string) => { const i = process.argv.indexOf(k); return i > 0 ? p
 type Frozen = { items: { n: number; weight: string; title: string; description: string; expectFail: boolean }[]; mix: Record<string, number>; estimate: Record<string, unknown> };
 const { readFileSync } = await import("node:fs");
 const frozen = JSON.parse(readFileSync("engine/docs/genesis/unattended-queue-2.json", "utf8")) as Frozen;
-const TASKS: [string, string][] = frozen.items.map((x) => [x.title, x.description]);
+const TASKS: [string, string, boolean][] = frozen.items.map((x) => [x.title, x.description, !!x.expectFail]);
 
 async function show() {
   const { data } = await db.from("assignments").select("id, title, status, created_at").eq("company_id", CO).in("status", ["waiting", "assigned", "queued", "working"]).order("created_at");
@@ -50,14 +50,15 @@ const n = Math.min(Number(arg("--fill")), TASKS.length);
 const live = await show();
 if (live.length) { console.error("이미 대기열에 있다 — --clear 먼저"); process.exit(1); }
 for (let i = 0; i < n; i++) {
-  const [title, desc] = TASKS[i];
+  const [title, desc, planted] = TASKS[i];
   const suffix = "";
   // 첫 개만 바로 시작, 나머지는 waiting — releaseEmployee 가 차례로 꺼낸다(177회차에 고친 길).
   const first = i === 0;
   const { data: a, error } = await db.from("assignments").insert({
     company_id: CO, company_employee_id: DEV, title: title + suffix, description: desc,
     status: first ? "assigned" : "waiting", current_progress_step: first ? "assignment_received" : null,
-    role_input_json: { approved: true, unattended: true }, role_input_schema_id: "small_app_assignment_v1", priority: "normal",
+    // **심은 것은 칸으로 표시한다** (204회차 09-21, 사장님): 제목으로 가르면 다음에 심는 과제는 제목이 달라 또 섮인다.
+    role_input_json: { approved: true, unattended: true, ...(planted ? { planted: true } : {}) }, role_input_schema_id: "small_app_assignment_v1", priority: "normal",
   }).select("id").single();
   if (error) { console.error(`${i + 1}번 못 넣음: ${error.message}`); break; }
   if (first) await db.from("work_executions").insert({ company_id: CO, assignment_id: a!.id, company_employee_id: DEV, status: "queued", current_step: "context_loaded", attempt_number: 1 });
