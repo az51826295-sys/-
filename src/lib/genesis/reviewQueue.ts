@@ -21,43 +21,50 @@ type Supabase = SupabaseClient;
 export const REVIEW_CAP = 10;
 
 /**
- * 붙었는데 그 뒤로 사장님 말이 없는 일의 수. 회사 하나 기준.
+ * 붙었는데 **명시적 판정이 없는** 일의 수. 회사 하나 기준.
  *
- * **열 이름을 직접 보고 썼다** (09-21). 첫 판에 `attachments.assignment.deliverableId` 를 읽었는데
- * 그 칸은 없다 — 실제 모양은 `{id, title, queued}` 다. 자가 없는 칸을 읽고 **0을 냈다.**
- * 사장님: *"도구가 '0' 이라고 할 때도 똑같이 의심하라는 신호예요."*
+ * **처음엔 "그 뒤에 사장님 말이 있었나" 로 쌀다 — 틀렸다** (사장님 09-21):
+ * > *"결과물이 붙은 뒤 그 대화에 아무 말이나 하면 앞의 결과물 전부가 본 것으로 세어져요.
+ * >  '밥 먹고 올게' 한마디로 상한이 풀릴 수 있다는 뜻이에요. … 재는 대상 자체가 목적과 어긋나 있어요."*
+ *
+ * 그래서 **딱지**를 본다. 결과물 바로 다음 사장님 말에 `attachments.reaction` 이 붙고(`reaction.ts`),
+ * 그 안의 `accepted` / `rejected` 가 **좋음·안 좋음**이다. 둘 다 false 면 새 지시이거나 잡담이라
+ * **판정이 아니다** — 안 본 것으로 센다. 딱지가 아예 없으면 더더욱 안 본 것이다.
  */
-export async function pendingReview(db: Supabase, companyId: string, days = 30): Promise<{ n: number; titles: string[] }> {
+export async function pendingReview(db: Supabase, companyId: string, days = 30): Promise<{ n: number; titles: string[]; judged: number }> {
   const since = new Date(Date.now() - days * 86400_000).toISOString();
   const { data: co } = await db.from("companies").select("owner_id").eq("id", companyId).maybeSingle();
-  if (!co) return { n: 0, titles: [] };
+  if (!co) return { n: 0, titles: [], judged: 0 };
   const { data: convs } = await db.from("conversations").select("id").eq("owner_id", co.owner_id as string).limit(200);
   const ids = (convs ?? []).map((c) => c.id as string);
-  if (!ids.length) return { n: 0, titles: [] };
-  // 일이 붙은 턴만 — 작은 집합이다(전체 대화를 읽지 않는다).
+  if (!ids.length) return { n: 0, titles: [], judged: 0 };
   const { data: att } = await db.from("conversation_messages")
     .select("conversation_id, created_at, aid:attachments->assignment->>id, title:attachments->assignment->>title")
     .in("conversation_id", ids).gte("created_at", since).not("attachments->assignment->>id", "is", null)
     .order("created_at", { ascending: false }).limit(1000);
-  if (!att?.length) return { n: 0, titles: [] };
-  // 그 대화들의 사장님 말 시각만
+  if (!att?.length) return { n: 0, titles: [], judged: 0 };
+  // 사장님 말 + 그 말에 붙은 딱지
   const { data: says } = await db.from("conversation_messages")
-    .select("conversation_id, created_at").in("conversation_id", ids).eq("role", "user").gte("created_at", since)
-    .order("created_at", { ascending: false }).limit(2000);
-  const lastSaid = new Map<string, string>();
-  for (const m of says ?? []) { // 내림차순이라 처음 만나는 것이 제일 늦다
-    const k = m.conversation_id as string;
-    if (!lastSaid.has(k)) lastSaid.set(k, m.created_at as string);
+    .select("conversation_id, created_at, acc:attachments->reaction->>accepted, rej:attachments->reaction->>rejected")
+    .in("conversation_id", ids).eq("role", "user").gte("created_at", since)
+    .order("created_at", { ascending: true }).limit(3000);
+  type S = { conversation_id: string; created_at: string; acc: string | null; rej: string | null };
+  const byConv = new Map<string, S[]>();
+  for (const m of (says ?? []) as unknown as S[]) {
+    const l = byConv.get(m.conversation_id); if (l) l.push(m); else byConv.set(m.conversation_id, [m]);
   }
   const titles: string[] = [];
   const seen = new Set<string>();
+  let judged = 0;
   for (const m of att as unknown as { conversation_id: string; created_at: string; aid: string; title: string | null }[]) {
     if (seen.has(m.aid)) continue;
     seen.add(m.aid);
-    const said = lastSaid.get(m.conversation_id);
-    if (!said || said <= m.created_at) titles.push(m.title ?? m.aid.slice(0, 8));
+    // **바로 다음** 사장님 말 하나만 본다(그 뒤 아무 말이 아니라).
+    const next = (byConv.get(m.conversation_id) ?? []).find((x) => x.created_at > m.created_at);
+    const ok = next ? next.acc === "true" || next.rej === "true" : false;
+    if (ok) judged++; else titles.push(m.title ?? m.aid.slice(0, 8));
   }
-  return { n: titles.length, titles };
+  return { n: titles.length, titles, judged };
 }
 
 /** 문. 넘쳤으면 이유를 돌려준다. 안 넘쳤으면 null. */
