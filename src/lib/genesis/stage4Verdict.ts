@@ -17,7 +17,11 @@ export type FixRound = {
   request: string;
   /** 조각 경로(`content_json.patched`)를 탔나 */
   patched: boolean;
-  /** 이 회차에서 바뀐 줄 / 그때 파일 전체 줄(게임이 여러 파일이면 **합**) */
+  /**
+   * 이 회차에서 바뀐 줄 / 그때 파일 전체 줄(게임이 여러 파일이면 **합**).
+   * **세는 법**: `git diff --numstat` 의 **추가 + 삭제 합**이다.
+   * 한 줄을 고치면 삭제 1 + 추가 1 로 **2** 가 된다. 한쪽으로 정해 둔다(3판).
+   */
   changedLines: number;
   totalLines: number;
   /** 말한 것이 실제로 바뀌었나 · 누가 봤나 */
@@ -47,6 +51,21 @@ export type Stage4Verdict =
   | { kind: "못 잼"; why: string }
   | { kind: "통과" | "실패"; why: string; rounds: number; wholeRewrites: number; broke: number; cumulativeRatio: number };
 
+/**
+ * **연 판을 전부 기록한다** (3판, 사장님 09-21).
+ * 회차를 다시 하는 것은 막았지만, 판이 무효·실패가 되면 **새 판을 열 수 있으니**
+ * 결국 성공한 판 하나만 남기는 모양이 된다. 판 수를 제한하지는 않는다 — **전부 적는다.**
+ * 무효도 실패도 지우지 않고, 결과는 항상 **"N판 중 M판 통과"** 로 적는다.
+ */
+export function judgeStage4Runs(runs: Stage4Run[]): { line: string; total: number; passed: number; failed: number; void_: number; unmeasured: number } {
+  const vs = runs.map((r) => judgeStage4(r));
+  const passed = vs.filter((v) => v.kind === "통과").length;
+  const failed = vs.filter((v) => v.kind === "실패").length;
+  const void_ = vs.filter((v) => v.kind === "무효").length;
+  const unmeasured = vs.filter((v) => v.kind === "못 잼").length;
+  return { line: `${runs.length}판 중 ${passed}판 통과 (실패 ${failed} · 무효 ${void_} · 못 잼 ${unmeasured})`, total: runs.length, passed, failed, void_, unmeasured };
+}
+
 export function judgeStage4(run: Stage4Run): Stage4Verdict {
   const { rounds, cumulative, ownerSaidDone } = run;
 
@@ -62,7 +81,9 @@ export function judgeStage4(run: Stage4Run): Stage4Verdict {
   const noRequest = rounds.filter((r) => !r.request.trim());
   if (noRequest.length) return { kind: "못 잼", why: `요청 원문이 없는 회차 ${noRequest.length}번` };
   const unseen = rounds.filter((r) => r.asked === null || r.broke === null);
-  if (unseen.length) return { kind: "못 잼", why: `${unseen.length}번은 요청대로 바뀌었는지·깨졌는지를 아무도 안 봤다` };
+  // **확인은 그 회차 안에서 끝낸다.** 나중에 채운 확인은 안 친다 — 그러면 못 잰 회차를 뒤늦게 확인해
+  // 통과로 바꿀 수 있다(3판, 사장님). 그래서 못 잼 회차가 있는 판은 **통과가 될 수 없다**.
+  if (unseen.length) return { kind: "못 잼", why: `${unseen.length}번은 요청대로 바뀌었는지·깨졌는지를 아무도 안 봤다 — 이 판은 통과가 될 수 없다` };
   const byMachine = rounds.filter((r) => r.askedBy !== "사람" || r.brokeBy !== "사람");
   if (byMachine.length) return { kind: "못 잼", why: `${byMachine.length}번은 사람이 안 봤다 — 2·3번은 사람 칸이다` };
 

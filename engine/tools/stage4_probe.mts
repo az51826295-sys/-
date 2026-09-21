@@ -1,5 +1,5 @@
 /** 4단계 본판 자 (2판) — **판을 열기 전에** 가짜 기록으로 끝까지 돌린다. 모델 0, 돈 0. */
-const { judgeStage4, TARGET_ROUNDS, WHOLE_REWRITE } = await import("../../src/lib/genesis/stage4Verdict");
+const { judgeStage4, judgeStage4Runs, TARGET_ROUNDS, WHOLE_REWRITE } = await import("../../src/lib/genesis/stage4Verdict");
 type FixRound = import("../../src/lib/genesis/stage4Verdict").FixRound;
 type Stage4Run = import("../../src/lib/genesis/stage4Verdict").Stage4Run;
 let bad = 0, seen = 0;
@@ -25,5 +25,17 @@ check("**회차마다 40%씩이어도 누적이 절반을 넘으면 실패**", j
 check("누적이 절반 미만이면 통과", judgeStage4(run({ cumulative: { changedLines: 149, originalLines: 300 } })).kind === "통과");
 check("잠근 값이 그대로다", TARGET_ROUNDS === 5 && WHOLE_REWRITE === 0.5);
 check("실패 이유가 여럿이면 다 적는다", (judgeStage4(run({ ownerSaidDone: false, rounds: swap(0, { patched: false, broke: true }) })) as { why: string }).why.split(" · ").length === 3);
+// ── **연 판을 전부 적는다** (3판, 사장님): 통과할 때까지 판을 열고 성공한 하나만 남기는 길을 막는다
+{
+  const pass = run();
+  const fail = run({ ownerSaidDone: false });
+  const invalid = run({ rounds: swap(2, { redone: true }) });
+  const unmeasured = run({ rounds: swap(1, { broke: null }) });
+  const led = judgeStage4Runs([invalid, fail, unmeasured, pass]);
+  check("**4판 중 1판 통과로 적힌다**(무효·실패도 안 지운다)", led.line.startsWith("4판 중 1판 통과") && led.void_ === 1 && led.failed === 1 && led.unmeasured === 1, led);
+  check("한 판만 열고 통과하면 1판 중 1판", judgeStage4Runs([pass]).line.startsWith("1판 중 1판 통과"));
+  check("**못 잼 회차가 있는 판은 통과가 될 수 없다**", (judgeStage4(unmeasured) as { why: string }).why.includes("통과가 될 수 없다"), judgeStage4(unmeasured));
+}
+
 console.log(`\n최종: ${bad ? `어긋남 ${bad}/${seen}` : `전부 맞음 ${seen}/${seen}`}`);
 process.exit(bad ? 1 : 0);
