@@ -96,6 +96,7 @@ function meterAi(ai: AIProvider, db: Db, scope: UsageScope): AIProvider {
         // 넘어가는 걸 찾고도 **언제** 바뀜는지를 못 알아낸 이유가 이 칸이 없어서였다.
         // 값은 여전히 위의 `model` 로 매긴다 — 이 칸은 보기 위한 것이지 썰에 쓰는 것이 아니다.
         answeredBy: result.answeredBy ?? null,
+        answeredFingerprint: result.answeredFingerprint ?? null,
         purpose: params.schemaName,
         inputTokens: result.inputTokens,
         outputTokens: result.outputTokens,
@@ -149,6 +150,8 @@ async function record(
     quantity?: number;
     /** 응답이 스스로 말한 이름. 공급자가 안 주면 null. */
     answeredBy?: string | null;
+    /** 응답의 지문. 이름이 같아도 바뀴을 본다. */
+    answeredFingerprint?: string | null;
   },
 ) {
   // Priced outside the try on purpose. Everything below swallows its errors so
@@ -175,6 +178,7 @@ async function record(
     unit: unitFor(call.model),
     quantity: call.quantity ?? null,
     answered_by: call.answeredBy ?? null,
+    answered_fingerprint: call.answeredFingerprint ?? null,
     cost_usd: cost,
     work_execution_id: scope.workExecutionId ?? null,
     project_id: scope.projectId ?? null,

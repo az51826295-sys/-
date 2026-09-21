@@ -141,6 +141,12 @@ export function createOpenAIProvider(opts: { judgmentModel?: string } = {}): AIP
          * 그때 별칭이 **언제** 바뀜는지 못 알아낸 이유가 바로 이 칸이 없어서였다.
          */
         answeredBy: (response as { model?: string }).model ?? null,
+        /**
+         * **지문** (205회차 09-22). 이름만으로는 부족하다 — 같은 이름 뒤에서 모델이 바뀔
+         * 수 있고, 그러면 이름은 그대로다. DeepSeek 은 `system_fingerprint` 를 준다(확인함).
+         * OpenAI 응답에는 null 이었다 — 공급자마다 다르므로 없으면 없는 대로 둔다.
+         */
+        answeredFingerprint: (response as { system_fingerprint?: string }).system_fingerprint ?? null,
       };
     },
   };

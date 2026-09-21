@@ -103,6 +103,11 @@ export interface AIProvider {
      */
     answeredBy?: string | null;
     /**
+     * **응답의 지문**. 이름이 같아도 모델이 바뀔 수 있어서, 이름만으로는 바뀴을 못 본다.
+     * DeepSeek 은 준다. OpenAI 는 안 줌(09-22 확인). 없으면 null.
+     */
+    answeredFingerprint?: string | null;
+    /**
      * 이 호출이 **왜 그 자리에서 돌았는가.**
      *
      * 모델 이름만 남기면 "싼 등급인데 비싼 모델로 돌았다"까지는 보이지만, 그게
