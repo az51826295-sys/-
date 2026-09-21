@@ -73,7 +73,12 @@ export async function pendingReview(db: Supabase, companyId: string, days = 30):
   const machine = new Set<string>();
   for (let i = 0; i < aids.length; i += 100) {
     const { data: dls } = await db.from("deliverables").select("assignment_id, loop:content_json->loop, askJudge:content_json->askJudge").in("assignment_id", aids.slice(i, i + 100));
-    for (const d of (dls ?? []) as unknown as { assignment_id: string; loop: unknown; askJudge: unknown }[]) if (d.loop || d.askJudge) machine.add(d.assignment_id);
+    // **고리 기록이 있다고 재진 것이 아니다** (204회차 09-21). `stoppedBy:"no_run"` 은 바퀴가 0 이다 —
+    // 돌려 보지도 못했다는 뜻이므로 사람 몫에서 뺀어서는 안 된다.
+    for (const d of (dls ?? []) as unknown as { assignment_id: string; loop: { rounds?: unknown[] } | null; askJudge: unknown }[]) {
+      const ran = (d.loop?.rounds?.length ?? 0) > 0;
+      if (ran || d.askJudge) machine.add(d.assignment_id);
+    }
   }
   const titles: string[] = [];
   const seen = new Set<string>();

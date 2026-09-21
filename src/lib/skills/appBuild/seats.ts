@@ -113,7 +113,11 @@ export async function headWins(db: SupabaseClient, days = 30): Promise<{ best: {
     const mode = r.seats?.fixMode as keyof typeof tally | undefined;
     if (!mode || !(mode in tally)) continue;
     const last = r.loop?.rounds?.[r.loop.rounds.length - 1];
-    const ok = r.askJudge?.verdict !== "되돌린다" && (!last || (last.unmet === 0 && last.broken === 0));
+    // **검사가 못 돌았으면 통과가 아니다** (204회차 09-21). 전에는 `!last` 일 때 통과로 쌀다 —
+    // 그러면 고리가 `no_run` 으로 멈춘 판(HTML 이 없어 돌려 보지도 못한 판)이 성적표에 통과로 들어간다.
+    // 어젠밤 무인 판에서 실제로 6판이 그렇게 들어갔다. **못 잼은 통과 쪽으로 반올림하지 않는다.**
+    if (!last) continue; // 재지 못한 판은 분모에도 안 들어간다
+    const ok = r.askJudge?.verdict !== "되돌린다" && last.unmet === 0 && last.broken === 0;
     tally[mode].n++; if (ok) tally[mode].ok++;
   }
   const pct = (t: { n: number; ok: number }) => (t.n ? `${t.ok}/${t.n}` : "0/0");
