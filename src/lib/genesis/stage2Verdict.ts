@@ -23,7 +23,7 @@ export const STAGE2 = {
 
 export type Stage2Verdict =
   | { kind: "못 잼"; why: string; need: { best: number; explore: number } }
-  | { kind: "머리가 낫다" | "섞는 게 낫다" | "모름"; why: string; diff: number };
+  | { kind: "머리가 낫다" | "섞는 게 낫다" | "모름"; why: string; diff: number; /** 띄 밖이어도 **증명이 아니다** — 잠정이다. */ strength: "잠정" | "모름" };
 
 export function judgeStage2(t: SeatTally): Stage2Verdict {
   const need = { best: Math.max(0, STAGE2.minN - t.best.n), explore: Math.max(0, STAGE2.minN - t.explore.n) };
@@ -32,10 +32,12 @@ export function judgeStage2(t: SeatTally): Stage2Verdict {
   }
   const rb = t.best.ok / t.best.n, re = t.explore.ok / t.explore.n;
   const diff = rb - re;
-  if (diff >= STAGE2.band) return { kind: "머리가 낫다", why: `머리가 고른 자리 통과율 ${(rb * 100).toFixed(0)}% vs 섞은 자리 ${(re * 100).toFixed(0)}%`, diff };
-  if (diff <= -STAGE2.band) return { kind: "섞는 게 낫다", why: `섞은 자리 ${(re * 100).toFixed(0)}% vs 머리 ${(rb * 100).toFixed(0)}%`, diff };
+  // **띄 밖이어도 증명은 아니다** (사장님 09-21): *"다섯 판씩이면 4/5 대 1/5 도 우연으로 꾰 나와요.
+  //  띄 밖 결과는 '당분간 이쪽으로 보낸다' 정도의 **잠정 판정**으로 적어 두세요. 되돌리기 싼 결정이라 그걸로 충분해요."*
+  if (diff >= STAGE2.band) return { kind: "머리가 낫다", why: `머리가 고른 자리 ${(rb * 100).toFixed(0)}% vs 섞은 자리 ${(re * 100).toFixed(0)}% — **잠정**이다(다섯 판씩은 우연으로도 나온다). 당분간 이쪽으로 보낸다`, diff, strength: "잠정" };
+  if (diff <= -STAGE2.band) return { kind: "섞는 게 낫다", why: `섞은 자리 ${(re * 100).toFixed(0)}% vs 머리 ${(rb * 100).toFixed(0)}% — **잠정**이다. 당분간 이쪽으로 보낸다`, diff, strength: "잠정" };
   // **모름도 결과다.** 여기서 "판을 더 쌓자" 로 가면 2단계가 무한정 늘어진다(사장님).
-  return { kind: "모름", why: `차이 ${(diff * 100).toFixed(0)}%p — 잠근 띠 ±${STAGE2.band * 100}%p 안이다. **이 표본으로는 구별 못 한다**는 것이 결과다`, diff };
+  return { kind: "모름", why: `차이 ${(diff * 100).toFixed(0)}%p — 잠근 띠 ±${STAGE2.band * 100}%p 안이다. **이 표본으로는 구별 못 한다**는 것이 결과다`, diff, strength: "모름" };
 }
 
 /**
@@ -46,3 +48,21 @@ export function judgeStage2(t: SeatTally): Stage2Verdict {
 export function stage2Done(v: Stage2Verdict): boolean {
   return v.kind !== "못 잼";
 }
+
+/**
+ * **고치는 판의 재료를 어디서 얻나** — 기준과 **같이** 잠근다 (사장님 09-21).
+ *
+ * > *"사장님이 요청을 써야 하면 그게 주말 시간을 먹고, 로키가 자기 산출물에 스스로 요청을 만들면
+ * >  쉬운 것만 고르게 될 수 있어요. 요청을 어떻게 만들지도 기준과 같이 잠가 두라고 하세요."*
+ *
+ * 그래서 요청은 **미리 얼린 목록**에서 나온다. 로키가 그때그때 짓지 않는다.
+ * - 대상 산출물은 **만든 순서대로** 고른다(고르기에 재량을 안 준다 — 쉬운 것만 집는 것을 막는다).
+ * - 요청 문장은 아래 네 갈래에서 **돌아가며** 쓴다. 갈래마다 난이도가 다르다.
+ * - 자리는 섞어 보내기가 정한다. **사람도 나도 자리를 안 고른다.**
+ */
+export const FIX_KINDS = [
+  { kind: "눈에 보이는 것", ask: "시작 화면에 '남은 시간' 을 큰 글씨로 띄워 줘.", 난이도: "쉬움" },
+  { kind: "규칙 하나", ask: "점수가 10점 넘으면 속도가 1.5배가 되게 해 줘.", 난이도: "보통" },
+  { kind: "고장 고치기", ask: "화면 끝에서 조작이 안 먹는 것 같아. 끝까지 움직이게 고쳐 줘.", 난이도: "어려움" },
+  { kind: "되돌리기", ask: "방금 바꾼 걸 되돌리고, 대신 색만 어둡게 해 줘.", 난이도: "보통" },
+] as const;
