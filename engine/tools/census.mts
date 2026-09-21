@@ -73,7 +73,7 @@ console.log(`  잘못 걸린 것이 ${falseHit.length === 0 ? "**0 개 — 이 �
 
 // **잡는 잣대를 바꿈** (사장님 09-21): "HTML 이 있으면 멀짱한 게임" 은 유니티 시절엔 안 맞는다 —
 // 진짜 게임 88개도 HTML 이 없다. 필요한 문장은 **"걸린 넷이 알려진 문서 넷과 정확히 같다"** 이다.
-const KNOWN = ["자가학습 API 교체", "엔진 교체 구조 설계", "유니티가 잔다", "요구사항 정의"];
+const KNOWN = ["자가학습 API 교체", "엔진 교체 구조 설계", "의 의미 설명", "요구사항 정의"];
 const hitTitles = hit.map((r) => r.title);
 const matched = KNOWN.filter((k) => hitTitles.some((t) => t.includes(k)));
 console.log(`  알려진 문서 ${KNOWN.length}개 중 걸린 것 ${matched.length}개 · 걸렸는데 알려진 문서가 아닌 것 ${hit.length - matched.length}개`);
