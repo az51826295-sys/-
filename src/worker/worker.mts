@@ -85,6 +85,23 @@ async function sweepTick() {
   }
 }
 
+/**
+ * **도는 쪽이 자기 커밋을 알린다** (2026-09-22, 사장님).
+ *
+ * "올렸다" 와 "새 코드가 도다" 는 다르다. 오늘 그 둘이 **두 번** 갈라졌고,
+ * 두 번 다 사장님이 짚어서 알았다. 그래서 워커가 자기 커밋을 적어 둔다.
+ *
+ * **막지 않고 알리기만 한다** — 엔진 어긋남에서 "막지 말고 표시만" 을 고른 것과 같다.
+ * 배포 흐름은 그대로고, `deploy_check.mts` 가 이걸 읽어 "배포 안 된 커밋 N개" 를 찍는다.
+ */
+async function heartbeatTick() {
+  const commit = process.env.RAILWAY_GIT_COMMIT_SHA ?? process.env.GIT_COMMIT_SHA ?? null;
+  await db.from("service_heartbeat").upsert({
+    service: "rookery-worker", commit_sha: commit, seen_at: new Date().toISOString(),
+    deployed_at: process.env.RAILWAY_DEPLOYMENT_CREATED_AT ?? null,
+  }, { onConflict: "service" });
+}
+
 const RETURNS_EVERY = 4;   // 15초 × 4 = 1분
 const WALLET_EVERY = 40;   // 15초 × 40 = 10분
 const PING_EVERY = 20;     // 15초 × 20 = 5분 — 뽑은 시각에서 최대 5분 늦는다. 그 정도는 랜덤에 묻힌다.
@@ -273,6 +290,7 @@ for (;;) {
     if (tickN % RETURNS_EVERY === 0) {
       try { await returnsTick(); } catch (e) { console.error(`${stamp()} 돌려놓기 실패`, e instanceof Error ? e.message : e); }
       try { await sweepTick(); } catch (e) { console.error(`${stamp()} 쓸기 실패`, e instanceof Error ? e.message : e); }
+      try { await heartbeatTick(); } catch (e) { console.error(`${stamp()} 심장 소리 실패`, e instanceof Error ? e.message : e); }
       // 202회차: 무인 판 결과를 볼 자리에 붙인다. **일의 완료와 무관한 경로다** — attachments.assignment 를 안 써서
       // 쓸기·결과 붙이기 어느 쪽과도 얽히지 않는다(사장님 조건 2).
       try {
