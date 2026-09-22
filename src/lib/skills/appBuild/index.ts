@@ -709,7 +709,13 @@ ${ctx.context.assignment.description ?? ""}`)}번까지 돌려 보고 고쳐요)
         return (data as { effort?: string | null } | null)?.effort ?? null;
       } catch { return null; }
     })();
-    const loopRounds = roundsFor(askText, effortOfHead);
+    // **난간이 있으면 고칠 바퀴를 준다**(205회차 09-22, 판 5 에서 배움).
+    // 판 5 는 난간을 **제대로 잡고도**(broken 3) 바퀴가 1이라 못 고친 채 나갔다.
+    // 머리가 "가볍게" 로 본 것은 틀리지 않았다 — 두 줄 물리 손질이 맞다.
+    // 틀린 것은 **잡는 것과 고치는 것을 같은 일로 본 것**이다. 난간을 심었으면 고칠 자리도 있어야 한다.
+    const guardsFromOrder = ((ctx.context.roleInput as { webGuards?: unknown } | null)?.webGuards as
+      { measure: string; min?: number | null; max?: number | null; why?: string }[] | undefined) ?? undefined;
+    const loopRounds = Math.max(roundsFor(askText, effortOfHead), guardsFromOrder?.length ? 4 : 0);
     if (effortOfHead) console.log(`[머리] 바퀴: ${effortOfHead} → ${loopRounds}바퀴`);
     if (!unity && process.env.BUILD_LOOP !== "0" && loopRounds > 0) {
       await setStep(ctx.supabase, ctx.executionId, "looping");
@@ -722,8 +728,7 @@ ${ctx.context.assignment.description ?? ""}`)}번까지 돌려 보고 고쳐요)
           rounds: loopRounds, usdCap: Number(process.env.BUILD_LOOP_USD ?? "0.5") || 0.5, thorough: isThorough(askText) || effortOfHead === "꼼꼼히",
           // **주문이 실어 보낸 숫자 난간**(205회차 09-22). 4단계 본판처럼 "높이는 그대로 두라" 가
           // 요청의 핵심일 때, 화면만 보는 심판으로는 그걸 못 지킨다.
-          guards: ((ctx.context.roleInput as { webGuards?: unknown } | null)?.webGuards as
-            { measure: string; min?: number | null; max?: number | null; why?: string }[] | undefined) ?? undefined,
+          guards: guardsFromOrder,
           onRound: async (rec, total) => {
             // 화면의 "N바퀴째 · 확인 목록 x/y". 단계 저장과 같은 칸(metrics_json)에 읽고-합쳐-쓴다.
             const { data: cur } = await ctx.supabase.from("work_executions").select("metrics_json").eq("id", ctx.executionId).maybeSingle();
