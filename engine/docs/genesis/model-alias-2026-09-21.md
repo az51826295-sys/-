@@ -105,3 +105,31 @@
 | 결산·자·문서 | 안 돈다(도구와 기록) | — |
 
 **주의**: 지문 칸 배선은 어젯밤 것이라 **한 번도 안 돌았다.** "코드 연결됨 · 원장 기록 미확인" 으로 적어 둔 그것이다.
+
+## 확인했다 — 그리고 **절반만 돌았다** (2026-09-22 11:0x)
+
+위 표의 첫 줄을 실제 판으로 확인했다(데모 회사, 작은 고치는 판 하나). 원장:
+
+```
+gpt-5.6-luna      → gpt-5.6-luna · (빔) · loop_verdict
+gpt-5.6-luna      → gpt-5.6-luna · (빔) · ask_verdict
+deepseek-v4-flash → (빔) · (빔) · app_patch
+deepseek-v4-flash → (빔) · (빔) · app_patch
+gpt-5.6-luna      → gpt-5.6-luna · (빔) · ask_verdict
+deepseek-v4-flash → (빔) · (빔) · app_patch
+deepseek-v4-flash → (빔) · (빔) · app_plan
+deepseek-v4-pro   → (빔) · (빔) · head_decision
+응답 이름이 찍힌 줄 3/8
+```
+
+**정작 보려던 쪽이 비어 있었다.** 이 칸을 만든 이유가 딥시크 별칭이 언제 움직이는지 보려는 것이었는데,
+찍힌 셋은 전부 luna 였고 딥시크 다섯 줄은 이름·지문 둘 다 빔이었다.
+
+원인: **공급자가 한 파일이 아니었다.** 나는 `providers/openai.ts` 의 `responses.parse` 길에만 넣었고,
+딥시크는 `providers/deepseek.ts` 의 `chat.completions.create` 를 쓴다(앤트로픽은 또 다른 파일).
+09-21 에 딥시크를 **직접 불러** 지문을 받은 것은 이 배선을 하나도 지나지 않는 길이었다.
+
+배울 것: **호출이 지나는 길이 몇 개인지 먼저 센다.** 한 길에 넣고 자를 대면
+자가 말한 "찍힌다" 는 내가 고친 길에 대한 답일 뿐이다. 3/8 을 한 덩어리로 세서
+"배선 됨" 으로 읽은 것도 같은 잘못이다 — 그래서 자(`answered_check.mts`)를
+**공급자별로 갈라 세게** 고쳤다. 한 덩어리로 세면 luna 가 딥시크의 0 을 덮는다.
