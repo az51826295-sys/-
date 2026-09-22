@@ -5,6 +5,8 @@
 #   sh engine/tools/deploy.sh rookery-worker
 set -e
 SVC="${1:-rookery-worker}"
+# 주의: 이 파일을 .gitignore 에 넣으면 **Railway 가 업로드에서 뺀다**(09-22에 당함).
+# 깃에서만 숨기려면 .git/info/exclude 를 쓴다 — Railway 는 그건 안 본다.
 git rev-parse HEAD > .deploy-commit
 echo "박음: $(cat .deploy-commit | cut -c1-7) → $SVC"
 railway up --service "$SVC" --ci

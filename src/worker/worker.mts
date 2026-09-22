@@ -100,7 +100,7 @@ async function heartbeatTick() {
   // 그래서 **올리기 직전에 파일로 박아 넣는다** — 올라간 트리에 들어 있으므로 항상 실제 도는 것과 같다.
   let commit: string | null = process.env.RAILWAY_GIT_COMMIT_SHA ?? process.env.ROOKERY_COMMIT ?? null;
   if (!commit) {
-    try { commit = (await import("node:fs")).readFileSync(".deploy-commit", "utf8").trim() || null; } catch { commit = null; }
+    try { commit = (await import("node:fs")).readFileSync(".deploy-commit", "utf8").trim() || "(파일은 있는데 비었다)"; } catch { commit = null; }
   }
   await db.from("service_heartbeat").upsert({
     service: "rookery-worker", commit_sha: commit, seen_at: new Date().toISOString(),
