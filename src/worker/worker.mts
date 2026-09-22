@@ -95,13 +95,10 @@ async function sweepTick() {
  * 배포 흐름은 그대로고, `deploy_check.mts` 가 이걸 읽어 "배포 안 된 커밋 N개" 를 찍는다.
  */
 async function heartbeatTick() {
-  // `railway up` 은 **작업 트리를 올리는** 방식이라 깃 커밋이 안 딸려 간다
-  // (`RAILWAY_GIT_COMMIT_SHA` 가 비어 있음을 09-22 에 확인했다).
-  // 그래서 **올리기 직전에 파일로 박아 넣는다** — 올라간 트리에 들어 있으므로 항상 실제 도는 것과 같다.
-  let commit: string | null = process.env.RAILWAY_GIT_COMMIT_SHA ?? process.env.ROOKERY_COMMIT ?? null;
-  if (!commit) {
-    try { commit = (await import("node:fs")).readFileSync(".deploy-commit", "utf8").trim() || "(파일은 있는데 비었다)"; } catch { commit = null; }
-  }
+  // `railway up` 은 작업 트리를 올리므로 깃 커밋이 안 딸려 온다.
+  // 파일로 박아 보았지만 두 번 다 런타임에 안 보였다(09-22) — 그래서 **환경변수**로 박는다.
+  // `engine/tools/deploy.sh` 가 올리기 전에 `ROOKERY_COMMIT` 을 세운다.
+  const commit = process.env.ROOKERY_COMMIT ?? process.env.RAILWAY_GIT_COMMIT_SHA ?? null;
   await db.from("service_heartbeat").upsert({
     service: "rookery-worker", commit_sha: commit, seen_at: new Date().toISOString(),
     deployed_at: process.env.RAILWAY_DEPLOYMENT_CREATED_AT ?? null,
