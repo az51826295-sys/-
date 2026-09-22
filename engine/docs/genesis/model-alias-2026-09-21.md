@@ -133,3 +133,35 @@ deepseek-v4-pro   → (빔) · (빔) · head_decision
 자가 말한 "찍힌다" 는 내가 고친 길에 대한 답일 뿐이다. 3/8 을 한 덩어리로 세서
 "배선 됨" 으로 읽은 것도 같은 잘못이다 — 그래서 자(`answered_check.mts`)를
 **공급자별로 갈라 세게** 고쳤다. 한 덩어리로 세면 luna 가 딥시크의 0 을 덮는다.
+
+## 딥시크 줄이 찍혔다 — 그리고 **별칭은 flash 만 접힌다** (2026-09-22, 판 `7e52c7ec`)
+
+세 공급자 파일에 다 배선하고 다시 돌린 원장:
+
+```
+deepseek-v4-pro   → deepseek-v4-pro · a307abda… · head_decision
+deepseek-v4-flash → deepseek-flash  · aeb56401… · app_plan
+deepseek-v4-flash → deepseek-flash  · aeb56401… · app_patch
+gpt-5.6-luna      → gpt-5.6-luna    · (빔)      · ask_verdict
+deepseek-v4-flash → deepseek-flash  · aeb56401… · app_patch
+gpt-5.6-luna      → gpt-5.6-luna    · (빔)      · ask_verdict
+gpt-5.6-luna      → gpt-5.6-luna    · (빔)      · loop_verdict
+
+deepseek: 이름 4/4 · 지문 4/4
+gpt-:     이름 3/3 · 지문 0/3   (이 API 는 지문을 안 준다)
+claude:   이번 판에 줄이 없다 — **못 잼**
+```
+
+**이제 원장까지 흐른다** — 딥시크는 이름·지문 둘 다, OpenAI 는 이름만.
+앤트로픽은 배선은 했지만 이번 판에 안 불렸으므로 **'통과' 가 아니라 '못 잼'** 이다.
+
+새로 나온 것 둘:
+
+1. **접히는 것은 flash 뿐이다.** `deepseek-v4-flash` 는 `deepseek-flash` 로 답하는데,
+   `deepseek-v4-pro` 는 **자기 이름 그대로** 답한다. 09-21 에 "딥시크가 별칭을 접는다" 고
+   한 덩어리로 적었는데, 접는 것은 싼 자리 하나였다.
+2. **지문은 모델별로 다르다** — pro `a307abda487cd1b463329ccb945ce396`,
+   flash `aeb56401ca74e127821c4f9126dcb669`. 서버별로 흩어지는 값이 아니라
+   **모델을 가리키는 값**이다. 그래서 이름이 접혀도 지문으로 갈릴 수 있다.
+
+앞으로 이 둘 중 **하나라도 바뀌면 모델이 갈린 것**이다. 자: `answered_check.mts`.
