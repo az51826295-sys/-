@@ -14,22 +14,15 @@ const origin = arg("--origin")!;
 const desc = readFileSync(arg("--scope")!, "utf8");
 const { data: a, error } = await db.from("assignments").insert({
   company_id: CO, company_employee_id: DEV,
-  title: "별빛 플랫포머 — 점프를 더 쫀득하게 (판6 1회차: 곡선)",
+  title: "별빛 플랫포머 — 점프를 더 쫀득하게 (판7 1회차: 곡선)",
   description: desc,
   status: "assigned", current_progress_step: "assignment_received",
   role_input_json: {
     approved: true, verify: true, previousDeliverableId: origin,
-    stage4: { run: 6, round: 1, request: "점프를 더 쫀득하게" },
+    stage4: { run: 7, round: 1, request: "점프를 더 쫀득하게" },
     // **난간을 고리 안으로**(205회차 09-22). 어기면 심판 말 위에 고장으로 얹힌다.
-    webGuards: [
-      { measure: "점프.못오르는발판", min: 1, max: 1, why: "원본과 같아야 한다 — 늘면 못 닿고 줄면 쉬워진다" },
-      { measure: "점프.높이px", min: 119.8, max: 139.8, why: "아래 84.4 / 위 149.3 에서 판이 바뀐다" },
-      // **해석의 중심을 옮겼다**(09-22 사장님이 고르심): 빠름이 아니라 **버티는 것**이 주인공.
-      // 상승 상한은 뺐다 — "너무 빨라" 가 거기서 나왔다.
-      { measure: "점프.꼭대기프레임", min: 7, why: "안내값 — **이번 판의 주인공** (원본 4)" },
-      { measure: "점프.공중프레임", min: 36, max: 40, why: "안내값 — 점프 전체가 짧아지면 안 된다 (원본 40, 판4 는 24 라 '너무 빨라')" },
-      { measure: "점프.하강나누기상승", max: 0.95, why: "안내값 — 하강은 조금만 빠르게 (원본 1.11) · 판정은 사장님 말이다" },
-    ],
+    // **로키가 제안하고 사장님이 잠근 자**(판 7). 내가 숫자를 안 쓴 첫 판이다.
+    webGuards: (() => { const p = JSON.parse(readFileSync(arg("--guards")!, "utf8")) as { 난간: unknown[]; 안내값: unknown[] }; return [...p.난간, ...p.안내값]; })(),
   },
   role_input_schema_id: "small_app_assignment_v1", priority: "normal",
 }).select("id").single();
