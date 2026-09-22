@@ -3,6 +3,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { AIProvider } from "@/lib/providers/types";
 import { buildPatch, type SourceFile } from "@/lib/skills/appBuild/patch";
 import { runWeb, factLines, DEFAULT_ACTIONS, type RunFacts, type RunAction } from "@/lib/skills/appBuild/run";
+import { checkGuards, measureNamesFor, type WebGuard } from "@/lib/skills/appBuild/webMeasures";
 
 /**
  * **예산 안에서 도는 고리** (179회차 09-18). 사장님 "그래".
@@ -125,6 +126,12 @@ export async function improveLoop(o: {
    * "못 본 것" 을 보러 두 바퀴 더 돌았고(각 30~47초) 얻은 것은 0~1개였다. 기본 모드는 **고칠 게 없으면 바로 끝**, 꼼꼼 모드만 못 본 것을 더 본다.
    */
   thorough?: boolean;
+  /**
+   * **숫자 난간**(205회차 09-22). 어기면 `broken` 에 들어간다 — 그러면 한 자리를 고친 것으로
+   * 점수·`done`·고치는 자리 프롬프트가 **전부** 이 사실을 보게 된다.
+   * 화면만 보는 심판이 못 보던 것을 기계가 잡는 자리다. **못 잰 것도 어긴 것과 같이 걸린다.**
+   */
+  guards?: WebGuard[];
 }): Promise<LoopResult> {
   const rounds: RoundRecord[] = [];
   let files = o.files;
@@ -136,11 +143,20 @@ export async function improveLoop(o: {
 
   for (let n = 1; n <= o.rounds; n++) {
     const t0 = Date.now();
-    const facts = await runWeb(files, { mobile: o.mobile, actions });
+    const facts = await runWeb(files, { mobile: o.mobile, actions, measures: o.guards?.length ? measureNamesFor(o.guards) : undefined });
     if (!facts.ran) { stoppedBy = "no_run"; console.warn(`[고리] ${n}바퀴: 돌려 보지 못함 — ${facts.why}`); break; }
     let verdict: LoopVerdict;
     try { verdict = await judge(o.judgeAi, { ask: o.ask, criteria: o.criteria, facts, mobile: o.mobile, round: n }); }
     catch (e) { stoppedBy = "judge_failed"; console.warn(`[고리] ${n}바퀴: 심판자가 못 봤다 —`, e instanceof Error ? e.message : e); break; }
+    // **난간은 심판 말 위에 얹는다.** 심판이 "다 됐다" 고 해도 숫자가 어긋나면 고장이다 —
+    // 판 2 에서 심판은 통과시켰고 높이는 36% 떨어져 있었다.
+    if (o.guards?.length) {
+      const hit = checkGuards(facts.measured, o.guards);
+      if (hit.length) {
+        verdict = { ...verdict, broken: [...verdict.broken, ...hit] };
+        console.log(`[고리] ${n}바퀴: 난간 ${hit.length}개 걸림 — ${hit[0]}`);
+      }
+    }
     // 같은 파일을 다른 대본으로 다시 본 것이면 경쟁이 아니라 **더 본 것**이다 — 맞은 것은 합치고, 사실은 최신으로. (같은 판이 1→3→0 으로 흔들리던 것.)
     // 한 번 맞다고 본 것은 맞은 것으로 둔다 — 다른 대본이 게임을 시작조차 못 하고 "시간이 안 줄어" 라고 하는 헛경보(5바퀴째 실측)가
     // 고치는 판을 부르고 되돌리는 것보다, 가끔 나는 고장을 놓치는 쪽이 싸다.

@@ -720,6 +720,10 @@ ${ctx.context.assignment.description ?? ""}`)}번까지 돌려 보고 고쳐요)
           db: ctx.supabase, executionId: ctx.executionId, judgeAi: await loopJudgeSeat(ctx), fixAi: await fixSeat(ctx),
           title: spec.title, ask: askText, criteria: spec.criteria, files: startFiles, mobile,
           rounds: loopRounds, usdCap: Number(process.env.BUILD_LOOP_USD ?? "0.5") || 0.5, thorough: isThorough(askText) || effortOfHead === "꼼꼼히",
+          // **주문이 실어 보낸 숫자 난간**(205회차 09-22). 4단계 본판처럼 "높이는 그대로 두라" 가
+          // 요청의 핵심일 때, 화면만 보는 심판으로는 그걸 못 지킨다.
+          guards: ((ctx.context.roleInput as { webGuards?: unknown } | null)?.webGuards as
+            { measure: string; min?: number | null; max?: number | null; why?: string }[] | undefined) ?? undefined,
           onRound: async (rec, total) => {
             // 화면의 "N바퀴째 · 확인 목록 x/y". 단계 저장과 같은 칸(metrics_json)에 읽고-합쳐-쓴다.
             const { data: cur } = await ctx.supabase.from("work_executions").select("metrics_json").eq("id", ctx.executionId).maybeSingle();

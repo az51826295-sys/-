@@ -1,6 +1,7 @@
 import sharp from "sharp";
 import type { Page, KeyInput } from "puppeteer-core";
 import { openHeadless } from "@/lib/video/headless";
+import { measureWeb } from "@/lib/skills/appBuild/webMeasures";
 
 /**
  * **웹 판을 실제로 돌려 본다** (179회차 09-18).
@@ -34,6 +35,11 @@ export type RunFacts = {
   shots: { start: string; mid: string; after: string };
   /** 이번에 실제로 한 조작(사람 말). */
   did: string[];
+  /**
+   * **숫자로 잰 값**(205회차 09-22). 화면만 보는 심판은 점프 높이를 못 본다 —
+   * 판 2 가 높이를 36% 떨어뜨리고도 통과한 자리가 여기였다. 못 잰 이름은 **아예 안 들어간다**(0 이 아니다).
+   */
+  measured?: Record<string, number>;
 };
 
 /**
@@ -104,7 +110,7 @@ async function tinyJpeg(png: Buffer): Promise<string> {
 const shot = (page: Page) => page.screenshot({ type: "png" }) as Promise<Buffer>;
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-export async function runWeb(files: File[], opts: { mobile: boolean; width?: number; height?: number; timeoutMs?: number; actions?: RunAction[] }): Promise<RunFacts> {
+export async function runWeb(files: File[], opts: { mobile: boolean; width?: number; height?: number; timeoutMs?: number; actions?: RunAction[]; measures?: string[] }): Promise<RunFacts> {
   const t0 = Date.now();
   const none: RunFacts = { ran: false, ms: 0, consoleErrors: [], blankAtStart: false, movesByItself: false, changesOnTap: false, changesOnKeys: false, text: "", shots: { start: "", mid: "", after: "" }, did: [] };
   const did: string[] = [];
@@ -215,8 +221,10 @@ export async function runWeb(files: File[], opts: { mobile: boolean; width?: num
     const end = await shot(page);
     const text = await page.evaluate(() => (document.body?.innerText ?? "").replace(/\s+/g, " ").trim().slice(0, 300)).catch(() => "");
     const blankAtStart = await isBlank(s0);
+    // **놀아 본 뒤에 잰다** — 시작 단추를 눌러 게임이 도는 상태여야 점프를 잴 수 있다.
+    const measured = opts.measures?.length ? await measureWeb(page, opts.measures).catch(() => ({})) : undefined;
     return {
-      ran: true, ms: Date.now() - t0,
+      ran: true, ms: Date.now() - t0, measured,
       consoleErrors: [...errors].slice(0, 12),
       blankAtStart, movesByItself, changesOnTap, changesOnKeys, text, did,
       shots: { start: await tinyJpeg(s0), mid: await tinyJpeg(mid ?? afterKeys), after: await tinyJpeg(end) },
@@ -239,5 +247,8 @@ export function factLines(f: RunFacts): string[] {
     `방향키·스페이스를 치면 ${f.changesOnKeys ? "화면이 바뀜" : "안 바뀜"}`,
     `해 본 조작: ${f.did.join(" → ") || "(없음)"}`,
     `놀아 본 뒤 화면 글자: ${f.text || "(없음)"}`,
+    ...(f.measured && Object.keys(f.measured).length
+      ? [`숫자로 잰 값: ${Object.entries(f.measured).map(([k, v]) => `${k}=${v}`).join(" · ")}`]
+      : []),
   ];
 }
