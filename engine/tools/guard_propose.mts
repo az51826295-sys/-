@@ -14,6 +14,7 @@
  */
 import { z } from "zod";
 const { seatProvider } = await import("../../src/lib/skills/appBuild/seats");
+const { readFileSync } = await import("node:fs");
 const { writeFileSync } = await import("node:fs");
 const arg = (k: string) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : undefined; };
 
@@ -43,7 +44,8 @@ const schema = z.object({
 
 const ai = await seatProvider("gpt-5.6-luna");
 if (!ai) { console.error("자리를 못 앉혔다"); process.exit(1); }
-const note = arg("--note");
+const noteFile = arg("--note-file");
+const note = noteFile ? readFileSync(noteFile, "utf8") : arg("--note");
 const { output } = await ai.generateStructuredOutput({
   systemInstructions: [
     "너는 게임을 고치는 AI 를 감독하는 AI 다. 사람이 한 말을 **무엇을 얼마로 재야 하는지**로 옮기는 일을 한다.",
