@@ -76,7 +76,7 @@ export const jumpProbeSource = (holdRight: boolean) => `(async () => {
  */
 function reach(ground: number, rec: Frame[], size: { w: number; h: number; speed: number }, plats: { x: number; y: number; w: number }[][]) {
   const dy = rec.map((f) => f.y - ground);
-  let 오름 = 0, 못오름 = 0;
+  let 오름 = 0, 못오름 = 0, 최소여유 = Infinity;
   for (const stage of plats) {
     const ps = [...stage].sort((a, b) => a.x - b.x);
     for (let i = 0; i + 1 < ps.length; i++) {
@@ -84,15 +84,22 @@ function reach(ground: number, rec: Frame[], size: { w: number; h: number; speed
       if (B.y > A.y) continue;              // 내려가는 이동 — 이 곡선으로는 못 판정한다
       오름++;
       const x0 = A.x + A.w - size.w, yA = A.y - size.h;
-      let ok = false;
+      let ok = false, 여유: number | null = null;
       for (let t = 1; t < dy.length && !ok; t++) {
         const x = x0 + size.speed * t, y = yA + dy[t], yPrev = yA + dy[t - 1];
-        if (x + size.w > B.x && x < B.x + B.w && yPrev + size.h <= B.y && y + size.h >= B.y) ok = true;
+        if (x + size.w > B.x && x < B.x + B.w && yPrev + size.h <= B.y && y + size.h >= B.y) {
+          ok = true;
+          // **내려앉은 자리에서 발판 오른쪽 끝까지 남은 거리.** 09-22 에 뚫린 구멍이 여기였다 —
+          // "닿는가" 만 보고 "지나치는가" 를 안 봤다. 판 6 은 이 값이 11.6 → 6.8px 로 줄었고
+          // (가로 4.8px/프레임이니 **1.5프레임**), 기계는 통과시켰는데 사장님은 클리어를 못 하셨다.
+          여유 = (B.x + B.w) - (x + size.w);
+        }
       }
       if (!ok) 못오름++;
+      if (여유 != null && 여유 < 최소여유) 최소여유 = 여유;
     }
   }
-  return { 오름, 못오름 };
+  return { 오름, 못오름, 최소여유: 최소여유 === Infinity ? null : Math.round(최소여유 * 10) / 10 };
 }
 
 export type JumpNumbers = {
@@ -105,6 +112,8 @@ export type JumpNumbers = {
   /** 올라가는 이웃 발판 쌍 중 **못 오르는 개수**. 난간은 0 이 아니라 **원본의 값 이하**다. */
   "점프.못오르는발판": number;
   "점프.오르는발판쌍": number;
+  /** 올라가는 이동들 중 **제일 빠듯한 착지 여유**(px). 작을수록 발판을 지나쳐 떨어지기 쉽다. */
+  "점프.착지여유최소px"?: number;
 };
 
 function read(ground: number, rec: Frame[]) {
@@ -140,6 +149,7 @@ export async function measureJump(page: Page): Promise<JumpNumbers | null> {
       "점프.하강프레임": a.하강,
       "점프.못오르는발판": r.못오름,
       "점프.오르는발판쌍": r.오름,
+      ...(r.최소여유 == null ? {} : { "점프.착지여유최소px": r.최소여유 }),
     };
   } catch { return null; }
 }
