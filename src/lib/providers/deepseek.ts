@@ -140,6 +140,11 @@ export function createDeepSeekProvider(opts: { judgmentModel?: string; /** 191�
         outputTokens: response.usage?.completion_tokens ?? 0,
         cachedInputTokens: (response.usage as { prompt_cache_hit_tokens?: number } | undefined)?.prompt_cache_hit_tokens ?? 0,
         model,
+        // **응답이 스스로 말한 이름과 지문**(205회차 09-22). 이 두 칸을 openai.ts 에만
+        // 넣고 "원장까지 흐른다" 고 적었는데, 딥시크는 공급자 파일이 아예 달라서
+        // 실제 판의 딥시크 줄이 전부 빈 채로 나왔다. 정작 별칭이 움직이는 쪽이 여기다.
+        answeredBy: (response as { model?: string }).model ?? null,
+        answeredFingerprint: (response as { system_fingerprint?: string }).system_fingerprint ?? null,
       };
     },
   };

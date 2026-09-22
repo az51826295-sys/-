@@ -125,6 +125,8 @@ export function createAnthropicProvider(): AIProvider {
         inputTokens: response.usage.input_tokens,
         outputTokens: response.usage.output_tokens,
         model,
+        // 응답이 말한 이름(205회차). 지문은 이 API 가 주지 않으므로 null 로 남는다.
+        answeredBy: response.model ?? null,
       };
     },
   };
