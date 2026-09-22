@@ -12,10 +12,10 @@ const origin = arg("--origin")!;
 const desc = readFileSync(arg("--scope")!, "utf8");
 const { data: a, error } = await db.from("assignments").insert({
   company_id: CO, company_employee_id: DEV,
-  title: "별빛 플랫포머 — 점프를 더 쫀득하게 (1회차: 곡선)",
+  title: "별빛 플랫포머 — 점프를 더 쫀득하게 (판2 1회차: 곡선)",
   description: desc,
   status: "assigned", current_progress_step: "assignment_received",
-  role_input_json: { approved: true, verify: true, previousDeliverableId: origin, stage4: { run: 1, round: 1, request: "점프를 더 쫀득하게" } },
+  role_input_json: { approved: true, verify: true, previousDeliverableId: origin, stage4: { run: 2, round: 1, request: "점프를 더 쫀득하게" } },
   role_input_schema_id: "small_app_assignment_v1", priority: "normal",
 }).select("id").single();
 if (error) { console.error(`못 넣음: ${error.message}`); process.exit(1); }

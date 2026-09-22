@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>별빛 플랫포머</title>
+  <style>
+    :root {
+      --ink: #17233d;
+      --purple: #7657d9;
+      --pink: #ff6b9a;
+      --cream: #fffaf0;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(145deg, #d9edff, #fbe5ef 55%, #fff2cb);
+      color: var(--ink);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    .wrap { width: min(100%, 1020px); padding: 18px; }
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    h1 { margin: 0; font-size: clamp(30px, 6vw, 52px); letter-spacing: -1px; }
+    .help { margin: 0; font-size: 14px; opacity: .75; }
+    .gamebox {
+      position: relative;
+      overflow: hidden;
+      border: 5px solid var(--ink);
+      border-radius: 22px;
+      box-shadow: 0 14px 0 rgba(23,35,61,.14), 0 22px 45px rgba(67,65,120,.18);
+      background: #9fdcff;
+    }
+    canvas { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; }
+    .touchpad {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-top: 12px;
+      padding: 0 4px;
+    }
+    .touchpad button {
+      flex: 1 1 0;
+      min-width: 0;
+      padding: 20px 0;
+      font-size: clamp(16px, 4vw, 22px);
+      touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+    }
+    .touchpad .jump { background: var(--purple); color: var(--cream); }
+    .overlay {
+      position: absolute;
+      inset: 0;
+      display: none;
+      place-items: center;
+      background: rgba(23,35,61,.72);
+      color: white;
+      text-align: center;
+      padding: 24px;
+    }
+    .overlay.show { display: grid; }
+    .card {
+      background: var(--cream);
+      color: var(--ink);
+      border: 4px solid var(--ink);
+      border-radius: 20px;
+      padding: 25px 28px;
+      min-width: min(88%, 390px);
+      box-shadow: 8px 8px 0 rgba(23,35,61,.35);
+    }
+    .card h2 { margin: 0 0 8px; font-size: 34px; }
+    .card p { margin: 8px 0 18px; }
+    button {
+      border: 3px solid var(--ink);
+      border-radius: 12px;
+      padding: 11px 22px;
+      background: var(--pink);
+      color: var(--ink);
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 4px 0 var(--ink);
+    }
+    button:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--ink); }
+    .tips { margin: 14px 2px 0; text-align: center; font-size: 13px; opacity: .7; }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <div class="topbar">
+      <h1>별빛 플랫포머</h1>
+      <p class="help">← → 이동 &nbsp;·&nbsp; SPACE 점프</p>
+    </div>
+    <section class="gamebox" aria-label="플랫포머 게임">
+      <canvas id="game" width="960" height="540"></canvas>
+      <div id="overlay" class="overlay">
+        <div class="card">
+          <h2 id="resultTitle">게임 오버</h2>
+          <p id="resultText">모든 목숨을 잃었습니다.</p>
+          <button id="restart">처음부터 다시 시작</button>
+        </div>
+      </div>
+    </section>
+    <nav class="touchpad" aria-label="터치 조작">
+      <button id="btnLeft" type="button">◀ 왼쪽</button>
+      <button id="btnJump" class="jump" type="button">점프</button>
+      <button id="btnRight" type="button">오른쪽 ▶</button>
+    </nav>
+    <p class="tips">구멍에 빠지면 목숨을 잃고 현재 스테이지의 시작점으로 돌아옵니다.</p>
+  </main>
+
+  <script>
+    "use strict";
+    const canvas = document.getElementById("game");
+    const ctx = canvas.getContext("2d");
+    const overlay = document.getElementById("overlay");
+    const resultTitle = document.getElementById("resultTitle");
+    const resultText = document.getElementById("resultText");
+    const restartButton = document.getElementById("restart");
+    const btnLeft = document.getElementById("btnLeft");
+    const btnRight = document.getElementById("btnRight");
+    const btnJump = document.getElementById("btnJump");
+
+    const W = canvas.width, H = canvas.height;
+    const keys = { left: false, right: false };
+    const stages = [
+      {
+        name: "새벽의 언덕",
+        start: { x: 55, y: 450 },
+        platforms: [
+          { x: 0, y: 450, w: 205, h: 90 },
+          { x: 250, y: 390, w: 155, h: 25 },
+          { x: 455, y: 325, w: 155, h: 25 },
+          { x: 665, y: 450, w: 295, h: 90 }
+        ]
+      },
+      {
+        name: "구름 다리",
+        start: { x: 45, y: 420 },
+        platforms: [
+          { x: 0, y: 420, w: 155, h: 120 },
+          { x: 200, y: 350, w: 130, h: 24 },
+          { x: 370, y: 445, w: 130, h: 95 },
+          { x: 545, y: 300, w: 145, h: 24 },
+          { x: 735, y: 400, w: 225, h: 140 }
+        ]
+      },
+      {
+        name: "별빛 정상",
+        start: { x: 45, y: 450 },
+        platforms: [
+          { x: 0, y: 450, w: 175, h: 90 },
+          { x: 225, y: 375, w: 120, h: 24 },
+          { x: 395, y: 290, w: 130, h: 24 },
+          { x: 570, y: 365, w: 115, h: 24 },
+          { x: 735, y: 430, w: 225, h: 110 }
+        ]
+      }
+    ];
+
+    const player = {
+      x: 0, y: 0, w: 28, h: 36, vx: 0, vy: 0,
+      speed: 4.8, jump: 13, onGround: false
+    };
+
+    // 점프 곡선용 중력 단계: 상승 초반(약) → 꼭대기 근처(더 약) → 하강(강)
+    const RISE_GRAVITY = 1.00;
+    const APEX_GRAVITY = 0.30;
+    const FALL_GRAVITY = 2.60;
+    let stageIndex = 0;
+    let lives = 3;
+    let mode = "playing";
+    let animation;
+
+    function currentStage() { return stages[stageIndex]; }
+
+    function resetPlayer() {
+      const s = currentStage();
+      player.x = s.start.x;
+      player.y = s.start.y - player.h;
+      player.vx = 0;
+      player.vy = 0;
+      player.onGround = true;
+    }
+
+    function newGame() {
+      stageIndex = 0;
+      lives = 3;
+      mode = "playing";
+      overlay.classList.remove("show");
+      resetPlayer();
+    }
+
+    function loseLife() {
+      if (mode !== "playing") return;
+      lives -= 1;
+      if (lives <= 0) {
+        mode = "gameover";
+        showResult("게임 오버", "모든 목숨을 잃었습니다.");
+      } else {
+        resetPlayer();
+      }
+    }
+
+    function showResult(title, text) {
+      resultTitle.textContent = title;
+      resultText.textContent = text;
+      restartButton.textContent = title === "클리어" ? "다시 플레이" : "처음부터 다시 시작";
+      overlay.classList.add("show");
+    }
+
+    function advanceStage() {
+      if (stageIndex >= stages.length - 1) {
+        mode = "clear";
+        showResult("클리어!", "3개의 스테이지를 모두 통과했습니다!");
+      } else {
+        stageIndex += 1;
+        resetPlayer();
+      }
+    }
+
+    function overlaps(a, b) {
+      return a.x < b.x + b.w && a.x + a.w > b.x &&
+             a.y < b.y + b.h && a.y + a.h > b.y;
+    }
+
+    function update() {
+      if (mode !== "playing") return;
+      const s = currentStage();
+      const oldBottom = player.y + player.h;
+      if (keys.left && !keys.right) player.vx = -player.speed;
+      else if (keys.right && !keys.left) player.vx = player.speed;
+      else player.vx *= 0.78;
+      player.x += player.vx;
+      player.x = Math.max(0, Math.min(W - player.w, player.x));
+
+      let g;
+      if (player.vy < -2.6) g = RISE_GRAVITY;
+      else if (player.vy <= 2.6) g = APEX_GRAVITY;
+      else g = FALL_GRAVITY;
+      player.vy += g;
+      player.y += player.vy;
+      player.onGround = false;
+
+      if (player.vy >= 0) {
+        let landing = null;
+        for (const p of s.platforms) {
+          const horizontal = player.x + player.w > p.x && player.x < p.x + p.w;
+          const crossed = oldBottom <= p.y && player.y + player.h >= p.y;
+          if (horizontal && crossed && (!landing || p.y < landing.y)) landing = p;
+        }
+        if (landing) {
+          player.y = landing.y - player.h;
+          player.vy = 0;
+          player.onGround = true;
+        }
+      }
+
+      if (player.y > H + 20) loseLife();
+      const flagZone = { x: 882, y: 155, w: 36, h: 310 };
+      if (overlaps(player, flagZone)) advanceStage();
+    }
+
+    function drawBackground() {
+      const g = ctx.createLinearGradient(0, 0, 0, H);
+      g.addColorStop(0, stageIndex === 2 ? "#2d2869" : "#86d8f6");
+      g.addColorStop(1, stageIndex === 2 ? "#855fa7" : "#f9d5cf");
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, W, H);
+      ctx.fillStyle = stageIndex === 2 ? "#fff1ab" : "rgba(255,255,255,.72)";
+      for (let i = 0; i < 22; i++) {
+        const x = (i * 137 + 47) % W, y = 58 + (i * 71) % 240;
+        ctx.beginPath(); ctx.arc(x, y, i % 3 === 0 ? 3 : 2, 0, Math.PI * 2); ctx.fill();
+      }
+      ctx.fillStyle = stageIndex === 2 ? "rgba(32,26,82,.28)" : "rgba(107,157,190,.25)";
+      ctx.beginPath(); ctx.moveTo(0, 430); ctx.lineTo(150, 300); ctx.lineTo(290, 430); ctx.lineTo(450, 270); ctx.lineTo(650, 430); ctx.lineTo(810, 310); ctx.lineTo(960, 430); ctx.lineTo(960, 540); ctx.lineTo(0, 540); ctx.fill();
+    }
+
+    function drawPlatform(p) {
+      ctx.fillStyle = "#714c9e";
+      ctx.fillRect(p.x, p.y, p.w, p.h);
+      ctx.fillStyle = "#b879d1";
+      ctx.fillRect(p.x, p.y, p.w, 9);
+      ctx.fillStyle = "rgba(34,25,73,.18)";
+      for (let x = p.x + 12; x < p.x + p.w; x += 28) ctx.fillRect(x, p.y + 18, 10, Math.max(4, p.h - 20));
+    }
+
+    function drawFlag() {
+      ctx.strokeStyle = "#17233d"; ctx.lineWidth = 6;
+      ctx.beginPath(); ctx.moveTo(900, 155); ctx.lineTo(900, 450); ctx.stroke();
+      ctx.fillStyle = "#ff557f";
+      ctx.beginPath(); ctx.moveTo(903, 165); ctx.lineTo(953, 184); ctx.lineTo(903, 204); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = "#ffe57f"; ctx.beginPath(); ctx.arc(900, 151, 8, 0, Math.PI * 2); ctx.fill();
+    }
+
+    function drawPlayer() {
+      ctx.save();
+      ctx.translate(player.x, player.y);
+      ctx.fillStyle = "#ff668f"; ctx.fillRect(3, 11, 22, 25);
+      ctx.fillStyle = "#ffd66e"; ctx.fillRect(5, 0, 18, 18);
+      ctx.fillStyle = "#17233d"; ctx.fillRect(9, 6, 3, 4); ctx.fillRect(17, 6, 3, 4);
+      ctx.fillStyle = "#5b3b96"; ctx.fillRect(1, 32, 10, 5); ctx.fillRect(17, 32, 10, 5);
+      ctx.restore();
+    }
+
+    function drawHud() {
+      ctx.fillStyle = "rgba(255,250,240,.92)";
+      ctx.beginPath(); ctx.roundRect(18, 16, 285, 54, 14); ctx.fill();
+      ctx.strokeStyle = "#17233d"; ctx.lineWidth = 3; ctx.stroke();
+      ctx.fillStyle = "#17233d"; ctx.font = "bold 19px system-ui";
+      ctx.fillText(`STAGE ${stageIndex + 1}  ·  ${currentStage().name}`, 32, 40);
+      ctx.font = "bold 16px system-ui";
+      ctx.fillText(`목숨 ${"♥".repeat(lives)}${"♡".repeat(3 - lives)}`, 32, 61);
+    }
+
+    function draw() {
+      drawBackground();
+      for (const p of currentStage().platforms) drawPlatform(p);
+      drawFlag();
+      drawPlayer();
+      drawHud();
+      animation = requestAnimationFrame(loop);
+    }
+
+    function loop() { update(); draw(); }
+
+    window.addEventListener("keydown", (e) => {
+      if (["ArrowLeft", "ArrowRight", "Space"].includes(e.code)) e.preventDefault();
+      if (e.code === "ArrowLeft") keys.left = true;
+      if (e.code === "ArrowRight") keys.right = true;
+      if (e.code === "Space" && !e.repeat) tryJump();
+    });
+    window.addEventListener("keyup", (e) => {
+      if (e.code === "ArrowLeft") keys.left = false;
+      if (e.code === "ArrowRight") keys.right = false;
+    });
+    function tryJump() {
+      if (mode === "playing" && player.onGround) {
+        player.vy = -player.jump;
+        player.onGround = false;
+      }
+    }
+
+    function bindHold(el, onDown, onUp) {
+      el.addEventListener("pointerdown", (e) => {
+        e.preventDefault();
+        if (el.setPointerCapture) el.setPointerCapture(e.pointerId);
+        onDown();
+      });
+      el.addEventListener("pointerup", (e) => { e.preventDefault(); onUp(); });
+      el.addEventListener("pointercancel", () => onUp());
+      el.addEventListener("pointerleave", () => onUp());
+      el.addEventListener("contextmenu", (e) => e.preventDefault());
+    }
+
+    bindHold(btnLeft, () => { keys.left = true; }, () => { keys.left = false; });
+    bindHold(btnRight, () => { keys.right = true; }, () => { keys.right = false; });
+    btnJump.addEventListener("pointerdown", (e) => { e.preventDefault(); tryJump(); });
+    btnJump.addEventListener("contextmenu", (e) => e.preventDefault());
+
+    restartButton.addEventListener("click", newGame);
+
+    newGame();
+    loop();
+  </script>
+</body>
+</html>
