@@ -43,7 +43,7 @@ try {
   console.log(`원본(잰 것): 못 오름 ${못오름(up.rec.map(f=>f.y-up.ground))} · 상승 19 · 꼭대기 4 · 하강 21`);
   console.log(`지어낸 곡선으로 원본 흉내: 못 오름 ${못오름(synth(19,4,21,129.8))}\n`);
   console.log("후보들 (높이 129.8 고정):");
-  for (const [r,h,f] of [[14,7,12],[14,7,13],[13,7,12],[14,8,12]] as [number,number,number][]) {
+  for (const [r,h,f] of [[17,8,15],[16,9,14],[18,8,14],[17,10,13],[19,8,13],[16,12,12]] as [number,number,number][]) {
     const n = 못오름(synth(r,h,f,129.8));
     console.log(`  상승 ${r} · 꼭대기 ${h} · 하강 ${f} (공중 ${r+h+f}) · 하강÷상승 ${(f/r).toFixed(2)} → 못 오름 ${n} ${n===1?"✅":"❌"}`);
   }

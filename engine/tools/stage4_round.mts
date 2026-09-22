@@ -6,26 +6,29 @@ const { createServiceClient } = await import("../../src/lib/supabase/service");
 const { readFileSync } = await import("node:fs");
 const db = createServiceClient();
 const arg = (k: string) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : undefined; };
-const CO = "00add05a-e81d-4e04-9980-34bb412a8780";
-const DEV = "e660c68b-5cdf-47ba-9673-5dded5cb8d83";
+// **판 5 부터 사장님 회사**(09-22 사장님이 "옮긴다"). 데모 회사에 두면 사장님 계정에서
+// 결과물이 안 보여(RLS 로 404) 회차마다 내가 따로 링크를 만들어야 했다.
+const CO = "5925c03a-557f-46d7-8589-7388b769df40";   // 권혁수
+const DEV = "b52d580e-1938-4a0d-817c-f60f5f00e743";  // Dev 자리
 const origin = arg("--origin")!;
 const desc = readFileSync(arg("--scope")!, "utf8");
 const { data: a, error } = await db.from("assignments").insert({
   company_id: CO, company_employee_id: DEV,
-  title: "별빛 플랫포머 — 점프를 더 쫀득하게 (판4 1회차: 곡선)",
+  title: "별빛 플랫포머 — 점프를 더 쫀득하게 (판5 1회차: 곡선)",
   description: desc,
   status: "assigned", current_progress_step: "assignment_received",
   role_input_json: {
     approved: true, verify: true, previousDeliverableId: origin,
-    stage4: { run: 4, round: 1, request: "점프를 더 쫀득하게" },
+    stage4: { run: 5, round: 1, request: "점프를 더 쫀득하게" },
     // **난간을 고리 안으로**(205회차 09-22). 어기면 심판 말 위에 고장으로 얹힌다.
     webGuards: [
       { measure: "점프.못오르는발판", min: 1, max: 1, why: "원본과 같아야 한다 — 늘면 못 닿고 줄면 쉬워진다" },
       { measure: "점프.높이px", min: 119.8, max: 139.8, why: "아래 84.4 / 위 149.3 에서 판이 바뀐다" },
-      // ㉠은 세 부분이다. 한 값으로 대신하면 하강만 건드려도 통과한다(판 3 이 그랬다).
-      { measure: "점프.상승프레임", max: 14, why: "안내값 — 빠르게 솟는다 (원본 19)" },
-      { measure: "점프.꼭대기프레임", min: 7, why: "안내값 — 꼭대기에서 잠깐 머문다 (원본 4)" },
-      { measure: "점프.하강나누기상승", max: 0.90, why: "안내값 — 내려올 때 더 빠르게 (원본 1.11) · 판정은 사장님 말이다" },
+      // **해석의 중심을 옮겼다**(09-22 사장님이 고르심): 빠름이 아니라 **버티는 것**이 주인공.
+      // 상승 상한은 뺐다 — "너무 빨라" 가 거기서 나왔다.
+      { measure: "점프.꼭대기프레임", min: 7, why: "안내값 — **이번 판의 주인공** (원본 4)" },
+      { measure: "점프.공중프레임", min: 36, max: 40, why: "안내값 — 점프 전체가 짧아지면 안 된다 (원본 40, 판4 는 24 라 '너무 빨라')" },
+      { measure: "점프.하강나누기상승", max: 0.95, why: "안내값 — 하강은 조금만 빠르게 (원본 1.11) · 판정은 사장님 말이다" },
     ],
   },
   role_input_schema_id: "small_app_assignment_v1", priority: "normal",
