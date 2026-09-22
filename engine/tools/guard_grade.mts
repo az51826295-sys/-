@@ -14,9 +14,13 @@ const 개발용: [string, string][] = [
   ["판4", "engine/work/stage4-run4/round1/index.html"],
   ["판5", "engine/work/stage4-run5/round1/index.html"],
   ["판6", "engine/work/stage4-run6/round1/index.html"],
+  // 판 3 은 판 7 에서 봉인으로 소모됐고, 판 7 은 사장님이 "높이가 높아서 클리어가 안돼" 라고
+  // 하셨으므로 둘 다 이제 **개발용**이다(09-22 저녁).
+  ["판3", "engine/work/stage4-run3/round1/index.html"],
+  ["판7", "engine/work/stage4-run7/round1/index.html"],
 ];
-const 봉인: [string, string] = ["판3(봉인)", "engine/work/stage4-run3/round1/index.html"];
-const 장 = process.argv.includes("--sealed") ? [...개발용, 봉인] : 개발용;
+// **봉인 없음**(09-22 저녁): 판 3 소모 · 판 4 흔들림 · 판 6 오염 · 판 7 풀림.
+const 장 = 개발용;
 
 const hl = await openHeadless({ width: 1280, height: 720 });
 if (!hl) process.exit(1);
