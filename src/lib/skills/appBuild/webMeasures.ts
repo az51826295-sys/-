@@ -46,8 +46,54 @@ export const jumpProbeSource = (holdRight: boolean) => `(async () => {
     if (${holdRight} && typeof keys === "object") keys.right = true;
     tryJump();
   });
-  return { ground, rec };
+  const size = { w: player.w, h: player.h, speed: player.speed };
+  // 이 판의 발판 — 닿는지 따지려면 무대가 있어야 한다. 없으면 빈 배열(그러면 '못 잼').
+  let plats = [];
+  try { plats = stages.map((s) => s.platforms.map((p) => ({ x: p.x, y: p.y, w: p.w }))); } catch (e) { plats = []; }
+  return { ground, rec, size, plats };
 })()`;
+
+/**
+ * **올라가는 이동만 센다. 그리고 0 이 아니라 원본과 견준다** (사장님 09-22 + 09-22 자 고침).
+ *
+ * 처음엔 "공중 40프레임" 을 난간으로 뒀는데 사장님이 부딪치는 곳을 짚었다:
+ * *"떨어지는 쪽을 빨리 만들면 공중 시간이 줄어드는데, 총 40프레임을 지키려면 그만큼을
+ * 올라가는 쪽이나 꼭대기 머묾으로 채워야 합니다. … 쫀득함의 첫째 요소와 반대 방향입니다."*
+ * 맞다. 공중 프레임은 **"가로 거리가 같다" 의 대리값**이었으므로 버리고 **닿는가를 직접 센다.**
+ *
+ * **그런데 첫 판은 자가 틀렸다.** 원본이 6쌍 "못 닿음" 으로 나왔다 — 사장님이 클리어하신 게임인데.
+ * 못 닿는다던 쌍은 전부 **내려가는 이동**이었다. 잰 곡선은 *뛴 높이로 돌아올 때까지*라
+ * 그 아래로 떨어지는 구간이 아예 없다. 자가 침묵한 게 아니라 **없는 것을 봤다.**
+ *
+ * 그래서 둘을 정했다:
+ * 1. **올라가는(또는 같은 높이) 이동만 센다.** 내려가는 쪽은 이 곡선으로 판정할 수 없다 — 안 센다.
+ * 2. **0 을 요구하지 않는다.** 원본에도 못 오르는 쌍이 하나 있다(무대1, 145px 오르막 — 그 길로
+ *    가는 게 아닌 듯하다). 이 자는 **필요한 길을 모른다.** 그러니 절대값이 아니라
+ *    **원본보다 나빠졌나**만 본다. 난간은 "원본의 개수 이하".
+ *
+ * 셈법: 가로는 이 게임에서 **즉시 등속**이다(`player.vx = player.speed`, 가속 없음).
+ * 그래서 `dx(t) = speed × t` 이고, 세로는 잰 곡선 `dy(t)` 를 그대로 쓴다.
+ */
+function reach(ground: number, rec: Frame[], size: { w: number; h: number; speed: number }, plats: { x: number; y: number; w: number }[][]) {
+  const dy = rec.map((f) => f.y - ground);
+  let 오름 = 0, 못오름 = 0;
+  for (const stage of plats) {
+    const ps = [...stage].sort((a, b) => a.x - b.x);
+    for (let i = 0; i + 1 < ps.length; i++) {
+      const A = ps[i], B = ps[i + 1];
+      if (B.y > A.y) continue;              // 내려가는 이동 — 이 곡선으로는 못 판정한다
+      오름++;
+      const x0 = A.x + A.w - size.w, yA = A.y - size.h;
+      let ok = false;
+      for (let t = 1; t < dy.length && !ok; t++) {
+        const x = x0 + size.speed * t, y = yA + dy[t], yPrev = yA + dy[t - 1];
+        if (x + size.w > B.x && x < B.x + B.w && yPrev + size.h <= B.y && y + size.h >= B.y) ok = true;
+      }
+      if (!ok) 못오름++;
+    }
+  }
+  return { 오름, 못오름 };
+}
 
 export type JumpNumbers = {
   "점프.높이px": number;
@@ -56,6 +102,9 @@ export type JumpNumbers = {
   "점프.상승프레임": number;
   "점프.꼭대기프레임": number;
   "점프.하강프레임": number;
+  /** 올라가는 이웃 발판 쌍 중 **못 오르는 개수**. 난간은 0 이 아니라 **원본의 값 이하**다. */
+  "점프.못오르는발판": number;
+  "점프.오르는발판쌍": number;
 };
 
 function read(ground: number, rec: Frame[]) {
@@ -74,9 +123,12 @@ function read(ground: number, rec: Frame[]) {
 /** 점프 숫자. 이 게임이 `player`·`draw`·`tryJump` 를 안 쓰면 **못 잰다**(null). */
 export async function measureJump(page: Page): Promise<JumpNumbers | null> {
   try {
-    const up = (await page.evaluate(jumpProbeSource(false))) as { ground: number; rec: Frame[] } | null;
+    const up = (await page.evaluate(jumpProbeSource(false))) as
+      { ground: number; rec: Frame[]; size: { w: number; h: number; speed: number }; plats: { x: number; y: number; w: number }[][] } | null;
     if (!up?.rec?.length) return null;
+    if (!up.plats?.length || !up.size?.speed) return null;   // 무대를 못 읽으면 못 잼
     const a = read(up.ground, up.rec);
+    const r = reach(up.ground, up.rec, up.size, up.plats);
     // 같은 높이로 돌아오지 않았으면 이 점프는 제자리 점프가 아니다 — 못 잼으로 둔다.
     if (a.착지높이차 !== 0) return null;
     return {
@@ -86,6 +138,8 @@ export async function measureJump(page: Page): Promise<JumpNumbers | null> {
       "점프.상승프레임": a.상승,
       "점프.꼭대기프레임": a.꼭대기,
       "점프.하강프레임": a.하강,
+      "점프.못오르는발판": r.못오름,
+      "점프.오르는발판쌍": r.오름,
     };
   } catch { return null; }
 }

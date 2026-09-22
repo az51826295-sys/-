@@ -10,9 +10,10 @@ const { readFileSync } = await import("node:fs");
 let bad = 0, seen = 0;
 const check = (n: string, ok: boolean, got?: unknown) => { seen++; if (!ok) bad++; console.log(ok ? "맞음  " : "어긋남", n, ok ? "" : JSON.stringify(got)); };
 
+// 잠근 난간 (판 3). 공중 프레임은 **뺐다** — 그건 거리의 대리값이었고 "빠르게 솟기" 와 부딪친다.
 const 난간 = [
-  { measure: "점프.높이px", min: 129.8, max: 129.8, why: "못 닿는 발판이 생긴다" },
-  { measure: "점프.공중프레임", min: 40, max: 40, why: "닿는 거리가 달라진다" },
+  { measure: "점프.못오르는발판", min: 1, max: 1, why: "원본과 같아야 한다 — 늘면 못 닿고, 줄면 쉬워진다" },
+  { measure: "점프.높이px", min: 119.8, max: 139.8, why: "±10px — 아래 84.4 / 위 149.3 에서 판이 바뀐다" },
 ];
 const 목표 = [{ measure: "점프.하강나누기상승", max: 0.95, why: "내려올 때 더 빨라야 한다" }];
 const names = measureNamesFor([...난간, ...목표]);
@@ -30,7 +31,7 @@ const 재기 = async (path: string) => {
   check("원본을 돌려 봤다", f.ran === true, f.why);
   check("**고리 길로도 숫자가 나온다**", !!f.measured && Object.keys(f.measured).length > 0, f.measured);
   check("원본 높이 129.8", f.measured?.["점프.높이px"] === 129.8, f.measured);
-  check("원본 공중 40프레임", f.measured?.["점프.공중프레임"] === 40, f.measured);
+  check("**원본은 못 오르는 쌍이 1 이다(0 이 아니다)**", f.measured?.["점프.못오르는발판"] === 1, f.measured);
   check("**원본은 난간을 안 어긴다**", checkGuards(f.measured, 난간).length === 0, checkGuards(f.measured, 난간));
   check("원본은 목표를 아직 못 지켰다(1.11)", checkGuards(f.measured, 목표).length === 1, checkGuards(f.measured, 목표));
 }
@@ -38,7 +39,7 @@ const 재기 = async (path: string) => {
 {
   const f = await 재기("engine/work/stage4-run2/round1/index.html");
   check("판2 높이 82.7", f.measured?.["점프.높이px"] === 82.7, f.measured);
-  check("판2 공중 32프레임", f.measured?.["점프.공중프레임"] === 32, f.measured);
+  check("**판2 는 못 오르는 쌍이 2 로 늘었다**", f.measured?.["점프.못오르는발판"] === 2, f.measured);
   const hit = checkGuards(f.measured, 난간);
   check("**판2 결과물은 난간 둘 다 걸린다**", hit.length === 2, hit);
   check("걸린 문장에 잰 값이 들어 있다", hit.every((h) => /= ?\d/.test(h)), hit);
@@ -49,6 +50,13 @@ const 재기 = async (path: string) => {
   check("점프가 없으면 숫자가 안 들어온다", !f.measured || f.measured["점프.높이px"] == null, f.measured);
   const hit = checkGuards(f.measured, 난간);
   check("**못 재면 못 잼으로 걸린다(통과 아님)**", hit.length === 2 && hit.every((h) => /못 잼/.test(h)), hit);
+}
+// ④ 너무 높아도 걸려야 한다 — 149.3px 을 넘으면 원본에서 못 오르던 145px 오르막이 열려 **판이 쉬워진다**
+{
+  check("너무 높으면 난간에 걸린다", checkGuards({ "점프.높이px": 155, "점프.못오르는발판": 0 }, 난간).length === 2,
+    checkGuards({ "점프.높이px": 155, "점프.못오르는발판": 0 }, 난간));
+  check("쉬워진 것(못 오름 0)도 걸린다", checkGuards({ "점프.높이px": 129.8, "점프.못오르는발판": 0 }, 난간).length === 1,
+    checkGuards({ "점프.높이px": 129.8, "점프.못오르는발판": 0 }, 난간));
 }
 console.log(`\n최종: ${bad ? `어긋남 ${bad}/${seen}` : `전부 맞음 ${seen}/${seen}`}`);
 process.exit(bad ? 1 : 0);
