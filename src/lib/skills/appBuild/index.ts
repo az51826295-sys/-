@@ -7,7 +7,7 @@ import { askApproval } from "@/lib/execution/approval";
 import type { EmployeeSkill, SkillRunContext } from "@/lib/skills/types";
 import { checkFiles, repairBrief, summarise } from "@/lib/skills/appBuild/verify";
 import { buildPatch } from "@/lib/skills/appBuild/patch";
-import { improveLoop, roundsFor, isThorough, type LoopResult } from "@/lib/skills/appBuild/loop";
+import { improveLoop, roundsFor, isThorough, notFinished, type LoopResult } from "@/lib/skills/appBuild/loop";
 import { factLines } from "@/lib/skills/appBuild/run";
 
 /**
@@ -786,15 +786,8 @@ ${ctx.context.assignment.description ?? ""}`)}번까지 돌려 보고 고쳐요)
       summary: { criteria: spec.criteria.length, met },
       // **끝까지 못 본 판은 그렇게 적는다**(205회차 09-23). 판 8 은 심판이 죽어 멈췄는데
       // 결과물 어디에도 그 사실이 없어, 내가 `loop.stoppedBy` 를 따로 읽어서야 알았다.
-      // 받는 쪽이 **"이 판은 끝까지 못 봤다" 를 결과물만 보고 알 수 있어야** 한다.
-      ...(loop && loop.stoppedBy !== "done"
-        ? { 끝까지못봄: { 멈춘이유: loop.stoppedBy, 바퀴: loop.rounds.length,
-            말: loop.stoppedBy === "judge_failed" ? "심판자가 못 봐서 멈췄다 — 남은 고장을 아무도 안 봤다"
-              : loop.stoppedBy === "patch_failed" ? "조각이 안 붙어 멈췄다"
-              : loop.stoppedBy === "usd" ? "돈 상한에 닿아 멈췄다"
-              : loop.stoppedBy === "no_run" ? "돌려 보지 못했다"
-              : "바퀴를 다 써서 멈췄다 — 고칠 것이 남아 있을 수 있다" } }
-        : {}),
+      // **다시 불러서 살아난 것도 적는다** — 조용히 넘어가면 심판이 자주 죽는지를 못 본다.
+      ...(loop ? (() => { const n = notFinished(loop.stoppedBy, loop.rounds.length, loop.judgeRetries); return n ? { 끝까지못봄: n } : {}; })() : {}),
       note,
     };
 

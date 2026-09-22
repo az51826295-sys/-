@@ -70,6 +70,8 @@ export type RoundRecord = {
 };
 
 export type LoopResult = {
+  /** 심판이 죽어 다시 부른 횟수. **0 이 아니면 조용히 넘어가지 않는다.** */
+  judgeRetries: number;
   files: SourceFile[];
   rounds: RoundRecord[];
   /** 제일 좋았던 바퀴 번호(1부터). */
@@ -84,6 +86,23 @@ export type LoopResult = {
 /** 점수 — 클수록 좋다. 맞은 것이 먼저고, 고장·오류·안 맞은 것이 깎는다. */
 function scoreOf(v: LoopVerdict, f: RunFacts): number {
   return v.met.length * 10 - v.unmet.length * 4 - v.broken.length * 6 - Math.min(f.consoleErrors.length, 5) * 3 - (f.blankAtStart ? 20 : 0);
+}
+
+/**
+ * **심판을 두 번까지 부른다**(205회차 09-23, 판 8 에서 배움).
+ * 판 8 은 3바퀴째에 심판이 죽어 멈췄고 **고장 9개짜리가 그대로 결과물로 나갔다.**
+ * 심판이 못 본 것은 형식 어긋남·잘림 같은 **기계 고장**이지 판단이 아니다(09-15 에 그은 선).
+ *
+ * **다시 부른 것도 세서 돌려준다** — 사장님 09-23:
+ * *"오늘 내내 고친 게 '조용히' 였습니다. 두 번째에 살아나면 첫 번째 죽음이 아무 데도 안 남습니다."*
+ * 심판이 자주 죽는지는 이 숫자가 쌓여야 보인다.
+ */
+export async function judgeTwice(ai: AIProvider, o: { ask: string; criteria: Criterion[]; facts: RunFacts; mobile: boolean; round: number }): Promise<{ verdict: LoopVerdict; retried: number }> {
+  try { return { verdict: await judge(ai, o), retried: 0 }; }
+  catch (e1) {
+    console.warn(`[고리] ${o.round}바퀴: 심판자가 못 봤다 — 한 번 다시 부른다:`, e1 instanceof Error ? e1.message : e1);
+    return { verdict: await judge(ai, o), retried: 1 };
+  }
 }
 
 async function judge(ai: AIProvider, o: { ask: string; criteria: Criterion[]; facts: RunFacts; mobile: boolean; round: number }): Promise<LoopVerdict> {
@@ -134,6 +153,8 @@ export async function improveLoop(o: {
   guards?: WebGuard[];
 }): Promise<LoopResult> {
   const rounds: RoundRecord[] = [];
+  /** 심판이 죽어 다시 부른 횟수(판 전체). 0 이 아니면 결과물에 적힌다. */
+  let judgeRetries = 0;
   let files = o.files;
   let best: { files: SourceFile[]; score: number; round: number; verdict: LoopVerdict; facts: RunFacts } | null = null;
   let stoppedBy: LoopResult["stoppedBy"] = "rounds";
@@ -146,16 +167,11 @@ export async function improveLoop(o: {
     const facts = await runWeb(files, { mobile: o.mobile, actions, measures: o.guards?.length ? measureNamesFor(o.guards) : undefined });
     if (!facts.ran) { stoppedBy = "no_run"; console.warn(`[고리] ${n}바퀴: 돌려 보지 못함 — ${facts.why}`); break; }
     let verdict: LoopVerdict;
-    // **심판이 죽으면 한 번 다시 부른다**(205회차 09-23, 판 8 에서 배움).
-    // 판 8 은 3바퀴째에 심판이 죽어 **고장 9개짜리 판이 그대로 결과물로 나갔다.**
-    // 심판이 못 본 것은 형식 어긋남·잘림 같은 **기계 고장**이지 판단이 아니다 —
-    // 09-15 에 그은 선 그대로 **조용히 한 번 다시**, 그래도 죽으면 그때 멈춘다.
-    try { verdict = await judge(o.judgeAi, { ask: o.ask, criteria: o.criteria, facts, mobile: o.mobile, round: n }); }
-    catch (e1) {
-      console.warn(`[고리] ${n}바퀴: 심판자가 못 봤다 — 한 번 다시 부른다:`, e1 instanceof Error ? e1.message : e1);
-      try { verdict = await judge(o.judgeAi, { ask: o.ask, criteria: o.criteria, facts, mobile: o.mobile, round: n }); }
-      catch (e2) { stoppedBy = "judge_failed"; console.warn(`[고리] ${n}바퀴: 두 번째도 못 봤다 —`, e2 instanceof Error ? e2.message : e2); break; }
-    }
+    let 재시도 = 0;
+    try { const r = await judgeTwice(o.judgeAi, { ask: o.ask, criteria: o.criteria, facts, mobile: o.mobile, round: n }); verdict = r.verdict; 재시도 = r.retried; }
+    catch (e) { stoppedBy = "judge_failed"; console.warn(`[고리] ${n}바퀴: 두 번 다 심판자가 못 봤다 —`, e instanceof Error ? e.message : e); break; }
+    judgeRetries += 재시도;
+
     // **난간은 심판 말 위에 얹는다.** 심판이 "다 됐다" 고 해도 숫자가 어긋나면 고장이다 —
     // 판 2 에서 심판은 통과시켰고 높이는 36% 떨어져 있었다.
     if (o.guards?.length) {
@@ -224,8 +240,8 @@ export async function improveLoop(o: {
   }
 
   const usd = (await spentUsd(o.db, o.executionId)) - usd0;
-  if (!best) return { files: o.files, rounds, bestRound: 0, verdict: null, facts: null, stoppedBy, usd };
-  return { files: best.files, rounds, bestRound: best.round, verdict: best.verdict, facts: best.facts, stoppedBy, usd };
+  if (!best) return { files: o.files, rounds, bestRound: 0, verdict: null, facts: null, stoppedBy, usd, judgeRetries };
+  return { files: best.files, rounds, bestRound: best.round, verdict: best.verdict, facts: best.facts, stoppedBy, usd, judgeRetries };
 }
 
 /** 주문에서 바퀴 수를 읽는다. "고퀄·꼼꼼히·제대로" 면 많이, 아니면 기본. 환경변수가 이긴다. */
@@ -240,3 +256,15 @@ export function roundsFor(order: string, effort?: string | null): number {
 }
 /** "고퀄·꼼꼼히·제대로" — 시간을 더 써도 되는 주문. */
 export function isThorough(order: string): boolean { return /고퀄|꼼꼼|제대로|완성도|정성/.test(order); }
+
+/** 끝까지 못 본 판을 사람 말로. `done` 이면 null. (순수 함수라 심어서 잴 수 있다.) */
+export function notFinished(stoppedBy: LoopResult["stoppedBy"], rounds: number, judgeRetries = 0): { 멈춘이유: string; 바퀴: number; 심판재시도?: number; 말: string } | null {
+  if (stoppedBy === "done" && !judgeRetries) return null;
+  const 말 = stoppedBy === "judge_failed" ? "심판자가 두 번 다 못 봐서 멈췄다 — 남은 고장을 아무도 안 봤다"
+    : stoppedBy === "patch_failed" ? "조각이 안 붙어 멈췄다"
+    : stoppedBy === "usd" ? "돈 상한에 닿아 멈췄다"
+    : stoppedBy === "no_run" ? "돌려 보지 못했다"
+    : stoppedBy === "rounds" ? "바퀴를 다 써서 멈췄다 — 고칠 것이 남아 있을 수 있다"
+    : "끝까지 봤다";
+  return { 멈춘이유: stoppedBy, 바퀴: rounds, ...(judgeRetries ? { 심판재시도: judgeRetries } : {}), 말 };
+}
