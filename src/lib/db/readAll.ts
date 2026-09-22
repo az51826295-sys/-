@@ -45,3 +45,36 @@ export async function assertComplete(db: SupabaseClient, table: string, got: num
     throw new Error(`${table}: 받은 줄 ${got} < 전체 ${total} 이고 ${PAGE} 의 배수다 — **잘렸을 수 있다. 못 믿는다.**`);
   }
 }
+
+/**
+ * **좀혀서 읽는 것도 다 읽는다.** 같은 조건으로 줄 수를 먼저 세고, 쌀수로 나눠 받고, 마지막에 대조한다.
+ *
+ * `readAll` 은 표 전체용이라 조건이 붙는 읽기에는 못 쓴다. 검토 대기열처럼 **실제로 도는 문**은
+ * 조건이 붙은 채 큼 표를 읽는다 — 그때 잘리면 **오래된 것을 조용히 못 보게 된다.**
+ *
+ * `apply` 는 같은 조건을 두 번(세기·읽기) 넣기 위해 받는다. 두 번이 다르면 대조가 무의미해진다.
+ */
+export async function readFiltered<T = Record<string, unknown>>(
+  db: SupabaseClient,
+  table: string,
+  columns: string,
+  apply: (q: any) => any,
+  order?: { column: string; ascending?: boolean },
+): Promise<T[]> {
+  const { count, error: ce } = await apply(db.from(table).select(columns, { count: "exact", head: true }));
+  if (ce) throw new Error(`${table} 줄 수를 못 썼다: ${ce.message}`);
+  const total = count ?? 0;
+  const out: T[] = [];
+  for (let from = 0; from < total; from += PAGE) {
+    let q = apply(db.from(table).select(columns)).range(from, from + PAGE - 1);
+    if (order) q = q.order(order.column, { ascending: order.ascending ?? true });
+    const { data, error } = await q;
+    if (error) throw new Error(`${table} ${from}쌀을 못 읽었다: ${error.message}`);
+    out.push(...((data ?? []) as T[]));
+  }
+  if (out.length !== total) {
+    throw new Error(`${table}: 받은 줄 ${out.length} ≠ 전체 ${total} — **이 읽기는 못 믿는다.**`);
+  }
+  return out;
+}
+

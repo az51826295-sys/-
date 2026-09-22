@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { readFiltered } from "@/lib/db/readAll";
 
 type Supabase = SupabaseClient;
 
@@ -44,6 +45,8 @@ export const REVIEW_SINCE = "2026-09-21T15:00:00.000Z";
  * 그 안의 `accepted` / `rejected` 가 **좋음·안 좋음**이다. 둘 다 false 면 새 지시이거나 잡담이라
  * **판정이 아니다** — 안 본 것으로 센다. 딱지가 아예 없으면 더더욱 안 본 것이다.
  */
+type S = { conversation_id: string; created_at: string; acc: string | null; rej: string | null };
+
 export async function pendingReview(db: Supabase, companyId: string, days = 30): Promise<{ n: number; titles: string[]; judged: number }> {
   const since = new Date(Date.now() - days * 86400_000).toISOString();
   const { data: co } = await db.from("companies").select("owner_id").eq("id", companyId).maybeSingle();
@@ -51,19 +54,24 @@ export async function pendingReview(db: Supabase, companyId: string, days = 30):
   const { data: convs } = await db.from("conversations").select("id").eq("owner_id", co.owner_id as string).limit(200);
   const ids = (convs ?? []).map((c) => c.id as string);
   if (!ids.length) return { n: 0, titles: [], judged: 0 };
-  const { data: att } = await db.from("conversation_messages")
-    .select("conversation_id, created_at, aid:attachments->assignment->>id, title:attachments->assignment->>title")
-    .in("conversation_id", ids).gte("created_at", since > REVIEW_SINCE ? since : REVIEW_SINCE).not("attachments->assignment->>id", "is", null)
-    .order("created_at", { ascending: false }).limit(1000);
-  if (!att?.length) return { n: 0, titles: [], judged: 0 };
-  // 사장님 말 + 그 말에 붙은 딱지
-  const { data: says } = await db.from("conversation_messages")
-    .select("conversation_id, created_at, acc:attachments->reaction->>accepted, rej:attachments->reaction->>rejected")
-    .in("conversation_id", ids).eq("role", "user").gte("created_at", since)
-    .order("created_at", { ascending: true }).limit(3000);
-  type S = { conversation_id: string; created_at: string; acc: string | null; rej: string | null };
+  // **다 읽는다**(09-22). 이전엔 `.limit(1000)` 이었는데, 서버가 한 번에 1000줄까지만 주므로
+  // 대화 메시지가 그보다 많아지면 **오래된 것을 조용히 못 본다.** 지금 949줄로 경계에 가깝다.
+  const att = await readFiltered<{ conversation_id: string; created_at: string; aid: string; title: string | null }>(
+    db, "conversation_messages",
+    "conversation_id, created_at, aid:attachments->assignment->>id, title:attachments->assignment->>title",
+    (q) => q.in("conversation_id", ids).gte("created_at", since > REVIEW_SINCE ? since : REVIEW_SINCE).not("attachments->assignment->>id", "is", null),
+    { column: "created_at", ascending: false },
+  );
+  if (!att.length) return { n: 0, titles: [], judged: 0 };
+  // 사장님 말 + 그 말에 붙은 딱지 — 이것도 다 읽는다
+  const says = await readFiltered<S>(
+    db, "conversation_messages",
+    "conversation_id, created_at, acc:attachments->reaction->>accepted, rej:attachments->reaction->>rejected",
+    (q) => q.in("conversation_id", ids).eq("role", "user").gte("created_at", since),
+    { column: "created_at", ascending: true },
+  );
   const byConv = new Map<string, S[]>();
-  for (const m of (says ?? []) as unknown as S[]) {
+  for (const m of says) {
     const l = byConv.get(m.conversation_id); if (l) l.push(m); else byConv.set(m.conversation_id, [m]);
   }
   // **기계가 판정한 것은 상한에서 뺀다** (사장님 09-20 제약 2, 09-21 승인).
@@ -83,7 +91,7 @@ export async function pendingReview(db: Supabase, companyId: string, days = 30):
   const titles: string[] = [];
   const seen = new Set<string>();
   let judged = 0;
-  for (const m of att as unknown as { conversation_id: string; created_at: string; aid: string; title: string | null }[]) {
+  for (const m of att) {
     if (seen.has(m.aid)) continue;
     seen.add(m.aid);
     // **바로 다음** 사장님 말 하나만 본다(그 뒤 아무 말이 아니라).

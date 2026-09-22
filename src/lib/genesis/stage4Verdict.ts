@@ -53,7 +53,14 @@ export const TARGET_ROUNDS = 5;
 
 export type Stage4Run = {
   rounds: FixRound[];
-  /** **누적**: 첫 판 원본과 마지막 판을 견준 diff. 회차별 합이 아니다(중복으로 부풀지 않게). */
+  /**
+   * **누적**: 원본과 마지막 판을 견준 diff. 회차별 합이 아니다(중복으로 부풀지 않게).
+   *
+   * **원본 = 판을 여는 시점의 파일** (6판, 사장님 09-22).
+   * "첫 판 원본" 이라고만 적어 모호했다 — 별빛 플랫포머는 판을 열기 전에 연습으로 한 번 고쳤고,
+   * 그 수정 전을 원본으로 잡느냐 뒤를 잡느냐에 따라 1판의 누적 비율이 달라진다.
+   * **판을 여는 시점의 파일**로 못 박는다 — 그 판에서 우리가 한 일만 센다는 뜻이다.
+   */
   cumulative: { changedLines: number; originalLines: number } | null;
   ownerSaidDone: boolean | null;
 };
