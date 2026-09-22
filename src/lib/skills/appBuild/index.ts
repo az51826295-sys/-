@@ -784,6 +784,17 @@ ${ctx.context.assignment.description ?? ""}`)}번까지 돌려 보고 고쳐요)
       // 179회차: 돌려 보고 고친 고리의 기록 — 바퀴마다 맞음/안 맞음/고장/오류/돈. 이것으로 "몇 바퀴가 값어치 있나" 를 잰다.
       loop: loop ? { rounds: loop.rounds, bestRound: loop.bestRound, stoppedBy: loop.stoppedBy, usd: loop.usd, verdict: loop.verdict, facts: loop.facts } : null,
       summary: { criteria: spec.criteria.length, met },
+      // **끝까지 못 본 판은 그렇게 적는다**(205회차 09-23). 판 8 은 심판이 죽어 멈췄는데
+      // 결과물 어디에도 그 사실이 없어, 내가 `loop.stoppedBy` 를 따로 읽어서야 알았다.
+      // 받는 쪽이 **"이 판은 끝까지 못 봤다" 를 결과물만 보고 알 수 있어야** 한다.
+      ...(loop && loop.stoppedBy !== "done"
+        ? { 끝까지못봄: { 멈춘이유: loop.stoppedBy, 바퀴: loop.rounds.length,
+            말: loop.stoppedBy === "judge_failed" ? "심판자가 못 봐서 멈췄다 — 남은 고장을 아무도 안 봤다"
+              : loop.stoppedBy === "patch_failed" ? "조각이 안 붙어 멈췄다"
+              : loop.stoppedBy === "usd" ? "돈 상한에 닿아 멈췄다"
+              : loop.stoppedBy === "no_run" ? "돌려 보지 못했다"
+              : "바퀴를 다 써서 멈췄다 — 고칠 것이 남아 있을 수 있다" } }
+        : {}),
       note,
     };
 

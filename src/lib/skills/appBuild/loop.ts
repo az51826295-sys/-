@@ -146,8 +146,16 @@ export async function improveLoop(o: {
     const facts = await runWeb(files, { mobile: o.mobile, actions, measures: o.guards?.length ? measureNamesFor(o.guards) : undefined });
     if (!facts.ran) { stoppedBy = "no_run"; console.warn(`[고리] ${n}바퀴: 돌려 보지 못함 — ${facts.why}`); break; }
     let verdict: LoopVerdict;
+    // **심판이 죽으면 한 번 다시 부른다**(205회차 09-23, 판 8 에서 배움).
+    // 판 8 은 3바퀴째에 심판이 죽어 **고장 9개짜리 판이 그대로 결과물로 나갔다.**
+    // 심판이 못 본 것은 형식 어긋남·잘림 같은 **기계 고장**이지 판단이 아니다 —
+    // 09-15 에 그은 선 그대로 **조용히 한 번 다시**, 그래도 죽으면 그때 멈춘다.
     try { verdict = await judge(o.judgeAi, { ask: o.ask, criteria: o.criteria, facts, mobile: o.mobile, round: n }); }
-    catch (e) { stoppedBy = "judge_failed"; console.warn(`[고리] ${n}바퀴: 심판자가 못 봤다 —`, e instanceof Error ? e.message : e); break; }
+    catch (e1) {
+      console.warn(`[고리] ${n}바퀴: 심판자가 못 봤다 — 한 번 다시 부른다:`, e1 instanceof Error ? e1.message : e1);
+      try { verdict = await judge(o.judgeAi, { ask: o.ask, criteria: o.criteria, facts, mobile: o.mobile, round: n }); }
+      catch (e2) { stoppedBy = "judge_failed"; console.warn(`[고리] ${n}바퀴: 두 번째도 못 봤다 —`, e2 instanceof Error ? e2.message : e2); break; }
+    }
     // **난간은 심판 말 위에 얹는다.** 심판이 "다 됐다" 고 해도 숫자가 어긋나면 고장이다 —
     // 판 2 에서 심판은 통과시켰고 높이는 36% 떨어져 있었다.
     if (o.guards?.length) {
