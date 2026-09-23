@@ -1,4 +1,5 @@
 import type { Page } from "puppeteer-core";
+import { playThrough } from "@/lib/skills/appBuild/playThrough";
 
 /**
  * **웹 판을 숫자로 재는 자** (205회차 09-22, 사장님이 ㉮를 고르심).
@@ -154,8 +155,20 @@ export async function measureJump(page: Page): Promise<JumpNumbers | null> {
   } catch { return null; }
 }
 
+/**
+ * **끝까지 해 보기** — 3번 칸(되던 것이 안 깨졌나)을 고리 안으로 (205회차 09-23).
+ * 4단계 판 1~8 은 전부 깰 수 없는 원본 위에서 돌았고 아무 자도 몰랐다. 이 칸이 있었으면 첫 판에 잡혔다.
+ * 조종할 이름이 없는 게임은 null → 난간이 '못 잼' 으로 건다(통과가 아니다).
+ */
+export async function measureClear(page: Page): Promise<Record<string, number> | null> {
+  const r = await playThrough(page, 2500);
+  if (r.끝 === "못 잼") return null;
+  return { "게임.클리어": r.끝 === "클리어" ? 1 : 0, "게임.닿은무대": r.닿은무대, "게임.잃은목숨": r.잃은목숨 };
+}
+
 export const WEB_MEASURES: Record<string, (p: Page) => Promise<Record<string, number> | null>> = {
   점프: measureJump as (p: Page) => Promise<Record<string, number> | null>,
+  게임: measureClear,
 };
 
 /** 이름들을 재서 한 장으로 합친다. 못 잰 묶음은 아예 안 들어간다(0 이 아니다). */
