@@ -5,7 +5,9 @@ const { readFileSync } = await import("node:fs");
 const hl = await openHeadless({ width: 1280, height: 720 });
 if (!hl) process.exit(1);
 try {
-  for (const [name, path] of [["원본","engine/work/stage4-run1/origin/index.html"],["판6","engine/work/stage4-run6/round1/index.html"]] as [string,string][]) {
+  // 인자로 판을 고를 수 있게(09-23): 기본은 원본 vs 판6. `--vs 판8=engine/work/stage4-run8/round1/index.html`
+  const vs = process.argv.indexOf("--vs") > 0 ? process.argv[process.argv.indexOf("--vs") + 1].split("=") : ["판6", "engine/work/stage4-run6/round1/index.html"];
+  for (const [name, path] of [["원본","engine/work/stage4-run1/origin/index.html"],[vs[0], vs[1]]] as [string,string][]) {
     const page = await hl.browser.newPage();
     await page.setRequestInterception(true);
     page.on("request", (r) => { const u=r.url(); if (u.startsWith("data:")||u==="about:blank") void r.continue(); else void r.abort(); });
