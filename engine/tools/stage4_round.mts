@@ -22,7 +22,13 @@ const { data: a, error } = await db.from("assignments").insert({
     stage4: { run: 8, round: 1, request: "점프를 더 쫀득하게" },
     // **난간을 고리 안으로**(205회차 09-22). 어기면 심판 말 위에 고장으로 얹힌다.
     // **로키가 제안하고 사장님이 잠근 자**(판 7). 내가 숫자를 안 쓴 첫 판이다.
-    webGuards: (() => { const p = JSON.parse(readFileSync(arg("--guards")!, "utf8")) as { 난간: unknown[]; 안내값: unknown[] }; return [...p.난간, ...p.안내값]; })(),
+    // **상시 난간을 먼저 얹는다**(개정판 8 ⑬). 로키가 무엇을 제안하든 게임은 끝까지 깨져야 한다.
+    // 기계가 못 깨면 사장님께 가기 전에 고장이다. 기계가 깨도 사람 칸은 남는다(기계 클리어 ≠ 사람 클리어).
+    webGuards: (() => {
+      const 상시 = [{ measure: "게임.클리어", min: 1, max: 1, why: "되던 것이 안 깨져야 한다 — 끝까지 해 보는 기계가 재는 상시 난간(개정판 8)" }];
+      const p = JSON.parse(readFileSync(arg("--guards")!, "utf8")) as { 난간: { measure: string }[]; 안내값: unknown[] };
+      return [...상시, ...p.난간.filter((g) => g.measure !== "게임.클리어"), ...p.안내값];
+    })(),
   },
   role_input_schema_id: "small_app_assignment_v1", priority: "normal",
 }).select("id").single();
