@@ -1,70 +1,33 @@
-// 185회차 자: 게임 여는 문·패널 play·"파일 줘" 답 — 데모 계정, 실서버, 모델 0.
-//   ROOKERY_DEMO_PASSWORD=… npx tsx engine/tools/rookery_env.mts engine/tools/play_probe.mts
-const SITE = process.env.ROOKERY_SITE ?? "https://rookery-web-production.up.railway.app";
-const EMAIL = "demo-rookery@rookery.local";
-const PASSWORD = process.env.ROOKERY_DEMO_PASSWORD ?? "";
-const { createClient } = await import("@supabase/supabase-js");
-const { createServiceClient } = await import("../../src/lib/supabase/service");
-const { changeFacts } = await import("../../src/lib/genesis/askJudge");
-
-const SUPA = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const anon = createClient(SUPA, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
-const { data: auth, error: authErr } = await anon.auth.signInWithPassword({ email: EMAIL, password: PASSWORD });
-if (authErr || !auth.session) { console.error("로그인 실패:", authErr?.message); process.exit(1); }
-const s = auth.session;
-const ref = new URL(SUPA).hostname.split(".")[0];
-const val = "base64-" + Buffer.from(JSON.stringify({ access_token: s.access_token, refresh_token: s.refresh_token, expires_at: s.expires_at, expires_in: s.expires_in, token_type: s.token_type, user: s.user })).toString("base64url");
-const name = `sb-${ref}-auth-token`;
-const CHUNK = 3180; // @supabase/ssr 가 긴 쿠키를 .0 .1 로 나눠 읽는다
-const cookie = val.length <= CHUNK ? `${name}=${val}` : Array.from({ length: Math.ceil(val.length / CHUNK) }, (_, i) => `${name}.${i}=${val.slice(i * CHUNK, (i + 1) * CHUNK)}`).join("; ");
-
-const db = createServiceClient();
-const { data: co } = await db.from("companies").select("id").eq("owner_id", s.user.id).maybeSingle();
-if (!co) { console.error("데모 회사가 없다"); process.exit(1); }
-const companyId = co.id as string;
-
-type Msg = { role: "user" | "assistant"; content: string };
-const history: Msg[] = [];
-let conversationId: string | null = null;
-const hm = () => new Date().toLocaleTimeString("ko-KR", { hour12: false });
-
-async function say(text: string): Promise<{ reply: string; assignment: { id: string; title: string } | null; files: unknown[] | null }> {
-  history.push({ role: "user", content: text });
-  const r = await fetch(`${SITE}/api/chat`, { method: "POST", headers: { "content-type": "application/json", cookie }, body: JSON.stringify({ messages: history, conversationId }) });
-  if (!r.ok || !r.body) throw new Error(`/api/chat ${r.status}`);
-  const textAll = await r.text();
-  const box: { done: Record<string, unknown> | null } = { done: null };
-  for (const line of textAll.split("\n")) { if (!line.trim()) continue; try { const ev = JSON.parse(line) as { type: string }; if (ev.type === "done") box.done = ev as unknown as Record<string, unknown>; if (ev.type === "error") throw new Error(JSON.stringify(ev)); } catch (e) { if (e instanceof SyntaxError) continue; throw e; } }
-  const done = box.done;
-  if (!done) throw new Error("답이 안 끝났다");
-  conversationId = (done.conversationId as string) ?? conversationId;
-  const reply = String(done.reply ?? "");
-  history.push({ role: "assistant", content: reply });
-  console.log(`${hm()} 나: ${text}\n${hm()} 로키: ${reply.replace(/\s+/g, " ").slice(0, 200)}`);
-  return { reply, assignment: (done.assignment as { id: string; title: string } | null) ?? null, files: (done.files as unknown[] | null) ?? null };
-}
+/**
+ * **끝까지 해 보는 기계에 이빨이 있나** (205회차 09-23).
+ * 잠근 두 줄: **원본은 깨져야 하고, 판 8 은 안 깨져야 한다.**
+ * 원본을 못 깨면 자가 아니라 **조종이 서툰 것**이고, 그 자로는 아무것도 못 잰다.
+ */
+const { openHeadless } = await import("../../src/lib/video/headless");
+const { playThrough } = await import("../../src/lib/skills/appBuild/playThrough");
+const { readFileSync } = await import("node:fs");
+const 판: [string, string, string][] = [
+  ["원본", "engine/work/stage4-run1/origin/index.html", "클리어"],
+  ["판6 (사장님: 클리어가 안돼)", "engine/work/stage4-run6/round1/index.html", "클리어 아님"],
+  ["판7 (사장님: 높이가 높아서)", "engine/work/stage4-run7/round1/index.html", "클리어 아님"],
+  ["판8 (오름 쌍 6개 막힘)", "engine/work/stage4-run8/round1/index.html", "클리어 아님"],
+];
+const hl = await openHeadless({ width: 1280, height: 720 });
+if (!hl) process.exit(1);
 let bad = 0;
-const check = (n: string, ok: boolean, got?: unknown) => { if (!ok) bad++; console.log(ok ? "맞음  " : "어긋남", n, ok ? "" : JSON.stringify(got)?.slice(0, 200)); };
-// 데모 회사의 마지막 웹 게임 대화를 찾는다
-const { data: dl } = await db.from("deliverables").select("id, title, assignment_id").eq("company_id", companyId).eq("deliverable_type", "app_build").order("created_at", { ascending: false }).limit(1);
-const d = dl![0];
-const { data: m } = await db.from("conversation_messages").select("conversation_id").contains("attachments", { returned: { deliverableId: d.id } }).limit(1).maybeSingle();
-conversationId = m!.conversation_id as string;
-console.log(`판: ${d.title} · 대화 ${conversationId.slice(0, 8)}`);
-// 1) 게임 여는 문
-const r1 = await fetch(`${SITE}/api/deliverables/${d.id}/play/`, { headers: { cookie } });
-const body = await r1.text();
-check("play 문 200", r1.status === 200, r1.status);
-check("HTML 이 온다", /<html|<canvas|<script/i.test(body), body.slice(0, 80));
-check("sandbox CSP", /sandbox/.test(r1.headers.get("content-security-policy") ?? ""), r1.headers.get("content-security-policy"));
-check("남의 것은 401", (await fetch(`${SITE}/api/deliverables/${d.id}/play/`)).status === 401);
-// 2) 패널이 play 를 준다
-const r2 = await fetch(`${SITE}/api/conversations/${conversationId}/panel`, { headers: { cookie } });
-const panel = (await r2.json()) as { current?: { play?: string | null; n: number }; versions: unknown[] };
-check("패널 play 주소", !!panel.current?.play, panel.current);
-// 3) "파일 줘" → 파일이 붙어 온다, 일은 안 만든다
-const a = await say("아니 여기 파일로 올려줘");
-const doneFiles = (a as unknown as { files?: unknown[] }).files;
-check("파일 요청에 파일 붙음", Array.isArray(doneFiles) && doneFiles.length > 0, a.reply);
-check("일을 안 만듦", !a.assignment, a.assignment);
-console.log(bad ? `어긋남 ${bad}` : "전부 맞음");
+try {
+  for (const [이름, path, 기대] of 판) {
+    const page = await hl.browser.newPage();
+    await page.setRequestInterception(true);
+    page.on("request", (r) => { const u = r.url(); if (u.startsWith("data:") || u === "about:blank") void r.continue(); else void r.abort(); });
+    await page.setContent(readFileSync(path, "utf8"), { waitUntil: "load" });
+    await new Promise((r) => setTimeout(r, 500));
+    const r = await playThrough(page, 4000);
+    await page.close();
+    const 맞나 = 기대 === "클리어" ? r.끝 === "클리어" : r.끝 !== "클리어";
+    if (!맞나) bad++;
+    console.log(`${맞나 ? "맞음 " : "어긋남"} ${이름} → **${r.끝}** (무대 ${r.닿은무대}/3 · 목숨 잃음 ${r.잃은목숨} · ${r.걸린틱}틱 · ${r.시도}번째 시도, 앞 ${r.뛴자리px}px)${r.why ? " · " + r.why : ""}`);
+  }
+} finally { await hl.close(); }
+console.log(`\n${bad ? `**어긋남 ${bad}판** — 이 자는 아직 3번 칸을 못 넘긴다` : "**전부 맞음** — 원본은 깨고 나머지는 못 깬다"}`);
+process.exit(bad ? 1 : 0);
