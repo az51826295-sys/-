@@ -25,6 +25,11 @@ export async function openHeadless(opts?: { width?: number; height?: number; mob
     "--disable-extensions", "--disable-background-networking", "--disable-sync", "--no-first-run",
     `--user-data-dir=${profile}`, `--remote-debugging-port=${port}`, "about:blank",
   ], { stdio: "ignore", detached: false });
+  // **부모가 죽을 때 자식도 끝낸다**(205회차 09-24). 윈도우에서는 `detached:false` 여도 node 가 시간 초과·강제 종료로
+  // 죽으면 msedge 가 남는다. 09-23 하루 동안 그렇게 154개가 쌓여 기계를 잡아먹었고, 나는 그걸 사장님 Edge 로 잘못 읽었다.
+  // 정상 종료(exit)·Ctrl-C(SIGINT)·강제 종료(SIGTERM) 셋 다 잡는다. 죽일 때는 **트리째**(자식 렌더러까지).
+  const reap = () => { try { if (proc.pid && proc.exitCode == null) spawn("taskkill", ["/PID", String(proc.pid), "/T", "/F"], { stdio: "ignore", windowsHide: true }); } catch { /* */ } };
+  process.once("exit", reap); process.once("SIGINT", reap); process.once("SIGTERM", reap);
   let ws = "";
   for (let i = 0; i < 60 && !ws; i++) {
     await new Promise((r) => setTimeout(r, 500));
@@ -46,6 +51,8 @@ export async function openHeadless(opts?: { width?: number; height?: number; mob
     defaultViewport: { width, height, isMobile: !!opts?.mobile, hasTouch: !!opts?.mobile, deviceScaleFactor: 1 },
   });
   const close = async () => {
+    process.off("exit", reap); process.off("SIGINT", reap); process.off("SIGTERM", reap);
+    reap();
     try { await browser.close(); } catch { /* */ }
     try { proc.kill(); } catch { /* */ }
     await rm(profile, { recursive: true, force: true }).catch(() => {});
