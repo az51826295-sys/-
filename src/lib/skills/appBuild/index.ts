@@ -8,6 +8,7 @@ import type { EmployeeSkill, SkillRunContext } from "@/lib/skills/types";
 import { checkFiles, repairBrief, summarise } from "@/lib/skills/appBuild/verify";
 import { buildPatch } from "@/lib/skills/appBuild/patch";
 import { improveLoop, roundsFor, isThorough, notFinished, type LoopResult } from "@/lib/skills/appBuild/loop";
+import type { SourceFile } from "@/lib/skills/appBuild/patch";
 import { factLines } from "@/lib/skills/appBuild/run";
 
 /**
@@ -225,6 +226,8 @@ export function wholeBuildInput(spec: { title: string; criteria: { id: string; w
 }
 
 type Previous = {
+  /** 앞 판의 결과물 id — 앞앞 판을 찾는 데 쓴다(09-23). */
+  id?: string;
   title: string;
   criteria: { id: string; when: string; then: string }[];
   files: { path: string; language: string; contents: string }[];
@@ -262,6 +265,7 @@ async function loadPrevious(ctx: SkillRunContext): Promise<Previous | null> {
     .map((k) => `${k.name}${k.message ? ` — ${k.message.slice(0, 300)}` : ""}`);
   const ask = `${ctx.context.assignment.title} ${ctx.context.assignment.description ?? ""}`;
   return {
+    id,
     title: data.title as string,
     criteria: pruneCriteria(c.criteria ?? [], c.coverage ?? [], ask),
     files: c.files ?? [],
@@ -729,6 +733,7 @@ ${ctx.context.assignment.description ?? ""}`)}번까지 돌려 보고 고쳐요)
           // **주문이 실어 보낸 숫자 난간**(205회차 09-22). 4단계 본판처럼 "높이는 그대로 두라" 가
           // 요청의 핵심일 때, 화면만 보는 심판으로는 그걸 못 지킨다.
           guards: guardsFromOrder,
+          lineage: await lineageOf(ctx, previous),
           onRound: async (rec, total) => {
             // 화면의 "N바퀴째 · 확인 목록 x/y". 단계 저장과 같은 칸(metrics_json)에 읽고-합쳐-쓴다.
             const { data: cur } = await ctx.supabase.from("work_executions").select("metrics_json").eq("id", ctx.executionId).maybeSingle();
@@ -851,3 +856,21 @@ ${ctx.context.assignment.description ?? ""}`)}번까지 돌려 보고 고쳐요)
     };
   },
 };
+
+/**
+ * 앞 판과 앞앞 판의 파일(09-23). 앞앞 판은 앞 판의 업무가 적어 둔 `previousDeliverableId` 로 찾는다.
+ * 못 찾으면 null — 그러면 되돌림 검사는 조용히 빠진다(못 잼이지 통과가 아니라는 뜻으로 로그를 남긴다).
+ */
+async function lineageOf(ctx: SkillRunContext, previous: Previous | null): Promise<{ prev: SourceFile[] | null; prevPrev: SourceFile[] | null }> {
+  if (!previous?.id) return { prev: null, prevPrev: null };
+  const prev = previous.files.map((f) => ({ path: f.path, language: f.language, contents: f.contents }));
+  try {
+    const { data: d } = await ctx.supabase.from("deliverables").select("assignment_id").eq("id", previous.id).maybeSingle();
+    const { data: a } = d?.assignment_id ? await ctx.supabase.from("assignments").select("role_input_json").eq("id", d.assignment_id as string).maybeSingle() : { data: null };
+    const ppId = (a?.role_input_json as { previousDeliverableId?: string } | null)?.previousDeliverableId ?? null;
+    if (!ppId) { console.log("[되돌림 검사] 앞앞 판이 없다 — 첫 고침이거나 연결이 안 남았다. 이번 판은 못 잼"); return { prev, prevPrev: null }; }
+    const { data: pp } = await ctx.supabase.from("deliverables").select("content_json").eq("id", ppId).maybeSingle();
+    const files = ((pp?.content_json as { files?: { path: string; language?: string; contents: string }[] } | null)?.files ?? []).map((f) => ({ path: f.path, language: f.language ?? "", contents: f.contents }));
+    return { prev, prevPrev: files.length ? files : null };
+  } catch (e) { console.warn("[되돌림 검사] 앞앞 판을 못 읽었다:", e instanceof Error ? e.message : e); return { prev, prevPrev: null }; }
+}

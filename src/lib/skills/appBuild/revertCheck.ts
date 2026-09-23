@@ -37,3 +37,21 @@ export function revertedFixes(prevPrev: string, prev: string, cur: string): Reve
   }
   return out;
 }
+
+type F = { path: string; contents: string };
+/**
+ * 파일 묶음끼리 대 본다 — 고리가 바퀴마다 부르는 꼴. 같은 경로끼리만 견준다.
+ * 돌려주는 것은 **고장 문장**들이다: 그대로 `verdict.broken` 에 얹히면 고치는 자리가 다음 바퀴에 본다.
+ */
+export function revertBroken(prevPrev: F[] | null | undefined, prev: F[] | null | undefined, cur: F[]): string[] {
+  if (!prevPrev?.length || !prev?.length) return [];
+  const out: string[] = [];
+  for (const c of cur) {
+    const a = prevPrev.find((f) => f.path === c.path), b = prev.find((f) => f.path === c.path);
+    if (!a || !b) continue;
+    for (const r of revertedFixes(a.contents, b.contents, c.contents)) {
+      out.push(`되돌림: 앞 판이 고친 줄이 사라졌다 — "${r.line.slice(0, 80)}"${r.되돌아간줄 ? ` (앞앞 판의 "${r.되돌아간줄.slice(0, 60)}" 로 돌아감)` : ""}`);
+    }
+  }
+  return out;
+}

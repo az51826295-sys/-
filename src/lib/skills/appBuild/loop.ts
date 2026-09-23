@@ -4,6 +4,7 @@ import type { AIProvider } from "@/lib/providers/types";
 import { buildPatch, type SourceFile } from "@/lib/skills/appBuild/patch";
 import { runWeb, factLines, DEFAULT_ACTIONS, type RunFacts, type RunAction } from "@/lib/skills/appBuild/run";
 import { checkGuards, measureNamesFor, type WebGuard } from "@/lib/skills/appBuild/webMeasures";
+import { revertBroken } from "@/lib/skills/appBuild/revertCheck";
 
 /**
  * **예산 안에서 도는 고리** (179회차 09-18). 사장님 "그래".
@@ -151,6 +152,11 @@ export async function improveLoop(o: {
    * 화면만 보는 심판이 못 보던 것을 기계가 잡는 자리다. **못 잰 것도 어긴 것과 같이 걸린다.**
    */
   guards?: WebGuard[];
+  /**
+   * **앞 판·앞앞 판의 파일**(205회차 09-23). 있으면 바퀴마다 "앞 판의 고침이 되돌려졌나" 를 기계가 본다.
+   * "제목만" 판이 앞 판의 "클리어!" 를 도로 되돌렸는데 부탁 심판이 통과시킨 구멍이다.
+   */
+  lineage?: { prev: SourceFile[] | null; prevPrev: SourceFile[] | null };
 }): Promise<LoopResult> {
   const rounds: RoundRecord[] = [];
   /** 심판이 죽어 다시 부른 횟수(판 전체). 0 이 아니면 결과물에 적힌다. */
@@ -174,6 +180,10 @@ export async function improveLoop(o: {
 
     // **난간은 심판 말 위에 얹는다.** 심판이 "다 됐다" 고 해도 숫자가 어긋나면 고장이다 —
     // 판 2 에서 심판은 통과시켰고 높이는 36% 떨어져 있었다.
+    if (o.lineage?.prev && o.lineage?.prevPrev) {
+      const rv = revertBroken(o.lineage.prevPrev, o.lineage.prev, files);
+      if (rv.length) { verdict = { ...verdict, broken: [...verdict.broken, ...rv] }; console.log(`[고리] ${n}바퀴: 되돌림 ${rv.length}개 — ${rv[0]}`); }
+    }
     if (o.guards?.length) {
       const hit = checkGuards(facts.measured, o.guards);
       if (hit.length) {
