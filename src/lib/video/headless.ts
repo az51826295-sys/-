@@ -33,7 +33,14 @@ export async function openHeadless(opts?: { width?: number; height?: number; mob
       if (r.ok) ws = ((await r.json()) as { webSocketDebuggerUrl?: string }).webSocketDebuggerUrl ?? "";
     } catch { /* 아직 */ }
   }
-  if (!ws) { try { proc.kill(); } catch { /* */ } await rm(profile, { recursive: true, force: true }).catch(() => {}); return null; }
+  if (!ws) {
+    // **왜 못 열었는지 말한다**(205회차 09-23). "브라우저 없음" 한 마디로는 실행 파일이 없는지,
+    // 떴는데 답이 없는지(기계가 꽉 찼을 때 — CPU 100% · 남은 메모리 671MB 에서 실제로 그랬다) 못 가른다.
+    console.warn(`[헤드리스] 30초 동안 포트 ${port} 응답 없음 · 프로세스 ${proc.exitCode == null ? "살아 있음(답만 없음 — 기계가 꽉 찼을 가능성)" : `죽음(exit ${proc.exitCode})`} · ${exe}`);
+    try { proc.kill(); } catch { /* */ }
+    await rm(profile, { recursive: true, force: true }).catch(() => {});
+    return null;
+  }
   const browser = await puppeteer.connect({
     browserWSEndpoint: ws,
     defaultViewport: { width, height, isMobile: !!opts?.mobile, hasTouch: !!opts?.mobile, deviceScaleFactor: 1 },
