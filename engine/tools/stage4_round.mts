@@ -14,12 +14,12 @@ const origin = arg("--origin")!;
 const desc = readFileSync(arg("--scope")!, "utf8");
 const { data: a, error } = await db.from("assignments").insert({
   company_id: CO, company_employee_id: DEV,
-  title: "별빛 플랫포머 — 점프를 더 쫀득하게 (판8 1회차: 곡선)",
+  title: "별빛 플랫포머 — 점프를 더 쫀득하게 (판9 1회차: 곡선)",
   description: desc,
   status: "assigned", current_progress_step: "assignment_received",
   role_input_json: {
     approved: true, verify: true, previousDeliverableId: origin,
-    stage4: { run: 8, round: 1, request: "점프를 더 쫀득하게" },
+    stage4: { run: 9, round: 1, request: "점프를 더 쫀득하게" },
     // **난간을 고리 안으로**(205회차 09-22). 어기면 심판 말 위에 고장으로 얹힌다.
     // **로키가 제안하고 사장님이 잠근 자**(판 7). 내가 숫자를 안 쓴 첫 판이다.
     // **상시 난간을 먼저 얹는다**(개정판 8 ⑬). 로키가 무엇을 제안하든 게임은 끝까지 깨져야 한다.

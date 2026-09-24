@@ -8,7 +8,7 @@ const { readFileSync } = await import("node:fs");
 const arg = (k: string) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : undefined; };
 const p = JSON.parse(readFileSync(arg("--proposal")!, "utf8")) as { 난간: any[]; 안내값: any[] };
 const 개발용: [string, string][] = [
-  ["원본", "engine/work/stage4-run1/origin/index.html"],
+  ["원본", "engine/work/candidate-na/index.html"],   // 판 9 부터 (나): 발판 되돌림 + 큰 제목 (09-24)
   ["판1", "engine/work/stage4-run1/round1/index.html"],
   ["판2", "engine/work/stage4-run2/round1/index.html"],
   ["판4", "engine/work/stage4-run4/round1/index.html"],

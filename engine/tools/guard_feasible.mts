@@ -26,7 +26,7 @@ try {
   const page = await hl.browser.newPage();
   await page.setRequestInterception(true);
   page.on("request",(r)=>{const u=r.url(); if(u.startsWith("data:")||u==="about:blank") void r.continue(); else void r.abort();});
-  await page.setContent(readFileSync("engine/work/stage4-run1/origin/index.html","utf8"),{waitUntil:"load"});
+  await page.setContent(readFileSync("engine/work/candidate-na/index.html","utf8"),{waitUntil:"load"}); // 판 9 부터 (나)
   await new Promise(r=>setTimeout(r,600));
   const up = await page.evaluate(jumpProbeSource(false)) as {ground:number;rec:{y:number}[];size:{w:number;h:number;speed:number};plats:{x:number;y:number;w:number}[][]};
 
