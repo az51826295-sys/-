@@ -1,6 +1,6 @@
 /**
  * **4단계 본판 한 회차를 주문한다.** 요청 원문을 그대로 싣는다(개정판 2 ④).
- *   --origin <결과물id> --scope <이번 회차 범위 파일>
+ *   --origin <결과물id> --scope <이번 회차 범위 파일> --guards <제안 JSON> [--round N]  (2회차부터는 --origin 에 앞 회차 결과물)
  */
 const { createServiceClient } = await import("../../src/lib/supabase/service");
 const { readFileSync } = await import("node:fs");
@@ -20,15 +20,16 @@ const origin = hit[0].id;
 const nFiles = hit[0].content_json?.files?.length ?? 0;
 if (nFiles === 0) { console.error(`원본 ${origin.slice(0, 8)} 에 파일이 없다 — 주문 안 넣음`); process.exit(1); }
 console.log(`원본 ${origin} · 파일 ${nFiles}개`);
+const round = Number(arg("--round") ?? 1);
 const desc = readFileSync(arg("--scope")!, "utf8");
 const { data: a, error } = await db.from("assignments").insert({
   company_id: CO, company_employee_id: DEV,
-  title: "별빛 플랫포머 — 점프를 더 쫀득하게 (판9 1회차: 곡선)",
+  title: `별빛 플랫포머 — 점프를 더 쫀득하게 (판9 ${round}회차: 곡선)`,
   description: desc,
   status: "assigned", current_progress_step: "assignment_received",
   role_input_json: {
     approved: true, verify: true, previousDeliverableId: origin,
-    stage4: { run: 9, round: 1, request: "점프를 더 쫀득하게" },
+    stage4: { run: 9, round, request: "점프를 더 쫀득하게" },
     // **난간을 고리 안으로**(205회차 09-22). 어기면 심판 말 위에 고장으로 얹힌다.
     // **로키가 제안하고 사장님이 잠근 자**(판 7). 내가 숫자를 안 쓴 첫 판이다.
     // **상시 난간을 먼저 얹는다**(개정판 8 ⑬). 로키가 무엇을 제안하든 게임은 끝까지 깨져야 한다.
@@ -43,4 +44,4 @@ const { data: a, error } = await db.from("assignments").insert({
 }).select("id").single();
 if (error) { console.error(`못 넣음: ${error.message}`); process.exit(1); }
 await db.from("work_executions").insert({ company_id: CO, assignment_id: a!.id, company_employee_id: DEV, status: "queued", current_step: "context_loaded", attempt_number: 1 });
-console.log(`1회차 주문: ${a!.id}`);
+console.log(`${round}회차 주문: ${a!.id}`);
