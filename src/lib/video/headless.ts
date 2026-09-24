@@ -28,7 +28,20 @@ export async function openHeadless(opts?: { width?: number; height?: number; mob
   // **부모가 죽을 때 자식도 끝낸다**(205회차 09-24). 윈도우에서는 `detached:false` 여도 node 가 시간 초과·강제 종료로
   // 죽으면 msedge 가 남는다. 09-23 하루 동안 그렇게 154개가 쌓여 기계를 잡아먹었고, 나는 그걸 사장님 Edge 로 잘못 읽었다.
   // 정상 종료(exit)·Ctrl-C(SIGINT)·강제 종료(SIGTERM) 셋 다 잡는다. 죽일 때는 **트리째**(자식 렌더러까지).
-  const reap = () => { try { if (proc.pid && proc.exitCode == null) spawn("taskkill", ["/PID", String(proc.pid), "/T", "/F"], { stdio: "ignore", windowsHide: true }); } catch { /* */ } };
+  // **프로필 폴더로 찾아 죽인다**(09-24 두 번째 고침). 윈도우 Edge 는 띄운 pid 가 곧 exit 0 하고
+  // 진짜 브라우저는 다른 부모 밑에 남아 `taskkill /T` 가 못 닿았다 — 첫 고침 뒤에도 30개가 또 쌓였다.
+  // 명령줄에 이 프로필 경로가 든 msedge 를 전부 죽인다. 리눅스(Railway)에서는 트리 종료로 충분하다.
+  const reap = () => {
+    try {
+      if (process.platform === "win32") {
+        const tag = path.basename(profile);
+        spawn("powershell", ["-NoProfile", "-Command",
+          `Get-CimInstance Win32_Process -Filter "Name='msedge.exe'" | Where-Object { $_.CommandLine -match '${tag}' } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }`],
+          { stdio: "ignore", windowsHide: true, detached: true }).unref();
+      }
+      if (proc.pid && proc.exitCode == null) proc.kill();
+    } catch { /* */ }
+  };
   process.once("exit", reap); process.once("SIGINT", reap); process.once("SIGTERM", reap);
   let ws = "";
   for (let i = 0; i < 60 && !ws; i++) {
