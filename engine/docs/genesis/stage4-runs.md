@@ -1642,3 +1642,4 @@ MODEL_OUTPUT_OFF_SCHEMA: expectations.1.why: expected string, received null; exp
 
 **두 번째 고침**: 명령줄에 **이 프로필 경로(`rk-hl-…`)** 가 든 msedge 를 전부 죽인다(PowerShell). 리눅스(Railway)는 트리 종료로 충분하다.
 열고 닫은 뒤 고아를 세는 시험(`reap_probe`)으로 잰다.
+reap v2 시험(`reap_probe`): **열기 전 0 · 열린 동안 16 · 닫고 3초 뒤 0** — 닫으면 남지 않는다. (첫 고침은 이 시험을 안 하고 "됐다" 고 적었다 — 그래서 30개가 또 쌓였다.)
