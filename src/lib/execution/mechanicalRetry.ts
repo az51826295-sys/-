@@ -20,12 +20,18 @@ type Supabase = SupabaseClient<any, any, any>;
  */
 
 /** 다시 해 볼 만한 고장. 뜻이 있는 실패(SELF_INCONSISTENT·CONTEXT_INCOMPLETE)는 넣지 않는다. */
-const MECHANICAL = new Set(["MODEL_OUTPUT_TRUNCATED", "DELIVERABLE_SAVE_FAILED"]);
+const MECHANICAL = new Set(["MODEL_OUTPUT_TRUNCATED", "DELIVERABLE_SAVE_FAILED", "MODEL_OUTPUT_OFF_SCHEMA", "MODEL_OUTPUT_UNPARSEABLE"]);
+/**
+ * 210회차 09-24: 모양 어긋남·못 읽음도 기계 고장이다. 14일 동안 9건이 **전부 첫 시도에서** 실행을 죽였고(계획 4·조각 고침 4·기타 1)
+ * 하나도 다시 하지 않았다 — 목록에 없어서 "뜻이 있는 실패" 로 사람에게 갔다. 모델이 JSON 칸 하나를 null 로 적은 것은
+ * 자기모순이 아니라 형식 고장이다. 첫 방어는 공급자 안의 한 번 고쳐 받기(deepseek.ts), 이것은 그 뒤의 한 번.
+ */
+const MECHANICAL_PREFIX = ["MODEL_OUTPUT_TRUNCATED", "MODEL_OUTPUT_OFF_SCHEMA", "MODEL_OUTPUT_UNPARSEABLE"];
 /** 이 횟수를 넘으면 진짜 실패로 둔다. */
 export const MAX_MECHANICAL_RETRIES = 1;
 
 export function isMechanical(code: string, message: string): boolean {
-  return MECHANICAL.has(code) || MECHANICAL.has(message.trim()) || message.includes("MODEL_OUTPUT_TRUNCATED");
+  return MECHANICAL.has(code) || MECHANICAL.has(message.trim()) || MECHANICAL_PREFIX.some((p) => message.includes(p));
 }
 
 /**

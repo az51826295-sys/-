@@ -40,13 +40,13 @@ const MODELS: Partial<Record<
 };
 
 /** `judgmentModel` 로 판단 자리의 모델을 바꿔 앉힐 수 있다(183회차 섞어 보내기 — flash 를 고치는 자리에). 나머지 등급은 그대로. */
-export function createDeepSeekProvider(opts: { judgmentModel?: string; /** 191회차: 자리로 앉힐 때 생각 모드(reasoning_effort high)를 끈다 — 70KB 파일 조각 고침에 생각 토큰 3만 6천·수 분이 들었다. */ thinking?: boolean } = {}): AIProvider {
+export function createDeepSeekProvider(opts: { judgmentModel?: string; /** 191회차: 자리로 앉힐 때 생각 모드(reasoning_effort high)를 끈다 — 70KB 파일 조각 고침에 생각 토큰 3만 6천·수 분이 들었다. */ thinking?: boolean; /** 시험용: 가짜 클라이언트를 꽂는다(schema_repair_probe). */ client?: OpenAI } = {}): AIProvider {
   const apiKey = process.env.DEEPSEEK_API_KEY;
   if (!apiKey) {
     throw new Error("DEEPSEEK_API_KEY is not set.");
   }
 
-  const client = new OpenAI({
+  const client = opts.client ?? new OpenAI({
     apiKey,
     baseURL: "https://api.deepseek.com/v1",
     maxRetries: 5,
@@ -103,48 +103,78 @@ export function createDeepSeekProvider(opts: { judgmentModel?: string; /** 191�
         ],
       });
 
-      const choice = response.choices[0];
-      if (choice?.finish_reason === "length") {
-        throw new Error("MODEL_OUTPUT_TRUNCATED");
-      }
-      if (choice?.message.refusal) {
-        throw new Error("MODEL_REFUSED");
-      }
+      // ── 모양 검사 ─────────────────────────────────────────────
+      // 잘림·거절은 그대로 던진다(고쳐 받을 것이 없다). 못 읽음·모양 어긋남은 **같은 자리에서 한 번** 고쳐 받는다.
+      //
+      // 210회차 09-24: 14일 동안 모양 어긋남(OFF_SCHEMA) 8건·못 읽음 1건이 전부 **첫 시도에서 실행을 죽였다** —
+      // 계획 단계 4건, 조각 고침 4건. `json_object` 모드는 모양을 보장하지 않는데(위 주석), 어긋나면 던지기만 했고
+      // 라우터의 gpt-5 올리기는 자리로 앉힌 공급자(seat)에는 없다. 판 9 첫 회차가 이걸로 두 번 죽었다(`expectations[].why: null`).
+      // luna(responses.parse)는 모양이 구조적으로 보장되어 이 고장이 0건이다 — 딥시크만 여기서 한 번 더 묻는다.
+      // 규율: **한 번만**, 같은 모델, 생각 모드 끔(고치는 일은 짧다), 토큰은 두 호출을 합쳐 장부에 남긴다.
+      type Checked = { ok: true; output: z.infer<typeof schema> } | { ok: false; code: string; text: string | null };
+      const check = (r: typeof response): Checked => {
+        const choice = r.choices[0];
+        if (choice?.finish_reason === "length") throw new Error("MODEL_OUTPUT_TRUNCATED");
+        if (choice?.message.refusal) throw new Error("MODEL_REFUSED");
+        const text = choice?.message.content;
+        if (!text) return { ok: false, code: "MODEL_OUTPUT_UNPARSEABLE", text: null };
+        let raw: unknown;
+        try { raw = JSON.parse(text); } catch { return { ok: false, code: "MODEL_OUTPUT_UNPARSEABLE", text }; }
+        // 모양이 어긋나면 고쳐 쓰지 않고 던진다. 반쪽짜리를 통과시키면 빠진 칸이
+        // 아래에서 `undefined` 로 조용히 흘러가고, 그건 틀린 답보다 찾기 어렵다.
+        const checked = schema.safeParse(raw);
+        if (!checked.success) {
+          return { ok: false, text, code: "MODEL_OUTPUT_OFF_SCHEMA: " + checked.error.issues.slice(0, 3).map((i) => `${i.path.join(".")}: ${i.message}`).join("; ") };
+        }
+        return { ok: true, output: checked.data };
+      };
+      const usageOf = (r: typeof response) => ({
+        inputTokens: r.usage?.prompt_tokens ?? 0,
+        outputTokens: r.usage?.completion_tokens ?? 0,
+        cachedInputTokens: (r.usage as { prompt_cache_hit_tokens?: number } | undefined)?.prompt_cache_hit_tokens ?? 0,
+      });
 
-      const text = choice?.message.content;
-      if (!text) throw new Error("MODEL_OUTPUT_UNPARSEABLE");
-
-      let raw: unknown;
-      try {
-        raw = JSON.parse(text);
-      } catch {
-        throw new Error("MODEL_OUTPUT_UNPARSEABLE");
-      }
-
-      // 모양이 어긋나면 고쳐 쓰지 않고 던진다. 반쪽짜리를 통과시키면 빠진 칸이
-      // 아래에서 `undefined` 로 조용히 흘러가고, 그건 틀린 답보다 찾기 어렵다.
-      const checked = schema.safeParse(raw);
-      if (!checked.success) {
-        throw new Error(
-          "MODEL_OUTPUT_OFF_SCHEMA: " +
-            checked.error.issues
-              .slice(0, 3)
-              .map((i) => `${i.path.join(".")}: ${i.message}`)
-              .join("; "),
-        );
+      let first = check(response);
+      let usage = usageOf(response);
+      let last = response;
+      if (!first.ok) {
+        const why = first.code;
+        const repair = await client.chat.completions.create({
+          model,
+          max_tokens: maxTokens,
+          response_format: { type: "json_object" },
+          // @ts-expect-error DeepSeek 확장 매개변수 — OpenAI SDK 타입에 없다.
+          thinking: { type: "disabled" },
+          messages: [
+            { role: "system", content: systemInstructions + `\n\n---\n답은 **오직 JSON 하나**로 낸다. 이 JSON Schema 를 그대로 따른다 (${schemaName}):\n` + shape },
+            { role: "user", content: input },
+            { role: "assistant", content: first.text ?? "" },
+            {
+              role: "user",
+              content:
+                `방금 답이 스키마에 맞지 않았다: ${why.replace(/^MODEL_OUTPUT_/, "")}.\n` +
+                "**같은 내용**을 스키마에 맞는 JSON 하나로 다시 낸다. 빠진 칸은 채우고, `null` 을 적은 칸은 스키마가 요구하는 형(문자열이면 짧은 설명)으로 적는다. " +
+                "설명·코드 울타리 없이 JSON 만.",
+            },
+          ],
+        });
+        const u2 = usageOf(repair);
+        usage = { inputTokens: usage.inputTokens + u2.inputTokens, outputTokens: usage.outputTokens + u2.outputTokens, cachedInputTokens: usage.cachedInputTokens + u2.cachedInputTokens };
+        last = repair;
+        first = check(repair);
+        if (!first.ok) throw new Error(first.code);
+        console.log(`[deepseek] 모양 고장을 한 번 고쳐 받았다 (${schemaName}): ${why.slice(0, 80)}`);
       }
 
       return {
-        output: checked.data,
-        inputTokens: response.usage?.prompt_tokens ?? 0,
-        outputTokens: response.usage?.completion_tokens ?? 0,
-        cachedInputTokens: (response.usage as { prompt_cache_hit_tokens?: number } | undefined)?.prompt_cache_hit_tokens ?? 0,
+        output: first.output,
+        ...usage,
         model,
         // **응답이 스스로 말한 이름과 지문**(205회차 09-22). 이 두 칸을 openai.ts 에만
         // 넣고 "원장까지 흐른다" 고 적었는데, 딥시크는 공급자 파일이 아예 달라서
         // 실제 판의 딥시크 줄이 전부 빈 채로 나왔다. 정작 별칭이 움직이는 쪽이 여기다.
-        answeredBy: (response as { model?: string }).model ?? null,
-        answeredFingerprint: (response as { system_fingerprint?: string }).system_fingerprint ?? null,
+        answeredBy: (last as { model?: string }).model ?? null,
+        answeredFingerprint: (last as { system_fingerprint?: string }).system_fingerprint ?? null,
       };
     },
   };
