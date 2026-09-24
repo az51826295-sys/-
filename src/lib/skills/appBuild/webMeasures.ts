@@ -177,6 +177,11 @@ export async function measureWeb(page: Page, names: string[]): Promise<Record<st
   for (const n of names) {
     const fn = WEB_MEASURES[n];
     if (!fn) continue;
+    // **자마다 화면을 새로 연다**(211회차 09-25). 상시 난간 `게임.클리어` 를 앞에 얹자 순서가 게임 → 점프가 됐고,
+    // 끝까지 깬 뒤의 화면에서 점프를 재니 빈 값(null)·쓰레기 값(높이 0·3프레임)이 나왔다 — 판 9 고리가 4바퀴 내내
+    // "난간 못 잼" 만 보며 돌았다. 같은 파일을 점프 → 게임 순서로 재면 맞는 값이 나온다(measure_order_probe).
+    // 자는 서로의 흔적 위에서 재면 안 된다. 앞선 조작(actions)의 흔적도 마찬가지라 첫 자부터 새로 연다.
+    try { await page.reload({ waitUntil: "load" }); await new Promise((r) => setTimeout(r, 300)); } catch { /* 못 새로 열면 있는 화면에서 잰다 */ }
     const got = await fn(page);
     if (got) Object.assign(out, got);
   }

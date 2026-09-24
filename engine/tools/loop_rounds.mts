@@ -1,0 +1,10 @@
+const { createServiceClient } = await import("../../src/lib/supabase/service");
+const db = createServiceClient();
+const { data } = await db.from("deliverables").select("content_json").eq("id", process.argv[2]).maybeSingle();
+const loop = ((data?.content_json ?? {}) as { loop?: { rounds?: Record<string, any>[]; stoppedBy?: string; verdict?: any } }).loop ?? {};
+console.log("멈춤:", loop.stoppedBy);
+for (const r of loop.rounds ?? []) console.log(`바퀴 ${r.n}: 맞음 ${r.met} · 안맞음 ${r.unmet} · 깨짐 ${r.broken} · 못잼 ${r.unknown} · 고침 ${r.edits} · $${r.usd} · ${(r.toPerson ?? "").slice(0, 90)}`);
+const v = loop.verdict ?? {};
+console.log("마지막 판정 키:", Object.keys(v).join(","));
+for (const b of (v.broken ?? []).slice(0, 12)) console.log("  깨짐:", typeof b === "string" ? b.slice(0, 140) : JSON.stringify(b).slice(0, 140));
+for (const u of (v.unknown ?? []).slice(0, 12)) console.log("  못잼:", typeof u === "string" ? u.slice(0, 140) : JSON.stringify(u).slice(0, 140));
