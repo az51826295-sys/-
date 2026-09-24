@@ -18,5 +18,11 @@ check("고침이 살아 있으면 안 잡는다", revertedFixes(A, B, B).length 
 check("앞 판이 안 고쳤으면 0", revertedFixes(A, A, C).length === 0, revertedFixes(A, A, C));
 // ④ 공백만 달라진 줄은 되돌림이 아니다
 check("공백만 달라진 줄은 안 잡는다", revertedFixes(A, B, B.replace("restartButton.textContent", "restartButton.textContent ")).length === 0);
+// ⑤ 앞 판이 넣은 줄을 **고치는** 것(값만 바꿈)은 되돌림이 아니다 — 판 9 2회차: riseGravity 0.44 → 0.30 이 되돌림으로 찍혀 고리가 손을 못 댔다
+{
+  const P0 = "a\nconst g = 1;\nb", P1 = "a\nconst g = 0.44;\nb", P2 = "a\nconst g = 0.30;\nb", P3 = "a\nconst g = 1;\nb";
+  check("앞 판의 줄을 고쳐 쓰면 안 잡는다(0.44 → 0.30)", revertedFixes(P0, P1, P2).length === 0, revertedFixes(P0, P1, P2));
+  check("옛 값으로 돌아가면 잡는다(0.44 → 1)", revertedFixes(P0, P1, P3).length === 1, revertedFixes(P0, P1, P3));
+}
 console.log(`\n최종: ${bad ? `어긋남 ${bad}/${seen}` : `전부 맞음 ${seen}/${seen}`}`);
 process.exit(bad ? 1 : 0);

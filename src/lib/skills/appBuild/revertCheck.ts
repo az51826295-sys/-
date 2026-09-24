@@ -28,14 +28,14 @@ export type Reverted = { line: string; 되돌아간줄: string | null };
 export function revertedFixes(prevPrev: string, prev: string, cur: string): Reverted[] {
   const fix = delta(prevPrev, prev);          // 앞 판의 고침
   const now = new Set(lines(cur));
-  const out: Reverted[] = [];
-  for (const l of fix.added) {
-    if (now.has(l)) continue;                  // 고침이 살아 있다
-    // 앞 판이 지웠던 줄 중 이번 판에 다시 나타난 것이 있나 — 있으면 명백한 되돌림
-    const back = [...fix.removed].find((r) => now.has(r)) ?? null;
-    out.push({ line: l, 되돌아간줄: back });
-  }
-  return out;
+  // **되돌림 = 앞 판이 지운 옛 줄이 돌아온 것**(212회차 09-25). 처음 판(205회차)은 앞 판이 넣은 줄이 *사라지기만 해도* 잡았다 —
+  // 위 셈법 주석과 달랐다. 그 탓에 판 9 2회차에서 `riseGravity: 0.44` 를 0.30 으로 *고치는* 것까지 되돌림으로 찍혀,
+  // 고리가 앞 판의 잘못된 값을 손대지 못하고 4바퀴 내내 "되돌림" 벌점만 받다가 앞 판과 똑같은 파일을 냈다.
+  // 고친 줄을 다시 고치는 건 고침이지 되돌림이 아니다. 옛 줄이 그대로 돌아왔을 때만 잡는다.
+  const back = [...fix.removed].filter((r) => now.has(r));
+  if (!back.length) return [];
+  const gone = [...fix.added].filter((l) => !now.has(l));
+  return back.map((r, i) => ({ line: gone[i] ?? gone[0] ?? "", 되돌아간줄: r }));
 }
 
 type F = { path: string; contents: string };
