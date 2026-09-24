@@ -38,12 +38,18 @@ const { data: a, error: ae } = await db.from("assignments").insert({
   role_input_schema_id: "small_app_assignment_v1", priority: "normal",
 }).select("id").single();
 if (ae) { console.error(`업무 못 만듦: ${ae.message}`); process.exit(1); }
+// **부모의 기준·기대치를 물려받는다**(판 9 시도 4, 09-24). 기준 없이 박았더니 고치는 판의 계획이 새 기준 1개만 내고
+// "확인 가능한 기준이 1개뿐(3 필요)" 으로 죽었다. 판 2~8 원본은 기준 17개를 이어 줬다. 원본은 부모의 게임에 고침 하나를 얹은 것이라 부모의 기준이 그대로 맞다.
+const { data: pd } = await db.from("deliverables").select("content_json").eq("id", parent).maybeSingle();
+const pc = ((pd?.content_json ?? {}) as Record<string, unknown>);
+const inherited = Object.fromEntries(["criteria", "coverage", "expectations", "target", "stage", "humanGate"].filter((k) => pc[k] != null).map((k) => [k, pc[k]]));
+console.log(`부모에서 물려받음: ${Object.keys(inherited).join(",") || "(없음)"} · 기준 ${Array.isArray(pc.criteria) ? (pc.criteria as unknown[]).length : 0}개`);
 const { data, error } = await db.from("deliverables").insert({
   company_id: CO, assignment_id: a!.id, company_employee_id: DEV, deliverable_scope: "assignment",
   title, deliverable_type: "app_build", status: "submitted", submitted_at: new Date().toISOString(),
   parent_deliverable_id: parent,
   content_markdown: `4단계 원본으로 박음(09-24). 끝까지 해 보는 기계: 클리어 ${r.닿은무대}/3.`,
-  content_json: { files: [{ path: "index.html", language: "html", contents: html }], origin: { pinnedAt: new Date().toISOString(), cleared: true, from: file, parent } },
+  content_json: { ...inherited, files: [{ path: "index.html", language: "html", contents: html }], origin: { pinnedAt: new Date().toISOString(), cleared: true, from: file, parent } },
 }).select("id").single();
 if (error) { console.error(`못 박음: ${error.message}`); process.exit(1); }
 console.log(`원본 결과물: ${data!.id} · 업무 ${a!.id} · ${title}`);
