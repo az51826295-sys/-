@@ -10,7 +10,16 @@ const arg = (k: string) => { const i = process.argv.indexOf(k); return i > 0 ? p
 // 결과물이 안 보여(RLS 로 404) 회차마다 내가 따로 링크를 만들어야 했다.
 const CO = "5925c03a-557f-46d7-8589-7388b769df40";   // 권혁수
 const DEV = "b52d580e-1938-4a0d-817c-f60f5f00e743";  // Dev 자리
-const origin = arg("--origin")!;
+// **원본 id 는 전체 uuid 로 푼다**(판 9 시도 3, 09-24). 앞 8자만 넘겼더니 그대로 저장됐고, 워커의 조회가 uuid 오류로 빈 값을
+// 받아 "처음 만드는 판" 이 됐다(새 유니티 게임이 나왔다). 앞글자를 받으면 여기서 하나로 풀고, 없거나 둘이면 거절한다.
+const originArg = arg("--origin")!;
+const { data: cands } = await db.from("deliverables").select("id, content_json").eq("company_id", CO).gte("created_at", "2026-09-01").order("created_at", { ascending: false }).limit(500);
+const hit = ((cands ?? []) as { id: string; content_json: { files?: unknown[] } | null }[]).filter((d) => d.id.startsWith(originArg));
+if (hit.length !== 1) { console.error(`원본 ${originArg}: ${hit.length === 0 ? "없다" : hit.length + "개가 맞아 하나로 못 고른다"} — 주문 안 넣음`); process.exit(1); }
+const origin = hit[0].id;
+const nFiles = hit[0].content_json?.files?.length ?? 0;
+if (nFiles === 0) { console.error(`원본 ${origin.slice(0, 8)} 에 파일이 없다 — 주문 안 넣음`); process.exit(1); }
+console.log(`원본 ${origin} · 파일 ${nFiles}개`);
 const desc = readFileSync(arg("--scope")!, "utf8");
 const { data: a, error } = await db.from("assignments").insert({
   company_id: CO, company_employee_id: DEV,

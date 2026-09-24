@@ -247,12 +247,16 @@ async function loadPrevious(ctx: SkillRunContext): Promise<Previous | null> {
     if (!id) console.warn(`[app_build] 고칠 대상 업무 ${ri.previousAssignmentId} 의 결과물이 아직 없다 — 처음 판으로 만든다`);
   }
   if (!id) return null;
-  const { data } = await ctx.supabase
+  const { data, error } = await ctx.supabase
     .from("deliverables")
     .select("title, content_json")
     .eq("id", id)
     .maybeSingle();
-  if (!data) return null;
+  // 고칠 대상을 못 읽으면 **멈춘다** — 조용히 처음 판으로 가지 않는다(211회차 09-24). 판 9 시도 3: 원본 id 가 앞 8자로 들어와
+  // 조회가 uuid 오류를 냈는데 `data` 만 보고 null 로 돌려, 고치라는 주문에 새 유니티 게임을 지어 냈다. 오류는 읽어야 한다(09-18 규칙).
+  // 기계 고장이 아니라 뜻이 있는 실패다 — 사람에게 간다.
+  if (error) throw new Error(`PREVIOUS_UNREADABLE: 고칠 대상 결과물 ${id} 을 못 읽었다 — ${error.message}`);
+  if (!data) throw new Error(`PREVIOUS_NOT_FOUND: 고칠 대상 결과물 ${id} 이 없다`);
   const c = (data.content_json ?? {}) as {
     criteria?: Previous["criteria"];
     coverage?: { criterionId: string; met: boolean }[];
