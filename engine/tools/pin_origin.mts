@@ -28,10 +28,22 @@ console.log(`끝까지 해 봄: ${r.끝} (무대 ${r.닿은무대}/3 · 목숨 �
 if (r.끝 !== "클리어") { console.error("**못 깬다 — 원본으로 못 박는다**(개정판 8 ⑮)"); process.exit(1); }
 
 const db = createServiceClient();
+const DEV = "b52d580e-1938-4a0d-817c-f60f5f00e743";   // Dev 자리(사장님 회사)
+const parent = arg("--parent") ?? null;                // 앞 판 결과물 id — 되돌림 검사의 계보가 여기서 이어진다
+// 결과물은 `deliverable_scope = "assignment"` 여야 하고 업무가 있어야 한다(제약 deliverables_scope_shape).
+// 그래서 "원본 박기" 업무를 하나 만들고 거기에 붙인다. 업무의 previousDeliverableId 가 앞앞 판 찾기에 쓰인다.
+const { data: a, error: ae } = await db.from("assignments").insert({
+  company_id: CO, company_employee_id: DEV, title, description: `4단계 원본으로 박음(${file}). 끝까지 해 보는 기계: 클리어 ${r.닿은무대}/3.`,
+  status: "completed", role_input_json: { approved: true, pinnedOrigin: true, ...(parent ? { previousDeliverableId: parent } : {}) },
+  role_input_schema_id: "small_app_assignment_v1", priority: "normal",
+}).select("id").single();
+if (ae) { console.error(`업무 못 만듦: ${ae.message}`); process.exit(1); }
 const { data, error } = await db.from("deliverables").insert({
-  company_id: CO, title, deliverable_type: "app",
+  company_id: CO, assignment_id: a!.id, company_employee_id: DEV, deliverable_scope: "assignment",
+  title, deliverable_type: "app_build", status: "submitted", submitted_at: new Date().toISOString(),
+  parent_deliverable_id: parent,
   content_markdown: `4단계 원본으로 박음(09-24). 끝까지 해 보는 기계: 클리어 ${r.닿은무대}/3.`,
-  content_json: { files: [{ path: "index.html", language: "html", contents: html }], origin: { pinnedAt: new Date().toISOString(), cleared: true, from: file } },
+  content_json: { files: [{ path: "index.html", language: "html", contents: html }], origin: { pinnedAt: new Date().toISOString(), cleared: true, from: file, parent } },
 }).select("id").single();
 if (error) { console.error(`못 박음: ${error.message}`); process.exit(1); }
-console.log(`원본 결과물: ${data!.id} · ${title}`);
+console.log(`원본 결과물: ${data!.id} · 업무 ${a!.id} · ${title}`);
