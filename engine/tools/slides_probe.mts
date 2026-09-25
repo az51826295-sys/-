@@ -32,4 +32,10 @@ check("신화 로키 판: 준_사실_사용·확인필요 둘 다 잡는다", c3
 const usesFacts = { ...good, slides: [{ heading: "로키 소개", bullets: [], note: "" }, { heading: "말하면 파일이 돼요", bullets: ["대화창에 말하면 mp4·문서 같은 진짜 파일로 나온다"], note: "" }, { heading: "고치기", bullets: ["이상한 부분만 말하면 그 부분만 다시 만든다"], note: "" }, { heading: "가입", bullets: ["이메일과 비밀번호만, 카드는 안 받는다"], note: "" }] };
 const c4 = judgeDeck(usesFacts, 4, facts, ask);
 check("사실을 쓴 판: 전부 통과", c4.every((k) => k.result === "Passed"), c4.filter((k) => k.result !== "Passed"));
+// 재료에 맞춰 장 수 깎기(218회차)
+const { fitWant } = await import("../../src/lib/skills/slidesMake/index");
+const ask3 = ["로키 소개 발표 자료 8장", "쓸 수 있는 사실:", "- 대화창에 말하면 파일로 나온다", "- 이상한 부분만 다시 만든다", "- 카드는 안 받는다"].join(String.fromCharCode(10));
+check("사실 3개에 8장 주문 → 5장", fitWant(ask3, 8).want === 5 && fitWant(ask3, 8).note.length > 0, fitWant(ask3, 8));
+check("사실 3개에 5장 주문 → 그대로", fitWant(ask3, 5).want === 5 && fitWant(ask3, 5).note === "");
+check("사실이 없으면 그대로", fitWant("발표 자료 10장", 10).want === 10);
 console.log(bad ? `어긋남 ${bad}/${seen}` : `전부 맞음 ${seen}/${seen}`); process.exit(bad ? 1 : 0);

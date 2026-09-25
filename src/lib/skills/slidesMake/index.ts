@@ -36,6 +36,14 @@ export function wantedSlides(ask: string): number {
   return Math.max(3, Math.min(30, n));
 }
 
+/** 재료가 모자라면 장 수를 깎는다(218회차, 사장님이 결정을 위임): 사실 N개면 제목·맺음 더해 N+2 장이 상한. 첫 판이 사실 3개를 8장에 펴 "파일 형식 — mp4·문서" 한 장을 만들었다. */
+export function fitWant(ask: string, want: number): { want: number; note: string } {
+  const facts = givenFacts(ask);
+  if (!facts.length) return { want, note: "" };
+  const cap = Math.max(3, facts.length + 2);
+  return want > cap + 1 ? { want: cap, note: `재료(쓸 수 있는 사실)가 ${facts.length}개라 주문 ${want}장 대신 ${cap}장으로 줄였어요 — 없는 말을 채워 장을 늘리지 않으려고요.` } : { want, note: "" };
+}
+
 const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
 /** 한 파일 HTML. 바깥 자원 없음. 화살표·클릭으로 넘긴다. 인쇄하면 한 장에 한 슬라이드. */
@@ -113,10 +121,10 @@ export function judgeDeck(p: Plan, want: number, facts: { ran: boolean; consoleE
   return c;
 }
 
-function render(p: Plan, cases: Case[], want: number): string {
+function render(p: Plan, cases: Case[], want: number, note = ""): string {
   const passed = cases.filter((k) => k.result === "Passed").length;
   return [
-    `## ${p.title}`, p.subtitle ? `_${p.subtitle}_` : "", `보는 사람: ${p.audience} · ${p.slides.length}장 (주문 ${want}장)`, "",
+    `## ${p.title}`, p.subtitle ? `_${p.subtitle}_` : "", `보는 사람: ${p.audience} · ${p.slides.length}장 (목표 ${want}장)`, note ? `_${note}_` : "", "",
     "브라우저에서 deck.html 을 열고 화살표 키로 넘깁니다. 인쇄하면 한 장에 한 슬라이드.", "",
     "## 차례", ...p.slides.map((s, i) => `${i + 1}. **${s.heading}**${s.bullets.length ? " — " + s.bullets.join(" · ") : ""}`), "",
     `## 자 (${passed}/${cases.length})`, "| 자 | 결과 | 메모 |", "|---|---|---|",
@@ -142,7 +150,10 @@ export const slidesMakeSkill: EmployeeSkill = {
   async run(ctx: SkillRunContext) {
     const ask = `${ctx.context.assignment.title}\n${ctx.context.assignment.description ?? ""}`;
     if (ask.trim().length < 6) throw new ExecutionError("CONTEXT_INCOMPLETE", "무엇에 대한 발표 자료인지 한 줄이 필요하다.");
-    const want = wantedSlides(ask);
+    const asked = wantedSlides(ask);
+    const fitted = fitWant(ask, asked);
+    const want = fitted.want;
+    if (fitted.note) console.log("[slides] " + fitted.note);
 
     await setStep(ctx.supabase, ctx.executionId, "planning");
     const write = (failed: string[]) => ctx.providers.ai.generateStructuredOutput({
@@ -181,7 +192,7 @@ export const slidesMakeSkill: EmployeeSkill = {
     const passed = cases.filter((k) => k.result === "Passed").length, failedN = cases.length - passed;
 
     const content = {
-      outline: p, want,
+      outline: p, want, asked, fitNote: fitted.note,
       files: [{ path: "deck.html", language: "html", contents: html }],
       howToRun: "deck.html 을 브라우저에서 열고 화살표 키로 넘긴다.",
       verdict: { verdict: failedN === 0 ? "PASS" : passed >= failedN ? "PARTIAL" : "FAIL", passed, failed: failedN, cases, scales: false, rate: Number((passed / cases.length).toFixed(4)) },
@@ -189,7 +200,7 @@ export const slidesMakeSkill: EmployeeSkill = {
     };
     const { data: saved, error } = await ctx.supabase.rpc("submit_generated_deliverable", {
       p_execution_id: ctx.executionId, p_title: p.title, p_deliverable_type: "slides",
-      p_content_markdown: render(p, cases, want), p_content_json: content, p_generation_model: ctx.providers.ai.model, p_citations: [],
+      p_content_markdown: render(p, cases, want, fitted.note), p_content_json: content, p_generation_model: ctx.providers.ai.model, p_citations: [],
     });
     if (error) throw new ExecutionError("DELIVERABLE_SAVE_FAILED", error.message);
     const rpc = saved as { ok: boolean; reason?: string; deliverableId?: string };
