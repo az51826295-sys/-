@@ -146,8 +146,13 @@ const transOut = z.object({
 });
 type TransOut = z.infer<typeof transOut>;
 export function isTranslateAsk(ask: string): boolean { return /번역|현지화|영어로|일본어로|중국어로|translate|localiz/i.test(ask); }
-/** "24자 이하"·"20 chars" → 24. 없으면 0(제한 없음). */
-export function charLimit(ask: string): number { const m = ask.match(/([0-9]{1,3})\s*(자|글자|chars?)\s*(이하|안|이내|max)?/); return m ? Number(m[1]) : 0; }
+/** "24자 이하"·"20 chars max"·"한 줄에 24자" → 24. 그냥 "25 자막"·"20초" 는 0(제한 없음). 자막 2판이 제목의 "09-25 자막" 을 25자 제한으로 읽어 번역을 전보문으로 만들었다. */
+export function charLimit(ask: string): number {
+  const withQualifier = ask.match(/([0-9]{1,3})\s*(?:자|글자|chars?)\s*(?:이하|이내|안|까지|max|or less)/i);
+  if (withQualifier) return Number(withQualifier[1]);
+  const perLine = ask.match(/한 줄에\s*([0-9]{1,3})\s*(?:자|글자)/);
+  return perLine ? Number(perLine[1]) : 0;
+}
 const PLACEHOLDER = new RegExp("[{][0-9A-Za-z_]+[}]|%[sd]|<[^>]+>", "g");
 const DIGITS = new RegExp("[0-9]+", "g");
 /** 용어 사전(217회차): 제품 이름은 옮기지 않는다. 기본 {로키: Rookery} + 주문의 "용어:" 아래 "- 원어 = 옮길 말" 줄. 자막 첫 판이 로키를 북유럽 신 Loki 로 옮겼다. */

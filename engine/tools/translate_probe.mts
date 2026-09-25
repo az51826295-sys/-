@@ -26,4 +26,10 @@ check("기본 사전에 로키→Rookery, 주문 용어 줄도 읽음", g1["로�
 const gj = judgeGlossary([{ src: "로키는 말하면 파일로", out: "Tell Loki and get files" }], glossaryOf(""));
 check("로키→Loki 를 잡는다", gj?.result === "Failed", gj);
 check("Rookery 면 통과", judgeGlossary([{ src: "로키는", out: "Rookery is" }], glossaryOf(""))?.result === "Passed");
+// 글자 수 제한 읽기(217회차 자막 2판 사고)
+const { charLimit: cl } = await import("../../src/lib/skills/outsource/index");
+check("'09-25 자막' 은 제한 아님", cl("20초 설명 영상 자막 영어로 (09-25 자막 번역 2판)") === 0, cl("20초 설명 영상 자막 영어로 (09-25 자막 번역 2판)"));
+check("'24자 이하' → 24", cl("각 줄 24자 이하로") === 24);
+check("'한 줄에 30자' → 30", cl("한 줄에 30자, 게임 UI") === 30);
+check("'20 chars max' → 20", cl("keep it 20 chars max") === 20);
 console.log(bad ? `어긋남 ${bad}/${seen}` : `전부 맞음 ${seen}/${seen}`); process.exit(bad ? 1 : 0);
