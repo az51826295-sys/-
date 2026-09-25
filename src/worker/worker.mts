@@ -100,7 +100,7 @@ async function heartbeatTick() {
   // `engine/tools/deploy.sh` 가 올리기 전에 `ROOKERY_COMMIT` 을 세운다.
   const commit = process.env.ROOKERY_COMMIT ?? process.env.RAILWAY_GIT_COMMIT_SHA ?? null;
   await db.from("service_heartbeat").upsert({
-    service: "rookery-worker", commit_sha: commit, seen_at: new Date().toISOString(),
+    service: process.env.RAILWAY_SERVICE_NAME ?? "rookery-worker", commit_sha: commit, seen_at: new Date().toISOString(),   // 222회차: 개발 워커는 자기 이름으로(본 워커 줄을 덮지 않게)
     deployed_at: process.env.RAILWAY_DEPLOYMENT_CREATED_AT ?? null,
   }, { onConflict: "service" });
 }

@@ -39,6 +39,13 @@
 - 첫 실전: 개발 계정에서 현황판 주문 → 서버 워커가 self_board 를 돌려 **자 4/4, $0.02** (사장님 회사에선 한도로 못 돌던 것). `board_probe` 개발 계정에서 11/11.
 - 개발 계정 한도 바꾸기: `engine/tools/limit_show.mts` 는 사장님 회사 전용이라, 개발 계정은 `ROOKERY_ACCOUNT` 와 무관하게 DB 에서 companies.spend_limit_usd 를 고친다(도구: `dev_limit.mts <달러> <일수>`).
 
+## 222회차(09-25 20:0x~) — 서버도 따로 (사장님 "서버는 따로 두고")
+- Railway 같은 프로젝트에 **개발 서비스 둘**: `rookery-worker-dev` · `rookery-web-dev`(https://rookery-web-dev-production.up.railway.app). 같은 DB(Supabase rookery-main), 다른 서버.
+- **가르는 줄**(worker.mts `ROOKERY_SCOPE`): 개발 워커(`dev`)는 개발 계정 회사(`ROOKERY_DEV_COMPANY_ID`)의 일만 집고, 본 워커(`prod`)는 그 일을 건너뛴다. 자가진화 매일·주간 고리는 본 워커만. 심장 소리는 서비스 이름으로 따로.
+- **결과 돌려놓기·쓸기 고리는 두 워커가 다 돈다** — 이미 붙은 것은 표시를 보고 거르지만 잠금은 아니다(화면 폴링과 워커가 같이 돌던 것과 같은 정도의 겹침). 겹쳐 붙은 턴이 보이면 여기가 원인.
+- 변수: 본 서비스 것을 복사(RAILWAY_*·결제 DODO/PADDLE/BILLING·GENESIS_SPEND 은 뺌) + `ROOKERY_SCOPE=dev`, `ROOKERY_DEV_COMPANY_ID`. 본 워커에도 `ROOKERY_SCOPE=prod`·DEV id 를 넣었다(그래야 건너뛴다).
+- 배포: 개발 서버는 `sh engine/tools/deploy.sh rookery-worker-dev` / `rookery-web-dev`. **자가 고침이 커밋한 코드는 개발 서버에 먼저 올려 보고, 본 서버는 사람이.** 개발 서비스 둘의 Railway 사용료가 붙는다(작은 서비스 둘, 달 $2~5 어림 — 사장님 청구서에서 확인).
+
 ## ⚠ 지금 상태: 한도에 닿아 있다 (사장님이 정할 것)
 `$21/30일` 은 **지나간 30일**을 센다. 09-25 19:00 기준 최근 30일 지출 **$64.82**(9월 초 3D·게임 판이 큼) → 새 일은 하나도 못 시작한다(현황판 첫 주문도 `SPEND_LIMIT_REACHED` 로 취소됨). 앞으로 지출 0 이면 **10-10** 에 창 합이 $21 아래로 내려가 저절로 풀린다.
 - 그대로 두면: 10-10 까지 로키는 쉬고, 매일·매주 배치는 "한도" 한 줄만 남기고 끝난다(돈 0).
