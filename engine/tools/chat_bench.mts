@@ -60,6 +60,21 @@ const CASES: Case[] = [
     },
   },
   {
+    // 217회차 09-25: 오늘 직원 둘(Deck·Out)이 늘었다 — 대화가 그걸 아는가. 목록은 등록부에서 오므로 자동이어야 하는데, 자로 확인.
+    name: "오늘 늘어난 일을 안다 (뭐 할 수 있어)",
+    say: "너 뭐 할 수 있어? 짧게.",
+    why: "발표 자료(Deck)·로고/문구/번역(Out)이 오늘 생겼다. 대화가 옛 목록만 말하면 사장님은 새 일을 시킬 줄 모른다.",
+    check: ({ reply }) => {
+      const bad: string[] = [];
+      if (!/발표|슬라이드|PPT/i.test(reply)) bad.push("발표 자료를 말하지 않았다");
+      if (!/로고|그림|포스터/.test(reply)) bad.push("그림·로고를 말하지 않았다");
+      if (!/번역|현지화|자막/.test(reply)) bad.push("번역을 말하지 않았다");
+      if (/small_app|slide_deck|outsource_/.test(reply)) bad.push("내부 이름표가 샜다");
+      bad.push(...forbidden(reply).map((w) => `금지 어구 "${w}"`));
+      return bad;
+    },
+  },
+  {
     name: "자기 결과물을 안다 (v2 보여줘)",
     say: "v2 보여줘",
     why: "09-16 실제: 실제로 있는 v2 를 '제 쪽에 없습니다' 라고 단언했다 — 정직한 말투로 틀렸다.",
