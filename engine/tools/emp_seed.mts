@@ -1,5 +1,5 @@
 /** 정의에는 있는데 employees 표에 없는 직원 행을 넣고, 사장님 회사에 뽑는다(214회차 Deck). emp_seed <slug> */
-const { account } = await import("./company.mts");
+const { account } = await import("./company.mjs");
 const { createServiceClient } = await import("../../src/lib/supabase/service");
 const { employeeDefinitions } = await import("../../src/lib/employees/definitions");
 const db = createServiceClient();

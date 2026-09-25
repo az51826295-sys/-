@@ -18,7 +18,7 @@ import { existsSync, readFileSync, writeFileSync, appendFileSync, mkdirSync } fr
 const { seatProviderForCompany } = await import("../../src/lib/skills/appBuild/seats");
 const { buildPatch } = await import("../../src/lib/skills/appBuild/patch");
 const { changeFacts, judgeAsk } = await import("../../src/lib/genesis/askJudge");
-const { account } = await import("./company.mts");
+const { account } = await import("./company.mjs");
 const { createServiceClient } = await import("../../src/lib/supabase/service");
 
 const arg = (k: string) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : undefined; };

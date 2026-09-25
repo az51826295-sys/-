@@ -1,7 +1,7 @@
 /** 로키 현황판(자기 화면) 자 시험(221회차). 모델 0 · 헤드리스 1번 · DB 1번(재료 읽기). */
 const { isBoardAsk, gatherBoardFacts, renderBoard, judgeBoard } = await import("../../src/lib/skills/slidesMake/board");
 const { runWeb } = await import("../../src/lib/skills/appBuild/run");
-const { account } = await import("./company.mts");
+const { account } = await import("./company.mjs");
 const { createServiceClient } = await import("../../src/lib/supabase/service");
 let bad = 0, seen = 0;
 const check = (n: string, ok: boolean, got?: unknown) => { seen++; if (!ok) bad++; console.log(ok ? "맞음  " : "어긋남", n, ok ? "" : JSON.stringify(got)); };

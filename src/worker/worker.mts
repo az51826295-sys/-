@@ -188,11 +188,23 @@ async function returnsTick() {
   }
 }
 
+// 222회차 09-25 사장님 "서버는 따로 두고": 개발 계정 일은 **개발 워커**만, 사장님 일은 **본 워커**만 집는다. 같은 DB, 다른 서버.
+//   ROOKERY_SCOPE=dev  → ROOKERY_DEV_COMPANY_ID 회사의 일만 · 자가진화 매일·주간 고리는 안 돈다(본 서버 몫)
+//   ROOKERY_SCOPE=prod(기본) → 그 회사의 일은 건너뛴다. DEV id 가 비어 있으면 가르지 않는다(옛 동작).
+const SCOPE = process.env.ROOKERY_SCOPE === "dev" ? "dev" : "prod";
+const DEV_CO = process.env.ROOKERY_DEV_COMPANY_ID ?? "";
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function scoped<T>(q: T): T {
+  if (!DEV_CO) return q;
+  const b = q as unknown as { eq: (c: string, v: string) => unknown; neq: (c: string, v: string) => unknown };
+  return (SCOPE === "dev" ? b.eq("company_id", DEV_CO) : b.neq("company_id", DEV_CO)) as T;
+}
+
 async function tick() {
-  const { data: queued } = await db
+  const { data: queued } = await scoped(db
     .from("work_executions")
     .select("id, company_employee_id, company_id, assignment_id, created_at")
-    .eq("status", "queued")
+    .eq("status", "queued"))
     .order("created_at", { ascending: true })
     .limit(20);
   // 200회차: 무인 판의 깃발. 바깥 문지기가 멈췄으면 아무것도 집지 않는다 — 로키는 세지 않고 복종만 한다.
@@ -231,10 +243,10 @@ async function tick() {
     void runOne(q.id as string, q.company_employee_id as string, "대기열");
   }
   const cutoff = new Date(Date.now() - DEAD_MS).toISOString();
-  const { data: dead } = await db
+  const { data: dead } = await scoped(db
     .from("work_executions")
-    .select("id, company_employee_id, current_step, updated_at")
-    .eq("status", "running")
+    .select("id, company_employee_id, company_id, current_step, updated_at")
+    .eq("status", "running"))
     .lt("updated_at", cutoff)
     .order("updated_at", { ascending: true })
     .limit(10);
@@ -301,7 +313,7 @@ for (;;) {
         await postUnattendedFeed(db, (m) => console.log(`${stamp()} [무인결과] ${m}`));
       } catch (e) { console.error(`${stamp()} 무인 결과 붙이기 실패`, e instanceof Error ? e.message : e); }
     }
-    if (tickN % DAILY_EVERY === 0) {
+    if (tickN % DAILY_EVERY === 0 && SCOPE !== "dev") {   // 매일·주간 고리는 본 서버만
       try { await dailyTick(); } catch (e) { console.error(`${stamp()} 자가진화 실패`, e instanceof Error ? e.message : e); }
       try { await weeklyTick(); } catch (e) { console.error(`${stamp()} 주간 보고 실패`, e instanceof Error ? e.message : e); }
     }

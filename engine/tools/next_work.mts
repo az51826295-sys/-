@@ -5,7 +5,7 @@
  *   npx tsx engine/tools/rookery_env.mts engine/tools/next_work.mts [--days 7] [--out engine/work/anything/next-work.json]
  */
 import { z } from "zod";
-const { account } = await import("./company.mts");
+const { account } = await import("./company.mjs");
 const { createServiceClient } = await import("../../src/lib/supabase/service");
 const { seatProviderForCompany } = await import("../../src/lib/skills/appBuild/seats");
 const CO = account().companyId;   // 222회차: 개발 계정

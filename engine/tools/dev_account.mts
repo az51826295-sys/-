@@ -6,7 +6,7 @@
 const { createServiceClient } = await import("../../src/lib/supabase/service");
 const { employeeDefinitions } = await import("../../src/lib/employees/definitions");
 const { ensureKnowledgeProfile } = await import("../../src/lib/chat/delegate");
-const { DEV_EMAIL } = await import("./company.mts");
+const { DEV_EMAIL } = await import("./company.mjs");
 const { writeFileSync, mkdirSync } = await import("node:fs");
 const arg = (k: string) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : undefined; };
 const LIMIT = Number(arg("--limit") ?? 7), DAYS = Number(arg("--days") ?? 30);

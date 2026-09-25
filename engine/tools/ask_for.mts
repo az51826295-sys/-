@@ -7,7 +7,7 @@
  * 그래야 결과가 그 대화에 돌아오고(`workReturns`), 미리보기 판에 **승인 / 수정 요청** 단추가 뜬다.
  * 모델 호출은 직원이 일할 때만 — 이 자는 접수 모델을 안 부른다(돈 0, 일값은 그 직원 단가).
  */
-const { account } = await import("./company.mts");
+const { account } = await import("./company.mjs");
 const { createServiceClient } = await import("../../src/lib/supabase/service");
 
 const arg = (k: string) => { const i = process.argv.indexOf(`--${k}`); return i > 0 ? process.argv[i + 1] : null; };

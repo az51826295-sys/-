@@ -9,7 +9,7 @@
  *   --dry: 주문 만들고 접수까지만(직원 일 안 시킴, 값 ≈ $0.03). --cap: 이번 주 지출이 이 값을 넘으면 안 넣는다.
  */
 import { z } from "zod";
-const { account } = await import("./company.mts");
+const { account } = await import("./company.mjs");
 const { createServiceClient } = await import("../../src/lib/supabase/service");
 const { workStateText } = await import("../../src/lib/chat/workState");
 const { intakeInstructions } = await import("../../src/lib/chat/routing");
