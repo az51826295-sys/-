@@ -114,11 +114,14 @@ function deviceFacts() {
 export default function AskClient({
   initial,
   task,
+  prefill,
 }: {
   /** 저장된 대화를 열고 들어올 때. 없으면 새 대화다. */
   initial?: { id: string; turns: Turn[] } | null;
   /** 과제 안에서 열었을 때. 여기서 시작한 대화는 그 과제에 들어간다. */
   task?: { id: string; title: string } | null;
+  /** 226회차: 폰에서 글을 긁어 로키로 넘겼을 때 그 글. 입력칸에 미리 담아 두고 보낼지는 사람이 정한다. */
+  prefill?: string | null;
 } = {}) {
   /** 익명일 때 남은 횟수. 로그인 상태면 null 이라 아무것도 안 보인다. */
   const [turnsLeft, setTurnsLeft] = useState<number | null>(null);
@@ -129,7 +132,15 @@ export default function AskClient({
   /** 이번 턴에 붙일 사진. 보내면 비운다. */
   const [attached, setAttached] = useState<{ name: string; b64: string }[]>([]);
   const [turns, setTurns] = useState<Turn[]>(initial?.turns ?? []);
-  const [text, setText] = useState("");
+  const [text, setText] = useState(prefill ?? "");
+  // 넘겨받은 글은 주소에서 지운다 — 안 지우면 새로고침할 때마다 같은 글이 다시 담긴다.
+  useEffect(() => {
+    if (prefill && typeof window !== "undefined" && window.location.search.includes("q=")) {
+      const u = new URL(window.location.href);
+      u.searchParams.delete("q");
+      window.history.replaceState(null, "", u.pathname + (u.search || "") + u.hash);
+    }
+  }, [prefill]);
   const [busy, setBusy] = useState(false);
   /** 지금 뒤에서 무엇을 하는 중인지. 답이 오면 비운다. */
   const [doing, setDoing] = useState<string | null>(null);

@@ -15,7 +15,7 @@ export const metadata = { title: "물어보기" };
 export default async function PublicAskPage({
   searchParams,
 }: {
-  searchParams: Promise<{ c?: string; task?: string }>;
+  searchParams: Promise<{ c?: string; task?: string; q?: string }>;
 }) {
   const supabase = await createClient();
   const {
@@ -24,7 +24,8 @@ export default async function PublicAskPage({
 
   // 저장된 대화를 열고 들어올 수 있다. 남의 대화 id 를 넣어도 loadConversation
   // 이 소유자로 걸러 null 을 주므로, 그때는 그냥 새 대화가 된다.
-  const { c, task: taskParam } = await searchParams;
+  // 226회차: 폰에서 글을 긁어 'Rookery' 를 고르면 그 글이 ?q= 로 실려 온다(ShareToRookery).
+  const { c, task: taskParam, q } = await searchParams;
   type Turn = {
     role: "user" | "assistant";
     content: string;
@@ -95,7 +96,7 @@ export default async function PublicAskPage({
     <AskShell
       me={user ? { email: user.email ?? null } : null}
     >
-      <AskClient initial={initial} task={task} />
+      <AskClient initial={initial} task={task} prefill={typeof q === "string" ? q.slice(0, 4000) : null} />
     </AskShell>
   );
 }

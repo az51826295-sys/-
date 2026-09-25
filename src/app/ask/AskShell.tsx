@@ -34,6 +34,12 @@ export default function AskShell({
   const [handoff, setHandoff] = useState<{ svg: string; until: number } | null>(null);
   // 223회차: 폰 알림. 상태는 메뉴를 열 때 읽는다(서비스 워커 조회라 처음 그릴 때 안 한다).
   const [push, setPush] = useState<PushState | "loading" | null>(null);
+  // 226회차: 떠 있게 하기는 **안드로이드 앱 안에서만** 뜻이 있다. 브라우저에서 누르면
+  // rookery://bubble 이 아무 데도 안 닿고 사장님만 헛클릭한다. TWA 는 standalone 으로 뜬다.
+  const [bubble, setBubble] = useState(false);
+  useEffect(() => {
+    setBubble(/android/i.test(navigator.userAgent) && window.matchMedia("(display-mode: standalone)").matches);
+  }, []);
   useEffect(() => { if (open && push === null) void pushState().then(setPush); }, [open, push]);
   async function togglePush() {
     if (push === "loading") return;
@@ -214,6 +220,16 @@ export default function AskShell({
                       {push === "on" ? "일이 끝나거나 아침 정리가 오면 이 기기로 알려요" : push === "denied" ? "이 브라우저에서 알림이 막혀 있어요 — 설정에서 풀어야 해요" : push === "unsupported" ? "이 브라우저는 알림을 못 받아요 — 폰 앱에서 켜 주세요" : push === "loading" ? "잠시만요" : "일 끝남·아침 정리·자가 고침을 이 기기로 받아요"}
                     </span>
                   </button>
+                  {bubble && (
+                    <button
+                      type="button"
+                      onClick={() => { window.location.href = "rookery://bubble"; }}
+                      className="w-full px-3 py-2 text-left text-sm hover:bg-[var(--rk-100)]"
+                    >
+                      떠 있게 하기
+                      <span className="block text-[11px] text-[var(--rk-400)]">다른 앱을 쓰는 중에도 동그라미를 눌러 불러요 · 다시 누르면 내려가요</span>
+                    </button>
+                  )}
                   <button
                     type="button"
                     onClick={() => void openHandoff()}
