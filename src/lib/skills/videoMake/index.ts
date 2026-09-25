@@ -216,7 +216,7 @@ export const videoMakeSkill: EmployeeSkill = {
       const fellBack = outsource && !clip;
       const cardTitle = fellBack ? (sc.heading || plan.title) : sc.heading;
       const cardLines = fellBack && !sc.bullets.length ? [sc.narration.slice(0, 28)] : sc.bullets;
-      scenes.push({ audio, caption: sc.narration, title: outsource && clip ? "" : cardTitle, lines: outsource && clip ? [] : cardLines, cite: outsource && clip ? undefined : (sc.cite || undefined), clip });
+      scenes.push({ audio, caption: sc.narration, title: outsource && clip ? "" : cardTitle, lines: outsource && clip ? [] : cardLines, cite: outsource && clip ? undefined : (sc.cite || undefined), clip, planSec: sc.seconds });
       console.log(`[video] 장면 ${i + 1}/${plan.scenes.length} 목소리 ${audio.length} B · 글자 ${sc.heading} / ${sc.bullets.length}줄`);
     }
 

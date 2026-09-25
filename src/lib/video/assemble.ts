@@ -95,6 +95,9 @@ export type Scene = {
   title?: string;
   lines?: string[];
   cite?: string;
+  /** 217회차 09-25: 대본이 이 장면에 준 초. 14일 19장면 중 18개가 계획보다 **짧게** 나왔다(말이 계획보다 짧음) —
+   *  장면 길이의 바닥으로 삼는다(최대 +2초까지만 채움). 계획은 대본의 리듬이고, 자 '장면_계획_대비' 가 재는 것도 이것이다. */
+  planSec?: number;
 };
 export type Assembled = { padUsed: number; audioSec: number[]; mp4: Buffer; srt: string; durations: number[]; total: number; first5s: Buffer; mid: Buffer; /** 장면마다 한가운데에서 한 장 — 경계 인식 고르기(133회차). */ shots: Buffer[]; hasAudio: boolean };
 
@@ -194,7 +197,8 @@ export async function assemble(
       if (hasClip) await writeFile(clipFile, sc.clip as Uint8Array);
       if (hasImage) await writeFile(img, sc.image as Uint8Array);
       await writeFile(aud, sc.audio);
-      const d = Math.max(1.5, audioSec[i] + pad);
+      const floor = scenes[i].planSec && Number.isFinite(scenes[i].planSec) ? Math.min(scenes[i].planSec as number, audioSec[i] + pad + 2) : 0;
+      const d = Math.max(1.5, audioSec[i] + pad, floor);
       durations.push(d);
       /**
        * 153회차 — **움직임**. 사장님 "? 연출은?"
