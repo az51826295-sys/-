@@ -177,3 +177,7 @@
 - 접수 자: "게임 버튼 글자 열 개 영어로 번역해 줘, 24자 이하로" → `outsource_translate` ✅. 접수 자는 이제 **21줄**.
 - 첫 실전 판 재료는 사장님 게임(별빛 플랫포머 5회차)의 화면 글자 11줄 — 사장님 것이라 내가 고른 재료가 아니다. 배포 뒤 돌린다.
 - `health` 자(오늘 고친 넷): 형식 고장 0/16 · 잘림 0/16 · 마지막 영상 장면 오차 0 · 대본 심판 돎 3/4(못 돎 1은 16000 전).
+
+**Out 번역 첫 판** (`a3536303`, 사장님 게임 화면 글자 11줄 → 영어, 24자 이하) — **자 7/7 · $0.021 · 1분 · deepseek-v4-pro**
+Platformer Game · Dawn Hill · Cloud Bridge · Starlight Peak · Clear! · Game Over · All lives lost. · Cleared all 3 stages! · Play Again · Restart from start · Touch Controls. 숫자 3 보존, 모두 24자 이하. 자연스러운가는 사장님 눈.
+오늘 Out 이 새로 하게 된 것 셋(그림·문구·번역) 중 둘은 실전 통과(문구 4/4·번역 7/7), 그림은 사장님 한 줄 대기.
