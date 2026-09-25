@@ -33,5 +33,9 @@ L += ['',
       "- 늦게 눌러도 뛰어지게 하거나 미리 눌러 둔 점프를 먹게 하는 것 (3회차)",
       "- 캐릭터가 늘어나거나 눌리는 그림 효과 (4회차)", '',
       "**고칠 곳만 고친다.** 점프 물리와 관련된 줄만 손댄다."]
+# 5회차(09-25): 회차마다 다른 조항(손댈 범위·하지 말 것)은 argv[4] 파일이 위 두 덩이(하지 말 것 · 고칠 곳)를 대신한다. chr(10) 은 도구 입력의 이스케이프 접힘 때문.
+if len(sys.argv) > 4:
+    cut = L.index('이번 회차에서 하지 말 것:')
+    L = L[:cut] + io.open(sys.argv[4], encoding='utf-8').read().rstrip(chr(10)).split(chr(10))
 io.open(sys.argv[2], 'w', encoding='utf-8', newline='').write("\n".join(L))
 print("주문서:", sys.argv[2])
