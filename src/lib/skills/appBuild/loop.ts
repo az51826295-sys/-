@@ -5,6 +5,7 @@ import { buildPatch, type SourceFile } from "@/lib/skills/appBuild/patch";
 import { runWeb, factLines, DEFAULT_ACTIONS, type RunFacts, type RunAction } from "@/lib/skills/appBuild/run";
 import { checkGuards, measureNamesFor, type WebGuard } from "@/lib/skills/appBuild/webMeasures";
 import { revertBroken } from "@/lib/skills/appBuild/revertCheck";
+import { predictMeasures, scorePrediction, lockPrediction, markScored, type PredScore } from "@/lib/skills/appBuild/predictMeasures";
 
 /**
  * **예산 안에서 도는 고리** (179회차 09-18). 사장님 "그래".
@@ -68,6 +69,8 @@ export type RoundRecord = {
   ms: number;
   usd: number;
   toPerson: string;
+  /** **재기 전에 적은 예측의 채점**(213회차 09-25). 난간이 있을 때만. */
+  예측?: PredScore;
 };
 
 export type LoopResult = {
@@ -168,8 +171,13 @@ export async function improveLoop(o: {
   const usd0 = await spentUsd(o.db, o.executionId);
   let usdBefore = usd0;
 
+  let lastMeasured: Record<string, number> | undefined;
+  let lastEdits: string[] = [];
   for (let n = 1; n <= o.rounds; n++) {
     const t0 = Date.now();
+    // **재기 전에 예측을 적고 잠근다**(213회차). 고치는 자리가 코드를 읽고 값을 셈해 낸다 — 잰 뒤 대 본다.
+    const pred = o.guards?.length ? await predictMeasures(o.fixAi, { guards: o.guards, files, round: n, lastMeasured: lastMeasured ?? null, lastEdits }) : null;
+    if (pred) await lockPrediction(o.db, o.executionId, pred);
     const facts = await runWeb(files, { mobile: o.mobile, actions, measures: o.guards?.length ? measureNamesFor(o.guards) : undefined });
     if (!facts.ran) { stoppedBy = "no_run"; console.warn(`[고리] ${n}바퀴: 돌려 보지 못함 — ${facts.why}`); break; }
     let verdict: LoopVerdict;
@@ -191,6 +199,14 @@ export async function improveLoop(o: {
         console.log(`[고리] ${n}바퀴: 난간 ${hit.length}개 걸림 — ${hit[0]}`);
       }
     }
+    lastMeasured = facts.measured;
+    let predScore: PredScore | undefined;
+    if (pred && o.guards?.length) {
+      predScore = scorePrediction(pred, facts.measured, o.guards);
+      await markScored(o.db, o.executionId, n, predScore, facts.measured);
+      const worst = Object.entries(predScore.오차).sort((x, y) => y[1] - x[1])[0];
+      console.log(`[예측] ${n}바퀴: 통과확률 ${pred.통과확률} → ${predScore.통과 ? "통과" : "실패"} (brier ${predScore.brier}) · 값 ${predScore.견줌}칸 견줌${worst ? ` · 제일 빗나간 ${worst[0]} ${worst[1]}` : ""}`);
+    }
     // 같은 파일을 다른 대본으로 다시 본 것이면 경쟁이 아니라 **더 본 것**이다 — 맞은 것은 합치고, 사실은 최신으로. (같은 판이 1→3→0 으로 흔들리던 것.)
     // 한 번 맞다고 본 것은 맞은 것으로 둔다 — 다른 대본이 게임을 시작조차 못 하고 "시간이 안 줄어" 라고 하는 헛경보(5바퀴째 실측)가
     // 고치는 판을 부르고 되돌리는 것보다, 가끔 나는 고장을 놓치는 쪽이 싸다.
@@ -208,6 +224,7 @@ export async function improveLoop(o: {
     const rec: RoundRecord = {
       n, met: verdict.met.length, unmet: verdict.unmet.length, unknown: verdict.unknown.length, broken: verdict.broken.length,
       errors: facts.consoleErrors.length, best: isBest, edits: 0, ms: Date.now() - t0, usd: Math.round((usdNow - usdBefore) * 1000) / 1000, toPerson: verdict.toPerson,
+      ...(predScore ? { 예측: predScore } : {}),
     };
     usdBefore = usdNow;
     rounds.push(rec);
@@ -246,6 +263,7 @@ export async function improveLoop(o: {
     const p = await buildPatch(o.fixAi, { title: o.title, ask: o.ask + extra, criteria: o.criteria, failedChecks: [], full: base, rest: [] });
     if (!p.ok) { stoppedBy = "patch_failed"; console.warn(`[고리] ${n}바퀴: 조각이 안 붙어 멈춘다`); break; }
     rec.edits = p.patch.edits.length;
+    lastEdits = p.patch.edits.map((e) => (e as { why?: string }).why ?? "").filter(Boolean);
     files = p.files;
   }
 
