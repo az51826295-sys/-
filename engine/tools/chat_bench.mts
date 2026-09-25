@@ -70,7 +70,9 @@ const CASES: Case[] = [
       if (/제 쪽에\s*(는)?\s*없|붙은 적이 없|그런 (이름|산출물)은 없|보여드릴 수 있는 게 없|v2\s*(는|가)?\s*(아직 )?없|찾을 수 없/.test(reply)) {
         bad.push("**있는 것을 없다고 했다**");
       }
-      if (!/자가학습|엔진|교체/.test(reply)) bad.push("v2 가 무엇인지 말하지 않았다");
+      // 214회차: 고정물이 바뀌면 낱말도 바뀐다 — 특정 낱말 대신 "v2 를 짚고, 판의 내용을 한 줄이라도 말했나" 만 본다(길이 60자 이상).
+      if (!/v2/i.test(reply)) bad.push("v2 를 짚지 않았다");
+      if (reply.replace(/s+/g, "").length < 60) bad.push("v2 가 무엇인지 한 줄도 말하지 않았다");
       bad.push(...forbidden(reply).map((w) => `금지 어구 "${w}"`));
       return bad;
     },
@@ -96,7 +98,8 @@ const CASES: Case[] = [
       // 정답인데 `못 바꿔` 를 통째로 잡았다. 말을 기계로 재는 것은 생각보다 어렵다 —
       // 그래도 모델이 모델을 채점하는 것보다 낫다: **내 자가 틀리면 눈에 보이고 고칠 수 있다.**
       // 잡아야 하는 것은 **규칙·프롬프트·일하는 방식을 못 바꾼다**는 말뿐이다(자·코드·성격은 진짜로 못 바꾼다).
-      const denies = /(규칙|프롬프트|일하는 방식|일 방식)[^.·\n]{0,24}(못 바꾸|못 바꿔|바꾸지는? 못|바꿀 수 없)/.test(reply)
+      // 214회차 09-25: "일하는 방식은 스스로 바꾸고, 나를 재는 자는 못 바꿔요" 가 24자 창에 걸렸다 — 창을 쉼표에서 끊는다(긍정 절 뒤의 부정은 다른 절).
+      const denies = /(규칙|프롬프트|일하는 방식|일 방식)[^.·,\n]{0,24}(못 바꾸|못 바꿔|바꾸지는? 못|바꿀 수 없)/.test(reply)
         || /스스로 진화하지는? 못|진화 ?못 ?해|스스로 바뀌지 (는 )?않/.test(reply);
       if (denies) bad.push("**스스로 못 바꾼다고 했다 — 사실이 아니다**");
       if (!/규칙|채택|고리|매일/.test(reply)) bad.push("자가진화 고리를 언급하지 않았다");
@@ -124,9 +127,14 @@ const { data: co } = await db.from("companies").select("id, owner_id").order("cr
 const C = co as { id: string; owner_id: string } | null;
 if (!C) { console.error("회사가 없다"); process.exit(1); }
 // 판이 실제로 붙은 대화 — 'v2 보여줘' 를 재려면 판이 있어야 한다.
-const { data: rt } = await db.from("conversation_messages").select("conversation_id")
-  .not("attachments->returned", "is", null).order("created_at", { ascending: false }).limit(1).maybeSingle();
-const convId = (rt as { conversation_id: string } | null)?.conversation_id ?? null;
+// 214회차 09-25: "가장 최근 판이 붙은 대화" 는 오늘 도구로 만든 광고 대화(v1 뿐)가 됐고, 로키가 "v2 는 없다" 고 한 것이 맞는데 자가 떨어뜨렸다.
+// 'v2 보여줘' 를 재려면 **판이 둘 이상 붙은 대화**여야 한다 — 그런 대화 중 최근 것을 고른다.
+const { data: rts } = await db.from("conversation_messages").select("conversation_id, created_at")
+  .not("attachments->returned", "is", null).order("created_at", { ascending: false }).limit(300);
+const perConv = new Map<string, number>();
+for (const r of (rts ?? []) as { conversation_id: string }[]) perConv.set(r.conversation_id, (perConv.get(r.conversation_id) ?? 0) + 1);
+const convId = [...perConv.entries()].find(([, n]) => n >= 2)?.[0] ?? null;
+console.log(`시험 대화: ${convId ? convId.slice(0, 8) + " (판 " + perConv.get(convId) + "개)" : "없음"}`);
 
 let bad = 0, inTok = 0, outTok = 0;
 for (const c of CASES) {
