@@ -25,3 +25,15 @@ for (const d of (vids ?? []) as Record<string, any>[]) {
 console.log(`② 영상 ${n}판: 장면_계획_대비 실패 ${sceneFail} · 장면당 오차 평균 ${scenes ? (absSum / scenes).toFixed(2) : "-"}초 (${scenes}장면)`);
 console.log(`③ 화면_글자_있음 실패 ${textFail}/${n}`);
 console.log(`④' 대본 심판: 돎 ${sjRan} · 못 돎(null) ${sjNull} (심판 칸이 있는 판만)`);
+
+// 218회차: 새 직원(Deck·Out)의 자 통과율 — 종류별 결과물 수와 자 통과 비율(기준일 뒤).
+{
+  const { data: ds } = await db.from("deliverables").select("deliverable_type, content_json").gte("created_at", since).in("deliverable_type", ["slides", "document", "image"]).limit(300);
+  const t: Record<string, { n: number; pass: number; total: number }> = {};
+  for (const d of (ds ?? []) as { deliverable_type: string; content_json: Record<string, any> | null }[]) {
+    const k = d.content_json?.kind ? `${d.deliverable_type}/${d.content_json.kind}` : d.deliverable_type;
+    const cases = (d.content_json?.verdict?.cases ?? []) as { result: string }[];
+    const r = (t[k] ??= { n: 0, pass: 0, total: 0 }); r.n++; r.pass += cases.filter((c) => c.result === "Passed").length; r.total += cases.length;
+  }
+  console.log("⑤ 새 직원 자 통과율: " + (Object.entries(t).map(([k, v]) => `${k} ${v.n}판 ${v.total ? Math.round((v.pass / v.total) * 100) : "-"}%`).join(" · ") || "없음"));
+}
