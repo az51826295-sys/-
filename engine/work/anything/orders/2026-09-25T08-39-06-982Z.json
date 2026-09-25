@@ -1,0 +1,16 @@
+{
+  "at": "2026-09-25T08:39:06.982Z",
+  "dry": true,
+  "rows": [
+    {
+      "kind": "분석",
+      "ask": "아래 두 자료의 레벨 디자인 핵심 원칙을 비교해서 정리하고, 우리 게임에 적용할 수 있는 개선점도 제안해줘.\n- https://www.youtube.com/watch?v=09r1B9cVEQY\n- https://80.lv/articles/level-design-workshop-blockmesh-and-lighting-tips\n- 우리 게임은 브라우저 2D 점프 게임이고, 무대는 3개야.",
+      "why": "별빛 플랫포머의 스테이지를 더 재미있게 만들 방법을 실제 자료를 바탕으로 찾고 싶어서",
+      "capabilityId": "analysis_sources",
+      "reply": "",
+      "assignmentId": null,
+      "hired": null,
+      "note": ""
+    }
+  ]
+}

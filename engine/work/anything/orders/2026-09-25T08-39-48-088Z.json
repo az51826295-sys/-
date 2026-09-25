@@ -1,0 +1,36 @@
+{
+  "at": "2026-09-25T08:39:48.088Z",
+  "dry": false,
+  "rows": [
+    {
+      "kind": "분석",
+      "ask": "아래 두 자료를 바탕으로 레벨 디자인에서 블록메시와 조명이 플레이 경험에 어떤 영향을 주는지 비교 분석해 줘. 고3 수행평가 보고서에 넣을 수 있게 핵심 주장, 자료 근거, 한계 순서로 정리해 줘.\n- https://www.youtube.com/watch?v=09r1B9cVEQY\n- https://80.lv/articles/level-design-workshop-blockmesh-and-lighting-tips",
+      "why": "레벨 디자인 강연을 보고서 주제로 정리해야 해서.",
+      "capabilityId": "analysis_sources",
+      "reply": "두 자료를 분석해서 핵심 주장 → 자료 근거 → 한계 순서로 정리해 드릴게요. 유튜브 영상과 80.lv 글의 주장·숫자를 원문 인용과 함께 뽑아 표로 만들고, 수행평가 보고서에 바로 넣을 수 있는 형태로 맞춰 드리겠습니다.",
+      "assignmentId": null,
+      "hired": null,
+      "note": "위임 실패: `cookies` was called outside a request scope. Read more: https://nextjs.org/docs/messages/next-dynamic-api-wrong-context"
+    },
+    {
+      "kind": "발표",
+      "ask": "‘별빛 플랫포머’를 소개하는 3분 발표 대본을 만들어 줘. 시작은 관심을 끄는 질문으로 하고, 게임 특징·조작법·스테이지 구성·플레이 목표·마무리 순서로 써 줘. 고3 학생이 실제로 발표하는 자연스러운 말투로 부탁해.\n- 브라우저 2D 점프 게임\n- 무대 3개: 새벽의 언덕, 구름 다리, 별빛 정상\n- 목숨 3개\n- 터치·키보드 조작",
+      "why": "학교 수행평가에서 내가 만든 게임을 소개하는 발표가 필요해서.",
+      "capabilityId": "outsource_text",
+      "reply": "3분 발표 대본이면 슬라이드보다는 대본 자체가 결과물이네요. '별빛 플랫포머' 소개 대본 — 관심 끄는 질문으로 열고, 게임 특징 → 조작법 → 스테이지 구성 → 플레이 목표 → 마무리 순서로, 고3이 실제로 말하듯 써 드릴게요.",
+      "assignmentId": null,
+      "hired": null,
+      "note": "위임 실패: `cookies` was called outside a request scope. Read more: https://nextjs.org/docs/messages/next-dynamic-api-wrong-context"
+    },
+    {
+      "kind": "문구",
+      "ask": "로키 서비스 소개 페이지에 넣을 짧은 홍보 문구를 만들어 줘. 제목 3개와 각 제목 아래 한 줄 설명을 써 줘. 게임·영상·문서를 대화로 만들 수 있고, 이상한 부분만 말하면 그 부분만 다시 만들 수 있다는 장점을 학생도 바로 이해하게 표현해 줘. 가입 조건도 부담 없이 드러내 줘.\n- 가입은 이메일과 비밀번호만 필요함\n- 카드는 받지 않음",
+      "why": "학생들이 로키를 처음 봤을 때 어떤 서비스인지 바로 알 수 있게 홍보 문구가 필요해서.",
+      "capabilityId": "outsource_text",
+      "reply": "",
+      "assignmentId": null,
+      "hired": null,
+      "note": "위임 실패: `cookies` was called outside a request scope. Read more: https://nextjs.org/docs/messages/next-dynamic-api-wrong-context"
+    }
+  ]
+}
