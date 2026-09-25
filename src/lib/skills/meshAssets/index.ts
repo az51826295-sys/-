@@ -60,6 +60,18 @@ const briefSchema = z.object({
    * dead·dance·sit·run_fast 중에서. 걷기·뛰기는 리깅이 그냥 준다. 캐릭터면 idle 은 항상 넣는다(서 있을 때 숨 쉬는 것).
    */
   actions: z.array(z.string()),
+  /**
+   * 고치는 판(09-26). 지난 산출물이 있을 때만 본다.
+   * - texture: 색·재질·무늬만 바뀐다(더 어둡게·금속 느낌으로·빨간 망토로).
+   *   Meshy retexture 로 10 크레딧에 고친다(새로 만들기는 30) — 모양이 그대로 남는 것이 값이다.
+   *   17회차 09-06 실측: 다시 칠하면 얼굴이 조금 달라지고 화질은 안 올라간다 — 화질용이 아니다.
+   * - shape: 모양·비율·부품이 바뀐다(더 크게·투구를 씌워·팔이 짧아). 텍스처만 바꿔선
+   *   안 되니 30 크레딧을 다시 쓴다.
+   * - 빈 문자열: 고치는 판이 아니다(처음 만드는 것).
+   */
+  fixKind: z.enum(["texture", "shape", ""]),
+  /** fixKind 가 texture 일 때 Meshy 에 갈 영어 문장. 재질·색만. 그 외에는 빈 문자열. */
+  texturePrompt: z.string(),
 });
 
 // 빛은 유니티 후처리 몫이다(사장님 09-06 17:52 "빛은 후처리해야지"). 콘셉트에 후광·림
@@ -174,11 +186,22 @@ export const meshAssetsSkill: EmployeeSkill = {
     // 가 되게(09-06 17회차: 4K 로 다시 만들 때 얼굴이 바뀌면 안 된다).
     let reusedConcept = false;
     let sheet: string[] = [];   // 회전 시트를 자른 칸들(앞·옆·뒤)
+    let previousMeshTaskId: string | null = null;  // 09-26: 고치는 판에 쓸 이전 메시
     // 재사용은 매니저가 그렇게 말했을 때만 — "새로 그려" 를 무시하고 지난 그림을
     // 집으면 옷이 바뀐 채 나온다(09-06 09:42 판타지 레인저).
     const wantsReuse = /같은\s*그림|지난\s*그림|그대로|그\s*사람|같은\s*얼굴|지난\s*캐릭터|고화질|최종|이\s*그림|그\s*그림|same (face|person|image)/i.test(
       `${ctx.context.assignment.title} ${ctx.context.assignment.description ?? ""}`,
     );
+    // 09-26: 지난 메시의 taskId 는 wantsReuse 와 **상관없이** 읽는다. 그 정규식은 "같은 그림"
+    // 같은 말만 잡는데, 고치는 주문("갑옷을 더 어둡게")은 거기 하나도 안 걸린다 — 17일간 3D 고치는
+    // 판이 0건이던 문이 여기였다. 실제로 다시 칠할지는 브리프의 fixKind(AI 판단)가 정한다.
+    if (roleInput.previousDeliverableId && !previousMeshTaskId) {
+      const { data: pm } = await ctx.supabase
+        .from("deliverables").select("content_json").eq("id", roleInput.previousDeliverableId).maybeSingle();
+      previousMeshTaskId = (pm?.content_json as { mesh?: { taskId?: string; mock?: boolean } } | null)?.mesh?.mock
+        ? null   // 목 판의 taskId 로는 다시 칠할 수 없다
+        : (pm?.content_json as { mesh?: { taskId?: string } } | null)?.mesh?.taskId ?? null;
+    }
     if (!reference && roleInput.previousDeliverableId && wantsReuse) {
       // 콘셉트 그림은 파일(concept_front.png)로 둔다. 행 안에 1.8 MB base64 를 넣었더니
       // 저장 문장이 시간 제한에 걸렸다(09-06 13:38 "statement timeout"). 옛 산출물은 행에
@@ -224,6 +247,12 @@ export const meshAssetsSkill: EmployeeSkill = {
         "처음 시키는 것이거나 그런 말이 없으면 false(초안: 그림 한 장만, 크레딧 0).\n" +
         "- `actions`: 캐릭터(wantRig)면 매니저가 말한 동작을 idle·jump·attack·wave·dead·dance·sit·run_fast 이름으로. " +
         "말이 없으면 [\"idle\"]. 소품이면 []. 걷기·뛰기는 적지 마라(리깅이 준다).\n" +
+        (previousMeshTaskId
+          ? "- **지난 3D 가 있다(고치는 판).** `fixKind`: 매니저가 **색·재질·무늬만** 바꾸라 했으면 texture " +
+            "(더 어둡게·금속 느낌으로·빨간 망토로) — 10 크레딧에 고치고 모양은 그대로다. **모양·비율·부품**이 " +
+            "바뀌면 shape (더 크게·투구를 씌워·팔이 짧아) — 30 크레딧을 다시 쓴다. 애매하면 shape 다: 텍스처만 " +
+            "바꿔서 모양 주문을 넘기면 매니저는 안 고쳐진 것을 받는다. texture 면 `texturePrompt` 에 재질·색 영어 문장." + "\n"
+          : "- 처음 만드는 것이다. `fixKind` 와 `texturePrompt` 는 빈 문자열." + "\n") +
         (reference ? "레퍼런스 이미지가 **있다**. conceptPrompt 는 그래도 쓴다(기록용)." : "") +
         (await renderGamedevLessons("mesh_assets")),
       input:
@@ -420,13 +449,28 @@ export const meshAssetsSkill: EmployeeSkill = {
     // ── 2. 메시 ────────────────────────────────────────────────────
     const mesher = defaultMeshProvider();
     let mesh;
+    const retex = { fallback: null as string | null };   // 다시 칠하기가 안 돼 새로 만든 이유
     try {
       // 캐릭터는 4k — 같은 30 크레딧에 피부 고주파 2배(07:39). 소품은 2k 로 족하다.
       const front = image;
       // 09-09: 얼굴 그림이 있어야만 멀티뷰로 가던 조건이었다. 조각은 얼굴이 없다 —
       // 회전 시트를 자른 칸(앞·옆·뒤)만으로도 멀티뷰가 훨씬 낫다(정면 한 장이면 뒤를 지어낸다).
       const extraViews = [views.back, views.side, views.face].filter((v): v is string => !!v);
-      mesh = await step(ctx.supabase, ctx.executionId, "mesh", async () => { const r = await (extraViews.length >= 1
+      // 09-26 고치는 판: 색·재질만 바뀌면 지난 메시를 다시 칠한다(1 크레딧). 모양은 그대로 남으니
+      // "같은 기사인데 갑옷만 더 어둡게" 가 30 크레딧짜리 새 판으로 가지 않는다.
+      const retexFrom = brief.fixKind === "texture" ? previousMeshTaskId : null;
+      mesh = await step(ctx.supabase, ctx.executionId, "mesh", async () => { if (retexFrom) {
+        try {
+          const t = await mesher.retexture(retexFrom, brief.texturePrompt || brief.conceptPrompt);
+          if (!t.mock) await bookMeshy("mesh_retexture", t.consumedCredits || 1);
+          return { taskId: t.taskId, glbUrl: t.glbUrl, fbxUrl: t.fbxUrl, thumbnailUrl: null, consumedCredits: t.consumedCredits, expiresAt: null, glbBase64: null, mock: t.mock, model: "meshy-retexture" };
+        } catch (e) {
+          // 09-26 실측: Meshy 는 오래된 task 를 404("Task not found")로 돌려준다 — DB 에 있던
+          // 3D 20개(16~20일 전)가 전부 그랬다. 고칠 대상이 없어진 것이지 주문이 틀린 것이 아니다.
+          // 여기서 끝내면 매니저는 "못 만들었습니다" 를 받는다 — 조용히 새로 만든다.
+          retex.fallback = e instanceof Error ? e.message : String(e);
+        }
+      } const r = await (extraViews.length >= 1
         ? mesher.multiImageTo3D([front, ...extraViews], { poseMode: brief.poseMode, textureResolution: "4k", aiModel: "meshy-7" })
         : mesher.imageTo3D(front, { poseMode: brief.poseMode, textureResolution: brief.wantRig ? "4k" : "2k" })); if (!r.mock) await bookMeshy("mesh_generate", r.consumedCredits || 30); return r; });
     } catch (error) {
@@ -522,6 +566,11 @@ export const meshAssetsSkill: EmployeeSkill = {
       (mesh.mock
         ? "> 목(mock) 판입니다. 실제 메시가 아니라 상자 하나입니다 — 배관 시험용이고 값은 0 입니다.\n\n"
         : "") +
+      (brief.fixKind === "texture" && previousMeshTaskId && !retex.fallback
+        ? "> **고친 판입니다.** 지난 3D 의 모양은 그대로 두고 색·재질만 다시 칠했습니다(10 크레딧 — 새로 만들면 30). 모양·비율·부품을 바꾸려면 그렇게 말씀해 주십시오 — 그때는 새로 만듭니다(30 크레딧).\n\n"
+        : retex.fallback
+        ? "> 지난 3D 를 다시 칠하려 했지만 그 판이 남아 있지 않아(`" + retex.fallback.slice(0, 60) + "`) **새로 만들었습니다**. 모양이 지난 것과 다를 수 있습니다.\n\n"
+        : "") +
       (conceptByMachine
         ? "> 레퍼런스 이미지가 없어서 **콘셉트 그림을 기계가 그려** 썼습니다. 생김새는 사장님이 정하신 것이 아닙니다.\n\n"
         : "> 사장님이 주신 레퍼런스 이미지로 만들었습니다.\n\n") +
@@ -554,6 +603,8 @@ export const meshAssetsSkill: EmployeeSkill = {
       brief,
       conceptByMachine,
       reusedConcept,
+      retexturedFrom: retex.fallback ? null : (brief.fixKind === "texture" ? previousMeshTaskId : null),
+      retexFallback: retex.fallback,
       textureResolution: brief.wantRig ? "4k" : "2k",
       views: Object.keys(views),
       conceptChecks,

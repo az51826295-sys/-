@@ -45,7 +45,11 @@ const { data: a, error: ae } = await db.from("assignments").insert({
   company_id: co.id, company_employee_id: ce.id, title: title.slice(0, 120), description: ask,
   status: "queued", priority: "normal", source_type: "manual", assignment_type: "manager", assignment_scope: "manager",
   // 217회차: --source <결과물 id> 면 재료 결과물을 싣는다(자막 번역처럼 앞 판의 파일을 쓰는 일).
-  ...(arg("source") ? { role_input_json: { sourceDeliverableId: arg("source") } } : {}),
+  // 217회차: --source <결과물 id> 면 재료 결과물을 싣는다. 226회차 09-26: --prev <결과물 id> 는
+  // **고치는 판** — 3D·게임이 지난 산출물을 이어 고칠 때 쓴다(3D 는 색·재질이면 다시 칠하기 1 크레딧).
+  ...(arg("source") || arg("prev")
+    ? { role_input_json: { ...(arg("source") ? { sourceDeliverableId: arg("source") } : {}), ...(arg("prev") ? { previousDeliverableId: arg("prev") } : {}) } }
+    : {}),
 }).select("id").single();
 if (ae || !a) throw ae ?? new Error("업무 못 만듦");
 

@@ -79,6 +79,13 @@ export type MeshProvider = {
    */
   rig(inputTaskId: string, heightMeters: number): Promise<RigResult>;
   /**
+   * 텍스처 수정(`POST /openapi/v1/retexture`, **10 크레딧** — 17회차 09-06 실측). 이미 만든 3D 의
+   * UV 를 유지한 채 다시 칠한다. 새로 만들기(30)보다 3배 싸고 **모양이 그대로 남는다** — 고치는 판의 값이
+   * 거기 있다. 다만 17회차가 재 둔 것: 다시 칠하면 **얼굴이 조금 달라지고** 화질은 안 올라간다.
+   * 그러니 화질용이 아니라 색·재질용이다.
+   */
+  retexture(inputTaskId: string, texturePrompt: string): Promise<{ taskId: string; glbUrl: string | null; fbxUrl: string | null; consumedCredits: number; mock: boolean }>;
+  /**
    * 동작 클립(`POST /openapi/v1/animations`, 3 크레딧쯤). 리깅 task id 와 라이브러리 action_id 로
    * idle·점프·공격 같은 클립을 FBX 로 받는다(29회차 09-07). 걷기·뛰기는 리깅이 주니 여기선 그 밖의 것.
    */
@@ -206,6 +213,33 @@ export function createMeshyProvider(apiKey: string): MeshProvider {
       };
     },
 
+    async retexture(inputTaskId, texturePrompt) {
+      // 09-26: 3D 고치기. 텍스처 프롬프트로 기존 모델을 재질로 수정한다(1 크레딧).
+      const created = await fetch(BASE + "/retexture", {
+        method: "POST",
+        headers,
+        // 09-26 실측: `prompt` 는 400 을 받는다 — "Either text_style_prompt, image_style_url
+        // or multiview_image_urls must be provided". 이름이 다르다.
+        body: JSON.stringify({ input_task_id: inputTaskId, text_style_prompt: texturePrompt }),
+        signal: AbortSignal.timeout(60_000),
+      });
+      if (created.status === 402) throw new Error("MESHY_NO_CREDITS");
+      if (!created.ok) throw new Error(`MESHY_RETEX_HTTP_${created.status}: ${(await created.text()).slice(0, 200)}`);
+      const { result: taskId } = (await created.json()) as { result: string };
+      const until = Date.now() + MAX_WAIT_MS;
+      let task: MeshyTask | null = null;
+      while (Date.now() < until) {
+        await new Promise((r) => setTimeout(r, POLL_MS));
+        const r = await get(`/retexture/${taskId}`);
+        if (!r.ok) continue;
+        task = (await r.json()) as MeshyTask;
+        if (task.status === "SUCCEEDED" || task.status === "FAILED" || task.status === "CANCELED") break;
+      }
+      if (!task) throw new Error("MESHY_RETEX_NO_ANSWER");
+      if (task.status !== "SUCCEEDED") throw new Error(`MESHY_RETEX_${task.status}: ${task.task_error?.message ?? "이유 없음"}`);
+      return { taskId, glbUrl: task.model_urls?.glb ?? null, fbxUrl: task.model_urls?.fbx ?? null, consumedCredits: task.consumed_credits ?? 0, mock: false };
+    },
+
     async multiImageTo3D(imageDataUrls, opts = {}) {
       return runTo3D("/multi-image-to-3d", { image_urls: imageDataUrls }, { aiModel: "meshy-7", ...opts });
     },
@@ -291,6 +325,9 @@ export function createMockMeshProvider(): MeshProvider {
     },
     async animate() {
       return { taskId: "mock-anim", fbxUrl: null, glbUrl: null, consumedCredits: 0, mock: true };
+    },
+    async retexture() {
+      return { taskId: "mock-retex", glbUrl: null, fbxUrl: null, consumedCredits: 0, mock: true };
     },
     async multiImageTo3D() {
       return this.imageTo3D("", {});

@@ -4,3 +4,4 @@
 |---|---|---|---|---|---|---|---|
 | 2026-09-25 09:28 | engine/tools/health.mts 의 요약 마지막 줄에 '⑥ 현황판 판 수' 를 더한다: deliv | engine/tools/health.mts | 6 | - | dry(되돌림) | $0.000 | 13초 |
 | 2026-09-25 09:31 | engine/tools/health.mts 의 요약 마지막 줄에 '⑥ 현황판 판 수' 를 더한다: deliv | engine/tools/health.mts | 7 | 내보낸다(맞다·고쳤다) | 커밋 571d452 | $0.000 | 137초 |
+| 2026-09-25 09:56 | 시험 | engine/tools/judge_vs_human.mts, engine/tools/human_look.mts | 0 | - | 조각 안 맞음 | $0.004 | 29초 |
