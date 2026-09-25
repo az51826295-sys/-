@@ -48,14 +48,18 @@ export async function checkAllowance(
 
   const { data: company } = await db
     .from("companies")
-    .select("spend_limit_usd, spend_window_days")
+    .select("spend_limit_usd, spend_window_days, credits_started_at")
     .eq("id", companyId)
     .maybeSingle();
 
   const limitUsd = Number(company?.spend_limit_usd ?? 0);
   const windowDays = Number(company?.spend_window_days ?? 30);
 
-  const since = new Date(Date.now() - windowDays * DAY_MS).toISOString();
+  // 223회차 09-25: 한도를 걸 때 **세는 시작점**을 둘 수 있다. 한도를 $21/30일로 걸자 지난 30일 지출($64)이 그대로 잡혀
+  // 인사 한 줄도 못 보냈다(사장님 폰 화면). 숫자는 그대로 두고 시작점만 오늘로 — limit 모드에서는 credits_started_at 을
+  // "한도 시작일" 로 쓴다(새 열을 만들 통로가 지금 없어서 빈 열을 빌렸다; 충전식에서는 원래 뜻 그대로). 없으면 옛 동작.
+  const startedAt = company?.credits_started_at ? Date.parse(String(company.credits_started_at)) : 0;
+  const since = new Date(Math.max(Date.now() - windowDays * DAY_MS, startedAt || 0)).toISOString();
 
   // 42회차 점검: ① 못 읽으면 0 으로 치고 **열어 줬다**(한도가 사라진다). 한도는 못 읽을 때 닫는 쪽이 맞다.
   // ② PostgREST 는 한 번에 최대 몇 백~천 행만 준다 — 장부가 그만큼 쌓이면 합계가 거기서 멈춘다. 쪽을 넘겨 가며 다 센다.
