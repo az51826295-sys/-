@@ -33,3 +33,18 @@ if (n) {
   for (const [k, v] of Object.entries(err)) console.log(`  ${k}: 오차 평균 ${(v.reduce((a, b) => a + b, 0) / v.length).toFixed(1)} (${v.length}회)`);
 } else console.log("  아직 없다 — 예측자가 서버에 올라간 뒤의 고리부터 쌓인다.");
 console.log(`머리 견적 ${estN}건: 값 오차 평균 $${estN ? (estUsdErr / estN).toFixed(3) : "-"} · 시간 오차 평균 ${estN ? (estMinErr / estN).toFixed(1) : "-"}분`);
+
+// 216회차 09-25: 영상도 예측자다 — 대본이 장면마다 적은 `seconds`(계획)와 ffprobe 실측(`durations`)을 대 본다.
+{
+  const { data: vids } = await db.from("deliverables").select("id, created_at, content_json").eq("deliverable_type", "video").gte("created_at", new Date(Date.now() - days * 864e5).toISOString()).order("created_at", { ascending: false }).limit(50);
+  let scenes = 0, absSum = 0, totalN = 0, totalAbs = 0;
+  for (const d of (vids ?? []) as Record<string, any>[]) {
+    const c = (d.content_json ?? {}) as Record<string, any>;
+    const plan: number[] = (c.script?.scenes ?? []).map((s: any) => Number(s.seconds ?? NaN));
+    const real: number[] = (c.durations ?? []).map(Number);
+    if (!plan.length || plan.length !== real.length || plan.some((x) => !Number.isFinite(x))) continue;
+    for (let i = 0; i < plan.length; i++) { scenes++; absSum += Math.abs(plan[i] - real[i]); }
+    if (Number.isFinite(c.script?.targetSec) && Number.isFinite(c.total)) { totalN++; totalAbs += Math.abs(Number(c.script.targetSec) - Number(c.total)); }
+  }
+  console.log(`영상 예측(계획 초 vs 실측 초): 장면 ${scenes}개 · 장면당 오차 평균 ${scenes ? (absSum / scenes).toFixed(2) : "-"}초 · 전체 길이 오차 평균 ${totalN ? (totalAbs / totalN).toFixed(2) : "-"}초 (${totalN}판)`);
+}
