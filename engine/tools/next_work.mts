@@ -5,9 +5,10 @@
  *   npx tsx engine/tools/rookery_env.mts engine/tools/next_work.mts [--days 7] [--out engine/work/anything/next-work.json]
  */
 import { z } from "zod";
+const { account } = await import("./company.mts");
 const { createServiceClient } = await import("../../src/lib/supabase/service");
 const { seatProviderForCompany } = await import("../../src/lib/skills/appBuild/seats");
-const CO = "5925c03a-557f-46d7-8589-7388b769df40";
+const CO = account().companyId;   // 222회차: 개발 계정
 const { readFileSync, writeFileSync, existsSync } = await import("node:fs");
 const arg = (k: string) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : undefined; };
 const days = Number(arg("--days") ?? 7); const NL = String.fromCharCode(10);

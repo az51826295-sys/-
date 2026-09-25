@@ -7,6 +7,7 @@
  * 그래야 결과가 그 대화에 돌아오고(`workReturns`), 미리보기 판에 **승인 / 수정 요청** 단추가 뜬다.
  * 모델 호출은 직원이 일할 때만 — 이 자는 접수 모델을 안 부른다(돈 0, 일값은 그 직원 단가).
  */
+const { account } = await import("./company.mts");
 const { createServiceClient } = await import("../../src/lib/supabase/service");
 
 const arg = (k: string) => { const i = process.argv.indexOf(`--${k}`); return i > 0 ? process.argv[i + 1] : null; };
@@ -19,14 +20,14 @@ if (!title || !ask) throw new Error("--title 과 --ask 가 필요하다");
 
 const db = createServiceClient();
 const { data: users } = await db.auth.admin.listUsers({ perPage: 200 });
-const owner = users.users.find((u) => u.email === "az51826295@gmail.com");
-if (!owner) throw new Error("사장님 계정을 못 찾음");
+const owner = users.users.find((u) => u.email === account().ownerEmail);   // 222회차: 개발 계정(ROOKERY_ACCOUNT=owner 면 사장님)
+if (!owner) throw new Error("계정을 못 찾음: " + account().ownerEmail);
 const { data: co } = await db.from("companies").select("id, name").eq("owner_id", owner.id).maybeSingle();
 if (!co) throw new Error("회사를 못 찾음");
 const { data: emp } = await db.from("employees").select("id, name").eq("slug", slug).maybeSingle();
 if (!emp) throw new Error(`직원 ${slug} 없음`);
 const { data: ce } = await db.from("company_employees").select("id").eq("company_id", co.id).eq("employee_id", emp.id).maybeSingle();
-if (!ce) throw new Error(`${emp.name} 이(가) 이 회사에 없음 — 대화로 한 번 뽑아야 한다`);
+if (!ce) throw new Error(`${emp.name} 이(가) 이 회사(${account().label})에 없음 — emp_seed ${slug}`);
 
 console.log(`회사 ${co.name} · 직원 ${emp.name}(${slug})`);
 console.log(`제목: ${title}`);

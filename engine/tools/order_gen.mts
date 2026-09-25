@@ -9,6 +9,7 @@
  *   --dry: 주문 만들고 접수까지만(직원 일 안 시킴, 값 ≈ $0.03). --cap: 이번 주 지출이 이 값을 넘으면 안 넣는다.
  */
 import { z } from "zod";
+const { account } = await import("./company.mts");
 const { createServiceClient } = await import("../../src/lib/supabase/service");
 const { workStateText } = await import("../../src/lib/chat/workState");
 const { intakeInstructions } = await import("../../src/lib/chat/routing");
@@ -23,7 +24,7 @@ const RESUME = arg("--resume");   // 지난 배치에서 직원이 바빠 못 �
 const N = Number(arg("--n") ?? 3); const DRY = process.argv.includes("--dry"); const EXPENSIVE = process.argv.includes("--expensive"); const CAP = Number(arg("--cap") ?? 20);   // 221회차: 회사 한도($21) 바로 안쪽
 const NL = String.fromCharCode(10);
 const db = createServiceClient();
-const CO = "5925c03a-557f-46d7-8589-7388b769df40";   // 사장님 회사
+const CO = account().companyId;   // 222회차: 개발 계정(ROOKERY_ACCOUNT=owner 면 사장님 회사)
 
 // 0) 지출 문지기 — 회사 한도(checkAllowance, 최근 N일 창)와 **같은 숫자**로 본다(221회차: 옛 $9.5/7일 상수는 한도가 $21/30일로 바뀐 뒤 남의 자였다). --cap 은 그 안쪽의 추가 멈춤선.
 const { checkAllowance } = await import("../../src/lib/costs/allowance");

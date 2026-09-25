@@ -32,6 +32,13 @@
 - **제안 → 코드 손 → 됐다.** `engine/tools/self_fix.mts`: 제안 하나 → 로키가 손댈 파일 ≤3 을 목록에서 고름 → 조각(find/replace)으로 고침 → 문 셋(`tsc` · `probe_all --fast` · 부탁 심판자 "제안 크기만큼 고쳤나") → 다 지나면 **로컬 커밋만**(push·배포 안 함, 안 지나면 되돌림). 첫 실전: 커밋 `571d452`(health.mts 에 ⑥ 줄, 7줄, 137초) — 로키가 스스로 고친 첫 코드. 매주 일요일 09:30 배치 끝에 `--auto`(사람손=false·값 0 인 첫 제안). 원장 `engine/docs/genesis/self-fix.md`.
 - **구멍 하나 막음**: 도구(손님 AI·제안·자가 고침)의 지출이 회사 장부(model_usage)에 안 적혀 한도가 못 봤다 → `seatProviderForCompany` 로 적히고, 한도에 닿으면 도구도 멈춘다. 화면·현황판·order_gen 의 숫자도 **문이 재는 숫자(최근 N일 창)** 로 통일(전엔 화면 "이번 달 $9" 인데 문은 "$21 다 씀").
 
+## 222회차(09-25 19:3x~19:5x) — 개발 계정을 따로 (사장님 "개발자 계정 따로 만들어 줘")
+- **개발 계정** `dev@rookery.local` · 회사 "로키 개발" (`c4c1aef6…`) · 한도 **$7/30일**(내가 실측에서 제안한 숫자: 매일 배치 ≈$0.2×30 + 주간 ≈$0.2×4; 바꾸려면 `ROOKERY_ACCOUNT=dev` 없이 `dev_account.mts --limit N` 이 아니라 아래 한 줄). 직원 10명 채용·지식 카드 채움. 비밀번호는 무작위라 아무도 모른다 — 화면에서 보려면 /login 매직 링크로 dev@rookery.local (메일이 안 가는 주소라 사실상 도구 전용).
+- **배치·자가 고침·시험은 전부 개발 계정에서 돈다**: order_gen · next_work · self_fix · ask_for · emp_seed · board_probe 가 `engine/tools/company.mts` 의 `account()` 를 쓴다. 사장님 회사로 돌리려면 `ROOKERY_ACCOUNT=owner`. 지출 보기·한도 바꾸기(week_spend·limit_show·spend_look)는 그대로 사장님 회사.
+- **사장님 회사의 $21/30일은 사장님이 시킨 일에만** 나간다. 개발 계정 $7 은 별도 지갑(둘 합치면 $28 ≈ 4만원 — 3만원 안에 두려면 사장님 회사 한도를 $14 로: `npx tsx engine/tools/rookery_env.mts engine/tools/limit_show.mts 14 30`).
+- 첫 실전: 개발 계정에서 현황판 주문 → 서버 워커가 self_board 를 돌려 **자 4/4, $0.02** (사장님 회사에선 한도로 못 돌던 것). `board_probe` 개발 계정에서 11/11.
+- 개발 계정 한도 바꾸기: `engine/tools/limit_show.mts` 는 사장님 회사 전용이라, 개발 계정은 `ROOKERY_ACCOUNT` 와 무관하게 DB 에서 companies.spend_limit_usd 를 고친다(도구: `dev_limit.mts <달러> <일수>`).
+
 ## ⚠ 지금 상태: 한도에 닿아 있다 (사장님이 정할 것)
 `$21/30일` 은 **지나간 30일**을 센다. 09-25 19:00 기준 최근 30일 지출 **$64.82**(9월 초 3D·게임 판이 큼) → 새 일은 하나도 못 시작한다(현황판 첫 주문도 `SPEND_LIMIT_REACHED` 로 취소됨). 앞으로 지출 0 이면 **10-10** 에 창 합이 $21 아래로 내려가 저절로 풀린다.
 - 그대로 두면: 10-10 까지 로키는 쉬고, 매일·매주 배치는 "한도" 한 줄만 남기고 끝난다(돈 0).

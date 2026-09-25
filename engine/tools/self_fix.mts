@@ -18,13 +18,14 @@ import { existsSync, readFileSync, writeFileSync, appendFileSync, mkdirSync } fr
 const { seatProviderForCompany } = await import("../../src/lib/skills/appBuild/seats");
 const { buildPatch } = await import("../../src/lib/skills/appBuild/patch");
 const { changeFacts, judgeAsk } = await import("../../src/lib/genesis/askJudge");
+const { account } = await import("./company.mts");
 const { createServiceClient } = await import("../../src/lib/supabase/service");
 
 const arg = (k: string) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : undefined; };
 const NL = String.fromCharCode(10);
 const DRY = process.argv.includes("--dry"), AUTO = process.argv.includes("--auto");
 const SCOPE = ["src/lib/skills", "src/lib/providers", "src/lib/execution", "src/lib/chat", "src/lib/genesis", "engine/tools"];
-const CO = "5925c03a-557f-46d7-8589-7388b769df40";
+const CO = account().companyId;   // 222회차: 개발 계정
 const t0 = Date.now();
 const git = (...a: string[]) => execFileSync("git", a, { encoding: "utf8" }).trim();
 const log = (m: string) => console.log(m);
@@ -68,7 +69,7 @@ const r = await buildPatch(ai, {
   criteria: [{ id: "자", when: "고친 뒤", then: p.자 }, { id: "범위", when: "언제나", then: "제안이 말한 자리만 고친다. 다른 줄은 한 글자도 바꾸지 않는다." }],
   failedChecks: [], full, rest: [],
 });
-if (!r.ok) { log(`조각이 안 맞았다(${r.failures.length}개): ${r.failures.map((f) => `${f.path} ${f.reason}`).join(", ")}`); record("조각 안 맞음", files, 0, "-", await spent()); process.exit(1); }
+if (!r.ok) { const why = r.failures.length ? `조각이 안 맞았다(${r.failures.length}개): ${r.failures.map((f) => `${f.path} ${f.reason}`).join(", ")}` : "고칠 조각을 안 냈다(제안이 이 파일들과 안 맞거나 할 일이 없음)"; log(why); record(r.failures.length ? "조각 안 맞음" : "조각 없음", files, 0, "-", await spent()); process.exit(r.failures.length ? 1 : 0); }
 const facts = changeFacts(full, r.files.map((f) => ({ path: f.path, contents: f.contents })));
 log(`바뀐 줄 ${r.changedLines}/${r.totalLines} (물어본 횟수 ${r.asked})`);
 for (const e of r.patch.edits) log(`  · ${e.path}: ${e.why}`);

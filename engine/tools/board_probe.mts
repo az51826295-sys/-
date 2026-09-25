@@ -1,6 +1,7 @@
 /** 로키 현황판(자기 화면) 자 시험(221회차). 모델 0 · 헤드리스 1번 · DB 1번(재료 읽기). */
 const { isBoardAsk, gatherBoardFacts, renderBoard, judgeBoard } = await import("../../src/lib/skills/slidesMake/board");
 const { runWeb } = await import("../../src/lib/skills/appBuild/run");
+const { account } = await import("./company.mts");
 const { createServiceClient } = await import("../../src/lib/supabase/service");
 let bad = 0, seen = 0;
 const check = (n: string, ok: boolean, got?: unknown) => { seen++; if (!ok) bad++; console.log(ok ? "맞음  " : "어긋남", n, ok ? "" : JSON.stringify(got)); };
@@ -10,10 +11,10 @@ check("말: '지출 보이는 화면'", isBoardAsk("지출 보이는 화면 짜 
 check("말: 발표 자료는 아님", !isBoardAsk("로키 소개 발표 자료 8장"));
 // 재료는 진짜 DB 에서 — 모델 0
 const db = createServiceClient();
-const ctx = { supabase: db, execution: { company_id: "5925c03a-557f-46d7-8589-7388b769df40" } } as never;
+const ctx = { supabase: db, execution: { company_id: account().companyId } } as never;   // 222회차: 개발 계정
 const f = await gatherBoardFacts(ctx);
 check("재료: 지출 숫자·직원 1명 이상·최근 일 1개 이상", typeof f.spendMonthUsd === "number" && f.employees.length >= 1 && f.recent.length >= 1, { spend: f.spendMonthUsd, emp: f.employees.length, recent: f.recent.length });
-check("재료: 한도가 읽힌다($21/30일)", f.limitUsd === 21 && f.limitDays === 30, { usd: f.limitUsd, days: f.limitDays });
+check("재료: 한도가 읽힌다(양수/양수)", (f.limitUsd ?? 0) > 0 && (f.limitDays ?? 0) > 0, { usd: f.limitUsd, days: f.limitDays });
 const good = { title: "로키 현황판", footer: "지금 DB 로", sections: [
   { heading: "이달 지출", lines: [`$${f.spendMonthUsd} / 한도 $${f.limitUsd}`], tone: "plain" as const },
   { heading: "직원", lines: [`${f.employees.length}명`], tone: "good" as const },
