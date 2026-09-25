@@ -14,7 +14,7 @@ const db = createServiceClient();
 const since = new Date(Date.now() - days * 864e5).toISOString();
 
 // 1) 실패한 실행 — 이유별로 센다
-const { data: fails } = await db.from("work_executions").select("error_message, current_step, error_code").eq("status", "failed").neq("error_code", "WAITING_APPROVAL").gte("created_at", since).limit(300);   // 기다림은 실패가 아니다(types.ts:175 — 상태표가 잠겨 실패 칸을 빌림)
+const { data: fails } = await db.from("work_executions").select("error_message, current_step, error_code").eq("status", "failed").or("error_code.is.null,error_code.neq.WAITING_APPROVAL").gte("created_at", since).limit(300);   // 기다림은 실패가 아니다(types.ts:175 — 상태표가 잠겨 실패 칸을 빌림)
 const failTally: Record<string, number> = {};
 for (const f of (fails ?? []) as { error_message: string | null; current_step: string }[]) { const k = `${f.current_step} · ${String(f.error_message ?? "?").split(":")[0].slice(0, 60)}`; failTally[k] = (failTally[k] ?? 0) + 1; }
 // 2) 결과물의 자 — 떨어진 자 이름별로 센다(모든 종류)

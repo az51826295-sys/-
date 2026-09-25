@@ -7,7 +7,7 @@ const { createServiceClient } = await import("../../src/lib/supabase/service");
 const db = createServiceClient();
 const arg = (k: string) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : undefined; };
 const since = arg("--since") ?? "2026-09-24T16:02:00Z";
-const { data: ex } = await db.from("work_executions").select("status, error_message, current_step, error_code").gte("created_at", since).neq("error_code", "WAITING_APPROVAL").limit(2000);   // 기다림(사장님 확인 대기)은 실패가 아니다
+const { data: ex } = await db.from("work_executions").select("status, error_message, current_step, error_code").gte("created_at", since).or("error_code.is.null,error_code.neq.WAITING_APPROVAL").limit(2000);   // 기다림(사장님 확인 대기)은 실패가 아니다
 const rows = (ex ?? []) as { status: string; error_message: string | null; current_step: string }[];
 const fmt = rows.filter((r) => /MODEL_OUTPUT_(OFF_SCHEMA|UNPARSEABLE)/.test(r.error_message ?? "")).length;
 const trunc = rows.filter((r) => /MODEL_OUTPUT_TRUNCATED/.test(r.error_message ?? "")).length;
