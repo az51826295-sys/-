@@ -181,3 +181,8 @@
 **Out 번역 첫 판** (`a3536303`, 사장님 게임 화면 글자 11줄 → 영어, 24자 이하) — **자 7/7 · $0.021 · 1분 · deepseek-v4-pro**
 Platformer Game · Dawn Hill · Cloud Bridge · Starlight Peak · Clear! · Game Over · All lives lost. · Cleared all 3 stages! · Play Again · Restart from start · Touch Controls. 숫자 3 보존, 모두 24자 이하. 자연스러운가는 사장님 눈.
 오늘 Out 이 새로 하게 된 것 셋(그림·문구·번역) 중 둘은 실전 통과(문구 4/4·번역 7/7), 그림은 사장님 한 줄 대기.
+
+## 14. 다른 AI 에게도 물음 — 딥시크(`next_work --seat deepseek-v4-pro`, 09-25 13:3x)
+제안 5개 중 4개는 luna 와 같음(형식·잘림·장면 길이·화면 글자 — 다 고침). 새로 짚은 것 하나: **"계획을 보이고 사장님 확인을 기다린다" 가 실패로 2건**.
+확인하니 설계된 것이었다(`types.ts:175`: 상태표가 잠겨 있어 기다림이 `failed` + `WAITING_APPROVAL` 을 빌려 쓴다). 실패가 아니라 **기다림**이다 — 장부를 세는 도구(`next_work`·`health`)가 이 코드를 빼도록 고쳤다. 상태표에 '기다림' 을 넣는 건 스키마 변경이라 주차장.
+두 AI 가 같은 사실에서 거의 같은 일을 고른다 = 남은 일은 "더 많은 표본" 이고, 표본은 사장님의 진짜 주문에서 온다.

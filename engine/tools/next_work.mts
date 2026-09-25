@@ -6,7 +6,7 @@
  */
 import { z } from "zod";
 const { createServiceClient } = await import("../../src/lib/supabase/service");
-const { createOpenAIProvider } = await import("../../src/lib/providers/openai");
+const { seatProvider } = await import("../../src/lib/skills/appBuild/seats");
 const { readFileSync, writeFileSync, existsSync } = await import("node:fs");
 const arg = (k: string) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : undefined; };
 const days = Number(arg("--days") ?? 7); const NL = String.fromCharCode(10);
@@ -14,7 +14,7 @@ const db = createServiceClient();
 const since = new Date(Date.now() - days * 864e5).toISOString();
 
 // 1) 실패한 실행 — 이유별로 센다
-const { data: fails } = await db.from("work_executions").select("error_message, current_step").eq("status", "failed").gte("created_at", since).limit(300);
+const { data: fails } = await db.from("work_executions").select("error_message, current_step, error_code").eq("status", "failed").neq("error_code", "WAITING_APPROVAL").gte("created_at", since).limit(300);   // 기다림은 실패가 아니다(types.ts:175 — 상태표가 잠겨 실패 칸을 빌림)
 const failTally: Record<string, number> = {};
 for (const f of (fails ?? []) as { error_message: string | null; current_step: string }[]) { const k = `${f.current_step} · ${String(f.error_message ?? "?").split(":")[0].slice(0, 60)}`; failTally[k] = (failTally[k] ?? 0) + 1; }
 // 2) 결과물의 자 — 떨어진 자 이름별로 센다(모든 종류)
@@ -46,7 +46,8 @@ const schema = z.object({
   })).min(3).max(5),
   안한것: z.string().describe("일부러 안 고른 것과 왜."),
 });
-const ai = createOpenAIProvider({ judgmentModel: "gpt-5.6-luna" });
+const ai = await seatProvider(arg("--seat") ?? "gpt-5.6-luna");   // 217회차: --seat 로 다른 AI(딥시크 포함)에게도 묻는다
+if (!ai) { console.error("자리를 못 앉혔다"); process.exit(1); }
 const { output } = await ai.generateStructuredOutput({
   systemInstructions: [
     "너는 로키(일하는 AI 회사)를 감독하는 AI 다. 아래는 최근 장부의 사실이다. **다음에 할 일 셋~다섯**을 고른다.",
