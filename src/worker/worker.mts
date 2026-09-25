@@ -322,6 +322,18 @@ for (;;) {
         if (h >= 12 && process.env.OWNER_EMAIL) { const r = await runPracticeSummary(db, { companyId: DEV_CO, ownerEmail: process.env.OWNER_EMAIL, log: (m) => console.log(`${stamp()} [연습 정리] ${m}`) }); void r; }
       } catch (e) { console.error(`${stamp()} 연습 고리 실패`, e instanceof Error ? e.message : e); }
     }
+    // 225회차 사장님 "너도 자동으로 돌려": 매일 인스타 게시물 한 벌을 사장님 회사에서. 끝나면 평소 길로 대화에 붙고 폰 알림.
+    if (tickN % DAILY_EVERY === 0 && SCOPE !== "dev" && process.env.ROOKERY_DAILY_POST === "1" && process.env.OWNER_EMAIL) {
+      try {
+        const { runDailyPost, kstHour } = await import("@/lib/genesis/practice");
+        if (kstHour() >= 9) {
+          const { data: us } = await db.auth.admin.listUsers({ perPage: 200 });
+          const u = us.users.find((x) => x.email === process.env.OWNER_EMAIL);
+          const { data: oc } = u ? await db.from("companies").select("id").eq("owner_id", u.id).maybeSingle() : { data: null };
+          if (oc) await runDailyPost(db, { companyId: oc.id as string, log: (m) => console.log(`${stamp()} [오늘 게시물] ${m}`) });
+        }
+      } catch (e) { console.error(`${stamp()} 오늘 게시물 실패`, e instanceof Error ? e.message : e); }
+    }
     if (tickN % DAILY_EVERY === 0 && SCOPE !== "dev") {   // 매일·주간 고리는 본 서버만
       try { await dailyTick(); } catch (e) { console.error(`${stamp()} 자가진화 실패`, e instanceof Error ? e.message : e); }
       try { await weeklyTick(); } catch (e) { console.error(`${stamp()} 주간 보고 실패`, e instanceof Error ? e.message : e); }

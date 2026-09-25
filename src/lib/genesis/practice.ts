@@ -141,3 +141,45 @@ export async function runPracticeSummary(db: Db, o: { companyId: string; ownerEm
   o.log(`${body} → 알림 ${sent}`);
   return { ran: true, body };
 }
+
+/**
+ * **매일 인스타 게시물 한 벌** (225회차 09-25, 사장님 "너도 자동으로 돌려").
+ *
+ * 사장님 회사에서 하루 한 번 Gram 에게 게시물을 시킨다. 재료는 **지어내지 않고** 둘에서만 온다:
+ * 고정 사실(제품 설명) + 최근 7일에 로키가 실제로 만든 결과물 제목. 그래서 매일 다른 글이 나오고, 전부 진짜다.
+ * 끝나면 평소 길(workReturns)로 사장님 대화에 붙고 폰 알림이 간다 — 사장님은 보고 올리기만.
+ * 값 ≈ 하루 $0.02(글 + 그림 1장) = 달 $0.6. 한도에 닿으면 Gram 을 부르기 전에 멈춘다.
+ * 자물쇠: 오늘 만든 dailyPost 업무가 있으면 오늘은 안 한다.
+ */
+const POST_FACTS = [
+  "대화창에 말하면 게임·영상·문서 같은 진짜 파일이 나온다",
+  "이상한 부분만 말하면 그 부분만 다시 만든다",
+  "가입은 이메일과 비밀번호만, 카드는 안 받는다",
+  "만드는 사람은 고등학생 한 명이다",
+];
+export async function runDailyPost(db: Db, o: { companyId: string; log: (m: string) => void; now?: Date }): Promise<{ ran: boolean; reason?: string }> {
+  const date = kstDate(o.now);
+  const since = new Date(Date.parse(date + "T00:00:00+09:00")).toISOString();
+  // 자물쇠는 **성한 판만** 센다: 실패한 판까지 세면 한 번 깨진 날은 내일까지 게시물이 없다(225회차: 사장님 서버가 옛 코드라 첫 판이 죽었다).
+  const { data: today } = await db.from("assignments").select("status").eq("company_id", o.companyId).gte("created_at", since).contains("role_input_json", { dailyPost: true });
+  if ((today ?? []).some((r) => !["failed", "cancelled"].includes(String((r as { status: string }).status)))) return { ran: false, reason: "오늘 이미 만들었다" };
+  if ((today ?? []).length >= 3) return { ran: false, reason: "오늘 세 번 실패해 더 안 한다" };
+  const a = await checkAllowance(db, o.companyId);
+  if (a.exhausted) { o.log(`한도라 안 만든다: $${a.spentUsd.toFixed(2)}/${a.limitUsd}`); return { ran: false, reason: "한도" }; }
+  const { data: co } = await db.from("companies").select("owner_id").eq("id", o.companyId).maybeSingle();
+  if (!co) return { ran: false, reason: "회사 없음" };
+  // 재료: 최근 7일에 실제로 만든 것(제목만 — 숫자·평가는 안 싣는다).
+  const week = new Date(Date.now() - 7 * 864e5).toISOString();
+  const { data: recent } = await db.from("deliverables").select("title, deliverable_type, created_at, work_executions!inner(company_id)").eq("work_executions.company_id", o.companyId).gte("created_at", week).order("created_at", { ascending: false }).limit(5);
+  const { kindOf } = await import("@/lib/work/kinds");
+  const made = ((recent ?? []) as unknown as { title: string; deliverable_type: string }[]).map((d) => `이번 주에 로키로 만든 것: ${String(d.title).slice(0, 50)} (${kindOf(d.deliverable_type).label})`);
+  const day = Number(date.slice(8)) % POST_FACTS.length;   // 날마다 앞에 오는 사실을 돌린다 — 같은 글이 반복되지 않게
+  const facts = [...POST_FACTS.slice(day), ...POST_FACTS.slice(0, day), ...made.slice(0, 2)];
+  const ask = [`인스타에 올릴 게시물 하나 만들어 줘. 오늘 올릴 것으로.`, "쓸 수 있는 사실:", ...facts.map((f) => `- ${f}`)].join(NL);
+  try {
+    const d = await dispatchOrder(db, o.companyId, "social_post", ask, co.owner_id as string);
+    await db.from("assignments").update({ role_input_json: { capabilityId: "social_post", dailyPost: true } }).eq("id", d.assignmentId);
+    o.log(`오늘 게시물 맡김 → ${d.employee} · 업무 ${d.assignmentId.slice(0, 8)}`);
+    return { ran: true };
+  } catch (e) { o.log(`못 맡김: ${e instanceof Error ? e.message : e}`); return { ran: false, reason: String(e) }; }
+}
