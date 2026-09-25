@@ -239,3 +239,4 @@ Platformer Game · Dawn Hill · Cloud Bridge · Starlight Peak · Clear! · Game
 - **첫 배치 결과**(data-collection.md): 분석 18/18·$0.117·3분 · 발표 대본 3/3·$0.083·3분 · 인스타 문구 4/4·$0.047·2분(막혔던 것은 앞 일 끝난 뒤 자동 재투입). 세 판 모두 자 전부 통과, 합 $0.25. 수집기가 끝에서 끝까지 돈다.
 - **2차 배치**(2개): 무대 원칙 정리 → Ana 14/14·$0.065·3분 · 화면 글자 영어 번역 → Out 7/7·$0.021·1분. 오늘 수집 5판 5/5 완료, 자 46/46, 합 $0.33. 주간 지출 $9.06/10 → 이번 주 돈 드는 판 끝.
 - 다음: 매일 한 배치(싼 종류 3개, ≈$0.25)를 자동으로 — 문지기는 회사 한도 안쪽($9.5). 사장님이 결정을 위임했으므로 내가 건다.
+- **매일 09:00 자동 배치**: Windows 작업 스케줄러 `RookeryDailyCollect` → `engine/tools/daily_collect.cmd`(order_gen --n 3 → order_score --wait, 기록 `engine/work/anything/daily.log`). 다음 실행 09-26 09:00. 노트북이 켜져 있고 로그인돼 있어야 돈다(Interactive only). 문지기 $9.5 라 한도에 닿으면 스스로 안 넣는다.
