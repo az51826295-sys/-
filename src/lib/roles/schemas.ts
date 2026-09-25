@@ -154,7 +154,7 @@ export const assignmentInputSchemaRegistry = {
   analysis_assignment_v1: analysisAssignmentSchema,
   video_assignment_v1: videoAssignmentSchema,
   slides_assignment_v1: appBuildAssignmentSchema,
-  outsource_assignment_v1: appBuildAssignmentSchema,   // 214회차: 고치는 판이면 지난 결과물 id 만 온다
+  outsource_assignment_v1: z.object({ previousDeliverableId: z.string().optional().nullable(), capabilityId: z.string().optional().nullable() }),   // 217회차: 접수가 고른 능력 id(그림/글)   // 214회차: 고치는 판이면 지난 결과물 id 만 온다
 } as const;
 
 export type AssignmentInputSchemaId = keyof typeof assignmentInputSchemaRegistry;

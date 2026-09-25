@@ -31,6 +31,8 @@ export type ChatTurnInput = {
   images?: string[];
   /** 이 대화에서 이 직원이 마지막으로 돌려준 산출물. "고쳐 줘" 가 이것을 바탕으로 간다. */
   previousDeliverableId?: string | null;
+  /** 217회차: 위임이 고른 능력 id — 한 직원이 능력을 둘 가지면(Out: 그림/글) 기술이 이걸 본다. */
+  capabilityId?: string | null;
   /** 169회차: 고칠 대상이 아직 대화에 안 돌아왔을 때(도는 중·방금 끝남) — 그 업무. 실행 때 그 업무의 결과물을 찾는다. */
   previousAssignmentId?: string | null;
   /** 이 대화의 마지막 산출물(누가 냈든). 다른 사람이 만든 것을 재료로 쓰는 일에 간다(44회차: Ana 분석 → Vid 영상). */
@@ -279,6 +281,9 @@ How to behave:
       ...(input.previousDeliverableId ? { previousDeliverableId: input.previousDeliverableId } : {}),
       ...(input.previousAssignmentId ? { previousAssignmentId: input.previousAssignmentId } : {}),
       ...(input.sourceDeliverableId ? { sourceDeliverableId: input.sourceDeliverableId } : {}),
+      // 217회차 09-25: 접수가 고른 능력 id 를 싣는다 — 한 직원이 능력을 둘 가지면(Out: 그림/글) 기술이 낱말로 추측하지 않고 이걸 본다.
+      // 받는 직원의 입력 스키마에 이 칸이 없으면 zod 가 조용히 버린다.
+      ...(input.capabilityId ? { capabilityId: input.capabilityId } : {}),
     },
   });
 

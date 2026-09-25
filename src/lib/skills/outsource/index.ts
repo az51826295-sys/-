@@ -162,8 +162,10 @@ export const outsourceSkill: EmployeeSkill = {
   async run(ctx: SkillRunContext) {
     const ask = `${ctx.context.assignment.title}\n${ctx.context.assignment.description ?? ""}`;
     if (ask.trim().length < 4) throw new ExecutionError("CONTEXT_INCOMPLETE", "무엇을 만들지 한 줄이 필요하다.");
-    // 접수가 고른 능력 id 는 여기 안 온다 — 말의 낱말로 갈래를 정한다(로고·그림·포스터… 는 그림, 나머지는 글).
-    if (!isImageAsk(ask)) return runText(ctx, ask);
+    // 217회차: 접수가 고른 능력 id 가 오면 그것으로 가른다. 없으면(도구로 넣은 판) 말의 낱말로.
+    const capId = (ctx.context.roleInput as { capabilityId?: string | null } | null)?.capabilityId ?? null;
+    const image = capId ? capId === "outsource_image" : isImageAsk(ask);
+    if (!image) return runText(ctx, ask);
 
     await setStep(ctx.supabase, ctx.executionId, "planning");
     const b = (await step(ctx.supabase, ctx.executionId, "brief", async () => (await ctx.providers.ai.generateStructuredOutput({
