@@ -176,7 +176,7 @@ const NOT_TOLD_YET =
  * 지식 카드가 없으면 대화가 가르친 것으로 만든다. 있으면 손대지 않는다 —
  * 매니저가 설문으로 채운 카드를 대화 요약이 덮어쓰면 아는 것이 줄어든다.
  */
-async function ensureKnowledgeProfile(
+export async function ensureKnowledgeProfile(
   db: Supabase,
   companyId: string,
   companyEmployeeId: string,

@@ -12,3 +12,8 @@ if (!row) {
 const CO = "5925c03a-557f-46d7-8589-7388b769df40";
 const { data: ce } = await db.from("company_employees").select("id").eq("company_id", CO).eq("employee_id", row!.id).maybeSingle();
 if (!ce) { const { error } = await db.from("company_employees").insert({ company_id: CO, employee_id: row!.id, onboarding_status: "completed", work_status: "ready" }); console.log(error ? "회사에 못 뽑음: " + error.message : "사장님 회사에 뽑음"); } else console.log("이미 뽑혀 있음");
+// 아는 것 없이 일하러 보내지 않는다 — 위임(delegate.ts)과 같은 절차. 없으면 문맥 읽기에서 "missing: Company summary…" 로 죽는다(214회차 Deck 첫 판).
+const { ensureKnowledgeProfile } = await import("../../src/lib/chat/delegate");
+const { data: ce2 } = await db.from("company_employees").select("id").eq("company_id", CO).eq("employee_id", row!.id).maybeSingle();
+await ensureKnowledgeProfile(db, CO, ce2!.id as string);
+console.log("지식 카드 채움");
