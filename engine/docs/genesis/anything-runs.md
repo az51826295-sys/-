@@ -240,3 +240,10 @@ Platformer Game · Dawn Hill · Cloud Bridge · Starlight Peak · Clear! · Game
 - **2차 배치**(2개): 무대 원칙 정리 → Ana 14/14·$0.065·3분 · 화면 글자 영어 번역 → Out 7/7·$0.021·1분. 오늘 수집 5판 5/5 완료, 자 46/46, 합 $0.33. 주간 지출 $9.06/10 → 이번 주 돈 드는 판 끝.
 - 다음: 매일 한 배치(싼 종류 3개, ≈$0.25)를 자동으로 — 문지기는 회사 한도 안쪽($9.5). 사장님이 결정을 위임했으므로 내가 건다.
 - **매일 09:00 자동 배치**: Windows 작업 스케줄러 `RookeryDailyCollect` → `engine/tools/daily_collect.cmd`(order_gen --n 3 → order_score --wait, 기록 `engine/work/anything/daily.log`). 다음 실행 09-26 09:00. 노트북이 켜져 있고 로그인돼 있어야 돈다(Interactive only). 문지기 $9.5 라 한도에 닿으면 스스로 안 넣는다.
+
+## 21. 221회차 09-25 18:2x~19:2x — "아니 되게 만들어라": 자기 화면 · 자기 코드 · 장부 구멍
+- **self_board**(Deck): DB 사실 → 로키가 칸·문구를 짜 한 파일 HTML 현황판 → /ask 미리보기. 자 4개, `board_probe` 11/11(심은 고장: 칸 2개·지어낸 $999.99·숫자 지움 → 셋 다 잡음; 처음 한 번은 심은 것이 덜 심겨 자가 침묵 — 지출이 두 곳에 있어 한 곳만 지웠었다). 접수 `routing_test` "내 화면 만들어 줘" → self_board 1/1.
+- **self_fix.mts**: 첫 실전 — "health.mts 에 ⑥ 현황판 판 수" 제안 → 파일 1개 고름 → 7줄 조각 → tsc 0 · probe_all 7/7 · 심판 "내보낸다(맞다·고쳤다)" → 커밋 571d452, 137초. 자: health.mts 가 "⑥ 현황판 판 수: 0" 을 찍는다 ✓.
+- **장부 구멍**: 자가 고침 원장 값 "$0.000" — seatProvider 호출은 model_usage 에 안 적혔다. `seatProviderForCompany` 로 장부+한도 문 통과. 실측: 30일 창 $64.82 / $21 → 도구가 "한도에 닿았다" 로 멈춤(문이 일함).
+- **한도 창**: $21/30일 이 과거 30일을 세서 걸자마자 닫혔다. 현황판 첫 서버 주문(437a84c3) SPEND_LIMIT_REACHED 로 취소 — 서버에서 self_board 를 실제로 돌린 판은 **아직 0**(자는 로컬 probe 로만). 지출 0 이면 10-10 에 풀림. 창 15일이면 $15.6 로 바로 열림 — 사장님 결정.
+- 배포: web(패널 숫자 = 문 숫자) · worker(self_board). 커밋 f3b113d · 1e702a5, push 안 함.
