@@ -214,3 +214,5 @@ Platformer Game · Dawn Hill · Cloud Bridge · Starlight Peak · Clear! · Game
 - 이 키로 열려 있는 다른 AI: **Lyria 3(음악)**, **Nano Banana(그림)**, Gemini 3.x Flash(글, 넉넉함), Computer Use Preview. "다른 AI 에 맡기기" 후보 목록에 넣는다.
 - 고침(배포): Veo 주문 사이 31초 띄우고 429 면 35초 뒤 한 번 더(`veo.ts`). 하루 10번은 결과물 원장에서 센다.
 - 사장님 결정 대기: 오늘 광고 외주 판을 Fast(≈$2.3) / Generate(≈$6, 소리·대사) / 내일 lite 중 무엇으로.
+
+**사장님 원문(09-25 17:0x): "난 필요없다고. 난 결제만 할게."** → 결정은 내가 한다. 내 결정: 광고 외주 판은 Fast(≈$2.3) — `VEO_TIER=fast` 로 바꿈(Railway 변수). Generate($6)는 다음 주. Out 그림 첫 판은 로키 제품 사실만으로 "단순한 마크 후보 3장, 두 색, 글자 없음" 으로 넣는다(그림 방향을 정한 건 나다 — 사장님이 결정을 안 하겠다고 하셨으므로).
