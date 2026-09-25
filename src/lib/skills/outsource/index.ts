@@ -11,7 +11,8 @@ import type { EmployeeSkill, SkillRunContext } from "@/lib/skills/types";
  *
  * 첫 조각은 **그림**: 로고·포스터·삽화. 접수 자가 "담당이 없다" 고 거절하던 자리다. 그림은 gpt-image-2 가 그린다 —
  * 로키가 하는 것은 셋뿐: 사람 말을 그림 AI 의 주문(영어 프롬프트)으로 옮기기 · 나온 파일을 **자로 재기**(개수·크기·화소) · 누가 만들었는지 적기.
- * 예쁜가는 자가 없다 — 사람 칸. 그림 AI 는 글자를 자주 틀리게 그리므로, 글자가 든 주문이면 그렇다고 결과에 적는다.
+ * 둘째 조각은 **글**: 광고 문구·슬로건·짧은 글. 글 모델이 쓰고, 로키는 개수·길이·숫자 출처·준 사실 사용을 잰다.
+ * 예쁜가·끌리나는 자가 없다 — 사람 칸. 그림 AI 는 글자를 자주 틀리게 그리므로, 글자가 든 주문이면 그렇다고 결과에 적는다.
  */
 const brief = z.object({
   prompt: z.string().describe("그림 AI 에 줄 영어 주문. 무엇이 보이나·구도·배경·색·스타일. 사람이 준 사실만. 상표·유명인 금지."),
@@ -23,6 +24,48 @@ const brief = z.object({
 type Brief = z.infer<typeof brief>;
 type Case = { name: string; result: "Passed" | "Failed"; message: string };
 
+/** 글 외주: 광고 문구·슬로건·짧은 글·초안. 만드는 건 글 모델, 로키는 주문·자·만든 이. */
+const textOut = z.object({
+  title: z.string().describe("무엇을 냈나 한 줄."),
+  items: z.array(z.string()).describe("주문한 개수만큼. 하나에 한 문구/단락. 사람이 준 사실만 — 없는 숫자·이름·약속 금지."),
+  why: z.string().describe("사람이 읽는 한 줄: 어떤 결로 썼나."),
+});
+type TextOut = z.infer<typeof textOut>;
+
+export function isImageAsk(ask: string): boolean { return /로고|그림|포스터|썸네일|삽화|이미지|일러스트|아이콘|배너/.test(ask); }
+/** "5개"·"3가지"·"7줄"·"문구 4개". 없으면 5. 1~20. */
+export function wantedCount(ask: string, fallback = 5): number {
+  const m = ask.match(/(\d{1,2})\s*(개|가지|줄|문구|편|안)/);
+  return m ? Math.max(1, Math.min(20, Number(m[1]))) : fallback;
+}
+/** 주문의 "- " 줄(쓸 수 있는 사실). Deck 과 같은 읽기. */
+export function askFacts(ask: string): string[] {
+  return ask.split("\n").map((l) => l.trim()).filter((l) => l.startsWith("- ")).map((l) => l.slice(2).trim()).filter((l) => l.length >= 4);
+}
+const tok = (t: string) => (t.match(/[가-힣A-Za-z0-9]{2,}/g) ?? []).map((w) => w.toLowerCase());
+
+/** 글 자 — 모델 0: 개수 · 길이(문구는 60자) · 숫자는 주문에 있는 것만 · 준 사실 사용. */
+export function judgeText(ask: string, out: TextOut, want: number): Case[] {
+  const c: Case[] = [];
+  c.push({ name: "개수_주문대로", result: out.items.length === want ? "Passed" : "Failed", message: `${out.items.length}개 (주문 ${want})` });
+  const isCopy = /문구|슬로건|카피|한 ?줄|제목/.test(ask);
+  if (isCopy) {
+    const long = out.items.filter((x) => x.length > 60).length;
+    c.push({ name: "문구_60자이하", result: long ? "Failed" : "Passed", message: long ? `${long}개가 60자 넘음` : "모두 60자 이하" });
+  }
+  const nums = [...new Set(out.items.join(" ").match(/\d+(?:[.,]\d+)?/g) ?? [])];
+  const askNums = new Set(ask.match(/\d+(?:[.,]\d+)?/g) ?? []);
+  const alien = nums.filter((n) => !askNums.has(n));
+  c.push({ name: "숫자_주문에_있는_것만", result: alien.length ? "Failed" : "Passed", message: alien.length ? `주문에 없는 숫자: ${alien.slice(0, 5).join(", ")}` : (nums.length ? "숫자 모두 주문에 있음" : "숫자 없음") });
+  const facts = askFacts(ask);
+  if (facts.length) {
+    const text = out.items.join(" ").toLowerCase();
+    const used = facts.filter((f) => { const t = tok(f); const hit = t.filter((w) => text.includes(w)).length; return t.length ? hit >= Math.min(2, t.length) && hit / t.length >= 0.4 : false; });
+    c.push({ name: "준_사실_사용", result: used.length * 2 >= facts.length ? "Passed" : "Failed", message: `준 사실 ${facts.length}개 중 ${used.length}개 쓰임` });
+  }
+  return c;
+}
+
 /** PNG 머리에서 가로·세로를 읽는다(IHDR, 16~24 바이트). 모델 0, 라이브러리 0. */
 export function pngSize(bytes: Uint8Array): { w: number; h: number } | null {
   if (bytes.length < 24 || bytes[0] !== 0x89 || bytes[1] !== 0x50) return null;
@@ -30,7 +73,7 @@ export function pngSize(bytes: Uint8Array): { w: number; h: number } | null {
   return { w: dv.getUint32(16), h: dv.getUint32(20) };
 }
 
-/** 자 — 모델 0. */
+/** 그림 자 — 모델 0. */
 export function judgeImages(b: Brief, files: { bytes: Uint8Array }[]): Case[] {
   const c: Case[] = [];
   c.push({ name: "장수_주문대로", result: files.length === b.variants ? "Passed" : "Failed", message: `${files.length}장 (주문 ${b.variants})` });
@@ -40,6 +83,59 @@ export function judgeImages(b: Brief, files: { bytes: Uint8Array }[]): Case[] {
   const wrong = files.map((f) => pngSize(f.bytes)).filter((d) => !d || d.w !== W || d.h !== H).length;
   c.push({ name: "화소_주문대로", result: wrong ? "Failed" : "Passed", message: wrong ? `${wrong}장이 ${b.size} 가 아님` : `모두 ${b.size}` });
   return c;
+}
+
+const verdictOf = (cases: Case[]) => {
+  const passed = cases.filter((k) => k.result === "Passed").length;
+  return { verdict: passed === cases.length ? "PASS" : passed * 2 >= cases.length ? "PARTIAL" : "FAIL", passed, failed: cases.length - passed, cases, scales: false, rate: Number((passed / Math.max(1, cases.length)).toFixed(4)) };
+};
+
+async function submit(ctx: SkillRunContext, title: string, type: string, markdown: string, content: unknown, model: string): Promise<string> {
+  const { data: saved, error } = await ctx.supabase.rpc("submit_generated_deliverable", {
+    p_execution_id: ctx.executionId, p_title: title, p_deliverable_type: type,
+    p_content_markdown: markdown, p_content_json: content, p_generation_model: model, p_citations: [],
+  });
+  if (error) throw new ExecutionError("DELIVERABLE_SAVE_FAILED", error.message);
+  const rpc = saved as { ok: boolean; reason?: string; deliverableId?: string };
+  if (!rpc.ok && !(rpc.reason === "already_submitted" && rpc.deliverableId)) throw new ExecutionError("DELIVERABLE_SAVE_FAILED", rpc.reason ?? "unknown");
+  return rpc.deliverableId as string;
+}
+
+async function runText(ctx: SkillRunContext, ask: string) {
+  const want = wantedCount(ask);
+  await setStep(ctx.supabase, ctx.executionId, "planning");
+  const write = (failed: string[]) => ctx.providers.ai.generateStructuredOutput({
+    systemInstructions: [
+      "너는 바깥 글 AI 다. 사람이 시킨 짧은 글(광고 문구·슬로건·소개 글·초안)을 한국어로 쓴다.",
+      `- 정확히 ${want}개. 하나에 한 문구/단락.`,
+      "- 사람이 준 사실만 쓴다. 주문에 없는 숫자·이름·기간·약속을 넣지 마라. '쓸 수 있는 사실' 줄이 있으면 그것으로만.",
+      "- 광고 문구·슬로건이면 60자 이하. 말투는 하나로.",
+      failed.length ? `지난 판에서 자에 걸린 것(고쳐서 다시): ${failed.join(" / ")}` : "",
+    ].filter(Boolean).join("\n"),
+    input: `주문: ${ask}`,
+    schema: textOut, schemaName: "text_outsource", maxTokens: 16000, tier: "judgment",
+  });
+  let r = await step(ctx.supabase, ctx.executionId, "text", async () => await write([]));
+  let out = r.output as TextOut;
+  await setStep(ctx.supabase, ctx.executionId, "verifying");
+  let cases = judgeText(ask, out, want);
+  if (cases.some((k) => k.result === "Failed")) {
+    const failed = cases.filter((k) => k.result === "Failed").map((k) => `${k.name}: ${k.message}`);
+    r = await step(ctx.supabase, ctx.executionId, "text2", async () => await write(failed));
+    out = r.output as TextOut; cases = judgeText(ask, out, want);
+  }
+  const v = verdictOf(cases);
+  const madeBy = (r as { model?: string }).model ?? ctx.providers.ai.model;
+  const markdown = [
+    `## ${out.title}`, "", `**이 글은 ${madeBy} 가 썼어요.** 로키는 주문을 옮기고 결과를 잰 것뿐이에요.`, `왜: ${out.why}`, "",
+    ...out.items.map((x, i) => `${i + 1}. ${x}`), "",
+    `## 자 (${v.passed}/${cases.length})`, "| 자 | 결과 | 메모 |", "|---|---|---|",
+    ...cases.map((k) => `| ${k.name} | ${k.result === "Passed" ? "✅" : "❌"} | ${k.message} |`),
+    "", "잘 읽히나·끌리나는 자가 없어요 — 사장님 눈으로. 마음에 드는 번호를 말해 주시면 그 결로 더 써요.",
+  ].join("\n");
+  const content = { kind: "text", items: out.items, madeBy, want, verdict: v, humanGate: ["잘 읽히나", "끌리나"] };
+  const deliverableId = await submit(ctx, out.title, "document", markdown, content, madeBy);
+  return { deliverableId, deliverableType: "document", metrics: { candidateCount: cases.length, selectedCount: v.passed, items: out.items.length } };
 }
 
 export const outsourceSkill: EmployeeSkill = {
@@ -53,12 +149,21 @@ export const outsourceSkill: EmployeeSkill = {
         "'로고 만들어 줘'·'포스터 그려 줘'·'썸네일 하나'·'그림 하나 뽑아 줘' 는 여기 / Make a logo or picture with an image model",
       produces: "PNG 1~3장(주문한 크기) + 그림 AI 에 준 주문 + 자(장 수·빈 그림·화소) + 누가 만들었는지",
     },
+    {
+      id: "outsource_text",
+      label:
+        "광고 문구·슬로건·짧은 글·초안을 바깥 글 AI 에 맡긴다 — 로키는 개수·길이·숫자 출처·준 사실 사용을 잰다. " +
+        "'인스타 광고 문구 5개'·'슬로건 3개'·'소개 글 한 단락' 은 여기 / Write ad copy or short text with a text model",
+      produces: "주문한 개수의 문구/단락 + 자(개수·길이·주문에 없는 숫자·준 사실) + 누가 만들었는지",
+    },
   ],
   acceptsInternalRequests: true,
 
   async run(ctx: SkillRunContext) {
     const ask = `${ctx.context.assignment.title}\n${ctx.context.assignment.description ?? ""}`;
-    if (ask.trim().length < 4) throw new ExecutionError("CONTEXT_INCOMPLETE", "무엇을 그릴지 한 줄이 필요하다.");
+    if (ask.trim().length < 4) throw new ExecutionError("CONTEXT_INCOMPLETE", "무엇을 만들지 한 줄이 필요하다.");
+    // 접수가 고른 능력 id 는 여기 안 온다 — 말의 낱말로 갈래를 정한다(로고·그림·포스터… 는 그림, 나머지는 글).
+    if (!isImageAsk(ask)) return runText(ctx, ask);
 
     await setStep(ctx.supabase, ctx.executionId, "planning");
     const b = (await step(ctx.supabase, ctx.executionId, "brief", async () => (await ctx.providers.ai.generateStructuredOutput({
@@ -91,37 +196,26 @@ export const outsourceSkill: EmployeeSkill = {
 
     await setStep(ctx.supabase, ctx.executionId, "verifying");
     const cases = judgeImages(b, files);
-    const passed = cases.filter((k) => k.result === "Passed").length;
+    const v = verdictOf(cases);
     const madeBy = files[0]?.model ?? "gpt-image-2";
     const markdown = [
       `## ${ctx.context.assignment.title}`, "",
       `**이 그림은 로키가 아니라 ${madeBy} 가 만들었어요.** 로키는 주문을 옮기고 결과를 잰 것뿐이에요.`, "",
       `그림 AI 에 준 주문: \`${b.prompt}\``, `왜: ${b.why}`,
       b.textInImage ? `그림 안 글자 요청: "${b.textInImage}" — 그림 AI 는 글자를 자주 틀리게 그려요. 글자는 꼭 확인하세요.` : "",
-      "", `## 자 (${passed}/${cases.length})`, "| 자 | 결과 | 메모 |", "|---|---|---|",
+      "", `## 자 (${v.passed}/${cases.length})`, "| 자 | 결과 | 메모 |", "|---|---|---|",
       ...cases.map((k) => `| ${k.name} | ${k.result === "Passed" ? "✅" : "❌"} | ${k.message} |`),
       errors.length ? `\n못 받은 장: ${errors.length} (${errors[0]?.slice(0, 80)})` : "",
       "", "예쁜가·쓸 만한가는 자가 없어요 — 사장님 눈으로. 마음에 드는 장을 말해 주시면 그 방향으로 더 뽑아요.",
-    ].filter((l) => l !== undefined).join("\n");
-    const content = {
-      brief: b, madeBy, variants: files.length, errors,
-      verdict: { verdict: passed === cases.length ? "PASS" : passed * 2 >= cases.length ? "PARTIAL" : "FAIL", passed, failed: cases.length - passed, cases, scales: false, rate: Number((passed / cases.length).toFixed(4)) },
-      humanGate: ["예쁜가", "쓸 만한가", "글자가 맞나"],
-    };
-    const { data: saved, error } = await ctx.supabase.rpc("submit_generated_deliverable", {
-      p_execution_id: ctx.executionId, p_title: ctx.context.assignment.title, p_deliverable_type: "image",
-      p_content_markdown: markdown, p_content_json: content, p_generation_model: madeBy, p_citations: [],
-    });
-    if (error) throw new ExecutionError("DELIVERABLE_SAVE_FAILED", error.message);
-    const rpc = saved as { ok: boolean; reason?: string; deliverableId?: string };
-    if (!rpc.ok && !(rpc.reason === "already_submitted" && rpc.deliverableId)) throw new ExecutionError("DELIVERABLE_SAVE_FAILED", rpc.reason ?? "unknown");
-    const deliverableId = rpc.deliverableId as string;
+    ].join("\n");
+    const content = { kind: "image", brief: b, madeBy, variants: files.length, errors, verdict: v, humanGate: ["예쁜가", "쓸 만한가", "글자가 맞나"] };
+    const deliverableId = await submit(ctx, ctx.context.assignment.title, "image", markdown, content, madeBy);
     for (const [i, f] of files.entries()) {
       await storeDeliverableFile(ctx.supabase, {
         companyId: ctx.execution.company_id, deliverableId, filename: `image-${i + 1}.png`, body: f.bytes, kind: "image", mimeType: "image/png",
         title: `그림 ${i + 1}/${files.length}`, description: b.prompt.slice(0, 200), producedByBackend: f.model,
       });
     }
-    return { deliverableId, deliverableType: "image", metrics: { candidateCount: cases.length, selectedCount: passed, images: files.length } };
+    return { deliverableId, deliverableType: "image", metrics: { candidateCount: cases.length, selectedCount: v.passed, images: files.length } };
   },
 };
