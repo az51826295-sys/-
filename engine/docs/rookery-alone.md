@@ -52,6 +52,13 @@
 - 부품: 두근도트 푸시(web-push·VAPID·sw.js)를 공용으로. 구독 표는 로키 프로젝트에 남아 있던 `dot_push_subs` 재사용(DDL 통로가 없어서 — 관리 토큰·psql·pg 셋 다 손에 없음). 코드: `src/lib/push/{send,client}.ts`, `/api/push`, `engine/tools/notify.mts`.
 - 안 되는 경우: 아이폰 사파리는 홈 화면에 추가한 뒤에만; 알림을 한 번 거절한 브라우저는 설정에서 풀어야 다시 묻는다.
 
+## 224회차(09-25 22:1x~22:4x) — 연습 고리를 서버 안으로 (사장님 "자동으로 만들고 싶은데 자동 몰라?")
+- 매일 연습(손님 AI 주문 3개 → 접수 → 일 → 자)이 **개발 워커 안에서** 돈다: `src/lib/genesis/practice.ts`, 스위치 `ROOKERY_PRACTICE=1`·`ROOKERY_PRACTICE_N=3`(개발 워커 변수). 한국 09시 뒤 첫 시간 눈금에 주문, 12시 뒤 첫 눈금에 "오늘 정리" 를 사장님 폰으로. **노트북이 꺼져 있어도 돈다.**
+- 자물쇠: 연습은 "오늘 만든 연습 업무가 있나", 정리는 service_heartbeat 의 `practice_summary` 줄(genesis_runs 의 kind 가 check 제약이라 새 종류를 못 넣음 — DDL 통로 없음).
+- 손 시험 `practice_probe.mts 1`: 주문 1 → Ana, 두 번째 부르면 "오늘 이미 돌았다"/"이미 보냈다". 값 $0.05.
+- 노트북 작업 스케줄러 `RookeryDailyCollect` 는 **껐다**(둘 다 돌면 하루 6판 = 두 배). 주간 `RookeryWeeklyNextWork`(제안 + 자가 고침 커밋)는 git 이 필요해 노트북에 남는다.
+- 아직 손: 자가 고침 코드의 배포(개발 서버 → 본 서버).
+
 ## 한도는 오늘부터 센다 (09-25 21:5x 폰 화면 "이번 기간 지출 한도에 걸려 있습니다" 뒤)
 `$14/30일` 이 지난 30일 지출($64)을 잡아 인사 한 줄도 못 보냈다. 숫자는 그대로 두고 **세는 시작점**을 오늘로: limit 모드에서 `companies.credits_started_at` 을 "한도 시작일" 로 쓴다(allowance.ts, 새 열을 만들 통로가 없어 빈 열을 빌림). 도구: `ROOKERY_ACCOUNT=owner … limit_start.mts`(시작점을 지금으로). 결과: 사장님 회사 $0.00/$14 열림. 다음 달에도 저절로 30일 창으로 굴러간다(시작점은 창보다 오래되면 무시).
 ## 아직 안 된 것 (정직하게)
