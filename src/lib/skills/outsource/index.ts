@@ -347,6 +347,7 @@ export const outsourceSkill: EmployeeSkill = {
         "- `prompt` 는 영어. 보이는 것만 적는다(무엇·구도·배경·색·스타일·빛). 사람이 준 사실만. 상표·유명인·실존 로고 금지.",
         "- 사람이 글자를 넣으라 했으면 `textInImage` 에 그 글자 그대로 적고 prompt 에도 넣는다. 그림 AI 는 글자를 자주 틀리게 그린다 — 그래도 시키는 대로.",
         "- 로고면 배경은 단순하게, 후보를 2~3장. 포스터·삽화면 1~2장.",
+        "- **한 장에 마크 하나.** 후보 수는 variants 로 정한다 — prompt 에 'three candidates' 처럼 여러 개를 시키지 마라(첫 판이 한 장에 셋을 그려 9개가 나왔다). prompt 는 'a single logo mark, centered' 로.",
         "- 사람이 크기·비율을 말했으면 size 를 그에 맞춘다. 안 말했으면 로고 1024x1024, 세로 포스터 1024x1536.",
         "- `why` 는 사람 말로 한 줄.",
       ].join("\n"),

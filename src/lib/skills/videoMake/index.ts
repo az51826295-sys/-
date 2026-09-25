@@ -252,7 +252,9 @@ export const videoMakeSkill: EmployeeSkill = {
     cases.push({ name: "자막_수_대본과_같다", result: srtCount === plan.scenes.length ? "Passed" : "Failed", message: `자막 ${srtCount} · 장면 ${plan.scenes.length}` });
     // 09-09 새 자 셋 — "화면에 글자가 있나" 를 재는 자가 없어서 빈 화면이 통과했다.
     const noText = plan.scenes.filter((s) => !s.heading.trim() || s.bullets.filter((b) => b.trim()).length === 0);
-    cases.push({ name: "화면_글자_있음", result: noText.length === 0 ? "Passed" : "Failed", message: `제목·본문이 빈 장면 ${noText.length}/${plan.scenes.length}` });
+    // 외주 모드는 글자 카드를 일부러 안 얹는다 — 이 자는 그 판에서 뜻이 없다(빈 장면이 곧 설계). 걸지 않고 그렇다고 적는다.
+    if (outsource) cases.push({ name: "화면_글자_있음", result: "Passed", message: "외주 모드(영상 AI 화면, 글자 카드 없음) — 이 자는 안 잰다" });
+    else cases.push({ name: "화면_글자_있음", result: noText.length === 0 ? "Passed" : "Failed", message: `제목·본문이 빈 장면 ${noText.length}/${plan.scenes.length}` });
     const tooLong = plan.scenes.flatMap((s) => [...(s.heading.length > 24 ? [s.heading] : []), ...s.bullets.filter((b) => b.length > 28)]);
     cases.push({ name: "화면_글자_안_넘침", result: tooLong.length === 0 ? "Passed" : "Failed", message: tooLong.length === 0 ? "제목 ≤24자 · 본문 줄 ≤28자" : `넘친 줄 ${tooLong.length}: ${tooLong[0].slice(0, 30)}` });
     if (source) {
