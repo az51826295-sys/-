@@ -37,3 +37,7 @@ console.log(`④' 대본 심판: 돎 ${sjRan} · 못 돎(null) ${sjNull} (심판
   }
   console.log("⑤ 새 직원 자 통과율: " + (Object.entries(t).map(([k, v]) => `${k} ${v.n}판 ${v.total ? Math.round((v.pass / v.total) * 100) : "-"}%`).join(" · ") || "없음"));
 }
+
+const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+const { count: boardCount } = await db.from("deliverables").select("id", { count: "exact", head: true }).gte("created_at", sevenDaysAgo).eq("content_json->>kind", "board");
+console.log(`⑥ 현황판 판 수: ${boardCount ?? 0}`);
