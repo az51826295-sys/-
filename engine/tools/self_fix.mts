@@ -107,6 +107,7 @@ git("add", ...changed);
 git("commit", "-q", "-m", `self-fix: ${p.이름.slice(0, 60)}${NL}${NL}근거: ${p.근거.slice(0, 200)}${NL}자: ${p.자.slice(0, 200)}${NL}문: ${gate.join(" · ")}${NL}${NL}로키 자가 고침(engine/tools/self_fix.mts)`);
 const sha = git("rev-parse", "--short", "HEAD");
 record(`커밋 ${sha}`, changed, r.changedLines, judge, usd);
+try { const { pushToUser } = await import("../../src/lib/push/send"); const { OWNER } = await import("./company.mjs"); const db2 = createServiceClient(); const { data: us } = await db2.auth.admin.listUsers({ perPage: 200 }); const u = us.users.find((x) => x.email === OWNER.ownerEmail); if (u) await pushToUser(db2, u.id, { title: "로키 — 스스로 고쳤어요", body: `${p.이름.slice(0, 70)} (커밋 ${sha}, 배포는 아직)`, tag: "self-fix" }); } catch { /* 알림은 덤 */ }
 log(`${NL}커밋 ${sha} — push·배포는 안 했다. 배포하려면: sh engine/tools/deploy.sh rookery-worker (웹이면 rookery-web)`);
 
 async function spent() { const db = createServiceClient(); const { data } = await db.from("model_usage").select("cost_usd").eq("company_id", CO).gte("created_at", new Date(t0).toISOString()).limit(500); return ((data ?? []) as { cost_usd: number }[]).reduce((s, u) => s + Number(u.cost_usd ?? 0), 0); }

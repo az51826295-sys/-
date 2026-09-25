@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Icon from "@/components/Icon";
 import BuyCredits from "./BuyCredits";
 import Learned from "./Learned";
+import { disablePush, enablePush, pushState, type PushState } from "@/lib/push/client";
 
 type Saved = { id: string; title: string | null; mode: string; updated_at: string };
 /**
@@ -31,6 +32,14 @@ export default function AskShell({
   const [deleting, setDeleting] = useState(false);
   /** 폰으로 이어하기(99회차): 서버가 만든 QR 과 만료 시각. */
   const [handoff, setHandoff] = useState<{ svg: string; until: number } | null>(null);
+  // 223회차: 폰 알림. 상태는 메뉴를 열 때 읽는다(서비스 워커 조회라 처음 그릴 때 안 한다).
+  const [push, setPush] = useState<PushState | "loading" | null>(null);
+  useEffect(() => { if (open && push === null) void pushState().then(setPush); }, [open, push]);
+  async function togglePush() {
+    if (push === "loading") return;
+    const was = push; setPush("loading");
+    try { setPush(was === "on" ? await disablePush() : await enablePush()); } catch { setPush(was); }
+  }
   const [handoffErr, setHandoffErr] = useState<string | null>(null);
   const [now, setNow] = useState(() => Date.now());
   useEffect(() => {
@@ -194,6 +203,17 @@ export default function AskShell({
                   </p>
                   <BuyCredits />
                   <Learned />
+                  <button
+                    type="button"
+                    onClick={() => void togglePush()}
+                    disabled={push === "unsupported" || push === "denied" || push === "loading"}
+                    className="w-full px-3 py-2 text-left text-sm hover:bg-[var(--rk-100)] disabled:opacity-60"
+                  >
+                    {push === "on" ? "알림 끄기" : "알림 켜기"}
+                    <span className="block text-[11px] text-[var(--rk-400)]">
+                      {push === "on" ? "일이 끝나거나 아침 정리가 오면 이 기기로 알려요" : push === "denied" ? "이 브라우저에서 알림이 막혀 있어요 — 설정에서 풀어야 해요" : push === "unsupported" ? "이 브라우저는 알림을 못 받아요 — 폰 앱에서 켜 주세요" : push === "loading" ? "잠시만요" : "일 끝남·아침 정리·자가 고침을 이 기기로 받아요"}
+                    </span>
+                  </button>
                   <button
                     type="button"
                     onClick={() => void openHandoff()}
