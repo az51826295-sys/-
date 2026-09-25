@@ -1,0 +1,26 @@
+{
+  "at": "2026-09-25T08:50:04.976Z",
+  "dry": false,
+  "rows": [
+    {
+      "kind": "분석",
+      "ask": "레벨 디자인 강연과 글을 바탕으로 별빛 플랫포머의 세 무대에 적용할 수 있는 원칙을 정리해 줘. 초보자도 이해하게 핵심, 적용 방법, 개선 아이디어 순서로 써 줘.\n- https://www.youtube.com/watch?v=09r1B9cVEQY\n- https://80.lv/articles/level-design-workshop-blockmesh-and-lighting-tips",
+      "why": "게임을 직접 고치기 전에 수행평가와 홍보에 쓸 수 있는 설계 근거가 필요하다.",
+      "capabilityId": "analysis_sources",
+      "reply": "",
+      "assignmentId": "2b857ee4-9603-4498-a5b2-2244bb245e75",
+      "hired": null,
+      "note": "Ana"
+    },
+    {
+      "kind": "번역",
+      "ask": "별빛 플랫포머의 화면 글자를 자연스러운 영어로 번역해 줘. 게임 UI에 바로 넣을 수 있게 원문과 번역을 한 줄씩 짝지어 줘.\n- 플랫포머 게임\n- 새벽의 언덕\n- 구름 다리\n- 별빛 정상\n- 클리어!\n- 게임 오버\n- 모든 목숨을 잃었습니다.\n- 3개의 스테이지를 모두 통과했습니다!\n- 다시 플레이\n- 처음부터 다시 시작\n- 터치 조작",
+      "why": "브라우저 게임을 영어권 친구들에게도 보여 주려면 화면 문구부터 자연스럽게 바꿔야 한다.",
+      "capabilityId": "outsource_translate",
+      "reply": "",
+      "assignmentId": "422f49fa-77f3-448d-b5a0-eaecf2d18fd4",
+      "hired": null,
+      "note": "Out"
+    }
+  ]
+}
