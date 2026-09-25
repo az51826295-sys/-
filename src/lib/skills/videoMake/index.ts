@@ -9,7 +9,7 @@ import { judgeAppeal, JUDGE_MAX_IMAGES, type Appeal } from "@/lib/genesis/judge"
 import { frameStyle, styleLine } from "@/lib/video/style";
 import { lookSchema, safeLook, lookLine } from "@/lib/video/look";
 import { makeClip } from "@/lib/providers/sora";
-import { makeVeoClip, veoConfigured, VEO_USD_PER_SECOND, type VeoTier } from "@/lib/providers/veo";
+import { makeVeoClip, veoConfigured, nearestVeoSeconds, VEO_USD_PER_SECOND, type VeoTier } from "@/lib/providers/veo";
 import { speechRate, speechLine } from "@/lib/video/speechRate";
 import type { EmployeeSkill, SkillRunContext } from "@/lib/skills/types";
 
@@ -169,6 +169,11 @@ export const videoMakeSkill: EmployeeSkill = {
     const useVeo = veoConfigured() && process.env.VIDEO_PROVIDER !== "sora";
     const veoTier = ((process.env.VEO_TIER as VeoTier | undefined) ?? "lite");
     let footageModel = useVeo ? `veo-3.1-${veoTier}` : "sora-2";
+    // 216회차 09-25 사장님 "못하는 건 다른 AI 한테 맡겨, 영상도": **외주 모드** — 장면을 카드+클립 조립이 아니라
+    // 영상 AI 가 통째로 만든 화면으로 낸다(글자 카드 없음, 장면 길이만큼 산다). 목소리(TTS)·자막·자·심판은 그대로 우리가.
+    // 켜는 법: 주문에 '통째로/외주/영상 AI/맡겨' 또는 VIDEO_OUTSOURCE=1. 값은 VEO_TIER 가 정한다(lite 소리 없음 $0.05/s · fast $0.15 · full $0.40).
+    const outsource = /통째로|외주|영상 ?AI|맡겨/.test(ask) || process.env.VIDEO_OUTSOURCE === "1";
+    if (outsource) console.log(`[video] 외주 모드: 장면은 영상 AI(${footageModel})가 통째로, 글자 카드 없음`);
     let footageUsd = 0;
     for (const [i, sc] of plan.scenes.entries()) {
       const speech = await openai.audio.speech.create({ model: "gpt-4o-mini-tts", voice: "alloy", input: sc.narration, response_format: "mp3" });
@@ -184,10 +189,13 @@ export const videoMakeSkill: EmployeeSkill = {
        * 영상이 아예 안 나오는 것보다 낫다. 문이 아니다.
        */
       let clip: Uint8Array | undefined;
-      const wantsFootage = sc.footage.trim().length > 0;
+      const wantsFootage = outsource || sc.footage.trim().length > 0;
+      // 외주 모드: 대본이 화면을 안 적은 장면도 영상 AI 에게 — 제목·글머리를 장면 설명으로 준다. 길이는 장면의 초(4·6·8 로 맞춤).
+      const footagePrompt = sc.footage.trim() || `Cinematic advertisement shot, no on-screen text: ${sc.heading}. ${sc.bullets.join(". ")}`;
+      const clipSec = outsource ? nearestVeoSeconds(sc.seconds) : 4;
       if (wantsFootage && process.env.GENESIS_SPEND === "i-approve") {
         try {
-          const made = useVeo ? await makeVeoClip({ prompt: sc.footage.trim(), seconds: 4, tier: veoTier }) : await makeClip({ prompt: sc.footage.trim(), seconds: 4 });
+          const made = useVeo ? await makeVeoClip({ prompt: footagePrompt, seconds: clipSec, tier: veoTier }) : await makeClip({ prompt: footagePrompt, seconds: clipSec });
           clip = made.mp4;
           soraSeconds += made.seconds;
           footageModel = made.model;
@@ -204,7 +212,7 @@ export const videoMakeSkill: EmployeeSkill = {
       } else if (wantsFootage) {
         console.log(`[video] 장면 ${i + 1} 화면을 적었지만 지출이 안 켜져 있다 — 글자 카드로 간다`);
       }
-      scenes.push({ audio, caption: sc.narration, title: sc.heading, lines: sc.bullets, cite: sc.cite || undefined, clip });
+      scenes.push({ audio, caption: sc.narration, title: outsource && clip ? "" : sc.heading, lines: outsource && clip ? [] : sc.bullets, cite: outsource && clip ? undefined : (sc.cite || undefined), clip });
       console.log(`[video] 장면 ${i + 1}/${plan.scenes.length} 목소리 ${audio.length} B · 글자 ${sc.heading} / ${sc.bullets.length}줄`);
     }
 
@@ -356,7 +364,7 @@ export const videoMakeSkill: EmployeeSkill = {
       ] : []),
       `재미와 말맛은 사람이 봐요. 첫 5초·중간 사진이 붙어 있어요. 고칠 장면을 말해 주면 그 장면만 다시 만들어요.`,
     ].join("\n");
-    const content = { script: plan, durations: a.durations, total: a.total, verdict, look, judge: judgeNote, judgeBy, scriptJudge, workModel: ctx.providers.ai.model, source: source ? { id: source.id, title: source.title } : null, filesPending: true };
+    const content = { script: plan, durations: a.durations, total: a.total, verdict, look, judge: judgeNote, judgeBy, scriptJudge, outsourced: outsource ? { model: footageModel, tier: useVeo ? veoTier : "sora" } : null, workModel: ctx.providers.ai.model, source: source ? { id: source.id, title: source.title } : null, filesPending: true };
     const { data: saved, error } = await ctx.supabase.rpc("submit_generated_deliverable", {
       p_execution_id: ctx.executionId, p_title: plan.title, p_deliverable_type: "video",
       p_content_markdown: markdown, p_content_json: content, p_generation_model: ctx.providers.ai.model, p_citations: [],
