@@ -199,7 +199,10 @@ export async function ensureKnowledgeProfile(
   const companySummary =
     `회사 이름: ${company?.name ?? "(없음)"}` +
     (company?.website ? ` · ${company.website}` : "") +
-    (learned ? `\n\n대화에서 알게 된 것:\n${learned}` : `\n\n${NOT_TOLD_YET}`);
+    // 218회차 09-25: '대화에서 알게 된 것'(대부분 검사·작업 규칙)이 회사 소개 칸에 들어가 있어, 발표 자료 직원이 그걸 회사 소개로 읽고 유니티 메모로 8장을 채웠다.
+    // 회사 소개는 이름·주소만, 배운 것은 additional_context 로 — 일 프롬프트(prompts.ts)는 둘 다 읽는다.
+    (learned ? "" : String.fromCharCode(10) + String.fromCharCode(10) + NOT_TOLD_YET);
+  const additionalContext = learned ? "대화에서 알게 된 것:" + String.fromCharCode(10) + learned : null;
 
   await db.from("employee_knowledge_profiles").insert({
     company_employee_id: companyEmployeeId,
@@ -209,7 +212,7 @@ export async function ensureKnowledgeProfile(
     differentiation_summary: null,
     competitors: [],
     priorities: [],
-    additional_context: null,
+    additional_context: additionalContext,
     role_knowledge_json: null,
   });
 }
