@@ -43,6 +43,8 @@ await releaseEmployee(db, ce.id as string);
 const { data: a, error: ae } = await db.from("assignments").insert({
   company_id: co.id, company_employee_id: ce.id, title: title.slice(0, 120), description: ask,
   status: "queued", priority: "normal", source_type: "manual", assignment_type: "manager", assignment_scope: "manager",
+  // 217회차: --source <결과물 id> 면 재료 결과물을 싣는다(자막 번역처럼 앞 판의 파일을 쓰는 일).
+  ...(arg("source") ? { role_input_json: { sourceDeliverableId: arg("source") } } : {}),
 }).select("id").single();
 if (ae || !a) throw ae ?? new Error("업무 못 만듦");
 

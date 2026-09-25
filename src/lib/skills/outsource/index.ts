@@ -3,7 +3,7 @@ import { ExecutionError, setStep } from "@/lib/execution/shared";
 import { step } from "@/lib/execution/steps";
 import { createImageProvider, type ImageSize } from "@/lib/providers/images";
 import { recordUsage } from "@/lib/costs/meter";
-import { storeDeliverableFile } from "@/lib/deliverables/files";
+import { storeDeliverableFile, loadDeliverableFiles, BUCKET } from "@/lib/deliverables/files";
 import type { EmployeeSkill, SkillRunContext } from "@/lib/skills/types";
 
 /**
@@ -205,6 +205,78 @@ async function runTranslate(ctx: SkillRunContext, ask: string) {
   return { deliverableId, deliverableType: "document", metrics: { candidateCount: cases.length, selectedCount: v.passed, items: out.items.length } };
 }
 
+/** 자막(SRT) 번역(217회차, gap_ask 2번): 앞 판 영상의 subtitles.srt 를 큐마다 옮긴다. 시각은 그대로(다시 조립하므로 구조상 같다). */
+const TIME_LINE = new RegExp("^([0-9:,]+) --> ([0-9:,]+)");
+export type Cue = { idx: string; time: string; text: string };
+export function parseSrt(srt: string): Cue[] {
+  const blocks = srt.split(String.fromCharCode(13)).join("").split(String.fromCharCode(10) + String.fromCharCode(10)).map((b) => b.trim()).filter(Boolean);
+  const cues: Cue[] = [];
+  for (const b of blocks) {
+    const lines = b.split(String.fromCharCode(10));
+    const t = lines.findIndex((l) => TIME_LINE.test(l));
+    if (t < 0) continue;
+    cues.push({ idx: lines.slice(0, t).join(" ").trim() || String(cues.length + 1), time: lines[t].trim(), text: lines.slice(t + 1).join(" ").trim() });
+  }
+  return cues;
+}
+export function buildSrt(cues: Cue[], texts: string[]): string {
+  const NL = String.fromCharCode(10);
+  return cues.map((c, i) => `${i + 1}${NL}${c.time}${NL}${texts[i] ?? ""}${NL}`).join(NL);
+}
+async function loadSrtOf(ctx: SkillRunContext, deliverableId: string): Promise<{ path: string; srt: string } | null> {
+  const files = await loadDeliverableFiles(ctx.supabase, deliverableId);
+  const f = files.find((x) => x.storagePath.endsWith(".srt"));
+  if (!f) return null;
+  const { data, error } = await ctx.supabase.storage.from(BUCKET).download(f.storagePath);
+  if (error || !data) return null;
+  return { path: f.storagePath, srt: await data.text() };
+}
+async function runSubtitles(ctx: SkillRunContext, ask: string, sourceId: string) {
+  const src = await loadSrtOf(ctx, sourceId);
+  if (!src) throw new ExecutionError("CONTEXT_INCOMPLETE", "재료 결과물에 자막(.srt) 파일이 없다.");
+  const cues = parseSrt(src.srt);
+  if (!cues.length) throw new ExecutionError("CONTEXT_INCOMPLETE", "자막에 큐가 하나도 없다.");
+  const limit = charLimit(ask);
+  const srcLines = cues.map((c) => c.text);
+  const listed = ask + String.fromCharCode(10) + String.fromCharCode(10) + "자막 줄:" + String.fromCharCode(10) + srcLines.map((l) => "- " + l).join(String.fromCharCode(10));
+  await setStep(ctx.supabase, ctx.executionId, "planning");
+  const write = (failed: string[]) => ctx.providers.ai.generateStructuredOutput({
+    systemInstructions: [
+      "너는 바깥 번역 AI 다. 영상 자막의 줄을 순서대로, 줄마다 하나씩 옮긴다. 합치거나 빼지 마라.",
+      "- `src` 는 원문 글자 그대로. `out` 은 옮긴 글. 숫자·{n}·%s 는 그대로.",
+      limit ? `- 옮긴 글은 ${limit}자 이하.` : "- 자막이므로 짧게, 한 줄에 읽히게.",
+      failed.length ? `지난 판에서 자에 걸린 것(고쳐서 다시): ${failed.join(" / ")}` : "",
+    ].filter(Boolean).join(String.fromCharCode(10)),
+    input: `주문: ${listed}`,
+    schema: transOut, schemaName: "srt_translate", maxTokens: 16000, tier: "judgment",
+  });
+  let r = await step(ctx.supabase, ctx.executionId, "srt", async () => await write([]));
+  let out = r.output as TransOut;
+  await setStep(ctx.supabase, ctx.executionId, "verifying");
+  let cases = judgeTranslate(listed, out, srcLines, limit);
+  if (cases.some((k) => k.result === "Failed")) {
+    const failed = cases.filter((k) => k.result === "Failed").map((k) => `${k.name}: ${k.message}`);
+    r = await step(ctx.supabase, ctx.executionId, "srt2", async () => await write(failed));
+    out = r.output as TransOut; cases = judgeTranslate(listed, out, srcLines, limit);
+  }
+  const rebuilt = buildSrt(cues, out.items.map((it) => it.out));
+  const rebuiltCues = parseSrt(rebuilt);
+  cases.push({ name: "큐_수_같음", result: rebuiltCues.length === cues.length ? "Passed" : "Failed", message: `${rebuiltCues.length}큐 (원본 ${cues.length})` });
+  cases.push({ name: "시각_그대로", result: rebuiltCues.every((c, i) => c.time === cues[i]?.time) ? "Passed" : "Failed", message: "시작·끝 시각이 원본과 같음" });
+  const v = verdictOf(cases);
+  const madeBy = (r as { model?: string }).model ?? ctx.providers.ai.model;
+  const markdown = [
+    `## ${out.title}`, "", `**이 자막 번역은 ${madeBy} 가 했어요.** 시각은 원본 그대로, 로키는 줄 수·숫자·자리표시자·시각을 잰 것뿐이에요.`, `왜: ${out.why}`, "",
+    "| 시각 | 원문 | 옮긴 글 |", "|---|---|---|", ...cues.map((c, i) => `| ${c.time.replace(" --> ", "→")} | ${c.text} | ${out.items[i]?.out ?? ""} |`), "",
+    `## 자 (${v.passed}/${cases.length})`, "| 자 | 결과 | 메모 |", "|---|---|---|", ...cases.map((k) => `| ${k.name} | ${k.result === "Passed" ? "✅" : "❌"} | ${k.message} |`),
+    "", "자연스러운가는 자가 없어요 — 사장님 눈으로. 파일은 아래에 붙어요.",
+  ].join(String.fromCharCode(10));
+  const content = { kind: "subtitles", source: sourceId, cues: cues.length, items: out.items, madeBy, limit, verdict: v, humanGate: ["자연스러운가"] };
+  const deliverableId = await submit(ctx, out.title, "document", markdown, content, madeBy);
+  await storeDeliverableFile(ctx.supabase, { companyId: ctx.execution.company_id, deliverableId, filename: "subtitles.translated.srt", body: new TextEncoder().encode(rebuilt), kind: "document", mimeType: "text/plain", title: "옮긴 자막 (SRT)", description: `원본 ${src.path}`, producedByBackend: madeBy });
+  return { deliverableId, deliverableType: "document", metrics: { candidateCount: cases.length, selectedCount: v.passed, items: cues.length } };
+}
+
 export const outsourceSkill: EmployeeSkill = {
   id: "outsource",
   deliverableType: "image",
@@ -227,7 +299,7 @@ export const outsourceSkill: EmployeeSkill = {
       id: "outsource_translate",
       label:
         "문구 번역·현지화(게임 UI·버튼·오류 메시지 등)를 바깥 번역 AI 에 맡긴다 — 줄마다 옮기고 로키가 개수·숫자·자리표시자·글자 수 제한을 잰다. " +
-        "'이 문구들 영어로 번역해 줘'·'버튼 글자 현지화' 는 여기 / Translate or localize UI strings line by line",
+        "'이 문구들 영어로 번역해 줘'·'버튼 글자 현지화'·'이 영상 자막 영어로' 는 여기 / Translate or localize UI strings or subtitles line by line",
       produces: "원문·옮긴 글 표 + 자(개수·순서·빈 줄·원문 그대로 아님·숫자·자리표시자·글자 수) + 누가 만들었는지",
     },
   ],
@@ -238,6 +310,8 @@ export const outsourceSkill: EmployeeSkill = {
     if (ask.trim().length < 4) throw new ExecutionError("CONTEXT_INCOMPLETE", "무엇을 만들지 한 줄이 필요하다.");
     // 217회차: 접수가 고른 능력 id 가 오면 그것으로 가른다. 없으면(도구로 넣은 판) 말의 낱말로.
     const capId = (ctx.context.roleInput as { capabilityId?: string | null } | null)?.capabilityId ?? null;
+    const sourceId = (ctx.context.roleInput as { sourceDeliverableId?: string | null } | null)?.sourceDeliverableId ?? null;
+    if (sourceId && /자막|srt/i.test(ask)) return runSubtitles(ctx, ask, sourceId);
     if (capId === "outsource_translate" || (!capId && isTranslateAsk(ask))) return runTranslate(ctx, ask);
     const image = capId ? capId === "outsource_image" : isImageAsk(ask);
     if (!image) return runText(ctx, ask);
