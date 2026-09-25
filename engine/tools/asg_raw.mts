@@ -1,0 +1,14 @@
+const { createServiceClient } = await import("../../src/lib/supabase/service");
+const db = createServiceClient();
+const { data: a } = await db.from("assignments").select("title, description").eq("id", process.argv[2]).maybeSingle();
+console.log("제목:", JSON.stringify(a?.title));
+console.log("설명(JSON):", JSON.stringify(a?.description).slice(0, 600));
+const { givenFacts } = await import("../../src/lib/skills/slidesMake/index");
+const NL = String.fromCharCode(10);
+console.log("givenFacts →", JSON.stringify(givenFacts(`${a?.title}${NL}${a?.description ?? ""}`)));
+const { data: p } = await db.from("employee_knowledge_profiles").select("company_summary, customer_summary, problem_summary, company_employee_id").limit(50);
+const { data: ce } = await db.from("company_employees").select("id, employees(slug)").eq("company_id", "5925c03a-557f-46d7-8589-7388b769df40");
+const deckCe = ((ce ?? []) as Record<string, any>[]).find((r) => r.employees?.slug === "deck")?.id;
+const prof = ((p ?? []) as Record<string, any>[]).find((r) => r.company_employee_id === deckCe);
+console.log("Deck 지식 카드 — 회사:", JSON.stringify(prof?.company_summary).slice(0, 400));
+console.log("  고객:", JSON.stringify(prof?.customer_summary).slice(0, 200), "| 문제:", JSON.stringify(prof?.problem_summary).slice(0, 200));

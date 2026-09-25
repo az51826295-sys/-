@@ -12,7 +12,8 @@ const { createServiceClient } = await import("../../src/lib/supabase/service");
 const arg = (k: string) => { const i = process.argv.indexOf(`--${k}`); return i > 0 ? process.argv[i + 1] : null; };
 const slug = arg("employee") ?? "vid";
 const title = arg("title") ?? "";
-const ask = arg("ask") ?? "";
+// 214회차 09-25: 여러 줄 주문을 --ask 로 넘기면 Windows 에서 **첫 줄바꿈에서 잘려** 첫 줄만 저장됐다(광고 A1·Deck 판 셋이 다 그랬다). 파일로 받는다.
+const ask = arg("ask-file") ? (await import("node:fs")).readFileSync(arg("ask-file")!, "utf8") : (arg("ask") ?? "");
 const RUN = process.argv.includes("--run");
 if (!title || !ask) throw new Error("--title 과 --ask 가 필요하다");
 
