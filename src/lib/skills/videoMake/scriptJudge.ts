@@ -33,7 +33,7 @@ export async function judgeScript(ai: AIProvider, o: { ask: string; scenes: Scen
       "답은 JSON 하나.",
     ].join("\n"),
     input: `## 지시문(사람이 한 말 그대로)\n${o.ask}\n\n## 대본\n${scriptText(o.scenes)}`,
-    schema: scriptVerdictSchema, schemaName: "script_verdict", maxTokens: 6000, tier: "judgment",
+    schema: scriptVerdictSchema, schemaName: "script_verdict", maxTokens: 16000, tier: "judgment",   // 6000 은 라우터의 생각 모드(deepseek-pro)에 잘렸다(첫 서버 판 TRUNCATED) — 예측자·계획과 같은 함정
   });
   return { verdict: output, model };
 }
