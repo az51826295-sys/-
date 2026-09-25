@@ -138,6 +138,73 @@ async function runText(ctx: SkillRunContext, ask: string) {
   return { deliverableId, deliverableType: "document", metrics: { candidateCount: cases.length, selectedCount: v.passed, items: out.items.length } };
 }
 
+/** 번역·현지화(217회차): 주문의 "- " 줄을 그대로 옮긴다. 만드는 건 글 모델, 로키는 개수·빈 줄·숫자·자리표시자·글자 수 제한·원문 그대로 아님을 잰다. */
+const transOut = z.object({
+  title: z.string().describe("무엇을 옮겼나 한 줄."),
+  items: z.array(z.object({ src: z.string().describe("원문 그대로"), out: z.string().describe("옮긴 글") })).describe("주문의 줄마다 하나, 순서대로."),
+  why: z.string().describe("사람이 읽는 한 줄: 어떤 결로 옮겼나."),
+});
+type TransOut = z.infer<typeof transOut>;
+export function isTranslateAsk(ask: string): boolean { return /번역|현지화|영어로|일본어로|중국어로|translate|localiz/i.test(ask); }
+/** "24자 이하"·"20 chars" → 24. 없으면 0(제한 없음). */
+export function charLimit(ask: string): number { const m = ask.match(/([0-9]{1,3})\s*(자|글자|chars?)\s*(이하|안|이내|max)?/); return m ? Number(m[1]) : 0; }
+const PLACEHOLDER = new RegExp("[{][0-9A-Za-z_]+[}]|%[sd]|<[^>]+>", "g");
+const DIGITS = new RegExp("[0-9]+", "g");
+export function judgeTranslate(ask: string, out: TransOut, srcLines: string[], limit: number): Case[] {
+  const c: Case[] = [];
+  c.push({ name: "개수_같음", result: out.items.length === srcLines.length ? "Passed" : "Failed", message: `${out.items.length}줄 (원문 ${srcLines.length})` });
+  const order = out.items.filter((it, i) => srcLines[i] !== undefined && it.src.trim() !== srcLines[i].trim()).length;
+  c.push({ name: "원문_순서대로", result: order ? "Failed" : "Passed", message: order ? `${order}줄의 원문이 주문과 다름` : "원문 줄이 주문과 같음" });
+  const empty = out.items.filter((it) => !it.out.trim()).length;
+  c.push({ name: "빈_줄_없음", result: empty ? "Failed" : "Passed", message: empty ? `${empty}줄이 비었음` : "빈 줄 없음" });
+  const same = out.items.filter((it) => /[가-힣]/.test(it.src) && it.out.trim() === it.src.trim()).length;
+  c.push({ name: "원문_그대로_아님", result: same ? "Failed" : "Passed", message: same ? `${same}줄이 원문 그대로` : "모두 옮김" });
+  const numBad = out.items.filter((it) => (it.src.match(DIGITS) ?? []).join(",") !== (it.out.match(DIGITS) ?? []).join(",")).length;
+  c.push({ name: "숫자_보존", result: numBad ? "Failed" : "Passed", message: numBad ? `${numBad}줄의 숫자가 다름` : "숫자 그대로" });
+  const phBad = out.items.filter((it) => (it.src.match(PLACEHOLDER) ?? []).sort().join(",") !== (it.out.match(PLACEHOLDER) ?? []).sort().join(",")).length;
+  c.push({ name: "자리표시자_보존", result: phBad ? "Failed" : "Passed", message: phBad ? `${phBad}줄의 {n}·%s·<태그> 가 다름` : "자리표시자 그대로" });
+  if (limit) { const long = out.items.filter((it) => it.out.length > limit).length; c.push({ name: `글자수_${limit}자이하`, result: long ? "Failed" : "Passed", message: long ? `${long}줄이 ${limit}자 넘음` : `모두 ${limit}자 이하` }); }
+  return c;
+}
+async function runTranslate(ctx: SkillRunContext, ask: string) {
+  const srcLines = askFacts(ask);
+  if (!srcLines.length) throw new ExecutionError("CONTEXT_INCOMPLETE", "옮길 문구가 없다. 한 줄에 하나씩 '- ' 로 적어야 한다.");
+  const limit = charLimit(ask);
+  await setStep(ctx.supabase, ctx.executionId, "planning");
+  const write = (failed: string[]) => ctx.providers.ai.generateStructuredOutput({
+    systemInstructions: [
+      "너는 바깥 번역 AI 다. 주문의 '- ' 줄을 순서대로, 줄마다 하나씩 옮긴다. 합치거나 빼지 마라.",
+      "- `src` 는 원문 글자 그대로. `out` 은 옮긴 글. 숫자·{n}·%s·<태그> 는 그대로 둔다.",
+      limit ? `- 옮긴 글은 ${limit}자 이하. 넘치면 더 짧은 말을 고른다.` : "",
+      "- 주문이 말한 말투(예: 게임 UI, 짧게)를 따른다. 설명을 덧붙이지 마라.",
+      failed.length ? `지난 판에서 자에 걸린 것(고쳐서 다시): ${failed.join(" / ")}` : "",
+    ].filter(Boolean).join(String.fromCharCode(10)),
+    input: `주문: ${ask}`,
+    schema: transOut, schemaName: "text_translate", maxTokens: 16000, tier: "judgment",
+  });
+  let r = await step(ctx.supabase, ctx.executionId, "translate", async () => await write([]));
+  let out = r.output as TransOut;
+  await setStep(ctx.supabase, ctx.executionId, "verifying");
+  let cases = judgeTranslate(ask, out, srcLines, limit);
+  if (cases.some((k) => k.result === "Failed")) {
+    const failed = cases.filter((k) => k.result === "Failed").map((k) => `${k.name}: ${k.message}`);
+    r = await step(ctx.supabase, ctx.executionId, "translate2", async () => await write(failed));
+    out = r.output as TransOut; cases = judgeTranslate(ask, out, srcLines, limit);
+  }
+  const v = verdictOf(cases);
+  const madeBy = (r as { model?: string }).model ?? ctx.providers.ai.model;
+  const markdown = [
+    `## ${out.title}`, "", `**이 번역은 ${madeBy} 가 했어요.** 로키는 주문을 옮기고 결과를 잰 것뿐이에요.`, `왜: ${out.why}`, "",
+    "| 원문 | 옮긴 글 |", "|---|---|", ...out.items.map((it) => `| ${it.src} | ${it.out} |`), "",
+    `## 자 (${v.passed}/${cases.length})`, "| 자 | 결과 | 메모 |", "|---|---|---|",
+    ...cases.map((k) => `| ${k.name} | ${k.result === "Passed" ? "✅" : "❌"} | ${k.message} |`),
+    "", "자연스러운가는 자가 없어요 — 사장님 눈으로.",
+  ].join(String.fromCharCode(10));
+  const content = { kind: "translate", items: out.items, madeBy, limit, verdict: v, humanGate: ["자연스러운가"] };
+  const deliverableId = await submit(ctx, out.title, "document", markdown, content, madeBy);
+  return { deliverableId, deliverableType: "document", metrics: { candidateCount: cases.length, selectedCount: v.passed, items: out.items.length } };
+}
+
 export const outsourceSkill: EmployeeSkill = {
   id: "outsource",
   deliverableType: "image",
@@ -156,6 +223,13 @@ export const outsourceSkill: EmployeeSkill = {
         "'인스타 광고 문구 5개'·'슬로건 3개'·'소개 글 한 단락' 은 여기 / Write ad copy or short text with a text model",
       produces: "주문한 개수의 문구/단락 + 자(개수·길이·주문에 없는 숫자·준 사실) + 누가 만들었는지",
     },
+    {
+      id: "outsource_translate",
+      label:
+        "문구 번역·현지화(게임 UI·버튼·오류 메시지 등)를 바깥 번역 AI 에 맡긴다 — 줄마다 옮기고 로키가 개수·숫자·자리표시자·글자 수 제한을 잰다. " +
+        "'이 문구들 영어로 번역해 줘'·'버튼 글자 현지화' 는 여기 / Translate or localize UI strings line by line",
+      produces: "원문·옮긴 글 표 + 자(개수·순서·빈 줄·원문 그대로 아님·숫자·자리표시자·글자 수) + 누가 만들었는지",
+    },
   ],
   acceptsInternalRequests: true,
 
@@ -164,6 +238,7 @@ export const outsourceSkill: EmployeeSkill = {
     if (ask.trim().length < 4) throw new ExecutionError("CONTEXT_INCOMPLETE", "무엇을 만들지 한 줄이 필요하다.");
     // 217회차: 접수가 고른 능력 id 가 오면 그것으로 가른다. 없으면(도구로 넣은 판) 말의 낱말로.
     const capId = (ctx.context.roleInput as { capabilityId?: string | null } | null)?.capabilityId ?? null;
+    if (capId === "outsource_translate" || (!capId && isTranslateAsk(ask))) return runTranslate(ctx, ask);
     const image = capId ? capId === "outsource_image" : isImageAsk(ask);
     if (!image) return runText(ctx, ask);
 
