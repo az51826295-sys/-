@@ -55,7 +55,7 @@ export async function predictMeasures(ai: AIProvider, input: {
         `## 파일 ${main.path} (${main.contents.length}자)`,
         main.contents.slice(0, 60_000),
       ].join(NL),
-      schema, schemaName: "measure_prediction", maxTokens: 1500, tier: "judgment",
+      schema, schemaName: "measure_prediction", maxTokens: 6000, tier: "judgment",   // 1500 은 luna 의 생각 토큰에 잘렸다(첫 실측 MODEL_OUTPUT_TRUNCATED)
     });
     const 값: Record<string, number | null> = {};
     for (const v of output.값) 값[v.measure] = v.value;

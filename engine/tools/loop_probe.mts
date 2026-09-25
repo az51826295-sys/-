@@ -6,6 +6,7 @@ const { meterProviders } = await import("../../src/lib/costs/meter");
 const { createOpenAIProvider } = await import("../../src/lib/providers/openai");
 const { improveLoop } = await import("../../src/lib/skills/appBuild/loop");
 const { factLines } = await import("../../src/lib/skills/appBuild/run");
+const fs = await import("node:fs");
 const arg = (k: string) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : undefined; };
 const rounds = Number(arg("--rounds") ?? 5);
 const db = createServiceClient();
@@ -27,9 +28,14 @@ const { data: a } = await db.from("assignments").select("title, description").eq
 const scope = { companyId: co, workExecutionId: d.work_execution_id as string, companyEmployeeId: d.company_employee_id as string };
 const judgeAi = meterProviders({ ...defaultProviders(), ai: createOpenAIProvider({ judgmentModel: process.env.LOOP_JUDGE_MODEL ?? "gpt-5.6-luna" }) }, db, scope).ai;
 const fixAi = meterProviders({ ...defaultProviders(), ai: createOpenAIProvider({ judgmentModel: process.env.FIX_SEAT_MODEL ?? "gpt-5.6-luna" }) }, db, scope).ai;
+// 213회차: --guards <제안 JSON> 이면 난간(상시 클리어 포함)을 걸어 예측자까지 돈다. --exec-fake 면 실행 행에 안 쓴다(옛 판 행을 더럽히지 않게).
+const gp = arg("--guards");
+const guards = gp ? (() => { const j = JSON.parse(fs.readFileSync(gp, "utf8")) as { 난간: unknown[]; 안내값: unknown[] }; return [{ measure: "게임.클리어", min: 1, max: 1, why: "상시" }, ...(j.난간 as never[]), ...(j.안내값 as never[])]; })() : undefined;
+const execId = process.argv.includes("--exec-fake") ? "00000000-0000-0000-0000-000000000000" : (d.work_execution_id as string);
+if (guards) console.log(`난간 ${guards.length}개 걸고 돈다 · 예측자 켜짐`);
 const t0 = Date.now();
 const r = await improveLoop({
-  db, executionId: d.work_execution_id as string, judgeAi, fixAi,
+  db, executionId: execId, judgeAi, fixAi, guards: guards as never,
   title: d.title as string, ask: `${a!.title}\n${a!.description ?? ""}`, criteria: c.criteria, files: c.files,
   mobile: false, rounds, usdCap: 1.0,
 });
@@ -37,6 +43,7 @@ console.log(`\n멈춘 이유 ${r.stoppedBy} · 제일 좋은 판 ${r.bestRound}�
 console.log("바퀴 | 맞음 | 안맞음 | 모름 | 고장 | 오류 | 고침 | 초 | $");
 for (const x of r.rounds) console.log(`${x.n} | ${x.met}/${c.criteria.length} | ${x.unmet} | ${x.unknown} | ${x.broken} | ${x.errors} | ${x.edits} | ${Math.round(x.ms / 1000)} | ${x.usd}${x.best ? " ★" : ""}`);
 for (const x of r.rounds) console.log(`  ${x.n}: ${x.toPerson}`);
+for (const x of r.rounds) if (x.예측) console.log(`  예측 ${x.n}: 통과확률 ${x.예측.통과확률} → ${x.예측.통과 ? '통과' : '실패'} · brier ${x.예측.brier} · 오차 ${JSON.stringify(x.예측.오차)}`);
 if (r.facts) for (const l of factLines(r.facts)) console.log("  사실:", l);
 const out = `C:/Users/az518/AppData/Local/Temp/claude/C--Users-az518-Desktop/f2c7198f-769b-44d1-a7c3-0ff62e8ac149/scratchpad/loop_best.html`;
 const { writeFileSync } = await import("node:fs");
