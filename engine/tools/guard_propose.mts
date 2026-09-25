@@ -18,7 +18,8 @@ const { readFileSync } = await import("node:fs");
 const { writeFileSync } = await import("node:fs");
 const arg = (k: string) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : undefined; };
 
-const 요청원문 = "점프를 더 쫀득하게";
+// 판 9 5회차(09-25): 새 말이 오면 원문·지금 값·손댈 수 있는 범위를 밖에서 준다. 없으면 판 7~9 의 값.
+const 요청원문 = arg("--request") ?? "점프를 더 쫀득하게";
 const 칸 = [
   ["점프.높이px", "발 딛고 선 땅에서 꼭대기까지 솟은 높이(px)"],
   ["점프.공중프레임", "뛰어서 다시 땅에 닿을 때까지 걸린 프레임 수(전체 길이)"],
@@ -33,7 +34,7 @@ const 칸 = [
   ["게임.닿은무대", "기계가 끝까지 해 봤을 때 닿은 무대 번호"],
   ["게임.잃은목숨", "기계가 끝까지 해 봤을 때 잃은 목숨 수"],
 ];
-const 지금값 = {
+const 지금값: Record<string, number> = arg("--now") ? JSON.parse(readFileSync(arg("--now")!, "utf8")) : {
   "점프.높이px": 129.8, "점프.공중프레임": 40, "점프.상승프레임": 19, "점프.꼭대기프레임": 4,
   "점프.하강프레임": 21, "점프.하강나누기상승": 1.11,
   // 판 9 부터 원본은 (나) — 무대 2 발판을 되돌려 **못오르는발판 0**(09-24, 3번 재서 같음). 나머지 값은 그대로.
@@ -74,9 +75,11 @@ const { output } = await ai.generateStructuredOutput({
     "",
     "**이미 걸려 있는 상시 난간**: 게임.클리어 = 1 (기계가 끝까지 깨야 한다). 이건 네가 안 내도 걸린다.",
     "",
+    // 줄바꿈 이스케이프가 도구 입력에서 접히므로(python-patch-escapes-collapse) 글자 코드로 쓴다.
+    ...(arg("--mutable") ? readFileSync(arg("--mutable")!, "utf8").split(String.fromCharCode(10)).map((l) => l.replace(String.fromCharCode(13), "")) : [
     "**이번 판에서 못 바꾸는 것**(고치는 자리가 손댈 수 없다):",
     "- 가로 이동 속도 4.8px/프레임 — 주문서가 '점프 물리와 관련된 줄만' 으로 묶어 두었다.",
-    "  그러므로 공중에 오래 떠 있으면 그만큼 가로로 더 날아간다. 이것을 셈에 넣어라.",
+    "  그러므로 공중에 오래 떠 있으면 그만큼 가로로 더 날아간다. 이것을 셈에 넣어라."]),
     "",
     "잴 수 있는 칸:",
     ...칸.map(([n, d]) => `- ${n} — ${d}`),

@@ -7,7 +7,8 @@ def rng(g):
     if lo is not None and hi is not None: return f"{lo} ~ {hi}" if lo != hi else f"정확히 {lo}"
     if lo is not None: return f"{lo} 이상"
     return f"{hi} 이하"
-L = ['사장님 요청 원문: "점프를 더 쫀득하게"', '',
+REQ = sys.argv[3] if len(sys.argv) > 3 else "점프를 더 쫀득하게"
+L = [f'사장님 요청 원문: "{REQ}"', '',
      "**이 요청을 무엇으로 잴지는 네가 정했고, 사장님이 그대로 잠그셨다.** 아래가 잠근 것이다.", '',
      "네가 사장님께 드린 말:"]
 L += ["> " + line for line in p['사장님께'].split('\n')]
