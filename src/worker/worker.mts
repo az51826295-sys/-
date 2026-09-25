@@ -313,6 +313,15 @@ for (;;) {
         await postUnattendedFeed(db, (m) => console.log(`${stamp()} [무인결과] ${m}`));
       } catch (e) { console.error(`${stamp()} 무인 결과 붙이기 실패`, e instanceof Error ? e.message : e); }
     }
+    // 224회차: 개발 워커의 연습 고리 — 노트북 없이 서버 안에서 하루 한 번(09시 뒤 주문, 12시 뒤 정리 → 사장님 폰).
+    if (tickN % DAILY_EVERY === 0 && SCOPE === "dev" && process.env.ROOKERY_PRACTICE === "1" && DEV_CO) {
+      try {
+        const { runPractice, runPracticeSummary, kstHour } = await import("@/lib/genesis/practice");
+        const h = kstHour();
+        if (h >= 9) { const r = await runPractice(db, { companyId: DEV_CO, n: Number(process.env.ROOKERY_PRACTICE_N ?? 3), log: (m) => console.log(`${stamp()} [연습] ${m}`) }); if (r.ran) console.log(`${stamp()} [연습] 오늘 주문 ${r.put}개 넣음`); }
+        if (h >= 12 && process.env.OWNER_EMAIL) { const r = await runPracticeSummary(db, { companyId: DEV_CO, ownerEmail: process.env.OWNER_EMAIL, log: (m) => console.log(`${stamp()} [연습 정리] ${m}`) }); void r; }
+      } catch (e) { console.error(`${stamp()} 연습 고리 실패`, e instanceof Error ? e.message : e); }
+    }
     if (tickN % DAILY_EVERY === 0 && SCOPE !== "dev") {   // 매일·주간 고리는 본 서버만
       try { await dailyTick(); } catch (e) { console.error(`${stamp()} 자가진화 실패`, e instanceof Error ? e.message : e); }
       try { await weeklyTick(); } catch (e) { console.error(`${stamp()} 주간 보고 실패`, e instanceof Error ? e.message : e); }
