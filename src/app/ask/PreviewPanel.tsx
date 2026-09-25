@@ -26,7 +26,7 @@ type Panel = {
     review: { decision: "approved" | "needs_changes" | string; at: string; feedback: string | null } | null;
   } | null;
   /** credits 가 있으면 충전식 회사(100회차) — 달러·Meshy 대신 자기 크레딧만 보인다. */
-  spend: { monthUsd: number; meshyCredits: number | null; credits?: number | null; note: string };
+  spend: { monthUsd: number; limitUsd?: number | null; limitDays?: number | null; meshyCredits: number | null; credits?: number | null; note: string };
 };
 
 /** 계획 카드: 도는 동안 "무엇을, 기준 몇 개, 얼마쯤". 서버(workReturns)가 저장된 단계에서 만든다. */
@@ -397,7 +397,7 @@ export default function PreviewPanel({
             <span>남은 크레딧 <b className="text-[var(--rk-ink)]">{data.spend.credits.toLocaleString("ko-KR")}</b></span>
           ) : (
             <>
-              <span>이번 달 사용 <b className="text-[var(--rk-ink)]">${data.spend.monthUsd.toFixed(2)}</b></span>
+              <span>이번 달 사용 <b className="text-[var(--rk-ink)]">${data.spend.monthUsd.toFixed(2)}</b>{data.spend.limitUsd != null ? <> · 한도 ${data.spend.limitUsd}/{data.spend.limitDays}일</> : null}</span>
               <span>Meshy 크레딧 <b className="text-[var(--rk-ink)]">{data.spend.meshyCredits === null ? "—" : data.spend.meshyCredits.toLocaleString()}</b></span>
             </>
           )}

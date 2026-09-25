@@ -91,7 +91,11 @@ export async function GET(
     }
   }
   let monthUsd = 0;
+  // 220회차 09-25 사장님 "지출 볼 수 있어야 해" — 한도도 같이 보인다(한 달 3만원 ≈ $21/30일).
+  let limit: { usd: number; days: number } | null = null;
   if (company) {
+    const { data: lim } = await supabase.from("companies").select("spend_limit_usd, spend_window_days").eq("id", company.id).maybeSingle();
+    if (lim?.spend_limit_usd != null) limit = { usd: Number(lim.spend_limit_usd), days: Number(lim.spend_window_days ?? 30) };
     const from = new Date();
     from.setUTCDate(1); from.setUTCHours(0, 0, 0, 0);
     const { data: usage } = await supabase
@@ -154,6 +158,6 @@ export async function GET(
           review,
         }
       : null,
-    spend: { monthUsd: Math.round(monthUsd * 100) / 100, meshyCredits, credits: prepaid ? credits : null, note: "글 모델 + 그림 + Meshy(09-07 부터). 공표 단가 기준, 청구서와 대조 전" },
+    spend: { monthUsd: Math.round(monthUsd * 100) / 100, limitUsd: limit?.usd ?? null, limitDays: limit?.days ?? null, meshyCredits, credits: prepaid ? credits : null, note: "글 모델 + 그림 + Meshy(09-07 부터). 공표 단가 기준, 청구서와 대조 전" },
   });
 }
