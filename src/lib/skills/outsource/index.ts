@@ -150,6 +150,22 @@ export function isTranslateAsk(ask: string): boolean { return /번역|현지화|
 export function charLimit(ask: string): number { const m = ask.match(/([0-9]{1,3})\s*(자|글자|chars?)\s*(이하|안|이내|max)?/); return m ? Number(m[1]) : 0; }
 const PLACEHOLDER = new RegExp("[{][0-9A-Za-z_]+[}]|%[sd]|<[^>]+>", "g");
 const DIGITS = new RegExp("[0-9]+", "g");
+/** 용어 사전(217회차): 제품 이름은 옮기지 않는다. 기본 {로키: Rookery} + 주문의 "용어:" 아래 "- 원어 = 옮길 말" 줄. 자막 첫 판이 로키를 북유럽 신 Loki 로 옮겼다. */
+export function glossaryOf(ask: string): Record<string, string> {
+  const g: Record<string, string> = { "로키": "Rookery" };
+  const NL = String.fromCharCode(10);
+  const lines = ask.split(NL).map((l) => l.trim());
+  const start = lines.findIndex((l) => /^용어/.test(l));
+  if (start >= 0) for (const l of lines.slice(start + 1)) { if (!l.startsWith("- ")) break; const m = l.slice(2).split("="); if (m.length === 2 && m[0].trim() && m[1].trim()) g[m[0].trim()] = m[1].trim(); }
+  return g;
+}
+export function glossaryLine(g: Record<string, string>): string { return "- 용어 사전(그대로 쓴다, 다른 말로 옮기지 않는다): " + Object.entries(g).map(([a, b]) => `${a} → ${b}`).join(", "); }
+export function judgeGlossary(items: { src: string; out: string }[], g: Record<string, string>): Case | null {
+  const pairs = Object.entries(g); if (!pairs.length) return null;
+  const bad = items.filter((it) => pairs.some(([a, b]) => it.src.includes(a) && !it.out.toLowerCase().includes(b.toLowerCase()))).length;
+  return { name: "용어_지킴", result: bad ? "Failed" : "Passed", message: bad ? `${bad}줄이 용어 사전과 다름(${pairs.map(([a, b]) => a + "→" + b).join(", ")})` : `용어 사전 지킴(${pairs.length}개)` };
+}
+
 export function judgeTranslate(ask: string, out: TransOut, srcLines: string[], limit: number): Case[] {
   const c: Case[] = [];
   c.push({ name: "개수_같음", result: out.items.length === srcLines.length ? "Passed" : "Failed", message: `${out.items.length}줄 (원문 ${srcLines.length})` });
@@ -164,6 +180,7 @@ export function judgeTranslate(ask: string, out: TransOut, srcLines: string[], l
   const phBad = out.items.filter((it) => (it.src.match(PLACEHOLDER) ?? []).sort().join(",") !== (it.out.match(PLACEHOLDER) ?? []).sort().join(",")).length;
   c.push({ name: "자리표시자_보존", result: phBad ? "Failed" : "Passed", message: phBad ? `${phBad}줄의 {n}·%s·<태그> 가 다름` : "자리표시자 그대로" });
   if (limit) { const long = out.items.filter((it) => it.out.length > limit).length; c.push({ name: `글자수_${limit}자이하`, result: long ? "Failed" : "Passed", message: long ? `${long}줄이 ${limit}자 넘음` : `모두 ${limit}자 이하` }); }
+  const gl = judgeGlossary(out.items, glossaryOf(ask)); if (gl) c.push(gl);
   return c;
 }
 async function runTranslate(ctx: SkillRunContext, ask: string) {
@@ -175,6 +192,7 @@ async function runTranslate(ctx: SkillRunContext, ask: string) {
     systemInstructions: [
       "너는 바깥 번역 AI 다. 주문의 '- ' 줄을 순서대로, 줄마다 하나씩 옮긴다. 합치거나 빼지 마라.",
       "- `src` 는 원문 글자 그대로. `out` 은 옮긴 글. 숫자·{n}·%s·<태그> 는 그대로 둔다.",
+      glossaryLine(glossaryOf(ask)),
       limit ? `- 옮긴 글은 ${limit}자 이하. 넘치면 더 짧은 말을 고른다.` : "",
       "- 주문이 말한 말투(예: 게임 UI, 짧게)를 따른다. 설명을 덧붙이지 마라.",
       failed.length ? `지난 판에서 자에 걸린 것(고쳐서 다시): ${failed.join(" / ")}` : "",
@@ -244,6 +262,7 @@ async function runSubtitles(ctx: SkillRunContext, ask: string, sourceId: string)
     systemInstructions: [
       "너는 바깥 번역 AI 다. 영상 자막의 줄을 순서대로, 줄마다 하나씩 옮긴다. 합치거나 빼지 마라.",
       "- `src` 는 원문 글자 그대로. `out` 은 옮긴 글. 숫자·{n}·%s 는 그대로.",
+      glossaryLine(glossaryOf(listed)),
       limit ? `- 옮긴 글은 ${limit}자 이하.` : "- 자막이므로 짧게, 한 줄에 읽히게.",
       failed.length ? `지난 판에서 자에 걸린 것(고쳐서 다시): ${failed.join(" / ")}` : "",
     ].filter(Boolean).join(String.fromCharCode(10)),
