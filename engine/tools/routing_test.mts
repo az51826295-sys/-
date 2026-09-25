@@ -31,6 +31,12 @@ const CASES: [string, string | null][] = [
   ["동전 스프라이트 그려 줘", "game_character_art"],
   ["경쟁 게임들 요즘 어떤지 조사해 줘", "market_context"],
   ["아트 바이블 만들어 줘", "visual_direction"],
+  // 09-25 "무엇이든 만들 수 있는가" 줄 — 광고·PPT·보고서. 없는 직원은 null(맡기지 말고 못 한다고 말해야 한다).
+  ["로키 광고 영상 15초 만들어 줘", "video_explainer"],
+  ["인스타 광고 문구 5개 뽑아 줘", null],
+  ["투자자용 발표 자료(PPT) 10장 만들어 줘", null],
+  ["이번 달 매출 보고서 써 줘", null],
+  ["로고 만들어 줘", null],
   ["오늘 몇 시야?", null],
   ["고마워, 잘 돼 간다", null],
   ["유니티에서 Rigidbody 랑 CharacterController 차이가 뭐야?", null],
@@ -62,7 +68,7 @@ for (const [text, want] of cases) {
     got = r.output.capabilityId;
     why = r.output.why;
   } catch (e) {
-    why = `호출 실패: ${e instanceof Error ? e.message.slice(0, 80) : e}`;
+    why = `호출 실패: ${e instanceof Error ? e.message.replace(/s+/g, " ").slice(0, 500) : e}`;
   }
   const bad = got !== null && !known.has(got);
   const ok = got === want && !bad;
