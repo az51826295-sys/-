@@ -29,6 +29,16 @@ export const VEO_USD_PER_SECOND: Record<VeoTier, number> = { lite: 0.05, fast: 0
 
 export function veoConfigured(): boolean { return !!process.env.GEMINI_API_KEY; }
 
+// 218회차 09-25 사장님과 ai.dev/rate-limit 을 같이 봄: Tier 1 은 Veo 등급마다 **분당 2번·하루 10번**. 장면 셋을 연달아 사면 분당 한도에 걸려 429.
+// 그래서 주문 사이를 31초 띄우고, 429 면 35초 뒤 한 번 더. 하루 한도는 여기서 못 센다(결과물 원장이 센다).
+let lastVeoStart = 0;
+const MIN_GAP_MS = 31_000;
+async function spaced(): Promise<void> {
+  const wait = lastVeoStart + MIN_GAP_MS - Date.now();
+  if (wait > 0) { console.log(`[veo] 분당 2번 한도 — ${Math.ceil(wait / 1000)}초 띄운다`); await new Promise((r) => setTimeout(r, wait)); }
+  lastVeoStart = Date.now();
+}
+
 export async function makeVeoClip(opts: {
   prompt: string;
   seconds?: number;
@@ -46,14 +56,19 @@ export async function makeVeoClip(opts: {
   const seconds = nearestVeoSeconds(opts.seconds ?? 8);
   const headers = { "x-goog-api-key": key, "content-type": "application/json" };
 
-  const start = await fetch(`${BASE}/models/${model}:predictLongRunning`, {
-    method: "POST", headers, signal: opts.signal,
-    body: JSON.stringify({
-      instances: [{ prompt: opts.prompt }],
-      // lite 는 generateAudio 를 받지 않는다(넣으면 400). 소리를 켤 때만 보낸다.
-      parameters: { aspectRatio: opts.aspect ?? "16:9", durationSeconds: seconds, resolution: "720p", ...(opts.audio ? { generateAudio: true } : {}) },
-    }),
+  const body = JSON.stringify({
+    instances: [{ prompt: opts.prompt }],
+    // lite 는 generateAudio 를 받지 않는다(넣으면 400). 소리를 켤 때만 보낸다.
+    parameters: { aspectRatio: opts.aspect ?? "16:9", durationSeconds: seconds, resolution: "720p", ...(opts.audio ? { generateAudio: true } : {}) },
   });
+  await spaced();
+  let start = await fetch(`${BASE}/models/${model}:predictLongRunning`, { method: "POST", headers, signal: opts.signal, body });
+  if (start.status === 429) {
+    console.log("[veo] 429 — 35초 뒤 한 번 더");
+    await new Promise((r) => setTimeout(r, 35_000));
+    lastVeoStart = Date.now();
+    start = await fetch(`${BASE}/models/${model}:predictLongRunning`, { method: "POST", headers, signal: opts.signal, body });
+  }
   if (!start.ok) throw new Error(`영상 주문 거절(${start.status}): ${(await start.text()).slice(0, 300)}`);
   const op = (await start.json()) as { name: string; done?: boolean };
   if (!op.name) throw new Error("영상 주문에 작업 이름이 없다");
