@@ -230,3 +230,4 @@ Platformer Game · Dawn Hill · Cloud Bridge · Starlight Peak · Clear! · Game
 - **`probe_all`** — 모델 0 자 시험 11개를 한 명령으로(--fast 는 헤드리스 뺌, 66초 / 전체 297초). 첫 전체 실행 10/11(slides 는 고치는 중이라 떨어짐 → 14/14 로 고침). 오늘 사고 다섯의 공통 원인("하나 고치고 다른 자 안 봄")에 대한 답.
 - **Deck 장 수 맞춤** — 사실 N개면 N+2 장 상한(제목·맺음), 결과에 이유를 적음. 첫 판이 사실 3개를 8장에 편 것. `slides_probe` 14/14. 배포.
 - **지식 카드 나눔** — `company_summary` 에 "대화에서 알게 된 것"(검사·작업 규칙)이 들어가 Deck 이 유니티 메모를 회사 소개로 읽었다. 이제 회사 소개는 이름·주소만, 배운 것은 `additional_context`(일 프롬프트 `prompts.ts` 는 둘 다 읽는다). 기존 카드 12개 중 8개 옮김(`card_split`). 사장님이 결정을 위임했기에 내가 정했다 — 주차장에서 뺀다.
+- `probe_all` 전체(헤드리스 포함) **11/11 · 260초**. `health` ⑤ 새 직원 자 통과율: slides 3판·document(문구 1·번역 1·자막 3)·image 1판 모두 100%.
