@@ -104,7 +104,7 @@ export const videoMakeSkill: EmployeeSkill = {
     // 158회차: 말 속도는 상수("초당 5자")가 아니라 **이 회사 지난 영상의 실측**이다 — 첫 진짜 판이 그 상수 때문에 4초 모자랐다.
     const voice = await speechRate(ctx.supabase, ctx.execution.company_id);
     console.log(`[video] 말 속도: ${speechLine(voice)}`);
-    const plan = (await step(ctx.supabase, ctx.executionId, "script", async () => (await ctx.providers.ai.generateStructuredOutput({
+    const writeScript = (note: string) => ctx.providers.ai.generateStructuredOutput({
       systemInstructions:
         "너는 이 회사의 영상 편집자다. 약 60초짜리 설명 영상의 대본을 한국어로 쓴다.\n\n" +
         "- **`look` 은 이 판의 연출이다.** 무엇을 만드는 판인지 보고 정해라 — 짧고 눈길을 끌어야 하면 글자를 크게·템포를 짧게, " +
@@ -128,13 +128,28 @@ export const videoMakeSkill: EmployeeSkill = {
         "- 1판은 첫 장면이 9.8초라 사람이 나가떨어졌다 — 첫 장면이 길면 그 뒤를 아무도 안 본다. 마지막 장면은 한 줄로 맺는다.\n" +
         "- 업무에 없는 사실을 지어내지 마라. 모르는 숫자는 쓰지 않는다." +
         (source ? "\n- **아래 '재료' 안의 사실만 쓴다.** 재료에 없는 숫자·이름·주장을 넣지 마라 — 기계가 숫자를 재료와 대조한다." : ""),
-      input: ask + (source ? `\n\n## 재료 — ${source.title}\n${source.text}` : ""),
+      input: (note ? "## 대본 심판이 되돌렸다 — 아래를 고쳐서 다시 쓴다" + String.fromCharCode(10) + note + String.fromCharCode(10) + String.fromCharCode(10) : "") + ask + (source ? `\n\n## 재료 — ${source.title}\n${source.text}` : ""),
       schema: script,
       schemaName: "video_script",
       // 1판(18:31) 6000 에서 잘렸다(MODEL_OUTPUT_TRUNCATED) — 추론 모델은 생각에 먼저 쓴다. Dev 계획과 같은 값.
       maxTokens: 24000,
       tier: "judgment",
-    })).output)) as Script;
+    });
+    let plan = (await step(ctx.supabase, ctx.executionId, "script", async () => (await writeScript("")).output)) as Script;
+    // 215회차 09-25: **대본 심판** — 그림(≈$0.6)·목소리를 만들기 전에 대본을 지시문과 대 보고 어겼으면 한 번 다시 쓴다.
+    // 완성 영상의 심판(아래 3.5)은 다 만든 뒤 옆에 적힐 뿐이었다. 여기는 싼 자리의 되돌림 한 번. 심판이 죽어도 영상은 간다.
+    const { judgeScript } = await import("@/lib/skills/videoMake/scriptJudge");
+    let scriptJudge: { first: unknown; redone: boolean; second?: unknown; by?: string } | null = null;
+    try {
+      const j1 = await judgeScript(ctx.providers.ai, { ask, scenes: plan.scenes });
+      scriptJudge = { first: j1.verdict, redone: false, by: j1.model };
+      if (j1.verdict.되돌린다) {
+        const note = [...j1.verdict.어긴것, ...j1.verdict.지어낸사실.map((f) => "지어낸 사실: " + f), j1.verdict.하나만바꾼다면 ? "하나만 바꾼다면: " + j1.verdict.하나만바꾼다면 : ""].filter(Boolean).join(String.fromCharCode(10));
+        console.log("[video] 대본 심판이 되돌렸다 — " + note.slice(0, 160));
+        const plan2 = (await step(ctx.supabase, ctx.executionId, "script2", async () => (await writeScript(note)).output)) as Script;
+        if (plan2.scenes.length) { plan = plan2; const j2 = await judgeScript(ctx.providers.ai, { ask, scenes: plan.scenes }); scriptJudge = { ...scriptJudge, redone: true, second: j2.verdict }; }
+      } else console.log("[video] 대본 심판 통과");
+    } catch (e) { console.warn("[video] 대본 심판 못 돌림:", e instanceof Error ? e.message : e); }
     // 158회차: "3개 미만이면 죽인다" 는 내가 박은 문이었다. 첫 진짜 판에서 대본이 20초를 **1장면·99자**로 계획하고 이유까지 적었는데
     // 이 줄이 죽였다. 장면 수는 대본의 판단이다(③). 난간은 **0장면**뿐 — 그건 그릴 게 없는 것이다.
     if (plan.scenes.length === 0) throw new ExecutionError("INVALID_DELIVERABLE_OUTPUT", "장면이 하나도 없다");
@@ -341,7 +356,7 @@ export const videoMakeSkill: EmployeeSkill = {
       ] : []),
       `재미와 말맛은 사람이 봐요. 첫 5초·중간 사진이 붙어 있어요. 고칠 장면을 말해 주면 그 장면만 다시 만들어요.`,
     ].join("\n");
-    const content = { script: plan, durations: a.durations, total: a.total, verdict, look, judge: judgeNote, judgeBy, workModel: ctx.providers.ai.model, source: source ? { id: source.id, title: source.title } : null, filesPending: true };
+    const content = { script: plan, durations: a.durations, total: a.total, verdict, look, judge: judgeNote, judgeBy, scriptJudge, workModel: ctx.providers.ai.model, source: source ? { id: source.id, title: source.title } : null, filesPending: true };
     const { data: saved, error } = await ctx.supabase.rpc("submit_generated_deliverable", {
       p_execution_id: ctx.executionId, p_title: plan.title, p_deliverable_type: "video",
       p_content_markdown: markdown, p_content_json: content, p_generation_model: ctx.providers.ai.model, p_citations: [],
