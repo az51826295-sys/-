@@ -86,6 +86,7 @@ export const roleKnowledgeSchemaRegistry = {
   analysis_knowledge_v1: analysisKnowledgeSchema,
   video_knowledge_v1: videoKnowledgeSchema,
   slides_knowledge_v1: analysisKnowledgeSchema,
+  social_knowledge_v1: analysisKnowledgeSchema,   // 225회차: 인스타 담당도 따로 아는 것이 없다
   outsource_knowledge_v1: analysisKnowledgeSchema,   // 216회차: 외주 직원도 따로 아는 것이 없다   // 214회차: 발표 자료 직원은 따로 아는 것이 없다 — 분석과 같은 빈 틀
 } as const;
 
@@ -154,6 +155,7 @@ export const assignmentInputSchemaRegistry = {
   analysis_assignment_v1: analysisAssignmentSchema,
   video_assignment_v1: videoAssignmentSchema,
   slides_assignment_v1: appBuildAssignmentSchema.extend({ capabilityId: z.string().optional().nullable() }),   // 221회차: slide_deck / self_board
+  social_assignment_v1: z.object({ previousDeliverableId: z.string().optional().nullable(), capabilityId: z.string().optional().nullable() }),   // 225회차
   outsource_assignment_v1: z.object({ previousDeliverableId: z.string().optional().nullable(), capabilityId: z.string().optional().nullable(), sourceDeliverableId: z.string().optional().nullable() }),   // 217회차: 접수가 고른 능력 id(그림/글)   // 214회차: 고치는 판이면 지난 결과물 id 만 온다
 } as const;
 

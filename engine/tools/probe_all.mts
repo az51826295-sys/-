@@ -5,7 +5,7 @@
  */
 import { spawnSync } from "node:child_process";
 const fast = process.argv.includes("--fast");
-const PURE = ["predict_probe", "revert_probe", "mech_probe", "schema_repair_probe", "out_probe", "translate_probe", "srt_probe"];
+const PURE = ["gram_probe", "predict_probe", "revert_probe", "mech_probe", "schema_repair_probe", "out_probe", "translate_probe", "srt_probe"];
 const HEADLESS = ["slides_probe", "board_probe", "measure_order_probe", "webguard_probe", "reap_probe"];
 const list = fast ? PURE : [...PURE, ...HEADLESS];
 const rows: string[] = []; let bad = 0; const t0 = Date.now();

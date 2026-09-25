@@ -8,6 +8,7 @@ import { analysisSkill } from "@/lib/skills/analysis";
 import { videoMakeSkill } from "@/lib/skills/videoMake";
 import { slidesMakeSkill } from "@/lib/skills/slidesMake";
 import { outsourceSkill } from "@/lib/skills/outsource";
+import { socialPostSkill } from "@/lib/skills/socialPost";
 import { SkillNotFoundError, type EmployeeSkill } from "@/lib/skills/types";
 
 /**
@@ -26,6 +27,7 @@ export const employeeSkillRegistry: Record<string, EmployeeSkill> = {
   video_make: videoMakeSkill,
   slides_make: slidesMakeSkill,
   outsource: outsourceSkill,
+  social_post: socialPostSkill,
 };
 
 export function getEmployeeSkill(skillId: string): EmployeeSkill {

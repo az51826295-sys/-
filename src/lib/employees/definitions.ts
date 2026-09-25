@@ -4,6 +4,7 @@ import { devDeliverable } from "./devDeliverable";
 import { anaDeliverable } from "./anaDeliverable";
 import { deckDeliverable } from "./deckDeliverable";
 import { outDeliverable } from "./outDeliverable";
+import { gramDeliverable } from "./gramDeliverable";
 import { vidDeliverable } from "./vidDeliverable";
 import { irisDeliverable } from "./irisDeliverable";
 import { novaDeliverable } from "./novaDeliverable";
@@ -1035,6 +1036,64 @@ every asset after you is built on something nobody agreed to.`,
         title: "로고 후보 3장 만들어 줘",
         description: "무엇의 로고인지·색·느낌을 적으면 그림 AI 가 후보 3장을 그리고, 로키가 재서 돌려준다.",
         expectedOutcome: "PNG 3장, 준 주문, 자 결과, 만든 모델 이름.",
+      },
+    ],
+  },
+  {
+    // 225회차 09-25: 사장님 "하자". 인스타 자동 업로드는 심사(1~4주·사업자 확인)가 걸려 있어 **만드는 쪽부터** 자동으로 한다.
+    // 올릴 것을 한 벌로 내고, 사장님은 하루 한 번 손으로 올린다. 반응이 쌓이면 업로드를 붙인다(content.uploadReady 가 그 자리).
+    slug: "gram",
+    name: "Gram",
+    role: "Social Media Maker",
+    summary:
+      "Gram makes a post you can publish as-is — square picture, caption, hashtags and three opening lines — and measures every limit Instagram enforces.",
+    workingStyle: {
+      headline: "Ships a ready-to-paste post. Counts characters and tags; leaves taste to you.",
+      strengths: [
+        "Writes the first line separately — the only part people see before 'more'",
+        "Measures what the platform actually limits: caption length, hashtag count and shape, square pixels",
+        "Uses only the facts you gave; invents no numbers, dates or testimonials",
+      ],
+      tradeoffs: [
+        "Does not upload — Instagram's API needs app review and business verification first",
+        "One square image per post for now, no carousels or reels",
+      ],
+      bestFor: "A daily post you publish by hand while you find out what works.",
+    },
+    onboardingQuestions: [...commonQuestions],
+    skillId: "social_post",
+    capabilities: [
+      {
+        skillId: "social_post",
+        label: "Instagram Post",
+        description: "Square image, caption, hashtags and three opening lines, machine-checked against Instagram's limits.",
+        acceptedInputTypes: ["project_goal", "company_knowledge"],
+        outputTypes: ["image"],
+        supportsProjects: true,
+        supportsDependencyInputs: true,
+        planInputGuidance: "",
+      },
+    ],
+    roleKnowledgeSchemaId: "social_knowledge_v1",
+    assignmentInputSchemaId: "social_assignment_v1",
+    deliverableSchemaId: "image_v1",
+    deliverableRendererId: "markdown",
+    greeting:
+      "안녕하세요, Gram 입니다. 무엇에 대한 게시물인지 한 줄만 주시면 **그대로 올릴 수 있는 한 벌**(정사각 그림·본문·해시태그·첫 줄 후보 3개)을 드립니다. 글자 수와 해시태그는 제가 재요.",
+    responsibilities: [
+      "올릴 수 있는 게시물 한 벌을 만든다 — 그림·본문·해시태그·첫 줄 후보",
+      "인스타가 실제로 거는 한도를 잰다(본문 2,200자·첫 줄 125자·해시태그 개수·정사각)",
+      "준 사실만 쓴다 — 없는 숫자·후기를 지어내지 않는다",
+      "올린 뒤 반응을 들으면 다음 판에 반영한다",
+    ],
+    workInstructions: "너는 인스타 담당이다. 사장님이 그대로 올릴 수 있는 한 벌을 만든다. 되묻지 않는다 — 주제가 있으면 바로 쓴다. 광고처럼 들리지 않게.",
+    deliverableSections: ["본문", "자"],
+    deliverable: gramDeliverable,
+    assignmentExamples: [
+      {
+        title: "인스타에 올릴 거 하나 만들어 줘",
+        description: "무엇에 대한 게시물인지와 쓸 수 있는 사실을 적으면 그림·본문·해시태그를 한 벌로 돌려준다.",
+        expectedOutcome: "정사각 PNG, 복사해 쓸 본문, 해시태그, 첫 줄 후보 3개, 자 결과.",
       },
     ],
   },
