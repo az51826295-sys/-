@@ -85,6 +85,7 @@ export const roleKnowledgeSchemaRegistry = {
   mesh_assets_knowledge_v1: meshAssetsKnowledgeSchema,
   analysis_knowledge_v1: analysisKnowledgeSchema,
   video_knowledge_v1: videoKnowledgeSchema,
+  slides_knowledge_v1: analysisKnowledgeSchema,   // 214회차: 발표 자료 직원은 따로 아는 것이 없다 — 분석과 같은 빈 틀
 } as const;
 
 export type RoleKnowledgeSchemaId = keyof typeof roleKnowledgeSchemaRegistry;
@@ -151,6 +152,7 @@ export const assignmentInputSchemaRegistry = {
   mesh_assets_assignment_v1: meshAssetsAssignmentSchema,
   analysis_assignment_v1: analysisAssignmentSchema,
   video_assignment_v1: videoAssignmentSchema,
+  slides_assignment_v1: appBuildAssignmentSchema,   // 214회차: 고치는 판이면 지난 결과물 id 만 온다
 } as const;
 
 export type AssignmentInputSchemaId = keyof typeof assignmentInputSchemaRegistry;

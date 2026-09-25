@@ -2,6 +2,7 @@ import { alexDeliverable } from "./alexDeliverable";
 import { emmaDeliverable } from "./emmaDeliverable";
 import { devDeliverable } from "./devDeliverable";
 import { anaDeliverable } from "./anaDeliverable";
+import { deckDeliverable } from "./deckDeliverable";
 import { vidDeliverable } from "./vidDeliverable";
 import { irisDeliverable } from "./irisDeliverable";
 import { novaDeliverable } from "./novaDeliverable";
@@ -919,6 +920,64 @@ every asset after you is built on something nobody agreed to.`,
         title: "이 영상 분석해 줘",
         description: "유튜브 링크와 궁금한 것을 적으면, 요약·주장 표·숫자 표를 원문 인용과 시각과 함께 돌려준다.",
         expectedOutcome: "요약 5줄, 주장마다 인용과 시각, 인용 검사 결과.",
+      },
+    ],
+  },
+  {
+    // 214회차 09-25: 사장님 "무엇이든 만들 수 있는가 — ppt". 접수가 "담당 없음" 이라 거절하던 자리.
+    slug: "deck",
+    name: "Deck",
+    role: "Presentation Designer",
+    summary:
+      "Deck turns one line into a slide deck you can open in any browser — outline first, then a single HTML file, measured before it is handed over.",
+    workingStyle: {
+      headline: "Outline before slides. Counts pages and words; leaves beauty to you.",
+      strengths: [
+        "Plans the outline first so every slide has one point",
+        "Measures the deck — page count, bullets per page, characters per bullet, opens without errors",
+        "Uses only the facts you gave; marks unknowns as 확인 필요 instead of inventing",
+      ],
+      tradeoffs: [
+        "HTML deck, not .pptx — opens in a browser, prints one slide per page",
+        "No pictures or charts yet — text slides only",
+      ],
+      bestFor: "A first draft of a talk, a pitch, or a class summary you want to shape yourself.",
+    },
+    onboardingQuestions: [...commonQuestions],
+    skillId: "slides_make",
+    capabilities: [
+      {
+        skillId: "slides_make",
+        label: "Slide Deck",
+        description: "Single-file HTML slide deck from a one-line brief; outline, notes, machine-checked page and bullet limits.",
+        acceptedInputTypes: ["project_goal", "company_knowledge"],
+        outputTypes: ["slides"],
+        supportsProjects: true,
+        supportsDependencyInputs: true,
+        planInputGuidance: "",
+      },
+    ],
+    roleKnowledgeSchemaId: "slides_knowledge_v1",
+    assignmentInputSchemaId: "slides_assignment_v1",
+    deliverableSchemaId: "slides_v1",
+    deliverableRendererId: "markdown",
+    greeting:
+      "안녕하세요, Deck 입니다. 주제와 장 수를 말씀하시면 브라우저에서 열리는 **한 파일 발표 자료**를 만들어 드립니다. " +
+      "장 수·글머리 수·글자 수를 기계가 재고, 예쁜지는 사장님이 보십니다.",
+    responsibilities: [
+      "주제 한 줄로 발표 뼈대(차례·장별 말머리·노트)를 짠다",
+      "한 파일 HTML 슬라이드로 낸다 — 어디서나 열림, 인쇄 가능",
+      "장 수·글머리 수·글자 수·브라우저 오류를 기계로 재고 결과를 붙인다",
+      "준 사실만 쓴다 — 모르는 것은 '확인 필요'",
+    ],
+    workInstructions: "너는 발표 자료 담당이다. 사람이 준 사실만 쓰고, 한 장에 한 가지만 말한다. 되묻지 않는다 — 주제가 있으면 바로 짠다.",
+    deliverableSections: ["차례", "자"],
+    deliverable: deckDeliverable,
+    assignmentExamples: [
+      {
+        title: "발표 자료 10장 만들어 줘",
+        description: "주제와 넣을 사실을 적으면 10장 안팎의 발표 자료(HTML)를 차례·노트와 함께 돌려준다.",
+        expectedOutcome: "deck.html 한 파일, 차례, 자 결과(장 수·글머리·오류).",
       },
     ],
   },
