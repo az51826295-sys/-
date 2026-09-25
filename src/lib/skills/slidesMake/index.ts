@@ -75,9 +75,28 @@ export function renderDeck(p: Plan): string {
   ].join("\n");
 }
 
-/** 자 — 모델 0. */
-export function judgeDeck(p: Plan, want: number, facts: { ran: boolean; consoleErrors: string[]; text: string } | null): Case[] {
+/** 주문의 "쓸 수 있는 사실" 줄들("- " 로 시작). 없으면 빈 배열. */
+export function givenFacts(ask: string): string[] {
+  const NL = String.fromCharCode(10);
+  const lines = ask.split(NL).map((l) => l.trim());
+  const start = lines.findIndex((l) => /사실/.test(l) && /:|：|이것뿐/.test(l));
+  return lines.slice(start >= 0 ? start + 1 : 0).filter((l) => l.startsWith("- ")).map((l) => l.slice(2).trim()).filter((l) => l.length >= 4);
+}
+const tokens = (t: string) => (t.match(/[가-힣A-Za-z0-9]{2,}/g) ?? []).map((w) => w.toLowerCase());
+const deckText = (p: Plan) => [p.title, p.subtitle, ...p.slides.flatMap((s) => [s.heading, ...s.bullets, s.note])].join(" ").toLowerCase();
+
+/** 자 — 모델 0. `ask` 를 주면 "준 사실을 썼나"·"확인 필요 비율" 도 잰다(214회차 첫 판: 로키를 북유럽 신으로 알아듣고 전부 '확인 필요'). */
+export function judgeDeck(p: Plan, want: number, facts: { ran: boolean; consoleErrors: string[]; text: string } | null, ask = ""): Case[] {
   const c: Case[] = [];
+  const given = givenFacts(ask);
+  if (given.length) {
+    const text = deckText(p);
+    const used = given.filter((f) => { const tk = tokens(f); const hit = tk.filter((w) => text.includes(w)).length; return tk.length ? hit >= Math.min(2, tk.length) && hit / tk.length >= 0.4 : false; });
+    c.push({ name: "준_사실_사용", result: used.length * 2 >= given.length ? "Passed" : "Failed", message: `준 사실 ${given.length}개 중 ${used.length}개가 장에 쓰임` });
+  }
+  const bullets = p.slides.flatMap((s) => s.bullets);
+  const unknown = bullets.filter((x) => /확인 필요|확인필요|TBD|미정/.test(x)).length;
+  c.push({ name: "확인필요_30%이하", result: bullets.length && unknown / bullets.length > 0.3 ? "Failed" : "Passed", message: `글머리 ${bullets.length}개 중 '확인 필요' ${unknown}개` });
   const n = p.slides.length;
   c.push({ name: "장수_목표안", result: Math.abs(n - want) <= 2 ? "Passed" : "Failed", message: `${n}장 (목표 ${want}, ±2)` });
   const tooMany = p.slides.map((s, i) => [i + 1, s.bullets.length] as const).filter(([, k]) => k > MAX_BULLETS);
@@ -129,6 +148,9 @@ export const slidesMakeSkill: EmployeeSkill = {
     const write = (failed: string[]) => ctx.providers.ai.generateStructuredOutput({
       systemInstructions: [
         "너는 이 회사의 발표 자료 담당이다. 사람이 한 말로 발표 자료의 뼈대를 짠다. 한국어.",
+        `이 회사: ${ctx.context.companyKnowledge.companySummary || "(모름)"} / 고객: ${ctx.context.companyKnowledge.customerSummary || "(모름)"} / 푸는 문제: ${ctx.context.companyKnowledge.problemSummary || "(모름)"}`,
+        "- 주문에 나오는 이름(예: 로키)은 **이 회사·제품의 이름**이다. 신화·다른 뜻으로 읽지 마라.",
+        "- 주문에 '쓸 수 있는 사실' 이 있으면 **그 사실로만** 장을 짠다. 사실 하나가 한 장이 되어도 좋다. 사실에 없는 칸을 '확인 필요' 로 채워 장을 늘리지 마라 — 모르는 것은 아예 장을 만들지 않는다.",
         `- 장 수는 ${want}장 안팎(±2). 첫 장은 제목 장(글머리 0~1개), 마지막 장은 맺음.`,
         `- 한 장에 글머리 1~${MAX_BULLETS}개, 글머리 하나는 ${MAX_CHARS}자 이하. 문장이 아니라 말머리.`,
         "- 사람이 준 사실만 쓴다. 숫자·이름을 지어내지 마라. 모르는 것은 '확인 필요' 로 적는다.",
@@ -149,12 +171,12 @@ export const slidesMakeSkill: EmployeeSkill = {
         return { ran: f.ran, consoleErrors: f.consoleErrors, text: f.text };
       } catch (e) { console.warn("[slides] 헤드리스 못 열음:", e instanceof Error ? e.message : e); return null; }
     };
-    let cases = judgeDeck(p, want, await look(html));
+    let cases = judgeDeck(p, want, await look(html), ask);
     if (cases.some((k) => k.result === "Failed")) {
       const failed = cases.filter((k) => k.result === "Failed").map((k) => `${k.name}: ${k.message}`);
       p = (await step(ctx.supabase, ctx.executionId, "plan2", async () => (await write(failed)).output)) as Plan;
       html = renderDeck(p);
-      cases = judgeDeck(p, want, await look(html));
+      cases = judgeDeck(p, want, await look(html), ask);
     }
     const passed = cases.filter((k) => k.result === "Passed").length, failedN = cases.length - passed;
 
