@@ -397,7 +397,7 @@ export default function PreviewPanel({
             <span>남은 크레딧 <b className="text-[var(--rk-ink)]">{data.spend.credits.toLocaleString("ko-KR")}</b></span>
           ) : (
             <>
-              <span>이번 달 사용 <b className="text-[var(--rk-ink)]">${data.spend.monthUsd.toFixed(2)}</b>{data.spend.limitUsd != null ? <> · 한도 ${data.spend.limitUsd}/{data.spend.limitDays}일</> : null}</span>
+              <span>{data.spend.limitDays ? `최근 ${data.spend.limitDays}일 사용` : "이번 달 사용"} <b className="text-[var(--rk-ink)]">${data.spend.monthUsd.toFixed(2)}</b>{data.spend.limitUsd != null ? <> · 한도 ${data.spend.limitUsd}{data.spend.monthUsd >= data.spend.limitUsd ? " · 한도에 닿아 새 일을 못 시작해요" : ""}</> : null}</span>
               <span>Meshy 크레딧 <b className="text-[var(--rk-ink)]">{data.spend.meshyCredits === null ? "—" : data.spend.meshyCredits.toLocaleString()}</b></span>
             </>
           )}

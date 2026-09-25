@@ -6,7 +6,8 @@
  */
 import { z } from "zod";
 const { createServiceClient } = await import("../../src/lib/supabase/service");
-const { seatProvider } = await import("../../src/lib/skills/appBuild/seats");
+const { seatProviderForCompany } = await import("../../src/lib/skills/appBuild/seats");
+const CO = "5925c03a-557f-46d7-8589-7388b769df40";
 const { readFileSync, writeFileSync, existsSync } = await import("node:fs");
 const arg = (k: string) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : undefined; };
 const days = Number(arg("--days") ?? 7); const NL = String.fromCharCode(10);
@@ -46,8 +47,9 @@ const schema = z.object({
   })).min(3).max(5),
   안한것: z.string().describe("일부러 안 고른 것과 왜."),
 });
-const ai = await seatProvider(arg("--seat") ?? "gpt-5.6-luna");   // 217회차: --seat 로 다른 AI(딥시크 포함)에게도 묻는다
-if (!ai) { console.error("자리를 못 앉혔다"); process.exit(1); }
+const seat = await seatProviderForCompany(arg("--seat") ?? "gpt-5.6-luna", db, CO);   // 217회차: --seat 로 다른 AI(딥시크 포함)에게도 묻는다 · 221회차: 회사 장부·한도를 지난다
+if (!seat.ai) { console.error(seat.why); process.exit(0); }
+const ai = seat.ai;
 const { output } = await ai.generateStructuredOutput({
   systemInstructions: [
     "너는 로키(일하는 AI 회사)를 감독하는 AI 다. 아래는 최근 장부의 사실이다. **다음에 할 일 셋~다섯**을 고른다.",

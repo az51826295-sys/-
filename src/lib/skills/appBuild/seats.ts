@@ -1,4 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { meterProviders } from "@/lib/costs/meter";
+import { checkAllowance, type SpendAllowance } from "@/lib/costs/allowance";
+import { defaultProviders } from "@/lib/execution/shared";
 import type { AIProvider } from "@/lib/providers/types";
 
 /**
@@ -142,6 +145,19 @@ export async function seatProvider(model: string): Promise<AIProvider | null> {
     const { createOpenAIProvider } = await import("@/lib/providers/openai");
     return createOpenAIProvider({ judgmentModel: model });
   } catch { return null; }
+}
+
+/**
+ * 221회차: 도구(손님 AI·다음 일 제안·자가 고침)가 앉힌 자리도 **회사 장부에 적는다.** 오늘 자가 고침 원장이 "$0.000" 을 찍었다 —
+ * 돈은 나갔는데 model_usage 에 없어서 한도($21/30일)가 못 봤다(09-21 "바깥이 하나가 아니었다" 와 같은 구멍). 도구는 이 함수로 앉힌다.
+ * 한도에 닿아 있으면 null 을 돌려 준다 — 도구도 회사와 같은 문을 지난다.
+ */
+export async function seatProviderForCompany(model: string, db: Parameters<typeof meterProviders>[1], companyId: string, opts: { ignoreLimit?: boolean } = {}): Promise<{ ai: AIProvider; allowance: SpendAllowance } | { ai: null; allowance: SpendAllowance; why: string }> {
+  const allowance = await checkAllowance(db, companyId);
+  if (allowance.exhausted && !opts.ignoreLimit) return { ai: null, allowance, why: `한도에 닿았다: 최근 ${allowance.windowDays}일 $${allowance.spentUsd.toFixed(2)} / $${allowance.limitUsd}` };
+  const ai = await seatProvider(model);
+  if (!ai) return { ai: null, allowance, why: "자리를 못 앉혔다(열쇠 없음)" };
+  return { ai: meterProviders({ ...defaultProviders(), ai }, db, { companyId }).ai, allowance };
 }
 
 /**

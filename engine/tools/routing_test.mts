@@ -35,6 +35,7 @@ const CASES: [string, string | null][] = [
   ["로키 광고 영상 15초 만들어 줘", "video_explainer"],
   ["인스타 광고 문구 5개 뽑아 줘", "outsource_text"],   // 216회차: Out 글 외주
   ["투자자용 발표 자료(PPT) 10장 만들어 줘", "slide_deck"],   // 214회차: Deck 이 생겼다
+  ["내 화면 만들어 줘. 지출이랑 한도 보이게", "self_board"],   // 221회차: 로키가 자기 화면을 짠다
   ["이번 달 매출 보고서 써 줘", null],
   ["로고 만들어 줘", "outsource_image"],   // 216회차: Out(외주) 이 생겼다
   ["게임 버튼 글자 열 개 영어로 번역해 줘, 24자 이하로", "outsource_translate"],   // 217회차: Out 번역

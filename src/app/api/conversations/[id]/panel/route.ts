@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { listVersions } from "@/lib/chat/versions";
 import { kindOf, proofOf, type ProofFile } from "@/lib/work/kinds";
+import { checkAllowance } from "@/lib/costs/allowance";
 import { defaultMeshProvider } from "@/lib/providers/meshy";
 import { billingOpen } from "@/lib/billing/plans";
 import { creditBalance } from "@/lib/billing/ledger";
@@ -92,18 +93,12 @@ export async function GET(
   }
   let monthUsd = 0;
   // 220회차 09-25 사장님 "지출 볼 수 있어야 해" — 한도도 같이 보인다(한 달 3만원 ≈ $21/30일).
+  // 221회차: 보이는 숫자는 **문이 재는 숫자와 같은 것**(최근 N일 창, checkAllowance) — 달력 달로 세면 문은 닫혔는데 화면은 여유로 보인다(오늘 $9 vs $21).
   let limit: { usd: number; days: number } | null = null;
   if (company) {
-    const { data: lim } = await supabase.from("companies").select("spend_limit_usd, spend_window_days").eq("id", company.id).maybeSingle();
-    if (lim?.spend_limit_usd != null) limit = { usd: Number(lim.spend_limit_usd), days: Number(lim.spend_window_days ?? 30) };
-    const from = new Date();
-    from.setUTCDate(1); from.setUTCHours(0, 0, 0, 0);
-    const { data: usage } = await supabase
-      .from("model_usage")
-      .select("cost_usd")
-      .eq("company_id", company.id)
-      .gte("created_at", from.toISOString());
-    monthUsd = ((usage ?? []) as { cost_usd: number | string }[]).reduce((s, u) => s + Number(u.cost_usd ?? 0), 0);
+    const a = await checkAllowance(supabase, company.id as string);
+    if (a.limitUsd > 0 && !a.prepaid) limit = { usd: a.limitUsd, days: a.windowDays };
+    monthUsd = a.spentUsd;
   }
 
   // 매니저 판정(98회차): 현재 판의 **업무**에 대한 첫 판정. 판정은 업무 단위다 — 고친 판이 같은 업무면 같은 판정 아래 있다.

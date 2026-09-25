@@ -13,23 +13,24 @@ const { createServiceClient } = await import("../../src/lib/supabase/service");
 const { workStateText } = await import("../../src/lib/chat/workState");
 const { intakeInstructions } = await import("../../src/lib/chat/routing");
 const { defaultProviders } = await import("../../src/lib/execution/shared");
-const { seatProvider } = await import("../../src/lib/skills/appBuild/seats");
+const { seatProviderForCompany } = await import("../../src/lib/skills/appBuild/seats");
+const { meterProviders } = await import("../../src/lib/costs/meter");
 
 const { writeFileSync, mkdirSync, existsSync, readFileSync } = await import("node:fs");
 const { dispatchOrder } = await import("./order_dispatch.mjs");
 const arg = (k: string) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : undefined; };
 const RESUME = arg("--resume");   // 지난 배치에서 직원이 바빠 못 넣은 주문을 다시 넣는다(생성·접수 안 함, 돈 0)
-const N = Number(arg("--n") ?? 3); const DRY = process.argv.includes("--dry"); const EXPENSIVE = process.argv.includes("--expensive"); const CAP = Number(arg("--cap") ?? 9.5);
+const N = Number(arg("--n") ?? 3); const DRY = process.argv.includes("--dry"); const EXPENSIVE = process.argv.includes("--expensive"); const CAP = Number(arg("--cap") ?? 20);   // 221회차: 회사 한도($21) 바로 안쪽
 const NL = String.fromCharCode(10);
 const db = createServiceClient();
 const CO = "5925c03a-557f-46d7-8589-7388b769df40";   // 사장님 회사
 
-// 0) 지출 문지기 — 사장님 한도($10/7일)보다 안쪽에서 멈춘다.
-const since = new Date(Date.now() - 7 * 864e5).toISOString();
-const { data: usage } = await db.from("model_usage").select("cost_usd").eq("company_id", CO).gte("created_at", since).limit(5000);   // 회사 한도와 같은 셈(week_spend)
-const spent = (usage ?? []).reduce((a: number, r: any) => a + Number(r.cost_usd ?? 0), 0);
-console.log(`이번 주 지출 $${spent.toFixed(2)} (멈춤선 $${CAP})`);
-if (spent >= CAP && !DRY) { console.log("멈춤선을 넘어 안 넣는다. --dry 로 주문만 만들 수는 있다."); process.exit(0); }
+// 0) 지출 문지기 — 회사 한도(checkAllowance, 최근 N일 창)와 **같은 숫자**로 본다(221회차: 옛 $9.5/7일 상수는 한도가 $21/30일로 바뀐 뒤 남의 자였다). --cap 은 그 안쪽의 추가 멈춤선.
+const { checkAllowance } = await import("../../src/lib/costs/allowance");
+const allow = await checkAllowance(db, CO);
+const spent = allow.spentUsd;
+console.log(`최근 ${allow.windowDays}일 지출 $${spent.toFixed(2)} / 한도 $${allow.limitUsd} (추가 멈춤선 $${CAP})`);
+if ((allow.exhausted || spent >= CAP) && !DRY) { console.log("한도·멈춤선에 닿아 안 넣는다. --dry 로 주문만 만들 수는 있다."); process.exit(0); }
 
 // 1) 손님 AI 가 주문을 쓴다 — 사장님 회사의 사실만 재료로.
 const orderSchema = z.object({
@@ -59,8 +60,9 @@ if (RESUME) {
   console.log(`다시 넣음 ${put}건 → ${RESUME}`);
   process.exit(0);
 }
-const customer = await seatProvider("gpt-5.6-luna");
-if (!customer) throw new Error("손님 자리를 못 앉혔다");
+const seat = await seatProviderForCompany("gpt-5.6-luna", db, CO, { ignoreLimit: DRY });   // 손님 AI 값도 회사 장부에
+if (!seat.ai) throw new Error(seat.why);
+const customer = seat.ai;
 const { output: gen } = await customer.generateStructuredOutput({
   systemInstructions: [
     "너는 이 회사의 사장(고3 학생, 1인 창업자)이다. AI 회사 로키의 대화창에 **오늘 실제로 시킬 법한 주문**을 쓴다.",
@@ -79,7 +81,7 @@ for (const [i, o] of orders.entries()) console.log(`  ${i + 1}. [${o.종류}] ${
 const intakeSchema = z.object({ reply: z.string().nullable(), searches: z.array(z.string()), drawings: z.array(z.string()), capabilityId: z.string().nullable(), capabilityWhy: z.string().nullable() });
 const { data: co } = await db.from("companies").select("id, owner_id").eq("id", CO).maybeSingle();
 if (!co) throw new Error("회사 없음");
-const ai = defaultProviders().ai;
+const ai = meterProviders(defaultProviders(), db, { companyId: CO }).ai;   // 접수 값도 장부에
 const batch = { at: new Date().toISOString(), dry: DRY, rows: [] as Record<string, unknown>[] };
 for (const o of orders) {
   const w = await workStateText(db, CO, null, o.말);

@@ -3,6 +3,7 @@ import { ExecutionError, setStep } from "@/lib/execution/shared";
 import { step } from "@/lib/execution/steps";
 import { runWeb } from "@/lib/skills/appBuild/run";
 import type { EmployeeSkill, SkillRunContext } from "@/lib/skills/types";
+import { isBoardAsk, runBoard } from "./board";
 
 /**
  * 슬라이드(발표 자료) — 말 한 줄로 **한 파일 HTML 발표 자료**를 낸다 (214회차 09-25).
@@ -144,11 +145,21 @@ export const slidesMakeSkill: EmployeeSkill = {
         "'발표 자료 10장 만들어 줘'·'PPT 만들어 줘'·'슬라이드로 정리해 줘' 는 여기 / Make a slide deck",
       produces: "한 파일 HTML 슬라이드(화살표로 넘김, 인쇄 가능) + 차례 + 자(장 수·글머리·브라우저 오류) 결과",
     },
+    {
+      id: "self_board",
+      label:
+        "로키 현황판(내 화면) 스스로 짜기 — 지출·한도·직원·최근 일·수집 판을 DB 에서 읽어 로키가 자기 화면을 한 파일 HTML 로 짠다. " +
+        "'내 화면 만들어 줘'·'현황판 그려 줘'·'대시보드 짜 줘'·'지출 보이는 화면' 은 여기 / Rookery draws its own dashboard",
+      produces: "한 파일 HTML 현황판(미리보기에서 바로 열림) + 칸 목록 + 자(칸 수·숫자 다 보임·지어낸 달러 없음·브라우저 오류) 결과",
+    },
   ],
   acceptsInternalRequests: true,
 
   async run(ctx: SkillRunContext) {
     const ask = `${ctx.context.assignment.title}\n${ctx.context.assignment.description ?? ""}`;
+    // 221회차: 로키가 자기 화면을 짠다 — 접수가 self_board 로 보냈거나, 말이 그렇게 들리면.
+    const capId = (ctx.context.roleInput as { capabilityId?: string | null } | null)?.capabilityId ?? null;
+    if (capId === "self_board" || (capId !== "slide_deck" && isBoardAsk(ask))) return runBoard(ctx, ask);
     if (ask.trim().length < 6) throw new ExecutionError("CONTEXT_INCOMPLETE", "무엇에 대한 발표 자료인지 한 줄이 필요하다.");
     const asked = wantedSlides(ask);
     const fitted = fitWant(ask, asked);

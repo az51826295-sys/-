@@ -6,3 +6,5 @@ call npx tsx engine/tools/rookery_env.mts engine/tools/order_gen.mts --n 3 >> en
 for /f "delims=" %%f in ('dir /b /o-d engine\work\anything\orders\*.json') do (set LATEST=%%f & goto :got)
 :got
 call npx tsx engine/tools/rookery_env.mts engine/tools/order_score.mts engine\work\anything\orders\%LATEST% --wait >> engine\work\anything\daily.log 2>&1
+rem 221: Rookery redraws its own dashboard every day with today's numbers (Deck employee, self_board). ~$0.03.
+call npx tsx engine/tools/rookery_env.mts engine/tools/ask_for.mts --employee deck --title "Rookery board - today" --ask-file engine/work/anything/board-ask.txt --run >> engine\work\anything\daily.log 2>&1

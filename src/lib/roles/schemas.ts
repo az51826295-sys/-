@@ -153,7 +153,7 @@ export const assignmentInputSchemaRegistry = {
   mesh_assets_assignment_v1: meshAssetsAssignmentSchema,
   analysis_assignment_v1: analysisAssignmentSchema,
   video_assignment_v1: videoAssignmentSchema,
-  slides_assignment_v1: appBuildAssignmentSchema,
+  slides_assignment_v1: appBuildAssignmentSchema.extend({ capabilityId: z.string().optional().nullable() }),   // 221회차: slide_deck / self_board
   outsource_assignment_v1: z.object({ previousDeliverableId: z.string().optional().nullable(), capabilityId: z.string().optional().nullable(), sourceDeliverableId: z.string().optional().nullable() }),   // 217회차: 접수가 고른 능력 id(그림/글)   // 214회차: 고치는 판이면 지난 결과물 id 만 온다
 } as const;
 
