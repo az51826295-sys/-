@@ -212,7 +212,11 @@ export const videoMakeSkill: EmployeeSkill = {
       } else if (wantsFootage) {
         console.log(`[video] 장면 ${i + 1} 화면을 적었지만 지출이 안 켜져 있다 — 글자 카드로 간다`);
       }
-      scenes.push({ audio, caption: sc.narration, title: outsource && clip ? "" : sc.heading, lines: outsource && clip ? [] : sc.bullets, cite: outsource && clip ? undefined : (sc.cite || undefined), clip });
+      // 외주 모드에서 화면을 못 샀으면(429 등) **빈 화면이 되지 않게** 글자 카드로 — 대본이 글자를 비웠으면 읽는 말을 얹는다(외주 1판: 두 장면 다 429 → 어두운 화면만 남았다).
+      const fellBack = outsource && !clip;
+      const cardTitle = fellBack ? (sc.heading || plan.title) : sc.heading;
+      const cardLines = fellBack && !sc.bullets.length ? [sc.narration.slice(0, 28)] : sc.bullets;
+      scenes.push({ audio, caption: sc.narration, title: outsource && clip ? "" : cardTitle, lines: outsource && clip ? [] : cardLines, cite: outsource && clip ? undefined : (sc.cite || undefined), clip });
       console.log(`[video] 장면 ${i + 1}/${plan.scenes.length} 목소리 ${audio.length} B · 글자 ${sc.heading} / ${sc.bullets.length}줄`);
     }
 

@@ -3,6 +3,7 @@ import { emmaDeliverable } from "./emmaDeliverable";
 import { devDeliverable } from "./devDeliverable";
 import { anaDeliverable } from "./anaDeliverable";
 import { deckDeliverable } from "./deckDeliverable";
+import { outDeliverable } from "./outDeliverable";
 import { vidDeliverable } from "./vidDeliverable";
 import { irisDeliverable } from "./irisDeliverable";
 import { novaDeliverable } from "./novaDeliverable";
@@ -978,6 +979,62 @@ every asset after you is built on something nobody agreed to.`,
         title: "발표 자료 10장 만들어 줘",
         description: "주제와 넣을 사실을 적으면 10장 안팎의 발표 자료(HTML)를 차례·노트와 함께 돌려준다.",
         expectedOutcome: "deck.html 한 파일, 차례, 자 결과(장 수·글머리·오류).",
+      },
+    ],
+  },
+  {
+    // 216회차 09-25: 사장님 "못하는 건 다른 AI 한테 맡겨". 로키가 못 하는 것을 바깥 AI 에 맡기고 주문·자·기록만 맡는 자리. 첫 조각은 그림(gpt-image-2).
+    slug: "out",
+    name: "Out",
+    role: "Outsourcer",
+    summary:
+      "Out hands work Rookery cannot do to an outside AI — pictures and logos first — writes the brief, measures what comes back, and says who made it.",
+    workingStyle: {
+      headline: "Translates the ask, buys the result, measures it, names the maker.",
+      strengths: [
+        "Turns one line into an image-model brief using only the facts you gave",
+        "Measures the files — count, size, pixels — before handing them over",
+        "Always says which outside model made it",
+      ],
+      tradeoffs: [
+        "Image models misspell text — anything written inside a picture must be checked by eye",
+        "Taste is not measured; you pick the keeper",
+      ],
+      bestFor: "Logos, posters, thumbnails, one-off illustrations.",
+    },
+    onboardingQuestions: [...commonQuestions],
+    skillId: "outsource",
+    capabilities: [
+      {
+        skillId: "outsource",
+        label: "Outsourced Image",
+        description: "Logo/poster/illustration made by an outside image model from a brief Rookery writes; files measured; maker named.",
+        acceptedInputTypes: ["project_goal", "company_knowledge"],
+        outputTypes: ["image"],
+        supportsProjects: true,
+        supportsDependencyInputs: true,
+        planInputGuidance: "",
+      },
+    ],
+    roleKnowledgeSchemaId: "outsource_knowledge_v1",
+    assignmentInputSchemaId: "outsource_assignment_v1",
+    deliverableSchemaId: "image_v1",
+    deliverableRendererId: "markdown",
+    greeting:
+      "안녕하세요, Out 입니다. 로키가 직접 못 하는 그림·로고는 제가 바깥 그림 AI 에 맡기고, 나온 것을 재서 드립니다. 누가 만들었는지 꼭 적어요.",
+    responsibilities: [
+      "사람 말을 그림 AI 의 주문으로 옮긴다 — 준 사실만",
+      "나온 파일을 잰다(장 수·빈 그림·화소)",
+      "누가 만들었는지 결과에 적는다",
+    ],
+    workInstructions: "너는 외주 담당이다. 그림은 네가 그리지 않는다. 주문을 옮기고, 결과를 재고, 만든 이를 적는다. 되묻지 않는다.",
+    deliverableSections: ["주문", "자"],
+    deliverable: outDeliverable,
+    assignmentExamples: [
+      {
+        title: "로고 후보 3장 만들어 줘",
+        description: "무엇의 로고인지·색·느낌을 적으면 그림 AI 가 후보 3장을 그리고, 로키가 재서 돌려준다.",
+        expectedOutcome: "PNG 3장, 준 주문, 자 결과, 만든 모델 이름.",
       },
     ],
   },

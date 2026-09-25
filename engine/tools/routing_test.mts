@@ -36,7 +36,7 @@ const CASES: [string, string | null][] = [
   ["인스타 광고 문구 5개 뽑아 줘", null],
   ["투자자용 발표 자료(PPT) 10장 만들어 줘", "slide_deck"],   // 214회차: Deck 이 생겼다
   ["이번 달 매출 보고서 써 줘", null],
-  ["로고 만들어 줘", null],
+  ["로고 만들어 줘", "outsource_image"],   // 216회차: Out(외주) 이 생겼다
   ["오늘 몇 시야?", null],
   ["고마워, 잘 돼 간다", null],
   ["유니티에서 Rigidbody 랑 CharacterController 차이가 뭐야?", null],
