@@ -55,6 +55,11 @@ export function sheetPrompt(look: CharacterLook): string {
     `Every cell shows THE SAME character — identical hairstyle, identical hair color, identical clothing, identical palette. Only the facial expression changes.`,
     `Character: ${look.appearance}.`,
     `Super-deformed chibi proportions: very big round head, tiny shoulders, simple cute face with small dot eyes and a tiny mouth. Facing the viewer, centered in its cell.`,
+    // 226회차 09-27 사장님 "도트 자르는 거 너무 못해". 재 보니 자르는 자리는 맞고 **안에 든 것이 들쭉날쭉**이었다:
+    // 한 판은 칸을 꽉 채우고(416px) 다른 판은 칸 가운데 작게(288px), 같은 판 안에서도 288/304 로 달랐다.
+    // 자른 뒤에 크기를 맞추면 도트가 깨지므로(정수배가 아니다) **그리는 쪽에서 못 박는다.**
+    // 09-09 에 사장님이 "퀄리티 일정하게" 라 하신 그 자리다 — 그때는 화풍만 맞추고 크기는 넘어갔다.
+    `SIZE — this matters as much as the drawing: the character FILLS its cell. The top of the hair nearly touches the top edge of the cell and the body reaches the bottom edge, leaving only a thin margin. The character is THE SAME SIZE in all six cells — never draw one larger or smaller than another, and never leave a cell mostly empty.`,
     `Cells in order: ${cells}`,
     `Style: VERY low resolution, about 48x48 pixels per cell, huge visible square pixels, thick chunky blocks, hard jagged edges, no smoothing, no anti-aliasing, no gradients, no shading detail. Flat solid colors from a tiny palette of about 10 colors. Crude and charming, not polished, not an illustration.`,
     `Background: one flat solid pure magenta color (#FF00FF) filling everything behind the characters and the gutters between cells — NOT transparent, NOT a checkerboard. No grid lines, no borders, no frames, no text, no labels, no numbers, no watermark, no speech bubbles, no motion lines.`,
