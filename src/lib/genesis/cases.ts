@@ -247,11 +247,20 @@ export async function collectCases(db: Supabase, companyId: string, opts: { limi
           const prev = [...list.slice(0, ai)].reverse().find((x) => x.role === "user");
           if (!prev) continue;
           const m = list[ai];
-          pairs.push({ m, prev: prev.content, turn: { id: next.id, order: prev.content, answer: m.content, reply: next.content, attachments: next.attachments } });
+          // 226회차: 로키 답에 결과물이 실려 있으면 같이 넘긴다 — 사장님 말이 **무엇을 두고 한 것인지**가
+          // 안 남아서 취향 자의 재료가 없었다(물림 42건 중 결과물이 이어진 것 3건).
+          const att = (m.attachments ?? {}) as { returned?: { deliverableId?: string }; assignment?: { title?: string } };
+          const did = att.returned?.deliverableId ?? null;
+          pairs.push({ m, prev: prev.content, turn: {
+            id: next.id, order: prev.content, answer: m.content, reply: next.content, attachments: next.attachments,
+            deliverable: did ? { id: did, title: att.assignment?.title ?? null } : null,
+          } });
         }
       }
       // 156회차: 사람 반응은 정규식이 아니라 **AI 가 읽는다**(`reaction.ts`). 읽은 것은 사람 말에 붙어 다시 안 읽는다.
-      const reactions = await labelReactions(pairs.map((p) => p.turn), { ai: opts.ai ?? null, db });
+      // 226회차: `needAbout` 을 켜면 **`about` 이 없는 옛 기록은 다시 읽는다** — 09-16~09-26 것은 묶음 번호가
+      // 밀려 남의 말에 붙어 있었으므로, 자가진화가 쓰는 재료가 여기서 저절로 씻긴다.
+      const reactions = await labelReactions(pairs.map((p) => p.turn), { ai: opts.ai ?? null, db, needAbout: true });
       for (const { m, prev, turn } of pairs) {
         const r = reactions.get(turn.id);
         const bad = r?.rejected ?? false;

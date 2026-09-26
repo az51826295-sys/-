@@ -43,20 +43,38 @@ export async function makeMusic(opts: {
   if (!key) throw new Error("GEMINI_API_KEY 가 없다");
   const model = opts.model ?? "lyria-3.5";
 
-  const r = await fetch(`${BASE}/models/${model}:generateContent`, {
-    method: "POST",
-    headers: { "x-goog-api-key": key, "content-type": "application/json" },
-    body: JSON.stringify({ contents: [{ parts: [{ text: opts.prompt }] }] }),
-    signal: opts.signal ?? AbortSignal.timeout(300_000),
-  });
-  if (!r.ok) throw new Error(`음악 주문 거절(${r.status}): ${(await r.text()).slice(0, 300)}`);
-
-  const j = (await r.json()) as {
-    candidates?: { content?: { parts?: { text?: string; inlineData?: { data?: string; mimeType?: string } }[] } }[];
+  type Res = {
+    candidates?: { content?: { parts?: { text?: string; inlineData?: { data?: string; mimeType?: string } }[] }; finishReason?: string }[];
+    promptFeedback?: { blockReason?: string };
   };
-  const parts = j.candidates?.[0]?.content?.parts ?? [];
+
+  // 226회차 09-26 실측: **같은 모양의 주문인데 한 번은 소리가 오고 한 번은 안 왔다**(15초 광고 판).
+  // 응답은 200 인데 오디오 파트가 없다 — 기계적 고장 쪽이라 조용히 한 번 더 부른다(09-15 규칙).
+  // 그리고 첫 candidate 만 보지 않는다: 오디오가 다른 candidate 에 실려 올 수 있다.
+  let parts: { text?: string; inlineData?: { data?: string; mimeType?: string } }[] = [];
+  let why = "";
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    const r = await fetch(`${BASE}/models/${model}:generateContent`, {
+      method: "POST",
+      headers: { "x-goog-api-key": key, "content-type": "application/json" },
+      body: JSON.stringify({ contents: [{ parts: [{ text: opts.prompt }] }] }),
+      signal: opts.signal ?? AbortSignal.timeout(300_000),
+    });
+    if (!r.ok) throw new Error(`음악 주문 거절(${r.status}): ${(await r.text()).slice(0, 300)}`);
+    const j = (await r.json()) as Res;
+    const all = (j.candidates ?? []).flatMap((c) => c.content?.parts ?? []);
+    if (all.some((p) => p.inlineData?.data)) { parts = all; break; }
+    // 왜 안 왔는지를 남긴다 — "음악이 안 왔다" 한 줄로는 다음에 또 못 고친다.
+    why = [
+      j.promptFeedback?.blockReason ? `막힘: ${j.promptFeedback.blockReason}` : "",
+      (j.candidates ?? []).map((c) => c.finishReason).filter(Boolean).join(","),
+      `파트 ${all.length}개`,
+      all.map((p) => p.text?.slice(0, 60)).filter(Boolean).join(" / "),
+    ].filter(Boolean).join(" · ");
+    if (attempt === 1) console.warn(`[lyria] 소리가 안 왔다 — 한 번 더 (${why})`);
+  }
   const audio = parts.find((p) => p.inlineData?.data);
-  if (!audio) throw new Error("음악이 안 왔다");
+  if (!audio) throw new Error(`음악이 안 왔다 (${why || "이유 없음"})`);
   const structure = parts.find((p) => typeof p.text === "string" && p.text.trim())?.text?.trim() ?? null;
 
   return {
