@@ -84,6 +84,11 @@ if (up.status !== 0) { console.log(`\n**올리기 자체가 실패했다**(코�
 
 // ── 올린 뒤: 새 커밋이 **실제로 도는가** ──────────────────────────
 // "올렸다" 와 "새 코드가 돈다" 는 다르다(09-22 사장님). 여기서 그 둘을 갈라 본다.
+if (!hb) {
+  console.log(`${new Date().toISOString().slice(11, 19)} 올림. 이 서비스는 자기 커밋을 안 알린다(heartbeat 없음) — **도는지 못 잰다.**`);
+  console.log("  잴 수 없는 것을 실패로 적지 않는다. 화면에서 직접 확인할 것.");
+  process.exit(0);
+}
 console.log(`${new Date().toISOString().slice(11, 19)} 올림. 새 커밋이 도는지 지켜본다(최대 10분)`);
 for (let i = 0; i < 40; i++) {
   await new Promise((r) => setTimeout(r, 15_000));
