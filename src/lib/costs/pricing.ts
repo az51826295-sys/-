@@ -65,10 +65,26 @@ const RATES: Record<string, Rate> = {
   // 장당 정액이 아니다. 저품질 1024×1024 한 장이 출력 196토큰으로 실측됐다.
   // 공표가이고 아직 청구서와 대조되지 않았다.
   "gpt-image-2": { unit: "tokens", input: 5, output: 40 },
+  // 226회차 09-26: 한 세대 뒤에 있었다. 같은 열쇠로 2.5 가 열려 있고 **출력 단가가 $40 → $30** 인데
+  // 같은 주문에 쓰는 토큰이 7,024 → 1,756 이다(실측). 한 장 $0.281 → $0.053 — 5.3배 싸고 5배 빠르다.
+  "gpt-image-2.5-sunburst": { unit: "tokens", input: 5, output: 30 },
+  "gpt-image-2.5-flare": { unit: "tokens", input: 5, output: 30 },
+  // 구글 그림. 우리 3D 배관에는 안 맞았다(측면으로 그리거나 비율이 길쭉하다 — 226회차 실측) —
+  // 그래도 값은 적어 둔다. 인스타 정사각처럼 정면이 아니어도 되는 자리에는 쓸 수 있다.
+  "gemini-3-pro-image": { unit: "tokens", input: 2, output: 120 },
+  "gemini-3.1-flash-image": { unit: "tokens", input: 0.5, output: 60 },
 
   // Meshy. 크레딧 단위인데 장부의 단위 칸이 tokens/images/seconds 뿐이라(표 제약) images 로 적고
   // quantity = 크레딧 수. Pro 플랜 $20/1,000 크레딧 = $0.02 (실제 플랜 확인 전, 09-07). 모델 30 · 리깅 5.
   "meshy-credit": { unit: "images", per: 0.02 },
+
+  // 226회차 09-26 — **음악.** 사장님 "음악 붙이고". 열쇠는 이미 있었고 우리는 한 번도 안 불렀다:
+  // 광고·영상에 음악이 없던 이유가 연출이 아니라 **재료** 였다(154회차 영상 때와 같은 자리).
+  // 값은 곡당 정액이라 토큰이 아니다 — 표 단위가 tokens/images/seconds 뿐이라 images 를 빌리고 quantity = 곡 수.
+  // 공표가(ai.google.dev/gemini-api/docs/pricing, 09-26). 실측: 한 줄 주문에 67초 192kbps MP3.
+  "lyria-3.5": { unit: "images", per: 0.08 },
+  "lyria-3-pro-preview": { unit: "images", per: 0.08 },
+  "lyria-3-clip-preview": { unit: "images", per: 0.04 },
 
   // 목소리(TTS, 39회차). gpt-4o-mini-tts 는 글자+오디오 토큰으로 매기는데(약 $0.015/분) 장부 단위가 없어 초로 적는다: $0.00025/초.
   "gpt-4o-mini-tts": { unit: "seconds", per: 0.00025 },

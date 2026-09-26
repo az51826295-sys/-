@@ -11,7 +11,18 @@ import { isPriced, UnpricedBackendError } from "@/lib/costs/pricing";
  * 아니라 스티커처럼 보이고, 나중에 다른 데 쓰려면 다시 잘라야 한다.
  */
 
-const MODEL = "gpt-image-2";
+/**
+ * 226회차 09-26 — **한 세대 뒤에 있었다.** 같은 열쇠로 `gpt-image-2.5` 가 열려 있는데 `gpt-image-2` 를 쓰고 있었다.
+ * 같은 주문(3D 콘셉트용 투구)으로 다섯을 나란히 재 보니:
+ *   gpt-image-2      102초 · 출력 7,024토큰 · $0.281   ← 쓰던 것. 제일 느리고 제일 비싸다
+ *   2.5-sunburst      29초 · 1,756토큰 · $0.053
+ *   2.5-flare         19초 · 1,756토큰 · $0.053        ← 이걸로 옮긴다
+ *   gemini-3-pro      17초 — **측면으로 그린다**(3D 배관에 못 쓴다)
+ *   gemini-3.1-flash   9초 — 비율이 길쭉하다
+ * 배경 밝기는 다섯 다 통과(0.965~0.999). 갈린 것은 **각도**다 — 메시는 정면 그림에서 형태를 떠낸다.
+ * 되돌리려면 `IMAGE_MODEL=gpt-image-2`.
+ */
+const MODEL = process.env.IMAGE_MODEL ?? "gpt-image-2.5-flare";
 /** 이 모델이 내는 가장 작은 정사각형. 대화창에 얹기엔 이걸로 충분하다. */
 const SIZE = "1024x1024";
 export type ImageSize = "1024x1024" | "1024x1536" | "1536x1024";

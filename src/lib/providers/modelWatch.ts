@@ -12,7 +12,7 @@
  * 소문이 아니라 우리 일에서 나은지를 재야 하기 때문이다.
  */
 
-export type Vendor = "openai" | "anthropic" | "deepseek";
+export type Vendor = "openai" | "anthropic" | "deepseek" | "gemini";
 export type ModelEntry = { id: string; vendor: Vendor; created?: number | null };
 export type WatchSnapshot = { takenAt: string; models: ModelEntry[] };
 
@@ -20,6 +20,9 @@ const ENDPOINTS: Record<Vendor, { url: string; headers: (key: string) => Record<
   openai: { url: "https://api.openai.com/v1/models", headers: (k) => ({ authorization: `Bearer ${k}` }), keyEnv: "OPENAI_API_KEY" },
   anthropic: { url: "https://api.anthropic.com/v1/models?limit=1000", headers: (k) => ({ "x-api-key": k, "anthropic-version": "2023-06-01" }), keyEnv: "ANTHROPIC_API_KEY" },
   deepseek: { url: "https://api.deepseek.com/models", headers: (k) => ({ authorization: `Bearer ${k}` }), keyEnv: "DEEPSEEK_API_KEY" },
+  // 226회차 09-26: 구글은 열쇠를 주소에 실어 보내고 응답도 `data` 가 아니라 `models` 다. 그래서 아래 파서가 갈린다.
+  // 이 문을 안 보고 있었다는 것이 오늘의 발견이다 — **한 열쇠로 61개가 열려 있었고 우리는 영상 셋만 쓰고 있었다.**
+  gemini: { url: "https://generativelanguage.googleapis.com/v1beta/models?pageSize=200", headers: () => ({}), keyEnv: "GEMINI_API_KEY" },
 };
 
 /** 공급자 하나의 목록. 열쇠가 없거나 문이 안 열리면 이유를 돌려준다 — 빈 목록을 "없어졌다"로 읽으면 안 된다. */
@@ -28,10 +31,13 @@ export async function listVendor(vendor: Vendor, env: Record<string, string | un
   const key = env[e.keyEnv];
   if (!key) return { ok: false, why: `${e.keyEnv} 없음` };
   try {
-    const r = await fetch(e.url, { headers: e.headers(key) });
+    const url = vendor === "gemini" ? `${e.url}&key=${encodeURIComponent(key)}` : e.url;
+    const r = await fetch(url, { headers: e.headers(key) });
     if (!r.ok) return { ok: false, why: `HTTP ${r.status}` };
-    const j = (await r.json()) as { data?: { id: string; created?: number; created_at?: string }[] };
-    const models = (j.data ?? []).map((m) => ({ id: m.id, vendor, created: typeof m.created === "number" ? m.created : m.created_at ? Math.floor(new Date(m.created_at).getTime() / 1000) : null }));
+    const j = (await r.json()) as { data?: { id: string; created?: number; created_at?: string }[]; models?: { name: string }[] };
+    const models = vendor === "gemini"
+      ? (j.models ?? []).map((m) => ({ id: m.name.replace(/^models\//, ""), vendor, created: null }))
+      : (j.data ?? []).map((m) => ({ id: m.id, vendor, created: typeof m.created === "number" ? m.created : m.created_at ? Math.floor(new Date(m.created_at).getTime() / 1000) : null }));
     return models.length ? { ok: true, models } : { ok: false, why: "목록이 비어 왔다" };
   } catch (err) { return { ok: false, why: err instanceof Error ? err.message : String(err) }; }
 }
@@ -80,7 +86,49 @@ export const IN_USE: { id: string; vendor: Vendor; where: string }[] = [
   { id: "claude-sonnet-5", vendor: "anthropic", where: "옆자리" },
   { id: "claude-opus-5", vendor: "anthropic", where: "옆자리" },
   { id: "claude-sonnet-4-6", vendor: "anthropic", where: "옛 옆자리" },
+  // 226회차 09-26: Veo 가 여기 빠져 있었다. 09-24 에 영상을 Veo 로 갈아타면서 sora 줄에 "폐기" 라고만 적고
+  // 새로 부르는 이름은 안 넣었다 — 자가 자기 목록을 안 고치면 "우리가 부르는데 없는 것" 검사가 헛돈다.
+  { id: "veo-3.1-generate-preview", vendor: "gemini", where: "영상" },
+  { id: "veo-3.1-fast-generate-preview", vendor: "gemini", where: "영상(빠른)" },
+  { id: "veo-3.1-lite-generate-preview", vendor: "gemini", where: "영상(싼)" },
 ];
+
+/**
+ * **무엇을 할 수 있는 모델인가** (226회차 09-26). 이름으로 가른다 — 공급자들이 능력을 따로 안 적어 준다.
+ * 틀릴 수 있는 자라서 `text` 는 "그 밖의 전부" 다(모르는 것을 글로 치는 쪽이, 새 능력을 글에 묻는 것보다 낫다).
+ */
+export type Power = "video" | "music" | "image" | "voice" | "text";
+export function powerOf(id: string): Power {
+  if (/veo|sora|video/i.test(id)) return "video";
+  if (/lyria|music/i.test(id)) return "music";
+  if (/image|imagen|dall-e|banana/i.test(id)) return "image";
+  if (/tts|speech|voice/i.test(id)) return "voice";
+  return "text";
+}
+
+/**
+ * **가지고 있는데 안 쓰는 힘.** 열쇠는 이미 있고 문도 열리는데 우리가 한 번도 안 부른 것들이다.
+ *
+ * 09-16 에 광고가 계속 쓰레기였던 이유가 이것이었다 — `sora-2` 가 **같은 열쇠로 열려 있었는데** 안 붙어 있었고,
+ * 로키는 자기가 영상 모델이 없다는 것조차 몰랐다. 사람이 눈으로 찾아야 알던 것을 자로 만든다.
+ *
+ * - `unusedPowers`: 그 능력에서 **부르는 것이 하나도 없다**(음악처럼 통째로 빈 칸)
+ * - `untried`: 능력은 쓰는데 **안 대 본 후보**가 있다(그림을 gpt-image-2 로만 하는 것처럼)
+ */
+export function idlePower(all: ModelEntry[], inUse: { id: string }[]): { unusedPowers: Record<string, string[]>; untried: Record<string, string[]> } {
+  const usedFams = new Set(inUse.map((u) => family(u.id)));
+  const usedPowers = new Set(inUse.map((u) => powerOf(u.id)));
+  const unusedPowers: Record<string, string[]> = {};
+  const untried: Record<string, string[]> = {};
+  for (const m of all) {
+    if (!isWorkModel(m.id) && powerOf(m.id) === "text") continue;   // 임베딩·검열 따위는 글 자리에서만 거른다
+    if (usedFams.has(family(m.id))) continue;
+    const p = powerOf(m.id);
+    (usedPowers.has(p) ? untried : unusedPowers)[p] ??= [];
+    (usedPowers.has(p) ? untried : unusedPowers)[p].push(m.id);
+  }
+  return { unusedPowers, untried };
+}
 
 export async function watchModels(prev: WatchSnapshot | null, env: Record<string, string | undefined> = process.env): Promise<{ report: WatchReport; snapshot: WatchSnapshot }> {
   const vendors = {} as WatchReport["vendors"];

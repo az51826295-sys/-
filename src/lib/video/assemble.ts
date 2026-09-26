@@ -162,7 +162,15 @@ function drawText(
 export async function assemble(
   scenes: Scene[],
   // 149회차: `look` 이 없으면 예전과 똑같이 돈다(기본값이 옛 상수다). 있으면 **그 판의 연출**을 따른다.
-  opts: { width?: number; height?: number; padSec?: number; look?: Partial<Look> | null; fitSec?: number } = {},
+  opts: {
+    width?: number; height?: number; padSec?: number; look?: Partial<Look> | null; fitSec?: number;
+    /**
+     * 226회차 09-26 — **배경 음악**(Lyria). 사장님 "음악 붙이고".
+     * 장면마다 깔면 이어 붙이는 자리에서 끊긴다. 그래서 전부 이어 붙인 **뒤에** 한 번만 얹는다.
+     * 길이는 영상에 맞춰 자르고 끝은 페이드아웃한다 — 음악이 영상보다 길게 왔을 때 뚝 끊기지 않게.
+     */
+    music?: Uint8Array | null;
+  } = {},
 ): Promise<Assembled> {
   const W = opts.width ?? 1280, H = opts.height ?? 720;
   const look = safeLook(opts.look);
@@ -274,7 +282,36 @@ export async function assemble(
     await writeFile(listFile, list.join("\n") + "\n");
     const out = path.join(dir, "out.mp4");
     await run(FFMPEG, ["-y", "-f", "concat", "-safe", "0", "-i", listFile, "-c", "copy", "-movflags", "+faststart", out]);
-    const total = await probeDuration(out);
+    let total = await probeDuration(out);
+
+    // ── 배경 음악 (226회차) ──────────────────────────────────────
+    // 목소리를 덮으면 안 된다. 고정 볼륨으로 줄이는 것보다 **말할 때만 음악이 비키는** 쪽이 낫다 —
+    // sidechaincompress 가 목소리를 신호로 받아 음악을 눌러 준다(라디오에서 하는 것과 같다).
+    // normalize=0 을 안 주면 amix 가 원래 목소리까지 반으로 줄인다.
+    if (opts.music?.length) {
+      const musFile = path.join(dir, "music.mp3");
+      await writeFile(musFile, opts.music);
+      const withMusic = path.join(dir, "out_music.mp4");
+      const fadeAt = Math.max(0, total - 1.6).toFixed(2);
+      try {
+        await run(FFMPEG, [
+          "-y", "-i", out, "-stream_loop", "-1", "-i", musFile,
+          "-filter_complex",
+          `[1:a]volume=0.32,afade=t=in:st=0:d=1.2,afade=t=out:st=${fadeAt}:d=1.6[m];` +
+          `[0:a]asplit=2[v1][v2];` +
+          `[m][v2]sidechaincompress=threshold=0.03:ratio=12:attack=15:release=400[mc];` +
+          `[v1][mc]amix=inputs=2:duration=first:normalize=0[a]`,
+          "-map", "0:v", "-map", "[a]", "-c:v", "copy", "-c:a", "aac", "-b:a", "160k",
+          "-t", total.toFixed(2), "-movflags", "+faststart", withMusic,
+        ]);
+        await run(FFMPEG, ["-y", "-i", withMusic, "-c", "copy", "-movflags", "+faststart", out]);
+        total = await probeDuration(out);
+      } catch (e) {
+        // 음악은 덤이다. 못 얹어도 영상은 나간다 — 조용한 영상이 없는 영상보다 낫다.
+        console.warn("[video] 음악을 못 얹었다:", e instanceof Error ? e.message.slice(0, 160) : e);
+      }
+    }
+
     const hasAudio = await probeHasAudio(out);
     const first = path.join(dir, "first5s.png"), mid = path.join(dir, "mid.png");
     await run(FFMPEG, ["-y", "-ss", Math.min(2.5, total / 2).toFixed(2), "-i", out, "-frames:v", "1", first]);

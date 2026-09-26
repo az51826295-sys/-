@@ -4,6 +4,7 @@ import { ExecutionError, setStep } from "@/lib/execution/shared";
 import { step } from "@/lib/execution/steps";
 import { recordUsage } from "@/lib/costs/meter";
 import { storeDeliverableFile } from "@/lib/deliverables/files";
+import { makeMusic, lyriaConfigured } from "@/lib/providers/lyria";
 import { assemble, type Scene } from "@/lib/video/assemble";
 import { judgeAppeal, JUDGE_MAX_IMAGES, type Appeal } from "@/lib/genesis/judge";
 import { frameStyle, styleLine } from "@/lib/video/style";
@@ -38,6 +39,13 @@ const script = z.object({
    * 어떤 값이 와도 영상은 나온다(깨질 값만 코드가 난간으로 잡는다). 그러니 겁내지 말고 이 판에 맞게 골라라.
    */
   look: lookSchema,
+  /**
+   * **배경 음악 주문**(226회차 09-26, 사장님 "음악 붙이고"). 영어 한 줄 — 분위기·악기·빠르기.
+   * 말이 들려야 하니 `no vocals` 를 꼭 적는다. 이 판에 음악이 방해가 된다고 보면 빈 문자열로 둔다.
+   * 예: "warm calm lo-fi piano with soft pads, slow, no vocals" ·
+   *     "bright confident synth-pop bed, mid tempo, no vocals"
+   */
+  music: z.string(),
   scenes: z.array(z.object({
     /** 화면 위쪽에 **크게 구워 넣을 제목**(≤ 24자). */
     heading: z.string(),
@@ -125,6 +133,9 @@ export const videoMakeSkill: EmployeeSkill = {
         "  · `narration` 읽을 말, 해요체. 길이는 그 장면의 `seconds` 에 맞춘다(60~120자 같은 상수는 없다 — 두 번째 진짜 판에서 대본이 「1장면당 60자 이상 규칙」 때문에 1장면을 골랐다). **화면 글자를 그대로 읽지 말고** 살을 붙여 말한다.\n" +
         "- **주문에 길이가 적혀 있으면 `targetSec` 는 그 숫자다.** '60초' 라고 했으면 60 이다 — 네가 편한 값으로 옮기지 마라(기계가 주문의 숫자로 잰다).\n" +
         "- 안 적혀 있으면 `targetSec` 는 **이 판에 맞게 네가 정한다** — 광고는 짧고, 가르치는 판은 길다. 왜인지 `sizeWhy` 에.\n" +
+        "- **`music`: 이 영상 밑에 깔 음악을 영어 한 줄로 주문한다.** 분위기·악기·빠르기를 적고 `no vocals` 를 꼭 붙인다 " +
+        "(사람 목소리가 섞이면 내레이션이 안 들린다). 음악은 말할 때 자동으로 비켜서니 겁내지 마라. " +
+        "조용한 편이 나은 판(엄숙한 주제, 소리 없이 볼 영상)이면 빈 문자열로 두면 음악 없이 나간다.\n" +
         "- 1판은 첫 장면이 9.8초라 사람이 나가떨어졌다 — 첫 장면이 길면 그 뒤를 아무도 안 본다. 마지막 장면은 한 줄로 맺는다.\n" +
         "- 업무에 없는 사실을 지어내지 마라. 모르는 숫자는 쓰지 않는다." +
         (source ? "\n- **아래 '재료' 안의 사실만 쓴다.** 재료에 없는 숫자·이름·주장을 넣지 마라 — 기계가 숫자를 재료와 대조한다." : ""),
@@ -231,7 +242,26 @@ export const videoMakeSkill: EmployeeSkill = {
       return /분/.test(m[0]) ? n * 60 : n;
     })();
     const look = safeLook(plan.look);
-    const a = await assemble(scenes, { look, fitSec: askedSec ?? undefined });
+
+    // ── 배경 음악 (226회차 09-26) ────────────────────────────────
+    // 154회차에 영상 모델이 없던 것과 같은 자리였다: Lyria 가 **같은 열쇠로 계속 열려 있었는데** 안 불렀다.
+    // 값은 곡당 $0.08 로 화면(초당 $0.05~0.40)보다 훨씬 싸지만, 사는 것은 같은 규율을 따른다 —
+    // `GENESIS_SPEND` 가 켜져 있을 때만. 실패하면 음악 없이 나간다(문이 아니라 덤이다).
+    let music: Uint8Array | null = null;
+    let musicUsd = 0;
+    if (plan.music?.trim() && lyriaConfigured() && process.env.GENESIS_SPEND === "i-approve") {
+      try {
+        const m = await makeMusic({ prompt: plan.music });
+        music = m.mp3;
+        musicUsd = m.usd;
+        await recordUsage(ctx.supabase, scope, { model: m.model, purpose: "video_music", inputTokens: 0, outputTokens: 0, quantity: 1 });
+        console.log(`[video] 음악 샀다 ${(m.mp3.length / 1024 / 1024).toFixed(2)}MB · $${m.usd} · 구조 ${m.structure ?? "없음"}`);
+      } catch (e) {
+        console.warn("[video] 음악을 못 샀다 — 없이 간다:", e instanceof Error ? e.message.slice(0, 160) : e);
+      }
+    }
+
+    const a = await assemble(scenes, { look, fitSec: askedSec ?? undefined, music });
     await recordUsage(ctx.supabase, scope, { model: "gpt-4o-mini-tts", purpose: "video_voice", inputTokens: 0, outputTokens: 0, quantity: Math.round(a.durations.reduce((s, d) => s + d, 0)) });
     const cases: Case[] = [];
     const within = a.total >= plan.targetSec * 0.7 && a.total <= plan.targetSec * 1.3;
