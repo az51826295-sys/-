@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { IN_USE } from "@/lib/providers/modelWatch";
 import type { AIProvider } from "@/lib/providers/types";
 import type { Supabase } from "@/lib/execution/shared";
 import { PLACES, placeFacts, safePlace, type Placement } from "@/lib/providers/place";
@@ -118,7 +119,13 @@ export async function decide(ai: AIProvider, input: { order: string; kind: strin
       schema: decisionSchema, schemaName: "head_decision", maxTokens: 6000, tier: "judgment",
     });
     // 난간(사람에게 나가는 글): 모델 이름이 새면 걷는다. 첫 판(161회차)에 "gpt-5 선택했습니다" 가 사장님 줄에 그대로 나갔다.
-    const ids = [...Object.keys(PLACES), "gpt-5-mini", "deepseek-chat", "deepseek-v4-flash", "sora-2", "sora-2-pro", "gpt-image-2"].sort((a, b) => b.length - a.length);
+    // 226회차 09-26: 이 목록은 손으로 적는 것이라 새 모델을 붙일 때마다 빠진다 — 그림을 2.5 로 옮기고
+    // 음악(Lyria)을 붙였는데 여기 없으면 그 이름이 그대로 사장님 줄에 나간다. IN_USE 를 같이 깐다(한 곳에서 관다).
+    const ids = [...new Set([
+      ...Object.keys(PLACES),
+      ...IN_USE.map((m) => m.id),
+      "gpt-5-mini", "deepseek-chat", "deepseek-v4-flash", "sora-2", "sora-2-pro", "gpt-image-2",
+    ])].sort((a, b) => b.length - a.length);
     // 모델 이름의 특수문자는 "." 과 "-" 뿐 — 글자 하나씩 문자 클래스로 감싸 정규식을 피한다(역슬래시 없이).
     const escapeRe = (x: string) => x.split("").map((ch) => (/[a-z0-9]/i.test(ch) ? ch : "[" + ch + "]")).join("");
     const scrub = (t: string) => t.replace(new RegExp(ids.map(escapeRe).join("|"), "gi"), "AI").replace(/AI( +AI)+/g, "AI");

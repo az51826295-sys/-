@@ -91,6 +91,17 @@ export const IN_USE: { id: string; vendor: Vendor; where: string }[] = [
   { id: "veo-3.1-generate-preview", vendor: "gemini", where: "영상" },
   { id: "veo-3.1-fast-generate-preview", vendor: "gemini", where: "영상(빠른)" },
   { id: "veo-3.1-lite-generate-preview", vendor: "gemini", where: "영상(싼)" },
+  // 226회차 09-26 에 붙인 것들.
+  { id: "gpt-image-2.5-flare", vendor: "openai", where: "그림(기본 — gpt-image-2 에서 옮김)" },
+  { id: "lyria-3.5", vendor: "gemini", where: "음악" },
+  { id: "lyria-3-pro-preview", vendor: "gemini", where: "음악(후보)" },
+  { id: "lyria-3-clip-preview", vendor: "gemini", where: "음악(30초 고정·반값)" },
+  // 자리 겨루기가 실제로 부르는 이름들(seats). 여기 없으면 "곧 죽을 호출" 검사가 이들을 안 본다.
+  { id: "gpt-5.6-luna", vendor: "openai", where: "판단·고치는 자리" },
+  { id: "gpt-5.6-terra", vendor: "openai", where: "자리 겨루기" },
+  { id: "gpt-5.3-codex", vendor: "openai", where: "코드 자리" },
+  // 안 부른다 — head.ts 가 **이름을 가리려고** 들고 있는 것이라 코드에 글자가 남아 있다. 자가 정직하게 잡으니 정직하게 적는다.
+  { id: "deepseek-chat", vendor: "deepseek", where: "안 부름(이름 가리기 목록에만)" },
 ];
 
 /**

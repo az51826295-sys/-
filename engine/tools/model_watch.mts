@@ -34,7 +34,7 @@ for (const l of readFileSync(".env.local", "utf8").split(/\r?\n/)) { const i = l
 
 // 코드가 실제로 부르는 이름을 훑어 IN_USE 에 빠진 게 없는지 본다(이 목록이 낡으면 '곧 죽을 호출'을 못 잡는다).
 const found = new Set<string>();
-const walk = (dir: string) => { for (const f of readdirSync(dir)) { const p = path.join(dir, f); if (statSync(p).isDirectory()) walk(p); else if (/\.tsx?$/.test(f) && !p.endsWith("modelWatch.ts")) for (const hit of readFileSync(p, "utf8").matchAll(/"((?:gpt|deepseek|claude|sora|o\d)-[a-z0-9.-]+)"/g)) found.add(hit[1]); } };
+const walk = (dir: string) => { for (const f of readdirSync(dir)) { const p = path.join(dir, f); if (statSync(p).isDirectory()) walk(p); else if (/\.tsx?$/.test(f) && !p.endsWith("modelWatch.ts") && !p.endsWith("pricing.ts")) for (const hit of readFileSync(p, "utf8").matchAll(/"((?:gpt|deepseek|claude|sora|veo|lyria|gemini|imagen|o\d)-[a-z0-9.-]+)"/g)) found.add(hit[1]); } };
 walk("src/lib");
 const notListed = [...found].filter((id) => !IN_USE.some((u) => u.id === id));
 if (notListed.length) console.log(`! 코드에 있는데 IN_USE 에 없는 이름: ${notListed.join(", ")} — modelWatch.ts 에 더할 것\n`);

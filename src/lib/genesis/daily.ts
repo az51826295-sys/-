@@ -152,7 +152,21 @@ export async function runDaily(
       const textish = report.fresh.filter((m) => (m.vendor === "openai" || m.vendor === "deepseek") && !/image|sora|video|gpt-image|chatgpt|chat-latest|-pro$|codex-mini|nano/i.test(m.id)).slice(0, 3);
       for (const m of textish) { const t = await runSeatBench(m.id); trials.push(t); log(`새 모델 시험: ${trialLine(t)}`); }
     } catch (e) { log(`새 모델 시험 실패: ${e instanceof Error ? e.message : String(e)}`); }
-    result.models = { report, snapshot, trials };
+    // 226회차 09-26 — **가지고 있는데 안 쓰는 힘.** 위의 파악은 "새로 생겼나·없어졌나" 를 본다. 그런데
+    // 오늘 손으로 찾아보니 **처음부터 안 쓰던 것**이 있었다: 한 열쇠로 61개가 열리는데 우리는 영상 셋만 불렀고,
+    // 음악(Lyria)은 통째로 비어 있었다 — 광고에 음악이 없던 이유다. 새것도 아니고 없어진 것도 아니라
+    // 어느 검사에도 안 걸렸다. 매일 같이 센다(돈 0, 목록은 위에서 이미 읽었다).
+    let idle: ReturnType<typeof import("@/lib/providers/modelWatch").idlePower> | null = null;
+    try {
+      const { idlePower, IN_USE } = await import("@/lib/providers/modelWatch");
+      idle = idlePower(snapshot.models, IN_USE);
+      const empty = Object.entries(idle.unusedPowers);
+      if (empty.length) log(`**통째로 안 쓰는 힘**: ${empty.map(([k, v]) => `${k}(${v.length})`).join(" · ")}`);
+      const spare = Object.entries(idle.untried).filter(([k]) => k !== "text");
+      if (spare.length) log(`안 대 본 후보: ${spare.map(([k, v]) => `${k} ${v.length}`).join(" · ")}`);
+    } catch (e) { log(`안 쓰는 힘 세기 실패: ${e instanceof Error ? e.message : String(e)}`); }
+
+    result.models = { report, snapshot, trials, idle };
     // 195회차 (ㄴ) 트랙: 본 것을 **배달한다.** gpt-live-1 은 09-08 에 목록에 떴는데(공표 09-10) 아무도 안 봤다 — 눈이 아니라 알림이 없었다.
     try {
       const { buildAlerts, postUrgent } = await import("@/lib/genesis/eye");
