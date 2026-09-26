@@ -1,5 +1,5 @@
 {
- "takenAt": "2026-09-17T17:56:48.828Z",
+ "takenAt": "2026-09-26T05:21:20.332Z",
  "models": [
   {
    "id": "claude-fable-5",
@@ -40,6 +40,11 @@
    "id": "claude-opus-5",
    "vendor": "anthropic",
    "created": 1784851200
+  },
+  {
+   "id": "claude-opus-5-5",
+   "vendor": "anthropic",
+   "created": 1790007840
   },
   {
    "id": "claude-sonnet-4-5-20250929",
@@ -465,6 +470,16 @@
    "id": "gpt-6-astra",
    "vendor": "openai",
    "created": 1787853604
+  },
+  {
+   "id": "gpt-6-luna",
+   "vendor": "openai",
+   "created": 1789406102
+  },
+  {
+   "id": "gpt-6-sol",
+   "vendor": "openai",
+   "created": 1789405937
   },
   {
    "id": "gpt-audio",
