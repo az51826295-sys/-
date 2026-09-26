@@ -69,9 +69,33 @@ if (!hb) ok.push(`${svc} 는 아직 자기 커밋을 알린 적이 없다(첫 �
 else if (beforeAge !== null && beforeAge > 10) fail.push(`${svc} 소식이 ${beforeAge}분 전이다 — 이미 내려가 있다. 먼저 왜 죽었는지 본다`);
 else ok.push(`${svc} 살아 있음 · ${String(beforeSha).slice(0, 7)} · ${beforeAge}분 전`);
 
+// ── 다른 서비스도 같이 본다 (226회차 09-26) ────────────────────
+// 오늘 실제로 값을 태운 자리: 개발 계정에 넣은 영상 업무를 **rookery-worker-dev** 가 집는데, 나는 내내
+// `rookery-worker` 만 올리고 "새 코드가 돈다" 를 확인했다. dev 는 커밋 7개 뒤진 채였고 음악 코드가 아예
+// 없었다. 자는 초록인데 일은 옛 코드로 돌았다 — **"내가 올린 것" 이 아니라 "그 일을 집을 것" 을 물어야 한다.**
+// 어느 서비스가 어느 일을 집는지는 코드가 모르니, 막지는 않고 **뒤진 것을 전부 적는다.**
+const behindOthers: string[] = [];
+{
+  const head7 = git(["rev-parse", "--short", "HEAD"]);
+  const { data: all } = await db.from("service_heartbeat").select("service, commit_sha, seen_at");
+  for (const r of (all ?? []) as { service: string; commit_sha: string | null; seen_at: string }[]) {
+    if (r.service === svc || !r.commit_sha) continue;
+    const age = Math.round((Date.now() - Date.parse(r.seen_at)) / 60000);
+    if (age > 30) continue;                                   // 안 도는 것은 여기서 따질 일이 아니다
+    if (r.commit_sha.startsWith(head7) || head7.startsWith(r.commit_sha.slice(0, 7))) continue;
+    let n = 0;
+    try { n = Number(git(["rev-list", "--count", `${r.commit_sha}..HEAD`])); } catch { n = -1; }
+    behindOthers.push(`${r.service} ${r.commit_sha.slice(0, 7)} — ${n < 0 ? "이 저장소에 없는 커밋" : `커밋 ${n}개 뒤`}`);
+  }
+}
+
 console.log(`\n=== 올리기 문: ${svc} ===`);
 for (const l of ok) console.log(`  · ${l}`);
 for (const l of fail) console.log(`  ≠ ${l}`);
+if (behindOthers.length) {
+  console.log(`\n  ! **다른 서비스가 뒤져 있다** — 그 일을 집는 쪽이 여기면 새 코드가 안 돈다:`);
+  for (const l of behindOthers) console.log(`      ${l}`);
+}
 if (fail.length) { console.log(`\n**안 올린다** — 문 ${fail.length}개에 걸렸다.`); process.exit(1); }
 if (!UP) { console.log("\n문 전부 통과. --up 을 붙이면 실제로 올린다."); process.exit(0); }
 
