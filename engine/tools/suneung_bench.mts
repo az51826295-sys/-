@@ -1,7 +1,7 @@
 /**
  * **수능 점수로 성능을 잰다 — 수학·과학 전반** (226회차 2026-09-27).
  *
- *   npx tsx engine/tools/rookery_env.mts engine/tools/suneung_bench.mts [판수] [--lanes 1,2] [--과목 물리]
+ *   npx tsx engine/tools/rookery_env.mts engine/tools/suneung_bench.mts [판수] [--lanes 2,3] [--과목 물리] [--시험지 engine/data/suneung-killer-v0.json]
  *
  * 시험지는 `engine/data/suneung-v0.json`(53문항 183점: 수학·물리·화학·생명·지구),
  * 정답은 `suneung_key.py` 가 세서 맞춘 것이다. 여기서는 정답을 다시 주장하지 않는다.
@@ -33,7 +33,8 @@ type 문항 = {
   정답: string;
   검산방식: "셈" | "식";
 };
-const 전체 = (JSON.parse(readFileSync("engine/data/suneung-v0.json", "utf-8")) as { 문항: 문항[] }).문항;
+const 시험지경로 = arg("--시험지") ?? "engine/data/suneung-v0.json";
+const 전체 = (JSON.parse(readFileSync(시험지경로, "utf-8")) as { 문항: 문항[] }).문항;
 const 시험지 = 고른과목 ? 전체.filter((q) => q.과목 === 고른과목) : 전체;
 const 과목들 = [...new Set(시험지.map((q) => q.과목))];
 const 만점 = (qs: 문항[]) => qs.reduce((a, q) => a + q.배점, 0);
@@ -74,7 +75,7 @@ const lanes: Lane[] = [
 ];
 
 console.log(
-  `시험지 ${시험지.length}문항 ${만점(시험지)}점 · ${판수}판씩\n` +
+  `시험지 ${시험지경로.split("/").pop()} · ${시험지.length}문항 ${만점(시험지)}점 · ${판수}판씩\n` +
     과목들
       .map((k) => {
         const qs = 시험지.filter((q) => q.과목 === k);

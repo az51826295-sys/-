@@ -213,6 +213,107 @@ def earth_quake():
     return [d for d in range(1, 10001) if abs(d / 4 - d / 8 - 10) < 1e-9][0]
 
 
+# ── 킬러급. 사람이 추론하기 어렵고 **세기는 쉬운** 것들 ─────────────────────
+
+
+def kill_seq():
+    """a₇ = 1 이 되는 a₁ 의 개수. 100개를 각각 여섯 번 밀어 본다."""
+    def step(a):
+        return a // 2 if a % 2 == 0 else 3 * a + 1
+    n = 0
+    for a1 in range(1, 101):
+        a = a1
+        for _ in range(6):
+            a = step(a)
+        if a == 1:
+            n += 1
+    return n
+
+
+def kill_invol():
+    """f(f(x)) = x 인 함수의 개수. 256가지를 전부 만들어 본다."""
+    from itertools import product
+    X = [1, 2, 3, 4]
+    return sum(1 for f in product(X, repeat=4) if all(f[f[x - 1] - 1] == x for x in X))
+
+
+def kill_gap():
+    """차가 모두 2 이상인 네 수. 조합을 전부 꺼내 본다."""
+    from itertools import combinations
+    return sum(1 for c in combinations(range(1, 11), 4)
+               if all(c[i + 1] - c[i] >= 2 for i in range(3)))
+
+
+def kill_circle():
+    """x² + y² = 2025 의 정수해. -45..45 를 전부 훑는다."""
+    return sum(1 for x in range(-45, 46) for y in range(-45, 46) if x * x + y * y == 2025)
+
+
+def kill_median():
+    """주사위 다섯 번, 중앙값이 4. 7776가지를 전부 던져 본다."""
+    from itertools import product
+    좋음 = sum(1 for t in product(range(1, 7), repeat=5) if sorted(t)[2] == 4)
+    return F(좋음, 6 ** 5)
+
+
+def kill_onto():
+    """6명 → 구별되는 3조, 빈 조 없음. 729가지를 전부 배정해 본다."""
+    from itertools import product
+    return sum(1 for t in product(range(3), repeat=6) if len(set(t)) == 3)
+
+
+def kill_triple():
+    """a+b+c 가 3의 배수이고 abc 가 짝수. 8000가지를 전부 센다."""
+    return sum(1 for a in range(1, 21) for b in range(1, 21) for c in range(1, 21)
+               if (a + b + c) % 3 == 0 and (a * b * c) % 2 == 0)
+
+
+def kill_chase():
+    """B 가 A 를 따라잡는 시간. 공식을 쓰지 않고 잘게 쪼개 달려 본다."""
+    dt = 1e-7
+    t, vB, xB = 0.0, 0.0, 0.0
+    while True:
+        t += dt
+        vB += 5.0 * dt
+        xB += vB * dt
+        xA = 10.0 * (t + 3.0)
+        if xB >= xA:
+            return round(t)
+        if t > 100:
+            raise SystemExit("못 따라잡았다")
+
+
+def kill_mix():
+    """섞은 뒤 pH. 남은 H+ 를 세고 10^-p 를 훑어 맞춘다."""
+    H = 0.3 * 0.100 - 0.1 * 0.100          # 남은 H+ (mol)
+    농도 = H / 0.200
+    return [p for p in range(0, 15) if abs(10.0 ** (-p) - 농도) < 1e-12][0]
+
+
+def kill_tri_gene():
+    """AaBbCc × AaBbCc → A_B_cc. 생식세포 8가지를 전부 짝지어 센다."""
+    from itertools import product
+    G = ["".join(g) for g in product("Aa", "Bb", "Cc")]
+    n = 0
+    for x in G:
+        for y in G:
+            A봄 = "A" in (x[0] + y[0])
+            B봄 = "B" in (x[1] + y[1])
+            cc = sorted(x[2] + y[2]) == ["c", "c"]
+            if A봄 and B봄 and cc:
+                n += 1
+    return F(n, len(G) ** 2)
+
+
+def kill_dist():
+    """거리 비. d = 10^((m-M+5)/5) 를 각각 훑어 찾고 비로 나눈다."""
+    def 거리(m, M):
+        import math as _m
+        목표 = (m - M + 5) / 5
+        return [d for d in range(1, 100001) if abs(_m.log10(d) - 목표) < 1e-9][0]
+    return F(거리(1, -4), 거리(6, 1))
+
+
 def show(v):
     if isinstance(v, F):
         return str(v.numerator) if v.denominator == 1 else f"{v.numerator}/{v.denominator}"
@@ -221,12 +322,15 @@ def show(v):
     return str(v)
 
 
-P = "engine/data/suneung-v0.json"
+P = sys.argv[1] if len(sys.argv) > 1 else "engine/data/suneung-v0.json"
 d = json.load(io.open(P, encoding="utf-8"))
 bad = 0
 채움 = 0
+import re as _re
 for q in d["문항"]:
-    got = show(eval(q["검산"]))
+    chk = q["검산"]
+    q["검산방식"] = "셈" if _re.search(r"(brute_|phys_|chem_|bio_|earth_|kill_)\w*\(", chk) or " for " in chk else "식"
+    got = show(eval(chk))
     if q.get("정답") in (None, ""):
         q["정답"] = got
         채움 += 1
