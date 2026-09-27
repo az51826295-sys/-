@@ -39,6 +39,32 @@ if (process.argv.includes("--selftest")) {
   const { createServiceClient } = await import("../../src/lib/supabase/service");
   const db = createServiceClient();
   const { data: cos } = await db.from("companies").select("id, name");
+  // 226회차 09-28: **재료가 언제 것인지 말하지 않고 있었다.** 이 자가 "수상한 것 18개" 를 내놓았고
+  // 나는 그것을 지금 상태로 읽었는데, 재료인 유니티 검사 기록은 **09-05~09-09 에서 끝나** 18일 전
+  // 것이었다. 죽은 시스템에 대한 경고를 지금 경고로 읽으면 엉뚱한 곳을 고친다.
+  // 오늘 여덟 번째 같은 모양이다 — 자는 **자기가 무엇을 언제 봤는지** 같이 적어야 한다.
+  const 창 = await (async () => {
+    const q = () => db.from("conversation_messages").select("created_at").not("attachments->unityChecks", "is", null);
+    const [{ data: 오래 }, { data: 최근 }] = await Promise.all([
+      q().order("created_at", { ascending: true }).limit(1),
+      q().order("created_at", { ascending: false }).limit(1),
+    ]);
+    const a = (오래 as { created_at: string }[] | null)?.[0]?.created_at ?? null;
+    const b = (최근 as { created_at: string }[] | null)?.[0]?.created_at ?? null;
+    return { 처음: a, 끝: b, 며칠전: b ? (Date.now() - new Date(b).getTime()) / 86400_000 : null };
+  })();
+  console.log(
+    창.처음
+      ? `재료: 유니티 검사 기록 ${창.처음.slice(0, 10)} ~ ${창.끝!.slice(0, 10)} (최근 것이 ${창.며칠전!.toFixed(1)}일 전)`
+      : "재료: 유니티 검사 기록이 없다 — 이 자는 지금 아무것도 못 잰다",
+  );
+  if ((창.며칠전 ?? 0) > 3) {
+    console.log(
+      `  ! **이 재료는 ${창.며칠전!.toFixed(0)}일 전에 멈췄다.** 아래 목록은 그때의 자에 대한 것이고,\n` +
+        "    지금 도는 판에 대한 경고가 아니다. 고치기 전에 그 자가 아직 쓰이는지 먼저 본다.",
+    );
+  }
+
   for (const co of (cos ?? []) as { id: string; name: string | null }[]) {
     const stats = await collectRulerStats(db, co.id);
     if (!stats.size) continue;
