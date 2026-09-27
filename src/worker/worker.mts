@@ -170,7 +170,14 @@ async function walletTick() {
 async function returnsTick() {
   const LIVE = ["assigned", "queued", "working", "waiting", "submitted", "failed", "needs_changes", "revision_queued", "revising"];
   const { data: liveA } = await db.from("assignments").select("id").in("status", LIVE).limit(200);
-  const liveIds = (liveA ?? []).map((a) => a.id as string);
+  // 226회차 09-27 — **끝난 일이 목록에서 빠져 결과가 영영 안 붙었다.**
+  // LIVE 에 completed 가 없어서, 일이 끝나는 순간 그 대화를 더 안 봤다. 끝나기 **전에** 이 tick 이
+  // 한 번 잡아야 붙고, 놓치면 사장님은 결과를 못 본다 — 붙고 안 붙고가 타이밍에 달려 있었다.
+  // 최근에 끝난 것도 같이 본다(collectWorkReturns 가 이미 붙은 것은 건너뛰므로 두 번 붙지 않는다).
+  const { data: doneA } = await db.from("assignments")
+    .select("id").eq("status", "completed")
+    .gte("created_at", new Date(Date.now() - 6 * 3600_000).toISOString()).limit(60);
+  const liveIds = [...(liveA ?? []), ...(doneA ?? [])].map((a) => a.id as string);
   const convIds = new Set<string>();
   for (let i = 0; i < liveIds.length; i += 25) {
     const chunk = liveIds.slice(i, i + 25);
