@@ -245,6 +245,27 @@ export async function collectWorkReturns(
         actions = [];
         // 226회차: 못 잰 것을 하나 묻는다. 누르면 그 말이 대화에 들어가고, `reaction` 이 그것을
         // **이 결과물에 매달아** 둔다(about) — 그게 자가진화와 취향 자의 먹이다.
+        // 226회차 09-27: **다음 조각 하나를 내보낸다.** 3D 주문이 여럿으로 갈린 판은 나머지를
+        // `pendingPieces` 에 남겨 두고, 결과가 붙는 지금(직원이 막 풀린 때) 하나만 꺼내 새 업무로 만든다.
+        // 한 번에 다 만들면 DB 제약(한 사람 한 일)에 걸리고, 하나씩 내면 **맨몸 → 투구 → 갑옷** 순서가 지켜진다.
+        {
+          const pend = ((d.content_json as { pendingPieces?: { 주문: string; 붙는곳?: string }[] | null } | null)?.pendingPieces) ?? null;
+          if (pend?.length) {
+            try {
+              const { dispatchOrder } = await import("@/lib/genesis/practice");
+              const { data: co } = await db.from("companies").select("owner_id").eq("id", a.company_id as string).maybeSingle();
+              const next = pend[0];
+              const rest = pend.slice(1);
+              await dispatchOrder(db, a.company_id as string, "mesh_from_image", next.주문, (co?.owner_id as string) ?? "");
+              // 남은 것은 **이 결과물에서 지우고** 다음 판이 이어받게 넘긴다 — 안 지우면 같은 조각이 계속 나간다.
+              await db.from("deliverables").update({ content_json: { ...(d.content_json as object), pendingPieces: rest.length ? rest : null } }).eq("id", deliverableId);
+              text += `
+
+다음 조각을 시작했어요: **${next.주문.slice(0, 40)}**${rest.length ? ` (뒤에 ${rest.length}개 더)` : ""}`;
+            } catch (e) { console.warn("[workReturns] 다음 조각 못 냄:", e instanceof Error ? e.message : e); }
+          }
+        }
+
         const ask = await askOneThing((d.title as string) || a.title, (d.content_markdown as string) ?? "");
         if (ask) {
           text += `\n\n---\n\n${ask.q}`;

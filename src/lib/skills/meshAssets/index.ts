@@ -265,15 +265,10 @@ export const meshAssetsSkill: EmployeeSkill = {
     const pieces = split.나눈다 ? split.조각.slice(0, 4) : [];
     if (pieces.length > 1) {
       console.log(`[mesh] 조각 ${pieces.length}개로 나눈다 — ${split.왜.slice(0, 80)}`);
-      // 첫 조각은 이 판에서 만든다. 나머지는 새 업무로.
-      const { dispatchOrder } = await import("@/lib/genesis/practice");
-      const { data: co } = await ctx.supabase.from("companies").select("owner_id").eq("id", ctx.execution.company_id as string).maybeSingle();
-      for (const p of pieces.slice(1)) {
-        try {
-          const d = await dispatchOrder(ctx.supabase, ctx.execution.company_id as string, "mesh_from_image", p.주문, (co?.owner_id as string) ?? "");
-          console.log(`[mesh]   조각 업무: ${p.주문.slice(0, 40)} → ${d.employee}`);
-        } catch (e) { console.warn("[mesh]   조각 업무 실패:", e instanceof Error ? e.message : e); }
-      }
+      // 09-27 첫 실전: 여기서 바로 업무를 만들었더니 셋 다
+      // `assignments_one_active_per_employee` 로 막혔다 — 이 판을 돌리는 그 직원이 아직 이 일을 붙들고 있다.
+      // 막힌 것이 오히려 옳은 순서를 알려 줬다: **맨몸이 나온 뒤에** 투구를 만들어야 그 몸에 맞는다.
+      // 그래서 여기서는 **남길 뿐**이고, 결과가 대화에 붙는 순간(그때 직원이 풀린다) 다음 조각 하나가 나간다.
     }
 
     // 단계 저장(계획 2 "안 죽는 실행"): 죽었다 다시 돌면 브리프·그림·메시·리깅을 다시 사지 않는다.
@@ -655,6 +650,11 @@ export const meshAssetsSkill: EmployeeSkill = {
       brief,
       conceptByMachine,
       reusedConcept,
+      // 226회차 09-27: 아직 안 만든 조각들. 결과가 대화에 붙을 때 **하나씩** 나간다(workReturns).
+      // 여기서 바로 만들면 한 직원이 두 일을 못 잡는다는 DB 제약에 걸린다 — 그리고 맨몸이 나온 뒤에
+      // 조각을 만드는 것이 순서로도 옳다.
+      pendingPieces: pieces.length > 1 ? pieces.slice(1) : null,
+      splitWhy: pieces.length > 1 ? split.왜 : null,
       retexturedFrom: retex.fallback ? null : (brief.fixKind === "texture" ? previousMeshTaskId : null),
       retexFallback: retex.fallback,
       textureResolution: brief.wantRig ? "4k" : "2k",
