@@ -244,6 +244,13 @@ function errorKind(error: unknown): string {
     return "overloaded";
   if (message.includes("timeout") || message.includes("econnreset"))
     return "timeout";
+  // 226회차 09-27: **이 칸에 잘림이 없었다.** 예측자가 900 토큰에 갇혀 있던 것을 찾고
+  // "다른 자리도 상한에 물리나" 를 장부에서 세려 했더니 `error_kind` 에 trunc 가 0건이었다 —
+  // 잘림이 없어서가 아니라 **이 함수가 잘림을 `other` 로 넣고 있었기 때문**이다.
+  // 재려던 것을 자가 볼 수 없으면 0 은 "없다" 가 아니라 "모른다" 다([[ruler-audit]]).
+  if (message.includes("truncat")) return "truncated";
+  // 모양이 안 맞아 못 읽은 것도 갈라 둔다 — 상한을 올려서 낫는 것과 프롬프트를 고쳐야 하는 것은 다르다.
+  if (message.includes("unparseable")) return "unparseable";
   if (message.includes("schema") || message.includes("json"))
     return "schema";
   return "other";
