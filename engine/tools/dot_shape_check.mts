@@ -31,7 +31,7 @@ async function mask(f: string): Promise<{ m: Uint8Array; rgb: Uint8Array; W: num
   return { m, rgb, W, H };
 }
 
-const masks = new Map<string, { m: Uint8Array; W: number; H: number }>();
+const masks = new Map<string, { m: Uint8Array; rgb: Uint8Array; W: number; H: number }>();
 for (const f of files) masks.set(f, await mask(f));
 const W = [...masks.values()][0].W, H = [...masks.values()][0].H;
 if ([...masks.values()].some((v) => v.W !== W || v.H !== H)) throw new Error("칸 크기가 서로 다르다 — 먼저 dot_align 을 돌릴 것");

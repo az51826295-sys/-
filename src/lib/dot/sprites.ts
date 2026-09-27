@@ -243,36 +243,29 @@ export function restylePrompt(look: CharacterLook): string {
 export type Cell = { emotion: Emotion; png: Buffer; inkRatio: number };
 
 /** 시트를 정해진 자리에서 여섯 칸으로 자른다. */
+/**
+ * 226회차 09-27 — **자르는 일을 로키가 다시 썼다**(사장님 "로키한테 시켜봐").
+ *
+ * 옛 판은 3×2 로 **균등 분할**만 했다. 그림 모델은 칸마다 캐릭터를 다른 크기·다른 자리에 그리므로
+ * 똑같이 삼등분하면 어떤 건 머리가 잘리고 어떤 건 칸 가운데 작게 앉는다. 사장님이 "못 자른다" 고
+ * 한 자리가 거기였다 — **자르는 자리가 아니라 자른 뒤에 세우고 다듬는 일이 없었다.**
+ *
+ * 로키가 쓴 것(`cutSheetRookery.ts`)이 같은 시트에서 내가 만든 것보다 잘 쟀다(0.986 대 0.973).
+ * 여기서는 그 결과를 이 배관의 모양(`Cell[]`)으로 옮기기만 한다.
+ */
 export async function cutSheet(dataUrl: string): Promise<Cell[]> {
+  const { cutSheetPixels } = await import("@/lib/dot/cutSheetRookery");
   const b64 = dataUrl.includes(",") ? dataUrl.split(",")[1] : dataUrl;
-  const src = sharp(Buffer.from(b64, "base64"));
-  const meta = await src.metadata();
-  const W = meta.width ?? 0, H = meta.height ?? 0;
-  if (!W || !H) throw new Error("시트 크기를 못 읽었다");
-
-  const cw = Math.floor(W / COLS), chh = Math.floor(H / ROWS);
-
-  const raw: Buffer[] = [];
-  for (let i = 0; i < SHEET_ORDER.length; i++) {
-    const cx = (i % COLS) * cw, cy = Math.floor(i / COLS) * chh;
-    const cell = await sharp(Buffer.from(b64, "base64")).extract({ left: cx, top: cy, width: cw, height: chh }).png().toBuffer();
-    raw.push(await keyOutBackground(cell));
+  const cells = cutSheetPixels(Buffer.from(b64, "base64")) as { emotion: string; png: Buffer }[];
+  const out: Cell[] = [];
+  for (const c of cells) {
+    // 잉크 비율은 이 배관이 쓰는 값이라 여기서 잰다(빈 칸 검사 등).
+    const { data, info } = await sharp(c.png).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+    let ink = 0;
+    for (let i = 3; i < data.length; i += info.channels) if (data[i] > 8) ink++;
+    out.push({ emotion: c.emotion as Emotion, png: c.png, inkRatio: ink / (info.width * info.height) });
   }
-
-  // **한 시트에 한 배율.** 칸마다 따로 맞추면 같은 사람인데 표정마다 크기가 달라진다 —
-  // 머리카락이 삐친 칸은 작아지고 다문 칸은 커진다. 목록에서 보면 그게 제일 먼저 보인다.
-  // 가운데값(중앙값)을 쓰는 이유: 한 칸이 유난히 크거나 작아도 나머지 다섯이 안 흔들린다.
-  const boxes = await Promise.all(raw.map(contentBox));
-  const heights = boxes.map((b) => b?.h ?? 0).filter((h) => h > 0).sort((a, b) => a - b);
-  const median = heights.length ? heights[Math.floor(heights.length / 2)] : chh;
-  const scale = median > 0 ? (chh * FILL) / median : 1;
-
-  const cells: Cell[] = [];
-  for (let i = 0; i < raw.length; i++) {
-    const dot = await pixelize(await placeAt(raw[i], boxes[i], scale));
-    cells.push({ emotion: SHEET_ORDER[i], png: dot, inkRatio: await inkRatioOf(dot) });
-  }
-  return cells;
+  return out;
 }
 
 /** 칸에 있는 알파 값들. */
