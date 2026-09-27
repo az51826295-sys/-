@@ -373,12 +373,41 @@ export async function collectWorkReturns(
       continue;
     }
 
+    // 226회차 09-27: **같은 결과물이 두 번 붙고 있었다.** 확인한 대화 세 개 전부 그랬다.
+    // 위의 "이미 붙은 것은 건너뛴다" 는 맞게 쓰여 있는데, 붙이는 일을 **둘이** 한다 —
+    // 워커의 returnsTick 과 브라우저 폴링([[screen-is-not-the-engine]]). 둘이 **읽고 나서**
+    // 둘이 쓰면 둘 다 "아직 안 붙었다" 를 본다. 읽고-쓰기 검사로는 경주를 못 막는다.
+    //
+    // 그래서 **id 를 (대화, 업무)로 정해 버린다.** 두 번째 쓰기는 자기가 primary key 에
+    // 부딪혀 떨어지고, 그 떨어짐은 고장이 아니다. 새 인덱스도, 옛 줄 지우기도 필요 없다 —
+    // 이미 두 번 붙은 옛 기록은 사장님 대화이므로 내 판단으로 지우지 않는다.
+    const 붙이는줄id = await (async () => {
+      const { createHash } = await import("node:crypto");
+      // **결과물까지 넣는다.** 업무만으로 정하면 한 업무가 두 결과물을 낼 때(고침판·조각)
+      // 두 번째가 막힌다. 09-27 에 실제로 겹친 것은 `deliverableId` 까지 같은 줄이었다.
+      // 결과물이 없는 실패 줄은 업무 하나당 한 번만 붙는 것이 맞으므로 "none" 으로 묶는다.
+      const h = createHash("sha1")
+        .update(`return:${conversationId}:${a.id}:${deliverableId ?? "none"}`)
+        .digest("hex");
+      // sha1 앞 16바이트를 uuid 모양으로 (버전 5 자리를 맞춘다)
+      const b = h.slice(0, 32).split("");
+      b[12] = "5";
+      b[16] = ((parseInt(b[16], 16) & 0x3) | 0x8).toString(16);
+      const s = b.join("");
+      return `${s.slice(0, 8)}-${s.slice(8, 12)}-${s.slice(12, 16)}-${s.slice(16, 20)}-${s.slice(20, 32)}`;
+    })();
+
     const { error } = await db.from("conversation_messages").insert({
+      id: 붙이는줄id,
       conversation_id: conversationId,
       role: "assistant",
       content: text,
       attachments: { returned: { assignmentId: a.id, deliverableId }, files: files ?? null },
     });
+    // 이미 붙어 있어서 떨어진 것(23505)은 **성공으로 본다** — 옆에서 먼저 붙인 것이다.
+    // 그래야 아래의 직원 풀어 주기·알림이 그 판에서 한 번은 돈다.
+    const 이미붙음 = !!error && ((error as { code?: string }).code === "23505");
+    if (이미붙음) console.log(`[returns] ${a.id.slice(0, 8)} 는 옆에서 이미 붙였다 — 두 번 안 붙인다.`);
     // 못 붙였으면 다음에 다시 시도한다 — 표시가 안 남았으니 다시 잡힌다.
     if (!error) {
       posted.push({ role: "assistant", content: text, files, kind: kindOfTurn, actions });
