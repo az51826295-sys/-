@@ -326,10 +326,10 @@ P = sys.argv[1] if len(sys.argv) > 1 else "engine/data/suneung-v0.json"
 d = json.load(io.open(P, encoding="utf-8"))
 bad = 0
 채움 = 0
-import re as _re
 for q in d["문항"]:
     chk = q["검산"]
-    q["검산방식"] = "셈" if _re.search(r"(brute_|phys_|chem_|bio_|earth_|kill_)\w*\(", chk) or " for " in chk else "식"
+    도우미 = any(p in chk for p in ("brute_", "phys_", "chem_", "bio_", "earth_", "kill_"))
+    q["검산방식"] = "셈" if 도우미 or " for " in chk else "식"
     got = show(eval(chk))
     if q.get("정답") in (None, ""):
         q["정답"] = got

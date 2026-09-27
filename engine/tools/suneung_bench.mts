@@ -24,6 +24,14 @@ const arg = (name: string) =>
 const 판수 = Number(process.argv[2] && !process.argv[2].startsWith("--") ? process.argv[2] : 1);
 const 고른줄 = arg("--lanes")?.split(",").map(Number) ?? null;
 const 고른과목 = arg("--과목");
+/**
+ * `--맨` 이면 **로키 지시문을 떼고** 돌린다 (226회차 09-27 사장님: "그냥 지피티로 푸는거랑
+ * 로키가 시키는거랑 성능 달라?").
+ *
+ * 이 대조군이 없으면 우리는 모델만 비교한 것이고, **로키가 무엇을 더하는지는 아무것도 모른다**.
+ * 답 칸 형식만 남기고(채점을 해야 하므로) 푸는 법에 대한 말은 전부 뗀다.
+ */
+const 맨 = process.argv.includes("--맨");
 
 type 문항 = {
   번호: number;
@@ -93,7 +101,7 @@ for (const [i, lane] of lanes.entries()) {
       let 답 = "(떨어짐)";
       try {
         const { output } = await lane.ai.generateStructuredOutput({
-          systemInstructions: SYS,
+          systemInstructions: 맨 ? "`답` 칸에는 숫자만 적는다. 분수는 a/b 로." : SYS,
           input: q.문제,
           schema,
           schemaName: "suneung",
