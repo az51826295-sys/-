@@ -82,19 +82,30 @@ const schema = z.object({
   왜: z.string(),
 });
 
-type Row = Case & { p: number; guess: string; why: string };
+type Row = Case & { p: number; guess: string; why: string; kind: string };
 const rows: Row[] = [];
 for (const c of picked) {
-  const { data: d } = await db.from("deliverables").select("title,deliverable_type,content_markdown").eq("id", c.deliverableId).maybeSingle();
-  const dd = d as { title: string; deliverable_type: string; content_markdown: string } | null;
+  const { data: d } = await db.from("deliverables").select("title,deliverable_type,content_markdown,content_json").eq("id", c.deliverableId).maybeSingle();
+  const dd = d as { title: string; deliverable_type: string; content_markdown: string; content_json: Record<string, unknown> } | null;
   if (!dd) continue;
+  // 226회차: 설명문만 주니 예측자가 "미확인 항목 5개" 를 짚었다. 사장님은 **해 보고** 말한다.
+  // 실행까지 가기 전에 **코드**라도 준다 — 속도·크기·개수가 거기 숫자로 적혀 있다.
+  const files = (dd.content_json?.files ?? null) as { path: string; contents?: string }[] | null;
+  const code = (files ?? [])
+    .filter((f) => /[.](js|ts|cs|html)$/i.test(f.path) && f.contents)
+    .map((f) => `--- ${f.path} ---` + String.fromCharCode(10) + (f.contents ?? "").slice(0, 4000))
+    .join(String.fromCharCode(10, 10)).slice(0, 9000);
   try {
     const { output } = await defaultProviders().ai.generateStructuredOutput({
       systemInstructions: SYS,
-      input: `종류: ${dd.deliverable_type}\n제목: ${dd.title}\n\n결과물:\n${(dd.content_markdown ?? "").slice(0, 3000)}`,
+      input: [
+        `종류: ${dd.deliverable_type}`, `제목: ${dd.title}`, "",
+        "결과물 설명:", (dd.content_markdown ?? "").slice(0, 2000),
+        ...(code ? ["", "코드(여기 적힌 값이 해 봤을 때 어떨지 생각해라 — 속도·크기·개수·시간):", code] : []),
+      ].join(String.fromCharCode(10)),
       schema, schemaName: "judge_predict", maxTokens: 900, tier: "routine",
     });
-    rows.push({ ...c, p: Math.min(1, Math.max(0, output.물릴확률)), guess: output.짚을것.trim(), why: output.왜 });
+    rows.push({ ...c, kind: dd.deliverable_type, p: Math.min(1, Math.max(0, output.물릴확률)), guess: output.짚을것.trim(), why: output.왜 });
   } catch (e) { console.log(`  ${c.deliverableId.slice(0,8)} 예측 실패`); }
 }
 
@@ -120,3 +131,22 @@ console.log(`  **예측자      ${mine.toFixed(3)}**`);
 console.log(`   밑바탕 비율  ${rate.toFixed(3)}  ← 이걸 못 이기면 아무것도 안 배운 것이다`);
 console.log(`   언제나 물림  ${always.toFixed(3)}`);
 console.log(`   언제나 통과  ${never.toFixed(3)}`);
+
+// 226회차: **종류를 갈라 본다.** 게임은 문서로 못 맞힌다는 짐작을 확인하려면 갈라 세야 한다 —
+// 합쳐 세면 한 종류의 실패가 다른 종류의 성공을 덮는다(09-22 "길 개수를 먼저 세고 자는 갈라 센다").
+const byKind = new Map<string, Row[]>();
+for (const r of rows) byKind.set(r.kind, [...(byKind.get(r.kind) ?? []), r]);
+console.log(`\n종류별:`);
+for (const [k, rs] of [...byKind].sort((a, b) => b[1].length - a[1].length)) {
+  const h = rs.filter((r) => (r.p >= 0.5) === r.rejected).length;
+  const bs = brier(rs.map((r) => r.p), rs.map((r) => r.rejected));
+  const bb = rs.filter((r) => r.rejected).length / rs.length;
+  const baseB = brier(rs.map(() => bb), rs.map((r) => r.rejected));
+  console.log(`  ${k.padEnd(14)} ${String(rs.length).padStart(2)}건 · 맞힘 ${h}/${rs.length} · Brier ${bs.toFixed(3)} (밑바탕 ${baseB.toFixed(3)})${bs < baseB ? "  ← **이겼다**" : ""}`);
+}
+
+// 다음 판에 다시 안 사도 되게 남긴다.
+import("node:fs").then((fs) => {
+  fs.writeFileSync("engine/data/judge_predict.json", JSON.stringify({ at: new Date().toISOString(), rows }, null, 1));
+  console.log(`\nengine/data/judge_predict.json 에 남겼다.`);
+});
