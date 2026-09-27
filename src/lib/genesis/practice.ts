@@ -36,7 +36,10 @@ const orderSchema = z.object({ 주문: z.array(z.object({ 종류: z.enum(["분�
 const intakeSchema = z.object({ reply: z.string().nullable(), searches: z.array(z.string()), drawings: z.array(z.string()), capabilityId: z.string().nullable(), capabilityWhy: z.string().nullable() });
 
 /** 접수가 고른 능력으로 업무를 만든다(engine/tools/order_dispatch.mts 와 같은 것 — 서버엔 engine 이 없어 여기로). */
-export async function dispatchOrder(db: Db, CO: string, capabilityId: string, ask: string, ownerId: string): Promise<{ assignmentId: string; employee: string }> {
+export async function dispatchOrder(db: Db, CO: string, capabilityId: string, ask: string, ownerId: string,
+  /** 226회차 09-27: 새 업무에 딸려 보낼 것. 3D 조각 이어달리기가 **남은 조각을 여기 실어** 사슬을 잇는다. */
+  extra?: Record<string, unknown>,
+): Promise<{ assignmentId: string; employee: string }> {
   const cap = capabilityCatalogue().find((c) => c.capabilityId === capabilityId);
   if (!cap) throw new Error("모르는 능력 " + capabilityId);
   const def = employeeDefinitions.find((e) => e.skillId === cap.skillId);
@@ -52,7 +55,7 @@ export async function dispatchOrder(db: Db, CO: string, capabilityId: string, as
   const { data: a, error } = await db.from("assignments").insert({
     company_id: CO, company_employee_id: ce!.id, title, description: ask, status: "queued", priority: "normal",
     source_type: "manual", assignment_type: "manager", assignment_scope: "manager",
-    role_input_schema_id: def.assignmentInputSchemaId, role_input_json: { capabilityId, collected: true, practice: true },
+    role_input_schema_id: def.assignmentInputSchemaId, role_input_json: { capabilityId, collected: true, practice: true, ...(extra ?? {}) },
   }).select("id").single();
   if (error || !a) throw new Error("업무 못 만듦: " + (error?.message ?? "?"));
   if (conv) await db.from("conversation_messages").insert([

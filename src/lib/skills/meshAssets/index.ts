@@ -180,7 +180,12 @@ export const meshAssetsSkill: EmployeeSkill = {
   async run(ctx: SkillRunContext) {
     await setStep(ctx.supabase, ctx.executionId, "planning");
 
-    const roleInput = (ctx.context.roleInput ?? {}) as { referenceImage?: string | null; previousDeliverableId?: string | null };
+    const roleInput = (ctx.context.roleInput ?? {}) as {
+      referenceImage?: string | null; previousDeliverableId?: string | null;
+      /** 226회차 09-27: 앞 조각이 물려준 나머지. 이 판의 결과물에 다시 남겨야 사슬이 이어진다 —
+       *  처음엔 원래 판의 결과물에만 남겼는데, 그건 이미 붙은 결과물이라 다시 안 붙어 사슬이 한 칸에서 끊겼다. */
+      pendingPieces?: { 주문: string; 붙는곳?: string }[] | null;
+    };
     let reference = typeof roleInput.referenceImage === "string" ? roleInput.referenceImage : null;
     // 그림이 안 왔고 지난 캐릭터가 있으면 그 콘셉트 그림을 다시 쓴다 — "같은 얼굴로 다시"
     // 가 되게(09-06 17회차: 4K 로 다시 만들 때 얼굴이 바뀌면 안 된다).
@@ -653,7 +658,8 @@ export const meshAssetsSkill: EmployeeSkill = {
       // 226회차 09-27: 아직 안 만든 조각들. 결과가 대화에 붙을 때 **하나씩** 나간다(workReturns).
       // 여기서 바로 만들면 한 직원이 두 일을 못 잡는다는 DB 제약에 걸린다 — 그리고 맨몸이 나온 뒤에
       // 조각을 만드는 것이 순서로도 옳다.
-      pendingPieces: pieces.length > 1 ? pieces.slice(1) : null,
+      // 이 판이 나눈 것이 있으면 그것을, 없으면 **물려받은 나머지**를 그대로 넘긴다.
+      pendingPieces: pieces.length > 1 ? pieces.slice(1) : (roleInput.pendingPieces?.length ? roleInput.pendingPieces : null),
       splitWhy: pieces.length > 1 ? split.왜 : null,
       retexturedFrom: retex.fallback ? null : (brief.fixKind === "texture" ? previousMeshTaskId : null),
       retexFallback: retex.fallback,

@@ -256,9 +256,11 @@ export async function collectWorkReturns(
               const { data: co } = await db.from("companies").select("owner_id").eq("id", a.company_id as string).maybeSingle();
               const next = pend[0];
               const rest = pend.slice(1);
-              await dispatchOrder(db, a.company_id as string, "mesh_from_image", next.주문, (co?.owner_id as string) ?? "");
+              await dispatchOrder(db, a.company_id as string, "mesh_from_image", next.주문, (co?.owner_id as string) ?? "",
+                rest.length ? { pendingPieces: rest } : undefined);
               // 남은 것은 **이 결과물에서 지우고** 다음 판이 이어받게 넘긴다 — 안 지우면 같은 조각이 계속 나간다.
-              await db.from("deliverables").update({ content_json: { ...(d.content_json as object), pendingPieces: rest.length ? rest : null } }).eq("id", deliverableId);
+              // 이 결과물에서는 지운다 — 나머지는 방금 만든 업무가 들고 간다(사슬은 거기서 이어진다).
+              await db.from("deliverables").update({ content_json: { ...(d.content_json as object), pendingPieces: null } }).eq("id", deliverableId);
               text += `
 
 다음 조각을 시작했어요: **${next.주문.slice(0, 40)}**${rest.length ? ` (뒤에 ${rest.length}개 더)` : ""}`;
