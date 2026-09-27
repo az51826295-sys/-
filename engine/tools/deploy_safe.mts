@@ -89,6 +89,21 @@ const behindOthers: string[] = [];
   }
 }
 
+// 226회차 09-27: **heartbeat 를 안 보내는 서비스는 위 목록에 아예 안 나온다.**
+// 오늘 두 번 그 구멍에 빠졌다 — 결과를 대화에 붙이는 일을 rookery-web 이 하는데, 그건 자기 커밋을
+// 안 알리므로 "뒤져 있다" 경고에 낄 수가 없다. 조각 이어달리기가 안 도는 원인을 워커에서만 찾았다.
+// 못 재는 것은 **못 잰다고 적는다** — 조용한 것과 괜찮은 것은 다르다.
+const SILENT = ["rookery-web", "rookery-web-dev"];
+{
+  const { data: hb2 } = await db.from("service_heartbeat").select("service");
+  const known = new Set(((hb2 ?? []) as { service: string }[]).map((r) => r.service));
+  const silent = SILENT.filter((s) => s !== svc && !known.has(s));
+  if (silent.length) {
+    console.log(`  ? **커밋을 안 알리는 서비스**: ${silent.join(", ")} — 새 코드인지 **못 잰다.**`);
+    console.log(`      이 판의 일을 그쪽이 집는다면 따로 올릴 것: npx tsx engine/tools/rookery_env.mts engine/tools/deploy_safe.mts <이름> --up`);
+  }
+}
+
 console.log(`\n=== 올리기 문: ${svc} ===`);
 for (const l of ok) console.log(`  · ${l}`);
 for (const l of fail) console.log(`  ≠ ${l}`);
