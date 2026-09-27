@@ -155,6 +155,44 @@ export const firstPass = z.object({
 /** 풀어야 아는 물음의 답. 출처 칸이 없다 — 수학에 URL 을 붙이라고 하면 지어낸다. */
 const solvePass = z.object({ reply: z.string() });
 
+/**
+ * 판단 자리에서 끝까지 푼다. 못 풀면 null — 부르는 쪽이 첫 답을 쓴다.
+ *
+ * **함수로 빼 둔 이유**: /ask 는 쿠키 클라이언트를 쓰므로 스크립트에서 못 돈다.
+ * 그래서 자(engine/tools/math_live.mts)가 이 함수를 **그대로 불러** 잰다 —
+ * 프롬프트를 시험 쪽에 베껴 두면 한쪽만 고치는 날이 온다(226회차에 벤치 스키마가 그랬다).
+ */
+export async function solveDeeply(
+  ai: ReturnType<typeof defaultProviders>["ai"],
+  args: { input: string; images?: string[] },
+): Promise<string | null> {
+  try {
+    const { output } = await ai.generateStructuredOutput({
+      systemInstructions: [
+        "너는 고3 학생에게 알려 준다. 한국어로.",
+        "",
+        "- **끝까지 풀어라.** 어림잡지 말고, 답이 정해질 때까지 계산한다.",
+        "- 계산은 **다른 길로 한 번 더** 확인한다. 두 길이 다르면 어느 쪽이 틀렸는지 찾아라 — 골라잡지 마라.",
+        "- 답과 **어떻게 나왔는지**를 같이 쓴다. 학생이 다음 문제를 혼자 풀 수 있을 만큼.",
+        "- 끝까지 못 갔으면 **어디서 막혔는지 그대로 말한다.** 짐작을 답처럼 내놓지 마라.",
+        "- 짧게. 필요한 단계만.",
+      ].join(String.fromCharCode(10)),
+      input: args.input,
+      // 사진으로 찍어 올린 문제도 여기서 푼다 — 사진을 빼면 문제를 못 본 채 답한다.
+      images: args.images,
+      schema: solvePass,
+      schemaName: "everyday_solve",
+      maxTokens: 16000,
+      tier: "judgment",
+    });
+    return output.reply.trim() ? output.reply : null;
+  } catch (error) {
+    // 떨어지면 부르는 쪽이 첫 답을 쓴다. 답이 없는 것보다는 낫다 — 다만 흔들릴 수 있다.
+    console.warn("[everyday] 깊게 풀기 실패 — 첫 답을 쓴다:", error instanceof Error ? error.message : error);
+    return null;
+  }
+}
+
 const answerPass = z.object({
   reply: z.string(),
   /** 실제로 근거로 쓴 출처의 url. 안 쓴 것은 넣지 않는다. */
@@ -628,30 +666,13 @@ export async function runEverydayTurn(
     let solved: string | null = null;
     if (plan.깊게) {
       say("풀어 보는 중");
-      try {
-        const { output: got } = await providers.ai.generateStructuredOutput({
-          systemInstructions: [
-            "너는 고3 학생에게 알려 준다. 한국어로.",
-            "",
-            "- **끝까지 풀어라.** 어림잡지 말고, 답이 정해질 때까지 계산한다.",
-            "- 계산은 **다른 길로 한 번 더** 확인한다. 두 길이 다르면 어느 쪽이 틀렸는지 찾아라 — 골라잡지 마라.",
-            "- 답과 **어떻게 나왔는지**를 같이 쓴다. 학생이 다음 문제를 혼자 풀 수 있을 만큼.",
-            "- 끝까지 못 갔으면 **어디서 막혔는지 그대로 말한다.** 짐작을 답처럼 내놓지 마라.",
-            "- 짧게. 필요한 단계만.",
-          ].join(String.fromCharCode(10)),
-          input: (work.hasAny ? `${work.text}\n\n` : "") + `대화:\n${transcript}`,
-          // 사진으로 찍어 올린 문제도 여기서 푼다 — 사진을 빼면 문제를 못 본 채 답한다.
-          images: seen,
-          schema: solvePass,
-          schemaName: "everyday_solve",
-          maxTokens: 16000,
-          tier: "judgment",
-        });
-        if (got.reply.trim()) solved = got.reply;
-      } catch (error) {
-        // 떨어지면 첫 답을 쓴다. 답이 없는 것보다는 낫다 — 다만 흔들릴 수 있다.
-        console.warn("[everyday] 깊게 풀기 실패 — 첫 답을 쓴다:", error instanceof Error ? error.message : error);
-      }
+      solved = await solveDeeply(providers.ai, {
+        input: (work.hasAny ? `${work.text}
+
+` : "") + `대화:
+${transcript}`,
+        images: seen,
+      });
     }
     reply =
       solved ??
