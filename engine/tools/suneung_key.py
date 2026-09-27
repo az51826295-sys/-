@@ -109,6 +109,110 @@ def brute_max():
     return Fx(1) - Fx(0)
 
 
+# ── 과학. 여기서부터는 **자를 정직하게 읽어야 한다** ─────────────────────────
+#
+# 수학의 "셈" 은 내 풀이와 **독립**이다 — 경우를 전부 돌려 보면 내가 어떻게 풀었는지는
+# 상관이 없다. 과학은 다르다. 물리 법칙·화학 양론은 어차피 내가 넣는 것이므로,
+# 아래 "셈" 은 **공식을 안 쓰고 답을 찾는다**는 뜻일 뿐이고(시늉해 보거나 값을 훑어 찾는다),
+# 법칙 자체가 틀렸다면 이 자는 못 잡는다. "식" 은 내 계산을 그대로 옮긴 것이다.
+# 그 구분을 시험지에 `검산방식` 으로 적어 두고, 점수표에도 같이 적는다.
+
+
+def phys_accel():
+    """4초에 32 m. 공식을 쓰지 않고 가속도를 훑어 찾는다 — 잘게 쪼개 더해 본다."""
+    def 거리(a, T=4.0, N=2_000_000):
+        dt, v, x = T / N, 0.0, 0.0
+        for _ in range(N):
+            v += a * dt
+            x += v * dt
+        return x
+    for a10 in range(1, 200):                       # 0.1 단위로 훑는다
+        if abs(거리(a10 / 10) - 32) < 0.01:
+            return a10 / 10
+    raise SystemExit("가속도를 못 찾았다")
+
+
+def phys_fall():
+    """20 m 자유낙하. 잘게 쪼개 떨어뜨려 지면에 닿는 순간의 속력을 읽는다."""
+    dt, v, x, g = 1e-7, 0.0, 0.0, 10.0
+    while x < 20.0:
+        v += g * dt
+        x += v * dt
+    return round(v)
+
+
+def chem_neutral():
+    """0.1 M 200 mL 를 중화하는 0.2 M 의 부피(mL). 1 mL 씩 훑어 찾는다."""
+    목표 = 0.1 * 0.200
+    return [V for V in range(1, 1001) if abs(0.2 * V / 1000 - 목표) < 1e-12][0]
+
+
+def chem_ph():
+    """0.001 M 의 pH. 10^-p = 0.001 인 p 를 훑어 찾는다."""
+    return [p for p in range(0, 15) if abs(10.0 ** (-p) - 0.001) < 1e-12][0]
+
+
+def bio_mono():
+    """Aa × Aa. 생식세포를 전부 짝지어 센다."""
+    G = ["A", "a"]
+    자손 = [x + y for x in G for y in G]
+    return F(sum(1 for z in 자손 if sorted(z) == ["a", "a"]), len(자손))
+
+
+def bio_di():
+    """AaBb × AaBb. 두 유전자가 따로 놀므로 생식세포 네 가지를 전부 짝짓는다."""
+    G = ["AB", "Ab", "aB", "ab"]
+    n = 0
+    for x in G:
+        for y in G:
+            if sorted(x[0] + y[0]) == ["a", "a"] and sorted(x[1] + y[1]) == ["b", "b"]:
+                n += 1
+    return F(n, len(G) ** 2)
+
+
+def bio_abo():
+    """AO × BO. 자녀 네 가지를 세고 O형(OO)만 고른다."""
+    자손 = [x + y for x in "AO" for y in "BO"]
+    return F(sum(1 for z in 자손 if sorted(z) == ["O", "O"]), len(자손))
+
+
+def bio_color():
+    """보인자 어머니(X^A X^a) × 정상 아버지(X^A Y). **아들 중** 색맹 비율을 센다."""
+    엄마, 아빠 = ["A", "a"], ["A", "Y"]
+    아들 = [m for m in 엄마 for f in 아빠 if f == "Y"]
+    return F(sum(1 for m in 아들 if m == "a"), len(아들))
+
+
+def bio_grow():
+    """2일마다 2배. 10일을 하루씩 세어 본다."""
+    n = 100
+    for 날 in range(1, 11):
+        if 날 % 2 == 0:
+            n *= 2
+    return n
+
+
+def earth_absmag():
+    """거리 100 pc, 겉보기 5. m - M = 5 log(d/10) 을 만족하는 M 을 훑어 찾는다."""
+    import math as _m
+    우변 = 5 * _m.log10(100 / 10)
+    return [M for M in range(-30, 31) if abs((5 - M) - 우변) < 1e-9][0]
+
+
+def earth_cloud():
+    """기온과 이슬점이 만나는 높이(m). 1 m 씩 올라가 보며 찾는다."""
+    for h in range(0, 20001):
+        km = h / 1000
+        if abs((20 - 10 * km) - (10 - 2 * km)) < 1e-9:
+            return h
+    raise SystemExit("구름 밑면을 못 찾았다")
+
+
+def earth_quake():
+    """PS시 10초가 되는 거리(km). 1 km 씩 훑어 찾는다."""
+    return [d for d in range(1, 10001) if abs(d / 4 - d / 8 - 10) < 1e-9][0]
+
+
 def show(v):
     if isinstance(v, F):
         return str(v.numerator) if v.denominator == 1 else f"{v.numerator}/{v.denominator}"
