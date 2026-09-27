@@ -1,0 +1,29 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>로키 소개</title>
+<style>
+:root{--bg:#0f1720;--ink:#f3f6fa;--accent:#5bd3ff;--dim:#9fb0c0}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI","Noto Sans KR",sans-serif}
+.slide{display:none;box-sizing:border-box;width:100vw;height:100vh;padding:7vh 9vw;flex-direction:column;justify-content:center}
+.slide.on{display:flex}
+h1{font-size:7vmin;margin:0 0 2vh;line-height:1.15}h2{font-size:5.5vmin;margin:0 0 3vh;color:var(--accent)}
+.sub{font-size:3vmin;color:var(--dim);margin:0}ul{margin:0;padding-left:1.2em;font-size:3.6vmin;line-height:1.6}li{margin:.4em 0}
+.note{display:none}#c{position:fixed;right:2vw;bottom:2vh;color:var(--dim);font-size:2.2vmin}
+#hint{position:fixed;left:2vw;bottom:2vh;color:var(--dim);font-size:2vmin}
+@media print{.slide{display:flex;page-break-after:always;height:100vh}#c,#hint{display:none}}
+</style></head><body>
+<section class="slide title" data-n="1"><h1>로키 소개</h1><p class="sub">로키 입문자용 기본 소개</p><ul><li>처음 듣는 분을 위한 기본 소개</li></ul><aside class="note">발표 시작 전, 대상자의 배경지식을 확인한다.</aside></section>
+<section class="slide" data-n="2"><h2>로키란?</h2><ul><li>정의: 확인 필요</li><li>이름의 유래: 확인 필요</li><li>주요 출처: 확인 필요</li></ul><aside class="note">로키의 기본 정의와 출처를 확인 후 설명한다.</aside></section>
+<section class="slide" data-n="3"><h2>기원과 배경</h2><ul><li>등장 배경: 확인 필요</li><li>시대적 맥락: 확인 필요</li><li>관련 지역: 확인 필요</li></ul><aside class="note">로키가 처음 등장한 시기와 문화적 배경을 확인한다.</aside></section>
+<section class="slide" data-n="4"><h2>주요 특징</h2><ul><li>성격: 확인 필요</li><li>능력: 확인 필요</li><li>외형: 확인 필요</li></ul><aside class="note">로키의 대표적인 성격과 능력을 요약한다.</aside></section>
+<section class="slide" data-n="5"><h2>대표 이야기</h2><ul><li>주요 사건: 확인 필요</li><li>관련 인물: 확인 필요</li><li>결말: 확인 필요</li></ul><aside class="note">로키 관련 대표 서사를 확인하여 소개한다.</aside></section>
+<section class="slide" data-n="6"><h2>문화적 영향</h2><ul><li>문학·예술에서: 확인 필요</li><li>대중문화에서: 확인 필요</li><li>현대적 해석: 확인 필요</li></ul><aside class="note">로키가 후대 문화에 미친 영향을 확인한다.</aside></section>
+<section class="slide" data-n="7"><h2>오해와 논란</h2><ul><li>대표적 오해: 확인 필요</li><li>해석 차이: 확인 필요</li><li>객관적 자료: 확인 필요</li></ul><aside class="note">로키에 대한 오해와 다양한 해석을 정리한다.</aside></section>
+<section class="slide" data-n="8"><h2>맺음</h2><ul><li>오늘 내용 정리</li><li>추가 질문 받기</li><li>참고 자료 안내: 확인 필요</li></ul><aside class="note">발표 내용을 요약하고 질의응답으로 마무리한다.</aside></section>
+<div id="c"></div><div id="hint">화살표 키 또는 클릭으로 넘김</div>
+<script>
+(function(){var S=[].slice.call(document.querySelectorAll(".slide")),i=0;
+function show(n){i=Math.max(0,Math.min(S.length-1,n));S.forEach(function(s,k){s.classList.toggle("on",k===i)});document.getElementById("c").textContent=(i+1)+" / "+S.length;}
+document.addEventListener("keydown",function(e){if(e.key==="ArrowRight"||e.key===" "||e.key==="PageDown")show(i+1);if(e.key==="ArrowLeft"||e.key==="PageUp")show(i-1);});
+document.addEventListener("click",function(e){show(e.clientX>window.innerWidth/2?i+1:i-1);});
+window.deck={count:S.length,go:show};show(0);})();
+</script></body></html>

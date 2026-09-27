@@ -51,6 +51,47 @@ function iou(a: Uint8Array, b: Uint8Array, skipFace: boolean): number {
 }
 
 console.log(`${files.length}칸 · ${W}×${H}`);
+
+// 226회차 09-27 — **자가 속은 자리.** 로키가 쓴 코드가 마젠타 배경을 안 지웠는데, 실루엣 IoU 는
+// 그걸 **1등(0.997)** 으로 줬다: 배경이 불투명하면 여섯 장이 전부 꽉 찬 사각형이라 완벽히 겹친다.
+// 겹침을 재기 전에 **배경이 있는지부터** 본다 — 투명이 없으면 그 뒤의 숫자는 전부 거짓이다.
+{
+  let bad = 0;
+  for (const [f, v] of masks) {
+    let clear = 0;
+    for (let i = 0; i < v.m.length; i++) if (!v.m[i]) clear++;
+    const pct = clear / v.m.length * 100;
+    if (pct < 5) { bad++; console.log(`  ≠ ${f.padEnd(16)} 투명 ${pct.toFixed(1)}% — **배경이 안 지워졌다**`); }
+  }
+  // 226회차: 배경을 지워도 **가장자리에 마젠타 자국**이 남는다(로키 2판에서 실제로 남았다).
+  // 이 검사가 없어서 또 통과시켰다 — 자는 한 번에 하나씩 늘어난다.
+  let fringed = 0;
+  for (const [f, v] of masks) {
+    let edge = 0, magenta = 0;
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+      const i = y * W + x;
+      if (!v.m[i]) continue;
+      let isEdge = false;
+      for (let dy = -1; dy <= 1 && !isEdge; dy++) for (let dx = -1; dx <= 1; dx++) {
+        const nx = x + dx, ny = y + dy;
+        if (nx < 0 || ny < 0 || nx >= W || ny >= H || !v.m[ny * W + nx]) { isEdge = true; break; }
+      }
+      if (!isEdge) continue;
+      edge++;
+      const r = v.rgb[i*3], g = v.rgb[i*3+1], b = v.rgb[i*3+2];
+      if (r - g > 40 && b - g > 40) magenta++;               // 마젠타 기운: 초록만 낮다
+    }
+    const pct = edge ? magenta / edge * 100 : 0;
+    if (magenta > 10) { fringed++; console.log(`  ≠ ${f.padEnd(16)} 가장자리 마젠타 ${magenta}개 (${pct.toFixed(1)}%) — **자국이 남았다**`); }
+  }
+  if (fringed) console.log(`  **${fringed}/${masks.size} 장에 마젠타 자국** — 배경 지우기가 덜 됐다`);
+
+  if (bad) {
+    console.log(`
+**${bad}/${masks.size} 장에 배경이 남아 있다.** 겹침·표정 숫자는 재지 않는다 — 재면 거짓이 나온다.`);
+    process.exit(1);
+  }
+}
 console.log("\n서로 얼마나 겹치나 (얼굴 뺀 나머지 — 머리·어깨·옷):");
 const names = [...masks.keys()];
 let worst = 1, worstPair = "";
@@ -88,3 +129,28 @@ for (let i = 0; i < names.length; i++) for (let j = i + 1; j < names.length; j++
   if (d < 0.01) { sameFace++; console.log(`  ${names[i]} ↔ ${names[j]} = ${(d * 100).toFixed(2)}%  ≠ **거의 같은 얼굴**`); }
 }
 console.log(`  짝 ${pairs}개 · 가장 닮은 짝의 얼굴 차이 ${(minD * 100).toFixed(2)}% · 거의 같은 것 ${sameFace}개 ${sameFace ? "— 표정이 안 살았다" : "— 표정이 다 다르다"}`);
+
+// 226회차 09-27 사장님 "여백도 자로 만들어서 로키한테 시켜".
+// 가장자리에 닿으면 잘린 것이고, 네 방향 여백이 제각각이면 표정을 바꿀 때 캐릭터가 튄다.
+// 도트 한 칸이 8px 이므로 **두 칸(16px)** 을 최소 여백으로 본다.
+const MIN_PAD = 16;
+console.log(`\n여백 (도트 2칸=16px 이상이어야 한다):`);
+let padBad = 0;
+const pads: { t: number; b: number; l: number; r: number }[] = [];
+for (const [f, v] of masks) {
+  let l = W, t = H, r = -1, b = -1;
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    if (!v.m[y * W + x]) continue;
+    if (x < l) l = x; if (x > r) r = x; if (y < t) t = y; if (y > b) b = y;
+  }
+  const pad = { t, b: H - 1 - b, l, r: W - 1 - r };
+  pads.push(pad);
+  const worst = Math.min(pad.t, pad.b, pad.l, pad.r);
+  const bad = worst < MIN_PAD;
+  if (bad) padBad++;
+  console.log(`  ${f.padEnd(16)} 위 ${String(pad.t).padStart(3)} 아래 ${String(pad.b).padStart(3)} 좌 ${String(pad.l).padStart(3)} 우 ${String(pad.r).padStart(3)}${bad ? `  ≠ **가장 좁은 곳 ${worst}px**` : "  · 넉넉"}`);
+}
+// 여섯 장의 여백이 서로 달라도 캐릭터가 튄다 — 위 여백의 퍼짐을 같이 본다.
+const ts = pads.map((p) => p.t), spread = Math.max(...ts) - Math.min(...ts);
+console.log(`  위 여백 퍼짐 ${spread}px ${spread <= 8 ? "· 고르다" : "≠ **칸마다 높이가 다르다**"}`);
+console.log(`  **여백 모자란 장 ${padBad}/${masks.size}** ${padBad ? "— 잘렸다" : "— 통과"}`);

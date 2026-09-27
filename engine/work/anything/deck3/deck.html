@@ -1,0 +1,29 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>로키 소개</title>
+<style>
+:root{--bg:#0f1720;--ink:#f3f6fa;--accent:#5bd3ff;--dim:#9fb0c0}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI","Noto Sans KR",sans-serif}
+.slide{display:none;box-sizing:border-box;width:100vw;height:100vh;padding:7vh 9vw;flex-direction:column;justify-content:center}
+.slide.on{display:flex}
+h1{font-size:7vmin;margin:0 0 2vh;line-height:1.15}h2{font-size:5.5vmin;margin:0 0 3vh;color:var(--accent)}
+.sub{font-size:3vmin;color:var(--dim);margin:0}ul{margin:0;padding-left:1.2em;font-size:3.6vmin;line-height:1.6}li{margin:.4em 0}
+.note{display:none}#c{position:fixed;right:2vw;bottom:2vh;color:var(--dim);font-size:2.2vmin}
+#hint{position:fixed;left:2vw;bottom:2vh;color:var(--dim);font-size:2vmin}
+@media print{.slide{display:flex;page-break-after:always;height:100vh}#c,#hint{display:none}}
+</style></head><body>
+<section class="slide title" data-n="1"><h1>로키 소개</h1><p class="sub">권혁수</p><ul><li>대화로 파일 생성</li></ul><aside class="note">로키를 처음 소개합니다. 대화로 파일이 만들어지는 점을 중심으로 설명합니다.</aside></section>
+<section class="slide" data-n="2"><h2>대화로 파일</h2><ul><li>대화창에 말하면 생성</li><li>mp4·문서 같은 진짜 파일</li></ul><aside class="note">대화창에 말한 내용을 바탕으로 mp4나 문서 같은 실제 파일을 만들어 줍니다.</aside></section>
+<section class="slide" data-n="3"><h2>파일 형식</h2><ul><li>mp4</li><li>문서</li></ul><aside class="note">현재 예로 확인 가능한 출력은 mp4와 문서입니다.</aside></section>
+<section class="slide" data-n="4"><h2>부분 수정</h2><ul><li>이상한 부분만 지적</li><li>그 부분만 다시 만듦</li></ul><aside class="note">이상한 부분을 짚어 주면 그 부분만 다시 만들어 줍니다.</aside></section>
+<section class="slide" data-n="5"><h2>정상 부분 유지</h2><ul><li>정상인 부분은 유지</li><li>전체를 다시 만들지 않음</li></ul><aside class="note">정상적인 부분은 유지되고, 전체를 다시 만들 필요가 없습니다.</aside></section>
+<section class="slide" data-n="6"><h2>간단 가입</h2><ul><li>이메일·비밀번호만</li></ul><aside class="note">가입 시 필요한 정보는 이메일과 비밀번호뿐입니다.</aside></section>
+<section class="slide" data-n="7"><h2>결제 정보</h2><ul><li>카드는 받지 않음</li></ul><aside class="note">가입 과정에서 카드는 요구하지 않습니다.</aside></section>
+<section class="slide" data-n="8"><h2>맺음</h2><ul><li>이메일·비밀번호로 가입</li><li>대화로 mp4·문서 만들기</li><li>이상한 부분만 재생성</li></ul><aside class="note">지금은 이메일과 비밀번호로 가입하고, 대화로 mp4·문서를 만들어 보세요. 이상한 부분만 골라 다시 만들 수 있습니다.</aside></section>
+<div id="c"></div><div id="hint">화살표 키 또는 클릭으로 넘김</div>
+<script>
+(function(){var S=[].slice.call(document.querySelectorAll(".slide")),i=0;
+function show(n){i=Math.max(0,Math.min(S.length-1,n));S.forEach(function(s,k){s.classList.toggle("on",k===i)});document.getElementById("c").textContent=(i+1)+" / "+S.length;}
+document.addEventListener("keydown",function(e){if(e.key==="ArrowRight"||e.key===" "||e.key==="PageDown")show(i+1);if(e.key==="ArrowLeft"||e.key==="PageUp")show(i-1);});
+document.addEventListener("click",function(e){show(e.clientX>window.innerWidth/2?i+1:i-1);});
+window.deck={count:S.length,go:show};show(0);})();
+</script></body></html>
