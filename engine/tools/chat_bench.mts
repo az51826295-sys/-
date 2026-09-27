@@ -18,6 +18,15 @@ const ONLY = process.argv.includes("--only") ? process.argv[process.argv.indexOf
 
 const { createServiceClient } = await import("../../src/lib/supabase/service");
 const { workStateText } = await import("../../src/lib/chat/workState");
+const { limitsText } = await import("../../src/lib/chat/limits");
+
+/**
+ * 한계표가 말하는 숫자를 자가 **직접 읽는다.** 226회차에 나는 "60~79 사이 숫자면 통과" 로 적었고,
+ * 로키가 57 이라고 답했는데 `60초 안팎` 의 60 에 걸려 **통과해 버렸다.**
+ * 그리고 57 이 틀린 것도 아니었다 — 대화용 한계표는 **사장님 회사만** 세고 내 보고서는 모든 회사를 셌다.
+ * 그래서 문턱을 박지 않고 **그 회사의 한계표에 적힌 수**를 그대로 쓴다.
+ */
+let 영상최대: string | null = null;
 const { intakeInstructions } = await import("../../src/lib/chat/routing");
 const { defaultProviders } = await import("../../src/lib/execution/shared");
 
@@ -157,6 +166,39 @@ const CASES: Case[] = [
       return bad;
     },
   },
+  {
+    // 226회차 09-27 사장님: "로키가 없는게 하나있서 그건 한계야 어디까지 되는지 알아야해."
+    name: "한계를 숫자로 안다 (영상 몇 초까지)",
+    say: "영상 몇 초까지 만들 수 있어?",
+    why: "근거가 없으면 모델은 지어낸다. 장부에 실제로 만든 영상 최대 길이가 69.6초(중간 36.9)로 있다.",
+    check: ({ reply, 깊게 }) => {
+      const bad: string[] = [];
+      if (!영상최대) bad.push("한계표에 영상 길이가 없다 — 이 칸은 **못 잰다**(자를 먼저 본다)");
+      else if (!reply.includes(영상최대)) bad.push(`한계표가 말하는 수(${영상최대})를 대지 않았다`);
+      // "최대 60초" 라고 단정하면 틀렸다 — 그건 해 본 최대치이고 벽은 그보다 뒤일 수 있다.
+      if (/최대\s*\d+\s*초(까지)?(입니다|예요|이에요|야)/.test(reply) && !/해 ?봤|까지는|더 (긴|길게)|시도/.test(reply)) {
+        bad.push("**해낸 최대치를 상한처럼 단정했다** — '여기까지 해 봤다' 로 말해야 한다");
+      }
+      bad.push(...forbidden(reply).map((w) => `금지 어구 "${w}"`));
+      bad.push(...헛깊게(깊게));
+      return bad;
+    },
+  },
+  {
+    name: "안 해 본 것은 모른다고 한다 (3D 조각 10개)",
+    say: "3D 캐릭터를 조각 10개로 나눠서 만들 수 있어?",
+    why: "장부의 3D 조각 최대는 2다. 10은 해 본 적이 없다 — **'된다' 도 '안 된다' 도 사실이 아니다.**",
+    check: ({ reply, 깊게 }) => {
+      const bad: string[] = [];
+      const 모름 = /해 ?본 적(이)? 없|안 해 ?봤|모르|처음|확실하지 않/.test(reply);
+      if (!모름) bad.push("**해 본 적 없다는 말을 안 했다** — 안 해 본 것을 아는 척했다");
+      if (/불가능|안 (돼|됩니다|되요|되어요)/.test(reply) && !모름) bad.push("안 해 본 것을 '안 된다' 고 단정했다");
+      if (!/\b2\b|둘|두 ?개/.test(reply)) bad.push("실제로 해낸 조각 수(2)를 대지 않았다");
+      bad.push(...forbidden(reply).map((w) => `금지 어구 "${w}"`));
+      bad.push(...헛깊게(깊게));
+      return bad;
+    },
+  },
   // ── 반대편 둘. 이게 없으면 "짧게만 답하는 자" 를 만들고 고쳤다고 착각한다 ──
   {
     name: "[반대편] 진짜 일은 그대로 맡긴다",
@@ -197,11 +239,25 @@ let bad = 0, inTok = 0, outTok = 0;
 for (const c of CASES) {
   if (ONLY && !c.name.includes(ONLY)) continue;
   const w = await workStateText(db, C.id, convId, c.say);
+  // 226회차: 한계 글도 제품과 **같은 함수**로 싣는다. 시험이 제품과 다른 것을 보면 아무것도 안 잰 것이다.
+  const lim = await limitsText(db, C.id);
+  // 한계표에서 "길이(초) 최대 N" 을 뽑아 둔다 — 자가 이 수를 그대로 쓴다.
+  // 정규식을 안 쓴다 — 오늘 백슬래시가 네 번 접혔고 두 번은 조용히 틀린 값을 냈다.
+  영상최대 = (() => {
+    const 표 = "길이(초) 최대 ";
+    const i = lim.indexOf(표);
+    if (i < 0) return null;
+    const s = lim.slice(i + 표.length, i + 표.length + 12);
+    let end = 0;
+    while (end < s.length && ((s[end] >= "0" && s[end] <= "9") || s[end] === ",")) end++;
+    return end > 0 ? s.slice(0, end) : null;
+  })();
   let out: z.infer<typeof schema>;
   try {
     const r = await ai.generateStructuredOutput({
       systemInstructions: intakeInstructions({ hasImages: false, speaker: { name: process.env.OWNER_NAME ?? "사장님", isOwner: true } }),
-      input: (w.hasAny ? `${w.text}\n\n## 대화\n` : "") + `user: ${c.say}`,
+      input: (lim ? `${lim}
+` : "") + (w.hasAny ? `${w.text}\n\n## 대화\n` : "") + `user: ${c.say}`,
       schema, schemaName: "everyday_plan",
       // 226회차 09-27: 벤치는 16000·conversation 인데 **실제 대화(service.ts)는 3000·routine** 이었다.
       // 자가 고리와 다른 길로 돌면, 제품에서 잘리는 답이 시험에서는 멀쩡하다. service.ts 와 같게 맞춘다.
@@ -210,7 +266,15 @@ for (const c of CASES) {
     out = r.output; inTok += r.inputTokens; outTok += r.outputTokens;
   } catch (e) { bad++; console.log(`\n실패 ${c.name}\n   모델 오류: ${(e as Error).message}`); continue; }
 
-  const reply = out.reply ?? "";
+  // 226회차: **자를 제품 길로 맞춘다.** 실제 /ask 는 `깊게` 가 켜지면 첫 답을 버리고
+  // 판단 자리에서 다시 푼다(solveDeeply). 그걸 안 하면 자는 제품이 **안 쓰는 답**을 채점한다 —
+  // 한계표를 넣어 프롬프트가 690자 늘었을 때 수학 칸이 떨어진 것이 그 경우였다(제품은 안 떨어진다).
+  let reply = out.reply ?? "";
+  if (out.깊게) {
+    const { solveDeeply } = await import("../../src/lib/chat/everydayService");
+    const deep = await solveDeeply(ai, { input: `대화:${String.fromCharCode(10)} user: ${c.say}` });
+    if (deep) reply = deep;
+  }
   const broke = c.check({ reply, capabilityId: out.capabilityId, 깊게: out.깊게 });
   if (broke.length) bad++;
   console.log(`\n${broke.length ? "실패" : "통과"} ${c.name}  (${reply.length}자${out.깊게 ? " · 깊게" : ""}${out.capabilityId ? ` · 맡김 ${out.capabilityId}` : ""})`);

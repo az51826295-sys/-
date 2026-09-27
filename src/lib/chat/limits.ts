@@ -1,0 +1,118 @@
+/**
+ * **로키가 자기 한계를 안다** (226회차 2026-09-27).
+ *
+ * 사장님: *"로키가 없는게 하나있서 그건 한계야 어디까지 되는지 알아야해."*
+ *
+ * "이거 어디까지 돼?" 에 답할 근거가 대화 프롬프트에 없었다. 근거가 없으면 모델은 지어낸다 —
+ * 09-16 에 **있는 v2 를 없다고** 했고, 오늘 나는 "잘림 0건" 을 "없다" 로 읽었다.
+ * 같은 병이다: **모르는 것을 모른다고 말할 자리가 없었다.**
+ *
+ * 그래서 한계를 주장하지 않고 **장부에서 센 사실**을 싣는다. 세 가지를 가른다:
+ *   · **해 봤고 됐다** — 실제로 만들어진 최대치. 사실이다.
+ *   · **끝까지 못 간 것** — 취소된 수와 이유.
+ *   · **안 해 봤다** — 등록부에 있는데 기록에 없는 것. **"안 된다" 가 아니라 "모른다" 다.**
+ *
+ * **최대치는 한계가 아니다.** 더 큰 것을 시도한 적이 없으면 벽은 그보다 뒤에 있다.
+ * 그 말을 프롬프트에 같이 넣는다 — 안 넣으면 모델이 최대치를 상한처럼 말한다.
+ *
+ * 값: 대화마다 세면 느리다. 회사별로 **10분 동안 기억**해 둔다.
+ */
+import type { Supabase } from "@/lib/execution/shared";
+
+type Limits = { text: string; at: number };
+const 기억 = new Map<string, Limits>();
+const 십분 = 10 * 60 * 1000;
+
+/** 종류마다 "크기" 를 읽는 법. 없으면 그 종류는 크기를 안 적는다 — 지어내지 않는다. */
+const 크기: Record<string, { 이름: string; 값: (c: Record<string, unknown>) => number | null }[]> = {
+  app_build: [
+    { 이름: "파일", 값: (c) => (Array.isArray(c.files) ? c.files.length : null) },
+    { 이름: "코드 글자", 값: (c) => (Array.isArray(c.files) ? (c.files as { contents?: string }[]).reduce((s, f) => s + (f.contents?.length ?? 0), 0) || null : null) },
+  ],
+  video: [
+    { 이름: "길이(초)", 값: (c) => (typeof c.total === "number" ? Math.round(c.total) : null) },
+    { 이름: "장면", 값: (c) => (Array.isArray(c.durations) ? c.durations.length : null) },
+  ],
+  analysis: [
+    { 이름: "출처", 값: (c) => (Array.isArray(c.sources) ? c.sources.length : null) },
+    { 이름: "인용", 값: (c) => (Array.isArray(c.claims) ? c.claims.length : null) },
+  ],
+  mesh_assets: [{ 이름: "조각", 값: (c) => (Array.isArray(c.clips) ? c.clips.length : null) }],
+  document: [{ 이름: "항목", 값: (c) => (Array.isArray(c.items) ? c.items.length : null) }],
+};
+
+const 한국말: Record<string, string> = {
+  app_build: "앱·게임 만들기",
+  video: "설명 영상",
+  analysis: "자료·영상 분석",
+  mesh_assets: "3D 모델",
+  document: "문서",
+  slides: "발표 자료",
+  image: "그림·로고",
+  game_assets: "도트 캐릭터",
+  market_research_report: "시장 조사",
+};
+
+export async function limitsText(db: Supabase, companyId: string | null): Promise<string> {
+  if (!companyId) return "";
+  const 있는것 = 기억.get(companyId);
+  if (있는것 && Date.now() - 있는것.at < 십분) return 있는것.text;
+
+  try {
+    const [{ data: ds, error: e1 }, { data: as, error: e2 }] = await Promise.all([
+      db.from("deliverables").select("deliverable_type, content_json").eq("company_id", companyId).limit(1000),
+      db.from("assignments").select("status, failure_reason").eq("company_id", companyId).limit(1000),
+    ]);
+    // 오류를 **읽는다.** 못 읽었으면 빈 글을 준다 — 0 을 "없다" 로 싣지 않는다.
+    if (e1 || e2) {
+      console.warn("[limits] 장부를 못 읽었다 — 한계는 안 싣는다:", e1?.message ?? e2?.message);
+      return "";
+    }
+    const 결과물 = (ds ?? []) as { deliverable_type: string; content_json: Record<string, unknown> | null }[];
+    const 업무 = (as ?? []) as { status: string; failure_reason: string | null }[];
+    if (!결과물.length && !업무.length) return "";
+
+    const 줄: string[] = [
+      "## 네가 실제로 어디까지 해냈나 (장부에서 센 것)",
+      "",
+      "**이건 한계가 아니라 해낸 최대치다.** 더 큰 것을 시도한 적이 없으면 벽은 그보다 뒤에 있다.",
+      "물으면 이 숫자를 대되 **\"여기까지 해 봤다\"** 라고 말하고, \"이게 최대다\" 라고 하지 마라.",
+      "",
+    ];
+
+    const 종류 = [...new Set(결과물.map((d) => d.deliverable_type))];
+    for (const t of 종류) {
+      const ds2 = 결과물.filter((d) => d.deliverable_type === t);
+      const 재기 = 크기[t];
+      const 조각 = (재기 ?? [])
+        .map((m) => {
+          const vs = ds2.map((d) => m.값(d.content_json ?? {})).filter((x): x is number => typeof x === "number" && x > 0);
+          return vs.length ? `${m.이름} 최대 ${Math.max(...vs).toLocaleString()}` : null;
+        })
+        .filter(Boolean);
+      줄.push(
+        `- ${한국말[t] ?? t}: ${ds2.length}번 만들었다` +
+          (조각.length ? ` (${조각.join(" · ")})` : " (크기는 기록에서 못 읽는다)"),
+      );
+    }
+
+    const 취소 = 업무.filter((a) => a.status === "cancelled").length;
+    const 이유 = new Map<string, number>();
+    for (const a of 업무) if (a.failure_reason) 이유.set(a.failure_reason.slice(0, 40), (이유.get(a.failure_reason.slice(0, 40)) ?? 0) + 1);
+    const 흔한 = [...이유].sort((x, y) => y[1] - x[1]).slice(0, 3);
+    줄.push("");
+    줄.push(`- 끝까지 못 간 것: 업무 ${업무.length}건 중 취소 ${취소}건` + (흔한.length ? ` · 적힌 이유 ${흔한.map(([r, n]) => `${r}(${n})`).join(", ")}` : ""));
+    줄.push("");
+    줄.push(
+      "**한 번도 안 해 본 것은 \"안 된다\" 가 아니라 \"모른다\" 다.** 위 목록에 없는 종류를 물으면" +
+        " \"코드는 있는데 아직 해 본 적이 없어서 어디까지 되는지 모른다\" 고 말해라. 된다고도 안 된다고도 하지 마라.",
+    );
+
+    const text = 줄.join("\n");
+    기억.set(companyId, { text, at: Date.now() });
+    return text;
+  } catch (e) {
+    console.warn("[limits] 한계를 못 셌다:", e instanceof Error ? e.message : e);
+    return "";
+  }
+}

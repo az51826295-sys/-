@@ -502,8 +502,14 @@ export async function runEverydayTurn(
   // 136회차: **자기가 뭘 만들고 있는지**를 프롬프트에 넣는다. 이게 없어서 로키가 실제로 있는 v2 를
   // "제 쪽에 없습니다" 라고 단언했다(사장님이 쓰다가 잡음). 대화 글만 보면 맞춰 볼 대상이 없다.
   const work = await workStateText(supabase, companyId, input.conversationId ?? null, input.messages[input.messages.length - 1]?.content ?? "");
+  // 226회차 09-27 사장님: "로키가 없는게 하나있서 그건 한계야 어디까지 되는지 알아야해."
+  // 136회차에 "자기가 뭘 만들고 있는지" 를 넣은 것과 같은 결이다 — 근거가 없으면 지어낸다.
+  // 여기 실리는 것은 **장부에서 센 사실**이고, "최대치는 한계가 아니다" 라는 말도 같이 간다.
+  const { limitsText } = await import("@/lib/chat/limits");
+  const limits = await limitsText(supabase, companyId);
   const liveNote = liveScreen ? `## 사장님의 지금 화면 (마지막 그림, ${liveScreen.host}, ${Math.round(liveScreen.ageMs / 1000)}초 전)\n로키 손이 방금 찍어 보낸 사장님 노트북 화면이다. 사장님이 화면에 대해 물으면 **이 그림을 보고** 답한다. 보이는 것만 말한다.\n\n` : "";
-  const withWork = deviceNote + liveNote + (work.hasAny ? `${work.text}\n\n## 대화\n${transcript}` : transcript);
+  const limitNote = limits ? `${limits}\n\n` : "";
+  const withWork = deviceNote + liveNote + limitNote + (work.hasAny ? `${work.text}\n\n## 대화\n${transcript}` : transcript);
 
   const firstPassCall = () => providers.ai.generateStructuredOutput({
     systemInstructions: intakeInstructions({ hasImages: seen.length > 0, speaker }),
