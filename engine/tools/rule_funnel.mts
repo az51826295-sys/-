@@ -52,7 +52,10 @@ for (const c of cs) 상태.set(c.status, (상태.get(c.status) ?? 0) + 1);
 console.log(`상태: ${[...상태].sort((a, b) => b[1] - a[1]).map(([s, n]) => `${s} ${n}`).join(" · ")}\n`);
 
 const 문셈 = new Map<string, number>();
-for (const c of cs) 문셈.set(어느문(c.reason), (문셈.get(어느문(c.reason)) ?? 0) + 1);
+// **판정 이유는 `manager_note` 에 있다** — `자동 검증(보류 사례 N건): …`.
+// 첫 판에 나는 `reason`(후보 본문 JSON)만 보고 "판정 이유가 저장되지 않는다" 고 적었다.
+// 오늘 세 번째로 **없는 것이 아니라 내가 안 본 것**이었다([[zero-can-mean-i-cannot-see]]).
+for (const c of cs) 문셈.set(어느문(c.manager_note), (문셈.get(어느문(c.manager_note)) ?? 0) + 1);
 console.log("어느 문에서 죽나:");
 for (const [g, n] of [...문셈].sort((a, b) => b[1] - a[1])) {
   console.log(`  ${String(n).padStart(3)}개 (${((n * 100) / cs.length).toFixed(0)}%) · ${g}`);
@@ -61,16 +64,16 @@ for (const [g, n] of [...문셈].sort((a, b) => b[1] - a[1])) {
 // ③④ 에서 죽은 것은 **간신히 떨어졌나** 를 본다. 문턱 바로 밑이면 표본이 모자란 것이고,
 // 한참 밑이면 규칙이 실제로 효과가 없는 것이다. 이 구분이 다음에 손댈 곳을 정한다.
 console.log("\n③④ 에서 죽은 것들의 숫자 (문턱: lift 0.20 · p 0.10):");
-const 숫자든것 = cs.filter((c) => (c.reason ?? "").includes("lift") || (c.reason ?? "").includes("p="));
+const 숫자든것 = cs.filter((c) => (c.manager_note ?? "").includes("lift") || (c.manager_note ?? "").includes("p="));
 for (const c of 숫자든것.slice(0, 20)) {
-  console.log(`  · ${(c.reason ?? "").slice(0, 56).padEnd(56)} ${c.title.slice(0, 34)}`);
+  console.log(`  · ${(c.manager_note ?? "").slice(0, 62).padEnd(62)} ${c.title.slice(0, 30)}`);
 }
 if (!숫자든것.length) {
   console.log("  하나도 없다 — **아무 후보도 통계 문까지 못 갔다.** 그러면 손댈 곳은 문턱이 아니라 제안자다.");
 }
 
 console.log("\n통과한 것:");
-for (const c of cs.filter((c) => (c.reason ?? "").includes("채택")).slice(0, 10)) {
-  console.log(`  · ${c.title.slice(0, 40)} — ${(c.reason ?? "").slice(0, 50)}`);
+for (const c of cs.filter((c) => (c.manager_note ?? "").includes("채택")).slice(0, 10)) {
+  console.log(`  · ${c.title.slice(0, 40)} — ${(c.manager_note ?? "").slice(0, 60)}`);
 }
 console.log("\n호출 0번 · 값 0원. 이미 산 기록을 읽은 것뿐이다.");
