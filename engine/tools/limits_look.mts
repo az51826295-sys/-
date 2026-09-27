@@ -60,27 +60,9 @@ for (let 시작 = 0; ; 시작 += 1000) {
   if (쪽.length < 1000) break;
 }
 
-/** 종류마다 "크기" 를 재는 법. 없으면 크기 칸은 비운다 — 지어내지 않는다. */
-const 크기재기: Record<string, { 이름: string; 값: (c: Record<string, unknown>) => number | null }[]> = {
-  app_build: [
-    { 이름: "파일 개수", 값: (c) => (Array.isArray(c.files) ? c.files.length : null) },
-    { 이름: "확인 항목 수", 값: (c) => (Array.isArray(c.criteria) ? c.criteria.length : null) },
-    { 이름: "고침 바퀴", 값: (c) => (typeof c.loop === "object" && c.loop && "rounds" in (c.loop as object) ? Number((c.loop as { rounds?: number }).rounds ?? 0) || null : null) },
-    { 이름: "코드 글자 수", 값: (c) => (Array.isArray(c.files) ? (c.files as { contents?: string }[]).reduce((s, f) => s + (f.contents?.length ?? 0), 0) || null : null) },
-  ],
-  video: [
-    { 이름: "길이(초)", 값: (c) => (typeof c.total === "number" ? c.total : null) },
-    { 이름: "장면 수", 값: (c) => (Array.isArray(c.durations) ? c.durations.length : null) },
-  ],
-  slides: [{ 이름: "장 수", 값: (c) => (Array.isArray(c.outline) ? c.outline.length : null) }],
-  analysis: [
-    { 이름: "출처 수", 값: (c) => (Array.isArray(c.sources) ? c.sources.length : null) },
-    { 이름: "인용 수", 값: (c) => (Array.isArray(c.claims) ? c.claims.length : null) },
-  ],
-  mesh_assets: [{ 이름: "조각 수", 값: (c) => (Array.isArray(c.clips) ? c.clips.length : null) }],
-  image: [{ 이름: "장 수", 값: (c) => (Array.isArray(c.variants) ? c.variants.length : null) }],
-  document: [{ 이름: "항목 수", 값: (c) => (Array.isArray(c.items) ? c.items.length : null) }],
-};
+// **크기를 읽는 법은 src/lib/chat/limits.ts 한 곳에만 있다.** 여기 베껴 두면 한쪽만 고치는 날이 온다
+// (226회차에 벤치가 스키마를 따로 적어 두어 새로 생긴 칸을 아예 못 쟀다).
+const { 크기: 크기재기 } = await import("../../src/lib/chat/limits");
 
 const 줄: string[] = [];
 const 적기 = (s = "") => { 줄.push(s); console.log(s); };

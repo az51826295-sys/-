@@ -23,8 +23,21 @@ type Limits = { text: string; at: number };
 const 기억 = new Map<string, Limits>();
 const 십분 = 10 * 60 * 1000;
 
-/** 종류마다 "크기" 를 읽는 법. 없으면 그 종류는 크기를 안 적는다 — 지어내지 않는다. */
-const 크기: Record<string, { 이름: string; 값: (c: Record<string, unknown>) => number | null }[]> = {
+/**
+ * 종류마다 "크기" 를 읽는 법. 없으면 그 종류는 크기를 안 적는다 — 지어내지 않는다.
+ *
+ * **여기 한 곳에만 적는다.** 리포트(`engine/tools/limits_look.mts`)가 이것을 import 한다 —
+ * 226회차에 벤치가 스키마를 따로 적어 두어 새 칸을 아예 못 잰 일이 있었다.
+ *
+ * 09-28: 발표 자료·그림·도트·시장 조사 넷이 "크기는 기록에서 못 읽는다" 였다.
+ * **그건 벽이 아니라 눈이 없는 것이다** — 뛰어넘기 전에 읽는 칸부터 만든다.
+ * 칸은 있었고 내가 엉뚱한 이름을 보고 있었다(slides 는 `outline.slides`, 그림은 `uploadReady.images`).
+ */
+const 배열길이 = (v: unknown): number | null => (Array.isArray(v) ? v.length || null : null);
+const 속 = (c: Record<string, unknown>, a: string, b: string): unknown =>
+  (c[a] as Record<string, unknown> | null | undefined)?.[b];
+
+export const 크기: Record<string, { 이름: string; 값: (c: Record<string, unknown>) => number | null }[]> = {
   app_build: [
     { 이름: "파일", 값: (c) => (Array.isArray(c.files) ? c.files.length : null) },
     { 이름: "코드 글자", 값: (c) => (Array.isArray(c.files) ? (c.files as { contents?: string }[]).reduce((s, f) => s + (f.contents?.length ?? 0), 0) || null : null) },
@@ -38,7 +51,23 @@ const 크기: Record<string, { 이름: string; 값: (c: Record<string, unknown>)
     { 이름: "인용", 값: (c) => (Array.isArray(c.claims) ? c.claims.length : null) },
   ],
   mesh_assets: [{ 이름: "조각", 값: (c) => (Array.isArray(c.clips) ? c.clips.length : null) }],
-  document: [{ 이름: "항목", 값: (c) => (Array.isArray(c.items) ? c.items.length : null) }],
+  document: [{ 이름: "항목", 값: (c) => 배열길이(c.items) }],
+  // ── 09-28 에 눈을 붙인 넷 ──────────────────────────────────────
+  slides: [
+    { 이름: "장", 값: (c) => 배열길이(속(c, "outline", "slides")) },
+    { 이름: "주문한 장", 값: (c) => (typeof c.asked === "number" ? c.asked || null : null) },
+  ],
+  // 그림은 `uploadReady.images` 가 **배열이 아니라 개수(숫자)** 다. 배열로 읽으려 해서 못 봤다 —
+  // 칸이 없던 게 아니고 내가 꼴을 잘못 알았다. 해시태그 수도 같이 읽는다(인스타가 거는 한도가 있다).
+  image: [
+    { 이름: "장", 값: (c) => (typeof 속(c, "uploadReady", "images") === "number" ? (속(c, "uploadReady", "images") as number) || null : 배열길이(속(c, "uploadReady", "images"))) },
+    { 이름: "해시태그", 값: (c) => 배열길이(속(c, "plan", "hashtags")) },
+  ],
+  game_assets: [{ 이름: "후보", 값: (c) => 배열길이(c.candidates) }],
+  market_research_report: [
+    { 이름: "절", 값: (c) => 배열길이(c.sections) },
+    { 이름: "다음 걸음", 값: (c) => 배열길이(c.recommendedNextSteps) },
+  ],
 };
 
 const 한국말: Record<string, string> = {
