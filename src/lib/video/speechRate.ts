@@ -33,6 +33,14 @@ export async function speechRate(db: Supabase, companyId: string): Promise<Speec
       if (c >= 10 && sec > 0.5) { xs.push(c); ys.push(sec); }
     }
   }
+  // 226회차 09-28: **옛 장면이 직선을 끌고 있었다.** 96장면으로 맞춘 직선은 최근 30장면에 대해
+  // 장면당 **+0.56초** 치우쳐 있었고(최근 것만으로 맞추면 0.00), 그 치우침이 장면 수만큼 곱해져
+  // 15장면 영상에서 **+8.5초**가 됐다. 목소리 설정이 그 사이 바뀐 것이다.
+  //
+  // 한 장면 오차는 평균 0.73초로 작았다 — **치우침은 평균으로 안 보인다.** 그래서 창을 줄인다.
+  // 40개 결과물(≈96장면) 전부가 아니라 **최근 장면 30개**로 맞춘다. 30 미만이면 있는 만큼 쓴다.
+  const WINDOW = 30;
+  if (xs.length > WINDOW) { xs.length = WINDOW; ys.length = WINDOW; }
   const n = xs.length;
   if (n < 5) return { ...DEFAULT_SPEECH, scenes: n };
   const mx = xs.reduce((a, b) => a + b, 0) / n, my = ys.reduce((a, b) => a + b, 0) / n;
@@ -41,7 +49,17 @@ export async function speechRate(db: Supabase, companyId: string): Promise<Speec
   const b = sxx > 0 ? sxy / sxx : DEFAULT_SPEECH.secPerChar;
   const a = my - b * mx;
   // 난간: 말도 안 되는 직선(음수 기울기·음수 여백)이면 기본값. 잰 값이 이상하면 이상하다고 두지 않고 기본으로 간다.
-  if (b <= 0.05 || b > 0.6 || a < 0 || a > 3) return { ...DEFAULT_SPEECH, scenes: n };
+  //
+  // 226회차 09-28: **이 난간이 맞는 값을 버릴 참이었다.** 창을 최근 30장면으로 줄이니 실측 여백이
+  // **3.07초**로 나왔는데 문턱이 `a > 3` 이었다 — 한 칸 차이로 좋은 직선을 버리고 기본값(0.5초)으로
+  // 떨어졌을 것이고, 그건 **지금보다 더 나쁘다.** 난간은 조용히 떨어뜨리므로 눈에도 안 띈다.
+  // 그래서 5초로 넓힌다(장면마다 여는 글자·페이드·앞뒤 쉼을 합치면 3초대는 있을 수 있다).
+  // **잰 값이 난간에 가까워지면 난간을 다시 본다** — 오늘 "한쪽만 막힌 자" 와 같은 종류다.
+  const 난간밖 = b <= 0.05 || b > 0.6 || a < 0 || a > 5;
+  if (난간밖) {
+    console.warn(`[speechRate] 직선이 난간 밖이라 기본값으로 간다 — 여백 ${a.toFixed(2)}s · 글자당 ${b.toFixed(3)}s (${n}장면). 난간이 맞는지 먼저 본다.`);
+    return { ...DEFAULT_SPEECH, scenes: n };
+  }
   return { overheadSec: a, secPerChar: b, scenes: n, measured: true };
 }
 
