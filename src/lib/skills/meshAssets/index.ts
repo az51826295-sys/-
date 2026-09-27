@@ -224,6 +224,58 @@ export const meshAssetsSkill: EmployeeSkill = {
       }
     }
 
+
+    // ── 0. 조각으로 나눌까 (226회차 09-27, 사장님 "모델이 있으면 아스트라가 나눠줘 3d 작업을") ──
+    //
+    // 09-08 에 사장님이 정한 방식은 **맨몸 먼저, 갑옷은 조각으로** 인데, 지금까지 그 나누기를
+    // **사람이** 했다. "기사 만들어" 하면 로키가 하나만 만들고 나머지는 사장님이 다시 시켜야 했다.
+    // 여기서 제일 비싼 자리(판단)에게 한 번 묻는다 — 나누는 것은 크기·순서·무엇이 뭐에 붙는지를
+    // 한꺼번에 봐야 하는 일이라 싼 자리에 맡길 판단이 아니다.
+    //
+    // 나누면 **첫 조각만 이 판에서 만들고 나머지는 새 업무로 낸다**: 조각마다 30 크레딧이 나가므로
+    // 한 판에 다 태우면 중간에 실패할 때 전부 잃고, 사장님이 중간에 보고 멈출 수도 없다.
+    const splitSchema = z.object({
+      나눈다: z.boolean().describe("이 주문이 조각 여럿으로 나뉘는가. 소품 하나·맨몸 하나면 false."),
+      왜: z.string(),
+      조각: z.array(z.object({
+        주문: z.string().describe("그 조각 하나만 만드는 주문. 한국어 한두 줄. 몸에 붙는 조각이면 기준 맨몸(1.996m·6.3등신)에 맞춘다고 적는다."),
+        붙는곳: z.string().describe("head·chest·shoulder_l·shoulder_r·hand_l·hand_r·hip·foot_l·foot_r 중 하나. 맨몸이면 빈 문자열."),
+      })).describe("만드는 순서대로. **맨몸이 있으면 반드시 첫 번째.** 최대 4개 — 그보다 잘게 나누면 값이 너무 든다."),
+    });
+    let split: { 나눈다: boolean; 왜: string; 조각: { 주문: string; 붙는곳: string }[] } = { 나눈다: false, 왜: "", 조각: [] };
+    if (!roleInput.previousDeliverableId) {              // 고치는 판은 나누지 않는다 — 고칠 대상이 이미 하나다
+      try {
+        split = await step(ctx.supabase, ctx.executionId, "split", async () => (await ctx.providers.ai.generateStructuredOutput({
+          systemInstructions:
+            "너는 3D 작업을 조각으로 나누는 사람이다. 이 회사 방식은 **맨몸을 먼저 만들고 갑옷·무기를 조각으로 얹는 것**이다" +
+            "(딱딱한 조각은 뼈에 매다니 리깅을 안 사도 된다 — 조각당 5 크레딧이 굳는다).\n" +
+            "- 소품 하나(상자·검 한 자루)나 이미 조각 하나를 말한 주문은 **나누지 않는다**(나눈다=false).\n" +
+            "- \"갑옷 입은 기사\" 처럼 몸과 얹는 것이 섞인 주문은 나눈다: 맨몸 · 투구 · 흉갑 · 무기 식으로.\n" +
+            "- **맨몸이 있으면 첫 번째에 둔다.** 조각은 그 몸에 맞춰야 하므로 순서가 뜻을 가진다.\n" +
+            "- 조각 하나에 30 크레딧과 그림값이 든다. 넷을 넘기지 마라. 나눌지 말지 애매하면 나누지 않는다.\n" +
+            "- 매니저가 적은 색·재질·비율을 각 조각 주문에 그대로 옮겨 적어라 — 조각끼리 따로 만들어지므로 여기서 안 적으면 흩어진다.",
+          input: `업무: ${ctx.context.assignment.title}
+설명: ${ctx.context.assignment.description ?? ""}
+기대: ${ctx.context.assignment.expectedOutcome ?? ""}`,
+          schema: splitSchema, schemaName: "mesh_split", maxTokens: 16000, tier: "judgment",
+        })).output);
+      } catch (e) { console.warn("[mesh] 나누기 판단 실패 — 한 조각으로 간다:", e instanceof Error ? e.message : e); }
+    }
+
+    const pieces = split.나눈다 ? split.조각.slice(0, 4) : [];
+    if (pieces.length > 1) {
+      console.log(`[mesh] 조각 ${pieces.length}개로 나눈다 — ${split.왜.slice(0, 80)}`);
+      // 첫 조각은 이 판에서 만든다. 나머지는 새 업무로.
+      const { dispatchOrder } = await import("@/lib/genesis/practice");
+      const { data: co } = await ctx.supabase.from("companies").select("owner_id").eq("id", ctx.execution.company_id as string).maybeSingle();
+      for (const p of pieces.slice(1)) {
+        try {
+          const d = await dispatchOrder(ctx.supabase, ctx.execution.company_id as string, "mesh_from_image", p.주문, (co?.owner_id as string) ?? "");
+          console.log(`[mesh]   조각 업무: ${p.주문.slice(0, 40)} → ${d.employee}`);
+        } catch (e) { console.warn("[mesh]   조각 업무 실패:", e instanceof Error ? e.message : e); }
+      }
+    }
+
     // 단계 저장(계획 2 "안 죽는 실행"): 죽었다 다시 돌면 브리프·그림·메시·리깅을 다시 사지 않는다.
     const brief = await step(ctx.supabase, ctx.executionId, "brief", async () => (await ctx.providers.ai.generateStructuredOutput({
 
