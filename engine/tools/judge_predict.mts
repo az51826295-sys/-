@@ -227,6 +227,18 @@ for (const [k, rs] of [...byKind].sort((a, b) => b[1].length - a[1].length)) {
 
 // 다음 판에 다시 안 사도 되게 남긴다.
 import("node:fs").then((fs) => {
-  fs.writeFileSync("engine/data/judge_predict.json", JSON.stringify({ at: new Date().toISOString(), rows }, null, 1));
-  console.log(`\nengine/data/judge_predict.json 에 남겼다.`);
+  // 226회차: 팔 하나만 남겼더니 제일 좋은 팔(②)의 확률이 사라져서 보정을 그 팔에 못 대 봤다.
+  // **팔을 전부 남긴다** — 같은 것을 두 번 사지 않기 위해 이 파일이 있는 것이다.
+  const 팔들: Record<string, { deliverableId: string; p: number; rejected: boolean; kind: string; guess: string }[]> = {};
+  for (const [이름, m] of 팔결과) {
+    팔들[이름] = 공통.map((id) => {
+      const r = m.get(id)!;
+      return { deliverableId: id, p: r.p, rejected: r.rejected, kind: r.kind, guess: r.guess };
+    });
+  }
+  fs.writeFileSync(
+    "engine/data/judge_predict.json",
+    JSON.stringify({ at: new Date().toISOString(), 밑바탕: base, rows, 팔들 }, null, 1),
+  );
+  console.log(`\nengine/data/judge_predict.json 에 남겼다(팔 ${Object.keys(팔들).length}개).`);
 });
