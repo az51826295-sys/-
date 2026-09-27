@@ -83,7 +83,33 @@ const schema = z.object({
 });
 
 type Row = Case & { p: number; guess: string; why: string; kind: string };
-const rows: Row[] = [];
+
+/**
+ * **팔을 갈라 잰다** (226회차 09-27 사장님 "자동", 그 앞에 "어떻게 쓰냐가 문제야").
+ *
+ * 프롬프트는 위의 `SYS` **하나뿐**이다 — 팔마다 베끼면 모델이 아니라 프롬프트를 비교하게 된다.
+ * 갈라 보는 것 셋:
+ *   ① 지금 그대로 — `routine` · **900 토큰**. 이게 의심스럽다: 217회차에 예측자가 1500·6000 에서
+ *      생각이 잘렸고([[judgment-tier-needs-16k-tokens]]) 지금은 그보다도 적다.
+ *   ② 같은 자리에 토큰만 16000
+ *   ③ 다른 회사 싼 모델(gpt-5-mini) · 16000
+ *   ④ ②와 ③의 확률을 **평균** — 확률은 숫자라 평균이 되고, 수학 답처럼 "갈리면 올리기" 를 할 필요가 없다.
+ *      226회차에 엮음이 수학에서는 값만 더 들었는데([[ensemble-buys-a-signal-not-a-score]]),
+ *      **여기는 지금 틀리는 자리**다 — 그래서 다시 잰다.
+ */
+type Arm = { 이름: string; ai: { generateStructuredOutput: Function }; tok: number };
+const { createOpenAIProvider } = await import("../../src/lib/providers/openai");
+const 팔나눔 = process.argv.includes("--팔");
+const ARMS: Arm[] = 팔나눔
+  ? [
+      { 이름: "① 지금 그대로 (900 토큰)", ai: defaultProviders().ai, tok: 900 },
+      { 이름: "② 토큰만 16000", ai: defaultProviders().ai, tok: 16000 },
+      { 이름: "③ gpt-5-mini · 16000", ai: createOpenAIProvider(), tok: 16000 },
+    ]
+  : [{ 이름: "지금 그대로 (900 토큰)", ai: defaultProviders().ai, tok: 900 }];
+
+/** 재료를 한 번만 모은다 — 팔마다 DB 를 다시 읽으면 느리고, 팔이 서로 다른 재료를 볼 위험이 있다. */
+const 재료: { c: Case; kind: string; input: string }[] = [];
 for (const c of picked) {
   const { data: d } = await db.from("deliverables").select("title,deliverable_type,content_markdown,content_json").eq("id", c.deliverableId).maybeSingle();
   const dd = d as { title: string; deliverable_type: string; content_markdown: string; content_json: Record<string, unknown> } | null;
@@ -95,42 +121,96 @@ for (const c of picked) {
     .filter((f) => /[.](js|ts|cs|html)$/i.test(f.path) && f.contents)
     .map((f) => `--- ${f.path} ---` + String.fromCharCode(10) + (f.contents ?? "").slice(0, 4000))
     .join(String.fromCharCode(10, 10)).slice(0, 9000);
-  try {
-    const { output } = await defaultProviders().ai.generateStructuredOutput({
-      systemInstructions: SYS,
-      input: [
-        `종류: ${dd.deliverable_type}`, `제목: ${dd.title}`, "",
-        "결과물 설명:", (dd.content_markdown ?? "").slice(0, 2000),
-        ...(code ? ["", "코드(여기 적힌 값이 해 봤을 때 어떨지 생각해라 — 속도·크기·개수·시간):", code] : []),
-      ].join(String.fromCharCode(10)),
-      schema, schemaName: "judge_predict", maxTokens: 900, tier: "routine",
-    });
-    rows.push({ ...c, kind: dd.deliverable_type, p: Math.min(1, Math.max(0, output.물릴확률)), guess: output.짚을것.trim(), why: output.왜 });
-  } catch (e) { console.log(`  ${c.deliverableId.slice(0,8)} 예측 실패`); }
+  재료.push({
+    c,
+    kind: dd.deliverable_type,
+    input: [
+      `종류: ${dd.deliverable_type}`, `제목: ${dd.title}`, "",
+      "결과물 설명:", (dd.content_markdown ?? "").slice(0, 2000),
+      ...(code ? ["", "코드(여기 적힌 값이 해 봤을 때 어떨지 생각해라 — 속도·크기·개수·시간):", code] : []),
+    ].join(String.fromCharCode(10)),
+  });
 }
+
+/** 한 팔로 시험지를 다 푼다. 못 받은 재료는 그 팔에서 빠진다 — 팔끼리 대려면 같은 재료여야 하므로 아래서 맞춘다. */
+async function 팔돌리기(arm: Arm): Promise<Map<string, Row>> {
+  const out = new Map<string, Row>();
+  for (const m of 재료) {
+    try {
+      const { output } = await arm.ai.generateStructuredOutput({
+        systemInstructions: SYS,
+        input: m.input,
+        schema, schemaName: "judge_predict", maxTokens: arm.tok, tier: "routine",
+      });
+      out.set(m.c.deliverableId, {
+        ...m.c, kind: m.kind,
+        p: Math.min(1, Math.max(0, output.물릴확률)),
+        guess: output.짚을것.trim(), why: output.왜,
+      });
+    } catch (e) {
+      console.log(`  ${arm.이름} · ${m.c.deliverableId.slice(0, 8)} 예측 실패 ${e instanceof Error ? e.message.slice(0, 40) : ""}`);
+    }
+  }
+  return out;
+}
+
+const 팔결과 = new Map<string, Map<string, Row>>();
+for (const arm of ARMS) {
+  console.log(`\n${arm.이름} 돌린다 (${재료.length}건)…`);
+  팔결과.set(arm.이름, await 팔돌리기(arm));
+}
+
+// 엮음: ②와 ③의 확률을 평균한다. 둘 다 답한 재료만 쓴다.
+if (팔나눔) {
+  const b = 팔결과.get("② 토큰만 16000")!;
+  const c3 = 팔결과.get("③ gpt-5-mini · 16000")!;
+  const 엮 = new Map<string, Row>();
+  for (const [id, r] of b) {
+    const o = c3.get(id);
+    if (o) 엮.set(id, { ...r, p: (r.p + o.p) / 2, guess: r.guess || o.guess });
+  }
+  팔결과.set("④ 엮음 (②③ 확률 평균)", 엮);
+}
+
+// **모든 팔이 답한 재료만** 쓴다. 팔마다 다른 재료로 재면 Brier 를 대 볼 수 없다.
+const 공통 = [...(팔결과.get(ARMS[0].이름) ?? new Map()).keys()].filter((id) =>
+  [...팔결과.values()].every((m) => m.has(id)),
+);
+const rows: Row[] = 공통.map((id) => 팔결과.get(ARMS[ARMS.length - 1].이름)!.get(id)!);
+console.log(`\n모든 팔이 답한 재료 ${공통.length}건 / ${재료.length}건`);
 
 // ── 채점 ────────────────────────────────────────────────────────
 const brier = (ps: number[], ys: boolean[]) => ps.reduce((s, p, i) => s + (p - (ys[i] ? 1 : 0)) ** 2, 0) / ps.length;
 const ys = rows.map((r) => r.rejected);
 const base = ys.filter(Boolean).length / ys.length;
-const mine = brier(rows.map((r) => r.p), ys);
 const always = brier(rows.map(() => 1), ys);
 const never = brier(rows.map(() => 0), ys);
 const rate = brier(rows.map(() => base), ys);
 
-console.log(`\n=== 예측 ${rows.length}건 ===`);
-for (const r of rows.slice(0, 12)) {
-  const hit = (r.p >= 0.5) === r.rejected;
-  console.log(`  ${hit ? "맞음" : "틀림"} p=${r.p.toFixed(2)} → 실제 ${r.rejected ? "물림" : "통과"}`);
-  console.log(`       짚을것 "${r.guess || "-"}" ↔ 사장님 "${r.about || "-"}"`);
-}
-const hits = rows.filter((r) => (r.p >= 0.5) === r.rejected).length;
-console.log(`\n맞힌 것 ${hits}/${rows.length} (${(hits/rows.length*100).toFixed(0)}%)`);
-console.log(`Brier (낮을수록 좋다)`);
-console.log(`  **예측자      ${mine.toFixed(3)}**`);
-console.log(`   밑바탕 비율  ${rate.toFixed(3)}  ← 이걸 못 이기면 아무것도 안 배운 것이다`);
+console.log(`\n=== 예측 ${rows.length}건 · 물림 ${ys.filter(Boolean).length}건 ===`);
+console.log(`Brier (낮을수록 좋다) · 밑바탕을 못 이기면 아무것도 안 배운 것이다`);
+console.log(`   밑바탕 비율  **${rate.toFixed(3)}**  ← 넘어야 하는 선`);
 console.log(`   언제나 물림  ${always.toFixed(3)}`);
 console.log(`   언제나 통과  ${never.toFixed(3)}`);
+for (const [이름, m] of 팔결과) {
+  const ps = 공통.map((id) => m.get(id)!.p);
+  const b = brier(ps, ys);
+  const h = 공통.filter((id) => (m.get(id)!.p >= 0.5) === m.get(id)!.rejected).length;
+  const 폭 = Math.max(...ps) - Math.min(...ps);
+  console.log(
+    `  ${이름.padEnd(22)} Brier ${b.toFixed(3)}${b < rate ? "  ← **이겼다**" : ""}` +
+      ` · 맞힘 ${h}/${공통.length} · 확률 폭 ${폭.toFixed(2)}`,
+  );
+}
+// 확률 폭도 같이 본다: 전부 같은 값만 답하면 Brier 가 좋아도 아무것도 예측하지 않은 것이다
+// (09-14 예측이 50일간 0.700 상수였던 것을 그때는 못 봤다).
+
+const 마지막 = 팔결과.get(ARMS[ARMS.length - 1].이름)!;
+for (const id of 공통.slice(0, 10)) {
+  const r = 마지막.get(id)!;
+  console.log(`  ${(r.p >= 0.5) === r.rejected ? "맞음" : "틀림"} p=${r.p.toFixed(2)} → 실제 ${r.rejected ? "물림" : "통과"}`);
+  console.log(`       짚을것 "${r.guess || "-"}" ↔ 사장님 "${r.about || "-"}"`);
+}
 
 // 226회차: **종류를 갈라 본다.** 게임은 문서로 못 맞힌다는 짐작을 확인하려면 갈라 세야 한다 —
 // 합쳐 세면 한 종류의 실패가 다른 종류의 성공을 덮는다(09-22 "길 개수를 먼저 세고 자는 갈라 센다").
