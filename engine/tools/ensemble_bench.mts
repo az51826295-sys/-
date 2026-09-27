@@ -21,6 +21,23 @@ import { readFileSync } from "node:fs";
 
 const { createDeepSeekProvider } = await import("../../src/lib/providers/deepseek");
 const { createOpenAIProvider } = await import("../../src/lib/providers/openai");
+const { costOf } = await import("../../src/lib/costs/pricing");
+
+/** 실제 토큰을 세서 값을 매긴다. 단가는 내가 적지 않고 pricing.ts 를 읽는다. */
+const 쓴것 = new Map<string, { 들어간: number; 나온: number }>();
+function 적기(model: string, i: number, o: number) {
+  const r = 쓴것.get(model) ?? { 들어간: 0, 나온: 0 };
+  r.들어간 += i;
+  r.나온 += o;
+  쓴것.set(model, r);
+}
+function 값어치(model: string): number | null {
+  const r = 쓴것.get(model);
+  if (!r) return null;
+  // 단가를 여기 다시 적지 않는다 — 회사가 쓰는 계산기를 그대로 부른다.
+  const c = costOf({ backend: model, inputTokens: r.들어간, outputTokens: r.나온 });
+  return c > 0 ? c : null;
+}
 
 const arg = (n: string) => (process.argv.includes(n) ? process.argv[process.argv.indexOf(n) + 1] : null);
 const 시험지경로 = arg("--시험지") ?? "engine/data/suneung-v0.json";
@@ -65,7 +82,7 @@ async function 물어(
   문제: string,
 ): Promise<{ 값: number | null; 원문: string }> {
   try {
-    const { output } = await ai.generateStructuredOutput({
+    const { output, model, inputTokens, outputTokens } = await ai.generateStructuredOutput({
       systemInstructions: SYS,
       input: 문제,
       schema,
@@ -73,6 +90,7 @@ async function 물어(
       maxTokens: 16000,
       tier,
     });
+    적기(model, inputTokens ?? 0, outputTokens ?? 0);
     return { 값: 값(output.답), 원문: output.답 };
   } catch (e) {
     return { 값: null, 원문: `(떨어짐 ${e instanceof Error ? e.message.slice(0, 22) : e})` };
@@ -119,6 +137,20 @@ console.log(`(참고) 판단 자리 혼자는 앞선 판에서 ${만점} / ${만
 console.log(`둘이 같았던 문항      ${같음} / ${시험지.length}  → 그중 **둘 다 틀린 것 ${같은데둘다틀림}**`);
 console.log(`갈려서 올린 문항      ${올림} / ${시험지.length}  → 올려서 맞힌 것 ${올려서맞음}`);
 console.log(`비싼 호출 아낀 비율    ${((같음 * 100) / 시험지.length).toFixed(0)}%`);
+console.log("\n값 — 실제 센 토큰 × pricing.ts 단가:");
+let 총 = 0;
+for (const [m, r] of 쓴것) {
+  const c = 값어치(m);
+  총 += c ?? 0;
+  console.log(`  ${m.padEnd(20)} 들어간 ${r.들어간.toLocaleString()} 나온 ${r.나온.toLocaleString()} → ${c === null ? "단가 모름" : "$" + c.toFixed(4)}`);
+}
+console.log(`  엮음 한 판 합계 $${총.toFixed(4)} (문항당 $${(총 / 시험지.length).toFixed(5)})`);
+const 판단만 = 값어치("deepseek-v4-pro");
+if (판단만 !== null && 올림 > 0) {
+  const 문항당판단 = 판단만 / 올림;
+  console.log(`  판단 자리 혼자 돌렸다면 어림 $${(문항당판단 * 시험지.length).toFixed(4)} (올린 ${올림}문항의 실제 단가로 환산)`);
+}
+
 if (겹쳐틀린것.length) {
   console.log("\n**겹쳐 틀린 것 — 여기서는 '같다' 가 '맞다' 가 아니었다:**");
   for (const x of 겹쳐틀린것) console.log(`   ${x}`);

@@ -22,7 +22,18 @@ const { intakeInstructions } = await import("../../src/lib/chat/routing");
 const { defaultProviders } = await import("../../src/lib/execution/shared");
 
 const db = createServiceClient();
-const ai = defaultProviders().ai;
+/**
+ * `--mini` 면 싼 자리를 **gpt-5-mini** 로 바꿔 앉히고 잰다 (226회차 09-27).
+ *
+ * 수능형 시험지에서 gpt-5-mini 가 179/183 이었고 지금 싼 자리(deepseek-v4-flash)는 140 이었다.
+ * 그런데 **싼 자리는 모든 대화가 지나가는 자리다** — 수학을 잘한다고 우리말 줄임말을 알아듣거나
+ * 잡담을 잡담으로 받는 것이 나아지지는 않는다([[rule-blast-radius]]: 규칙이 닿는 범위를 먼저 센다).
+ * 그래서 자리를 바꾸기 전에 **이 자를 먼저 통과하는지** 본다.
+ */
+const MINI = process.argv.includes("--mini");
+const { createOpenAIProvider } = await import("../../src/lib/providers/openai");
+const ai = MINI ? createOpenAIProvider() : defaultProviders().ai;
+if (MINI) console.log("싼 자리를 gpt-5-mini 로 바꿔 앉혔다 (--mini)");
 
 // 226회차 09-27: 여기 스키마를 따로 적어 두었더니 제품에 새로 생긴 칸(깊게)을 **아예 못 쟀다**.
 // 자는 제품의 스키마를 그대로 쓴다 — 칸이 늘면 시험도 같이 늘어야 한다.
