@@ -64,6 +64,24 @@ const chatOutputSchema = z.object({
   /** 매니저에게 하는 답. 직원의 목소리로. */
   reply: z.string(),
   /**
+   * 이 물음이 **풀어야 아는 것**인가.
+   *
+   * 226회차 09-27 실측이 근거다. 같은 수능 4점 문제를 **다섯 번** 물었더니
+   * 싼 자리(3000)는 1/5, 판단 자리(16000)는 5/5 였다. 싼 자리가 낸 답은 55·37·73·55·55 —
+   * 흔들렸다. **한 번씩 재면 6/6 이 나와서 안 보인다**(그래서 오늘 아침에 이 칸을 한 번 되돌렸다).
+   * 학생은 틀린 답을 알아볼 수 없으므로, 여기서는 흔들림 자체가 고장이다.
+   *
+   * 설명을 주석이 아니라 `.describe()` 에 둔다 — 주석은 모델에게 가지 않는다.
+   */
+  깊게: z
+    .boolean()
+    .describe(
+      "true when answering REQUIRES actually working something out step by step and a wrong step " +
+        "changes the answer: math problems, probability/counting, algebra, proofs, unit conversion, " +
+        "tracing why code produces a given output, comparing numbers. " +
+        "false for chat, opinions, explanations of how things work, and anything you are delegating as work.",
+    ),
+  /**
    * 매니저가 일을 시켰다고 판단되면 채운다. 잡담·질문이면 null.
    *
    * 모델은 제안만 한다 — 실제 생성은 아래에서 기존 createAssignment 를
@@ -257,6 +275,38 @@ How to behave:
         expectedOutcome: null,
       },
     };
+  }
+
+  // ── 풀어야 아는 물음은 다시, 깊게 ──────────────────────────────
+  // 일을 맡기는 턴에서는 하지 않는다 — 그쪽 답은 어차피 코드가 업무로 바꾼다.
+  if (output.깊게 && !output.assignment && !input.requireAssignment) {
+    try {
+      const { output: deep } = await providers.ai.generateStructuredOutput({
+        systemInstructions:
+          systemInstructions +
+          "\n- THIS QUESTION HAS ONE RIGHT ANSWER AND YOU MUST WORK IT OUT, not estimate it. " +
+            "Solve it completely before writing the reply. Check your arithmetic by a second route, and if the two " +
+            "routes disagree, find which one is wrong rather than picking one. " +
+            "Then write the answer AND the path that got there, short enough for a student to follow. " +
+            "If you cannot finish it, say exactly where you got stuck — do not present a guess as the answer. " +
+            "Leave \"깊게\" true and \"assignment\" null.",
+        input: `# Conversation so far
+
+${transcript}
+
+Respond as ${employee.name}.`,
+        schema: chatOutputSchema,
+        schemaName: "employee_chat_turn",
+        tier: "judgment",
+        // 3000 에서 생각이 잘려 답만 그럴듯하게 나왔다(MODEL_OUTPUT_TRUNCATED).
+        // 판단 자리는 16000 부터다 — 217회차에 예측자·대본 심판이 같은 자리에서 잘렸다.
+        maxTokens: 16000,
+      });
+      if (deep.reply?.trim()) output = { ...deep, assignment: null };
+    } catch (e) {
+      // 깊게 묻기가 떨어지면 처음 답을 쓴다. 답이 없는 것보다는 낫다 — 다만 흔들릴 수 있다.
+      console.warn("[chat] 깊게 답하기 실패 — 처음 답을 쓴다:", e instanceof Error ? e.message : e);
+    }
   }
 
   // ── 업무 접수 ────────────────────────────────────────────────────

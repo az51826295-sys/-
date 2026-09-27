@@ -86,7 +86,32 @@ export type EverydayResult =
     }
   | { ok: false; error: string; status: number };
 
-const firstPass = z.object({
+/** 자(chat_bench)가 이것을 그대로 쓴다 — 시험이 제품과 다른 스키마로 돌면 게이트를 못 잰다. */
+export const firstPass = z.object({
+  /**
+   * 이 물음이 **풀어야 아는 것**인가. 맞으면 아래 `reply` 는 버리고 판단 자리에서 다시 푼다.
+   *
+   * 226회차 09-27 실측이 근거다(사장님: "로키 수학문제라도 알려줘"). 수능 4점 문제 둘을
+   * **각각 다섯 번** 물었다:
+   *
+   * | 자리 | 맞음 |
+   * |---|---|
+   * | 싼 자리 3000 (직원 대화) | 5/10 |
+   * | **싼 자리 16000 (이 파일, 지금까지)** | **3/10** — 55·55·37·55·28 로 흔들렸다 |
+   * | 판단 자리 16000 | **10/10** |
+   *
+   * 토큰을 올려도 안 낫는다. **자리가 다른 것이다.** 그리고 문제마다 한 번씩만 재면
+   * 6/6 이 나와서 이 고장이 안 보인다 — 오늘 아침에 그 한 번으로 재고 이 칸을 한 번 되돌렸다.
+   * 학생은 틀린 답을 알아볼 수 없으므로 여기서는 흔들림 자체가 고장이다.
+   */
+  깊게: z
+    .boolean()
+    .describe(
+      "true when answering REQUIRES working something out step by step, where one wrong step changes " +
+        "the answer: math problems, probability and counting, algebra, calculus, proofs, unit conversion, " +
+        "tracing what code prints, comparing numbers. Also true when the user photographed a problem to solve. " +
+        "false for chat, opinions, how-things-work explanations, requests to search, draw, or build something.",
+    ),
   /**
    * 찾아볼 것 없이 지금 답할 수 있으면 여기에 답을 쓴다.
    * 최신 사실·출처가 필요하면 비워 두고 `searches` 를 채운다.
@@ -126,6 +151,9 @@ const firstPass = z.object({
    * 때만 채운다 — 안 그러면 물어본 적 없는 일이 사장님 프로젝트에 쌓인다.
    */
 });
+
+/** 풀어야 아는 물음의 답. 출처 칸이 없다 — 수학에 URL 을 붙이라고 하면 지어낸다. */
+const solvePass = z.object({ reply: z.string() });
 
 const answerPass = z.object({
   reply: z.string(),
@@ -595,7 +623,38 @@ export async function runEverydayTurn(
     // 136회차: 빈 답을 "무엇을 도와드릴까요?" 로 때우던 자리. 사장님이 일이 다 끝난 뒤 "완료되었으면
     // 보여줘" 라고 쳤는데 바로 이 문장이 나왔다 — 멍한 눈빛이다. 모델이 답을 못 냈으면 **그 사실을 말하고**,
     // 지금 무엇이 있는지라도 알려 준다. 빈손으로 되묻는 것이 제일 나쁘다.
+    // 226회차 09-27: 풀어야 아는 물음이면 **첫 답을 버리고** 판단 자리에서 다시 푼다.
+    // 위 표 그대로 — 이 자리의 답은 3/10 이었다. 학생에게 틀린 답을 주는 것이 제일 나쁘다.
+    let solved: string | null = null;
+    if (plan.깊게) {
+      say("풀어 보는 중");
+      try {
+        const { output: got } = await providers.ai.generateStructuredOutput({
+          systemInstructions: [
+            "너는 고3 학생에게 알려 준다. 한국어로.",
+            "",
+            "- **끝까지 풀어라.** 어림잡지 말고, 답이 정해질 때까지 계산한다.",
+            "- 계산은 **다른 길로 한 번 더** 확인한다. 두 길이 다르면 어느 쪽이 틀렸는지 찾아라 — 골라잡지 마라.",
+            "- 답과 **어떻게 나왔는지**를 같이 쓴다. 학생이 다음 문제를 혼자 풀 수 있을 만큼.",
+            "- 끝까지 못 갔으면 **어디서 막혔는지 그대로 말한다.** 짐작을 답처럼 내놓지 마라.",
+            "- 짧게. 필요한 단계만.",
+          ].join(String.fromCharCode(10)),
+          input: (work.hasAny ? `${work.text}\n\n` : "") + `대화:\n${transcript}`,
+          // 사진으로 찍어 올린 문제도 여기서 푼다 — 사진을 빼면 문제를 못 본 채 답한다.
+          images: seen,
+          schema: solvePass,
+          schemaName: "everyday_solve",
+          maxTokens: 16000,
+          tier: "judgment",
+        });
+        if (got.reply.trim()) solved = got.reply;
+      } catch (error) {
+        // 떨어지면 첫 답을 쓴다. 답이 없는 것보다는 낫다 — 다만 흔들릴 수 있다.
+        console.warn("[everyday] 깊게 풀기 실패 — 첫 답을 쓴다:", error instanceof Error ? error.message : error);
+      }
+    }
     reply =
+      solved ??
       plan.reply ??
       (images.length
         ? "그렸습니다."
