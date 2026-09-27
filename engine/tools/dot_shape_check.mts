@@ -154,3 +154,27 @@ for (const [f, v] of masks) {
 const ts = pads.map((p) => p.t), spread = Math.max(...ts) - Math.min(...ts);
 console.log(`  위 여백 퍼짐 ${spread}px ${spread <= 8 ? "· 고르다" : "≠ **칸마다 높이가 다르다**"}`);
 console.log(`  **여백 모자란 장 ${padBad}/${masks.size}** ${padBad ? "— 잘렸다" : "— 통과"}`);
+
+// 226회차 09-27 사장님 "머리카락 복잡한 캐릭터는 잘 안 되네".
+// 위의 실루엣 겹침(IoU)은 **면적**을 본다 — 머리카락 세부가 칸마다 달라도 전체 윤곽이 비슷하면 높게 나온다.
+// 실제로 머리가 복잡한 유나(0.977)·서하(0.971)가 짧은 머리 도윤(0.954)보다 높게 나왔다. 자가 못 잡은 것이다.
+// 그래서 **얼굴 밖(머리카락·옷)의 색이 칸마다 얼마나 다른지**를 잰다. 표정은 얼굴에서만 달라야 하니
+// 이 값은 낮을수록 좋다 — 높으면 칸마다 머리를 다시 그린 것이다.
+function outsideDiff(a: Uint8Array, b: Uint8Array): number {
+  let diff = 0, n = 0;
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    if (inFace(x, y)) continue;
+    const i = (y * W + x) * 3;
+    n++;
+    if (Math.abs(a[i] - b[i]) + Math.abs(a[i+1] - b[i+1]) + Math.abs(a[i+2] - b[i+2]) > 30) diff++;
+  }
+  return n ? diff / n : 0;
+}
+console.log(`\n얼굴 밖(머리카락·옷)은 얼마나 다른가 — 낮아야 좋다:`);
+let maxOut = 0, maxPair = '';
+for (let i = 0; i < names.length; i++) for (let j = i + 1; j < names.length; j++) {
+  const d = outsideDiff(masks.get(names[i])!.rgb, masks.get(names[j])!.rgb);
+  if (d > maxOut) { maxOut = d; maxPair = `${names[i]} ↔ ${names[j]}`; }
+}
+console.log(`  가장 많이 다른 짝: ${maxPair} = ${(maxOut * 100).toFixed(1)}%`);
+console.log(`  ${maxOut <= 0.08 ? "· 머리·옷이 고르다 (≤8%)" : "≠ **칸마다 머리를 다시 그렸다** (>8%)"}`);

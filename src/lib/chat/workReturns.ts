@@ -73,6 +73,52 @@ const STEP_LABEL: Record<string, string> = {
  * 이 폴링이 아니라 /api/unity/checks 가 직접 넣어서, 화면이 열려 있어도 새로
  * 고치기 전엔 안 보였다. 이제 폴링이 집어 온다.
  */
+
+/**
+ * **로키에게 입을 달아 준다** (226회차 2026-09-27, 사장님 "로키가 굶고 있다고 니가 해결해 —
+ * 먹이를 주거나 입을 달아줘").
+ *
+ * 자가진화도 취향 자도 사장님 판정을 먹고 자라는데 결과물 400개에 판정이 7건뿐이었다. 그릇
+ * (사장님 말을 결과물에 잇기)은 아침에 만들었지만 **입이 없었다** — 로키는 결과를 내놓고 끝이라
+ * 사장님이 먼저 말을 걸지 않으면 아무것도 안 들어온다.
+ *
+ * 처음엔 자가 "못 잼" 이라 적은 줄을 물으려 했는데, 지난 40개에 대 보니 **2개만 걸렸고** 그마저
+ * "M1 은 닫힘(정보만)" 같은 기계 말이라 사람이 답할 수 없었다. **못 잰 것은 기계가 못 잰 것이지
+ * 사람에게 물을 것이 아니다.**
+ *
+ * 그래서 묻는 것을 바꿨다: **주문에 없는데 로키가 자기가 정해 버린 것 하나.** 결과물마다 다르고
+ * 본문에 이미 적혀 있으므로 싼 자리에서 한 줄 뽑는다(결과물당 ≈$0.005).
+ */
+async function askOneThing(title: string, body: string): Promise<{ q: string; yes: string; no: string } | null> {
+  try {
+    const { defaultProviders } = await import("@/lib/execution/shared");
+    const { z } = await import("zod");
+    const { output } = await defaultProviders().ai.generateStructuredOutput({
+      systemInstructions: [
+        "너는 방금 낸 결과물을 사장님께 보여 주는 참이다. **한 가지만 묻는다.**",
+        "물을 것: 주문에 없었는데 **네가 임의로 정해 버린 것** 하나. 크기·색·길이·구성처럼 사장님이 보면 바로 답할 수 있는 것.",
+        "- 기계 낱말(규칙 이름·검사 이름·M1·A3)을 쓰지 마라. 사장님은 그게 뭔지 모른다.",
+        "- 형용사로 묻지 마라. **네가 정한 값을 대고** 물어라.",
+        "  좋은 예: 투구 높이를 17cm 로 잡았어요. 게임에서 이 크기가 맞나요?",
+        "  나쁜 예: 투구가 어떠세요?",
+        "- 물을 것이 정말 없으면 q 를 빈 문자열로 둔다. 억지로 만들지 마라.",
+      ].join(String.fromCharCode(10)),
+      input: `제목: ${title}\n\n결과물:\n${body.slice(0, 2500)}`,
+      schema: z.object({
+        q: z.string().describe("한 문장. 네가 정한 값을 대고 묻는다. 물을 것이 없으면 빈 문자열."),
+        yes: z.string().describe("사장님이 그대로 좋다를 누를 때 대화에 들어갈 말. 무엇에 대한 것인지 드러나게."),
+        no: z.string().describe("아니다를 누를 때 들어갈 말. 사장님이 이어 쓰도록 끝을 열어 둔다."),
+      }),
+      schemaName: "ask_one_thing",
+      maxTokens: 700,
+      tier: "routine",
+    });
+    return output.q.trim() ? output : null;
+  } catch {
+    return null;                                            // 입은 덤이다 — 못 물어도 결과는 나간다
+  }
+}
+
 export async function collectUnityChecks(
   db: Supabase,
   conversationId: string,
@@ -197,6 +243,14 @@ export async function collectWorkReturns(
         const dverdict = ((d.content_json as { verdict?: { verdict?: string } } | null)?.verdict?.verdict) ?? "";
         kindOfTurn = "result";
         actions = [];
+        // 226회차: 못 잰 것을 하나 묻는다. 누르면 그 말이 대화에 들어가고, `reaction` 이 그것을
+        // **이 결과물에 매달아** 둔다(about) — 그게 자가진화와 취향 자의 먹이다.
+        const ask = await askOneThing((d.title as string) || a.title, (d.content_markdown as string) ?? "");
+        if (ask) {
+          text += `\n\n---\n\n${ask.q}`;
+          actions.push({ label: "그대로 좋아요", text: ask.yes });
+          actions.push({ label: "아니에요", text: ask.no });
+        }
         if (dtype === "mesh_assets" && dverdict === "DRAFT") actions.push({ label: "고화질로 만들기", text: "고화질로 만들어 줘" });
         if (dtype === "analysis" || dtype === "market_research_report") actions.push({ label: "이걸로 영상 만들기", text: "이걸로 60초 영상 만들어 줘" });
         // 46회차(사장님 지시): 게임은 단계로 간다 — 프로토타입 → 맵 → 캐릭터 → 다듬기.
