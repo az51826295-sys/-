@@ -164,7 +164,8 @@ const solvePass = z.object({ reply: z.string() });
  */
 export async function solveDeeply(
   ai: ReturnType<typeof defaultProviders>["ai"],
-  args: { input: string; images?: string[] },
+  /** 자리. 기본은 판단 자리 — 226회차 실측에서 싼 자리는 3/10 이었다. 시험(suneung_bench)만 바꿔 끼운다. */
+  args: { input: string; images?: string[]; tier?: "judgment" | "conversation" },
 ): Promise<string | null> {
   try {
     const { output } = await ai.generateStructuredOutput({
@@ -183,7 +184,7 @@ export async function solveDeeply(
       schema: solvePass,
       schemaName: "everyday_solve",
       maxTokens: 16000,
-      tier: "judgment",
+      tier: args.tier ?? "judgment",
     });
     return output.reply.trim() ? output.reply : null;
   } catch (error) {
