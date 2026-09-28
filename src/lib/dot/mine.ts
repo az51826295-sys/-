@@ -27,9 +27,9 @@ export const 맞팔_하트 = 5;
 
 export type MyPost = { id: number; image: string; caption: string; at: string; likes: number };
 
-/** 게시물 한 장에 캐릭터가 하트를 줄 확률. 친밀도가 높을수록 잘 준다(0.30 ~ 0.90). */
+/** 게시물 한 장에 캐릭터가 하트를 줄 확률. 친밀도가 높을수록 잘 준다(0.45 ~ 0.90). */
 function 하트확률(stage: number): number {
-  return Math.min(0.9, 0.3 + 0.15 * Math.max(0, stage));
+  return Math.min(0.9, 0.45 + 0.12 * Math.max(0, stage));
 }
 
 /**
@@ -45,12 +45,25 @@ export async function 하트예약(userId: string, postId: number): Promise<numb
     ]);
     const stage = new Map<string, number>();
     for (const b of (bs ?? []) as { character_id: string; stage: number }[]) stage.set(b.character_id, b.stage ?? 0);
+    const 후보 = ((fs ?? []) as { character_id: string }[]).map((f) => f.character_id);
+    /**
+     * **적어도 한 명은 준다** (09-29 실측으로 고친 것).
+     *
+     * 처음 온 사람은 추가한 캐릭터가 **한 명**이고 친밀도가 0 이다. 확률만 굴리면 첫 판에서
+     * 0개가 나왔고(실제로 나왔다), 그러면 맞팔까지 평균 17장을 올려야 한다 — 그 규칙은 있으나 마나다.
+     * 그래서 **가장 친한 한 명은 반드시** 준다. 추가한 사람이 하나뿐이면 5장이면 맞팔이 된다.
+     */
+    const 꼭주는이 = 후보.length
+      ? 후보.reduce((a, b) => ((stage.get(b) ?? 0) > (stage.get(a) ?? 0) ? b : a))
+      : null;
     const 줄: { post_id: number; character_id: string; created_at: string }[] = [];
-    for (const f of (fs ?? []) as { character_id: string }[]) {
-      if (Math.random() > 하트확률(stage.get(f.character_id) ?? 0)) continue;
-      // 1분 ~ 3시간 뒤. 사람마다 보는 때가 다르니 한 줄로 몰리지 않는다.
-      const 뒤 = 60_000 + Math.random() * 3 * 3600_000;
-      줄.push({ post_id: postId, character_id: f.character_id, created_at: new Date(Date.now() + 뒤).toISOString() });
+    for (const id of 후보) {
+      const 꼭 = id === 꼭주는이;
+      if (!꼭 && Math.random() > 하트확률(stage.get(id) ?? 0)) continue;
+      // 꼭 주는 한 명은 **1~10분** 안에 — 첫 사람이 올리자마자 아무 반응도 없으면 그걸로 끝이다.
+      // 나머지는 1분 ~ 3시간. 한 줄로 몰리지 않게.
+      const 뒤 = 꼭 ? 60_000 + Math.random() * 9 * 60_000 : 60_000 + Math.random() * 3 * 3600_000;
+      줄.push({ post_id: postId, character_id: id, created_at: new Date(Date.now() + 뒤).toISOString() });
     }
     if (!줄.length) return 0;
     const { error } = await db.from("dot_user_post_likes").upsert(줄, { onConflict: "post_id,character_id" });
