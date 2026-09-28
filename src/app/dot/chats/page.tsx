@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import DotTabs from "../DotTabs";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
@@ -30,15 +29,20 @@ export default async function DotList() {
   const db = createServiceClient();
 
   const bonds = new Map<string, number>();
+  /** 추가한(팔로우한) 캐릭터. 방 목록에 나오는 사람은 이 안에 있는 사람뿐이다. */
+  const follows = new Set<string>();
   // 카톡 목록의 그 두 칸: **마지막 말**과 **그 시각**. 상태 한 줄 대신, 있으면 이게 뜬다.
   const last = new Map<string, { text: string; at: string; mine: boolean }>();
   const unread = new Map<string, number>();
   if (user && characters.length) {
     // 09-28: 남은 대화를 안 그리니 `dot_usage` 도 안 읽는다 — 안 쓰는 값을 부르면 왕복만 는다.
-    const [{ data: bs }, { data: ms }] = await Promise.all([
+    const [{ data: bs }, { data: ms }, { data: fs }] = await Promise.all([
       db.from("dot_bonds").select("character_id, stage, last_seen_at").eq("user_id", user.id),
       db.from("dot_messages").select("character_id, role, content, created_at").eq("user_id", user.id).order("id", { ascending: false }).limit(60),
+      // 227회차 09-29: 방 목록은 이제 **추가한 사람만**이다(사장님 방식 바꾸기).
+      db.from("dot_follows").select("character_id").eq("user_id", user.id),
     ]);
+    for (const f of (fs ?? []) as { character_id: string }[]) follows.add(f.character_id);
     const seen = new Map<string, string | null>();
     for (const b of (bs ?? []) as { character_id: string; stage: number; last_seen_at: string | null }[]) { bonds.set(b.character_id, b.stage); seen.set(b.character_id, b.last_seen_at); }
     // 카톡의 안 읽은 수(86회차): 방을 마지막으로 본 시각 뒤에 온 캐릭터 말. 최근 60줄 안에서 센다(그보다 많으면 60+).
@@ -51,9 +55,13 @@ export default async function DotList() {
     for (const m of (ms ?? []) as { character_id: string; role: string; content: string; created_at: string }[]) {
       if (!last.has(m.character_id)) last.set(m.character_id, { text: m.content.replace(/\n+/g, " "), at: m.created_at, mine: m.role === "user" });
     }
-    // 아직 아무와도 이야기한 적이 없으면 **고르기 화면**으로. 이름만 있는 목록은 처음 온 사람에겐 빈 방이다.
-    if (bonds.size === 0) redirect("/dot/feed");
+    // 09-29: 예전에는 사이가 0 이면 피드로 **보내 버렸다.** 이제는 안 보낸다 —
+    // 추가한 사람이 없는 것은 고장이 아니라 **아직 안 고른 것**이고, 그 자리에는
+    // "검색에서 찾아보세요" 가 있어야 한다. 말없이 다른 화면으로 튕기면 사람은 길을 잃는다.
   }
+
+  // 추가한 사람만 방이 된다. 로그인 전에는 아무것도 안 보인다(그 화면은 로그인이 먼저 막는다).
+  const 방들 = characters.filter((c) => follows.has(c.id));
 
   return (
     <div className="kl-root">
@@ -72,8 +80,13 @@ export default async function DotList() {
         </header>
 
         <div className="kl-list">
-          {characters.length === 0 && <div className="kl-empty">아직 아무도 없어요.</div>}
-          {[...characters]
+          {방들.length === 0 && (
+            <div className="kl-empty">
+              아직 추가한 사람이 없어요.
+              <Link href="/dot/search" className="kl-empty-go">검색에서 찾아보기</Link>
+            </div>
+          )}
+          {[...방들]
             // 카톡처럼 최근에 이야기한 방이 위로.
             .sort((a, b) => (last.get(b.id)?.at ?? "").localeCompare(last.get(a.id)?.at ?? ""))
             .map((c) => {
@@ -140,6 +153,7 @@ const CSS = `
 .kl-when { font-size:11px; color:#a3aab3; white-space:nowrap; }
 .kl-badge { min-width:18px; height:18px; padding:0 5px; background:#ff4a3d; color:#fff; font-size:11px; font-weight:700; line-height:1; display:flex; align-items:center; justify-content:center; border-radius:9px; clip-path:polygon(2px 0, calc(100% - 2px) 0, 100% 2px, 100% calc(100% - 2px), calc(100% - 2px) 100%, 2px 100%, 0 calc(100% - 2px), 0 2px); }
 .kl-hearts { font-size:12px; color:#ff5c7a; letter-spacing:1px; white-space:nowrap; }
-.kl-empty { padding:24px 14px; font-size:14px; color:#8a8f98; }
+.kl-empty-go { display:inline-block; margin-top:12px; padding:10px 18px; background:#fee500; color:#1f1a00; text-decoration:none; border-radius:999px; font-size:14px; font-weight:600; }
+.kl-empty { padding:44px 14px; font-size:14px; color:#8a8f98; text-align:center; line-height:1.7; }
 .kl-warn { background:#fff8d6; color:#5a4a00; font-size:13px; padding:10px 16px; }
 `;

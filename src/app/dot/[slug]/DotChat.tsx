@@ -186,6 +186,30 @@ export default function DotChat({
     if (res.ok) { setLines([]); setToast("대화를 지웠어요"); }
     else setToast("지우지 못했어요");
   }
+  /**
+   * **대화방 나가기** (227회차 09-29, 사장님 *"나가기 버튼 있어 대화방 나가기"*).
+   *
+   * 나가기는 **지우기가 아니다.** 방 목록에서 내려갈 뿐 대화와 친밀도는 그대로 남는다 —
+   * 다시 추가하면 이어서 이야기한다. 인스타 언팔로우와 같은 결이고,
+   * 되돌릴 수 없는 쪽(대화 내용 지우기)은 위에 따로 있다.
+   */
+  async function 나가기() {
+    setMenu(false);
+    if (!window.confirm(`${who.name} 님과의 방에서 나갈까요?
+대화와 친밀도는 남아 있어서, 다시 추가하면 이어집니다.`)) return;
+    try {
+      const res = await fetch("/api/dot/follow", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ characterId: who.id, follow: false }),
+      });
+      // 못 나갔으면 **그대로 둔다.** 조용히 목록으로 보내면 나간 줄 알았다가 다시 보인다.
+      if (!res.ok) { setToast("나가지 못했어요"); return; }
+      window.location.href = "/dot/chats";
+    } catch {
+      setToast("나가지 못했어요");
+    }
+  }
   const endRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => { endRef.current?.scrollIntoView({ behavior: "smooth" }); }, [lines, busy]);
@@ -319,6 +343,12 @@ export default function DotChat({
             {/* 아동 안전 신고 — Play 아동 안전 표준의 "앱 내 신고" (09-12). 이 방에 대한 신고라 여기 남긴다. */}
             <a href={`mailto:az51826295@gmail.com?subject=${encodeURIComponent("두근도트 신고: " + who.name)}&body=${encodeURIComponent("어떤 문제인지 적어 주세요. 아동 안전 관련이면 24시간 안에 확인합니다.")}`}>신고하기<small>부적절한 내용·아동 안전 우려</small></a>
             <button onClick={() => { setMenu(false); setGuide(true); }}>도움말<small>이 방의 단추들</small></button>
+            {/*
+              09-29: [[kakao-placement-rule]] 은 방 메뉴를 여섯 줄 이하로 두라고 했는데 이게 일곱 번째다.
+              그래도 여기 둔다 — 사장님이 **방 안에** 나가기를 두라고 하셨고, 나가기는 그 방 것이다.
+              헷갈릴 자리라 위의 "지우기" 와 말을 분명히 갈라 뒀다: 나가기는 남고, 지우기는 없앤다.
+            */}
+            <button onClick={나가기} className="danger">나가기<small>방 목록에서 내려요 · 대화는 남아요</small></button>
             {/* 95회차 사장님 "몰아놓지 말고 분산": 계정·약관·계정 삭제는 친구 탭 ⚙ 설정으로, 채팅 목록·피드는 뒤로 가기와 아래 탭으로. */}
           </div>
         )}

@@ -3,6 +3,7 @@ import { createServiceClient } from "@/lib/supabase/service";
 import Link from "next/link";
 import DotTabs from "../DotTabs";
 import FeedCard, { type FeedPost } from "./FeedCard";
+import { ensureStarter } from "@/lib/dot/starter";
 
 /**
  * 피드 — 캐릭터들이 올린 게시물 (78회차 09-11, 사장님 "카톡 벤치마킹: 캐릭터들이 도트 게시물을 올리고 팔로우하고 채팅").
@@ -24,6 +25,9 @@ export default async function DotFeed({ searchParams }: { searchParams: Promise<
   // 팔로우 — 기본은 팔로잉한 캐릭터만. 아무도 안 하면 전체를 보여 주고 "팔로우하면 여기 모여요".
   let follows = new Set<string>();
   if (user) {
+    // 227회차 09-29: 처음 온 사람에게는 기본 캐릭터 **한 명**만 넣어 준다(사장님 방식 바꾸기).
+    // 첫 화면이 피드이므로 여기가 그 자리다. 쓰던 사람은 아무 일도 안 일어난다.
+    await ensureStarter(user.id);
     const { data: f } = await db.from("dot_follows").select("character_id").eq("user_id", user.id);
     follows = new Set(((f ?? []) as { character_id: string }[]).map((x) => x.character_id));
   }

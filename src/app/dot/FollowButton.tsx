@@ -1,8 +1,13 @@
 "use client";
 import { useState } from "react";
 
-/** 팔로우/팔로잉 단추 — 프로필·피드·친구 목록이 같이 쓴다(83회차). */
-export default function FollowButton({ characterId, following: f0, name, size = "md" }: { characterId: string; following: boolean; name?: string; size?: "sm" | "md" }) {
+/**
+ * 팔로우/팔로잉 단추 — 프로필·피드·검색이 같이 쓴다(83회차).
+ *
+ * 227회차 09-29: 사장님이 *"마음에들면 추가하는거야"* 라고 하셔서 **글자를 고를 수 있게** 했다.
+ * 피드·프로필은 인스타 그대로 "팔로우", 검색은 사장님 말 그대로 "추가". 하는 일은 같다.
+ */
+export default function FollowButton({ characterId, following: f0, name, size = "md", words = ["팔로우", "팔로잉"] }: { characterId: string; following: boolean; name?: string; size?: "sm" | "md"; words?: [string, string] }) {
   const [following, setFollowing] = useState(f0);
   const [busy, setBusy] = useState(false);
   async function toggle() {
@@ -14,9 +19,9 @@ export default function FollowButton({ characterId, following: f0, name, size = 
     } catch { setFollowing(!next); } finally { setBusy(false); }
   }
   return (
-    <button className={`fb ${size}${following ? " on" : ""}`} onClick={toggle} disabled={busy} aria-pressed={following} aria-label={`${name ?? ""} ${following ? "팔로잉" : "팔로우"}`}>
+    <button className={`fb ${size}${following ? " on" : ""}`} onClick={toggle} disabled={busy} aria-pressed={following} aria-label={`${name ?? ""} ${following ? words[1] : words[0]}`}>
       <style>{CSS}</style>
-      {following ? "팔로잉" : "팔로우"}
+      {following ? words[1] : words[0]}
     </button>
   );
 }
