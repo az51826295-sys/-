@@ -24,7 +24,21 @@ const { createServiceClient } = await import("../../src/lib/supabase/service");
 const arg = (k: string) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : undefined; };
 const NL = String.fromCharCode(10);
 const DRY = process.argv.includes("--dry"), AUTO = process.argv.includes("--auto");
-const SCOPE = ["src/lib/skills", "src/lib/providers", "src/lib/execution", "src/lib/chat", "src/lib/genesis", "engine/tools"];
+/**
+ * 손닿는 범위. **넓힐 때는 닿는 곳을 먼저 센다**([[rule-blast-radius]]).
+ *
+ * 226회차 09-28 사장님: *"로키한테 두근도트 업데이트 맡겨봐."* 그래서 `src/lib/dot` 을 더한다.
+ * **두근도트는 사장님 손님이 쓰는 앱이다**(11명이 534번 대화했다) — 여기가 지금까지의 범위와 다르다.
+ * 앞의 것들은 회사 안에서만 도는 코드였다.
+ *
+ * 그래도 넓히는 이유: 자가 고침은 **로컬 커밋까지만** 하고 배포는 사람 손이다. 사람이 보기 전에는
+ * 손님에게 안 간다. 그 난간이 없었으면 안 넓혔다.
+ *
+ * **화면(`src/app/dot`)은 아직 안 넣는다.** 눈에 바로 보이는 것이고, 지금 우리 자는 화면을
+ * 잘 못 잰다(09-16 화면 심판자가 고장의 40~45% 만 잡았다). 로직부터 맡기고 화면은 재는 자가
+ * 생긴 뒤에 연다.
+ */
+const SCOPE = ["src/lib/skills", "src/lib/providers", "src/lib/execution", "src/lib/chat", "src/lib/genesis", "src/lib/dot", "engine/tools"];
 const CO = account().companyId;   // 222회차: 개발 계정
 const t0 = Date.now();
 const git = (...a: string[]) => execFileSync("git", a, { encoding: "utf8" }).trim();
