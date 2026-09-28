@@ -20,7 +20,8 @@
 const RUN = process.argv.includes("--run");
 const 개수 = Number(process.argv.find((a) => /^\d+$/.test(a))) || 2;
 
-const { tripoKey, makeTripoMeshFromImage } = await import("../../src/lib/providers/tripo");
+const { falKey, falRun } = await import("../../src/lib/providers/fal");
+const { MESH3D } = await import("../../src/lib/providers/mesh3dRegistry");
 const { createServiceClient } = await import("../../src/lib/supabase/service");
 const { defaultMeshProvider } = await import("../../src/lib/providers/meshy");
 
@@ -46,8 +47,8 @@ for (const d of (지난 ?? []) as { content_json: Record<string, unknown> | null
   if (그림들.length >= 개수) break;
 }
 
-const 키 = tripoKey();
-console.log(`Tripo 키: ${키 ? "있다" : "**없다**"} · 빌린 콘셉트 그림 ${그림들.length}장`);
+const 키 = falKey();
+console.log(`fal 키: ${키 ? "있다" : "**없다**"} · 빌린 콘셉트 그림 ${그림들.length}장`);
 if (!그림들.length) {
   console.log("지난 3D 결과물에서 콘셉트 그림을 못 찾았다 — 그림 없이는 같은 입력으로 못 견준다.");
   process.exit(0);
@@ -69,15 +70,32 @@ type 판 = { 손: string; 주문: string; 초: number | null; 크레딧: number 
 const 판들: 판[] = [];
 const mesh = defaultMeshProvider();
 
+/**
+ * **fal 은 `image_url` 에 data URL 을 바로 받는다.** 처음엔 파일을 올려 주소를 받으려 했는데
+ * 그 주소가 404 였다(`rest.alpha.fal.ai/storage/upload`). 올리기를 건너뛰면 그 길이 아예 없어진다 —
+ * 고칠 것을 줄이는 쪽을 고른다.
+ */
+const 올리기 = async (dataUrl: string): Promise<string> => dataUrl;
+
+// 재는 손: 등록부에서 **그림을 받는 fal 손**만 고른다. 등록부에 한 줄 더하면 여기도 저절로 는다.
+const fal손 = MESH3D.filter((h) => h.문 === "fal" && h.모델 && h.입력.includes("그림"));
+console.log(`fal 손 ${fal손.length}개: ${fal손.map((h) => h.이름).join(" · ")}`);
+
 for (const { 그림, 무엇: p } of 그림들) {
-  // ── Tripo ──
-  try {
-    const r = await makeTripoMeshFromImage(그림, { lowPoly: true, texture: true });
-    let 받아짐 = false;
-    if (r.glbUrl) { try { 받아짐 = (await fetch(r.glbUrl, { method: "HEAD" })).ok; } catch { 받아짐 = false; } }
-    판들.push({ 손: "tripo", 주문: p, 초: r.ms / 1000, 크레딧: r.consumedCredits, 받아짐 });
-  } catch (e) {
-    판들.push({ 손: "tripo", 주문: p, 초: null, 크레딧: null, 받아짐: false, 왜: e instanceof Error ? e.message.slice(0, 90) : String(e) });
+  let 주소 = "";
+  try { 주소 = await 올리기(그림); } catch (e) { console.log(`그림 올리기 실패: ${e instanceof Error ? e.message : e}`); }
+  for (const h of fal손) {
+    if (!주소) { 판들.push({ 손: h.id, 주문: p, 초: null, 크레딧: null, 받아짐: false, 왜: "그림을 못 올렸다" }); continue; }
+    try {
+      const r = await falRun(h.모델!, { image_url: 주소 });
+      const o = r.out as Record<string, any>;
+      const url = o?.model_mesh?.url ?? o?.model_glb?.url ?? o?.mesh?.url ?? o?.model?.url ?? null;
+      let 받아짐 = false;
+      if (url) { try { 받아짐 = (await fetch(url, { method: "HEAD" })).ok; } catch { 받아짐 = false; } }
+      판들.push({ 손: h.id, 주문: p, 초: r.ms / 1000, 크레딧: null, 받아짐, 왜: url ? undefined : `파일 칸을 못 찾았다: ${Object.keys(o ?? {}).slice(0, 6).join(",")}` });
+    } catch (e) {
+      판들.push({ 손: h.id, 주문: p, 초: null, 크레딧: null, 받아짐: false, 왜: e instanceof Error ? e.message.slice(0, 90) : String(e) });
+    }
   }
   // ── Meshy ──
   const t0 = Date.now();

@@ -57,12 +57,16 @@ export const MESH3D: Mesh3dHand[] = [
   // ── fal 을 거치는 손들: 열쇠 하나(FAL_KEY)로 전부 열린다 ──
   // 모델 id 는 fal 문서에서 확인한 뒤 채운다. **지금은 비워 둔다** —
   // 확인 안 한 id 를 적으면 "있는 줄 알았는데 없는" 것이 된다(오늘 그 종류를 열한 번 겪었다).
-  { id: "fal-tripo", 이름: "Tripo (fal)", 문: "fal", 모델: "", 열쇠: "FAL_KEY", 입력: ["그림", "글", "여러장"] },
-  { id: "fal-rodin", 이름: "Rodin (fal)", 문: "fal", 모델: "", 열쇠: "FAL_KEY", 입력: ["그림", "글"],
+  // 09-28: fal 문서에서 확인한 id 다(짐작이 아니다). `fal-ai/` 접두가 **없는** 것에 주의.
+  { id: "fal-tripo", 이름: "Tripo v2.5 (fal)", 문: "fal", 모델: "tripo3d/tripo/v2.5/image-to-3d", 열쇠: "FAL_KEY", 입력: ["그림"] },
+  { id: "fal-rodin", 이름: "Rodin (fal)", 문: "fal", 모델: "fal-ai/hyper3d/rodin", 열쇠: "FAL_KEY", 입력: ["그림", "글"],
     들은값: "로우 37초 · 익스트림로우 39초 (09-28 영상 분석) · 직접 API 는 월 $120 이라 fal 로만 닿는다" },
+  // 09-28: `hunyuan-3d/v3.1/rapid/image-to-3d` 로 적었다가 **404 "Application v3.1 not found"** —
+  // 검색 결과를 보고 적었지 문서에서 확인하지 않았다. **확인 안 한 id 는 비운다**(내가 적어 놓고 어겼다).
   { id: "fal-hunyuan", 이름: "Hunyuan 3D (fal)", 문: "fal", 모델: "", 열쇠: "FAL_KEY", 입력: ["그림"],
     들은값: "기본 약 2분 10초 · 로우폴리까지 5~6분 (09-28 영상 분석)" },
-  { id: "fal-trellis", 이름: "Trellis 2 (fal)", 문: "fal", 모델: "", 열쇠: "FAL_KEY", 입력: ["그림"] },
+  // Trellis 도 같은 이유로 비운다 — `trellis/multi` 는 검색에서 본 것이고 확인 전이다.
+  { id: "fal-trellis", 이름: "Trellis (fal)", 문: "fal", 모델: "", 열쇠: "FAL_KEY", 입력: ["여러장"] },
 ];
 
 /** 지금 열쇠가 있어 실제로 쓸 수 있는 손만. 없는 것을 있다고 말하지 않는다. */
