@@ -9,7 +9,7 @@
  */
 import fs from "node:fs";
 import { createImageProvider } from "../../src/lib/providers/images";
-import { sheetPrompt, cutSheet, cleanSprite, SHEET_ORDER } from "../../src/lib/dot/sprites";
+import { sheetPrompt, cutSheet, cleanSprite, SHEET_ORDER, 색으로가를수있나 } from "../../src/lib/dot/sprites";
 import { createClient } from "@supabase/supabase-js";
 
 const slug = process.argv[2] ?? "yuna";
@@ -31,6 +31,18 @@ console.log(`그렸다 ${((Date.now()-t0)/1000).toFixed(0)}초 · ${made.model}`
 const out = `C:/Users/az518/Desktop/도트-${slug}-새판`;
 fs.mkdirSync(out, { recursive: true });
 fs.writeFileSync(`${out}/_sheet.png`, Buffer.from(made.dataUrl.split(",")[1], "base64"));
+
+// 226회차 09-28 사장님 "색으로 구분해라": **색으로 못 가르는 시트는 쓰지 않는다.**
+// 지금까지는 마젠타가 아니어도 플러드 필로 어물쩍 넘어가 지저분한 판이 통과했다.
+// 재 보니 마젠타 판은 섞인 띠 0.41% 인데 갈색 질감 판은 21.20% 였다 — 재료가 나쁜 것이다.
+const 시트버퍼 = Buffer.from(made.dataUrl.split(",")[1], "base64");
+const 가를수 = await 색으로가를수있나(시트버퍼);
+console.log(`색 가르기: ${가를수.가능 ? "된다" : "**안 된다**"} — ${가를수.왜}`);
+if (!가를수.가능) {
+  console.log("이 시트는 안 쓴다. 배경이 평평한 마젠타가 아니면 잘라도 가장자리가 지저분해진다.");
+  console.log("다시 그리려면 같은 명령을 한 번 더 돌린다(그림값이 또 든다).");
+  process.exit(2);
+}
 
 const cells = await cutSheet(made.dataUrl);
 console.log(`잘랐다 ${cells.length}칸`);

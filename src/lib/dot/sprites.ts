@@ -94,6 +94,69 @@ const FILL = 0.9;
  * 비슷한 색(흰 셔츠 등)은 가장자리와 이어지지 않으므로 살아남는다.
  * 이미 투명한 그림은 손대지 않는다.
  */
+/**
+ * **이 시트를 색으로 가를 수 있나** (226회차 09-28, 사장님 "색으로 구분해라").
+ *
+ * 프롬프트는 처음부터 **평평한 마젠타(#FF00FF)** 를 주문한다. 그런데 그림 모델이 안 지키고
+ * 갈색 질감 배경을 그려 올 때가 있고, 그때 색 구분이 무너진다. 재 봤다(같은 인물, 다른 판):
+ *
+ * | 배경 | 배경과 섞인 띠 | 애매한 픽셀 |
+ * |---|---|---|
+ * | 마젠타 252,1,252 | **0.41%** | **0.24%** |
+ * | 갈색 질감 | **21.20%** | **25.04%** |
+ *
+ * 사장님 눈에는 "색이 아예 다른데" 인데, 기계가 보는 숫자로는 갈색 판에서 **절반 가까이가
+ * 어느 쪽인지 정해지지 않는다.** 그래서 못 자른 것이다 — 자르는 법이 나빠서가 아니라 **재료가 나빠서**다.
+ *
+ * 이 함수는 판정하지 않고 **숫자를 준다.** 쓸지 말지는 부르는 쪽이 정한다.
+ */
+export async function 색으로가를수있나(png: Buffer): Promise<{ 마젠타: number; 가장많은색: number; 가능: boolean; 왜: string }> {
+  const { data, info } = await sharp(png).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+  const W = info.width, H = info.height, ch = info.channels;
+  const 전체 = W * H;
+  let 마젠타 = 0, 투명 = 0;
+  const 셈 = new Map<number, number>();
+  for (let p = 0; p < data.length; p += ch) {
+    if (data[p + 3] < 128) { 투명++; continue; }
+    if (data[p] > 170 && data[p + 2] > 120 && data[p + 1] < 110 && (data[p] - data[p + 1]) > 90) 마젠타++;
+    // 색을 조금 뭉개서 센다(안티에일리어싱으로 1~2 씩 흔들리는 것을 같은 색으로).
+    const k = ((data[p] >> 3) << 10) | ((data[p + 1] >> 3) << 5) | (data[p + 2] >> 3);
+    셈.set(k, (셈.get(k) ?? 0) + 1);
+  }
+  const 가장많은색 = Math.max(0, ...셈.values()) / 전체;
+  const m = 마젠타 / 전체;
+
+  // **섞인 띠로 가른다.** 09-28 에 기준을 두 번 잘못 잡았다(투명 5% → 통과, 테두리 깨끗 → 통과).
+  // 둘 다 틀렸다 — 칸 안만 갈색인 판을 통과시켰고, 그림이 테두리에 닿는 멀쩡한 마젠타 판을 떨어뜨렸다.
+  //
+  // 실제로 설명력이 있었던 숫자는 **배경과 그림 사이에 섞인 픽셀 비율**이다(같은 인물, 다른 판):
+  //   마젠타 판 0.41% · 갈색 질감 판 21.20%
+  // 마젠타는 옷·머리·살에 없는 색이라 섞인 띠가 거의 없다. 그래서 색으로 갈린다.
+  if (m >= 0.05) return { 마젠타: m, 가장많은색, 가능: true, 왜: `마젠타 배경 ${(m * 100).toFixed(1)}%` };
+
+  // 마젠타가 아니면: 가장 많은 색을 배경 후보로 잡고 그 언저리(30~89)가 얼마나 되는지 본다.
+  let 배경키 = -1, 최다 = 0;
+  for (const [k, n] of 셈) if (n > 최다) { 최다 = n; 배경키 = k; }
+  const br = ((배경키 >> 10) & 31) << 3, bgc = ((배경키 >> 5) & 31) << 3, bb = (배경키 & 31) << 3;
+  let 섞임 = 0, 불투명 = 0;
+  for (let q = 0; q < data.length; q += ch) {
+    if (data[q + 3] < 128) continue;
+    불투명++;
+    const d = Math.abs(data[q] - br) + Math.abs(data[q + 1] - bgc) + Math.abs(data[q + 2] - bb);
+    if (d >= 30 && d < 90) 섞임++;
+  }
+  const 섞인띠 = 불투명 ? 섞임 / 불투명 : 0;
+  if (섞인띠 < 0.05 && 투명 / 전체 >= 0.05) {
+    return { 마젠타: m, 가장많은색, 가능: true, 왜: `배경이 이미 지워졌고 섞인 띠 ${(섞인띠 * 100).toFixed(1)}%` };
+  }
+  return {
+    마젠타: m,
+    가장많은색,
+    가능: false,
+    왜: `마젠타가 ${(m * 100).toFixed(1)}% 뿐이고 **배경과 섞인 띠가 ${(섞인띠 * 100).toFixed(1)}%** 다 — 색으로 못 가른다`,
+  };
+}
+
 async function keyOutBackground(png: Buffer): Promise<Buffer> {
   const { data, info } = await sharp(png).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
   const W = info.width, H = info.height, ch = info.channels;
