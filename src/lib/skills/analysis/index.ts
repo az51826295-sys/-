@@ -220,7 +220,18 @@ export const analysisSkill: EmployeeSkill = {
 
   async run(ctx: SkillRunContext) {
     const ask = `${ctx.context.assignment.title}\n${ctx.context.assignment.description ?? ""}`;
-    const urls = Array.from(new Set((ask.match(URL_RE) ?? []).map((u) => u.replace(/[.,)]+$/, "")))).slice(0, 4);
+    // 226회차 09-28: 여기가 **분석 출처의 벽**이었다. 사장님이 링크를 몇 개 적어도 4개만 읽었고,
+    // 한계표의 "출처 최대 3" 은 그 아래에서 멈춘 흔적이었다(벽이 둘이었다 — 주문 3 · 코드 4).
+    //
+    // 8로 올린다. **값이 출처 수에 비례해 오르므로** 상한을 없애지는 않는다 —
+    // 하나당 자막/글을 12만 자까지 읽고 그것이 다 프롬프트에 들어간다.
+    // 상한에 걸려 잘린 링크는 **말해 준다**(조용히 버리면 사장님은 6개를 줬는데 4개만 읽힌 걸 모른다).
+    const MAX_SOURCES = 8;
+    const 모든링크 = Array.from(new Set((ask.match(URL_RE) ?? []).map((u) => u.replace(/[.,)]+$/, ""))));
+    const urls = 모든링크.slice(0, MAX_SOURCES);
+    if (모든링크.length > MAX_SOURCES) {
+      console.warn(`[analysis] 링크 ${모든링크.length}개 중 앞 ${MAX_SOURCES}개만 읽는다 — 버린 것: ${모든링크.slice(MAX_SOURCES).join(" ")}`);
+    }
     if (!urls.length) throw new ExecutionError("CONTEXT_INCOMPLETE", "분석할 링크가 없다. 유튜브나 글 주소를 하나 이상 적어야 한다.");
 
     // ── 1. 읽는다 (단계 저장: 죽어도 다시 안 받는다) ──
@@ -283,6 +294,11 @@ export const analysisSkill: EmployeeSkill = {
     const markdown = render(out, sources, verdict);
     const content = {
       sources: sources.map(({ url, kind, title, durationSec, pages, chars }) => ({ url, kind, title, durationSec, pages, chars })),
+      // 09-28: 상한(8개)에 걸려 **안 읽은 링크를 결과물에 적는다.** 로그에만 남기면 사장님은
+      // 6개를 줬는데 4개만 읽힌 것을 모른다 — 조용히 버리는 것이 오늘 내내 쫓던 고장이다.
+      droppedLinks: 모든링크.length > MAX_SOURCES ? 모든링크.slice(MAX_SOURCES) : null,
+      // 못 읽은 것(자막 없음·404·담벼락)도 센다. 링크를 줬는데 빈손인 것을 사람이 알아야 한다.
+      unreadable: sources.filter((s) => !s.chars).map((s) => s.url),
       claims: out.claims, numbers: out.numbers, forUs: out.forUs, unanswered: out.unanswered,
       // 129회차: 분석의 검사는 **주장 하나에 하나**라 말한 양만큼 늘어난다(근거_N·숫자_N).
       // 합격 문턱(PASS=흠 없음)은 그대로 두고, 맞힌 비율을 같이 싣는다 — 학습 라벨이 '많이 말하면 불리'로 기울지 않게.

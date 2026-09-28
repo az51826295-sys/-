@@ -56,7 +56,9 @@ export const 크기: Record<string, { 이름: string; 값: (c: Record<string, un
     { 이름: "장면", 값: (c) => (Array.isArray(c.durations) ? c.durations.length : null) },
   ],
   analysis: [
-    { 이름: "출처", 값: (c) => (Array.isArray(c.sources) ? c.sources.length : null) },
+    { 이름: "출처", 값: (c) => 배열길이(c.sources) },
+    // 09-28: 못 읽은 링크 수도 본다. 출처 6개를 받아도 넷이 빈손이면 실제로 읽은 것은 둘이다.
+    { 이름: "못 읽은 링크", 값: (c) => 배열길이(c.unreadable) },
     { 이름: "인용", 값: (c) => (Array.isArray(c.claims) ? c.claims.length : null) },
   ],
   // 09-28: **여기서 내 표가 거짓말을 했다.** `clips` 를 "조각" 으로 읽어 "조각 최대 2" 라고 적었는데,
