@@ -4,8 +4,6 @@ import DotTabs from "../DotTabs";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import { publicCharacters } from "@/lib/dot/load";
-import { FREE_TURNS_PER_DAY, todayKST } from "@/lib/dot/bond";
-import { balanceFor } from "@/lib/dot/money";
 
 /**
  * 목록 — **카톡 친구목록.**
@@ -35,11 +33,10 @@ export default async function DotList() {
   // 카톡 목록의 그 두 칸: **마지막 말**과 **그 시각**. 상태 한 줄 대신, 있으면 이게 뜬다.
   const last = new Map<string, { text: string; at: string; mine: boolean }>();
   const unread = new Map<string, number>();
-  let remaining = FREE_TURNS_PER_DAY;
   if (user && characters.length) {
-    const [{ data: bs }, { data: u }, { data: ms }] = await Promise.all([
+    // 09-28: 남은 대화를 안 그리니 `dot_usage` 도 안 읽는다 — 안 쓰는 값을 부르면 왕복만 는다.
+    const [{ data: bs }, { data: ms }] = await Promise.all([
       db.from("dot_bonds").select("character_id, stage, last_seen_at").eq("user_id", user.id),
-      db.from("dot_usage").select("turns").eq("user_id", user.id).eq("day", todayKST()).maybeSingle(),
       db.from("dot_messages").select("character_id, role, content, created_at").eq("user_id", user.id).order("id", { ascending: false }).limit(60),
     ]);
     const seen = new Map<string, string | null>();
@@ -54,7 +51,6 @@ export default async function DotList() {
     for (const m of (ms ?? []) as { character_id: string; role: string; content: string; created_at: string }[]) {
       if (!last.has(m.character_id)) last.set(m.character_id, { text: m.content.replace(/\n+/g, " "), at: m.created_at, mine: m.role === "user" });
     }
-    remaining = (await balanceFor(db, user.id, todayKST())).remaining;
     // 아직 아무와도 이야기한 적이 없으면 **고르기 화면**으로. 이름만 있는 목록은 처음 온 사람에겐 빈 방이다.
     if (bonds.size === 0) redirect("/dot/feed");
   }
@@ -66,7 +62,13 @@ export default async function DotList() {
       <div className="kl-phone">
         <header className="kl-bar">
           <span className="kl-title">두근도트</span>
-          <span className="kl-turns">오늘 남은 대화 {remaining}/{FREE_TURNS_PER_DAY}</span>
+          {/*
+            226회차 09-28, 사장님 *"오늘 남은 대화는 표시하지말고"*.
+            베타 테스터를 받는 참이다. 방 목록 맨 위에 늘 붙어 있는 "오늘 남은 대화 12/15" 는
+            들어오자마자 **미터기부터 보여 주는 것**이다 — 처음 온 사람에게 먼저 보일 것이 아니다.
+            숫자를 아예 없애지는 않았다: 다 쓰면 그때 카드가 뜨고, 얼굴을 누르면 잔고가 보인다
+            (DotChat.tsx 의 "지금 남은 대화 N번" — 그건 사람이 **눌러서** 보는 자리다).
+          */}
         </header>
 
         <div className="kl-list">
@@ -124,7 +126,6 @@ const CSS = `
 .kl-phone { width:100%; max-width:430px; height:100dvh; max-height:940px; background:#fff; display:flex; flex-direction:column; overflow:hidden; }
 .kl-bar { display:flex; align-items:baseline; gap:8px; padding:18px 20px 12px; }
 .kl-title { flex:1; font-size:24px; font-weight:700; letter-spacing:-.4px; color:#111; }
-.kl-turns { font-size:12px; color:#8a8f98; }
 .kl-list { flex:1; min-height:0; overflow-y:auto; padding:4px 8px; }
 .kl-item { display:flex; align-items:center; gap:14px; padding:12px 12px; border-radius:16px; text-decoration:none; color:#111; }
 .kl-item:active { background:#f2f4f7; }

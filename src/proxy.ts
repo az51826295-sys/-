@@ -58,7 +58,10 @@ export async function proxy(request: NextRequest) {
   }
 
   // 도트 화면은 로그인부터(API 는 스스로 401 을 낸다). 개인정보 처리방침은 스토어 심사가 로그인 없이 봐야 하니 연다.
-  const isDotPage = (path === "/dot" || path.startsWith("/dot/")) && path !== "/dot/privacy" && path !== "/dot/delete-account" && path !== "/dot/child-safety";
+  // 226회차 09-28: 줄줄이 `!==` 에 네 번째를 붙이려다 목록으로 바꾼다 — 다음에 또 는다.
+  // `/dot/beta` 는 인스타 모집 글이 보내는 곳이다. 아직 계정이 없는 사람이 오므로 로그인을 물으면 안 된다.
+  const 로그인없이열림 = new Set(["/dot/privacy", "/dot/delete-account", "/dot/child-safety", "/dot/beta"]);
+  const isDotPage = (path === "/dot" || path.startsWith("/dot/")) && !로그인없이열림.has(path);
   const res = await updateSession(request, { requireLogin: isDotPage && PRODUCT !== "rookery" });
 
   // 100회차: 안드로이드 앱(TWA)으로 들어왔는지 표시한다. 구글 플레이 정책상 앱 안에서는 디지털 상품을 우리 결제로 못 판다 →
