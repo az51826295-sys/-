@@ -73,10 +73,14 @@ async function readViaInnertube(id: string): Promise<{ segs: Seg[]; lang: string
       const pick = tracks.find((t) => t.language_code === "en") ?? tracks.find((t) => t.language_code === "ko") ?? tracks[0];
       // 막히면(429·403) **조금 쉬고 한 번 더.** 09-28 에 서버가 링크 4개 중 첫 영상만 읽었다 —
       // 잇단 요청이 막힌 모양이다. 던지지 않고 한 번만 다시 한다(더 하면 느려지고 더 막힌다).
+      // **막히는 것은 429 다** — 09-28 에 내 노트북에서 다섯 영상을 연달아 확인하니 바로 429 가 났다.
+      // 서버만의 문제가 아니라 **요청 빈도** 문제다. 그래서 점점 더 기다린다(5초 → 15초, 두 번까지).
+      // 더 늘리지 않는 이유: 자료 다섯이면 최악 1분 반이 늘고, 그보다 기다리면 업무가 느려진다.
       let r = await fetch(pick.base_url + "&fmt=json3");
-      if (!r.ok) {
-        console.warn(`[analysis] 자막 받기 실패 HTTP ${r.status} — 2초 쉬고 한 번 더`);
-        await new Promise((res) => setTimeout(res, 2000));
+      for (const 쉼 of [5000, 15000]) {
+        if (r.ok) break;
+        console.warn(`[analysis] 자막 받기 막힘 HTTP ${r.status} — ${쉼 / 1000}초 쉬고 다시`);
+        await new Promise((res) => setTimeout(res, 쉼));
         r = await fetch(pick.base_url + "&fmt=json3");
       }
       if (!r.ok) continue;
