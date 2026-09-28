@@ -40,6 +40,15 @@ const 속 = (c: Record<string, unknown>, a: string, b: string): unknown =>
 export const 크기: Record<string, { 이름: string; 값: (c: Record<string, unknown>) => number | null }[]> = {
   app_build: [
     { 이름: "파일", 값: (c) => (Array.isArray(c.files) ? c.files.length : null) },
+    // 09-28: 리포트에 "고침 바퀴: 읽을 수 있는 줄이 없다" 로 남아 있었다. **칸은 있었다** —
+    // `loop.rounds` 가 **배열**인데 내가 숫자로 읽었다(`Number([])` = 0 → null).
+    // 그걸 파다가 `stoppedBy: "no_run"` 을 보고 "돌려 보지도 않는다" 고 과하게 놀랐는데,
+    // 세어 보니 200판 중 83판이 실제로 돌았고 no_run 은 13판(6.5%)이었다.
+    // **놀라기 전에 세는 것이 먼저다.**
+    { 이름: "고침 바퀴", 값: (c) => 배열길이(속(c, "loop", "rounds")) },
+    // 09-28: 크기 읽는 법을 여기 한 곳으로 모을 때 **리포트에만 있던 이 자를 잃었다**(최대 189).
+    // 한 곳으로 모으는 것은 맞지만, 옮길 때 **양쪽 목록을 대 봐야** 조용히 빠지지 않는다.
+    { 이름: "확인 항목", 값: (c) => 배열길이(c.criteria) },
     { 이름: "코드 글자", 값: (c) => (Array.isArray(c.files) ? (c.files as { contents?: string }[]).reduce((s, f) => s + (f.contents?.length ?? 0), 0) || null : null) },
   ],
   video: [
