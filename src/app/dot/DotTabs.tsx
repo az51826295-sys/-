@@ -15,15 +15,18 @@ const ICON: Record<string, string> = {
   chats: "M1 1h6v1h1v3h-1v1h-3l-2 2v-2h-1v-1h-1v-3h1z",
   // 사진(액자 + 산)
   feed: "M0 1h8v6h-8zM1 2v4h6v-4zM2 5l1-2 1 1 1-2 1 3z",
+  // 사람(내 창) — 09-29 사장님 "자신의 창도 있어야지". 인스타처럼 **맨 오른쪽**이다.
+  me: "M3 0h2v1h1v2h-1v1h-2v-1h-1v-2h1zM1 5h6v1h1v2h-8v-2h1z",
 };
 
 import Link from "next/link";
 
-export default function DotTabs({ on }: { on: "search" | "chats" | "feed" }) {
+export default function DotTabs({ on }: { on: "search" | "chats" | "feed" | "me" }) {
   const tabs = [
     { key: "feed", href: "/dot/feed", label: "피드" },
     { key: "search", href: "/dot/search", label: "검색" },
     { key: "chats", href: "/dot/chats", label: "채팅" },
+    { key: "me", href: "/dot/me", label: "내 창" },
   ] as const;
   return (
     <nav className="dt-tabs" aria-label="아래 탭">
