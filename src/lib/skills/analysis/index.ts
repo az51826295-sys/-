@@ -56,14 +56,29 @@ type Seg = { text: string; offset: number; duration: number };
  */
 async function readViaInnertube(id: string): Promise<{ segs: Seg[]; lang: string; via: string } | null> {
   YtLog.setLevel(YtLog.Level.NONE);
-  for (const client of [ClientType.ANDROID, ClientType.IOS]) {
+  // 226회차 09-28: **IOS 를 먼저 쓴다.** ANDROID 는 자막을 XML 로 돌려줘 `fmt=json3` 파싱이
+  // **매 영상마다 반드시** 깨진다(`Unexpected token '<'`). 다섯 영상을 재 봤더니 다섯 다 그랬고,
+  // 다섯 다 IOS 로는 읽혔다. 순서만 바꿔도 **헛된 요청이 영상마다 하나씩 줄고**,
+  // 요청이 줄면 유튜브가 막을 여지도 줄어든다.
+  //
+  // 왜 이걸 고치나: 서버에서 링크 4개를 붙였는데 **첫 영상만 읽히고 셋이 0자**였다.
+  // 내 노트북에서는 다섯 다 읽혔다 — 즉 코드가 아니라 **잇단 요청이 막힌 것**으로 보인다.
+  // 그래서 (1) 헛요청을 없애고 (2) 아래에서 실패하면 조금 쉬고 한 번 더 한다.
+  for (const client of [ClientType.IOS, ClientType.ANDROID]) {
     try {
       const yt = await Innertube.create({ client_type: client });
       const info = await yt.getBasicInfo(id, { client: client === ClientType.ANDROID ? "ANDROID" : "IOS" });
       const tracks = (info.captions?.caption_tracks ?? []) as { language_code: string; base_url: string; kind?: string }[];
       if (!tracks.length) continue;
       const pick = tracks.find((t) => t.language_code === "en") ?? tracks.find((t) => t.language_code === "ko") ?? tracks[0];
-      const r = await fetch(pick.base_url + "&fmt=json3");
+      // 막히면(429·403) **조금 쉬고 한 번 더.** 09-28 에 서버가 링크 4개 중 첫 영상만 읽었다 —
+      // 잇단 요청이 막힌 모양이다. 던지지 않고 한 번만 다시 한다(더 하면 느려지고 더 막힌다).
+      let r = await fetch(pick.base_url + "&fmt=json3");
+      if (!r.ok) {
+        console.warn(`[analysis] 자막 받기 실패 HTTP ${r.status} — 2초 쉬고 한 번 더`);
+        await new Promise((res) => setTimeout(res, 2000));
+        r = await fetch(pick.base_url + "&fmt=json3");
+      }
       if (!r.ok) continue;
       const j = (await r.json()) as { events?: { tStartMs: number; dDurationMs?: number; segs?: { utf8: string }[] }[] };
       const segs: Seg[] = (j.events ?? [])
@@ -238,7 +253,10 @@ export const analysisSkill: EmployeeSkill = {
     await setStep(ctx.supabase, ctx.executionId, "planning");
     const sources = await step(ctx.supabase, ctx.executionId, "read", async () => {
       const out: Source[] = [];
-      for (const url of urls) {
+      for (const [i, url] of urls.entries()) {
+        // 09-28: 자료끼리 **조금 띄운다.** 서버에서 잇달아 자막을 받으니 첫 것만 되고 나머지가
+        // 0자로 들어왔다(내 노트북에서는 다섯 다 읽혔다). 1초는 사람이 못 느끼고 막힐 여지는 준다.
+        if (i > 0) await new Promise((res) => setTimeout(res, 1000));
         const yt = YT_RE.exec(url);
         try {
           const s = yt ? await readYoutube(url, yt[1]) : isPdfUrl(url) ? await readPdf(url) : await readWeb(url);
