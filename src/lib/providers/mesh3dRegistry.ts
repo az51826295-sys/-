@@ -61,13 +61,26 @@ export const MESH3D: Mesh3dHand[] = [
   { id: "fal-tripo", 이름: "Tripo v2.5 (fal)", 문: "fal", 모델: "tripo3d/tripo/v2.5/image-to-3d", 열쇠: "FAL_KEY", 입력: ["그림"] },
   { id: "fal-rodin", 이름: "Rodin (fal)", 문: "fal", 모델: "fal-ai/hyper3d/rodin", 열쇠: "FAL_KEY", 입력: ["그림", "글"],
     들은값: "로우 37초 · 익스트림로우 39초 (09-28 영상 분석) · 직접 API 는 월 $120 이라 fal 로만 닿는다" },
-  // 09-28: `hunyuan-3d/v3.1/rapid/image-to-3d` 로 적었다가 **404 "Application v3.1 not found"** —
-  // 검색 결과를 보고 적었지 문서에서 확인하지 않았다. **확인 안 한 id 는 비운다**(내가 적어 놓고 어겼다).
-  { id: "fal-hunyuan", 이름: "Hunyuan 3D (fal)", 문: "fal", 모델: "", 열쇠: "FAL_KEY", 입력: ["그림"],
+  // 09-28: `hunyuan-3d/v3.1/rapid/image-to-3d` 가 **404** 라서 "없는 id" 로 보고 비워 뒀는데,
+  // fal 자기 목록(`fal.ai/api/models?keywords=`)을 받아 보니 **있었다.** 틀린 것은 이름이 아니라
+  // **`fal-ai/` 접두가 빠진 것**이었다. 404 를 "그건 없다" 로 읽었다 — 404 는 "그 주소엔 없다" 일 뿐이다.
+  // 아래 id 는 전부 그 목록에서 그대로 옮긴 것이다(짐작 아님).
+  { id: "fal-hunyuan", 이름: "Hunyuan 3D v3.1 rapid (fal)", 문: "fal", 모델: "fal-ai/hunyuan-3d/v3.1/rapid/image-to-3d", 열쇠: "FAL_KEY", 입력: ["그림"],
     들은값: "기본 약 2분 10초 · 로우폴리까지 5~6분 (09-28 영상 분석)" },
-  // Trellis 도 같은 이유로 비운다 — `trellis/multi` 는 검색에서 본 것이고 확인 전이다.
-  { id: "fal-trellis", 이름: "Trellis (fal)", 문: "fal", 모델: "", 열쇠: "FAL_KEY", 입력: ["여러장"] },
+  { id: "fal-trellis", 이름: "Trellis (fal)", 문: "fal", 모델: "fal-ai/trellis", 열쇠: "FAL_KEY", 입력: ["그림"] },
+  { id: "fal-trellis-multi", 이름: "Trellis 여러장 (fal)", 문: "fal", 모델: "fal-ai/trellis/multi", 열쇠: "FAL_KEY", 입력: ["여러장"] },
 ];
+
+/**
+ * **그림→3D 가 아닌 손들.** 견줄 대상이 아니라서 위 표에 안 넣지만, 있는 줄도 모르면 못 쓴다
+ * ([[idle-power-already-paid-for]] — 한 열쇠로 61개가 열리는데 셋만 부르고 있었다).
+ * 값·속도는 아직 안 쟀다 — **쓰기 전에 잰다.**
+ */
+export const MESH3D_기타 = [
+  { id: "fal-hunyuan-part", 모델: "fal-ai/hunyuan-3d/v3.1/part", 무엇: "3D 를 **조각으로 가른다**(3d-to-3d)" },
+  { id: "fal-hunyuan-topo", 모델: "fal-ai/hunyuan-3d/v3.1/smart-topology", 무엇: "면을 다시 짠다(리토폴로지)" },
+  { id: "fal-trellis-retex", 모델: "fal-ai/trellis-2/retexture", 무엇: "모양 두고 **다시 칠한다**" },
+] as const;
 
 /** 지금 열쇠가 있어 실제로 쓸 수 있는 손만. 없는 것을 있다고 말하지 않는다. */
 export function 쓸수있는손(): Mesh3dHand[] {
