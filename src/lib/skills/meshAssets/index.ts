@@ -661,6 +661,15 @@ export const meshAssetsSkill: EmployeeSkill = {
       // 이 판이 나눈 것이 있으면 그것을, 없으면 **물려받은 나머지**를 그대로 넘긴다.
       pendingPieces: pieces.length > 1 ? pieces.slice(1) : (roleInput.pendingPieces?.length ? roleInput.pendingPieces : null),
       splitWhy: pieces.length > 1 ? split.왜 : null,
+      // 226회차 09-28: **나눈 조각 수가 장부에 안 남고 있었다.** `pendingPieces` 는 *남은* 것이라
+      // 하나씩 지워지므로, 사슬이 끝나면 "몇 조각으로 나눴나" 를 아무도 모른다.
+      // 그래서 한계표가 `clips`(애니메이션 동작 클립)를 조각으로 잘못 읽어 **틀린 숫자**를 말했다.
+      // 총 조각 수와 이 판이 몇 번째인지를 남긴다 — 이제 "조각 최대 N" 을 사실로 말할 수 있다.
+      // **나눈 판만 총 개수를 안다.** 물려받은 판에서 `남은 수 + 1` 로 세면 그건 총 개수가 아니라
+      // 남은 개수다(4조각 중 2번째면 3이 나온다) — 그래서 물려받은 판에서는 **적지 않는다.**
+      // 틀린 숫자를 적는 것이 빈 칸보다 나쁘다. 한계표는 나눈 판들의 최대값을 읽으면 된다.
+      pieceCount: pieces.length > 1 ? pieces.length : null,
+      piecesLeft: Array.isArray(roleInput.pendingPieces) ? roleInput.pendingPieces.length : null,
       retexturedFrom: retex.fallback ? null : (brief.fixKind === "texture" ? previousMeshTaskId : null),
       retexFallback: retex.fallback,
       textureResolution: brief.wantRig ? "4k" : "2k",
