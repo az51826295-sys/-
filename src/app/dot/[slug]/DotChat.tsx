@@ -116,6 +116,27 @@ export default function DotChat({
   const [linkPw, setLinkPw] = useState("");
   const [linkErr, setLinkErr] = useState<string | null>(null);
   const [linkBusy, setLinkBusy] = useState(false);
+  // 구글이 켜져 있나 — 서버에 물어본다. null 은 **아직 모른다**(켜졌다고 넘겨짚지 않는다).
+  const [구글가능, set구글가능] = useState<boolean | null>(null);
+  useEffect(() => {
+    if (!linkOpen || 구글가능 !== null) return;
+    fetch("/api/dot/google")
+      .then((r) => r.json())
+      .then((j: { google?: boolean }) => set구글가능(!!j.google))
+      .catch(() => set구글가능(false));
+  }, [linkOpen, 구글가능]);
+  /** 구글로 붙이기 — 주소를 받아 그리로 보낸다. 오류는 그대로 보여 준다(삼키면 말없이 아무 일도 안 한다). */
+  async function 구글로연결() {
+    setLinkBusy(true); setLinkErr(null);
+    try {
+      const r = await fetch("/api/dot/google", { method: "POST" });
+      const j = (await r.json().catch(() => ({}))) as { url?: string; error?: string };
+      if (j.url) { window.location.href = j.url; return; }
+      setLinkErr(j.error ?? "구글 연결을 못 열었어요.");
+    } catch (e) {
+      setLinkErr(e instanceof Error ? e.message : "구글 연결을 못 열었어요.");
+    } finally { setLinkBusy(false); }
+  }
   async function linkAccount() {
     if (linkBusy) return;
     setLinkBusy(true); setLinkErr(null);
@@ -501,11 +522,27 @@ export default function DotChat({
         <div className="kk-peek" onClick={() => setLinkOpen(false)} role="dialog" aria-label="계정 연결">
           <div className="kk-peek-card kk-link" onClick={(e) => e.stopPropagation()}>
             <div className="kk-peek-name">계정 연결하기</div>
-            <p className="kk-link-help">지금까지의 대화와 친밀도가 이 이메일에 붙어요. 폰을 바꿔도 로그인하면 그대로예요.</p>
-            <input type="email" placeholder="이메일" value={linkEmail} onChange={(e) => setLinkEmail(e.target.value)} autoComplete="email" inputMode="email" />
-            <input type="password" placeholder="비밀번호 (8자 이상)" value={linkPw} onChange={(e) => setLinkPw(e.target.value)} autoComplete="new-password" />
-            {linkErr && <div className="kk-link-err">{linkErr}</div>}
-            <button className="kk-link-go" onClick={linkAccount} disabled={linkBusy || !linkEmail || linkPw.length < 8}>{linkBusy ? "연결하는 중…" : "연결"}</button>
+            {/* 226회차 09-28 사장님 "구글로그인으로 바꿔 회원가입빼고".
+                구글이 켜져 있으면 **구글만** 내민다. 안 켜져 있으면 옛 길(이메일)을 그대로 둔다 —
+                09-28 현재 두근도트 Supabase 에 구글이 꺼져 있고, 이미 이메일로 붙은 사람이 13명이라
+                화면만 바꾸면 **아무도 연결 못 한다.** 켜지는 순간 저절로 바뀐다. */}
+            {구글가능 === null ? (
+              <p className="kk-link-help">잠시만요…</p>
+            ) : 구글가능 ? (
+              <>
+                <p className="kk-link-help">지금까지의 대화와 친밀도가 구글 계정에 붙어요. 폰을 바꿔도 그대로예요.</p>
+                {linkErr && <div className="kk-link-err">{linkErr}</div>}
+                <button className="kk-link-go" onClick={구글로연결} disabled={linkBusy}>{linkBusy ? "여는 중…" : "구글로 계속하기"}</button>
+              </>
+            ) : (
+              <>
+                <p className="kk-link-help">지금까지의 대화와 친밀도가 이 이메일에 붙어요. 폰을 바꿔도 로그인하면 그대로예요.</p>
+                <input type="email" placeholder="이메일" value={linkEmail} onChange={(e) => setLinkEmail(e.target.value)} autoComplete="email" inputMode="email" />
+                <input type="password" placeholder="비밀번호 (8자 이상)" value={linkPw} onChange={(e) => setLinkPw(e.target.value)} autoComplete="new-password" />
+                {linkErr && <div className="kk-link-err">{linkErr}</div>}
+                <button className="kk-link-go" onClick={linkAccount} disabled={linkBusy || !linkEmail || linkPw.length < 8}>{linkBusy ? "연결하는 중…" : "연결"}</button>
+              </>
+            )}
           </div>
         </div>
       )}

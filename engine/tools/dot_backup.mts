@@ -31,9 +31,13 @@ let 받음 = 0, 못받음 = 0;
 for (const c of chars) {
   const dir = `${뿌리}/${c.slug}`;
   mkdirSync(dir, { recursive: true });
+  // 226회차 09-28: **윈도우는 파일 이름에 `:` 를 못 쓴다.** 멘헤라 키가 `menhera:angry` 라
+  // `menhera:angry.png` 로 쓰면 NTFS 가 `menhera` 라는 빈 파일의 곁줄기로 만들어 버린다 —
+  // 그래서 첫 판에서 **멘헤라 6장이 조용히 안 받아졌다.** 오류도 안 났다.
+  const 이름짓기 = (k: string) => k.replace(/:/g, "-");
   const 것들: [string, string][] = [
-    ...Object.entries(c.sprites ?? {}),
-    ...Object.entries(c.faces ?? {}).map(([k, v]) => [`face-${k.replace(/:/g, "-")}`, v] as [string, string]),
+    ...Object.entries(c.sprites ?? {}).map(([k, v]) => [이름짓기(k), v] as [string, string]),
+    ...Object.entries(c.faces ?? {}).map(([k, v]) => [`face-${이름짓기(k)}`, v] as [string, string]),
   ];
   for (const [이름, url] of 것들) {
     try {
