@@ -59,7 +59,13 @@ export const 크기: Record<string, { 이름: string; 값: (c: Record<string, un
     { 이름: "출처", 값: (c) => (Array.isArray(c.sources) ? c.sources.length : null) },
     { 이름: "인용", 값: (c) => (Array.isArray(c.claims) ? c.claims.length : null) },
   ],
-  mesh_assets: [{ 이름: "조각", 값: (c) => (Array.isArray(c.clips) ? c.clips.length : null) }],
+  // 09-28: **여기서 내 표가 거짓말을 했다.** `clips` 를 "조각" 으로 읽어 "조각 최대 2" 라고 적었는데,
+  // `clips` 는 **애니메이션 동작 클립**(`["idle"]`)이다. 조각(맨몸·투구·갑옷)은 이 칸이 아니다.
+  //
+  // **나눈 조각 수는 장부에 안 남는다** — `pendingPieces` 는 *남은* 것이고 하나씩 지워진다.
+  // 그러니 여기서는 **적지 않는다.** 틀린 숫자를 대는 것이 "모른다" 보다 나쁘다.
+  // (조각 수를 재려면 이어달리기 사슬을 세는 칸을 결과물에 새로 남겨야 한다.)
+  mesh_assets: [{ 이름: "동작 클립", 값: (c) => 배열길이(c.clips) }],
   document: [{ 이름: "항목", 값: (c) => 배열길이(c.items) }],
   // ── 09-28 에 눈을 붙인 넷 ──────────────────────────────────────
   slides: [
