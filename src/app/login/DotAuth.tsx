@@ -19,6 +19,15 @@ export default function DotAuth({
   origin?: string;
 }) {
   const isLogin = mode === "login";
+  // 226회차 09-28, 사장님 *"구글로그인으로 바꿔 회원가입빼고"*.
+  //
+  // **새로 드는 사람은 구글로만 든다.** 다만 이미 이메일·비밀번호로 든 사람이 13명 있다 —
+  // 이메일 칸을 통째로 빼면 그 13명이 **문 밖에 선다.** 그래서 갈라 놓는다:
+  //   · 로그인 화면: 구글 + (옛 사람들을 위한) 이메일. "가입하기" 는 **뺀다.**
+  //   · 가입 화면: 구글만. 새 이메일 계정은 이제 안 만든다.
+  // 구글이 아직 안 켜졌으면(`google` 이 없으면) 옛 화면 그대로 — 안 그러면 아무도 못 든다.
+  const 이메일도 = !google || isLogin;
+  const 가입권유 = !google;
   return (
     <div className="da-root">
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
@@ -37,17 +46,19 @@ export default function DotAuth({
           <form action={google} className="da-google">
             <input type="hidden" name="origin" value={origin ?? ""} />
             <button type="submit"><span className="da-g">G</span> 구글로 {isLogin ? "들어가기" : "시작하기"}</button>
-            <div className="da-or">또는 이메일로</div>
+            {이메일도 && <div className="da-or">또는 이메일로</div>}
           </form>
         )}
-        <form action={action} className="da-form">
-          <label>이메일<input name="email" type="email" required autoComplete="email" inputMode="email" /></label>
-          <label>비밀번호<input name="password" type="password" required autoComplete={isLogin ? "current-password" : "new-password"} minLength={6} /></label>
-          <button type="submit">{isLogin ? "들어가기" : "시작하기"}</button>
-        </form>
+        {이메일도 && (
+          <form action={action} className="da-form">
+            <label>이메일<input name="email" type="email" required autoComplete="email" inputMode="email" /></label>
+            <label>비밀번호<input name="password" type="password" required autoComplete={isLogin ? "current-password" : "new-password"} minLength={6} /></label>
+            <button type="submit">{isLogin ? "들어가기" : "시작하기"}</button>
+          </form>
+        )}
         <div className="da-foot">
-          {isLogin ? <>처음이에요? <a href="/signup">가입하기</a></> : <>이미 있어요? <a href="/login">로그인</a></>}
-          <span className="da-dot">·</span>
+          {가입권유 && (isLogin ? <>처음이에요? <a href="/signup">가입하기</a></> : <>이미 있어요? <a href="/login">로그인</a></>)}
+          {가입권유 && <span className="da-dot">·</span>}
           <a href="/dot/privacy">개인정보</a>
         </div>
       </div>
