@@ -21,6 +21,26 @@ const { defaultProviders } = await import("../../src/lib/execution/shared");
 const 줄수 = (p: string) => {
   try { return readFileSync(p, "utf-8").split("\n").length; } catch { return 0; }
 };
+/**
+ * **이름만 주면 로키는 짐작한다.** 09-28 첫 판에서 파일 이름과 줄 수만 줬더니
+ * "말풍선을 3개로 제한하자" 를 골랐는데 — `bubbles.ts` 에 `MAX_BUBBLES = 3` 이 **이미 있었다.**
+ * 이름을 보고 없는 문제를 지어낸 것이고, **재료를 안 준 내 잘못**이다.
+ * 그래서 파일마다 머리 주석과 내보내는 것을 같이 준다(전문은 너무 크다).
+ */
+const 속 = (path: string): string => {
+  let t = "";
+  try { t = readFileSync(path, "utf-8"); } catch { return ""; }
+  const 줄 = t.split("\n");
+  const 머리 = 줄.slice(0, 12).filter((l) => l.trim().startsWith("*")).slice(0, 6);
+  const 내보냄 = 줄.filter((l) => l.startsWith("export ")).slice(0, 14);
+  return [...머리, ...내보냄].join("\n");
+};
+const 속목록 = (dir: string) =>
+  readdirSync(dir)
+    .filter((f) => /\.(ts|tsx)$/.test(f) && statSync(`${dir}/${f}`).isFile())
+    .map((f) => `\n### ${dir}/${f} (${줄수(`${dir}/${f}`)}줄)\n${속(`${dir}/${f}`)}`)
+    .join("\n");
+
 const 목록 = (dir: string) =>
   readdirSync(dir)
     .filter((f) => /\.(ts|tsx)$/.test(f) && statSync(`${dir}/${f}`).isFile())
@@ -49,10 +69,11 @@ const SYS = [
   "- `src/lib/dot` 안만 손댄다. 화면(`src/app/dot`)은 이번엔 못 건드린다.",
   "- **손님에게 보이는 앱이다.** 잘못 고치면 손님이 본다. 그래서 `위험` 칸에 그 지점을 적어라.",
   "- 네가 고른 것이 그대로 실행된다. **하고 싶은 말이 아니라 할 수 있는 일**을 골라라.",
+  "- **이미 있는 것을 만들자고 하지 마라.** 아래 파일 설명을 먼저 읽어라 — 09-28 첫 판에 '말풍선 3개 제한' 을 골랐는데 그건 이미 있었다.",
 ].join("\n");
 
 const input = [
-  "## 두근도트 코드 (src/lib/dot)", 목록("src/lib/dot"), "",
+  "## 두근도트 코드 (src/lib/dot) — 머리 주석과 내보내는 것", 속목록("src/lib/dot"), "",
   "## 두근도트 화면 (src/app/dot — 이번엔 못 고친다, 참고용)", 목록("src/app/dot"), "",
   "## 최근 두근도트 관련 커밋", 커밋, "",
   "## 지금 있는 두근도트 자(시험 도구)", 자들,
