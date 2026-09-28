@@ -56,7 +56,10 @@ export const 크기: Record<string, { 이름: string; 값: (c: Record<string, un
     { 이름: "장면", 값: (c) => (Array.isArray(c.durations) ? c.durations.length : null) },
   ],
   analysis: [
-    { 이름: "출처", 값: (c) => 배열길이(c.sources) },
+    // 09-28: **준 개수를 세면 거짓이 된다.** 링크 5개를 주고 넷이 붙었는데 그중 셋이 0자였다
+    // (자막 추출 실패). 그런데 표는 "출처 최대 4" 라고 적을 참이었다.
+    // **실제로 글이 들어온 것만 센다** — 읽지도 못한 링크는 출처가 아니다.
+    { 이름: "읽은 출처", 값: (c) => (Array.isArray(c.sources) ? c.sources.filter((s: { chars?: number }) => (s?.chars ?? 0) > 0).length || null : null) },
     // 09-28: 못 읽은 링크 수도 본다. 출처 6개를 받아도 넷이 빈손이면 실제로 읽은 것은 둘이다.
     { 이름: "못 읽은 링크", 값: (c) => 배열길이(c.unreadable) },
     { 이름: "인용", 값: (c) => (Array.isArray(c.claims) ? c.claims.length : null) },
