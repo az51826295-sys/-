@@ -29,22 +29,27 @@ export default async function DotList() {
   const db = createServiceClient();
 
   const bonds = new Map<string, number>();
-  /** 추가한(팔로우한) 캐릭터. 방 목록에 나오는 사람은 이 안에 있는 사람뿐이다. */
+  /** 추가한(팔로우한) 캐릭터. */
   const follows = new Set<string>();
+  /** 사람이 **직접 나가기를 누른** 방. 이것만 목록에서 내린다. */
+  const 나간방 = new Set<string>();
   // 카톡 목록의 그 두 칸: **마지막 말**과 **그 시각**. 상태 한 줄 대신, 있으면 이게 뜬다.
   const last = new Map<string, { text: string; at: string; mine: boolean }>();
   const unread = new Map<string, number>();
   if (user && characters.length) {
     // 09-28: 남은 대화를 안 그리니 `dot_usage` 도 안 읽는다 — 안 쓰는 값을 부르면 왕복만 는다.
     const [{ data: bs }, { data: ms }, { data: fs }] = await Promise.all([
-      db.from("dot_bonds").select("character_id, stage, last_seen_at").eq("user_id", user.id),
+      db.from("dot_bonds").select("character_id, stage, last_seen_at, left_at").eq("user_id", user.id),
       db.from("dot_messages").select("character_id, role, content, created_at").eq("user_id", user.id).order("id", { ascending: false }).limit(60),
       // 227회차 09-29: 방 목록은 이제 **추가한 사람만**이다(사장님 방식 바꾸기).
       db.from("dot_follows").select("character_id").eq("user_id", user.id),
     ]);
     for (const f of (fs ?? []) as { character_id: string }[]) follows.add(f.character_id);
     const seen = new Map<string, string | null>();
-    for (const b of (bs ?? []) as { character_id: string; stage: number; last_seen_at: string | null }[]) { bonds.set(b.character_id, b.stage); seen.set(b.character_id, b.last_seen_at); }
+    for (const b of (bs ?? []) as { character_id: string; stage: number; last_seen_at: string | null; left_at: string | null }[]) {
+      bonds.set(b.character_id, b.stage); seen.set(b.character_id, b.last_seen_at);
+      if (b.left_at) 나간방.add(b.character_id);
+    }
     // 카톡의 안 읽은 수(86회차): 방을 마지막으로 본 시각 뒤에 온 캐릭터 말. 최근 60줄 안에서 센다(그보다 많으면 60+).
     for (const m of (ms ?? []) as { character_id: string; role: string; created_at: string }[]) {
       if (m.role !== "character") continue;
@@ -60,8 +65,18 @@ export default async function DotList() {
     // "검색에서 찾아보세요" 가 있어야 한다. 말없이 다른 화면으로 튕기면 사람은 길을 잃는다.
   }
 
-  // 추가한 사람만 방이 된다. 로그인 전에는 아무것도 안 보인다(그 화면은 로그인이 먼저 막는다).
-  const 방들 = characters.filter((c) => follows.has(c.id));
+  /**
+   * 방이 되는 조건: **추가했거나, 말을 걸어 본 적이 있거나.**
+   *
+   * 09-29 에 "추가한 사람만" 으로 바꿨다가 실제 사용자 **6명의 방 7개를 사라지게 했다.**
+   * 예전에는 팔로우 없이도 방이 다 보였으므로, 쓰던 사람에겐 `dot_follows` 줄이 없다 —
+   * 그분들에겐 어제까지 있던 방이 오늘 없어진 것이고, 그건 기능이 아니라 사고다.
+   * 데이터는 되돌렸고(`dot_audit_users.mts --고쳐라`), 여기서도 막는다:
+   * **말을 한 번이라도 나눈 방은 안 지운다.** 없애려면 사람이 **직접 나가기**를 눌러야 한다 —
+   * 그때만 `dot_bonds.left_at` 이 찍히고, 그것만 목록에서 내린다.
+   * (팔로우 하나로 둘을 다 하려다 "쓰던 사람의 방이 사라지는 것" 과 "나가기" 가 같은 일이 됐다.)
+   */
+  const 방들 = characters.filter((c) => (follows.has(c.id) || bonds.has(c.id)) && !나간방.has(c.id));
 
   return (
     <div className="kl-root">

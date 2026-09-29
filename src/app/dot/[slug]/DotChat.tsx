@@ -198,10 +198,10 @@ export default function DotChat({
     if (!window.confirm(`${who.name} 님과의 방에서 나갈까요?
 대화와 친밀도는 남아 있어서, 다시 추가하면 이어집니다.`)) return;
     try {
-      const res = await fetch("/api/dot/follow", {
+      const res = await fetch("/api/dot/leave", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ characterId: who.id, follow: false }),
+        body: JSON.stringify({ characterId: who.id }),
       });
       // 못 나갔으면 **그대로 둔다.** 조용히 목록으로 보내면 나간 줄 알았다가 다시 보인다.
       if (!res.ok) { setToast("나가지 못했어요"); return; }

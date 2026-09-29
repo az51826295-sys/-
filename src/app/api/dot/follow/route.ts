@@ -16,5 +16,8 @@ export async function POST(request: Request) {
   }
   const { error } = await db.from("dot_follows").upsert({ user_id: userId, character_id: characterId }, { onConflict: "user_id,character_id" });
   if (error) return Response.json({ error: error.message }, { status: 500 });
+  // 227회차 09-29: 나갔던 방을 **다시 추가하면 돌아온다.** 나간 표시를 지우지 않으면
+  // 추가해도 방 목록에 안 뜨고, 사람은 추가가 안 된 줄 안다.
+  await db.from("dot_bonds").update({ left_at: null }).eq("user_id", userId).eq("character_id", characterId);
   return Response.json({ ok: true, following: true });
 }
