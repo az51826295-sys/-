@@ -52,7 +52,8 @@ const CSS = `
 * { box-sizing:border-box; }
 .pv-root { min-height:100dvh; background:#0b0f14; display:flex; justify-content:center; font-family:"Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Segoe UI", Roboto, sans-serif; -webkit-font-smoothing:antialiased; }
 .pv-phone { width:100%; max-width:430px; min-height:100dvh; background:#fff; padding:20px 22px 48px; color:#141414; }
-.pv-back { font-size:14px; color:#7b8590; text-decoration:none; }
+/* 09-29 UI 점검: 돌아가기가 20px 높이라 손가락이 빗나갔다. */
+.pv-back { font-size:14px; color:#7b8590; text-decoration:none; display:inline-flex; align-items:center; min-height:44px; padding-right:14px; }
 h1 { font-size:22px; font-weight:700; margin:16px 0 2px; letter-spacing:-.3px; }
 .pv-date { font-size:12px; color:#a3aab3; margin:0 0 18px; }
 h2 { font-size:15px; font-weight:600; margin:22px 0 8px; color:#111; }

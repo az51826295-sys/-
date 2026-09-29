@@ -107,7 +107,8 @@ const CSS = `
 .me-phone { width:100%; max-width:430px; min-height:100dvh; background:#fff; color:#141414; display:flex; flex-direction:column; }
 .me-head { display:flex; align-items:center; padding:14px 16px 10px; }
 .me-title { font-size:20px; font-weight:700; letter-spacing:-.3px; }
-.me-gear { margin-left:auto; color:#5c6570; display:flex; }
+/* 09-29 UI 점검: 누를 자리를 44px 로(아이콘은 그대로 24px). */
+.me-gear { margin-left:auto; margin-right:-10px; width:44px; height:44px; color:#5c6570; display:flex; align-items:center; justify-content:center; }
 .me-body { flex:1; min-height:0; overflow-y:auto; padding-bottom:14px; }
 .me-nums { display:flex; padding:6px 16px 16px; }
 .me-nums div { flex:1; display:flex; flex-direction:column; align-items:center; gap:2px; }

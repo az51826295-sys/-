@@ -65,6 +65,7 @@ const CSS = `
 .sc-phone { width:100%; max-width:430px; min-height:100dvh; background:#fff; color:#141414; display:flex; flex-direction:column; }
 .sc-head { display:flex; align-items:center; padding:14px 16px 10px; }
 .sc-title { font-size:20px; font-weight:700; letter-spacing:-.3px; }
-.sc-gear { margin-left:auto; color:#5c6570; display:flex; }
+/* 227회차 09-29 UI 점검: 아이콘이 24x24 라 손가락이 못 맞혔다. 누를 자리를 44px 로 키운다(보이는 그림은 그대로). */
+.sc-gear { margin-left:auto; margin-right:-10px; width:44px; height:44px; color:#5c6570; display:flex; align-items:center; justify-content:center; }
 .sc-body { flex:1; min-height:0; overflow-y:auto; padding-bottom:12px; }
 `;

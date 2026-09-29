@@ -102,7 +102,8 @@ export default function SearchList({ items }: { items: SearchItem[] }) {
 const CSS = `
 .sc-bar { display:flex; align-items:center; gap:8px; margin:4px 16px 14px; padding:9px 12px; background:#f1f3f6; border-radius:12px; color:#8a919a; }
 .sc-mag { flex:0 0 auto; }
-.sc-input { flex:1; min-width:0; border:none; background:none; font:inherit; font-size:15px; color:#141414; outline:none; }
+/* 09-29 UI 점검: 글칸 높이가 23px 이라 회색 바 안쪽인데도 누르면 안 눌리는 자리가 있었다. 바를 꽉 채운다. */
+.sc-input { flex:1; min-width:0; border:none; background:none; font:inherit; font-size:15px; color:#141414; outline:none; padding:10px 0; }
 .sc-input::placeholder { color:#a3aab3; }
 .sc-x { border:none; background:none; font-size:20px; line-height:1; color:#8a919a; cursor:pointer; padding:0 2px; }
 .sc-none { padding:34px 24px; text-align:center; font-size:14px; color:#5c6570; line-height:1.7; }
