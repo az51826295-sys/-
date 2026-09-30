@@ -155,14 +155,11 @@ export async function prepareTurn(db: SupabaseClient, userId: string, characterI
       lastTalkedOn: (bondRow?.last_talked_on as string) ?? null,
     };
     const memo: string[] = Array.isArray(bondRow?.memo) ? (bondRow!.memo as string[]) : [];
-    // ── 선물: 캐릭터마다 하루 한 번 ─────────────────────────────
+    // ── 선물: 횟수 제한 없음 ─────────────────────────────────
+    // 09-30 사장님 "3번 풀어" — 하루 한 번 제한을 뗐다. 돈을 내고 사는 것이라 크레딧이 곧 한도다.
+    // last_gift_on 은 계속 적는다(누가 언제 선물했는지 볼 수 있게) — 막는 데는 안 쓴다.
     const 선물 = giftFor(opts.gift);
     if (opts.gift && !선물) { await giveBack(); return { ok: false, reason: "failed", message: "그런 선물은 없어요." }; }
-    if (선물 && (bondRow?.last_gift_on as string | null) === day) {
-      // 이미 턴을 가져왔으니 **돌려준다** — 선물이 막혔는데 대화 횟수까지 깎이면 두 번 손해다.
-      await giveBack();
-      return { ok: false, reason: "gift_limit", message: "오늘은 이미 선물했어요. 내일 또 줄 수 있어요." };
-    }
     const 선물점 = 선물 ? giftPoints(선물, character.persona ?? "") : null;
     if (선물) {
       // **원자적으로** 뺀다(dot_spend_credits) — 두 번 눌러도 잔고가 모자라면 두 번째는 막힌다.

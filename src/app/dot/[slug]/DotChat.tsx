@@ -479,10 +479,10 @@ export default function DotChat({
           <div className="kk-gifts">
             {/*
               09-30 사장님 "두쫀쿠 사주기 같이 선물을 선물하면 올라가게 해".
-              캐릭터마다 하루 한 번. 좋아하는 걸 주면 두 배 — 어느 게 좋아하는 건지는 **안 알려 준다**.
+              횟수 제한 없음(09-30 "3번 풀어") — 크레딧이 한도. 좋아하는 걸 주면 두 배 — 어느 게 좋아하는 건지는 **안 알려 준다**.
               대화하다 알게 되는 것이 재미다(유나가 소금빵 얘기를 먼저 꺼낸다).
             */}
-            <div className="kk-gifts-title">{who.name}에게 선물하기 <small>하루 한 번 · 보유 {balance.credits}크레딧</small></div>
+            <div className="kk-gifts-title">{who.name}에게 선물하기 <small>보유 {balance.credits}크레딧</small></div>
             <div className="kk-gifts-grid">
               {GIFTS.map((g) => (
                 <button key={g.key} onClick={() => send(`🎁 ${g.name}`, undefined, g.key)} disabled={busy}>
