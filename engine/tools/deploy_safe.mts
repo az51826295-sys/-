@@ -123,6 +123,33 @@ if (up.status !== 0) { console.log(`\n**올리기 자체가 실패했다**(코�
 
 // ── 올린 뒤: 새 커밋이 **실제로 도는가** ──────────────────────────
 // "올렸다" 와 "새 코드가 돈다" 는 다르다(09-22 사장님). 여기서 그 둘을 갈라 본다.
+/**
+ * **heartbeat 는 없지만 자기 커밋을 말하는 서비스** (227회차 09-30).
+ *
+ * dot-web 은 heartbeat 를 안 보내서 여기서 늘 "도는지 못 잰다" 로 끝났다. 그 말을 읽고도
+ * 09-29·09-30 이틀에 걸쳐 **"배포 완료" 인데 옛 코드가 도는** 일에 두 번 빠졌다 — 한 번은 하트 확률,
+ * 한 번은 말투 사다리. 그래서 dot-web 에 `/api/dot/version` 을 달았고, 이제 여기서 그걸 직접 묻는다.
+ * 새 커밋이 뜰 때까지 기다리고, 안 뜨면 **실패로** 끝낸다(0 으로 끝나면 부른 쪽이 됐다고 믿는다).
+ */
+const 버전주소: Record<string, string> = {
+  "dot-web": "https://dot-web-production-7e03.up.railway.app/api/dot/version",
+};
+if (!hb && 버전주소[svc]) {
+  const 짧은 = sha.slice(0, 7);
+  console.log(`${new Date().toISOString().slice(11, 19)} 올림. ${svc} 가 ${짧은} 을 말할 때까지 기다린다(최대 10분)`);
+  for (let i = 0; i < 40; i++) {
+    await new Promise((r) => setTimeout(r, 15_000));
+    try {
+      const j = (await (await fetch(버전주소[svc], { cache: "no-store" })).json()) as { commit?: string };
+      if (j.commit && j.commit.startsWith(짧은)) {
+        console.log(`${new Date().toISOString().slice(11, 19)} **새 코드가 돈다** — ${j.commit}`);
+        process.exit(0);
+      }
+    } catch { /* 갈아끼우는 중엔 잠깐 응답이 없다 */ }
+  }
+  console.log(`**10분이 지나도 ${짧은} 이 안 떴다** — 옛 코드가 돌고 있을 수 있다. 화면을 보기 전에 원인부터.`);
+  process.exit(2);
+}
 if (!hb) {
   console.log(`${new Date().toISOString().slice(11, 19)} 올림. 이 서비스는 자기 커밋을 안 알린다(heartbeat 없음) — **도는지 못 잰다.**`);
   console.log("  잴 수 없는 것을 실패로 적지 않는다. 화면에서 직접 확인할 것.");
