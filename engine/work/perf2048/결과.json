@@ -1,0 +1,285 @@
+{
+ "loop": {
+  "usd": 0.002237999999999997,
+  "facts": {
+   "ms": 11658,
+   "did": [
+    "'다시 시작' 누름",
+    "0.8초 기다림",
+    "움직이는 자리 0번 누름",
+    "화면 여기저기 6번 누름",
+    "ArrowRight 키",
+    "Space 키",
+    "KeyD 키",
+    "1.2초 기다림"
+   ],
+   "ran": true,
+   "text": "2048 같은 숫자를 합쳐 2048을 만들어 보세요. 점수 4 화살표 키로 타일을 움직이세요. 다시 시작 4 2",
+   "shots": {
+    "mid": "",
+    "after": "",
+    "start": ""
+   },
+   "blankAtStart": false,
+   "changesOnTap": false,
+   "changesOnKeys": true,
+   "consoleErrors": [],
+   "movesByItself": false
+  },
+  "rounds": [
+   {
+    "n": 1,
+    "ms": 32462,
+    "met": 8,
+    "usd": 0.002,
+    "best": true,
+    "edits": 0,
+    "unmet": 0,
+    "broken": 0,
+    "errors": 0,
+    "unknown": 4,
+    "toPerson": "기본 이동·병합·점수·재시작은 확인됐지만 핵심 병합 예외와 게임 오버·오프라인 동작은 아직 확인되지 않았습니다."
+   }
+  ],
+  "verdict": {
+   "met": [
+    "c01_grid_16_cells",
+    "c02_start_two_tiles_2_or_4",
+    "c03_arrow_changes_board",
+    "c04_basic_merge_double",
+    "c06_spawn_only_after_real_change",
+    "c08_score_increase_by_merge_value",
+    "c09_score_visible_numeric",
+    "c10_restart_resets_state"
+   ],
+   "done": false,
+   "unmet": [],
+   "broken": [],
+   "unknown": [
+    "c05_no_double_merge_in_one_move",
+    "c07_no_spawn_when_no_change",
+    "c11_game_over_message",
+    "c12_single_file_offline"
+   ],
+   "toPerson": "기본 이동·병합·점수·재시작은 확인됐지만 핵심 병합 예외와 게임 오버·오프라인 동작은 아직 확인되지 않았습니다.",
+   "toWorker": "확인되지 않은 기준이 남아 있습니다.\n[4,4,4,4] 상태에서 ← 한 번 후 [8,8]인지 확인하세요.\n움직일 수 없는 방향을 눌렀을 때 타일 수와 화면이 그대로인지 확인하세요.\n빈 칸 없이 합칠 수 없는 판에서 '게임 오버'가 표시되는지 확인하세요.\n네트워크를 끄고 로컬 index.html만 열어 외부 리소스 없이 동작하는지 확인하세요.",
+   "nextActions": [
+    {
+     "n": null,
+     "x": null,
+     "y": null,
+     "do": "click_text",
+     "ms": null,
+     "key": null,
+     "text": "다시 시작"
+    },
+    {
+     "n": null,
+     "x": null,
+     "y": null,
+     "do": "key",
+     "ms": null,
+     "key": "ArrowLeft",
+     "text": null
+    },
+    {
+     "n": null,
+     "x": null,
+     "y": null,
+     "do": "key",
+     "ms": null,
+     "key": "ArrowUp",
+     "text": null
+    },
+    {
+     "n": null,
+     "x": null,
+     "y": null,
+     "do": "key",
+     "ms": null,
+     "key": "ArrowDown",
+     "text": null
+    },
+    {
+     "n": null,
+     "x": null,
+     "y": null,
+     "do": "wait",
+     "ms": 1000,
+     "key": null,
+     "text": null
+    }
+   ]
+  },
+  "bestRound": 1,
+  "stoppedBy": "done"
+ },
+ "note": "코드 문법만 확인했어요(0개 확인, 0개 문제, 1개는 확인 못 함). 브라우저에서 실제로 1번 돌려 보고 확인했어요 — 고칠 게 안 나왔어요.",
+ "files": [
+  {
+   "path": "index.html",
+   "contents": "<!DOCTYPE html>\n<html lang=\"ko\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>2048 화살표 키 퍼즐</title>\n  <style>\n    :root {\n      --board: #bbada0;\n      --empty: rgba(238, 228, 218, 0.35);\n      --text: #776e65;\n      --light: #f9f6f2;\n      --accent: #8f7a66;\n    }\n\n    * { box-sizing: border-box; }\n\n    body {\n      margin: 0;\n      min-height: 100vh;\n      display: flex;\n      justify-content: center;\n      align-items: center;\n      padding: 24px;\n      color: var(--text);\n      background: #faf8ef;\n      font-family: Arial, Helvetica, sans-serif;\n    }\n\n    .game {\n      width: min(100%, 500px);\n    }\n\n    header {\n      display: flex;\n      justify-content: space-between;\n      align-items: flex-start;\n      gap: 16px;\n      margin-bottom: 18px;\n    }\n\n    h1 {\n      margin: 0;\n      color: #776e65;\n      font-size: clamp(42px, 12vw, 68px);\n      line-height: 0.9;\n      letter-spacing: -4px;\n    }\n\n    .subtitle {\n      margin: 10px 0 0;\n      font-size: 14px;\n      line-height: 1.4;\n    }\n\n    .score-box {\n      min-width: 92px;\n      padding: 8px 14px 10px;\n      border-radius: 5px;\n      color: #eee4da;\n      background: #bbada0;\n      text-align: center;\n      font-weight: bold;\n      text-transform: uppercase;\n    }\n\n    .score-label {\n      display: block;\n      font-size: 11px;\n      letter-spacing: 1px;\n    }\n\n    #score {\n      display: block;\n      margin-top: 2px;\n      color: white;\n      font-size: 25px;\n      line-height: 1.1;\n    }\n\n    .controls {\n      display: flex;\n      justify-content: space-between;\n      align-items: center;\n      margin-bottom: 16px;\n      gap: 12px;\n    }\n\n    .help { margin: 0; font-size: 14px; }\n\n    button {\n      border: 0;\n      border-radius: 4px;\n      padding: 11px 15px;\n      color: white;\n      background: var(--accent);\n      cursor: pointer;\n      font-size: 14px;\n      font-weight: bold;\n    }\n\n    button:hover { background: #776452; }\n    button:focus-visible { outline: 3px solid #edc53f; outline-offset: 2px; }\n\n    .board {\n      position: relative;\n      display: grid;\n      grid-template-columns: repeat(4, 1fr);\n      gap: 12px;\n      padding: 12px;\n      border-radius: 6px;\n      background: var(--board);\n      aspect-ratio: 1;\n      user-select: none;\n    }\n\n    .cell {\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      border-radius: 5px;\n      background: var(--empty);\n      color: var(--text);\n      font-size: clamp(25px, 8vw, 45px);\n      font-weight: bold;\n    }\n\n    .cell[data-value=\"2\"] { background: #eee4da; }\n    .cell[data-value=\"4\"] { background: #ede0c8; }\n    .cell[data-value=\"8\"] { background: #f2b179; color: #f9f6f2; }\n    .cell[data-value=\"16\"] { background: #f59563; color: #f9f6f2; }\n    .cell[data-value=\"32\"] { background: #f67c5f; color: #f9f6f2; }\n    .cell[data-value=\"64\"] { background: #f65e3b; color: #f9f6f2; }\n    .cell[data-value=\"128\"], .cell[data-value=\"256\"] { background: #edcf72; color: #f9f6f2; font-size: clamp(22px, 7vw, 38px); }\n    .cell[data-value=\"512\"], .cell[data-value=\"1024\"], .cell[data-value=\"2048\"] { background: #edc53f; color: #f9f6f2; font-size: clamp(19px, 6vw, 34px); }\n\n    .message {\n      min-height: 28px;\n      margin: 15px 0 0;\n      color: #776e65;\n      font-size: 20px;\n      font-weight: bold;\n      text-align: center;\n    }\n\n    @media (max-width: 420px) {\n      body { padding: 15px; }\n      .board { gap: 8px; padding: 8px; }\n      header { margin-bottom: 13px; }\n      .help { font-size: 12px; }\n    }\n  </style>\n</head>\n<body>\n  <main class=\"game\">\n    <header>\n      <div>\n        <h1>2048</h1>\n        <p class=\"subtitle\">같은 숫자를 합쳐 2048을 만들어 보세요.</p>\n      </div>\n      <div class=\"score-box\" aria-label=\"점수\">\n        <span class=\"score-label\">점수</span>\n        <span id=\"score\">0</span>\n      </div>\n    </header>\n\n    <div class=\"controls\">\n      <p class=\"help\">화살표 키로 타일을 움직이세요.</p>\n      <button id=\"restart\" type=\"button\">다시 시작</button>\n    </div>\n\n    <section id=\"board\" class=\"board\" aria-label=\"2048 게임 보드\"></section>\n    <p id=\"message\" class=\"message\" role=\"status\" aria-live=\"polite\"></p>\n  </main>\n\n  <script>\n    (function () {\n      'use strict';\n\n      const SIZE = 4;\n      const boardElement = document.getElementById('board');\n      const scoreElement = document.getElementById('score');\n      const messageElement = document.getElementById('message');\n      const restartButton = document.getElementById('restart');\n      let board = [];\n      let score = 0;\n      let gameOver = false;\n\n      function makeEmptyBoard() {\n        return Array.from({ length: SIZE }, () => Array(SIZE).fill(0));\n      }\n\n      function draw() {\n        boardElement.innerHTML = '';\n        for (let row = 0; row < SIZE; row += 1) {\n          for (let col = 0; col < SIZE; col += 1) {\n            const cell = document.createElement('div');\n            const value = board[row][col];\n            cell.className = 'cell';\n            cell.dataset.value = value === 0 ? '' : String(value);\n            cell.textContent = value === 0 ? '' : String(value);\n            cell.setAttribute('aria-label', value === 0 ? '빈 칸' : String(value));\n            boardElement.appendChild(cell);\n          }\n        }\n        scoreElement.textContent = String(score);\n      }\n\n      function emptyCells() {\n        const cells = [];\n        for (let row = 0; row < SIZE; row += 1) {\n          for (let col = 0; col < SIZE; col += 1) {\n            if (board[row][col] === 0) cells.push({ row, col });\n          }\n        }\n        return cells;\n      }\n\n      function addRandomTile() {\n        const cells = emptyCells();\n        if (cells.length === 0) return false;\n        const spot = cells[Math.floor(Math.random() * cells.length)];\n        board[spot.row][spot.col] = Math.random() < 0.9 ? 2 : 4;\n        return true;\n      }\n\n      function startGame() {\n        board = makeEmptyBoard();\n        score = 0;\n        gameOver = false;\n        messageElement.textContent = '';\n        addRandomTile();\n        addRandomTile();\n        draw();\n      }\n\n      function slideLine(line) {\n        const compact = line.filter(value => value !== 0);\n        const result = [];\n        let gained = 0;\n        for (let i = 0; i < compact.length; i += 1) {\n          if (compact[i] === compact[i + 1]) {\n            const merged = compact[i] * 2;\n            result.push(merged);\n            gained += merged;\n            i += 1;\n          } else {\n            result.push(compact[i]);\n          }\n        }\n        while (result.length < SIZE) result.push(0);\n        return { line: result, gained: gained };\n      }\n\n      function getLine(index, direction) {\n        const line = [];\n        for (let offset = 0; offset < SIZE; offset += 1) {\n          if (direction === 'left') line.push(board[index][offset]);\n          if (direction === 'right') line.push(board[index][SIZE - 1 - offset]);\n          if (direction === 'up') line.push(board[offset][index]);\n          if (direction === 'down') line.push(board[SIZE - 1 - offset][index]);\n        }\n        return line;\n      }\n\n      function setLine(index, direction, line) {\n        for (let offset = 0; offset < SIZE; offset += 1) {\n          if (direction === 'left') board[index][offset] = line[offset];\n          if (direction === 'right') board[index][SIZE - 1 - offset] = line[offset];\n          if (direction === 'up') board[offset][index] = line[offset];\n          if (direction === 'down') board[SIZE - 1 - offset][index] = line[offset];\n        }\n      }\n\n      function canMove() {\n        if (emptyCells().length > 0) return true;\n        for (let row = 0; row < SIZE; row += 1) {\n          for (let col = 0; col < SIZE; col += 1) {\n            if (col < SIZE - 1 && board[row][col] === board[row][col + 1]) return true;\n            if (row < SIZE - 1 && board[row][col] === board[row + 1][col]) return true;\n          }\n        }\n        return false;\n      }\n\n      function move(direction) {\n        if (gameOver) return;\n        let changed = false;\n        let gainedThisMove = 0;\n\n        for (let index = 0; index < SIZE; index += 1) {\n          const oldLine = getLine(index, direction);\n          const processed = slideLine(oldLine);\n          if (processed.line.some((value, position) => value !== oldLine[position])) changed = true;\n          setLine(index, direction, processed.line);\n          gainedThisMove += processed.gained;\n        }\n\n        if (!changed) {\n          if (!canMove()) {\n            gameOver = true;\n            messageElement.textContent = '게임 오버';\n            draw();\n          }\n          return;\n        }\n\n        score += gainedThisMove;\n        addRandomTile();\n        draw();\n        if (!canMove()) {\n          gameOver = true;\n          messageElement.textContent = '게임 오버';\n        }\n      }\n\n      document.addEventListener('keydown', function (event) {\n        const directions = {\n          ArrowLeft: 'left',\n          ArrowRight: 'right',\n          ArrowUp: 'up',\n          ArrowDown: 'down'\n        };\n        if (directions[event.key]) {\n          event.preventDefault();\n          move(directions[event.key]);\n        }\n      });\n\n      restartButton.addEventListener('click', startGame);\n      startGame();\n    }());\n  </script>\n</body>\n</html>\n",
+   "language": "html"
+  }
+ ],
+ "seats": {
+  "fix": null,
+  "build": "gpt-5.6-luna",
+  "judge": "gpt-5.6-luna",
+  "fixWhy": "성적 85% (22판) 로 제일 좋음",
+  "fixMode": null
+ },
+ "stage": "prototype",
+ "target": "web",
+ "verify": {
+  "files": [
+   {
+    "ok": false,
+    "path": "index.html",
+    "errors": [],
+    "checked": false,
+    "language": "html"
+   }
+  ],
+  "broken": 0,
+  "parsed": 0,
+  "repaired": false,
+  "unchecked": 1
+ },
+ "patched": null,
+ "summary": {
+  "met": 8,
+  "criteria": 12
+ },
+ "askJudge": null,
+ "coverage": [
+  {
+   "met": true,
+   "where": "index.html의 #board에 4x4 CSS Grid를 사용하고, startGame/draw에서 정확히 16개의 .cell 요소를 생성합니다.",
+   "criterionId": "c01_grid_16_cells"
+  },
+  {
+   "met": true,
+   "where": "startGame()이 빈 보드에 addRandomTile()을 정확히 두 번 호출하며 각 타일은 90% 확률의 2 또는 10% 확률의 4입니다.",
+   "criterionId": "c02_start_two_tiles_2_or_4"
+  },
+  {
+   "met": true,
+   "where": "keydown 핸들러가 네 화살표 키를 move()에 연결하고, 이동 가능한 경우 줄을 밀어 보드를 변경합니다.",
+   "criterionId": "c03_arrow_changes_board"
+  },
+  {
+   "met": true,
+   "where": "slideLine()이 인접한 동일 숫자를 하나의 두 배 값으로 합칩니다.",
+   "criterionId": "c04_basic_merge_double"
+  },
+  {
+   "met": true,
+   "where": "slideLine()의 병합 후 i += 1 처리로 [4,4,4,4]가 [8,8,0,0]이 되며 한 번의 이동에서 재병합되지 않습니다.",
+   "criterionId": "c05_no_double_merge_in_one_move"
+  },
+  {
+   "met": true,
+   "where": "move()에서 changed가 true일 때만 addRandomTile()을 정확히 한 번 호출합니다.",
+   "criterionId": "c06_spawn_only_after_real_change"
+  },
+  {
+   "met": true,
+   "where": "move()는 changed가 false이면 즉시 반환하며 새 타일을 추가하지 않습니다.",
+   "criterionId": "c07_no_spawn_when_no_change"
+  },
+  {
+   "met": true,
+   "where": "slideLine()이 해당 이동의 생성 합계(gained)를 반환하고 move()가 그 값을 score에 더합니다.",
+   "criterionId": "c08_score_increase_by_merge_value"
+  },
+  {
+   "met": true,
+   "where": "화면의 .score-box 안 #score 요소에 점수를 숫자 문자열로 표시합니다.",
+   "criterionId": "c09_score_visible_numeric"
+  },
+  {
+   "met": true,
+   "where": "restart 버튼이 startGame()을 호출해 보드를 새로 만들고 타일 2개 및 점수 0으로 즉시 초기화합니다.",
+   "criterionId": "c10_restart_resets_state"
+  },
+  {
+   "met": true,
+   "where": "이동 후 canMove()가 false이면 messageElement.textContent에 '게임 오버'를 표시합니다.",
+   "criterionId": "c11_game_over_message"
+  },
+  {
+   "met": true,
+   "where": "모든 HTML, CSS, JavaScript가 단일 index.html에 포함되어 있고 외부 리소스 의존성이 없습니다.",
+   "criterionId": "c12_single_file_offline"
+  }
+ ],
+ "criteria": [
+  {
+   "id": "c01_grid_16_cells",
+   "then": "칸 수가 16이 아니면 실패다.",
+   "when": "브라우저에서 index.html을 열면 4x4 격자가 보이고, 눈으로 세면 칸이 정확히 16개다."
+  },
+  {
+   "id": "c02_start_two_tiles_2_or_4",
+   "then": "두 타일의 값은 각각 2 또는 4여야 하며, 다른 숫자가 보이면 실패다.",
+   "when": "첫 화면이 뜬 직후 숫자 타일을 세면 정확히 2개다."
+  },
+  {
+   "id": "c03_arrow_changes_board",
+   "then": "타일의 위치 또는 숫자 중 하나 이상이 바뀌어야 한다.",
+   "when": "이동 가능한 상태에서 화살표 키(←/→/↑/↓) 중 하나를 누른다."
+  },
+  {
+   "id": "c04_basic_merge_double",
+   "then": "두 타일은 하나로 합쳐지고 숫자는 정확히 2배가 된다.",
+   "when": "같은 숫자 두 타일이 한 줄에서 이동 방향으로 만나도록 만든 뒤 해당 방향 키를 누른다."
+  },
+  {
+   "id": "c05_no_double_merge_in_one_move",
+   "then": "결과는 [8,8]이어야 하며 [16]이 되면 실패다.",
+   "when": "한 줄이 [4,4,4,4]인 상태에서 ←를 한 번 누른다."
+  },
+  {
+   "id": "c06_spawn_only_after_real_change",
+   "then": "이동/병합으로 계산된 결과 뒤에 새 타일이 정확히 1개만 추가된다.",
+   "when": "판이 실제로 바뀌는 이동을 한 번 수행한 뒤 타일 수를 확인한다."
+  },
+  {
+   "id": "c07_no_spawn_when_no_change",
+   "then": "판 상태와 타일 개수는 그대로 유지되고 새 타일이 생기지 않는다.",
+   "when": "아무 타일도 움직이거나 합쳐질 수 없는 방향 키를 누른다."
+  },
+  {
+   "id": "c08_score_increase_by_merge_value",
+   "then": "점수는 0보다 커지고, 증가량은 그 이동에서 생성된 합쳐진 타일 값들의 합과 같다.",
+   "when": "합치기가 일어나는 이동을 수행한다."
+  },
+  {
+   "id": "c09_score_visible_numeric",
+   "then": "점수 값이 숫자로 읽히게 표시되어야 한다.",
+   "when": "게임 화면을 본다."
+  },
+  {
+   "id": "c10_restart_resets_state",
+   "then": "즉시 새 판으로 초기화되어 숫자 타일은 2개가 되고 점수는 0이 된다.",
+   "when": "다시 시작 버튼을 누른다."
+  },
+  {
+   "id": "c11_game_over_message",
+   "then": "화면에 '게임 오버' 문구가 표시되어야 한다.",
+   "when": "빈 칸이 없고 어느 방향으로도 합칠 수 없는 상태를 만든다."
+  },
+  {
+   "id": "c12_single_file_offline",
+   "then": "외부 리소스 없이 게임이 정상 동작해야 한다.",
+   "when": "네트워크를 끈 상태에서 로컬 index.html 파일만 연다."
+  }
+ ],
+ "howToRun": "파일을 `index.html`로 저장한 뒤 브라우저에서 직접 열면 됩니다. 외부 리소스를 사용하지 않으므로 인터넷 연결 없이 실행할 수 있습니다. 보드에서 화살표 키를 누르고, `다시 시작` 버튼으로 게임을 초기화하세요.",
+ "humanGate": [
+  "타일 숫자 글자가 충분히 커서 일반적인 노트북 화면에서 한눈에 읽기 쉬운지 최종 확인한다.",
+  "색 대비와 배치가 눈에 거슬리지 않는지(미적 품질)는 사람 리뷰로 판단한다."
+ ],
+ "expectations": []
+}
