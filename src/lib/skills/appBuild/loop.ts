@@ -173,6 +173,8 @@ export async function improveLoop(o: {
 
   let lastMeasured: Record<string, number> | undefined;
   let lastEdits: string[] = [];
+  /** 못 본 것을 보러 **고치지 않고 다시 돌려만 본** 횟수. 기본 모드에서 한 번까지. */
+  let 다시본횟수 = 0;
   for (let n = 1; n <= o.rounds; n++) {
     const t0 = Date.now();
     // **재기 전에 예측을 적고 잠근다**(213회차). 고치는 자리가 코드를 읽고 값을 셈해 낸다 — 잰 뒤 대 본다.
@@ -246,9 +248,29 @@ export async function improveLoop(o: {
     // 멈춤: 더 고칠 게 없다고 했고 못 본 것도 없으면. 못 본 것만 남았으면 새 대본으로 **한 번 더 보기만** 한다(고치지 않는다).
     const onlyUnknown = verdict.unmet.length === 0 && verdict.broken.length === 0;
     const prevUnknown = rounds.length >= 2 ? rounds[rounds.length - 2].unknown : Infinity;
-    // 못 본 것만 남았을 때: 기본 모드는 여기서 끝. 꼼꼼 모드는 새 대본이 있고 **지난 바퀴보다 못 본 것이 줄었을 때만** 한 번 더 본다.
-    if (onlyUnknown && (!o.thorough || verdict.unknown.length === 0 || !next.length || n === o.rounds || verdict.unknown.length >= prevUnknown)) { stoppedBy = "done"; break; }
-    if (onlyUnknown) { rounds[rounds.length - 1].toPerson += " (못 본 것을 보러 한 번 더 돌려 봄)"; continue; }
+    /**
+     * 못 본 것(`unknown`)만 남았을 때.
+     *
+     * 228회차 09-30 까지 **기본 모드는 여기서 그냥 끝냈다** — 심판자가 "이걸 보려면 이렇게 눌러 봐라" 고
+     * 대본(`nextActions`)까지 써 줬는데 **한 번도 안 써 보고** `done` 으로 닫았다. 그리고 `done` 은 사람 눈에 성공으로 읽힌다.
+     * 같은 날 두 판이 그랬다: 2048 은 12개 중 4개(핵심인 이중 합침 포함), 타워 디펜스는 18개 중 14개를 못 본 채 닫혔다.
+     *
+     * 그래서 기본 모드도 **한 번은 다시 돌려 본다**(고치지 않는다 — 대본만 바꿔 더 본다).
+     * 값은 돌려 보기 한 번 + 심판 한 번이고, 못 본 칸이 통과로 둔갑하는 것보다 싸다.
+     * 꼼꼼 모드는 전처럼 **못 본 것이 줄어드는 동안** 계속 더 본다.
+     */
+    if (onlyUnknown) {
+      const 더볼수있나 = verdict.unknown.length > 0 && next.length > 0 && n < o.rounds;
+      const 꼼꼼더 = o.thorough && verdict.unknown.length < prevUnknown;
+      const 기본더 = !o.thorough && 다시본횟수 < 1;
+      if (더볼수있나 && (꼼꼼더 || 기본더)) {
+        다시본횟수++;
+        rounds[rounds.length - 1].toPerson += " (못 본 것을 보러 한 번 더 돌려 봄)";
+        continue;
+      }
+      stoppedBy = "done";
+      break;
+    }
     if (n === o.rounds) { stoppedBy = "rounds"; break; }
     if (usdNow - usd0 >= o.usdCap) { stoppedBy = "usd"; console.log(`[고리] 돈 상한 $${o.usdCap} 에 닿아 멈춘다`); break; }
 

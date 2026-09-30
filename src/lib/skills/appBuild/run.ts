@@ -29,6 +29,11 @@ export type RunFacts = {
   changesOnTap: boolean;
   /** 방향키·스페이스를 친 뒤 화면이 바뀌었나. */
   changesOnKeys: boolean;
+  /**
+   * **대본을 다 하고 난 뒤**, 아무것도 안 건드리고 0.6초씩 두 번 더 봤을 때 화면이 바뀐 횟수(0~2).
+   * `movesByItself` 는 시작 단추를 누르기 전 값이라 제목 화면에서 늘 0 이다 — 이것이 "지금 도는 중인가" 다.
+   */
+  movesAfterPlay: number;
   /** 화면에 보이는 글자(앞 300자). 점수·타이머·버튼 글자를 심판자가 본다. */
   text: string;
   /** 화면 세 장(시작·시작 단추 누른 뒤·놀아 본 뒤), 작은 JPEG base64 — 심판자에게 보여 준다. 저장하지 않는다. */
@@ -112,7 +117,7 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 export async function runWeb(files: File[], opts: { mobile: boolean; width?: number; height?: number; timeoutMs?: number; actions?: RunAction[]; measures?: string[] }): Promise<RunFacts> {
   const t0 = Date.now();
-  const none: RunFacts = { ran: false, ms: 0, consoleErrors: [], blankAtStart: false, movesByItself: false, changesOnTap: false, changesOnKeys: false, text: "", shots: { start: "", mid: "", after: "" }, did: [] };
+  const none: RunFacts = { ran: false, ms: 0, consoleErrors: [], blankAtStart: false, movesByItself: false, changesOnTap: false, changesOnKeys: false, movesAfterPlay: 0, text: "", shots: { start: "", mid: "", after: "" }, did: [] };
   const did: string[] = [];
   const entry = entryOf(files);
   if (!entry) return { ...none, why: "HTML 파일이 없다" };
@@ -183,13 +188,37 @@ export async function runWeb(files: File[], opts: { mobile: boolean; width?: num
       try {
         if (act.do === "click_text") {
           const re = new RegExp(act.text, "i");
+          /**
+           * **누를 수 있는 것부터 찾는다** (228회차 09-30).
+           * 전에는 `div·span` 도 같은 후보였고, 게다가 **자식 없는 것을 먼저** 골랐다.
+           * 타워 디펜스 판에서 화면 한가운데 "일시정지" 안내 **딱지**(자식 없는 div)가
+           * 일시정지 **단추**를 이겼다 — 단추는 멈춘 뒤 "▶ 다시" 로 글자가 바뀌기 때문이다.
+           * 그래서 켤 때는 단추를 누르고 끌 때는 딱지를 눌러 **게임이 멈춘 채로 갇혔고**,
+           * 심판자는 그 화면을 보고 "적이 안 움직인다" 고 적어 멀쩡한 코드를 세 바퀴 고치게 했다.
+           * 딱지는 눌러도 아무 일이 없다 — 누를 수 있는 것이 하나라도 맞으면 그걸 고른다.
+           *
+           * **창 안에서는 이름 붙인 함수를 만들지 않는다.** 이 파일은 esbuild 를 지나며 이름을 지키려고
+           * `__name(...)` 을 끼워 넣는데, 창 안에는 그런 것이 없어 조작이 통째로 죽는다
+           * (첫 판에 `__name is not defined` 로 글자 누르기가 다섯 번 다 실패했다). 전부 제자리에 편다.
+           */
           const hit = await page.evaluate((src) => {
             const re = new RegExp(src, "i");
-            const els = [...document.querySelectorAll("button, a, [role=button], div, span, p, h1, h2, h3")] as HTMLElement[];
-            const el = els.find((e) => e.children.length === 0 && re.test(e.textContent ?? "") && e.getBoundingClientRect().width > 0) ?? els.find((e) => re.test(e.textContent ?? "") && e.getBoundingClientRect().width > 0);
-            if (!el) return null; const r = el.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2, text: (el.textContent ?? "").trim().slice(0, 30) };
+            const CLICKABLE = "button, a[href], [role=button], input[type=button], input[type=submit], input[type=reset], summary, label, [onclick]";
+            const 모두 = ([...document.querySelectorAll("button, a, [role=button], input, summary, label, div, span, p, h1, h2, h3")] as HTMLElement[])
+              .filter((e) => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0 && re.test(e.textContent ?? ""); });
+            const 누를것 = 모두.filter((e) => e.matches(CLICKABLE) || getComputedStyle(e).cursor === "pointer");
+            // 누를 수 있는 것 중에서는 **제일 안쪽**(자식 없는 것)을 고른다 — 감싼 큰 칸을 누르면 엉뚱한 데가 눌린다.
+            const el = 누를것.find((e) => e.children.length === 0) ?? 누를것[0]
+              ?? 모두.find((e) => e.children.length === 0) ?? 모두[0];
+            if (!el) return null;
+            const r = el.getBoundingClientRect();
+            return {
+              x: r.left + r.width / 2, y: r.top + r.height / 2,
+              text: (el.textContent ?? "").trim().slice(0, 30),
+              누를것: el.matches(CLICKABLE) || getComputedStyle(el).cursor === "pointer",
+            };
           }, re.source);
-          if (hit) { await press(Math.round(hit.x), Math.round(hit.y)); did.push(`'${hit.text}' 누름`); await sleep(600); if (!mid) mid = await shot(page); }
+          if (hit) { await press(Math.round(hit.x), Math.round(hit.y)); did.push(`'${hit.text}' 누름${hit.누를것 ? "" : " (누를 수 있는 것이 없어 글자만 맞는 것을 누름)"}`); await sleep(600); if (!mid) mid = await shot(page); }
           else did.push(`'${act.text}' 글자 없음`);
         } else if (act.do === "taps_moving") {
           let n = 0;
@@ -219,6 +248,25 @@ export async function runWeb(files: File[], opts: { mobile: boolean; width?: num
       } catch (e) { did.push(`조작 실패: ${e instanceof Error ? e.message.slice(0, 60) : String(e)}`); }
     }
     const end = await shot(page);
+    /**
+     * **놀아 본 뒤에도 화면이 스스로 바뀌나** (228회차 09-30).
+     *
+     * `movesByItself` 는 **시작 단추를 누르기 전**에 잰다 — 제목 화면이라 거의 늘 "안 움직임" 이다.
+     * 그래서 캔버스 게임의 "적이 움직이나" 를 아무도 안 보고 있었고, 심판자는 사진 세 장으로 짐작했다.
+     * 타워 디펜스 판(09-30)에서 그 짐작이 틀렸다 — 게다가 대본이 일시정지를 켜 둔 채였다.
+     *
+     * 여기서는 대본을 다 마친 **그 상태 그대로** 0.6초 간격으로 세 장을 더 찍는다.
+     * 게임이 도는 중이면 계속 바뀌고, 멈췄거나(일시정지·게임오버) 안 도는 것이면 안 바뀐다.
+     * **사실만 적는다** — 어느 쪽이 옳은지는 심판자가 확인 목록을 놓고 정한다.
+     */
+    let 놀고나서움직임 = 0;
+    let 앞장 = end;
+    for (let i = 0; i < 2; i++) {
+      await sleep(600);
+      const 다음 = await shot(page);
+      if ((await diff(앞장, 다음)) > CHANGED) 놀고나서움직임++;
+      앞장 = 다음;
+    }
     const text = await page.evaluate(() => (document.body?.innerText ?? "").replace(/\s+/g, " ").trim().slice(0, 300)).catch(() => "");
     const blankAtStart = await isBlank(s0);
     // **놀아 본 뒤에 잰다** — 시작 단추를 눌러 게임이 도는 상태여야 점프를 잴 수 있다.
@@ -226,7 +274,7 @@ export async function runWeb(files: File[], opts: { mobile: boolean; width?: num
     return {
       ran: true, ms: Date.now() - t0, measured,
       consoleErrors: [...errors].slice(0, 12),
-      blankAtStart, movesByItself, changesOnTap, changesOnKeys, text, did,
+      blankAtStart, movesByItself, changesOnTap, changesOnKeys, movesAfterPlay: 놀고나서움직임, text, did,
       shots: { start: await tinyJpeg(s0), mid: await tinyJpeg(mid ?? afterKeys), after: await tinyJpeg(end) },
     };
   } catch (e) {
@@ -245,6 +293,8 @@ export function factLines(f: RunFacts): string[] {
     `가만히 두면 ${f.movesByItself ? "움직임" : "안 움직임"}`,
     `가운데를 누르면 ${f.changesOnTap ? "화면이 바뀜" : "안 바뀜"}`,
     `방향키·스페이스를 치면 ${f.changesOnKeys ? "화면이 바뀜" : "안 바뀜"}`,
+    // 캔버스 게임의 "적이 움직이나" 는 여기서만 보인다(위 '가만히 두면' 은 제목 화면 값이다).
+    `놀아 본 뒤 그대로 두면 ${f.movesAfterPlay === 2 ? "계속 바뀜(도는 중)" : f.movesAfterPlay === 1 ? "한 번 바뀜" : "안 바뀜(멈췄거나 끝난 화면)"}`,
     `해 본 조작: ${f.did.join(" → ") || "(없음)"}`,
     `놀아 본 뒤 화면 글자: ${f.text || "(없음)"}`,
     ...(f.measured && Object.keys(f.measured).length
