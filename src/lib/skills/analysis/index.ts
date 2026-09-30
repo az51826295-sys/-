@@ -256,10 +256,34 @@ export const analysisSkill: EmployeeSkill = {
     // 찾은 자료는 결과물에 **"로키가 찾은 자료"** 로 따로 적는다(사람이 준 것과 섞이면 출처를 믿을 수 없다).
     let 찾은자료 = false;
     if (!urls.length) {
-      const 검색어 = ctx.context.assignment.title.slice(0, 300);
+      // 첫 실측(09-30 17:13): 주문 문장을 통째로 검색어로 넣었더니 끝의 "근거 링크도 함께 표시해 줘" 에 끌려
+      // "AI 거짓말 줄이는 법" 스레드 글이 잡혔다 — 레벨 디자인 자료 0개. 그래서 ① 검색어는 싼 자리가 주문에서
+      // **읽어야 할 자료가 무엇인지만** 뽑아 한국어·영어 둘로 쓰고 ② SNS 글과 본문이 짧은 쪽은 뺀다.
       const 찾음 = await step(ctx.supabase, ctx.executionId, "search", async () => {
-        try { return (await ctx.providers.search.search(검색어, 6)).map((r) => r.url); }
-        catch (e) { console.warn(`[analysis] 검색 실패: ${e instanceof Error ? e.message : e}`); return [] as string[]; }
+        try {
+          const q = await ctx.providers.ai.generateStructuredOutput({
+            systemInstructions:
+              "주문을 읽고, 그 일을 하려면 찾아 읽어야 할 **자료**(강연·글·문서)를 찾는 웹 검색어를 쓴다. " +
+              "주문의 형식 요구(표로, 링크 달아, 5개로 등)나 우리 제품 이름은 검색어에 넣지 마라 — 그건 자료가 아니다. " +
+              "`ko` 는 한국어 검색어, `en` 은 같은 뜻의 영어 검색어. 각각 3~8낱말.",
+            input: `주문: ${ask.slice(0, 1500)}`,
+            schema: z.object({ ko: z.string(), en: z.string() }), schemaName: "analysis_search_queries",
+            maxTokens: 16000, tier: "routine",
+          });
+          const { ko, en } = q.output as { ko: string; en: string };
+          const SNS = /(^|\.)(threads\.(com|net)|instagram\.com|x\.com|twitter\.com|facebook\.com|tiktok\.com)$/i;
+          const 모음: { url: string; len: number }[] = [];
+          for (const 검색어 of [en, ko]) {
+            for (const r of await ctx.providers.search.search(검색어, 6)) {
+              if (SNS.test(r.sourceDomain ?? "") || 모음.some((m) => m.url === r.url)) continue;
+              const len = r.rawContent?.length ?? 0;
+              if (len < 2000 && !YT_RE.test(r.url)) continue;   // 본문이 짧으면 분석할 게 없다(영상은 자막을 따로 읽는다)
+              모음.push({ url: r.url, len });
+            }
+          }
+          console.log(`[analysis] 스스로 찾음 — ko "${ko}" · en "${en}" → ${모음.length}개`);
+          return 모음.map((m) => m.url);
+        } catch (e) { console.warn(`[analysis] 검색 실패: ${e instanceof Error ? e.message : e}`); return [] as string[]; }
       });
       urls = 찾음.slice(0, 4);
       찾은자료 = urls.length > 0;
