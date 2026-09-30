@@ -16,7 +16,8 @@
  * 광고가 어지러운 것과 **무엇을 파는지 안 보이는 것**은 다르다.
  */
 import { execFileSync } from "node:child_process";
-import { existsSync } from "node:fs";
+import { existsSync, writeFileSync } from "node:fs";
+import sharp from "sharp";
 import ffmpegPath from "ffmpeg-static";
 
 const OUT = "C:/Users/az518/Desktop/두근도트-영상";
@@ -50,6 +51,51 @@ const FF = ffmpegPath as unknown as string;
 if (!FF || !existsSync(FF)) { console.error("ffmpeg 을 못 찾았다"); process.exit(1); }
 for (const c of 컷들) {
   for (const f of [c.카드, c.글자]) if (f && !existsSync(`${칸}/${f}`)) { console.error(`장면이 없다: ${f}`); process.exit(1); }
+}
+
+/**
+ * **아이콘을 영상에 얹는다** (사장님 "지금 그냥 프로필도 붙여" · "아이콘 말하는거야").
+ *
+ * 릴스는 퍼 나르기가 쉬워서 **어디서 온 영상인지**가 화면에 없으면 앱을 못 찾는다.
+ * 앱 아이콘과 **같은 그림**(말풍선+하트)이라야 스토어에서 알아본다.
+ * 흔들림·기울임은 장면에만 걸고 **아이콘은 안 흔든다** — 같이 떨면 읽히지 않는다.
+ */
+const 도장 = `${칸}/_도장.png`;
+{
+  const 칸수 = 16, 그림 = [
+    "................", "................",
+    "..############..", ".##############.",
+    ".#####@@##@@###.", ".####@@@@@@@@##.",
+    ".####@@@@@@@@##.", ".####@@@@@@@@##.",
+    ".#####@@@@@@###.", ".######@@@@####.",
+    "..######@@####..", "...##...........",
+    "...##...........", "..##............",
+    "................", "................",
+  ];
+  const buf = Buffer.alloc(칸수 * 칸수 * 4);
+  for (let y = 0; y < 칸수; y++) for (let x = 0; x < 칸수; x++) {
+    const p = (y * 칸수 + x) * 4;
+    if ((그림[y][x]) === "#") { buf[p] = 255; buf[p + 1] = 255; buf[p + 2] = 255; buf[p + 3] = 255; }
+  }
+  const 아이콘크기 = 104, 속 = Math.round(아이콘크기 * 0.62);
+  const 말풍선 = await sharp(buf, { raw: { width: 칸수, height: 칸수, channels: 4 } })
+    .resize(속, 속, { kernel: "nearest" }).png().toBuffer();
+  const 동그라미 = await sharp({ create: { width: 아이콘크기, height: 아이콘크기, channels: 4, background: { r: 255, g: 92, b: 122, alpha: 1 } } })
+    .composite([
+      { input: 말풍선, left: Math.round((아이콘크기 - 속) / 2), top: Math.round((아이콘크기 - 속) / 2) },
+      { input: Buffer.from(`<svg width="${아이콘크기}" height="${아이콘크기}"><circle cx="${아이콘크기 / 2}" cy="${아이콘크기 / 2}" r="${아이콘크기 / 2}" fill="#fff"/></svg>`), blend: "dest-in" },
+    ]).png().toBuffer();
+  const 폭 = 420, 높 = 128;
+  const 판 = await sharp({ create: { width: 폭, height: 높, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })
+    .composite([
+      { input: 동그라미, left: 8, top: 12 },
+      { input: Buffer.from(`<svg width="${폭}" height="${높}" xmlns="http://www.w3.org/2000/svg">
+          <text x="128" y="78" font-family="Malgun Gothic, sans-serif" font-size="44" font-weight="800" fill="#fff"
+            style="paint-order:stroke" stroke="#0b0f14" stroke-width="7" stroke-opacity="0.75">두근도트</text>
+        </svg>`) },
+    ]).png().toBuffer();
+  writeFileSync(도장, 판);
+  console.log("도장(아이콘+이름) 만듦");
 }
 
 const 입력: string[] = [], 거르기: string[] = [];
@@ -95,11 +141,17 @@ let 번 = 0;
 
 let 앞 = "[v0]", 누적 = 컷들[0].초;
 for (let i = 1; i < 컷들.length; i++) {
-  const 나옴 = i === 컷들.length - 1 ? "[out]" : `[x${i}]`;
+  const 나옴 = i === 컷들.length - 1 ? "[이은것]" : `[x${i}]`;
   거르기.push(`${앞}[v${i}]xfade=transition=${컷들[i - 1].전환 || "fade"}:duration=${겹침}:offset=${(누적 - 겹침).toFixed(3)}${나옴}`);
   누적 = 누적 + 컷들[i].초 - 겹침;
   앞 = 나옴;
 }
+
+// 도장은 **다 이은 뒤에** 한 번만 얹는다 — 컷마다 얹으면 전환할 때 같이 밀려 들어가 어지럽다.
+입력.push("-i", 도장);
+const 도장번 = 번++;
+거르기.push(`[${도장번}:v]format=rgba,colorchannelmixer=aa=0.92[도장]`);
+거르기.push(`[이은것][도장]overlay=x=40:y=64:format=auto[out]`);
 
 const 결과 = `${OUT}/두근도트-릴스3.mp4`;
 console.log(`컷 ${컷들.length}개 · 기대 길이 ${누적.toFixed(1)}초`);
