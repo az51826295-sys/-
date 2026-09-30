@@ -55,15 +55,78 @@ export type BondGain = {
   reasons: string[];
 };
 
+// ── 멀어지기 (227회차 09-30, 사장님 "올라가는 게 있으면 내려가는 것도 있어야지") ─────────────────
+//
+// 친밀도는 지금까지 **오르기만** 했다. 그러면 한 번 5단계가 된 사이는 석 달을 안 와도 5단계다 —
+// 숫자가 사이를 말하지 못한다. 그래서 **안 오면 멀어진다.**
+//
+// 무엇으로 깎나: **안 온 날 수**. 모델한테 "이 말이 서운했니" 를 묻지 않는다 — 이 파일 맨 위 원칙 그대로
+// 규칙이 센다. (말로 깎으면 츤데레 서하는 평소 말투가 퉁명해서 늘 깎인다.)
+//
+// 얼마나: 하루는 봐준다(어제 못 왔어도 괜찮다). 그 뒤로 **하루 −{@link DECAY_PER_DAY}점**, 0 밑으로는 안 간다.
+// 일주일을 비우면 −25 — 2단계(20~119)가 1단계로 내려갈 수 있는 정도. 한 달이면 −140.
+//
+// **오늘부터만 센다.** 이 규칙이 없던 날에 안 온 것을 소급해 깎으면, 쓰던 사람은 아무것도 안 했는데
+// 하트가 줄어든다. 09-29 에 채팅 목록을 바꾸다 쓰던 사람 방 7개를 날린 일이 있었다 — 같은 실수를 안 한다.
+export const DECAY_SINCE = "2026-09-30";
+export const DECAY_PER_DAY = 5;
+const DECAY_GRACE_DAYS = 1;
+
+function 날수(from: string, to: string): number {
+  return Math.round((Date.parse(to + "T00:00:00Z") - Date.parse(from + "T00:00:00Z")) / 86_400_000);
+}
+
+/** 마지막으로 이야기한 날부터 오늘까지 **깎을 점수**. 봐주는 날·시작일을 반영한다. */
+export function decayFor(lastTalkedOn: string | null, today: string): { lost: number; daysAway: number } {
+  if (!lastTalkedOn) return { lost: 0, daysAway: 0 };
+  const from = lastTalkedOn > DECAY_SINCE ? lastTalkedOn : DECAY_SINCE;   // 시작일 전은 안 센다
+  const 빈날 = 날수(from, today) - 1;                                       // 어제 왔으면 0
+  const 깎을날 = Math.max(0, 빈날 - DECAY_GRACE_DAYS);
+  return { lost: 깎을날 * DECAY_PER_DAY, daysAway: Math.max(0, 날수(lastTalkedOn, today) - 1) };
+}
+
+// ── 선물 (227회차 09-30, 사장님 "두쫀쿠 사주기 같이 선물을 선물하면 올라가게 해") ──────────────────
+//
+// 목록은 **내가 지어내지 않는다** — 사장님이 예로 든 두쫀쿠, 그리고 사장님이 캐릭터마다 적어 둔
+// "좋아하는 것" 에서 가져왔다(유나 소금빵 · 서하 딸기우유 · 린 캔커피 · 도윤 라면).
+//
+// **좋아하는 걸 주면 두 배.** 캐릭터의 persona 글에 그 낱말이 있으면 좋아하는 것이다 — 이름으로 분기하지
+// 않고 글에서 찾으므로, 설문으로 새 캐릭터가 오면 그 사람이 좋아하는 게 저절로 맞는다.
+//
+// **캐릭터마다 하루 한 번.** 무제한이면 선물 버튼만 연타해서 하루에 5단계가 된다 — 그러면 매일 오는 습관을
+// 파는 이 제품의 숫자가 뜻을 잃는다(위 applyTurn 주석). 대화 한 턴을 쓴다(말 대신 선물을 건네는 것이라서).
+export type Gift = { key: string; name: string; tell: string; points: number; 낱말: string[] };
+export const GIFTS: Gift[] = [
+  { key: "dzk", name: "두쫀쿠", tell: "두바이 쫀득 쿠키(두쫀쿠)", points: 8, 낱말: ["두쫀쿠", "쿠키"] },
+  { key: "saltbread", name: "소금빵", tell: "갓 구운 소금빵", points: 8, 낱말: ["소금빵"] },
+  { key: "strawmilk", name: "딸기우유", tell: "딸기우유", points: 8, 낱말: ["딸기우유"] },
+  { key: "cancoffee", name: "캔커피", tell: "캔커피", points: 8, 낱말: ["캔커피"] },
+  { key: "ramen", name: "라면", tell: "편의점 라면", points: 8, 낱말: ["라면"] },
+];
+export function giftFor(key: unknown): Gift | null {
+  return typeof key === "string" ? GIFTS.find((g) => g.key === key) ?? null : null;
+}
+/** 이 캐릭터가 좋아하는 선물인가 — persona 글에 낱말이 있나. 있으면 두 배. */
+export function giftPoints(gift: Gift, persona: string): { points: number; liked: boolean } {
+  const liked = gift.낱말.some((w) => persona.includes(w));
+  return { points: liked ? gift.points * 2 : gift.points, liked };
+}
+
 /**
  * 한 턴이 지났을 때 사이가 얼마나 가까워지나.
  *
  * 하루 첫 대화와 연속 출석에 크게 얹는다 — **매일 오는 것**이 이 제품이 파는
  * 습관이지, 한 번에 백 마디 쏟는 것이 아니다. 그래서 턴 자체는 1점만 준다.
+ *
+ * 09-30: 안 온 날만큼 **먼저 깎고**(decayFor), 선물이면 **얹는다**. 이유는 전부 reasons 에 남긴다 —
+ * 화면이 "3일 만이에요 −5" 를 보여 줘야 사람이 왜 줄었는지 안다. 말없이 줄면 고장으로 읽힌다.
  */
-export function applyTurn(prev: BondState, today: string, userText: string): BondGain {
+export function applyTurn(prev: BondState, today: string, userText: string, gift?: { name: string; points: number; liked: boolean } | null): BondGain {
   const reasons: string[] = [];
   let gained = 1;
+  const 멀어짐 = prev.lastTalkedOn !== today ? decayFor(prev.lastTalkedOn, today) : { lost: 0, daysAway: 0 };
+  if (멀어짐.lost > 0) reasons.push(`${멀어짐.daysAway}일 만이에요 −${멀어짐.lost}`);
+  if (gift) reasons.push(`${gift.name} 선물${gift.liked ? "(좋아하는 거!)" : ""} +${gift.points}`);
 
   const firstToday = prev.lastTalkedOn !== today;
   let streak = prev.streakDays;
@@ -85,11 +148,16 @@ export function applyTurn(prev: BondState, today: string, userText: string): Bon
     reasons.push("길게 말해 줌 +1");
   }
 
-  const points = prev.points + gained;
+  if (gift) gained += gift.points;
+  // 깎는 것은 **얹기 전에** 0 밑으로 안 가게 — 멀어진 뒤에 오늘 온 만큼은 온전히 받는다.
+  const 남은 = Math.max(0, prev.points - 멀어짐.lost);
+  const points = 남은 + gained;
   const stage = stageFor(points);
   if (stage > prev.stage) reasons.push(`${stage}단계가 됐어요`);
+  // 내려간 것도 말한다. 하트가 말없이 한 칸 줄면 사람은 고장인 줄 안다.
+  if (stage < prev.stage) reasons.push(`${stage}단계로 멀어졌어요`);
 
-  return { next: { points, stage, streakDays: streak, lastTalkedOn: today }, gained, reasons };
+  return { next: { points, stage, streakDays: streak, lastTalkedOn: today }, gained: points - prev.points, reasons };
 }
 
 function yesterdayOf(day: string): string {

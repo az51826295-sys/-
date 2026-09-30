@@ -11,6 +11,8 @@ import {
   applyTurn,
   stageVoiceFor,
   toVoiceLadder,
+  giftFor,
+  giftPoints,
   toMode,
   lengthRule,
   modeVoice,
@@ -76,7 +78,7 @@ type Answer = z.infer<typeof answer>;
 export type TurnResult =
   | { ok: true; reply: string; emotion: Emotion; sticker: Emotion | null; bond: { points: number; stage: number; gained: number; reasons: string[]; toNext: ReturnType<typeof toNextStage> }; remaining: number }
   | { ok: false; reason: "limit"; remaining: 0; resetsAt: string }
-  | { ok: false; reason: "no_character" | "failed"; message: string };
+  | { ok: false; reason: "no_character" | "failed" | "gift_limit"; message: string };
 
 type Character = { id: string; name: string; persona: string; speech: string; sprites: Record<string, string>; formal_start?: boolean; default_emotion?: string; voice_ladder?: string | null };
 
@@ -96,9 +98,15 @@ export type Prepared = {
   sinceSticker: number;
   /** 사람이 보낸 스티커 키(없으면 null). */
   userSticker: string | null;
+  /** 09-30: 선물이면 그 이름·점수·좋아하는 것인지. applyTurn 이 얹는다. */
+  gift: { key: string; name: string; points: number; liked: boolean } | null;
 };
 
-export type TurnOpts = { postCaption?: string | null; /** 사람이 보낸 스티커 키(90회차). 있으면 사람 말은 그 뜻으로 건넨다. */ userSticker?: string | null };
+export type TurnOpts = {
+  postCaption?: string | null;
+  /** 사람이 보낸 스티커 키(90회차). 있으면 사람 말은 그 뜻으로 건넨다. */ userSticker?: string | null;
+  /** 09-30 선물 키(bond.ts GIFTS). 스티커처럼 **말 대신 건네는 것**이라 같은 길을 탄다. */ gift?: string | null;
+};
 
 export async function prepareTurn(db: SupabaseClient, userId: string, characterId: string, text: string, opts: TurnOpts = {}): Promise<Prepared | Exclude<TurnResult, { ok: true }>> {
   const message = text.trim();
@@ -114,7 +122,7 @@ export async function prepareTurn(db: SupabaseClient, userId: string, characterI
   const [chRes, takeRes, bondRes, recentRes, countRes] = await Promise.all([
     db.from("dot_characters").select("id, name, persona, speech, sprites, formal_start, default_emotion, voice_ladder").eq("id", characterId).maybeSingle(),
     db.rpc("dot_take_turn", { p_user: userId, p_day: day, p_limit: FREE_TURNS_PER_DAY }),
-    db.from("dot_bonds").select("points, stage, streak_days, last_talked_on, memo, mode").eq("user_id", userId).eq("character_id", characterId).maybeSingle(),
+    db.from("dot_bonds").select("points, stage, streak_days, last_talked_on, memo, mode, last_gift_on").eq("user_id", userId).eq("character_id", characterId).maybeSingle(),
     db.from("dot_messages").select("role, content, sticker").eq("user_id", userId).eq("character_id", characterId).order("id", { ascending: false }).limit(HISTORY_TURNS * 2 + HISTORY_BLOCK),
     db.from("dot_messages").select("id", { count: "exact", head: true }).eq("user_id", userId).eq("character_id", characterId),
   ]);
@@ -136,6 +144,15 @@ export async function prepareTurn(db: SupabaseClient, userId: string, characterI
       lastTalkedOn: (bondRow?.last_talked_on as string) ?? null,
     };
     const memo: string[] = Array.isArray(bondRow?.memo) ? (bondRow!.memo as string[]) : [];
+    // ── 선물: 캐릭터마다 하루 한 번 ─────────────────────────────
+    const 선물 = giftFor(opts.gift);
+    if (opts.gift && !선물) { await giveBack(); return { ok: false, reason: "failed", message: "그런 선물은 없어요." }; }
+    if (선물 && (bondRow?.last_gift_on as string | null) === day) {
+      // 이미 턴을 가져왔으니 **돌려준다** — 선물이 막혔는데 대화 횟수까지 깎이면 두 번 손해다.
+      await giveBack();
+      return { ok: false, reason: "gift_limit", message: "오늘은 이미 선물했어요. 내일 또 줄 수 있어요." };
+    }
+    const 선물점 = 선물 ? giftPoints(선물, character.persona ?? "") : null;
     const mode = toMode(bondRow?.mode);
     const all = ((recent ?? []) as { role: string; content: string; sticker: string | null }[]).reverse();   // 오래된 것부터
     // 스티커 줄(빈 글)은 프롬프트에 안 넣는다. 마지막 스티커 뒤로 몇 줄 지났는지는 스티커 규칙이 쓴다(89회차).
@@ -184,11 +201,15 @@ export async function prepareTurn(db: SupabaseClient, userId: string, characterI
     // 피드 답장이면 사람 말 앞에 그 게시물을 붙인다 — 모델은 "내 게시물을 보고 하는 말" 로 받는다.
     const quoted = opts.postCaption ? `(사람이 네 게시물 "${opts.postCaption}" 을 보고 말한다 — 그 사진 얘기로 받아 준다)\n` : "";
     // 사람 스티커(90회차): 말 대신 그림을 보냈다 — 모델에겐 그 뜻을 글로. 짧게 그 기분에 맞춰 받는다.
-    const said = opts.userSticker && USER_STICKERS[opts.userSticker] ? `(${USER_STICKERS[opts.userSticker].tell}. 말 없이 스티커만 보냈다 — 그 기분에 맞춰 짧게 받아 준다)` : message;
+    const said = 선물
+      // 선물은 **네가 좋아하는 것인지**까지 모델에게 알린다 — 좋아하는 걸 받았을 때와 아닐 때 반응이 달라야 산다.
+      ? `(사람이 너에게 ${선물.tell}을(를) 선물했다.${선물점!.liked ? " 네가 정말 좋아하는 거다." : ""} 네 말투 그대로, 받은 기분을 짧게 말한다. 고맙다는 말만 하지 말고 네 성격대로.)`
+      : opts.userSticker && USER_STICKERS[opts.userSticker] ? `(${USER_STICKERS[opts.userSticker].tell}. 말 없이 스티커만 보냈다 — 그 기분에 맞춰 짧게 받아 준다)` : message;
     const input = [...history.map((h) => `${h.role === "user" ? "사람" : character.name}: ${h.content}`), `${quoted}사람: ${said}`,
       // 94회차: 시간 힌트는 방금 한 말을 보고 정한다 — 새벽 1시에 네 답 연속 새벽 타령 + "밥은 먹었어" 가 나왔다.
       timeHint(new Date(), history.filter((h) => h.role !== "user").slice(-4).map((h) => h.content))].join("\n");
-    return { character, day, used, prev, memo, system, input, message, t0, giveBack, sinceSticker, userSticker: opts.userSticker && USER_STICKERS[opts.userSticker] ? opts.userSticker : null };
+    return { character, day, used, prev, memo, system, input, message, t0, giveBack, sinceSticker, userSticker: opts.userSticker && USER_STICKERS[opts.userSticker] ? opts.userSticker : null,
+      gift: 선물 && 선물점 ? { key: 선물.key, name: 선물.name, points: 선물점.points, liked: 선물점.liked } : null };
   } catch (e) {
     await giveBack();
     return { ok: false, reason: "failed", message: e instanceof Error ? e.message : String(e) };
@@ -207,7 +228,7 @@ export async function finishTurn(
   // 67회차: 시큰둥이 기본인 인물(린)은 모델이 neutral 을 자주 낸다(15턴 중 8). 그 인물의 "무표정" 은
   // 무표정 그림이 아니라 시큰둥 그림이다 — 인물별 기본 표정으로 바꿔 보여 준다(글은 안 건드린다).
   if (emotion === "neutral" && p.character.default_emotion && p.character.default_emotion !== "neutral") emotion = toEmotion(p.character.default_emotion);
-  const gain = applyTurn(p.prev, p.day, p.message);
+  const gain = applyTurn(p.prev, p.day, p.message, p.gift);
   // 기억은 **문을 거친다**(memo.ts): 방금 말에 없는 낱말로 된 것은 버리고, 같은 얘기는 갈아 끼운다.
   // 09-11 운영 표에서 지어낸 기억("RPG 를 좋아한다")과 같은 말 세 번을 봤다.
   const decided = mergeMemo(p.memo, said.remember, p.message);
@@ -226,6 +247,7 @@ export async function finishTurn(
     ]),
     db.from("dot_bonds").upsert(
       { user_id: userId, character_id: p.character.id, points: gain.next.points, stage: gain.next.stage, streak_days: gain.next.streakDays, last_talked_on: gain.next.lastTalkedOn, memo: nextMemo, updated_at: new Date().toISOString(),
+        ...(p.gift ? { last_gift_on: p.day } : {}),
         // 말을 보냈다 = 방을 보고 있다(09-13). 방 열 때만 찍으면 그 안에서 받은 답이 전부 "안 읽음" 으로 셌다(사장님 화면 배지 5).
         last_seen_at: new Date(Date.now() + 1000).toISOString() },
       { onConflict: "user_id,character_id" },
@@ -257,8 +279,8 @@ export async function finishTurn(
 }
 
 /** 한 통으로 받는 길(옛 API·앱 호환). */
-export async function runDotTurn(db: SupabaseClient, userId: string, characterId: string, text: string): Promise<TurnResult> {
-  const p = await prepareTurn(db, userId, characterId, text);
+export async function runDotTurn(db: SupabaseClient, userId: string, characterId: string, text: string, opts: TurnOpts = {}): Promise<TurnResult> {
+  const p = await prepareTurn(db, userId, characterId, text, opts);
   if ("ok" in p) return p;
   try {
     const t = Date.now();

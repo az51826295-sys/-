@@ -19,7 +19,7 @@ export async function POST(request: Request) {
   const userId = await userIdFrom(request);
   if (!userId) return Response.json({ error: "로그인이 필요해요." }, { status: 401 });
 
-  let body: { characterId?: unknown; message?: unknown; postId?: unknown; sticker?: unknown };
+  let body: { characterId?: unknown; message?: unknown; postId?: unknown; sticker?: unknown; gift?: unknown };
   try { body = (await request.json()) as typeof body; } catch { return Response.json({ error: "요청을 읽지 못했어요." }, { status: 400 }); }
   const characterId = typeof body.characterId === "string" ? body.characterId : "";
   const message = typeof body.message === "string" ? body.message : "";
@@ -34,15 +34,19 @@ export async function POST(request: Request) {
   }
 
   const userSticker = isUserSticker(body.sticker) ? body.sticker : null;
+  // 09-30 선물. 키 확인은 turn 이 한다(없는 선물이면 턴을 돌려주고 거절).
+  const gift = typeof body.gift === "string" ? body.gift : null;
 
   const enc = new TextEncoder();
   const stream = new ReadableStream<Uint8Array>({
     async start(controller) {
       const send = (o: unknown) => { try { controller.enqueue(enc.encode(JSON.stringify(o) + "\n")); } catch { /* 창을 닫았다 */ } };
       try {
-        const r = await streamDotTurn(createServiceClient(), userId, characterId, message, (text) => send({ type: "delta", text }), { postCaption, userSticker });
+        const r = await streamDotTurn(createServiceClient(), userId, characterId, message, (text) => send({ type: "delta", text }), { postCaption, userSticker, gift });
         if (r.ok) send({ type: "done", ...r });
         else if (r.reason === "limit") send({ type: "error", ...r });
+        // 선물 하루 한 번 — 이유를 그대로 전한다("잠깐 문제" 로 뭉치면 사람은 고장인 줄 안다).
+        else if (r.reason === "gift_limit") send({ type: "error", reason: "gift_limit", message: r.message });
         else { console.error("[dot] 턴 실패:", r.message); send({ type: "error", reason: "failed", message: "잠깐 문제가 생겼어요. 다시 말해 줄래요?" }); }
       } catch (e) {
         console.error("[dot] 흘려보내기 예외:", e instanceof Error ? e.message : e);

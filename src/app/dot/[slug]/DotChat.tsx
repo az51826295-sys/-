@@ -5,6 +5,7 @@ import Link from "next/link";
 import { pushState, enablePush, disablePush, type PushState } from "./push-client";
 import { SKUS, AD_REFILL_TURNS, type Balance } from "@/lib/dot/money";
 import { USER_STICKERS, USER_STICKER_KEYS } from "@/lib/dot/stickers";
+import { GIFTS } from "@/lib/dot/bond";
 import { splitBubbles } from "@/lib/dot/bubbles";
 
 /**
@@ -221,14 +222,16 @@ export default function DotChat({
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [stickerOpen, setStickerOpen] = useState(false);
+  /** 09-30 선물 판. 스티커 판과 동시에 안 열린다. */
+  const [giftOpen, setGiftOpen] = useState(false);
   // 91회차 사장님 "채팅에서 뭔 기능인지 잘 모르겠다": 첫 방문에 한 번, 이 방의 단추가 뭔지 세 줄. 메뉴 "도움말" 로 다시 볼 수 있다.
   const [guide, setGuide] = useState(false);
   useEffect(() => { try { if (signedIn && !localStorage.getItem("dot-guide-v1")) setGuide(true); } catch { /* 저장소 없음 */ } }, [signedIn]);
   function closeGuide() { setGuide(false); try { localStorage.setItem("dot-guide-v1", "1"); } catch { /* 이번만 */ } }
-  async function send(preset?: string, stickerKey?: string) {
+  async function send(preset?: string, stickerKey?: string, giftKey?: string) {
     const message = (preset ?? text).trim();
     if (!message || busy || !who) return;
-    setText(""); setStickerOpen(false);
+    setText(""); setStickerOpen(false); setGiftOpen(false);
     // 09-11 사장님 "메시지 발송 부분이 어색해": 보내고 나서 입력창을 잠갔더니 폰 키보드가 내려갔다. 초점은 입력창에 남긴다.
     if (inputRef.current) { inputRef.current.style.height = ""; if (!preset) inputRef.current.focus(); }
     setLines((l) => [...l, { role: "user", content: message, emotion: null, sticker: stickerKey ? `user:${stickerKey}` : null, at: new Date().toISOString() }]);
@@ -240,7 +243,7 @@ export default function DotChat({
       const res = await fetch("/api/dot/chat/stream", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ characterId: who.id, message, postId: replyTo?.id ?? null, sticker: stickerKey ?? null }),
+        body: JSON.stringify({ characterId: who.id, message, postId: replyTo?.id ?? null, sticker: stickerKey ?? null, gift: giftKey ?? null }),
       });
       setReplyTo(null);
       if (!res.ok || !res.body) {
@@ -468,8 +471,31 @@ export default function DotChat({
             ))}
           </div>
         )}
+        {giftOpen && (
+          <div className="kk-gifts">
+            {/*
+              09-30 사장님 "두쫀쿠 사주기 같이 선물을 선물하면 올라가게 해".
+              캐릭터마다 하루 한 번. 좋아하는 걸 주면 두 배 — 어느 게 좋아하는 건지는 **안 알려 준다**.
+              대화하다 알게 되는 것이 재미다(유나가 소금빵 얘기를 먼저 꺼낸다).
+            */}
+            <div className="kk-gifts-title">{who.name}에게 선물하기 <small>하루 한 번</small></div>
+            <div className="kk-gifts-grid">
+              {GIFTS.map((g) => (
+                <button key={g.key} onClick={() => send(`🎁 ${g.name}`, undefined, g.key)} disabled={busy || remaining <= 0}>
+                  <span className="kk-gift-name">{g.name}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
         <div className="kk-input-row">
-          <button className="kk-emo" aria-label="스티커" onClick={() => setStickerOpen((v) => !v)} disabled={!mounted || !signedIn}>
+          <button className="kk-emo" aria-label="선물" onClick={() => { setGiftOpen((v) => !v); setStickerOpen(false); }} disabled={!mounted || !signedIn}>
+            <svg width="22" height="22" viewBox="0 0 12 12" shapeRendering="crispEdges" aria-hidden>
+              <path fill="currentColor" d="M3 1h2v1h-2zM7 1h2v1h-2zM2 2h1v2h-1zM5 2h2v2h-2zM9 2h1v2h-1zM0 4h12v3h-12zM1 7h10v5h-10z" />
+              <path fill="var(--bar, #fff)" d="M5 4h2v8h-2z" opacity="0.55" />
+            </svg>
+          </button>
+          <button className="kk-emo" aria-label="스티커" onClick={() => { setStickerOpen((v) => !v); setGiftOpen(false); }} disabled={!mounted || !signedIn}>
             <svg width="22" height="22" viewBox="0 0 12 12" shapeRendering="crispEdges" aria-hidden><path fill="currentColor" d={USER_STICKERS.smile.path} fillRule="evenodd" /></svg>
           </button>
           <textarea
@@ -835,6 +861,13 @@ const CSS = `
 .kk-stickers { position:relative; z-index:2; display:grid; grid-template-columns:repeat(6, 1fr); gap:4px; padding:8px; background:var(--bar, #fff); border-top:1px solid rgba(0,0,0,.06); }
 .kk-stickers button { background:none; border:none; display:flex; flex-direction:column; align-items:center; gap:2px; font:inherit; font-size:11px; color:var(--ink, #5c6570); cursor:pointer; padding:4px 0; }
 .kk-stickers button:disabled { opacity:.4; }
+.kk-gifts { position:relative; z-index:2; padding:10px 10px 12px; background:var(--bar, #fff); border-top:1px solid rgba(0,0,0,.06); }
+.kk-gifts-title { font-size:13px; font-weight:700; color:var(--ink, #3c434b); margin:0 2px 8px; }
+.kk-gifts-title small { font-weight:400; color:#8a919a; margin-left:6px; }
+.kk-gifts-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:6px; }
+.kk-gifts-grid button { min-height:44px; border:1.5px solid rgba(0,0,0,.14); border-radius:12px; background:#fff; font:inherit; font-size:14px; color:#141414; cursor:pointer; }
+.kk-gifts-grid button:active { background:#fff1f3; border-color:#ff5c7a; }
+.kk-gifts-grid button:disabled { opacity:.4; }
 .kk-input-row { position:relative; z-index:2; display:flex; gap:6px; align-items:flex-end; padding:8px 8px calc(8px + env(safe-area-inset-bottom)); background:var(--bar, rgba(255,255,255,.92)); backdrop-filter:blur(8px); border-top:1px solid rgba(0,0,0,.06); }
 .kk-quote { display:flex; align-items:center; gap:10px; padding:8px 12px; background:var(--bar, #fff); border-top:1px solid rgba(0,0,0,.06); }
 .kk-quote img { width:36px; height:45px; object-fit:cover; image-rendering:pixelated; border-radius:6px; }

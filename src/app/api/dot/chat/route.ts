@@ -15,7 +15,7 @@ export async function POST(request: Request) {
   const userId = await userIdFrom(request);
   if (!userId) return Response.json({ error: "로그인이 필요해요." }, { status: 401 });
 
-  let body: { characterId?: unknown; message?: unknown };
+  let body: { characterId?: unknown; message?: unknown; gift?: unknown };
   try {
     body = (await request.json()) as typeof body;
   } catch {
@@ -30,10 +30,13 @@ export async function POST(request: Request) {
     return Response.json({ error: "메시지가 너무 길어요(1000자)." }, { status: 400 });
   }
 
-  const result = await runDotTurn(createServiceClient(), userId, characterId, message);
+  // 09-30 선물 — 안드로이드 앱(Bearer)도 같은 길로 선물한다.
+  const gift = typeof body.gift === "string" ? body.gift : null;
+  const result = await runDotTurn(createServiceClient(), userId, characterId, message, { gift });
   if (result.ok) return Response.json(result);
   if (result.reason === "limit") return Response.json(result, { status: 429 });
   if (result.reason === "no_character") return Response.json(result, { status: 404 });
+  if (result.reason === "gift_limit") return Response.json(result, { status: 409 });
   console.error("[dot] 턴 실패:", result.message);
   return Response.json({ ok: false, reason: "failed", message: "잠깐 문제가 생겼어요. 다시 말해 줄래요?" }, { status: 500 });
 }
