@@ -268,10 +268,14 @@ export default function DotChat({
           if (ev.bond) setBond((b) => ({ ...b, ...ev.bond }));  // 턴 결과엔 mode 가 없다 — 덮어쓰지 말고 합친다
           if (typeof ev.remaining === "number") setRemaining(ev.remaining);
           if (ev.bond?.reasons?.length) setToast(ev.bond.reasons.join("  "));
+          // 선물이 되면 낸 크레딧만큼 화면 잔고도 줄인다(선물 판의 "보유 N크레딧" 이 옛 숫자로 남지 않게).
+          if (giftKey) { const g = GIFTS.find((x) => x.key === giftKey); if (g) setBalance((b) => ({ ...b, credits: Math.max(0, b.credits - g.price) })); }
         } else if (ev.type === "error") {
           finished = true;
           setLive(null);
           setToast(ev.reason === "limit" ? "오늘 대화는 다 썼어요. 내일 또 만나요" : ev.message ?? ev.error ?? "문제가 생겼어요");
+          // 09-30 선물은 유료 — 크레딧이 모자라면 말만 하지 말고 **충전 창을 연다.** 막다른 길로 두지 않는다.
+          if (ev.reason === "no_credits") setShopOpen(true);
         }
       };
       for (;;) {
@@ -478,11 +482,13 @@ export default function DotChat({
               캐릭터마다 하루 한 번. 좋아하는 걸 주면 두 배 — 어느 게 좋아하는 건지는 **안 알려 준다**.
               대화하다 알게 되는 것이 재미다(유나가 소금빵 얘기를 먼저 꺼낸다).
             */}
-            <div className="kk-gifts-title">{who.name}에게 선물하기 <small>하루 한 번</small></div>
+            <div className="kk-gifts-title">{who.name}에게 선물하기 <small>하루 한 번 · 보유 {balance.credits}크레딧</small></div>
             <div className="kk-gifts-grid">
               {GIFTS.map((g) => (
-                <button key={g.key} onClick={() => send(`🎁 ${g.name}`, undefined, g.key)} disabled={busy || remaining <= 0}>
+                <button key={g.key} onClick={() => send(`🎁 ${g.name}`, undefined, g.key)} disabled={busy}>
                   <span className="kk-gift-name">{g.name}</span>
+                  {/* 값을 **누르기 전에** 보여 준다 — 누르고 나서 "모자라요" 는 속은 기분이 든다. */}
+                  <span className="kk-gift-price">{g.price}크레딧</span>
                 </button>
               ))}
             </div>
@@ -865,7 +871,8 @@ const CSS = `
 .kk-gifts-title { font-size:13px; font-weight:700; color:var(--ink, #3c434b); margin:0 2px 8px; }
 .kk-gifts-title small { font-weight:400; color:#8a919a; margin-left:6px; }
 .kk-gifts-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:6px; }
-.kk-gifts-grid button { min-height:44px; border:1.5px solid rgba(0,0,0,.14); border-radius:12px; background:#fff; font:inherit; font-size:14px; color:#141414; cursor:pointer; }
+.kk-gifts-grid button { min-height:52px; border:1.5px solid rgba(0,0,0,.14); border-radius:12px; background:#fff; font:inherit; font-size:14px; color:#141414; cursor:pointer; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; }
+.kk-gift-price { font-size:11px; color:#ff5c7a; font-weight:600; }
 .kk-gifts-grid button:active { background:#fff1f3; border-color:#ff5c7a; }
 .kk-gifts-grid button:disabled { opacity:.4; }
 .kk-input-row { position:relative; z-index:2; display:flex; gap:6px; align-items:flex-end; padding:8px 8px calc(8px + env(safe-area-inset-bottom)); background:var(--bar, rgba(255,255,255,.92)); backdrop-filter:blur(8px); border-top:1px solid rgba(0,0,0,.06); }

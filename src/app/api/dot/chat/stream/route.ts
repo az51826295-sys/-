@@ -46,7 +46,7 @@ export async function POST(request: Request) {
         if (r.ok) send({ type: "done", ...r });
         else if (r.reason === "limit") send({ type: "error", ...r });
         // 선물 하루 한 번 — 이유를 그대로 전한다("잠깐 문제" 로 뭉치면 사람은 고장인 줄 안다).
-        else if (r.reason === "gift_limit") send({ type: "error", reason: "gift_limit", message: r.message });
+        else if (r.reason === "gift_limit" || r.reason === "no_credits") send({ type: "error", reason: r.reason, message: r.message });
         else { console.error("[dot] 턴 실패:", r.message); send({ type: "error", reason: "failed", message: "잠깐 문제가 생겼어요. 다시 말해 줄래요?" }); }
       } catch (e) {
         console.error("[dot] 흘려보내기 예외:", e instanceof Error ? e.message : e);

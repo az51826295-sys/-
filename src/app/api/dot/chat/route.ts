@@ -37,6 +37,8 @@ export async function POST(request: Request) {
   if (result.reason === "limit") return Response.json(result, { status: 429 });
   if (result.reason === "no_character") return Response.json(result, { status: 404 });
   if (result.reason === "gift_limit") return Response.json(result, { status: 409 });
+  // 09-30 선물은 유료 — 크레딧이 모자라면 402(결제 필요). 앱은 이걸 보고 충전 창을 연다.
+  if (result.reason === "no_credits") return Response.json(result, { status: 402 });
   console.error("[dot] 턴 실패:", result.message);
   return Response.json({ ok: false, reason: "failed", message: "잠깐 문제가 생겼어요. 다시 말해 줄래요?" }, { status: 500 });
 }

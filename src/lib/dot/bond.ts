@@ -94,14 +94,19 @@ export function decayFor(lastTalkedOn: string | null, today: string): { lost: nu
 // 않고 글에서 찾으므로, 설문으로 새 캐릭터가 오면 그 사람이 좋아하는 게 저절로 맞는다.
 //
 // **캐릭터마다 하루 한 번.** 무제한이면 선물 버튼만 연타해서 하루에 5단계가 된다 — 그러면 매일 오는 습관을
-// 파는 이 제품의 숫자가 뜻을 잃는다(위 applyTurn 주석). 대화 한 턴을 쓴다(말 대신 선물을 건네는 것이라서).
-export type Gift = { key: string; name: string; tell: string; points: number; 낱말: string[] };
+// 파는 이 제품의 숫자가 뜻을 잃는다(위 applyTurn 주석). 유료가 된 뒤에도 남긴다 — 돈으로 사이를 한 번에 사는
+// 길을 막고, 어린 사용자가 한자리에서 크레딧을 몰아 쓰는 것도 막는다.
+//
+// **유료**(09-30 사장님 "선물은 돈내고 하는 거야") — 충전한 **크레딧**으로 산다(대화 50번 1,900원과 같은 지갑).
+// 대화 턴은 안 쓴다(두 번 받지 않는다). `price` 는 **자리표** — money.ts SKUS 처럼 값은 사장님이 정한다.
+// 크레딧 1개 ≈ 25~38원(대화 200번 4,900원 ~ 50번 1,900원)이라 10크레딧 ≈ 250~380원.
+export type Gift = { key: string; name: string; tell: string; points: number; price: number; 낱말: string[] };
 export const GIFTS: Gift[] = [
-  { key: "dzk", name: "두쫀쿠", tell: "두바이 쫀득 쿠키(두쫀쿠)", points: 8, 낱말: ["두쫀쿠", "쿠키"] },
-  { key: "saltbread", name: "소금빵", tell: "갓 구운 소금빵", points: 8, 낱말: ["소금빵"] },
-  { key: "strawmilk", name: "딸기우유", tell: "딸기우유", points: 8, 낱말: ["딸기우유"] },
-  { key: "cancoffee", name: "캔커피", tell: "캔커피", points: 8, 낱말: ["캔커피"] },
-  { key: "ramen", name: "라면", tell: "편의점 라면", points: 8, 낱말: ["라면"] },
+  { key: "dzk", name: "두쫀쿠", tell: "두바이 쫀득 쿠키(두쫀쿠)", points: 8, price: 15, 낱말: ["두쫀쿠", "쿠키"] },
+  { key: "saltbread", name: "소금빵", tell: "갓 구운 소금빵", points: 8, price: 10, 낱말: ["소금빵"] },
+  { key: "strawmilk", name: "딸기우유", tell: "딸기우유", points: 8, price: 10, 낱말: ["딸기우유"] },
+  { key: "cancoffee", name: "캔커피", tell: "캔커피", points: 8, price: 10, 낱말: ["캔커피"] },
+  { key: "ramen", name: "라면", tell: "편의점 라면", points: 8, price: 10, 낱말: ["라면"] },
 ];
 export function giftFor(key: unknown): Gift | null {
   return typeof key === "string" ? GIFTS.find((g) => g.key === key) ?? null : null;

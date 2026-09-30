@@ -78,7 +78,7 @@ type Answer = z.infer<typeof answer>;
 export type TurnResult =
   | { ok: true; reply: string; emotion: Emotion; sticker: Emotion | null; bond: { points: number; stage: number; gained: number; reasons: string[]; toNext: ReturnType<typeof toNextStage> }; remaining: number }
   | { ok: false; reason: "limit"; remaining: 0; resetsAt: string }
-  | { ok: false; reason: "no_character" | "failed" | "gift_limit"; message: string };
+  | { ok: false; reason: "no_character" | "failed" | "gift_limit" | "no_credits"; message: string };
 
 type Character = { id: string; name: string; persona: string; speech: string; sprites: Record<string, string>; formal_start?: boolean; default_emotion?: string; voice_ladder?: string | null };
 
@@ -121,12 +121,23 @@ export async function prepareTurn(db: SupabaseClient, userId: string, characterI
   // 필요는 없다 — 한도에 걸리면 읽은 것을 버리면 된다.
   const [chRes, takeRes, bondRes, recentRes, countRes] = await Promise.all([
     db.from("dot_characters").select("id, name, persona, speech, sprites, formal_start, default_emotion, voice_ladder").eq("id", characterId).maybeSingle(),
-    db.rpc("dot_take_turn", { p_user: userId, p_day: day, p_limit: FREE_TURNS_PER_DAY }),
+    // 09-30 사장님 "선물은 돈내고 하는 거야" — 선물은 **크레딧**으로 산다. 대화 턴까지 가져가면 두 번 받는다.
+    opts.gift ? Promise.resolve({ data: 1, error: null }) : db.rpc("dot_take_turn", { p_user: userId, p_day: day, p_limit: FREE_TURNS_PER_DAY }),
     db.from("dot_bonds").select("points, stage, streak_days, last_talked_on, memo, mode, last_gift_on").eq("user_id", userId).eq("character_id", characterId).maybeSingle(),
     db.from("dot_messages").select("role, content, sticker").eq("user_id", userId).eq("character_id", characterId).order("id", { ascending: false }).limit(HISTORY_TURNS * 2 + HISTORY_BLOCK),
     db.from("dot_messages").select("id", { count: "exact", head: true }).eq("user_id", userId).eq("character_id", characterId),
   ]);
-  const giveBack = async (): Promise<void> => { await db.rpc("dot_give_back_turn", { p_user: userId, p_day: day, p_limit: FREE_TURNS_PER_DAY }).then(() => {}, () => {}); };
+  /** 실패하면 **받은 것을 돌려준다.** 대화면 턴 하나, 선물이면 낸 크레딧(아래서 값이 정해지면 바뀐다). */
+  let 돌려줄크레딧 = 0, 선물키 = "";
+  const giveBack = async (): Promise<void> => {
+    if (돌려줄크레딧 > 0) {
+      await db.rpc("dot_grant", { p_user: userId, p_sku: `gift_refund:${선물키}`, p_credits: 돌려줄크레딧, p_menhera_days: 0, p_source: "refund", p_ref: null }).then(() => {}, () => {});
+      돌려줄크레딧 = 0;
+      return;
+    }
+    if (opts.gift) return;   // 선물은 턴을 안 가져갔다 — 돌려줄 턴도 없다
+    await db.rpc("dot_give_back_turn", { p_user: userId, p_day: day, p_limit: FREE_TURNS_PER_DAY }).then(() => {}, () => {});
+  };
 
   const character = chRes.data ? (chRes.data as unknown as Character) : null;
   if (!character) { if (Number(takeRes.data ?? 0) > 0) await giveBack(); return { ok: false, reason: "no_character", message: "그런 캐릭터가 없다" }; }
@@ -153,6 +164,13 @@ export async function prepareTurn(db: SupabaseClient, userId: string, characterI
       return { ok: false, reason: "gift_limit", message: "오늘은 이미 선물했어요. 내일 또 줄 수 있어요." };
     }
     const 선물점 = 선물 ? giftPoints(선물, character.persona ?? "") : null;
+    if (선물) {
+      // **원자적으로** 뺀다(dot_spend_credits) — 두 번 눌러도 잔고가 모자라면 두 번째는 막힌다.
+      const { data: 남음, error: se } = await db.rpc("dot_spend_credits", { p_user: userId, p_amount: 선물.price, p_sku: `gift:${선물.key}` });
+      if (se) return { ok: false, reason: "failed", message: se.message };
+      if (Number(남음) < 0) return { ok: false, reason: "no_credits", message: `크레딧이 모자라요. ${선물.name}은(는) ${선물.price}크레딧이에요.` };
+      돌려줄크레딧 = 선물.price; 선물키 = 선물.key;   // 이 뒤로 실패하면 돌려준다
+    }
     const mode = toMode(bondRow?.mode);
     const all = ((recent ?? []) as { role: string; content: string; sticker: string | null }[]).reverse();   // 오래된 것부터
     // 스티커 줄(빈 글)은 프롬프트에 안 넣는다. 마지막 스티커 뒤로 몇 줄 지났는지는 스티커 규칙이 쓴다(89회차).
