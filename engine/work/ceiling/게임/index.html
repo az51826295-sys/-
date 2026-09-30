@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>별빛 수호대</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main id="app">
+    <section id="titleScreen" class="screen active">
+      <div class="title-card">
+        <div class="eyebrow">OFFLINE TOWER DEFENSE</div>
+        <h1>별빛 수호대</h1>
+        <p>길을 지키고 10개의 웨이브를 막아내세요.</p>
+        <div class="record">최고 기록 <strong id="highScore">0</strong> 웨이브</div>
+        <button id="startButton" class="primary">시작</button>
+      </div>
+    </section>
+
+    <section id="gameScreen" class="screen">
+      <header class="topbar">
+        <div class="brand">✦ 별빛 수호대</div>
+        <div class="stats">
+          <span>💰 <b id="money">220</b></span>
+          <span>❤ <b id="lives">20</b></span>
+          <span>웨이브 <b id="wave">1</b> / 10</span>
+        </div>
+        <button id="pauseButton" class="pause">Ⅱ 일시정지</button>
+      </header>
+      <div class="game-layout">
+        <div class="board-wrap">
+          <canvas id="gameCanvas" width="900" height="560"></canvas>
+          <div id="message" class="message"></div>
+          <div id="pausedLabel" class="paused-label hidden">일시정지</div>
+        </div>
+        <aside class="sidebar">
+          <h2>타워 선택</h2>
+          <p class="hint">타워를 고른 뒤 잔디를 클릭하세요.</p>
+          <button class="tower-choice selected" data-type="blaster"><span class="tower-icon blue">●</span><span><b>블래스터</b><small>가격 50 · 공격 12</small></span></button>
+          <button class="tower-choice" data-type="cannon"><span class="tower-icon orange">◆</span><span><b>캐논</b><small>가격 85 · 공격 28</small></span></button>
+          <button class="tower-choice" data-type="frost"><span class="tower-icon cyan">✦</span><span><b>프로스트</b><small>가격 70 · 공격 8 · 둔화</small></span></button>
+          <div id="towerPanel" class="tower-panel hidden">
+            <h3 id="selectedTowerName">타워</h3>
+            <div id="towerStats"></div>
+            <button id="upgradeButton" class="small-button">업그레이드</button>
+            <button id="sellButton" class="small-button sell">판매</button>
+          </div>
+          <div class="legend"><span>● 적</span><span>━ 길</span><span>◆ 타워</span></div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="gameOverScreen" class="screen">
+      <div class="title-card">
+        <div class="eyebrow danger">THE LINE FELL</div>
+        <h1>게임 오버</h1>
+        <p>수호대가 도달한 웨이브</p>
+        <div class="final-wave" id="finalWave">1</div>
+        <button id="retryButton" class="primary">다시 하기</button>
+      </div>
+    </section>
+  </main>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+export const TOWER_TYPES={blaster:{name:'블래스터',price:50,damage:12,range:125,rate:.55,color:'#65b8ff'},cannon:{name:'캐논',price:85,damage:28,range:105,rate:1.15,color:'#ffae65'},frost:{name:'프로스트',price:70,damage:8,range:145,rate:.7,color:'#69f0e2'}};
+export class Tower{
+ constructor(x,y,type){this.x=x;this.y=y;this.type=type;this.level=1;this.damage=TOWER_TYPES[type].damage;this.range=TOWER_TYPES[type].range;this.rate=TOWER_TYPES[type].rate;this.cool=0;this.totalCost=TOWER_TYPES[type].price;this.target=null;}
+ update(dt,enemies,projectiles){this.cool-=dt;if(this.cool>0)return;let best=null,dist=Infinity;for(const e of enemies){let d=Math.hypot(e.x-this.x,e.y-this.y);if(!e.dead&&d<=this.range&&d<dist){best=e;dist=d}}if(best){this.target=best;this.cool=this.rate;projectiles.push({x:this.x,y:this.y,target:best,speed:430,damage:this.damage,color:TOWER_TYPES[this.type].color,slow:this.type==='frost'});}}
+ upgrade(){let cost=this.upgradeCost();this.level++;this.damage=Math.round(this.damage*1.45);this.range+=12;this.totalCost+=cost;return cost}
+ upgradeCost(){return 45+this.level*30}
+ draw(ctx,selected){ctx.beginPath();ctx.fillStyle=TOWER_TYPES[this.type].color;ctx.arc(this.x,this.y,18,0,Math.PI*2);ctx.fill();ctx.fillStyle='#132035';ctx.fillRect(this.x-4,this.y-14,8,28);ctx.strokeStyle=selected?'#fff':'#17324c';ctx.lineWidth=selected?3:2;ctx.stroke();if(selected){ctx.beginPath();ctx.strokeStyle=this.color+'55';ctx.arc(this.x,this.y,this.range,0,Math.PI*2);ctx.stroke();}}
+}
+export function updateProjectiles(projectiles,dt,moneyRef){for(let i=projectiles.length-1;i>=0;i--){let p=projectiles[i],e=p.target;if(!e||e.dead){projectiles.splice(i,1);continue}let dx=e.x-p.x,dy=e.y-p.y,d=Math.hypot(dx,dy),step=p.speed*dt;if(d<=step){if(e.damage(p.damage,p.slow))moneyRef.value+=e.reward;p.hit=true;projectiles.splice(i,1)}else{p.x+=dx/d*step;p.y+=dy/d*step}}}
+export function drawProjectiles(ctx,ps){for(const p of ps){ctx.beginPath();ctx.fillStyle=p.color;ctx.arc(p.x,p.y,5,0,Math.PI*2);ctx.fill();}}

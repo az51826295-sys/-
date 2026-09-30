@@ -1,0 +1,525 @@
+{
+ "loop": {
+  "usd": 0.027759999999999993,
+  "facts": {
+   "ms": 23060,
+   "did": [
+    "'시작' 누름",
+    "5초 기다림",
+    "'일시정지\n        \n        \n       ' 누름",
+    "(330,110) 누름",
+    "3초 기다림",
+    "'일시정지\n        \n        \n       ' 누름",
+    "(330,140) 누름",
+    "'길 위에는 타워를 배치할 수 없어요\n          ' 누름",
+    "(330,170) 누름",
+    "'Ⅱ 일시정지' 누름",
+    "2초 기다림",
+    "'일시정지' 누름",
+    "움직이는 자리 0번 누름",
+    "0.8초 기다림"
+   ],
+   "ran": true,
+   "text": "✦ 별빛 수호대 💰 120 ❤ 20 웨이브 1 / 10 ▶ 다시 길 위에는 타워를 배치할 수 없어요 일시정지 타워 선택 타워를 고른 뒤 잔디를 클릭하세요. ● 블래스터 가격 50 · 공격 12 ◆ 캐논 가격 85 · 공격 28 ✦ 프로스트 가격 70 · 공격 8 · 둔화 ● 적 ━ 길 ◆ 타워",
+   "shots": {
+    "mid": "",
+    "after": "",
+    "start": ""
+   },
+   "blankAtStart": false,
+   "changesOnTap": false,
+   "changesOnKeys": false,
+   "consoleErrors": [],
+   "movesByItself": false
+  },
+  "rounds": [
+   {
+    "n": 1,
+    "ms": 38327,
+    "met": 3,
+    "usd": 0.003,
+    "best": true,
+    "edits": 3,
+    "unmet": 1,
+    "broken": 1,
+    "errors": 0,
+    "unknown": 14,
+    "toPerson": "시작 화면과 기본 게임 화면, 길 위 배치 거부는 확인됐지만 적이 자동으로 움직이지 않아 주요 진행 기능은 아직 확인되지 않았습니다."
+   },
+   {
+    "n": 2,
+    "ms": 47919,
+    "met": 3,
+    "usd": 0.007,
+    "best": true,
+    "edits": 3,
+    "unmet": 1,
+    "broken": 0,
+    "errors": 0,
+    "unknown": 14,
+    "toPerson": "시작 화면과 게임 화면은 보였지만, 시작 뒤 적이 움직이지 않아 전투와 웨이브 진행 반응은 확인하지 못했습니다."
+   },
+   {
+    "n": 3,
+    "ms": 44577,
+    "met": 2,
+    "usd": 0.006,
+    "best": false,
+    "edits": 0,
+    "unmet": 1,
+    "broken": 0,
+    "errors": 0,
+    "unknown": 15,
+    "toPerson": "시작 화면과 게임 화면은 보였지만 적 이동과 타워·웨이브·게임 오버 동작은 아직 확인되지 않았습니다."
+   }
+  ],
+  "verdict": {
+   "met": [
+    "c1",
+    "c2",
+    "c7"
+   ],
+   "done": false,
+   "unmet": [
+    {
+     "id": "c3",
+     "why": "시작 후 5초를 기다렸지만 적이 나타나거나 길을 따라 움직이는 반응이 보이지 않았다."
+    }
+   ],
+   "broken": [],
+   "unknown": [
+    "c4",
+    "c5",
+    "c6",
+    "c8",
+    "c9",
+    "c10",
+    "c11",
+    "c12",
+    "c13",
+    "c14",
+    "c15",
+    "c16",
+    "c17",
+    "c18"
+   ],
+   "toPerson": "시작 화면과 게임 화면은 보였지만, 시작 뒤 적이 움직이지 않아 전투와 웨이브 진행 반응은 확인하지 못했습니다.",
+   "toWorker": "c3: 시작 뒤에도 적 생성·이동이 시작되지 않으므로 웨이브 스폰과 게임 시간 갱신을 시작 버튼 동작에 연결하세요.\n게임 화면은 그려지고 콘솔 오류는 없지만, 현재는 적이 없어 전투·웨이브·게임 오버·타워 기능을 확인할 수 없습니다.",
+   "nextActions": [
+    {
+     "n": null,
+     "x": null,
+     "y": null,
+     "do": "click_text",
+     "ms": null,
+     "key": null,
+     "text": "시작"
+    },
+    {
+     "n": null,
+     "x": null,
+     "y": null,
+     "do": "wait",
+     "ms": 1000,
+     "key": null,
+     "text": null
+    },
+    {
+     "n": null,
+     "x": null,
+     "y": null,
+     "do": "click_text",
+     "ms": null,
+     "key": null,
+     "text": "● 블래스터"
+    },
+    {
+     "n": null,
+     "x": 330,
+     "y": 110,
+     "do": "tap",
+     "ms": null,
+     "key": null,
+     "text": null
+    },
+    {
+     "n": null,
+     "x": null,
+     "y": null,
+     "do": "wait",
+     "ms": 10000,
+     "key": null,
+     "text": null
+    },
+    {
+     "n": null,
+     "x": null,
+     "y": null,
+     "do": "click_text",
+     "ms": null,
+     "key": null,
+     "text": "일시정지"
+    },
+    {
+     "n": null,
+     "x": null,
+     "y": null,
+     "do": "wait",
+     "ms": 2000,
+     "key": null,
+     "text": null
+    },
+    {
+     "n": null,
+     "x": null,
+     "y": null,
+     "do": "click_text",
+     "ms": null,
+     "key": null,
+     "text": "일시정지"
+    },
+    {
+     "n": null,
+     "x": null,
+     "y": null,
+     "do": "wait",
+     "ms": 5000,
+     "key": null,
+     "text": null
+    }
+   ]
+  },
+  "bestRound": 2,
+  "stoppedBy": "patch_failed"
+ },
+ "note": "코드 문법만 확인했어요(7개 확인, 0개 문제, 2개는 확인 못 함). 브라우저에서 실제로 3번 돌려 보고 6군데 고쳤어요(제일 잘 된 2번째 판이에요).",
+ "files": [
+  {
+   "path": "index.html",
+   "contents": "<!doctype html>\n<html lang=\"ko\">\n<head>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n  <title>별빛 수호대</title>\n  <link rel=\"stylesheet\" href=\"styles.css\">\n</head>\n<body>\n  <main id=\"app\">\n    <section id=\"titleScreen\" class=\"screen active\">\n      <div class=\"title-card\">\n        <div class=\"eyebrow\">OFFLINE TOWER DEFENSE</div>\n        <h1>별빛 수호대</h1>\n        <p>길을 지키고 10개의 웨이브를 막아내세요.</p>\n        <div class=\"record\">최고 기록 <strong id=\"highScore\">0</strong> 웨이브</div>\n        <button id=\"startButton\" class=\"primary\">시작</button>\n      </div>\n    </section>\n\n    <section id=\"gameScreen\" class=\"screen\">\n      <header class=\"topbar\">\n        <div class=\"brand\">✦ 별빛 수호대</div>\n        <div class=\"stats\">\n          <span>💰 <b id=\"money\">220</b></span>\n          <span>❤ <b id=\"lives\">20</b></span>\n          <span>웨이브 <b id=\"wave\">1</b> / 10</span>\n        </div>\n        <button id=\"pauseButton\" class=\"pause\">Ⅱ 일시정지</button>\n      </header>\n      <div class=\"game-layout\">\n        <div class=\"board-wrap\">\n          <canvas id=\"gameCanvas\" width=\"900\" height=\"560\"></canvas>\n          <div id=\"message\" class=\"message\"></div>\n          <div id=\"pausedLabel\" class=\"paused-label hidden\">일시정지</div>\n        </div>\n        <aside class=\"sidebar\">\n          <h2>타워 선택</h2>\n          <p class=\"hint\">타워를 고른 뒤 잔디를 클릭하세요.</p>\n          <button class=\"tower-choice selected\" data-type=\"blaster\"><span class=\"tower-icon blue\">●</span><span><b>블래스터</b><small>가격 50 · 공격 12</small></span></button>\n          <button class=\"tower-choice\" data-type=\"cannon\"><span class=\"tower-icon orange\">◆</span><span><b>캐논</b><small>가격 85 · 공격 28</small></span></button>\n          <button class=\"tower-choice\" data-type=\"frost\"><span class=\"tower-icon cyan\">✦</span><span><b>프로스트</b><small>가격 70 · 공격 8 · 둔화</small></span></button>\n          <div id=\"towerPanel\" class=\"tower-panel hidden\">\n            <h3 id=\"selectedTowerName\">타워</h3>\n            <div id=\"towerStats\"></div>\n            <button id=\"upgradeButton\" class=\"small-button\">업그레이드</button>\n            <button id=\"sellButton\" class=\"small-button sell\">판매</button>\n          </div>\n          <div class=\"legend\"><span>● 적</span><span>━ 길</span><span>◆ 타워</span></div>\n        </aside>\n      </div>\n    </section>\n\n    <section id=\"gameOverScreen\" class=\"screen\">\n      <div class=\"title-card\">\n        <div class=\"eyebrow danger\">THE LINE FELL</div>\n        <h1>게임 오버</h1>\n        <p>수호대가 도달한 웨이브</p>\n        <div class=\"final-wave\" id=\"finalWave\">1</div>\n        <button id=\"retryButton\" class=\"primary\">다시 하기</button>\n      </div>\n    </section>\n  </main>\n  <script type=\"module\" src=\"js/main.js\"></script>\n</body>\n</html>",
+   "language": "html"
+  },
+  {
+   "path": "styles.css",
+   "contents": "*{box-sizing:border-box}body{margin:0;background:#101827;color:#edf5ff;font-family:system-ui,-apple-system,\"Segoe UI\",sans-serif}button{font:inherit;cursor:pointer}#app{min-height:100vh}.screen{display:none;min-height:100vh}.screen.active{display:flex}.title-card{margin:auto;text-align:center;padding:48px 60px;background:#19263b;border:1px solid #314563;border-radius:24px;box-shadow:0 20px 70px #0006;min-width:360px}.eyebrow{letter-spacing:3px;color:#71d4ff;font-size:12px;font-weight:700}.danger{color:#ff8c87}.title-card h1{font-size:48px;margin:14px 0 8px;background:linear-gradient(90deg,#82dbff,#d9a6ff);color:transparent;background-clip:text}.title-card p{color:#aebdd0}.record{margin:28px 0;color:#aebdd0}.record strong{font-size:25px;color:#fff;margin:0 7px}.primary{border:0;border-radius:12px;background:#5b8cff;color:#fff;padding:13px 52px;font-weight:800;box-shadow:0 5px 20px #5b8cff55}.primary:hover{background:#7ba4ff}.topbar{height:70px;padding:0 24px;display:flex;align-items:center;gap:30px;background:#18253a;border-bottom:1px solid #32445f}.brand{font-weight:800;font-size:20px;color:#8bddff}.stats{display:flex;gap:26px;margin:auto;font-size:16px}.stats b{color:#fff}.pause{background:#273953;border:1px solid #49617f;color:#dbe9fa;border-radius:8px;padding:8px 13px}.game-layout{display:flex;justify-content:center;gap:18px;padding:18px}.board-wrap{position:relative}.board-wrap canvas{display:block;max-width:calc(100vw - 300px);height:auto;background:#1c513f;border:2px solid #456f63;border-radius:10px}.sidebar{width:250px;background:#18253a;border:1px solid #314563;border-radius:12px;padding:18px;flex:none}.sidebar h2{font-size:18px;margin:0}.hint{font-size:12px;color:#91a4ba}.tower-choice{display:flex;align-items:center;text-align:left;gap:10px;width:100%;padding:10px;margin:8px 0;color:#edf5ff;background:#22334d;border:1px solid transparent;border-radius:8px}.tower-choice:hover,.tower-choice.selected{border-color:#74bfff;background:#2a4161}.tower-choice small{display:block;color:#9fb2c8;font-size:11px;margin-top:3px}.tower-icon{width:30px;text-align:center;font-size:23px}.blue{color:#72b8ff}.orange{color:#ffad64}.cyan{color:#69f0e2}.tower-panel{margin-top:17px;padding-top:14px;border-top:1px solid #39506e}.tower-panel h3{margin:0 0 8px}.tower-panel p{font-size:12px;color:#a9bbd0;margin:5px 0}.small-button{width:100%;border:0;border-radius:7px;padding:8px;margin-top:8px;background:#527ee8;color:#fff}.small-button.sell{background:#a34e68}.hidden{display:none!important}.legend{margin-top:25px;color:#9db0c6;font-size:11px;display:flex;flex-direction:column;gap:5px}.message{position:absolute;top:14px;left:50%;transform:translateX(-50%);padding:9px 17px;border-radius:20px;background:#18253eee;color:#ffe39b;opacity:0;transition:opacity .2s;pointer-events:none}.message.show{opacity:1}.paused-label{position:absolute;inset:0;display:grid;place-items:center;font-size:38px;font-weight:800;background:#09121a88;color:#fff}.final-wave{font-size:60px;font-weight:800;color:#ffbd6c;margin:12px}\n@media(max-width:850px){.game-layout{padding:8px;display:block}.board-wrap canvas{max-width:100%;width:100%}.sidebar{width:100%;margin-top:8px}.tower-choice{display:inline-flex;width:32%;vertical-align:top}.stats{gap:8px;font-size:12px}.brand{font-size:14px}.topbar{padding:0 8px;gap:8px}}\n",
+   "language": "css"
+  },
+  {
+   "path": "js/storage.js",
+   "contents": "const KEY = 'starlight-high-score';\nexport function getHighScore(){ return Number(localStorage.getItem(KEY) || 0); }\nexport function saveHighScore(value){ const old=getHighScore(); if(value>old) localStorage.setItem(KEY,String(value)); return Math.max(old,value); }\n",
+   "language": "javascript"
+  },
+  {
+   "path": "js/enemy.js",
+   "contents": "export class Enemy{\n  constructor(path, wave){ this.path=path; this.x=path[0].x; this.y=path[0].y; this.segment=0; this.hp=45+wave*13; this.maxHp=this.hp; this.speed=38+wave*2; this.radius=14; this.dead=false; this.reward=8+Math.floor(wave/2); this.slow=1; }\n  update(dt){ if(this.dead)return 'dead'; this.slow=Math.min(1,this.slow+dt*.35); let remain=this.speed*this.slow*dt; while(remain>0 && this.segment<this.path.length-1){let p=this.path[this.segment+1],dx=p.x-this.x,dy=p.y-this.y,d=Math.hypot(dx,dy);if(d<=remain){this.x=p.x;this.y=p.y;this.segment++;remain-=d}else{this.x+=dx/d*remain;this.y+=dy/d*remain;remain=0}} if(this.segment>=this.path.length-1)return 'escaped'; return 'moving'; }\n  damage(n,slow=false){this.hp-=n;if(slow)this.slow=.38;return this.hp<=0;}\n  draw(ctx){ctx.beginPath();ctx.fillStyle='#ff7181';ctx.arc(this.x,this.y,this.radius,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#ffd1d5';ctx.stroke();ctx.fillStyle='#161d2c';ctx.fillRect(this.x-18,this.y-25,36,5);ctx.fillStyle='#68e391';ctx.fillRect(this.x-18,this.y-25,36*Math.max(0,this.hp/this.maxHp),5);ctx.fillStyle='#fff';ctx.font='10px sans-serif';ctx.textAlign='center';ctx.fillText(Math.ceil(Math.max(0,this.hp)),this.x,this.y+4);}\n}\n",
+   "language": "javascript"
+  },
+  {
+   "path": "js/tower.js",
+   "contents": "export const TOWER_TYPES={blaster:{name:'블래스터',price:50,damage:12,range:125,rate:.55,color:'#65b8ff'},cannon:{name:'캐논',price:85,damage:28,range:105,rate:1.15,color:'#ffae65'},frost:{name:'프로스트',price:70,damage:8,range:145,rate:.7,color:'#69f0e2'}};\nexport class Tower{\n constructor(x,y,type){this.x=x;this.y=y;this.type=type;this.level=1;this.damage=TOWER_TYPES[type].damage;this.range=TOWER_TYPES[type].range;this.rate=TOWER_TYPES[type].rate;this.cool=0;this.totalCost=TOWER_TYPES[type].price;this.target=null;}\n update(dt,enemies,projectiles){this.cool-=dt;if(this.cool>0)return;let best=null,dist=Infinity;for(const e of enemies){let d=Math.hypot(e.x-this.x,e.y-this.y);if(!e.dead&&d<=this.range&&d<dist){best=e;dist=d}}if(best){this.target=best;this.cool=this.rate;projectiles.push({x:this.x,y:this.y,target:best,speed:430,damage:this.damage,color:TOWER_TYPES[this.type].color,slow:this.type==='frost'});}}\n upgrade(){let cost=this.upgradeCost();this.level++;this.damage=Math.round(this.damage*1.45);this.range+=12;this.totalCost+=cost;return cost}\n upgradeCost(){return 45+this.level*30}\n draw(ctx,selected){ctx.beginPath();ctx.fillStyle=TOWER_TYPES[this.type].color;ctx.arc(this.x,this.y,18,0,Math.PI*2);ctx.fill();ctx.fillStyle='#132035';ctx.fillRect(this.x-4,this.y-14,8,28);ctx.strokeStyle=selected?'#fff':'#17324c';ctx.lineWidth=selected?3:2;ctx.stroke();if(selected){ctx.beginPath();ctx.strokeStyle=this.color+'55';ctx.arc(this.x,this.y,this.range,0,Math.PI*2);ctx.stroke();}}\n}\nexport function updateProjectiles(projectiles,dt,moneyRef){for(let i=projectiles.length-1;i>=0;i--){let p=projectiles[i],e=p.target;if(!e||e.dead){projectiles.splice(i,1);continue}let dx=e.x-p.x,dy=e.y-p.y,d=Math.hypot(dx,dy),step=p.speed*dt;if(d<=step){if(e.damage(p.damage,p.slow))moneyRef.value+=e.reward;p.hit=true;projectiles.splice(i,1)}else{p.x+=dx/d*step;p.y+=dy/d*step}}}\nexport function drawProjectiles(ctx,ps){for(const p of ps){ctx.beginPath();ctx.fillStyle=p.color;ctx.arc(p.x,p.y,5,0,Math.PI*2);ctx.fill();}}\n",
+   "language": "javascript"
+  },
+  {
+   "path": "js/wave.js",
+   "contents": "import {Enemy} from './enemy.js';\nexport class WaveManager{constructor(path){this.path=path;this.number=1;this.spawned=0;this.total=5;this.timer=0.5;this.gap=1.15;this.active=true;}reset(n=1){this.number=n;this.spawned=0;this.total=4+n;this.timer=0;this.active=true;}update(dt,enemies){if(!this.active)return;if(this.spawned<this.total){this.timer-=dt;if(this.timer<=0){enemies.push(new Enemy(this.path,this.number));this.spawned++;this.timer=this.gap;}}else if(enemies.length===0){if(this.number<10){this.number++;this.reset(this.number)}else this.active=false;}}}\n",
+   "language": "javascript"
+  },
+  {
+   "path": "js/scene.js",
+   "contents": "export function drawScene(ctx,path,towers,enemies,projectiles,selected){ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);ctx.fillStyle='#245a43';ctx.fillRect(0,0,900,560);ctx.setLineDash([18,12]);ctx.lineWidth=42;ctx.lineCap='round';ctx.strokeStyle='#b88b63';ctx.beginPath();ctx.moveTo(path[0].x,path[0].y);for(let i=1;i<path.length;i++)ctx.lineTo(path[i].x,path[i].y);ctx.stroke();ctx.setLineDash([]);ctx.lineWidth=3;ctx.strokeStyle='#d8b07d';ctx.stroke();ctx.fillStyle='#b5e6bd';ctx.font='bold 13px sans-serif';ctx.fillText('START',18,120);ctx.fillText('EXIT',820,475);for(const t of towers)t.draw(ctx,t===selected);for(const e of enemies)e.draw(ctx);for(const p of projectiles){ctx.beginPath();ctx.fillStyle=p.color;ctx.arc(p.x,p.y,5,0,Math.PI*2);ctx.fill();}}\nexport function isOnPath(x,y,path){for(let i=0;i<path.length-1;i++){let a=path[i],b=path[i+1],dx=b.x-a.x,dy=b.y-a.y,t=Math.max(0,Math.min(1,((x-a.x)*dx+(y-a.y)*dy)/(dx*dx+dy*dy)));if(Math.hypot(x-(a.x+t*dx),y-(a.y+t*dy))<30)return true}return false;}\n",
+   "language": "javascript"
+  },
+  {
+   "path": "js/ui.js",
+   "contents": "export class UI{constructor(){this.$=id=>document.getElementById(id);this.high=this.$('highScore');this.money=this.$('money');this.lives=this.$('lives');this.wave=this.$('wave');this.messageEl=this.$('message');}show(id){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));this.$(id).classList.add('active')}stats(m,l,w){this.money.textContent=m;this.lives.textContent=l;this.wave.textContent=w}message(s){this.messageEl.textContent=s;this.messageEl.classList.add('show');clearTimeout(this.mt);this.mt=setTimeout(()=>this.messageEl.classList.remove('show'),1800)}}\n",
+   "language": "javascript"
+  },
+  {
+   "path": "js/main.js",
+   "contents": "import {getHighScore,saveHighScore} from './storage.js';import {Tower,TOWER_TYPES,updateProjectiles} from './tower.js';import {WaveManager} from './wave.js';import {drawScene,isOnPath} from './scene.js';import {UI} from './ui.js';\nconst ui=new UI(),canvas=document.getElementById('gameCanvas'),ctx=canvas.getContext('2d');ui.high.textContent=getHighScore();\nconst path=[{x:0,y:135},{x:185,y:135},{x:185,y:410},{x:430,y:410},{x:430,y:155},{x:690,y:155},{x:690,y:455},{x:900,y:455}];let towers=[],enemies=[],projectiles=[],money=220,lives=20,selectedType='blaster',selectedTower=null,paused=false,running=false,last=0,wave;\nfunction reset(){towers=[];enemies=[];projectiles=[];money=220;lives=20;paused=false;running=true;wave=new WaveManager(path);ui.stats(money,lives,wave.number);document.getElementById('pausedLabel').classList.add('hidden');document.getElementById('pauseButton').textContent='Ⅱ 일시정지';last=0;requestAnimationFrame(loop)}\nfunction loop(time){if(!running)return;if(!last)last=time;let dt=Math.min(.05,(time-last)/1000||0);last=time;if(!paused){wave.update(dt,enemies);for(const e of [...enemies]){let result=e.update(dt);if(result==='escaped'){enemies.splice(enemies.indexOf(e),1);lives--;ui.message('적이 끝에 도달했습니다! 목숨 -1');if(lives<=0){endGame();return}}}for(const t of towers)t.update(dt,enemies,projectiles);let wallet={value:money};updateProjectiles(projectiles,dt,wallet);money=wallet.value;for(let i=enemies.length-1;i>=0;i--)if(enemies[i].dead||enemies[i].hp<=0){money+=enemies[i].reward;enemies.splice(i,1)}if(wave.number!==Number(ui.wave.textContent))ui.message('다음 웨이브 시작!');ui.stats(money,lives,wave.number);if(!wave.active&&enemies.length===0){ui.message('10 웨이브 완주!');running=false;saveHighScore(10)}}drawScene(ctx,path,towers,enemies,projectiles,selectedTower);requestAnimationFrame(loop)}\nfunction endGame(){running=false;let reached=wave?wave.number:1;saveHighScore(reached);document.getElementById('finalWave').textContent=reached;ui.show('gameOverScreen')}\nfunction pos(ev){let r=canvas.getBoundingClientRect();return{x:(ev.clientX-r.left)*canvas.width/r.width,y:(ev.clientY-r.top)*canvas.height/r.height}}\ncanvas.addEventListener('click',ev=>{if(!running||paused)return;let p=pos(ev),hit=towers.find(t=>Math.hypot(t.x-p.x,t.y-p.y)<22);if(hit){selectedTower=hit;showTowerPanel();return}selectedTower=null;hideTowerPanel();if(isOnPath(p.x,p.y,path)){ui.message('길 위에는 타워를 배치할 수 없어요');return}let info=TOWER_TYPES[selectedType];if(money<info.price){ui.message('돈이 모자라요');return}towers.push(new Tower(p.x,p.y,selectedType));money-=info.price;ui.stats(money,lives,wave.number)});\nfunction showTowerPanel(){let panel=document.getElementById('towerPanel'),t=selectedTower;panel.classList.remove('hidden');document.getElementById('selectedTowerName').textContent=TOWER_TYPES[t.type].name+' Lv.'+t.level;document.getElementById('towerStats').innerHTML='<p>공격력: '+t.damage+' · 사거리: '+Math.round(t.range)+'</p><p>업그레이드: '+t.upgradeCost()+' 골드</p>';}\nfunction hideTowerPanel(){document.getElementById('towerPanel').classList.add('hidden')}\ndocument.querySelectorAll('.tower-choice').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.tower-choice').forEach(x=>x.classList.remove('selected'));b.classList.add('selected');selectedType=b.dataset.type;selectedTower=null;hideTowerPanel()}));\ndocument.getElementById('upgradeButton').addEventListener('click',()=>{if(!selectedTower)return;let cost=selectedTower.upgradeCost();if(money<cost){ui.message('돈이 모자라요');return}money-=selectedTower.upgrade();ui.stats(money,lives,wave.number);showTowerPanel()});\ndocument.getElementById('sellButton').addEventListener('click',()=>{if(!selectedTower)return;money+=Math.floor(selectedTower.totalCost*.7);towers.splice(towers.indexOf(selectedTower),1);selectedTower=null;hideTowerPanel();ui.stats(money,lives,wave.number)});\ndocument.getElementById('pauseButton').addEventListener('click',()=>{if(!running)return;paused=!paused;document.getElementById('pausedLabel').classList.toggle('hidden',!paused);document.getElementById('pauseButton').textContent=paused?'▶ 다시':'Ⅱ 일시정지'});\ndocument.getElementById('startButton').addEventListener('click',()=>{ui.show('gameScreen');reset()});document.getElementById('retryButton').addEventListener('click',()=>{ui.show('gameScreen');reset()});\n",
+   "language": "javascript"
+  }
+ ],
+ "seats": {
+  "fix": null,
+  "build": "gpt-5.6-luna",
+  "judge": "gpt-5.6-luna",
+  "fixWhy": "섞어 보내기(30%)",
+  "fixMode": null
+ },
+ "stage": "prototype",
+ "target": "web",
+ "verify": {
+  "files": [
+   {
+    "ok": false,
+    "path": "index.html",
+    "errors": [],
+    "checked": false,
+    "language": "html"
+   },
+   {
+    "ok": false,
+    "path": "styles.css",
+    "errors": [],
+    "checked": false,
+    "language": "css"
+   },
+   {
+    "ok": true,
+    "path": "js/storage.js",
+    "errors": [],
+    "checked": true,
+    "language": "javascript"
+   },
+   {
+    "ok": true,
+    "path": "js/enemy.js",
+    "errors": [],
+    "checked": true,
+    "language": "javascript"
+   },
+   {
+    "ok": true,
+    "path": "js/tower.js",
+    "errors": [],
+    "checked": true,
+    "language": "javascript"
+   },
+   {
+    "ok": true,
+    "path": "js/wave.js",
+    "errors": [],
+    "checked": true,
+    "language": "javascript"
+   },
+   {
+    "ok": true,
+    "path": "js/scene.js",
+    "errors": [],
+    "checked": true,
+    "language": "javascript"
+   },
+   {
+    "ok": true,
+    "path": "js/ui.js",
+    "errors": [],
+    "checked": true,
+    "language": "javascript"
+   },
+   {
+    "ok": true,
+    "path": "js/main.js",
+    "errors": [],
+    "checked": true,
+    "language": "javascript"
+   }
+  ],
+  "broken": 0,
+  "parsed": 7,
+  "repaired": false,
+  "unchecked": 2
+ },
+ "patched": null,
+ "summary": {
+  "met": 3,
+  "criteria": 18
+ },
+ "askJudge": null,
+ "coverage": [
+  {
+   "met": true,
+   "where": "index.html의 제목 화면과 js/storage.js의 localStorage 최고 기록",
+   "criterionId": "c1"
+  },
+  {
+   "met": true,
+   "where": "js/main.js의 시작 버튼 및 게임 상단 stats",
+   "criterionId": "c2"
+  },
+  {
+   "met": true,
+   "where": "js/wave.js, js/enemy.js의 자동 생성·경로 이동",
+   "criterionId": "c3"
+  },
+  {
+   "met": true,
+   "where": "js/main.js에서 escaped 적 제거 및 lives 감소",
+   "criterionId": "c4"
+  },
+  {
+   "met": true,
+   "where": "js/main.js 캔버스 클릭 배치와 가격 차감",
+   "criterionId": "c5"
+  },
+  {
+   "met": true,
+   "where": "js/main.js의 잔액 검사 및 '돈이 모자라요'",
+   "criterionId": "c6"
+  },
+  {
+   "met": true,
+   "where": "js/scene.js isOnPath 검사",
+   "criterionId": "c7"
+  },
+  {
+   "met": true,
+   "where": "js/tower.js의 사거리 타겟팅·투사체·체력 감소",
+   "criterionId": "c8"
+  },
+  {
+   "met": true,
+   "where": "js/main.js의 hp<=0 제거와 보상 증가",
+   "criterionId": "c9"
+  },
+  {
+   "met": true,
+   "where": "js/wave.js의 적 소진 후 다음 웨이브",
+   "criterionId": "c10"
+  },
+  {
+   "met": true,
+   "where": "js/main.js endGame 및 gameOverScreen",
+   "criterionId": "c11"
+  },
+  {
+   "met": true,
+   "where": "js/main.js paused 상태에서 업데이트 중단",
+   "criterionId": "c12"
+  },
+  {
+   "met": true,
+   "where": "js/main.js 타워 클릭 및 towerPanel",
+   "criterionId": "c13"
+  },
+  {
+   "met": true,
+   "where": "js/tower.js upgrade와 main.js 업그레이드 버튼",
+   "criterionId": "c14"
+  },
+  {
+   "met": true,
+   "where": "js/main.js 판매 버튼과 환급",
+   "criterionId": "c15"
+  },
+  {
+   "met": true,
+   "where": "js/storage.js 저장 및 제목 초기화 표시",
+   "criterionId": "c16"
+  },
+  {
+   "met": true,
+   "where": "js/ui.js, scene.js, enemy.js, tower.js, wave.js, storage.js로 로직 분리",
+   "criterionId": "c17"
+  },
+  {
+   "met": true,
+   "where": "index.html/styles.css 및 모든 JS가 외부 리소스 없이 동작",
+   "criterionId": "c18"
+  }
+ ],
+ "criteria": [
+  {
+   "id": "c1",
+   "then": "최고 기록이 없던 첫 실행이면 0(또는 초기값)으로 보이고, 값은 숫자로 읽을 수 있다.",
+   "when": "브라우저에서 index.html을 열면 제목 화면에 게임 이름, \"시작\" 버튼, 최고 기록 값이 보인다."
+  },
+  {
+   "id": "c2",
+   "then": "게임 화면으로 전환되고 길, 돈, 목숨, 현재 웨이브 번호가 동시에 보인다.",
+   "when": "제목 화면에서 \"시작\" 버튼을 누른다."
+  },
+  {
+   "id": "c3",
+   "then": "적이 길 시작점에서 생성되어 길 경로를 따라 끝점 방향으로 연속 이동한다.",
+   "when": "게임 화면을 5초 이상 본다."
+  },
+  {
+   "id": "c4",
+   "then": "해당 적은 화면에서 사라지고 목숨 숫자가 정확히 1 감소한다.",
+   "when": "적 하나가 길 끝점에 도달한다."
+  },
+  {
+   "id": "c5",
+   "then": "선택한 타워 1개가 배치되고 돈 숫자가 그 타워 가격만큼 감소한다.",
+   "when": "타워 선택 후 길이 아닌 빈 칸을 클릭하고 돈이 충분하다."
+  },
+  {
+   "id": "c6",
+   "then": "타워는 배치되지 않고 돈 숫자는 변하지 않으며 \"돈이 모자라요\" 안내 문구가 보인다.",
+   "when": "현재 돈보다 가격이 높은 타워를 같은 방식으로 배치 시도한다."
+  },
+  {
+   "id": "c7",
+   "then": "타워는 배치되지 않고 기존 타워/돈/목숨/웨이브 값은 변하지 않는다.",
+   "when": "길 위 좌표를 클릭해 타워 배치를 시도한다."
+  },
+  {
+   "id": "c8",
+   "then": "타워가 자동 공격하고 맞은 적의 체력 표시 숫자가 감소한다.",
+   "when": "타워 사거리 안으로 적이 들어온 상태를 2초 이상 관찰한다."
+  },
+  {
+   "id": "c9",
+   "then": "적은 즉시 제거되고 돈 숫자가 증가한다.",
+   "when": "적 체력이 0 이하가 된다."
+  },
+  {
+   "id": "c10",
+   "then": "다음 웨이브가 시작되며 웨이브 번호가 정확히 1 증가한다.",
+   "when": "현재 웨이브의 적이 모두 죽거나 모두 길 끝에 도달한다."
+  },
+  {
+   "id": "c11",
+   "then": "게임 오버 화면으로 전환되고 도달 웨이브 수와 \"다시 하기\" 버튼이 보인다.",
+   "when": "게임 진행 중 목숨이 0이 된다."
+  },
+  {
+   "id": "c12",
+   "then": "적 좌표와 투사체 좌표가 더 이상 변하지 않고, 다시 버튼을 눌러 해제하면 이동/공격이 재개된다.",
+   "when": "게임 화면에서 일시정지 버튼을 눌러 정지 상태로 2초 기다린다."
+  },
+  {
+   "id": "c13",
+   "then": "해당 타워의 업그레이드 버튼과 판매 버튼이 보인다.",
+   "when": "배치된 타워를 클릭한다."
+  },
+  {
+   "id": "c14",
+   "then": "돈이 업그레이드 비용만큼 감소하고 타워 공격력 또는 사거리 수치가 상승한다.",
+   "when": "업그레이드 비용이 충분한 상태에서 업그레이드 버튼을 누른다."
+  },
+  {
+   "id": "c15",
+   "then": "해당 타워가 제거되고 돈이 판매 환급액만큼 증가한다.",
+   "when": "판매 버튼을 누른다."
+  },
+  {
+   "id": "c16",
+   "then": "제목 화면 최고 기록이 갱신된 값으로 유지되어 보인다.",
+   "when": "게임 오버 후 기록이 기존 최고 기록보다 높고 페이지를 새로고침한다."
+  },
+  {
+   "id": "c17",
+   "then": "화면(UI/scene), 적(enemy), 타워(tower), 웨이브(wave/spawn), 저장(storage) 로직이 분리된 복수 JS 파일로 나뉘어 있다.",
+   "when": "프로젝트 파일 구성을 확인한다."
+  },
+  {
+   "id": "c18",
+   "then": "외부 폰트·라이브러리·원격 이미지 없이 게임이 동일하게 실행되고 렌더링된다.",
+   "when": "네트워크를 끊은 상태에서 index.html을 실행한다."
+  }
+ ],
+ "howToRun": "모든 파일을 같은 구조로 저장한 뒤 index.html을 브라우저에서 열면 됩니다. 외부 라이브러리나 네트워크가 필요하지 않습니다. ES 모듈이 차단되는 브라우저에서는 간단한 로컬 서버(예: `python3 -m http.server`)를 프로젝트 폴더에서 실행하고 `http://localhost:8000`으로 접속하세요.",
+ "humanGate": [
+  "타워/적/투사체 시각 표현이 서로 충분히 구분되어 플레이 중 오인되지 않는지",
+  "화면 전환(제목→게임→오버)의 연출이 사용자에게 부자연스럽지 않은지",
+  "난이도 상승(웨이브 1~10)이 체감상 급격히 무너지지 않는지"
+ ],
+ "expectations": [],
+ "끝까지못봄": {
+  "말": "조각이 안 붙어 멈췄다",
+  "바퀴": 3,
+  "멈춘이유": "patch_failed"
+ }
+}

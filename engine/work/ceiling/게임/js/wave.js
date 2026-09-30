@@ -1,0 +1,2 @@
+import {Enemy} from './enemy.js';
+export class WaveManager{constructor(path){this.path=path;this.number=1;this.spawned=0;this.total=5;this.timer=0.5;this.gap=1.15;this.active=true;}reset(n=1){this.number=n;this.spawned=0;this.total=4+n;this.timer=0;this.active=true;}update(dt,enemies){if(!this.active)return;if(this.spawned<this.total){this.timer-=dt;if(this.timer<=0){enemies.push(new Enemy(this.path,this.number));this.spawned++;this.timer=this.gap;}}else if(enemies.length===0){if(this.number<10){this.number++;this.reset(this.number)}else this.active=false;}}}

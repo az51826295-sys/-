@@ -1,0 +1,6 @@
+export class Enemy{
+  constructor(path, wave){ this.path=path; this.x=path[0].x; this.y=path[0].y; this.segment=0; this.hp=45+wave*13; this.maxHp=this.hp; this.speed=38+wave*2; this.radius=14; this.dead=false; this.reward=8+Math.floor(wave/2); this.slow=1; }
+  update(dt){ if(this.dead)return 'dead'; this.slow=Math.min(1,this.slow+dt*.35); let remain=this.speed*this.slow*dt; while(remain>0 && this.segment<this.path.length-1){let p=this.path[this.segment+1],dx=p.x-this.x,dy=p.y-this.y,d=Math.hypot(dx,dy);if(d<=remain){this.x=p.x;this.y=p.y;this.segment++;remain-=d}else{this.x+=dx/d*remain;this.y+=dy/d*remain;remain=0}} if(this.segment>=this.path.length-1)return 'escaped'; return 'moving'; }
+  damage(n,slow=false){this.hp-=n;if(slow)this.slow=.38;return this.hp<=0;}
+  draw(ctx){ctx.beginPath();ctx.fillStyle='#ff7181';ctx.arc(this.x,this.y,this.radius,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#ffd1d5';ctx.stroke();ctx.fillStyle='#161d2c';ctx.fillRect(this.x-18,this.y-25,36,5);ctx.fillStyle='#68e391';ctx.fillRect(this.x-18,this.y-25,36*Math.max(0,this.hp/this.maxHp),5);ctx.fillStyle='#fff';ctx.font='10px sans-serif';ctx.textAlign='center';ctx.fillText(Math.ceil(Math.max(0,this.hp)),this.x,this.y+4);}
+}
