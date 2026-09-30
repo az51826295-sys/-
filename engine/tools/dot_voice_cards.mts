@@ -16,11 +16,26 @@
 import sharp from "sharp";
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 
-const 표 = process.argv[2] ?? "후";
-const 자료 = JSON.parse(readFileSync(`engine/work/voice/${표}.json`, "utf8")) as {
-  할말: string[];
-  판들: { 캐릭터: string; 단계: number; 답: string[] }[];
-};
+/**
+ * 여러 판을 받는다(`후 후2 후3`). 09-30 첫 판은 **"가장 다른 답"** 을 골랐더니 서하 카드가 거꾸로 나왔다 —
+ * "친해진 뒤" 가 더 짧고 무뚝뚝했다. 차이가 크다고 **약속한 방향**인 건 아니다.
+ * 그래서 캐릭터 사다리(bond.ts stageVoiceFor)가 약속한 방향으로 점수를 매긴다:
+ *   polite   — 1단계 존댓말이 많고 5단계가 적을수록
+ *   tsundere — 1단계 부정("딱히…")이 있고 5단계가 없을수록, 5단계가 길수록
+ *   blunt    — 5단계가 1단계보다 길수록
+ * 방향이 거꾸로인 쌍은 **아예 못 고른다.** 세 판을 합쳐 잰 평균이 이 방향이었으므로(dot_voice_sum),
+ * 그 평균을 보여 주는 한 쌍을 고르는 것이다 — 평균과 반대인 예를 고르면 그게 거짓말이다.
+ */
+const 표들 = process.argv.slice(2).length ? process.argv.slice(2) : ["후"];
+type 판 = { 캐릭터: string; 단계: number; 답: string[] };
+const 자료 = { 할말: [] as string[], 판들: [] as 판[] };
+for (const 표 of 표들) {
+  const j = JSON.parse(readFileSync(`engine/work/voice/${표}.json`, "utf8")) as { 할말: string[]; 판들: 판[] };
+  자료.할말 = j.할말;
+  자료.판들.push(...j.판들);
+}
+const 사다리: Record<string, "polite" | "tsundere" | "blunt"> = { 유나: "polite", 서하: "tsundere", 린: "blunt", 도윤: "polite" };
+const 부정말 = /딱히|별로|아니거든|아니야|뭐래|그런 거 아니/u;
 const OUT = "C:/Users/az518/Desktop/두근도트-인스타/말투비교";
 mkdirSync(OUT, { recursive: true });
 
@@ -67,30 +82,38 @@ const 존대비 = (a: string) => {
 
 const 이름들 = [...new Set(자료.판들.map((p) => p.캐릭터))];
 for (const 이름 of 이름들) {
-  const 처음 = 자료.판들.find((p) => p.캐릭터 === 이름 && p.단계 === 1);
-  const 나중 = 자료.판들.find((p) => p.캐릭터 === 이름 && p.단계 === 5);
-  if (!처음 || !나중) { console.log(`${이름}: 1단계나 5단계 답이 없다`); continue; }
+  const 처음들 = 자료.판들.filter((p) => p.캐릭터 === 이름 && p.단계 === 1);
+  const 나중들 = 자료.판들.filter((p) => p.캐릭터 === 이름 && p.단계 === 5);
+  if (!처음들.length || !나중들.length) { console.log(`${이름}: 1단계나 5단계 답이 없다`); continue; }
+  const 길이 = (t: string) => t.replace(/\s+/g, "").length;
+  const 결 = 사다리[이름] ?? "polite";
 
-  // 가장 다른 한 마디를 고른다(실패한 답은 빼고)
-  let 고른 = -1, 차이 = -1;
-  for (let i = 0; i < 자료.할말.length; i++) {
-    const a = 처음.답[i], b = 나중.답[i];
-    if (!a || !b || a.startsWith("(실패") || b.startsWith("(실패")) continue;
-    const d = Math.abs(b.length - a.length) / 10 + Math.abs(존대비(a) - 존대비(b)) * 3;
-    if (d > 차이) { 차이 = d; 고른 = i; }
+  // 같은 판·같은 물음끼리만 짝짓는다(판 순서가 같다: 처음들[k] 와 나중들[k] 는 같은 판)
+  let 고른: { 물음: string; a: string; b: string } | null = null, 최고 = -Infinity;
+  for (let k = 0; k < Math.min(처음들.length, 나중들.length); k++) {
+    for (let i = 0; i < 자료.할말.length; i++) {
+      const a = 처음들[k].답[i], b = 나중들[k].답[i];
+      if (!a || !b || a.startsWith("(실패") || b.startsWith("(실패")) continue;
+      let 점: number;
+      if (결 === "polite") 점 = (존대비(a) - 존대비(b)) * 10 + (길이(b) >= 12 ? 1 : 0);
+      else if (결 === "tsundere") 점 = (부정말.test(a) ? 3 : 0) - (부정말.test(b) ? 3 : 0) + (길이(b) - 길이(a)) / 8;
+      else 점 = (길이(b) - 길이(a)) / 4 + (/\?/.test(b) ? 1 : 0);
+      if (점 <= 0) continue;                              // **약속한 방향이 아니면 못 고른다**
+      if (길이(a) > 70 || 길이(b) > 70) continue;        // 카드 한 장에 안 들어가면 못 읽는다
+      if (점 > 최고) { 최고 = 점; 고른 = { 물음: 자료.할말[i], a, b }; }
+    }
   }
-  if (고른 < 0) { console.log(`${이름}: 쓸 답이 없다`); continue; }
-
-  const 물음 = 자료.할말[고른];
+  if (!고른) { console.log(`${이름}: 약속한 방향을 보여 주는 쌍이 없다 — 카드를 안 만든다`); continue; }
+  const 물음 = 고른.물음;
   let svg = `<rect width="${W}" height="${H}" fill="#a5bccd"/>`;
   svg += `<text x="${W / 2}" y="92" font-family="${글꼴}" font-size="52" font-weight="800" fill="#141414" text-anchor="middle">${esc(이름)} · 같은 말, 다른 대답</text>`;
   let y = 150;
-  for (const [판, 제목] of [[처음, "처음 만난 날"], [나중, "친해진 뒤"]] as const) {
+  for (const [답, 제목] of [[고른.a, "처음 만난 날"], [고른.b, "친해진 뒤"]] as const) {
     svg += `<rect x="60" y="${y}" width="${W - 120}" height="54" rx="27" fill="#141414"/>`;
     svg += `<text x="${W / 2}" y="${y + 38}" font-family="${글꼴}" font-size="30" font-weight="700" fill="#fff" text-anchor="middle">${제목}</text>`;
     y += 80;
     const [a, ah] = 말풍선(물음, true, y); svg += a; y += ah + 20;
-    const [b, bh] = 말풍선(판.답[고른], false, y); svg += b; y += bh + 46;
+    const [b, bh] = 말풍선(답, false, y); svg += b; y += bh + 46;
   }
   svg += `<text x="${W / 2}" y="${H - 50}" font-family="${글꼴}" font-size="30" fill="#3c434b" text-anchor="middle">실제 앱에서 받은 답 그대로 · 두근도트</text>`;
 
