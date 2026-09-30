@@ -1,7 +1,7 @@
 import { z } from "zod";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { defaultProviders } from "@/lib/execution/shared";
-import { todayKST, timeOfDayKST } from "./bond";
+import { todayKST, timeOfDayKST, toVoiceLadder } from "./bond";
 
 /**
  * 게시물 — 캐릭터가 하루 한 장 올린다 (78회차 09-11).
@@ -36,7 +36,7 @@ export function postDecision(b: { hasPostToday: boolean; minute: number }, nowMi
 
 const shape = z.object({ caption: z.string() });
 
-export type PostChar = { id: string; slug: string; name: string; persona: string; speech: string; formal_start: boolean; photos: { url: string; caption: string }[] };
+export type PostChar = { id: string; slug: string; name: string; persona: string; speech: string; formal_start: boolean; voice_ladder?: string | null; photos: { url: string; caption: string }[] };
 
 /** 한 줄 쓰기 — 그 캐릭터가 자기 사진에 붙이는 말. ≤50자, AI 얘기 없음. */
 export async function writeCaption(c: PostChar, photo: { url: string; caption: string }): Promise<string> {
@@ -47,7 +47,8 @@ export async function writeCaption(c: PostChar, photo: { url: string; caption: s
       "", "## 사진", `장면: ${photo.caption}`,
       "", "## 어떻게 쓰나",
       "- **한 문장, 50자 이내.** 일기 한 줄처럼. 해시태그·이모지 남발 없이(이모지 최대 하나).",
-      c.formal_start ? "- 팔로워에게 말하듯 존댓말." : "- 편한 반말.",
+      // 09-30: formal_start 만 보면 서하(반말 츤데레)가 존댓말로 게시물을 썼다. 사다리를 본다.
+      toVoiceLadder(c.voice_ladder, c.formal_start) === "polite" ? "- 팔로워에게 말하듯 존댓말." : "- 편한 반말.",
       `- 지금 한국 시간 ${timeOfDayKST()}. 시간에 맞는 말이면 좋다.`,
       "- 네가 AI 라는 말은 안 한다. 성적인 내용 없음.",
       "", "## 답의 모양 (json)", "- `caption` 그 한 줄",
@@ -62,7 +63,7 @@ export async function writeCaption(c: PostChar, photo: { url: string; caption: s
 export async function postTick(db: SupabaseClient, log: (s: string) => void = console.log, force = false): Promise<{ posted: number }> {
   const day = todayKST();
   const k = new Date(Date.now() + 9 * 3_600_000); const nowMin = k.getUTCHours() * 60 + k.getUTCMinutes();
-  const { data: chars } = await db.from("dot_characters").select("id, slug, name, persona, speech, formal_start, photos").eq("is_public", true);
+  const { data: chars } = await db.from("dot_characters").select("id, slug, name, persona, speech, formal_start, voice_ladder, photos").eq("is_public", true);
   const { data: todays } = await db.from("dot_posts").select("character_id").eq("published_on", day);
   const done = new Set(((todays ?? []) as { character_id: string }[]).map((t) => t.character_id));
   let posted = 0;

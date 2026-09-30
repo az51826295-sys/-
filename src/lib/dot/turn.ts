@@ -9,7 +9,8 @@ import {
   EMOTIONS,
   FREE_TURNS_PER_DAY,
   applyTurn,
-  stageVoice,
+  stageVoiceFor,
+  toVoiceLadder,
   toMode,
   lengthRule,
   modeVoice,
@@ -77,7 +78,7 @@ export type TurnResult =
   | { ok: false; reason: "limit"; remaining: 0; resetsAt: string }
   | { ok: false; reason: "no_character" | "failed"; message: string };
 
-type Character = { id: string; name: string; persona: string; speech: string; sprites: Record<string, string>; formal_start?: boolean; default_emotion?: string };
+type Character = { id: string; name: string; persona: string; speech: string; sprites: Record<string, string>; formal_start?: boolean; default_emotion?: string; voice_ladder?: string | null };
 
 /** 모델을 부르기 **전까지** 한 것. 실패하면 `giveBack` 으로 턴을 돌려준다. */
 export type Prepared = {
@@ -111,7 +112,7 @@ export async function prepareTurn(db: SupabaseClient, userId: string, characterI
   // 턴 세기가 먼저여야 하는 것은 **모델 호출**보다 먼저라는 뜻이지, 사이를 읽는 것보다 먼저일
   // 필요는 없다 — 한도에 걸리면 읽은 것을 버리면 된다.
   const [chRes, takeRes, bondRes, recentRes, countRes] = await Promise.all([
-    db.from("dot_characters").select("id, name, persona, speech, sprites, formal_start, default_emotion").eq("id", characterId).maybeSingle(),
+    db.from("dot_characters").select("id, name, persona, speech, sprites, formal_start, default_emotion, voice_ladder").eq("id", characterId).maybeSingle(),
     db.rpc("dot_take_turn", { p_user: userId, p_day: day, p_limit: FREE_TURNS_PER_DAY }),
     db.from("dot_bonds").select("points, stage, streak_days, last_talked_on, memo, mode").eq("user_id", userId).eq("character_id", characterId).maybeSingle(),
     db.from("dot_messages").select("role, content, sticker").eq("user_id", userId).eq("character_id", characterId).order("id", { ascending: false }).limit(HISTORY_TURNS * 2 + HISTORY_BLOCK),
@@ -149,7 +150,9 @@ export async function prepareTurn(db: SupabaseClient, userId: string, characterI
       `너는 "${character.name}" 다. 사람과 일대일로 이야기한다.`,
       "", "## 너는 누구인가", character.persona, character.speech ? `말투: ${character.speech}` : "",
       // 소꿉친구(린)처럼 **처음부터 반말**인 인물은 단계 말투를 4단계부터 시작한다 — 1단계 존댓말 규칙이 인물 설정을 이기면 안 된다.
-      "", "## 지금 이 사람과의 사이", `${prev.stage}단계. ${stageVoice(character.formal_start === false ? Math.max(prev.stage, 4) : prev.stage)}`,
+      // 09-30: 반말 캐릭터를 `Math.max(stage, 4)` 로 올려 두던 꼼수를 뺐다 — 그 때문에 린은 단계가 몇이든
+      // 같은 말투였다. 캐릭터마다 자기 사다리를 탄다(bond.ts stageVoiceFor).
+      "", "## 지금 이 사람과의 사이", `${prev.stage}단계. ${stageVoiceFor(toVoiceLadder(character.voice_ladder, character.formal_start), prev.stage)}`,
       memo.length ? `\n이 사람에 대해 네가 아는 것:\n${memo.map((m) => `- ${m}`).join("\n")}` : "",
       "", modeVoice(mode),
       // "지금 몇 시" 는 여기 두지 않는다 — 시간대가 바뀔 때마다 앞부분 캐시가 깨진다(79회차 캐시 45%). 입력 맨 끝에 붙인다.

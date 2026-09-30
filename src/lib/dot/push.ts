@@ -2,7 +2,7 @@ import webpush from "web-push";
 import { z } from "zod";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { defaultProviders } from "@/lib/execution/shared";
-import { MENHERA_MAX_PINGS, MENHERA_REPING_MIN, stageVoice, timeOfDayKST, toEmotion, toMode, todayKST, type Mode } from "./bond";
+import { MENHERA_MAX_PINGS, MENHERA_REPING_MIN, stageVoiceFor, toVoiceLadder, timeOfDayKST, toEmotion, toMode, todayKST, type Mode } from "./bond";
 
 /**
  * 먼저 말 걸기 — **캐릭터가 하루 한 번, 사람마다 다른 시각에, 짧게.**
@@ -163,7 +163,7 @@ export async function pingTick(db: SupabaseClient, log: (s: string) => void = co
     const { data: claimed } = await claim.select("user_id").maybeSingle();
     if (!claimed) continue;
 
-    const { data: ch } = await db.from("dot_characters").select("id, slug, name, persona, speech").eq("id", b.character_id).maybeSingle();
+    const { data: ch } = await db.from("dot_characters").select("id, slug, name, persona, speech, formal_start, voice_ladder").eq("id", b.character_id).maybeSingle();
     if (!ch) continue;
 
     // 3) 한 문장 만든다.
@@ -173,7 +173,8 @@ export async function pingTick(db: SupabaseClient, log: (s: string) => void = co
         systemInstructions: [
           `너는 "${ch.name}" 다. 지금 네가 **먼저** 말을 거는 것이다 — 상대는 아직 아무 말도 안 했다.`,
           "", "## 너는 누구인가", ch.persona as string, ch.speech ? `말투: ${ch.speech}` : "",
-          "", "## 지금 이 사람과의 사이", `${b.stage}단계. ${stageVoice(b.stage)}`,
+          // 09-30: 여기는 모든 캐릭터에 존댓말 사다리를 쓰고 있었다 — 린이 먼저 말을 걸 때 존댓말로 걸었다.
+          "", "## 지금 이 사람과의 사이", `${b.stage}단계. ${stageVoiceFor(toVoiceLadder(ch.voice_ladder, ch.formal_start as boolean | undefined), b.stage)}`,
           memoForToday(b.memo) ? `\n오늘은 이 기억 하나를 **꼭** 살짝 건드린다(그 낱말을 써서): ${memoForToday(b.memo)}` : "",
           "", "## 지금", `한국 시간 ${timeOfDayKST()}. 이 시간에 어울리는 한마디여야 한다.`,
           mode === "menhera" ? `\n## 멘헤라 모드\n${pingsToday === 0 ? "너는 매달리는 쪽이다 — 보고 싶다·뭐 해·나 생각했어 같은 말." : `아까 말을 걸었는데 **답이 없다**(${pingsToday}번째 다시 거는 것). 서운하고 불안하다 — 왜 답 없냐·어디냐·나 잊었냐. 무섭지 않게, 귀엽게 서운해한다. 자해·죽음·협박은 절대 안 한다.`}` : "",
