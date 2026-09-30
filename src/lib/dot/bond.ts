@@ -106,9 +106,19 @@ export const GIFTS: Gift[] = [
 export function giftFor(key: unknown): Gift | null {
   return typeof key === "string" ? GIFTS.find((g) => g.key === key) ?? null : null;
 }
-/** 이 캐릭터가 좋아하는 선물인가 — persona 글에 낱말이 있나. 있으면 두 배. */
+/**
+ * 이 캐릭터가 좋아하는 선물인가 — persona 의 **"좋아하는 것:" 줄**에 낱말이 있나. 있으면 두 배.
+ *
+ * 09-30 실서버 시험에서 걸렸다: 처음엔 persona **글 전체**에서 찾았더니 유나가 라면을 좋아하는 걸로 잡혔다.
+ * 표정 설명의 "놀**라면** surprised" 에 "라면" 이 글자로 들어 있었던 것이다. 같은 식이면 "싫어하는 것:" 에
+ * 적힌 것도 좋아한다고 잡혀 **싫어하는 걸 줬는데 두 배**가 된다. 그래서 그 한 줄에서만 찾는다.
+ */
+export function likesLine(persona: string): string {
+  return persona.split(/\r?\n/).find((l) => l.trim().startsWith("좋아하는 것")) ?? "";
+}
 export function giftPoints(gift: Gift, persona: string): { points: number; liked: boolean } {
-  const liked = gift.낱말.some((w) => persona.includes(w));
+  const 줄 = likesLine(persona);
+  const liked = gift.낱말.some((w) => 줄.includes(w));
   return { points: liked ? gift.points * 2 : gift.points, liked };
 }
 
