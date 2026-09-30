@@ -67,11 +67,14 @@ const builds = (buildRows ?? []) as Build[];
   for (const b of asc) {
     const files = b.content_json?.files ?? [];
     if (files.length === 0) continue;
-    looked++;
+    // 09-30 점검: **조각 고침 판**(`patched`)은 모델이 바뀐 줄만 내고, 저장할 때 전체 파일을 붙인다.
+    // 그걸 "다시 냈다" 로 세면 조각 고침이 잘 돌수록 경보가 는다(6건 중 6건이 그랬다). 견줄 기준으로만 쓴다.
+    const patched = !!(b.content_json as { patched?: unknown } | null)?.patched;
+    if (!patched) looked++;
     let same = 0, sameKb = 0;
     for (const f of files) {
       const prev = lastByPath.get(f.path);
-      if (prev !== undefined && prev === f.contents) { same++; sameKb += Math.round(f.contents.length / 1024); }
+      if (!patched && prev !== undefined && prev === f.contents) { same++; sameKb += Math.round(f.contents.length / 1024); }
       lastByPath.set(f.path, f.contents);
     }
     if (same > 0) {
