@@ -762,6 +762,21 @@ ${ctx.context.assignment.description ?? ""}`)}번까지 돌려 보고 고쳐요)
     const judgeUnmet = loop?.verdict ? new Map(loop.verdict.unmet.map((u) => [u.id, u.why])) : null;
     const met = judgeMet ? judgeMet.size : made.coverage.filter((c) => c.met).length;
 
+    /**
+     * **못 본 것을 먼저 말한다** (228회차 09-30).
+     *
+     * 그날 타워 디펜스 판이 기준 21개 중 **12개를 못 본 채** `done` 으로 닫혔고, 사람에게 간 말은
+     * *"브라우저에서 3번 돌려 보고 확인했어요"* 였다. 그 못 본 12개 안에 **타워가 한 번도 안 쏘는 고장**이 들어 있었다
+     * (겨냥할 적을 고르는 줄이 `best=Infinity` 로 시작해 조건이 영영 참이 안 됐다 — 타워 디펜스인데 타워가 안 쏜다).
+     *
+     * `done` 은 사람 눈에 성공으로 읽힌다. 그러니 **몇 개를 못 봤는지 숫자로** 앞에 붙이고,
+     * 절반을 넘으면 "확인했어요" 라고 말하지 않는다. 못 본 것은 통과가 아니다.
+     */
+    const 못본것 = loop?.verdict ? loop.verdict.unknown.length : 0;
+    const 기준수 = loop?.verdict ? loop.verdict.met.length + loop.verdict.unmet.length + 못본것 : 0;
+    const 못본말 = 못본것
+      ? ` 다만 기준 ${기준수}개 중 **${못본것}개는 끝내 못 봤어요**(안 된다는 뜻이 아니라, 제가 그 자리까지 못 갔다는 뜻이에요) — 그건 직접 해 보셔야 알아요.`
+      : "";
     const note =
       // 175회차: 사장님 "말투 좀 바꿔야 돼" — 파서·임의 코드 실행·열쇠 이야기는 사람이 읽을 말이 아니다.
       `코드 문법만 확인했어요(${verify.parsed}개 확인, ${verify.broken}개 문제${verify.unchecked ? `, ${verify.unchecked}개는 확인 못 함` : ""})` +
@@ -769,8 +784,11 @@ ${ctx.context.assignment.description ?? ""}`)}번까지 돌려 보고 고쳐요)
       (loop?.rounds.length
         ? (loop.rounds.reduce((n, r) => n + r.edits, 0)
           ? `. 브라우저에서 실제로 ${loop.rounds.length}번 돌려 보고 ${loop.rounds.reduce((n, r) => n + r.edits, 0)}군데 고쳤어요(제일 잘 된 ${loop.bestRound}번째 판이에요).`
-          : `. 브라우저에서 실제로 ${loop.rounds.length}번 돌려 보고 확인했어요 — 고칠 게 안 나왔어요.`)
-        : ". 서버에서 실제로 실행해 보지는 않아요 — 위 '확인한 것' 목록을 보고 직접 열어서 해 보세요.");
+          : 못본것 * 2 > 기준수
+            ? `. 브라우저에서 실제로 ${loop.rounds.length}번 돌려 봤어요 — 고칠 게 안 나왔지만 **본 것보다 못 본 것이 많아요.**`
+            : `. 브라우저에서 실제로 ${loop.rounds.length}번 돌려 보고 확인했어요 — 고칠 게 안 나왔어요.`)
+        : ". 서버에서 실제로 실행해 보지는 않아요 — 위 '확인한 것' 목록을 보고 직접 열어서 해 보세요.") +
+      못본말;
 
     const content = {
       target: spec.target,
