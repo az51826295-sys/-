@@ -51,7 +51,7 @@ export async function nextStep(ai: AIProvider, input: { goal: string; png: strin
       input.history.length ? input.history.slice(-8).map((h, i) => `${i + 1}. ${h}`).join("\n") : "(아직 없음 — 첫 걸음)",
     ].join("\n"),
     images: [input.png],
-    schema: stepSchema, schemaName: "hand_step", maxTokens: 4000, tier: "judgment",
+    schema: stepSchema, schemaName: "hand_step", maxTokens: 16000, tier: "judgment",
   });
   // 난간 ①: 좌표는 화면 안으로만. 밖이면 wait 로 바꾼다 — 엉뚱한 데를 누르는 것보다 한 박자 쉬는 게 낫다.
   const a = { ...output.action };

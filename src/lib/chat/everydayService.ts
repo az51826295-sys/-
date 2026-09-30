@@ -730,7 +730,7 @@ ${transcript}`,
       images: seen,
       schema: answerPass,
       schemaName: "everyday_answer",
-      maxTokens: 12000,
+      maxTokens: 16000,
       tier: "judgment",
     });
 

@@ -128,7 +128,7 @@ export async function judgeMachine(ai: AIProvider, input: { spec: MachineSpec; j
       "## 이 기계에서 하려는 일", input.job.slice(0, 1200),
     ].join("\n"),
     // 첫 판(159회차): gpt-5 가 생각 토큰으로 1,500 을 다 써서 잘렸다(132회차 심판자와 같은 함정). 넉넉히.
-    schema: machineJudgmentSchema, schemaName: "machine_judgment", maxTokens: 8000, tier: "judgment",
+    schema: machineJudgmentSchema, schemaName: "machine_judgment", maxTokens: 16000, tier: "judgment",
   });
   return { judgment: output, model };
 }

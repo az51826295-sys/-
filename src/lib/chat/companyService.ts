@@ -159,7 +159,7 @@ export async function runCompanyChatTurn(
     schemaName: "company_chat_route",
     // 답이 곧 사용자가 받는 물건이므로 깎지 않는다. 이 호출은 라우팅만 하는
     // 것이 아니라 **첫 답을 쓰는** 호출이다.
-    maxTokens: 8000,
+    maxTokens: 16000,
     tier: "judgment",
   });
 

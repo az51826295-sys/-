@@ -135,7 +135,7 @@ async function checkConcept(ctx: SkillRunContext, imageDataUrl: string, mustHave
       images: [imageDataUrl.split(",")[1] ?? imageDataUrl],
       schema: verdict,
       schemaName: "concept_check",
-      maxTokens: 1500,
+      maxTokens: 16000,
       tier: "judgment",
     });
     return output.results.filter((r) => !r.satisfied).map((r) => `${r.condition} (${r.why})`);

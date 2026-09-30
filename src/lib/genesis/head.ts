@@ -116,7 +116,7 @@ export async function decide(ai: AIProvider, input: { order: string; kind: strin
     const { output, model } = await ai.generateStructuredOutput({
       systemInstructions: SYS,
       input: ["## 사실", input.facts, "", "## 이 일", `종류(기계가 적은 것): ${input.kind}`, input.needsEyes ? "그림을 봐야 하는 일이다." : "", `주문: ${input.order.slice(0, 1500)}`].filter(Boolean).join("\n"),
-      schema: decisionSchema, schemaName: "head_decision", maxTokens: 6000, tier: "judgment",
+      schema: decisionSchema, schemaName: "head_decision", maxTokens: 16000, tier: "judgment",
     });
     // 난간(사람에게 나가는 글): 모델 이름이 새면 걷는다. 첫 판(161회차)에 "gpt-5 선택했습니다" 가 사장님 줄에 그대로 나갔다.
     // 226회차 09-26: 이 목록은 손으로 적는 것이라 새 모델을 붙일 때마다 빠진다 — 그림을 2.5 로 옮기고

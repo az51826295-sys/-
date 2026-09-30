@@ -162,6 +162,10 @@ const builds = (buildRows ?? []) as Build[];
   const found: Finding[] = [];
   for (const b of old) {
     if (b.content_json?.unityChecks) continue;
+    // 09-30 점검: 09-05 부터 판은 **웹**이다. 웹 판의 소식은 `loop`(돌려 보고 고치는 고리)나
+    // `verdict`(현황판 자)에 붙는다. 유니티 칸만 보던 이 자가 20/20 을 "사라짐" 으로 셌다 — 전부 소식이 있었다.
+    const cj = b.content_json as { loop?: unknown; verdict?: unknown } | null;
+    if (cj?.loop || cj?.verdict) continue;
     found.push({ what: "판이 났는데 검사가 끝내 안 붙었다", evidence: `${b.created_at.slice(5, 16)} ${short(b.title, 40)}` });
   }
   add("소식 없이 사라진 판", "90분 넘은 게임 판", old.length, found,

@@ -84,6 +84,6 @@ export async function judgeAsk(ai: AIProvider, o: { said: string; previousTitle?
     `## 없어진 줄 (앞에서부터 ${f.removedSample.length}줄)\n${f.removedSample.join("\n") || "(없음)"}\n\n` +
     `## 새로 생긴 줄 (앞에서부터 ${f.addedSample.length}줄)\n${f.addedSample.join("\n") || "(없음)"}\n` +
     (o.howToRun ? `\n## 직원이 적은 실행 방법\n${o.howToRun.slice(0, 800)}\n` : "");
-  const r = await ai.generateStructuredOutput({ systemInstructions: SYSTEM, input, schema: askVerdictSchema, schemaName: "ask_verdict", maxTokens: 6000, tier: "judgment" });
+  const r = await ai.generateStructuredOutput({ systemInstructions: SYSTEM, input, schema: askVerdictSchema, schemaName: "ask_verdict", maxTokens: 16000, tier: "judgment" });
   return { verdict: r.output as AskVerdict, model: ai.model };
 }

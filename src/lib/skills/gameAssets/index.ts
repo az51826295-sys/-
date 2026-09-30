@@ -98,7 +98,7 @@ export const gameAssetsSkill: EmployeeSkill = {
         `기대 결과: ${ctx.context.assignment.expectedOutcome ?? ""}`,
       schema: briefSchema,
       schemaName: "game_asset_brief",
-      maxTokens: 4000,
+      maxTokens: 16000,
       tier: "judgment",
     });
 

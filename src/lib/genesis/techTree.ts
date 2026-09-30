@@ -165,7 +165,7 @@ export async function predict(ai: AIProvider, tree: TechTree, o: { horizon: stri
     o.extra ?? "",
   ].join(nl);
   const { output } = await ai.generateStructuredOutput({
-    systemInstructions: SYS, input, schema: predictionSchema, schemaName: "tech_predictions", maxTokens: 8000, tier: "judgment",
+    systemInstructions: SYS, input, schema: predictionSchema, schemaName: "tech_predictions", maxTokens: 16000, tier: "judgment",
   });
   return output;
 }

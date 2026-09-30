@@ -188,8 +188,47 @@ export function judgeTranslate(ask: string, out: TransOut, srcLines: string[], l
   const gl = judgeGlossary(out.items, glossaryOf(ask)); if (gl) c.push(gl);
   return c;
 }
+/**
+ * 09-30 점검: "별빛 플랫포머의 화면 문구를 영어로" 가 **"옮길 문구가 없다"** 로 돌아갔다(09-29).
+ * 그 게임은 로키가 만든 것이고 글자는 그 파일 안에 있다 — 사람에게 다시 적게 하지 말고 꺼낸다.
+ * 이 회사의 게임 판 중 **제목 앞부분(" — " 앞)이 주문에 나오는 가장 최근 판**의 파일에서 한글 글자를 모은다.
+ * 모델 0: 따옴표 안·태그 사이의 한글 줄만(코드 주석은 뺀다). 못 찾으면 빈 배열 — 원래대로 되묻는다.
+ */
+export async function gameTextFrom(ctx: SkillRunContext, ask: string): Promise<{ lines: string[]; from: string } | null> {
+  const { data } = await ctx.supabase.from("deliverables").select("title, content_json")
+    .eq("company_id", ctx.execution.company_id).eq("deliverable_type", "app_build")
+    .order("created_at", { ascending: false }).limit(40);
+  const 판 = ((data ?? []) as { title: string | null; content_json: { files?: { path: string; contents: string }[] } | null }[])
+    .find((d) => { const 이름 = (d.title ?? "").split(" — ")[0].trim(); return 이름.length >= 2 && ask.includes(이름) && (d.content_json?.files?.length ?? 0) > 0; });
+  if (!판) return null;
+  const 모음 = new Set<string>();
+  for (const f of 판.content_json!.files!) {
+    if (!/\.(html?|js|ts|jsx|tsx|json)$/i.test(f.path)) continue;
+    const 본문 = f.contents.replace(/\/\*[\s\S]*?\*\//g, "").replace(/^\s*\/\/.*$/gm, "").replace(/<!--[\s\S]*?-->/g, "");
+    const 후보 = [
+      ...[...본문.matchAll(/(["'`])((?:(?!\1)[^\n\\])*[가-힣](?:(?!\1)[^\n\\])*)\1/g)].map((m) => m[2]),
+      ...[...본문.matchAll(/>([^<>{}\n]*[가-힣][^<>{}\n]*)</g)].map((m) => m[1]),
+    ];
+    for (const t of 후보) {
+      const s = t.replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/\s+/g, " ").trim();
+      if (s.length < 2 || s.length > 80 || s.includes("${")) continue;
+      모음.add(s);
+    }
+  }
+  const lines = [...모음].slice(0, 60);
+  return lines.length ? { lines, from: 판.title ?? "" } : null;
+}
+
 async function runTranslate(ctx: SkillRunContext, ask: string) {
-  const srcLines = askFacts(ask);
+  let srcLines = askFacts(ask);
+  if (!srcLines.length) {
+    const 꺼냄 = await gameTextFrom(ctx, ask);
+    if (꺼냄) {
+      srcLines = 꺼냄.lines;
+      // 이 뒤의 자(원문_순서대로·용어)와 모델이 같은 줄을 보도록 주문에 붙인다.
+      ask = `${ask}\n\n(로키가 "${꺼냄.from}" 파일에서 꺼낸 화면 글자)\n${srcLines.map((l) => `- ${l}`).join("\n")}`;
+    }
+  }
   if (!srcLines.length) throw new ExecutionError("CONTEXT_INCOMPLETE", "옮길 문구가 없다. 한 줄에 하나씩 '- ' 로 적어야 한다.");
   const limit = charLimit(ask);
   await setStep(ctx.supabase, ctx.executionId, "planning");

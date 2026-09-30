@@ -247,11 +247,24 @@ export const analysisSkill: EmployeeSkill = {
     // 상한에 걸려 잘린 링크는 **말해 준다**(조용히 버리면 사장님은 6개를 줬는데 4개만 읽힌 걸 모른다).
     const MAX_SOURCES = 8;
     const 모든링크 = Array.from(new Set((ask.match(URL_RE) ?? []).map((u) => u.replace(/[.,)]+$/, ""))));
-    const urls = 모든링크.slice(0, MAX_SOURCES);
+    let urls = 모든링크.slice(0, MAX_SOURCES);
     if (모든링크.length > MAX_SOURCES) {
       console.warn(`[analysis] 링크 ${모든링크.length}개 중 앞 ${MAX_SOURCES}개만 읽는다 — 버린 것: ${모든링크.slice(MAX_SOURCES).join(" ")}`);
     }
-    if (!urls.length) throw new ExecutionError("CONTEXT_INCOMPLETE", "분석할 링크가 없다. 유튜브나 글 주소를 하나 이상 적어야 한다.");
+    // 09-30 점검: "레벨 디자인 강연과 글을 읽고 …" 처럼 **링크 없이** 오면 되돌려 보냈다(09-29 실패).
+    // 사람이 링크를 찾아 다시 적게 하는 건 로키가 할 일을 떠넘기는 것이다 — 이미 가진 검색으로 찾아 읽는다.
+    // 찾은 자료는 결과물에 **"로키가 찾은 자료"** 로 따로 적는다(사람이 준 것과 섞이면 출처를 믿을 수 없다).
+    let 찾은자료 = false;
+    if (!urls.length) {
+      const 검색어 = ctx.context.assignment.title.slice(0, 300);
+      const 찾음 = await step(ctx.supabase, ctx.executionId, "search", async () => {
+        try { return (await ctx.providers.search.search(검색어, 6)).map((r) => r.url); }
+        catch (e) { console.warn(`[analysis] 검색 실패: ${e instanceof Error ? e.message : e}`); return [] as string[]; }
+      });
+      urls = 찾음.slice(0, 4);
+      찾은자료 = urls.length > 0;
+    }
+    if (!urls.length) throw new ExecutionError("CONTEXT_INCOMPLETE", "분석할 링크가 없고, 검색으로도 자료를 못 찾았다. 유튜브나 글 주소를 하나 이상 적어야 한다.");
 
     // ── 1. 읽는다 (단계 저장: 죽어도 다시 안 받는다) ──
     await setStep(ctx.supabase, ctx.executionId, "planning");
@@ -313,8 +326,9 @@ export const analysisSkill: EmployeeSkill = {
       verdict = judge(out, readable);
     }
 
-    const markdown = render(out, sources, verdict);
+    const markdown = (찾은자료 ? `> 링크가 없어서 **로키가 검색으로 찾은 자료 ${urls.length}개**로 썼어요. 원하는 자료가 있으면 주소를 적어 다시 시켜 주세요.\n\n` : "") + render(out, sources, verdict);
     const content = {
+      searchedBySelf: 찾은자료,
       sources: sources.map(({ url, kind, title, durationSec, pages, chars }) => ({ url, kind, title, durationSec, pages, chars })),
       // 09-28: 상한(8개)에 걸려 **안 읽은 링크를 결과물에 적는다.** 로그에만 남기면 사장님은
       // 6개를 줬는데 4개만 읽힌 것을 모른다 — 조용히 버리는 것이 오늘 내내 쫓던 고장이다.

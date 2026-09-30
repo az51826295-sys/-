@@ -141,7 +141,7 @@ export async function judgeWork(ai: AIProvider, input: JudgeInput): Promise<{ ve
     schemaName: "judge_verdict",
     // 추론하는 모델(gpt-5)은 답 앞에 생각을 먼저 쓴다 — 3000 으로는 생각만 하다 잘렸다(09-16 첫 판).
     // 판정 글 자체는 1000자면 되지만 생각 몫을 넉넉히 둔다.
-    maxTokens: 8000,
+    maxTokens: 16000,
     tier: "judgment",
   });
   return { verdict: r.output, inputTokens: r.inputTokens, outputTokens: r.outputTokens, model: r.model ?? ai.model };
@@ -223,7 +223,7 @@ export async function judgeAppeal(
     images: imgs.map((i) => i.b64),
     schema: appealSchema,
     schemaName: "appeal",
-    maxTokens: 8000,
+    maxTokens: 16000,
     tier: "judgment",
   });
   return { appeal: r.output, inputTokens: r.inputTokens, outputTokens: r.outputTokens, model: r.model ?? ai.model };

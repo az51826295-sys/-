@@ -180,7 +180,7 @@ export const slidesMakeSkill: EmployeeSkill = {
         failed.length ? `지난 판에서 자에 걸린 것(고쳐서 다시): ${failed.join(" / ")}` : "",
       ].filter(Boolean).join("\n"),
       input: `업무: ${ctx.context.assignment.title}\n설명: ${ctx.context.assignment.description ?? ""}`,
-      schema: plan, schemaName: "slide_deck_plan", maxTokens: 8000, tier: "judgment",
+      schema: plan, schemaName: "slide_deck_plan", maxTokens: 16000, tier: "judgment",
     });
     let p = (await step(ctx.supabase, ctx.executionId, "plan", async () => (await write([])).output)) as Plan;
 
