@@ -22,7 +22,7 @@ import ffmpegPath from "ffmpeg-static";
 import { openHeadless } from "../../../src/lib/video/headless";
 
 const 초 = Number(process.argv[2] ?? 30);
-const 뿌리 = "engine/work/ceiling/게임소리2";
+const 뿌리 = "engine/work/ceiling/게임규격";
 const 일터 = "engine/work/sprites/녹화칸";
 const 낼곳 = "C:/Users/az518/Desktop/로키-도트게임-영상";
 rmSync(일터, { recursive: true, force: true });

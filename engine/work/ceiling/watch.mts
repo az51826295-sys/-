@@ -1,8 +1,8 @@
 import { writeFileSync } from "node:fs";
 const { createServiceClient } = await import("../../../src/lib/supabase/service");
 const db = createServiceClient();
-const { data: all } = await db.from("assignments").select("id").gte("created_at", "2026-10-01T05:15:00Z").order("created_at", { ascending: false }).limit(10);
-const id = ((all ?? []) as any[]).find((r) => r.id.startsWith("74577bdf"))!.id;
+const { data: all } = await db.from("assignments").select("id").gte("created_at", "2026-10-01T05:55:00Z").order("created_at", { ascending: false }).limit(10);
+const id = ((all ?? []) as any[]).find((r) => r.id.startsWith("0950a9bf"))!.id;
 let 마지막 = "";
 for (let i = 0; i < 200; i++) {
   const { data: a } = await db.from("assignments").select("status").eq("id", id).single();
@@ -16,9 +16,9 @@ for (let i = 0; i < 200; i++) {
     const dv = (d ?? [])[0] as any;
     if (dv) {
       const cj = dv.content_json ?? {}, l = cj.loop ?? {}, v = l.verdict ?? {};
-      writeFileSync("engine/work/ceiling/결과소리2.json", JSON.stringify(cj, null, 1));
+      writeFileSync("engine/work/ceiling/결과규격.json", JSON.stringify(cj, null, 1));
       for (const f of cj.files ?? []) {
-        const p = `engine/work/ceiling/게임소리2/${f.path}`;
+        const p = `engine/work/ceiling/게임규격/${f.path}`;
         (await import("node:fs")).mkdirSync(p.split("/").slice(0, -1).join("/"), { recursive: true });
         writeFileSync(p, f.contents);
       }

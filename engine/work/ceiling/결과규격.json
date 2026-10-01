@@ -1,0 +1,402 @@
+{
+ "loop": {
+  "usd": 0.0030890000000000015,
+  "facts": {
+   "ms": 16090,
+   "did": [
+    "'시작' 누름",
+    "0.8초 기다림",
+    "움직이는 자리 6번 누름",
+    "화면 여기저기 6번 누름",
+    "ArrowRight 키",
+    "Space 키",
+    "KeyD 키",
+    "1.2초 기다림"
+   ],
+   "ran": true,
+   "text": "✦ 도트 타워 디펜스 돈 30 목숨 20 웨이브 1 일시정지 🔊 소리 켜짐 화살 대포 빙결 빈 땅을 눌러 타워 설치 · 설치한 타워를 누르면 업그레이드",
+   "shots": {
+    "mid": "",
+    "after": "",
+    "start": ""
+   },
+   "numberTrail": {
+    "wave": [
+     "1"
+    ],
+    "lives": [
+     "20"
+    ],
+    "money": [
+     "150",
+     "30"
+    ],
+    "titleBest": [
+     "0"
+    ]
+   },
+   "resumeProbe": "안멈춤",
+   "blankAtStart": false,
+   "changesOnTap": false,
+   "changesOnKeys": true,
+   "consoleErrors": [],
+   "movesByItself": false,
+   "movesAfterPlay": 2
+  },
+  "rounds": [
+   {
+    "n": 1,
+    "ms": 46389,
+    "met": 9,
+    "usd": 0.003,
+    "best": true,
+    "edits": 0,
+    "unmet": 0,
+    "broken": 0,
+    "errors": 0,
+    "unknown": 13,
+    "toPerson": "화면과 기본 설치·도트 그림은 정상으로 보였지만 전투·웨이브·일시정지·업그레이드·소리·저장 기록은 더 확인해야 합니다."
+   }
+  ],
+  "verdict": {
+   "met": [
+    "[1] 제목 화면에 \"시작\" 글자가 보인다.",
+    "[2] 시작 후 게임 화면으로 바뀌고 길·돈·목숨·웨이브가 보인다.",
+    "[3] 돈 150→30, 목숨 20, 웨이브 1처럼 숫자가 화면에 보인다.",
+    "[4] 시작 후 적이 나타났고, 기다린 뒤에도 게임 화면이 계속 바뀌었다.",
+    "[5] 적이 동그라미나 네모가 아닌 도트 그림으로 보인다.",
+    "[6] 타워가 동그라미나 네모가 아닌 도트 그림으로 보인다.",
+    "[7] 빈칸을 눌러 타워를 설치한 뒤 돈이 150에서 30으로 줄었다.",
+    "[new_sprite_grounding] 화면에서 적과 타워의 도트 그림이 기준 위치보다 24픽셀 아래로 가라앉지 않고 길·설치 위치에 맞춰 보이며, 체력 막대와 글자도 그림에 가려지지 않는다.",
+    "[new_sprite_scale_variants] 약한 적·빠른 적·튼튼한 적이 서로 다른 크기로 보이고, 타워들도 각자 다른 도트 그림으로 보인다."
+   ],
+   "done": false,
+   "unmet": [],
+   "broken": [],
+   "unknown": [
+    "[8] 돈보다 비싼 타워가 설치되지 않고 돈도 줄지 않는지는 확인하지 못했다.",
+    "[9] 길 위에 타워를 놓을 수 없는지는 확인하지 못했다.",
+    "[10] 사거리 안의 적 체력이 줄어드는 장면이나 수치를 확인하지 못했다.",
+    "[11] 돈이 150에서 30으로 줄기만 했고, 적 처치 뒤 돈이 늘어난 숫자는 보지 못했다.",
+    "[12] 목숨이 20에서 줄지 않아 적 누수로 목숨이 감소하는지는 확인하지 못했다.",
+    "[13] 웨이브가 1에서 올라가는 장면을 확인하지 못했다.",
+    "[14] 목숨 0의 게임 오버 화면과 진행 웨이브 수를 확인하지 못했다.",
+    "[15] 일시정지 후 적이 멈추고 다시 눌렀을 때 움직이는지는 확인하지 못했다.",
+    "[16] 타워 선택·업그레이드 단추·업그레이드 후 능력치 변화를 확인하지 못했다.",
+    "[17] 새로고침 뒤 최고 기록이 남는지는 확인하지 못했다.",
+    "[18] js/sprites.js가 앞 판과 글자까지 같고 수정되지 않았는지는 화면과 실행 사실만으로 확인할 수 없다.",
+    "[new_enemy_tower_sprite_variants] 세 종류의 적과 화살·대포·빙결 타워 그림은 보였지만, 각각이 지정된 sprite 키와 정확히 대응하는지는 파일 내용을 보지 않아 확인하지 못했다.",
+    "[new_sound_events_and_toggle] 소리 켜짐 글자는 보였지만 소리 단추 토글과 발사·피격·처치·설치·강화·거부·누수·새 웨이브·게임 오버 효과음은 확인하지 못했다."
+   ],
+   "toPerson": "화면과 기본 설치·도트 그림은 정상으로 보였지만 전투·웨이브·일시정지·업그레이드·소리·저장 기록은 더 확인해야 합니다.",
+   "toWorker": "",
+   "nextActions": [
+    {
+     "n": null,
+     "x": null,
+     "y": null,
+     "do": "click_text",
+     "ms": null,
+     "key": null,
+     "text": "돈보다 비싼 타워를 빈칸에 눌러 설치 거부와 돈 유지 확인"
+    },
+    {
+     "n": null,
+     "x": null,
+     "y": null,
+     "do": "click_text",
+     "ms": null,
+     "key": null,
+     "text": "길에 가까운 빈칸에 타워를 놓고 10초 넘게 기다리기"
+    },
+    {
+     "n": null,
+     "x": null,
+     "y": null,
+     "do": "click_text",
+     "ms": null,
+     "key": null,
+     "text": "일시정지 누르기 → 3초 기다리기 → 같은 단추 다시 누르기 → 3초 기다리기"
+    },
+    {
+     "n": null,
+     "x": null,
+     "y": null,
+     "do": "click_text",
+     "ms": null,
+     "key": null,
+     "text": "설치한 타워 누르기 → 업그레이드 단추 누르기"
+    },
+    {
+     "n": null,
+     "x": null,
+     "y": null,
+     "do": "click_text",
+     "ms": null,
+     "key": null,
+     "text": "소리 단추 누르기 → '🔇 소리 꺼짐' 확인 → 다시 누르기 → '🔊 소리 켜짐' 확인"
+    }
+   ]
+  },
+  "bestRound": 1,
+  "stoppedBy": "done"
+ },
+ "note": "코드 문법만 확인했어요(3개 확인, 0개 문제, 2개는 확인 못 함). 브라우저에서 실제로 1번 돌려 봤어요 — 고칠 게 안 나왔지만 **본 것보다 못 본 것이 많아요.** 다만 기준 22개 중 **13개는 끝내 못 봤어요**(안 된다는 뜻이 아니라, 제가 그 자리까지 못 갔다는 뜻이에요) — 그건 직접 해 보셔야 알아요.",
+ "files": [
+  {
+   "path": "js/game.js",
+   "contents": "import { sprite, spritesReady } from './sprites.js';\nimport { unlockSound, sfx, startMusic, toggleMusic } from './sound.js';\ndocument.addEventListener('pointerdown', unlockSound, { once: true });\n\nawait spritesReady();\n\n(() => {\n  'use strict';\n  const canvas = document.getElementById('gameCanvas');\n  const ctx = canvas.getContext('2d');\n  ctx.imageSmoothingEnabled = false;\n  const W = canvas.width, H = canvas.height;\n  const $ = id => document.getElementById(id);\n  const title = $('titleScreen'), over = $('gameOverScreen'), hud = $('hud');\n  const panel = $('towerPanel');\n  const path = [{x:-20,y:112},{x:170,y:112},{x:170,y:260},{x:410,y:260},{x:410,y:105},{x:680,y:105},{x:680,y:420},{x:900,y:420},{x:980,y:510}];\n  let money=150, lives=20, wave=1, running=false, paused=false, last=0, spawnClock=0, selected=null;\n  let enemies=[], towers=[], spawned=0, wavePause=0, shootCooldown=0, selectedTowerKind='tower_arrow';\n  let soundOn=true;\n  const bestKey='dotTowerBestWave';\n  const best=()=>Number(localStorage.getItem(bestKey)||0);\n  $('titleBest').textContent=best();\n\n  function reset(){money=150;lives=20;wave=1;enemies=[];towers=[];spawned=0;spawnClock=0;wavePause=0;shootCooldown=0;selected=null;paused=false;running=true;title.classList.add('hidden');over.classList.add('hidden');hud.classList.remove('hidden');panel.classList.add('hidden');startMusic();sfx('wave');updateHud()}\n  function updateHud(){$('money').textContent=money;$('lives').textContent=lives;$('wave').textContent=wave}\n  function dist(a,b){return Math.hypot(a.x-b.x,a.y-b.y)}\n  function pointLine(p,a,b){const dx=b.x-a.x,dy=b.y-a.y,t=Math.max(0,Math.min(1,((p.x-a.x)*dx+(p.y-a.y)*dy)/(dx*dx+dy*dy)));return Math.hypot(p.x-(a.x+t*dx),p.y-(a.y+t*dy))}\n  function onRoad(x,y){for(let i=0;i<path.length-1;i++)if(pointLine({x,y},path[i],path[i+1])<34)return true;return false}\n  function pixelSprite(x,y,scale,rows,palette){rows.forEach((row,ry)=>[...row].forEach((c,rx)=>{if(c!=='.'){ctx.fillStyle=palette[c]||c;ctx.fillRect(Math.round(x+rx*scale),Math.round(y+ry*scale),scale,scale)}}))}\n  function drawScene(){\n    ctx.fillStyle='#79b99b';ctx.fillRect(0,0,W,H);\n    ctx.fillStyle='rgba(255,255,255,.08)';for(let x=0;x<W;x+=48)for(let y=0;y<H;y+=48)ctx.fillRect(x,y,2,2);\n    ctx.lineCap='square';ctx.lineJoin='round';ctx.strokeStyle='#38546a';ctx.lineWidth=78;ctx.beginPath();ctx.moveTo(path[0].x,path[0].y);path.slice(1).forEach(p=>ctx.lineTo(p.x,p.y));ctx.stroke();\n    ctx.strokeStyle='#bf9762';ctx.lineWidth=62;ctx.beginPath();ctx.moveTo(path[0].x,path[0].y);path.slice(1).forEach(p=>ctx.lineTo(p.x,p.y));ctx.stroke();\n    ctx.strokeStyle='#e0ba78';ctx.lineWidth=3;ctx.setLineDash([5,10]);ctx.beginPath();ctx.moveTo(path[0].x,path[0].y);path.slice(1).forEach(p=>ctx.lineTo(p.x,p.y));ctx.stroke();ctx.setLineDash([]);\n    // entrance and castle\n    pixelSprite(16,78,5,['..333.','..333.','..333.','..333.','333333','3.3333','333333'],{'3':'#e8d49b'});\n    pixelSprite(895,465,5,['.4444.','444444','4.44.4','444444','44..44','444444','4....4'],{'4':'#d96868'});\n    towers.forEach(t=>{ctx.fillStyle='rgba(17,29,48,.25)';ctx.fillRect(t.x-20,t.y+16,40,7);drawTower(t)});\n    enemies.forEach(e=>drawEnemy(e));\n    if(paused&&running){ctx.fillStyle='rgba(10,20,35,.55)';ctx.fillRect(0,0,W,H);ctx.fillStyle='#fff4d6';ctx.font='24px monospace';ctx.textAlign='center';ctx.fillText('일시정지',W/2,H/2);ctx.textAlign='left'}\n  }\n  function drawTower(t){ctx.drawImage(sprite(t.kind),t.x-24,t.y-40,48,48);ctx.fillStyle='#fff4d6';ctx.font='10px monospace';ctx.fillText('L'+t.level,t.x-12,t.y+30)}\n  function drawEnemy(e){const bob=Math.sin(e.anim)*2;ctx.drawImage(sprite(e.kind),e.x-24,e.y-40+bob,48,48);ctx.fillStyle='#35233d';ctx.fillRect(e.x-22,e.y-34,44,5);ctx.fillStyle='#72df9c';ctx.fillRect(e.x-22,e.y-34,44*Math.max(0,e.hp/e.maxHp),5)}\n  function advanceEnemy(e,dt){let remain=e.speed*dt;while(remain>0&&e.seg<path.length-1){const target=path[e.seg+1],d=dist(e,target);if(d<=remain){e.x=target.x;e.y=target.y;e.seg++;remain-=d}else{e.x+=(target.x-e.x)*remain/d;e.y+=(target.y-e.y)*remain/d;remain=0}}e.anim+=dt*8;if(e.seg>=path.length-1){e.dead=true;lives--;sfx('leak');updateHud();if(lives<=0)gameOver()}}\n  function spawn(){const hp=38+wave*15;const kinds=['enemy_weak','enemy_fast','enemy_tank'];enemies.push({x:path[0].x,y:path[0].y,seg:0,speed:38+wave*2,hp,maxHp:hp,anim:0,kind:kinds[spawned%3]})}\n  function update(dt){if(!running||paused)return;shootCooldown-=dt;spawnClock+=dt;if(spawned<5+wave*2&&spawnClock>.8){spawn();spawned++;spawnClock=0}if(spawned>=5+wave*2&&enemies.length===0){wave++;spawned=0;wavePause=1.1;money+=25;sfx('wave');updateHud()}if(wavePause>0)wavePause-=dt;enemies.forEach(e=>{if(!e.dead)advanceEnemy(e,dt)});enemies=enemies.filter(e=>!e.dead);towers.forEach(t=>{t.cool-=dt;if(t.cool<=0){let target=enemies.filter(e=>!e.dead&&dist(t,e)<t.range).sort((a,b)=>dist(t,a)-dist(t,b))[0];if(target){if(shootCooldown<=0){sfx('shoot');shootCooldown=.08}target.hp-=t.damage;sfx('hit');t.cool=.55;if(target.hp<=0){target.dead=true;money+=12;sfx('kill');updateHud()}}}});enemies=enemies.filter(e=>!e.dead)}\n  function gameOver(){running=false;sfx('over');hud.classList.add('hidden');panel.classList.add('hidden');$('finalWave').textContent=wave;const old=best();if(wave>old)localStorage.setItem(bestKey,wave);over.classList.remove('hidden')}\n  function canvasPoint(ev){const r=canvas.getBoundingClientRect();return{x:(ev.clientX-r.left)*W/r.width,y:(ev.clientY-r.top)*H/r.height}}\n  canvas.addEventListener('click',ev=>{if(!running||paused)return;const p=canvasPoint(ev);const hit=towers.find(t=>dist(t,p)<25);if(hit){selected=hit;showPanel();return}if(p.y>H-55||onRoad(p.x,p.y)){sfx('deny');return}const x=Math.round(p.x/48)*48+24,y=Math.round(p.y/48)*48+24;if(x>W-30||y>H-20||onRoad(x,y)||towers.some(t=>dist(t,{x,y})<42)){sfx('deny');return}if(money>=60){money-=60;towers.push({x,y,kind:selectedTowerKind,level:1,damage:18,range:125,cool:0});sfx('place');updateHud()}else{sfx('deny')}});\n  function showPanel(){panel.classList.remove('hidden');$('towerInfo').textContent=`타워 L${selected.level} · 공격 ${selected.damage} · 사거리 ${selected.range}`;$('upgradeButton').textContent=`업그레이드 (₩${50+selected.level*25})`}\n  $('upgradeButton').onclick=()=>{if(!selected)return;const cost=50+selected.level*25;if(money>=cost){money-=cost;selected.level++;selected.damage+=12;selected.range+=18;sfx('upgrade');updateHud();showPanel()}else{sfx('deny')}};\n  $('closePanel').onclick=()=>{selected=null;panel.classList.add('hidden')};$('pauseButton').onclick=()=>{if(running){paused=!paused;$('pauseButton').textContent=paused?'계속':'일시정지'}};$('arrowTowerButton').onclick=()=>{selectedTowerKind='tower_arrow'};$('cannonTowerButton').onclick=()=>{selectedTowerKind='tower_cannon'};$('frostTowerButton').onclick=()=>{selectedTowerKind='tower_frost'};$('soundButton').onclick=()=>{toggleMusic();soundOn=!soundOn;$('soundButton').textContent=soundOn?'🔊 소리 켜짐':'🔇 소리 꺼짐'};$('startButton').onclick=reset;$('retryButton').onclick=reset;\n  function frame(now){const dt=Math.min(.05,(now-last)/1000||0);last=now;update(dt);drawScene();requestAnimationFrame(frame)}requestAnimationFrame(frame);\n})();\n",
+   "language": "javascript"
+  },
+  {
+   "path": "index.html",
+   "contents": "<!doctype html>\n<html lang=\"ko\">\n<head>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  <title>도트 타워 디펜스</title>\n  <link rel=\"stylesheet\" href=\"css/style.css\">\n</head>\n<body>\n  <main class=\"cabinet\">\n    <header class=\"topbar\">\n      <div class=\"brand\">✦ 도트 타워 디펜스</div>\n      <div id=\"hud\" class=\"hud hidden\">\n        <span>돈 <b id=\"money\">150</b></span>\n        <span>목숨 <b id=\"lives\">20</b></span>\n        <span>웨이브 <b id=\"wave\">1</b></span>\n        <button id=\"pauseButton\" type=\"button\">일시정지</button>\n      </div>\n      <button id=\"soundButton\" type=\"button\">🔊 소리 켜짐</button>\n    </header>\n\n    <section class=\"screen-wrap\">\n      <canvas id=\"gameCanvas\" width=\"960\" height=\"600\" aria-label=\"도트 타워 디펜스 게임 화면\"></canvas>\n      <section id=\"titleScreen\" class=\"screen-card\">\n        <div class=\"pixel-mark\">◆</div>\n        <h1>도트 타워 디펜스</h1>\n        <p>길을 지키고 보물을 모으세요!</p>\n        <button id=\"startButton\" class=\"primary\" type=\"button\">시작</button>\n        <p class=\"record\">최고 기록: <strong id=\"titleBest\">0</strong> 웨이브</p>\n      </section>\n      <section id=\"gameOverScreen\" class=\"screen-card hidden\">\n        <div class=\"pixel-mark danger\">☠</div>\n        <h1>게임 오버</h1>\n        <p>성벽이 무너졌습니다.</p>\n        <p class=\"final-record\">도달한 웨이브 <strong id=\"finalWave\">1</strong></p>\n        <button id=\"retryButton\" class=\"primary\" type=\"button\">다시 시작</button>\n      </section>\n    </section>\n    <div id=\"towerPanel\" class=\"tower-panel hidden\">\n      <span id=\"towerInfo\">타워</span>\n      <button id=\"upgradeButton\" type=\"button\">업그레이드</button>\n      <button id=\"closePanel\" type=\"button\">닫기</button>\n    </div>\n    <div class=\"tower-types\">\n      <button id=\"arrowTowerButton\" type=\"button\">화살</button>\n      <button id=\"cannonTowerButton\" type=\"button\">대포</button>\n      <button id=\"frostTowerButton\" type=\"button\">빙결</button>\n    </div>\n    <p class=\"help\">빈 땅을 눌러 타워 설치 · 설치한 타워를 누르면 업그레이드</p>\n  </main>\n  <script type=\"module\" src=\"js/game.js\"></script>\n</body>\n</html>\n",
+   "language": "html"
+  },
+  {
+   "path": "css/style.css",
+   "contents": ":root{--ink:#172238;--cream:#fff4d6;--red:#e85d5d;--gold:#ffd166;--blue:#35a7d4}\n*{box-sizing:border-box}body{margin:0;background:#192b45;color:var(--cream);font-family:'Press Start 2P',monospace;min-height:100vh;display:flex;align-items:center;justify-content:center}.cabinet{width:min(100%,1040px);padding:18px}.topbar{height:64px;background:#263d61;border:4px solid #0e1829;box-shadow:6px 6px 0 #0e1829;display:flex;align-items:center;justify-content:space-between;padding:0 18px}.brand{color:var(--gold);font-size:16px;text-shadow:3px 3px #8b4d42}.hud{display:flex;gap:16px;align-items:center;font-size:11px}.hud span{background:#16263e;padding:11px 9px;border:2px solid #597499}.hud b{color:var(--gold)}button{font:inherit;color:var(--cream);background:#35577f;border:3px solid #0e1829;padding:10px 13px;cursor:pointer;box-shadow:3px 3px 0 #0e1829}button:hover{filter:brightness(1.2)}button:active{transform:translate(2px,2px);box-shadow:1px 1px 0 #0e1829}.screen-wrap{position:relative;margin-top:16px;border:5px solid #0e1829;box-shadow:8px 8px 0 #0e1829;background:#79b99b}.screen-wrap canvas{display:block;width:100%;height:auto;image-rendering:pixelated}.screen-card{position:absolute;inset:0;margin:auto;width:min(85%,560px);height:max-content;text-align:center;padding:45px 20px;background:rgba(23,34,56,.94);border:5px solid #f4d58c;box-shadow:8px 8px 0 #0e1829}.screen-card h1{font-size:26px;color:var(--gold);line-height:1.6;margin:15px 0}.screen-card p{font-size:12px;line-height:2}.pixel-mark{font-size:34px;color:#7be0c2}.pixel-mark.danger{color:#f27474}.primary{font-size:18px;color:#172238;background:var(--gold);padding:15px 30px;margin:15px}.record{color:#b9d5d0}.hidden{display:none!important}.tower-panel{background:#263d61;border:4px solid #0e1829;box-shadow:4px 4px 0 #0e1829;margin:14px auto 0;padding:12px;display:flex;gap:12px;align-items:center;justify-content:center;font-size:11px}.tower-panel span{color:var(--gold);margin-right:8px}.tower-panel button{padding:8px;font-size:10px}.help{text-align:center;font-size:10px;color:#b9d5d0;line-height:1.8}@media(max-width:700px){.topbar{height:auto;display:block}.brand{text-align:center;margin-bottom:12px;font-size:12px}.hud{justify-content:center;gap:5px;flex-wrap:wrap}.hud span{padding:8px 5px;font-size:9px}.screen-card h1{font-size:17px}.screen-card{padding:30px 10px}.help{font-size:8px}}\n",
+   "language": "css"
+  },
+  {
+   "path": "js/sprites.js",
+   "contents": "// 로키가 뽑은 도트 조각 꾸러미. **이 파일은 고치지 마라.**\n// 그림을 글자로 담아 뒀다 — 판은 바깥 요청이 막힌 창에서 돌아서 주소로는 못 불러온다.\n// 쓰는 법:  import { SPRITES, sprite } from './sprites.js';\n//           ctx.drawImage(sprite('enemy_fast'), x - 24, y - 24, 48, 48);\n//\n// **규격**: 한 장 48×48 · 도트 한 칸 2픽셀(격자 24칸) · 조각마다 키가 다르고 **바닥이 맞다**.\n// 그러니 **늘 48×48 그대로 그려라.** 크기를 조각마다 다르게 늘리면 도트 칸이 어긋나고 덩치 차이가 깨진다.\n// 발이 닿는 선은 그림의 아래끝이다 — 길 위에 세울 때 `y + 24` 가 발밑이 되게 그린다.\n//   enemy_weak    키 13/24칸\n//   enemy_fast    키 17/24칸\n//   enemy_tank    키 22/24칸\n//   tower_arrow   키 19/24칸\n//   tower_cannon  키 16/24칸\n//   tower_frost   키 21/24칸\n\nexport const SPRITES = {\n  // 약한 적\n  enemy_weak: \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwBAMAAAClLOS0AAAAMFBMVEVMaXFUoCtMmCczcCopUiRssUMZPhwMJhN8t1gACgoAAABAfi6x0Zebs4oIIhF0fXI7jJMHAAAAEHRSTlMA/v7+8/3zp/5IFvz+/Xj9yYUCeQAAAAlwSFlzAAAD6AAAA+gBtXtSawAAAKRJREFUeJzt0EENxTAMA9BRMIVQKIVQCIVQCIVQKIVQKIVQKIVS6Fdv09cmBcB89JN88HV9+VJOdFVV7lGG1WYKiFcV1sgUAGirBsHuBIAIHFEBg4gDcAGZFaAP+JyT5kwn5go05Nak5J1orQY+t8P3FPxNPQMDJOcREdB96h1OeS4BjVaCNYTGuePUqgUI46EMYtWh9xNf4bq69TC16Nbv9QP8AEJFiKvDQpitAAAAAElFTkSuQmCC\",\n  // 빠른 적\n  enemy_fast: \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwBAMAAAClLOS0AAAAMFBMVEVMaXESN3sZWbkFHkoROXwAABUKMXERSp8SKmMEFTsADjErNVQ3THpAYKATLFwdb+TR7UNxAAAAD3RSTlMA+vtjuhiU8PqjNI78/M/W9d+eAAAACXBIWXMAAAPoAAAD6AG1e1JrAAAAvElEQVR4nO3SQY1FMQgFUCxcC9cCFrCABSxgoRZqoRZqoRZqoRbeZDKLyUv+f+1fzG5YEU4CJCDyH38esfwn8RVHEAxt4i6uwTiAAKybZqp1A2ILigLY5HVxGgDoDqygFIxJzvGdFdvBUpQKjjkHUUvRuoMmtTuZY2SmapW2A5Hmlkoy3cx/yw8gnqmVrBJ5P9RbEKUFQDU7BdFGrkvFj0HEWHFbdQuRtbxo9Ai9fwb+evQD6O1rT6CvfgJfF2KFe95fNwwAAAAASUVORK5CYII=\",\n  // 튼튼한 적\n  enemy_tank: \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwBAMAAAClLOS0AAAAMFBMVEVMaXEkJik7PEFwTzsVFRVnZGhRT1KOY0c5ODxNNywkJigmJiZ6fICdiHywdkozMTSrUnJsAAAAEHRSTlMA8/r8I/z9/sz8eFD8/v2gfutzDAAAAAlwSFlzAAAD6AAAA+gBtXtSawAAASBJREFUeJy901FthDEIAOBawAIWsIAFLGABC1jAAhawgIVaqIUu/yXb3WX71z2tLzT5EkiBjvGPh3mk5RX+BpziqUvSJfkvUG0NoRIBbV1nqJ7LQEOCwNbsqhNsmU3RAtRIc8reJ3ASAZpzrqkgQu4nYEAEXb3WpOv61ZdbyEAACDO9IkbmAUqCvCCWUUA5hcgB3ARyVJho1EgQswPgat0jg5Qix9Ze6wDbCJgJdRESM9BnqltAIx97Elyd3MPP4ASaPg0cbHopEB0gr0476R5bya8Z4AFGOlcr8GDQLvbnPO5gDEYh4sFEgu/bfgeFYVqj1AJflv0XYBS7tszte42fobTjAdH6XuMG2EXx8UBU8Zdct5CoiNdv2YiKz4b8BB90aCxa81zWMAAAAABJRU5ErkJggg==\",\n  // 화살 타워\n  tower_arrow: \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwBAMAAAClLOS0AAAAMFBMVEVMaXE8MS9NS051c3M2MjJnZGQ/PUA0Ihg8LCQLCwBmOyF3RSQqVIhva2lriayNiYdrJKFAAAAAD3RSTlMAd+f9PfyqwvcX/vz7u/pmPG/5AAAACXBIWXMAAAPoAAAD6AG1e1JrAAAAlUlEQVR4nO3RQQ0FMQgEUCyMBSxgAQtYqAUsYKEWamEt1MJaWAvd7PEnNCn3z/UlA2GI/kMd6CVAc2+oQO/uvVeAEJEl7QHjugYK4OOD4eeAcMCT9VvQYFUOPQeYMZvhHJRjzmA9B2J5HmEqQLM5pVUAIiYowRJZJWgfpFftYa0a8DJb6a82oPZFWdLHFpjvm9MGf+EFdgFqySvGpDwAAAAASUVORK5CYII=\",\n  // 대포 타워\n  tower_cannon: \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwBAMAAAClLOS0AAAAMFBMVEUAAABaWl01MzWKUxZlZmuBXjEbGR06Kx8zJh8GBgaebCtqRRwvLzR3dnfIeh5FTFi/PX9/AAAAD3RSTlMB/fz9/vz+oHgo/fXM/f5pxqBqAAAACXBIWXMAAAPoAAAD6AG1e1JrAAAAw0lEQVR4nO3QQY2EMQgF4N8CFrCABSxgoRZqAQtYqAUsYAELtcCmO5fOZJr0uId9hzbplzxSnuc/fzGmPaCrXkNEypieEHYHJuOVSWa6FR7hcQCowkIMHEQXoMBIDRELnVq7AAPAsQCb+yVwo/YK7cOPoMDg2BDD9G2VRwiGhJX43O4BDDiBpiez3oEyM4gLM8cdBCfXGASZ9Tb9BOZDROaYIkL9Bjr5eiJZp29dR6CJzEWzOAvn9sUjaF9xit97q/oGP1pQxaHziF5MAAAAAElFTkSuQmCC\",\n  // 얼음 타워\n  tower_frost: \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwBAMAAAClLOS0AAAAMFBMVEUAAAAnOFiJqbYgRGpUc4tJgJcsZ5Ks5fEpNEt7nKpRnLEbRGZvobPU9/gzgO6Uy9dJCKpqAAAAD3RSTlMBbf2lo/7z/kT3/OT+/f2KUtj8AAAACXBIWXMAAAPoAAAD6AG1e1JrAAAArklEQVR4nM3SQY1FMQgF0FrAAhawgAUsYAELtYAFLNRCLdRCLfD389qE7obtSbi5hNb++7DSG8C2DS/Qx7Y9eq8DIyk5cx36ZOd5yrhBIzE5NrwC40R+Ak1MfQIQF3gBoLAggDpwikmernsDSETPU8YNmqL7ufkZOoxcOb6rrgAmkSFmZeixJGVF1GEYCtoYZfAZ6BhzloFSdenILAMoignq54xX6MTkxPR567/wA9WMjMnv9kG6AAAAAElFTkSuQmCC\",\n};\n\nconst _이미지 = {};\n/** 키를 주면 그려 넣을 수 있는 그림을 돌려준다(한 번만 만든다). */\nexport function sprite(key) {\n  if (!_이미지[key]) { const im = new Image(); im.src = SPRITES[key]; _이미지[key] = im; }\n  return _이미지[key];\n}\n\n/** 다 읽힐 때까지 기다린다. 첫 화면에서 빈 칸이 보이지 않게. */\nexport function spritesReady() {\n  return Promise.all(Object.keys(SPRITES).map((k) => new Promise((done) => {\n    const im = sprite(k);\n    if (im.complete) done(); else { im.onload = () => done(); im.onerror = () => done(); }\n  })));\n}\n",
+   "language": "javascript"
+  },
+  {
+   "path": "js/sound.js",
+   "contents": "// 로키가 만든 소리 꾸러미. **이 파일은 고치지 마라.**\n// 효과음은 파일이 아니라 **그 자리에서 만든 소리**다(WebAudio) — 0바이트, 겹쳐 쳐도 안 밀린다.\n// 쓰는 법:\n//   import { unlockSound, sfx, startMusic, toggleMusic } from './sound.js';\n//   document.addEventListener('pointerdown', unlockSound, { once: true });  // 브라우저가 첫 소리를 막는다\n//   sfx('hit');        // 타격음 — 적이 맞을 때\n//   sfx('shoot');      // 발사\n//   sfx('kill');       // 적이 죽을 때\n//   sfx('place');      // 타워 설치\n//   sfx('upgrade');    // 강화\n//   sfx('deny');       // 돈이 모자라거나 길 위라 안 될 때\n//   sfx('leak');       // 적이 끝까지 갔을 때(목숨 -1)\n//   sfx('wave');       // 새 웨이브\n//   sfx('over');       // 게임 오버\n//   startMusic();      // 배경 음악(이어서 돈다) · toggleMusic() 로 켜고 끈다\n\nlet ac = null;\nlet 음악 = null;\n\nexport function unlockSound() {\n  if (!ac) { const C = window.AudioContext || window.webkitAudioContext; if (C) ac = new C(); }\n  if (ac && ac.state === 'suspended') ac.resume();\n  return !!ac;\n}\n\n/** 소리 하나. 종류마다 파형·높이·길이가 다르다. */\nexport function sfx(kind) {\n  if (!ac) unlockSound();\n  if (!ac) return;\n  const t = ac.currentTime;\n  const 설정 = {\n    shoot:   { wave: 'square',   from: 880,  to: 440,  len: 0.07, gain: 0.05 },\n    hit:     { wave: 'square',   from: 320,  to: 120,  len: 0.09, gain: 0.10, noise: true },\n    kill:    { wave: 'triangle', from: 520,  to: 70,   len: 0.26, gain: 0.11 },\n    place:   { wave: 'triangle', from: 300,  to: 620,  len: 0.14, gain: 0.08 },\n    upgrade: { wave: 'square',   from: 520,  to: 1040, len: 0.20, gain: 0.07 },\n    deny:    { wave: 'sawtooth', from: 180,  to: 110,  len: 0.16, gain: 0.07 },\n    leak:    { wave: 'sawtooth', from: 260,  to: 90,   len: 0.34, gain: 0.10 },\n    wave:    { wave: 'square',   from: 440,  to: 880,  len: 0.28, gain: 0.07 },\n    over:    { wave: 'triangle', from: 330,  to: 60,   len: 0.80, gain: 0.12 },\n  }[kind];\n  if (!설정) return;\n\n  const g = ac.createGain();\n  g.gain.setValueAtTime(설정.gain, t);\n  g.gain.exponentialRampToValueAtTime(0.0001, t + 설정.len);\n  g.connect(ac.destination);\n\n  const o = ac.createOscillator();\n  o.type = 설정.wave;\n  o.frequency.setValueAtTime(설정.from, t);\n  o.frequency.exponentialRampToValueAtTime(Math.max(20, 설정.to), t + 설정.len);\n  o.connect(g);\n  o.start(t); o.stop(t + 설정.len);\n\n  // 타격음에는 '퍽' 하는 잡음을 조금 섞는다 — 맑은 삐 소리만으로는 때린 느낌이 안 난다.\n  if (설정.noise) {\n    const n = ac.createBufferSource();\n    const buf = ac.createBuffer(1, Math.floor(ac.sampleRate * 0.05), ac.sampleRate);\n    const d = buf.getChannelData(0);\n    for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / d.length);\n    n.buffer = buf;\n    const ng = ac.createGain();\n    ng.gain.setValueAtTime(0.06, t);\n    ng.gain.exponentialRampToValueAtTime(0.0001, t + 0.05);\n    n.connect(ng); ng.connect(ac.destination);\n    n.start(t);\n  }\n}\n\nconst BGM = \"\";   // 음원 없음 — 아래에서 **그 자리에서 연주한다**\n\n/**\n * 배경 음악. 음원 파일이 있으면 그걸 틀고, 없으면 **그 자리에서 연주한다**.\n * 연주 쪽은 0바이트다 — 옛 게임이 그랬듯 네모파로 가락을 찍어 낸다.\n * 가락은 C 장조로 네 마디가 돌아간다(C - Am - F - G). 빠르기 120.\n */\nconst 가락 = [\n  // [음높이(반음, 0 = C4), 길이(16분음표 수)] — 0.5마디씩 네 덩이\n  [0, 2], [4, 2], [7, 2], [12, 2], [7, 2], [4, 2], [7, 2], [4, 2],\n  [-3, 2], [0, 2], [4, 2], [9, 2], [4, 2], [0, 2], [4, 2], [0, 2],\n  [-7, 2], [-3, 2], [0, 2], [5, 2], [0, 2], [-3, 2], [0, 2], [5, 2],\n  [-5, 2], [-1, 2], [2, 2], [7, 2], [2, 2], [-1, 2], [2, 2], [-1, 2],\n];\nconst 베이스 = [0, 0, -3, -3, -7, -7, -5, -5];   // 마디마다 두 번\nconst 한박 = 60 / 120 / 4;                        // 16분음표 한 칸(초)\nconst 높이 = (반음) => 261.63 * Math.pow(2, 반음 / 12);\nlet 연주중 = false, 다음때 = 0, 자리 = 0, 시계 = null, 음량 = 0.18;\n\nfunction _한음(freq, 시작, 길이, 결, 세기) {\n  const g = ac.createGain();\n  g.gain.setValueAtTime(0, 시작);\n  g.gain.linearRampToValueAtTime(세기, 시작 + 0.01);\n  g.gain.setValueAtTime(세기, 시작 + 길이 * 0.7);\n  g.gain.exponentialRampToValueAtTime(0.0001, 시작 + 길이);\n  g.connect(ac.destination);\n  const o = ac.createOscillator();\n  o.type = 결; o.frequency.setValueAtTime(freq, 시작);\n  o.connect(g); o.start(시작); o.stop(시작 + 길이);\n}\n\nfunction _찍기() {\n  if (!연주중 || !ac) return;\n  // 0.2초 앞까지 미리 예약해 둔다 — 그래야 끊기지 않는다.\n  while (다음때 < ac.currentTime + 0.2) {\n    const [반음, 칸] = 가락[자리 % 가락.length];\n    _한음(높이(반음 + 12), 다음때, 한박 * 칸 * 0.9, 'square', 음량 * 0.5);\n    if (자리 % 4 === 0) _한음(높이(베이스[Math.floor(자리 / 4) % 베이스.length] - 12), 다음때, 한박 * 3.4, 'triangle', 음량);\n    if (자리 % 2 === 1) {                      // 엇박에 하이햇\n      const n = ac.createBufferSource();\n      const b = ac.createBuffer(1, Math.floor(ac.sampleRate * 0.03), ac.sampleRate);\n      const d = b.getChannelData(0);\n      for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / d.length);\n      n.buffer = b;\n      const g = ac.createGain();\n      g.gain.setValueAtTime(음량 * 0.25, 다음때);\n      g.gain.exponentialRampToValueAtTime(0.0001, 다음때 + 0.03);\n      n.connect(g); g.connect(ac.destination); n.start(다음때);\n    }\n    다음때 += 한박 * 칸;\n    자리++;\n  }\n}\n\n/** 배경 음악을 튼다(이어서 돈다). 사람이 화면을 한 번 누른 뒤에 불러야 소리가 난다. */\nexport function startMusic(volume = 0.35) {\n  if (!ac) unlockSound();\n  if (!ac) return false;\n  if (BGM) {\n    if (!음악) { 음악 = new Audio(BGM); 음악.loop = true; }\n    음악.volume = volume;\n    음악.play().catch(() => {});\n    return true;\n  }\n  if (연주중) return true;\n  음량 = 0.18 * (volume / 0.35);\n  연주중 = true; 자리 = 0; 다음때 = ac.currentTime + 0.05;\n  시계 = setInterval(_찍기, 60);\n  _찍기();\n  return true;\n}\nexport function stopMusic() {\n  if (음악) 음악.pause();\n  연주중 = false;\n  if (시계) { clearInterval(시계); 시계 = null; }\n}\n/** 켜져 있으면 끄고, 꺼져 있으면 켠다. 켜졌는지를 돌려준다. */\nexport function toggleMusic() {\n  const 켜짐 = BGM ? !!(음악 && !음악.paused) : 연주중;\n  if (켜짐) { stopMusic(); return false; }\n  startMusic(); return true;\n}\nexport function hasMusic() { return true; }\n",
+   "language": "javascript"
+  }
+ ],
+ "seats": {
+  "fix": "gpt-5.6-luna",
+  "build": "gpt-5.6-luna",
+  "judge": "gpt-5.6-luna",
+  "fixWhy": "성적 84% (27판) 로 제일 좋음",
+  "fixMode": "best"
+ },
+ "stage": "prototype",
+ "target": "web",
+ "verify": {
+  "files": [
+   {
+    "ok": true,
+    "path": "js/game.js",
+    "errors": [],
+    "checked": true,
+    "language": "javascript"
+   },
+   {
+    "ok": false,
+    "path": "index.html",
+    "errors": [],
+    "checked": false,
+    "language": "html"
+   },
+   {
+    "ok": false,
+    "path": "css/style.css",
+    "errors": [],
+    "checked": false,
+    "language": "css"
+   },
+   {
+    "ok": true,
+    "path": "js/sprites.js",
+    "errors": [],
+    "checked": true,
+    "language": "javascript"
+   },
+   {
+    "ok": true,
+    "path": "js/sound.js",
+    "errors": [],
+    "checked": true,
+    "language": "javascript"
+   }
+  ],
+  "broken": 0,
+  "parsed": 3,
+  "repaired": false,
+  "unchecked": 2
+ },
+ "patched": {
+  "ms": 11887,
+  "asked": 1,
+  "edits": [
+   {
+    "why": "타워 도트 조각의 아래끝이 설치 칸에 닿도록 그리는 기준점만 위로 올립니다.",
+    "path": "js/game.js"
+   },
+   {
+    "why": "적 도트 조각의 아래끝이 길 위에 닿도록 그리는 기준점만 위로 올립니다.",
+    "path": "js/game.js"
+   }
+  ],
+  "totalLines": 312,
+  "changedLines": 2
+ },
+ "summary": {
+  "met": 9,
+  "criteria": 22
+ },
+ "askJudge": {
+  "did": "js/game.js의 적·타워 drawImage 두 줄만 각각 y-40 기준으로 바꿨고, sprites.js·sound.js와 나머지 파일은 그대로다.",
+  "asked": "적과 타워의 그림을 발 위치에 맞게 위로 옮기고, 게임 규칙과 지정 파일은 건드리지 말 것.",
+  "verdict": "내보낸다",
+  "sentBack": false,
+  "toPerson": "요청한 두 그리기 위치만 고쳐서 발이 제자리에 오게 했고, 게임 규칙과 지정 파일은 건드리지 않았습니다.",
+  "toWorker": "",
+  "askedSize": "작은 손질",
+  "sizeMatch": "맞다",
+  "uninvited": [],
+  "confidence": 0.99,
+  "fixedTheThing": "고쳤다"
+ },
+ "coverage": [
+  {
+   "met": true,
+   "where": "js/game.js의 drawEnemy와 drawTower에서 48×48 크기는 유지하고 y 기준만 각각 -40으로 조정했습니다.",
+   "criterionId": "new_sprite_grounding"
+  },
+  {
+   "met": true,
+   "where": "js/game.js가 기존처럼 kind별 sprite를 사용하며, 조각 크기와 종류별 그림 규칙은 건드리지 않았습니다.",
+   "criterionId": "new_sprite_scale_variants"
+  },
+  {
+   "met": true,
+   "where": "js/game.js의 sprite(e.kind), sprite(t.kind) 호출과 도트 조각 크기를 유지했습니다.",
+   "criterionId": "new_enemy_tower_sprite_variants"
+  },
+  {
+   "met": true,
+   "where": "js/game.js의 적 그리기가 계속 sprite를 사용합니다.",
+   "criterionId": "[5]"
+  },
+  {
+   "met": true,
+   "where": "js/game.js의 타워 그리기가 계속 sprite를 사용합니다.",
+   "criterionId": "[6]"
+  }
+ ],
+ "criteria": [
+  {
+   "id": "1",
+   "then": "",
+   "when": "제목 화면에 \"시작\" 글자가 보인다."
+  },
+  {
+   "id": "2",
+   "then": "",
+   "when": "시작을 누르면 화면이 게임 화면으로 바뀌고, 길·돈·목숨·웨이브가 보인다."
+  },
+  {
+   "id": "3",
+   "then": "",
+   "when": "게임 화면에 돈, 목숨, 웨이브 번호가 숫자로 보인다."
+  },
+  {
+   "id": "4",
+   "then": "",
+   "when": "시간이 지나면 적이 나타나고, 적의 자리가 길을 따라 움직인다."
+  },
+  {
+   "id": "5",
+   "then": "",
+   "when": "적이 도트 그림으로 그려지고 동그라미나 네모로 대체되지 않는다."
+  },
+  {
+   "id": "6",
+   "then": "",
+   "when": "타워가 도트 그림으로 그려지고 동그라미나 네모로 대체되지 않는다."
+  },
+  {
+   "id": "7",
+   "then": "",
+   "when": "빈 칸을 눌러 타워를 놓으면 돈이 그 타워 값만큼 줄어든다."
+  },
+  {
+   "id": "8",
+   "then": "",
+   "when": "돈보다 비싼 타워는 놓이지 않고 돈도 줄지 않는다."
+  },
+  {
+   "id": "9",
+   "then": "",
+   "when": "길 위에는 타워가 놓이지 않는다."
+  },
+  {
+   "id": "10",
+   "then": "",
+   "when": "타워 사거리 안에 적이 있으면 적의 체력이 줄어든다."
+  },
+  {
+   "id": "11",
+   "then": "",
+   "when": "적이 죽으면 돈이 늘어난다."
+  },
+  {
+   "id": "12",
+   "then": "",
+   "when": "적이 길 끝에 닿으면 목숨이 1 줄어든다."
+  },
+  {
+   "id": "13",
+   "then": "",
+   "when": "한 웨이브가 끝나면 웨이브 번호가 1 오른다."
+  },
+  {
+   "id": "14",
+   "then": "",
+   "when": "목숨이 0이 되면 게임 오버 화면이 뜨고, 간 웨이브 수가 보인다."
+  },
+  {
+   "id": "15",
+   "then": "",
+   "when": "일시정지를 누르면 적의 자리가 더 바뀌지 않고, 다시 누르면 움직인다."
+  },
+  {
+   "id": "16",
+   "then": "",
+   "when": "놓은 타워를 누르면 업그레이드 단추가 뜨며, 업그레이드하면 돈이 줄고 공격력이나 사거리가 오른다."
+  },
+  {
+   "id": "17",
+   "then": "",
+   "when": "새로고침해도 제목 화면에 최고 기록이 남아 있다."
+  },
+  {
+   "id": "18",
+   "then": "",
+   "when": "js/sprites.js는 앞 판 그대로이며 수정되거나 다시 작성되지 않는다."
+  },
+  {
+   "id": "new_enemy_tower_sprite_variants",
+   "then": "js/sprites.js와 js/sound.js는 수정하지 않는다.",
+   "when": "Play에서 약한 적·빠른 적·튼튼한 적이 각각 enemy_weak·enemy_fast·enemy_tank 그림으로 보이고, 설치한 화살·대포·빙결 타워가 각각 tower_arrow·tower_cannon·tower_frost 그림으로 보인다."
+  },
+  {
+   "id": "new_sound_events_and_toggle",
+   "then": "시작을 누르면 음악이 시작되고, 화면의 소리 단추를 누를 때마다 '🔊 소리 켜짐'과 '🔇 소리 꺼짐'이 번갈아 표시된다.",
+   "when": "Play에서 타워 발사·적 피격·적 처치·타워 설치·강화·설치 거부·적 누수·새 웨이브·게임 오버 때 각각 지정된 효과음이 들리고, 발사음은 0.08초 안에 두 번 울리지 않는다."
+  },
+  {
+   "id": "new_sprite_grounding",
+   "then": "",
+   "when": "Play에서 적과 타워의 도트 그림 아래끝이 각각 길과 설치한 칸에 닿아 보이며, 어느 그림도 기준 위치보다 24픽셀 아래로 가라앉지 않는다. 적의 체력 막대와 레벨 글자는 해당 적 그림에 가려지지 않는다."
+  },
+  {
+   "id": "new_sprite_scale_variants",
+   "then": "",
+   "when": "Play에서 약한 적·빠른 적·튼튼한 적이 서로 다른 크기로 보이고, 약한 적이 가장 작으며 튼튼한 적이 가장 크다. 타워 세 종류도 각각 자기 도트 그림으로 계속 보인다."
+  }
+ ],
+ "howToRun": "지난 판과 같은 방식으로 기존 앱을 실행하고, 제목 화면에서 시작을 눌러 게임 화면을 확인합니다.",
+ "humanGate": [
+  "Play 화면에서 적의 발이 길에 닿고 타워의 발이 설치 칸에 닿는지 사람이 확인한다.",
+  "Play 화면에서 세 적의 덩치 차이와 체력 막대·레벨 글자가 그림에 가려지지 않는지 사람이 확인한다."
+ ],
+ "expectations": []
+}

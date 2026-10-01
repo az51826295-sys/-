@@ -29,7 +29,7 @@ await page.setRequestInterception(true);
 page.on("request", (r) => (r.url().includes(`127.0.0.1:${포트}`) ? r.continue() : r.abort()));
 await page.goto(`http://127.0.0.1:${포트}/`, { waitUntil: "networkidle0" });
 const 쉼 = (ms: number) => new Promise((r) => setTimeout(r, ms));
-const 칸 = "C:/Users/az518/Desktop/로키-소리게임2-사진";
+const 칸 = "C:/Users/az518/Desktop/로키-규격게임-사진";
 mkdirSync(칸, { recursive: true });
 const 찍기 = async (이름: string) => {
   const b = await page.screenshot({ type: "png" });
