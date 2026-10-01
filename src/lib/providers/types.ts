@@ -80,6 +80,16 @@ export interface AIProvider {
     maxTokens?: number;
     /** Defaults to "judgment". */
     tier?: WorkTier;
+    /**
+     * **같은 것을 두 번 물으면 같은 답이 와야 하는 자리**에만 0 을 준다.
+     *
+     * 228회차 10-02: 규칙 판정자가 같은 규칙·같은 사례 126건을 세 번 재며
+     * 어긴 사례 `1 · 0 · 20` 을 냈다(같은 모델이 148번 다 답했으니 섞기가 아니라 표본 흔들림이다).
+     * 그 위에서 **무엇을 배울지**가 정해지고 있었다 — 자가 흔들리면 배운 것도 흔들린다.
+     *
+     * 안 주면 벤더 기본값(보통 1)이다. 글을 쓰는 자리는 그대로 두는 게 낫다.
+     */
+    temperature?: number;
   }): Promise<{
     output: T;
     inputTokens: number;

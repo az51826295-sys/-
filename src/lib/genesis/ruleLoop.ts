@@ -125,8 +125,25 @@ export const TRAIN_SHOW = 120;
 /** 재검증할 때가 됐나: 채택 때 보류분보다 growth 건 이상 늘었을 때만. */
 export const recheckDue = (holdoutAtAdoption: number, holdoutNow: number) => holdoutNow >= holdoutAtAdoption + RECHECK.growth;
 
-/** 규칙 하나를 보류분에 대 본다(호출 1번). 결과는 가린 채 "어겼나" 만 묻고, 셈은 여기서 한다. */
-async function judgeRule(ai: AIProvider, rule: string, violationTest: string, holdout: LearnCase[]): Promise<{ counts: Counts; judged: number }> {
+/**
+ * **한 번에 묻는 사례 수.** 228회차 10-02 에 잰 것:
+ * 같은 규칙·같은 보류분 126건을 **한 번에** 물으면 어긴 사례가 `1 · 0 · 20` 으로 나와
+ * **같은 규칙이 떨어졌다 붙었다** 했다(판정이 뒤집혔다). 42건씩 쪼개 물으니 `10 · 17 · 18` 로
+ * 세 판 모두 같은 판정이 나왔다. 사례 하나당 판정 한 번인 것은 같으니 **값은 거의 안 는다** —
+ * 묻는 덩어리만 작아진다. 자가 흔들리면 그 위에서 잰 것은 **전부 한 번 재고 믿은 것**이 된다.
+ */
+export const JUDGE_CHUNK = 42;
+
+/** 규칙 하나를 보류분에 대 본다(쪽마다 호출 1번). 결과는 가린 채 "어겼나" 만 묻고, 셈은 여기서 한다. */
+export async function judgeRule(ai: AIProvider, rule: string, violationTest: string, holdout: LearnCase[]): Promise<{ counts: Counts; judged: number }> {
+  const rows: { bad: boolean; violates: boolean }[] = [];
+  for (let s = 0; s < holdout.length; s += JUDGE_CHUNK) {
+    rows.push(...(await judgeChunk(ai, rule, violationTest, holdout.slice(s, s + JUDGE_CHUNK))));
+  }
+  return { counts: countsFrom(rows), judged: rows.length };
+}
+
+async function judgeChunk(ai: AIProvider, rule: string, violationTest: string, holdout: LearnCase[]): Promise<{ bad: boolean; violates: boolean }[]> {
   const { output: judged } = await ai.generateStructuredOutput({
     systemInstructions: JUDGE_SYS,
     input: [
@@ -141,11 +158,12 @@ async function judgeRule(ai: AIProvider, rule: string, violationTest: string, ho
     // 113회차 09-15: 보류 59건 판정 JSON 이 2000 토큰을 넘어 MODEL_OUTPUT_TRUNCATED 로 하루치가 통째로 죽었다(첫 자동 실행).
     // 228회차: 보류분이 142건으로 늘어 4000 도 모자란다 — **사례 수에 맞춰 늘린다.** 못 박은 수는 늘 어딘가에서 모자라진다.
     maxTokens: Math.max(4000, holdout.length * 70),
-    tier: "routine",
+    // **온도 0.** 같은 규칙·같은 사례를 두 번 물으면 같은 답이 와야 하는 자리다 —
+    // 10-02 에 기본 온도로 재니 어긴 사례가 1·0·20 으로 나왔고, 그 위에서 무엇을 배울지가 정해지고 있었다.
+    tier: "routine", temperature: 0,
   });
   const verdict = new Map(judged.judgments.map((j) => [j.case, j.violates]));
-  const rows = holdout.flatMap((c, i) => (verdict.has(i) ? [{ bad: c.bad, violates: verdict.get(i)! }] : []));
-  return { counts: countsFrom(rows), judged: rows.length };
+  return holdout.flatMap((c, i) => (verdict.has(i) ? [{ bad: c.bad, violates: verdict.get(i)! }] : []));
 }
 
 type AdoptedRule = { knowledgeId: string; candidateId: string; title: string; rule: string; violationTest: string; holdoutAtAdoption: number };

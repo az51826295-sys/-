@@ -63,6 +63,7 @@ export function createDeepSeekProvider(opts: { judgmentModel?: string; /** 191�
       schemaName,
       maxTokens = 8000,
       tier = "conversation",
+      temperature,
     }) {
       const model = tier === "judgment" && opts.judgmentModel ? opts.judgmentModel : MODELS[tier];
       if (!model) {
@@ -86,6 +87,7 @@ export function createDeepSeekProvider(opts: { judgmentModel?: string; /** 191�
       const response = await client.chat.completions.create({
         model,
         max_tokens: maxTokens,
+        ...(temperature === undefined ? {} : { temperature }),
         response_format: { type: "json_object" },
         ...(thinking ? { reasoning_effort: "high" as const } : {}),
         // @ts-expect-error DeepSeek 확장 매개변수 — OpenAI SDK 타입에 없다.

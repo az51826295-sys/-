@@ -86,15 +86,21 @@ const 적을것: string[] = [];
 for (const c of 줄선것) {
   let 결과: { counts: any; judged: number };
   try {
-    const { output } = await ai.generateStructuredOutput({
-      systemInstructions: JUDGE,
-      input: [`규칙: ${c.rule}`, `어겼는지 판별하는 법: ${c.violationTest}`, "", ...holdout.map(사례글)].join("\n\n"),
-      schema: 꼴, schemaName: "rule_judgments",
-      maxTokens: Math.max(4000, holdout.length * 70), tier: "routine",
-    });
-    호출++;
-    const v = new Map((output as any).judgments.map((j: any) => [j.case, j.violates]));
-    const rows = holdout.flatMap((x: any, i: number) => (v.has(i) ? [{ bad: Boolean(x.bad), violates: Boolean(v.get(i)) }] : []));
+    // **쪼개 묻는다.** 126건을 한 번에 물으면 같은 규칙이 떨어졌다 붙었다 한다(10-02 측정: 어긴 사례 1·0·20).
+    // 42건씩 나눠 물으면 10·17·18 로 판정이 한결같다. 사례당 판정 횟수는 같아서 값은 거의 안 는다.
+    const rows: { bad: boolean; violates: boolean }[] = [];
+    for (let s = 0; s < holdout.length; s += 42) {
+      const 쪽 = holdout.slice(s, s + 42);
+      const { output } = await ai.generateStructuredOutput({
+        systemInstructions: JUDGE,
+        input: [`규칙: ${c.rule}`, `어겼는지 판별하는 법: ${c.violationTest}`, "", ...쪽.map(사례글)].join("\n\n"),
+        schema: 꼴, schemaName: "rule_judgments",
+        maxTokens: Math.max(4000, 쪽.length * 70), tier: "routine", temperature: 0,
+      });
+      호출++;
+      const v = new Map((output as any).judgments.map((j: any) => [j.case, j.violates]));
+      쪽.forEach((x: any, i: number) => { if (v.has(i)) rows.push({ bad: Boolean(x.bad), violates: Boolean(v.get(i)) }); });
+    }
     결과 = { counts: countsFrom(rows), judged: rows.length };
   } catch (e) { 호출++; console.log(`  건너뜀 — 판정 실패: ${e instanceof Error ? e.message : String(e)}`); continue; }
 
