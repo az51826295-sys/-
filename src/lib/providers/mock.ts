@@ -54,6 +54,20 @@ function extractCompetitors(input: string): string[] {
 }
 
 function buildOutput(input: string): unknown {
+  /**
+   * **거짓말의 온도**(228회차 10-01). 취조실 화면을 **돈 안 쓰고** 눌러 볼 수 있게 한다.
+   * 모델이 아니라 **배관**을 시험하는 자리다 — 그래서 말은 성의 없어도 되고,
+   * 대신 수치·화면·증거 고르기가 실제로 도는지가 보여야 한다.
+   * 마지막에 온 형사 말을 되받아 쓰니, 화면에서 입력이 서버까지 갔는지도 눈으로 보인다.
+   */
+  if (input.includes("형사:")) {
+    const 마지막 = [...input.matchAll(/^형사: (.+)$/gm)].pop()?.[1] ?? "";
+    return {
+      말: `(목) 방금 "${마지막.slice(0, 28)}" 라고 물으셨네요. 저는 드릴 말씀이 없습니다.`,
+      태도: "(목) 손가락으로 책상을 두 번 두드린다.",
+    };
+  }
+
   // 100회차: 검증된 규칙 고리(genesis/ruleLoop.ts)의 목 — 파이프라인 모양만 시험한다(판정은 일부러 기계적).
   if (input.includes("## Failure cases to learn from")) {
     // 151회차: 제안자는 이제 **어긴 사례 번호**를 대야 한다. 목도 진짜처럼 실패 사례의 번호를 읽어서 댄다 —
