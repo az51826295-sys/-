@@ -56,9 +56,12 @@ function 찍히는말({ 글, 압박 }: { 글: string; 압박: number }) {
   return <>{보임}</>;
 }
 
-export default function 취조실({ 사건, 용의자들, 증거들, 확인할것 }: {
+export default function 취조실({ 사건, 용의자들, 증거들, 확인할것, 현장으로, 찾은수, 모든증거수 }: {
   사건: { 제목: string; 피해자: string; 발생시각: string; 장소: string };
   용의자들: 용의자[]; 증거들: 증거[]; 확인할것: 확인[];
+  /** 처음부터 다시 — 담아 둔 판을 지우고 현장으로 돌아간다. */
+  현장으로?: () => void;
+  찾은수?: number; 모든증거수?: number;
 }) {
   const [누구, set누구] = useState(용의자들[0]?.id ?? "A");
   const [방, set방] = useState<Record<string, { 상태: 상태; 줄들: 줄[] }>>(() =>
@@ -146,7 +149,13 @@ export default function 취조실({ 사건, 용의자들, 증거들, 확인할�
       <div className={css.속}>
         <header className={css.머리}>
           <h1 className={css.제목}>거짓말의 온도</h1>
-          <p className={css.사건줄}>{사건.피해자} · {사건.발생시각} · {사건.장소}</p>
+          <p className={css.사건줄}>
+            {사건.피해자} · {사건.발생시각} · {사건.장소}
+            {찾은수 != null && 모든증거수 != null && (
+              <span className={css.찾은수}> · 손에 든 증거 {찾은수}/{모든증거수}</span>
+            )}
+            {현장으로 && <button className={css.치우기} onClick={현장으로}>처음부터</button>}
+          </p>
         </header>
 
         <div className={css.사람들}>

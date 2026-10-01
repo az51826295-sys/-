@@ -12,12 +12,15 @@
  * 절대 응답에 싣지 않는다 — 화면에 안 그려도 브라우저 개발자 도구로 다 보인다.
  */
 import { NextResponse } from "next/server";
-import { 사건1, 용의자찾기 } from "@/lib/lie/case";
+import { 기본사건, 용의자찾기 } from "@/lib/lie/case";
 import { 심문하기, 처음상태 } from "@/lib/lie/turn";
 import type { 심문상태 } from "@/lib/lie/stress";
 import { defaultProviders } from "@/lib/execution/shared";
 
 export const runtime = "nodejs";
+
+/** 아직 고르는 화면이 없다 — 표의 첫 사건. 사건을 더하면 여기서 몸의 `사건id` 로 집으면 된다. */
+const 사건 = 기본사건();
 export const maxDuration = 60;
 
 export async function POST(req: Request) {
@@ -28,13 +31,13 @@ export async function POST(req: Request) {
   if (!말) return NextResponse.json({ 잘못: "할 말이 비었다" }, { status: 400 });
   if (말.length > 400) return NextResponse.json({ 잘못: "너무 길다(400자까지)" }, { status: 400 });
 
-  const 용의자 = 용의자찾기(사건1, 몸.용의자 ?? "A");
+  const 용의자 = 용의자찾기(사건, 몸.용의자 ?? "A");
   if (!용의자) return NextResponse.json({ 잘못: "그런 용의자가 없다" }, { status: 404 });
 
   try {
     const { ai } = defaultProviders(null);
     const r = await 심문하기({
-      ai, 사건: 사건1, 용의자,
+      ai, 사건: 사건, 용의자,
       상태: 몸.상태 ?? 처음상태(),
       말,
       기록: (몸.기록 ?? []).slice(-16),

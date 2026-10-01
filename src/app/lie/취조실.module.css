@@ -186,3 +186,8 @@
 .결과칸.모자람 { border-color: #6b5a3d; }
 .결과제목 { margin: 0 0 14px; font-size: 22px; font-weight: 800; }
 .결과말 { margin: 0 0 18px; font-size: 14.5px; line-height: 1.8; color: #cfdcea; white-space: pre-wrap; }
+
+/* 현장 조사 — 가운데 + 오른쪽 두 칸 */
+.판2 { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 16px; align-items: start; }
+@media (max-width: 820px) { .판2 { grid-template-columns: minmax(0, 1fr); } }
+.찾은수 { color: var(--흐린글); }
