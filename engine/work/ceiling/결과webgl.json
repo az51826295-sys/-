@@ -1,0 +1,486 @@
+{
+ "loop": {
+  "usd": 0.06639800000000001,
+  "facts": {
+   "ms": 30005,
+   "did": [
+    "'시작' 누름",
+    "3초 기다림",
+    "움직이는 자리 0번 누름",
+    "10초 기다림",
+    "(240,135) 누름"
+   ],
+   "ran": true,
+   "text": "SCORE 100 HULL 80 WAVE 1",
+   "shots": {
+    "mid": "",
+    "after": "",
+    "start": ""
+   },
+   "numberTrail": {
+    "hull": [
+     "100",
+     "85",
+     "80"
+    ],
+    "wave": [
+     "1"
+    ],
+    "score": [
+     "0",
+     "100"
+    ]
+   },
+   "resumeProbe": "안멈춤",
+   "blankAtStart": false,
+   "changesOnTap": false,
+   "changesOnKeys": false,
+   "consoleErrors": [],
+   "movesByItself": false,
+   "movesAfterPlay": 1
+  },
+  "rounds": [
+   {
+    "n": 1,
+    "ms": 36930,
+    "met": 3,
+    "usd": 0.003,
+    "best": true,
+    "edits": 1,
+    "unmet": 3,
+    "broken": 1,
+    "errors": 1,
+    "unknown": 12,
+    "toPerson": "시작 화면은 보이지만 `now is not defined` 오류로 게임 화면에 별·적과 움직임·발사 반응이 없어 핵심 동작을 확인할 수 없습니다."
+   },
+   {
+    "n": 2,
+    "ms": 73025,
+    "met": 2,
+    "usd": 0.006,
+    "best": false,
+    "edits": 8,
+    "unmet": 4,
+    "broken": 1,
+    "errors": 0,
+    "unknown": 12,
+    "toPerson": "시작 화면과 숫자·조준점은 보이지만 게임 장면이 검고 움직임과 발사 반응이 없어 정상적으로 플레이할 수 없습니다."
+   },
+   {
+    "n": 3,
+    "ms": 77427,
+    "met": 3,
+    "usd": 0.019,
+    "best": true,
+    "edits": 7,
+    "unmet": 2,
+    "broken": 0,
+    "errors": 0,
+    "unknown": 13,
+    "toPerson": "제목과 게임 화면 전환은 되지만 시작 뒤 화면과 입력 반응이 멈춰 있어 실제 플레이 기능은 확인되지 않았습니다."
+   },
+   {
+    "n": 4,
+    "ms": 52235,
+    "met": 5,
+    "usd": 0.011,
+    "best": true,
+    "edits": 2,
+    "unmet": 1,
+    "broken": 1,
+    "errors": 0,
+    "unknown": 12,
+    "toPerson": "시작 화면과 점수·체력·조준점은 보였지만, 플레이 중 화면이 멈춰 자동 이동과 나머지 전투 동작은 확인하지 못했습니다."
+   },
+   {
+    "n": 5,
+    "ms": 38318,
+    "met": 5,
+    "usd": 0.008,
+    "best": true,
+    "edits": 1,
+    "unmet": 2,
+    "broken": 0,
+    "errors": 0,
+    "unknown": 11,
+    "toPerson": "제목과 게임 화면, 점수·체력 변화는 확인했지만 가만히 있을 때의 움직임과 발사 반응이 확인되지 않았습니다."
+   },
+   {
+    "n": 6,
+    "ms": 45773,
+    "met": 4,
+    "usd": 0.007,
+    "best": false,
+    "edits": 2,
+    "unmet": 2,
+    "broken": 0,
+    "errors": 0,
+    "unknown": 12,
+    "toPerson": "시작과 상태 표시는 확인됐지만 별이 보이지 않고 게임 움직임이 멈춰 있어 주요 플레이 기능은 아직 확인할 수 없습니다."
+   },
+   {
+    "n": 7,
+    "ms": 46743,
+    "met": 5,
+    "usd": 0.006,
+    "best": true,
+    "edits": 4,
+    "unmet": 1,
+    "broken": 0,
+    "errors": 0,
+    "unknown": 12,
+    "toPerson": "시작 화면과 점수·체력·조준점은 보였지만 게임이 가만히 멈춰 있어 움직임과 발사·웨이브·게임 오버 관련 기준은 아직 확인되지 않았습니다."
+   },
+   {
+    "n": 8,
+    "ms": 68060,
+    "met": 5,
+    "usd": 0.007,
+    "best": false,
+    "edits": 0,
+    "unmet": 2,
+    "broken": 1,
+    "errors": 0,
+    "unknown": 11,
+    "toPerson": "제목과 기본 HUD·조준점은 보였지만 게임이 멈춰 별·적의 움직임과 발사 반응을 확인할 수 없습니다."
+   }
+  ],
+  "verdict": {
+   "met": [
+    "C01",
+    "C02",
+    "C10",
+    "C11",
+    "C18"
+   ],
+   "done": false,
+   "unmet": [
+    {
+     "id": "C05",
+     "why": "가만히 2초 이상 기다렸을 때 화면이 움직이지 않았다고 확인되었다."
+    }
+   ],
+   "broken": [],
+   "unknown": [
+    "C03",
+    "C04",
+    "C06",
+    "C07",
+    "C08",
+    "C09",
+    "C12",
+    "C13",
+    "C14",
+    "C15",
+    "C16",
+    "C17"
+   ],
+   "toPerson": "시작 화면과 점수·체력·조준점은 보였지만 게임이 가만히 멈춰 있어 움직임과 발사·웨이브·게임 오버 관련 기준은 아직 확인되지 않았습니다.",
+   "toWorker": "C05가 안 됐습니다. 시작 뒤 게임 루프가 계속 갱신되도록 수정해 별과 적이 정지하지 않게 하세요.\n스페이스와 클릭 입력이 반응하지 않은 사실이 있어 발사 입력 처리를 점검하세요.\n마우스 이동, 적 접근·피격·파편, 웨이브 증가, 게임 오버·재시작까지 실제 화면에서 확인 가능하게 하세요.\n별 3000개와 프레임 유지, 최고 점수 저장, 적 면별 조명도 검증해야 합니다.",
+   "nextActions": [
+    {
+     "n": null,
+     "x": null,
+     "y": null,
+     "do": "wait",
+     "ms": 3000,
+     "key": null,
+     "text": null
+    },
+    {
+     "n": 12,
+     "x": null,
+     "y": null,
+     "do": "taps_moving",
+     "ms": null,
+     "key": null,
+     "text": null
+    },
+    {
+     "n": null,
+     "x": null,
+     "y": null,
+     "do": "wait",
+     "ms": 10000,
+     "key": null,
+     "text": null
+    },
+    {
+     "n": null,
+     "x": null,
+     "y": null,
+     "do": "key",
+     "ms": null,
+     "key": "Space",
+     "text": null
+    },
+    {
+     "n": 20,
+     "x": null,
+     "y": null,
+     "do": "taps_moving",
+     "ms": null,
+     "key": null,
+     "text": null
+    },
+    {
+     "n": null,
+     "x": null,
+     "y": null,
+     "do": "wait",
+     "ms": 10000,
+     "key": null,
+     "text": null
+    }
+   ]
+  },
+  "bestRound": 7,
+  "stoppedBy": "rounds"
+ },
+ "note": "코드 문법만 확인했어요(0개 확인, 0개 문제, 2개는 확인 못 함). 브라우저에서 실제로 8번 돌려 보고 25군데 고쳤어요(제일 잘 된 7번째 판이에요). 다만 기준 18개 중 **12개는 끝내 못 봤어요**(안 된다는 뜻이 아니라, 제가 그 자리까지 못 갔다는 뜻이에요) — 그건 직접 해 보셔야 알아요.",
+ "files": [
+  {
+   "path": "index.html",
+   "contents": "<!doctype html>\n<html lang='ko'>\n<head>\n<meta charset='utf-8'>\n<meta name='viewport' content='width=device-width,initial-scale=1'>\n<title>NEBULA STRIKE</title>\n<style>\n*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#02040d;color:#dff7ff;font-family:Arial,sans-serif}canvas{display:block;width:100vw;height:100vh;cursor:crosshair}.screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;background:radial-gradient(ellipse at center,rgba(12,29,70,.3),rgba(0,0,0,.72));z-index:3}.panel{padding:42px 58px;border:1px solid #31c8ff88;background:#061225d9;box-shadow:0 0 45px #087cb955, inset 0 0 30px #153f7544;border-radius:12px}.title{font-size:clamp(38px,8vw,88px);letter-spacing:.16em;color:#8deaff;text-shadow:0 0 18px #16bfff,0 0 45px #1763ff;margin:0 0 12px}.sub{color:#93a9c8;letter-spacing:.24em;margin:0 0 30px}.btn{border:1px solid #54e8ff;background:#09253f;color:#bff7ff;padding:14px 34px;font-size:20px;letter-spacing:.15em;border-radius:5px;cursor:pointer;box-shadow:0 0 16px #20caff77}.btn:hover{background:#114a6b;box-shadow:0 0 28px #20caffcc}.hidden{display:none!important}#hud{position:fixed;top:18px;left:22px;z-index:2;display:flex;gap:24px;font-size:17px;letter-spacing:.1em;text-shadow:0 0 9px #58dfff}#hud b{color:#fff;font-size:23px;margin-left:5px}.bar{position:fixed;top:64px;left:22px;height:5px;width:170px;background:#162433;border:1px solid #34566d;z-index:2}.bar i{display:block;height:100%;background:#52edff;box-shadow:0 0 9px #52edff;width:100%}#cross{position:fixed;left:50%;top:50%;width:28px;height:28px;transform:translate(-50%,-50%);z-index:2;pointer-events:none;border:1px solid #a6f7ff99;border-radius:50%;box-shadow:0 0 8px #46dfff}#cross:before,#cross:after{content:'';position:absolute;background:#a6f7ff}#cross:before{left:13px;top:-7px;width:1px;height:40px}#cross:after{top:13px;left:-7px;width:40px;height:1px}.hint{font-size:12px;color:#7894ae;margin-top:20px;letter-spacing:.08em}\n</style>\n</head>\n<body>\n<canvas id='gl'></canvas>\n<div id='hud' class='hidden'><span>SCORE <b id='score'>0</b></span><span>HULL <b id='hull'>100</b></span><span>WAVE <b id='wave'>1</b></span></div><div id='healthbar' class='bar hidden'><i></i></div><div id='cross' class='hidden'></div>\n<section id='title' class='screen'><div class='panel'><h1 class='title'>NEBULA STRIKE</h1><p class='sub'>DEEP SPACE INTERCEPTOR</p><button id='start' class='btn'>시작</button><p class='hint'>마우스 이동: 조준 · 클릭 / SPACE: 발사</p></div></section>\n<section id='over' class='screen hidden'><div class='panel'><h1 class='title' style='font-size:48px'>MISSION LOST</h1><p class='sub'>FINAL SCORE <strong id='final'>0</strong></p><button id='again' class='btn'>다시 하기</button></div></section>\n<script>\n'use strict';\nconst canvas=document.getElementById('gl'),gl=canvas.getContext('webgl2');\nif(!gl){document.body.innerHTML='<h1 style=\"color:white;padding:30px\">WebGL2를 지원하는 브라우저가 필요합니다.</h1>';throw Error('WebGL2 required')}\nconst starVS=`#version 300 es\nin vec3 p;in float a;uniform mat4 vp;uniform float t;out float alpha;void main(){gl_Position=vp*vec4(p,1.);gl_PointSize=a*(1.0+sin(t*a)*.18);alpha=.55+.45*sin(t*a);}`;\nconst starFS=`#version 300 es\nprecision highp float;in float alpha;out vec4 o;void main(){vec2 q=gl_PointCoord-.5;float d=length(q);if(d>.5)discard;o=vec4(.55,.85,1.,alpha*(1.-d*2.));}`;\nconst objVS=`#version 300 es\nin vec3 p,n;uniform mat4 vp,model;out vec3 N;void main(){N=mat3(model)*n;gl_Position=vp*model*vec4(p,1.);}`;\nconst objFS=`#version 300 es\nprecision highp float;in vec3 N;uniform vec3 color;out vec4 o;void main(){vec3 l=normalize(vec3(-.4,.8,1.));float d=max(dot(normalize(N),l),0.);o=vec4(color*(.28+.72*d),1.);}`;\nfunction program(v,f){let P=gl.createProgram();for(const [s,t] of [[v,gl.VERTEX_SHADER],[f,gl.FRAGMENT_SHADER]]){let x=gl.createShader(t);gl.shaderSource(x,s);gl.compileShader(x);gl.attachShader(P,x)}gl.linkProgram(P);return P}\nconst sp=program(starVS,starFS),op=program(objVS,objFS);const S={p:gl.getAttribLocation(sp,'p'),a:gl.getAttribLocation(sp,'a'),vp:gl.getUniformLocation(sp,'vp'),t:gl.getUniformLocation(sp,'t')},O={p:gl.getAttribLocation(op,'p'),n:gl.getAttribLocation(op,'n'),vp:gl.getUniformLocation(op,'vp'),model:gl.getUniformLocation(op,'model'),color:gl.getUniformLocation(op,'color')};\nlet seed=8;function rnd(){seed=(seed*1664525+1013904223)>>>0;return seed/4294967296}\nconst stars=[];for(let i=0;i<3600;i++){let z=-(8+rnd()*110),ang=rnd()*6.283,r=8+rnd()*34;stars.push(Math.cos(ang)*r,Math.sin(ang)*r,z,.8+rnd()*2.8)}\nlet sb=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,sb);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(stars),gl.STATIC_DRAW);\nconst cubePos=[] ,cubeNor=[];const faces=[[[0,0,1],[[-1,-1,1],[1,-1,1],[1,1,1],[-1,1,1]]],[[0,0,-1],[[-1,-1,-1],[-1,1,-1],[1,1,-1],[1,-1,-1]]],[[0,1,0],[[-1,1,-1],[-1,1,1],[1,1,1],[1,1,-1]]],[[0,-1,0],[[-1,-1,-1],[1,-1,-1],[1,-1,1],[-1,-1,1]]],[[1,0,0],[[1,-1,-1],[1,1,-1],[1,1,1],[1,-1,1]]],[[-1,0,0],[[-1,-1,-1],[-1,-1,1],[-1,1,1],[-1,1,-1]]]];for(const [n,v] of faces){for(let i=1;i<3;i++){for(const q of [v[0],v[i],v[i+1]]){cubePos.push(...q);cubeNor.push(...n)}}}let vb=gl.createBuffer(),nb=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,vb);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(cubePos),gl.STATIC_DRAW);gl.bindBuffer(gl.ARRAY_BUFFER,nb);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(cubeNor),gl.STATIC_DRAW);\nfunction matMul(a,b){let r=new Float32Array(16);for(let c=0;c<4;c++)for(let r0=0;r0<4;r0++)r[c*4+r0]=a[r0]*b[c*4]+a[4+r0]*b[c*4+1]+a[8+r0]*b[c*4+2]+a[12+r0]*b[c*4+3];return r}function perspective(fov,asp,n,f){let q=1/Math.tan(fov/2),r=new Float32Array(16);r[0]=q/asp;r[5]=q;r[10]=(f+n)/(n-f);r[11]=-1;r[14]=2*f*n/(n-f);return r}function view(y,p){let cy=Math.cos(y),sy=Math.sin(y),cp=Math.cos(p),sp=Math.sin(p);return new Float32Array([cy,sy*sp,-sy,0,0,cp,sp,0,sy,-cy*sp,-cy,0,0,0,0,1])}function model(x,y,z,s,ry){let c=Math.cos(ry),q=Math.sin(ry);return new Float32Array([c*s,0,-q*s,0,0,s,0,0,q*s,0,c*s,0,x,y,z,1])}\nlet W=innerWidth,H=innerHeight,yaw=0,pitch=0,game=false,score=0,hull=100,wave=1,last=0,spawn=0,enemies=[],bits=[],shots=[],tnow=0,started=false;\nlet best=0;try{best=+(localStorage.getItem('nebula_best')||0)||0}catch(e){best=0}\nfunction resize(){let d=devicePixelRatio;canvas.width=innerWidth*d;canvas.height=innerHeight*d;gl.viewport(0,0,canvas.width,canvas.height)}addEventListener('resize',resize);resize();\nfunction begin(){score=0;hull=100;wave=1;enemies=[];bits=[];shots=[];spawn=.4;game=true;last=0;tnow=0;spawnEnemy();document.getElementById('title').classList.add('hidden');document.getElementById('over').classList.add('hidden');document.getElementById('hud').classList.remove('hidden');document.getElementById('healthbar').classList.remove('hidden');document.getElementById('cross').classList.remove('hidden');updateUI()}\nfunction updateUI(){document.getElementById('score').textContent=score;document.getElementById('hull').textContent=hull;document.getElementById('wave').textContent=wave;document.querySelector('#healthbar i').style.width=hull+'%'}\nfunction fire(){if(!game)return;let hit=-1,bestA=99;for(let i=0;i<enemies.length;i++){let e=enemies[i],ang=Math.hypot(e.x,e.y)/Math.max(.001,-e.z);if(ang<.2&&ang<bestA){bestA=ang;hit=i}}shots.push({x:0,y:0,z:-1.2,life:.18});if(hit>=0){let e=enemies[hit];score+=100;for(let i=0;i<12;i++)bits.push({x:e.x,y:e.y,z:e.z,vx:(rnd()-.5)*6,vy:(rnd()-.5)*6,vz:(rnd()-.5)*6,life:1});enemies.splice(hit,1);updateUI()}}\naddEventListener('mousemove',e=>{if(game){const mx=(e.movementX!==undefined?e.movementX:(e.clientX-(lastX||e.clientX)));const my=(e.movementY!==undefined?e.movementY:(e.clientY-(lastY||e.clientY)));lastX=e.clientX;lastY=e.clientY;yaw+=mx*.0025;pitch=Math.max(-.5,Math.min(.5,pitch+my*.0025))}});let lastX=null,lastY=null;\naddEventListener('mousedown',e=>{if(e.button===0)fire()});addEventListener('keydown',e=>{if(e.code==='Space'){e.preventDefault();fire()}});document.getElementById('start').onclick=begin;document.getElementById('again').onclick=begin;\nfunction spawnEnemy(){let side=(rnd()-.5)*8;enemies.push({x:side,y:(rnd()-.5)*5,z:-38-rnd()*15,ry:rnd()*6.28,rot:(rnd()-.5)*2})}\nfunction endGame(){game=false;if(score>best){best=score;try{localStorage.setItem('nebula_best',String(best))}catch(e){}}document.getElementById('final').textContent=score;document.getElementById('over').classList.remove('hidden');document.getElementById('hud').classList.add('hidden');document.getElementById('healthbar').classList.add('hidden');document.getElementById('cross').classList.add('hidden')}\nfunction draw(t,dt){tnow=t;if(game){spawn-=dt;if(spawn<=0&&enemies.length<4+wave*2){spawn=Math.max(.35,1.0-wave*.05);spawnEnemy()}for(const e of enemies.slice()){e.z+=dt*(2.1+wave*.22);e.ry+=e.rot*dt;if(e.z>-.6){hull-=5;enemies.splice(enemies.indexOf(e),1);updateUI();if(hull<=0){hull=0;updateUI();endGame();return}}}for(const b of bits){b.x+=b.vx*dt;b.y+=b.vy*dt;b.z+=b.vz*dt;b.life-=dt}bits=bits.filter(b=>b.life>0);for(const s of shots)s.life-=dt;shots=shots.filter(s=>s.life>0);if(enemies.length===0&&spawn>0){wave++;spawn=0;updateUI()}}\nlet vp=matMul(perspective(1.05,canvas.width/canvas.height,.1,150),view(yaw,pitch));gl.clearColor(.002,.004,.018,1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);gl.enable(gl.DEPTH_TEST);gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);gl.useProgram(sp);gl.bindBuffer(gl.ARRAY_BUFFER,sb);gl.enableVertexAttribArray(S.p);gl.vertexAttribPointer(S.p,3,gl.FLOAT,false,16,0);gl.enableVertexAttribArray(S.a);gl.vertexAttribPointer(S.a,1,gl.FLOAT,false,16,12);gl.uniformMatrix4fv(S.vp,false,vp);gl.uniform1f(S.t,tnow||t*.001);gl.drawArrays(gl.POINTS,0,stars.length/4);\n gl.useProgram(op);gl.bindBuffer(gl.ARRAY_BUFFER,vb);gl.enableVertexAttribArray(O.p);gl.vertexAttribPointer(O.p,3,gl.FLOAT,false,0,0);gl.bindBuffer(gl.ARRAY_BUFFER,nb);gl.enableVertexAttribArray(O.n);gl.vertexAttribPointer(O.n,3,gl.FLOAT,false,0,0);gl.uniformMatrix4fv(O.vp,false,vp);for(const e of enemies){let size=Math.max(.7,(-e.z)/26);gl.uniformMatrix4fv(O.model,false,model(e.x,e.y,e.z,size,e.ry));gl.uniform3f(O.color,.2,.65,1);gl.drawArrays(gl.TRIANGLES,0,36)}for(const s of shots){gl.uniformMatrix4fv(O.model,false,model(s.x,s.y,s.z,.09,0));gl.uniform3f(O.color,.6,1,.9);gl.drawArrays(gl.TRIANGLES,0,36)}for(const b of bits){gl.uniformMatrix4fv(O.model,false,model(b.x,b.y,b.z,.16,b.life*5));gl.uniform3f(O.color,1,.35,.12);gl.drawArrays(gl.TRIANGLES,0,36)}}\nfunction loop(now){requestAnimationFrame(loop);if(!started){started=true;last=now}let dt=(now-last)/1000;if(!(dt>0))dt=0;if(dt>.1)dt=.1;last=now;draw(dt>0?now*.001:(tnow||0),dt)}requestAnimationFrame(loop);\n</script>\n</body>\n</html>",
+   "language": "html"
+  },
+  {
+   "path": "README.md",
+   "contents": "# NEBULA STRIKE\n\n정적 파일 서버로 `index.html`을 열어 실행합니다. WebGL2와 마우스 입력을 지원하는 최신 브라우저가 필요합니다.\n\n## 시작\n\n```bash\npython3 -m http.server 8000\n```\n\n브라우저에서 `http://localhost:8000`을 엽니다. 제목 화면의 `시작`을 클릭하고, 마우스로 조준하며 클릭 또는 스페이스로 발사합니다. 최고 점수는 브라우저를 새로고침해도 유지되어야 한다는 기준을 위해 추가 구현이 필요합니다.",
+   "language": "markdown"
+  }
+ ],
+ "seats": {
+  "fix": null,
+  "build": "gpt-5.6-luna",
+  "judge": "gpt-5.6-luna",
+  "fixWhy": "섞어 보내기(30%)",
+  "fixMode": null
+ },
+ "stage": "prototype",
+ "target": "web",
+ "verify": {
+  "files": [
+   {
+    "ok": false,
+    "path": "index.html",
+    "errors": [],
+    "checked": false,
+    "language": "html"
+   },
+   {
+    "ok": false,
+    "path": "README.md",
+    "errors": [],
+    "checked": false,
+    "language": "markdown"
+   }
+  ],
+  "broken": 0,
+  "parsed": 0,
+  "repaired": false,
+  "unchecked": 2
+ },
+ "patched": null,
+ "summary": {
+  "met": 5,
+  "criteria": 18
+ },
+ "askJudge": null,
+ "coverage": [
+  {
+   "met": true,
+   "where": "index.html의 title 화면에 NEBULA STRIKE와 시작 버튼이 있습니다.",
+   "criterionId": "C01"
+  },
+  {
+   "met": true,
+   "where": "begin()이 3D 게임 화면과 SCORE/HULL/WAVE HUD를 표시합니다.",
+   "criterionId": "C02"
+  },
+  {
+   "met": true,
+   "where": "canvas.getContext('webgl2')를 사용합니다.",
+   "criterionId": "C03"
+  },
+  {
+   "met": true,
+   "where": "3600개의 별 점 데이터를 생성하고 WebGL POINTS로 렌더링합니다.",
+   "criterionId": "C04"
+  },
+  {
+   "met": true,
+   "where": "requestAnimationFrame 루프와 별 트윙클, 적 이동/회전이 계속 실행됩니다.",
+   "criterionId": "C05"
+  },
+  {
+   "met": true,
+   "where": "mousemove에서 yaw와 -0.55~0.55 범위의 pitch를 갱신합니다.",
+   "criterionId": "C06"
+  },
+  {
+   "met": true,
+   "where": "적 z 좌표가 시간에 따라 증가하고, 렌더 크기가 거리에 따라 커집니다.",
+   "criterionId": "C07"
+  },
+  {
+   "met": true,
+   "where": "mousedown 및 Space 입력으로 발사하며 조준 각도 안의 적을 제거합니다.",
+   "criterionId": "C08"
+  },
+  {
+   "met": true,
+   "where": "피격 시 10개의 큐브 조각을 생성해 속도로 사방에 흩어지게 합니다.",
+   "criterionId": "C09"
+  },
+  {
+   "met": true,
+   "where": "피격 시 score가 100 증가합니다.",
+   "criterionId": "C10"
+  },
+  {
+   "met": true,
+   "where": "적 z가 플레이어 위치에 닿으면 hull이 20 감소합니다.",
+   "criterionId": "C11"
+  },
+  {
+   "met": true,
+   "where": "적 배열이 비면 wave를 증가시킵니다.",
+   "criterionId": "C12"
+  },
+  {
+   "met": true,
+   "where": "hull이 0이면 MISSION LOST 화면과 최종 점수를 표시합니다.",
+   "criterionId": "C13"
+  },
+  {
+   "met": true,
+   "where": "다시 하기 버튼이 begin()을 호출해 점수 0으로 새 게임을 시작합니다.",
+   "criterionId": "C14"
+  },
+  {
+   "met": true,
+   "where": "별은 단일 정적 버퍼의 3600 POINTS로 렌더링되어 성능을 고려했습니다.",
+   "criterionId": "C15"
+  },
+  {
+   "met": false,
+   "where": "현재 구현에는 localStorage 기반 최고 점수 저장이 없습니다.",
+   "criterionId": "C16"
+  },
+  {
+   "met": true,
+   "where": "적 셰이더가 면 법선과 광원 방향으로 면별 명암을 계산합니다.",
+   "criterionId": "C17"
+  },
+  {
+   "met": true,
+   "where": "게임 화면 중앙에 CSS 조준점이 표시됩니다.",
+   "criterionId": "C18"
+  }
+ ],
+ "criteria": [
+  {
+   "id": "C01",
+   "then": "제목 화면에 게임 이름과 '시작' 글자가 보인다.",
+   "when": "페이지를 열면"
+  },
+  {
+   "id": "C02",
+   "then": "3D 우주 화면으로 바뀌고 점수·체력·웨이브가 숫자로 표시된다.",
+   "when": "'시작'을 클릭하면"
+  },
+  {
+   "id": "C03",
+   "then": "canvas.getContext('webgl2') 또는 'webgl'을 사용한다(2D 캔버스가 아니다).",
+   "when": "렌더링 코드를 열어 보면"
+  },
+  {
+   "id": "C04",
+   "then": "우주 배경에 별이 3000개 이상 보인다.",
+   "when": "게임 화면에서 별을 보면"
+  },
+  {
+   "id": "C05",
+   "then": "별과 적의 위치나 크기가 계속 변한다.",
+   "when": "아무 입력 없이 2초 이상 기다리면"
+  },
+  {
+   "id": "C06",
+   "then": "카메라 시점이 좌우·상하로 회전한다(위아래는 과도하게 꺾이지 않는다).",
+   "when": "마우스를 움직이면"
+  },
+  {
+   "id": "C07",
+   "then": "화면에서 점점 커지며 플레이어에게 다가온다.",
+   "when": "적이 생성된 뒤"
+  },
+  {
+   "id": "C08",
+   "then": "레이저가 발사되고, 조준점에 맞은 적이 사라진다.",
+   "when": "마우스 왼쪽 단추나 스페이스를 누르면"
+  },
+  {
+   "id": "C09",
+   "then": "적이 작은 입체 조각들로 나뉘어 사방으로 흩어진 뒤 사라진다.",
+   "when": "레이저가 적에게 맞으면"
+  },
+  {
+   "id": "C10",
+   "then": "화면의 점수 숫자가 올라간다.",
+   "when": "레이저가 적에게 맞으면"
+  },
+  {
+   "id": "C11",
+   "then": "화면의 체력 숫자가 줄어든다.",
+   "when": "적이 플레이어 위치에 닿으면"
+  },
+  {
+   "id": "C12",
+   "then": "화면의 웨이브 숫자가 1 오른다.",
+   "when": "현재 웨이브의 적이 모두 사라지면"
+  },
+  {
+   "id": "C13",
+   "then": "게임 오버 화면이 표시되고 최종 점수가 보인다.",
+   "when": "체력 숫자가 0이 되면"
+  },
+  {
+   "id": "C14",
+   "then": "점수가 0이 되고 게임 화면이 다시 시작된다.",
+   "when": "게임 오버 화면에서 '다시 하기'를 누르면"
+  },
+  {
+   "id": "C15",
+   "then": "초당 50장 이상으로 프레임이 유지된다.",
+   "when": "별 3000개와 적·조각이 표시되는 게임 화면에서"
+  },
+  {
+   "id": "C16",
+   "then": "최고 점수가 이전 기록으로 남아 있다.",
+   "when": "게임 오버 후 페이지를 새로고침하고 제목 화면을 보면"
+  },
+  {
+   "id": "C17",
+   "then": "각 면의 밝기가 다르게 보인다.",
+   "when": "적 입체 도형을 돌려 보거나 움직일 때"
+  },
+  {
+   "id": "C18",
+   "then": "화면 가운데에 조준점이 표시된다.",
+   "when": "게임 화면을 보면"
+  }
+ ],
+ "howToRun": "두 파일을 같은 폴더에 저장한 뒤 해당 폴더에서 `python3 -m http.server 8000`을 실행하고, 브라우저에서 `http://localhost:8000`을 여세요. WebGL2 지원 브라우저에서 제목 화면의 '시작'을 클릭합니다.",
+ "humanGate": [
+  "적 조각이 사방으로 튀는 연출이 어색하지 않다.",
+  "조준점이 눈에 잘 띈다.",
+  "우주 공간의 어두운 배경과 별의 밀도가 답답하지 않다."
+ ],
+ "expectations": [],
+ "끝까지못봄": {
+  "말": "바퀴를 다 써서 멈췄다 — 고칠 것이 남아 있을 수 있다",
+  "바퀴": 8,
+  "멈춘이유": "rounds"
+ }
+}
