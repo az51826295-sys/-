@@ -54,7 +54,14 @@ export const MAX_ORGANIZATION_CANDIDATES = 3;
  * 8 → 16 (102회차 09-14): 활성 지식이 13개가 되자 최신순 상한 8이 확인된 규칙(LegacyRuntime.ttf, 09-05 '(규칙)' 셋)을 조용히
  * 잘라 내고 있었다. 한 줄이 100~200자라 16개여도 실행당 1,500자 안팎 — 일 하나 값에 비하면 작다. 자르는 순서는 retrieval.ts.
  */
-export const MAX_KNOWLEDGE_PER_EXECUTION = 16;
+/**
+ * 228회차 10-01: 16 → 18. 되살린 규칙 중 **뜻으로 새것인 2개**를 넣을 자리다.
+ * 재고 올렸다 — 지식 한 줄 ≈ 104 토큰, 2줄이면 모든 일마다 +208 토큰 ≈ 한 달 $0.04(하루 20판).
+ * 함부로 더 올리지 마라: 이 수는 **모든 직원이 모든 일마다** 낸다. 그리고 같은 말이 두 줄이면
+ * 둘 다 묽어진다 — 10-01 에 안 올라간 10개 중 8개가 이미 있는 말이었다(`rule_dup_check.mts`).
+ * 자리가 모자라면 상한부터 올리지 말고 **겹치는 것부터 세라.**
+ */
+export const MAX_KNOWLEDGE_PER_EXECUTION = 18;
 
 export const knowledgeCategoryLabel: Record<KnowledgeCategory, string> = {
   best_practice: "Best Practice",
