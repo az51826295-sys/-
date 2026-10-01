@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>도트 타워 디펜스</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main class="cabinet">
+    <header class="topbar">
+      <div class="brand">✦ 도트 타워 디펜스</div>
+      <div id="hud" class="hud hidden">
+        <span>돈 <b id="money">150</b></span>
+        <span>목숨 <b id="lives">20</b></span>
+        <span>웨이브 <b id="wave">1</b></span>
+        <button id="pauseButton" type="button">일시정지</button>
+      </div>
+    </header>
+
+    <section class="screen-wrap">
+      <canvas id="gameCanvas" width="960" height="600" aria-label="도트 타워 디펜스 게임 화면"></canvas>
+      <section id="titleScreen" class="screen-card">
+        <div class="pixel-mark">◆</div>
+        <h1>도트 타워 디펜스</h1>
+        <p>길을 지키고 보물을 모으세요!</p>
+        <button id="startButton" class="primary" type="button">시작</button>
+        <p class="record">최고 기록: <strong id="titleBest">0</strong> 웨이브</p>
+      </section>
+      <section id="gameOverScreen" class="screen-card hidden">
+        <div class="pixel-mark danger">☠</div>
+        <h1>게임 오버</h1>
+        <p>성벽이 무너졌습니다.</p>
+        <p class="final-record">도달한 웨이브 <strong id="finalWave">1</strong></p>
+        <button id="retryButton" class="primary" type="button">다시 시작</button>
+      </section>
+    </section>
+    <div id="towerPanel" class="tower-panel hidden">
+      <span id="towerInfo">타워</span>
+      <button id="upgradeButton" type="button">업그레이드</button>
+      <button id="closePanel" type="button">닫기</button>
+    </div>
+    <p class="help">빈 땅을 눌러 타워 설치 · 설치한 타워를 누르면 업그레이드</p>
+  </main>
+  <script type="module" src="js/game.js"></script>
+</body>
+</html>
