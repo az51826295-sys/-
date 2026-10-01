@@ -1,0 +1,11 @@
+/* 캔버스의 모든 그림 */
+(function(){
+  const R=window.TD.Renderer={};
+  R.draw=function(ctx,game){const w=900,h=600;ctx.clearRect(0,0,w,h);ctx.fillStyle='#142237';ctx.fillRect(0,0,w,h);R.grid(ctx);R.path(ctx);game.towers.forEach(t=>R.tower(ctx,t,t===game.selected));game.enemies.forEach(e=>R.enemy(ctx,e));game.bullets.forEach(b=>R.bullet(ctx,b));game.particles.forEach(p=>R.particle(ctx,p));};
+  R.grid=function(c){c.strokeStyle='#233653';c.lineWidth=1;for(let x=0;x<=900;x+=60){c.beginPath();c.moveTo(x,0);c.lineTo(x,600);c.stroke()}for(let y=0;y<=600;y+=60){c.beginPath();c.moveTo(0,y);c.lineTo(900,y);c.stroke()}};
+  R.path=function(c){c.save();c.lineCap='butt';c.lineJoin='round';c.strokeStyle='#6d553e';c.lineWidth=78;c.beginPath();c.moveTo(-30,210);c.lineTo(270,210);c.lineTo(270,450);c.lineTo(930,450);c.stroke();c.strokeStyle='#a57b51';c.lineWidth=66;c.stroke();c.restore();c.fillStyle='#e9d2a0';c.font='bold 14px sans-serif';c.fillText('START',12,192);c.fillText('END',850,432)};
+  R.tower=function(c,t,selected){c.save();if(selected){c.beginPath();c.arc(t.x,t.y,t.range,0,Math.PI*2);c.fillStyle='#59a9ff18';c.fill();c.strokeStyle='#69b5ff88';c.stroke()}c.fillStyle='#3973b8';c.beginPath();c.arc(t.x,t.y,22,0,Math.PI*2);c.fill();c.fillStyle='#a9ddff';c.beginPath();c.arc(t.x,t.y,10,0,Math.PI*2);c.fill();c.fillStyle='#fff';c.font='bold 12px sans-serif';c.textAlign='center';c.fillText(t.level,t.x,t.y+4);c.restore()};
+  R.enemy=function(c,e){let p=e.pos;c.fillStyle='#d44c62';c.beginPath();c.arc(p.x,p.y,e.radius,0,Math.PI*2);c.fill();c.fillStyle='#2a1420';c.fillRect(p.x-18,p.y-28,36,5);c.fillStyle='#63e37c';c.fillRect(p.x-18,p.y-28,36*Math.max(0,e.hp/e.maxHp),5);c.fillStyle='#fff';c.beginPath();c.arc(p.x-6,p.y-4,3,0,Math.PI*2);c.arc(p.x+6,p.y-4,3,0,Math.PI*2);c.fill()};
+  R.bullet=function(c,b){c.fillStyle='#ffe16a';c.beginPath();c.arc(b.x,b.y,5,0,Math.PI*2);c.fill()};
+  R.particle=function(c,p){c.globalAlpha=Math.max(0,p.life/p.max);c.fillStyle='#ffbd4a';c.beginPath();c.arc(p.x,p.y,p.r*(p.life/p.max),0,Math.PI*2);c.fill();c.globalAlpha=1};
+})();

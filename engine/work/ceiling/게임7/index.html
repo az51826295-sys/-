@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>미니 타워 디펜스</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main id="app">
+    <section id="titleScreen" class="screen">
+      <div class="title-card">
+        <div class="logo">⚔️</div>
+        <h1>미니 타워 디펜스</h1>
+        <p>길을 지키고 적을 막아내세요!</p>
+        <button id="startButton" class="primary">시작</button>
+        <p class="high-score">최고 기록: <strong id="titleBestWave">0</strong> 웨이브</p>
+        <p class="hint">빈 칸을 눌러 타워를 설치하세요</p>
+      </div>
+    </section>
+
+    <section id="gameScreen" class="screen hidden">
+      <header class="topbar">
+        <h1>미니 타워 디펜스</h1>
+        <div class="stats">
+          <span>💰 돈 <b id="moneyValue">150</b></span>
+          <span>❤️ 목숨 <b id="livesValue">10</b></span>
+          <span>🌊 웨이브 <b id="waveValue">1</b></span>
+        </div>
+        <button id="pauseButton" class="pause">일시정지</button>
+      </header>
+      <div class="game-layout">
+        <div class="canvas-wrap">
+          <canvas id="gameCanvas" width="900" height="600" aria-label="타워 디펜스 게임 화면"></canvas>
+          <div id="message" class="message" aria-live="polite"></div>
+          <div id="pauseOverlay" class="overlay hidden">일시정지<br><small>계속하려면 버튼을 누르세요</small></div>
+        </div>
+        <aside id="towerPanel" class="tower-panel hidden">
+          <h2>타워 정보</h2>
+          <p>레벨 <strong id="towerLevel">1</strong></p>
+          <p>공격력 <strong id="towerDamage">18</strong></p>
+          <p>사거리 <strong id="towerRange">125</strong></p>
+          <button id="upgradeButton" class="primary">업그레이드 (💰75)</button>
+          <button id="sellButton" class="danger">판매 (+💰30)</button>
+        </aside>
+      </div>
+      <p class="instructions">길이 아닌 칸을 눌러 타워 설치 · 타워를 누르면 업그레이드/판매</p>
+    </section>
+
+    <section id="gameOverScreen" class="screen hidden">
+      <div class="title-card game-over-card">
+        <div class="logo">💥</div>
+        <h1>게임 오버</h1>
+        <p>방어선이 무너졌습니다.</p>
+        <p class="result">도달한 웨이브: <strong id="finalWave">0</strong></p>
+        <p>최고 기록: <strong id="overBestWave">0</strong> 웨이브</p>
+        <button id="restartButton" class="primary">다시 시작</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/entities.js"></script>
+  <script src="js/waves.js"></script>
+  <script src="js/renderer.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
