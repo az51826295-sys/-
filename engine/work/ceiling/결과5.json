@@ -1,0 +1,459 @@
+{
+ "loop": {
+  "usd": 0.018389000000000003,
+  "facts": {
+   "ms": 24423,
+   "did": [
+    "'시작' 누름",
+    "0.8초 기다림",
+    "'일시정지' 누름",
+    "1.5초 기다림",
+    "'일시정지되었습니다.약한42빠른27튼튼한115\n  타워 ' 누름 (누를 수 있는 것이 없어 글자만 맞는 것을 누름)",
+    "3초 기다림",
+    "'⚡ 번개 타워 170G사거리 190 · 공격력 8 · ' 누름",
+    "'길 위' 글자 없음",
+    "'일시정지되었습니다.약한42빠른27튼튼한115🏹Lv1 ' 누름 (누를 수 있는 것이 없어 글자만 맞는 것을 누름)",
+    "5초 기다림",
+    "움직이는 자리 0번 누름",
+    "0.8초 기다림",
+    "멈춰 있어서 아까 누른 단추('⚡ 번개 타워 170G사거리 190 ')를 다시 눌러 봄"
+   ],
+   "ran": true,
+   "text": "🛡 길목 수호대 돈 255 목숨 20 웨이브 1 / 10 다시 시작 약한 42 빠른 27 튼튼한 115 🏹 Lv1 D12 타워 선택 🏹 화살 타워 65G 사거리 145 · 공격력 12 · 연사 0.65초 💣 대포 타워 110G 사거리 115 · 공격력 30 · 연사 1.1초 ⚡ 번개 타워 170G 사거리 190 · 공격력 8 · 연사 0.25초 번개 타워 선택됨 빈 칸을 눌러 설치하세요. 적 유형: 약한 적 · 빠른 적 · 튼튼한 적 타워를 누르면 업그레이드와 판매를 할 수 있습니다.",
+   "shots": {
+    "mid": "",
+    "after": "",
+    "start": ""
+   },
+   "numberTrail": {
+    "wave": [
+     "1"
+    ],
+    "lives": [
+     "20"
+    ],
+    "money": [
+     "320",
+     "255"
+    ],
+    "highScore": [
+     "0"
+    ]
+   },
+   "resumeProbe": "풀어도안움직임",
+   "blankAtStart": false,
+   "changesOnTap": false,
+   "changesOnKeys": false,
+   "consoleErrors": [],
+   "movesByItself": false,
+   "movesAfterPlay": 0
+  },
+  "rounds": [
+   {
+    "n": 1,
+    "ms": 24922,
+    "met": 9,
+    "usd": 0.002,
+    "best": true,
+    "edits": 0,
+    "unmet": 0,
+    "broken": 0,
+    "errors": 0,
+    "unknown": 10,
+    "toPerson": "시작과 기본 전투·설치는 확인됐지만 비싼 타워 거부, 길 위 설치 거부, 일시정지·업그레이드·게임 오버와 웨이브 진행은 아직 확인하지 못했습니다. (못 본 것을 보러 한 번 더 돌려 봄)"
+   },
+   {
+    "n": 2,
+    "ms": 47492,
+    "met": 9,
+    "usd": 0.003,
+    "best": true,
+    "edits": 2,
+    "unmet": 2,
+    "broken": 1,
+    "errors": 0,
+    "unknown": 8,
+    "toPerson": "시작과 타워 설치는 확인됐지만 재개 뒤에도 게임이 움직이지 않아 공격·보상·웨이브 진행은 아직 확인되지 않았습니다."
+   },
+   {
+    "n": 3,
+    "ms": 48827,
+    "met": 8,
+    "usd": 0.006,
+    "best": false,
+    "edits": 1,
+    "unmet": 1,
+    "broken": 0,
+    "errors": 0,
+    "unknown": 10,
+    "toPerson": "시작과 타워 설치는 확인됐지만 적 처치 보상과 웨이브·게임 오버·일시정지 등의 동작은 아직 확인되지 않았습니다."
+   },
+   {
+    "n": 4,
+    "ms": 33101,
+    "met": 1,
+    "usd": 0.007,
+    "best": false,
+    "edits": 0,
+    "unmet": 0,
+    "broken": 0,
+    "errors": 0,
+    "unknown": 18,
+    "toPerson": "제목 화면은 확인했지만 시작 뒤 게임 동작은 아직 확인하지 못했습니다."
+   }
+  ],
+  "verdict": {
+   "met": [
+    "screen_title_start",
+    "screen_start_game",
+    "hud_numeric_values",
+    "enemy_spawn_move",
+    "enemy_three_types",
+    "tower_place_cost",
+    "tower_three_types",
+    "enemy_death_reward",
+    "state_numbers_visible"
+   ],
+   "done": false,
+   "unmet": [
+    {
+     "id": "tower_attack",
+     "why": "타워를 설치한 뒤 적 체력 숫자(약한 42·빠른 27·튼튼한 115)가 줄지 않았다."
+    },
+    {
+     "id": "pause_resume",
+     "why": "일시정지 뒤 다시 눌렀지만 적과 총알의 움직임이 재개되지 않았다."
+    }
+   ],
+   "broken": [
+    "일시정지 해제 뒤에도 게임 진행이 재개되지 않아 적 이동·공격·웨이브 진행을 확인할 수 없다."
+   ],
+   "unknown": [
+    "tower_too_expensive",
+    "tower_off_path_only",
+    "enemy_reach_end",
+    "wave_progression",
+    "wave_ten",
+    "game_over",
+    "tower_upgrade_sell",
+    "persistent_high_score"
+   ],
+   "toPerson": "시작과 타워 설치는 확인됐지만 재개 뒤에도 게임이 움직이지 않아 공격·보상·웨이브 진행은 아직 확인되지 않았습니다.",
+   "toWorker": "1. 일시정지 해제 시 게임 루프의 시간이 다시 흐르고 적·총알 위치가 갱신되게 고친다.\n2. 타워 설치 후 사거리 판정과 공격 타이머가 실행되어 적 체력이 줄게 한다.\n3. 적 처치 시 돈을 증가시키고, 적 도착 시 목숨을 감소시킨다.\n4. 모든 적이 처리되면 다음 웨이브를 생성하고, 목숨 0이면 게임 오버 화면을 표시한다.",
+   "nextActions": [
+    {
+     "n": null,
+     "x": null,
+     "y": null,
+     "do": "click_text",
+     "ms": null,
+     "key": null,
+     "text": "시작"
+    },
+    {
+     "n": null,
+     "x": null,
+     "y": null,
+     "do": "wait",
+     "ms": 3000,
+     "key": null,
+     "text": null
+    },
+    {
+     "n": null,
+     "x": null,
+     "y": null,
+     "do": "click_text",
+     "ms": null,
+     "key": null,
+     "text": "화살 타워"
+    },
+    {
+     "n": null,
+     "x": 240,
+     "y": 135,
+     "do": "tap",
+     "ms": null,
+     "key": null,
+     "text": null
+    },
+    {
+     "n": null,
+     "x": null,
+     "y": null,
+     "do": "wait",
+     "ms": 5000,
+     "key": null,
+     "text": null
+    },
+    {
+     "n": null,
+     "x": null,
+     "y": null,
+     "do": "click_text",
+     "ms": null,
+     "key": null,
+     "text": "대포 타워"
+    },
+    {
+     "n": null,
+     "x": 330,
+     "y": 130,
+     "do": "tap",
+     "ms": null,
+     "key": null,
+     "text": null
+    },
+    {
+     "n": null,
+     "x": null,
+     "y": null,
+     "do": "wait",
+     "ms": 5000,
+     "key": null,
+     "text": null
+    }
+   ]
+  },
+  "bestRound": 1,
+  "stoppedBy": "done"
+ },
+ "note": "코드 문법만 확인했어요(0개 확인, 0개 문제, 1개는 확인 못 함). 브라우저에서 실제로 4번 돌려 보고 3군데 고쳤어요(제일 잘 된 1번째 판이에요). 다만 기준 19개 중 **8개는 끝내 못 봤어요**(안 된다는 뜻이 아니라, 제가 그 자리까지 못 갔다는 뜻이에요) — 그건 직접 해 보셔야 알아요.",
+ "files": [
+  {
+   "path": "index.html",
+   "contents": "<!DOCTYPE html>\n<html lang=\"ko\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n<title>길목 수호대</title>\n<style>\n*{box-sizing:border-box}body{margin:0;background:#101827;color:#eef5ff;font-family:Arial,'Malgun Gothic',sans-serif;min-height:100vh}.screen{min-height:100vh;display:flex;align-items:center;justify-content:center}.hidden{display:none!important}\n#titleScreen{background:radial-gradient(circle at 50% 35%,#294a69,#101827 65%)}.titleCard{width:min(620px,92vw);text-align:center;padding:58px 25px;border:2px solid #4e789d;border-radius:24px;background:rgba(13,25,42,.88);box-shadow:0 20px 70px #0008}.titleCard h1{font-size:clamp(38px,8vw,72px);margin:0 0 14px;color:#ffd166;text-shadow:0 4px #6e4616}.titleCard p{color:#b9cce0;font-size:18px}.bigButton,.actionButton{border:0;border-radius:10px;padding:13px 27px;background:#3ecf8e;color:#082217;font-weight:bold;font-size:19px;cursor:pointer;box-shadow:0 4px #168158}.bigButton:hover,.actionButton:hover{filter:brightness(1.12)}.record{margin:23px 0;color:#ffd166;font-size:17px}\n#gameScreen{display:block;padding:12px;background:#101827}.topbar{max-width:1120px;margin:auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:9px 0}.brand{font-size:22px;color:#ffd166;font-weight:bold;margin-right:auto}.hud{display:flex;gap:7px;flex-wrap:wrap}.hudBox{background:#1b2c42;border:1px solid #38536e;padding:8px 13px;border-radius:8px;font-size:16px}.hudBox b{color:#fff59b;font-size:20px;margin-left:4px}.pause{background:#e0a93a;color:#241b04;padding:9px 15px;border:0;border-radius:8px;font-weight:bold;cursor:pointer}\n.layout{max-width:1120px;margin:auto;display:grid;grid-template-columns:minmax(620px,900px) 205px;gap:14px;align-items:start}.board{position:relative;width:100%;aspect-ratio:900/520;overflow:hidden;border:3px solid #405c70;border-radius:12px;background:#284c38;box-shadow:0 10px 30px #0005}.grass{position:absolute;inset:0;background-color:#28553c;background-image:radial-gradient(#47754d 1px,transparent 1px);background-size:18px 18px}.pathSvg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}.pathOutline{fill:none;stroke:#9a703b;stroke-width:82;stroke-linecap:round;stroke-linejoin:round}.pathInner{fill:none;stroke:#d8b66c;stroke-width:68;stroke-linecap:round;stroke-linejoin:round}.pathDash{fill:none;stroke:#efd995;stroke-width:3;stroke-dasharray:12 13;opacity:.65}\n.enemy{position:absolute;width:32px;height:32px;border-radius:50%;transform:translate(-50%,-50%);z-index:5;border:2px solid #fff;box-shadow:0 2px 5px #0009;text-align:center;font-weight:bold;color:white;font-size:11px;line-height:28px}.enemy small{position:absolute;top:-19px;left:50%;transform:translateX(-50%);white-space:nowrap;font-size:11px;color:#fff;background:#162033dd;border-radius:4px;padding:1px 4px;line-height:14px}.enemy.weak{background:#e45d5d}.enemy.fast{background:#d887e8}.enemy.tank{background:#586f9e;width:38px;height:38px;line-height:34px}.tower{position:absolute;transform:translate(-50%,-50%);width:43px;height:43px;border-radius:10px;border:3px solid #dcecff;z-index:7;text-align:center;color:white;font-size:11px;font-weight:bold;cursor:pointer;box-shadow:0 2px 6px #0009}.tower span{display:block;line-height:15px;text-shadow:1px 1px #000}.tower.arrow{background:#3c9ee8}.tower.cannon{background:#e2813a}.tower.tesla{background:#a35ce0}.tower .towerStats{position:absolute;top:43px;left:50%;transform:translateX(-50%);white-space:nowrap;background:#142236dd;border-radius:4px;padding:1px 3px;font-size:10px;color:#ffef9d}.bullet{position:absolute;width:9px;height:9px;border-radius:50%;background:#fff48c;box-shadow:0 0 8px #ffe95b;z-index:8;pointer-events:none}.rangeRing{position:absolute;border:1px dashed #fff9;border-radius:50%;transform:translate(-50%,-50%);z-index:6;pointer-events:none}.side{background:#192a3e;border:1px solid #38536e;border-radius:12px;padding:12px}.side h2{font-size:17px;margin:0 0 9px;color:#ffd166}.towerChoice{width:100%;text-align:left;padding:9px 7px;margin:6px 0;border:1px solid #47637c;background:#243b55;color:#fff;border-radius:8px;cursor:pointer}.towerChoice.selected{outline:3px solid #ffd166;background:#315b70}.towerChoice b{display:block}.towerChoice small{display:block;color:#bdd1e5;line-height:17px}.towerChoice em{float:right;color:#ffec76;font-style:normal}.towerInfo{margin-top:12px;border-top:1px solid #446079;padding-top:9px;color:#bcd0e2;min-height:72px;font-size:13px}.towerInfo button{margin:4px 2px 0 0;border:0;border-radius:5px;padding:7px 8px;cursor:pointer;font-weight:bold}.upgrade{background:#ffd166}.sell{background:#ee7464;color:#30100c}.hint{font-size:12px;color:#91abc0;line-height:17px;margin-top:12px}.toast{position:absolute;z-index:20;left:50%;top:14px;transform:translateX(-50%);background:#17283ddd;border:1px solid #ffd166;color:#fff3b0;border-radius:8px;padding:9px 16px;pointer-events:none}.gameOverCard{background:#192a3e;border:2px solid #e45d5d;border-radius:20px;text-align:center;padding:42px 55px;box-shadow:0 12px 50px #0008}.gameOverCard h1{color:#ff7777;font-size:48px;margin:0 0 15px}.gameOverCard p{font-size:20px;color:#d6e5f3}.gameOverCard b{color:#ffd166;font-size:27px}\n@media(max-width:850px){.layout{grid-template-columns:1fr}.side{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}.side h2,.towerInfo,.hint{grid-column:1/-1}.towerChoice{margin:0}.brand{width:100%}.board{min-width:0}.topbar{padding:5px}}\n</style>\n</head>\n<body>\n<section id=\"titleScreen\" class=\"screen\"><div class=\"titleCard\"><h1>길목 수호대</h1><p>길을 따라 몰려오는 적을 막아 마을을 지켜라!</p><div class=\"record\">최고 기록 웨이브: <b id=\"highScore\">0</b></div><button id=\"startButton\" class=\"bigButton\">시작</button></div></section>\n<section id=\"gameScreen\" class=\"hidden\">\n  <div class=\"topbar\"><div class=\"brand\">🛡 길목 수호대</div><div class=\"hud\"><div class=\"hudBox\">돈 <b id=\"money\">320</b></div><div class=\"hudBox\">목숨 <b id=\"lives\">20</b></div><div class=\"hudBox\">웨이브 <b id=\"wave\">1</b> / 10</div></div><button id=\"pauseButton\" class=\"pause\">일시정지</button></div>\n  <div class=\"layout\"><div id=\"board\" class=\"board\"><div class=\"grass\"></div><svg class=\"pathSvg\" viewBox=\"0 0 900 520\" preserveAspectRatio=\"none\"><polyline class=\"pathOutline\" points=\"0,100 180,100 180,380 420,380 420,170 700,170 700,430 900,430\"/><polyline class=\"pathInner\" points=\"0,100 180,100 180,380 420,380 420,170 700,170 700,430 900,430\"/><polyline class=\"pathDash\" points=\"0,100 180,100 180,380 420,380 420,170 700,170 700,430 900,430\"/></svg><div id=\"toast\" class=\"toast hidden\"></div></div>\n  <aside class=\"side\"><h2>타워 선택</h2><button class=\"towerChoice\" data-type=\"arrow\"><b>🏹 화살 타워 <em>65G</em></b><small>사거리 145 · 공격력 12 · 연사 0.65초</small></button><button class=\"towerChoice\" data-type=\"cannon\"><b>💣 대포 타워 <em>110G</em></b><small>사거리 115 · 공격력 30 · 연사 1.1초</small></button><button class=\"towerChoice\" data-type=\"tesla\"><b>⚡ 번개 타워 <em>170G</em></b><small>사거리 190 · 공격력 8 · 연사 0.25초</small></button><div id=\"towerInfo\" class=\"towerInfo\">타워를 선택한 뒤 길이 아닌 빈 곳을 누르세요.</div><div class=\"hint\">적 유형: <b style=\"color:#e45d5d\">약한 적</b> · <b style=\"color:#d887e8\">빠른 적</b> · <b style=\"color:#7895c9\">튼튼한 적</b><br>타워를 누르면 업그레이드와 판매를 할 수 있습니다.</div></aside></div>\n</section>\n<section id=\"overScreen\" class=\"screen hidden\"><div class=\"gameOverCard\"><h1>게임 오버</h1><p>마을의 목숨이 모두 소진되었습니다.</p><p>도달한 웨이브: <b id=\"finalWave\">1</b></p><button id=\"retryButton\" class=\"bigButton\">다시 하기</button></div></section>\n<script>\nconst board=document.getElementById('board'), moneyEl=document.getElementById('money'), livesEl=document.getElementById('lives'), waveEl=document.getElementById('wave'), toastEl=document.getElementById('toast');\nconst towerData={arrow:{name:'화살',cost:65,range:145,damage:12,rate:650,color:'arrow'},cannon:{name:'대포',cost:110,range:115,damage:30,rate:1100,color:'cannon'},tesla:{name:'번개',cost:170,range:190,damage:8,rate:250,color:'tesla'}};\nconst route=[{x:0,y:100},{x:180,y:100},{x:180,y:380},{x:420,y:380},{x:420,y:170},{x:700,y:170},{x:700,y:430},{x:900,y:430}];let lengths=[],totalLength=0;for(let i=1;i<route.length;i++){let d=Math.hypot(route[i].x-route[i-1].x,route[i].y-route[i-1].y);lengths.push(d);totalLength+=d}\nlet state,loop,selectedType='arrow',idCounter=0;\nfunction resetGame(){state={money:320,lives:20,wave:1,enemies:[],towers:[],bullets:[],spawned:0,nextSpawn:0,last:performance.now(),paused:false,between:0,over:false};document.getElementById('titleScreen').classList.add('hidden');document.getElementById('overScreen').classList.add('hidden');document.getElementById('gameScreen').classList.remove('hidden');document.querySelectorAll('.tower').forEach(e=>e.remove());document.querySelectorAll('.enemy,.bullet,.rangeRing').forEach(e=>e.remove());updateHud();selectTower('arrow');clearInterval(loop);loop=setInterval(tick,40)}\nfunction updateHud(){moneyEl.textContent=Math.floor(state.money);livesEl.textContent=state.lives;waveEl.textContent=state.wave}\nfunction showToast(msg){toastEl.textContent=msg;toastEl.classList.remove('hidden');clearTimeout(showToast.t);showToast.t=setTimeout(()=>toastEl.classList.add('hidden'),1900)}\nfunction selectTower(type){selectedType=type;document.querySelectorAll('.towerChoice').forEach(b=>b.classList.toggle('selected',b.dataset.type===type));document.getElementById('towerInfo').innerHTML='<b>'+towerData[type].name+' 타워 선택됨</b><br>빈 칸을 눌러 설치하세요.'}\ndocument.querySelectorAll('.towerChoice').forEach(b=>b.onclick=()=>selectTower(b.dataset.type));\nfunction pointAt(dist){let d=Math.max(0,dist);for(let i=0;i<lengths.length;i++){if(d<=lengths[i]){let a=route[i],b=route[i+1],r=d/lengths[i];return{x:a.x+(b.x-a.x)*r,y:a.y+(b.y-a.y)*r}}d-=lengths[i]}return route[route.length-1]}\nfunction distToSegment(px,py,a,b){let dx=b.x-a.x,dy=b.y-a.y,t=((px-a.x)*dx+(py-a.y)*dy)/(dx*dx+dy*dy);t=Math.max(0,Math.min(1,t));return Math.hypot(px-(a.x+t*dx),py-(a.y+t*dy))}\nfunction onPath(x,y){for(let i=1;i<route.length;i++)if(distToSegment(x,y,route[i-1],route[i])<49)return true;return false}\nboard.onclick=function(e){if(e.target.closest('.tower'))return;let r=board.getBoundingClientRect(),x=(e.clientX-r.left)*900/r.width,y=(e.clientY-r.top)*520/r.height;if(onPath(x,y)){showToast('길 위에는 타워를 놓을 수 없습니다.');return}let d=towerData[selectedType];if(state.money<d.cost){showToast('돈이 부족합니다! 필요한 돈: '+d.cost+'G');return}if(state.towers.some(t=>Math.hypot(t.x-x,t.y-y)<43)){showToast('타워가 너무 가까이 있습니다.');return}state.money-=d.cost;let t={id:++idCounter,type:selectedType,x,y,level:1,damage:d.damage,range:d.range,rate:d.rate,cool:0,el:null};state.towers.push(t);drawTower(t);updateHud()};\nfunction drawTower(t){let el=document.createElement('div');el.className='tower '+t.type;el.style.left=(t.x/900*100)+'%';el.style.top=(t.y/520*100)+'%';el.innerHTML='<span>'+({arrow:'🏹',cannon:'💣',tesla:'⚡'}[t.type])+'</span><div class=\"towerStats\">Lv'+t.level+' D'+t.damage+'</div>';el.onclick=e=>{e.stopPropagation();openTower(t)};board.appendChild(el);t.el=el}\nfunction openTower(t){let inf=document.getElementById('towerInfo');inf.innerHTML='<b>'+towerData[t.type].name+' 타워 Lv'+t.level+'</b><br>공격력 '+t.damage+' · 사거리 '+t.range+' · 연사 '+(t.rate/1000).toFixed(2)+'초<br><button class=\"upgrade\">업그레이드 '+(55*t.level)+'G</button><button class=\"sell\">판매 +'+Math.floor(towerData[t.type].cost*.6*t.level)+'G</button>';inf.querySelector('.upgrade').onclick=()=>upgrade(t);inf.querySelector('.sell').onclick=()=>sell(t);let ring=document.createElement('div');ring.className='rangeRing';ring.style.left=t.x/900*100+'%';ring.style.top=t.y/520*100+'%';ring.style.width=t.range/900*100*2+'%';ring.style.height=t.range/520*100*2+'%';board.appendChild(ring);setTimeout(()=>ring.remove(),1800)}\nfunction upgrade(t){let cost=55*t.level;if(state.money<cost){showToast('업그레이드할 돈이 부족합니다.');return}state.money-=cost;t.level++;t.damage+=Math.ceil(t.damage*.35);t.range+=12;t.rate=Math.max(120,t.rate-35);t.el.querySelector('.towerStats').textContent='Lv'+t.level+' D'+t.damage;updateHud();openTower(t)}\nfunction sell(t){state.money+=Math.floor(towerData[t.type].cost*.6*t.level);t.el.remove();state.towers=state.towers.filter(x=>x!==t);document.getElementById('towerInfo').textContent='타워를 선택한 뒤 길이 아닌 빈 곳을 누르세요.';updateHud()}\nfunction spawnEnemy(){let n=state.spawned%3,type=n===0?'weak':n===1?'fast':'tank',base={weak:{hp:42,speed:47,reward:12},fast:{hp:27,speed:82,reward:16},tank:{hp:115,speed:28,reward:28}}[type],scale=1+(state.wave-1)*.16;let e={id:++idCounter,type,hp:Math.round(base.hp*scale),maxHp:Math.round(base.hp*scale),speed:base.speed*(1+(state.wave-1)*.025),reward:base.reward+state.wave,dist:0,el:null};state.enemies.push(e);let el=document.createElement('div');el.className='enemy '+type;el.innerHTML='<small>'+({weak:'약한',fast:'빠른',tank:'튼튼한'}[type])+'</small><span>'+e.hp+'</span>';board.appendChild(el);e.el=el;state.spawned++}\nfunction removeEnemy(e,escaped){if(e.el)e.el.remove();state.enemies=state.enemies.filter(x=>x!==e);if(escaped){state.lives--;showToast('적이 길 끝에 도착했습니다!');}else state.money+=e.reward;updateHud();if(state.lives<=0)gameOver()}\nfunction tick(){if(!state||state.over||state.paused)return;let now=performance.now(),dt=Math.min(80,now-state.last);state.last=now;let sec=dt/1000;if(state.spawned<5+state.wave*2){state.nextSpawn-=dt;if(state.nextSpawn<=0){spawnEnemy();state.nextSpawn=620-Math.min(280,state.wave*15)}}else if(state.enemies.length===0){state.between+=dt;if(state.wave<10&&state.between>1000){state.wave++;state.spawned=0;state.nextSpawn=0;state.between=0;updateHud();showToast('웨이브 '+state.wave+' 시작!')}}\nstate.enemies.slice().forEach(e=>{e.dist+=e.speed*sec;if(e.dist>=totalLength){removeEnemy(e,true);return}let p=pointAt(e.dist);e.el.style.left=p.x/900*100+'%';e.el.style.top=p.y/520*100+'%'});\nstate.towers.forEach(t=>{t.cool-=dt;if(t.cool<=0){let target=state.enemies.find(e=>{let p=pointAt(e.dist);return Math.hypot(p.x-t.x,p.y-t.y)<=t.range});if(target){t.cool=t.rate;let b={x:t.x,y:t.y,target,damage:t.damage,el:null};let el=document.createElement('div');el.className='bullet';board.appendChild(el);b.el=el;state.bullets.push(b)}}});\nstate.bullets.slice().forEach(b=>{if(!state.enemies.includes(b.target)){b.el.remove();state.bullets=state.bullets.filter(x=>x!==b);return}let p=pointAt(b.target.dist),dx=p.x-b.x,dy=p.y-b.y,d=Math.hypot(dx,dy),step=500*sec;if(d<=step){b.target.hp-=b.damage;b.target.el.querySelector('span').textContent=Math.max(0,b.target.hp);b.el.remove();state.bullets=state.bullets.filter(x=>x!==b);if(b.target.hp<=0)removeEnemy(b.target,false)}else{b.x+=dx/d*step;b.y+=dy/d*step;b.el.style.left=b.x/900*100+'%';b.el.style.top=b.y/520*100+'%'}})}\nfunction gameOver(){if(state.over)return;state.over=true;clearInterval(loop);let old=Number(localStorage.getItem(' 길목수호대 최고기록')||0);if(state.wave>old)localStorage.setItem(' 길목수호대 최고기록',state.wave);document.getElementById('finalWave').textContent=state.wave;document.getElementById('gameScreen').classList.add('hidden');document.getElementById('overScreen').classList.remove('hidden')}\ndocument.getElementById('pauseButton').onclick=()=>{state.paused=!state.paused;document.getElementById('pauseButton').textContent=state.paused?'다시 시작':'일시정지';showToast(state.paused?'일시정지되었습니다.':'게임을 계속합니다.')};document.getElementById('startButton').onclick=resetGame;document.getElementById('retryButton').onclick=resetGame;\nlet best=Number(localStorage.getItem(' 길목수호대 최고기록')||0);document.getElementById('highScore').textContent=best;\n</script>\n</body>\n</html>",
+   "language": "html"
+  }
+ ],
+ "seats": {
+  "fix": null,
+  "build": "gpt-5.6-luna",
+  "judge": "gpt-5.6-luna",
+  "fixWhy": "섞어 보내기(30%)",
+  "fixMode": null
+ },
+ "stage": "prototype",
+ "target": "web",
+ "verify": {
+  "files": [
+   {
+    "ok": false,
+    "path": "index.html",
+    "errors": [],
+    "checked": false,
+    "language": "html"
+   }
+  ],
+  "broken": 0,
+  "parsed": 0,
+  "repaired": false,
+  "unchecked": 1
+ },
+ "patched": null,
+ "summary": {
+  "met": 9,
+  "criteria": 19
+ },
+ "askJudge": null,
+ "coverage": [
+  {
+   "met": true,
+   "where": "index.html의 titleScreen에 게임 이름 '길목 수호대'와 '시작' 버튼이 있습니다.",
+   "criterionId": "screen_title_start"
+  },
+  {
+   "met": true,
+   "where": "startButton 클릭 시 gameScreen이 표시되며 길, 돈, 목숨, 웨이브 HUD가 표시됩니다.",
+   "criterionId": "screen_start_game"
+  },
+  {
+   "met": true,
+   "where": "money, lives, wave HUD 요소가 숫자로 갱신됩니다.",
+   "criterionId": "hud_numeric_values"
+  },
+  {
+   "met": true,
+   "where": "spawnEnemy와 tick에서 적이 경로 좌표를 따라 시작점에서 끝점으로 이동합니다.",
+   "criterionId": "enemy_spawn_move"
+  },
+  {
+   "met": true,
+   "where": "weak, fast, tank 유형이 서로 다른 체력과 속도로 생성됩니다.",
+   "criterionId": "enemy_three_types"
+  },
+  {
+   "met": true,
+   "where": "board 클릭 설치 시 타워가 생성되고 선택 타워의 cost만큼 money가 감소합니다.",
+   "criterionId": "tower_place_cost"
+  },
+  {
+   "met": true,
+   "where": "돈이 부족하면 타워를 만들지 않고 '돈이 부족합니다!' 안내를 표시합니다.",
+   "criterionId": "tower_too_expensive"
+  },
+  {
+   "met": true,
+   "where": "onPath 검사로 길 위 설치를 차단하고 길 밖 설치만 허용합니다.",
+   "criterionId": "tower_off_path_only"
+  },
+  {
+   "met": true,
+   "where": "화살, 대포, 번개 타워가 가격·사거리·공격력·연사 속도와 함께 선택됩니다.",
+   "criterionId": "tower_three_types"
+  },
+  {
+   "met": true,
+   "where": "타워 사거리의 적을 찾고 bullet 충돌 시 적 HP를 감소시킵니다.",
+   "criterionId": "tower_attack"
+  },
+  {
+   "met": true,
+   "where": "HP 0 적을 제거하고 reward만큼 money를 증가시킵니다.",
+   "criterionId": "enemy_death_reward"
+  },
+  {
+   "met": true,
+   "where": "적이 totalLength에 도달하면 제거하고 lives를 1 감소시킵니다.",
+   "criterionId": "enemy_reach_end"
+  },
+  {
+   "met": true,
+   "where": "해당 웨이브의 적이 모두 처리되면 wave가 증가하고 다음 적이 생성됩니다.",
+   "criterionId": "wave_progression"
+  },
+  {
+   "met": true,
+   "where": "wave가 최대 10까지 진행되고 웨이브마다 적 체력과 수가 증가합니다.",
+   "criterionId": "wave_ten"
+  },
+  {
+   "met": true,
+   "where": "lives가 0이면 gameOver 화면에 도달 웨이브와 '다시 하기'가 표시됩니다.",
+   "criterionId": "game_over"
+  },
+  {
+   "met": true,
+   "where": "paused 상태에서 tick이 중단되어 적과 총알이 움직이지 않으며 다시 누르면 재개됩니다.",
+   "criterionId": "pause_resume"
+  },
+  {
+   "met": true,
+   "where": "타워 클릭 시 업그레이드·판매 버튼이 열리고 각각 능력치 증가·환급을 수행합니다.",
+   "criterionId": "tower_upgrade_sell"
+  },
+  {
+   "met": true,
+   "where": "gameOver에서 localStorage에 최고 웨이브를 저장하고 새로고침 시 제목 화면에 표시합니다.",
+   "criterionId": "persistent_high_score"
+  },
+  {
+   "met": true,
+   "where": "적 위에 현재 HP가 표시되고 타워에 Lv와 공격력 수치가 표시됩니다.",
+   "criterionId": "state_numbers_visible"
+  }
+ ],
+ "criteria": [
+  {
+   "id": "screen_title_start",
+   "then": "",
+   "when": "index.html을 브라우저에서 열면 제목 화면에 게임 이름과 \"시작\" 글자가 보인다."
+  },
+  {
+   "id": "screen_start_game",
+   "then": "",
+   "when": "제목 화면에서 \"시작\"을 누르면 게임 화면으로 바뀌고, 길·돈·목숨·웨이브 표시가 보인다."
+  },
+  {
+   "id": "hud_numeric_values",
+   "then": "",
+   "when": "게임 화면의 돈, 목숨, 웨이브 번호가 각각 숫자로 표시된다."
+  },
+  {
+   "id": "enemy_spawn_move",
+   "then": "",
+   "when": "게임을 잠시 진행하면 적이 나타나고, 적의 위치가 길을 따라 시작점에서 끝점 방향으로 이동한다."
+  },
+  {
+   "id": "enemy_three_types",
+   "then": "",
+   "when": "게임을 진행하면 약한 적·빠른 적·튼튼한 적 세 종류가 서로 다른 체력 또는 속도로 나타난다."
+  },
+  {
+   "id": "tower_place_cost",
+   "then": "",
+   "when": "빈 칸을 누르고 타워를 선택해 놓으면 타워가 표시되고, 설치 전 돈에서 그 타워 가격만큼 돈이 줄어든다."
+  },
+  {
+   "id": "tower_too_expensive",
+   "then": "",
+   "when": "현재 돈보다 비싼 타워를 놓으려고 하면 타워가 생성되지 않고 돈도 줄지 않으며, 돈이 부족하다는 안내가 보인다."
+  },
+  {
+   "id": "tower_off_path_only",
+   "then": "",
+   "when": "길 위를 눌러 타워를 놓으려고 하면 타워가 놓이지 않고, 길이 아닌 빈 칸에서는 타워를 놓을 수 있다."
+  },
+  {
+   "id": "tower_three_types",
+   "then": "",
+   "when": "게임 화면에서 가격·사거리·공격력·연사 속도가 서로 다른 세 종류의 타워를 선택할 수 있다."
+  },
+  {
+   "id": "tower_attack",
+   "then": "",
+   "when": "적이 타워의 사거리 안에 들어오면 타워가 자동으로 공격하고, 적에게 표시된 체력 숫자가 줄어든다."
+  },
+  {
+   "id": "enemy_death_reward",
+   "then": "",
+   "when": "적의 체력이 0이 되면 적이 사라지고 돈 숫자가 증가한다."
+  },
+  {
+   "id": "enemy_reach_end",
+   "then": "",
+   "when": "적이 길 끝에 닿으면 적이 사라지고 목숨 숫자가 1 줄어든다."
+  },
+  {
+   "id": "wave_progression",
+   "then": "",
+   "when": "한 웨이브의 적이 모두 죽거나 길 끝으로 지나가면 웨이브 번호가 1 증가하고 다음 웨이브의 적이 나타난다."
+  },
+  {
+   "id": "wave_ten",
+   "then": "",
+   "when": "게임을 계속 진행하면 웨이브 번호가 최대 10까지 올라가며, 웨이브가 올라갈수록 적의 수 또는 체력이 증가한다."
+  },
+  {
+   "id": "game_over",
+   "then": "",
+   "when": "목숨이 0이 되면 게임 오버 화면으로 바뀌고, 도달한 웨이브 수와 \"다시 하기\" 단추가 보인다."
+  },
+  {
+   "id": "pause_resume",
+   "then": "",
+   "when": "일시정지 단추를 누르면 적의 위치와 총알의 위치가 더 이상 변하지 않는다. 다시 누르면 적과 총알의 움직임이 이어진다."
+  },
+  {
+   "id": "tower_upgrade_sell",
+   "then": "",
+   "when": "놓은 타워를 누르면 업그레이드와 판매 단추가 보인다. 업그레이드하면 돈이 줄면서 공격력 또는 사거리가 증가하고, 판매하면 타워가 사라지면서 일부 돈이 돌아온다."
+  },
+  {
+   "id": "persistent_high_score",
+   "then": "",
+   "when": "게임 오버 뒤 새로고침하면 제목 화면에 이전에 도달한 웨이브 이상의 최고 기록이 남아 있다."
+  },
+  {
+   "id": "state_numbers_visible",
+   "then": "",
+   "when": "게임을 플레이하는 동안 각 적의 체력과 각 타워의 상태 또는 수치가 화면의 숫자나 타워에 붙은 표시로 읽힌다."
+  }
+ ],
+ "howToRun": "index.html 파일을 저장한 뒤 웹 브라우저에서 직접 열면 됩니다. 제목 화면에서 '시작'을 누르고, 오른쪽에서 타워를 선택한 다음 길이 아닌 빈 칸을 눌러 설치하세요. 타워를 누르면 업그레이드와 판매를 할 수 있고, 일시정지 버튼으로 적과 총알의 움직임을 멈출 수 있습니다.",
+ "humanGate": [
+  "길·적·타워·버튼·숫자 표시가 서로 겹치지 않아 사람이 한눈에 구분할 수 있는지는 직접 판단한다.",
+  "세 화면의 색상과 배치가 게임의 상태를 직관적으로 전달하는지는 사람이 직접 확인한다."
+ ],
+ "expectations": []
+}

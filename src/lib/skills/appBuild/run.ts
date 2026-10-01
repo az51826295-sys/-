@@ -222,8 +222,12 @@ export async function runWeb(files: File[], opts: { mobile: boolean; width?: num
 
     // 대본대로 놀아 본다 — 시작 단추를 누르고, 캔버스 여기저기를 누르고, 키를 친다. 심판자가 준 대본이 있으면 그것.
     let mid: Buffer | null = null;
-    /** 마지막으로 누른 **진짜 단추**의 자리. 끝에 화면이 멈춰 있으면 이것을 다시 눌러 본다. */
-    let 마지막단추 = -1;
+    /**
+     * 이번 판에서 **눌러 본 진짜 단추들의 자리**(누른 차례대로). 끝에 화면이 멈춰 있으면 **뒤에서부터** 다시 눌러 본다.
+     * 마지막 하나만 기억하면 안 된다 — 멈춘 뒤에 타워 고르기 같은 다른 단추를 누르면 그게 마지막이 되어,
+     * 정작 멈춤을 켠 단추는 안 눌린다(09-30 5판에서 실제로 그랬다: 번개 타워 단추를 눌러 보고 "풀어도 안 움직임" 이라 적었다).
+     */
+    const 누른단추들: number[] = [];
     const box = () => page.evaluate(() => {
       const cs = [...document.querySelectorAll("canvas")].map((c) => c.getBoundingClientRect()).filter((r) => r.width > 20 && r.height > 20);
       cs.sort((a, b) => b.width * b.height - a.width * a.height);
@@ -269,7 +273,7 @@ export async function runWeb(files: File[], opts: { mobile: boolean; width?: num
           if (hit) {
             await press(Math.round(hit.x), Math.round(hit.y));
             did.push(`'${hit.text}' 누름${hit.누를것 ? "" : " (누를 수 있는 것이 없어 글자만 맞는 것을 누름)"}`);
-            if (hit.누를것 && hit.자리 >= 0) 마지막단추 = hit.자리;
+            if (hit.누를것 && hit.자리 >= 0 && !누른단추들.includes(hit.자리)) 누른단추들.push(hit.자리);
             await sleep(600); if (!mid) mid = await shot(page);
           }
           else did.push(`'${act.text}' 글자 없음`);
@@ -335,22 +339,24 @@ export async function runWeb(files: File[], opts: { mobile: boolean; width?: num
      */
     let 멈춤풀림: "안멈춤" | "풀려서움직임" | "풀어도안움직임" | "풀단추없음" = "안멈춤";
     if (놀고나서움직임 === 0) {
-      const 눌렀나 = 마지막단추 < 0 ? null : await page.evaluate((i) => {
-        const b = [...document.querySelectorAll("button, a[href], [role=button], input[type=button]")][i] as HTMLElement | undefined;
-        if (!b) return null;
-        const r = b.getBoundingClientRect();
-        if (r.width <= 0 || r.height <= 0) return null;
-        b.click();
-        return (b.textContent ?? "").trim().slice(0, 20);
-      }, 마지막단추).catch(() => null);
-      if (!눌렀나) 멈춤풀림 = "풀단추없음";
-      else {
+      // **눌러 본 단추를 뒤에서부터 되짚는다.** 멈춤을 켠 단추가 어느 것인지는 모르지만, 그 안에 있다.
+      // 새 단추를 찍어 보지 않는다 — 안 눌러 본 것을 누르면 판이 처음으로 돌아갈 수 있다.
+      멈춤풀림 = 누른단추들.length ? "풀어도안움직임" : "풀단추없음";
+      for (const 자리 of [...누른단추들].reverse().slice(0, 3)) {
+        const 눌렀나 = await page.evaluate((i) => {
+          const b = [...document.querySelectorAll("button, a[href], [role=button], input[type=button]")][i] as HTMLElement | undefined;
+          if (!b) return null;
+          const r = b.getBoundingClientRect();
+          if (r.width <= 0 || r.height <= 0) return null;
+          b.click();
+          return (b.textContent ?? "").trim().slice(0, 20);
+        }, 자리).catch(() => null);
+        if (!눌렀나) continue;
         did.push(`멈춰 있어서 아까 누른 단추('${눌렀나}')를 다시 눌러 봄`);
         await sleep(400);
         const a = await shot(page); await sleep(700); const b = await shot(page);
-        멈춤풀림 = (await diff(a, b)) > CHANGED ? "풀려서움직임" : "풀어도안움직임";
-        if (멈춤풀림 === "풀려서움직임") 놀고나서움직임 = 2;
         await 숫자찍기();
+        if ((await diff(a, b)) > CHANGED) { 멈춤풀림 = "풀려서움직임"; 놀고나서움직임 = 2; break; }
       }
     }
     const text = await page.evaluate(() => (document.body?.innerText ?? "").replace(/\s+/g, " ").trim().slice(0, 300)).catch(() => "");
