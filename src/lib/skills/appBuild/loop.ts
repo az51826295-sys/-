@@ -245,6 +245,19 @@ export async function improveLoop(o: {
     }).filter((a): a is RunAction => !!a);
     // 심판자의 대본에 "움직이는 것 누르기" 가 없으면 붙인다 — 두더지·떨어지는 것은 그것으로만 맞는다(두 번째 시험에서 점수 고장을 이것 없이는 못 봤다).
     if (next.length) actions = next.some((a) => a.do === "taps_moving" || a.do === "taps") ? next : [...next, { do: "taps_moving", n: 6 }, { do: "wait", ms: 800 }];
+    /**
+     * **대본은 반드시 게임을 켜고 시작한다** (228회차 09-30).
+     *
+     * 다시 보기 대본이 **시작 단추를 안 누르고** 바로 '일시정지' 를 찾았다. 제목 화면에 그런 건 없으니
+     * 글자가 없다며 지나갔고, **게임이 끝내 안 켜졌다** — 그 바퀴는 기준 21개 중 13개를 못 보고 끝났다.
+     * 심판자 자신도 *"시작 버튼을 누른 뒤 ... 확인하지 못해 대부분의 기준을 판단할 수 없습니다"* 라고 적었다.
+     *
+     * 창은 바퀴마다 새로 열린다(앞 바퀴에서 켠 게임은 안 남는다). 그러니 **첫 걸음은 늘 시작**이어야 한다.
+     * 대본에 시작으로 보이는 누르기가 없으면 앞에 붙인다. 이미 있으면 건드리지 않는다.
+     */
+    if (next.length && !actions.some((a) => a.do === "click_text" && /시작|start|play|플레이|다시/i.test(a.text))) {
+      actions = [{ do: "click_text", text: "시작|start|play|플레이|게임 시작" }, { do: "wait", ms: 800 }, ...actions];
+    }
     // 멈춤: 더 고칠 게 없다고 했고 못 본 것도 없으면. 못 본 것만 남았으면 새 대본으로 **한 번 더 보기만** 한다(고치지 않는다).
     const onlyUnknown = verdict.unmet.length === 0 && verdict.broken.length === 0;
     const prevUnknown = rounds.length >= 2 ? rounds[rounds.length - 2].unknown : Infinity;

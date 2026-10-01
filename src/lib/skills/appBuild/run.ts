@@ -40,6 +40,8 @@ export type RunFacts = {
    * 값이 하나뿐이면 **그 숫자는 한 번도 안 움직였다**(못 본 것이 아니라 본 것이다).
    */
   numberTrail: Record<string, string[]>;
+  /** 끝에 화면이 멈춰 있었을 때 '재개' 단추를 눌러 본 결과. 멈춤과 고장을 가른다. */
+  resumeProbe: "안멈춤" | "풀려서움직임" | "풀어도안움직임" | "풀단추없음";
   /** 화면에 보이는 글자(앞 300자). 점수·타이머·버튼 글자를 심판자가 본다. */
   text: string;
   /** 화면 세 장(시작·시작 단추 누른 뒤·놀아 본 뒤), 작은 JPEG base64 — 심판자에게 보여 준다. 저장하지 않는다. */
@@ -123,7 +125,7 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 export async function runWeb(files: File[], opts: { mobile: boolean; width?: number; height?: number; timeoutMs?: number; actions?: RunAction[]; measures?: string[] }): Promise<RunFacts> {
   const t0 = Date.now();
-  const none: RunFacts = { ran: false, ms: 0, consoleErrors: [], blankAtStart: false, movesByItself: false, changesOnTap: false, changesOnKeys: false, movesAfterPlay: 0, numberTrail: {}, text: "", shots: { start: "", mid: "", after: "" }, did: [] };
+  const none: RunFacts = { ran: false, ms: 0, consoleErrors: [], blankAtStart: false, movesByItself: false, changesOnTap: false, changesOnKeys: false, movesAfterPlay: 0, numberTrail: {}, resumeProbe: "안멈춤", text: "", shots: { start: "", mid: "", after: "" }, did: [] };
   const did: string[] = [];
   const entry = entryOf(files);
   if (!entry) return { ...none, why: "HTML 파일이 없다" };
@@ -220,6 +222,8 @@ export async function runWeb(files: File[], opts: { mobile: boolean; width?: num
 
     // 대본대로 놀아 본다 — 시작 단추를 누르고, 캔버스 여기저기를 누르고, 키를 친다. 심판자가 준 대본이 있으면 그것.
     let mid: Buffer | null = null;
+    /** 마지막으로 누른 **진짜 단추**의 자리. 끝에 화면이 멈춰 있으면 이것을 다시 눌러 본다. */
+    let 마지막단추 = -1;
     const box = () => page.evaluate(() => {
       const cs = [...document.querySelectorAll("canvas")].map((c) => c.getBoundingClientRect()).filter((r) => r.width > 20 && r.height > 20);
       cs.sort((a, b) => b.width * b.height - a.width * a.height);
@@ -253,13 +257,21 @@ export async function runWeb(files: File[], opts: { mobile: boolean; width?: num
               ?? 모두.find((e) => e.children.length === 0) ?? 모두[0];
             if (!el) return null;
             const r = el.getBoundingClientRect();
+            // 나중에 **같은 것을 다시 누르려고** 자리를 적어 둔다(글자는 눌리면 바뀐다 — 일시정지↔다시 시작).
+            const 누를수있는것들 = [...document.querySelectorAll("button, a[href], [role=button], input[type=button]")];
             return {
               x: r.left + r.width / 2, y: r.top + r.height / 2,
               text: (el.textContent ?? "").trim().slice(0, 30),
               누를것: el.matches(CLICKABLE) || getComputedStyle(el).cursor === "pointer",
+              자리: 누를수있는것들.indexOf(el),
             };
           }, re.source);
-          if (hit) { await press(Math.round(hit.x), Math.round(hit.y)); did.push(`'${hit.text}' 누름${hit.누를것 ? "" : " (누를 수 있는 것이 없어 글자만 맞는 것을 누름)"}`); await sleep(600); if (!mid) mid = await shot(page); }
+          if (hit) {
+            await press(Math.round(hit.x), Math.round(hit.y));
+            did.push(`'${hit.text}' 누름${hit.누를것 ? "" : " (누를 수 있는 것이 없어 글자만 맞는 것을 누름)"}`);
+            if (hit.누를것 && hit.자리 >= 0) 마지막단추 = hit.자리;
+            await sleep(600); if (!mid) mid = await shot(page);
+          }
           else did.push(`'${act.text}' 글자 없음`);
         } else if (act.do === "taps_moving") {
           let n = 0;
@@ -310,6 +322,37 @@ export async function runWeb(files: File[], opts: { mobile: boolean; width?: num
       앞장 = 다음;
       await 숫자찍기();
     }
+    /**
+     * **멈춰 있으면 한 번 풀어 본다** (228회차 09-30).
+     *
+     * 대본이 일시정지를 켜 놓고 끝나는 일이 거듭 생긴다 — 멈추면 단추 글자가 "▶ 다시"·"재개" 로 **바뀌기 때문에**
+     * 같은 글자로 다시 누를 수 없다. 그 화면을 보고 심판자는 "게임이 안 돈다" 고 적는다(09-30 에 실제로 그랬다).
+     *
+     * 그래서 끝에 화면이 멈춰 있으면 **아까 누른 바로 그 단추**를 한 번 더 눌러 보고 다시 잰다.
+     * **글자로 찾지 않는다** — 멈추면 글자가 바뀌고(일시정지 → "▶ 다시"·"재개"·심지어 "다시 시작"),
+     * "다시 시작" 이 이어 하기인지 처음부터인지는 말로 가릴 수 없다. 자리로 가리키면 그 물음이 사라진다.
+     * 눌러서 다시 움직이면 그건 **고장이 아니라 멈춤이었다**는 사실이고, 그 사실을 그대로 적는다.
+     */
+    let 멈춤풀림: "안멈춤" | "풀려서움직임" | "풀어도안움직임" | "풀단추없음" = "안멈춤";
+    if (놀고나서움직임 === 0) {
+      const 눌렀나 = 마지막단추 < 0 ? null : await page.evaluate((i) => {
+        const b = [...document.querySelectorAll("button, a[href], [role=button], input[type=button]")][i] as HTMLElement | undefined;
+        if (!b) return null;
+        const r = b.getBoundingClientRect();
+        if (r.width <= 0 || r.height <= 0) return null;
+        b.click();
+        return (b.textContent ?? "").trim().slice(0, 20);
+      }, 마지막단추).catch(() => null);
+      if (!눌렀나) 멈춤풀림 = "풀단추없음";
+      else {
+        did.push(`멈춰 있어서 아까 누른 단추('${눌렀나}')를 다시 눌러 봄`);
+        await sleep(400);
+        const a = await shot(page); await sleep(700); const b = await shot(page);
+        멈춤풀림 = (await diff(a, b)) > CHANGED ? "풀려서움직임" : "풀어도안움직임";
+        if (멈춤풀림 === "풀려서움직임") 놀고나서움직임 = 2;
+        await 숫자찍기();
+      }
+    }
     const text = await page.evaluate(() => (document.body?.innerText ?? "").replace(/\s+/g, " ").trim().slice(0, 300)).catch(() => "");
     const blankAtStart = await isBlank(s0);
     // **놀아 본 뒤에 잰다** — 시작 단추를 눌러 게임이 도는 상태여야 점프를 잴 수 있다.
@@ -317,7 +360,7 @@ export async function runWeb(files: File[], opts: { mobile: boolean; width?: num
     return {
       ran: true, ms: Date.now() - t0, measured,
       consoleErrors: [...errors].slice(0, 12),
-      blankAtStart, movesByItself, changesOnTap, changesOnKeys, movesAfterPlay: 놀고나서움직임, numberTrail: 자취, text, did,
+      blankAtStart, movesByItself, changesOnTap, changesOnKeys, movesAfterPlay: 놀고나서움직임, numberTrail: 자취, resumeProbe: 멈춤풀림, text, did,
       shots: { start: await tinyJpeg(s0), mid: await tinyJpeg(mid ?? afterKeys), after: await tinyJpeg(end) },
     };
   } catch (e) {
@@ -337,7 +380,10 @@ export function factLines(f: RunFacts): string[] {
     `가운데를 누르면 ${f.changesOnTap ? "화면이 바뀜" : "안 바뀜"}`,
     `방향키·스페이스를 치면 ${f.changesOnKeys ? "화면이 바뀜" : "안 바뀜"}`,
     // 캔버스 게임의 "적이 움직이나" 는 여기서만 보인다(위 '가만히 두면' 은 제목 화면 값이다).
-    `놀아 본 뒤 그대로 두면 ${f.movesAfterPlay === 2 ? "계속 바뀜(도는 중)" : f.movesAfterPlay === 1 ? "한 번 바뀜" : "안 바뀜(멈췄거나 끝난 화면)"}`,
+    `놀아 본 뒤 그대로 두면 ${f.movesAfterPlay === 2 ? "계속 바뀜(도는 중)" : f.movesAfterPlay === 1 ? "한 번 바뀜" : "안 바뀜(멈췄거나 끝난 화면)"}` +
+      (f.resumeProbe === "풀려서움직임" ? " — 멈춰 있던 것이고, **'재개' 를 누르니 다시 움직였다**(고장이 아니다)"
+        : f.resumeProbe === "풀어도안움직임" ? " — '재개' 를 눌러 봐도 안 움직였다"
+          : f.resumeProbe === "풀단추없음" ? " — 다시 눌러 볼 단추가 없었다" : ""),
     `해 본 조작: ${f.did.join(" → ") || "(없음)"}`,
     // **안 움직인 숫자는 "못 본 것" 이 아니라 "본 것" 이다.** 돈이 420 에서 한 번도 안 오르면 적을 못 죽였다는 뜻이다.
     ...(Object.keys(f.numberTrail).length
