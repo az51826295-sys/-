@@ -16,6 +16,7 @@ const { createServiceClient } = await import("../../../src/lib/supabase/service"
 const db = createServiceClient();
 
 const js = readFileSync("engine/work/sprites/sprites.js", "utf8");
+const 소리 = readFileSync("engine/work/sprites/sound.js", "utf8");
 const 키들 = [...js.matchAll(/^\s{2}(\w+):\s"data:image/gm)].map((m) => m[1]);
 if (!키들.length) { console.error("꾸러미에서 키를 못 찾았다 — 만들기.mts 를 먼저"); process.exit(1); }
 
@@ -33,10 +34,13 @@ const content = {
   stage: "assets",
   criteria: [],
   humanGate: [],
-  files: [{ path: "js/sprites.js", language: "javascript", contents: js }],
-  howToRun: "이 파일 하나는 그림 꾸러미다. 게임에서 import 해서 쓴다.",
+  files: [
+    { path: "js/sprites.js", language: "javascript", contents: js },
+    { path: "js/sound.js", language: "javascript", contents: 소리 },
+  ],
+  howToRun: "이 두 파일은 그림·소리 꾸러미다. 게임에서 import 해서 쓴다.",
   coverage: [],
-  note: `로키가 뽑은 도트 조각 ${키들.length}장을 담은 꾸러미다. 게임이 이걸 import 해서 그린다.`,
+  note: `도트 조각 ${키들.length}장 + 소리 열 가지를 담은 꾸러미다. 게임이 이걸 import 해서 그리고 울린다.`,
 };
 const markdown = [
   `## 도트 조각 꾸러미 (${키들.length}장)`, "",
@@ -51,8 +55,8 @@ const markdown = [
 const { data: 업무, error: ae } = await db.from("assignments").insert({
   company_id: co.id,
   company_employee_id: ce.id,
-  title: `도트 조각 꾸러미 (${키들.length}장)`,
-  description: "로키가 뽑은 도트 조각을 게임이 쓸 수 있게 한 파일로 묶은 것. 그림은 gpt-image-2.5-flare 로 뽑았다.",
+  title: `도트·소리 꾸러미 (그림 ${키들.length}장 · 소리 10가지)`,
+  description: "게임이 쓸 그림과 소리를 한 벌로 묶은 것. 그림은 gpt-image-2.5-flare, 소리는 코드로 그 자리에서 만든다(WebAudio).",
   status: "completed",
   priority: "normal",
   assignment_type: "manager",
@@ -79,7 +83,7 @@ const { data: made, error } = await db.from("deliverables").insert({
   company_employee_id: ce.id,
   assignment_id: (업무 as { id: string }).id,
   work_execution_id: (실행 as { id: string }).id,
-  title: `도트 조각 꾸러미 (${키들.length}장)`,
+  title: `도트·소리 꾸러미 (그림 ${키들.length}장 · 소리 10가지)`,
   deliverable_type: "app_build",
   content_markdown: markdown,
   content_json: content,
@@ -92,7 +96,7 @@ const { data: made, error } = await db.from("deliverables").insert({
 }).select("id").single();
 if (error) { console.error("못 넣었다:", error.message); process.exit(1); }
 
-console.log(`회사 ${co.name} · 꾸러미 ${Math.round(js.length / 1024)}KB · 조각 ${키들.length}장`);
+console.log(`회사 ${co.name} · 그림 ${Math.round(js.length / 1024)}KB(${키들.length}장) · 소리 ${Math.round(소리.length / 1024)}KB(10가지)`);
 console.log(`키: ${키들.join(", ")}`);
 console.log(`\n**앞 판 산출물 id: ${(made as { id: string }).id}**`);
 console.log(`다음: ask_for.mts ... --prev ${(made as { id: string }).id}`);

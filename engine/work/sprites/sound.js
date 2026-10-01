@@ -1,0 +1,153 @@
+// 로키가 만든 소리 꾸러미. **이 파일은 고치지 마라.**
+// 효과음은 파일이 아니라 **그 자리에서 만든 소리**다(WebAudio) — 0바이트, 겹쳐 쳐도 안 밀린다.
+// 쓰는 법:
+//   import { unlockSound, sfx, startMusic, toggleMusic } from './sound.js';
+//   document.addEventListener('pointerdown', unlockSound, { once: true });  // 브라우저가 첫 소리를 막는다
+//   sfx('hit');        // 타격음 — 적이 맞을 때
+//   sfx('shoot');      // 발사
+//   sfx('kill');       // 적이 죽을 때
+//   sfx('place');      // 타워 설치
+//   sfx('upgrade');    // 강화
+//   sfx('deny');       // 돈이 모자라거나 길 위라 안 될 때
+//   sfx('leak');       // 적이 끝까지 갔을 때(목숨 -1)
+//   sfx('wave');       // 새 웨이브
+//   sfx('over');       // 게임 오버
+//   startMusic();      // 배경 음악(이어서 돈다) · toggleMusic() 로 켜고 끈다
+
+let ac = null;
+let 음악 = null;
+
+export function unlockSound() {
+  if (!ac) { const C = window.AudioContext || window.webkitAudioContext; if (C) ac = new C(); }
+  if (ac && ac.state === 'suspended') ac.resume();
+  return !!ac;
+}
+
+/** 소리 하나. 종류마다 파형·높이·길이가 다르다. */
+export function sfx(kind) {
+  if (!ac) unlockSound();
+  if (!ac) return;
+  const t = ac.currentTime;
+  const 설정 = {
+    shoot:   { wave: 'square',   from: 880,  to: 440,  len: 0.07, gain: 0.05 },
+    hit:     { wave: 'square',   from: 320,  to: 120,  len: 0.09, gain: 0.10, noise: true },
+    kill:    { wave: 'triangle', from: 520,  to: 70,   len: 0.26, gain: 0.11 },
+    place:   { wave: 'triangle', from: 300,  to: 620,  len: 0.14, gain: 0.08 },
+    upgrade: { wave: 'square',   from: 520,  to: 1040, len: 0.20, gain: 0.07 },
+    deny:    { wave: 'sawtooth', from: 180,  to: 110,  len: 0.16, gain: 0.07 },
+    leak:    { wave: 'sawtooth', from: 260,  to: 90,   len: 0.34, gain: 0.10 },
+    wave:    { wave: 'square',   from: 440,  to: 880,  len: 0.28, gain: 0.07 },
+    over:    { wave: 'triangle', from: 330,  to: 60,   len: 0.80, gain: 0.12 },
+  }[kind];
+  if (!설정) return;
+
+  const g = ac.createGain();
+  g.gain.setValueAtTime(설정.gain, t);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + 설정.len);
+  g.connect(ac.destination);
+
+  const o = ac.createOscillator();
+  o.type = 설정.wave;
+  o.frequency.setValueAtTime(설정.from, t);
+  o.frequency.exponentialRampToValueAtTime(Math.max(20, 설정.to), t + 설정.len);
+  o.connect(g);
+  o.start(t); o.stop(t + 설정.len);
+
+  // 타격음에는 '퍽' 하는 잡음을 조금 섞는다 — 맑은 삐 소리만으로는 때린 느낌이 안 난다.
+  if (설정.noise) {
+    const n = ac.createBufferSource();
+    const buf = ac.createBuffer(1, Math.floor(ac.sampleRate * 0.05), ac.sampleRate);
+    const d = buf.getChannelData(0);
+    for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / d.length);
+    n.buffer = buf;
+    const ng = ac.createGain();
+    ng.gain.setValueAtTime(0.06, t);
+    ng.gain.exponentialRampToValueAtTime(0.0001, t + 0.05);
+    n.connect(ng); ng.connect(ac.destination);
+    n.start(t);
+  }
+}
+
+const BGM = "";   // 음원 없음 — 아래에서 **그 자리에서 연주한다**
+
+/**
+ * 배경 음악. 음원 파일이 있으면 그걸 틀고, 없으면 **그 자리에서 연주한다**.
+ * 연주 쪽은 0바이트다 — 옛 게임이 그랬듯 네모파로 가락을 찍어 낸다.
+ * 가락은 C 장조로 네 마디가 돌아간다(C - Am - F - G). 빠르기 120.
+ */
+const 가락 = [
+  // [음높이(반음, 0 = C4), 길이(16분음표 수)] — 0.5마디씩 네 덩이
+  [0, 2], [4, 2], [7, 2], [12, 2], [7, 2], [4, 2], [7, 2], [4, 2],
+  [-3, 2], [0, 2], [4, 2], [9, 2], [4, 2], [0, 2], [4, 2], [0, 2],
+  [-7, 2], [-3, 2], [0, 2], [5, 2], [0, 2], [-3, 2], [0, 2], [5, 2],
+  [-5, 2], [-1, 2], [2, 2], [7, 2], [2, 2], [-1, 2], [2, 2], [-1, 2],
+];
+const 베이스 = [0, 0, -3, -3, -7, -7, -5, -5];   // 마디마다 두 번
+const 한박 = 60 / 120 / 4;                        // 16분음표 한 칸(초)
+const 높이 = (반음) => 261.63 * Math.pow(2, 반음 / 12);
+let 연주중 = false, 다음때 = 0, 자리 = 0, 시계 = null, 음량 = 0.18;
+
+function _한음(freq, 시작, 길이, 결, 세기) {
+  const g = ac.createGain();
+  g.gain.setValueAtTime(0, 시작);
+  g.gain.linearRampToValueAtTime(세기, 시작 + 0.01);
+  g.gain.setValueAtTime(세기, 시작 + 길이 * 0.7);
+  g.gain.exponentialRampToValueAtTime(0.0001, 시작 + 길이);
+  g.connect(ac.destination);
+  const o = ac.createOscillator();
+  o.type = 결; o.frequency.setValueAtTime(freq, 시작);
+  o.connect(g); o.start(시작); o.stop(시작 + 길이);
+}
+
+function _찍기() {
+  if (!연주중 || !ac) return;
+  // 0.2초 앞까지 미리 예약해 둔다 — 그래야 끊기지 않는다.
+  while (다음때 < ac.currentTime + 0.2) {
+    const [반음, 칸] = 가락[자리 % 가락.length];
+    _한음(높이(반음 + 12), 다음때, 한박 * 칸 * 0.9, 'square', 음량 * 0.5);
+    if (자리 % 4 === 0) _한음(높이(베이스[Math.floor(자리 / 4) % 베이스.length] - 12), 다음때, 한박 * 3.4, 'triangle', 음량);
+    if (자리 % 2 === 1) {                      // 엇박에 하이햇
+      const n = ac.createBufferSource();
+      const b = ac.createBuffer(1, Math.floor(ac.sampleRate * 0.03), ac.sampleRate);
+      const d = b.getChannelData(0);
+      for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / d.length);
+      n.buffer = b;
+      const g = ac.createGain();
+      g.gain.setValueAtTime(음량 * 0.25, 다음때);
+      g.gain.exponentialRampToValueAtTime(0.0001, 다음때 + 0.03);
+      n.connect(g); g.connect(ac.destination); n.start(다음때);
+    }
+    다음때 += 한박 * 칸;
+    자리++;
+  }
+}
+
+/** 배경 음악을 튼다(이어서 돈다). 사람이 화면을 한 번 누른 뒤에 불러야 소리가 난다. */
+export function startMusic(volume = 0.35) {
+  if (!ac) unlockSound();
+  if (!ac) return false;
+  if (BGM) {
+    if (!음악) { 음악 = new Audio(BGM); 음악.loop = true; }
+    음악.volume = volume;
+    음악.play().catch(() => {});
+    return true;
+  }
+  if (연주중) return true;
+  음량 = 0.18 * (volume / 0.35);
+  연주중 = true; 자리 = 0; 다음때 = ac.currentTime + 0.05;
+  시계 = setInterval(_찍기, 60);
+  _찍기();
+  return true;
+}
+export function stopMusic() {
+  if (음악) 음악.pause();
+  연주중 = false;
+  if (시계) { clearInterval(시계); 시계 = null; }
+}
+/** 켜져 있으면 끄고, 꺼져 있으면 켠다. 켜졌는지를 돌려준다. */
+export function toggleMusic() {
+  const 켜짐 = BGM ? !!(음악 && !음악.paused) : 연주중;
+  if (켜짐) { stopMusic(); return false; }
+  startMusic(); return true;
+}
+export function hasMusic() { return true; }

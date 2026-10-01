@@ -1,0 +1,324 @@
+{
+ "loop": {
+  "usd": 0.004810000000000009,
+  "facts": {
+   "ms": 21882,
+   "did": [
+    "'게임 시작' 누름",
+    "0.8초 기다림",
+    "8초 기다림",
+    "1초 기다림",
+    "움직이는 자리 6번 누름",
+    "0.8초 기다림"
+   ],
+   "ran": true,
+   "text": "◆ 도트 요새 디펜스 웨이브 2 / 10 성벽 20 🔊 소리 켜짐 타워의 공격은 자동으로 진행됩니다 · 공격음은 빠르게 겹치지 않도록 제한됩니다",
+   "shots": {
+    "mid": "",
+    "after": "",
+    "start": ""
+   },
+   "numberTrail": {
+    "base-label": [
+     "20"
+    ],
+    "wave-label": [
+     "1 / 10",
+     "2 / 10"
+    ]
+   },
+   "resumeProbe": "안멈춤",
+   "blankAtStart": false,
+   "changesOnTap": false,
+   "changesOnKeys": false,
+   "consoleErrors": [],
+   "movesByItself": false,
+   "movesAfterPlay": 2
+  },
+  "rounds": [
+   {
+    "n": 1,
+    "ms": 22097,
+    "met": 0,
+    "usd": 0.001,
+    "best": true,
+    "edits": 0,
+    "unmet": 0,
+    "broken": 0,
+    "errors": 0,
+    "unknown": 3,
+    "toPerson": "게임은 오류 없이 실행되고 웨이브가 1에서 2로 진행됐지만, 웨이브 10 완료와 공격음 간격 및 음악 버튼의 실제 전환은 아직 확인하지 못했습니다. (못 본 것을 보러 한 번 더 돌려 봄)"
+   },
+   {
+    "n": 2,
+    "ms": 45043,
+    "met": 9,
+    "usd": 0.003,
+    "best": true,
+    "edits": 0,
+    "unmet": 0,
+    "broken": 0,
+    "errors": 0,
+    "unknown": 17,
+    "toPerson": "화면과 반응은 정상이며 웨이브 2까지 확인됐지만 타워 기능·게임 오버·소리·웨이브 10은 더 확인해야 합니다."
+   }
+  ],
+  "verdict": {
+   "met": [
+    "[wave_10_completion] 게임 화면에서 웨이브 1/10이 2/10으로 바뀌는 것은 확인됐다. 그러나 웨이브 10까지는 확인되지 않았다.",
+    "[music_starts_with_game] 시작 후 게임 화면으로 전환됐고 ‘🔊 소리 켜짐’ 단추가 보인다. 다만 실제 음악 시작과 단추를 눌렀을 때 상태가 반대로 바뀌는 것은 확인하지 못했다.",
+    "1. 제목 화면에 ‘시작’ 글자가 보인다.",
+    "2. 시작을 누르면 게임 화면으로 바뀌고 길과 게임 요소가 보인다.",
+    "3. 게임 화면에 웨이브와 성벽 수치가 숫자로 보인다.",
+    "4. 기다린 뒤 적이 나타나며 게임 화면이 계속 바뀐다.",
+    "5. 화면의 적이 동그라미가 아닌 도트 그림으로 보인다.",
+    "6. 화면의 타워가 도트 그림으로 보인다.",
+    "13. 웨이브 숫자가 1/10에서 2/10으로 바뀌었다."
+   ],
+   "done": false,
+   "unmet": [],
+   "broken": [],
+   "unknown": [
+    "7. 빈 칸에 타워를 놓았을 때 돈이 타워 값만큼 줄어드는지 확인하지 못했다.",
+    "8. 돈보다 비싼 타워가 놓이지 않고 돈도 유지되는지 확인하지 못했다.",
+    "9. 길 위에 타워가 놓이지 않는지 확인하지 못했다.",
+    "10. 사거리 안의 적이 공격받아 체력이 줄어드는지 확인하지 못했다.",
+    "11. 적이 죽었을 때 돈이 늘어나는지 확인하지 못했다. 돈 숫자는 20으로 계속 보였다.",
+    "12. 적이 끝까지 갔을 때 성벽 수가 1 줄어드는지 확인하지 못했다. 성벽 숫자는 20으로 계속 보였다.",
+    "14. 성벽이 0이 됐을 때 게임 오버 화면이 뜨는지 확인하지 못했다.",
+    "15. 일시정지 후 적과 총알이 멈췄다가 재개 후 움직이는지 확인하지 못했다.",
+    "16. 타워 선택 후 업그레이드 단추와 업그레이드 효과를 확인하지 못했다.",
+    "17. 새로고침 후 최고 기록이 남는지 확인하지 못했다.",
+    "18. js/sprites.js와 js/sound.js가 앞 판 그대로인지 실행 사실만으로는 확인하지 못했다.",
+    "19. 적이 맞을 때 타격음이 나는지 확인하지 못했다.",
+    "20. 타워 설치·강화·적 처치 때 각각 다른 소리가 나는지 확인하지 못했다.",
+    "21. 소리 단추가 실제로 음악을 켜고 끄는지 확인하지 못했다.",
+    "[wave_10_completion] 웨이브 10의 적을 모두 처리한 뒤 마지막 웨이브 완료 상태가 표시되는지 확인하지 못했다.",
+    "[shoot_sound_cooldown] 타워의 공격음 간격이 0.08초보다 짧지 않게 제한되는지 소리로 확인하지 못했다.",
+    "[music_starts_with_game] 시작 버튼을 누를 때 실제 배경 음악이 시작되는지, 소리 단추를 눌렀을 때 글자와 음악 상태가 함께 바뀌는지 확인하지 못했다."
+   ],
+   "toPerson": "화면과 반응은 정상이며 웨이브 2까지 확인됐지만 타워 기능·게임 오버·소리·웨이브 10은 더 확인해야 합니다.",
+   "toWorker": "현재 콘솔 오류나 화면 고장은 보이지 않습니다.\n남은 항목은 대부분 타워 설치·업그레이드·일시정지·소리·게임 오버를 실제로 조작해 확인해야 합니다.\n길 가까운 빈칸에 타워를 놓고 10초 넘게 기다려 처치 보상과 공격을 확인할 수 있습니다.",
+   "nextActions": [
+    {
+     "n": null,
+     "x": null,
+     "y": null,
+     "do": "click_text",
+     "ms": null,
+     "key": null,
+     "text": "게임 시작"
+    },
+    {
+     "n": null,
+     "x": null,
+     "y": null,
+     "do": "wait",
+     "ms": 1000,
+     "key": null,
+     "text": null
+    },
+    {
+     "n": 3,
+     "x": 250,
+     "y": 180,
+     "do": "taps",
+     "ms": null,
+     "key": null,
+     "text": null
+    },
+    {
+     "n": 3,
+     "x": 280,
+     "y": 180,
+     "do": "taps",
+     "ms": null,
+     "key": null,
+     "text": null
+    },
+    {
+     "n": null,
+     "x": null,
+     "y": null,
+     "do": "wait",
+     "ms": 12000,
+     "key": null,
+     "text": "길에 가까운 빈칸에 타워를 놓고 10초 넘게 기다리기"
+    },
+    {
+     "n": null,
+     "x": null,
+     "y": null,
+     "do": "click_text",
+     "ms": null,
+     "key": null,
+     "text": "일시정지"
+    },
+    {
+     "n": null,
+     "x": null,
+     "y": null,
+     "do": "wait",
+     "ms": 2000,
+     "key": null,
+     "text": null
+    },
+    {
+     "n": null,
+     "x": null,
+     "y": null,
+     "do": "click_text",
+     "ms": null,
+     "key": null,
+     "text": "재개"
+    },
+    {
+     "n": null,
+     "x": null,
+     "y": null,
+     "do": "click_text",
+     "ms": null,
+     "key": null,
+     "text": "🔊 소리 켜짐"
+    },
+    {
+     "n": null,
+     "x": null,
+     "y": null,
+     "do": "click_text",
+     "ms": null,
+     "key": null,
+     "text": "🔇 소리 꺼짐"
+    }
+   ]
+  },
+  "bestRound": 1,
+  "stoppedBy": "done"
+ },
+ "note": "코드 문법만 확인했어요(3개 확인, 0개 문제, 1개는 확인 못 함). 브라우저에서 실제로 2번 돌려 봤어요 — 고칠 게 안 나왔지만 **본 것보다 못 본 것이 많아요.** 다만 기준 26개 중 **17개는 끝내 못 봤어요**(안 된다는 뜻이 아니라, 제가 그 자리까지 못 갔다는 뜻이에요) — 그건 직접 해 보셔야 알아요.",
+ "files": [
+  {
+   "path": "index.html",
+   "contents": "<!doctype html>\n<html lang=\"ko\">\n<head>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  <title>도트 요새 디펜스</title>\n  <style>\n    :root { color-scheme: dark; }\n    * { box-sizing: border-box; }\n    html, body { margin: 0; min-height: 100%; background: #111827; color: #f8fafc; font-family: system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif; }\n    body { display: grid; place-items: center; padding: 18px; }\n    #app { width: min(100%, 1020px); }\n    header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; }\n    h1 { margin: 0; color: #fbbf24; font-size: clamp(22px, 4vw, 34px); letter-spacing: .06em; text-shadow: 3px 3px #7c2d12; }\n    #hud { display: none; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }\n    .stat, button { border: 2px solid #475569; background: #1e293b; color: #f8fafc; border-radius: 7px; padding: 8px 12px; font-weight: 700; }\n    .stat strong { color: #fde68a; }\n    button { cursor: pointer; border-color: #f59e0b; box-shadow: 0 3px 0 #92400e; }\n    button:hover { background: #334155; }\n    button:active { transform: translateY(2px); box-shadow: 0 1px 0 #92400e; }\n    #game-wrap { position: relative; overflow: hidden; border: 4px solid #475569; border-radius: 10px; background: #172033; box-shadow: 0 12px 40px #020617aa; }\n    canvas { display: block; width: 100%; height: auto; image-rendering: pixelated; image-rendering: crisp-edges; }\n    #title-screen, #end-screen { position: absolute; inset: 0; display: grid; place-items: center; background: #0f172acc; text-align: center; padding: 24px; }\n    #end-screen { display: none; }\n    .panel { max-width: 560px; padding: 25px; border: 3px solid #f59e0b; border-radius: 10px; background: #1e293bf2; box-shadow: 6px 6px 0 #0f172f; }\n    .panel h2 { margin: 0 0 10px; color: #fbbf24; font-size: 30px; }\n    .panel p { line-height: 1.65; color: #cbd5e1; }\n    #start, #again { font-size: 18px; padding: 11px 25px; background: #b45309; border-color: #fbbf24; }\n    .hint { margin: 8px 0 0; color: #94a3b8; font-size: 13px; text-align: center; }\n    @media (max-width: 650px) { body { padding: 8px; } header { align-items: flex-start; flex-direction: column; } #hud { justify-content: flex-start; } .stat, button { padding: 6px 8px; font-size: 12px; } }\n  </style>\n</head>\n<body>\n  <main id=\"app\">\n    <header>\n      <h1>◆ 도트 요새 디펜스</h1>\n      <div id=\"hud\" aria-live=\"polite\">\n        <span class=\"stat\">웨이브 <strong id=\"wave-label\">1 / 10</strong></span>\n        <span class=\"stat\">성벽 <strong id=\"base-label\">20</strong></span>\n        <button id=\"sound-button\" type=\"button\" aria-pressed=\"true\">🔊 소리 켜짐</button>\n      </div>\n    </header>\n    <div id=\"game-wrap\">\n      <canvas id=\"game\" width=\"960\" height=\"540\" aria-label=\"도트 타워 디펜스 게임\"></canvas>\n      <section id=\"title-screen\">\n        <div class=\"panel\">\n          <h2>요새를 지켜라!</h2>\n          <p>자동 타워가 적을 공격합니다.<br>10개의 웨이브를 모두 막아내고 성벽을 지키세요.</p>\n          <button id=\"start\" type=\"button\">게임 시작</button>\n        </div>\n      </section>\n      <section id=\"end-screen\">\n        <div class=\"panel\">\n          <h2 id=\"end-title\">요새 방어 성공!</h2>\n          <p id=\"end-message\"></p>\n          <button id=\"again\" type=\"button\">다시 플레이</button>\n        </div>\n      </section>\n    </div>\n    <p class=\"hint\">타워의 공격은 자동으로 진행됩니다 · 공격음은 빠르게 겹치지 않도록 제한됩니다</p>\n  </main>\n  <script src=\"js/game.js\"></script>\n</body>\n</html>\n",
+   "language": "html"
+  },
+  {
+   "path": "js/game.js",
+   "contents": "(() => {\n  'use strict';\n\n  const canvas = document.getElementById('game');\n  const ctx = canvas.getContext('2d');\n  const titleScreen = document.getElementById('title-screen');\n  const endScreen = document.getElementById('end-screen');\n  const hud = document.getElementById('hud');\n  const waveLabel = document.getElementById('wave-label');\n  const baseLabel = document.getElementById('base-label');\n  const soundButton = document.getElementById('sound-button');\n  const endTitle = document.getElementById('end-title');\n  const endMessage = document.getElementById('end-message');\n\n  const W = canvas.width, H = canvas.height;\n  const pathY = 300;\n  let state = 'title';\n  let wave = 0;\n  let baseHealth = 20;\n  let enemies = [];\n  let shots = [];\n  let particles = [];\n  let towers = [];\n  let spawnLeft = 0;\n  let spawnTimer = 0;\n  let nextWaveTimer = 0;\n  let lastTime = 0;\n  let lastShootSound = -Infinity;\n  let audioEnabled = true;\n  let audioContext = null;\n  let musicTimer = null;\n  let musicStep = 0;\n\n  const towerSpots = [\n    { x: 150, y: 220, kind: 0 }, { x: 310, y: 380, kind: 1 },\n    { x: 470, y: 205, kind: 0 }, { x: 630, y: 385, kind: 1 },\n    { x: 790, y: 220, kind: 0 }, { x: 875, y: 385, kind: 1 }\n  ];\n\n  function resetGame() {\n    state = 'playing'; wave = 0; baseHealth = 20; enemies = []; shots = []; particles = [];\n    towers = towerSpots.map((s, i) => ({ ...s, cooldown: i * 0.08, level: 1 }));\n    titleScreen.style.display = 'none'; endScreen.style.display = 'none'; hud.style.display = 'flex';\n    beginNextWave(); updateHud();\n  }\n\n  function beginNextWave() {\n    wave++;\n    if (wave > 10) { finish(true); return; }\n    spawnLeft = 5 + wave * 2;\n    spawnTimer = 0.15;\n    nextWaveTimer = 0;\n    updateHud();\n  }\n\n  function updateHud() {\n    waveLabel.textContent = `${Math.min(wave, 10)} / 10`;\n    baseLabel.textContent = String(Math.max(0, baseHealth));\n  }\n\n  function spawnEnemy() {\n    const armored = wave >= 4 && Math.random() < Math.min(.35, wave * .035);\n    const hp = 25 + wave * 10 + (armored ? 22 : 0);\n    enemies.push({ x: -24, y: pathY + (Math.random() - .5) * 32, hp, maxHp: hp, speed: 27 + wave * 1.8 + Math.random() * 8, radius: armored ? 17 : 14, armored, hitFlash: 0, wobble: Math.random() * 6.28 });\n    spawnLeft--;\n  }\n\n  function damageEnemy(enemy, amount) {\n    enemy.hp -= amount;\n    enemy.hitFlash = .1;\n    burst(enemy.x, enemy.y, '#fde68a', 3);\n    if (enemy.hp <= 0) {\n      const index = enemies.indexOf(enemy);\n      if (index !== -1) enemies.splice(index, 1);\n      burst(enemy.x, enemy.y, enemy.armored ? '#c084fc' : '#fb7185', 12);\n      beep(110 + Math.random() * 45, .07, 'square', .045);\n    }\n  }\n\n  function fire(tower, target) {\n    tower.cooldown = tower.kind ? .52 : .37;\n    shots.push({ x: tower.x, y: tower.y, target, speed: 560, damage: tower.kind ? 18 : 13, color: tower.kind ? '#67e8f9' : '#fbbf24' });\n    // This timestamp is shared by every tower: no shoot sound can be less than 80ms apart.\n    const now = performance.now();\n    if (audioEnabled && now - lastShootSound >= 80) {\n      lastShootSound = now;\n      beep(tower.kind ? 520 : 390, .045, 'square', .025);\n    }\n  }\n\n  function update(dt) {\n    if (state !== 'playing') return;\n    if (spawnLeft > 0) {\n      spawnTimer -= dt;\n      if (spawnTimer <= 0) { spawnEnemy(); spawnTimer = Math.max(.23, .68 - wave * .025); }\n    } else if (enemies.length === 0 && shots.length === 0) {\n      nextWaveTimer += dt;\n      if (nextWaveTimer > 1.1) beginNextWave();\n    }\n\n    for (const enemy of enemies) {\n      enemy.x += enemy.speed * dt; enemy.hitFlash = Math.max(0, enemy.hitFlash - dt); enemy.wobble += dt * 5;\n      if (enemy.x > W + 25) { enemy.dead = true; baseHealth--; updateHud(); burst(W - 20, enemy.y, '#f87171', 7); }\n    }\n    enemies = enemies.filter(e => !e.dead);\n    if (baseHealth <= 0) { finish(false); return; }\n\n    for (const tower of towers) {\n      tower.cooldown -= dt;\n      if (tower.cooldown <= 0) {\n        let target = null, best = -Infinity;\n        for (const enemy of enemies) {\n          const dx = enemy.x - tower.x, dy = enemy.y - tower.y;\n          if (dx * dx + dy * dy < 205 * 205 && enemy.x > best) { best = enemy.x; target = enemy; }\n        }\n        if (target) fire(tower, target);\n      }\n    }\n\n    for (let i = shots.length - 1; i >= 0; i--) {\n      const shot = shots[i];\n      if (!shot.target || !enemies.includes(shot.target)) { shots.splice(i, 1); continue; }\n      const dx = shot.target.x - shot.x, dy = shot.target.y - shot.y, d = Math.hypot(dx, dy);\n      const step = shot.speed * dt;\n      if (d < step + 5) { damageEnemy(shot.target, shot.damage); shots.splice(i, 1); }\n      else { shot.x += dx / d * step; shot.y += dy / d * step; }\n    }\n    updateParticles(dt);\n  }\n\n  function draw() {\n    ctx.fillStyle = '#172033'; ctx.fillRect(0, 0, W, H);\n    drawBackground();\n    drawPath();\n    for (const tower of towers) drawTower(tower);\n    for (const shot of shots) { ctx.fillStyle = shot.color; ctx.fillRect(Math.round(shot.x - 4), Math.round(shot.y - 4), 8, 8); ctx.fillStyle = '#fff7ed'; ctx.fillRect(Math.round(shot.x - 1), Math.round(shot.y - 1), 3, 3); }\n    for (const enemy of enemies) drawEnemy(enemy);\n    drawParticles();\n    if (state === 'playing' && spawnLeft === 0 && enemies.length === 0 && shots.length === 0 && nextWaveTimer > 0) {\n      ctx.fillStyle = '#fef3c7'; ctx.font = 'bold 18px monospace'; ctx.textAlign = 'center'; ctx.fillText(wave < 10 ? `웨이브 ${wave} 방어 완료` : '마지막 웨이브 정리 중...', W / 2, 54);\n    }\n  }\n\n  function drawBackground() {\n    ctx.fillStyle = '#1e293b'; ctx.fillRect(0, 0, W, 160);\n    ctx.fillStyle = '#263449';\n    for (let x = 0; x < W; x += 32) for (let y = 20; y < 150; y += 32) ctx.fillRect(x + ((y / 32) % 2) * 8, y, 3, 3);\n    ctx.fillStyle = '#0f172a'; ctx.fillRect(0, 440, W, 100);\n    ctx.fillStyle = '#334155'; for (let x = 0; x < W; x += 48) ctx.fillRect(x, 460 + (x % 3) * 7, 30, 4);\n    // right-side keep\n    ctx.fillStyle = '#475569'; ctx.fillRect(896, 150, 64, 290); ctx.fillStyle = '#64748b'; ctx.fillRect(908, 180, 40, 260);\n    ctx.fillStyle = '#fbbf24'; ctx.fillRect(919, 205, 18, 45); ctx.fillStyle = '#fef3c7'; ctx.fillRect(923, 212, 10, 10);\n  }\n\n  function drawPath() {\n    ctx.fillStyle = '#475569'; ctx.fillRect(0, pathY - 43, W, 86);\n    ctx.fillStyle = '#64748b'; ctx.fillRect(0, pathY - 35, W, 70);\n    ctx.fillStyle = '#7c8da5';\n    for (let x = -20; x < W; x += 52) ctx.fillRect(x, pathY - 2, 25, 4);\n    ctx.fillStyle = '#94a3b8'; ctx.fillRect(0, pathY - 43, W, 4); ctx.fillRect(0, pathY + 39, W, 4);\n  }\n\n  function drawTower(t) {\n    ctx.fillStyle = '#0f172a'; ctx.fillRect(t.x - 25, t.y + 19, 50, 8);\n    ctx.fillStyle = t.kind ? '#0891b2' : '#d97706'; ctx.fillRect(t.x - 20, t.y - 19, 40, 40);\n    ctx.fillStyle = t.kind ? '#67e8f9' : '#fbbf24'; ctx.fillRect(t.x - 13, t.y - 29, 26, 13);\n    ctx.fillStyle = '#1e293b'; ctx.fillRect(t.x - 7, t.y - 10, 14, 14);\n    ctx.fillStyle = '#f8fafc'; ctx.fillRect(t.x - 4, t.y - 8, 4, 4); ctx.fillRect(t.x + 4, t.y - 8, 4, 4);\n    ctx.fillStyle = '#e2e8f0'; ctx.fillRect(t.x + 15, t.y - 5, 13, 7);\n  }\n\n  function drawEnemy(e) {\n    const y = Math.round(e.y + Math.sin(e.wobble) * 2);\n    ctx.fillStyle = e.hitFlash > 0 ? '#fff' : (e.armored ? '#9333ea' : '#e11d48');\n    ctx.fillRect(Math.round(e.x - e.radius), y - e.radius, e.radius * 2, e.radius * 2);\n    ctx.fillStyle = e.armored ? '#c084fc' : '#fb7185'; ctx.fillRect(e.x - e.radius + 4, y - e.radius + 4, e.radius * 2 - 8, 5);\n    ctx.fillStyle = '#111827'; ctx.fillRect(e.x - 8, y - 5, 5, 5); ctx.fillRect(e.x + 4, y - 5, 5, 5);\n    ctx.fillStyle = '#0f172a'; ctx.fillRect(e.x - 21, y - e.radius - 10, 42, 5);\n    ctx.fillStyle = '#4ade80'; ctx.fillRect(e.x - 20, y - e.radius - 9, 40 * Math.max(0, e.hp / e.maxHp), 3);\n  }\n\n  function burst(x, y, color, count) { for (let i = 0; i < count; i++) particles.push({ x, y, vx: (Math.random() - .5) * 100, vy: (Math.random() - .5) * 100, life: .35 + Math.random() * .3, max: .6, color }); }\n  function updateParticles(dt) { for (const p of particles) { p.x += p.vx * dt; p.y += p.vy * dt; p.vy += 100 * dt; p.life -= dt; } particles = particles.filter(p => p.life > 0); }\n  function drawParticles() { for (const p of particles) { ctx.globalAlpha = Math.max(0, p.life / p.max); ctx.fillStyle = p.color; ctx.fillRect(p.x - 3, p.y - 3, 6, 6); } ctx.globalAlpha = 1; }\n\n  function finish(won) {\n    state = won ? 'won' : 'lost'; stopMusic(); endScreen.style.display = 'grid';\n    endTitle.textContent = won ? '요새 방어 성공!' : '요새가 함락되었습니다';\n    endMessage.textContent = won ? '웨이브 10의 적까지 모두 막아냈습니다. 마지막 웨이브 완료!' : `웨이브 ${wave}에서 성벽이 무너졌습니다. 다시 도전해 보세요.`;\n  }\n\n  function ensureAudio() {\n    if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();\n    if (audioContext.state === 'suspended') audioContext.resume();\n  }\n  function beep(freq, duration, type, volume) {\n    if (!audioEnabled) return;\n    ensureAudio(); const osc = audioContext.createOscillator(), gain = audioContext.createGain();\n    osc.type = type; osc.frequency.value = freq; gain.gain.setValueAtTime(volume, audioContext.currentTime); gain.gain.exponentialRampToValueAtTime(.001, audioContext.currentTime + duration);\n    osc.connect(gain).connect(audioContext.destination); osc.start(); osc.stop(audioContext.currentTime + duration);\n  }\n  function startMusic() {\n    ensureAudio(); stopMusic(); musicStep = 0;\n    musicTimer = setInterval(() => {\n      if (!audioEnabled || state !== 'playing') return;\n      const notes = [196, 247, 294, 247, 220, 262, 330, 262]; beep(notes[musicStep++ % notes.length], .12, 'triangle', .018);\n    }, 280);\n  }\n  function stopMusic() { if (musicTimer !== null) { clearInterval(musicTimer); musicTimer = null; } }\n  function setSound(on) { audioEnabled = on; soundButton.textContent = on ? '🔊 소리 켜짐' : '🔇 소리 꺼짐'; soundButton.setAttribute('aria-pressed', String(on)); if (on && state === 'playing') startMusic(); else if (!on) stopMusic(); }\n\n  document.getElementById('start').addEventListener('click', () => { ensureAudio(); resetGame(); startMusic(); });\n  document.getElementById('again').addEventListener('click', () => { ensureAudio(); resetGame(); startMusic(); });\n  soundButton.addEventListener('click', () => { setSound(!audioEnabled); });\n\n  function loop(now) { const dt = Math.min(.05, (now - lastTime) / 1000 || 0); lastTime = now; update(dt); draw(); requestAnimationFrame(loop); }\n  requestAnimationFrame(loop);\n})();\n",
+   "language": "javascript"
+  },
+  {
+   "path": "js/sprites.js",
+   "contents": "// 로키가 뽑은 도트 조각 꾸러미. **이 파일은 고치지 마라.**\n// 그림을 글자로 담아 뒀다 — 판은 바깥 요청이 막힌 창에서 돌아서 주소로는 못 불러온다.\n// 쓰는 법:  import { SPRITES, sprite } from './sprites.js';\n//           ctx.drawImage(sprite('enemy_fast'), x - 24, y - 24, 48, 48);\n// 한 장은 48×48 이고, 가운데가 그 조각의 가운데다.\n\nexport const SPRITES = {\n  // 약한 적\n  enemy_weak: \"data:image/png;base64,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\",\n  // 빠른 적\n  enemy_fast: \"data:image/png;base64,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\",\n  // 튼튼한 적\n  enemy_tank: \"data:image/png;base64,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\",\n  // 화살 타워\n  tower_arrow: \"data:image/png;base64,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\",\n  // 대포 타워\n  tower_cannon: \"data:image/png;base64,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\",\n  // 얼음 타워\n  tower_frost: \"data:image/png;base64,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\",\n};\n\nconst _이미지 = {};\n/** 키를 주면 그려 넣을 수 있는 그림을 돌려준다(한 번만 만든다). */\nexport function sprite(key) {\n  if (!_이미지[key]) { const im = new Image(); im.src = SPRITES[key]; _이미지[key] = im; }\n  return _이미지[key];\n}\n\n/** 다 읽힐 때까지 기다린다. 첫 화면에서 빈 칸이 보이지 않게. */\nexport function spritesReady() {\n  return Promise.all(Object.keys(SPRITES).map((k) => new Promise((done) => {\n    const im = sprite(k);\n    if (im.complete) done(); else { im.onload = () => done(); im.onerror = () => done(); }\n  })));\n}\n",
+   "language": "javascript"
+  },
+  {
+   "path": "js/sound.js",
+   "contents": "// 로키가 만든 소리 꾸러미. **이 파일은 고치지 마라.**\n// 효과음은 파일이 아니라 **그 자리에서 만든 소리**다(WebAudio) — 0바이트, 겹쳐 쳐도 안 밀린다.\n// 쓰는 법:\n//   import { unlockSound, sfx, startMusic, toggleMusic } from './sound.js';\n//   document.addEventListener('pointerdown', unlockSound, { once: true });  // 브라우저가 첫 소리를 막는다\n//   sfx('hit');        // 타격음 — 적이 맞을 때\n//   sfx('shoot');      // 발사\n//   sfx('kill');       // 적이 죽을 때\n//   sfx('place');      // 타워 설치\n//   sfx('upgrade');    // 강화\n//   sfx('deny');       // 돈이 모자라거나 길 위라 안 될 때\n//   sfx('leak');       // 적이 끝까지 갔을 때(목숨 -1)\n//   sfx('wave');       // 새 웨이브\n//   sfx('over');       // 게임 오버\n//   startMusic();      // 배경 음악(이어서 돈다) · toggleMusic() 로 켜고 끈다\n\nlet ac = null;\nlet 음악 = null;\n\nexport function unlockSound() {\n  if (!ac) { const C = window.AudioContext || window.webkitAudioContext; if (C) ac = new C(); }\n  if (ac && ac.state === 'suspended') ac.resume();\n  return !!ac;\n}\n\n/** 소리 하나. 종류마다 파형·높이·길이가 다르다. */\nexport function sfx(kind) {\n  if (!ac) unlockSound();\n  if (!ac) return;\n  const t = ac.currentTime;\n  const 설정 = {\n    shoot:   { wave: 'square',   from: 880,  to: 440,  len: 0.07, gain: 0.05 },\n    hit:     { wave: 'square',   from: 320,  to: 120,  len: 0.09, gain: 0.10, noise: true },\n    kill:    { wave: 'triangle', from: 520,  to: 70,   len: 0.26, gain: 0.11 },\n    place:   { wave: 'triangle', from: 300,  to: 620,  len: 0.14, gain: 0.08 },\n    upgrade: { wave: 'square',   from: 520,  to: 1040, len: 0.20, gain: 0.07 },\n    deny:    { wave: 'sawtooth', from: 180,  to: 110,  len: 0.16, gain: 0.07 },\n    leak:    { wave: 'sawtooth', from: 260,  to: 90,   len: 0.34, gain: 0.10 },\n    wave:    { wave: 'square',   from: 440,  to: 880,  len: 0.28, gain: 0.07 },\n    over:    { wave: 'triangle', from: 330,  to: 60,   len: 0.80, gain: 0.12 },\n  }[kind];\n  if (!설정) return;\n\n  const g = ac.createGain();\n  g.gain.setValueAtTime(설정.gain, t);\n  g.gain.exponentialRampToValueAtTime(0.0001, t + 설정.len);\n  g.connect(ac.destination);\n\n  const o = ac.createOscillator();\n  o.type = 설정.wave;\n  o.frequency.setValueAtTime(설정.from, t);\n  o.frequency.exponentialRampToValueAtTime(Math.max(20, 설정.to), t + 설정.len);\n  o.connect(g);\n  o.start(t); o.stop(t + 설정.len);\n\n  // 타격음에는 '퍽' 하는 잡음을 조금 섞는다 — 맑은 삐 소리만으로는 때린 느낌이 안 난다.\n  if (설정.noise) {\n    const n = ac.createBufferSource();\n    const buf = ac.createBuffer(1, Math.floor(ac.sampleRate * 0.05), ac.sampleRate);\n    const d = buf.getChannelData(0);\n    for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / d.length);\n    n.buffer = buf;\n    const ng = ac.createGain();\n    ng.gain.setValueAtTime(0.06, t);\n    ng.gain.exponentialRampToValueAtTime(0.0001, t + 0.05);\n    n.connect(ng); ng.connect(ac.destination);\n    n.start(t);\n  }\n}\n\nconst BGM = \"\";   // 음원 없음 — 아래에서 **그 자리에서 연주한다**\n\n/**\n * 배경 음악. 음원 파일이 있으면 그걸 틀고, 없으면 **그 자리에서 연주한다**.\n * 연주 쪽은 0바이트다 — 옛 게임이 그랬듯 네모파로 가락을 찍어 낸다.\n * 가락은 C 장조로 네 마디가 돌아간다(C - Am - F - G). 빠르기 120.\n */\nconst 가락 = [\n  // [음높이(반음, 0 = C4), 길이(16분음표 수)] — 0.5마디씩 네 덩이\n  [0, 2], [4, 2], [7, 2], [12, 2], [7, 2], [4, 2], [7, 2], [4, 2],\n  [-3, 2], [0, 2], [4, 2], [9, 2], [4, 2], [0, 2], [4, 2], [0, 2],\n  [-7, 2], [-3, 2], [0, 2], [5, 2], [0, 2], [-3, 2], [0, 2], [5, 2],\n  [-5, 2], [-1, 2], [2, 2], [7, 2], [2, 2], [-1, 2], [2, 2], [-1, 2],\n];\nconst 베이스 = [0, 0, -3, -3, -7, -7, -5, -5];   // 마디마다 두 번\nconst 한박 = 60 / 120 / 4;                        // 16분음표 한 칸(초)\nconst 높이 = (반음) => 261.63 * Math.pow(2, 반음 / 12);\nlet 연주중 = false, 다음때 = 0, 자리 = 0, 시계 = null, 음량 = 0.18;\n\nfunction _한음(freq, 시작, 길이, 결, 세기) {\n  const g = ac.createGain();\n  g.gain.setValueAtTime(0, 시작);\n  g.gain.linearRampToValueAtTime(세기, 시작 + 0.01);\n  g.gain.setValueAtTime(세기, 시작 + 길이 * 0.7);\n  g.gain.exponentialRampToValueAtTime(0.0001, 시작 + 길이);\n  g.connect(ac.destination);\n  const o = ac.createOscillator();\n  o.type = 결; o.frequency.setValueAtTime(freq, 시작);\n  o.connect(g); o.start(시작); o.stop(시작 + 길이);\n}\n\nfunction _찍기() {\n  if (!연주중 || !ac) return;\n  // 0.2초 앞까지 미리 예약해 둔다 — 그래야 끊기지 않는다.\n  while (다음때 < ac.currentTime + 0.2) {\n    const [반음, 칸] = 가락[자리 % 가락.length];\n    _한음(높이(반음 + 12), 다음때, 한박 * 칸 * 0.9, 'square', 음량 * 0.5);\n    if (자리 % 4 === 0) _한음(높이(베이스[Math.floor(자리 / 4) % 베이스.length] - 12), 다음때, 한박 * 3.4, 'triangle', 음량);\n    if (자리 % 2 === 1) {                      // 엇박에 하이햇\n      const n = ac.createBufferSource();\n      const b = ac.createBuffer(1, Math.floor(ac.sampleRate * 0.03), ac.sampleRate);\n      const d = b.getChannelData(0);\n      for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / d.length);\n      n.buffer = b;\n      const g = ac.createGain();\n      g.gain.setValueAtTime(음량 * 0.25, 다음때);\n      g.gain.exponentialRampToValueAtTime(0.0001, 다음때 + 0.03);\n      n.connect(g); g.connect(ac.destination); n.start(다음때);\n    }\n    다음때 += 한박 * 칸;\n    자리++;\n  }\n}\n\n/** 배경 음악을 튼다(이어서 돈다). 사람이 화면을 한 번 누른 뒤에 불러야 소리가 난다. */\nexport function startMusic(volume = 0.35) {\n  if (!ac) unlockSound();\n  if (!ac) return false;\n  if (BGM) {\n    if (!음악) { 음악 = new Audio(BGM); 음악.loop = true; }\n    음악.volume = volume;\n    음악.play().catch(() => {});\n    return true;\n  }\n  if (연주중) return true;\n  음량 = 0.18 * (volume / 0.35);\n  연주중 = true; 자리 = 0; 다음때 = ac.currentTime + 0.05;\n  시계 = setInterval(_찍기, 60);\n  _찍기();\n  return true;\n}\nexport function stopMusic() {\n  if (음악) 음악.pause();\n  연주중 = false;\n  if (시계) { clearInterval(시계); 시계 = null; }\n}\n/** 켜져 있으면 끄고, 꺼져 있으면 켠다. 켜졌는지를 돌려준다. */\nexport function toggleMusic() {\n  const 켜짐 = BGM ? !!(음악 && !음악.paused) : 연주중;\n  if (켜짐) { stopMusic(); return false; }\n  startMusic(); return true;\n}\nexport function hasMusic() { return true; }\n",
+   "language": "javascript"
+  }
+ ],
+ "seats": {
+  "fix": "gpt-5.6-luna",
+  "build": "gpt-5.6-luna",
+  "judge": "gpt-5.6-luna",
+  "fixWhy": "성적 83% (23판) 로 제일 좋음",
+  "fixMode": "best"
+ },
+ "stage": "polish",
+ "target": "web",
+ "verify": {
+  "files": [
+   {
+    "ok": false,
+    "path": "index.html",
+    "errors": [],
+    "checked": false,
+    "language": "html"
+   },
+   {
+    "ok": true,
+    "path": "js/game.js",
+    "errors": [],
+    "checked": true,
+    "language": "javascript"
+   },
+   {
+    "ok": true,
+    "path": "js/sprites.js",
+    "errors": [],
+    "checked": true,
+    "language": "javascript"
+   },
+   {
+    "ok": true,
+    "path": "js/sound.js",
+    "errors": [],
+    "checked": true,
+    "language": "javascript"
+   }
+  ],
+  "broken": 0,
+  "parsed": 3,
+  "repaired": false,
+  "unchecked": 1
+ },
+ "patched": null,
+ "summary": {
+  "met": 9,
+  "criteria": 3
+ },
+ "askJudge": {
+  "did": "index.html과 js/game.js를 새로 만들고 js/sprites.js와 js/sound.js는 건드리지 않음. index.html에 제목 화면, 게임 화면, 오버레이, HUD, 소리 버튼 등 추가.",
+  "asked": "브라우저에서 도는 도트 타워 디펜스 게임을 만들되, 기존 js/sprites.js와 js/sound.js는 손대지 않고 재사용.",
+  "verdict": "내보낸다",
+  "sentBack": false,
+  "toPerson": "부탁하신 게임 파일이 새로 만들어졌고, 그림·소리 파일은 그대로입니다.",
+  "toWorker": "",
+  "askedSize": "새로 만들기",
+  "sizeMatch": "맞다",
+  "uninvited": [],
+  "confidence": 0.75,
+  "fixedTheThing": "모르겠다"
+ },
+ "coverage": [
+  {
+   "met": true,
+   "where": "js/game.js의 beginNextWave가 10번째 웨이브를 생성하고 HUD에 `10 / 10`을 표시하며, 마지막 적과 투사체가 모두 사라지면 finish(true)로 마지막 웨이브 완료 화면을 표시합니다.",
+   "criterionId": "wave_10_completion"
+  },
+  {
+   "met": true,
+   "where": "js/game.js의 fire에서 모든 타워가 공유하는 lastShootSound 타임스탬프를 검사해 공격음 재생 간격을 80ms 이상으로 제한합니다. 공격 투사체와 피격 파티클은 별도로 계속 갱신됩니다.",
+   "criterionId": "shoot_sound_cooldown"
+  },
+  {
+   "met": true,
+   "where": "js/game.js의 시작 버튼 핸들러가 resetGame 뒤 startMusic을 호출합니다. 게임 HUD의 sound-button은 `🔊 소리 켜짐`/`🔇 소리 꺼짐`으로 바뀌며 클릭할 때마다 배경 음악 상태를 반전시킵니다.",
+   "criterionId": "music_starts_with_game"
+  }
+ ],
+ "criteria": [
+  {
+   "id": "wave_10_completion",
+   "then": "웨이브 10의 적이 모두 죽거나 길 끝을 통과하면 게임이 정상적으로 종료되거나 마지막 웨이브 완료 상태가 표시된다.",
+   "when": "Play에서 적을 계속 막아 웨이브 10까지 진행할 수 있고, 웨이브 번호가 10으로 표시된다."
+  },
+  {
+   "id": "shoot_sound_cooldown",
+   "then": "타워의 공격과 적 피격은 계속 화면에 보이고, 공격음만 제한된 간격으로 들린다.",
+   "when": "게임 화면에서 타워가 적을 여러 번 공격해도 shoot 소리는 0.08초보다 짧은 간격으로 연속 재생되지 않는다."
+  },
+  {
+   "id": "music_starts_with_game",
+   "then": "게임 화면의 소리 켜기·끄기 단추를 누르면 단추 글자가 켜짐과 꺼짐 상태로 바뀌고, 다시 누르면 배경 음악 상태가 반대로 바뀐다.",
+   "when": "제목 화면에서 시작을 누르면 게임 화면으로 바뀌면서 배경 음악이 시작된다."
+  }
+ ],
+ "howToRun": "기존 프로젝트의 루트에 `index.html`을 덮어쓰고, `js/game.js`를 추가합니다. 기존 `js/sprites.js`와 `js/sound.js`는 그대로 둡니다. 그 다음 정적 서버(예: VS Code Live Server 또는 `python3 -m http.server 8000`)로 폴더를 열고 브라우저에서 `http://localhost:8000`에 접속한 뒤 제목 화면의 게임 시작을 누릅니다. 시작 버튼의 사용자 입력으로 Web Audio가 활성화되고 배경 음악이 시작됩니다.",
+ "humanGate": [
+  "도트 적과 타워가 코드 도형처럼 보이지 않고 제공된 픽셀 아트와 어울리는지 사람이 게임 화면을 보고 확인한다.",
+  "타격음·처치음·설치음·강화음·누수음이 서로 구별되고 반복 재생이 거슬리지 않는지는 사람이 직접 들어 확인한다."
+ ],
+ "expectations": []
+}

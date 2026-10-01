@@ -1,0 +1,45 @@
+수정 요청: 소리를 붙이고, 안 쓰는 도트 그림 세 장도 쓰게 해 줘. 게임 규칙은 그대로 두고 이것만 고쳐.
+
+## 1. 소리 붙이기
+`js/sound.js` 를 앞 판에 **새로 넣어 뒀다. 그 파일은 손대지 마라.** 이렇게 쓴다:
+
+```js
+import { sprite, spritesReady } from './sprites.js';
+import { unlockSound, sfx, startMusic, toggleMusic } from './sound.js';
+document.addEventListener('pointerdown', unlockSound, { once: true });
+```
+
+이 자리마다 소리를 울려라:
+- 타워가 쏠 때 `sfx('shoot')` — 다만 **0.08초에 한 번보다 자주는 울리지 마라**(시끄럽다)
+- **적이 맞을 때 `sfx('hit')`** ← 타격음. 이게 제일 중요하다
+- 적이 죽을 때 `sfx('kill')`
+- 타워를 놓았을 때 `sfx('place')` · 강화했을 때 `sfx('upgrade')`
+- 돈이 모자라거나 길 위라 안 될 때 `sfx('deny')`
+- 적이 끝까지 가서 목숨이 줄 때 `sfx('leak')`
+- 새 웨이브가 시작될 때 `sfx('wave')` · 게임 오버에 `sfx('over')`
+
+시작 단추를 누를 때 `startMusic()` 을 부르고, 화면에 **소리 켜기/끄기 단추**를 하나 둬라.
+누르면 `toggleMusic()` 을 부르고 단추 글자가 "🔊 소리 켜짐" / "🔇 소리 꺼짐" 으로 바뀌게 하라.
+
+## 2. 안 쓰는 그림 세 장 쓰기
+지금은 여섯 장 중 셋만 쓴다. 나머지도 써라:
+- 적 세 종류를 **그림으로 구분**하라 — 약한 적 `enemy_weak`, 빠른 적 `enemy_fast`, **튼튼한 적 `enemy_tank`**
+- 타워 세 종류를 **그림으로 구분**하라 — `tower_arrow`, **`tower_cannon`**, **`tower_frost`**
+  (지금은 어느 타워를 놓아도 `tower_arrow` 로 그린다. 놓은 종류에 맞는 그림으로 그려라.)
+
+## 3. 손대지 말 것
+`js/sprites.js` 와 `js/sound.js` 는 **그대로 둬라. 손댈 파일에 넣지 마라.**
+길·배경·체력 막대처럼 지금 코드로 그리는 것은 그대로 둔다.
+`index.html` 은 `<script type="module" src="js/game.js">` 여야 import 가 된다 — 지금 그렇지 않으면 그것부터 고쳐라.
+
+## 확인 가능한 기준
+1. 적이 세 종류 다 서로 다른 도트 그림으로 그려진다(`enemy_weak`·`enemy_fast`·`enemy_tank`).
+2. 타워가 세 종류 다 서로 다른 도트 그림으로 그려진다(`tower_arrow`·`tower_cannon`·`tower_frost`).
+3. 적이 맞을 때 `sfx('hit')` 가 불린다.
+4. 타워가 쏠 때 `sfx('shoot')` 가 불리고, 0.08초보다 자주는 안 불린다.
+5. 적이 죽을 때 `sfx('kill')`, 타워를 놓을 때 `sfx('place')`, 강화할 때 `sfx('upgrade')` 가 불린다.
+6. 안 되는 조작(돈 모자람·길 위)에 `sfx('deny')` 가 불린다.
+7. 목숨이 줄 때 `sfx('leak')`, 새 웨이브에 `sfx('wave')`, 게임 오버에 `sfx('over')` 가 불린다.
+8. 소리 켜기/끄기 단추가 화면에 있고, 누르면 글자가 바뀐다.
+9. `js/sprites.js` 와 `js/sound.js` 가 앞 판과 글자까지 같다.
+10. 게임 규칙(타워 설치·공격·웨이브·게임 오버·최고 기록)은 앞 판처럼 그대로 돈다.

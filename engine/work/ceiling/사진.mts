@@ -29,7 +29,7 @@ await page.setRequestInterception(true);
 page.on("request", (r) => (r.url().includes(`127.0.0.1:${포트}`) ? r.continue() : r.abort()));
 await page.goto(`http://127.0.0.1:${포트}/`, { waitUntil: "networkidle0" });
 const 쉼 = (ms: number) => new Promise((r) => setTimeout(r, ms));
-const 칸 = "C:/Users/az518/Desktop/로키-도트게임-사진";
+const 칸 = "C:/Users/az518/Desktop/로키-소리게임2-사진";
 mkdirSync(칸, { recursive: true });
 const 찍기 = async (이름: string) => {
   const b = await page.screenshot({ type: "png" });
@@ -48,7 +48,9 @@ const 누르기 = async (x: number, y: number) => {
   await page.mouse.click(r.l + (x * r.w) / 960, r.t + (y * r.h) / 600);
   await 쉼(200);
 };
-for (const [x, y] of [[120, 60], [230, 200], [460, 170], [340, 330]] as [number, number][]) await 누르기(x, y);
+const 고르기 = async (id: string) => { await page.evaluate((i) => (document.getElementById(i) as HTMLElement)?.click(), id); await 쉼(150); };
+const 놓을곳: [string, number, number][] = [["arrowTowerButton", 120, 60], ["cannonTowerButton", 230, 200], ["frostTowerButton", 460, 170]];
+for (const [단추, x, y] of 놓을곳) { await 고르기(단추); await 누르기(x, y); }
 await 쉼(6000);
 await 찍기("3-적과타워");
 await 쉼(14000);

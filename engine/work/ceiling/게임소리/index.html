@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>도트 요새 디펜스</title>
+  <style>
+    :root { color-scheme: dark; }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; background: #111827; color: #f8fafc; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    body { display: grid; place-items: center; padding: 18px; }
+    #app { width: min(100%, 1020px); }
+    header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+    h1 { margin: 0; color: #fbbf24; font-size: clamp(22px, 4vw, 34px); letter-spacing: .06em; text-shadow: 3px 3px #7c2d12; }
+    #hud { display: none; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+    .stat, button { border: 2px solid #475569; background: #1e293b; color: #f8fafc; border-radius: 7px; padding: 8px 12px; font-weight: 700; }
+    .stat strong { color: #fde68a; }
+    button { cursor: pointer; border-color: #f59e0b; box-shadow: 0 3px 0 #92400e; }
+    button:hover { background: #334155; }
+    button:active { transform: translateY(2px); box-shadow: 0 1px 0 #92400e; }
+    #game-wrap { position: relative; overflow: hidden; border: 4px solid #475569; border-radius: 10px; background: #172033; box-shadow: 0 12px 40px #020617aa; }
+    canvas { display: block; width: 100%; height: auto; image-rendering: pixelated; image-rendering: crisp-edges; }
+    #title-screen, #end-screen { position: absolute; inset: 0; display: grid; place-items: center; background: #0f172acc; text-align: center; padding: 24px; }
+    #end-screen { display: none; }
+    .panel { max-width: 560px; padding: 25px; border: 3px solid #f59e0b; border-radius: 10px; background: #1e293bf2; box-shadow: 6px 6px 0 #0f172f; }
+    .panel h2 { margin: 0 0 10px; color: #fbbf24; font-size: 30px; }
+    .panel p { line-height: 1.65; color: #cbd5e1; }
+    #start, #again { font-size: 18px; padding: 11px 25px; background: #b45309; border-color: #fbbf24; }
+    .hint { margin: 8px 0 0; color: #94a3b8; font-size: 13px; text-align: center; }
+    @media (max-width: 650px) { body { padding: 8px; } header { align-items: flex-start; flex-direction: column; } #hud { justify-content: flex-start; } .stat, button { padding: 6px 8px; font-size: 12px; } }
+  </style>
+</head>
+<body>
+  <main id="app">
+    <header>
+      <h1>◆ 도트 요새 디펜스</h1>
+      <div id="hud" aria-live="polite">
+        <span class="stat">웨이브 <strong id="wave-label">1 / 10</strong></span>
+        <span class="stat">성벽 <strong id="base-label">20</strong></span>
+        <button id="sound-button" type="button" aria-pressed="true">🔊 소리 켜짐</button>
+      </div>
+    </header>
+    <div id="game-wrap">
+      <canvas id="game" width="960" height="540" aria-label="도트 타워 디펜스 게임"></canvas>
+      <section id="title-screen">
+        <div class="panel">
+          <h2>요새를 지켜라!</h2>
+          <p>자동 타워가 적을 공격합니다.<br>10개의 웨이브를 모두 막아내고 성벽을 지키세요.</p>
+          <button id="start" type="button">게임 시작</button>
+        </div>
+      </section>
+      <section id="end-screen">
+        <div class="panel">
+          <h2 id="end-title">요새 방어 성공!</h2>
+          <p id="end-message"></p>
+          <button id="again" type="button">다시 플레이</button>
+        </div>
+      </section>
+    </div>
+    <p class="hint">타워의 공격은 자동으로 진행됩니다 · 공격음은 빠르게 겹치지 않도록 제한됩니다</p>
+  </main>
+  <script src="js/game.js"></script>
+</body>
+</html>
