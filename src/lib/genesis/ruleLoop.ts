@@ -120,6 +120,8 @@ async function existingRules(db: Supabase, companyId: string): Promise<{ titles:
 const norm = (s: string) => s.replace(/\(.*?\)/g, "").replace(/\s+/g, "").toLowerCase();
 
 export const RECHECK = { growth: 10, maxPerRun: 2 } as const;
+/** 제안자에게 보여 줄 사례 수(최근 것부터). 창을 넓혀도 제안 프롬프트는 안 커지게 막는 자리. */
+export const TRAIN_SHOW = 120;
 /** 재검증할 때가 됐나: 채택 때 보류분보다 growth 건 이상 늘었을 때만. */
 export const recheckDue = (holdoutAtAdoption: number, holdoutNow: number) => holdoutNow >= holdoutAtAdoption + RECHECK.growth;
 
@@ -136,8 +138,9 @@ async function judgeRule(ai: AIProvider, rule: string, violationTest: string, ho
     ].join("\n\n"),
     schema: judgeSchema,
     schemaName: "rule_judgments",
-    // 113회차 09-15: 보류 59건 판정 JSON 이 2000 토큰을 넘어 MODEL_OUTPUT_TRUNCATED 로 하루치가 통째로 죽었다(첫 자동 실행). 넉넉히.
-    maxTokens: 4000,
+    // 113회차 09-15: 보류 59건 판정 JSON 이 2000 토큰을 넘어 MODEL_OUTPUT_TRUNCATED 로 하루치가 통째로 죽었다(첫 자동 실행).
+    // 228회차: 보류분이 142건으로 늘어 4000 도 모자란다 — **사례 수에 맞춰 늘린다.** 못 박은 수는 늘 어딘가에서 모자라진다.
+    maxTokens: Math.max(4000, holdout.length * 70),
     tier: "routine",
   });
   const verdict = new Map(judged.judgments.map((j) => [j.case, j.violates]));
@@ -172,7 +175,11 @@ export async function runRuleLoop(
 ): Promise<RuleLoopResult> {
   const maxRules = Math.min(3, opts.maxRules ?? 3);
   const cases = await collectCases(db, companyId, { ai });   // 156회차: 사장님 반응은 모델이 읽는다
-  const train = cases.filter((c) => !isHoldout(c.id) || c.source === "execution");
+  // 228회차: 창을 160→400 으로 넓혔다. **보류분은 다 쓰고 제안용은 자른다** —
+  // 검증은 사례가 많을수록 좋지만(문턱을 넘기려면 어긴 사례가 쌓여야 한다), 제안 프롬프트는
+  // 사례를 다 실으면 10만 토큰이 넘어 값이 창 넓힌 몫보다 더 든다. 제안자는 최근 것부터 TRAIN_SHOW 건만 본다.
+  const train = cases.filter((c) => !isHoldout(c.id) || c.source === "execution")
+    .sort((x, y) => (x.at < y.at ? 1 : -1)).slice(0, TRAIN_SHOW);
   // 실행 실패 사례는 결과물이 없어서 "없음" 자체가 답을 흘린다 → 검증(보류분)에서 뺀다. 제안에는 쓴다.
   const holdout = cases.filter((c) => isHoldout(c.id) && c.source !== "execution");
   const bySource: Record<string, number> = {};

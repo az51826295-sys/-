@@ -40,7 +40,10 @@ const clip = (s: string | null | undefined, n: number) => (s ?? "").replace(/\s+
  *   목(mock) 파일럿과 돈 0 자들은 안 줘도 된다 — 그때는 예전과 똑같이 돈다.
  */
 export async function collectCases(db: Supabase, companyId: string, opts: { limit?: number; ai?: AIProvider | null } = {}): Promise<LearnCase[]> {
-  const limit = opts.limit ?? 160;
+  // 228회차 10-01: **160 이 창을 막고 있었다.** 쌓인 사례는 356건인데 160건만 보고 있었고,
+  // 그 탓에 보류분이 64건뿐이라 "어긴 사례 1~2건 — 판단 불가" 로 떨어진 후보가 61개 중 52개였다.
+  // 좋은 규칙이 아니라 **잴 수가 없던 규칙**들이다. 창을 넓히면 보류분이 142건이 되어 같은 빈도가 문턱 3을 넘는다.
+  const limit = opts.limit ?? 400;
   const out: LearnCase[] = [];
 
   // ── verdict
