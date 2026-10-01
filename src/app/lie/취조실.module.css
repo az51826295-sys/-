@@ -1,0 +1,157 @@
+/**
+ * **취조실 꾸밈** (228회차 10-01, 사장님 "퀄리티 높여").
+ *
+ * 처음 판은 인라인 스타일로 네모만 늘어놓았다. 게임 이름이 *거짓말의 **온도*** 인데
+ * 온도가 작은 막대 넷으로 구석에 있었다 — **이름이 가리키는 것이 화면의 가운데여야 한다.**
+ *
+ * 그래서 바꾼 것:
+ *  · **온도계를 세로로 크게.** 압박이 오르면 유리관이 차오르고 색이 파랑→주황→빨강으로 간다.
+ *  · **취조실 조명.** 위에서 떨어지는 빛 한 줄기, 둘레는 어둡다. 얼굴 그림과 결을 맞췄다.
+ *  · **압박이 높을수록 화면이 붉어진다**(가장자리 비네트). 숫자를 안 봐도 손끝으로 느껴지게.
+ *  · 증거는 **서류철 카드**로. 고르면 종이가 들린다.
+ *
+ * 색은 전부 변수로 뺐다 — 나중에 사건이 바뀌면 여기만 고친다.
+ */
+
+.방 {
+  --바탕: #0b111b;
+  --칸: #121c2b;
+  --선: #233247;
+  --글: #e6edf6;
+  --흐린글: #8ca0b8;
+  --더흐린글: #6b7d93;
+  --강조: #4a8fd4;
+  --경고: #e4584f;
+  --노랑: #e8b14a;
+
+  min-height: 100vh;
+  background:
+    radial-gradient(1200px 520px at 50% -140px, #1a2740 0%, transparent 70%),
+    var(--바탕);
+  color: var(--글);
+  font-family: "Pretendard", "Malgun Gothic", system-ui, sans-serif;
+  position: relative;
+}
+
+/** 압박이 높을수록 가장자리가 붉어진다. 숫자를 안 봐도 분위기로 안다. */
+.비네트 {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  transition: opacity 900ms ease;
+  background: radial-gradient(circle at 50% 45%, transparent 48%, rgba(190, 40, 34, 0.42) 100%);
+  z-index: 5;
+}
+
+.속 { max-width: 1240px; margin: 0 auto; padding: 22px 18px 56px; position: relative; z-index: 1; }
+
+.머리 { border-bottom: 1px solid var(--선); padding-bottom: 14px; margin-bottom: 18px; }
+.제목 { margin: 0; font-size: 25px; letter-spacing: -0.5px; font-weight: 800; }
+.사건줄 { margin: 7px 0 0; font-size: 13px; color: var(--흐린글); letter-spacing: 0.2px; }
+
+/* ── 용의자 고르기 ───────────────────────────────── */
+.사람들 { display: flex; gap: 10px; margin-bottom: 18px; flex-wrap: wrap; }
+.사람 {
+  display: flex; align-items: center; gap: 10px;
+  padding: 7px 14px 7px 7px; border-radius: 12px; cursor: pointer;
+  border: 1px solid var(--선); background: var(--칸); color: var(--흐린글);
+  font-size: 14px; font-family: inherit; transition: border-color .2s, background .2s;
+}
+.사람:hover { border-color: #35496a; }
+.사람.고름 { border-color: var(--강조); background: #16263c; color: var(--글); }
+.사람 img { width: 38px; height: 38px; border-radius: 9px; object-fit: cover; filter: grayscale(.35); }
+.사람.고름 img { filter: none; }
+.사람 b { font-weight: 700; }
+.사람 span { font-size: 12px; color: var(--더흐린글); margin-left: 4px; }
+.깨진표 { color: var(--노랑); font-size: 15px; }
+
+/* ── 판 ─────────────────────────────────────────── */
+.판 { display: grid; grid-template-columns: 300px minmax(0, 1fr) 290px; gap: 16px; align-items: start; }
+@media (max-width: 1080px) { .판 { grid-template-columns: minmax(0, 1fr) 290px; } .얼굴칸 { display: none; } }
+@media (max-width: 820px) { .판 { grid-template-columns: minmax(0, 1fr); } }
+
+/* ── 왼쪽: 얼굴 + 온도계 ─────────────────────────── */
+.얼굴칸 { background: var(--칸); border: 1px solid var(--선); border-radius: 16px; overflow: hidden; }
+.얼굴 { width: 100%; display: block; aspect-ratio: 1; object-fit: cover; transition: filter 700ms ease; }
+.얼굴글 { padding: 12px 14px 14px; }
+.얼굴이름 { font-size: 17px; font-weight: 800; margin: 0; }
+.얼굴관계 { font-size: 12px; color: var(--더흐린글); margin: 3px 0 9px; }
+.겉모습 { font-size: 12.5px; color: var(--흐린글); line-height: 1.65; margin: 0; }
+
+/* ── 가운데: 대화 ────────────────────────────────── */
+.대화칸 {
+  background: linear-gradient(180deg, #101a28 0%, #0e1724 100%);
+  border: 1px solid var(--선); border-radius: 16px;
+  padding: 16px; min-height: 440px; max-height: 58vh; overflow-y: auto;
+}
+.안내 { color: var(--더흐린글); font-size: 13px; line-height: 1.7; margin: 0 0 14px; }
+.줄 { margin-bottom: 16px; }
+.말풍선 {
+  display: inline-block; max-width: 86%; padding: 11px 14px; border-radius: 13px;
+  font-size: 14.5px; line-height: 1.68; white-space: pre-wrap;
+}
+.누구 { font-size: 11px; color: var(--더흐린글); margin-bottom: 5px; letter-spacing: .3px; }
+.형사줄 { text-align: right; }
+.형사줄 .말풍선 { background: #1d3550; border: 1px solid #2d4e73; }
+.용의자줄 .말풍선 { background: #171f2c; border: 1px solid #27313f; }
+.태도 { font-size: 12.5px; color: #93a8c0; margin-top: 7px; font-style: italic; }
+.깨짐 { margin-top: 7px; font-size: 12.5px; color: var(--노랑); }
+.헛다리 { margin-top: 7px; font-size: 12.5px; color: var(--더흐린글); }
+.무너짐 { margin-top: 8px; font-size: 13.5px; color: #ff9a9a; font-weight: 800; letter-spacing: .5px; }
+
+.고른증거줄 { margin-top: 11px; font-size: 13px; color: #ffd9a0; }
+.치우기 { margin-left: 8px; background: none; border: none; color: var(--더흐린글); cursor: pointer; font-size: 12px; font-family: inherit; }
+.잘못 { margin-top: 11px; color: #ff8e8e; font-size: 13px; }
+
+.입력줄 { display: flex; gap: 9px; margin-top: 13px; }
+.입력 {
+  flex: 1; padding: 13px 15px; border-radius: 11px; border: 1px solid var(--선);
+  background: #0d1623; color: var(--글); font-size: 15px; font-family: inherit;
+}
+.입력:focus { outline: none; border-color: var(--강조); }
+.보내기 {
+  padding: 13px 22px; border-radius: 11px; border: none; background: var(--강조);
+  color: #fff; font-size: 15px; font-weight: 700; cursor: pointer; font-family: inherit;
+}
+.보내기:disabled { background: #2a3a4d; cursor: default; }
+
+/* ── 오른쪽: 증거 + 까닭 ────────────────────────── */
+.옆칸 { background: var(--칸); border: 1px solid var(--선); border-radius: 16px; padding: 14px; margin-bottom: 14px; }
+.옆제목 { margin: 0 0 4px; font-size: 14px; color: #cfe0f2; font-weight: 700; }
+.옆설명 { margin: 0 0 11px; font-size: 12px; color: var(--더흐린글); }
+
+.서류 {
+  display: block; width: 100%; text-align: left; margin-bottom: 9px;
+  padding: 10px 12px; border-radius: 10px; cursor: pointer; font-family: inherit;
+  border: 1px solid var(--선); background: #0f1826; color: #dbe6f2;
+  font-size: 13px; line-height: 1.5; transition: transform .15s, border-color .15s, background .15s;
+}
+.서류:hover { transform: translateY(-1px); border-color: #35496a; }
+.서류.고름 { border-color: #c8923d; background: #2a2113; transform: translateY(-2px); }
+.서류.썼음 { color: var(--더흐린글); }
+.서류 small { display: block; font-size: 11px; color: var(--더흐린글); margin-top: 4px; }
+.서류 .썼음표 { color: var(--더흐린글); font-size: 11px; }
+
+.까닭줄 { font-size: 12px; color: var(--흐린글); margin-bottom: 5px; line-height: 1.55; }
+
+/* ── 온도계 — 이 게임의 이름이다 ──────────────────── */
+.온도칸 { padding: 16px 14px 14px; border-top: 1px solid var(--선); }
+.온도머리 { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
+.온도이름 { font-size: 13px; color: #cfe0f2; font-weight: 700; }
+.온도말 { font-size: 12px; color: var(--흐린글); }
+.온도계 { display: flex; gap: 13px; align-items: flex-end; }
+.유리관 {
+  width: 26px; height: 150px; border-radius: 13px; position: relative; overflow: hidden;
+  background: #0b1420; border: 1px solid #27384f; flex: none;
+}
+.수은 {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  transition: height 900ms cubic-bezier(.22,1,.36,1), background 900ms ease;
+  border-radius: 0 0 12px 12px;
+}
+.눈금 { position: absolute; left: 0; right: 0; height: 1px; background: #27384f; }
+.작은것들 { flex: 1; }
+.작은줄 { margin-bottom: 9px; }
+.작은머리 { display: flex; justify-content: space-between; font-size: 11.5px; color: var(--흐린글); margin-bottom: 4px; }
+.작은관 { height: 6px; background: #0b1420; border-radius: 3px; overflow: hidden; }
+.작은막대 { height: 100%; transition: width 700ms ease; }

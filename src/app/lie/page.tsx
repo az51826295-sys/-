@@ -16,7 +16,9 @@ export const metadata = { title: "거짓말의 온도" };
 
 export default function Page() {
   // **플레이어가 알아도 되는 것만** 내려보낸다. 진실·약점·무너지면 은 뺀다.
-  const 용의자들 = 사건1.용의자.map((s) => ({ id: s.id, 이름: s.이름, 관계: s.관계, 겉모습: s.겉모습 }));
+  // 얼굴은 `public/lie/` 에 있다(규격: 448×448 · 가슴 위 · 취조실 조명 — `engine/work/lie/얼굴.mts`).
+  const 얼굴 = { A: "/lie/han.jpg", B: "/lie/yun.jpg", C: "/lie/park.jpg" } as Record<string, string>;
+  const 용의자들 = 사건1.용의자.map((s) => ({ id: s.id, 이름: s.이름, 관계: s.관계, 겉모습: s.겉모습, 얼굴: 얼굴[s.id] ?? "" }));
   const 증거들 = 사건1.증거.map((e) => ({ id: e.id, 이름: e.이름, 설명: e.설명 }));
   return (
     <취조실
