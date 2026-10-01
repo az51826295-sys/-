@@ -155,3 +155,34 @@
 .작은머리 { display: flex; justify-content: space-between; font-size: 11.5px; color: var(--흐린글); margin-bottom: 4px; }
 .작은관 { height: 6px; background: #0b1420; border-radius: 3px; overflow: hidden; }
 .작은막대 { height: 100%; transition: width 700ms ease; }
+
+/* ── 확인할 것 ─────────────────────────────────── */
+.확인줄 { display: flex; gap: 9px; margin-bottom: 10px; font-size: 12.5px; color: #c3d2e4; line-height: 1.5; }
+.확인줄 small { display: block; font-size: 11px; color: var(--더흐린글); margin-top: 3px; }
+.확인표 { color: var(--더흐린글); flex: none; }
+.확인됨 { color: var(--더흐린글); }
+.확인됨 .확인표 { color: var(--노랑); }
+
+/* ── 지목 ──────────────────────────────────────── */
+.지목단추 {
+  display: block; width: 100%; margin-bottom: 7px; padding: 9px 12px; border-radius: 9px;
+  border: 1px solid #4a2a2a; background: #1b1113; color: #e4b6b6;
+  font-size: 13px; font-family: inherit; cursor: pointer; transition: background .15s, border-color .15s;
+}
+.지목단추:hover:not(:disabled) { background: #2a1618; border-color: #7a3a3a; }
+.지목단추:disabled { opacity: .45; cursor: default; }
+
+/* ── 결과 ──────────────────────────────────────── */
+.결과덮개 {
+  position: fixed; inset: 0; z-index: 20; display: flex; align-items: center; justify-content: center;
+  background: rgba(4, 8, 14, .86); padding: 24px;
+}
+.결과칸 {
+  max-width: 560px; width: 100%; padding: 28px 30px 26px; border-radius: 18px;
+  background: #101a28; border: 1px solid var(--선);
+}
+.결과칸.맞음 { border-color: #3d6b4a; box-shadow: 0 0 60px rgba(60, 140, 90, .18); }
+.결과칸.틀림 { border-color: #6b3d3d; box-shadow: 0 0 60px rgba(160, 60, 55, .2); }
+.결과칸.모자람 { border-color: #6b5a3d; }
+.결과제목 { margin: 0 0 14px; font-size: 22px; font-weight: 800; }
+.결과말 { margin: 0 0 18px; font-size: 14.5px; line-height: 1.8; color: #cfdcea; white-space: pre-wrap; }
