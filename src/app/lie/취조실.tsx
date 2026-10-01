@@ -17,14 +17,17 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import css from "./취조실.module.css";
 
 type 수치 = { 압박: number; 당황: number; 분노: number; 경계: number };
-type 상태 = { 수치: 수치; 깨진약점: string[]; 내민증거: string[]; 턴: number; 최근질문: string[]; 무너짐: boolean; 얻은증언?: string[] };
-type 줄 = { 누구: "형사" | "용의자"; 말: string; 태도?: string; 까닭?: string[]; 깨짐?: string[]; 헛다리?: string[]; 무너짐?: boolean };
+type 상태 = { 수치: 수치; 깨진약점: string[]; 내민증거: string[]; 턴: number; 최근질문: string[]; 무너짐: boolean; 얻은증언?: string[]; 계기?: number };
+/** **형사가 눈금에서 읽는 것.** 서버가 준다 — 화면이 직접 안 센다(기계가 어긋난 몫까지 서버가 안다). */
+type 보임 = { 압박: number; 계기: number; 등급: "정상" | "흔들림" | "불안정" | "신뢰불가"; 말: string };
+type 줄 = { 누구: "형사" | "용의자" | "기계"; 말: string; 태도?: string; 까닭?: string[]; 깨짐?: string[]; 헛다리?: string[]; 무너짐?: boolean };
 type 용의자 = { id: string; 이름: string; 관계: string; 겉모습: string; 얼굴: string };
 type 증거 = { id: string; 이름: string; 설명: string };
 type 확인 = { id: string; 주장: string; 물을사람: string; 얻는증거id: string };
 type 지목답 = { 판정: "맞음" | "모자람" | "틀림"; 제목: string; 말: string; 모자란증거: string[] };
 
-const 처음상태 = (): 상태 => ({ 수치: { 압박: 10, 당황: 0, 분노: 0, 경계: 15 }, 깨진약점: [], 내민증거: [], 턴: 0, 최근질문: [], 무너짐: false, 얻은증언: [] });
+const 처음상태 = (): 상태 => ({ 수치: { 압박: 10, 당황: 0, 분노: 0, 경계: 15 }, 깨진약점: [], 내민증거: [], 턴: 0, 최근질문: [], 무너짐: false, 얻은증언: [], 계기: 100 });
+const 처음보임 = (): 보임 => ({ 압박: 10, 계기: 100, 등급: "정상", 말: "교정 상태 양호. 눈금을 믿어도 된다." });
 
 const 압박말 = (n: number) => (n >= 80 ? "몰렸다" : n >= 50 ? "불편하다" : n >= 25 ? "조금 긴장" : "침착하다");
 const 분노말 = (n: number) => (n >= 70 ? "입을 닫았다" : n >= 40 ? "기분이 상했다" : "괜찮다");
@@ -64,8 +67,8 @@ export default function 취조실({ 사건, 용의자들, 증거들, 확인할�
   찾은수?: number; 모든증거수?: number;
 }) {
   const [누구, set누구] = useState(용의자들[0]?.id ?? "A");
-  const [방, set방] = useState<Record<string, { 상태: 상태; 줄들: 줄[] }>>(() =>
-    Object.fromEntries(용의자들.map((s) => [s.id, { 상태: 처음상태(), 줄들: [] }])));
+  const [방, set방] = useState<Record<string, { 상태: 상태; 줄들: 줄[]; 보임: 보임 }>>(() =>
+    Object.fromEntries(용의자들.map((s) => [s.id, { 상태: 처음상태(), 줄들: [], 보임: 처음보임() }])));
   const [말, set말] = useState("");
   const [고른증거, set고른증거] = useState<string[]>([]);
   const [기다림, set기다림] = useState(false);
@@ -75,9 +78,12 @@ export default function 취조실({ 사건, 용의자들, 증거들, 확인할�
   const [지목답, set지목답] = useState<지목답 | null>(null);
   const [잘못, set잘못] = useState("");
   const 끝 = useRef<HTMLDivElement>(null);
-  const 이방 = 방[누구] ?? { 상태: 처음상태(), 줄들: [] };
+  const 이방 = 방[누구] ?? { 상태: 처음상태(), 줄들: [], 보임: 처음보임() };
   const 지금 = 용의자들.find((s) => s.id === 누구)!;
+  // **수치는 진짜, 보임은 기계가 말하는 것.** 얼굴과 가장자리는 진짜를 따르고(형사의 눈),
+  // 온도계 눈금은 보임을 따른다(기계). 둘이 어긋나는 순간이 이 게임의 한가운데다.
   const 수치 = 이방.상태.수치;
+  const 보임 = 이방.보임 ?? 처음보임();
 
   useEffect(() => { 끝.current?.scrollIntoView({ behavior: "smooth" }); }, [이방.줄들.length, 기다림]);
 
@@ -95,7 +101,7 @@ export default function 취조실({ 사건, 용의자들, 증거들, 확인할�
     try {
       const r = await fetch("/api/lie/turn", {
         method: "POST", headers: { "content-type": "application/json" },
-        body: JSON.stringify({ 용의자: 누구, 말: 보낼말, 상태: 앞.상태, 기록: 앞.줄들.map((l) => ({ 누구: l.누구, 말: l.말 })) }),
+        body: JSON.stringify({ 용의자: 누구, 말: 보낼말, 상태: 앞.상태, 기록: 앞.줄들.filter((l) => l.누구 !== "기계").map((l) => ({ 누구: l.누구 as "형사" | "용의자", 말: l.말 })) }),
       });
       const j = await r.json();
       if (!r.ok) { set잘못(j.잘못 ?? "안 됐어요"); set기다림(false); return; }
@@ -106,7 +112,7 @@ export default function 취조실({ 사건, 용의자들, 증거들, 확인할�
         // **얻은 증언은 방마다 공유한다.** 윤미래에게 들은 말을 한선호 방으로 들고 가야 들이댈 수 있다.
         for (const id of Object.keys(다음)) 다음[id] = { ...다음[id], 상태: { ...다음[id].상태, 얻은증언: 새증언 } };
         다음[누구] = {
-          상태: j.상태,
+          상태: j.상태, 보임: j.보임 ?? p[누구].보임,
           줄들: [...p[누구].줄들, { 누구: "용의자", 말: j.말, 태도: j.태도, 까닭: j.까닭, 깨짐: j.깨짐, 헛다리: j.헛다리, 무너짐: j.방금무너짐 }],
         };
         return 다음;
@@ -114,6 +120,29 @@ export default function 취조실({ 사건, 용의자들, 증거들, 확인할�
     } catch { set잘못("서버에 못 닿았어요"); }
     set기다림(false);
   }, [말, 고른증거, 기다림, 방, 누구, 증거들, 증언들]);
+
+  /**
+   * **기계를 다시 맞춘다.** 모델을 안 부르니 돈이 0원이다 — 대신 게임 안에서 턴을 버리고
+   * 상대가 숨을 돌린다(압박 −6). 그래서 "지금 맞출까, 한 번 더 밀어붙일까" 가 선택이 된다.
+   */
+  const 재교정하기 = useCallback(async () => {
+    if (기다림) return;
+    set기다림(true); set잘못("");
+    const 앞 = 방[누구];
+    try {
+      const r = await fetch("/api/lie/turn", {
+        method: "POST", headers: { "content-type": "application/json" },
+        body: JSON.stringify({ 용의자: 누구, 재교정: true, 상태: 앞.상태 }),
+      });
+      const j = await r.json();
+      if (!r.ok) { set잘못(j.잘못 ?? "기계가 말을 안 듣는다"); set기다림(false); return; }
+      set방((p) => ({ ...p, [누구]: {
+        상태: j.상태, 보임: j.보임 ?? p[누구].보임,
+        줄들: [...p[누구].줄들, { 누구: "기계", 말: j.기계말 }],
+      } }));
+    } catch { set잘못("서버에 못 닿았어요"); }
+    set기다림(false);
+  }, [기다림, 방, 누구]);
 
   const 손에든증거 = [...증거들, ...증언들];
 
@@ -186,13 +215,15 @@ export default function 취조실({ 사건, 용의자들, 증거들, 확인할�
 
             <div className={css.온도칸}>
               <div className={css.온도머리}>
-                <span className={css.온도이름}>압박</span>
-                <span className={css.온도말}>{압박말(수치.압박)}</span>
+                <span className={css.온도이름}>압박 <small className={css.기계딱지}>IDX-9 판독</small></span>
+                <span className={css.온도말}>{압박말(보임.압박)}</span>
               </div>
               <div className={css.온도계}>
-                <div className={css.유리관}>
+                {/* **눈금은 기계가 말하는 것**(보임). 얼굴과 가장자리는 진짜를 따른다 — 둘이 어긋난다. */}
+                <div className={`${css.유리관} ${보임.등급 === "불안정" || 보임.등급 === "신뢰불가" ? css.흔들리는관 : ""}`}>
                   {[25, 50, 80].map((t) => <div key={t} className={css.눈금} style={{ bottom: `${t}%` }} />)}
-                  <div className={css.수은} style={{ height: `${수치.압박}%`, background: 수은색(수치.압박) }} />
+                  <div className={css.수은} style={{ height: `${보임.압박}%`, background: 수은색(보임.압박) }} />
+                  <div className={css.눈금값}>{보임.압박}</div>
                 </div>
                 <div className={css.작은것들}>
                   {([
@@ -206,6 +237,19 @@ export default function 취조실({ 사건, 용의자들, 증거들, 확인할�
                     </div>
                   ))}
                 </div>
+              </div>
+
+              {/* **계기신뢰도** — 세계관 ②. 이 기계는 틀릴 수 있고, 플레이어는 그걸 알고 있어야 한다. */}
+              <div className={`${css.계기칸} ${css["등급" + 보임.등급] ?? ""}`}>
+                <div className={css.계기머리}>
+                  <span>계기신뢰도</span>
+                  <span className={css.계기값}>{보임.계기} · {보임.등급}</span>
+                </div>
+                <div className={css.계기막대}><div className={css.계기찬것} style={{ width: `${보임.계기}%` }} /></div>
+                <p className={css.계기말}>{보임.말}</p>
+                <button className={css.재교정} disabled={기다림 || 보임.계기 >= 98} onClick={() => void 재교정하기()}>
+                  {보임.계기 >= 98 ? "교정할 것이 없다" : "기계를 다시 맞춘다 (한 턴을 쓴다)"}
+                </button>
               </div>
             </div>
           </aside>
@@ -221,6 +265,7 @@ export default function 취조실({ 사건, 용의자들, 증거들, 확인할�
               )}
               {이방.줄들.map((l, i) => {
                 const 마지막인가 = i === 이방.줄들.length - 1;
+                if (l.누구 === "기계") return <div key={i} className={css.기계줄}>{l.말}</div>;
                 return (
                   <div key={i} className={`${css.줄} ${l.누구 === "형사" ? css.형사줄 : css.용의자줄}`}>
                     <div className={css.말풍선}>

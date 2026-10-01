@@ -14,7 +14,7 @@
 import { NextResponse } from "next/server";
 import { 기본사건, 용의자찾기 } from "@/lib/lie/case";
 import { 심문하기, 처음상태 } from "@/lib/lie/turn";
-import type { 심문상태 } from "@/lib/lie/stress";
+import { 기계재교정, 보이는압박, 계기말, 계기신뢰도, type 심문상태 } from "@/lib/lie/stress";
 import { defaultProviders } from "@/lib/execution/shared";
 
 export const runtime = "nodejs";
@@ -24,14 +24,29 @@ const 사건 = 기본사건();
 export const maxDuration = 60;
 
 export async function POST(req: Request) {
-  let 몸: { 용의자?: string; 말?: string; 상태?: 심문상태; 기록?: { 누구: "형사" | "용의자"; 말: string }[] };
+  let 몸: { 용의자?: string; 말?: string; 상태?: 심문상태; 기록?: { 누구: "형사" | "용의자"; 말: string }[]; 재교정?: boolean };
   try { 몸 = await req.json(); } catch { return NextResponse.json({ 잘못: "본문을 못 읽었다" }, { status: 400 }); }
+
+  const 용의자id = 몸.용의자 ?? "A";
+
+  // ── 기계를 다시 맞춘다(세계관 ②) ────────────────────────────
+  // **모델을 안 부른다.** 기계를 만지는 것은 셈이지 대화가 아니다 — 그래서 값이 0원이다.
+  // 대신 게임 안에서는 턴을 하나 버리고 상대가 숨을 돌린다. 값은 거기서 치른다.
+  if (몸.재교정) {
+    const 뒤 = 기계재교정(몸.상태 ?? 처음상태());
+    const 말씀 = 계기말(뒤);
+    return NextResponse.json({
+      말: null, 재교정함: true, 상태: 뒤,
+      기계말: `[교정 완료] ${말씀.말} 그 사이 ${용의자id === "A" ? "상대" : "상대"}가 숨을 돌렸다.`,
+      보임: { 압박: 보이는압박(뒤, 용의자id), 계기: 계기신뢰도(뒤), 등급: 말씀.등급, 말: 말씀.말 },
+    });
+  }
 
   const 말 = (몸.말 ?? "").trim();
   if (!말) return NextResponse.json({ 잘못: "할 말이 비었다" }, { status: 400 });
   if (말.length > 400) return NextResponse.json({ 잘못: "너무 길다(400자까지)" }, { status: 400 });
 
-  const 용의자 = 용의자찾기(사건, 몸.용의자 ?? "A");
+  const 용의자 = 용의자찾기(사건, 용의자id);
   if (!용의자) return NextResponse.json({ 잘못: "그런 용의자가 없다" }, { status: 404 });
 
   try {
@@ -52,6 +67,10 @@ export async function POST(req: Request) {
       깨짐: r.셈.이번에깨짐.map((w) => w.깨지는진술),
       헛다리: r.셈.헛다리,
       방금무너짐: r.셈.방금무너짐,
+      // **형사가 눈금에서 읽는 것.** 진짜 압박이 아니다 — 기계가 어긋나 있으면 여기도 어긋나 있다.
+      // (v0 은 상태를 화면이 들고 있어서 진짜 수치도 같이 오간다. 화면은 이 `보임` 만 그린다.
+      //  남에게 내놓을 때 상태를 서버로 옮기면 그때 진짜 수치가 아예 안 나가게 된다.)
+      보임: { 압박: 보이는압박(r.상태, 용의자id), 계기: 계기신뢰도(r.상태), ...(({ 등급, 말 }) => ({ 등급, 말 }))(계기말(r.상태)) },
       // **교차 검증으로 얻은 증언.** 화면의 증거 목록에 하나 더해진다 — 취조로 만들어 낸 증거다.
       얻은증언: r.셈.얻은교차
         ? { id: r.셈.얻은교차.생기는증거.id, 이름: r.셈.얻은교차.생기는증거.이름, 설명: r.셈.얻은교차.생기는증거.설명 }
