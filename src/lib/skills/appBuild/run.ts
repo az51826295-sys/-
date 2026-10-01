@@ -34,6 +34,12 @@ export type RunFacts = {
    * `movesByItself` 는 시작 단추를 누르기 전 값이라 제목 화면에서 늘 0 이다 — 이것이 "지금 도는 중인가" 다.
    */
   movesAfterPlay: number;
+  /**
+   * 놀아 보는 동안 **화면 숫자가 지나온 값**(id 마다, 이어서 같은 값은 한 번만).
+   * 점수·돈·목숨·웨이브가 여기 담긴다 — 캔버스 게임의 핵심 한 바퀴를 이것으로 본다.
+   * 값이 하나뿐이면 **그 숫자는 한 번도 안 움직였다**(못 본 것이 아니라 본 것이다).
+   */
+  numberTrail: Record<string, string[]>;
   /** 화면에 보이는 글자(앞 300자). 점수·타이머·버튼 글자를 심판자가 본다. */
   text: string;
   /** 화면 세 장(시작·시작 단추 누른 뒤·놀아 본 뒤), 작은 JPEG base64 — 심판자에게 보여 준다. 저장하지 않는다. */
@@ -117,7 +123,7 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 export async function runWeb(files: File[], opts: { mobile: boolean; width?: number; height?: number; timeoutMs?: number; actions?: RunAction[]; measures?: string[] }): Promise<RunFacts> {
   const t0 = Date.now();
-  const none: RunFacts = { ran: false, ms: 0, consoleErrors: [], blankAtStart: false, movesByItself: false, changesOnTap: false, changesOnKeys: false, movesAfterPlay: 0, text: "", shots: { start: "", mid: "", after: "" }, did: [] };
+  const none: RunFacts = { ran: false, ms: 0, consoleErrors: [], blankAtStart: false, movesByItself: false, changesOnTap: false, changesOnKeys: false, movesAfterPlay: 0, numberTrail: {}, text: "", shots: { start: "", mid: "", after: "" }, did: [] };
   const did: string[] = [];
   const entry = entryOf(files);
   if (!entry) return { ...none, why: "HTML 파일이 없다" };
@@ -176,6 +182,41 @@ export async function runWeb(files: File[], opts: { mobile: boolean; width?: num
     await sleep(400);
     const afterKeys = await shot(page);
     const changesOnKeys = (await diff(b2, afterKeys)) > CHANGED;
+
+    /**
+     * **화면 숫자가 놀아 보는 동안 어떻게 움직였나** (228회차 09-30).
+     *
+     * 캔버스 게임은 적·타워·총알이 DOM 에 없어서 심판자가 사진으로 짐작할 수밖에 없었다.
+     * 그런데 **점수·돈·목숨·웨이브는 거의 늘 DOM 에 숫자로 있다** — 그것이 게임의 핵심 한 바퀴를 말해 준다.
+     *
+     * 09-30 타워 디펜스 판: 겨냥 줄이 `best=Infinity` 로 시작해 **타워가 한 번도 안 쐈다.**
+     * 사진으로는 안 보이고 기준은 `모름` 으로 남았지만, **돈이 420 에서 한 번도 안 올랐다** 는 것은
+     * 이 한 줄이면 보였다. "안 바뀐 숫자" 는 "못 본 것" 이 아니라 **본 것**이다.
+     *
+     * 창 안에서는 이름 붙인 함수를 만들지 않는다(`__name` 이 없어 통째로 죽는다).
+     */
+    const 숫자들 = () => page.evaluate(() => {
+      const 모음: Record<string, string> = {};
+      for (const e of [...document.querySelectorAll("[id]")] as HTMLElement[]) {
+        if (e.children.length > 2 || !e.id) continue;
+        const t = (e.textContent ?? "").replace(/\s+/g, " ").trim();
+        if (!t || t.length > 24 || !/[0-9]/.test(t)) continue;
+        const r = e.getBoundingClientRect();
+        if (r.width <= 0 || r.height <= 0) continue;
+        모음[e.id] = t;
+      }
+      return 모음;
+    }).catch(() => ({} as Record<string, string>));
+    /** id 마다 **이어서 같은 값은 한 번만** 적는다 — 420→420→340 은 420→340 이다. */
+    const 자취: Record<string, string[]> = {};
+    const 숫자찍기 = async () => {
+      const 지금 = await 숫자들();
+      for (const [k, v] of Object.entries(지금)) {
+        const 줄 = (자취[k] ??= []);
+        if (줄[줄.length - 1] !== v) 줄.push(v);
+      }
+    };
+    await 숫자찍기();
 
     // 대본대로 놀아 본다 — 시작 단추를 누르고, 캔버스 여기저기를 누르고, 키를 친다. 심판자가 준 대본이 있으면 그것.
     let mid: Buffer | null = null;
@@ -246,6 +287,7 @@ export async function runWeb(files: File[], opts: { mobile: boolean; width?: num
           const key = act.key as KeyInput; await page.keyboard.down(key); await sleep(act.ms ?? 120); await page.keyboard.up(key); did.push(`${act.key} 키`); await sleep(150);
         } else if (act.do === "wait") { const ms = Math.min(act.ms, 25_000); await sleep(ms); did.push(`${Math.round(ms / 100) / 10}초 기다림`); }
       } catch (e) { did.push(`조작 실패: ${e instanceof Error ? e.message.slice(0, 60) : String(e)}`); }
+      await 숫자찍기();   // 조작마다 한 번 — 어느 조작에서 숫자가 움직였는지가 순서로 남는다
     }
     const end = await shot(page);
     /**
@@ -266,6 +308,7 @@ export async function runWeb(files: File[], opts: { mobile: boolean; width?: num
       const 다음 = await shot(page);
       if ((await diff(앞장, 다음)) > CHANGED) 놀고나서움직임++;
       앞장 = 다음;
+      await 숫자찍기();
     }
     const text = await page.evaluate(() => (document.body?.innerText ?? "").replace(/\s+/g, " ").trim().slice(0, 300)).catch(() => "");
     const blankAtStart = await isBlank(s0);
@@ -274,7 +317,7 @@ export async function runWeb(files: File[], opts: { mobile: boolean; width?: num
     return {
       ran: true, ms: Date.now() - t0, measured,
       consoleErrors: [...errors].slice(0, 12),
-      blankAtStart, movesByItself, changesOnTap, changesOnKeys, movesAfterPlay: 놀고나서움직임, text, did,
+      blankAtStart, movesByItself, changesOnTap, changesOnKeys, movesAfterPlay: 놀고나서움직임, numberTrail: 자취, text, did,
       shots: { start: await tinyJpeg(s0), mid: await tinyJpeg(mid ?? afterKeys), after: await tinyJpeg(end) },
     };
   } catch (e) {
@@ -296,6 +339,15 @@ export function factLines(f: RunFacts): string[] {
     // 캔버스 게임의 "적이 움직이나" 는 여기서만 보인다(위 '가만히 두면' 은 제목 화면 값이다).
     `놀아 본 뒤 그대로 두면 ${f.movesAfterPlay === 2 ? "계속 바뀜(도는 중)" : f.movesAfterPlay === 1 ? "한 번 바뀜" : "안 바뀜(멈췄거나 끝난 화면)"}`,
     `해 본 조작: ${f.did.join(" → ") || "(없음)"}`,
+    // **안 움직인 숫자는 "못 본 것" 이 아니라 "본 것" 이다.** 돈이 420 에서 한 번도 안 오르면 적을 못 죽였다는 뜻이다.
+    ...(Object.keys(f.numberTrail).length
+      ? [
+        `놀아 보는 동안 움직인 숫자: ${Object.entries(f.numberTrail).filter(([, v]) => v.length > 1)
+          .map(([k, v]) => `${k} ${v.length > 5 ? [v[0], "…", v[v.length - 1]].join("→") : v.join("→")}`).join(" · ") || "(하나도 없음)"}`,
+        `끝까지 안 움직인 숫자: ${Object.entries(f.numberTrail).filter(([, v]) => v.length === 1)
+          .map(([k, v]) => `${k} ${v[0]}`).join(" · ") || "(없음)"}`,
+      ]
+      : []),
     `놀아 본 뒤 화면 글자: ${f.text || "(없음)"}`,
     ...(f.measured && Object.keys(f.measured).length
       ? [`숫자로 잰 값: ${Object.entries(f.measured).map(([k, v]) => `${k}=${v}`).join(" · ")}`]
