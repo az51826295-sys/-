@@ -9,16 +9,21 @@
  * 그래서 직접 잰다: ① WebGL 로 켜졌나 ② 셰이더가 붙었나 ③ 화면에 **뭔가 그려졌나**(까만 화면이 아닌가)
  * ④ 가만히 둬도 바뀌나 ⑤ 초당 몇 장인가.
  */
-import { readFileSync, existsSync, writeFileSync, mkdirSync } from "node:fs";
+import { readFileSync, existsSync, writeFileSync, mkdirSync, statSync } from "node:fs";
 import { createServer } from "node:http";
 import { extname, join, normalize } from "node:path";
 import { openHeadless } from "../../../src/lib/video/headless";
+import sharp from "sharp";
 
-const 뿌리 = "engine/work/ceiling/게임webgl";
+// 228회차 10-02: 폴더를 인자로 받는다 — 자리 비교는 여러 폴더를 **같은 자**로 재야 한다.
+const 뿌리 = process.argv[2] ?? "engine/work/ceiling/게임webgl";
 const 종류: Record<string, string> = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css" };
 const 서버 = createServer((q, s) => {
   const 길 = normalize(join(뿌리, decodeURIComponent((q.url ?? "/").split("?")[0]))).split("\\").join("/");
-  const f = !extname(길) ? join(뿌리, "index.html") : 길;
+  // **폴더면 index.html.** 확장자로 가리면 안 된다 — 폴더 이름에 점이 있으면(`gpt-5.6-luna-1`)
+  // `extname` 이 ".6-luna-1" 을 내놔서 폴더를 파일로 읽다 터진다(10-02 자리 비교에서 터졌다).
+  const 폴더인가 = existsSync(길) && statSync(길).isDirectory();
+  const f = 폴더인가 || !extname(길) ? join(길.startsWith(뿌리) ? 길 : 뿌리, "index.html") : 길;
   if (!f.split("\\").join("/").startsWith(뿌리) || !existsSync(f)) { s.writeHead(404); s.end(); return; }
   s.writeHead(200, { "content-type": 종류[extname(f)] ?? "text/plain" }); s.end(readFileSync(f));
 });
@@ -30,7 +35,14 @@ if (!창) { console.error("창을 못 띄웠다"); process.exit(1); }
 const page = await 창.browser.newPage();
 const 오류: string[] = [];
 page.on("pageerror", (e) => 오류.push(String(e).slice(0, 120)));
-page.on("console", (m) => { if (m.type() === "error") 오류.push(m.text().slice(0, 120)); });
+// **favicon 404 는 게임의 잘못이 아니다.** 브라우저가 알아서 찾는 것이고, 우리 서버엔 없다.
+// 10-02 자리 비교에서 이것 하나로 아스트라 판이 ⑤ 에서 헛되이 떨어졌다 — 자가 잡은 게 아니라 자가 만든 흠이었다.
+// 글에는 주소가 안 들어 있다("Failed to load resource: … 404") — **어디서 난 말인지**(location)를 봐야 가린다.
+const 헛소리 = (m: { text(): string; location(): { url?: string } }) => {
+  const 어디 = m.location()?.url ?? "";
+  return /favicon/i.test(어디) || /favicon/i.test(m.text());
+};
+page.on("console", (m) => { if (m.type() === "error" && !헛소리(m)) 오류.push(`${m.text().slice(0, 100)}${m.location()?.url ? ` [${String(m.location().url).slice(-40)}]` : ""}`); });
 await page.setRequestInterception(true);
 page.on("request", (r) => (r.url().includes(`127.0.0.1:${포트}`) ? r.continue() : r.abort()));
 await page.goto(`http://127.0.0.1:${포트}/`, { waitUntil: "networkidle0" });
@@ -59,24 +71,31 @@ const 눌림 = await page.evaluate(() => {
 });
 await 쉼(1500);
 
-/** 화면이 **까맣지 않은가** — 캔버스 픽셀을 읽어 색이 몇 가지나 나오는지 센다. */
-const 그림 = async () => page.evaluate(() => {
-  const c = document.querySelector("canvas") as HTMLCanvasElement;
-  const g = (c.getContext("webgl2") ?? c.getContext("webgl")) as WebGLRenderingContext | null;
-  if (!g) return { 색: 0, 지문: 0, 밝은점: 0 };
-  const w = Math.min(c.width, 320), h = Math.min(c.height, 200);
-  const px = new Uint8Array(w * h * 4);
-  g.readPixels(0, 0, w, h, g.RGBA, g.UNSIGNED_BYTE, px);
+/**
+ * 화면이 **까맣지 않은가** — **화면 사진**을 읽어 센다.
+ *
+ * ## 10-02: 여기가 틀려 있었다
+ * 전에는 `gl.readPixels` 로 캔버스를 읽었다. 그런데 WebGL 은 `preserveDrawingBuffer: true` 없이
+ * **프레임 밖에서 읽으면 그리는 버퍼가 이미 비워져 있어 늘 까맣게 나온다.** 게임이 멀쩡히 돌아도 그렇다.
+ * 10-02 자리 비교에서 아스트라 판을 "까만 화면" 으로 적었는데 **화면 사진에는 별·적·HUD 가 다 있었다.**
+ * 그러니 어제 WebGL 천장 시험에서 고리가 8바퀴를 돌며 못 고친 "까만 화면" 도 **이 자의 흠**일 수 있다.
+ *
+ * 사진은 브라우저가 합성한 **사람이 보는 그대로**다. 자가 사람보다 덜 보면 그건 자가 아니다.
+ */
+const 그림 = async () => {
+  const buf = await page.screenshot({ type: "png" });
+  const { data, info } = await sharp(Buffer.from(buf)).resize(320, 200, { fit: "fill" }).raw().toBuffer({ resolveWithObject: true });
+  const 칸 = info.channels;
   const 본색 = new Set<number>();
   let 밝은점 = 0, 지문 = 0;
-  for (let i = 0; i < px.length; i += 4) {
-    const v = (px[i] << 16) | (px[i + 1] << 8) | px[i + 2];
+  for (let i = 0; i < data.length; i += 칸) {
+    const v = (data[i] << 16) | (data[i + 1] << 8) | data[i + 2];
     본색.add(v);
-    if (px[i] + px[i + 1] + px[i + 2] > 90) 밝은점++;
-    지문 = (지문 * 31 + px[i] + px[i + 2]) >>> 0;
+    if (data[i] + data[i + 1] + data[i + 2] > 90) 밝은점++;
+    지문 = (지문 * 31 + data[i] + data[i + 2]) >>> 0;
   }
   return { 색: 본색.size, 지문, 밝은점 };
-});
+};
 
 const a = await 그림();
 재("② 까만 화면이 아니다", a.색 > 3 && a.밝은점 > 20, `'${눌림}' 누른 뒤 · 서로 다른 색 ${a.색}가지 · 밝은 점 ${a.밝은점}개`);
@@ -100,6 +119,8 @@ const fps = await page.evaluate(
 
 const 칸 = "C:/Users/az518/Desktop/로키-webgl-사진";
 mkdirSync(칸, { recursive: true });
-writeFileSync(`${칸}/화면.png`, await page.screenshot({ type: "png" }));
-console.log(`\n→ ${칸}/화면.png`);
+// 사진은 **잰 폴더 이름으로** 남긴다 — 한 이름에 덮어쓰면 두 판을 나란히 못 본다.
+const 이름 = 뿌리.split("/").pop() || "화면";
+writeFileSync(`${칸}/${이름}.png`, await page.screenshot({ type: "png" }));
+console.log(`\n→ ${칸}/${이름}.png`);
 await 창.close(); 서버.close();
