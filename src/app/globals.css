@@ -294,3 +294,12 @@ img.pixelated {
   .rk-전환-쓸기, .rk-전환, .rk-일판::before, .rk-모드띠 .rk-점, .rk-숨 { animation: none !important; }
   .rk-전환 { opacity: 0; }
 }
+
+/* 켜 두고 쓰는 좁은 창 — 단추는 늘 같은 자리에. */
+.rk-창단추 { display: flex; align-items: center; gap: 6px; flex: none; }
+.rk-창단추 button {
+  padding: 4px 9px; border-radius: 8px; font-size: 11.5px; letter-spacing: .2px;
+  border: 1px solid var(--rk-200); background: var(--rk-100); color: var(--rk-600); cursor: pointer;
+}
+.rk-창단추 button:hover { color: var(--rk-800); border-color: var(--rk-400); }
+.rk-창단추 .rk-막힘 { font-size: 11px; color: #ffb4b4; }
