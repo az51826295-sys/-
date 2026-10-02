@@ -226,3 +226,71 @@ img.pixelated {
 @media (prefers-reduced-motion: reduce) {
   .rk-progress > span { animation-duration: 3s; }
 }
+
+/* ───────── 대화 중인가 일하는 중인가 (228회차 10-02) ─────────
+   사장님 "대화하고 있는지 개발하는지 구분해야 하고" · "누르면 전체화면이 빨간색 애니메이션".
+   빨강은 평소에 안 쓰는 색이라 켜지면 바로 눈에 든다 — 그래서 **일하는 중에만** 쓴다. */
+:root { --rk-일: #e02a2a; --rk-일-연: #ff6b6b; }
+
+/* 전체화면 전환 — 일로 들어갈 때 한 번 */
+.rk-전환 {
+  position: fixed; inset: 0; z-index: 90; pointer-events: none;
+  animation: rk-전환-꺼짐 1.1s ease-out forwards;
+}
+.rk-전환::after {
+  content: ""; position: absolute; inset: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(224, 42, 42, 0.32) 0%, rgba(224, 42, 42, 0.1) 45%, transparent 72%);
+}
+.rk-전환-쓸기 {
+  position: absolute; inset: 0;
+  background: linear-gradient(100deg, transparent 0%, rgba(255, 107, 107, 0.55) 46%, rgba(255, 255, 255, 0.22) 50%, rgba(255, 107, 107, 0.55) 54%, transparent 100%);
+  transform: translateX(-120%);
+  animation: rk-쓸기 0.85s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+@keyframes rk-쓸기 { to { transform: translateX(120%); } }
+@keyframes rk-전환-꺼짐 { 0%, 62% { opacity: 1; } 100% { opacity: 0; } }
+
+/* 일하는 동안 남는 테두리 — 번쩍이지 않는다. 몇십 분을 켜 두는 것이라 숨 쉬듯 느리게. */
+.rk-일판 { position: relative; }
+.rk-일판::before {
+  content: ""; position: fixed; inset: 0; z-index: 80; pointer-events: none;
+  box-shadow: inset 0 0 0 2px rgba(224, 42, 42, 0.5), inset 0 0 70px rgba(224, 42, 42, 0.14);
+  animation: rk-숨쉬기 3.4s ease-in-out infinite;
+}
+@keyframes rk-숨쉬기 { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
+
+/* 지금 무엇을 하는 중인지 늘 보이는 띠 */
+.rk-모드띠 {
+  display: flex; align-items: center; gap: 9px; flex-wrap: wrap;
+  padding: 7px 12px; border-radius: 10px; font-size: 12.5px; letter-spacing: .2px;
+  border: 1px solid var(--rk-200); background: var(--rk-100); color: var(--rk-800);
+}
+.rk-모드띠 b { font-weight: 700; }
+.rk-모드띠 .rk-하는일 { color: var(--rk-600); }
+.rk-모드띠 .rk-분 { margin-left: auto; color: var(--rk-400); font-variant-numeric: tabular-nums; }
+.rk-모드띠 .rk-점 { width: 7px; height: 7px; border-radius: 50%; background: var(--rk-400); }
+.rk-모드띠.rk-말 .rk-점 { animation: rk-깜빡 1.4s ease-in-out infinite; }
+.rk-모드띠.rk-일 {
+  border-color: rgba(224, 42, 42, 0.45); background: rgba(224, 42, 42, 0.09); color: #ffd9d9;
+}
+.rk-모드띠.rk-일 .rk-하는일 { color: #ffb4b4; }
+.rk-모드띠.rk-일 .rk-점 { background: var(--rk-일-연); animation: rk-깜빡 1.1s ease-in-out infinite; }
+@keyframes rk-깜빡 { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
+
+/* 로키가 앞에 나와 있다 — 자리와 움직임만. 캐릭터 그림은 사장님이 정하실 몫. */
+.rk-얼굴칸 { position: relative; width: 44px; height: 44px; flex: none; display: grid; place-items: center; }
+.rk-얼굴 { width: 30px; height: 30px; opacity: .85; transition: transform .4s ease, opacity .4s ease; }
+.rk-숨 {
+  position: absolute; inset: 0; border-radius: 50%;
+  border: 1px solid var(--rk-200); transition: border-color .4s ease;
+}
+.rk-얼굴-말 .rk-숨 { animation: rk-숨결 1.8s ease-in-out infinite; }
+.rk-얼굴-일 .rk-숨 { border-color: rgba(224, 42, 42, 0.6); animation: rk-숨결 2.6s ease-in-out infinite; }
+.rk-얼굴-일 .rk-얼굴 { opacity: 1; transform: scale(1.06); }
+@keyframes rk-숨결 { 0%, 100% { transform: scale(1); opacity: .9; } 50% { transform: scale(1.12); opacity: .45; } }
+
+/* 멀미나는 사람에게는 움직임을 끈다. */
+@media (prefers-reduced-motion: reduce) {
+  .rk-전환-쓸기, .rk-전환, .rk-일판::before, .rk-모드띠 .rk-점, .rk-숨 { animation: none !important; }
+  .rk-전환 { opacity: 0; }
+}

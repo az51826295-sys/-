@@ -1,6 +1,7 @@
 "use client";
 
 import { Waiting } from "@/components/Waiting";
+import { 모드계산, use방금들어감, 전환, 모드띠, 로키얼굴 } from "./모드";
 
 import { useEffect, useRef, useState } from "react";
 import Icon from "@/components/Icon";
@@ -423,12 +424,27 @@ export default function AskClient({
 
   const last = turns[turns.length - 1];
 
+  // ── 대화 중인가 일하는 중인가 (228회차, 사장님 "대화하고 있는지 개발하는지 구분해야 하고")
+  // 답을 기다리는 몇 초와 뒤에서 몇 분째 코드를 쓰는 것이 같은 얼굴이면 안 된다.
+  const 도는일 = Object.entries(steps);
+  const 모드 = 모드계산(busy, 도는일.length);
+  const 방금들어감 = use방금들어감(모드);
+  const 하는일 = 도는일.length ? 도는일.map(([, v]) => v).join(" · ") : null;
+  const 몇분 = (() => {
+    const 시작들 = 도는일.map(([id]) => startedAt[id]).filter(Boolean);
+    if (!시작들.length) return null;
+    const 가장이른 = Math.min(...시작들.map((t) => new Date(t).getTime()));
+    return Math.max(0, Math.round((Date.now() - 가장이른) / 60_000));
+  })();
+
   return (
+    <>
+    <전환 보임={방금들어감} />
     // 위쪽 여백은 장식이 아니다. 좌우 모서리에 설정과 과제 버튼이 떠 있어서,
     // 이만큼 내리지 않으면 첫 줄이 버튼 밑에 깔린다.
     // `pixel` 은 globals.css 에 있다 — 폰트·종이색·픽셀 보간을 한 번에 켠다.
     // 이 화면에만 붙인다: 대시보드는 표가 빽빽해서 픽셀 폰트가 오히려 나쁘다.
-    <div className="pixel mx-auto flex h-[calc(100vh-4rem)] max-w-2xl flex-col px-4 pt-9 lg:max-w-[1180px] lg:flex-row lg:gap-6">
+    <div className={`pixel mx-auto flex h-[calc(100vh-4rem)] max-w-2xl flex-col px-4 pt-9 lg:max-w-[1180px] lg:flex-row lg:gap-6${모드 === "일하는중" ? " rk-일판" : ""}`}>
     <div className="flex h-full min-h-0 min-w-0 flex-1 flex-col lg:max-w-2xl">
       {task && (
         <p className="pt-2 text-center text-xs text-[var(--rk-400)]">
@@ -460,6 +476,17 @@ export default function AskClient({
         운영 신호지 쓰는 사람이 볼 말이 아니다. 신호는 그대로 남아 있다: `/api/routing/health`,
         `RoutingNotice.tsx`(안 붙였을 뿐), 자가진단(`selfcheck.mts` 7번 줄).
       */}
+
+      {/*
+        **로키가 앞에 나와 있다.** 두근도트처럼 얼굴이 먼저고 말이 그 아래로 흐른다.
+        조용할 때는 아무것도 안 보인다 — 할 일 없는데 서 있으면 장식이고, 장식은 제일 먼저 지겨워진다(08-31).
+      */}
+      {모드 !== "조용함" && (
+        <div className="flex items-center gap-3 pb-1">
+          <로키얼굴 모드={모드} />
+          <div className="min-w-0 flex-1"><모드띠 모드={모드} 하는일={하는일} 몇분={몇분} /></div>
+        </div>
+      )}
 
       <div className="flex-1 space-y-4 overflow-y-auto py-6">
         {/*
@@ -745,5 +772,6 @@ export default function AskClient({
       onFix={(feedback) => { setPreviewOpen(false); void send(`수정 요청: ${feedback}`); }}
     />
     </div>
+    </>
   );
 }
