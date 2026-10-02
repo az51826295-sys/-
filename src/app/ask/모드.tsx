@@ -88,3 +88,49 @@ export function 로키얼굴({ 모드 }: { 모드: 모드 }) {
     </div>
   );
 }
+
+// ───────────────────────── 결 고르기 (228회차 10-02) ─────────────────────────
+/**
+ * **보고 고르게 한다.** 사장님 "모방이 창조의 어머니고 모방하는게 속도가 더 빠르잖아,
+ * 영상으로 미리 만들고 모방하는건 어때?" — 방향은 맞는데 **AI 가 지어낸 영상은 글자가 깨지고,
+ * 무엇보다 그걸 보고 내가 또 만들어야 한다.** 그래서 **진짜로 도는 화면을 여러 결로 만들어 찍는다.**
+ * 고른 것은 이미 돌아가는 것이라 다시 만들 일이 없다.
+ *
+ * `?결=2` 처럼 주소로 고른다. 사장님이 하나 고르시면 그 결을 기본으로 못 박고 나머지는 지운다 —
+ * 고르라고 만든 것을 안 지우면 그때부터 그건 "설정" 이 되고, 설정은 아무도 안 바꾼다.
+ */
+export type 결 = 1 | 2 | 3;
+export const 결이름: Record<결, string> = {
+  1: "지금 것 — 얼굴 작게, 띠 하나",
+  2: "두근도트처럼 — 얼굴 크게 위에",
+  3: "메신저처럼 — 얼굴은 옆에, 대화가 주인공",
+};
+
+export function use결(): 결 {
+  const [결, set결] = useState<결>(1);
+  useEffect(() => {
+    try {
+      const n = Number(new URLSearchParams(window.location.search).get("결"));
+      if (n === 2 || n === 3) set결(n);
+    } catch { /* 못 읽으면 지금 것 */ }
+  }, []);
+  return 결;
+}
+
+/** 결 2 — 두근도트처럼 얼굴이 크게 앞에 서고 말이 그 아래로 흐른다. */
+export function 큰얼굴({ 모드, 하는일, 몇분 }: { 모드: 모드; 하는일?: string | null; 몇분?: number | null }) {
+  return (
+    <div className="rk-큰얼굴칸">
+      <div className={`rk-큰얼굴 ${모드 === "일하는중" ? "rk-얼굴-일" : 모드 === "대화중" ? "rk-얼굴-말" : ""}`}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/logo/rookery-mark-white.svg" alt="" />
+        <span className="rk-숨" aria-hidden />
+      </div>
+      <div className="rk-큰이름">로키</div>
+      <div className="rk-큰상태">
+        {모드 === "일하는중" ? (하는일 ?? "일하는 중") : 모드 === "대화중" ? "답을 쓰는 중이에요" : "무엇이든 물어보세요"}
+        {모드 === "일하는중" && 몇분 != null ? ` · ${몇분}분째` : ""}
+      </div>
+    </div>
+  );
+}

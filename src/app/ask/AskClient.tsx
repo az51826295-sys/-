@@ -1,7 +1,7 @@
 "use client";
 
 import { Waiting } from "@/components/Waiting";
-import { 모드계산, use방금들어감, 전환, 모드띠, 로키얼굴 } from "./모드";
+import { 모드계산, use방금들어감, 전환, 모드띠, 로키얼굴, use결, 큰얼굴 } from "./모드";
 import { use좁은창, 창단추 } from "./좁은창";
 import { use화면보기, 화면보기띠 } from "./화면보기";
 
@@ -434,12 +434,27 @@ export default function AskClient({
 
   const last = turns[turns.length - 1];
 
+  /**
+   * **시연 모드**(?시연=1). 조용함 → 대화 중 → 일하는 중을 저절로 돈다.
+   * 진짜 업무를 돌리면 돈이 들고 몇 분이 걸린다 — 영상 한 편 찍자고 그럴 일이 아니다.
+   * 이건 **보여 주기 위한 가짜**라 주소에 적지 않으면 절대 안 켜진다.
+   */
+  const [시연, set시연] = useState<0 | 1 | 2>(0);
+  useEffect(() => {
+    try { if (new URLSearchParams(window.location.search).get("시연") !== "1") return; } catch { return; }
+    const 차례: (0 | 1 | 2)[] = [0, 1, 2, 2, 2];
+    let i = 0;
+    const 자 = setInterval(() => { i = (i + 1) % 차례.length; set시연(차례[i]); }, 2600);
+    return () => clearInterval(자);
+  }, []);
   // ── 대화 중인가 일하는 중인가 (228회차, 사장님 "대화하고 있는지 개발하는지 구분해야 하고")
   // 답을 기다리는 몇 초와 뒤에서 몇 분째 코드를 쓰는 것이 같은 얼굴이면 안 된다.
   const 도는일 = Object.entries(steps);
-  const 모드 = 모드계산(busy, 도는일.length);
+  const 모드 = 시연 ? (시연 === 1 ? "대화중" : "일하는중") : 모드계산(busy, 도는일.length);
   // 켜 두고 쓰는 좁은 창(메신저처럼). 미리보기 칸은 접는다 — 좁은 데서 반을 떼면 대화가 죽는다.
   const { 좁게, 바꾸기: 창바꾸기 } = use좁은창();
+  // 보고 고르시라고 만든 세 결(?결=2, ?결=3). 고르시면 그것만 남기고 나머지는 지운다.
+  const 결 = use결();
   // **로키가 화면을 보고 있다가 말을 건다.** 사장님이 한 번 눌러야 켜지고, 켜져 있는 동안 늘 보인다.
   const 화면 = use화면보기(
     useCallback((말: string) => setTurns((t) => [...t, { role: "assistant", content: 말, 먼저건말: true }]), []),
@@ -505,10 +520,13 @@ export default function AskClient({
         **로키가 앞에 나와 있다.** 두근도트처럼 얼굴이 먼저고 말이 그 아래로 흐른다.
         조용할 때는 아무것도 안 보인다 — 할 일 없는데 서 있으면 장식이고, 장식은 제일 먼저 지겨워진다(08-31).
       */}
+      {결 === 2 && <큰얼굴 모드={모드} 하는일={하는일 ?? (시연 ? "Dev: 코드를 쓰는 중" : null)} 몇분={몇분 ?? (시연 === 2 ? 7 : null)} />}
       <div className="flex items-center gap-3 pb-1">
-        {모드 !== "조용함" && <로키얼굴 모드={모드} />}
+        {결 !== 2 && 모드 !== "조용함" && <로키얼굴 모드={모드} />}
         <div className="min-w-0 flex-1">
-          {모드 !== "조용함" && <모드띠 모드={모드} 하는일={하는일} 몇분={몇분} />}
+          {결 !== 2 && 모드 !== "조용함" && (
+            <모드띠 모드={모드} 하는일={하는일 ?? (시연 === 2 ? "Dev: 코드를 쓰는 중" : null)} 몇분={몇분 ?? (시연 === 2 ? 7 : null)} />
+          )}
         </div>
         <창단추 좁게={좁게} 바꾸기={창바꾸기} />
       </div>
