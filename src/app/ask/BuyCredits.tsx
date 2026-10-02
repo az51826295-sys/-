@@ -138,6 +138,19 @@ export default function BuyCredits() {
 
   // 140회차: 결제 대행사가 없으면 이 자리를 아예 안 보여 준다. 잔액은 미리보기 패널에 이미 뜬다.
   // 167회차: 서버가 "이 사람은 된다" 고 하면 빌드 때 박힌 스위치가 꺼져 있어도 보인다(시험 모드 명단).
+  //
+  // 228회차 10-03 — **앱에서는 까닭을 적는다.** 사장님이 "크레딧 표시가 아예 없다" 고 하셨는데,
+  // 앱(TWA)으로 들어오면 구글 정책 때문에 일부러 숨기는 자리였다. 그런데 **아무 말 없이 사라지니**
+  // 고장과 구별이 안 된다. 게다가 그 표시는 쿠키로 1년 남아서, 한 번 앱으로 들어온 브라우저는
+  // 계속 숨는다. 숨기는 건 그대로 두되 **왜 없는지는 말한다.**
+  if (info.inApp) {
+    return (
+      <div className="px-3 py-2 text-[11px] leading-relaxed text-[var(--rk-400)]">
+        크레딧 {credits}
+        <span className="mt-0.5 block">앱 안에서는 결제를 못 열어요(구글 정책). 브라우저에서 열면 됩니다.</span>
+      </div>
+    );
+  }
   if (!CHECKOUT_OPEN && !info.canCheckout) return null;
 
   return (

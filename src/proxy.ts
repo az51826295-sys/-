@@ -70,6 +70,13 @@ export async function proxy(request: NextRequest) {
   if (referer.startsWith("android-app://com.rookery.ai") || request.nextUrl.searchParams.get("app") === "android") {
     res.cookies.set("rk_app", "android", { path: "/", maxAge: 60 * 60 * 24 * 365, sameSite: "lax", secure: true });
   }
+  // **푸는 길**(228회차 10-03). 위 표시는 1년을 남는다 — TWA 는 첫 요청에만 referer 를 싣기 때문에
+  // 짧게 둘 수 없다. 그런데 보통 브라우저가 한 번 `?app=android` 로 들어오면 그 브라우저는 **1년 동안
+  // 결제 단추를 못 본다.** 10-03 에 사장님이 "크레딧 표시가 아예 없다" 고 하신 자리가 여기일 수 있다.
+  // 시크릿 창 말고도 풀 수 있게 `?app=web` 을 둔다.
+  if (request.nextUrl.searchParams.get("app") === "web") {
+    res.cookies.set("rk_app", "", { path: "/", maxAge: 0, sameSite: "lax", secure: true });
+  }
   return res;
 }
 
