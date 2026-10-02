@@ -13,12 +13,15 @@ export default async function SignupPage({
   searchParams: Promise<{ error?: string }>;
 }) {
   const { error } = await searchParams;
+  // `origin` 은 두 가지에 다 필요하다 — 가지 **안**에서 만들면 밖에서 ReferenceError 가 난다.
+  // (10-03 에 login 쪽이 그래서 실서버에서 죽었다. `origin` 은 브라우저 전역 이름이라 타입 검사가 못 잡는다.)
+  const h = await headers();
+  const origin = `${h.get("x-forwarded-proto") ?? "https"}://${h.get("host") ?? ""}`;
+  const 구글 = process.env.GOOGLE_LOGIN === "1" ? googleLogin : undefined;
 
   if (process.env.PRODUCT === "dot") {
-    const h = await headers();
-    const origin = `${h.get("x-forwarded-proto") ?? "https"}://${h.get("host") ?? ""}`;
-    return <DotAuth mode="signup" error={error} action={signup} google={process.env.GOOGLE_LOGIN === "1" ? googleLogin : undefined} origin={origin} />;
+    return <DotAuth mode="signup" error={error} action={signup} google={구글} origin={origin} />;
   }
 
-  return <RookeryAuth mode="signup" action={signup} error={error} google={process.env.GOOGLE_LOGIN === "1" ? googleLogin : undefined} origin={origin} />;
+  return <RookeryAuth mode="signup" action={signup} error={error} google={구글} origin={origin} />;
 }
