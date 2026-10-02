@@ -29,6 +29,15 @@ const 바뀜문턱 = 0.12;
 
 type 상태 = "꺼짐" | "켜는중" | "보는중" | "멈춤";
 
+/** 지금 보이는 화면을 **한 장 떠서** 구조로 옮긴다 — 사장님이 "이거처럼" 하실 때. */
+async function 한장뜨기(v: HTMLVideoElement): Promise<string> {
+  const c = document.createElement("canvas");
+  const 비 = Math.min(1, 1100 / v.videoWidth);   // 구조를 읽는 일이라 보기보다 조금 크게 뜬다
+  c.width = Math.round(v.videoWidth * 비); c.height = Math.round(v.videoHeight * 비);
+  c.getContext("2d")!.drawImage(v, 0, 0, c.width, c.height);
+  return c.toDataURL("image/jpeg", 0.72).split(",")[1];
+}
+
 export function use화면보기(말붙이기: (말: string) => void, 앞말: () => string[]) {
   const [상태, set상태] = useState<상태>("꺼짐");
   const [본횟수, set본횟수] = useState(0);
@@ -122,10 +131,55 @@ export function use화면보기(말붙이기: (말: string) => void, 앞말: () 
     return () => { 멈춤 = true; clearInterval(자); };
   }, [상태, 말붙이기, 앞말, 끄기]);
 
-  return { 상태, 본횟수, 보낸횟수, 잘못, 켜기, 끄기, 상한: 기본상한 };
+  /**
+   * **이거처럼.** 사장님이 베끼고 싶은 앱을 띄워 두고 누르면, 그 화면을 구조로 옮겨 대화에 붙인다.
+   * 말 걸기와 다른 점: 이건 **사장님이 먼저 시킨 것**이라 문턱이 없다. 반드시 답한다.
+   */
+  const [옮기는중, set옮기는중] = useState(false);
+  const 이거처럼 = useCallback(async () => {
+    const v = 비디오.current;
+    if (!v || !v.videoWidth || 옮기는중) return;
+    set옮기는중(true); set잘못("");
+    try {
+      const r = await fetch("/api/ask/copy", {
+        method: "POST", headers: { "content-type": "application/json" },
+        body: JSON.stringify({ 그림: await 한장뜨기(v) }),
+      });
+      const j = await r.json();
+      if (!r.ok || !j.구조) { set잘못(j.잘못 ?? "구조를 못 읽었어요"); set옮기는중(false); return; }
+      const k = j.구조 as {
+        무엇: string; 뼈대: { 자리: string; 무엇: string; 높이비중: string }[];
+        글자층: string; 색쓰임: string; 간격: string; 움직임: string;
+        옮기면: string[]; 안가져올것: string[]; 못본것: string[];
+      };
+      말붙이기([
+        `**이 화면을 봤어요 — ${k.무엇}**`,
+        "",
+        "**뼈대**",
+        ...k.뼈대.map((b) => `- [${b.자리}] ${b.무엇} (${b.높이비중})`),
+        "",
+        `**글자 층** ${k.글자층}`,
+        `**색 쓰임** ${k.색쓰임}`,
+        `**간격** ${k.간격}`,
+        `**움직임** ${k.움직임}`,
+        "",
+        "**우리 화면으로 옮기면**",
+        ...k.옮기면.map((x) => `- ${x}`),
+        "",
+        "**안 가져올 것**(그 앱 고유의 것)",
+        ...k.안가져올것.map((x) => `- ${x}`),
+        "",
+        "**한 장으로는 못 본 것**",
+        ...k.못본것.map((x) => `- ${x}`),
+      ].join(String.fromCharCode(10)));
+    } catch { set잘못("서버에 못 닿았어요"); }
+    set옮기는중(false);
+  }, [옮기는중, 말붙이기]);
+
+  return { 상태, 본횟수, 보낸횟수, 잘못, 켜기, 끄기, 상한: 기본상한, 이거처럼, 옮기는중 };
 }
 
-export function 화면보기띠({ 상태, 본횟수, 보낸횟수, 상한, 잘못, 켜기, 끄기 }: ReturnType<typeof use화면보기>) {
+export function 화면보기띠({ 상태, 본횟수, 보낸횟수, 상한, 잘못, 켜기, 끄기, 이거처럼, 옮기는중 }: ReturnType<typeof use화면보기>) {
   if (상태 === "꺼짐" || 상태 === "켜는중") {
     return (
       <div className="rk-화면띠">
@@ -150,6 +204,9 @@ export function 화면보기띠({ 상태, 본횟수, 보낸횟수, 상한, 잘�
       <span className="rk-눈" aria-hidden />
       <b>화면 보는 중</b>
       <span className="rk-설명">{본횟수}번 봄 · {보낸횟수}/{상한}번 물어봄</span>
+      <button type="button" onClick={() => void 이거처럼()} disabled={옮기는중} title="지금 보이는 화면을 베낄 수 있는 구조로 옮긴다">
+        {옮기는중 ? "보는 중…" : "이거처럼"}
+      </button>
       <button type="button" onClick={끄기}>그만 보기</button>
     </div>
   );
