@@ -4,6 +4,7 @@ import { Waiting } from "@/components/Waiting";
 import { 모드계산, use방금들어감, 전환, 모드띠, 로키얼굴, use결, 큰얼굴 } from "./모드";
 import { use좁은창, 창단추 } from "./좁은창";
 import { use화면보기, 화면보기띠 } from "./화면보기";
+import 예시 from "./예시";
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Icon from "@/components/Icon";
@@ -521,6 +522,12 @@ export default function AskClient({
         조용할 때는 아무것도 안 보인다 — 할 일 없는데 서 있으면 장식이고, 장식은 제일 먼저 지겨워진다(08-31).
       */}
       {결 === 2 && <큰얼굴 모드={모드} 하는일={하는일 ?? (시연 ? "Dev: 코드를 쓰는 중" : null)} 몇분={몇분 ?? (시연 === 2 ? 7 : null)} />}
+      {/*
+        **처음 화면에서는 안 보인다**(228회차 10-03). 맨 윗줄 제일 좋은 자리를
+        좁게·창으로 띄우기·화면 보여주기가 먹고 있었다 — 처음 온 사람에게 필요 없고,
+        "화면 보여주기" 는 무섭기까지 하다. 한 번 주고받은 뒤에 나온다.
+      */}
+      {turns.length > 0 && (
       <div className="flex items-center gap-3 pb-1">
         {결 !== 2 && 모드 !== "조용함" && <로키얼굴 모드={모드} />}
         <div className="min-w-0 flex-1">
@@ -530,9 +537,12 @@ export default function AskClient({
         </div>
         <창단추 좁게={좁게} 바꾸기={창바꾸기} />
       </div>
+      )}
+      {turns.length > 0 && (
       <div className="pb-2">
         <화면보기띠 {...화면} />
       </div>
+      )}
 
       <div className="flex-1 space-y-4 overflow-y-auto py-6">
         {/*
@@ -547,10 +557,11 @@ export default function AskClient({
                 ? `"${task.title}" 안에서 나눈 이야기만 여기 모입니다.`
                 : "무엇이든 물어보세요. 찾아봐야 할 것은 찾아보고, 시간이 드는 일은 AI가 업무로 맡아 자동으로 만들어요."}
             </p>
-            {/* 100회차: Paddle 심사가 "사람을 붙여"를 번역기로 읽고 사람 용역으로 보고 거절했다(09-13). 소프트웨어라는 것을 영어로도 적는다. */}
-            {!task && (
-              <p className="text-[11px] text-[var(--rk-400)]">Rookery is AI software (SaaS). All results are generated automatically by AI models and delivered digitally in the app. We do not sell physical goods or human-performed services.</p>
-            )}
+            {/*
+              **예시 셋**(228회차 10-03). 처음 쓰는 사람으로 들어가 재 보니 예시가 0개였다 —
+              "무엇이든 물어보세요" 만 있고 뭘 물을지 보기가 없으면 사람은 거기서 멈춘다.
+            */}
+            {!task && <예시 넣기={(글) => { setText(글); requestAnimationFrame(() => inputRef.current?.focus()); }} />}
             {/* 100회차: Paddle 판매자 심사는 첫 화면에서 약관·개인정보·환불로 가는 길을 본다(루트 / 가 여기로 온다). */}
             {!task && (
               <p className="text-[11px] text-[var(--rk-400)]">
@@ -562,6 +573,14 @@ export default function AskClient({
                 <span className="mx-1.5">·</span>
                 <a href="/privacy" className="underline">개인정보 처리방침</a>
               </p>
+            )}
+            {/*
+              100회차: Paddle 심사가 "사람을 붙여"를 번역기로 읽고 사람 용역으로 보고 거절했다(09-13).
+              소프트웨어라는 것을 영어로도 적는다. 다만 **맨 아래**다 — 10-03 에 재 보니 한국 사람이 보는
+              첫 화면 둘째 줄에 영어 178자가 있었다. 심사에 필요한 글이지 처음 온 사람에게 할 말이 아니다.
+            */}
+            {!task && (
+              <p className="text-[10px] leading-relaxed text-[var(--rk-400)] opacity-70">Rookery is AI software (SaaS). All results are generated automatically by AI models and delivered digitally in the app. We do not sell physical goods or human-performed services.</p>
             )}
           </div>
         )}

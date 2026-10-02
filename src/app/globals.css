@@ -342,3 +342,13 @@ img.pixelated {
 .rk-큰얼굴.rk-얼굴-일 img { opacity: 1; transform: scale(1.08); }
 .rk-큰이름 { font-size: 15px; font-weight: 800; letter-spacing: .3px; color: var(--rk-ink); }
 .rk-큰상태 { font-size: 12px; color: var(--rk-400); text-align: center; max-width: 320px; }
+
+/* 처음 온 사람에게 보기 셋 — 누르면 입력칸에 들어간다(바로 안 보낸다). */
+.rk-예시 { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; margin-top: 10px; }
+.rk-예시-말 { font-size: 11.5px; color: var(--rk-400); margin-right: 2px; }
+.rk-예시 button {
+  padding: 5px 11px; border-radius: 999px; font-size: 12px; cursor: pointer;
+  border: 1px solid var(--rk-200); background: var(--rk-100); color: var(--rk-800);
+  transition: border-color 140ms ease;
+}
+.rk-예시 button:hover { border-color: var(--rk-400); }
