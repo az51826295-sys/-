@@ -374,6 +374,44 @@ export const appBuildSkill: EmployeeSkill = {
     // 186회차: 고치는 판의 계획(제목·기준 이어받기·손댈 파일·작은 고침인가)은 생각 모드 자리(deepseek-v4-pro, 40초쯤)에 앉힐 일이 아니다 —
     // 고치는 자리(luna, 5초)로. 처음 만드는 판의 계획은 그대로(기준을 처음 쓰는 자리라 판단이 더 든다). 되돌리기: PLAN_SEAT_FIX=router.
     const planAi = previous && previous.files.length > 0 && (process.env.PLAN_SEAT_FIX ?? "fix") !== "router" ? await fixSeat(ctx) : ctx.providers.ai;
+
+    /**
+     * **장르만 말하면 그 장르를 참고한다** (228회차 10-02, 사장님 "사용자가 횡스크롤을 만들겠다 하면
+     * 다른 게임을 참고하라는 거지").
+     *
+     * "횡스크롤 게임 만들어 줘" 는 주문이 아니라 **장르 이름**이다. 그 빈칸을 내가 메우면
+     * 그 장르에서 당연한 것을 빠뜨린다 — 코요테 타임도, 입력 선행도, 히트스톱도 없는 게임은
+     * 돌아가지만 재미가 없다. 그래서 **계획을 쓰기 전에** 그 장르에서 잘 된 게임을 참고해
+     * "없으면 이상한 것" 을 먼저 뽑는다(호출 1번).
+     *
+     * 처음 만드는 판에만 한다 — 고치는 판은 이미 기준이 있고, 거기에 장르 기준을 더 밀어 넣으면
+     * 사람이 말한 고장의 크기를 넘는다(165회차에 그래서 새 게임이 나왔다).
+     */
+    const 참고글 = await (async () => {
+      if (previous) return "";
+      const 주문 = `${ctx.context.assignment.title} ${ctx.context.assignment.description ?? ""}`;
+      if (!/게임|횡스크롤|플랫폼|슈팅|액션|rpg|로그라이크|퍼즐|레이싱|디펜스/i.test(주문)) return "";
+      try {
+        const { 참고게임꼴, 참고게임지시문, 참고게임물음 } = await import("@/lib/ask/참고게임");
+        const { output } = await ctx.providers.ai.generateStructuredOutput({
+          systemInstructions: 참고게임지시문, input: 참고게임물음(주문),
+          schema: 참고게임꼴, schemaName: "genre_ref", maxTokens: 16000, tier: "judgment",
+        });
+        const r = output as { 장르: string; 참고작: { 이름: string }[]; 기준: { when: string; then: string }[]; 사람이정할것: string[] };
+        const 줄: string[] = [
+          `## 이 장르에서 빠뜨리면 안 되는 것 (${r.장르} · ${r.참고작.map((g) => g.이름).join("·")} 참고)`,
+          "주문에 안 적혀 있어도 이 장르라면 **없으면 이상한 것**이다. 기준에 녹여라 — 그대로 베끼지 말고 이번 앱에 맞게.",
+          ...r.기준.slice(0, 16).map((c) => `- ${c.when} → ${c.then}`),
+        ];
+        if (r.사람이정할것.length) 줄.push(`사장님이 정하실 것(지어내지 마라): ${r.사람이정할것.slice(0, 6).join(" · ")}`);
+        줄.push("");
+        return 줄.join(String.fromCharCode(10));
+      } catch (e) {
+        // 참고를 못 받아도 계획은 선다 — 있으면 좋은 것이지 없으면 못 가는 것이 아니다.
+        console.error("[참고게임] 못 받음:", e instanceof Error ? e.message : e);
+        return "";
+      }
+    })();
     const spec = await step(ctx.supabase, ctx.executionId, "plan", async () => (await planAi.generateStructuredOutput({
       systemInstructions:
         "너는 이 회사의 개발자다. **아직 코드를 쓰지 마라.**\n\n" +
@@ -398,6 +436,7 @@ export const appBuildSkill: EmployeeSkill = {
         (await renderGamedevLessons("blueprint")),
       input:
         deviceNote + "\n\n" +
+        참고글 +
         `업무: ${ctx.context.assignment.title}\n` +
         `설명: ${ctx.context.assignment.description ?? ""}\n` +
         `기대 결과: ${ctx.context.assignment.expectedOutcome ?? ""}` +

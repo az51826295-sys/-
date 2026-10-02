@@ -1,0 +1,87 @@
+/**
+ * **베낀 기준으로 실제로 만들어 본다** (228회차 10-02, 사장님 "영상 하나랑 게임 하나로 가자").
+ *   npx tsx engine/tools/rookery_env.mts engine/work/ask/모방으로짓기.mts [모델=gpt-5.6-luna]
+ *
+ * ## 이것이 사장님 말을 재는 판이다
+ * 사장님: *"모방이 생성하는데 절대적으로 빠른건 인정?"* — 인정했다. 이제 **재 본다.**
+ *
+ * 같은 자리(luna)로 같은 게임을 두 번 짓는다. 다른 것은 **주문 하나뿐**이다:
+ *   · 10-02 오전: **손으로 쓴 주문**(engine/work/webgl/order.txt, 기준 18개) → 자 2/5 · 못 돌았다
+ *   · 지금:       **베낀 기준**(engine/work/ask/게임모방자.mts 가 장면에서 뽑은 14개)
+ *
+ * 베낀 기준이 나은 까닭이 있다면 이것이다: 손으로 쓴 주문은 **내가 바란 것**이고,
+ * 베낀 기준은 **실제로 돌아간 것에서 뽑은 것**이다. 돌아가는 것을 보고 적으면 못 돌 것을 안 적는다.
+ *
+ * 그래도 **한 판은 한 판이다.** 이걸로 "모방이 낫다" 를 정하지 않는다 — 한 번 재면 흔들림이 안 보인다.
+ */
+import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
+import path from "node:path";
+
+const { WHOLE_BUILD_SYSTEM, wholeBuildInput, buildSchema } = await import("../../../src/lib/skills/appBuild/index");
+const { createOpenAIProvider } = await import("../../../src/lib/providers/openai");
+const { meterProviders } = await import("../../../src/lib/costs/meter");
+const { createServiceClient } = await import("../../../src/lib/supabase/service");
+
+const 모델 = process.argv[2] ?? "gpt-5.6-luna";
+const 기준길 = "C:/Users/az518/Desktop/로키-게임모방/기준.json";
+if (!existsSync(기준길)) { console.error(`베낀 기준이 없다 — 먼저 게임모방자.mts 를 돌려라: ${기준길}`); process.exit(1); }
+
+type 베낀것 = {
+  무엇: string; 화면칸: string[]; 조작: string; 규칙: string[]; 손맛: string; 그림결: string;
+  기준: { id: string; when: string; then: string }[]; 안가져올것: string[]; 못본것: string[];
+};
+const 베낀것 = JSON.parse(readFileSync(기준길, "utf8")) as 베낀것;
+console.log(`베낀 기준 ${베낀것.기준.length}개 · ${베낀것.무엇}`);
+
+const db = createServiceClient();
+const { data: co } = await db.from("companies").select("id").eq("name", "권혁수").maybeSingle();
+if (!co) { console.error("회사를 못 찾았다"); process.exit(1); }
+
+const spec = { title: 베낀것.무엇, criteria: 베낀것.기준, touch: [] as string[] };
+/**
+ * **못 본 것은 주문에 안 싣는다.** 장면으로 못 본 것(점수 계산식·적 AI)을 "알아서 해라" 로 넘기면
+ * 모델이 지어내고, 그러면 베낀 것이 아니라 또 지어낸 것이 된다. 대신 **모른다고 적어** 둔다 —
+ * 그래야 받는 쪽이 "여기는 내가 정해야 하는 자리" 로 읽는다.
+ */
+const 덧붙임 = [
+  "",
+  "## 어디서 베꼈나",
+  `보고 적은 것이다: ${베낀것.무엇}`,
+  `화면 칸: ${베낀것.화면칸.join(" · ")}`,
+  `조작: ${베낀것.조작}`,
+  `손맛: ${베낀것.손맛}`,
+  `그림결: ${베낀것.그림결}`,
+  "",
+  "## 가져오지 않는 것",
+  ...베낀것.안가져올것.map((x) => `- ${x}`),
+  "",
+  "## 장면으로는 못 본 것 — **지어내지 말고 수수하게 정하고, 무엇으로 정했는지 적어라**",
+  ...베낀것.못본것.map((x) => `- ${x}`),
+  "",
+  "## 기기",
+  "- 데스크톱 · 마우스와 키보드 · 1280x800 · 포인터 락 됨",
+].join(String.fromCharCode(10));
+
+const 칸 = `engine/work/ask/모방게임-${모델}`;
+mkdirSync(칸, { recursive: true });
+const { ai } = meterProviders({ ai: createOpenAIProvider({ judgmentModel: 모델 }) } as any, db, { companyId: (co as any).id, purpose: "copy_build" } as any);
+
+const t0 = Date.now();
+const { output } = await ai.generateStructuredOutput({
+  systemInstructions: WHOLE_BUILD_SYSTEM,
+  input: wholeBuildInput(spec, 덧붙임, null),
+  schema: buildSchema, schemaName: "app_build", maxTokens: 100000, tier: "judgment",
+});
+const 초 = Math.round((Date.now() - t0) / 1000);
+for (const f of output.files) {
+  const p = path.join(칸, f.path);
+  mkdirSync(path.dirname(p), { recursive: true });
+  writeFileSync(p, f.contents);
+}
+const 글자 = output.files.reduce((s, f) => s + f.contents.length, 0);
+console.log(`\n${모델} — ${초}초 · 파일 ${output.files.length}개 · ${(글자 / 1024).toFixed(0)}KB · 스스로 "지켰다" ${output.coverage.filter((x) => x.met).length}/${베낀것.기준.length}`);
+
+const { data: 값 } = await db.from("model_usage").select("cost_usd").eq("purpose", "copy_build").limit(20);
+console.log(`값(누적) $${((값 ?? []) as any[]).reduce((s, r) => s + Number(r.cost_usd ?? 0), 0).toFixed(3)}`);
+console.log(`\n이제 **같은 자**로 잰다:`);
+console.log(`  npx tsx engine/work/webgl/자.mts ${칸}`);
