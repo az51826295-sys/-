@@ -10,11 +10,20 @@ export default function RookeryAuth({
   action,
   error,
   message,
+  google,
+  origin,
 }: {
   mode: "login" | "signup";
   action: (formData: FormData) => void | Promise<void>;
   error?: string;
   message?: string;
+  /**
+   * **구글로 들어가기** (228회차 10-03). 두근도트엔 있고 로키엔 없었다 — 그래서 구글 계정만 쓰는 사람은
+   * 로키 웹에 **아예 못 들어왔다**(10-03 에 사장님이 결제 시험을 못 한 까닭이 이것이었다).
+   * 안 켜졌으면(`google` 이 없으면) 지금 화면 그대로 — 켜다 말면 아무도 못 드는 쪽이 더 나쁘다.
+   */
+  google?: (formData: FormData) => Promise<void>;
+  origin?: string;
 }) {
   const isLogin = mode === "login";
   return (
@@ -24,6 +33,20 @@ export default function RookeryAuth({
         <img src="/rookery-icon-192.png" alt="" className="mb-4 h-12 w-12" style={{ imageRendering: "pixelated" }} />
         <h1 className="text-2xl font-bold">{isLogin ? "로키에 로그인" : "로키 시작하기"}</h1>
         <p className="mt-1 text-sm text-[var(--rk-600)]">{isLogin ? "대화와 결과물은 계정에 저장돼요." : "계정을 만들면 대화와 결과물이 저장돼요."}</p>
+
+        {google && (
+          <form action={google} className="mt-5">
+            <input type="hidden" name="origin" value={origin ?? ""} />
+            <button
+              type="submit"
+              className="flex w-full items-center justify-center gap-2 border-2 border-[var(--rk-ink)] bg-[var(--rk-ink)] px-3 py-2.5 text-sm font-bold text-[var(--rk-paper)]"
+            >
+              <span className="grid h-5 w-5 place-items-center rounded-full bg-white text-[13px] font-black text-[#4285F4]">G</span>
+              구글로 {isLogin ? "들어가기" : "시작하기"}
+            </button>
+            <div className="mt-3 text-center text-[11px] text-[var(--rk-400)]">또는 이메일로</div>
+          </form>
+        )}
 
         {isLogin && (
           <div className="mt-5 border-2 border-[#E0703A] px-3 py-2.5 text-[12.5px] leading-relaxed">

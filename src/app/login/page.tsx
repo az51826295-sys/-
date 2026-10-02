@@ -20,5 +20,5 @@ export default async function LoginPage({
   }
 
   // 99회차: 로키도 한국어·검은 화면. 폰에서 처음 여는 사람에게 QR 이어하기를 먼저 알린다.
-  return <RookeryAuth mode="login" action={login} error={error} message={message} />;
+  return <RookeryAuth mode="login" action={login} error={error} message={message} google={process.env.GOOGLE_LOGIN === "1" ? googleLogin : undefined} origin={origin} />;
 }

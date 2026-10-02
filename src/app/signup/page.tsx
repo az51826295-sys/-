@@ -20,5 +20,5 @@ export default async function SignupPage({
     return <DotAuth mode="signup" error={error} action={signup} google={process.env.GOOGLE_LOGIN === "1" ? googleLogin : undefined} origin={origin} />;
   }
 
-  return <RookeryAuth mode="signup" action={signup} error={error} />;
+  return <RookeryAuth mode="signup" action={signup} error={error} google={process.env.GOOGLE_LOGIN === "1" ? googleLogin : undefined} origin={origin} />;
 }
