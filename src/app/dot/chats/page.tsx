@@ -16,7 +16,7 @@ import { publicCharacters } from "@/lib/dot/load";
  */
 export const metadata = { title: "두근도트" };
 export const viewport = {
-  width: "device-width", initialScale: 1, maximumScale: 1, userScalable: false, themeColor: "#a5bccd",
+  width: "device-width", viewportFit: "cover" as const, initialScale: 1, maximumScale: 1, userScalable: false, themeColor: "#a5bccd",
 };
 
 export default async function DotList() {

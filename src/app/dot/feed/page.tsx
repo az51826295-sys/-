@@ -11,7 +11,7 @@ import { ensureStarter } from "@/lib/dot/starter";
  * 좋아요는 친밀도 +1(한 번), "답장" 은 그 게시물을 들고 방으로 간다.
  */
 export const metadata = { title: "두근도트 — 피드" };
-export const viewport = { width: "device-width", initialScale: 1, maximumScale: 1, userScalable: false, themeColor: "#ffffff" };
+export const viewport = { width: "device-width", viewportFit: "cover" as const, initialScale: 1, maximumScale: 1, userScalable: false, themeColor: "#ffffff" };
 
 export default async function DotFeed({ searchParams }: { searchParams: Promise<{ all?: string }> }) {
   const { all } = await searchParams;

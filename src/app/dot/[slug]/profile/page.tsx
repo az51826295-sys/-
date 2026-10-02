@@ -16,7 +16,7 @@ const PROFILE_WALL: Record<string, string> = { yuna: "/wallpapers/sakura.png", s
 const STAGE_WORD = ["", "처음 보는 사이", "아는 사이", "친한 사이", "가까운 사이", "아주 가까운 사이"];
 const EMO_KO: Record<string, string> = { neutral: "평소", happy: "기쁨", shy: "부끄", sad: "시무룩", angry: "툴툴", surprised: "깜짝" };
 
-export const viewport = { width: "device-width", initialScale: 1, maximumScale: 1, userScalable: false, themeColor: "#0b0f14" };
+export const viewport = { width: "device-width", viewportFit: "cover" as const, initialScale: 1, maximumScale: 1, userScalable: false, themeColor: "#0b0f14" };
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;

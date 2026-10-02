@@ -13,7 +13,7 @@ import { balanceFor, type Balance } from "@/lib/dot/money";
  * 불러오면 빈 방이 먼저 보이고, 그 한 박자가 "덜 만든 것" 처럼 느껴진다.
  */
 export const viewport = {
-  width: "device-width", initialScale: 1, maximumScale: 1, userScalable: false, themeColor: "#a5bccd",
+  width: "device-width", viewportFit: "cover" as const, initialScale: 1, maximumScale: 1, userScalable: false, themeColor: "#a5bccd",
   // 09-12 사장님 화면: 키보드가 뜨면 입력줄 아래 검은 빈칸. 크롬 108+ 는 키보드가 떠도 레이아웃(100dvh)을 안 줄이고
   // visualViewport 만 줄인다 → 우리가 phone 을 vv 높이로 줄이면 root(100dvh) 가운데 정렬 때문에 위아래에 빈칸. 레이아웃째 줄이게 한다.
   interactiveWidget: "resizes-content" as const,

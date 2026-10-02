@@ -8,7 +8,7 @@ import SettingsActions from "./SettingsActions";
  * 친구 탭 오른쪽 위 톱니바퀴 → 여기. 채팅 목록·피드는 아래 탭과 뒤로 가기가 있으니 메뉴에서 뺐다.
  */
 export const metadata = { title: "두근도트 — 설정" };
-export const viewport = { width: "device-width", initialScale: 1, maximumScale: 1, userScalable: false, themeColor: "#a5bccd" };
+export const viewport = { width: "device-width", viewportFit: "cover" as const, initialScale: 1, maximumScale: 1, userScalable: false, themeColor: "#a5bccd" };
 
 export default async function DotSettings() {
   const supabase = await createClient();
