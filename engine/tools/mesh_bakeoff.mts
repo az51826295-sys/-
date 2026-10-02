@@ -77,6 +77,22 @@ const mesh = defaultMeshProvider();
  */
 const 올리기 = async (dataUrl: string): Promise<string> => dataUrl;
 
+/** 받은 것을 폴더에 남긴다 — 모양을 사장님이 직접 보셔야 "성능" 이 된다. */
+const 나온칸 = "C:/Users/az518/Desktop/로키-3D-오디션";
+const 받아두기 = async (이름: string, 모델주소: string | null, 그림주소: string | null) => {
+  const { mkdirSync, writeFileSync } = await import("node:fs");
+  mkdirSync(나온칸, { recursive: true });
+  for (const [무엇, 주소, 끝] of [["모양", 모델주소, "glb"], ["미리보기", 그림주소, "png"]] as const) {
+    if (!주소) { console.log(`   ${이름} ${무엇}: 주소 없음`); continue; }
+    try {
+      const b = Buffer.from(await (await fetch(주소)).arrayBuffer());
+      const f = `${나온칸}/${이름}.${끝}`;
+      writeFileSync(f, b);
+      console.log(`   ${이름} ${무엇} → ${f} (${(b.length / 1024).toFixed(0)}KB)`);
+    } catch (e) { console.log(`   ${이름} ${무엇} 못 받음: ${e instanceof Error ? e.message.slice(0, 50) : e}`); }
+  }
+};
+
 // 재는 손: 등록부에서 **그림을 받는 fal 손**만 고른다. 등록부에 한 줄 더하면 여기도 저절로 는다.
 const fal손 = MESH3D.filter((h) => h.문 === "fal" && h.모델 && h.입력.includes("그림"));
 console.log(`fal 손 ${fal손.length}개: ${fal손.map((h) => h.이름).join(" · ")}`);
@@ -92,6 +108,8 @@ for (const { 그림, 무엇: p } of 그림들) {
       const url = o?.model_mesh?.url ?? o?.model_glb?.url ?? o?.mesh?.url ?? o?.model?.url ?? null;
       let 받아짐 = false;
       if (url) { try { 받아짐 = (await fetch(url, { method: "HEAD" })).ok; } catch { 받아짐 = false; } }
+      // **본 것을 남긴다.** 시간·크레딧만 재면 "성능" 의 절반도 못 본다 — 모양은 눈으로 봐야 한다.
+      await 받아두기(h.id, url, o?.rendered_image?.url ?? o?.preview?.url ?? o?.thumbnail?.url ?? o?.image?.url ?? null);
       판들.push({ 손: h.id, 주문: p, 초: r.ms / 1000, 크레딧: null, 받아짐, 왜: url ? undefined : `파일 칸을 못 찾았다: ${Object.keys(o ?? {}).slice(0, 6).join(",")}` });
     } catch (e) {
       판들.push({ 손: h.id, 주문: p, 초: null, 크레딧: null, 받아짐: false, 왜: e instanceof Error ? e.message.slice(0, 90) : String(e) });
@@ -104,6 +122,7 @@ for (const { 그림, 무엇: p } of 그림들) {
     let 받아짐 = false;
     const url = r.glbUrl ?? r.fbxUrl;
     if (url) { try { 받아짐 = (await fetch(url, { method: "HEAD" })).ok; } catch { 받아짐 = false; } }
+    await 받아두기(`meshy-${r.model}`, url ?? null, r.thumbnailUrl ?? null);
     판들.push({ 손: `meshy(${r.model})`, 주문: p, 초: (Date.now() - t0) / 1000, 크레딧: r.consumedCredits, 받아짐: 받아짐 || !!r.glbBase64 });
   } catch (e) {
     판들.push({ 손: "meshy", 주문: p, 초: (Date.now() - t0) / 1000, 크레딧: null, 받아짐: false, 왜: e instanceof Error ? e.message.slice(0, 90) : String(e) });
