@@ -3,8 +3,9 @@
 import { Waiting } from "@/components/Waiting";
 import { 모드계산, use방금들어감, 전환, 모드띠, 로키얼굴 } from "./모드";
 import { use좁은창, 창단추 } from "./좁은창";
+import { use화면보기, 화면보기띠 } from "./화면보기";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Icon from "@/components/Icon";
 import PreviewPanel, { PreviewStrip, previewSummary, usePreview, type PlanCard } from "@/app/ask/PreviewPanel";
 import { ChatMarkdown } from "@/components/ChatMarkdown";
@@ -73,6 +74,8 @@ type Turn = {
   kind?: "result" | "checks" | "approval" | "exhausted";
   /** 이 턴에 대고 누를 수 있는 것. 사장님: "예시 버튼은 편의가 아니다" — 편의는 눈앞의 것에 대고 누르는 것. */
   actions?: { label: string; text: string }[];
+  /** **로키가 화면을 보고 먼저 건 말.** 사람이 물어서 나온 답이 아니라서 다르게 그린다. */
+  먼저건말?: boolean;
   /** 돌아온 일에 딸린 파일. 글 파일(contents)은 브라우저가, 저장소 파일(href)은 서버를 거쳐 연다. */
   files?: { path: string; contents?: string; href?: string }[] | null;
   needsOnboarding?: { id: string; name: string } | null;
@@ -134,6 +137,12 @@ export default function AskClient({
   /** 이번 턴에 붙일 사진. 보내면 비운다. */
   const [attached, setAttached] = useState<{ name: string; b64: string }[]>([]);
   const [turns, setTurns] = useState<Turn[]>(initial?.turns ?? []);
+  /**
+   * 화면 보기 고리가 **지금까지 오간 말**을 읽는 자리. 상태를 바로 보면 고리가 매번 새로 걸려
+   * 20초 자가 다시 시작된다 — 그러면 영영 안 들여다본다. 그래서 ref 로 흘려 둔다.
+   */
+  const turnsRef = useRef<Turn[]>(initial?.turns ?? []);
+  useEffect(() => { turnsRef.current = turns; }, [turns]);
   const [text, setText] = useState(prefill ?? "");
   // 넘겨받은 글은 주소에서 지운다 — 안 지우면 새로고침할 때마다 같은 글이 다시 담긴다.
   useEffect(() => {
@@ -431,6 +440,11 @@ export default function AskClient({
   const 모드 = 모드계산(busy, 도는일.length);
   // 켜 두고 쓰는 좁은 창(메신저처럼). 미리보기 칸은 접는다 — 좁은 데서 반을 떼면 대화가 죽는다.
   const { 좁게, 바꾸기: 창바꾸기 } = use좁은창();
+  // **로키가 화면을 보고 있다가 말을 건다.** 사장님이 한 번 눌러야 켜지고, 켜져 있는 동안 늘 보인다.
+  const 화면 = use화면보기(
+    useCallback((말: string) => setTurns((t) => [...t, { role: "assistant", content: 말, 먼저건말: true }]), []),
+    useCallback(() => turnsRef.current.slice(-4).map((t) => `${t.role === "user" ? "사장님" : "로키"}: ${t.content.slice(0, 160)}`), []),
+  );
   const 방금들어감 = use방금들어감(모드);
   const 하는일 = 도는일.length ? 도는일.map(([, v]) => v).join(" · ") : null;
   const 몇분 = (() => {
@@ -498,6 +512,9 @@ export default function AskClient({
         </div>
         <창단추 좁게={좁게} 바꾸기={창바꾸기} />
       </div>
+      <div className="pb-2">
+        <화면보기띠 {...화면} />
+      </div>
 
       <div className="flex-1 space-y-4 overflow-y-auto py-6">
         {/*
@@ -541,9 +558,13 @@ export default function AskClient({
                   : "bg-[var(--rk-100)] text-[var(--rk-ink)]") +
                 // 시킨 일의 결과는 답이 아니라 **돌아온 것**이다. 왼쪽 띠 하나로
                 // 가른다 — 같은 회색 상자면 "누가 언제 한 말인지" 를 읽어야 안다.
-                (t.returnedWork ? " border-l-8 border-l-[#E0703A]" : "")
+                (t.returnedWork ? " border-l-8 border-l-[#E0703A]" : "") +
+                // **로키가 화면을 보고 먼저 건 말**은 답이 아니다. 물어보지도 않았는데 온 말이라
+                // 같은 상자면 "내가 뭘 물었더라" 를 되짚게 된다. 파란 띠로 가른다.
+                (t.먼저건말 ? " rk-먼저" : "")
               }
             >
+              {t.먼저건말 && <div className="rk-먼저-딱지">화면을 보고</div>}
               {/* 188회차: 옛 결과 턴엔 파일 전문이 본문에 실려 있다(새 결과는 목록만). 그리는 쪽에서 "## 파일" 아래를 자른다 — 파일은 아래 열기·저장으로. */}
               {t.role === "assistant" ? <ChatMarkdown>{t.returnedWork ? stripFileBodies(t.content) : t.content}</ChatMarkdown> : t.content}
             </div>
