@@ -12,7 +12,14 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const 두근도트 = process.env.PRODUCT !== "rookery";
+/**
+ * **어느 제품인가.** `login/page.tsx` 와 같은 자를 쓴다 — `PRODUCT === "dot"` 일 때만 두근도트다.
+ *
+ * 처음엔 `!== "rookery"` 로 적었는데, 그러면 PRODUCT 를 안 준 **내 컴퓨터에서 로키가 두근도트 행세**를 한다
+ * (`/ask` 를 열었는데 홈 화면 앱 이름이 "두근도트" 로 나왔다). 기본값은 **로키**여야 한다 —
+ * 두근도트 서버는 PRODUCT=dot 을 실제로 주고 있다.
+ */
+const 두근도트 = process.env.PRODUCT === "dot";
 
 /**
  * **아이폰에서 앱처럼 열리게** (228회차 10-03, 사장님 "애플에서 쓰는 거에도 올리자").
