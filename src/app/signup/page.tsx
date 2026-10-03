@@ -3,6 +3,7 @@ import { signup } from "./actions";
 import DotAuth from "../login/DotAuth";
 import { googleLogin } from "../login/actions";
 import { headers } from "next/headers";
+import { publicOriginFromHeaders } from "@/lib/http/origin";
 
 // 두근도트 서비스에서는 탭 제목도 두근도트. 루트 레이아웃의 "Rookery" 가 앱 안에 뜨면 딴 회사 페이지가 된다.
 export const metadata = process.env.PRODUCT === "dot" ? { title: "두근도트 — 가입" } : { title: "로키 — 가입" };
@@ -16,7 +17,8 @@ export default async function SignupPage({
   // `origin` 은 두 가지에 다 필요하다 — 가지 **안**에서 만들면 밖에서 ReferenceError 가 난다.
   // (10-03 에 login 쪽이 그래서 실서버에서 죽었다. `origin` 은 브라우저 전역 이름이라 타입 검사가 못 잡는다.)
   const h = await headers();
-  const origin = `${h.get("x-forwarded-proto") ?? "https"}://${h.get("host") ?? ""}`;
+  // **x-forwarded-host 를 먼저 본다.** Railway 뒤에서 `host` 는 내부 이름이라 localhost 가 된다(97회차·10-03 두 번).
+  const origin = publicOriginFromHeaders(h) ?? "";
   const 구글 = process.env.GOOGLE_LOGIN === "1" ? googleLogin : undefined;
 
   if (process.env.PRODUCT === "dot") {
