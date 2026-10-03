@@ -45,9 +45,15 @@ const 헛소리 = (m: { text(): string; location(): { url?: string } }) => {
 page.on("console", (m) => { if (m.type() === "error" && !헛소리(m)) 오류.push(`${m.text().slice(0, 100)}${m.location()?.url ? ` [${String(m.location().url).slice(-40)}]` : ""}`); });
 await page.setRequestInterception(true);
 page.on("request", (r) => (r.url().includes(`127.0.0.1:${포트}`) ? r.continue() : r.abort()));
-await page.goto(`http://127.0.0.1:${포트}/`, { waitUntil: "networkidle0" });
+/**
+ * **`networkidle0` 로 기다리지 않는다** (228회차 10-03).
+ * 바깥 요청을 막아 둔 창에서는 끊긴 요청 때문에 "조용해짐" 이 영영 안 올 수 있다 —
+ * 10-03 에 그래서 자가 30초를 매달리다 죽었다. **자가 매달리면 아무것도 못 잰다.**
+ * 글이 붙은 뒤 잠깐 기다리는 쪽이 더 튼튼하고, 어차피 아래에서 몇 초를 더 본다.
+ */
+await page.goto(`http://127.0.0.1:${포트}/`, { waitUntil: "domcontentloaded", timeout: 20000 });
 const 쉼 = (ms: number) => new Promise((r) => setTimeout(r, ms));
-await 쉼(600);
+await 쉼(1800);
 
 const 재 = (n: string, ok: boolean | null, 본: string) =>
   console.log(`${ok === true ? "맞음  " : ok === false ? "어긋남" : "못 잼 "} ${n}\n        ${본}`);
