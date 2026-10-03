@@ -15,7 +15,7 @@ for (const l of readFileSync(".env.local", "utf8").split(String.fromCharCode(10)
 import sharp from "sharp";
 const { createServiceClient } = await import("../../src/lib/supabase/service");
 const { createImageProvider } = await import("../../src/lib/providers/images");
-const { sheetPrompt, restylePrompt, cutSheet, measureCells, SHEET_ORDER } = await import("../../src/lib/dot/sprites");
+const { sheetPrompt, restylePrompt, cutSheet, measureCells, pixelize, SHEET_ORDER } = await import("../../src/lib/dot/sprites");
 const { faceCrop } = await import("./dot_faces_lib");
 
 const args = process.argv.slice(2);
@@ -28,20 +28,57 @@ const spec = JSON.parse(readFileSync(specPath, "utf8")) as {
   slug: string; name: string; tagline: string; look: string; persona: string; speech: string; greeting: string;
   chips?: string[]; formal_start?: boolean; default_emotion?: string;
 };
-const SHEET = "C:/Users/az518/AppData/Local/Temp/claude/C--Users-az518-Desktop/d7b8eaa0-592d-4d32-a057-634ae1e64f74/scratchpad/sheet";
+/**
+ * **시트가 사는 곳** (228회차 10-03 고침).
+ *
+ * 전에는 **옛 세션의 임시 폴더**가 박혀 있었다. 그 세션이 끝나면서 폴더가 사라져,
+ * 이 도구는 그림을 만들기도 전에 ENOENT 로 죽었다 — 그러고도 **그 아래 catch 가 안 돌았다**
+ * (참조 파일 읽기가 `.catch()` **밖**이라, 던지는 순간 대비책까지 같이 죽는다).
+ * 임시 폴더에 둔 것이 잘못이었다: 쓰고 버리는 자리에 **다음에도 쓸 것**을 두면 안 된다.
+ */
+const SHEET = "C:/Users/az518/Desktop/두근도트-시트";
 mkdirSync(`${SHEET}/faces`, { recursive: true });
 
-console.log(`1) 시트 — 본: ${ref} · 품질 ${quality}`);
+/**
+ * **이미 만든 시트를 다시 쓴다** (`--use-sheet`). 자를 고치고 다시 재 보는 데 그림값을 또 낼 까닭이 없다 —
+ * 10-03 에 뭉개기를 길에 넣고 확인할 때, 이미 있던 시트로 공짜로 확인했다.
+ */
+const 시트다시 = args.includes("--use-sheet");
+console.log(`1) 시트 — 본: ${ref} · 품질 ${quality}${시트다시 ? " · **이미 있는 시트를 쓴다(그림값 0)**" : ""}`);
 const drawer = createImageProvider();
 const look = { name: spec.name, appearance: spec.look };
 const t0 = Date.now();
-const made = await drawer.edit("data:image/png;base64," + readFileSync(`${SHEET}/${ref}-sheet.png`).toString("base64"), restylePrompt(look), "1536x1024", quality)
-  .catch(async (e) => { console.warn("   참조 그리기 실패 → 새로 그린다:", e instanceof Error ? e.message : e); return drawer.draw(sheetPrompt(look), quality, "1536x1024"); });
+// 참조 시트를 **먼저 읽어 본다.** 읽기가 `.catch()` 밖에 있으면 없을 때 대비책이 안 돈다.
+const 있던시트 = (() => {
+  if (!시트다시) return null;
+  try { return readFileSync(`${SHEET}/${spec.slug}-sheet.png`).toString("base64"); }
+  catch { console.warn(`   --use-sheet 인데 ${spec.slug}-sheet.png 가 없다 → 새로 그린다.`); return null; }
+})();
+const 참조 = (() => {
+  try { return readFileSync(`${SHEET}/${ref}-sheet.png`).toString("base64"); }
+  catch { console.warn(`   참조 시트가 없다(${SHEET}/${ref}-sheet.png) → 새로 그린다. 화풍이 기존과 다를 수 있다.`); return null; }
+})();
+const made = 있던시트
+  ? { dataUrl: "data:image/png;base64," + 있던시트, inputTokens: 0, outputTokens: 0 }
+  : 참조
+  ? await drawer.edit("data:image/png;base64," + 참조, restylePrompt(look), "1536x1024", quality)
+      .catch(async (e) => { console.warn("   참조 그리기 실패 → 새로 그린다:", e instanceof Error ? e.message : e); return drawer.draw(sheetPrompt(look), quality, "1536x1024"); })
+  : await drawer.draw(sheetPrompt(look), quality, "1536x1024");
 console.log(`   ${((Date.now() - t0) / 1000).toFixed(1)}s · 토큰 in ${made.inputTokens} out ${made.outputTokens}`);
 writeFileSync(`${SHEET}/${spec.slug}-sheet.png`, Buffer.from(made.dataUrl.split(",")[1], "base64"));
 
-console.log("2) 자르기 + 자");
-const cells = await cutSheet(made.dataUrl);
+console.log("2) 자르기 + 뭉개기 + 자");
+const 자른것 = await cutSheet(made.dataUrl);
+/**
+ * **뭉개는 단계가 길에 없었다** (228회차 10-03).
+ *
+ * `도트다` 자는 "pixelize 가 24색으로 줄인 뒤라 40색이 넘으면 뭉개기가 안 먹은 것" 이라고 적혀 있는데,
+ * `pixelize` 는 **정의만 있고 아무 데서도 안 불리고 있었다.** 그래서 그림이 아무리 잘 나와도
+ * 색이 500~800 으로 나와 **늘 떨어졌다**(나비 첫 판 791색, 둘째 판 525색).
+ * 자가 **길에 없는 단계를 가정하고 재면**, 좋은 것이 떨어진다.
+ * `pixelize` 안에 `cleanSprite`(떨어진 조각 지우기 + 알파 굳히기)가 들어 있어 그 자도 같이 잡힌다.
+ */
+const cells = await Promise.all(자른것.map(async (c) => ({ ...c, png: await pixelize(c.png) })));
 for (const c of cells) writeFileSync(`${SHEET}/${spec.slug}-${c.emotion}.png`, c.png);
 const { cases } = await measureCells(cells);
 let failed = 0;
