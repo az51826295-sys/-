@@ -7,7 +7,7 @@
  *
  *   npx tsx engine/tools/dot_photo_new.mts [slug…]     (없으면 공개 인물 전부) · 내 PC 에서 주 1회 돌린다(시트 PNG 가 여기 있다)
  */
-import { readFileSync, writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 for (const l of readFileSync(".env.local", "utf8").split(String.fromCharCode(10))) { const i = l.indexOf("="); if (i > 0 && !l.startsWith("#")) process.env[l.slice(0,i).trim()] = l.slice(i+1).trim(); }
 process.env.AI_PROVIDER = "deepseek";
 import sharp from "sharp";
@@ -16,7 +16,11 @@ const { createServiceClient } = await import("../../src/lib/supabase/service");
 const { createImageProvider } = await import("../../src/lib/providers/images");
 const { defaultProviders } = await import("../../src/lib/execution/shared");
 
-const SHEET = "C:/Users/az518/AppData/Local/Temp/claude/C--Users-az518-Desktop/d7b8eaa0-592d-4d32-a057-634ae1e64f74/scratchpad/sheet";
+// 228회차 10-03: 옛 세션 임시 폴더가 박혀 있었다 — 그 폴더는 사라졌다.
+// 쓰고 버리는 자리에 **다음에도 쓸 것**을 두면 안 된다. (dot_new_character.mts 와 같은 자리)
+const SHEET = "C:/Users/az518/Desktop/두근도트-시트";
+// **쓸 자리를 먼저 만든다.** 안 만들면 그림을 다 그려 놓고 ENOENT 로 버린다 — 돈은 이미 나간 뒤다.
+mkdirSync(`${SHEET}/photos`, { recursive: true });
 const W = 200, H = 250;
 const db = createServiceClient();
 const drawer = createImageProvider();

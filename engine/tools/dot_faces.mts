@@ -14,7 +14,9 @@ for (const l of readFileSync(".env.local", "utf8").split(String.fromCharCode(10)
 import sharp from "sharp";
 import { faceCrop, FACE_PX } from "./dot_faces_lib";
 const { createServiceClient } = await import("../../src/lib/supabase/service");
-const SHEET = "C:/Users/az518/AppData/Local/Temp/claude/C--Users-az518-Desktop/d7b8eaa0-592d-4d32-a057-634ae1e64f74/scratchpad/sheet";
+// 228회차 10-03: 옛 세션 임시 폴더가 박혀 있었다 — 그 폴더는 사라졌다.
+// 쓰고 버리는 자리에 **다음에도 쓸 것**을 두면 안 된다. (dot_new_character.mts 와 같은 자리)
+const SHEET = "C:/Users/az518/Desktop/두근도트-시트";
 const OUT = SHEET + "/faces"; mkdirSync(OUT, { recursive: true });
 const EMO = ["neutral", "happy", "shy", "sad", "angry", "surprised"];
 const isSkin = (r: number, g: number, b: number, a: number) => a > 128 && r > 180 && g > 130 && b > 100 && r > g && g > b && (r - b) > 40;
