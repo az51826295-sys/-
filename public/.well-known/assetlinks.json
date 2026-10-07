@@ -45,7 +45,8 @@
       "namespace": "android_app",
       "package_name": "com.rookery.ash",
       "sha256_cert_fingerprints": [
-        "30:6C:94:C4:CE:5C:3F:2D:E7:7E:BD:6F:9F:73:BE:D0:78:9D:17:4E:C9:F4:62:F8:64:53:77:FF:07:0D:FF:54"
+        "30:6C:94:C4:CE:5C:3F:2D:E7:7E:BD:6F:9F:73:BE:D0:78:9D:17:4E:C9:F4:62:F8:64:53:77:FF:07:0D:FF:54",
+        "66:69:4F:87:7B:3B:44:FC:BA:F6:2F:4A:78:16:3B:56:58:12:E4:F9:48:10:63:C3:FB:2C:72:C8:B6:94:3A:24"
       ]
     }
   }
