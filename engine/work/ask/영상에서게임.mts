@@ -20,20 +20,24 @@ import { execFileSync } from "node:child_process";
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import ffmpegPath from "ffmpeg-static";
 
+/**
+ * **사진으로도 받는다** (228회차 10-03, 사장님 "사진으로 보내줄게").
+ * 영상이 커서 못 보내는 때가 있다. 그때는 **시간 순 사진 여러 장**이면 된다 —
+ * 우리가 영상에서 하는 일도 결국 "장면 몇 장 뽑기" 이기 때문이다.
+ * 다만 **초를 모른다**는 것은 모델에게 반드시 말한다. 모르는 것을 아는 척하면 지어낸다.
+ */
 const 영상 = process.argv.find((a) => /\.(mp4|mov|webm|mkv)$/i.test(a));
+const 사진들 = process.argv.filter((a) => /\.(png|jpe?g|webp)$/i.test(a) && existsSync(a));
 const 진짜 = process.argv.includes("--진짜");
 const 칸 = "C:/Users/az518/Desktop/로키-게임모방";
 mkdirSync(칸, { recursive: true });
-if (!영상 || !existsSync(영상)) { console.error("플레이 영상 파일이 필요하다 (.mp4)"); process.exit(1); }
+if (!영상 && !사진들.length) { console.error("플레이 영상(.mp4) 이나 시간 순 사진 여러 장이 필요하다"); process.exit(1); }
+if (영상 && !existsSync(영상)) { console.error(`영상이 없다: ${영상}`); process.exit(1); }
 
 const FF = ffmpegPath as unknown as string;
-const ffprobe = (await import("ffprobe-static")).default as unknown as { path: string };
-const j = JSON.parse(execFileSync(ffprobe.path, ["-v", "quiet", "-print_format", "json", "-show_format", 영상]).toString()) as { format: { duration: string } };
-const 길이 = Number(j.format.duration);
-console.log(`영상: ${영상} (${길이.toFixed(1)}초)`);
 
 /** 화면이 확 바뀐 자리. 고르게 뜨면 그 간격이 답으로 둔갑한다(10-02 에 겪음). */
-function 바뀐자리(): number[] {
+function 바뀐자리(길이: number): number[] {
   const 읽기 = (e: unknown) => String((e as { stderr?: Buffer })?.stderr ?? "");
   let 글 = "";
   try {
@@ -43,22 +47,45 @@ function 바뀐자리(): number[] {
   return [...글.matchAll(/pts_time:([0-9.]+)/g)].map((m) => Number(m[1])).filter((t) => t > 0.3 && t < 길이 - 0.3);
 }
 
-const 바뀜 = 바뀐자리();
-// 게임 영상은 컷이 안 바뀌고 **안에서만** 움직이는 때가 많다 — 그러면 바뀐 자리가 거의 안 나온다.
-// 그때는 고르게 채우되, **고르게 떴다는 것을 모델에게 말한다**(간격을 규칙으로 읽지 않게).
-const 고르게 = 바뀜.length < 4;
-const 초들 = (고르게
-  ? Array.from({ length: 6 }, (_, i) => 길이 * ((i + 0.7) / 7))
-  : 바뀜.map((t) => t + 0.3)).map((s) => Math.round(s * 10) / 10).slice(0, 8);
-console.log(고르게
-  ? `컷이 거의 안 바뀐다(움직임만 있는 영상) → 고르게 ${초들.length}장: ${초들.join("·")}초`
-  : `바뀐 자리 ${바뀜.length}곳 → ${초들.length}장: ${초들.join("·")}초`);
-
 const 장면: string[] = [];
-for (const s of 초들) {
-  const f = `${칸}/영상-${s}초.jpg`;
-  execFileSync(FF, ["-y", "-ss", String(s), "-i", 영상, "-frames:v", "1", "-q:v", "4", f], { stdio: ["ignore", "ignore", "pipe"] });
-  장면.push(readFileSync(f).toString("base64"));
+let 뜬방식 = "";
+
+if (영상) {
+  const ffprobe = (await import("ffprobe-static")).default as unknown as { path: string };
+  const j = JSON.parse(execFileSync(ffprobe.path, ["-v", "quiet", "-print_format", "json", "-show_format", 영상]).toString()) as { format: { duration: string } };
+  const 길이 = Number(j.format.duration);
+  console.log(`영상: ${영상} (${길이.toFixed(1)}초)`);
+
+  const 바뀜 = 바뀐자리(길이);
+  // 게임 영상은 컷이 안 바뀌고 **안에서만** 움직이는 때가 많다 — 그러면 바뀐 자리가 거의 안 나온다.
+  // 그때는 고르게 채우되, **고르게 떴다는 것을 모델에게 말한다**(간격을 규칙으로 읽지 않게).
+  const 고르게 = 바뀜.length < 4;
+  const 초들 = (고르게
+    ? Array.from({ length: 6 }, (_, i) => 길이 * ((i + 0.7) / 7))
+    : 바뀜.map((t) => t + 0.3)).map((s) => Math.round(s * 10) / 10).slice(0, 8);
+  console.log(고르게
+    ? `컷이 거의 안 바뀐다(움직임만 있는 영상) → 고르게 ${초들.length}장: ${초들.join("·")}초`
+    : `바뀐 자리 ${바뀜.length}곳 → ${초들.length}장: ${초들.join("·")}초`);
+
+  for (const s of 초들) {
+    const f = `${칸}/영상-${s}초.jpg`;
+    execFileSync(FF, ["-y", "-ss", String(s), "-i", 영상, "-frames:v", "1", "-q:v", "4", f], { stdio: ["ignore", "ignore", "pipe"] });
+    장면.push(readFileSync(f).toString("base64"));
+  }
+  뜬방식 = [
+    `각 장면의 초: ${초들.map((s) => `${s}초`).join(" · ")}`,
+    고르게
+      ? "이 장면들은 **고르게 뜬 것**이다 — 장면 사이 간격은 컷 길이가 아니다. 간격을 규칙으로 읽지 마라."
+      : "이 장면들은 **화면이 확 바뀐 자리**에서 떴다 — 이웃한 두 초의 차이가 그 장면이 이어진 시간이다.",
+  ].join("\n");
+} else {
+  for (const f of 사진들) 장면.push(readFileSync(f).toString("base64"));
+  console.log(`사진 ${장면.length}장: ${사진들.map((f) => f.split(/[\\/]/).pop()).join(" · ")}`);
+  뜬방식 = [
+    "이 장면들은 **사람이 찍어 보낸 사진**이다 — **몇 초 지점인지 모른다.**",
+    "장면 사이의 간격을 규칙으로 읽지 마라. 보낸 차례만 믿어라.",
+    "사진은 **흐름이 아니라 둘러본 것**일 수 있다 — 같은 화면의 다른 창들일 수 있다는 뜻이다.",
+  ].join("\n");
 }
 
 if (!진짜) { console.log("\n목(mock)은 그림을 못 본다 — 기준을 뽑으려면 --진짜"); process.exit(0); }
@@ -76,14 +103,21 @@ const db = createServiceClient();
 const { data: co } = await db.from("companies").select("id").eq("name", "권혁수").maybeSingle();
 const { ai } = meterProviders(defaultProviders(null), db, { companyId: (co as any).id, purpose: "video_to_game" } as any);
 
+/** 사장님이 말로만 주신 것(화면에 없는 것)을 실어 보내는 자리. `--덧 "전투는 ○○처럼"` */
+const 덧 = process.argv[process.argv.indexOf("--덧") + 1];
+const 덧붙임 = process.argv.includes("--덧") && 덧 ? [
+  "",
+  "## 보낸 사람이 **말로** 덧붙인 것 (화면에는 없다)",
+  덧,
+  "이것은 **본 것이 아니라 들은 것**이다. 기준으로 옮기되, `못본것` 에도 적어 둬라 — 우리가 안 본 것이니까.",
+] : [];
+
 const 물음 = [
-  `같은 게임의 플레이 영상에서 뽑은 장면 ${장면.length}장이다(시간 순).`,
-  `각 장면의 초: ${초들.map((s) => `${s}초`).join(" · ")}`,
-  고르게
-    ? "이 장면들은 **고르게 뜬 것**이다 — 장면 사이 간격은 컷 길이가 아니다. 간격을 규칙으로 읽지 마라."
-    : "이 장면들은 **화면이 확 바뀐 자리**에서 떴다 — 이웃한 두 초의 차이가 그 장면이 이어진 시간이다.",
+  `같은 게임의 장면 ${장면.length}장이다(보낸 차례대로).`,
+  뜬방식,
   "",
   "장면 사이의 차이를 보고, 만들 수 있는 기준으로 옮겨라.",
+  ...덧붙임,
 ].join("\n");
 
 const { output } = await ai.generateStructuredOutput({

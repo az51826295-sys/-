@@ -37,7 +37,21 @@ const db = createServiceClient();
 const { data: co } = await db.from("companies").select("id").eq("name", "권혁수").maybeSingle();
 if (!co) { console.error("회사를 못 찾았다"); process.exit(1); }
 
-const spec = { title: 베낀것.무엇, criteria: 베낀것.기준, touch: [] as string[] };
+/**
+ * **두 군데서 베낄 때** (228회차 10-03, 사장님 *"전투는 오늘도 환생, 전체적인건 보내준 사진"*).
+ * 사장님이 가리킨 곳이 하나가 아닐 수 있다 — 전체 구조는 이 게임, 전투는 저 게임.
+ * 그때 `전투.json`(또는 다른 조각)을 따로 두고 여기서 **합친다.**
+ * 손으로 기준.json 을 고치지 않는 까닭: 어느 기준이 **어디서 왔는지**가 지워지면,
+ * 나중에 결과가 이상할 때 **사진 탓인지 내 탓인지**를 못 가른다.
+ */
+type 조각 = { 어디서: string; 어떻게알았나: string; 기준: { id: string; when: string; then: string }[]; 못본것?: string[] };
+const 조각길 = "C:/Users/az518/Desktop/로키-게임모방/전투.json";
+const 조각 = existsSync(조각길) ? (JSON.parse(readFileSync(조각길, "utf8")) as 조각) : null;
+if (조각) console.log(`덧댄 조각: ${조각.어디서} — 기준 ${조각.기준.length}개 (${조각.어떻게알았나})`);
+
+const 모든기준 = [...베낀것.기준, ...(조각?.기준 ?? [])];
+const 모든못본것 = [...베낀것.못본것, ...(조각?.못본것 ?? [])];
+const spec = { title: 베낀것.무엇, criteria: 모든기준, touch: [] as string[] };
 /**
  * **못 본 것은 주문에 안 싣는다.** 장면으로 못 본 것(점수 계산식·적 AI)을 "알아서 해라" 로 넘기면
  * 모델이 지어내고, 그러면 베낀 것이 아니라 또 지어낸 것이 된다. 대신 **모른다고 적어** 둔다 —
@@ -47,6 +61,10 @@ const 덧붙임 = [
   "",
   "## 어디서 베꼈나",
   `보고 적은 것이다: ${베낀것.무엇}`,
+  ...(조각 ? [
+    `**전투만은 다른 곳에서 왔다**: ${조각.어디서} — ${조각.어떻게알았나}`,
+    `그래서 ${조각.기준.map((c) => c.id).join("·")} 는 **화면으로 본 것이 아니다.** 수수하게 만들고, 숫자는 네가 정했다고 적어라.`,
+  ] : []),
   `화면 칸: ${베낀것.화면칸.join(" · ")}`,
   `조작: ${베낀것.조작}`,
   `손맛: ${베낀것.손맛}`,
@@ -56,7 +74,7 @@ const 덧붙임 = [
   ...베낀것.안가져올것.map((x) => `- ${x}`),
   "",
   "## 장면으로는 못 본 것 — **지어내지 말고 수수하게 정하고, 무엇으로 정했는지 적어라**",
-  ...베낀것.못본것.map((x) => `- ${x}`),
+  ...모든못본것.map((x) => `- ${x}`),
   "",
   "## 기기",
   "- 데스크톱 · 마우스와 키보드 · 1280x800 · 포인터 락 됨",
@@ -71,7 +89,14 @@ const 덧붙임 = [
   "## 집 규칙 — 영상에 안 보이지만 늘 지킨다",
   "- **바깥에서 아무것도 받아오지 마라.** CDN·라이브러리·글꼴·그림 주소 금지. three.js 도 안 된다.",
   "  (돌려 보는 자리가 바깥 요청을 막는다 — 받아오면 그 자리에서 죽는다.)",
-  "- 3D 면 `canvas.getContext('webgl2')` 또는 `'webgl'` 로 **직접** 그린다. 셰이더와 행렬도 직접 쓴다.",
+  /**
+   * 3D 줄은 **3D 일 때만** 붙인다. 10-03 에 이 줄이 늘 붙어 있었는데,
+   * 베낀 것이 **메뉴와 목록뿐인 2D** 여도 "webgl 로 직접 그려라" 가 따라갔다.
+   * 안 쓰는 규칙은 공짜가 아니다 — 09-15 에 기준 189개를 들이밀어 지킴이 2% 로 떨어졌었다.
+   */
+  ...(/3d|삼디|쓰리디|webgl|입체/i.test(`${베낀것.무엇} ${베낀것.그림결} ${베낀것.화면칸.join(" ")}`)
+    ? ["- 3D 면 `canvas.getContext('webgl2')` 또는 `'webgl'` 로 **직접** 그린다. 셰이더와 행렬도 직접 쓴다."]
+    : []),
   "- 폴더 하나에 넣고 `index.html` 을 열면 바로 돌아야 한다.",
 ].join(String.fromCharCode(10));
 
@@ -92,9 +117,14 @@ for (const f of output.files) {
   writeFileSync(p, f.contents);
 }
 const 글자 = output.files.reduce((s, f) => s + f.contents.length, 0);
-console.log(`\n${모델} — ${초}초 · 파일 ${output.files.length}개 · ${(글자 / 1024).toFixed(0)}KB · 스스로 "지켰다" ${output.coverage.filter((x) => x.met).length}/${베낀것.기준.length}`);
+console.log(`\n${모델} — ${초}초 · 파일 ${output.files.length}개 · ${(글자 / 1024).toFixed(0)}KB · 스스로 "지켰다" ${output.coverage.filter((x) => x.met).length}/${모든기준.length}`);
 
-const { data: 값 } = await db.from("model_usage").select("cost_usd").eq("purpose", "copy_build").limit(20);
-console.log(`값(누적) $${((값 ?? []) as any[]).reduce((s, r) => s + Number(r.cost_usd ?? 0), 0).toFixed(3)}`);
+/**
+ * **값은 `schemaName` 으로 적힌다.** 내가 scope 에 적은 `purpose` 는 원장이 안 본다(meter.ts 100줄).
+ * 그래서 10-03 에 이 줄이 내내 `$0.000` 을 찍었고, 나는 하마터면 "장부에 구멍" 이라고 보고할 뻔했다 —
+ * **0 은 "안 썼다" 가 아니라 "그 이름으로는 못 본다" 였다.** 이 판이 쓴 것만 보려고 시각으로 자른다.
+ */
+const { data: 값 } = await db.from("model_usage").select("cost_usd").eq("purpose", "app_build").gte("created_at", new Date(t0).toISOString());
+console.log(`이 판이 쓴 값 $${((값 ?? []) as any[]).reduce((s, r) => s + Number(r.cost_usd ?? 0), 0).toFixed(3)}`);
 console.log(`\n이제 **같은 자**로 잰다:`);
 console.log(`  npx tsx engine/work/webgl/자.mts ${칸}`);
