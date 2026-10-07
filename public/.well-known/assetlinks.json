@@ -36,5 +36,17 @@
         "41:DC:D2:72:40:E8:5B:7C:D0:F6:FD:2E:06:F2:CF:DF:CF:BD:BA:87:11:7A:0D:75:57:B0:2D:8A:34:46:BE:9D"
       ]
     }
+  },
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.rookery.ash",
+      "sha256_cert_fingerprints": [
+        "30:6C:94:C4:CE:5C:3F:2D:E7:7E:BD:6F:9F:73:BE:D0:78:9D:17:4E:C9:F4:62:F8:64:53:77:FF:07:0D:FF:54"
+      ]
+    }
   }
 ]

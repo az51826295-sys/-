@@ -1,0 +1,882 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>잿빛 원정대</title>
+<style>
+  /*
+   * 10-04 사장님 결정: **그림과 글, 턴제, 도트.** 첫 시스템(길드)을 그대로 쓴다.
+   *
+   * 그림은 작게 위에, **글이 아래에서 크게 흐른다.** 글이 주인공이다 —
+   * 캐릭터가 늙고 죽는 것은 도트가 사라지는 것보다 **문장으로 읽을 때** 훨씬 세다.
+   * 그래서 그림 50장이 아니라 7장으로도 게임이 선다. 이게 사장님이 말한 효율이다.
+   */
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;
+    font-family:"Malgun Gothic",sans-serif}
+  /*
+   * **도트 RPG 창** (10-07 사장님). 색은 야영지 배경에서 뽑았다 — 저녁 보라 + 모닥불 주황.
+   * 창 하나 = 진한 테두리 3px + 안쪽 밝은 선/어두운 선(볼록) + 모서리 한 칸 깎기.
+   */
+  :root{--밤:#1a1420;--창:#2c2236;--창속:#221a2a;--테:#0d0910;--빛테:#7a6290;--그늘:#170f1d;
+        --금:#f2b45a;--글:#f1e4c8;--흐림:#a8977f;--초록:#8fe08f}
+  body{background:var(--밤);color:var(--글);overflow:hidden}
+  #app{position:relative;width:100vw;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+
+  #top,.rbtn,#bond,.btn,#panel.open,.tab,#board,.tag{
+    border:3px solid var(--테);
+    box-shadow:inset 2px 2px 0 var(--빛테),inset -2px -2px 0 var(--그늘);
+    clip-path:polygon(0 3px,3px 3px,3px 0,calc(100% - 3px) 0,calc(100% - 3px) 3px,100% 3px,100% calc(100% - 3px),
+      calc(100% - 3px) calc(100% - 3px),calc(100% - 3px) 100%,3px 100%,3px calc(100% - 3px),0 calc(100% - 3px))}
+
+  #top{margin:4px 4px 0;padding:6px 10px;background:var(--창);
+       display:flex;justify-content:space-between;align-items:center;font-size:13px;text-shadow:1px 1px 0 #000}
+  #top .zone{color:var(--금)}
+  #top .res{display:flex;gap:10px;color:var(--글)}
+  #top .res img{width:16px;height:16px;image-rendering:pixelated;vertical-align:-3px}
+
+  /* 그림은 작게 — 자리만 잡는다 */
+  #board{height:170px;position:relative;margin:4px 4px 0;background:linear-gradient(#2a1f33,#1c1524 70%,#3a2c2a);overflow:hidden}
+  #board canvas{position:absolute;inset:0;width:100%;height:100%}
+
+  /* 글이 본문 */
+  #log{flex:1;overflow-y:auto;padding:10px 12px 16px;font-size:15px;line-height:1.75}
+  #log .l{margin:2px 0;color:#c9b9a0}
+  #log .hit{color:#fff3dc}
+  #log .big{color:var(--금);font-size:17px;margin:7px 0}
+  #log .bad{color:#ff8e7a}
+  #log .die{color:#ff6b5b;font-size:17px;margin:9px 0;border-left:3px solid #ff6b5b;padding-left:9px}
+  #log .good{color:var(--초록)}
+  #log .turn{color:#6e5d78;font-size:12px;margin-top:9px}
+  #log b{font-weight:400;color:#ffe2a8}
+
+  #panel{height:0;overflow:hidden;background:var(--창);margin:0 4px}
+  #panel.open{flex:1;height:auto;overflow-y:auto}   /* 공방·캐릭터 탭은 이 창이 화면을 채운다 — 260px 고정이면 탭 단추가 가운데 뜬다(10-07) */
+  .row{display:flex;align-items:center;gap:9px;padding:9px 11px;border-bottom:2px solid var(--창속)}
+  .row .nm{flex:1;min-width:0}
+  .row .nm b{display:block;font-size:14px;color:var(--글);font-weight:400}
+  .row .nm i{font-style:normal;font-size:12px;color:var(--흐림)}
+  .tag{display:inline-block;font-size:11px;padding:1px 6px;background:var(--창속);color:var(--흐림);margin-right:3px;
+       border-width:2px;box-shadow:none}
+  .tag.r{color:var(--금)}
+  .btn{padding:6px 11px;background:#4a3550;color:var(--글);font-size:13px;font-family:inherit;text-shadow:1px 1px 0 #000}
+  .btn:active{box-shadow:inset -2px -2px 0 var(--빛테),inset 2px 2px 0 var(--그늘)}
+  .btn:disabled{opacity:.4}
+  /* 얼굴 칸 (10-07 사장님 "캐릭터창에 얼굴도") — 스프라이트 머리를 잘라 2배, 테두리는 등급색 */
+  .얼굴{width:68px;height:68px;flex:none;image-rendering:pixelated;border:3px solid;background:#1a1420 center/64px 64px no-repeat;
+        box-shadow:inset 0 0 0 1px #0d0910}
+  .bar{height:6px;background:var(--테);margin-top:4px;padding:1px}
+  .bar i{display:block;height:100%;background:var(--금)}
+
+  /* ── 길드 (야영지) ── */
+  #hall{flex:1;position:relative;display:none;background:var(--밤)}
+  #hall.on{display:block}
+  #hallArt{position:absolute;inset:0}
+  #hallArt canvas{width:100%;height:100%}
+  #side{position:absolute;top:10px;right:10px;display:flex;flex-direction:column;gap:6px}
+  .rbtn{position:relative;padding:7px 12px;background:var(--창);font-size:12px;color:var(--글);text-shadow:1px 1px 0 #000}
+  .rbtn .dot{position:absolute;top:4px;right:4px;width:6px;height:6px;background:#8fff6a;box-shadow:0 0 0 1px var(--테)}
+  #bond{position:absolute;left:10px;right:10px;bottom:10px;background:rgba(44,34,54,.94);padding:9px 12px}
+  #bond .nm{display:flex;justify-content:space-between;align-items:baseline;text-shadow:1px 1px 0 #000}
+  #bond .nm b{font-size:17px;font-weight:400;color:var(--금)}
+  #bond .nm i{font-style:normal;font-size:11px;color:var(--흐림)}
+  #bond .bar{height:8px;margin:6px 0 5px}
+  #bond .sub{font-size:12px;color:var(--글)}
+
+  #battle{flex:1;display:none;flex-direction:column;overflow:hidden}
+  #battle.on{display:flex}
+  #log{flex:1}
+
+  #tabs{display:flex;gap:3px;padding:4px;background:var(--밤)}
+  .tab{flex:1;padding:9px 0 10px;text-align:center;font-size:13px;color:var(--흐림);background:var(--창속)}
+  .tab.on{color:var(--금);background:#4a3550;text-shadow:1px 1px 0 #000}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="top">
+    <span class="zone" id="zone">1구간 · 1층</span>
+    <span class="res"><span><img src="art/coin.png">&nbsp;<b id="gold">0</b></span>
+                      <span><img src="art/shard.png">&nbsp;<b id="shard">0</b></span></span>
+  </div>
+
+  <!-- 길드: 켜면 여기. 대표 캐릭터 하나가 서 있고 우편함·공지·설정·친밀도가 붙는다. -->
+  <div id="hall">
+    <div id="hallArt"><canvas id="hcv"></canvas></div>
+    <div id="side">
+      <div class="rbtn" id="mailBtn">우편함<span class="dot"></span></div>
+      <div class="rbtn">공지</div>
+      <div class="rbtn">설정</div>
+    </div>
+    <div id="bond">
+      <div class="nm"><b id="repName">리안</b><i id="repAge">출전 0 / 1000 · 젊음</i></div>
+      <div class="bar"><i id="bondBar" style="width:0%"></i></div>
+      <div class="sub" id="repRole">공격 · 거구 축복</div>
+    </div>
+  </div>
+
+  <div id="battle">
+    <div id="board"><canvas id="cv"></canvas></div>
+    <div id="log"></div>
+  </div>
+  <div id="panel"></div>
+
+  <div id="tabs">
+    <!-- 10-07 사장님 순서: 캐릭터 · 시장 · 대장간 · 전투 · 길드 -->
+    <div class="tab" data-t="crew">캐릭터</div>
+    <div class="tab" data-t="shop">시장</div>
+    <div class="tab" data-t="forge">대장간</div>
+    <div class="tab" data-t="run">전투</div>
+    <div class="tab home on" data-t="hall">길드</div>
+  </div>
+</div>
+
+<script>
+const $ = (s) => document.querySelector(s);
+const 그림 = {};
+/** 있는 그림만 부른다 — 없는 걸 부르면 404 가 쌓이고, 게임은 멀쩡한데 자가 떨어진다(10-04). */
+fetch("art/manifest.json").then((r) => r.ok ? r.json() : []).then((들) => {
+  for (const n of 들) { 그림[n] = new Image(); 그림[n].src = `art/${n}.png`; }
+}).catch(() => {});
+
+/* ── 세상 ─────────────────────────────────────────── */
+/**
+ * 규칙은 `캐릭터/전투규칙.md` (10-07 사장님 결정 + 지피티 상의). 구간 이름은 중세로 —
+ * 옛 이름(무너진 지하도·녹슨 환승역…)은 핵전쟁 티가 나서 버렸다. **1구간만 완성**(사장님), 나머지는 이름만.
+ */
+const 구간이름 = ["침묵의 배수 회랑","쇠종의 회랑","물잠긴 암거","재의 숙영지","봉인된 현자의 전당",
+                  "무너진 비공정 창고","검은 이삭 들판","번개샘 제단","심층 봉인고","태고의 문턱"];
+const 일구간 = {
+  몹: [ { 이름:"거대 쥐", 그림:"m-rat", 속도:105, 체력:1, 공격:1 },
+        { 이름:"초록 슬라임", 그림:"m-slime", 속도:80, 체력:1.25, 공격:.8 },
+        { 이름:"이끼 박쥐", 그림:"m-bat", 속도:125, 체력:.75, 공격:1.1 } ],
+  보스: { 이름:"녹슨 철 골렘", 그림:"b-golem", 속도:60, 방어:40 },
+};
+/** 보스 보호막 층(사장님: 제어는 완전 해제, 다른 궁극기는 25%만). 70층은 없다. */
+const 보호막층 = new Set([40,50,60,80,90,100]);
+const 역할계수 = { 방어:{체력:1.35,공격:.82,방어:1.35}, 공격:{체력:.92,공격:1.22,방어:.85},
+                  지원:{체력:1,공격:.92,방어:.95},      제어:{체력:1,공격:.98,방어:1} };
+const 등급계수 = { 희귀:.9, 영웅:1, 전설:1.08 };
+const 등급상한 = { 희귀:80, 영웅:100, 전설:120 };
+const 등급색   = { 희귀:"#5aa9ff", 영웅:"#b67cff", 전설:"#ffd04a" };
+
+/**
+ * **도감 — 캐릭터 한 명 = 카드 한 장** (원신식, 사장님 10-07). 이름은 **직업명**(10-07 사장님 — 참고 게임처럼). 기사만 카드가 확정됐고(캐릭터/기사.md),
+ * 검사·회복술사·흑마법사는 **임시**다 — 일반공격만 사장님 말씀대로(검사 베기 · 회복술사 단일 힐 · 마법사 마법탄).
+ */
+const 도감 = {
+  기사:   { 직업:"기사", 역할:"방어", 등급:"전설", 그림:"c-knight", 개성:{ 체력:1.48, 공격:.82, 방어:1.62 }, 속도:91,
+            일반:"푸른방패검", 스킬:"철벽의맹세", 궁:"새벽을가르는방패", 특성:["마지막 수호자","푸른 강철의 결의"] },
+  검사:   { 직업:"검사", 역할:"공격", 등급:"영웅", 그림:"c-swordsman", 개성:{}, 속도:108, 일반:"베기", 특성:[], 임시:true },
+  회복술사: { 직업:"회복술사", 역할:"지원", 등급:"영웅", 그림:"c-healer", 개성:{}, 속도:100, 일반:"단일힐", 특성:[], 임시:true },
+  흑마법사: { 직업:"흑마법사", 역할:"제어", 등급:"영웅", 그림:"c-darkmage", 개성:{}, 속도:104, 일반:"마법탄", 스킬:"사슬", 특성:[], 임시:true },
+};
+let 다음id = 1;
+function 대원만들기(키, 레벨 = 1){
+  return { id:다음id++, 키, 이름:키, 레벨, 경험:0, 중복:0, hp:1, 막:0, 보임막:0, 쿨:0, 궁:0, 도발:false,
+           살아있나:true, 동작:"idle", 동작남음:0 };
+}
+const 카드 = (c) => 도감[c.키];
+const 역할 = (c) => 카드(c).역할;
+function 능력(c, 칸){
+  const 기본 = { 체력:70 + c.레벨*15, 공격:9 + c.레벨*2.9, 방어:45 + c.레벨*1 }[칸];
+  return Math.floor(기본 * 역할계수[역할(c)][칸] * 등급계수[카드(c).등급] * (카드(c).개성[칸] ?? 1)) + (S.가방?.장비 ? 장비몫(c, 칸) : 0);
+}
+const 최대체력 = (c) => 능력(c, "체력"), 공격력 = (c) => 능력(c, "공격"), 방어력 = (c) => 능력(c, "방어");
+const 속도 = (c) => c.속도 ?? 카드(c).속도;
+const 필요경험 = (c) => 80 + (c.레벨 - 1)*12;
+
+const S = { 단계:1, 층:1, 금화:0, 대원:[], 파티:[], 탭:"hall", 진행:true, 쉼:0, 대표:null, 최고층:0,
+            가방:{ 파편:0, 잔혼:0, 수호핵:0, 별가루:0, 문장:{ 방어:0, 공격:0, 지원:0, 제어:0 } } };
+for (const k of ["기사","검사","회복술사"]) S.대원.push(대원만들기(k));
+S.파티 = S.대원.map((c) => c.id);
+S.대표 = S.대원[0].id;
+
+/* ── 글 ───────────────────────────────────────────── */
+function 적기(글, 결){
+  const d = document.createElement("div");
+  d.className = "l " + (결 ?? "");
+  d.innerHTML = 글;
+  const el = $("#log");
+  el.appendChild(d);
+  while (el.children.length > 120) el.removeChild(el.firstChild);
+  el.scrollTop = el.scrollHeight;
+}
+const 수 = (n) => Math.floor(n).toLocaleString();
+/** 받침 보고 조사 고르기 — 이름이 직업명(기사·회복술사…)이 되면서 "기사이(가)" 가 됐다(10-07) */
+const 조사 = (말, 있, 없) => { const k = String(말).replace(/\s*\d+$/, "").slice(-1).charCodeAt(0) - 0xAC00;
+  return k >= 0 && k < 11172 && k % 28 !== 0 ? 있 : 없; };
+
+/* ── 전투 (턴제) ──────────────────────────────────── */
+let 적들 = [], 턴 = 0, 보스판 = false;
+function 적만들기(){
+  보스판 = S.층 % 10 === 0;
+  const 세기 = Math.pow(1.055, S.층 - 1);           // 1.105 는 100층에 2만 배 — 지피티 상의로 낮춤
+  if (보스판) {
+    const b = 일구간.보스, 막힘 = 보호막층.has(S.층);
+    적들 = [{ 이름:b.이름, 그림:b.그림, hp:Math.floor(260*세기), 최대:Math.floor(260*세기), 공격:Math.floor(14*세기),
+              속도:b.속도, 방어:b.방어, 보호막: 막힘 ? 100 : 0, 보스:true, 동작:"idle", 동작남음:0 }];
+    적기(`<b>${S.층}층</b> — ${b.이름}${조사(b.이름,"이","가")} 길을 막고 있다.`, "big");
+    if (막힘) 적기("보호막이 돌고 있다. <b>제어</b>라면 한 번에 벗긴다.", "bad");
+  } else {
+    const n = 1 + (S.층 % 3 === 0 ? 1 : 0) + (S.층 % 5 === 0 ? 1 : 0);
+    const 종들 = Array.from({ length:n }, (_, i) => 일구간.몹[(S.층 + i) % 일구간.몹.length]);
+    적들 = 종들.map((m, i) => {
+      const 같은수 = 종들.filter((x) => x === m).length;
+      return { 이름: m.이름 + (같은수 > 1 ? ` ${i+1}` : ""), 그림:m.그림, 속도:m.속도, 방어:0, 보호막:0,
+               hp:Math.floor(60*세기*m.체력), 최대:Math.floor(60*세기*m.체력), 공격:Math.floor(9*세기*m.공격), 동작:"idle", 동작남음:0 };
+    });
+  }
+  턴 = 0;
+}
+const 파티원 = () => S.파티.map((id) => S.대원.find((c) => c.id === id)).filter(Boolean);
+const 산아군 = () => 파티원().filter((c) => c.hp > 0);
+const 세리안 = () => 산아군().find((c) => c.키 === "기사");
+function 전투준비(){
+  for (const c of 파티원()) { c.hp = 최대체력(c); c.막 = 0; c.보임막 = 0; c.쿨 = 0; c.도발 = false; }
+  약대기 = false;
+  if (S.약챙김 && S.가방?.약 > 0) { S.가방.약--; 약대기 = true; }
+}
+function 원정시작(){ 전투준비(); 적만들기(); 그리기(); }
+
+/**
+ * **글과 빛을 맞물린다** (10-04, 10-07). 한 턴을 장면 목록으로 만들어 두고 하나씩 꺼내
+ * 그림을 움직이고 빛을 터뜨린 다음 글을 적는다. 장면 하나 = 글 한 줄 = 동작 하나.
+ */
+const 장면들 = [];
+let 장면쉼 = 0;
+function 장면(그린이, 동작, 글, 결, 빛){ 장면들.push({ 그린이, 동작, 글, 결, 빛 }); }
+function 장면흘리기(){
+  if (장면쉼 > 0) { 장면쉼--; return true; }
+  const v = 장면들.shift();
+  if (!v) return false;
+  if (v.그린이) { v.그린이.동작 = v.동작 ?? "attack"; v.그린이.동작남음 = 0.5; }
+  터뜨리기(v.빛);
+  if (v.글) 적기(v.글, v.결);
+  장면쉼 = v.글 ? 1 : 0;
+  그리기();
+  return true;
+}
+/** 막이 몇 남았나를 **장면이 흐를 때** 그림에 옮긴다 — 계산은 먼저 끝나 있어서, 바로 그리면 글보다 앞서 간다. */
+const 막들 = (...cs) => cs.map((c) => [c, c.막]);
+
+/* ── 피해·막 ── */
+/** 방어(규칙 2): 받는 피해 = 원피해 × 100 / (100 + 방어). 막은 그 뒤에 깎인다. */
+const 방어뒤 = (원, 방어) => 원 * 100 / (100 + 방어);
+function 막주기(시전자, 대상들, 양, 빛색){
+  양 = Math.floor(양);
+  for (const t of 대상들) t.막 += 양;
+  if (시전자.키 === "기사") 시전자.궁 = Math.min(100, 시전자.궁 + 34);   // 세리안: 막 생성 1회당 34
+  return { 종류:"막", 들:대상들.map(자리), 색:빛색, 막들:막들(...대상들) };
+}
+let 막고정 = false;                   // 세리안 6중: 궁극기 뒤 다음 행동까지 막이 안 깎인다
+/** 아군이 맞는다. 세리안 특성 둘이 여기서 일한다. */
+function 아군맞기(t, 원){
+  const 세 = 세리안();
+  let 수호 = null;
+  // 특성 「마지막 수호자」: 체력이 가장 낮은 아군이 맞을 때 세리안이 막을 대신 씌운다(턴당 1회, 자기 자신은 빼고 — 10-07 "세리안 앞에 세리안이")
+  if (세 && t !== 세 && !세.수호씀 && 산아군().sort((a, b) => a.hp/최대체력(a) - b.hp/최대체력(b))[0] === t) {
+    세.수호씀 = true;
+    const 양 = Math.floor(최대체력(세) * (세.중복 >= 2 ? .12 : .08));
+    t.막 += 양; 세.궁 = Math.min(100, 세.궁 + 34); 수호 = 양;
+  }
+  let 피 = 방어뒤(원, 방어력(t));
+  // 특성 「푸른 강철의 결의」: 세리안은 막이 있는 동안 받는 피해 −18%
+  if (t.키 === "기사" && t.막 > 0) 피 *= t.중복 >= 4 ? .76 : .82;
+  피 = Math.max(1, Math.floor(피));
+  const 막음 = 막고정 ? 피 : Math.min(t.막, 피);
+  if (!막고정) t.막 -= 막음;
+  피 -= 막음; t.hp -= 피;
+  return { 피, 막음, 수호 };
+}
+function 적맞기(e, 원){
+  const 피 = Math.max(1, Math.floor(방어뒤(원, e.방어) * (0.9 + Math.random()*0.2)));
+  e.hp -= 피;
+  return 피;
+}
+function 쓰러짐확인(e){
+  if (e.hp > 0) return;
+  장면(null, null, `${e.이름}${조사(e.이름,"이","가")} 쓰러졌다.`);
+  적들 = 적들.filter((x) => x !== e);
+}
+const 과녁 = () => 적들.find((e) => e.hp > 0);
+const 가장다친 = () => 산아군().filter((x) => x.hp < 최대체력(x)).sort((a, b) => a.hp/최대체력(a) - b.hp/최대체력(b))[0];
+/** 보호막 두른 적을 치면 튕긴다 — 공용 */
+function 튕겼나(c, e, 글, 색){
+  if (e.보호막 <= 0) return false;
+  장면(c, "attack", `<b>${c.이름}</b>의 ${글}${조사(글,"이","가")} 보호막에 튕겼다.`, "bad", { 종류:"튕김", 에서:자리(c), 에:자리(e), 색 });
+  return true;
+}
+
+/**
+ * **기술표 — 행동은 여기에만 있다.** 카드의 일반공격·스킬·궁극기가 키로 여기를 가리킨다.
+ * 아군행동() 은 "궁 → 스킬 → 일반" 순서로 고르기만 한다(규칙 3·4).
+ */
+const 기술표 = {
+  /* 세리안 (캐릭터/기사.md 확정) */
+  푸른방패검: { 쓰기(c){
+    const e = 과녁(); if (!e) return;
+    if (!튕겼나(c, e, "검", "#7aa8ff")) {
+      const 피 = 적맞기(e, 공격력(c) * .95);
+      장면(c, "attack", `<b>${c.이름}</b>${조사(c.이름,"이","가")} 검과 방패를 함께 내질렀다. → ${e.이름} <span class="hit">${수(피)}</span>`, "",
+        { 종류:"탄", 에서:자리(c), 에:자리(e), 색:"#7ec8ff" });
+      쓰러짐확인(e);
+    }
+    // 일반공격 막(최대 체력 4%) + 특성 「푸른 강철의 결의」(일반공격 뒤 공격력 35%)
+    장면(null, null, null, null, 막주기(c, [c], 최대체력(c) * .04 + 공격력(c) * (c.중복 >= 4 ? .35 : .35), "#7ec8ff"));
+  } },
+  철벽의맹세: { 쿨:(c) => c.중복 >= 5 ? 2 : 3, 쓸까:() => true, 쓰기(c){
+    const 양 = 공격력(c) * (c.중복 >= 1 ? 1.55 : 1.4);
+    const 빛 = 막주기(c, 산아군(), 양, "#7ec8ff");
+    c.도발 = true;
+    장면(c, "attack", `<b>${c.이름}</b>${조사(c.이름,"이","가")} 철벽의 맹세를 세웠다. 아군 전원 막 <span class="good">${수(양)}</span> · 적의 눈이 방패로 쏠린다.`, "big", 빛);
+  } },
+  새벽을가르는방패: { 쓰기(c){
+    장면(c, "attack", `<b>${c.이름}</b>${조사(c.이름,"이","가")} 새벽을 가르는 방패를 펼쳤다.`, "big", { 종류:"섬광", 에서:자리(c), 색:"#bfe6ff" });
+    for (const e of [...적들]) {
+      if (e.보호막 > 0) {
+        e.보호막 = Math.max(0, e.보호막 - 25);                       // 사장님: 궁극기는 보호막 25%만
+        장면(null, null, `${e.이름}의 보호막이 갈라졌다. (남은 ${e.보호막}%)`, "", { 종류:"맞음", 에:자리(e), 색:"#7aa8ff" });
+        continue;
+      }
+      const 피 = 적맞기(e, 공격력(c) * (c.중복 >= 3 ? 2.2 : 1.8));
+      장면(null, null, `→ ${e.이름} <span class="hit">${수(피)}</span>`, "", { 종류:"맞음", 에:자리(e), 색:"#bfe6ff" });
+      쓰러짐확인(e);
+    }
+    const 양 = 공격력(c) * 2.2;
+    장면(null, null, `아군 전원 막 <span class="good">${수(양)}</span>`, "good", 막주기(c, 산아군(), 양, "#bfe6ff"));
+    if (c.중복 >= 6) 막고정 = true;
+  } },
+  /* 임시 (카드 대기) — 일반공격만 사장님 말씀대로 */
+  베기: { 쓰기(c){
+    const e = 과녁(); if (!e || 튕겼나(c, e, "칼", "#7aa8ff")) return;
+    const 치명 = Math.random() < .1, 피 = 적맞기(e, 공격력(c) * (치명 ? 2 : 1));
+    장면(c, "attack", `<b>${c.이름}</b> → ${e.이름} <span class="hit">${수(피)}</span>${치명 ? " <span class='big'>치명타</span>" : ""}`, "",
+      { 종류:"탄", 에서:자리(c), 에:자리(e), 색: 치명 ? "#ffe66b" : "#e8f0ff", 세게:치명 });
+    쓰러짐확인(e);
+  } },
+  마법탄: { 쓰기(c){
+    const e = 과녁(); if (!e || 튕겼나(c, e, "마법탄", "#c69bff")) return;
+    const 피 = 적맞기(e, 공격력(c));
+    장면(c, "attack", `<b>${c.이름}</b>의 마법탄 → ${e.이름} <span class="hit">${수(피)}</span>`, "", { 종류:"탄", 에서:자리(c), 에:자리(e), 색:"#c69bff" });
+    쓰러짐확인(e);
+  } },
+  단일힐: { 쓰기(c){
+    const t = 가장다친();
+    if (!t) { 장면(c, "idle", `<b>${c.이름}</b>${조사(c.이름,"은","는")} 숨을 고르며 뒤를 살폈다.`); return; }
+    const 양 = Math.floor(공격력(c) * 1.6);
+    t.hp = Math.min(최대체력(t), t.hp + 양);
+    장면(c, "attack", `<b>${c.이름}</b>${조사(c.이름,"이","가")} ${t.이름}의 상처를 덮었다. <span class="good">+${수(양)}</span>`, "", { 종류:"회복", 에:자리(t), 색:"#9dff8a" });
+  } },
+  사슬: { 쿨:() => 3, 쓸까:() => 적들.some((e) => e.보호막 > 0), 쓰기(c){
+    const e = 적들.find((x) => x.보호막 > 0);
+    e.보호막 = 0;                                                     // 사장님: 제어는 완전 해제
+    장면(c, "attack", `<b>${c.이름}</b>${조사(c.이름,"이","가")} 사슬을 던져 보호막을 끊었다.`, "big", { 종류:"사슬", 에서:자리(c), 에:자리(e), 색:"#c69bff" });
+  } },
+};
+
+/* ── 공방 (층과합성-지피티.md 3장, 1구간 레시피만) ── */
+/**
+ * 공방 3층 · 장비 5층 · 약 8층에 열린다. 실패 없음, 즉시 제작.
+ * 회복약은 바꿨다(10-07): 설계는 "전투 시작 때 가장 다친 아군 20%" 인데 우리는 층마다 체력이 꽉 차서
+ * 시작할 때 다친 사람이 없다 → **전투 중 처음으로 절반 아래로 떨어진 아군을 20% 회복**.
+ */
+const 레시피 = {
+  철검:   { 이름:"견습자의 철검", 슬롯:"무기", 열림:5, 재료:{ 파편:12, 수호핵:1 }, 금화:1000, 효과:{ 공격:18 }, 글:"공격 +18" },
+  가죽갑옷: { 이름:"습지 가죽갑옷", 슬롯:"갑옷", 열림:5, 재료:{ 파편:15, 잔혼:5 }, 금화:1200, 효과:{ 체력:120, 방어:10 }, 글:"체력 +120 · 방어 +10" },
+  회복약: { 이름:"별빛 회복약", 슬롯:"약", 열림:8, 재료:{ 잔혼:8, 파편:3 }, 금화:800, 글:"전투 중 처음 절반 아래로 떨어진 아군 체력 20% 회복 · 전투당 1개" },
+};
+S.가방.장비 = []; S.가방.약 = 0; S.약챙김 = true;
+let 다음템 = 1;
+const 모자람 = (키) => { const r = 레시피[키], 없 = [];
+  for (const [k, n] of Object.entries(r.재료)) if (S.가방[k] < n) 없.push(k);
+  if (S.금화 < r.금화) 없.push("금화");
+  if (S.최고층 < r.열림) 없.push(`${r.열림}층`);
+  return 없; };
+function 만들기(키){
+  const r = 레시피[키];
+  if (S.최고층 < 3 || 모자람(키).length) return false;
+  for (const [k, n] of Object.entries(r.재료)) S.가방[k] -= n;
+  S.금화 -= r.금화;
+  if (r.슬롯 === "약") S.가방.약++;
+  else S.가방.장비.push({ id:다음템++, 키, 누구:null });
+  윗줄();
+  return true;
+}
+function 장착(템id, 대원id){
+  const t = S.가방.장비.find((x) => x.id === 템id); if (!t) return false;
+  const 슬롯 = 레시피[t.키].슬롯;
+  for (const x of S.가방.장비) if (x.누구 === 대원id && 레시피[x.키].슬롯 === 슬롯) x.누구 = null;   // 같은 칸에 있던 것은 내린다
+  t.누구 = 대원id;
+  return true;
+}
+function 벗기(템id){ const t = S.가방.장비.find((x) => x.id === 템id); if (t) t.누구 = null; }
+const 장비들 = (c) => S.가방.장비.filter((x) => x.누구 === c.id);
+const 장비몫 = (c, 칸) => 장비들(c).reduce((v, x) => v + (레시피[x.키].효과[칸] ?? 0), 0);
+let 약대기 = false;
+
+let 행동순서 = [];
+function 한턴(){
+  if (장면흘리기()) return;
+  if (S.쉼 > 0) {
+    S.쉼--;
+    if (S.쉼 === 0) { 전투준비(); 적만들기(); 적기("원정대가 다시 섰다.", "good"); 그리기(); }
+    else 적기(`상처를 꿰매는 중… (${S.쉼})`, "turn");
+    return;
+  }
+  if (!파티원().length) { S.진행 = false; 적기("원정대가 비었다. 캐릭터 탭에서 태워라.", "die"); return; }
+  if (!산아군().length) { 전멸(); return; }
+  if (!적들.length) { 층넘기(); return; }
+  턴++;
+  장면(null, null, `턴 ${턴}`, "turn");
+  const 세 = 세리안(); if (세) 세.수호씀 = false;
+  // 속도(사장님 A): 아군·적을 섞어 빠른 순서대로. 같으면 아군 먼저.
+  const 줄 = [...산아군().map((c) => ({ 누구:c, 편:"아군" })), ...적들.map((e) => ({ 누구:e, 편:"적" }))]
+    .sort((a, b) => 속도(b.누구) - 속도(a.누구) || (a.편 === "아군" ? -1 : 1));
+  행동순서 = 줄.map((x) => x.편);
+  for (const { 누구, 편 } of 줄) {
+    if (!적들.length || !산아군().length) break;
+    if (누구.hp <= 0) continue;
+    if (편 === "아군") 아군행동(누구); else 적행동(누구);
+  }
+  윗줄(); 그리기();
+}
+function 아군행동(c){
+  c.도발 = false;                                            // 도발은 다음 본인 행동 시작 전까지(규칙 5)
+  if (c.키 === "기사") 막고정 = false;
+  if (c.쿨 > 0) c.쿨--;
+  const d = 카드(c);
+  if (d.궁 && c.궁 >= 100) { c.궁 = 0; 기술표[d.궁].쓰기(c); return; }
+  const s = d.스킬 && 기술표[d.스킬];
+  if (s && c.쿨 === 0 && s.쓸까(c)) { s.쓰기(c); c.쿨 = s.쿨(c); return; }
+  기술표[d.일반].쓰기(c);
+}
+function 적행동(e){
+  const 산것 = 산아군();
+  // 도발(규칙 5): 끌린 사람이 있으면 그 사람, 여럿이면 방어 역할 먼저. 없으면 아무나.
+  const 끌린 = 산것.filter((c) => c.도발).sort((a, b) => (역할(b) === "방어") - (역할(a) === "방어"))[0];
+  const t = 끌린 ?? 산것[Math.floor(Math.random() * 산것.length)];
+  const { 피, 막음, 수호 } = 아군맞기(t, e.공격 * (0.9 + Math.random()*0.2));
+  if (수호) 장면(세리안(), "attack", `<b>기사</b>가 ${t.이름} 앞에 방패를 들었다. 막 <span class="good">${수(수호)}</span>`, "",
+    { 종류:"막", 들:[자리(t)], 색:"#7ec8ff" });
+  const 글 = 막음 > 0
+    ? `${e.이름} → <b>${t.이름}</b> 막이 <span class="good">${수(막음)}</span> 받아냈다${피 > 0 ? ` · <span class="bad">${수(피)}</span>` : ""}${t.막 <= 0 ? " — 막이 깨졌다" : ""}`
+    : `${e.이름} → <b>${t.이름}</b> <span class="bad">${수(피)}</span>`;
+  장면(e, "attack", 글, "", { 종류: 막음 > 0 ? (t.막 <= 0 ? "막깨짐" : "막맞음") : "맞음",
+    에서:자리(e), 에:자리(t), 색: 막음 > 0 ? "#7ec8ff" : "#ff7a5c", 막들:막들(t) });
+  if (t.hp <= 0) 장면(null, null, `<b>${t.이름}</b>${조사(t.이름,"이","가")} 주저앉았다.`, "bad");
+  else if (약대기 && t.hp < 최대체력(t) * .5) {
+    약대기 = false;
+    const 양 = Math.floor(최대체력(t) * .2);
+    t.hp = Math.min(최대체력(t), t.hp + 양);
+    장면(null, null, `별빛 회복약이 깨졌다. <b>${t.이름}</b> <span class="good">+${수(양)}</span>`, "good", { 종류:"회복", 에:자리(t), 색:"#ffe9a0" });
+  }
+}
+
+/* ── 층을 넘을 때: 경험·드롭 ── */
+function 층넘기(){
+  const 층 = S.층, 첫 = 층 > S.최고층;
+  // 경험(규칙): 출전 전원 100+층×10, 벤치 50%
+  const 양 = 100 + 층*10;
+  for (const c of S.대원) {
+    c.경험 += S.파티.includes(c.id) ? 양 : Math.floor(양/2);
+    while (c.레벨 < 등급상한[카드(c).등급] && c.경험 >= 필요경험(c)) {
+      c.경험 -= 필요경험(c); c.레벨++;
+      if (S.파티.includes(c.id)) 장면(c, "idle", `<b>${c.이름}</b> 레벨 ${c.레벨}`, "good");
+    }
+  }
+  // 드롭(층과합성-지피티.md 2-1·2-4)
+  const 굴 = (a, b) => a + Math.floor(Math.random()*(b - a + 1));
+  const g = (80 + 층*20) * (보스판 ? 4 : 1), 파 = 보스판 ? 굴(8, 12) : 굴(2, 4), 잔 = 보스판 ? 굴(4, 6) : 굴(1, 2);
+  S.금화 += g; S.가방.파편 += 파; S.가방.잔혼 += 잔;
+  let 줄 = `금화 <b>+${수(g)}</b> · 균열 파편 +${파} · 짐승 잔혼 +${잔}`;
+  if (보스판) { S.가방.수호핵 += 1; 줄 += " · 수호핵 +1"; }
+  if (첫) {
+    const 별 = 보스판 ? 100 : 15;
+    S.가방.별가루 += 별; 줄 += ` · <span class="big">별가루 +${별}</span> (첫 클리어)`;
+    if (보스판) { S.가방.문장.방어 += 3; 줄 += " · 수호의 문장 +3"; }
+    S.최고층 = 층;
+  }
+  장면(null, null, 줄, "good");
+  // 10층 보스: 흑마법사(제어) 합류 — 뽑기가 생기기 전까지 임시
+  if (보스판 && !S.대원.some((c) => c.키 === "흑마법사")) {
+    const 새 = 대원만들기("흑마법사", Math.max(1, ...S.대원.map((c) => c.레벨)));
+    S.대원.push(새);
+    if (S.파티.length < 5) S.파티.push(새.id);
+    장면(null, null, `골렘의 잔해 속에서 <b>흑마법사</b>(제어)가 걸어 나왔다.`, "big");
+  }
+  S.층++;
+  if (S.층 > 100) { 적기("탑의 끝에 닿았다.", "big"); S.진행 = false; 윗줄(); return; }
+  if ((S.층 - 1) % 10 === 0) { S.단계 = Math.floor((S.층 - 1)/10) + 1;
+    장면(null, null, `<b>${S.단계}구간 · ${구간이름[(S.단계 - 1) % 10]}</b>`, "big"); }
+  전투준비(); 적만들기(); 윗줄(); 그리기();
+  저장();
+}
+function 전멸(){
+  적기("원정대가 물러났다. 구간 처음으로 돌아간다.", "die");
+  S.층 = Math.max(1, Math.floor((S.층 - 1)/10)*10 + 1);
+  S.단계 = Math.floor((S.층 - 1)/10) + 1;
+  S.쉼 = 4;
+  for (const c of 파티원()) { c.막 = 0; c.보임막 = 0; }
+  윗줄(); 그리기();
+}
+
+/**
+ * **얼굴** — 스프라이트 맨 윗줄(머리끝)에서 32칸 정사각을 잘라 쓴다. 가로 가운데는 머리 줄들의 가운데.
+ * 그림이 아직 안 왔으면 빈 칸(다음 그리기 때 채워진다).
+ */
+const 얼굴칸 = {};
+function 얼굴(이름){
+  if (얼굴칸[이름]) return 얼굴칸[이름];
+  const im = 그림[이름]; if (!im || !im.naturalWidth) return "";
+  const w = im.naturalWidth, h = im.naturalHeight, cv0 = document.createElement("canvas");
+  cv0.width = w; cv0.height = h; const x0 = cv0.getContext("2d"); x0.drawImage(im, 0, 0);
+  const d = x0.getImageData(0, 0, w, h).data;
+  let 위 = 0; while (위 < h && ![...Array(w).keys()].some((x) => d[(위*w + x)*4 + 3] > 0)) 위++;
+  let 합 = 0, 수 = 0;
+  for (let y = 위; y < Math.min(h, 위 + 22); y++) for (let x = 0; x < w; x++) if (d[(y*w + x)*4 + 3] > 0) { 합 += x; 수++; }
+  const cx = 수 ? 합/수 : w/2, 칸 = 32;
+  const 나 = document.createElement("canvas"); 나.width = 칸; 나.height = 칸;
+  const 나x = 나.getContext("2d"); 나x.imageSmoothingEnabled = false;
+  나x.drawImage(im, Math.round(cx - 칸/2), 위 + 3, 칸, 칸, 0, 0, 칸, 칸);   // 머리끝에서 3칸 아래부터 — 높은 머리 장식이 얼굴을 밀어낸다(리안 포니테일)
+  return (얼굴칸[이름] = 나.toDataURL());
+}
+
+/** 그림 고르기 — 캐릭터는 가만히 선다(10-07). 없으면 hero 로 떨어진다. */
+function 칸고르기(이름){
+  const 기본 = 그림[이름];
+  return 기본 && 기본.complete && 기본.naturalWidth ? 기본 : (그림.hero && 그림.hero.complete ? 그림.hero : null);
+}
+
+/* ── 빛 (파티클) ──────────────────────────────────── */
+/**
+ * **싸움은 빛으로 보인다** (10-07 사장님: "다 마법으로 하자 … 그래서 파티클이 중요해").
+ * 캐릭터는 가만히 서 있고, 스킬이 무엇을 했는지는 **빛이 말한다** — 글이 숫자를, 빛이 동작을 맡는다.
+ * 빛 종류는 `빛표` 에만 있다. 기술표의 빛 색을 바꾸면 그 기술의 빛만 바뀐다.
+ */
+let 판폭 = 390, 판높이 = 170;           // 길드 탭에선 캔버스가 숨어 크기가 0 — 마지막으로 본 크기를 쓴다
+/** 그리기() 와 **같은 자리 계산**. 따로 계산하면 빛이 캐릭터 옆 허공에서 터진다. */
+/**
+ * **전투는 작은 그림**(10-07 사장님 "전투 때 크기가 너무 크다"). 도트 칸을 2×2 로 묶은 절반짜리 `-s` 를 쓴다
+ * — 그냥 0.5배로 그리면 칸이 깨진다. **보스는 큰 그림 그대로**: 절반이면 아군보다 작아진다.
+ */
+const 전투그림 = (이름, 보스) => { const s = 그림[이름 + "-s"];
+  return !보스 && s && s.complete && s.naturalWidth ? s : 칸고르기(이름); };
+const 몸키 = (이름, 보스) => { const im = 전투그림(이름, 보스); return im && im.naturalHeight ? im.naturalHeight - 4 : 60; };
+const 아군x = (i) => 34 + i*44, 적x = (i) => 판폭 - 40 - i*48;   // 전투용 작은 그림 폭(33~51)에 맞춘 간격   // 10-07 규격 몸은 동그랗고 넓다 — 46 간격이면 서로 겹치고 맨 앞이 잘렸다
+function 자리(누구){
+  const pi = 파티원().slice(0,5).indexOf(누구);
+  if (pi >= 0) return { x: 아군x(pi), y: 판높이 - 16 - 몸키(카드(누구).그림)*0.45 };
+  const ei = 적들.slice(0,3).indexOf(누구);
+  if (ei >= 0) return { x: 적x(ei), y: 판높이 - 16 - 몸키(누구.그림, 누구.보스)*0.45 };
+  return { x: 판폭/2, y: 판높이/2 };
+}
+const 알갱이 = [], 날것 = [], 빛셈 = {};
+let 막번쩍 = 0;
+const 무작 = (a, b) => a + Math.random()*(b-a);
+function 알(x, y, vx, vy, 수명, 색, 크 = 2, 끌림 = 0, 늦게 = 0){
+  알갱이.push({ x, y, vx, vy, t:-늦게, 수명, 색, 크, 끌림 });
+}
+function 터짐(p, 색, n = 14, 세기 = 60, 끌림 = 0){
+  for (let i = 0; i < n; i++) { const a = Math.random()*Math.PI*2, v = 무작(.3, 1)*세기;
+    알(p.x, p.y, Math.cos(a)*v, Math.sin(a)*v, 무작(.25, .55), 색, Math.round(무작(1, 3)), 끌림); }
+}
+const 빛표 = {
+  /** 쏘는 마법: 빛 덩이가 날아가 맞은 자리에서 터진다 */
+  탄(f){ 날것.push({ x:f.에서.x + 12, y:f.에서.y, 목:f.에, t:0, 걸림:.2, 색:f.색, 크: f.세게 ? 5 : 4,
+    도착: () => { 터짐(f.에, f.색, f.세게 ? 30 : 18, f.세게 ? 95 : 70); 터짐(f.에, "#ffffff", 5, 30); } }); },
+  튕김(f){ 날것.push({ x:f.에서.x + 12, y:f.에서.y, 목:{ x:f.에.x - 22, y:f.에.y }, t:0, 걸림:.18, 색:"#b6ff4d", 크:3,
+    도착: () => 터짐({ x:f.에.x - 22, y:f.에.y }, f.색, 12, 45) }); },
+  /** 방어막: 아군 하나하나에 빛이 모여들고, 막이 번쩍 선다 */
+  막(f){ 막번쩍 = .7;
+    for (const p of f.들) for (let i = 0; i < 18; i++) { const a = i/18*Math.PI*2, r = 30;
+      알(p.x + Math.cos(a)*r, p.y + Math.sin(a)*r, -Math.cos(a)*48, -Math.sin(a)*48, .5, f.색, 2, 0, i*.008); } },
+  막맞음(f){ 막번쩍 = .35; 터짐({ x:f.에.x + 18, y:f.에.y }, f.색, 10, 40); },
+  막깨짐(f){ 막번쩍 = .5; 터짐({ x:f.에.x + 18, y:f.에.y }, f.색, 26, 90, 220); 터짐(f.에, "#ffffff", 6, 40); },
+  맞음(f){ 터짐(f.에, f.색, 12, 55); },
+  /** 궁극기: 시전자에서 큰 빛 고리가 판 전체로 퍼진다 */
+  섬광(f){ 막번쩍 = .9;
+    for (let i = 0; i < 48; i++) { const a = i/48*Math.PI*2;
+      알(f.에서.x, f.에서.y, Math.cos(a)*260, Math.sin(a)*120, .55, i%4 ? f.색 : "#ffffff", 3); }
+    터짐(f.에서, "#ffffff", 16, 70); },
+  /** 회복: 발밑에서 빛이 피어오른다 */
+  회복(f){ for (let i = 0; i < 20; i++)
+    알(f.에.x + 무작(-12, 12), f.에.y + 무작(4, 24), 무작(-6, 6), 무작(-60, -25), 무작(.5, .9), i%3 ? f.색 : "#ffffff", 2, 0, i*.02); },
+  /** 사슬: 빛 고리가 줄지어 뻗고, 보호막이 깨져 조각이 떨어진다 */
+  사슬(f){ const n = 16;
+    for (let i = 0; i <= n; i++) { const k = i/n;
+      알(f.에서.x + (f.에.x - f.에서.x)*k, f.에서.y + (f.에.y - f.에서.y)*k - Math.sin(k*Math.PI)*12, 0, 0, .5, f.색, 3, 0, k*.18); }
+    날것.push({ x:f.에.x, y:f.에.y, 목:f.에, t:0, 걸림:.2, 숨김:true,
+      도착: () => { 터짐(f.에, "#7aa8ff", 28, 100, 260); 터짐(f.에, f.색, 10, 50); } }); },
+};
+function 터뜨리기(f){
+  if (!f) return;
+  if (f.막들) for (const [c, v] of f.막들) c.보임막 = v;
+  if (!빛표[f.종류]) return;
+  빛셈[f.종류] = (빛셈[f.종류] ?? 0) + 1;
+  빛표[f.종류](f);
+}
+function 빛흘리기(dt){
+  for (const q of 알갱이) {
+    q.t += dt; if (q.t < 0) continue;
+    q.x += q.vx*dt; q.y += q.vy*dt; q.vy += q.끌림*dt;
+    if (!q.끌림) { q.vx *= .93; q.vy *= .93; }
+  }
+  for (let i = 알갱이.length - 1; i >= 0; i--) if (알갱이[i].t > 알갱이[i].수명) 알갱이.splice(i, 1);
+  for (let i = 날것.length - 1; i >= 0; i--) {
+    const n = 날것[i]; n.t += dt;
+    if (n.sx === undefined) { n.sx = n.x; n.sy = n.y; }
+    const k = Math.min(1, n.t / n.걸림);
+    n.x = n.sx + (n.목.x - n.sx) * k; n.y = n.sy + (n.목.y - n.sy) * k - Math.sin(k*Math.PI) * 6;
+    if (!n.숨김) 알(n.x, n.y, 무작(-10, 10), 무작(-10, 10), .22, n.색, 2);   // 꼬리
+    if (k >= 1) { 날것.splice(i, 1); n.도착(); }
+  }
+  if (막번쩍 > 0) 막번쩍 -= dt;
+  if (알갱이.length > 900) 알갱이.splice(0, 알갱이.length - 900);
+}
+function 빛그리기(ctx){
+  // 방어막: 막이 남아 있는 동안 아군 위에 계속 서 있다 — 탱커가 일하는 게 눈에 보여야 한다
+  for (const c of 파티원().slice(0,5)) {
+    if (!(c.보임막 > 0) || c.hp <= 0) continue;
+    const p = 자리(c), ry = 몸키(카드(c).그림)*0.55 + 6, rx = 21;
+    ctx.save();
+    ctx.globalAlpha = .1 + Math.max(0, 막번쩍)*.3; ctx.fillStyle = "#7ec8ff";
+    ctx.beginPath(); ctx.ellipse(p.x, p.y + 4, rx, ry, 0, 0, 7); ctx.fill();
+    ctx.globalAlpha = .4 + Math.max(0, 막번쩍)*.4 + Math.sin(Date.now()/180)*.08;
+    ctx.strokeStyle = "#a9dcff"; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.ellipse(p.x, p.y + 4, rx, ry, 0, Math.PI*1.05, Math.PI*1.95); ctx.stroke();
+    ctx.restore();
+  }
+  ctx.save(); ctx.globalCompositeOperation = "lighter";
+  for (const q of 알갱이) {
+    if (q.t < 0) continue;
+    ctx.globalAlpha = Math.max(0, 1 - q.t/q.수명);
+    ctx.fillStyle = q.색; ctx.fillRect(Math.round(q.x - q.크/2), Math.round(q.y - q.크/2), q.크, q.크);
+  }
+  for (const n of 날것) {
+    if (n.숨김) continue;
+    ctx.globalAlpha = .35; ctx.fillStyle = n.색; ctx.fillRect(Math.round(n.x - n.크), Math.round(n.y - n.크), n.크*2, n.크*2);
+    ctx.globalAlpha = 1; ctx.fillStyle = "#ffffff"; ctx.fillRect(Math.round(n.x - n.크/2), Math.round(n.y - n.크/2), n.크, n.크);
+  }
+  ctx.restore();
+}
+
+/* ── 그림 (작게, 자리만) ──────────────────────────── */
+const cv = $("#cv"), ctx = cv.getContext("2d");
+function 크기(){ const r = cv.getBoundingClientRect(), d = devicePixelRatio||1;
+  cv.width = r.width*d; cv.height = r.height*d; ctx.setTransform(d,0,0,d,0,0); ctx.imageSmoothingEnabled = false; }
+addEventListener("resize", () => { 크기(); 그리기(); });
+let 앞그린 = Date.now();
+function 그리기(){
+  const dt = Math.min(.12, (Date.now()-앞그린)/1000); 앞그린 = Date.now();
+  for (const c of S.대원) if (c.동작남음 > 0) c.동작남음 -= dt;
+  for (const e of 적들) if (e.동작남음 > 0) e.동작남음 -= dt;
+  const w = cv.getBoundingClientRect().width, h = cv.getBoundingClientRect().height;
+  if (w > 0 && h > 0) { 판폭 = w; 판높이 = h; }
+  빛흘리기(dt);
+  ctx.clearRect(0,0,w,h);
+  // 탑 안 복도(396×168 도트) — 바닥이 그림의 아래 29% 라 캐릭터 발(h-16)이 바닥 위에 선다
+  const bg = 그림.tower && 그림.tower.complete && 그림.tower.naturalWidth ? 그림.tower : null;
+  if (bg) { const s = Math.max(w/396, h/168); ctx.drawImage(bg, Math.round((w - 396*s)/2), Math.round(h - 168*s), 396*s, 168*s); }
+  ctx.fillStyle = "rgba(13,9,16,.55)"; ctx.fillRect(0, h-16, w, 16);
+  const p = 파티원();
+  // 도트는 1:1 로 그린다 — 1.5배 같은 배율은 칸이 깨진다(10-07 도트 칸 되살리기)
+  p.slice(0,5).forEach((c, i) => {
+    const im = 전투그림(카드(c).그림); if (!im) return;
+    const x = 아군x(i), 밀림 = c.동작남음 > 0 && c.동작 === "attack" ? 6 : 0;
+    ctx.globalAlpha = c.hp > 0 ? 1 : .28;
+    ctx.drawImage(im, Math.round(x - im.naturalWidth/2 + 밀림), h - 16 - im.naturalHeight + 2);
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = "#222a35"; ctx.fillRect(x-18, h-13, 36, 4);
+    ctx.fillStyle = "#6fbf73"; ctx.fillRect(x-18, h-13, 36*Math.max(0, c.hp/최대체력(c)), 4);
+    if (카드(c).궁) { ctx.fillStyle = c.궁 >= 100 ? "#ffe66b" : "#7ec8ff"; ctx.fillRect(x-18, h-8, 36*c.궁/100, 2); }
+  });
+  적들.slice(0,3).forEach((e, i) => {
+    const im = 전투그림(e.그림, e.보스); if (!im) return;
+    const x = 적x(i), 밀림 = e.동작남음 > 0 && e.동작 === "attack" ? -6 : 0;
+    ctx.save(); ctx.translate(Math.round(x + 밀림), h - 16 + 2); ctx.scale(-1, 1);
+    ctx.drawImage(im, -Math.round(im.naturalWidth/2), -im.naturalHeight); ctx.restore();
+    ctx.fillStyle = "#222a35"; ctx.fillRect(x-20, h-13, 40, 4);
+    ctx.fillStyle = e.보호막 > 0 ? "#7aa8ff" : "#d9534f"; ctx.fillRect(x-20, h-13, 40*Math.max(0, e.hp/e.최대), 4);
+  });
+  빛그리기(ctx);
+}
+
+/* ── 아래 칸 ──────────────────────────────────────── */
+function 윗줄(){
+  $("#zone").textContent = `${구간이름[(S.단계-1)%10]} · ${S.층}층`;
+  $("#gold").textContent = 수(S.금화); $("#shard").textContent = 수(S.가방.별가루);
+}
+function 칸(){
+  const el = $("#panel");
+  if (S.탭 === "run" || S.탭 === "hall") { el.className = ""; el.innerHTML = ""; return; }
+  el.className = "open";
+  if (S.탭 === "crew") {
+    el.innerHTML = `<div class="row"><div class="nm"><b>별빛 회복약 ${S.가방.약}개</b><i>출전할 때 한 병 챙긴다</i></div>
+        <button class="btn" id="potion">${S.약챙김 ? "챙김" : "안 챙김"}</button></div>` + S.대원.map((c) => {
+      const 안에 = S.파티.includes(c.id), d = 카드(c);
+      return `<div class="row">
+        <div class="얼굴" style="border-color:${등급색[d.등급]};background-image:url(${얼굴(d.그림)})"></div>
+        <div class="nm"><b><span style="color:${등급색[d.등급]}">${c.이름}</span> <span style="color:#a8977f">Lv.${c.레벨}</span>
+          <span class="tag" style="color:${등급색[d.등급]}">${d.등급}</span><span class="tag r">${d.직업} · ${d.역할}</span>${d.임시 ? `<span class="tag">카드 대기</span>` : ""}</b>
+          <i>체력 ${수(최대체력(c))} · 공격 ${수(공격력(c))} · 방어 ${수(방어력(c))} · 속도 ${속도(c)}</i>
+          <div style="margin-top:4px">${["무기","갑옷"].map((슬롯) => { const 낀 = 장비들(c).find((x) => 레시피[x.키].슬롯 === 슬롯);
+            const 남은 = S.가방.장비.filter((x) => !x.누구 && 레시피[x.키].슬롯 === 슬롯);
+            return 낀 ? `<span class="tag r" data-off="${낀.id}">${슬롯} ${레시피[낀.키].이름} ✕</span>`
+              : 남은.length ? `<span class="tag" data-eq="${남은[0].id}" data-who="${c.id}">${슬롯} + ${레시피[남은[0].키].이름}</span>`
+              : `<span class="tag" style="opacity:.5">${슬롯} 비어 있음</span>`; }).join("")}</div>
+          <div class="bar"><i style="width:${Math.min(100, c.경험/필요경험(c)*100)}%"></i></div></div>
+        <button class="btn" data-rep="${c.id}" style="margin-right:4px">${S.대표===c.id?"대표":"대표로"}</button>
+        <button class="btn" data-id="${c.id}">${안에?"내리기":"태우기"}</button></div>`;
+    }).join("");
+    el.querySelectorAll("[data-id]").forEach((b) => b.onclick = () => {
+      const id = Number(b.dataset.id);
+      if (S.파티.includes(id)) S.파티 = S.파티.filter((x) => x !== id);
+      else if (S.파티.length < 5) S.파티.push(id);
+      칸(); 그리기();
+    });
+    el.querySelectorAll("[data-eq]").forEach((b) => b.onclick = () => { 장착(Number(b.dataset.eq), Number(b.dataset.who)); 칸(); });
+    el.querySelectorAll("[data-off]").forEach((b) => b.onclick = () => { 벗기(Number(b.dataset.off)); 칸(); });
+    $("#potion").onclick = () => { S.약챙김 = !S.약챙김; 칸(); };
+    el.querySelectorAll("[data-rep]").forEach((b) => b.onclick = () => {
+      S.대표 = Number(b.dataset.rep); 칸(); 길드그리기();
+    });
+  } else if (S.탭 === "forge") {
+    const g = S.가방;
+    if (S.최고층 < 3) { el.innerHTML = `<div class="row"><div class="nm"><b>대장간</b><i>3층을 넘으면 대장간이 열린다. (지금 ${S.최고층}층)</i></div></div>`; return; }
+    const 재료글 = (r) => [...Object.entries(r.재료).map(([k, n]) => `${{파편:"파편",잔혼:"잔혼",수호핵:"수호핵"}[k]} <span style="color:${g[k] >= n ? "#8fe08f" : "#ff8e7a"}">${g[k]}/${n}</span>`),
+      `금화 <span style="color:${S.금화 >= r.금화 ? "#8fe08f" : "#ff8e7a"}">${수(r.금화)}</span>`].join(" · ");
+    el.innerHTML = `<div class="row"><div class="nm"><b>가방</b><i>균열 파편 ${g.파편} · 짐승 잔혼 ${g.잔혼} · 수호핵 ${g.수호핵} · 금화 ${수(S.금화)}</i></div></div>`
+      + Object.entries(레시피).map(([k, r]) => { const 없 = 모자람(k), 잠김 = S.최고층 < r.열림;
+        return `<div class="row"><div class="nm"><b>${r.이름} <span class="tag">${r.슬롯}</span></b>
+          <i>${잠김 ? `${r.열림}층을 넘으면 열린다` : `${r.글}<br>${재료글(r)}`}</i></div>
+          <button class="btn" data-make="${k}" ${없.length ? "disabled" : ""}>만들기</button></div>`; }).join("")
+      + `<div class="row"><div class="nm"><i>만든 장비와 회복약은 <span style="color:#f2b45a">캐릭터</span> 탭에서 끼우고 챙긴다.</i></div></div>`;
+    el.querySelectorAll("[data-make]").forEach((b) => b.onclick = () => { 만들기(b.dataset.make); 칸(); });
+  } else if (S.탭 === "shop") {
+    el.innerHTML = `<div class="row"><div class="nm"><b>시장</b><i>아직 비어 있다.</i></div></div>`;
+  } else {
+    const g = S.가방;
+    el.innerHTML = `<div class="row"><div class="nm"><b>길드</b>
+        <i>대원 ${S.대원.length}명 · 가장 깊이 ${S.최고층}층</i></div></div>
+      <div class="row"><div class="nm"><b>가방</b>
+        <i>균열 파편 ${g.파편} · 짐승 잔혼 ${g.잔혼} · 수호핵 ${g.수호핵} · 수호의 문장 ${g.문장.방어} · 별가루 ${g.별가루}</i></div></div>
+      <div class="row"><div class="nm"><b>원정</b><i>${S.진행?"내려가는 중":"멈춤"}</i></div>
+        <button class="btn" id="toggle">${S.진행?"멈추기":"다시 가기"}</button></div>`;
+    $("#toggle").onclick = () => { S.진행 = !S.진행; 칸(); };
+  }
+}
+function 화면(){
+  $("#hall").classList.toggle("on", S.탭 === "hall");
+  $("#battle").classList.toggle("on", S.탭 === "run");
+  document.querySelectorAll(".tab").forEach((x) => x.classList.toggle("on", x.dataset.t === S.탭));
+  칸();
+  if (S.탭 === "hall") 길드그리기();
+  if (S.탭 === "run") { 크기(); 그리기(); }
+}
+document.querySelectorAll(".tab").forEach((t) => t.onclick = () => { S.탭 = t.dataset.t; 화면(); });
+
+/** 길드에 서 있는 대표. 크게 — 여기가 이 사람을 보는 자리다. */
+const hcv = $("#hcv"), hctx = hcv.getContext("2d");
+/**
+ * **폐허 위 야영지** (10-07 사장님). 배경은 192×344 도트 — 캐릭터를 자를 때와 같은 비율로 줄인 것이라
+ * **같은 배율로 그리면 도트 한 칸 크기가 맞는다.** 캐릭터만 크게 키우면 붙여 넣은 스티커로 보인다.
+ * 좌표는 전부 배경 도트 칸 단위(불 97,178 · 캐릭터 발 96,216).
+ */
+const 야영 = { 불:{ x:97, y:178 }, 발:{ x:96, y:252 } };   // 발은 불 앞 빈 땅 — 216 에선 불을 가렸다(10-07)
+const 길드알 = [];
+let 길드앞 = Date.now();
+function 길드그리기(){
+  const r = hcv.getBoundingClientRect(), d = devicePixelRatio || 1;
+  if (!r.width) return;
+  if (hcv.width !== Math.round(r.width*d) || hcv.height !== Math.round(r.height*d)) {
+    hcv.width = Math.round(r.width*d); hcv.height = Math.round(r.height*d);
+  }
+  hctx.setTransform(d,0,0,d,0,0); hctx.imageSmoothingEnabled = false;
+  const w = r.width, h = r.height;
+  const dt = Math.min(.1, (Date.now() - 길드앞)/1000); 길드앞 = Date.now();
+  hctx.fillStyle = "#1a1420"; hctx.fillRect(0,0,w,h);
+
+  const bg = 그림.camp && 그림.camp.complete && 그림.camp.naturalWidth ? 그림.camp : null;
+  const s = Math.max(w/192, h/344);                          // 화면을 덮는 배율
+  const ox = Math.round((w - 192*s)/2), oy = 0;
+  const 칸 = (p) => ({ x: ox + p.x*s, y: oy + p.y*s });
+  if (bg) hctx.drawImage(bg, ox, oy, 192*s, 344*s);
+
+  // 모닥불 불씨 · 하늘의 초록 먼지 — 칸 크기를 배경 도트에 맞춘다
+  const 불 = 칸(야영.불), 점 = Math.max(2, Math.round(s));
+  if (Math.random() < dt*22) 길드알.push({ x:불.x + 무작(-6,6), y:불.y, vx:무작(-8,8), vy:무작(-48,-22), t:0, 수명:무작(.7,1.5),
+    색: Math.random() < .3 ? "#ffe08a" : "#ff8a3a" });
+  if (Math.random() < dt*3) 길드알.push({ x:무작(0,w), y:무작(h*.05,h*.45), vx:무작(4,12), vy:무작(-4,4), t:0, 수명:무작(3,6), 색:"#ffe9a0", 흐림:true });   // 반딧불 — 초록 방사능 먼지는 티가 나서 뺐다(10-07)
+  for (const q of 길드알) { q.t += dt; q.x += q.vx*dt + (q.흐림 ? 0 : Math.sin(q.t*6)*.3); q.y += q.vy*dt; }
+  for (let i = 길드알.length-1; i >= 0; i--) if (길드알[i].t > 길드알[i].수명) 길드알.splice(i, 1);
+  // 불빛이 일렁인다
+  hctx.save(); hctx.globalCompositeOperation = "lighter";
+  hctx.globalAlpha = .1 + Math.sin(Date.now()/90)*.03 + Math.random()*.02;
+  const 빛 = hctx.createRadialGradient(불.x, 불.y, 2, 불.x, 불.y, 34*s);
+  빛.addColorStop(0, "#ff9a40"); 빛.addColorStop(1, "rgba(255,120,40,0)");
+  hctx.fillStyle = 빛; hctx.fillRect(불.x - 34*s, 불.y - 34*s, 68*s, 68*s);
+  for (const q of 길드알) {
+    const k = q.t/q.수명;
+    hctx.globalAlpha = q.흐림 ? Math.sin(k*Math.PI)*.45 : 1 - k;
+    hctx.fillStyle = q.색; hctx.fillRect(Math.round(q.x), Math.round(q.y), 점, 점);
+  }
+  hctx.restore();
+
+  const c = S.대원.find((x) => x.id === S.대표 && x.살아있나) ?? S.대원.find((x) => x.살아있나);
+  if (!c) { hctx.fillStyle="#c9b48a"; hctx.font="14px Malgun Gothic"; hctx.textAlign="center";
+            hctx.fillText("야영지가 비었다", w/2, h/2); return; }
+  S.대표 = c.id;
+  const im = 칸고르기(카드(c).그림);
+  if (im) {
+    const 발 = 칸(야영.발), 크w = im.naturalWidth*s, 크h = im.naturalHeight*s;
+    hctx.save(); hctx.globalAlpha = .4; hctx.beginPath();
+    hctx.ellipse(발.x, 발.y, 크w*0.28, 3*s, 0, 0, 7); hctx.fillStyle="#000"; hctx.fill(); hctx.restore();
+    hctx.drawImage(im, Math.round(발.x - 크w/2), Math.round(발.y - 크h + 2*s), 크w, 크h);
+  }
+  $("#repName").textContent = c.이름;
+  const 판 = 카드(c);
+  $("#repName").style.color = 등급색[판.등급];
+  $("#repAge").textContent = `${판.등급} · ${판.직업} · Lv.${c.레벨}`;
+  $("#repRole").textContent = `체력 ${수(최대체력(c))} · 공격 ${수(공격력(c))} · 방어 ${수(방어력(c))} · 속도 ${속도(c)}`;
+  $("#bondBar").style.width = Math.min(100, c.경험/필요경험(c)*100) + "%";
+}
+
+// 자가 창 안에서 턴을 직접 돌릴 수 있어야 한다 — 1.4초씩 기다리면 100층에 두 시간이다.
+Object.assign(window, { S, 한턴, 적만들기, 층넘기, 최대체력, 공격력, 방어력, 전멸, 기술표, 도감, 빛셈, 빛표, 대원만들기, 방어뒤, 만들기, 장착, 레시피, 전투준비, 저장, 불러오기, 지우기 });
+Object.defineProperty(window, "행동순서", { get: () => 행동순서 });
+Object.defineProperty(window, "적들", { get: () => 적들 });
+
+/**
+ * **진행 저장** (10-07 스토어 등록 전 — 껐다 켜면 처음부터였다). 층을 넘을 때마다, 그리고 10초마다 이 기기에 저장한다.
+ * 적·장면은 저장하지 않는다(불러오면 그 층을 새로 연다). 저장이 막힌 기기(사생활 창 등)에서도 게임은 돈다.
+ */
+const 저장열쇠 = "guild-save-v1";
+function 저장(){
+  try { localStorage.setItem(저장열쇠, JSON.stringify({ S: { ...S, 탭:"hall" }, 다음id, 다음템, 때: Date.now() })); return true; }
+  catch { return false; }
+}
+function 불러오기(){
+  try {
+    const 글 = localStorage.getItem(저장열쇠); if (!글) return false;
+    const v = JSON.parse(글);
+    // 도감에서 빠진 캐릭터가 있으면 옛 저장 — **덮어쓰기 전에** 보고 버린다(반쯤 덮인 판은 더 나쁘다)
+    if (!v?.S?.대원?.length || v.S.대원.some((c) => !도감[c.키])) return false;
+    Object.assign(S, v.S); 다음id = v.다음id; 다음템 = v.다음템;
+    return true;
+  } catch { return false; }
+}
+function 지우기(){ try { localStorage.removeItem(저장열쇠); } catch {} }
+const 불러옴 = 불러오기();
+setInterval(저장, 10_000);
+
+if (불러옴) 적기(`<b>${구간이름[(S.단계-1)%10]} · ${S.층}층</b>에서 다시 시작한다.`, "big");
+else 적기("<b>1구간 · 침묵의 배수 회랑</b>", "big");
+if (!불러옴) 적기("기사가 방패를 고쳐 메고 첫 계단을 내려갔다.");
+크기(); 원정시작(); 윗줄(); 화면();
+setInterval(() => { if (S.진행) 한턴(); }, 420);
+// 빛은 매 화면마다 움직여야 부드럽다 — 80ms 간격이면 파티클이 뚝뚝 끊긴다
+(function 돌기(){ if (S.탭 === "run") 그리기(); else if (S.탭 === "hall") 길드그리기(); requestAnimationFrame(돌기); })();
+</script>
+</body>
+</html>
