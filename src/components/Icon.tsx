@@ -18,7 +18,8 @@ export type IconName =
   | "company"
   | "history"
   | "settings"
-  | "signout";
+  | "signout"
+  | "send";
 
 const PATHS: Record<IconName, ReactNode> = {
   attach: (
@@ -49,6 +50,13 @@ const PATHS: Record<IconName, ReactNode> = {
   signout: (
     <>
       <path d="M12 3.5h-8.5v17h8.5"/><path d="M8 12h13"/><path d="M18 9l3 3-3 3"/>
+    </>
+  ),
+  // 보내기 — 동그란 단추 안에 들어간다(10-09 사장님 "둥글한거로 통일").
+  // 고른 여섯 개와 같은 결: 선으로만 그리고 끝을 둥글린다.
+  send: (
+    <>
+      <path d="M12 19.5v-15"/><path d="M5.5 11L12 4.5l6.5 6.5"/>
     </>
   ),
 };

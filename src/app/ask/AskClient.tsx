@@ -588,7 +588,7 @@ export default function AskClient({
           <div key={i} className={t.role === "user" ? "text-right" : ""}>
             <div
               className={
-                "inline-block max-w-[85%] border-2 border-[var(--rk-ink)] px-4 py-2.5 text-sm " +
+                "inline-block max-w-[85%] rounded-2xl border-2 border-[var(--rk-ink)] px-4 py-2.5 text-sm " +
                 (t.role === "user" ? "whitespace-pre-wrap " : "") +
                 (t.role === "user"
                   ? "bg-[var(--rk-ink)] text-[var(--rk-paper)]"
@@ -669,7 +669,7 @@ export default function AskClient({
                       else inputRef.current?.focus();
                     }}
                     className={
-                      "border-2 px-2.5 py-1 text-xs disabled:opacity-40 " +
+                      "rounded-full border-2 px-3 py-1 text-xs disabled:opacity-40 " +
                       (b.label === "시작"
                         ? "border-[#E0703A] bg-[#E0703A] text-[var(--rk-paper)]"
                         : "border-[var(--rk-ink)] bg-[var(--rk-paper)] text-[var(--rk-ink)] hover:bg-[var(--rk-100)]")
@@ -762,7 +762,7 @@ export default function AskClient({
               key={o.label}
               onClick={() => send(o.label)}
               title={o.description ?? undefined}
-              className="border border-[var(--rk-400)] px-3 py-1.5 text-sm hover:bg-[var(--rk-100)]"
+              className="rounded-full border border-[var(--rk-400)] px-4 py-1.5 text-sm hover:bg-[var(--rk-100)]"
             >
               {o.label}
             </button>
@@ -778,14 +778,14 @@ export default function AskClient({
               <img
                 src={`data:image/png;base64,${a.b64}`}
                 alt={a.name}
-                className="h-16 w-16 border border-[var(--rk-200)] object-cover"
+                className="h-16 w-16 rounded-xl border border-[var(--rk-200)] object-cover"
               />
               <button
                 onClick={() =>
                   setAttached((prev) => prev.filter((_, k) => k !== i))
                 }
                 aria-label="빼기"
-                className="absolute -right-1.5 -top-1.5 h-5 w-5 bg-[var(--rk-ink)] text-xs text-[var(--rk-paper)]"
+                className="absolute -right-1.5 -top-1.5 h-5 w-5 rounded-full bg-[var(--rk-ink)] text-xs text-[var(--rk-paper)]"
               >
                 ×
               </button>
@@ -800,34 +800,45 @@ export default function AskClient({
           e.preventDefault();
           send(text);
         }}
-        className="flex gap-2 border-t border-[var(--rk-200)] py-3"
+        /* 10-09 사장님 "말하는 거 아래쪽은 사진 바탕으로해" — 칸 세 개가 각각
+           각진 상자로 떠 있던 것을 둥근 상자 하나로 묶는다. 글 칸이 위,
+           동그란 단추들이 그 아래. 테두리가 상자 하나뿐이라 눈이 덜 바쁘다. */
+        className="mt-2 rounded-[26px] border border-[var(--rk-200)] bg-[var(--rk-100)] px-3 py-2"
       >
-        <label className="flex shrink-0 cursor-pointer items-center border-2 border-[var(--rk-ink)] bg-transparent px-3 text-[var(--rk-ink)] hover:bg-[var(--rk-100)]">
-          <Icon name="attach" size={20} />
-          <input
-            type="file"
-            accept="image/*"
-            multiple
-            className="hidden"
-            onChange={(e) => {
-              void attach(e.target.files);
-              e.target.value = "";
-            }}
-          />
-        </label>
         <input
           ref={inputRef}
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder="무엇이든 물어보세요"
-          className="min-w-0 flex-1 border-2 border-[var(--rk-ink)] bg-transparent px-4 py-3 text-sm text-[var(--rk-ink)] outline-none placeholder:text-[var(--rk-400)] focus:bg-[var(--rk-100)]"
+          className="w-full bg-transparent px-2 py-2.5 text-sm text-[var(--rk-ink)] outline-none placeholder:text-[var(--rk-400)]"
         />
-        <button
-          disabled={busy || !text.trim()}
-          className="shrink-0 whitespace-nowrap border-2 border-[var(--rk-ink)] bg-[var(--rk-ink)] px-5 text-sm font-medium text-[var(--rk-paper)] disabled:opacity-30"
-        >
-          보내기
-        </button>
+        <div className="flex items-center gap-2">
+          <label
+            aria-label="그림 붙이기"
+            className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full border border-[var(--rk-200)] bg-[var(--rk-paper)] text-[var(--rk-ink)] hover:bg-[var(--rk-200)]"
+          >
+            <Icon name="attach" size={18} />
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              className="hidden"
+              onChange={(e) => {
+                void attach(e.target.files);
+                e.target.value = "";
+              }}
+            />
+          </label>
+          <div className="min-w-0 flex-1" />
+          <button
+            aria-label="보내기"
+            title="보내기"
+            disabled={busy || !text.trim()}
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[var(--rk-ink)] text-[var(--rk-paper)] disabled:opacity-30"
+          >
+            <Icon name="send" size={18} />
+          </button>
+        </div>
       </form>
     </div>
     {!좁게 && <PreviewPanel

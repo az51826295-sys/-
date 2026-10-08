@@ -57,7 +57,7 @@ export default function Learned() {
       </button>
       {show && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4" onClick={() => setShow(false)} role="dialog" aria-label="배운 것">
-          <div className="max-h-[85vh] w-full max-w-md overflow-y-auto border-2 border-[#E0703A] bg-[var(--rk-paper)] p-4 text-[var(--rk-ink)]" onClick={(e) => e.stopPropagation()}>
+          <div className="max-h-[85vh] w-full max-w-md overflow-y-auto rounded-2xl border-2 border-[#E0703A] bg-[var(--rk-paper)] p-4 text-[var(--rk-ink)]" onClick={(e) => e.stopPropagation()}>
             <div className="mb-1 flex items-baseline justify-between gap-2">
               <span className="text-sm font-bold">배운 것</span>
               <button type="button" onClick={() => setShow(false)} className="text-xs text-[var(--rk-400)] hover:text-[var(--rk-ink)]">닫기</button>
@@ -76,7 +76,7 @@ export default function Learned() {
                 ) : (
                   <ul className="mb-3 flex flex-col gap-2">
                     {data.rules.map((r) => (
-                      <li key={r.id} className="border-2 border-[var(--rk-ink)] px-3 py-2">
+                      <li key={r.id} className="rounded-xl border-2 border-[var(--rk-ink)] px-3 py-2">
                         <div className="flex items-start justify-between gap-2">
                           <span className="min-w-0">
                             <span className="block text-sm font-bold">{r.title}</span>
@@ -84,7 +84,7 @@ export default function Learned() {
                             <span className="mt-1 block text-[11px] text-[var(--rk-600)]">{day(r.since)}부터 · {evidence(r.counts, r.p)}</span>
                           </span>
                           <button type="button" disabled={busy !== null} onClick={() => void turnOff(r.id, r.title)}
-                            className="shrink-0 whitespace-nowrap border-2 border-[var(--rk-ink)] px-2 py-1 text-xs hover:bg-[var(--rk-100)] disabled:opacity-50">끄기</button>
+                            className="shrink-0 whitespace-nowrap rounded-full border-2 border-[var(--rk-ink)] px-3 py-1 text-xs hover:bg-[var(--rk-100)] disabled:opacity-50">끄기</button>
                         </div>
                       </li>
                     ))}
