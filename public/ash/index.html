@@ -565,10 +565,29 @@ let 판폭 = 390, 판높이 = 170;           // 길드 탭에선 캔버스가 �
  * **전투는 작은 그림**(10-07 사장님 "전투 때 크기가 너무 크다"). 도트 칸을 2×2 로 묶은 절반짜리 `-s` 를 쓴다
  * — 그냥 0.5배로 그리면 칸이 깨진다. **보스는 큰 그림 그대로**: 절반이면 아군보다 작아진다.
  */
-const 전투그림 = (이름, 보스) => { const s = 그림[이름 + "-s"];
-  return !보스 && s && s.complete && s.naturalWidth ? s : 칸고르기(이름); };
-const 몸키 = (이름, 보스) => { const im = 전투그림(이름, 보스); return im && im.naturalHeight ? im.naturalHeight - 4 : 60; };
-const 아군x = (i) => 34 + i*44, 적x = (i) => 판폭 - 40 - i*48;   // 전투용 작은 그림 폭(33~51)에 맞춘 간격   // 10-07 규격 몸은 동그랗고 넓다 — 46 간격이면 서로 겹치고 맨 앞이 잘렸다
+/**
+ * 10-09 사장님 "전투 들어가면 화질 떨어지는 이유가 뭐야?" — 이유는 여기였다.
+ * 절반 그림(-s)은 도트를 2×2 로 묶은 것이라 **도트 수가 1/4** 이다(136칸 → 72칸).
+ * 작게 만드는 것과 도트를 줄이는 것이 한 몸이 돼 있었다. 이제 둘을 뗀다:
+ * **원본 도트를 그대로 쓰고, 도트 한 칸을 기기픽셀 2개로 그린다.** 폰(DPR 3)에서 136×2=272 기기픽셀 —
+ * 예전 절반 그림(72×3=216)보다 26% 크고 도트는 두 배다.
+ * 기기픽셀이 모자란 화면(DPR 1)에서는 한 칸을 1픽셀 밑으로 못 줄이니 **그때만** 절반 그림을 쓴다.
+ */
+const 쓸만 = (im) => !!(im && im.complete && im.naturalWidth);
+function 전투칸(이름, 보스){
+  const d = devicePixelRatio || 1;
+  const 원 = 칸고르기(이름), 절 = 그림[이름 + "-s"];
+  if (보스 && 쓸만(원)) return { im: 원, 칸: d };                        // 보스는 크게 그대로
+  const k = Math.round(d * 2/3);
+  if (d >= 2 && k >= 1 && 쓸만(원)) return { im: 원, 칸: k };            // 원본 도트
+  return { im: 쓸만(절) ? 절 : 원, 칸: d };                              // 못 줄이는 화면
+}
+const 전투그림 = (이름, 보스) => 전투칸(이름, 보스).im;
+/** 화면에서 차지하는 세로(CSS px). 빛이 몸 위에서 터지려면 그림과 **같은 자**로 재야 한다. */
+const 몸키 = (이름, 보스) => { const { im, 칸 } = 전투칸(이름, 보스), d = devicePixelRatio || 1;
+  return 쓸만(im) ? im.naturalHeight*칸/d - 4 : 60; };
+// 원본 도트로 바꾸며 몸이 26% 넓어졌다(기사 50→67) — 간격도 같이 넓히지 않으면 서로 파묻힌다
+const 아군x = (i) => 36 + i*48, 적x = (i) => 판폭 - 36 - i*52;   // 36: 기사 몸이 67 CSS 라 32 면 왼쪽이 잘린다
 function 자리(누구){
   const pi = 파티원().slice(0,5).indexOf(누구);
   if (pi >= 0) return { x: 아군x(pi), y: 판높이 - 16 - 몸키(카드(누구).그림)*0.45 };
@@ -695,22 +714,28 @@ function 그리기(){
   }
   ctx.fillStyle = "rgba(13,9,16,.55)"; ctx.fillRect(0, h-16, w, 16);
   const p = 파티원();
-  // 도트는 1:1 로 그린다 — 1.5배 같은 배율은 칸이 깨진다(10-07 도트 칸 되살리기)
+  // 그림은 **기기픽셀 자리에서** 그린다 — CSS 자리에서 그리면 도트 한 칸이 3픽셀/4픽셀로 갈려 뭉갠다.
+  const dd = devicePixelRatio || 1, 발 = Math.round((h - 14) * dd);   // 발이 닿는 줄(기기픽셀)
   p.slice(0,5).forEach((c, i) => {
-    const im = 전투그림(카드(c).그림); if (!im) return;
+    const { im, 칸 } = 전투칸(카드(c).그림); if (!쓸만(im)) return;
     const x = 아군x(i), 밀림 = c.동작남음 > 0 && c.동작 === "attack" ? 6 : 0;
+    const 너비 = im.naturalWidth*칸, 높이 = im.naturalHeight*칸;
     ctx.globalAlpha = c.hp > 0 ? 1 : .28;
-    ctx.drawImage(im, Math.round(x - im.naturalWidth/2 + 밀림), h - 16 - im.naturalHeight + 2);
+    ctx.save(); ctx.setTransform(1,0,0,1,0,0);
+    ctx.drawImage(im, Math.round((x + 밀림)*dd - 너비/2), 발 - 높이, 너비, 높이);
+    ctx.restore();
     ctx.globalAlpha = 1;
     ctx.fillStyle = "#222a35"; ctx.fillRect(x-18, h-13, 36, 4);
     ctx.fillStyle = "#6fbf73"; ctx.fillRect(x-18, h-13, 36*Math.max(0, c.hp/최대체력(c)), 4);
     if (카드(c).궁) { ctx.fillStyle = c.궁 >= 100 ? "#ffe66b" : "#7ec8ff"; ctx.fillRect(x-18, h-8, 36*c.궁/100, 2); }
   });
   적들.slice(0,3).forEach((e, i) => {
-    const im = 전투그림(e.그림, e.보스); if (!im) return;
+    const { im, 칸 } = 전투칸(e.그림, e.보스); if (!쓸만(im)) return;
     const x = 적x(i), 밀림 = e.동작남음 > 0 && e.동작 === "attack" ? -6 : 0;
-    ctx.save(); ctx.translate(Math.round(x + 밀림), h - 16 + 2); ctx.scale(-1, 1);
-    ctx.drawImage(im, -Math.round(im.naturalWidth/2), -im.naturalHeight); ctx.restore();
+    const 너비 = im.naturalWidth*칸, 높이 = im.naturalHeight*칸;
+    ctx.save(); ctx.setTransform(1,0,0,1,0,0);
+    ctx.translate(Math.round((x + 밀림)*dd), 발); ctx.scale(-1, 1);
+    ctx.drawImage(im, -Math.round(너비/2), -높이, 너비, 높이); ctx.restore();
     ctx.fillStyle = "#222a35"; ctx.fillRect(x-20, h-13, 40, 4);
     ctx.fillStyle = e.보호막 > 0 ? "#7aa8ff" : "#d9534f"; ctx.fillRect(x-20, h-13, 40*Math.max(0, e.hp/e.최대), 4);
   });
