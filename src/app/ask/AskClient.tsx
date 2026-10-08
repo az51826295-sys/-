@@ -544,14 +544,7 @@ export default function AskClient({
       </div>
       )}
 
-      {/*
-        10-09 사장님 "대화창 좀 내려봐". 글이 맨 위에 붙고 가운데가 텅 비어 있었다 —
-        대화는 **입력칸 바로 위에서** 시작해야 방금 오간 말이 손 가까이에 있다.
-        `justify-end` 를 스크롤 상자에 바로 주면 넘칠 때 위쪽이 잘려 못 올라간다.
-        그래서 상자는 그냥 스크롤만 맡고, 안쪽 칸이 `min-h-full` 로 키를 채운 뒤 아래로 민다.
-      */}
-      <div className="flex-1 overflow-y-auto py-6">
-        <div className="flex min-h-full flex-col justify-end space-y-4">
+      <div className="flex-1 space-y-4 overflow-y-auto py-6">
         {/*
           빈 화면에 다섯을 세워 뒀다가 뺐다(2026-08-31 사장님 지시). 얼굴은
           **일하는 중일 때** 나오는 것으로 남긴다 — 아무 일도 없는데 서 있으면
@@ -760,7 +753,6 @@ export default function AskClient({
           <Waiting stage={doing} className="text-[var(--rk-400)]" />
         )}
         <div ref={endRef} />
-        </div>
       </div>
 
       {last?.options && last.options.length > 0 && !busy && (
