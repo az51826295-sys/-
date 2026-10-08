@@ -37,9 +37,11 @@ const 모습: Record<string, string> = {
   // 10-07 사장님 "규격을 만들자" — 종이 없는 기준 몸. 모두가 이 몸을 쓴다(캐릭터/규격.md)
   "규격": "A plain base body for a cute mascot character, with NO species features: no ears, no tail, no markings. A soft round white mochi-like creature: a huge round head about 60% of the total height, a tiny round body about 60% as wide as the head, very short stubby arms and legs. Simple black dot eyes with one small white shine pixel, a tiny mouth, small pink blush on the cheeks. One arm held slightly forward as if to hold a weapon, but the hand is empty. Like a minimal kawaii sticker character.",
   // 10-07 몬스터도 한 마리씩 — 시트에서 자른 것은 도트 칸이 깨져 있었다. 크기는 사람(키 약 80도트) 기준.
-  "거대 쥐": "A giant brown sewer rat monster standing on its hind legs, pink tail and ears, beady red eyes, buck teeth. A small monster: about 65% of a human's height.",
-  "초록 슬라임": "A round bright green slime blob monster with two big simple eyes and a glossy highlight. A small monster: about 45% of a human's height, wider than tall.",
-  "녹슨 철 골렘": "A bulky ancient iron golem boss, rusty orange plates with moss in the cracks, small glowing green eyes and one glowing green core in its chest. A BOSS: about 140% of a human's height, very broad.",
+  // 10-09 사장님 "적 그림체 맞춰" — 몬스터만 밝고 둥글어 혼자 튀었다. 기사 쪽 결(바랜 색·지저분한 질감)로 고쳐 적는다.
+  "거대 쥐": "A giant sewer rat monster standing on its hind legs, matted dirty grey-brown fur, a long scabbed bald tail, torn ears, small dull red eyes, yellowed buck teeth. Mangy and diseased, not cute. A small monster: about 65% of a human's height.",
+  "초록 슬라임": "A round slime blob monster of murky, sickly desaturated green, half translucent with grit and small bones suspended inside, a dull wet sheen rather than a bright highlight, two small simple dark eyes. A small monster: about 45% of a human's height, wider than tall.",
+  "이끼 박쥐": "A bat monster with dark grey-brown fur, ragged torn leathery wings, patches of dull damp moss growing on its back and wing joints, small pale eyes and thin sharp fangs. Grim and sickly, not cute. A small monster: about 40% of a human's height, wider than tall.",
+  "녹슨 철 골렘": "A bulky ancient iron golem boss, dull rust-brown and grey iron plates pitted with corrosion, dark moss in the cracks, a dim weak green glow in its deep eye sockets and one small dim core in its chest. A BOSS: about 140% of a human's height, very broad.",
 };
 // 10-07 외형표(지피티, 사장님 "얼굴이 다 같다")가 있으면 그게 이긴다 — 넷이 서로 겹치지 않게 짠 표다
 const 표 = (() => { try { return readFileSync("C:/Users/az518/Desktop/로키-길드턴제/캐릭터/외형표.md", "utf8"); } catch { return ""; } })();
@@ -78,8 +80,17 @@ const 옛주문 = [
  */
 const 어둠 = process.argv.includes("--어둠");
 const 참고화면 = "C:/Users/az518/Desktop/로키-도트/참고/모험가목록-1.jpg";
+/**
+ * **그림 안에서 차지할 높이.** 사람은 0.8, 몬스터는 그보다 작다 — 기사(몸 123도트)에 견준 비율을 그대로 옮긴다.
+ * 10-09: 이 값을 안 주고 "사람 대비 65%" 라고만 적었더니 넷 다 사람만 하게 나왔다.
+ */
+const 틀표: Record<string, number> = { "거대 쥐": .52, "초록 슬라임": .36, "이끼 박쥐": .32, "녹슨 철 골렘": .62 };
+const 틀높이 = 틀표[이름] ?? .8;
 const 어둠주문 = [
-  "A single pixel art character sprite for a dark fantasy RPG: exactly ONE character, full body, standing, facing right, centered, about 80% of the image height.",
+  // 10-09: "사람 대비 65%" 라고만 적었더니 **그림 안에 사람이 없어** 모델이 기준을 못 잡고 넷 다 사람만 하게 그렸다
+  // (쥐 몸 115 도트 = 기사 123 의 93%). 그래서 **그림 높이의 몇 %** 라는 절대 틀로 다시 적는다.
+  "A single pixel art character sprite for a dark fantasy RPG: exactly ONE character, full body, standing, facing right, horizontally centered and standing on the bottom edge area.",
+  `FRAME SIZE — THIS IS A HARD RULE: the creature must fill only about ${Math.round(틀높이*100)}% of the image height. The remaining space above it must be empty magenta background. Do not zoom in, do not crop, do not fill the frame.`,
   모습[이름],
   "REFERENCE IMAGE: a screenshot of a mobile RPG roster. Use it for ART STYLE ONLY — copy the look of the small character portraits on the left: muted, desaturated, gritty dark-fantasy palette; realistic proportions (about 4.5 heads tall, NOT chibi); dense small pixel detail with dark outlines; materials read as iron, leather and cloth. Do NOT copy any character from it and do NOT draw any UI.",
   ...(이름 !== "기사" ? ["SECOND REFERENCE IMAGE: our approved knight sprite. Match it EXACTLY in pixel size, the character's size in the frame, outline darkness, shading and muted palette — this character must look like it is from the same sprite set as the knight. Do not draw the knight."] : []),
