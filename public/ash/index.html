@@ -34,6 +34,10 @@
   #top .zone{color:var(--금)}
   #top .res{display:flex;gap:10px;color:var(--글)}
   #top .res img{width:16px;height:16px;image-rendering:pixelated;vertical-align:-3px}
+  /* 소리 단추 — 켜고 끄는 것은 늘 보이는 자리에 둔다. 끌 수 없는 음악은 지우고 싶은 앱이 된다. */
+  #sndBtn{background:none;border:0;color:var(--금);font:inherit;font-size:15px;line-height:1;
+          padding:0 2px;cursor:pointer;opacity:.95}
+  #sndBtn.off{color:var(--글);opacity:.35;text-decoration:line-through}
 
   /* 그림은 작게 — 자리만 잡는다 */
   #board{height:170px;position:relative;margin:4px 4px 0;background:linear-gradient(#2a1f33,#1c1524 70%,#3a2c2a);overflow:hidden}
@@ -97,7 +101,8 @@
   <div id="top">
     <span class="zone" id="zone">1구간 · 1층</span>
     <span class="res"><span><img src="art/coin.png">&nbsp;<b id="gold">0</b></span>
-                      <span><img src="art/shard.png">&nbsp;<b id="shard">0</b></span></span>
+                      <span><img src="art/shard.png">&nbsp;<b id="shard">0</b></span>
+                      <button id="sndBtn" type="button" aria-label="소리">♪</button></span>
   </div>
 
   <!-- 길드: 켜면 여기. 대표 캐릭터 하나가 서 있고 우편함·공지·설정·친밀도가 붙는다. -->
@@ -887,6 +892,31 @@ if (!불러옴) 적기("기사가 방패를 고쳐 메고 첫 계단을 내려�
 setInterval(() => { if (S.진행) 한턴(); }, 420);
 // 빛은 매 화면마다 움직여야 부드럽다 — 80ms 간격이면 파티클이 뚝뚝 끊긴다
 (function 돌기(){ if (S.탭 === "run") 그리기(); else if (S.탭 === "hall") 길드그리기(); requestAnimationFrame(돌기); })();
+
+/* ── 음악 ──────────────────────────────────────────
+   브라우저는 사람이 한 번 건드리기 전에는 소리를 못 내게 막는다(앱으로 감싼 것도 같다).
+   그래서 켜 두고 기다렸다가 **첫 손길에** 튼다 — 안 그러면 조용히 막히고 왜 안 나오는지 모른다.
+   켜고 끈 것은 기억한다. 화면을 덮으면 멈춘다(주머니 안에서 혼자 울지 않게). */
+const 음악 = new Audio("snd/beneath-the-flame.mp3");
+음악.loop = true; 음악.volume = .45; 음악.preload = "auto";
+// 문서에 붙여 둔다 — `new Audio()` 는 문서 밖이라 밖에서 상태를 볼 길이 없다(자가 못 잰다).
+음악.hidden = true; document.body.appendChild(음악);
+const 소리단추 = $("#sndBtn");
+let 소리켬 = localStorage.getItem("ash-snd") !== "off";
+function 소리칠하기(){ 소리단추.classList.toggle("off", !소리켬); 소리단추.title = 소리켬 ? "소리 끄기" : "소리 켜기"; }
+function 음악맞추기(){
+  if (소리켬 && !document.hidden) { 음악.play().catch(() => {}); }
+  else 음악.pause();
+}
+소리칠하기();
+소리단추.addEventListener("click", (e) => {
+  e.stopPropagation();
+  소리켬 = !소리켬; localStorage.setItem("ash-snd", 소리켬 ? "on" : "off");
+  소리칠하기(); 음악맞추기();
+});
+// 첫 손길 한 번만 — 그다음부터는 브라우저가 막지 않는다
+addEventListener("pointerdown", 음악맞추기, { once: true });
+document.addEventListener("visibilitychange", 음악맞추기);
 </script>
 </body>
 </html>
