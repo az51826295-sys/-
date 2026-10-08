@@ -677,7 +677,17 @@ function 그리기(){
   ctx.clearRect(0,0,w,h);
   // 탑 안 복도(396×168 도트) — 바닥이 그림의 아래 29% 라 캐릭터 발(h-16)이 바닥 위에 선다
   const bg = 그림.tower && 그림.tower.complete && 그림.tower.naturalWidth ? 그림.tower : null;
-  if (bg) { const s = Math.max(w/396, h/168); ctx.drawImage(bg, Math.round((w - 396*s)/2), Math.round(h - 168*s), 396*s, 168*s); }
+  // 10-09 화질: 배경만 뭉개져 보였다. 캐릭터는 CSS 1px = 도트 1칸이라 기기픽셀로 딱 3배(정수)인데,
+  // 배경은 w/396 로 맞추다 보니 3.04배가 돼 **도트 한 칸이 어떤 건 3픽셀 어떤 건 4픽셀**이 됐다.
+  // 그래서 배경은 기기픽셀 자리에서 직접, 정수배(k)로만 그린다. 남는 띠는 어두운 색으로 메운다.
+  if (bg) {
+    const d = devicePixelRatio || 1;
+    const k = Math.max(1, Math.round(Math.max(w/396, h/168) * d));
+    ctx.save(); ctx.setTransform(1,0,0,1,0,0);
+    ctx.fillStyle = "#17111f"; ctx.fillRect(0, 0, cv.width, cv.height);
+    ctx.drawImage(bg, Math.round((cv.width - 396*k)/2), cv.height - 168*k, 396*k, 168*k);
+    ctx.restore();
+  }
   ctx.fillStyle = "rgba(13,9,16,.55)"; ctx.fillRect(0, h-16, w, 16);
   const p = 파티원();
   // 도트는 1:1 로 그린다 — 1.5배 같은 배율은 칸이 깨진다(10-07 도트 칸 되살리기)

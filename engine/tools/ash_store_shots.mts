@@ -7,7 +7,8 @@
 import { mkdirSync, readFileSync } from "node:fs";
 import { openHeadless } from "../../src/lib/video/headless";
 
-const 주소 = "https://rookery-web-production.up.railway.app/ash/index.html";
+// 올리기 전에 고친 것을 보려면 ASH_URL 로 로컬 주소를 준다(예: http://127.0.0.1:8123/ash/index.html).
+const 주소 = process.env.ASH_URL ?? "https://rookery-web-production.up.railway.app/ash/index.html";
 const 나올 = "C:/Users/az518/Desktop/로키-도트/스토어/잿빛원정대";
 mkdirSync(나올, { recursive: true });
 const 창 = await openHeadless({ width: 360, height: 640 });
