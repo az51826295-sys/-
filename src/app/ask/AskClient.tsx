@@ -484,7 +484,12 @@ export default function AskClient({
       JSX 안에서는 중괄호로 감싼 블록 주석이어야 한다 — 같은 글이 자리에 따라 주석도 되고 글자도 된다.
       그리고 그 블록 주석 안에는 닫는 표시를 글로 쓰면 안 된다 — 거기서 주석이 끊긴다(방금 그래서 한 번 깨졌다).
     */}
-    <div className={`pixel mx-auto flex flex-col ${좁게 ? "h-[calc(100vh-1.5rem)] max-w-[420px] px-3 pt-3" : "h-[calc(100vh-4rem)] max-w-2xl px-4 pt-9 lg:max-w-[1180px] lg:flex-row lg:gap-6"}${모드 === "일하는중" ? " rk-일판" : ""}`}>
+    {/*
+      10-09 사장님 "입력 상자 내리라고". 상자 키를 화면보다 4rem 짧게 잡아 뒀더니
+      그 4rem 이 **입력칸 아래 빈 띠**로 남아 있었다. 화면 키를 다 쓰고 바닥 여백만 조금 둔다.
+      `dvh` 인 이유: 폰은 주소창이 접히면서 `vh` 가 실제 화면보다 커진다 — 그만큼 또 밀려 내려간다.
+    */}
+    <div className={`pixel mx-auto flex flex-col ${좁게 ? "h-[100dvh] max-w-[420px] px-3 pb-2 pt-3" : "h-[100dvh] max-w-2xl px-4 pb-2 pt-9 lg:max-w-[1180px] lg:flex-row lg:gap-6"}${모드 === "일하는중" ? " rk-일판" : ""}`}>
     <div className={`flex h-full min-h-0 min-w-0 flex-1 flex-col${좁게 ? "" : " lg:max-w-2xl"}`}>
       {task && (
         <p className="pt-2 text-center text-xs text-[var(--rk-400)]">
