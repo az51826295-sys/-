@@ -67,11 +67,15 @@
   #맵.on{display:block}
   /* 맵이 떠 있을 땐 글 칸을 접는다 — 둘이 공간을 반씩 나눠 가져 맵이 8층쯤에서 잘렸다 */
   #맵.on ~ #log{display:none}
-  #맵 .탑{position:absolute;inset:0;background-repeat:repeat-y;background-position:center top;
-          background-size:100% auto;image-rendering:pixelated;opacity:.42}
+  /* 탑 그림: 꼭대기 한 장 + 그 아래로 기둥을 이어 붙인다. 크기는 JS가 정수배로 준다(도트가 뭉개진다) */
+  #맵 .탑{position:absolute;inset:0;background-image:url(art/tower-shaft.png);
+          background-repeat:repeat-y;image-rendering:pixelated;opacity:.52;overflow:hidden}
+  #맵 .꼭대기{display:block;margin:0 auto;image-rendering:pixelated}
   #맵 .속{position:relative;padding:10px 0}
-  #맵 .층칸{display:flex;align-items:center;gap:8px;margin:0 10px 8px;padding:7px 10px;
-            background:rgba(20,14,26,.74);border:1px solid #3a2c45;cursor:pointer}
+  #맵 .층들{position:relative}
+  /* 칸을 좁혀 탑이 양옆으로 보이게 한다 — 꽉 채우면 탑 그림이 벽지가 되고 그냥 목록으로 읽힌다 */
+  #맵 .층칸{display:flex;align-items:center;gap:8px;width:78%;margin:0 auto 8px;padding:7px 10px;
+            background:rgba(20,14,26,.78);border:1px solid #3a2c45;cursor:pointer}
   #맵 .층칸.새{border-color:var(--금)}
   #맵 .층칸.보스{border-color:#d9534f}
   #맵 .층칸 b{color:var(--글);font-size:14px;min-width:46px}
@@ -166,12 +170,12 @@
   <div id="panel"></div>
 
   <div id="tabs">
-    <!-- 10-07 사장님 순서: 캐릭터 · 시장 · 대장간 · 전투 · 길드 -->
-    <div class="tab" data-t="crew">캐릭터</div>
-    <div class="tab" data-t="shop">시장</div>
-    <div class="tab" data-t="forge">대장간</div>
-    <div class="tab" data-t="run">전투</div>
+    <!-- 10-09 사장님 순서: 길드 · 캐릭터 · 전투 · 대장간 · 시장 (10-07 순서에서 바뀜) -->
     <div class="tab home on" data-t="hall">길드</div>
+    <div class="tab" data-t="crew">캐릭터</div>
+    <div class="tab" data-t="run">전투</div>
+    <div class="tab" data-t="forge">대장간</div>
+    <div class="tab" data-t="shop">시장</div>
   </div>
 </div>
 
@@ -881,16 +885,21 @@ function 맵그리기(){
   if (S.진행) return;
   const 끝 = Math.min(100, S.최고층 + 1);
   const 층들 = Array.from({ length: 끝 }, (_, i) => 끝 - i);          // 위가 높은 층
-  // 10-09: 탑 기둥 그림을 따로 뽑으려 했으나 제미나이 크레딧이 떨어졌다.
-  // 돈 안 쓰고 — 이미 있는 **탑 복도**(전투 배경)를 세로로 이어 붙인다. 층마다 복도가 보여 오히려 맞는다.
-  칸.innerHTML = `<div class="탑" style="background-image:url(art/tower.png)"></div>
-    <div class="속">${층들.map((f) => {
+  // 10-09 지피티로 뽑은 탑 그림(256×384 두 장). **도트 한 칸이 기계 픽셀 정수배**가 되게 폭을 정한다 —
+  // 폭을 100% 로 맡기면 3.04배 같은 값이 나와 어떤 칸은 3px, 어떤 칸은 4px 이 돼 뭉개진다(전투 배경과 같은 규칙).
+  const d = devicePixelRatio || 1, 바탕폭 = 256, 바탕높 = 384;
+  const k = Math.max(1, Math.round((칸.clientWidth || 360) * d / 바탕폭));
+  const 폭 = 바탕폭 * k / d, 꼭 = 바탕높 * k / d;
+  칸.innerHTML = `<div class="속" style="min-height:${Math.round(꼭 + 30)}px">
+    <div class="탑" style="background-size:${폭}px auto;background-position:center ${꼭}px">
+      <img class="꼭대기" src="art/tower-top.png" style="width:${폭}px" alt=""></div>
+    <div class="층들">${층들.map((f) => {
       const 보스 = f % 10 === 0, 새층 = f > S.최고층;
       return `<div class="층칸${보스 ? " 보스" : ""}${새층 ? " 새" : ""}" data-f="${f}">
         <b>${f}층</b>
         <i>${보스 ? 일구간.보스.이름 : 구간이름[Math.floor((f - 1)/10) % 10]}</i>
         <span class="표">${새층 ? "새 층" : "깸"}</span></div>`;
-    }).join("")}</div>`;
+    }).join("")}</div></div>`;
   칸.querySelectorAll("[data-f]").forEach((b) => b.onclick = () => 출발창(Number(b.dataset.f)));
 }
 
