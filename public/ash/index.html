@@ -1159,7 +1159,6 @@ function 길드그리기(){
 
 // 자가 창 안에서 턴을 직접 돌릴 수 있어야 한다 — 1.4초씩 기다리면 100층에 두 시간이다.
 Object.assign(window, { S, 맵그리기, 출발창, 화면, 한턴, 적만들기, 무리수, 층넘기, 최대체력, 공격력, 방어력, 전멸, 기술표, 도감, 빛셈, 빛표, 대원만들기, 방어뒤, 만들기, 장착, 레시피, 전투준비, 저장, 불러오기, 지우기 });
-Object.defineProperty(window, "적들", { get: () => 적들 });   // 자가 무리를 세려면 지금 적을 봐야 한다
 Object.defineProperty(window, "행동순서", { get: () => 행동순서 });
 Object.defineProperty(window, "적들", { get: () => 적들 });
 
