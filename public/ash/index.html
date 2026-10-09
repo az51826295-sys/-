@@ -84,7 +84,7 @@
           background:rgba(20,14,26,.82);border:2px solid var(--빛테);color:var(--금);
           font:inherit;font-size:12px;padding:4px 9px;cursor:pointer}
   #탑버튼.on{display:block}
-  /* 자동 등반 — 자격이 찬 순간 올라간다. 자격을 건너뛰지는 않는다(10-09 사장님). */
+  /* 자동 등반 — 자격이 찬 순간 오른다. 자격을 건너뛰지는 않는다(10-09 사장님 선택 2번). */
   #자동버튼{position:absolute;right:62px;top:10px;z-index:5;display:none;
             background:rgba(20,14,26,.82);border:2px solid #4a3a55;color:#6e5d78;
             font:inherit;font-size:12px;padding:4px 9px;cursor:pointer}
@@ -114,18 +114,6 @@
   #덮개 .줄자{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:9px;font-size:13px;color:#c9b9a0}
   #덮개 .줄자 b{color:var(--글);font-weight:400}
   #덮개 .기술,#덮개 .장비{display:flex;flex-wrap:wrap;gap:4px}
-  /* 대장간 — 순도 판(10-09). 같은 재료라도 순도가 다르면 다른 물건이라 묶음으로 보여 준다 */
-  .서브탭{display:flex;gap:6px;margin:0 0 6px}
-  .서브탭 span{flex:1;text-align:center;padding:6px;font-size:13px;color:#8d7c99;
-               background:var(--창속);border:2px solid var(--테);cursor:pointer}
-  .서브탭 span.on{color:var(--금);background:var(--창);border-color:var(--빛테)}
-  .묶음{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}
-  .조각{font-size:11px;color:#a8977f;border:1px solid #3a2c45;padding:2px 6px}
-  .조각 b{font-weight:400} .조각 i{color:#6e5d78;font-style:normal}
-  .예측{margin-top:6px;padding:6px 8px;background:var(--창속);border-left:3px solid var(--금);
-        display:flex;flex-wrap:wrap;gap:3px 10px;font-size:11.5px;color:#cdbda6}
-  .예측 b{font-weight:400;color:var(--글)} .예측 i{font-style:normal}
-  .예측 .흠{color:#ff8e7a;width:100%}
   #덮개 .줄{display:flex;gap:6px;margin-top:12px}
   #덮개 .줄 .btn{flex:1}
   /* 기술·특성을 누르면 그 자리에서 풀이가 열린다 (10-09 사장님) */
@@ -249,6 +237,13 @@ const 역할계수 = { 방어:{체력:1.35,공격:.82,방어:1.35}, 공격:{체�
                   지원:{체력:1,공격:.92,방어:.95},      제어:{체력:1,공격:.98,방어:1} };
 const 등급계수 = { 희귀:.9, 영웅:1, 전설:1.08 };
 const 등급상한 = { 희귀:80, 영웅:100, 전설:120 };
+/**
+ * **레벨 상한** — 등급으로도 막히고, **지금까지 연 층**으로도 막힌다 (10-09).
+ * 전에는 층만 올라가면 끝이라 되돌이를 돌수록 레벨이 앞서 나갔다:
+ * 실측으로 25층에서 **Lv.64**, 그래서 맨몸으로 25층까지 전멸 0번이었다.
+ * 되돌이는 **재료를 모으는 것**이지 레벨로 밀어붙이는 길이 아니다.
+ */
+const 레벨상한 = (c) => Math.min(등급상한[카드(c).등급], (S.최고층 ?? 1) + 2);
 const 등급색   = { 희귀:"#5aa9ff", 영웅:"#b67cff", 전설:"#ffd04a" };
 
 /**
@@ -274,8 +269,7 @@ function 능력(c, 칸){
   return Math.floor(기본 * 역할계수[역할(c)][칸] * 등급계수[카드(c).등급] * (카드(c).개성[칸] ?? 1)) + (S.가방?.장비 ? 장비몫(c, 칸) : 0);
 }
 const 최대체력 = (c) => 능력(c, "체력"), 공격력 = (c) => 능력(c, "공격"), 방어력 = (c) => 능력(c, "방어");
-// 10-09: 불순물 「녹강」이 여기서 일한다 — 속도를 깎는다. 1 아래로는 안 내려간다.
-const 속도 = (c) => Math.max(1, (c.속도 ?? 카드(c).속도) + (S.가방?.장비 ? 흠몫(c, "속도") : 0));
+const 속도 = (c) => c.속도 ?? 카드(c).속도;
 const 필요경험 = (c) => 80 + (c.레벨 - 1)*12;
 
 /**
@@ -285,7 +279,7 @@ const 필요경험 = (c) => 80 + (c.레벨 - 1)*12;
  */
 const S = { 단계:1, 층:1, 금화:0, 대원:[], 파티:[], 탭:"hall", 진행:false, 쉼:0, 대표:null, 최고층:0, 사냥층:null,
             무리:0, 무리수:1, 깸:{}, 보스깸:[], 자동오름:true,
-            가방:{ 재료:[], 별가루:0, 문장:{ 방어:0, 공격:0, 지원:0, 제어:0 } } };
+            가방:{ 파편:0, 잔혼:0, 수호핵:0, 별가루:0, 문장:{ 방어:0, 공격:0, 지원:0, 제어:0 } } };
 for (const k of ["기사","검사","회복술사"]) S.대원.push(대원만들기(k));
 S.파티 = S.대원.map((c) => c.id);
 S.대표 = S.대원[0].id;
@@ -327,10 +321,13 @@ const 무리수 = (층) => 층 % 10 === 0 ? 1 : 2 + (층 % 4 === 0 ? 1 : 0);
 function 적만들기(무리 = 0){
   보스판 = S.층 % 10 === 0;
   S.무리 = 무리; S.무리수 = 무리수(S.층);
-  const 세기 = Math.pow(1.055, S.층 - 1);           // 1.105 는 100층에 2만 배 — 지피티 상의로 낮춤
+  /* 10-09 사장님 스탯표에 맞춘다. 전에는 1.055 라 25층 몹 체력이 218밖에 안 됐다.
+     표 기준: 1층 HP 120·ATK 18 → 17층 HP 850·ATK 110 = 약 7배 / 16층 ⇒ **층당 ×1.12** */
+  const 세기 = Math.pow(1.12, S.층 - 1);
   if (보스판) {
     const b = 일구간.보스, 막힘 = 보호막층.has(S.층);
-    적들 = [{ 이름:b.이름, 그림:생김새(b.그림), hp:Math.floor(260*세기), 최대:Math.floor(260*세기), 공격:Math.floor(14*세기),
+    // 보스 바닥값은 표의 10층(HP 1,800 · ATK 120)에서 거꾸로 푼 것: 1800 / 1.12^9 ≈ 650
+    적들 = [{ 이름:b.이름, 그림:생김새(b.그림), hp:Math.floor(650*세기), 최대:Math.floor(650*세기), 공격:Math.floor(43*세기),
               속도:b.속도, 방어:b.방어, 보호막: 막힘 ? 100 : 0, 보스:true, 동작:"idle", 동작남음:0 }];
     적기(`<b>${S.층}층</b> — ${b.이름}${조사(b.이름,"이","가")} 길을 막고 있다.`, "big");
     if (막힘) 적기("보호막이 돌고 있다. <b>제어</b>라면 한 번에 벗긴다.", "bad");
@@ -342,7 +339,7 @@ function 적만들기(무리 = 0){
     적들 = 종들.map((m, i) => {
       const 같은수 = 종들.filter((x) => x === m).length;
       return { 이름: m.이름 + (같은수 > 1 ? ` ${i+1}` : ""), 그림:생김새(m.그림), 속도:m.속도, 방어:0, 보호막:0,
-               hp:Math.floor(60*세기*m.체력), 최대:Math.floor(60*세기*m.체력), 공격:Math.floor(9*세기*m.공격), 동작:"idle", 동작남음:0 };
+               hp:Math.floor(120*세기*m.체력), 최대:Math.floor(120*세기*m.체력), 공격:Math.floor(18*세기*m.공격), 동작:"idle", 동작남음:0 };
     });
     if (무리 > 0) 적기(`<b>${무리 + 1}번째 무리</b>가 어둠에서 걸어 나왔다. (${무리 + 1}/${S.무리수})`, "bad");
   }
@@ -384,7 +381,10 @@ const 막들 = (...cs) => cs.map((c) => [c, c.막]);
 const 방어뒤 = (원, 방어) => 원 * 100 / (100 + 방어);
 function 막주기(시전자, 대상들, 양, 빛색){
   양 = Math.floor(양);
-  for (const t of 대상들) t.막 += 양;
+  /* 10-09: **막에 천장을 둔다.** 전에는 안 맞으면 끝없이 쌓였다 —
+     실측으로 20층 보스전 110턴에 검사 막이 372까지 올라가 아무도 안 죽었다.
+     막은 "한 번 버티는 것"이지 "쌓아 두는 것"이 아니다. */
+  for (const t of 대상들) t.막 = Math.min(t.막 + 양, Math.floor(최대체력(t) * .35));
   if (시전자.키 === "기사") 시전자.궁 = Math.min(100, 시전자.궁 + 34);   // 세리안: 막 생성 1회당 34
   return { 종류:"막", 들:대상들.map(자리), 색:빛색, 막들:막들(...대상들) };
 }
@@ -400,8 +400,6 @@ function 아군맞기(t, 원){
     t.막 += 양; 세.궁 = Math.min(100, 세.궁 + 34); 수호 = 양;
   }
   let 피 = 방어뒤(원, 방어력(t));
-  // 10-09: 불순물 「습기」 — 받는 피해가 늘어난다
-  const 받피 = 흠몫(t, "받피"); if (받피) 피 *= 1 + 받피/100;
   // 특성 「푸른 강철의 결의」: 세리안은 막이 있는 동안 받는 피해 −18%
   if (t.키 === "기사" && t.막 > 0) 피 *= t.중복 >= 4 ? .76 : .82;
   피 = Math.max(1, Math.floor(피));
@@ -485,7 +483,8 @@ const 기술표 = {
   단일힐: { 쓰기(c){
     const t = 가장다친();
     if (!t) { 장면(c, "idle", `<b>${c.이름}</b>${조사(c.이름,"은","는")} 숨을 고르며 뒤를 살폈다.`); return; }
-    const 양 = Math.floor(공격력(c) * 1.6);
+    // 10-09: 1.6 이면 회복이 보스 한 대(143)보다 컸다(105 vs 73 순손실) — 그래서 탱커가 안 죽었다
+    const 양 = Math.floor(공격력(c) * .9);
     t.hp = Math.min(최대체력(t), t.hp + 양);
     장면(c, "attack", `<b>${c.이름}</b>${조사(c.이름,"이","가")} ${t.이름}의 상처를 덮었다. <span class="good">+${수(양)}</span>`, "", { 종류:"회복", 에:자리(t), 색:"#9dff8a" });
   } },
@@ -523,126 +522,25 @@ const 특성설명 = {
  * 회복약은 바꿨다(10-07): 설계는 "전투 시작 때 가장 다친 아군 20%" 인데 우리는 층마다 체력이 꽉 차서
  * 시작할 때 다친 사람이 없다 → **전투 중 처음으로 절반 아래로 떨어진 아군을 20% 회복**.
  */
-/* ── 재료 ──────────────────────────────────────────────────────────
- * 10-09 사장님: **"얻는 재료가 지금 너무 대충이야."** 맞는 말이었다 —
- * 전에는 1층에서 쥐를 잡든 9층에서 뭘 잡든 `파편 2~4개`가 똑같이 나왔다. 층도 몹도 안 봤다.
- *
- * 이제 재료는 개수가 아니라 **순도와 불순도를 가진 덩어리**다.
- *   · **순도** — 만든 장비의 능력치에 그대로 곱해진다. 높을수록 좋은 장비
- *   · **불순도** — 장비에 **흠**을 남긴다. 재료마다 흠의 종류가 다르다
- * 그래서 같은 "녹슨 철 조각"이라도 순도 32%짜리와 85%짜리가 **다른 물건**이 되고,
- * 모으고·고르고·정제하는 일이 그 자체로 게임이 된다.
- *
- * 가방에는 **묶음**으로 쌓인다(100판을 돌면 낱개로는 수백 개가 된다).
- * 순도·불순도를 5 단위로 반올림해 같은 것끼리 묶는다.
- */
-const 재료표 = {
-  철조각: { 이름:"녹슨 철 조각", 계통:"쇠",   올림:["공격","방어"],
-           흠:{ 이름:"녹강", 칸:"속도", 몫:-15, 글:(n) => `속도 ${n}` } },
-  가죽:   { 이름:"거친 가죽",   계통:"가죽", 올림:["체력","방어"],
-           흠:{ 이름:"악취", 칸:"미끼", 몫:25, 글:(n) => `적이 먼저 노린다 (+${n}%)` } },
-  이끼:   { 이름:"이끼 정수",   계통:"혼",   올림:["공격"], 희귀:true,
-           흠:{ 이름:"습기", 칸:"받피", 몫:12, 글:(n) => `받는 피해 +${n}%` } },
-};
-// 10 단위로 묶는다. 5 단위면 순도 13가지 × 불순 9가지 = 117 묶음이라 가방이 못 읽을 지경이 된다.
-const 둥글5 = (n) => Math.max(0, Math.min(100, Math.round(n / 10) * 10));
-const 급 = (순) => 순 >= 85 ? "S" : 순 >= 70 ? "A" : 순 >= 50 ? "B" : "C";
-const 급색 = { S:"#ffd36b", A:"#c9a0ff", B:"#7ec8ff", C:"#8d7c99" };
-
-const 재료들 = () => (S.가방.재료 ??= []);
-/** 같은 키·순도·불순도면 한 묶음으로 합친다 */
-function 재료넣기(키, 순도, 불순, 수 = 1){
-  순도 = 둥글5(순도); 불순 = 둥글5(불순);
-  const 묶 = 재료들().find((x) => x.키 === 키 && x.순도 === 순도 && x.불순 === 불순);
-  if (묶) 묶.수 += 수; else 재료들().push({ 키, 순도, 불순, 수 });
-}
-const 재료합 = (키) => 재료들().filter((x) => x.키 === 키).reduce((a, x) => a + x.수, 0);
-/** 순도 순으로 늘어놓는다. 좋은=true 면 좋은 것부터(장비 만들 때), false 면 나쁜 것부터(정제할 때) */
-const 재료줄 = (키, 좋은) => 재료들().filter((x) => x.키 === 키 && x.수 > 0)
-  .sort((a, b) => 좋은 ? b.순도 - a.순도 : a.순도 - b.순도);
-/** 수량만큼 꺼낸다. 꺼낸 것들의 평균 순도·불순도를 돌려준다(모자라면 null) */
-function 재료꺼내기(키, 수, 좋은 = true){
-  if (재료합(키) < 수) return null;
-  let 남 = 수, 순합 = 0, 불합 = 0;
-  for (const 묶 of 재료줄(키, 좋은)) {
-    const 쓸 = Math.min(남, 묶.수);
-    묶.수 -= 쓸; 남 -= 쓸; 순합 += 묶.순도 * 쓸; 불합 += 묶.불순 * 쓸;
-    if (!남) break;
-  }
-  S.가방.재료 = 재료들().filter((x) => x.수 > 0);
-  return { 순도: 둥글5(순합 / 수), 불순: 둥글5(불합 / 수) };
-}
-
-/**
- * **몹이 자기 것을 떨군다.** 전에는 층 보상으로만 나와서 뭘 잡든 똑같았다.
- * 순도 30~90 · 불순도 10~50 사이로 나온다 — 그래서 같은 몹을 여러 번 잡을 이유가 생긴다.
- */
-function 떨구기(키, 수){
-  const 나온 = [];
-  for (let i = 0; i < 수; i++) {
-    const 순 = 둥글5(30 + Math.random() * 60), 불 = 둥글5(10 + Math.random() * 40);
-    재료넣기(키, 순, 불, 1); 나온.push({ 키, 순: 순, 불: 불 });
-  }
-  return 나온;
-}
-
-/** **정제** — 낮은 것 셋을 녹여 하나로. 순도 +20 · 불순도 −15 (사장님 설계안 3:1) */
-function 정제(키){
-  const 쓴 = 재료꺼내기(키, 3, false);          // 나쁜 것부터 녹인다
-  if (!쓴) return null;
-  const 순 = 둥글5(Math.min(100, 쓴.순도 + 20)), 불 = 둥글5(Math.max(0, 쓴.불순 - 15));
-  재료넣기(키, 순, 불, 1);
-  return { 앞: 쓴, 뒤: { 순도: 순, 불순: 불 } };
-}
-
-/** 순도가 능력치에 곱해지는 배율. 30% → 0.9배 · 60% → 1.2배 · 90% → 1.5배 */
-const 순배 = (순도) => 0.6 + (순도 ?? 50) / 100;
-
 const 레시피 = {
-  // 10-09: 재료가 `파편/잔혼` 숫자에서 **순도 가진 덩어리**로 바뀌었다. 1~3층 재료 셋으로 다시 짰다.
-  철검:   { 이름:"견습자의 철검", 슬롯:"무기", 열림:1, 재료:{ 철조각:5, 이끼:2 }, 금화:300, 효과:{ 공격:18 }, 글:"공격 +18" },
-  가죽갑옷: { 이름:"습지 가죽갑옷", 슬롯:"갑옷", 열림:1, 재료:{ 가죽:5, 철조각:3 }, 금화:400, 효과:{ 체력:120, 방어:10 }, 글:"체력 +120 · 방어 +10" },
-  회복약: { 이름:"별빛 회복약", 슬롯:"약", 열림:2, 재료:{ 이끼:3, 가죽:2 }, 금화:200, 글:"전투 중 처음 절반 아래로 떨어진 아군 체력 20% 회복 · 전투당 1개" },
+  철검:   { 이름:"견습자의 철검", 슬롯:"무기", 열림:5, 재료:{ 파편:12, 수호핵:1 }, 금화:1000, 효과:{ 공격:18 }, 글:"공격 +18" },
+  가죽갑옷: { 이름:"습지 가죽갑옷", 슬롯:"갑옷", 열림:5, 재료:{ 파편:15, 잔혼:5 }, 금화:1200, 효과:{ 체력:120, 방어:10 }, 글:"체력 +120 · 방어 +10" },
+  회복약: { 이름:"별빛 회복약", 슬롯:"약", 열림:8, 재료:{ 잔혼:8, 파편:3 }, 금화:800, 글:"전투 중 처음 절반 아래로 떨어진 아군 체력 20% 회복 · 전투당 1개" },
 };
 S.가방.장비 = []; S.가방.약 = 0; S.약챙김 = true;
 let 다음템 = 1;
 const 모자람 = (키) => { const r = 레시피[키], 없 = [];
-  for (const [k, n] of Object.entries(r.재료)) if (재료합(k) < n) 없.push(재료표[k].이름);
+  for (const [k, n] of Object.entries(r.재료)) if (S.가방[k] < n) 없.push(k);
   if (S.금화 < r.금화) 없.push("금화");
   if (S.최고층 < r.열림) 없.push(`${r.열림}층`);
   return 없; };
-
-/**
- * **만들어 보기 전에 얼마짜리가 나올지 보여 준다** (사장님 UI 안 "스탯 예측").
- * 지금 가방에서 **순도 높은 것부터** 썼을 때의 결과다. 실제 만들기도 같은 것을 쓴다 —
- * 보여 준 것과 다른 게 나오면 그건 거짓말이다.
- */
-function 만들면(키){
-  const r = 레시피[키];
-  let 순합 = 0, 불합 = 0, 총 = 0;
-  const 흠 = {};
-  for (const [k, n] of Object.entries(r.재료)) {
-    const 줄 = 재료줄(k, true); let 남 = n, 순 = 0, 불 = 0, 센 = 0;
-    for (const 묶 of 줄) { const 쓸 = Math.min(남, 묶.수); 순 += 묶.순도*쓸; 불 += 묶.불순*쓸; 센 += 쓸; 남 -= 쓸; if (!남) break; }
-    if (!센) continue;
-    순합 += 순; 불합 += 불; 총 += 센;
-    const 흠틀 = 재료표[k].흠;
-    흠[흠틀.칸] = (흠[흠틀.칸] ?? 0) + Math.round(흠틀.몫 * (불 / 센) / 100);
-  }
-  const 순도 = 총 ? 둥글5(순합 / 총) : 50, 불순 = 총 ? 둥글5(불합 / 총) : 0;
-  const 효과 = {};
-  for (const [칸, v] of Object.entries(r.효과 ?? {})) 효과[칸] = Math.round(v * 순배(순도));
-  return { 순도, 불순, 효과, 흠, 급: 급(순도) };
-}
-
 function 만들기(키){
   const r = 레시피[키];
-  if (모자람(키).length) return false;
-  const 볼 = 만들면(키);                                   // **보여 준 것과 같은 재료를 쓴다**
-  for (const [k, n] of Object.entries(r.재료)) 재료꺼내기(k, n, true);
+  if (S.최고층 < 3 || 모자람(키).length) return false;
+  for (const [k, n] of Object.entries(r.재료)) S.가방[k] -= n;
   S.금화 -= r.금화;
   if (r.슬롯 === "약") S.가방.약++;
-  else S.가방.장비.push({ id:다음템++, 키, 누구:null, 순도:볼.순도, 불순:볼.불순, 효과:볼.효과, 흠:볼.흠 });
+  else S.가방.장비.push({ id:다음템++, 키, 누구:null });
   윗줄();
   return true;
 }
@@ -655,10 +553,7 @@ function 장착(템id, 대원id){
 }
 function 벗기(템id){ const t = S.가방.장비.find((x) => x.id === 템id); if (t) t.누구 = null; }
 const 장비들 = (c) => S.가방.장비.filter((x) => x.누구 === c.id);
-// 10-09: 장비는 이제 **자기 순도로 계산된 효과**를 들고 다닌다(옛 장비는 레시피 기본값).
-const 장비몫 = (c, 칸) => 장비들(c).reduce((v, x) => v + ((x.효과 ?? 레시피[x.키].효과)[칸] ?? 0), 0);
-/** **불순물의 흠**을 모은다 — 속도·미끼(적이 먼저 노림)·받피(받는 피해 +%) */
-const 흠몫 = (c, 칸) => 장비들(c).reduce((v, x) => v + ((x.흠 ?? {})[칸] ?? 0), 0);
+const 장비몫 = (c, 칸) => 장비들(c).reduce((v, x) => v + (레시피[x.키].효과[칸] ?? 0), 0);
 let 약대기 = false;
 
 let 행동순서 = [];
@@ -703,16 +598,28 @@ function 아군행동(c){
 }
 function 적행동(e){
   const 산것 = 산아군();
+  /**
+   * **보스는 세 턴마다 전원을 친다** (10-09, 사장님 설계안의 「지진파」).
+   * 도발이 걸리면 보스가 탱커만 때려서 나머지는 구경만 했다 — 그래서 파티가 안 무너졌다.
+   * 광역은 도발을 무시하므로 **힐과 막으로 버틸 수 있느냐**를 실제로 묻는다.
+   */
+  if (e.보스) {
+    e.광역 = (e.광역 ?? 0) + 1;
+    if (e.광역 % 3 === 0) {
+      장면(e, "attack", `<b>${e.이름}</b>${조사(e.이름,"이","가")} 바닥을 내리찍었다 — <span class="big">전원</span>`, "bad",
+        { 종류:"섬광", 에서:자리(e), 색:"#ff7a5c" });
+      for (const t of [...산것]) {
+        const { 피: 피2, 막음: 막2 } = 아군맞기(t, e.공격 * .95);
+        장면(null, null, `→ <b>${t.이름}</b> <span class="bad">${수(피2)}</span>${막2 > 0 ? ` (막 ${수(막2)})` : ""}`, "",
+          { 종류:"맞음", 에:자리(t), 색:"#ff7a5c" });
+        if (t.hp <= 0) 장면(null, null, `<b>${t.이름}</b>${조사(t.이름,"이","가")} 주저앉았다.`, "bad");
+      }
+      return;
+    }
+  }
   // 도발(규칙 5): 끌린 사람이 있으면 그 사람, 여럿이면 방어 역할 먼저. 없으면 아무나.
   const 끌린 = 산것.filter((c) => c.도발).sort((a, b) => (역할(b) === "방어") - (역할(a) === "방어"))[0];
-  // 10-09: 불순물 「악취」 — 뽑기 가중치를 올린다. 도발이 있으면 도발이 먼저다(규칙 5는 안 건드린다).
-  const 뽑기 = () => {
-    const 무게 = 산것.map((c) => 100 + 흠몫(c, "미끼"));
-    let r = Math.random() * 무게.reduce((a, b) => a + b, 0);
-    for (let i = 0; i < 산것.length; i++) { r -= 무게[i]; if (r <= 0) return 산것[i]; }
-    return 산것[산것.length - 1];
-  };
-  const t = 끌린 ?? 뽑기();
+  const t = 끌린 ?? 산것[Math.floor(Math.random() * 산것.length)];
   const { 피, 막음, 수호 } = 아군맞기(t, e.공격 * (0.9 + Math.random()*0.2));
   if (수호) 장면(세리안(), "attack", `<b>기사</b>가 ${t.이름} 앞에 방패를 들었다. 막 <span class="good">${수(수호)}</span>`, "",
     { 종류:"막", 들:[자리(t)], 색:"#7ec8ff" });
@@ -766,25 +673,17 @@ function 판끝(){
   const 양 = 100 + 층*10;
   for (const c of S.대원) {
     c.경험 += S.파티.includes(c.id) ? 양 : Math.floor(양/2);
-    while (c.레벨 < 등급상한[카드(c).등급] && c.경험 >= 필요경험(c)) {
+    while (c.레벨 < 레벨상한(c) && c.경험 >= 필요경험(c)) {
       c.경험 -= 필요경험(c); c.레벨++;
       if (S.파티.includes(c.id)) 장면(c, "idle", `<b>${c.이름}</b> 레벨 ${c.레벨}`, "good");
     }
   }
-  /* ── 떨어지는 것 (10-09 사장님 "얻는 재료가 너무 대충이야") ──────────
-     전에는 층도 몹도 안 보고 `파편 2~4`가 나왔다. 이제 **몹이 자기 것을 떨구고**,
-     떨어진 것마다 순도·불순도가 다르다. 그래서 같은 몹을 여러 번 잡을 이유가 생긴다. */
+  // 드롭(층과합성-지피티.md 2-1·2-4)
   const 굴 = (a, b) => a + Math.floor(Math.random()*(b - a + 1));
-  const g = (80 + 층*20) * (보스판 ? 4 : 1);
-  S.금화 += g;
-  const 나온 = [
-    ...떨구기("철조각", 보스판 ? 굴(5, 8) : 굴(1, 3)),
-    ...떨구기("가죽",   보스판 ? 굴(4, 6) : 굴(1, 2)),
-    ...(Math.random() < (보스판 ? 1 : .35) ? 떨구기("이끼", 보스판 ? 3 : 1) : []),   // 이끼는 희귀하다
-  ];
-  // 로그에 **순도까지** 적는다 — "뭐가 나왔나"보다 "얼마짜리가 나왔나"가 중요한 게임이다
-  let 줄 = `금화 <b>+${수(g)}</b>` + 나온.map((d) =>
-    ` · <span style="color:${급색[급(d.순)]}">[${급(d.순)}]</span> ${재료표[d.키].이름}<span style="color:#8d7c99">(순도 ${d.순}%·불순 ${d.불}%)</span>`).join("");
+  const g = (80 + 층*20) * (보스판 ? 4 : 1), 파 = 보스판 ? 굴(8, 12) : 굴(2, 4), 잔 = 보스판 ? 굴(4, 6) : 굴(1, 2);
+  S.금화 += g; S.가방.파편 += 파; S.가방.잔혼 += 잔;
+  let 줄 = `금화 <b>+${수(g)}</b> · 균열 파편 +${파} · 짐승 잔혼 +${잔}`;
+  if (보스판) { S.가방.수호핵 += 1; 줄 += " · 수호핵 +1"; }
   if (첫) {
     const 별 = 보스판 ? 100 : 15;
     S.가방.별가루 += 별; 줄 += ` · <span class="big">별가루 +${별}</span> (첫 클리어)`;
@@ -887,6 +786,23 @@ function 카드창(id){
 }
 
 function 전멸(){
+  /**
+   * **관문에서 지면 한 층 내려가 모은다** (10-09 사장님).
+   * 보스층(10·20·30…)에서 쓰러지면 자동 등반을 끄고 **바로 아래 층**으로 물러난다.
+   * 자고 일어나도 안전한 층에서 재료와 금화가 쌓여 있게 하기 위한 것이다 —
+   * 관문 앞에서 밤새 전멸만 반복하면 아무것도 안 남는다.
+   * 자동 등반을 꺼 두는 이유: 다시 자격이 차도 **준비 안 된 채로** 관문에 또 들어가지 않게.
+   */
+  if (S.층 % 10 === 0 && S.층 > 1) {
+    const 아래 = S.층 - 1;
+    적기(`<b>${S.층}층</b> 관문에서 무너졌다. 자동 등반을 끄고 <b>${아래}층</b>으로 물러나 힘을 모은다.`, "die");
+    적기("대장간에서 장비를 갖추고 다시 오면 된다.", "turn");
+    S.자동오름 = false;
+    S.층 = 아래; S.사냥층 = 아래; S.단계 = Math.floor((아래 - 1)/10) + 1;
+    S.쉼 = 4;
+    for (const c of 파티원()) { c.막 = 0; c.보임막 = 0; }
+    윗줄(); 그리기(); 저장(); return;
+  }
   // 10-09 사장님 "켜 둔 동안 계속 도전" — 되돌이 사냥 중엔 구간 처음으로 밀려나지 않는다
   if (S.사냥층) {
     적기(`원정대가 쓰러졌다. 숨을 고르고 <b>${S.사냥층}층</b>에 다시 든다.`, "die");
@@ -1234,26 +1150,6 @@ function 출발창(층){
   그리자();
   document.body.appendChild(덮);
 }
-/** **재료 보관함** (사장님 UI 안). 순도 묶음을 전부 펴서 본다 — 가방 줄에는 요약만 둔다. */
-function 보관함(키){
-  const m = 재료표[키], 줄 = 재료줄(키, true);
-  const 덮 = document.createElement("div"); 덮.id = "덮개";
-  덮.innerHTML = `<div class="카드" onclick="event.stopPropagation()">
-    <div class="nm"><b>${m.이름} <span class="tag">${재료합(키)}개</span></b>
-      <i>${m.계통} 계통 · 올리는 것: ${m.올림.join("·")} · 흠 「${m.흠.이름}」</i></div>
-    <div class="칸이름">순도 묶음</div>
-    <div class="묶음">${줄.length ? 줄.map((x) => `<span class="조각" style="border-color:${급색[급(x.순도)]}">
-      <b style="color:${급색[급(x.순도)]}">${급(x.순도)}</b> 순도 ${x.순도}% · 불순 ${x.불순}% <i>×${x.수}</i></span>`).join("")
-      : `<span class="조각" style="opacity:.45">없음</span>`}</div>
-    <div class="풀이 on">순도가 높을수록 만든 장비의 능력치가 커진다(30% → 0.9배 · 90% → 1.5배).
-      불순도는 흠을 남긴다 — <b>${m.흠.글(Math.round(m.흠.몫))}</b> 까지.</div>
-    <div class="줄"><button class="btn" id="닫기">닫기</button></div>
-  </div>`;
-  덮.onclick = () => 덮.remove();
-  document.body.appendChild(덮);
-  덮.querySelector("#닫기").onclick = () => 덮.remove();
-}
-
 function 칸(){
   const el = $("#panel");
   if (S.탭 === "run" || S.탭 === "hall") { el.className = ""; el.innerHTML = ""; return; }
@@ -1278,59 +1174,16 @@ function 칸(){
     el.querySelectorAll("[data-카드]").forEach((b) => b.onclick = () => 카드창(Number(b.dataset.카드)));
   } else if (S.탭 === "forge") {
     const g = S.가방;
-    /**
-     * **대장간** (10-09 순도 판). 사장님 UI 안대로 [제작]과 [정제]를 가른다.
-     * 가방 줄은 재료마다 **순도 묶음**을 보여 준다 — 같은 "녹슨 철 조각"이라도 85%와 32%는 다른 물건이다.
-     */
-    S.대장탭 = S.대장탭 ?? "제작";
-    const 재료글 = (r) => Object.entries(r.재료).map(([k, n]) =>
-      `${재료표[k].이름} <span style="color:${재료합(k) >= n ? "#8fe08f" : "#ff8e7a"}">${재료합(k)}/${n}</span>`)
-      .concat(`금화 <span style="color:${S.금화 >= r.금화 ? "#8fe08f" : "#ff8e7a"}">${수(r.금화)}</span>`).join(" · ");
-
-    el.innerHTML = `<div class="서브탭">${["제작","정제"].map((t) =>
-        `<span class="${S.대장탭 === t ? "on" : ""}" data-대장탭="${t}">${t}</span>`).join("")}</div>`
-      + Object.keys(재료표).map((k) => {
-          // 가방 줄은 **등급 요약만**. 묶음을 전부 펴면 레시피가 화면 밖으로 밀려난다(사장님 UI 안: 누르면 보관함 팝업).
-          const 셈 = { S:0, A:0, B:0, C:0 };
-          for (const x of 재료줄(k, true)) 셈[급(x.순도)] += x.수;
-          return `<div class="row 재료줄" data-보관="${k}" style="cursor:pointer"><div class="nm">
-            <b>${재료표[k].이름} <span class="tag">${재료합(k)}개</span></b>
-            <i>${재료합(k) ? Object.entries(셈).filter(([, n]) => n).map(([g2, n]) =>
-                `<span style="color:${급색[g2]}">${g2} ${n}</span>`).join(" · ") : "없음"}</i></div>
-            <span style="color:#6e5d78;font-size:18px;padding:0 4px">›</span></div>`; }).join("")
-      + (S.대장탭 === "제작"
-        ? Object.entries(레시피).map(([k, r]) => {
-            const 없 = 모자람(k), 잠김 = S.최고층 < r.열림, 볼 = 없.length ? null : 만들면(k);
-            // **만들기 전에 얼마짜리가 나올지** 보여 준다 — 순도 높은 것부터 쓴 결과다
-            const 예측 = 볼 ? `<div class="예측"><b style="color:${급색[볼.급]}">[${볼.급}] 순도 ${볼.순도}%</b>
-                ${Object.entries(볼.효과).map(([칸, v]) => {
-                  const 기본 = r.효과[칸], 차 = v - 기본;
-                  return `<span>${칸} <b>+${v}</b> <i style="color:${차 >= 0 ? "#8fe08f" : "#ff8e7a"}">(기본 ${기본}${차 ? ` · ${차 > 0 ? "+" : ""}${차}` : ""})</i></span>`;
-                }).join("")}
-                ${Object.entries(볼.흠).filter(([, n]) => n).map(([칸, n]) => {
-                  const 틀 = Object.values(재료표).find((m) => m.흠.칸 === 칸).흠;
-                  return `<span class="흠">흠 「${틀.이름}」 ${틀.글(n)}</span>`;
-                }).join("")}</div>` : "";
-            return `<div class="row"><div class="nm"><b>${r.이름} <span class="tag">${r.슬롯}</span></b>
-              <i>${잠김 ? `${r.열림}층을 넘으면 열린다` : `${r.글}<br>${재료글(r)}`}</i>${예측}</div>
-              <button class="btn" data-make="${k}" ${없.length ? "disabled" : ""}>만들기</button></div>`; }).join("")
-          + `<div class="row"><div class="nm"><i>만든 장비와 회복약은 <span style="color:#f2b45a">캐릭터</span> 탭에서 끼우고 챙긴다.</i></div></div>`
-        : Object.keys(재료표).map((k) => {
-            const 셋 = 재료줄(k, false).flatMap((x) => Array(x.수).fill(x)).slice(0, 3);
-            const 됨 = 셋.length === 3;
-            const 앞순 = 됨 ? 둥글5(셋.reduce((a, x) => a + x.순도, 0)/3) : 0;
-            const 앞불 = 됨 ? 둥글5(셋.reduce((a, x) => a + x.불순, 0)/3) : 0;
-            return `<div class="row"><div class="nm"><b>${재료표[k].이름} 정제 <span class="tag">3 → 1</span></b>
-              <i>${됨 ? `순도 ${앞순}% → <span style="color:#8fe08f">${둥글5(Math.min(100, 앞순+20))}%</span> ·
-                   불순 ${앞불}% → <span style="color:#8fe08f">${둥글5(Math.max(0, 앞불-15))}%</span>
-                   <br>가장 나쁜 셋을 녹인다` : `3개가 있어야 한다 (지금 ${재료합(k)}개)`}</i></div>
-              <button class="btn" data-정제="${k}" ${됨 ? "" : "disabled"}>정제</button></div>`; }).join("")
-          + `<div class="row"><div class="nm"><i>정제는 <b>가장 나쁜 셋</b>을 녹여 하나로 만든다. 좋은 것은 안 건드린다.</i></div></div>`);
-
-    el.querySelectorAll("[data-보관]").forEach((b) => b.onclick = () => 보관함(b.dataset.보관));
-    el.querySelectorAll("[data-대장탭]").forEach((b) => b.onclick = () => { S.대장탭 = b.dataset.대장탭; 칸(); });
-    el.querySelectorAll("[data-make]").forEach((b) => b.onclick = () => { 만들기(b.dataset.make); 저장(); 칸(); });
-    el.querySelectorAll("[data-정제]").forEach((b) => b.onclick = () => { 정제(b.dataset.정제); 저장(); 칸(); });
+    if (S.최고층 < 3) { el.innerHTML = `<div class="row"><div class="nm"><b>대장간</b><i>3층을 넘으면 대장간이 열린다. (지금 ${S.최고층}층)</i></div></div>`; return; }
+    const 재료글 = (r) => [...Object.entries(r.재료).map(([k, n]) => `${{파편:"파편",잔혼:"잔혼",수호핵:"수호핵"}[k]} <span style="color:${g[k] >= n ? "#8fe08f" : "#ff8e7a"}">${g[k]}/${n}</span>`),
+      `금화 <span style="color:${S.금화 >= r.금화 ? "#8fe08f" : "#ff8e7a"}">${수(r.금화)}</span>`].join(" · ");
+    el.innerHTML = `<div class="row"><div class="nm"><b>가방</b><i>균열 파편 ${g.파편} · 짐승 잔혼 ${g.잔혼} · 수호핵 ${g.수호핵} · 금화 ${수(S.금화)}</i></div></div>`
+      + Object.entries(레시피).map(([k, r]) => { const 없 = 모자람(k), 잠김 = S.최고층 < r.열림;
+        return `<div class="row"><div class="nm"><b>${r.이름} <span class="tag">${r.슬롯}</span></b>
+          <i>${잠김 ? `${r.열림}층을 넘으면 열린다` : `${r.글}<br>${재료글(r)}`}</i></div>
+          <button class="btn" data-make="${k}" ${없.length ? "disabled" : ""}>만들기</button></div>`; }).join("")
+      + `<div class="row"><div class="nm"><i>만든 장비와 회복약은 <span style="color:#f2b45a">캐릭터</span> 탭에서 끼우고 챙긴다.</i></div></div>`;
+    el.querySelectorAll("[data-make]").forEach((b) => b.onclick = () => { 만들기(b.dataset.make); 칸(); });
   } else if (S.탭 === "shop") {
     el.innerHTML = `<div class="row"><div class="nm"><b>시장</b><i>아직 비어 있다.</i></div></div>`;
   } else {
@@ -1338,7 +1191,7 @@ function 칸(){
     el.innerHTML = `<div class="row"><div class="nm"><b>길드</b>
         <i>대원 ${S.대원.length}명 · 가장 깊이 ${S.최고층}층</i></div></div>
       <div class="row"><div class="nm"><b>가방</b>
-        <i>${Object.keys(재료표).map((k) => `${재료표[k].이름} ${재료합(k)}`).join(" · ")} · 별가루 ${g.별가루}</i></div></div>
+        <i>균열 파편 ${g.파편} · 짐승 잔혼 ${g.잔혼} · 수호핵 ${g.수호핵} · 수호의 문장 ${g.문장.방어} · 별가루 ${g.별가루}</i></div></div>
       <div class="row"><div class="nm"><b>원정</b><i>${S.진행?"내려가는 중":"멈춤"}</i></div>
         <button class="btn" id="toggle">${S.진행?"멈추기":"다시 가기"}</button></div>`;
     $("#toggle").onclick = () => { S.진행 = !S.진행; 칸(); };
@@ -1421,7 +1274,7 @@ function 길드그리기(){
 }
 
 // 자가 창 안에서 턴을 직접 돌릴 수 있어야 한다 — 1.4초씩 기다리면 100층에 두 시간이다.
-Object.assign(window, { S, 맵그리기, 출발창, 화면, 한턴, 적만들기, 무리수, 판끝, 자격, 열린층, 필요판, 최대체력, 공격력, 방어력, 전멸, 기술표, 도감, 빛셈, 빛표, 대원만들기, 방어뒤, 만들기, 장착, 레시피, 속도, 벗기, 재료표, 재료합, 재료줄, 재료넣기, 떨구기, 정제, 만들면, 급, 흠몫, 장비몫, 전투준비, 저장, 불러오기, 지우기 });
+Object.assign(window, { S, 맵그리기, 출발창, 화면, 한턴, 적만들기, 무리수, 판끝, 자격, 열린층, 필요판, 최대체력, 공격력, 방어력, 전멸, 기술표, 도감, 빛셈, 빛표, 대원만들기, 방어뒤, 만들기, 모자람, 장착, 레시피, 전투준비, 저장, 불러오기, 지우기 });
 Object.defineProperty(window, "행동순서", { get: () => 행동순서 });
 Object.defineProperty(window, "적들", { get: () => 적들 });
 

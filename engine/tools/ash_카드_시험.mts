@@ -20,9 +20,7 @@ try {
   await page.evaluate(() => { const w = window as any;
     w.S.대원.length || w.S.대원.push(w.대원만들기("기사", 5));
     // 만들기는 최고층 + 금화까지 본다 — 재료만 심으면 조용히 거절한다(10-09 자가 여기서 한 번 틀렸다)
-    // 10-09 순도 판: 재료가 숫자에서 **순도 묶음**으로 바뀌었다. 깨끗한 것으로 넉넉히 심는다.
-    w.S.가방.재료 = [];
-    for (const k of Object.keys(w.재료표)) w.재료넣기(k, 80, 10, 50);
+    Object.assign(w.S.가방, { 파편: 99, 잔혼: 99, 수호핵: 9, 별가루: 999 });
     w.S.최고층 = Math.max(w.S.최고층, 5); w.S.금화 = Math.max(w.S.금화, 9999);
     if (!w.만들기("가죽갑옷")) throw new Error("장비를 못 만들었다 — 시험 밑바탕이 틀렸다");
     w.S.탭 = "crew"; });
