@@ -67,12 +67,21 @@
   #맵.on{display:block}
   /* 맵이 떠 있을 땐 글 칸을 접는다 — 둘이 공간을 반씩 나눠 가져 맵이 8층쯤에서 잘렸다 */
   #맵.on ~ #log{display:none}
-  /* 탑 그림: 꼭대기 한 장 + 그 아래로 기둥을 이어 붙인다. 크기는 JS가 정수배로 준다(도트가 뭉개진다) */
+  /* 탑 그림: 기둥을 이어 붙인다. 꼭대기 한 장은 **100층을 열었을 때만** — 13층인데 꼭대기가
+     보이면 다 오른 것처럼 보이고, 층이 적을 땐 탑이 포스터처럼 떠 있었다(10-09 사장님 "이상해"). */
   #맵 .탑{position:absolute;inset:0;background-image:url(art/tower-shaft.png);
           background-repeat:repeat-y;image-rendering:pixelated;opacity:.52;overflow:hidden}
   #맵 .꼭대기{display:block;margin:0 auto;image-rendering:pixelated}
+  /* 위로 갈수록 어둠에 묻힌다 — "아직 위가 더 있다" */
+  #맵 .안개{position:absolute;left:0;right:0;top:0;height:90px;pointer-events:none;
+            background:linear-gradient(var(--밤),rgba(26,20,32,0))}
   #맵 .속{position:relative;padding:10px 0}
   #맵 .층들{position:relative}
+  /* 전투 중에 탑으로 돌아가는 길 — 이게 없어서 한번 떠나면 맵을 영영 못 봤다 */
+  #탑버튼{position:absolute;right:10px;top:10px;z-index:5;display:none;
+          background:rgba(20,14,26,.82);border:2px solid var(--빛테);color:var(--금);
+          font:inherit;font-size:12px;padding:4px 9px;cursor:pointer}
+  #탑버튼.on{display:block}
   /* 칸을 좁혀 탑이 양옆으로 보이게 한다 — 꽉 채우면 탑 그림이 벽지가 되고 그냥 목록으로 읽힌다 */
   #맵 .층칸{display:flex;align-items:center;gap:8px;width:78%;margin:0 auto 8px;padding:7px 10px;
             background:rgba(20,14,26,.78);border:1px solid #3a2c45;cursor:pointer}
@@ -162,7 +171,7 @@
   </div>
 
   <div id="battle">
-    <div id="board"><canvas id="cv"></canvas></div>
+    <div id="board"><canvas id="cv"></canvas><button id="탑버튼" type="button">▲ 탑</button></div>
     <!-- 10-09 사장님: 시작하자마자 깨지 말고 **고르고 시작**한다. 멈춰 있을 때만 뜬다. -->
     <div id="맵"></div>
     <div id="log"></div>
@@ -881,6 +890,8 @@ function 윗줄(){
  */
 function 맵그리기(){
   const 칸 = $("#맵"); if (!칸) return;
+  const 탑단추 = $("#탑버튼");
+  if (탑단추) 탑단추.classList.toggle("on", S.진행 && S.탭 === "run");
   칸.classList.toggle("on", !S.진행);
   if (S.진행) return;
   const 끝 = Math.min(100, S.최고층 + 1);
@@ -890,9 +901,12 @@ function 맵그리기(){
   const d = devicePixelRatio || 1, 바탕폭 = 256, 바탕높 = 384;
   const k = Math.max(1, Math.round((칸.clientWidth || 360) * d / 바탕폭));
   const 폭 = 바탕폭 * k / d, 꼭 = 바탕높 * k / d;
-  칸.innerHTML = `<div class="속" style="min-height:${Math.round(꼭 + 30)}px">
-    <div class="탑" style="background-size:${폭}px auto;background-position:center ${꼭}px">
-      <img class="꼭대기" src="art/tower-top.png" style="width:${폭}px" alt=""></div>
+  // 꼭대기는 **끝까지 올랐을 때만** 보인다 — 13층에서 꼭대기가 보이면 다 오른 것처럼 보인다
+  const 끝까지 = 끝 >= 100;
+  칸.innerHTML = `<div class="속">
+    <div class="탑" style="background-size:${폭}px auto;background-position:center ${끝까지 ? 꼭 : 0}px">
+      ${끝까지 ? `<img class="꼭대기" src="art/tower-top.png" style="width:${폭}px" alt="">` : ""}</div>
+    ${끝까지 ? "" : `<div class="안개"></div>`}
     <div class="층들">${층들.map((f) => {
       const 보스 = f % 10 === 0, 새층 = f > S.최고층;
       return `<div class="층칸${보스 ? " 보스" : ""}${새층 ? " 새" : ""}" data-f="${f}">
@@ -902,6 +916,13 @@ function 맵그리기(){
     }).join("")}</div></div>`;
   칸.querySelectorAll("[data-f]").forEach((b) => b.onclick = () => 출발창(Number(b.dataset.f)));
 }
+
+/* 전투를 멈추고 탑으로 — 되돌이도 여기서 끊는다. 이 길이 없어서 한번 떠나면 맵을 못 봤다. */
+$("#탑버튼").onclick = () => {
+  S.진행 = false; S.사냥층 = null;
+  적기("발을 멈추고 탑을 올려다본다.", "");
+  맵그리기(); 윗줄(); 저장();
+};
 
 /**
  * **층을 누르면 — 누구를 데려갈까** (사장님 "층 누르면 출전 시킬 동료 구하고").

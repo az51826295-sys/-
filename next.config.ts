@@ -16,7 +16,12 @@ const nextConfig: NextConfig = {
 
   /* 스토어 그림(/store/*)은 다른 출처(Play 콘솔 페이지)에서 fetch 해서 올릴 수 있게 CORS 를 연다 (09-12). 공개 그림뿐이다. */
   async headers() {
-    return [{ source: "/store/:path*", headers: [{ key: "Access-Control-Allow-Origin", value: "*" }] }];
+    return [
+      { source: "/store/:path*", headers: [{ key: "Access-Control-Allow-Origin", value: "*" }] },
+      // 10-09 사장님 "배포 안 됨": 서버엔 새 코드가 있는데 폰 앱(TWA)이 옛 index.html 을 보여 줬다.
+      // max-age=0 은 "재검증하라"일 뿐이라 안드로이드 웹뷰가 캐시를 먼저 쓴다. 통째로 못 쓰게 막는다.
+      { source: "/ash/index.html", headers: [{ key: "Cache-Control", value: "no-store, must-revalidate" }] },
+    ];
   },
 };
 
