@@ -4,6 +4,7 @@
  * 목록이 간단해졌는지 · 눌러서 창이 뜨는지 · 대표·출전·장비가 먹는지 · 닫히는지.
  */
 import { openHeadless } from "../../src/lib/video/headless";
+import { 이름헬퍼 } from "./ash_공통.mts";
 const 주소 = process.env.ASH_URL ?? "https://rookery-web-production.up.railway.app/ash/index.html";
 let 나쁨 = 0;
 const 재기 = (n: string, ok: boolean, 본?: unknown) => { if (!ok) 나쁨++; console.log(ok ? "통과" : "실패", n, ok ? "" : JSON.stringify(본)); };
@@ -12,6 +13,7 @@ if (!창) { console.error("창 없음"); process.exit(1); }
 try {
   const page = await 창.browser.newPage();
   await page.setViewport({ width: 390, height: 844, deviceScaleFactor: 2 });
+  await 이름헬퍼(page);
   await page.goto(주소, { waitUntil: "networkidle2", timeout: 60_000 });
   await new Promise((r) => setTimeout(r, 2000));
   // 장비는 **가방에 있어야** 입힐 칸이 생긴다 — 빈 가방으로 재면 "장비 칸 없음" 이 고장처럼 보인다
@@ -51,7 +53,9 @@ try {
   });
   재기("장비가 실제로 입혀진다", !!입힘 && 입힘.낀것 > 0, 입힘);
   await new Promise((r) => setTimeout(r, 400));
-  재기("카드에 대표·출전이 있다", !!창있나?.대표 && !!창있나?.출전, 창있나);
+  재기("카드에 대표가 있다", !!창있나?.대표, 창있나);
+  // 10-09 사장님 "캐릭터 누르면 출전 빼기 없애" — 출전은 층을 고를 때 한 자리에서만 정한다
+  재기("카드에 출전 단추가 없다", 창있나?.출전 === false, 창있나);
 
   // 10-09: 처음 판정식이 `(A && B) || A` 여서 사실상 A만 봤다 — 대표 지정을 빼도 통과했다.
   // **비워 두고 눌러서, 그 캐릭터 id 가 들어왔는지**로 본다.
@@ -63,13 +67,29 @@ try {
   });
   재기("대표로가 먹는다", 대표됨.뒤 === 대표됨.누구, 대표됨);
 
-  await new Promise((r) => setTimeout(r, 400));
-  const 출전됨 = await page.evaluate(() => {
-    const w = window as any; const 앞 = w.S.파티.length;
-    (document.querySelector("#덮개 #출전") as HTMLElement).click();
-    return { 앞, 뒤: w.S.파티.length };
+  /* ── 기술·특성을 누르면 무슨 일을 하는지 나온다 (10-09 사장님) ────────── */
+  await new Promise((r) => setTimeout(r, 300));
+  const 풀이 = await page.evaluate(() => {
+    const 봄= (고를: string) => {
+      const b = document.querySelector(`#덮개 [data-풀이^="${고를}"]`) as HTMLElement | null;
+      if (!b) return { 태그: false, 글: "", 숫자: false };
+      b.click();
+      const p = document.querySelector("#덮개 #풀이") as HTMLElement;
+      const 글 = p.classList.contains("on") ? (p.textContent ?? "") : "";
+      return { 태그: true, 글, 숫자: /\d/.test(글) };
+    };
+    const 기 = 봄("기술"), 특 = 봄("특성");
+    // 같은 것을 또 누르면 닫힌다
+    const b = document.querySelector('#덮개 [data-풀이^="특성"]') as HTMLElement;
+    b.click();
+    const 닫힘 = !(document.querySelector("#덮개 #풀이") as HTMLElement).classList.contains("on");
+    return { 기, 특, 닫힘 };
   });
-  재기("출전 넣기/빼기가 먹는다", 출전됨.앞 !== 출전됨.뒤, 출전됨);
+  재기("기술을 누르면 설명이 뜬다", 풀이.기.태그 && 풀이.기.글.length > 10, 풀이.기);
+  재기("기술 설명에 숫자가 있다", 풀이.기.숫자, 풀이.기.글.slice(0, 80));
+  재기("특성을 누르면 뭘 강화하는지 뜬다", 풀이.특.태그 && 풀이.특.글.length > 10, 풀이.특);
+  재기("특성 설명에 숫자가 있다", 풀이.특.숫자, 풀이.특.글.slice(0, 80));
+  재기("또 누르면 닫힌다", 풀이.닫힘, 풀이);
 
   await new Promise((r) => setTimeout(r, 400));
   await page.evaluate(() => (document.querySelector("#덮개 #닫기") as HTMLElement).click());
@@ -77,6 +97,8 @@ try {
   재기("닫기가 먹는다", await page.evaluate(() => !document.querySelector("#덮개")));
 
   재기("내리기·태우기 단추가 없다", await page.evaluate(() => !/내리기|태우기/.test(document.querySelector("#panel")?.textContent ?? "")));
+  // 10-09 사장님 "캐릭터 창에 별빛회복약 안 보이게"
+  재기("캐릭터 탭에 별빛 회복약이 없다", await page.evaluate(() => !/회복약/.test(document.querySelector("#panel")?.textContent ?? "")));
 } finally { await 창.browser.close(); await 창.close?.(); }
 console.log(나쁨 === 0 ? "\n전부 통과" : `\n실패 ${나쁨}건`);
 process.exit(나쁨 === 0 ? 0 : 1);

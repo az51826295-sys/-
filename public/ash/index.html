@@ -42,6 +42,7 @@
   /* 그림은 작게 — 자리만 잡는다 */
   #board{height:170px;position:relative;margin:4px 4px 0;background:linear-gradient(#2a1f33,#1c1524 70%,#3a2c2a);overflow:hidden}
   #board canvas{position:absolute;inset:0;width:100%;height:100%}
+  #board.접음{display:none}   /* 탑을 고르는 동안엔 전투 칸을 접는다 (10-09 사장님) */
 
   /* 글이 본문 */
   #log{flex:1;overflow-y:auto;padding:10px 12px 16px;font-size:15px;line-height:1.75}
@@ -75,7 +76,8 @@
   /* 위로 갈수록 어둠에 묻힌다 — "아직 위가 더 있다" */
   #맵 .안개{position:absolute;left:0;right:0;top:0;height:90px;pointer-events:none;
             background:linear-gradient(var(--밤),rgba(26,20,32,0))}
-  #맵 .속{position:relative;padding:10px 0}
+  /* 층이 몇 개 없어도 탑은 화면 끝까지 선다 — 중간에 뚝 끊기면 탑이 아니라 그림 조각이 된다 */
+  #맵 .속{position:relative;padding:10px 0;min-height:100%}
   #맵 .층들{position:relative}
   /* 전투 중에 탑으로 돌아가는 길 — 이게 없어서 한번 떠나면 맵을 영영 못 봤다 */
   #탑버튼{position:absolute;right:10px;top:10px;z-index:5;display:none;
@@ -102,6 +104,14 @@
   #덮개 .기술,#덮개 .장비{display:flex;flex-wrap:wrap;gap:4px}
   #덮개 .줄{display:flex;gap:6px;margin-top:12px}
   #덮개 .줄 .btn{flex:1}
+  /* 기술·특성을 누르면 그 자리에서 풀이가 열린다 (10-09 사장님) */
+  #덮개 .귀띔{color:#55475e;font-size:11px}
+  #덮개 .tag[data-풀이]{cursor:pointer}
+  #덮개 .tag.펴짐{box-shadow:0 0 0 1px var(--금) inset}
+  #덮개 .풀이{display:none;margin-top:8px;padding:8px 10px;font-size:12.5px;line-height:1.55;
+              color:#cdbda6;background:var(--창속);border-left:3px solid var(--금)}
+  #덮개 .풀이.on{display:block}
+  #덮개 .풀이 b{color:var(--글);font-weight:400}
   #log b{font-weight:400;color:#ffe2a8}
 
   #panel{height:0;overflow:hidden;background:var(--창);margin:0 4px}
@@ -446,6 +456,27 @@ const 기술표 = {
   } },
 };
 
+/**
+ * **이게 무슨 기술인가 · 이 특성이 뭘 강화하는가** (10-09 사장님).
+ *
+ * 숫자는 전부 **위 기술표와 아군맞기() 코드에서 그대로** 가져왔다. 지어내지 않는다 —
+ * 글과 코드가 어긋나면 설명이 거짓말이 되고, 사장님은 그걸 믿고 편성을 짜게 된다.
+ * 겹친 카드(중복)로 값이 변하는 기술은 **그 캐릭터의 지금 값**을 보여 준다.
+ */
+const 기술설명 = {
+  푸른방패검: (c) => `일반공격 · 적 하나를 공격력 <b>95%</b>로 친다. 그 뒤 나에게 막을 두른다 — 최대체력 4% + 공격력 35%.`,
+  철벽의맹세: (c) => `기술 · <b>${c.중복 >= 5 ? 2 : 3}턴</b>마다. 아군 전원에게 막 <b>공격력 ${c.중복 >= 1 ? 155 : 140}%</b>를 씌우고, 적의 눈이 나에게 쏠린다(도발).`,
+  새벽을가르는방패: (c) => `궁극기 · 적 전원을 <b>공격력 ${c.중복 >= 3 ? 220 : 180}%</b>로 친다. 보호막을 두른 적은 피해 대신 <b>보호막 25</b>가 깎인다. 그 뒤 아군 전원에게 막 공격력 220%.${c.중복 >= 6 ? " 이 막은 <b>닳지 않는다</b>." : ""}`,
+  베기: (c) => `일반공격 · 적 하나를 공격력 <b>100%</b>로 친다. <b>10%</b>로 치명타(2배).`,
+  마법탄: (c) => `일반공격 · 적 하나를 공격력 <b>100%</b>로 친다.`,
+  단일힐: (c) => `일반공격 · 가장 많이 다친 아군을 <b>공격력 160%</b>만큼 회복한다.`,
+  사슬: (c) => `기술 · <b>3턴</b>마다. 보호막을 두른 적 하나의 보호막을 <b>통째로</b> 없앤다.`,
+};
+const 특성설명 = {
+  "마지막 수호자": (c) => `가장 위태로운 아군이 맞기 직전, 내가 대신 막을 씌운다 — <b>내 최대체력의 ${c.중복 >= 2 ? 12 : 8}%</b>. 한 턴에 한 번, 나 자신에게는 안 걸린다. 궁 게이지도 <b>+34</b> 찬다.`,
+  "푸른 강철의 결의": (c) => `내가 막을 두르고 있는 동안 <b>받는 피해 ${c.중복 >= 4 ? 24 : 18}% 감소</b>.`,
+};
+
 /* ── 공방 (층과합성-지피티.md 3장, 1구간 레시피만) ── */
 /**
  * 공방 3층 · 장비 5층 · 약 8층에 열린다. 실패 없음, 즉시 제작.
@@ -608,8 +639,11 @@ function 카드창(id){
       <span>체력 <b>${수(최대체력(c))}</b></span><span>공격 <b>${수(공격력(c))}</b></span>
       <span>방어 <b>${수(방어력(c))}</b></span><span>속도 <b>${속도(c)}</b></span>
     </div>
-    ${기술.length ? `<div class="칸이름">기술</div><div class="기술">${기술.map((k) => `<span class="tag r">${k}</span>`).join("")}</div>` : ""}
-    ${d.특성?.length ? `<div class="칸이름">특성</div><div class="기술">${d.특성.map((k) => `<span class="tag">${k}</span>`).join("")}</div>` : ""}
+    ${기술.length ? `<div class="칸이름">기술 <span class="귀띔">눌러 보기</span></div>
+      <div class="기술">${기술.map((k) => `<span class="tag r" data-풀이="기술:${k}">${k}</span>`).join("")}</div>` : ""}
+    ${d.특성?.length ? `<div class="칸이름">특성 <span class="귀띔">눌러 보기</span></div>
+      <div class="기술">${d.특성.map((k) => `<span class="tag" data-풀이="특성:${k}">${k}</span>`).join("")}</div>` : ""}
+    <div class="풀이" id="풀이"></div>
     <div class="칸이름">장비</div>
     <div class="장비">${["무기","갑옷"].map((슬롯) => {
       const 낀 = 장비들(c).find((x) => 레시피[x.키].슬롯 === 슬롯);
@@ -617,8 +651,8 @@ function 카드창(id){
       return 낀 ? `<span class="tag r" data-off="${낀.id}">${슬롯} ${레시피[낀.키].이름} ✕</span>`
         : 남은.length ? `<span class="tag" data-eq="${남은[0].id}" data-who="${c.id}">${슬롯} + ${레시피[남은[0].키].이름}</span>`
         : `<span class="tag" style="opacity:.5">${슬롯} 비어 있음</span>`; }).join("")}</div>
+    <!-- 10-09 사장님 "캐릭터 누르면 출전 빼기 없애" — 출전은 층을 고를 때 한 자리에서만 정한다 -->
     <div class="줄">
-      <button class="btn" id="출전">${안에 ? "출전 빼기" : "출전 넣기"}</button>
       <button class="btn" id="대표">${S.대표 === c.id ? "대표임" : "대표로"}</button>
       <button class="btn" id="닫기">닫기</button>
     </div>
@@ -628,11 +662,18 @@ function 카드창(id){
   const 다시 = () => { 덮.remove(); 카드창(id); 칸(); };
   덮.querySelectorAll("[data-eq]").forEach((b) => b.onclick = () => { 장착(Number(b.dataset.eq), Number(b.dataset.who)); 다시(); });
   덮.querySelectorAll("[data-off]").forEach((b) => b.onclick = () => { 벗기(Number(b.dataset.off)); 다시(); });
-  덮.querySelector("#출전").onclick = () => {
-    if (S.파티.includes(c.id)) S.파티 = S.파티.filter((x) => x !== c.id);
-    else if (S.파티.length < 5) S.파티.push(c.id);
-    그리기(); 다시();
-  };
+  // 태그를 누르면 그 자리에서 풀이가 열린다. 같은 것을 또 누르면 닫힌다(창을 안 쌓는다).
+  const 풀이칸 = 덮.querySelector("#풀이");
+  덮.querySelectorAll("[data-풀이]").forEach((b) => b.onclick = () => {
+    const [종류, 이름] = b.dataset.풀이.split(":");
+    const 켜짐 = b.classList.contains("펴짐");
+    덮.querySelectorAll("[data-풀이]").forEach((x) => x.classList.remove("펴짐"));
+    if (켜짐) { 풀이칸.classList.remove("on"); 풀이칸.innerHTML = ""; return; }
+    b.classList.add("펴짐");
+    const 글 = (종류 === "기술" ? 기술설명 : 특성설명)[이름];
+    풀이칸.innerHTML = `<b>${이름}</b><br>${글 ? 글(c) : "아직 설명이 없다 — 카드 대기."}`;
+    풀이칸.classList.add("on");
+  });
   덮.querySelector("#대표").onclick = () => { S.대표 = c.id; 길드그리기(); 다시(); };
   덮.querySelector("#닫기").onclick = () => { 덮.remove(); 칸(); };
 }
@@ -892,6 +933,9 @@ function 맵그리기(){
   const 칸 = $("#맵"); if (!칸) return;
   const 탑단추 = $("#탑버튼");
   if (탑단추) 탑단추.classList.toggle("on", S.진행 && S.탭 === "run");
+  // 10-09 사장님 "탑 고를 때 전투 화면이 왜 있냐고" — 멈춰 있는 동안 전투 칸을 접는다.
+  // 싸우지도 않는 전투 화면이 위에 붙어 있으면 탑이 반쪽만 보이고, 고르는 중인지 싸우는 중인지도 헷갈린다.
+  const 판 = $("#board"); if (판) 판.classList.toggle("접음", !S.진행 && S.탭 === "run");
   칸.classList.toggle("on", !S.진행);
   if (S.진행) return;
   const 끝 = Math.min(100, S.최고층 + 1);
@@ -938,6 +982,9 @@ function 출발창(층){
       <div class="기술">${S.대원.map((c) => { const d = 카드(c), 안 = S.파티.includes(c.id);
         return `<span class="tag${안 ? " r" : ""}" data-넣="${c.id}" style="cursor:pointer;${안 ? `color:${등급색[d.등급]}` : "opacity:.55"}">${안 ? "✓ " : "+ "}${d.직업} Lv.${c.레벨}</span>`;
       }).join("") || `<span class="tag" style="opacity:.5">대원이 없다</span>`}</div>
+      <div class="칸이름">챙길 것</div>
+      <div class="기술"><span class="tag${S.약챙김 ? " r" : ""}" id="약" style="cursor:pointer;${S.약챙김 ? "" : "opacity:.55"}">${
+        S.약챙김 ? "✓ " : "+ "}별빛 회복약 ${S.가방.약}개</span></div>
       <div class="줄">
         <button class="btn" id="되돌이">되돌이로 돌기</button>
         <button class="btn" id="쭉">여기서부터 올라가기</button>
@@ -950,13 +997,15 @@ function 출발창(층){
       else if (S.파티.length < 5) S.파티.push(id);
       그리자();
     });
+    덮.querySelector("#약").onclick = () => { S.약챙김 = !S.약챙김; 그리자(); };
     const 떠나기 = (되돌이) => {
       if (!S.파티.length) return;
       S.층 = 층; S.단계 = Math.floor((층 - 1)/10) + 1;
       S.사냥층 = 되돌이 ? 층 : null; S.진행 = true; S.쉼 = 0;
       덮.remove();
       적기(되돌이 ? `<b>${층}층</b>을 되돌이로 돈다.` : `<b>${층}층</b>부터 올라간다.`, "big");
-      전투준비(); 적만들기(); 윗줄(); 그리기(); 화면(); 저장();
+      // 윗줄()이 전투 칸을 다시 펴므로, 크기()는 그 뒤에 불러야 한다 — 접힌 칸은 폭이 0이다
+      전투준비(); 적만들기(); 윗줄(); 크기(); 그리기(); 화면(); 저장();
     };
     덮.querySelector("#되돌이").onclick = () => 떠나기(true);
     덮.querySelector("#쭉").onclick = () => 떠나기(false);
@@ -977,8 +1026,8 @@ function 칸(){
      * 한 줄에 다 넣으니 넷만 돼도 화면이 글자 벽이 됐다.
      * "내리기·태우기 지우고"(사장님) — 출전은 카드 창에서 고른다.
      */
-    el.innerHTML = `<div class="row"><div class="nm"><b>별빛 회복약 ${S.가방.약}개</b><i>출전할 때 한 병 챙긴다</i></div>
-        <button class="btn" id="potion">${S.약챙김 ? "챙김" : "안 챙김"}</button></div>` + S.대원.map((c) => {
+    // 10-09 사장님 "캐릭터 창에 별빛회복약 안 보이게" — 약은 떠나기 직전에 챙기는 것이라 출발 창으로 옮겼다
+    el.innerHTML = S.대원.map((c) => {
       const 안에 = S.파티.includes(c.id), d = 카드(c);
       return `<div class="row 카드열기" data-카드="${c.id}" style="cursor:pointer">
         <div class="얼굴" style="border-color:${등급색[d.등급]};background-image:url(${얼굴(d.그림)})"></div>
@@ -988,7 +1037,6 @@ function 칸(){
         <span style="color:#6e5d78;font-size:18px;padding:0 4px">›</span></div>`;
     }).join("");
     el.querySelectorAll("[data-카드]").forEach((b) => b.onclick = () => 카드창(Number(b.dataset.카드)));
-    $("#potion").onclick = () => { S.약챙김 = !S.약챙김; 칸(); };
   } else if (S.탭 === "forge") {
     const g = S.가방;
     if (S.최고층 < 3) { el.innerHTML = `<div class="row"><div class="nm"><b>대장간</b><i>3층을 넘으면 대장간이 열린다. (지금 ${S.최고층}층)</i></div></div>`; return; }

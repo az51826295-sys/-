@@ -4,6 +4,7 @@
  * 맵이 뜨나 · 꼭대기가 위인가 · 깬 층까지만 있나 · 누르면 출전 고르는 창이 뜨나 · 떠나면 맵이 사라지나.
  */
 import { openHeadless } from "../../src/lib/video/headless";
+import { 이름헬퍼 } from "./ash_공통.mts";
 const 주소 = process.env.ASH_URL ?? "https://rookery-web-production.up.railway.app/ash/index.html";
 let 나쁨 = 0;
 const 재기 = (n: string, ok: boolean, 본?: unknown) => { if (!ok) 나쁨++; console.log(ok ? "통과" : "실패", n, ok ? "" : JSON.stringify(본)); };
@@ -12,6 +13,7 @@ if (!창) process.exit(1);
 try {
   const page = await 창.browser.newPage();
   await page.setViewport({ width: 390, height: 844, deviceScaleFactor: 2 });
+  await 이름헬퍼(page);
   await page.goto(주소, { waitUntil: "networkidle2", timeout: 60_000 });
   await new Promise((r) => setTimeout(r, 1800));
   // **이빨 확인**: --sabotage 면 사장님이 "이상해"라 한 꼴을 일부러 되살린다. 그래도 전부 통과하면 자가 눈이 먼 것이다.
@@ -32,6 +34,9 @@ try {
     return el ? { 보임: getComputedStyle(el).display !== "none", 칸들, 넘침: el.scrollHeight > el.clientHeight } : null;
   });
   재기("맵이 보인다", !!맵?.보임, 맵);
+  // 10-09 사장님 "탑 고를 때 전투 화면이 왜 있냐고"
+  재기("탑을 고를 땐 전투 칸이 접힌다",
+    await page.evaluate(() => getComputedStyle(document.querySelector("#board")!).display === "none"));
   재기("깬 층 + 한 층까지만 있다", JSON.stringify(맵?.칸들) === JSON.stringify([8,7,6,5,4,3,2,1]), 맵?.칸들);
   재기("맨 위가 가장 높은 층", 맵?.칸들?.[0] === 8, 맵?.칸들?.[0]);
 
@@ -43,6 +48,14 @@ try {
   });
   재기("층을 누르면 출발 창이 뜬다", !!창열림, 창열림);
   재기("출전 고를 동료가 있다", (창열림?.동료 ?? 0) > 0, 창열림);
+  // 약은 캐릭터 창에서 빼고 **떠나기 직전 자리**로 옮겼다 (10-09 사장님)
+  const 약 = await page.evaluate(() => {
+    const w = window as any, b = document.querySelector("#덮개 #약") as HTMLElement | null;
+    if (!b) return null;
+    const 앞 = w.S.약챙김; b.click();
+    return { 있다: true, 앞, 뒤: w.S.약챙김, 글: (document.querySelector("#덮개 #약")?.textContent ?? "").trim() };
+  });
+  재기("출발 창에서 약을 챙긴다", !!약 && 약.앞 !== 약.뒤 && /회복약/.test(약.글), 약);
 
   const 뺐다 = await page.evaluate(() => {
     const w = window as any; const 앞 = w.S.파티.length;
@@ -59,6 +72,12 @@ try {
     return { 층: w.S.층, 사냥층: w.S.사냥층, 진행: w.S.진행, 덮개: !!document.querySelector("#덮개") };
   });
   재기("되돌이로 떠난다", 떠남.층 === 5 && 떠남.사냥층 === 5 && 떠남.진행 === true && !떠남.덮개, 떠남);
+  // 접었던 전투 칸이 다시 펴지고 폭이 살아나야 한다 — 접힌 채로 캔버스를 그리면 폭 0 이 된다
+  const 폈나 = await page.evaluate(() => {
+    const b = document.querySelector("#board") as HTMLElement, cv = document.querySelector("#cv") as HTMLCanvasElement;
+    return { 보임: getComputedStyle(b).display !== "none", 판폭: cv.width, 칸폭: b.clientWidth };
+  });
+  재기("떠나면 전투 칸이 다시 펴지고 폭이 산다", 폈나.보임 && 폈나.판폭 > 0 && 폈나.칸폭 > 0, 폈나);
   await new Promise((r) => setTimeout(r, 300));
   재기("떠나면 맵이 사라진다", await page.evaluate(() => getComputedStyle(document.querySelector("#맵")!).display === "none"));
 
@@ -99,13 +118,16 @@ try {
   });
   재기("탑 기둥 그림이 실제로 온다", 기둥.상태 === 200, 기둥);
 
-  // 포스터꼴: 층이 하나뿐일 때 맵이 그림 높이만큼 부풀면 안 된다
+  // 포스터꼴: 층이 하나뿐인데 **스크롤이 생기면** 그림 높이만큼 부푼 것이다.
+  // (화면을 꽉 채우는 것은 괜찮다 — 탑이 끝까지 서 있어야 탑으로 보인다)
   const 한층 = await page.evaluate(() => {
     const w = window as any; w.S.최고층 = 0; w.맵그리기();
-    const 속 = document.querySelector("#맵 .속") as HTMLElement;
-    return { 속높이: 속.offsetHeight, 칸수: document.querySelectorAll("#맵 [data-f]").length };
+    const 맵 = document.querySelector("#맵") as HTMLElement;
+    return { 칸수: document.querySelectorAll("#맵 [data-f]").length,
+      속높이: (document.querySelector("#맵 .속") as HTMLElement).offsetHeight,
+      맵높이: 맵.clientHeight, 스크롤: 맵.scrollHeight > 맵.clientHeight + 2 };
   });
-  재기("층이 하나면 맵도 짧다(포스터꼴 아님)", 한층.칸수 === 1 && 한층.속높이 < 140, 한층);
+  재기("층이 하나면 스크롤이 안 생긴다(포스터꼴 아님)", 한층.칸수 === 1 && !한층.스크롤, 한층);
 } finally { await 창.browser.close(); await 창.close?.(); }
 console.log(나쁨 === 0 ? "\n전부 통과" : `\n실패 ${나쁨}건`);
 process.exit(나쁨 === 0 ? 0 : 1);

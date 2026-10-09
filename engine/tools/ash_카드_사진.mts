@@ -1,5 +1,6 @@
 /** 캐릭터 목록과 카드 창을 한 장씩 찍는다 (10-09). 모델 0 · 값 0. */
 import { openHeadless } from "../../src/lib/video/headless";
+import { 이름헬퍼 } from "./ash_공통.mts";
 const 주소 = process.env.ASH_URL ?? "https://rookery-web-production.up.railway.app/ash/index.html";
 const 나올 = "engine/docs/ui-ask";
 const 창 = await openHeadless({ width: 390, height: 844 });
@@ -7,6 +8,7 @@ if (!창) process.exit(1);
 try {
   const page = await 창.browser.newPage();
   await page.setViewport({ width: 390, height: 844, deviceScaleFactor: 2 });
+  await 이름헬퍼(page);
   await page.goto(주소, { waitUntil: "networkidle2", timeout: 60_000 });
   await new Promise((r) => setTimeout(r, 2000));
   await page.evaluate(() => { const w = window as any;
