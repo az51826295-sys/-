@@ -52,6 +52,16 @@
   #log .die{color:#ff6b5b;font-size:17px;margin:9px 0;border-left:3px solid #ff6b5b;padding-left:9px}
   #log .good{color:var(--초록)}
   #log .turn{color:#6e5d78;font-size:12px;margin-top:9px}
+  #고르기{margin:6px 4px 0;padding:8px 10px;background:var(--창);display:none}
+  #고르기.on{display:block}
+  #고르기 .말{font-size:13px;color:var(--글);margin-bottom:7px}
+  #고르기 .층들{display:flex;flex-wrap:wrap;gap:5px;max-height:104px;overflow-y:auto}
+  #고르기 .ch{padding:4px 9px;font-size:13px;color:var(--글);background:#2a1f33;
+              border:1px solid #4a3a55;cursor:pointer}
+  #고르기 .ch.새{color:var(--금);border-color:var(--금)}
+  #고르기 .ch.고름{background:var(--금);color:#1a1420;border-color:var(--금)}
+  #고르기 .줄{display:flex;gap:6px;margin-top:8px;align-items:center}
+  #고르기 .줄 .btn{flex:1}
   #log b{font-weight:400;color:#ffe2a8}
 
   #panel{height:0;overflow:hidden;background:var(--창);margin:0 4px}
@@ -122,6 +132,8 @@
 
   <div id="battle">
     <div id="board"><canvas id="cv"></canvas></div>
+    <!-- 10-09 사장님: 시작하자마자 깨지 말고 **고르고 시작**한다. 멈춰 있을 때만 뜬다. -->
+    <div id="고르기"></div>
     <div id="log"></div>
   </div>
   <div id="panel"></div>
@@ -191,7 +203,12 @@ const 최대체력 = (c) => 능력(c, "체력"), 공격력 = (c) => 능력(c, "�
 const 속도 = (c) => c.속도 ?? 카드(c).속도;
 const 필요경험 = (c) => 80 + (c.레벨 - 1)*12;
 
-const S = { 단계:1, 층:1, 금화:0, 대원:[], 파티:[], 탭:"hall", 진행:true, 쉼:0, 대표:null, 최고층:0,
+/**
+ * `사냥층` — 10-09 사장님 "선택해서 1층을 깨시겠습니까 이러면 1층만 계속 반복".
+ * null 이면 옛 방식(한 층씩 올라감). 숫자면 **그 층만 되돌이로 돈다** — 층을 안 넘기고 적만 다시 세운다.
+ * `진행`은 이제 처음에 꺼져 있다. 시작하자마자 1층을 깨 버리면 **고를 틈이 없다**(사장님 지적).
+ */
+const S = { 단계:1, 층:1, 금화:0, 대원:[], 파티:[], 탭:"hall", 진행:false, 쉼:0, 대표:null, 최고층:0, 사냥층:null,
             가방:{ 파편:0, 잔혼:0, 수호핵:0, 별가루:0, 문장:{ 방어:0, 공격:0, 지원:0, 제어:0 } } };
 for (const k of ["기사","검사","회복술사"]) S.대원.push(대원만들기(k));
 S.파티 = S.대원.map((c) => c.id);
@@ -519,6 +536,8 @@ function 층넘기(){
     if (S.파티.length < 5) S.파티.push(새.id);
     장면(null, null, `골렘의 잔해 속에서 <b>흑마법사</b>(제어)가 걸어 나왔다.`, "big");
   }
+  // 되돌이 사냥이면 층을 안 넘긴다 — 같은 층의 적만 다시 세운다
+  if (S.사냥층) { 전투준비(); 적만들기(); 윗줄(); 그리기(); 저장(); return; }
   S.층++;
   if (S.층 > 100) { 적기("탑의 끝에 닿았다.", "big"); S.진행 = false; 윗줄(); return; }
   if ((S.층 - 1) % 10 === 0) { S.단계 = Math.floor((S.층 - 1)/10) + 1;
@@ -527,6 +546,13 @@ function 층넘기(){
   저장();
 }
 function 전멸(){
+  // 10-09 사장님 "켜 둔 동안 계속 도전" — 되돌이 사냥 중엔 구간 처음으로 밀려나지 않는다
+  if (S.사냥층) {
+    적기(`원정대가 쓰러졌다. 숨을 고르고 <b>${S.사냥층}층</b>에 다시 든다.`, "die");
+    S.쉼 = 4;
+    for (const c of 파티원()) { c.막 = 0; c.보임막 = 0; }
+    윗줄(); 그리기(); return;
+  }
   적기("원정대가 물러났다. 구간 처음으로 돌아간다.", "die");
   S.층 = Math.max(1, Math.floor((S.층 - 1)/10)*10 + 1);
   S.단계 = Math.floor((S.층 - 1)/10) + 1;
@@ -759,8 +785,39 @@ function 그리기(){
 
 /* ── 아래 칸 ──────────────────────────────────────── */
 function 윗줄(){
-  $("#zone").textContent = `${구간이름[(S.단계-1)%10]} · ${S.층}층`;
+  $("#zone").textContent = `${구간이름[(S.단계-1)%10]} · ${S.층}층` + (S.사냥층 ? " · 되돌이" : "");
   $("#gold").textContent = 수(S.금화); $("#shard").textContent = 수(S.가방.별가루);
+  고르기그리기();
+}
+
+/**
+ * **어디를 돌까** (10-09 사장님). 멈춰 있을 때만 뜬다 — 도는 중에 층 단추가 떠 있으면
+ * 누를 때마다 전투가 끊긴다. 고를 수 있는 층은 **깨본 최고층 + 한 층**까지(새 층은 한 칸씩 열린다).
+ */
+function 고르기그리기(){
+  const 칸 = $("#고르기"); if (!칸) return;
+  if (S.진행) { 칸.classList.remove("on"); return; }
+  칸.classList.add("on");
+  const 끝 = Math.min(100, S.최고층 + 1);
+  // 고를 수 있는 끝을 넘어선 층(옛 저장·시험판)이면 끝으로 당겨 둔다 — 단추와 글이 어긋나면 안 누른다
+  const 고른 = Math.min(S.사냥층 ?? S.층, 끝);
+  if (S.층 !== 고른) { S.층 = 고른; S.단계 = Math.floor((S.층 - 1)/10) + 1; }
+  칸.innerHTML = `<div class="말">어디를 돌까? <b>${고른}층</b>${끝 > S.최고층 && 고른 === 끝 ? " — 새 층" : ""}</div>
+    <div class="층들">${Array.from({ length: 끝 }, (_, i) => i + 1).map((f) =>
+      `<div class="ch${f === 고른 ? " 고름" : ""}${f > S.최고층 ? " 새" : ""}" data-f="${f}">${f}</div>`).join("")}</div>
+    <div class="줄">
+      <button class="btn" id="되돌이">${고른}층 되돌이로 돌기</button>
+      <button class="btn" id="쭉">쭉 올라가기</button>
+    </div>`;
+  칸.querySelectorAll(".ch").forEach((b) => b.onclick = () => {
+    S.층 = Number(b.dataset.f); S.단계 = Math.floor((S.층 - 1)/10) + 1;
+    S.사냥층 = S.사냥층 ? S.층 : null;
+    전투준비(); 적만들기(); 윗줄(); 그리기();
+  });
+  $("#되돌이").onclick = () => { S.사냥층 = S.층; S.진행 = true; S.쉼 = 0;
+    적기(`<b>${S.층}층</b>을 되돌이로 돈다.`, "big"); 전투준비(); 적만들기(); 윗줄(); 그리기(); 화면(); 저장(); };
+  $("#쭉").onclick = () => { S.사냥층 = null; S.진행 = true; S.쉼 = 0;
+    적기(`<b>${S.층}층</b>부터 올라간다.`, "big"); 전투준비(); 적만들기(); 윗줄(); 그리기(); 화면(); 저장(); };
 }
 function 칸(){
   const el = $("#panel");
@@ -827,7 +884,7 @@ function 화면(){
   document.querySelectorAll(".tab").forEach((x) => x.classList.toggle("on", x.dataset.t === S.탭));
   칸();
   if (S.탭 === "hall") 길드그리기();
-  if (S.탭 === "run") { 크기(); 그리기(); }
+  if (S.탭 === "run") { 크기(); 그리기(); 고르기그리기(); }
 }
 document.querySelectorAll(".tab").forEach((t) => t.onclick = () => { S.탭 = t.dataset.t; 화면(); });
 
