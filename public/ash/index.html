@@ -891,7 +891,8 @@ function 판끝(){
 function 카드창(id){
   const c = S.대원.find((x) => x.id === id); if (!c) return;
   const d = 카드(c), 안에 = S.파티.includes(c.id);
-  const 기술 = [d.일반, d.스킬, d.궁].filter(Boolean);
+  // 10-10: 스킬이 **배열**이 됐다(검사·흑마법사는 둘). 펴지 않으면 "처형,약점노리기" 가 한 덩어리로 찍힌다.
+  const 기술 = [d.일반, ...스킬들(d), d.궁].filter(Boolean);
   const 덮 = document.createElement("div"); 덮.id = "덮개";
   덮.innerHTML = `<div class="카드" onclick="event.stopPropagation()">
     <div class="머리">
@@ -1515,7 +1516,7 @@ function 길드그리기(){
 }
 
 // 자가 창 안에서 턴을 직접 돌릴 수 있어야 한다 — 1.4초씩 기다리면 100층에 두 시간이다.
-Object.assign(window, { S, 맵그리기, 출발창, 화면, 한턴, 적만들기, 무리수, 판끝, 자격, 열린층, 필요판, 최대체력, 공격력, 방어력, 전멸, 기술표, 도감, 빛셈, 빛표, 대원만들기, 방어뒤, 결의배, 도감, 만들기, 모자람, 장착, 레시피, 구간, 구간들, 매대, 사기, 남은수, 산수, 매대확인, 전투준비, 저장, 불러오기, 지우기 });
+Object.assign(window, { S, 맵그리기, 출발창, 화면, 한턴, 적만들기, 무리수, 판끝, 자격, 열린층, 필요판, 최대체력, 공격력, 방어력, 전멸, 기술표, 도감, 빛셈, 빛표, 대원만들기, 방어뒤, 결의배, 도감, 기술설명, 특성설명, 스킬들, 카드창, 만들기, 모자람, 장착, 레시피, 구간, 구간들, 매대, 사기, 남은수, 산수, 매대확인, 전투준비, 저장, 불러오기, 지우기 });
 Object.defineProperty(window, "행동순서", { get: () => 행동순서 });
 Object.defineProperty(window, "적들", { get: () => 적들 });
 

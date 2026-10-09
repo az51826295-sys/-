@@ -91,6 +91,31 @@ try {
   재기("특성 설명에 숫자가 있다", 풀이.특.숫자, 풀이.특.글.slice(0, 80));
   재기("또 누르면 닫힌다", 풀이.닫힘, 풀이);
 
+  /* **도감에 적힌 기술이 카드에 하나씩, 설명과 함께 있는가** (10-10).
+     스킬이 배열이 된 뒤 "처형,약점노리기" 가 한 덩어리로 찍히고 설명이 "없다" 로 떴다.
+     앞의 자는 **첫 태그 하나만** 눌러 봐서 이것을 못 봤다. */
+  const 낱낱 = await page.evaluate(() => {
+    const w = window as any;
+    const 빠진: string[] = [], 덩어리: string[] = [];
+    for (const [키, d] of Object.entries(w.도감) as [string, any][]) {
+      const 기술 = [d.일반, ...[].concat(d.스킬 ?? []), d.궁].filter(Boolean) as string[];
+      for (const k of 기술) {
+        if (/[,]/.test(k)) 덩어리.push(`${키}:${k}`);
+        if (!w.기술설명?.[k]) 빠진.push(`${키}:${k}`);
+      }
+      for (const t of d.특성 ?? []) if (!w.특성설명?.[t]) 빠진.push(`${키}:특성 ${t}`);
+    }
+    // 검사 카드를 열어 태그가 몇 개인지 센다
+    document.querySelector("#덮개")?.remove();
+    const 검 = w.S.대원.find((c: any) => c.키 === "검사") ?? w.S.대원[0];
+    w.카드창(검.id);
+    const 태그 = [...document.querySelectorAll('#덮개 [data-풀이^="기술"]')].map((x) => (x.textContent ?? "").trim());
+    return { 빠진, 덩어리, 태그 };
+  });
+  재기("기술 태그가 한 덩어리로 안 찍힌다", 낱낱.덩어리.length === 0, 낱낱.덩어리);
+  재기("도감의 모든 기술·특성에 설명이 있다", 낱낱.빠진.length === 0, 낱낱.빠진);
+  재기("검사 카드에 기술이 셋 보인다", 낱낱.태그.length === 3, 낱낱.태그);
+
   await new Promise((r) => setTimeout(r, 400));
   await page.evaluate(() => (document.querySelector("#덮개 #닫기") as HTMLElement).click());
   await new Promise((r) => setTimeout(r, 300));
