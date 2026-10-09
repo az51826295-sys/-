@@ -1,6 +1,6 @@
 /** 캐릭터 목록과 카드 창을 한 장씩 찍는다 (10-09). 모델 0 · 값 0. */
 import { openHeadless } from "../../src/lib/video/headless";
-import { 이름헬퍼 } from "./ash_공통.mts";
+import { 이름헬퍼 } from "./ash_공통.mjs";
 const 주소 = process.env.ASH_URL ?? "https://rookery-web-production.up.railway.app/ash/index.html";
 const 나올 = "engine/docs/ui-ask";
 const 창 = await openHeadless({ width: 390, height: 844 });

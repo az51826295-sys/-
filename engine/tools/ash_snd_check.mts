@@ -7,7 +7,7 @@
  * currentTime 이 흐르는지, 끄면 멈추는지, 다시 켜면 이어지는지.
  */
 import { openHeadless } from "../../src/lib/video/headless";
-import { 이름헬퍼 } from "./ash_공통.mts";
+import { 이름헬퍼 } from "./ash_공통.mjs";
 
 const 주소 = process.env.ASH_URL ?? "https://rookery-web-production.up.railway.app/ash/index.html";
 let 나쁨 = 0;

@@ -8,7 +8,7 @@
  * 게임 안의 `한턴()` 을 그대로 부른다(따로 셈을 베끼면 게임과 다른 것을 재게 된다).
  */
 import { openHeadless } from "../../src/lib/video/headless";
-import { 이름헬퍼 } from "./ash_공통.mts";
+import { 이름헬퍼 } from "./ash_공통.mjs";
 
 const 주소 = process.env.ASH_URL ?? "https://rookery-web-production.up.railway.app/ash/index.html";
 const 끝층 = Number(process.argv[2] ?? 40);
