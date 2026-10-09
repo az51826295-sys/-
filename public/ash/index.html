@@ -62,6 +62,21 @@
   #고르기 .ch.고름{background:var(--금);color:#1a1420;border-color:var(--금)}
   #고르기 .줄{display:flex;gap:6px;margin-top:8px;align-items:center}
   #고르기 .줄 .btn{flex:1}
+  /* 탑 맵 (10-09 사장님 "탑에 약간 맵같이 스크롤로") — 꼭대기가 위, 1층이 아래. 올라가는 느낌을 세로로 준다. */
+  #맵{flex:1;overflow-y:auto;margin:4px;background:#0f0a14;position:relative;display:none}
+  #맵.on{display:block}
+  /* 맵이 떠 있을 땐 글 칸을 접는다 — 둘이 공간을 반씩 나눠 가져 맵이 8층쯤에서 잘렸다 */
+  #맵.on ~ #log{display:none}
+  #맵 .탑{position:absolute;inset:0;background-repeat:repeat-y;background-position:center top;
+          background-size:100% auto;image-rendering:pixelated;opacity:.42}
+  #맵 .속{position:relative;padding:10px 0}
+  #맵 .층칸{display:flex;align-items:center;gap:8px;margin:0 10px 8px;padding:7px 10px;
+            background:rgba(20,14,26,.74);border:1px solid #3a2c45;cursor:pointer}
+  #맵 .층칸.새{border-color:var(--금)}
+  #맵 .층칸.보스{border-color:#d9534f}
+  #맵 .층칸 b{color:var(--글);font-size:14px;min-width:46px}
+  #맵 .층칸 i{color:#8d7c99;font-size:12px;font-style:normal;flex:1}
+  #맵 .층칸 .표{color:var(--금);font-size:12px}
   /* 카드 창 — 덮개를 누르면 닫힌다(폰에서 손가락이 위까지 안 올라가게) */
   #덮개{position:fixed;inset:0;z-index:40;background:rgba(10,7,13,.78);
         display:flex;align-items:center;justify-content:center;padding:16px}
@@ -145,7 +160,7 @@
   <div id="battle">
     <div id="board"><canvas id="cv"></canvas></div>
     <!-- 10-09 사장님: 시작하자마자 깨지 말고 **고르고 시작**한다. 멈춰 있을 때만 뜬다. -->
-    <div id="고르기"></div>
+    <div id="맵"></div>
     <div id="log"></div>
   </div>
   <div id="panel"></div>
@@ -851,37 +866,75 @@ function 그리기(){
 function 윗줄(){
   $("#zone").textContent = `${구간이름[(S.단계-1)%10]} · ${S.층}층` + (S.사냥층 ? " · 되돌이" : "");
   $("#gold").textContent = 수(S.금화); $("#shard").textContent = 수(S.가방.별가루);
-  고르기그리기();
+  맵그리기();
 }
 
 /**
- * **어디를 돌까** (10-09 사장님). 멈춰 있을 때만 뜬다 — 도는 중에 층 단추가 떠 있으면
- * 누를 때마다 전투가 끊긴다. 고를 수 있는 층은 **깨본 최고층 + 한 층**까지(새 층은 한 칸씩 열린다).
+ * **탑 맵** (10-09 사장님 "탑에 약간 맵같이 만들어 스크롤로 큰탑 사진 뽑아서 / 층 누르면 출전 시킬 동료 구하고").
+ * 꼭대기가 위, 1층이 아래 — 손가락으로 올라간다. 배경은 탑 기둥 그림을 세로로 이어 붙인다
+ * (한 장을 100층 높이로 늘리면 도트가 깨진다).
+ * 도는 중에는 안 뜬다 — 층 단추가 떠 있으면 누를 때마다 전투가 끊긴다.
  */
-function 고르기그리기(){
-  const 칸 = $("#고르기"); if (!칸) return;
-  if (S.진행) { 칸.classList.remove("on"); return; }
-  칸.classList.add("on");
+function 맵그리기(){
+  const 칸 = $("#맵"); if (!칸) return;
+  칸.classList.toggle("on", !S.진행);
+  if (S.진행) return;
   const 끝 = Math.min(100, S.최고층 + 1);
-  // 고를 수 있는 끝을 넘어선 층(옛 저장·시험판)이면 끝으로 당겨 둔다 — 단추와 글이 어긋나면 안 누른다
-  const 고른 = Math.min(S.사냥층 ?? S.층, 끝);
-  if (S.층 !== 고른) { S.층 = 고른; S.단계 = Math.floor((S.층 - 1)/10) + 1; }
-  칸.innerHTML = `<div class="말">어디를 돌까? <b>${고른}층</b>${끝 > S.최고층 && 고른 === 끝 ? " — 새 층" : ""}</div>
-    <div class="층들">${Array.from({ length: 끝 }, (_, i) => i + 1).map((f) =>
-      `<div class="ch${f === 고른 ? " 고름" : ""}${f > S.최고층 ? " 새" : ""}" data-f="${f}">${f}</div>`).join("")}</div>
-    <div class="줄">
-      <button class="btn" id="되돌이">${고른}층 되돌이로 돌기</button>
-      <button class="btn" id="쭉">쭉 올라가기</button>
+  const 층들 = Array.from({ length: 끝 }, (_, i) => 끝 - i);          // 위가 높은 층
+  // 10-09: 탑 기둥 그림을 따로 뽑으려 했으나 제미나이 크레딧이 떨어졌다.
+  // 돈 안 쓰고 — 이미 있는 **탑 복도**(전투 배경)를 세로로 이어 붙인다. 층마다 복도가 보여 오히려 맞는다.
+  칸.innerHTML = `<div class="탑" style="background-image:url(art/tower.png)"></div>
+    <div class="속">${층들.map((f) => {
+      const 보스 = f % 10 === 0, 새층 = f > S.최고층;
+      return `<div class="층칸${보스 ? " 보스" : ""}${새층 ? " 새" : ""}" data-f="${f}">
+        <b>${f}층</b>
+        <i>${보스 ? 일구간.보스.이름 : 구간이름[Math.floor((f - 1)/10) % 10]}</i>
+        <span class="표">${새층 ? "새 층" : "깸"}</span></div>`;
+    }).join("")}</div>`;
+  칸.querySelectorAll("[data-f]").forEach((b) => b.onclick = () => 출발창(Number(b.dataset.f)));
+}
+
+/**
+ * **층을 누르면 — 누구를 데려갈까** (사장님 "층 누르면 출전 시킬 동료 구하고").
+ * 출전을 여기서 고르고 떠난다. 되돌이로 돌지 한 층씩 올라갈지도 여기서 고른다.
+ */
+function 출발창(층){
+  const 덮 = document.createElement("div"); 덮.id = "덮개";
+  const 그리자 = () => {
+    덮.innerHTML = `<div class="카드" onclick="event.stopPropagation()">
+      <div class="nm"><b><span style="color:var(--금)">${층}층</span>${층 % 10 === 0 ? ` <span class="tag r">보스</span>` : ""}</b>
+        <i>누구를 데려갈까 · ${S.파티.length}/5</i></div>
+      <div class="칸이름">출전</div>
+      <div class="기술">${S.대원.map((c) => { const d = 카드(c), 안 = S.파티.includes(c.id);
+        return `<span class="tag${안 ? " r" : ""}" data-넣="${c.id}" style="cursor:pointer;${안 ? `color:${등급색[d.등급]}` : "opacity:.55"}">${안 ? "✓ " : "+ "}${d.직업} Lv.${c.레벨}</span>`;
+      }).join("") || `<span class="tag" style="opacity:.5">대원이 없다</span>`}</div>
+      <div class="줄">
+        <button class="btn" id="되돌이">되돌이로 돌기</button>
+        <button class="btn" id="쭉">여기서부터 올라가기</button>
+      </div>
+      <div class="줄"><button class="btn" id="닫기">닫기</button></div>
     </div>`;
-  칸.querySelectorAll(".ch").forEach((b) => b.onclick = () => {
-    S.층 = Number(b.dataset.f); S.단계 = Math.floor((S.층 - 1)/10) + 1;
-    S.사냥층 = S.사냥층 ? S.층 : null;
-    전투준비(); 적만들기(); 윗줄(); 그리기();
-  });
-  $("#되돌이").onclick = () => { S.사냥층 = S.층; S.진행 = true; S.쉼 = 0;
-    적기(`<b>${S.층}층</b>을 되돌이로 돈다.`, "big"); 전투준비(); 적만들기(); 윗줄(); 그리기(); 화면(); 저장(); };
-  $("#쭉").onclick = () => { S.사냥층 = null; S.진행 = true; S.쉼 = 0;
-    적기(`<b>${S.층}층</b>부터 올라간다.`, "big"); 전투준비(); 적만들기(); 윗줄(); 그리기(); 화면(); 저장(); };
+    덮.querySelectorAll("[data-넣]").forEach((b) => b.onclick = () => {
+      const id = Number(b.dataset.넣);
+      if (S.파티.includes(id)) S.파티 = S.파티.filter((x) => x !== id);
+      else if (S.파티.length < 5) S.파티.push(id);
+      그리자();
+    });
+    const 떠나기 = (되돌이) => {
+      if (!S.파티.length) return;
+      S.층 = 층; S.단계 = Math.floor((층 - 1)/10) + 1;
+      S.사냥층 = 되돌이 ? 층 : null; S.진행 = true; S.쉼 = 0;
+      덮.remove();
+      적기(되돌이 ? `<b>${층}층</b>을 되돌이로 돈다.` : `<b>${층}층</b>부터 올라간다.`, "big");
+      전투준비(); 적만들기(); 윗줄(); 그리기(); 화면(); 저장();
+    };
+    덮.querySelector("#되돌이").onclick = () => 떠나기(true);
+    덮.querySelector("#쭉").onclick = () => 떠나기(false);
+    덮.querySelector("#닫기").onclick = () => 덮.remove();
+  };
+  덮.onclick = () => 덮.remove();
+  그리자();
+  document.body.appendChild(덮);
 }
 function 칸(){
   const el = $("#panel");
@@ -937,7 +990,7 @@ function 화면(){
   document.querySelectorAll(".tab").forEach((x) => x.classList.toggle("on", x.dataset.t === S.탭));
   칸();
   if (S.탭 === "hall") 길드그리기();
-  if (S.탭 === "run") { 크기(); 그리기(); 고르기그리기(); }
+  if (S.탭 === "run") { 크기(); 그리기(); 맵그리기(); }
 }
 document.querySelectorAll(".tab").forEach((t) => t.onclick = () => { S.탭 = t.dataset.t; 화면(); });
 
@@ -1008,7 +1061,7 @@ function 길드그리기(){
 }
 
 // 자가 창 안에서 턴을 직접 돌릴 수 있어야 한다 — 1.4초씩 기다리면 100층에 두 시간이다.
-Object.assign(window, { S, 한턴, 적만들기, 층넘기, 최대체력, 공격력, 방어력, 전멸, 기술표, 도감, 빛셈, 빛표, 대원만들기, 방어뒤, 만들기, 장착, 레시피, 전투준비, 저장, 불러오기, 지우기 });
+Object.assign(window, { S, 맵그리기, 출발창, 화면, 한턴, 적만들기, 층넘기, 최대체력, 공격력, 방어력, 전멸, 기술표, 도감, 빛셈, 빛표, 대원만들기, 방어뒤, 만들기, 장착, 레시피, 전투준비, 저장, 불러오기, 지우기 });
 Object.defineProperty(window, "행동순서", { get: () => 행동순서 });
 Object.defineProperty(window, "적들", { get: () => 적들 });
 

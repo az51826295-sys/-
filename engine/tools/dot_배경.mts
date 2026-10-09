@@ -6,7 +6,8 @@
  * 도트 한 칸 크기를 맞춘다 — 배경만 고운 그림이면 캐릭터가 붙여 넣은 스티커로 보인다.
  */
 import sharp from "sharp";
-import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
+const 존재 = (p: string) => existsSync(p);
 
 const 진짜 = process.argv.includes("--진짜");
 const 칸 = "C:/Users/az518/Desktop/로키-도트/배경";
@@ -33,6 +34,10 @@ const 장면들: Record<string, { 이름: string; 비율: string; 주문: string
     그림체 + " Moody but readable, not too busy.",
     "IMPORTANT: the bottom quarter is a flat, plain, dark floor running across the whole width — characters will stand on it on the left and right.",
   ] },
+  // 10-09 사장님 "탑에 약간 맵같이 만들어 스크롤로 큰탑 사진 뽑아서" — 맵은 세로로 길게 이어 붙인다.
+  // 그래서 **위아래가 맞물리는 기둥 한 토막**과 **꼭대기 한 장**으로 가른다(한 장을 늘리면 도트가 깨진다).
+  탑기둥: { 이름: "탑 기둥(맵·이어붙임)", 비율: "9:16", 주문: [] },
+  탑꼭대기: { 이름: "탑 꼭대기(맵)", 비율: "9:16", 주문: [] },
 };
 const 고른 = process.argv.slice(2).find((a) => !a.startsWith("--")) ?? "camp";
 const 장 = 장면들[고른];
@@ -62,6 +67,24 @@ const 중세장면: Record<string, string[]> = {
     그림체 + " Cozy, heroic, unmistakably medieval.",
     "IMPORTANT: leave the lower middle of the image as open flat ground with nothing on it — a character will stand there.",
   ],
+  탑기둥: [
+    "A single vertical pixel art image: one section of the OUTSIDE of a huge stone tower, seen straight on from a distance.",
+    "The tower shaft fills the middle of the image from top to bottom: rough dark grey stone blocks, narrow arched windows with faint warm light,",
+    "iron braziers on brackets, a few tattered banners, cracks with creeping ivy. Night sky with drifting mist on both sides of the tower.",
+    "SEAMLESS: the very top edge and the very bottom edge must match exactly, so copies of this image can be stacked vertically with no visible seam.",
+    "The tower must have the same width at the top edge and at the bottom edge, centered, with no roof, no base, no ground.",
+    "Subtle hint only, easy to miss: one window frame is smooth grey concrete instead of stone.",
+    "Nothing glows green, no pipes, no hazard stripes, no electric lights.",
+    그림체 + " Dark, cold, towering.",
+  ],
+  탑꼭대기: [
+    "A single vertical pixel art image: the TOP of a huge stone tower against a night sky, seen straight on from a distance.",
+    "The tower shaft rises from the bottom edge and ends in a battlemented summit with a broken spire, a large iron beacon with a weak flame, and torn banners.",
+    "Rough dark grey stone, narrow arched windows with faint warm light, drifting mist, a cold moon and stars behind it.",
+    "The tower shaft at the BOTTOM edge must be centered and the same width as the rest of the tower, with no ground.",
+    "Nothing glows green, no pipes, no hazard stripes, no electric lights.",
+    그림체 + " Dark, cold, the end of a long climb.",
+  ],
   tower: [
     "A single wide side-view pixel art battle background for a turn-based RPG.",
     "Scene: a corridor deep inside an old castle keep — rough stone walls, heavy wooden doors with iron bands, wooden beams, hanging heraldic banners, iron wall torches with warm firelight.",
@@ -71,7 +94,7 @@ const 중세장면: Record<string, string[]> = {
     "IMPORTANT: the bottom quarter is a flat, plain, dark stone floor running across the whole width — characters will stand on it on the left and right.",
   ],
 };
-const 시대 = 중세 ? [
+const 시대 = 중세 && 존재(`${칸}/_원본-${고른}.png`) ? [
   "REFERENCE IMAGE: keep the same composition and camera angle as the attached image — the same horizon height, the fire in the same spot, the same open empty ground where a character stands, the same floor height.",
   "But redraw everything in it as described here; do NOT copy its buildings, pipes, glow or colors.",
   "SECOND REFERENCE IMAGE: our game's character sheet. Match its pixel art style exactly — the same outline thickness, the same pixel size, the same shading and saturation — so the characters look like they belong in this background.",
@@ -93,7 +116,8 @@ function 부르기(){ return fetch(`https://generativelanguage.googleapis.com/v1
   method: "POST",
   headers: { "x-goog-api-key": GEMINI, "content-type": "application/json" },
   body: JSON.stringify({ contents: [{ parts: [
-      ...(중세 ? [{ inlineData: { mimeType: "image/png", data: readFileSync(`${칸}/_원본-${고른}.png`).toString("base64") } },
+      // 탑 맵은 **이전 판이 없다** — 기준 그림을 못 읽으면 그림체 기준(캐릭터 시트)만 보낸다
+      ...(중세 ? [...(존재(`${칸}/_원본-${고른}.png`) ? [{ inlineData: { mimeType: "image/png", data: readFileSync(`${칸}/_원본-${고른}.png`).toString("base64") } }] : []),
                { inlineData: { mimeType: "image/png", data: readFileSync(캐릭터시트).toString("base64") } }] : []),
       { text: 주문 } ] }],
     generationConfig: { imageConfig: { aspectRatio: 장.비율 } } }),
