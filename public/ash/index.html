@@ -62,6 +62,18 @@
   #고르기 .ch.고름{background:var(--금);color:#1a1420;border-color:var(--금)}
   #고르기 .줄{display:flex;gap:6px;margin-top:8px;align-items:center}
   #고르기 .줄 .btn{flex:1}
+  /* 카드 창 — 덮개를 누르면 닫힌다(폰에서 손가락이 위까지 안 올라가게) */
+  #덮개{position:fixed;inset:0;z-index:40;background:rgba(10,7,13,.78);
+        display:flex;align-items:center;justify-content:center;padding:16px}
+  #덮개 .카드{width:100%;max-width:380px;max-height:86vh;overflow-y:auto;
+              background:var(--창);border:2px solid #4a3a55;padding:12px}
+  #덮개 .머리{display:flex;gap:10px;align-items:center}
+  #덮개 .칸이름{color:#6e5d78;font-size:12px;margin:10px 0 4px}
+  #덮개 .줄자{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:9px;font-size:13px;color:#c9b9a0}
+  #덮개 .줄자 b{color:var(--글);font-weight:400}
+  #덮개 .기술,#덮개 .장비{display:flex;flex-wrap:wrap;gap:4px}
+  #덮개 .줄{display:flex;gap:6px;margin-top:12px}
+  #덮개 .줄 .btn{flex:1}
   #log b{font-weight:400;color:#ffe2a8}
 
   #panel{height:0;overflow:hidden;background:var(--창);margin:0 4px}
@@ -545,6 +557,58 @@ function 층넘기(){
   전투준비(); 적만들기(); 윗줄(); 그리기();
   저장();
 }
+/**
+ * **캐릭터 카드 창** (10-09 사장님 "누르면 캐릭터 카드 창에 자세한 정보랑 대표 장비 입힐 수 있게").
+ * 목록에서 덜어낸 것이 전부 여기로 온다: 능력치 · 기술 · 장비 · 대표 · 출전.
+ * 덮개를 누르면 닫는다 — 닫는 단추만 두면 폰에서 손가락이 위까지 올라가야 한다.
+ */
+function 카드창(id){
+  const c = S.대원.find((x) => x.id === id); if (!c) return;
+  const d = 카드(c), 안에 = S.파티.includes(c.id);
+  const 기술 = [d.일반, d.스킬, d.궁].filter(Boolean);
+  const 덮 = document.createElement("div"); 덮.id = "덮개";
+  덮.innerHTML = `<div class="카드" onclick="event.stopPropagation()">
+    <div class="머리">
+      <div class="얼굴" style="border-color:${등급색[d.등급]};background-image:url(${얼굴(d.그림)})"></div>
+      <div class="nm"><b><span style="color:${등급색[d.등급]}">${d.직업}</span>
+        <span style="color:#a8977f">Lv.${c.레벨}</span>
+        <span class="tag" style="color:${등급색[d.등급]}">${d.등급}</span></b>
+        <i>${d.역할}${d.임시 ? " · 카드 대기" : ""}</i>
+        <div class="bar"><i style="width:${Math.min(100, c.경험/필요경험(c)*100)}%"></i></div></div>
+    </div>
+    <div class="줄자">
+      <span>체력 <b>${수(최대체력(c))}</b></span><span>공격 <b>${수(공격력(c))}</b></span>
+      <span>방어 <b>${수(방어력(c))}</b></span><span>속도 <b>${속도(c)}</b></span>
+    </div>
+    ${기술.length ? `<div class="칸이름">기술</div><div class="기술">${기술.map((k) => `<span class="tag r">${k}</span>`).join("")}</div>` : ""}
+    ${d.특성?.length ? `<div class="칸이름">특성</div><div class="기술">${d.특성.map((k) => `<span class="tag">${k}</span>`).join("")}</div>` : ""}
+    <div class="칸이름">장비</div>
+    <div class="장비">${["무기","갑옷"].map((슬롯) => {
+      const 낀 = 장비들(c).find((x) => 레시피[x.키].슬롯 === 슬롯);
+      const 남은 = S.가방.장비.filter((x) => !x.누구 && 레시피[x.키].슬롯 === 슬롯);
+      return 낀 ? `<span class="tag r" data-off="${낀.id}">${슬롯} ${레시피[낀.키].이름} ✕</span>`
+        : 남은.length ? `<span class="tag" data-eq="${남은[0].id}" data-who="${c.id}">${슬롯} + ${레시피[남은[0].키].이름}</span>`
+        : `<span class="tag" style="opacity:.5">${슬롯} 비어 있음</span>`; }).join("")}</div>
+    <div class="줄">
+      <button class="btn" id="출전">${안에 ? "출전 빼기" : "출전 넣기"}</button>
+      <button class="btn" id="대표">${S.대표 === c.id ? "대표임" : "대표로"}</button>
+      <button class="btn" id="닫기">닫기</button>
+    </div>
+  </div>`;
+  덮.onclick = () => 덮.remove();
+  document.body.appendChild(덮);
+  const 다시 = () => { 덮.remove(); 카드창(id); 칸(); };
+  덮.querySelectorAll("[data-eq]").forEach((b) => b.onclick = () => { 장착(Number(b.dataset.eq), Number(b.dataset.who)); 다시(); });
+  덮.querySelectorAll("[data-off]").forEach((b) => b.onclick = () => { 벗기(Number(b.dataset.off)); 다시(); });
+  덮.querySelector("#출전").onclick = () => {
+    if (S.파티.includes(c.id)) S.파티 = S.파티.filter((x) => x !== c.id);
+    else if (S.파티.length < 5) S.파티.push(c.id);
+    그리기(); 다시();
+  };
+  덮.querySelector("#대표").onclick = () => { S.대표 = c.id; 길드그리기(); 다시(); };
+  덮.querySelector("#닫기").onclick = () => { 덮.remove(); 칸(); };
+}
+
 function 전멸(){
   // 10-09 사장님 "켜 둔 동안 계속 도전" — 되돌이 사냥 중엔 구간 처음으로 밀려나지 않는다
   if (S.사냥층) {
@@ -824,35 +888,24 @@ function 칸(){
   if (S.탭 === "run" || S.탭 === "hall") { el.className = ""; el.innerHTML = ""; return; }
   el.className = "open";
   if (S.탭 === "crew") {
+    /**
+     * 10-09 사장님 "캐릭터 창 간단하게 — 직업 레벨 등급까지만 보여주고 누르면 카드 창".
+     * 목록은 **누구인지 알아볼 만큼만** 싣는다. 능력치·장비·대표는 카드 창으로 옮겼다 —
+     * 한 줄에 다 넣으니 넷만 돼도 화면이 글자 벽이 됐다.
+     * "내리기·태우기 지우고"(사장님) — 출전은 카드 창에서 고른다.
+     */
     el.innerHTML = `<div class="row"><div class="nm"><b>별빛 회복약 ${S.가방.약}개</b><i>출전할 때 한 병 챙긴다</i></div>
         <button class="btn" id="potion">${S.약챙김 ? "챙김" : "안 챙김"}</button></div>` + S.대원.map((c) => {
       const 안에 = S.파티.includes(c.id), d = 카드(c);
-      return `<div class="row">
+      return `<div class="row 카드열기" data-카드="${c.id}" style="cursor:pointer">
         <div class="얼굴" style="border-color:${등급색[d.등급]};background-image:url(${얼굴(d.그림)})"></div>
-        <div class="nm"><b><span style="color:${등급색[d.등급]}">${c.이름}</span> <span style="color:#a8977f">Lv.${c.레벨}</span>
-          <span class="tag" style="color:${등급색[d.등급]}">${d.등급}</span><span class="tag r">${d.직업} · ${d.역할}</span>${d.임시 ? `<span class="tag">카드 대기</span>` : ""}</b>
-          <i>체력 ${수(최대체력(c))} · 공격 ${수(공격력(c))} · 방어 ${수(방어력(c))} · 속도 ${속도(c)}</i>
-          <div style="margin-top:4px">${["무기","갑옷"].map((슬롯) => { const 낀 = 장비들(c).find((x) => 레시피[x.키].슬롯 === 슬롯);
-            const 남은 = S.가방.장비.filter((x) => !x.누구 && 레시피[x.키].슬롯 === 슬롯);
-            return 낀 ? `<span class="tag r" data-off="${낀.id}">${슬롯} ${레시피[낀.키].이름} ✕</span>`
-              : 남은.length ? `<span class="tag" data-eq="${남은[0].id}" data-who="${c.id}">${슬롯} + ${레시피[남은[0].키].이름}</span>`
-              : `<span class="tag" style="opacity:.5">${슬롯} 비어 있음</span>`; }).join("")}</div>
-          <div class="bar"><i style="width:${Math.min(100, c.경험/필요경험(c)*100)}%"></i></div></div>
-        <button class="btn" data-rep="${c.id}" style="margin-right:4px">${S.대표===c.id?"대표":"대표로"}</button>
-        <button class="btn" data-id="${c.id}">${안에?"내리기":"태우기"}</button></div>`;
+        <div class="nm"><b><span style="color:${등급색[d.등급]}">${d.직업}</span>
+          <span style="color:#a8977f">Lv.${c.레벨}</span>
+          <span class="tag" style="color:${등급색[d.등급]}">${d.등급}</span>${안에 ? `<span class="tag r">출전</span>` : ""}${S.대표===c.id ? `<span class="tag">대표</span>` : ""}</b></div>
+        <span style="color:#6e5d78;font-size:18px;padding:0 4px">›</span></div>`;
     }).join("");
-    el.querySelectorAll("[data-id]").forEach((b) => b.onclick = () => {
-      const id = Number(b.dataset.id);
-      if (S.파티.includes(id)) S.파티 = S.파티.filter((x) => x !== id);
-      else if (S.파티.length < 5) S.파티.push(id);
-      칸(); 그리기();
-    });
-    el.querySelectorAll("[data-eq]").forEach((b) => b.onclick = () => { 장착(Number(b.dataset.eq), Number(b.dataset.who)); 칸(); });
-    el.querySelectorAll("[data-off]").forEach((b) => b.onclick = () => { 벗기(Number(b.dataset.off)); 칸(); });
+    el.querySelectorAll("[data-카드]").forEach((b) => b.onclick = () => 카드창(Number(b.dataset.카드)));
     $("#potion").onclick = () => { S.약챙김 = !S.약챙김; 칸(); };
-    el.querySelectorAll("[data-rep]").forEach((b) => b.onclick = () => {
-      S.대표 = Number(b.dataset.rep); 칸(); 길드그리기();
-    });
   } else if (S.탭 === "forge") {
     const g = S.가방;
     if (S.최고층 < 3) { el.innerHTML = `<div class="row"><div class="nm"><b>대장간</b><i>3층을 넘으면 대장간이 열린다. (지금 ${S.최고층}층)</i></div></div>`; return; }
