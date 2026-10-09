@@ -25,7 +25,8 @@ try {
   });
   await page.evaluate(() => { const w = window as any;
     for (let i = 1; i < 9999; i++) clearInterval(i);
-    w.S.최고층 = 7; w.S.진행 = false; w.S.탭 = "run"; w.화면(); w.맵그리기(); });
+    w.S.깸 = {}; w.S.보스깸 = []; for (let f = 1; f < 7; f++) w.S.깸[f] = 99;
+    w.S.최고층 = w.열린층(); w.S.진행 = false; w.S.탭 = "run"; w.화면(); w.맵그리기(); });
   await new Promise((r) => setTimeout(r, 500));
 
   const 맵 = await page.evaluate(() => {
@@ -37,14 +38,14 @@ try {
   // 10-09 사장님 "탑 고를 때 전투 화면이 왜 있냐고"
   재기("탑을 고를 땐 전투 칸이 접힌다",
     await page.evaluate(() => getComputedStyle(document.querySelector("#board")!).display === "none"));
-  재기("깬 층 + 한 층까지만 있다", JSON.stringify(맵?.칸들) === JSON.stringify([8,7,6,5,4,3,2,1]), 맵?.칸들);
-  재기("맨 위가 가장 높은 층", 맵?.칸들?.[0] === 8, 맵?.칸들?.[0]);
+  재기("열린 층까지만 있다", JSON.stringify(맵?.칸들) === JSON.stringify([7,6,5,4,3,2,1]), 맵?.칸들);
+  재기("맨 위가 가장 높은 층", 맵?.칸들?.[0] === 7, 맵?.칸들?.[0]);
 
   await page.evaluate(() => (document.querySelector('#맵 [data-f="5"]') as HTMLElement).click());
   await new Promise((r) => setTimeout(r, 400));
   const 창열림 = await page.evaluate(() => {
     const d = document.querySelector("#덮개");
-    return d ? { 글: (d.textContent ?? "").slice(0, 40), 동료: d.querySelectorAll("[data-넣]").length, 되돌이: !!d.querySelector("#되돌이") } : null;
+    return d ? { 글: (d.textContent ?? "").slice(0, 40), 동료: d.querySelectorAll("[data-넣]").length, 들어가기: !!d.querySelector("#들어가기") } : null;
   });
   재기("층을 누르면 출발 창이 뜬다", !!창열림, 창열림);
   재기("출전 고를 동료가 있다", (창열림?.동료 ?? 0) > 0, 창열림);
@@ -68,10 +69,10 @@ try {
   const 떠남 = await page.evaluate(() => {
     const w = window as any;
     if (!w.S.파티.length) (document.querySelector("#덮개 [data-넣]") as HTMLElement).click();
-    (document.querySelector("#덮개 #되돌이") as HTMLElement).click();
+    (document.querySelector("#덮개 #들어가기") as HTMLElement).click();
     return { 층: w.S.층, 사냥층: w.S.사냥층, 진행: w.S.진행, 덮개: !!document.querySelector("#덮개") };
   });
-  재기("되돌이로 떠난다", 떠남.층 === 5 && 떠남.사냥층 === 5 && 떠남.진행 === true && !떠남.덮개, 떠남);
+  재기("들어가면 그 층을 되돌이로 돈다", 떠남.층 === 5 && 떠남.사냥층 === 5 && 떠남.진행 === true && !떠남.덮개, 떠남);
   // 접었던 전투 칸이 다시 펴지고 폭이 살아나야 한다 — 접힌 채로 캔버스를 그리면 폭 0 이 된다
   const 폈나 = await page.evaluate(() => {
     const b = document.querySelector("#board") as HTMLElement, cv = document.querySelector("#cv") as HTMLCanvasElement;
