@@ -201,6 +201,7 @@
   #panel{height:0;overflow:hidden;background:var(--창);margin:0 4px}
   #panel.open{flex:1;height:auto;overflow-y:auto}   /* 공방·캐릭터 탭은 이 창이 화면을 채운다 — 260px 고정이면 탭 단추가 가운데 뜬다(10-07) */
   .row{display:flex;align-items:center;gap:9px;padding:9px 11px;border-bottom:2px solid var(--창속)}
+  .row.된다{background:#241c2e;box-shadow:inset 3px 0 0 var(--금)}   /* 지금 만들 수 있는 것 (10-10 사장님) */
   .row .nm{flex:1;min-width:0}
   .row .nm b{display:block;font-size:14px;color:var(--글);font-weight:400}
   .row .nm i{font-style:normal;font-size:12px;color:var(--흐림)}
@@ -712,6 +713,16 @@ const 특성설명 = {
  *
  * 매일 다시 채워진다. 날짜가 바뀌면 산 횟수가 0 으로 돌아간다.
  */
+/**
+ * **재료 이름은 여기 한 곳에만 적는다** (10-10).
+ * 전에는 대장간이 따로 `{파편,잔혼,수호핵}` 표를 들고 있어서 T2·T3 재료를 더하자
+ * 화면에 **undefined** 가 다섯 개 찍혔다. 이름을 두 군데 적으면 한 곳은 반드시 뒤처진다.
+ */
+const 재료이름 = {
+  파편: "균열 파편", 잔혼: "짐승 잔혼", 수호핵: "수호핵",
+  가죽: "단단한 가죽", 강철: "강철 조각", 이빨: "사냥개의 이빨", 거인뼈: "거인의 뼈",
+};
+
 const 매대 = {
   파편:   { 이름:"균열 파편", 값:150,  하루:20, 글:"대장간 기본 재료" },
   잔혼:   { 이름:"짐승 잔혼", 값:260,  하루:12, 글:"대장간 기본 재료" },
@@ -746,7 +757,7 @@ const 레시피 = {
   회복약: { 이름:"별빛 회복약", 슬롯:"약", 열림:8, 재료:{ 잔혼:8, 파편:3 }, 금화:800, 글:"전투 중 처음 절반 아래로 떨어진 아군 체력 20% 회복 · 전투당 1개" },
   /* ── T2 (10~19층) — 20층 관문을 넘기 위한 것 (10-10 사장님 명세가 출발점, 수치는 자로 맞춤) ──
      10층을 넘어서면 더 만들 게 없어서 파밍할 이유가 사라졌다. 그 구멍을 메운다. */
-  대검:   { 이름:"수호자의 대검", 슬롯:"무기", 열림:10, 재료:{ 파편:25, 수호핵:1 }, 금화:10000, 효과:{ 공격:40 }, 글:"공격 +40" },
+  대검:   { 이름:"수호자의 대검", 슬롯:"무기", 열림:10, 재료:{ 파편:25, 수호핵:1 }, 금화:10000, 효과:{ 공격:52 }, 글:"공격 +52" },
   강철갑옷: { 이름:"골렘의 강철 갑옷", 슬롯:"갑옷", 열림:10, 재료:{ 가죽:20, 수호핵:1 }, 금화:8000, 효과:{ 체력:450, 방어:35 }, 글:"체력 +450 · 방어 +35" },
   /* ── T3 (20~29층) — 30층 관문을 넘기 위한 것. 핵심 재료는 20층 보스가 떨군다 ── */
   엄니검: { 이름:"사냥개의 엄니검", 슬롯:"무기", 열림:20, 재료:{ 강철:30, 이빨:1 }, 금화:25000, 효과:{ 공격:150 }, 글:"공격 +150" },
@@ -755,7 +766,7 @@ const 레시피 = {
 S.가방.장비 = []; S.가방.약 = 0; S.약챙김 = true;
 let 다음템 = 1;
 const 모자람 = (키) => { const r = 레시피[키], 없 = [];
-  for (const [k, n] of Object.entries(r.재료)) if (S.가방[k] < n) 없.push(k);
+  for (const [k, n] of Object.entries(r.재료)) if ((S.가방[k] ?? 0) < n) 없.push(재료이름[k] ?? k);
   if (S.금화 < r.금화) 없.push("금화");
   if (S.최고층 < r.열림) 없.push(`${r.열림}층`);
   return 없; };
@@ -1578,15 +1589,23 @@ function 칸(){
   } else if (S.탭 === "forge") {
     const g = S.가방;
     if (S.최고층 < 3) { el.innerHTML = `<div class="row"><div class="nm"><b>대장간</b><i>3층을 넘으면 대장간이 열린다. (지금 ${S.최고층}층)</i></div></div>`; return; }
-    const 재료글 = (r) => [...Object.entries(r.재료).map(([k, n]) => `${{파편:"파편",잔혼:"잔혼",수호핵:"수호핵"}[k]} <span style="color:${g[k] >= n ? "#8fe08f" : "#ff8e7a"}">${g[k]}/${n}</span>`),
+    /* 10-10: 재료 이름을 **한 곳**에서 가져온다. 전에는 대장간만 따로 `{파편,잔혼,수호핵}` 표를
+       들고 있어서, T2·T3 재료를 더하자 화면에 **undefined** 가 다섯 개 찍혔다.
+       이름을 두 군데에 적으면 한 곳은 반드시 뒤처진다. */
+    const 재료글 = (r) => [...Object.entries(r.재료).map(([k, n]) =>
+        `${재료이름[k] ?? k} <span style="color:${(g[k] ?? 0) >= n ? "#8fe08f" : "#ff8e7a"}">${g[k] ?? 0}/${n}</span>`),
       `금화 <span style="color:${S.금화 >= r.금화 ? "#8fe08f" : "#ff8e7a"}">${수(r.금화)}</span>`].join(" · ");
-    el.innerHTML = `<div class="row"><div class="nm"><b>가방</b><i>균열 파편 ${g.파편} · 짐승 잔혼 ${g.잔혼} · 수호핵 ${g.수호핵} · 금화 ${수(S.금화)}</i></div></div>`
+    const 가방줄 = Object.keys(재료이름).filter((k) => (g[k] ?? 0) > 0)
+      .map((k) => `${재료이름[k]} ${g[k]}`).join(" · ") || "재료가 없다";
+    el.innerHTML = `<div class="row"><div class="nm"><b>가방</b><i>${가방줄} · 금화 ${수(S.금화)}</i></div></div>`
       + Object.entries(레시피).map(([k, r]) => { const 없 = 모자람(k), 잠김 = S.최고층 < r.열림;
-        return `<div class="row"><div class="nm"><b>${r.이름} <span class="tag">${r.슬롯}</span></b>
+        // 10-10 사장님 "제작 가능한 장비 강조" — 지금 만들 수 있는 것이 한눈에 보여야 한다
+        return `<div class="row${!잠김 && !없.length ? " 된다" : ""}"><div class="nm"><b>${r.이름} <span class="tag">${r.슬롯}</span>${
+            !잠김 && !없.length ? `<span class="tag r">만들 수 있다</span>` : ""}</b>
           <i>${잠김 ? `${r.열림}층을 넘으면 열린다` : `${r.글}<br>${재료글(r)}`}</i></div>
           <button class="btn" data-make="${k}" ${없.length ? "disabled" : ""}>만들기</button></div>`; }).join("")
       + `<div class="row"><div class="nm"><i>만든 장비와 회복약은 <span style="color:#f2b45a">캐릭터</span> 탭에서 끼우고 챙긴다.</i></div></div>`;
-    el.querySelectorAll("[data-make]").forEach((b) => b.onclick = () => { 만들기(b.dataset.make); 칸(); });
+    el.querySelectorAll("[data-make]").forEach((b) => b.onclick = () => { 만들기(b.dataset.make); 저장(); 칸(); });
   } else if (S.탭 === "shop") {
     매대확인();
     el.innerHTML = `<div class="row"><div class="nm"><b>오늘의 매대</b>
