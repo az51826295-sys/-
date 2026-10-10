@@ -54,9 +54,9 @@ try {
       for (const 탭 of ["장비", "기술"]) { w.S.대원탭 = 탭; w.화면(); 긁(`${c.키}-${탭}`, "#panel"); }
     }
     // 가방 창
-    w.S.보는대원 = w.S.대원[0].id; w.S.대원탭 = "장비"; w.화면();
+    w.S.보는대원 = w.S.대원[0].id; w.S.대원탭 = "장비"; w.S.가방슬롯 = null; w.화면();
     (document.querySelector('[data-슬롯="무기"]') as HTMLElement)?.click();
-    긁("가방", "#덮개"); document.querySelector("#덮개")?.remove();
+    긁("가방", "#panel .가방패널"); w.S.가방슬롯 = null;
     // 출발 창 · 맵
     w.S.진행 = false; w.S.탭 = "run"; w.화면(); w.맵그리기();
     긁("맵", "#맵");

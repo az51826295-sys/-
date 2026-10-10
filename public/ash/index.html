@@ -188,6 +188,12 @@
   .조건줄 b{color:#a8977f;font-weight:400}
   .조건줄.참{color:var(--초록);border-left-color:var(--초록)}
   .조건줄.참 b{color:var(--초록)}
+  /* 가방 — **아래로 펼쳐지는 패널**. 위의 슬롯과 한 화면에 있어야 견주며 고른다 (10-10 사장님) */
+  .가방패널{margin:0 11px 10px;background:var(--창속);border:2px solid var(--빛테)}
+  .가방머리{display:flex;justify-content:space-between;padding:6px 10px;font-size:12px;color:var(--금);
+            border-bottom:2px solid var(--테)}
+  .가방머리 span{color:var(--흐림)}
+  .가방패널 .가방격자{padding:8px}
   /* 가방 — 그리드 칸. 만든 것이 몇 개인지 한눈에 보여야 한다 */
   .가방격자{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:10px 11px}
   .칸짜리{min-height:76px;background:var(--창속);border:2px solid var(--테);cursor:pointer;
@@ -202,6 +208,14 @@
   #panel.open{flex:1;height:auto;overflow-y:auto}   /* 공방·캐릭터 탭은 이 창이 화면을 채운다 — 260px 고정이면 탭 단추가 가운데 뜬다(10-07) */
   .row{display:flex;align-items:center;gap:9px;padding:9px 11px;border-bottom:2px solid var(--창속)}
   .row.된다{background:#241c2e;box-shadow:inset 3px 0 0 var(--금)}   /* 지금 만들 수 있는 것 (10-10 사장님) */
+  .row.잠김{opacity:.5}
+  /* 대장간 — 층대로 묶고 재료를 칸으로 (10-09 "디테일하게 처음부터 다시") */
+  .단계줄{padding:7px 11px 4px;font-size:11px;color:#6e5d78;background:var(--창속);letter-spacing:.5px}
+  .재료줄{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}
+  .재료칸{font-size:11px;color:#8d7c99;border:1px solid #3a2c45;padding:2px 6px;background:var(--창속)}
+  .재료칸 b{color:#ff8e7a;font-weight:400}
+  .재료칸.참 b{color:var(--초록)}
+  .재료칸 i{color:#ff8e7a;font-style:normal;margin-left:4px;font-size:10px}
   .row .nm{flex:1;min-width:0}
   .row .nm b{display:block;font-size:14px;color:var(--글);font-weight:400}
   .row .nm i{font-style:normal;font-size:12px;color:var(--흐림)}
@@ -376,7 +390,7 @@ const 필요경험 = (c) => 80 + (c.레벨 - 1)*12;
  * `진행`은 이제 처음에 꺼져 있다. 시작하자마자 1층을 깨 버리면 **고를 틈이 없다**(사장님 지적).
  */
 const S = { 단계:1, 층:1, 금화:0, 대원:[], 파티:[], 탭:"hall", 진행:false, 쉼:0, 대표:null, 최고층:0, 사냥층:null,
-            무리:0, 무리수:1, 깸:{}, 보스깸:[], 자동오름:true, 장날:null, 산것:{}, 출석날:null, 버프:null, 보는대원:null, 대원탭:"장비",
+            무리:0, 무리수:1, 깸:{}, 보스깸:[], 자동오름:true, 장날:null, 산것:{}, 출석날:null, 버프:null, 보는대원:null, 대원탭:"장비", 가방슬롯:null,
             가방:{ 파편:0, 잔혼:0, 수호핵:0, 가죽:0, 강철:0, 이빨:0, 거인뼈:0, 별가루:0, 문장:{ 방어:0, 공격:0, 지원:0, 제어:0 } } };
 for (const k of ["기사","검사","회복술사"]) S.대원.push(대원만들기(k));
 S.파티 = S.대원.map((c) => c.id);
@@ -1493,7 +1507,8 @@ function 대원창(el){
       `<span class="${S.대원탭 === t ? "on" : ""}" data-대원탭="${t}">${t}</span>`).join("")}</div></div>
     ${S.대원탭 === "장비"
       ? `<div class="슬롯줄">${["무기", "갑옷"].map(슬롯칸).join("")}</div>
-         <div class="row"><div class="nm"><i>슬롯을 누르면 가방이 열린다. 벗기는 것도 거기서.</i></div></div>`
+         ${S.가방슬롯 ? 가방패널(S.가방슬롯, c)
+           : `<div class="row"><div class="nm"><i>슬롯을 누르면 아래에 가방이 펼쳐진다.</i></div></div>`}`
       : `<div style="padding:4px 11px 0"><div class="칸이름">기술 <span class="귀띔">눌러 보기</span></div>
          <div class="기술">${기술.map((k) => `<span class="tag r" data-풀이="기술:${k}">${k}</span>`).join("")}</div>
          ${d.특성?.length ? `<div class="칸이름">특성 <span class="귀띔">눌러 보기</span></div>
@@ -1509,7 +1524,11 @@ function 대원창(el){
   el.querySelector("#뒷사람").onclick = () => { if (자리 < 줄.length - 1) { S.보는대원 = 줄[자리 + 1].id; 칸(); } };
   el.querySelectorAll("[data-대원탭]").forEach((b) => b.onclick = () => { S.대원탭 = b.dataset.대원탭; 칸(); });
   el.querySelector("#대표로").onclick = () => { S.대표 = c.id; 길드그리기(); 저장(); 다시(); };
-  el.querySelectorAll("[data-슬롯]").forEach((b) => b.onclick = () => 가방창(b.dataset.슬롯, c.id));
+  el.querySelectorAll("[data-슬롯]").forEach((b) => b.onclick = () => {
+    S.가방슬롯 = S.가방슬롯 === b.dataset.슬롯 ? null : b.dataset.슬롯; 칸();
+  });
+  el.querySelectorAll("[data-낄]").forEach((b) => b.onclick = () => { 장착(Number(b.dataset.낄), c.id); 저장(); 칸(); });
+  el.querySelectorAll("[data-벗김]").forEach((b) => b.onclick = () => { 벗기(Number(b.dataset.벗김)); 저장(); 칸(); });
 
   // 기술·특성 풀이 — 카드 창에 있던 것을 그대로 가져왔다
   const 풀이칸 = el.querySelector("#풀이");
@@ -1526,43 +1545,35 @@ function 대원창(el){
 }
 
 /**
- * **가방** (10-10). 만든 장비를 한눈에 볼 데가 없었다 — 카드 창 안에서만 보였다.
- * 슬롯에서 열면 **그 칸에 맞는 것만** 추려 보여 주고, 누르면 바로 갈아 낀다.
+ * **가방 — 아래로 펼쳐지는 패널** (10-10 사장님 "슬롯 터치 시 **아래 가방 패널**이 열려 바로 비교").
+ *
+ * 처음엔 모달로 만들었는데, 사장님이 없애라고 한 바로 그 팝업을 다시 만든 꼴이었다.
+ * 패널이면 **위의 슬롯과 아래의 후보가 한 화면에** 있어서 끼운 것과 견주며 고를 수 있다.
+ * 지금 낀 것보다 나은지는 **숫자로** 같이 적는다 — 이름만 보고는 모른다.
  */
-function 가방창(슬롯, 누구){
+function 가방패널(슬롯, c){
   const 들 = S.가방.장비.filter((x) => 레시피[x.키].슬롯 === 슬롯);
-  const 덮 = document.createElement("div"); 덮.id = "덮개";
-  const 그리자 = () => {
-    const 지금 = S.가방.장비.filter((x) => 레시피[x.키].슬롯 === 슬롯);
-    const 낀것 = 지금.find((x) => x.누구 === 누구);
-    덮.innerHTML = `<div class="카드" onclick="event.stopPropagation()">
-      <div class="nm"><b style="display:block;font-size:15px">가방 · ${슬롯}</b>
-        <i style="color:var(--흐림);font-size:12px">${지금.length}개 · 누르면 갈아 낀다</i></div>
-      <div class="가방격자">${낀것 ? `<div class="칸짜리 벗기" data-벗김="${낀것.id}">
-            <div class="이름">벗는다</div><div class="수">빈 칸으로</div></div>` : ""}
-        ${지금.length ? 지금.map((x) => {
-        const r = 레시피[x.키], 낌 = x.누구 === 누구;
-        const 남 = x.누구 != null && !낌 ? S.대원.find((c) => c.id === x.누구) : null;
+  const 낀것 = 들.find((x) => x.누구 === c.id);
+  const 값 = (키) => Object.values(레시피[키].효과 ?? {}).reduce((a, b) => a + Number(b), 0);
+  const 지금값 = 낀것 ? 값(낀것.키) : 0;
+  return `<div class="가방패널">
+    <div class="가방머리">가방 · ${슬롯} <span>${들.length}개</span></div>
+    <div class="가방격자">
+      ${낀것 ? `<div class="칸짜리 벗기" data-벗김="${낀것.id}">
+          <div class="이름">벗는다</div><div class="수">빈 칸으로</div></div>` : ""}
+      ${들.length ? 들.map((x) => {
+        const r = 레시피[x.키], 낌 = x.누구 === c.id;
+        const 남 = x.누구 != null && !낌 ? S.대원.find((y) => y.id === x.누구) : null;
+        const 차 = 값(x.키) - 지금값;
         return `<div class="칸짜리${낌 ? " 낌" : ""}" data-낄="${x.id}">
           <div class="이름">${r.이름}</div>
-          <div class="수">${낌 ? "끼는 중" : 남 ? `${카드(남).직업}` : "비어 있음"}</div></div>`;
-      }).join("") : `<div class="칸짜리 빔"><div class="이름">없다</div></div>`}</div>
-      ${지금.length ? "" : `<div class="풀이 on">대장간에서 ${슬롯}을 만들면 여기에 쌓인다.</div>`}
-      <div class="줄"><button class="btn" id="닫기">닫기</button></div></div>`;
-    덮.querySelectorAll("[data-낄]").forEach((b) => b.onclick = () => {
-      장착(Number(b.dataset.낄), 누구); 저장(); 덮.remove(); 칸();
-    });
-    // 10-10 사장님 "X 버튼 완전 삭제" — 벗기는 것도 가방 안에서 한다
-    덮.querySelectorAll("[data-벗김]").forEach((b) => b.onclick = () => {
-      벗기(Number(b.dataset.벗김)); 저장(); 덮.remove(); 칸();
-    });
-    덮.querySelector("#닫기").onclick = () => 덮.remove();
-  };
-  덮.onclick = () => 덮.remove();
-  그리자();
-  document.body.appendChild(덮);
+          <div class="수">${낌 ? "끼는 중" : 남 ? 카드(남).직업
+            : 차 > 0 ? `<span style="color:#8fe08f">+${수(차)}</span>`
+            : 차 < 0 ? `<span style="color:#ff8e7a">${수(차)}</span>` : "같다"}</div></div>`;
+      }).join("") : `<div class="칸짜리 빔"><div class="이름">없다</div>
+          <div class="수">대장간에서</div></div>`}
+    </div></div>`;
 }
-
 function 칸(){
   const el = $("#panel");
   if (S.탭 === "run" || S.탭 === "hall") { el.className = ""; el.innerHTML = ""; return; }
@@ -1587,25 +1598,64 @@ function 칸(){
     }).join("");
     el.querySelectorAll("[data-카드]").forEach((b) => b.onclick = () => { S.보는대원 = Number(b.dataset.카드); 칸(); });
   } else if (S.탭 === "forge") {
+    /**
+     * **대장간** (10-09 사장님 "대장간이랑 시장 시스템 디테일하게 처음부터 다시 만들").
+     *
+     * 전에는 레시피를 한 줄씩 늘어놓기만 했다. 세 가지를 더했다:
+     *  ① **층대(T1·T2·T3)로 묶는다** — 지금 내가 어느 단계에 있는지가 목록에서 보인다
+     *  ② **재료를 칸으로** 보여 준다. 모자란 것은 붉고, 모자란 만큼이 숫자로 남는다
+     *  ③ **지금 낀 것과 견준다** — 만들면 누가 얼마나 좋아지는지. 이름만 보고는 모른다
+     * 재료 이름은 `재료이름` 한 곳에서만 가져온다(두 군데 적었다가 undefined 가 다섯 개 찍혔다).
+     */
     const g = S.가방;
     if (S.최고층 < 3) { el.innerHTML = `<div class="row"><div class="nm"><b>대장간</b><i>3층을 넘으면 대장간이 열린다. (지금 ${S.최고층}층)</i></div></div>`; return; }
-    /* 10-10: 재료 이름을 **한 곳**에서 가져온다. 전에는 대장간만 따로 `{파편,잔혼,수호핵}` 표를
-       들고 있어서, T2·T3 재료를 더하자 화면에 **undefined** 가 다섯 개 찍혔다.
-       이름을 두 군데에 적으면 한 곳은 반드시 뒤처진다. */
-    const 재료글 = (r) => [...Object.entries(r.재료).map(([k, n]) =>
-        `${재료이름[k] ?? k} <span style="color:${(g[k] ?? 0) >= n ? "#8fe08f" : "#ff8e7a"}">${g[k] ?? 0}/${n}</span>`),
-      `금화 <span style="color:${S.금화 >= r.금화 ? "#8fe08f" : "#ff8e7a"}">${수(r.금화)}</span>`].join(" · ");
+
+    const 단계 = (r) => r.열림 >= 20 ? "T3 · 20층 위" : r.열림 >= 10 ? "T2 · 10층 위" : "T1 · 처음";
+    const 값 = (키) => Object.values(레시피[키].효과 ?? {}).reduce((a, b) => a + Number(b), 0);
+    /** 이걸 만들면 **누가** 가장 좋아지나 — 그 슬롯이 비었거나 더 나쁜 것을 낀 대원 */
+    const 쓸사람 = (키) => {
+      const r = 레시피[키]; if (r.슬롯 === "약") return null;
+      let 좋 = null, 폭 = 0;
+      for (const c of S.대원) {
+        const 낀 = 장비들(c).find((x) => 레시피[x.키].슬롯 === r.슬롯);
+        const 차 = 값(키) - (낀 ? 값(낀.키) : 0);
+        if (차 > 폭) { 폭 = 차; 좋 = c; }
+      }
+      return 좋 ? { 누구: 카드(좋).직업, 폭 } : null;
+    };
+
+    const 칸들 = (r) => Object.entries(r.재료).map(([k, n]) => {
+      const 가진 = g[k] ?? 0, 됨 = 가진 >= n;
+      return `<span class="재료칸${됨 ? " 참" : ""}">${재료이름[k] ?? k}
+        <b>${가진}/${n}</b>${됨 ? "" : `<i>${n - 가진} 모자람</i>`}</span>`;
+    }).concat(`<span class="재료칸${S.금화 >= r.금화 ? " 참" : ""}">금화 <b>${수(r.금화)}</b>${
+      S.금화 >= r.금화 ? "" : `<i>${수(r.금화 - S.금화)} 모자람</i>`}</span>`).join("");
+
     const 가방줄 = Object.keys(재료이름).filter((k) => (g[k] ?? 0) > 0)
       .map((k) => `${재료이름[k]} ${g[k]}`).join(" · ") || "재료가 없다";
-    el.innerHTML = `<div class="row"><div class="nm"><b>가방</b><i>${가방줄} · 금화 ${수(S.금화)}</i></div></div>`
-      + Object.entries(레시피).map(([k, r]) => { const 없 = 모자람(k), 잠김 = S.최고층 < r.열림;
-        // 10-10 사장님 "제작 가능한 장비 강조" — 지금 만들 수 있는 것이 한눈에 보여야 한다
-        return `<div class="row${!잠김 && !없.length ? " 된다" : ""}"><div class="nm"><b>${r.이름} <span class="tag">${r.슬롯}</span>${
-            !잠김 && !없.length ? `<span class="tag r">만들 수 있다</span>` : ""}</b>
-          <i>${잠김 ? `${r.열림}층을 넘으면 열린다` : `${r.글}<br>${재료글(r)}`}</i></div>
-          <button class="btn" data-make="${k}" ${없.length ? "disabled" : ""}>만들기</button></div>`; }).join("")
-      + `<div class="row"><div class="nm"><i>만든 장비와 회복약은 <span style="color:#f2b45a">캐릭터</span> 탭에서 끼우고 챙긴다.</i></div></div>`;
-    el.querySelectorAll("[data-make]").forEach((b) => b.onclick = () => { 만들기(b.dataset.make); 저장(); 칸(); });
+
+    let 글 = `<div class="row"><div class="nm"><b>가방</b><i>${가방줄} · 금화 ${수(S.금화)}</i></div></div>`;
+    let 앞단계 = "";
+    for (const [k, r] of Object.entries(레시피)) {
+      const 없 = 모자람(k), 잠김 = S.최고층 < r.열림, 된다 = !잠김 && !없.length;
+      if (단계(r) !== 앞단계) { 앞단계 = 단계(r); 글 += `<div class="단계줄">${앞단계}</div>`; }
+      const 쓸 = 된다 ? 쓸사람(k) : null;
+      글 += `<div class="row${된다 ? " 된다" : ""}${잠김 ? " 잠김" : ""}">
+        <div class="nm"><b>${r.이름} <span class="tag">${r.슬롯}</span>${
+          된다 ? `<span class="tag r">만들 수 있다</span>` : ""}</b>
+          <i>${r.글}</i>
+          ${잠김 ? `<i style="color:#6e5d78">${r.열림}층을 넘으면 열린다</i>`
+                 : `<div class="재료줄">${칸들(r)}</div>`}
+          ${쓸 ? `<i style="color:var(--초록)">${쓸.누구}에게 끼우면 +${수(쓸.폭)}</i>` : ""}</div>
+        <button class="btn" data-make="${k}" ${잠김 || 없.length ? "disabled" : ""}>만들기</button></div>`;
+    }
+    글 += `<div class="row"><div class="nm"><i>만든 것은 <span style="color:#f2b45a">캐릭터</span> 탭에서 슬롯을 눌러 끼운다.</i></div></div>`;
+    el.innerHTML = 글;
+    el.querySelectorAll("[data-make]").forEach((b) => b.onclick = () => {
+      const 전 = 레시피[b.dataset.make].이름;
+      if (만들기(b.dataset.make)) 적기(`대장간에서 <b>${전}</b>을 만들었다.`, "good");
+      저장(); 칸();
+    });
   } else if (S.탭 === "shop") {
     매대확인();
     el.innerHTML = `<div class="row"><div class="nm"><b>오늘의 매대</b>
@@ -1707,7 +1757,7 @@ function 길드그리기(){
 }
 
 // 자가 창 안에서 턴을 직접 돌릴 수 있어야 한다 — 1.4초씩 기다리면 100층에 두 시간이다.
-Object.assign(window, { S, 맵그리기, 출발창, 화면, 한턴, 적만들기, 무리수, 판끝, 자격, 열린층, 필요판, 최대체력, 공격력, 방어력, 전멸, 기술표, 도감, 빛셈, 빛표, 대원만들기, 방어뒤, 결의배, 도감, 기술설명, 특성설명, 스킬들, 대원창, 가방창, 전투력, 벗기, 칸, 만들기, 모자람, 장착, 레시피, 구간, 구간들, 매대, 사기, 남은수, 산수, 매대확인, 전투준비, 저장, 불러오기, 지우기 });
+Object.assign(window, { S, 맵그리기, 출발창, 화면, 한턴, 적만들기, 무리수, 판끝, 자격, 열린층, 필요판, 최대체력, 공격력, 방어력, 전멸, 기술표, 도감, 빛셈, 빛표, 대원만들기, 방어뒤, 결의배, 도감, 기술설명, 특성설명, 스킬들, 대원창, 가방패널, 전투력, 벗기, 칸, 만들기, 모자람, 장착, 레시피, 구간, 구간들, 매대, 사기, 남은수, 산수, 매대확인, 전투준비, 저장, 불러오기, 지우기 });
 Object.defineProperty(window, "행동순서", { get: () => 행동순서 });
 Object.defineProperty(window, "적들", { get: () => 적들 });
 

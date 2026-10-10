@@ -80,19 +80,21 @@ try {
     const w = window as any;
     (document.querySelector('[data-슬롯="갑옷"]') as HTMLElement).click();
     await new Promise((r) => setTimeout(r, 200));
-    const 떴나 = !!document.querySelector("#덮개 .가방격자");
-    (document.querySelector("#덮개 [data-낄]") as HTMLElement | null)?.click();
-    return { 떴나, 낀뒤: w.S.가방.장비.filter((x: any) => x.누구 != null).length };
+    // 10-10 사장님 "아래 가방 패널" — **모달이 아니라 같은 화면 안**이어야 한다
+    const 떴나 = !!document.querySelector("#panel .가방패널");
+    const 덮개 = !!document.querySelector("#덮개");
+    (document.querySelector("#panel [data-낄]") as HTMLElement | null)?.click();
+    return { 떴나, 덮개, 낀뒤: w.S.가방.장비.filter((x: any) => x.누구 != null).length };
   });
-  재기("슬롯을 누르면 가방이 열린다", 가방.떴나, 가방);
+  재기("슬롯을 누르면 **아래 패널**로 가방이 열린다(모달 아님)", 가방.떴나 && !가방.덮개, 가방);
   재기("가방에서 고르면 실제로 입는다", 가방.낀뒤 > 0, 가방);
 
   await new Promise((r) => setTimeout(r, 400));
   const 벗 = await page.evaluate(async () => {
     const w = window as any;
-    (document.querySelector('[data-슬롯="갑옷"]') as HTMLElement).click();
+    if (!document.querySelector("#panel .가방패널")) (document.querySelector('[data-슬롯="갑옷"]') as HTMLElement).click();
     await new Promise((r) => setTimeout(r, 200));
-    const 벗김 = document.querySelector("#덮개 [data-벗김]") as HTMLElement | null;
+    const 벗김 = document.querySelector("#panel [data-벗김]") as HTMLElement | null;
     const 있나 = !!벗김;
     벗김?.click();
     return { 있나, 낀: w.S.가방.장비.filter((x: any) => x.누구 != null).length };
@@ -105,6 +107,7 @@ try {
   const 기술 = await page.evaluate(async () => {
     const w = window as any;
     document.querySelector("#덮개")?.remove();
+    w.S.가방슬롯 = null;
     const 검 = w.S.대원.find((c: any) => c.키 === "검사");
     if (검) w.S.보는대원 = 검.id;
     w.S.대원탭 = "기술"; w.화면();
