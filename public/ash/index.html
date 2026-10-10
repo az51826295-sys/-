@@ -302,7 +302,11 @@
   #hallArt{position:absolute;inset:0}
   #hallArt canvas{width:100%;height:100%}
   #side{position:absolute;top:10px;right:10px;display:flex;flex-direction:column;gap:6px}
-  .rbtn{position:relative;padding:7px 12px;background:var(--창);font-size:12px;color:var(--글);text-shadow:1px 1px 0 #000}
+  .rbtn{position:relative;padding:6px 10px;background:var(--창);font-size:12px;color:var(--글);text-shadow:1px 1px 0 #000;
+        display:flex;align-items:center;gap:5px;min-width:94px}
+  .rbtn img{width:18px;height:18px;image-rendering:pixelated}
+  /* 소식 / 거점 — 시안처럼 묶음에 제목을 단다 (10-10) */
+  .곁제목{font-size:10px;color:#8d7c99;text-shadow:1px 1px 0 #000;margin:2px 0 -2px;text-align:right}
   .rbtn .dot{position:absolute;top:4px;right:4px;width:6px;height:6px;background:#8fff6a;box-shadow:0 0 0 1px var(--테)}
   #bond{position:absolute;left:10px;right:10px;bottom:10px;background:rgba(44,34,54,.94);padding:9px 12px}
   #bond .nm{display:flex;justify-content:space-between;align-items:baseline;text-shadow:1px 1px 0 #000}
@@ -333,12 +337,15 @@
   <!-- 길드: 켜면 여기. 대표 캐릭터 하나가 서 있고 우편함·공지·설정·친밀도가 붙는다. -->
   <div id="hall">
     <div id="hallArt"><canvas id="hcv"></canvas></div>
+    <!-- 10-10 사장님 시안: 소식(우편·공지)은 위, 거점 살림(출석·식당·설정)은 아래 -->
     <div id="side">
-      <div class="rbtn" id="출석단추">출석<span class="dot"></span></div>
-      <div class="rbtn" id="식당단추">식당</div>
-      <div class="rbtn" id="mailBtn">우편함<span class="dot"></span></div>
-      <div class="rbtn" id="공지단추">공지</div>
-      <div class="rbtn" id="설정단추">설정</div>
+      <div class="곁제목">커뮤니티 및 소식</div>
+      <div class="rbtn" id="mailBtn"><img src="art/icon/s-scroll.png" alt="">우편함<span class="dot"></span></div>
+      <div class="rbtn" id="공지단추"><img src="art/icon/s-skill.png" alt="">공지</div>
+      <div class="곁제목">거점</div>
+      <div class="rbtn" id="출석단추"><img src="art/icon/t-hall.png" alt="">출석<span class="dot"></span></div>
+      <div class="rbtn" id="식당단추"><img src="art/icon/s-grow.png" alt="">식당</div>
+      <div class="rbtn" id="설정단추"><img src="art/icon/t-forge.png" alt="">설정</div>
     </div>
     <div id="bond">
       <div class="nm"><b id="repName">리안</b><i id="repAge">출전 0 / 1000 · 젊음</i></div>
@@ -1922,6 +1929,8 @@ const hcv = $("#hcv"), hctx = hcv.getContext("2d");
  * 좌표는 전부 배경 도트 칸 단위(불 97,178 · 캐릭터 발 96,216).
  */
 const 야영 = { 불:{ x:97, y:178 }, 발:{ x:96, y:252 } };   // 발은 불 앞 빈 땅 — 216 에선 불을 가렸다(10-07)
+/** 길드 홀(384×256) 기준 자리 — 탁자 위 촛불과, 대표가 설 바닥 (10-10 사장님 시안) */
+const 홀자리 = { 폭:384, 높:256, 불:{ x:192, y:140 }, 발:{ x:192, y:236 } };
 const 길드알 = [];
 let 길드앞 = Date.now();
 function 길드그리기(){
@@ -1935,14 +1944,17 @@ function 길드그리기(){
   const dt = Math.min(.1, (Date.now() - 길드앞)/1000); 길드앞 = Date.now();
   hctx.fillStyle = "#1a1420"; hctx.fillRect(0,0,w,h);
 
-  const bg = 그림.camp && 그림.camp.complete && 그림.camp.naturalWidth ? 그림.camp : null;
-  const s = Math.max(w/192, h/344);                          // 화면을 덮는 배율
-  const ox = Math.round((w - 192*s)/2), oy = 0;
+  /* 10-10 사장님 시안: 야영지 대신 **길드 홀**(방 안). 아직 안 받았으면 야영지로 버틴다. */
+  const 쓸만2 = (im) => !!(im && im.complete && im.naturalWidth);
+  const 홀 = 쓸만2(그림.hall), bg = 홀 ? 그림.hall : (쓸만2(그림.camp) ? 그림.camp : null);
+  const 밑 = 홀 ? 홀자리 : { 폭:192, 높:344, ...야영 };
+  const s = Math.max(w/밑.폭, h/밑.높);                       // 화면을 덮는 배율
+  const ox = Math.round((w - 밑.폭*s)/2), oy = Math.round((h - 밑.높*s)/2);
   const 칸 = (p) => ({ x: ox + p.x*s, y: oy + p.y*s });
-  if (bg) hctx.drawImage(bg, ox, oy, 192*s, 344*s);
+  if (bg) hctx.drawImage(bg, ox, oy, 밑.폭*s, 밑.높*s);
 
   // 모닥불 불씨 · 하늘의 초록 먼지 — 칸 크기를 배경 도트에 맞춘다
-  const 불 = 칸(야영.불), 점 = Math.max(2, Math.round(s));
+  const 불 = 칸(밑.불), 점 = Math.max(2, Math.round(s));
   if (Math.random() < dt*22) 길드알.push({ x:불.x + 무작(-6,6), y:불.y, vx:무작(-8,8), vy:무작(-48,-22), t:0, 수명:무작(.7,1.5),
     색: Math.random() < .3 ? "#ffe08a" : "#ff8a3a" });
   if (Math.random() < dt*3) 길드알.push({ x:무작(0,w), y:무작(h*.05,h*.45), vx:무작(4,12), vy:무작(-4,4), t:0, 수명:무작(3,6), 색:"#ffe9a0", 흐림:true });   // 반딧불 — 초록 방사능 먼지는 티가 나서 뺐다(10-07)
@@ -1967,7 +1979,7 @@ function 길드그리기(){
   S.대표 = c.id;
   const im = 칸고르기(카드(c).그림);
   if (im) {
-    const 발 = 칸(야영.발), 크w = im.naturalWidth*s, 크h = im.naturalHeight*s;
+    const 발 = 칸(밑.발), 크w = im.naturalWidth*s, 크h = im.naturalHeight*s;
     hctx.save(); hctx.globalAlpha = .4; hctx.beginPath();
     hctx.ellipse(발.x, 발.y, 크w*0.28, 3*s, 0, 0, 7); hctx.fillStyle="#000"; hctx.fill(); hctx.restore();
     hctx.drawImage(im, Math.round(발.x - 크w/2), Math.round(발.y - 크h + 2*s), 크w, 크h);
