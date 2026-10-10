@@ -96,9 +96,9 @@
   #맵 .머리줄{display:flex;align-items:center;gap:8px}
   /* 자격 — 뭐가 남았는지가 이 게임의 길잡이다 */
   #맵 .자격줄{display:flex;flex-wrap:wrap;gap:4px 10px;margin-top:4px}
-  #맵 .조건{color:#6e5d78;font-size:11px}
+  #맵 .조건{color:#6e5d78;font-size:11px;border-left:2px solid #3a2c45;padding-left:5px}
   #맵 .조건 b{color:#a8977f;font-weight:400}
-  #맵 .조건.참{color:var(--초록)} #맵 .조건.참 b{color:var(--초록)}
+  #맵 .조건.참{color:var(--초록);border-left-color:var(--초록)} #맵 .조건.참 b{color:var(--초록)}
   #맵 .층칸.새{border-color:var(--금)}
   #맵 .층칸.보스{border-color:#d9534f}
   #맵 .층칸 b{color:var(--글);font-size:14px;min-width:46px}
@@ -124,6 +124,78 @@
               color:#cdbda6;background:var(--창속);border-left:3px solid var(--금)}
   #덮개 .풀이.on{display:block}
   #덮개 .풀이 b{color:var(--글);font-weight:400}
+
+  /* ── 캐릭터 상세 — 작은 모달을 걷어내고 **화면 전체**를 쓴다 (10-10 사장님).
+       대원이 열 명만 돼도 팝업 안에서는 장비·기술을 한눈에 못 본다. ── */
+  .머리띠{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--창속);border-bottom:2px solid var(--테)}
+  .머리띠 .뒤로{color:var(--금);font-size:13px;cursor:pointer;padding:2px 6px}
+  .머리띠 .넘김{margin-left:auto;display:flex;gap:4px}
+  .머리띠 .넘김 span{color:var(--글);background:var(--창);border:2px solid var(--테);
+                     padding:2px 11px;font-size:14px;cursor:pointer;line-height:1.4}
+  .머리띠 .넘김 span.꺼짐{opacity:.3;cursor:default}
+  .큰머리{display:flex;gap:12px;padding:12px 11px;align-items:center}
+  .큰머리 .얼굴{width:92px;height:92px;background-size:88px 88px}
+  .큰이름{font-size:17px}
+  .힘{margin-top:6px;font-size:12px;color:var(--흐림)}
+  .힘 b{color:var(--금);font-weight:400;font-size:15px}
+  .넉줄{display:grid;grid-template-columns:1fr 1fr;gap:5px 14px;padding:0 11px 10px;font-size:13px;color:#c9b9a0}
+  .넉줄 span{display:flex;justify-content:space-between;border-bottom:1px solid var(--창속);padding-bottom:3px}
+  .넉줄 b{color:var(--글);font-weight:400}
+  .서브탭{display:flex;gap:6px;margin:0 0 6px}
+  .서브탭 span{flex:1;text-align:center;padding:6px;font-size:13px;color:#8d7c99;
+               background:var(--창속);border:2px solid var(--테);cursor:pointer}
+  .서브탭 span.on{color:var(--금);background:var(--창);border-color:var(--빛테)}
+  .귀띔{color:#55475e;font-size:11px}
+  .기술{display:flex;flex-wrap:wrap;gap:4px}
+  .칸이름{color:#6e5d78;font-size:12px;margin:10px 0 4px}
+  .풀이{display:none;margin-top:8px;padding:8px 10px;font-size:12.5px;line-height:1.55;
+        color:#cdbda6;background:var(--창속);border-left:3px solid var(--금)}
+  .풀이.on{display:block}
+  .풀이 b{color:var(--글);font-weight:400}
+  .tag.펴짐{box-shadow:0 0 0 1px var(--금) inset}
+  .tag[data-풀이]{cursor:pointer}
+  /* 장비 슬롯 — 글자 단추 대신 네모 칸. 비면 비었다고 보인다 */
+  .슬롯줄{display:flex;gap:8px;padding:10px 11px}
+  .슬롯{flex:1;min-height:92px;background:var(--창속);border:2px solid var(--테);position:relative;cursor:pointer;
+        display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:4px}
+  .슬롯 .칸이름2{font-size:10px;color:#55475e}
+  .슬롯 .템이름{font-size:11px;color:var(--글);text-align:center;line-height:1.25}
+  .슬롯 .템값{font-size:10px;color:#8fe08f;text-align:center;line-height:1.2}
+  .슬롯.참{border-color:var(--빛테)}
+  .슬롯 .비움{position:absolute;top:1px;right:5px;color:#ff8e7a;font-size:13px}
+  /* 출전 슬롯 — 글자 체크박스 대신 초상화 칸 (10-10 사장님) */
+  .출전줄{display:flex;gap:4px;flex-wrap:wrap}
+  .출전줄 .자리{flex:1 1 calc(20% - 4px);min-width:56px;background:var(--창속);border:2px solid var(--테);
+                padding:4px 2px;text-align:center;cursor:pointer;position:relative}
+  .출전줄 .자리.참{border-color:var(--빛테)}
+  .출전줄 .빈자리{cursor:default;display:flex;align-items:center;justify-content:center;min-height:68px}
+  .출전줄 .빈자리 i{color:#44384d;font-size:10px;font-style:normal}
+  .출전줄 .낯{width:36px;height:36px;margin:0 auto 3px;border:2px solid;image-rendering:pixelated;
+              background:#1a1420 center/34px 34px no-repeat}
+  .출전줄 b{display:block;font-size:10.5px;color:var(--글);font-weight:400;line-height:1.2}
+  .출전줄 i{display:block;font-size:9.5px;color:var(--흐림);font-style:normal}
+  /* 10-10 사장님 "O/X 를 싹 없애라" — 체크 글자 대신 **불이 들어오는 카드**로 가른다 */
+  .출전줄 .자리.켬{border-color:var(--금);background:#2a2033}
+  .출전줄 .자리.켬 i{color:var(--금)}
+  .출전줄.고르기 .자리{opacity:.6}
+  .출전줄.고르기 .자리.켬{opacity:1}
+  .출전줄 .넓게{flex:1 1 100%;display:flex;align-items:center;gap:10px;text-align:left;padding:8px 10px}
+  .출전줄 .넓게 b{font-size:13px} .출전줄 .넓게 i{margin-left:auto;font-size:11px}
+  /* 자격 — 됐는지 안 됐는지를 글자(✓·) 가 아니라 **색과 선**으로 */
+  .자격칸{display:flex;flex-direction:column;gap:4px;margin-top:2px}
+  .조건줄{display:flex;justify-content:space-between;font-size:12px;color:#6e5d78;
+          padding:5px 8px;background:var(--창속);border-left:3px solid #3a2c45}
+  .조건줄 b{color:#a8977f;font-weight:400}
+  .조건줄.참{color:var(--초록);border-left-color:var(--초록)}
+  .조건줄.참 b{color:var(--초록)}
+  /* 가방 — 그리드 칸. 만든 것이 몇 개인지 한눈에 보여야 한다 */
+  .가방격자{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:10px 11px}
+  .칸짜리{min-height:76px;background:var(--창속);border:2px solid var(--테);cursor:pointer;
+          display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:3px}
+  .칸짜리 .이름{font-size:10.5px;color:var(--글);text-align:center;line-height:1.2}
+  .칸짜리 .수{font-size:10px;color:var(--금)}
+  .칸짜리.낌{border-color:var(--빛테)}
+  .칸짜리.빔{opacity:.35;cursor:default}
   #log b{font-weight:400;color:#ffe2a8}
 
   #panel{height:0;overflow:hidden;background:var(--창);margin:0 4px}
@@ -298,7 +370,7 @@ const 필요경험 = (c) => 80 + (c.레벨 - 1)*12;
  * `진행`은 이제 처음에 꺼져 있다. 시작하자마자 1층을 깨 버리면 **고를 틈이 없다**(사장님 지적).
  */
 const S = { 단계:1, 층:1, 금화:0, 대원:[], 파티:[], 탭:"hall", 진행:false, 쉼:0, 대표:null, 최고층:0, 사냥층:null,
-            무리:0, 무리수:1, 깸:{}, 보스깸:[], 자동오름:true, 장날:null, 산것:{}, 출석날:null, 버프:null,
+            무리:0, 무리수:1, 깸:{}, 보스깸:[], 자동오름:true, 장날:null, 산것:{}, 출석날:null, 버프:null, 보는대원:null, 대원탭:"장비",
             가방:{ 파편:0, 잔혼:0, 수호핵:0, 가죽:0, 별가루:0, 문장:{ 방어:0, 공격:0, 지원:0, 제어:0 } } };
 for (const k of ["기사","검사","회복술사"]) S.대원.push(대원만들기(k));
 S.파티 = S.대원.map((c) => c.id);
@@ -871,7 +943,7 @@ function 판끝(){
     }
   } else {
     const 남 = 자격(층).줄.filter((r) => !r.됨);
-    if (남.length) 장면(null, null, `${층}층 자격 — ${자격(층).줄.map((r) => `${r.됨 ? "✓" : "·"} ${r.이름} ${r.지금}`).join(" · ")}`, "turn");
+    if (남.length) 장면(null, null, `${층}층 자격 — ${자격(층).줄.map((r) => `${r.이름} ${r.지금}`).join(" · ")}`, "turn");
   }
   // 10층 보스: 흑마법사(제어) 합류 — 뽑기가 생기기 전까지 임시
   if (보스판 && !S.대원.some((c) => c.키 === "흑마법사")) {
@@ -883,69 +955,6 @@ function 판끝(){
   // **층을 안 올린다.** 같은 층을 다시 세운다 — 떠나는 것은 사장님이 탑에서 고른다.
   전투준비(); 적만들기(); 윗줄(); 그리기(); 저장();
 }
-/**
- * **캐릭터 카드 창** (10-09 사장님 "누르면 캐릭터 카드 창에 자세한 정보랑 대표 장비 입힐 수 있게").
- * 목록에서 덜어낸 것이 전부 여기로 온다: 능력치 · 기술 · 장비 · 대표 · 출전.
- * 덮개를 누르면 닫는다 — 닫는 단추만 두면 폰에서 손가락이 위까지 올라가야 한다.
- */
-function 카드창(id){
-  const c = S.대원.find((x) => x.id === id); if (!c) return;
-  const d = 카드(c), 안에 = S.파티.includes(c.id);
-  // 10-10: 스킬이 **배열**이 됐다(검사·흑마법사는 둘). 펴지 않으면 "처형,약점노리기" 가 한 덩어리로 찍힌다.
-  const 기술 = [d.일반, ...스킬들(d), d.궁].filter(Boolean);
-  const 덮 = document.createElement("div"); 덮.id = "덮개";
-  덮.innerHTML = `<div class="카드" onclick="event.stopPropagation()">
-    <div class="머리">
-      <div class="얼굴" style="border-color:${등급색[d.등급]};background-image:url(${얼굴(d.그림)})"></div>
-      <div class="nm"><b><span style="color:${등급색[d.등급]}">${d.직업}</span>
-        <span style="color:#a8977f">Lv.${c.레벨}</span>
-        <span class="tag" style="color:${등급색[d.등급]}">${d.등급}</span></b>
-        <i>${d.역할}${d.임시 ? " · 카드 대기" : ""}</i>
-        <div class="bar"><i style="width:${Math.min(100, c.경험/필요경험(c)*100)}%"></i></div></div>
-    </div>
-    <div class="줄자">
-      <span>체력 <b>${수(최대체력(c))}</b></span><span>공격 <b>${수(공격력(c))}</b></span>
-      <span>방어 <b>${수(방어력(c))}</b></span><span>속도 <b>${속도(c)}</b></span>
-    </div>
-    ${기술.length ? `<div class="칸이름">기술 <span class="귀띔">눌러 보기</span></div>
-      <div class="기술">${기술.map((k) => `<span class="tag r" data-풀이="기술:${k}">${k}</span>`).join("")}</div>` : ""}
-    ${d.특성?.length ? `<div class="칸이름">특성 <span class="귀띔">눌러 보기</span></div>
-      <div class="기술">${d.특성.map((k) => `<span class="tag" data-풀이="특성:${k}">${k}</span>`).join("")}</div>` : ""}
-    <div class="풀이" id="풀이"></div>
-    <div class="칸이름">장비</div>
-    <div class="장비">${["무기","갑옷"].map((슬롯) => {
-      const 낀 = 장비들(c).find((x) => 레시피[x.키].슬롯 === 슬롯);
-      const 남은 = S.가방.장비.filter((x) => !x.누구 && 레시피[x.키].슬롯 === 슬롯);
-      return 낀 ? `<span class="tag r" data-off="${낀.id}">${슬롯} ${레시피[낀.키].이름} ✕</span>`
-        : 남은.length ? `<span class="tag" data-eq="${남은[0].id}" data-who="${c.id}">${슬롯} + ${레시피[남은[0].키].이름}</span>`
-        : `<span class="tag" style="opacity:.5">${슬롯} 비어 있음</span>`; }).join("")}</div>
-    <!-- 10-09 사장님 "캐릭터 누르면 출전 빼기 없애" — 출전은 층을 고를 때 한 자리에서만 정한다 -->
-    <div class="줄">
-      <button class="btn" id="대표">${S.대표 === c.id ? "대표임" : "대표로"}</button>
-      <button class="btn" id="닫기">닫기</button>
-    </div>
-  </div>`;
-  덮.onclick = () => 덮.remove();
-  document.body.appendChild(덮);
-  const 다시 = () => { 덮.remove(); 카드창(id); 칸(); };
-  덮.querySelectorAll("[data-eq]").forEach((b) => b.onclick = () => { 장착(Number(b.dataset.eq), Number(b.dataset.who)); 다시(); });
-  덮.querySelectorAll("[data-off]").forEach((b) => b.onclick = () => { 벗기(Number(b.dataset.off)); 다시(); });
-  // 태그를 누르면 그 자리에서 풀이가 열린다. 같은 것을 또 누르면 닫힌다(창을 안 쌓는다).
-  const 풀이칸 = 덮.querySelector("#풀이");
-  덮.querySelectorAll("[data-풀이]").forEach((b) => b.onclick = () => {
-    const [종류, 이름] = b.dataset.풀이.split(":");
-    const 켜짐 = b.classList.contains("펴짐");
-    덮.querySelectorAll("[data-풀이]").forEach((x) => x.classList.remove("펴짐"));
-    if (켜짐) { 풀이칸.classList.remove("on"); 풀이칸.innerHTML = ""; return; }
-    b.classList.add("펴짐");
-    const 글 = (종류 === "기술" ? 기술설명 : 특성설명)[이름];
-    풀이칸.innerHTML = `<b>${이름}</b><br>${글 ? 글(c) : "아직 설명이 없다 — 카드 대기."}`;
-    풀이칸.classList.add("on");
-  });
-  덮.querySelector("#대표").onclick = () => { S.대표 = c.id; 길드그리기(); 다시(); };
-  덮.querySelector("#닫기").onclick = () => { 덮.remove(); 칸(); };
-}
-
 function 전멸(){
   /**
    * **관문에서 지면 한 층 내려가 모은다** (10-09 사장님).
@@ -1251,7 +1260,7 @@ function 맵그리기(){
         <div class="머리줄"><b>${f}층</b>
           <i>${보스 ? 구간(f).보스.이름 : 구간이름[(f - 1) % 10]}</i>
           <span class="표">${자.참 ? "졸업" : 꼭대기층 ? "오르는 중" : "미완"}</span></div>
-        <div class="자격줄">${자.줄.map((r) => `<span class="조건${r.됨 ? " 참" : ""}">${r.됨 ? "✓" : "·"} ${r.이름} <b>${r.지금}</b></span>`).join("")}</div>
+        <div class="자격줄">${자.줄.map((r) => `<span class="조건${r.됨 ? " 참" : ""}">${r.이름} <b>${r.지금}</b></span>`).join("")}</div>
       </div>`;
     }).join("")}</div></div>`;
   칸.querySelectorAll("[data-f]").forEach((b) => b.onclick = () => 출발창(Number(b.dataset.f)));
@@ -1346,15 +1355,30 @@ function 출발창(층){
     덮.innerHTML = `<div class="카드" onclick="event.stopPropagation()">
       <div class="nm"><b><span style="color:var(--금)">${층}층</span>${층 % 10 === 0 ? ` <span class="tag r">보스</span>` : ""}</b>
         <i>누구를 데려갈까 · ${S.파티.length}/5</i></div>
-      <div class="칸이름">출전</div>
-      <div class="기술">${S.대원.map((c) => { const d = 카드(c), 안 = S.파티.includes(c.id);
-        return `<span class="tag${안 ? " r" : ""}" data-넣="${c.id}" style="cursor:pointer;${안 ? `color:${등급색[d.등급]}` : "opacity:.55"}">${안 ? "✓ " : "+ "}${d.직업} Lv.${c.레벨}</span>`;
-      }).join("") || `<span class="tag" style="opacity:.5">대원이 없다</span>`}</div>
+      <!-- 10-10 사장님: 글자 체크박스를 치우고 초상화 슬롯 다섯 칸으로.
+           윗줄은 데려갈 자리, 아랫줄은 남은 대원. 누르면 오가고, 빈 칸이 몇인지 바로 보인다.
+           (이 주석은 템플릿 문자열 안이다 — 여기에 백틱을 쓰면 템플릿이 끊긴다. 10-10 그래서 한 번 터졌다.) -->
+      <div class="칸이름">출전 ${S.파티.length}/5</div>
+      <div class="출전줄">${Array.from({ length: 5 }, (_, i) => {
+        const id = S.파티[i], c = id != null ? S.대원.find((x) => x.id === id) : null;
+        if (!c) return `<div class="자리 빈자리"><i>${i + 1}</i></div>`;
+        const d = 카드(c);
+        return `<div class="자리 참" data-넣="${c.id}">
+          <div class="낯" style="border-color:${등급색[d.등급]};background-image:url(${얼굴(d.그림)})"></div>
+          <b>${d.직업}</b><i>Lv.${c.레벨}</i></div>`;
+      }).join("")}</div>
+      <div class="칸이름">대원 — 누르면 넣고 뺀다</div>
+      <div class="출전줄 고르기">${S.대원.map((c) => { const d = 카드(c), 안 = S.파티.includes(c.id);
+        return `<div class="자리${안 ? " 켬" : ""}" data-넣="${c.id}">
+          <div class="낯" style="border-color:${안 ? 등급색[d.등급] : "#3a2c45"};background-image:url(${얼굴(d.그림)})"></div>
+          <b>${d.직업}</b><i>${안 ? "출전" : `Lv.${c.레벨}`}</i></div>`; }).join("")
+        || `<div class="자리 빈자리"><i>대원이 없다</i></div>`}</div>
       <div class="칸이름">챙길 것</div>
-      <div class="기술"><span class="tag${S.약챙김 ? " r" : ""}" id="약" style="cursor:pointer;${S.약챙김 ? "" : "opacity:.55"}">${
-        S.약챙김 ? "✓ " : "+ "}별빛 회복약 ${S.가방.약}개</span></div>
+      <div class="출전줄"><div class="자리 넓게${S.약챙김 ? " 켬" : ""}" id="약">
+        <b>별빛 회복약</b><i>${S.약챙김 ? `챙긴다 · ${S.가방.약}개` : `안 챙긴다 · ${S.가방.약}개`}</i></div></div>
       <div class="칸이름">자격</div>
-      <div class="기술">${자격(층).줄.map((r) => `<span class="tag${r.됨 ? " r" : ""}" style="${r.됨 ? "" : "opacity:.6"}">${r.됨 ? "✓" : "·"} ${r.이름} ${r.지금}</span>`).join("")}</div>
+      <div class="자격칸">${자격(층).줄.map((r) =>
+        `<div class="조건줄${r.됨 ? " 참" : ""}"><span>${r.이름}</span><b>${r.지금}</b></div>`).join("")}</div>
       <!-- 10-09 사장님 구성: 올라가는 단추가 없다. 들어가서 되돌이로 돌며 자격을 채운다. -->
       <div class="줄"><button class="btn" id="들어가기">들어간다</button></div>
       <div class="줄"><button class="btn" id="닫기">닫기</button></div>
@@ -1381,10 +1405,130 @@ function 출발창(층){
   그리자();
   document.body.appendChild(덮);
 }
+/**
+ * **캐릭터 상세 — 화면 전체** (10-10 사장님 "답답한 소형 팝업을 완전히 없애고").
+ *
+ * 팝업 안에서는 능력치·장비·기술을 한 번에 못 본다. 대원이 열 명만 돼도 못 버틴다.
+ * 그래서 캐릭터 탭 자체가 상세 화면으로 바뀌고, **좌우 화살표로 목록에 안 나가고** 넘긴다.
+ * 장비는 글자 단추 대신 **네모 슬롯** — 비었으면 비었다고 보인다(10-10 사장님 "X 버튼 완전 삭제").
+ */
+const 전투력 = (c) => Math.round(최대체력(c) / 8 + 공격력(c) * 3 + 방어력(c) * 1.6 + 속도(c) * .6);
+
+function 대원창(el){
+  const 줄 = S.대원, 자리 = 줄.findIndex((x) => x.id === S.보는대원);
+  if (자리 < 0) { S.보는대원 = null; 칸(); return; }
+  const c = 줄[자리], d = 카드(c);
+  const 기술 = [d.일반, ...스킬들(d), d.궁].filter(Boolean);
+  const 안에 = S.파티.includes(c.id);
+
+  const 슬롯칸 = (슬롯) => {
+    const 낀 = 장비들(c).find((x) => 레시피[x.키].슬롯 === 슬롯);
+    const 값 = 낀 ? Object.entries(레시피[낀.키].효과 ?? {}).map(([k, v]) => `${k} +${v}`).join(" · ") : "";
+    // 10-10 사장님 "X 버튼 완전 삭제" — 슬롯을 누르면 가방이 열리고, 벗기는 것도 거기서 한다
+    return `<div class="슬롯${낀 ? " 참" : ""}" data-슬롯="${슬롯}">
+      <div class="칸이름2">${슬롯}</div>
+      ${낀 ? `<div class="템이름">${레시피[낀.키].이름}</div><div class="템값">${값}</div>`
+           : `<div class="템이름" style="opacity:.4">비어 있음</div>`}</div>`;
+  };
+
+  el.innerHTML = `<div class="머리띠">
+      <span class="뒤로" id="뒤로">‹ 캐릭터</span>
+      <div class="넘김">
+        <span id="앞사람" class="${자리 === 0 ? "꺼짐" : ""}">‹</span>
+        <span id="뒷사람" class="${자리 === 줄.length - 1 ? "꺼짐" : ""}">›</span>
+      </div></div>
+    <div class="큰머리">
+      <div class="얼굴" style="border-color:${등급색[d.등급]};background-image:url(${얼굴(d.그림)})"></div>
+      <div class="nm"><b class="큰이름"><span style="color:${등급색[d.등급]}">${d.직업}</span>
+        <span style="color:#a8977f">Lv.${c.레벨}</span>
+        <span class="tag" style="color:${등급색[d.등급]}">${d.등급}</span></b>
+        <i>${d.역할}${안에 ? " · 출전 중" : ""}${S.대표 === c.id ? " · 대표" : ""}</i>
+        <div class="힘">전투력 <b>${수(전투력(c))}</b></div>
+        <div class="bar"><i style="width:${Math.min(100, c.경험/필요경험(c)*100)}%"></i></div></div>
+    </div>
+    <div class="넉줄">
+      <span>체력 <b>${수(최대체력(c))}</b></span><span>공격 <b>${수(공격력(c))}</b></span>
+      <span>방어 <b>${수(방어력(c))}</b></span><span>속도 <b>${속도(c)}</b></span>
+    </div>
+    <div style="padding:0 11px"><div class="서브탭">${["장비", "기술"].map((t) =>
+      `<span class="${S.대원탭 === t ? "on" : ""}" data-대원탭="${t}">${t}</span>`).join("")}</div></div>
+    ${S.대원탭 === "장비"
+      ? `<div class="슬롯줄">${["무기", "갑옷"].map(슬롯칸).join("")}</div>
+         <div class="row"><div class="nm"><i>슬롯을 누르면 가방이 열린다. 벗기는 것도 거기서.</i></div></div>`
+      : `<div style="padding:4px 11px 0"><div class="칸이름">기술 <span class="귀띔">눌러 보기</span></div>
+         <div class="기술">${기술.map((k) => `<span class="tag r" data-풀이="기술:${k}">${k}</span>`).join("")}</div>
+         ${d.특성?.length ? `<div class="칸이름">특성 <span class="귀띔">눌러 보기</span></div>
+           <div class="기술">${d.특성.map((k) => `<span class="tag" data-풀이="특성:${k}">${k}</span>`).join("")}</div>` : ""}
+         <div class="풀이" id="풀이"></div></div>`}
+    <div class="row" style="border:0">
+      <button class="btn" id="대표로" style="flex:1">${S.대표 === c.id ? "대표임" : "대표로"}</button>
+    </div>`;
+
+  const 다시 = () => 칸();
+  el.querySelector("#뒤로").onclick = () => { S.보는대원 = null; 칸(); };
+  el.querySelector("#앞사람").onclick = () => { if (자리 > 0) { S.보는대원 = 줄[자리 - 1].id; 칸(); } };
+  el.querySelector("#뒷사람").onclick = () => { if (자리 < 줄.length - 1) { S.보는대원 = 줄[자리 + 1].id; 칸(); } };
+  el.querySelectorAll("[data-대원탭]").forEach((b) => b.onclick = () => { S.대원탭 = b.dataset.대원탭; 칸(); });
+  el.querySelector("#대표로").onclick = () => { S.대표 = c.id; 길드그리기(); 저장(); 다시(); };
+  el.querySelectorAll("[data-슬롯]").forEach((b) => b.onclick = () => 가방창(b.dataset.슬롯, c.id));
+
+  // 기술·특성 풀이 — 카드 창에 있던 것을 그대로 가져왔다
+  const 풀이칸 = el.querySelector("#풀이");
+  el.querySelectorAll("[data-풀이]").forEach((b) => b.onclick = () => {
+    const [종류, 이름] = b.dataset.풀이.split(":");
+    const 켜짐 = b.classList.contains("펴짐");
+    el.querySelectorAll("[data-풀이]").forEach((x) => x.classList.remove("펴짐"));
+    if (켜짐) { 풀이칸.classList.remove("on"); 풀이칸.innerHTML = ""; return; }
+    b.classList.add("펴짐");
+    const 글 = (종류 === "기술" ? 기술설명 : 특성설명)[이름];
+    풀이칸.innerHTML = `<b>${이름}</b><br>${글 ? 글(c) : "아직 설명이 없다."}`;
+    풀이칸.classList.add("on");
+  });
+}
+
+/**
+ * **가방** (10-10). 만든 장비를 한눈에 볼 데가 없었다 — 카드 창 안에서만 보였다.
+ * 슬롯에서 열면 **그 칸에 맞는 것만** 추려 보여 주고, 누르면 바로 갈아 낀다.
+ */
+function 가방창(슬롯, 누구){
+  const 들 = S.가방.장비.filter((x) => 레시피[x.키].슬롯 === 슬롯);
+  const 덮 = document.createElement("div"); 덮.id = "덮개";
+  const 그리자 = () => {
+    const 지금 = S.가방.장비.filter((x) => 레시피[x.키].슬롯 === 슬롯);
+    const 낀것 = 지금.find((x) => x.누구 === 누구);
+    덮.innerHTML = `<div class="카드" onclick="event.stopPropagation()">
+      <div class="nm"><b style="display:block;font-size:15px">가방 · ${슬롯}</b>
+        <i style="color:var(--흐림);font-size:12px">${지금.length}개 · 누르면 갈아 낀다</i></div>
+      <div class="가방격자">${낀것 ? `<div class="칸짜리 벗기" data-벗김="${낀것.id}">
+            <div class="이름">벗는다</div><div class="수">빈 칸으로</div></div>` : ""}
+        ${지금.length ? 지금.map((x) => {
+        const r = 레시피[x.키], 낌 = x.누구 === 누구;
+        const 남 = x.누구 != null && !낌 ? S.대원.find((c) => c.id === x.누구) : null;
+        return `<div class="칸짜리${낌 ? " 낌" : ""}" data-낄="${x.id}">
+          <div class="이름">${r.이름}</div>
+          <div class="수">${낌 ? "끼는 중" : 남 ? `${카드(남).직업}` : "비어 있음"}</div></div>`;
+      }).join("") : `<div class="칸짜리 빔"><div class="이름">없다</div></div>`}</div>
+      ${지금.length ? "" : `<div class="풀이 on">대장간에서 ${슬롯}을 만들면 여기에 쌓인다.</div>`}
+      <div class="줄"><button class="btn" id="닫기">닫기</button></div></div>`;
+    덮.querySelectorAll("[data-낄]").forEach((b) => b.onclick = () => {
+      장착(Number(b.dataset.낄), 누구); 저장(); 덮.remove(); 칸();
+    });
+    // 10-10 사장님 "X 버튼 완전 삭제" — 벗기는 것도 가방 안에서 한다
+    덮.querySelectorAll("[data-벗김]").forEach((b) => b.onclick = () => {
+      벗기(Number(b.dataset.벗김)); 저장(); 덮.remove(); 칸();
+    });
+    덮.querySelector("#닫기").onclick = () => 덮.remove();
+  };
+  덮.onclick = () => 덮.remove();
+  그리자();
+  document.body.appendChild(덮);
+}
+
 function 칸(){
   const el = $("#panel");
   if (S.탭 === "run" || S.탭 === "hall") { el.className = ""; el.innerHTML = ""; return; }
   el.className = "open";
+  if (S.탭 === "crew" && S.보는대원 != null) { 대원창(el); return; }
   if (S.탭 === "crew") {
     /**
      * 10-09 사장님 "캐릭터 창 간단하게 — 직업 레벨 등급까지만 보여주고 누르면 카드 창".
@@ -1402,7 +1546,7 @@ function 칸(){
           <span class="tag" style="color:${등급색[d.등급]}">${d.등급}</span>${안에 ? `<span class="tag r">출전</span>` : ""}${S.대표===c.id ? `<span class="tag">대표</span>` : ""}</b></div>
         <span style="color:#6e5d78;font-size:18px;padding:0 4px">›</span></div>`;
     }).join("");
-    el.querySelectorAll("[data-카드]").forEach((b) => b.onclick = () => 카드창(Number(b.dataset.카드)));
+    el.querySelectorAll("[data-카드]").forEach((b) => b.onclick = () => { S.보는대원 = Number(b.dataset.카드); 칸(); });
   } else if (S.탭 === "forge") {
     const g = S.가방;
     if (S.최고층 < 3) { el.innerHTML = `<div class="row"><div class="nm"><b>대장간</b><i>3층을 넘으면 대장간이 열린다. (지금 ${S.최고층}층)</i></div></div>`; return; }
@@ -1516,7 +1660,7 @@ function 길드그리기(){
 }
 
 // 자가 창 안에서 턴을 직접 돌릴 수 있어야 한다 — 1.4초씩 기다리면 100층에 두 시간이다.
-Object.assign(window, { S, 맵그리기, 출발창, 화면, 한턴, 적만들기, 무리수, 판끝, 자격, 열린층, 필요판, 최대체력, 공격력, 방어력, 전멸, 기술표, 도감, 빛셈, 빛표, 대원만들기, 방어뒤, 결의배, 도감, 기술설명, 특성설명, 스킬들, 카드창, 만들기, 모자람, 장착, 레시피, 구간, 구간들, 매대, 사기, 남은수, 산수, 매대확인, 전투준비, 저장, 불러오기, 지우기 });
+Object.assign(window, { S, 맵그리기, 출발창, 화면, 한턴, 적만들기, 무리수, 판끝, 자격, 열린층, 필요판, 최대체력, 공격력, 방어력, 전멸, 기술표, 도감, 빛셈, 빛표, 대원만들기, 방어뒤, 결의배, 도감, 기술설명, 특성설명, 스킬들, 대원창, 가방창, 전투력, 벗기, 칸, 만들기, 모자람, 장착, 레시피, 구간, 구간들, 매대, 사기, 남은수, 산수, 매대확인, 전투준비, 저장, 불러오기, 지우기 });
 Object.defineProperty(window, "행동순서", { get: () => 행동순서 });
 Object.defineProperty(window, "적들", { get: () => 적들 });
 

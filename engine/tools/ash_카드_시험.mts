@@ -1,13 +1,20 @@
 /**
- * **캐릭터 카드 창이 실제로 되는가** (10-09). 모델 0 · 값 0.
- *   ASH_URL=http://127.0.0.1:8123/ash/index.html npx tsx engine/tools/ash_카드_시험.mts
- * 목록이 간단해졌는지 · 눌러서 창이 뜨는지 · 대표·출전·장비가 먹는지 · 닫히는지.
+ * **캐릭터 상세 화면** (10-10 전면 개편). 모델 0 · 값 0.
+ *   ASH_URL=http://127.0.0.1:8124/ash/index.html npx tsx engine/tools/ash_카드_시험.mts [--sabotage]
+ *
+ * 10-09 까지는 작은 모달(카드창)이었다. 10-10 사장님 지시로 **화면 전체**를 쓰는
+ * 대원창으로 바꾸고 모달은 지웠다. 그리고 **O/X 를 전부 걷어냈다** —
+ * 글자 체크박스와 벗기기 X 는 사장님이 "끔찍하다"고 한 것이다.
+ *
+ * 재는 것: 목록이 간단한가 · 누르면 전체 화면이 뜨는가 · 좌우로 넘어가는가 ·
+ * 장비가 **슬롯**인가 · 가방에서 끼고 벗는가 · 기술 설명이 낱낱이 있는가 · **O/X 가 없는가**.
  */
 import { openHeadless } from "../../src/lib/video/headless";
 import { 이름헬퍼 } from "./ash_공통.mjs";
 const 주소 = process.env.ASH_URL ?? "https://rookery-web-production.up.railway.app/ash/index.html";
 let 나쁨 = 0;
 const 재기 = (n: string, ok: boolean, 본?: unknown) => { if (!ok) 나쁨++; console.log(ok ? "통과" : "실패", n, ok ? "" : JSON.stringify(본)); };
+
 const 창 = await openHeadless({ width: 390, height: 844 });
 if (!창) { console.error("창 없음"); process.exit(1); }
 try {
@@ -16,14 +23,22 @@ try {
   await 이름헬퍼(page);
   await page.goto(주소, { waitUntil: "networkidle2", timeout: 60_000 });
   await new Promise((r) => setTimeout(r, 2000));
-  // 장비는 **가방에 있어야** 입힐 칸이 생긴다 — 빈 가방으로 재면 "장비 칸 없음" 이 고장처럼 보인다
+
+  if (process.argv.includes("--sabotage")) await page.evaluate(() => {
+    // 심은 고장: 옛 O/X 로 되돌린다(체크 글자 + 벗기기 표시)
+    const w = window as any, 원 = w.대원창;
+    w.대원창 = (el: HTMLElement) => { 원(el);
+      el.innerHTML += '<span class="tag">✓ 출전</span><span class="tag">✕</span>'; };
+  });
+
   await page.evaluate(() => { const w = window as any;
     w.S.대원.length || w.S.대원.push(w.대원만들기("기사", 5));
     // 만들기는 최고층 + 금화까지 본다 — 재료만 심으면 조용히 거절한다(10-09 자가 여기서 한 번 틀렸다)
-    Object.assign(w.S.가방, { 파편: 99, 잔혼: 99, 수호핵: 9, 별가루: 999 });
-    w.S.최고층 = Math.max(w.S.최고층, 5); w.S.금화 = Math.max(w.S.금화, 9999);
+    Object.assign(w.S.가방, { 파편: 99, 잔혼: 99, 수호핵: 9, 가죽: 99, 별가루: 999 });
+    w.S.최고층 = Math.max(w.S.최고층, 10); w.S.금화 = Math.max(w.S.금화, 99999);
     if (!w.만들기("가죽갑옷")) throw new Error("장비를 못 만들었다 — 시험 밑바탕이 틀렸다");
-    w.S.탭 = "crew"; });
+    w.만들기("철검");
+    w.S.보는대원 = null; w.S.탭 = "crew"; });
   await page.evaluate(() => (document.querySelector('.tab[data-t="crew"]') as HTMLElement).click());
   await new Promise((r) => setTimeout(r, 600));
 
@@ -34,96 +49,103 @@ try {
   재기("목록 줄이 눌리는 카드다", !!줄, 줄);
   재기("목록에 능력치가 없다", !!줄 && !줄.능력치, 줄?.글);
 
+  /* ── 누르면 **모달이 아니라 화면 전체**가 바뀐다 ── */
   await page.evaluate(() => (document.querySelector("#panel .row.카드열기") as HTMLElement).click());
   await new Promise((r) => setTimeout(r, 500));
-  const 창있나 = await page.evaluate(() => {
-    const d = document.querySelector("#덮개");
-    return d ? { 능력치: /체력/.test(d.textContent ?? ""), 장비: !!d.querySelector("[data-eq],[data-off]"), 대표: !!d.querySelector("#대표"), 출전: !!d.querySelector("#출전") } : null;
+  const 상세 = await page.evaluate(() => {
+    const el = document.querySelector("#panel")!;
+    return { 덮개: !!document.querySelector("#덮개"),
+      머리띠: !!el.querySelector(".머리띠"), 뒤로: !!el.querySelector("#뒤로"),
+      전투력: /전투력/.test(el.textContent ?? ""), 능력치: /체력/.test(el.textContent ?? ""),
+      슬롯수: el.querySelectorAll("[data-슬롯]").length, 대표: !!el.querySelector("#대표로") };
   });
-  재기("누르면 카드 창이 뜬다", !!창있나, 창있나);
-  재기("카드에 능력치가 있다", !!창있나?.능력치, 창있나);
-  재기("카드에 입힐 장비 칸이 있다", !!창있나?.장비, 창있나);
+  재기("모달이 아니라 전체 화면이다", 상세.머리띠 && !상세.덮개, 상세);
+  재기("전투력과 능력치가 보인다", 상세.전투력 && 상세.능력치, 상세);
+  재기("장비가 슬롯 둘이다", 상세.슬롯수 === 2, 상세);
+  재기("대표로 단추가 있다", 상세.대표, 상세);
 
-  const 입힘 = await page.evaluate(() => {
-    const w = window as any;
-    const b = document.querySelector("#덮개 [data-eq]") as HTMLElement | null;
-    if (!b) return null;
-    b.click();
-    return { 낀것: w.S.가방.장비.filter((x: { 누구: number | null }) => x.누구 !== null).length };
+  /* ── 좌우로 다음 대원 ── */
+  const 넘김 = await page.evaluate(() => {
+    const w = window as any, 앞 = w.S.보는대원;
+    (document.querySelector("#뒷사람") as HTMLElement).click();
+    const 뒤 = w.S.보는대원;
+    (document.querySelector("#앞사람") as HTMLElement).click();
+    return { 앞, 뒤, 돌아옴: w.S.보는대원 };
   });
-  재기("장비가 실제로 입혀진다", !!입힘 && 입힘.낀것 > 0, 입힘);
-  await new Promise((r) => setTimeout(r, 400));
-  재기("카드에 대표가 있다", !!창있나?.대표, 창있나);
-  // 10-09 사장님 "캐릭터 누르면 출전 빼기 없애" — 출전은 층을 고를 때 한 자리에서만 정한다
-  재기("카드에 출전 단추가 없다", 창있나?.출전 === false, 창있나);
+  재기("좌우 화살표로 다음 대원에 간다", 넘김.뒤 !== 넘김.앞 && 넘김.돌아옴 === 넘김.앞, 넘김);
 
-  // 10-09: 처음 판정식이 `(A && B) || A` 여서 사실상 A만 봤다 — 대표 지정을 빼도 통과했다.
-  // **비워 두고 눌러서, 그 캐릭터 id 가 들어왔는지**로 본다.
-  const 대표됨 = await page.evaluate(() => {
-    const w = window as any; w.S.대표 = null;
-    const 누구 = w.S.대원[0].id;
-    (document.querySelector("#덮개 #대표") as HTMLElement).click();
-    return { 누구, 뒤: w.S.대표 };
-  });
-  재기("대표로가 먹는다", 대표됨.뒤 === 대표됨.누구, 대표됨);
-
-  /* ── 기술·특성을 누르면 무슨 일을 하는지 나온다 (10-09 사장님) ────────── */
+  /* ── 슬롯을 누르면 가방, 거기서 끼고 벗는다 ── */
   await new Promise((r) => setTimeout(r, 300));
-  const 풀이 = await page.evaluate(() => {
-    const 봄= (고를: string) => {
-      const b = document.querySelector(`#덮개 [data-풀이^="${고를}"]`) as HTMLElement | null;
-      if (!b) return { 태그: false, 글: "", 숫자: false };
-      b.click();
-      const p = document.querySelector("#덮개 #풀이") as HTMLElement;
-      const 글 = p.classList.contains("on") ? (p.textContent ?? "") : "";
-      return { 태그: true, 글, 숫자: /\d/.test(글) };
-    };
-    const 기 = 봄("기술"), 특 = 봄("특성");
-    // 같은 것을 또 누르면 닫힌다
-    const b = document.querySelector('#덮개 [data-풀이^="특성"]') as HTMLElement;
-    b.click();
-    const 닫힘 = !(document.querySelector("#덮개 #풀이") as HTMLElement).classList.contains("on");
-    return { 기, 특, 닫힘 };
-  });
-  재기("기술을 누르면 설명이 뜬다", 풀이.기.태그 && 풀이.기.글.length > 10, 풀이.기);
-  재기("기술 설명에 숫자가 있다", 풀이.기.숫자, 풀이.기.글.slice(0, 80));
-  재기("특성을 누르면 뭘 강화하는지 뜬다", 풀이.특.태그 && 풀이.특.글.length > 10, 풀이.특);
-  재기("특성 설명에 숫자가 있다", 풀이.특.숫자, 풀이.특.글.slice(0, 80));
-  재기("또 누르면 닫힌다", 풀이.닫힘, 풀이);
-
-  /* **도감에 적힌 기술이 카드에 하나씩, 설명과 함께 있는가** (10-10).
-     스킬이 배열이 된 뒤 "처형,약점노리기" 가 한 덩어리로 찍히고 설명이 "없다" 로 떴다.
-     앞의 자는 **첫 태그 하나만** 눌러 봐서 이것을 못 봤다. */
-  const 낱낱 = await page.evaluate(() => {
+  const 가방 = await page.evaluate(async () => {
     const w = window as any;
-    const 빠진: string[] = [], 덩어리: string[] = [];
+    (document.querySelector('[data-슬롯="갑옷"]') as HTMLElement).click();
+    await new Promise((r) => setTimeout(r, 200));
+    const 떴나 = !!document.querySelector("#덮개 .가방격자");
+    (document.querySelector("#덮개 [data-낄]") as HTMLElement | null)?.click();
+    return { 떴나, 낀뒤: w.S.가방.장비.filter((x: any) => x.누구 != null).length };
+  });
+  재기("슬롯을 누르면 가방이 열린다", 가방.떴나, 가방);
+  재기("가방에서 고르면 실제로 입는다", 가방.낀뒤 > 0, 가방);
+
+  await new Promise((r) => setTimeout(r, 400));
+  const 벗 = await page.evaluate(async () => {
+    const w = window as any;
+    (document.querySelector('[data-슬롯="갑옷"]') as HTMLElement).click();
+    await new Promise((r) => setTimeout(r, 200));
+    const 벗김 = document.querySelector("#덮개 [data-벗김]") as HTMLElement | null;
+    const 있나 = !!벗김;
+    벗김?.click();
+    return { 있나, 낀: w.S.가방.장비.filter((x: any) => x.누구 != null).length };
+  });
+  재기("가방에 벗기 칸이 있다", 벗.있나, 벗);
+  재기("벗기면 실제로 벗는다", 벗.낀 === 0, 벗);
+
+  /* ── 기술 — 낱낱이, 설명과 함께 ── */
+  await new Promise((r) => setTimeout(r, 300));
+  const 기술 = await page.evaluate(async () => {
+    const w = window as any;
+    document.querySelector("#덮개")?.remove();
+    const 검 = w.S.대원.find((c: any) => c.키 === "검사");
+    if (검) w.S.보는대원 = 검.id;
+    w.S.대원탭 = "기술"; w.화면();
+    await new Promise((r) => setTimeout(r, 200));
+    const 태그 = [...document.querySelectorAll('#panel [data-풀이^="기술"]')].map((x) => (x.textContent ?? "").trim());
+    (document.querySelector('#panel [data-풀이^="기술"]') as HTMLElement)?.click();
+    const p = document.querySelector("#panel #풀이") as HTMLElement;
+    const 글 = p?.classList.contains("on") ? (p.textContent ?? "") : "";
+    // 도감에 적힌 모든 기술·특성에 설명이 있나
+    const 빠진: string[] = [];
     for (const [키, d] of Object.entries(w.도감) as [string, any][]) {
-      const 기술 = [d.일반, ...[].concat(d.스킬 ?? []), d.궁].filter(Boolean) as string[];
-      for (const k of 기술) {
-        if (/[,]/.test(k)) 덩어리.push(`${키}:${k}`);
+      for (const k of [d.일반, ...[].concat(d.스킬 ?? []), d.궁].filter(Boolean) as string[])
         if (!w.기술설명?.[k]) 빠진.push(`${키}:${k}`);
-      }
       for (const t of d.특성 ?? []) if (!w.특성설명?.[t]) 빠진.push(`${키}:특성 ${t}`);
     }
-    // 검사 카드를 열어 태그가 몇 개인지 센다
-    document.querySelector("#덮개")?.remove();
-    const 검 = w.S.대원.find((c: any) => c.키 === "검사") ?? w.S.대원[0];
-    w.카드창(검.id);
-    const 태그 = [...document.querySelectorAll('#덮개 [data-풀이^="기술"]')].map((x) => (x.textContent ?? "").trim());
-    return { 빠진, 덩어리, 태그 };
+    return { 태그, 글, 빠진 };
   });
-  재기("기술 태그가 한 덩어리로 안 찍힌다", 낱낱.덩어리.length === 0, 낱낱.덩어리);
-  재기("도감의 모든 기술·특성에 설명이 있다", 낱낱.빠진.length === 0, 낱낱.빠진);
-  재기("검사 카드에 기술이 셋 보인다", 낱낱.태그.length === 3, 낱낱.태그);
+  재기("검사 기술이 낱낱이 셋 보인다", 기술.태그.length === 3 && !기술.태그.some((t) => /,/.test(t)), 기술.태그);
+  재기("기술을 누르면 설명이 뜬다", 기술.글.length > 10 && /[0-9]/.test(기술.글), 기술.글.slice(0, 60));
+  재기("도감의 모든 기술·특성에 설명이 있다", 기술.빠진.length === 0, 기술.빠진);
 
-  await new Promise((r) => setTimeout(r, 400));
-  await page.evaluate(() => (document.querySelector("#덮개 #닫기") as HTMLElement).click());
-  await new Promise((r) => setTimeout(r, 300));
-  재기("닫기가 먹는다", await page.evaluate(() => !document.querySelector("#덮개")));
+  /* ── **O/X 가 없는가** (10-10 사장님 "싹 없애라") ── */
+  const 오엑스 = await page.evaluate(() => {
+    const w = window as any;
+    const 글들: string[] = [];
+    for (const t of ["crew", "forge", "shop"]) { w.S.탭 = t; w.화면(); 글들.push(document.querySelector("#panel")?.textContent ?? ""); }
+    w.S.탭 = "crew"; w.S.보는대원 = w.S.대원[0].id; w.S.대원탭 = "장비"; w.화면();
+    글들.push(document.querySelector("#panel")?.textContent ?? "");
+    document.querySelector("#덮개")?.remove();
+    w.출발창(1);
+    글들.push(document.querySelector("#덮개")?.textContent ?? "");
+    document.querySelector("#덮개")?.remove();
+    return 글들.join(" ").match(/[✓✕☑☒]/g) ?? [];
+  });
+  재기("화면에 O/X 글자가 없다", 오엑스.length === 0, 오엑스);
 
   재기("내리기·태우기 단추가 없다", await page.evaluate(() => !/내리기|태우기/.test(document.querySelector("#panel")?.textContent ?? "")));
-  // 10-09 사장님 "캐릭터 창에 별빛회복약 안 보이게"
-  재기("캐릭터 탭에 별빛 회복약이 없다", await page.evaluate(() => !/회복약/.test(document.querySelector("#panel")?.textContent ?? "")));
+  재기("캐릭터 탭에 별빛 회복약이 없다", await page.evaluate(() => {
+    const w = window as any; w.S.보는대원 = null; w.S.탭 = "crew"; w.화면();
+    return !/회복약/.test(document.querySelector("#panel")?.textContent ?? "");
+  }));
 } finally { await 창.browser.close(); await 창.close?.(); }
-console.log(나쁨 === 0 ? "\n전부 통과" : `\n실패 ${나쁨}건`);
+console.log(나쁨 === 0 ? "전부 통과" : `실패 ${나쁨}건`);
 process.exit(나쁨 === 0 ? 0 : 1);
