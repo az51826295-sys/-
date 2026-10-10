@@ -31,12 +31,18 @@
 
   #top{margin:4px 4px 0;padding:6px 10px;background:var(--창);
        display:flex;justify-content:space-between;align-items:center;font-size:13px;text-shadow:1px 1px 0 #000}
-  #top .zone{color:var(--금)}
+  /* 윗줄은 **한 줄**이어야 한다 — 가방 단추를 더했더니 층 이름이 두 줄로 접혔다(10-10) */
+  #top{flex-wrap:nowrap}
+  #top .zone{color:var(--금);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+  #top .res{flex:none;white-space:nowrap}
   #top .res{display:flex;gap:10px;color:var(--글)}
   #top .res img{width:16px;height:16px;image-rendering:pixelated;vertical-align:-3px}
   /* 소리 단추 — 켜고 끄는 것은 늘 보이는 자리에 둔다. 끌 수 없는 음악은 지우고 싶은 앱이 된다. */
   #sndBtn{background:none;border:0;color:var(--금);font:inherit;font-size:15px;line-height:1;
           padding:0 2px;cursor:pointer;opacity:.95}
+  /* 어디서든 열리는 가방 (10-10 사장님 "독립된 그리드 아이템창 신설") */
+  #가방단추{background:none;border:0;color:var(--금);font:inherit;font-size:12px;line-height:1;
+            padding:0 4px;cursor:pointer;opacity:.95;white-space:nowrap}
   #sndBtn.off{color:var(--글);opacity:.35;text-decoration:line-through}
 
   /* 그림은 작게 — 자리만 잡는다 */
@@ -272,6 +278,7 @@
     <span class="zone" id="zone">1구간 · 1층</span>
     <span class="res"><span><img src="art/coin.png">&nbsp;<b id="gold">0</b></span>
                       <span><img src="art/shard.png">&nbsp;<b id="shard">0</b></span>
+                      <button id="가방단추" type="button" aria-label="가방">가방</button>
                       <button id="sndBtn" type="button" aria-label="소리">♪</button></span>
   </div>
 
@@ -401,7 +408,7 @@ const 필요경험 = (c) => 80 + (c.레벨 - 1)*12;
  * `진행`은 이제 처음에 꺼져 있다. 시작하자마자 1층을 깨 버리면 **고를 틈이 없다**(사장님 지적).
  */
 const S = { 단계:1, 층:1, 금화:0, 대원:[], 파티:[], 탭:"hall", 진행:false, 쉼:0, 대표:null, 최고층:0, 사냥층:null,
-            무리:0, 무리수:1, 깸:{}, 보스깸:[], 자동오름:true, 장날:null, 산것:{}, 출석날:null, 버프:null, 보는대원:null, 대원탭:"장비", 가방슬롯:null,
+            무리:0, 무리수:1, 깸:{}, 보스깸:[], 자동오름:true, 장날:null, 산것:{}, 출석날:null, 버프:null, 보는대원:null, 대원탭:"장비", 가방슬롯:null, 가방탭:"재료",
             가방:{ 파편:0, 잔혼:0, 수호핵:0, 가죽:0, 강철:0, 이빨:0, 거인뼈:0, 별가루:0, 문장:{ 방어:0, 공격:0, 지원:0, 제어:0 } } };
 for (const k of ["기사","검사","회복술사"]) S.대원.push(대원만들기(k));
 S.파티 = S.대원.map((c) => c.id);
@@ -1342,6 +1349,8 @@ function 맵그리기(){
   칸.querySelectorAll("[data-f]").forEach((b) => b.onclick = () => 출발창(Number(b.dataset.f)));
 }
 
+$("#가방단추").onclick = () => 가방창();
+
 $("#자격버튼").onclick = () => {
   const 층 = S.층, 자 = 자격(층);
   쪽창(`${층}층 관문`, `<div class="자격칸">${자.줄.map((r) =>
@@ -1546,12 +1555,26 @@ function 대원창(el){
       <span>체력 <b>${수(최대체력(c))}</b></span><span>공격 <b>${수(공격력(c))}</b></span>
       <span>방어 <b>${수(방어력(c))}</b></span><span>속도 <b>${속도(c)}</b></span>
     </div>
-    <div style="padding:0 11px"><div class="서브탭">${["장비", "기술"].map((t) =>
+    <div style="padding:0 11px"><div class="서브탭">${["장비", "강화", "기술"].map((t) =>
       `<span class="${S.대원탭 === t ? "on" : ""}" data-대원탭="${t}">${t}</span>`).join("")}</div></div>
     ${S.대원탭 === "장비"
-      ? `<div class="슬롯줄">${["무기", "갑옷"].map(슬롯칸).join("")}</div>
+      ? `<div class="슬롯줄">${["무기", "갑옷", "장신구"].map(슬롯칸).join("")}</div>
          ${S.가방슬롯 ? 가방패널(S.가방슬롯, c)
            : `<div class="row"><div class="nm"><i>슬롯을 누르면 아래에 가방이 펼쳐진다.</i></div></div>`}`
+      : S.대원탭 === "강화"
+      ? `<div style="padding:4px 11px 0">
+          <div class="칸이름">자람</div>
+          <div class="자격칸">
+            <div class="조건줄 참"><span>지금 레벨</span><b>Lv.${c.레벨}</b></div>
+            <div class="조건줄${c.레벨 >= 레벨상한(c) ? "" : " 참"}"><span>올릴 수 있는 끝</span><b>Lv.${레벨상한(c)}</b></div>
+            <div class="조건줄"><span>다음 레벨까지</span><b>${수(Math.max(0, 필요경험(c) - c.경험))}</b></div>
+            <div class="조건줄"><span>겹친 카드</span><b>${c.중복}</b></div>
+          </div>
+          <div class="풀이 on">레벨은 <b>싸워서</b> 오른다. 그리고 <b>지금까지 연 층</b>까지만 오른다 —
+            지금은 <b>Lv.${레벨상한(c)}</b> 이 끝이고, 층을 열면 그만큼 더 오른다.<br>
+            되돌이로 레벨을 밀어 올리는 길을 일부러 막아 뒀다. 그게 막혀 있어야 <b>장비를 만들 이유</b>가 생긴다.
+            <br><br>경험치 주입·승급은 <b>아직 없다</b> — 넣으면 이 설계가 깨지므로 사장님 결정을 기다린다.</div>
+        </div>`
       : `<div style="padding:4px 11px 0"><div class="칸이름">기술 <span class="귀띔">눌러 보기</span></div>
          <div class="기술">${기술.map((k) => `<span class="tag r" data-풀이="기술:${k}">${k}</span>`).join("")}</div>
          ${d.특성?.length ? `<div class="칸이름">특성 <span class="귀띔">눌러 보기</span></div>
@@ -1617,6 +1640,95 @@ function 가방패널(슬롯, c){
           <div class="수">대장간에서</div></div>`}
     </div></div>`;
 }
+/**
+ * **가방 — 독립 창** (10-10 사장님 "독립된 그리드 아이템창 신설, 재료 / 장비 / 소모품 탭 분류").
+ *
+ * 캐릭터 상세의 가방 **패널**은 "이 슬롯에 뭘 끼울까"를 고르는 자리다.
+ * 이 창은 **가진 것 전부**를 보는 자리다 — 재료가 몇 개인지, 안 끼운 장비가 몇 개인지.
+ * 상단 어디서든 열린다.
+ */
+function 가방창(){
+  S.가방탭 = S.가방탭 ?? "재료";
+  const 덮 = document.createElement("div"); 덮.id = "덮개";
+  const 그리자 = () => {
+    const g = S.가방, 탭 = S.가방탭;
+    let 속 = "";
+    if (탭 === "재료") {
+      const 들 = Object.keys(재료이름).filter((k) => (g[k] ?? 0) > 0);
+      속 = 들.length
+        ? `<div class="가방격자">${들.map((k) => `<div class="칸짜리" data-재료="${k}">
+            <div class="이름">${재료이름[k]}</div><div class="수">${수(g[k])}</div></div>`).join("")}</div>`
+        : `<div class="풀이 on">아직 모은 재료가 없다. 탑을 돌면 쌓인다.</div>`;
+    } else if (탭 === "장비") {
+      const 들 = g.장비 ?? [];
+      속 = 들.length
+        ? `<div class="가방격자">${들.map((x) => { const r = 레시피[x.키];
+            const 쥔 = x.누구 != null ? S.대원.find((c) => c.id === x.누구) : null;
+            return `<div class="칸짜리${쥔 ? " 낌" : ""}" data-템="${x.id}">
+              <div class="이름">${r.이름}</div>
+              <div class="수">${쥔 ? 카드(쥔).직업 : "안 낌"}</div></div>`; }).join("")}</div>`
+        : `<div class="풀이 on">만든 장비가 없다. <b>대장간</b>에서 만든다.</div>`;
+    } else {
+      속 = `<div class="가방격자"><div class="칸짜리${g.약 > 0 ? "" : " 빔"}" data-소모="약">
+          <div class="이름">별빛 회복약</div><div class="수">${수(g.약 ?? 0)}</div></div></div>
+        <div class="풀이 on">소모품은 <b>떠나기 전</b>에 몇 개 챙길지 고른다 — 탑에서 층을 고를 때.</div>`;
+    }
+    덮.innerHTML = `<div class="카드" onclick="event.stopPropagation()">
+      <div class="nm"><b style="display:block;font-size:15px">가방</b>
+        <i style="color:var(--흐림);font-size:12px">금화 ${수(S.금화)} · 별가루 ${수(g.별가루 ?? 0)}</i></div>
+      <div class="서브탭" style="margin-top:8px">${["재료", "장비", "소모품"].map((t) =>
+        `<span class="${탭 === t ? "on" : ""}" data-가방탭="${t}">${t}</span>`).join("")}</div>
+      ${속}
+      <div class="줄"><button class="btn" id="닫기">닫기</button></div></div>`;
+    덮.querySelectorAll("[data-가방탭]").forEach((b) => b.onclick = () => { S.가방탭 = b.dataset.가방탭; 그리자(); });
+    덮.querySelectorAll("[data-재료]").forEach((b) => b.onclick = () => 물건창({ 종류: "재료", 키: b.dataset.재료 }));
+    덮.querySelectorAll("[data-템]").forEach((b) => b.onclick = () => 물건창({ 종류: "장비", id: Number(b.dataset.템) }));
+    덮.querySelectorAll("[data-소모]").forEach((b) => b.onclick = () => 물건창({ 종류: "소모품" }));
+    덮.querySelector("#닫기").onclick = () => 덮.remove();
+  };
+  덮.onclick = () => 덮.remove();
+  그리자();
+  document.body.appendChild(덮);
+}
+
+/** **물건 하나를 자세히** (사장님 "아이템 카드를 누르면 아이템 상세 정보"). 판매는 아직 없다. */
+function 물건창(무엇){
+  let 제목 = "", 속 = "";
+  if (무엇.종류 === "재료") {
+    const k = 무엇.키, 쓰는곳 = Object.values(레시피).filter((r) => r.재료[k]);
+    제목 = 재료이름[k];
+    속 = `<div class="자격칸">
+        <div class="조건줄 참"><span>가진 것</span><b>${수(S.가방[k] ?? 0)}</b></div>
+        ${매대[k] ? `<div class="조건줄"><span>시장 값</span><b>${수(매대[k].값)} 금화</b></div>` : ""}
+      </div>
+      <div class="풀이 on">${쓰는곳.length
+        ? `<b>쓰는 곳</b><br>${쓰는곳.map((r) => `· ${r.이름} (${r.재료[k]}개)`).join("<br>")}`
+        : "아직 쓰는 곳이 없다."}</div>`;
+  } else if (무엇.종류 === "장비") {
+    const x = S.가방.장비.find((y) => y.id === 무엇.id); if (!x) return;
+    const r = 레시피[x.키], 쥔 = x.누구 != null ? S.대원.find((c) => c.id === x.누구) : null;
+    제목 = r.이름;
+    속 = `<div class="자격칸">
+        <div class="조건줄 참"><span>칸</span><b>${r.슬롯}</b></div>
+        ${Object.entries(r.효과 ?? {}).map(([칸, v]) => `<div class="조건줄 참"><span>${칸}</span><b>+${수(v)}</b></div>`).join("")}
+        <div class="조건줄${쥔 ? " 참" : ""}"><span>지금</span><b>${쥔 ? `${카드(쥔).직업}가 낌` : "아무도 안 낌"}</b></div>
+      </div>
+      <div class="풀이 on">끼우고 벗는 것은 <b>캐릭터</b> 탭에서 그 칸을 눌러서 한다.</div>`;
+  } else {
+    제목 = "별빛 회복약";
+    속 = `<div class="자격칸"><div class="조건줄 참"><span>가진 것</span><b>${수(S.가방.약 ?? 0)}</b></div></div>
+      <div class="풀이 on">전투 중 처음으로 절반 아래로 떨어진 아군의 체력을 <b>20%</b> 되살린다.
+        한 병에 한 번. 떠나기 전에 몇 병 챙길지 고른다.</div>`;
+  }
+  const 덮 = document.createElement("div"); 덮.id = "덮개"; 덮.style.zIndex = "50";
+  덮.innerHTML = `<div class="카드" onclick="event.stopPropagation()">
+    <div class="nm"><b style="display:block;font-size:15px">${제목}</b></div>
+    ${속}<div class="줄"><button class="btn" id="닫기">닫기</button></div></div>`;
+  덮.onclick = () => 덮.remove();
+  document.body.appendChild(덮);
+  덮.querySelector("#닫기").onclick = () => 덮.remove();
+}
+
 function 칸(){
   const el = $("#panel");
   if (S.탭 === "run" || S.탭 === "hall") { el.className = ""; el.innerHTML = ""; return; }
@@ -1800,7 +1912,7 @@ function 길드그리기(){
 }
 
 // 자가 창 안에서 턴을 직접 돌릴 수 있어야 한다 — 1.4초씩 기다리면 100층에 두 시간이다.
-Object.assign(window, { S, 맵그리기, 출발창, 화면, 한턴, 적만들기, 무리수, 판끝, 자격, 열린층, 필요판, 최대체력, 공격력, 방어력, 전멸, 기술표, 도감, 빛셈, 빛표, 대원만들기, 방어뒤, 결의배, 도감, 기술설명, 특성설명, 스킬들, 대원창, 가방패널, 전투력, 벗기, 칸, 만들기, 모자람, 장착, 레시피, 구간, 구간들, 매대, 사기, 남은수, 산수, 매대확인, 전투준비, 저장, 불러오기, 지우기 });
+Object.assign(window, { S, 맵그리기, 출발창, 화면, 한턴, 적만들기, 무리수, 판끝, 자격, 열린층, 필요판, 최대체력, 공격력, 방어력, 전멸, 기술표, 도감, 빛셈, 빛표, 대원만들기, 방어뒤, 결의배, 도감, 기술설명, 특성설명, 스킬들, 대원창, 가방패널, 가방창, 물건창, 전투력, 레벨상한, 필요경험, 벗기, 칸, 만들기, 모자람, 장착, 레시피, 구간, 구간들, 매대, 사기, 남은수, 산수, 매대확인, 전투준비, 저장, 불러오기, 지우기 });
 Object.defineProperty(window, "행동순서", { get: () => 행동순서 });
 Object.defineProperty(window, "적들", { get: () => 적들 });
 

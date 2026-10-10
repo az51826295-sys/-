@@ -57,6 +57,21 @@ try {
     w.S.보는대원 = w.S.대원[0].id; w.S.대원탭 = "장비"; w.S.가방슬롯 = null; w.화면();
     (document.querySelector('[data-슬롯="무기"]') as HTMLElement)?.click();
     긁("가방", "#panel .가방패널"); w.S.가방슬롯 = null;
+    // 가방 독립 창 — 탭 셋 + 물건 상세
+    document.querySelector("#덮개")?.remove();
+    (document.querySelector("#가방단추") as HTMLElement)?.click();
+    for (const t of ["재료", "장비", "소모품"]) {
+      (document.querySelector(`[data-가방탭="${t}"]`) as HTMLElement)?.click();
+      긁(`가방창-${t}`, "#덮개");
+    }
+    (document.querySelector('[data-가방탭="재료"]') as HTMLElement)?.click();
+    (document.querySelector("[data-재료]") as HTMLElement)?.click();
+    긁("물건상세", "#덮개:last-child");
+    document.querySelectorAll("#덮개").forEach((x) => x.remove());
+    // 캐릭터 강화 탭
+    w.S.탭 = "crew"; w.S.보는대원 = w.S.대원[0].id; w.S.대원탭 = "강화"; w.화면();
+    긁("강화탭", "#panel");
+    w.S.대원탭 = "장비";
     // 출발 창 · 맵
     w.S.진행 = false; w.S.탭 = "run"; w.화면(); w.맵그리기();
     긁("맵", "#맵");

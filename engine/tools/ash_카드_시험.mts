@@ -57,11 +57,14 @@ try {
     return { 덮개: !!document.querySelector("#덮개"),
       머리띠: !!el.querySelector(".머리띠"), 뒤로: !!el.querySelector("#뒤로"),
       전투력: /전투력/.test(el.textContent ?? ""), 능력치: /체력/.test(el.textContent ?? ""),
-      슬롯수: el.querySelectorAll("[data-슬롯]").length, 대표: !!el.querySelector("#대표로") };
+      슬롯수: el.querySelectorAll("[data-슬롯]").length, 서브탭: el.querySelectorAll("[data-대원탭]").length,
+      대표: !!el.querySelector("#대표로") };
   });
   재기("모달이 아니라 전체 화면이다", 상세.머리띠 && !상세.덮개, 상세);
   재기("전투력과 능력치가 보인다", 상세.전투력 && 상세.능력치, 상세);
-  재기("장비가 슬롯 둘이다", 상세.슬롯수 === 2, 상세);
+  // 10-10 사장님 "무기 / 갑옷 / **장신구**" — 장신구는 아직 레시피가 없어도 **칸은 있어야** 한다
+  재기("장비가 슬롯 셋이다(무기·갑옷·장신구)", 상세.슬롯수 === 3, 상세);
+  재기("서브탭이 셋이다(장비·강화·기술)", 상세.서브탭 === 3, 상세);
   재기("대표로 단추가 있다", 상세.대표, 상세);
 
   /* ── 좌우로 다음 대원 ── */
@@ -145,6 +148,35 @@ try {
   재기("화면에 O/X 글자가 없다", 오엑스.length === 0, 오엑스);
 
   재기("내리기·태우기 단추가 없다", await page.evaluate(() => !/내리기|태우기/.test(document.querySelector("#panel")?.textContent ?? "")));
+  /* ── 가방 **독립 창** (10-10 사장님 "독립된 그리드 아이템창 신설, 재료/장비/소모품 탭 분류") ── */
+  const 창들 = await page.evaluate(async () => {
+    const w = window as any;
+    document.querySelector("#덮개")?.remove();
+    Object.assign(w.S.가방, { 파편: 50, 가죽: 20, 약: 3 });
+    (document.querySelector("#가방단추") as HTMLElement).click();
+    await new Promise((r) => setTimeout(r, 150));
+    const 덮 = document.querySelector("#덮개");
+    const 탭수 = 덮?.querySelectorAll("[data-가방탭]").length ?? 0;
+    const 재료칸 = 덮?.querySelectorAll("[data-재료]").length ?? 0;
+    // 재료 하나를 눌러 상세가 뜨는지
+    (덮?.querySelector("[data-재료]") as HTMLElement | null)?.click();
+    await new Promise((r) => setTimeout(r, 120));
+    const 상세들 = document.querySelectorAll("#덮개").length;
+    const 상세글 = [...document.querySelectorAll("#덮개")].map((x) => x.textContent ?? "").join(" ");
+    // 장비 탭 · 소모품 탭
+    document.querySelectorAll("#덮개").forEach((x, i) => { if (i > 0) x.remove(); });
+    (document.querySelector('[data-가방탭="장비"]') as HTMLElement)?.click();
+    const 장비칸 = document.querySelectorAll("[data-템]").length;
+    (document.querySelector('[data-가방탭="소모품"]') as HTMLElement)?.click();
+    const 소모칸 = document.querySelectorAll("[data-소모]").length;
+    document.querySelectorAll("#덮개").forEach((x) => x.remove());
+    return { 탭수, 재료칸, 상세들, 쓰는곳: /쓰는 곳/.test(상세글), 장비칸, 소모칸 };
+  });
+  재기("상단에서 가방 창이 열린다", 창들.탭수 === 3, 창들);
+  재기("재료가 칸으로 보인다", 창들.재료칸 >= 2, 창들);
+  재기("재료를 누르면 상세가 뜨고 쓰는 곳을 알려 준다", 창들.상세들 >= 2 && 창들.쓰는곳, 창들);
+  재기("장비·소모품 탭에도 칸이 있다", 창들.장비칸 >= 1 && 창들.소모칸 === 1, 창들);
+
   재기("캐릭터 탭에 별빛 회복약이 없다", await page.evaluate(() => {
     const w = window as any; w.S.보는대원 = null; w.S.탭 = "crew"; w.화면();
     return !/회복약/.test(document.querySelector("#panel")?.textContent ?? "");
