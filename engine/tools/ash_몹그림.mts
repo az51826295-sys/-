@@ -32,6 +32,37 @@ const 몹 = {
     "Empty eye sockets with a faint dim glow. Coal dust and grime on the bones.",
     "About 95% of a human's height, thin and stooped.",
   ].join(" "),
+  /* ── 20~29층 [통곡의 고탑 회랑] + 관문 보스 둘 (10-10 사장님 명세) ── */
+  "침묵의 기사": [
+    "A silent knight monster: a tall suit of dull grey plate armor standing on its own, visor shut, NOTHING inside —",
+    "the gaps between the plates are pure black. A torn colorless surcoat hangs from it. It holds a heavy longsword point-down.",
+    "Pitted, scratched, old metal. No glow anywhere, no eyes.",
+    "About 110% of a human's height, broad and still.",
+  ].join(" "),
+  "가고일 파수꾼": [
+    "A gargoyle sentinel monster: a squat stone creature of grey weathered granite, wings folded tight against its back,",
+    "a blunt horned head and heavy clawed hands. Moss and dust in the carved grooves, one wing tip broken off.",
+    "It looks half statue, half awake. Dull stone only — no glow, no color.",
+    "About 85% of a human's height, wide and heavy.",
+  ].join(" "),
+  "원혼의 영체": [
+    "A wraith monster: a tattered hooded shroud in washed-out grey, with NO body inside — the lower half frays away into smoke",
+    "instead of legs. Two faint cold-white pinpricks where eyes would be. Thin skeletal hands reach out from the sleeves.",
+    "Desaturated and dim; it does not light anything around it.",
+    "About 100% of a human's height, narrow and drifting.",
+  ].join(" "),
+  "지옥사냥개": [
+    "A hellhound BOSS monster: a huge gaunt black hound with matted scorched fur, ribs showing through burnt hide,",
+    "a heavy iron collar with a snapped chain, cracked skin along its back showing dull ember-red underneath.",
+    "Lips drawn back over long teeth. The embers are **dim and smoldering**, not bright fire — more ash than flame.",
+    "A BOSS: about 130% of a human's height, long and low to the ground.",
+  ].join(" "),
+  "망령의 거인": [
+    "A wraith giant BOSS monster: a towering gaunt humanoid of grey ash-flesh and exposed bone, draped in enormous tattered",
+    "burial wrappings that trail behind it. Its ribcage is hollow and dark inside. A cracked crown of dull iron on its brow,",
+    "head bowed, long heavy arms. Two faint cold-white pinpricks for eyes.",
+    "A BOSS: about 180% of a human's height, very tall and broad.",
+  ].join(" "),
   "동굴 암살자": [
     "A cave assassin monster: a lean human-shaped figure wrapped head to toe in dark grey-brown rags and worn leather straps,",
     "the face completely hidden by a wound cloth with only a thin dark slit. Dull iron dagger in a reverse grip.",
@@ -75,16 +106,33 @@ for (const 이름 of 할것) {
     // 캐릭터와 같은 비율로 줄인다 — 도트 한 칸 크기가 같아야 한 그림으로 보인다
     const 작게 = await sharp(원본).resize(256, 256, { kernel: "nearest", fit: "inside" }).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
     const { data, info } = 작게;
-    let 지움 = 0;
+    let 지움 = 0, 고침 = 0;
+    const 묶 = (n: number) => Math.max(0, Math.min(255, Math.round(n)));
     for (let k = 0; k < data.length; k += info.channels) {
       const [r2, g2, b2] = [data[k], data[k + 1], data[k + 2]];
       // 마젠타 = 빨강·파랑이 높고 초록이 낮다. 가장자리의 섞인 색까지 넉넉히 집는다.
-      if (r2 > 90 && b2 > 90 && g2 < Math.min(r2, b2) * 0.8) { data[k + 3] = 0; 지움++; }
+      if (r2 > 90 && b2 > 90 && g2 < Math.min(r2, b2) * 0.8) { data[k + 3] = 0; 지움++; continue; }
+      /* 반투명한 곳(연기·망토·너덜거리는 천)에는 마젠타가 **배어든다.** 거기를 지우면
+         그림이 뜯기므로 **색만** 끌어내려 회색 쪽으로 돌린다.
+         `묶`(클램프)이 없으면 값이 음수로 내려가 0~255 를 돌아 **빨강·파랑 점**이 박힌다
+         — 10-10 에 실제로 그렇게 됐고, 눈으로는 "별이 박힌 것" 처럼 보였다. */
+      const 과 = (r2 + b2) / 2 - g2;
+      if (r2 > g2 && b2 > g2 && 과 > 14) { data[k] = 묶(r2 - 과 * .92); data[k + 2] = 묶(b2 - 과 * .92); 고침++; }
     }
     const 칸수 = data.length / info.channels;
     await sharp(data, { raw: { width: info.width, height: info.height, channels: info.channels } })
       .png().toFile(`${칸}/후보-${i}.png`);
-    console.log(`  후보-${i}.png · 배경 지움 ${(지움 / 칸수 * 100).toFixed(0)}%`);
+    // 지운 뒤 **남은 것을 다시 센다** — 안 세면 보라가 박힌 판에 1등을 준다(10-09 교훈)
+    const { data: d2 } = await sharp(`${칸}/후보-${i}.png`).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+    let 남 = 0, 튄 = 0;
+    for (let k = 0; k < d2.length; k += 4) {
+      if (d2[k + 3] < 8) continue;
+      const [r3, g3, b3] = [d2[k], d2[k + 1], d2[k + 2]];
+      if (r3 > 90 && b3 > 90 && g3 < Math.min(r3, b3) * .8) 남++;
+      if ((r3 > 180 && g3 < 60 && b3 < 60) || (b3 > 180 && r3 < 60 && g3 < 60)) 튄++;
+    }
+    console.log(`  후보-${i}.png · 배경 지움 ${(지움 / 칸수 * 100).toFixed(0)}% · 색 고침 ${고침}`
+      + `${남 || 튄 ? ` · ⚠ 남은 마젠타 ${남} · 튄 점 ${튄}` : " · 깨끗"}`);
   }
 }
 console.log(`\n끝. ${뿌리}/<이름>/후보-*.png — 사장님이 고른 뒤 ash_적넣기.mts 로 넣는다.`);
