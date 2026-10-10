@@ -71,6 +71,21 @@ const 몹 = {
     "Warmer and cleaner than the others — pale cream, soft gold, muted blue — but still worn cloth, not shiny.",
     "About the same height as a human, standing straight.",
   ].join(" "),
+  /* 10-11 뽑기 SR 동료 둘 (사장님·제미나이 명세). 기존 다섯과 **안 겹치게**:
+     로건은 붉은 바이저로 얼굴을 완전히 가린 중장갑(기사 세리안은 푸른 강철·얼굴 어둠),
+     이브는 검은 가죽에 철제 스파이크(검사는 붉은 두건·정직한 직타). */
+  "성기사": [
+    "A paladin: a heavy armored knight in thick, blocky, battered iron plate, a large tower shield held at the ready",
+    "and a broad sword at the hip. The helmet is a closed visor with a dull DARK RED slit — the face is COMPLETELY hidden.",
+    "Faded crimson cloth straps and a short torn tabard over the plate. Scratched, dented, dusty metal; no gold, no shine.",
+    "Broad and heavy, about 105% of a human's height, standing planted.",
+  ].join(" "),
+  "암살자": [
+    "An assassin: a lean figure in black worn leather with riveted iron spiked shoulder plates and bracers,",
+    "a deep hood pulled low so the face is LOST IN SHADOW — no features visible at all. A worn dark cloak, straps and pouches.",
+    "A chipped iron dagger held in each hand, reverse grip. Blacks and cold greys only, dull and dusty, nothing shiny.",
+    "Slim, about 95% of a human's height, crouched slightly forward.",
+  ].join(" "),
   "동굴 암살자": [
     "A cave assassin monster: a lean human-shaped figure wrapped head to toe in dark grey-brown rags and worn leather straps,",
     "the face completely hidden by a wound cloth with only a thin dark slit. Dull iron dagger in a reverse grip.",
