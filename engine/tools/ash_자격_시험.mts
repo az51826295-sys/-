@@ -93,6 +93,26 @@ try {
   재기("자동 등반이어도 자격 전엔 안 오른다", 본.자동_자격전 === 1, 본.자동_자격전);
   재기("자동 등반이면 자격이 차는 순간 오른다", 본.자동_자격후 === 2, 본.자동_자격후);
   재기("구간 문은 횟수만으론 안 열린다(자동이어도)", 본.문_횟수만.열림 === 10, 본);
+
+  /* ── 전투 화면의 **관문 자격 단추** (10-10 사장님) ── */
+  const 단추 = await page.evaluate(async () => {
+    const w = window as any;
+    const 보임 = () => { const b = document.querySelector("#자격버튼") as HTMLElement | null;
+      return b ? getComputedStyle(b).display !== "none" : false; };
+    w.S.탭 = "run"; w.S.진행 = true;
+    w.S.층 = 11; w.맵그리기(); const 일반층 = 보임();      // 일반 층에선 볼 게 없다
+    w.S.층 = 10; w.맵그리기(); const 관문층 = 보임();
+    document.querySelector("#덮개")?.remove();
+    (document.querySelector("#자격버튼") as HTMLElement).click();
+    await new Promise((r) => setTimeout(r, 150));
+    const 창 = document.querySelector("#덮개");
+    const 글 = 창 ? (창.textContent ?? "") : "";
+    document.querySelector("#덮개")?.remove();
+    return { 일반층, 관문층, 떴나: !!창, 조건수: 창?.querySelectorAll(".조건줄").length ?? 0, 글: 글.slice(0, 60) };
+  });
+  재기("일반 층에선 관문 단추가 안 보인다", 단추.일반층 === false, 단추);
+  재기("관문 층에선 관문 단추가 보인다", 단추.관문층 === true, 단추);
+  재기("누르면 남은 조건이 뜬다", 단추.떴나 && 단추.조건수 >= 2, 단추);
 } finally { await 창.browser.close(); await 창.close?.(); }
 console.log(나쁨 === 0 ? "\n전부 통과" : `\n실패 ${나쁨}건`);
 process.exit(나쁨 === 0 ? 0 : 1);

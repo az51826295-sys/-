@@ -90,6 +90,12 @@
             font:inherit;font-size:12px;padding:4px 9px;cursor:pointer}
   #자동버튼.on{display:block}
   #자동버튼.켬{border-color:var(--빛테);color:var(--초록)}
+  /* 관문 자격 — 10·20·30… 층에서만 뜬다. 뭐가 남았는지 전투 화면에서 바로 본다 (10-10 사장님) */
+  #자격버튼{position:absolute;right:150px;top:10px;z-index:5;display:none;
+            background:rgba(20,14,26,.82);border:2px solid #d9534f;color:#ff9a8a;
+            font:inherit;font-size:12px;padding:4px 9px;cursor:pointer}
+  #자격버튼.on{display:block}
+  #자격버튼.참{border-color:var(--초록);color:var(--초록)}
   /* 칸을 좁혀 탑이 양옆으로 보이게 한다 — 꽉 채우면 탑 그림이 벽지가 되고 그냥 목록으로 읽힌다 */
   #맵 .층칸{width:78%;margin:0 auto 8px;padding:7px 10px;
             background:rgba(20,14,26,.82);border:1px solid #3a2c45;cursor:pointer}
@@ -181,6 +187,11 @@
   .출전줄.고르기 .자리.켬{opacity:1}
   .출전줄 .넓게{flex:1 1 100%;display:flex;align-items:center;gap:10px;text-align:left;padding:8px 10px}
   .출전줄 .넓게 b{font-size:13px} .출전줄 .넓게 i{margin-left:auto;font-size:11px}
+  /* 몇 병 챙길지 — 켜고 끄기가 아니라 수를 고른다 (10-10 사장님) */
+  .수조절{display:flex;align-items:center;gap:8px;margin-left:10px}
+  .수조절 span{width:26px;height:26px;line-height:22px;text-align:center;font-size:16px;cursor:pointer;
+               background:var(--창);border:2px solid var(--테);color:var(--금)}
+  .수조절 .몇{min-width:20px;text-align:center;color:var(--글);font-size:15px}
   /* 자격 — 됐는지 안 됐는지를 글자(✓·) 가 아니라 **색과 선**으로 */
   .자격칸{display:flex;flex-direction:column;gap:4px;margin-top:2px}
   .조건줄{display:flex;justify-content:space-between;font-size:12px;color:#6e5d78;
@@ -282,7 +293,7 @@
   </div>
 
   <div id="battle">
-    <div id="board"><canvas id="cv"></canvas><button id="자동버튼" type="button">자동 등반</button><button id="탑버튼" type="button">▲ 탑</button></div>
+    <div id="board"><canvas id="cv"></canvas><button id="자격버튼" type="button">관문</button><button id="자동버튼" type="button">자동 등반</button><button id="탑버튼" type="button">▲ 탑</button></div>
     <!-- 10-09 사장님: 시작하자마자 깨지 말고 **고르고 시작**한다. 멈춰 있을 때만 뜬다. -->
     <div id="맵"></div>
     <div id="log"></div>
@@ -487,8 +498,11 @@ const 산아군 = () => 파티원().filter((c) => c.hp > 0);
 const 세리안 = () => 산아군().find((c) => c.키 === "기사");
 function 전투준비(){
   for (const c of 파티원()) { c.hp = 최대체력(c); c.막 = 0; c.보임막 = 0; c.쿨 = 0; c.쿨표 = {}; c.벼름 = false; c.도발 = false; }
-  약대기 = false;
-  if (S.약챙김 && S.가방?.약 > 0) { S.가방.약--; 약대기 = true; }
+  /* 10-10 사장님 "챙길 수량 설정" — 켜고 끄는 게 아니라 **몇 병**을 들고 갈지 고른다.
+     가진 것보다 많이는 못 챙기고, 전투에서 하나씩 깨진다. */
+  S.약수 = Math.max(0, Math.min(S.약수 ?? 0, S.가방?.약 ?? 0));
+  약대기 = S.약수;
+  S.가방.약 -= S.약수;
 }
 function 원정시작(){ 전투준비(); 적만들기(); 그리기(); }
 
@@ -777,7 +791,7 @@ const 레시피 = {
   엄니검: { 이름:"사냥개의 엄니검", 슬롯:"무기", 열림:20, 재료:{ 강철:30, 이빨:1 }, 금화:25000, 효과:{ 공격:150 }, 글:"공격 +150" },
   맹수흉갑: { 이름:"맹수의 가죽 흉갑", 슬롯:"갑옷", 열림:20, 재료:{ 가죽:40, 이빨:1 }, 금화:20000, 효과:{ 체력:950, 방어:75 }, 글:"체력 +950 · 방어 +75" },
 };
-S.가방.장비 = []; S.가방.약 = 0; S.약챙김 = true;
+S.가방.장비 = []; S.가방.약 = 0; S.약수 = 1;
 let 다음템 = 1;
 const 모자람 = (키) => { const r = 레시피[키], 없 = [];
   for (const [k, n] of Object.entries(r.재료)) if ((S.가방[k] ?? 0) < n) 없.push(재료이름[k] ?? k);
@@ -804,7 +818,7 @@ function 장착(템id, 대원id){
 function 벗기(템id){ const t = S.가방.장비.find((x) => x.id === 템id); if (t) t.누구 = null; }
 const 장비들 = (c) => S.가방.장비.filter((x) => x.누구 === c.id);
 const 장비몫 = (c, 칸) => 장비들(c).reduce((v, x) => v + (레시피[x.키].효과[칸] ?? 0), 0);
-let 약대기 = false;
+let 약대기 = 0;   // 이번 판에 들고 들어온 약 (10-10: 참/거짓 → 개수)
 
 let 행동순서 = [];
 function 한턴(){
@@ -900,8 +914,8 @@ function 적행동(e){
   장면(e, "attack", 글, "", { 종류: 막음 > 0 ? (t.막 <= 0 ? "막깨짐" : "막맞음") : "맞음",
     에서:자리(e), 에:자리(t), 색: 막음 > 0 ? "#7ec8ff" : "#ff7a5c", 막들:막들(t) });
   if (t.hp <= 0) 장면(null, null, `<b>${t.이름}</b>${조사(t.이름,"이","가")} 주저앉았다.`, "bad");
-  else if (약대기 && t.hp < 최대체력(t) * .5) {
-    약대기 = false;
+  else if (약대기 > 0 && t.hp < 최대체력(t) * .5) {
+    약대기--;
     const 양 = Math.floor(최대체력(t) * .2);
     t.hp = Math.min(최대체력(t), t.hp + 양);
     장면(null, null, `별빛 회복약이 깨졌다. <b>${t.이름}</b> <span class="good">+${수(양)}</span>`, "good", { 종류:"회복", 에:자리(t), 색:"#ffe9a0" });
@@ -1282,6 +1296,15 @@ function 맵그리기(){
   const 칸 = $("#맵"); if (!칸) return;
   const 탑단추 = $("#탑버튼");
   if (탑단추) 탑단추.classList.toggle("on", S.진행 && S.탭 === "run");
+  // 관문(10의 배수)에 **들어와 있을 때만** 뜬다 — 일반 층에선 볼 게 없다
+  const 자격단추 = $("#자격버튼");
+  if (자격단추) {
+    const 문 = S.진행 && S.탭 === "run" && S.층 % 10 === 0;
+    자격단추.classList.toggle("on", 문);
+    if (문) { const 자 = 자격(S.층);
+      자격단추.classList.toggle("참", 자.참);
+      자격단추.textContent = 자.참 ? `${S.층}층 자격 · 참` : `${S.층}층 자격`; }
+  }
   const 자동단추 = $("#자동버튼");
   if (자동단추) { 자동단추.classList.toggle("on", S.진행 && S.탭 === "run");
     자동단추.classList.toggle("켬", !!S.자동오름);
@@ -1318,6 +1341,16 @@ function 맵그리기(){
     }).join("")}</div></div>`;
   칸.querySelectorAll("[data-f]").forEach((b) => b.onclick = () => 출발창(Number(b.dataset.f)));
 }
+
+$("#자격버튼").onclick = () => {
+  const 층 = S.층, 자 = 자격(층);
+  쪽창(`${층}층 관문`, `<div class="자격칸">${자.줄.map((r) =>
+      `<div class="조건줄${r.됨 ? " 참" : ""}"><span>${r.이름}</span><b>${r.지금}</b></div>`).join("")}</div>
+    <div class="풀이 on">${자.참
+      ? `자격이 찼다. <b>${층 + 1}층</b>으로 오를 수 있다 — 탑에서 고르거나, 자동 등반을 켜 두면 바로 올라간다.`
+      : `아직 못 오른다. 위에 남은 것을 채우면 <b>${층 + 1}층</b>이 열린다.<br>
+         관문에서 지면 자동 등반이 꺼지고 한 층 내려가 모으게 된다.`}</div>`);
+};
 
 $("#자동버튼").onclick = () => { S.자동오름 = !S.자동오름; 적기(S.자동오름 ? "자격이 차면 바로 올라간다." : "자격이 차도 이 층에 머문다.", "turn"); 맵그리기(); 저장(); };
 
@@ -1427,8 +1460,14 @@ function 출발창(층){
           <b>${d.직업}</b><i>${안 ? "출전" : `Lv.${c.레벨}`}</i></div>`; }).join("")
         || `<div class="자리 빈자리"><i>대원이 없다</i></div>`}</div>
       <div class="칸이름">챙길 것</div>
-      <div class="출전줄"><div class="자리 넓게${S.약챙김 ? " 켬" : ""}" id="약">
-        <b>별빛 회복약</b><i>${S.약챙김 ? `챙긴다 · ${S.가방.약}개` : `안 챙긴다 · ${S.가방.약}개`}</i></div></div>
+      <div class="출전줄"><div class="자리 넓게${(S.약수 ?? 0) > 0 ? " 켬" : ""}">
+        <b>별빛 회복약</b>
+        <span class="수조절">
+          <span class="덜" data-약="-1">−</span>
+          <b class="몇">${S.약수 ?? 0}</b>
+          <span class="더" data-약="1">+</span>
+        </span>
+        <i>가진 것 ${S.가방.약}개</i></div></div>
       <div class="칸이름">자격</div>
       <div class="자격칸">${자격(층).줄.map((r) =>
         `<div class="조건줄${r.됨 ? " 참" : ""}"><span>${r.이름}</span><b>${r.지금}</b></div>`).join("")}</div>
@@ -1442,7 +1481,11 @@ function 출발창(층){
       else if (S.파티.length < 5) S.파티.push(id);
       그리자();
     });
-    덮.querySelector("#약").onclick = () => { S.약챙김 = !S.약챙김; 그리자(); };
+    덮.querySelectorAll("[data-약]").forEach((b) => b.onclick = (ev) => {
+      ev.stopPropagation();
+      S.약수 = Math.max(0, Math.min((S.약수 ?? 0) + Number(b.dataset.약), S.가방.약));
+      그리자();
+    });
     덮.querySelector("#들어가기").onclick = () => {
       if (!S.파티.length) return;
       S.층 = 층; S.단계 = Math.floor((층 - 1)/10) + 1;

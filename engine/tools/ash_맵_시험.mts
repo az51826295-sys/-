@@ -51,12 +51,19 @@ try {
   재기("출전 고를 동료가 있다", (창열림?.동료 ?? 0) > 0, 창열림);
   // 약은 캐릭터 창에서 빼고 **떠나기 직전 자리**로 옮겼다 (10-09 사장님)
   const 약 = await page.evaluate(() => {
-    const w = window as any, b = document.querySelector("#덮개 #약") as HTMLElement | null;
-    if (!b) return null;
-    const 앞 = w.S.약챙김; b.click();
-    return { 있다: true, 앞, 뒤: w.S.약챙김, 글: (document.querySelector("#덮개 #약")?.textContent ?? "").trim() };
+    const w = window as any;
+    w.S.가방.약 = 3; w.S.약수 = 0;
+    const 더 = document.querySelector('#덮개 [data-약="1"]') as HTMLElement | null;
+    if (!더) return null;
+    더.click(); 더.click();                                  // 0 → 2
+    const 둘 = w.S.약수;
+    (document.querySelector('#덮개 [data-약="-1"]') as HTMLElement).click();   // 2 → 1
+    const 하나 = w.S.약수;
+    for (let i = 0; i < 9; i++) 더.click();                  // 가진 것(3)보다 많이는 못 챙긴다
+    return { 있다: true, 둘, 하나, 끝: w.S.약수, 글: (document.querySelector("#덮개")?.textContent ?? "") };
   });
-  재기("출발 창에서 약을 챙긴다", !!약 && 약.앞 !== 약.뒤 && /회복약/.test(약.글), 약);
+  재기("출발 창에서 약을 **몇 병** 챙길지 고른다", !!약 && 약.둘 === 2 && 약.하나 === 1 && /회복약/.test(약.글), 약);
+  재기("가진 것보다 많이는 못 챙긴다", 약?.끝 === 3, 약);
 
   const 뺐다 = await page.evaluate(() => {
     const w = window as any; const 앞 = w.S.파티.length;
