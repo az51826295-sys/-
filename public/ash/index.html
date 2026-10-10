@@ -150,6 +150,15 @@
   .큰이름{font-size:17px}
   .힘{margin-top:6px;font-size:12px;color:var(--흐림)}
   .힘 b{color:var(--금);font-weight:400;font-size:15px}
+  /* 시안(10-10): 능력치는 한 줄, 그 아래 큰 액자 */
+  .한줄자{padding:0 11px 8px;font-size:12.5px;color:#8d7c99}
+  .한줄자 b{color:var(--글);font-weight:400}
+  .액자{margin:0 11px 10px;height:168px;border:2px solid var(--테);position:relative;overflow:hidden;
+        background:#17111f url(art/tower.png) center/auto 100% no-repeat}
+  .액자::after{content:"";position:absolute;inset:0;background:linear-gradient(rgba(10,7,13,.45),rgba(10,7,13,.72))}
+  .액자 .선것{position:absolute;left:50%;bottom:6px;transform:translateX(-50%);width:120px;height:140px;
+              background-position:center bottom;background-size:auto 136px;background-repeat:no-repeat;
+              image-rendering:pixelated;z-index:2}
   .넉줄{display:grid;grid-template-columns:1fr 1fr;gap:5px 14px;padding:0 11px 10px;font-size:13px;color:#c9b9a0}
   .넉줄 span{display:flex;justify-content:space-between;border-bottom:1px solid var(--창속);padding-bottom:3px}
   .넉줄 b{color:var(--글);font-weight:400}
@@ -193,6 +202,33 @@
   .출전줄.고르기 .자리.켬{opacity:1}
   .출전줄 .넓게{flex:1 1 100%;display:flex;align-items:center;gap:10px;text-align:left;padding:8px 10px}
   .출전줄 .넓게 b{font-size:13px} .출전줄 .넓게 i{margin-left:auto;font-size:11px}
+  /* ── 전투 진입 — 사장님 시안(10-10): 진행 점 · 세로 슬롯 카드 · 전투 준비 두 칸 ── */
+  .점줄{display:flex;align-items:center;justify-content:center;gap:0;margin:2px 0 8px}
+  .점줄 .점{width:22px;height:22px;line-height:18px;text-align:center;font-size:11px;
+            border:2px solid #3a2c45;background:var(--창속);color:#55475e;border-radius:50%}
+  .점줄 .점.참{border-color:var(--초록);color:var(--초록);background:#1e2a1e}
+  .점줄 .선{flex:1;height:2px;background:#3a2c45;max-width:34px}
+  .슬롯판{display:flex;gap:4px}
+  .칸슬롯{flex:1;min-height:104px;background:var(--창속);border:2px solid var(--테);position:relative;
+          display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:4px 2px;cursor:pointer}
+  .칸슬롯.참{border-color:var(--금);background:#241c2e}
+  .칸슬롯 .번호{position:absolute;top:1px;left:4px;font-size:9px;color:#55475e}
+  .칸슬롯 .큰낯{width:40px;height:40px;border:2px solid;image-rendering:pixelated;
+                background:#1a1420 center/38px 38px no-repeat}
+  .칸슬롯 .더하기{width:40px;height:40px;line-height:36px;text-align:center;font-size:22px;
+                  color:#44384d;border:2px dashed #3a2c45}
+  .칸슬롯 b{font-size:9.5px;color:var(--글);font-weight:400;text-align:center;line-height:1.2}
+  .칸슬롯 i{font-size:9px;color:#55475e;font-style:normal}
+  .칸슬롯 i.참{color:var(--금)}
+  .준비줄{display:flex;gap:6px;margin-top:4px}
+  .준비칸{flex:1;background:var(--창속);border:2px solid var(--테);padding:6px 8px}
+  .준비칸.흐림{opacity:.5}
+  .준비머리{font-size:11px;color:var(--금);margin-bottom:5px}
+  .준비머리 img{width:16px;height:16px;image-rendering:pixelated;vertical-align:-3px;margin-right:3px}
+  .준비속{display:flex;flex-direction:column;gap:5px}
+  .준비속 b{font-size:11px;color:var(--글);font-weight:400}
+  .준비속 i{font-size:11px;color:#55475e;font-style:normal}
+  .큰단추{font-size:15px;padding:11px}
   /* 몇 병 챙길지 — 켜고 끄기가 아니라 수를 고른다 (10-10 사장님) */
   .수조절{display:flex;align-items:center;gap:8px;margin-left:10px}
   .수조절 span{width:26px;height:26px;line-height:22px;text-align:center;font-size:16px;cursor:pointer;
@@ -219,6 +255,18 @@
   .칸짜리 .수{font-size:10px;color:var(--금)}
   .칸짜리.낌{border-color:var(--빛테)}
   .칸짜리.빔{opacity:.35;cursor:default}
+  /* 탭에 아이콘 (10-10 사장님 시안) — 그림 위, 글자 아래 */
+  .tab img{display:block;width:26px;height:26px;margin:0 auto 1px;image-rendering:pixelated}
+  .tab{line-height:1.1}
+  /* 서브탭에도 아이콘 */
+  .서브탭 span img{width:16px;height:16px;image-rendering:pixelated;vertical-align:-3px;margin-right:3px}
+  /* 아이콘 칸 — 재료·장비를 글자가 아니라 **그림**으로 (사장님 시안) */
+  .칸짜리 img{width:34px;height:34px;image-rendering:pixelated;display:block;margin:0 auto 2px}
+  .슬롯 img{width:36px;height:36px;image-rendering:pixelated;display:block;margin:0 auto 2px}
+  .재료칸 img{width:14px;height:14px;image-rendering:pixelated;vertical-align:-2px;margin-right:2px}
+  .템아이콘{flex:none;width:40px;height:40px;background:var(--창속);border:2px solid var(--테);
+            display:flex;align-items:center;justify-content:center}
+  .템아이콘 img{width:32px;height:32px;image-rendering:pixelated}
   #log b{font-weight:400;color:#ffe2a8}
 
   #panel{height:0;overflow:hidden;background:var(--창);margin:0 4px}
@@ -309,11 +357,11 @@
 
   <div id="tabs">
     <!-- 10-09 사장님 순서: 길드 · 캐릭터 · 전투 · 대장간 · 시장 (10-07 순서에서 바뀜) -->
-    <div class="tab home on" data-t="hall">길드</div>
-    <div class="tab" data-t="crew">캐릭터</div>
-    <div class="tab" data-t="run">전투</div>
-    <div class="tab" data-t="forge">대장간</div>
-    <div class="tab" data-t="shop">시장</div>
+    <div class="tab home on" data-t="hall"><img src="art/icon/t-hall.png" alt="">길드</div>
+    <div class="tab" data-t="crew"><img src="art/icon/t-crew.png" alt="">캐릭터</div>
+    <div class="tab" data-t="run"><img src="art/icon/t-run.png" alt="">전투</div>
+    <div class="tab" data-t="forge"><img src="art/icon/t-forge.png" alt="">대장간</div>
+    <div class="tab" data-t="shop"><img src="art/icon/t-shop.png" alt="">시장</div>
   </div>
 </div>
 
@@ -785,6 +833,11 @@ function 사기(키){
   윗줄(); 저장();
   return true;
 }
+
+/** 레시피 키 → 아이콘 이름 (10-10 사장님 시안: 글자 말고 그림) */
+const 물건아이콘 = { 철검:"i-철검", 대검:"i-대검", 엄니검:"i-엄니검",
+  가죽갑옷:"i-가죽갑옷", 강철갑옷:"i-강철갑옷", 맹수흉갑:"i-맹수흉갑", 회복약:"i-약" };
+const 아이콘 = (이름) => `<img src="art/icon/${이름}.png" alt="">`;
 
 const 레시피 = {
   철검:   { 이름:"견습자의 철검", 슬롯:"무기", 열림:5, 재료:{ 파편:12, 수호핵:1 }, 금화:1000, 효과:{ 공격:18 }, 글:"공격 +18" },
@@ -1453,14 +1506,18 @@ function 출발창(층){
       <!-- 10-10 사장님: 글자 체크박스를 치우고 초상화 슬롯 다섯 칸으로.
            윗줄은 데려갈 자리, 아랫줄은 남은 대원. 누르면 오가고, 빈 칸이 몇인지 바로 보인다.
            (이 주석은 템플릿 문자열 안이다 — 여기에 백틱을 쓰면 템플릿이 끊긴다. 10-10 그래서 한 번 터졌다.) -->
-      <div class="칸이름">출전 ${S.파티.length}/5</div>
-      <div class="출전줄">${Array.from({ length: 5 }, (_, i) => {
+      <!-- 10-10 사장님 시안: **1~5 진행 점** + 세로 슬롯 카드. 빈 칸은 [+] 와 "대기 중". -->
+      <div class="점줄">${Array.from({ length: 5 }, (_, i) =>
+        `<span class="점${i < S.파티.length ? " 참" : ""}">${i + 1}</span>`).join('<i class="선"></i>')}</div>
+      <div class="칸이름">최대 5인 파티 편성</div>
+      <div class="슬롯판">${Array.from({ length: 5 }, (_, i) => {
         const id = S.파티[i], c = id != null ? S.대원.find((x) => x.id === id) : null;
-        if (!c) return `<div class="자리 빈자리"><i>${i + 1}</i></div>`;
-        const d = 카드(c);
-        return `<div class="자리 참" data-넣="${c.id}">
-          <div class="낯" style="border-color:${등급색[d.등급]};background-image:url(${얼굴(d.그림)})"></div>
-          <b>${d.직업}</b><i>Lv.${c.레벨}</i></div>`;
+        const d = c ? 카드(c) : null;
+        return `<div class="칸슬롯${c ? " 참" : ""}" ${c ? `data-넣="${c.id}"` : ""}>
+          <span class="번호">${i + 1}</span>
+          ${c ? `<div class="큰낯" style="border-color:${등급색[d.등급]};background-image:url(${얼굴(d.그림)})"></div>
+                 <b>${d.직업} Lv.${c.레벨}</b><i class="참">출전 중</i>`
+              : `<div class="더하기">+</div><i>대기 중</i>`}</div>`;
       }).join("")}</div>
       <div class="칸이름">대원 — 누르면 넣고 뺀다</div>
       <div class="출전줄 고르기">${S.대원.map((c) => { const d = 카드(c), 안 = S.파티.includes(c.id);
@@ -1468,20 +1525,26 @@ function 출발창(층){
           <div class="낯" style="border-color:${안 ? 등급색[d.등급] : "#3a2c45"};background-image:url(${얼굴(d.그림)})"></div>
           <b>${d.직업}</b><i>${안 ? "출전" : `Lv.${c.레벨}`}</i></div>`; }).join("")
         || `<div class="자리 빈자리"><i>대원이 없다</i></div>`}</div>
-      <div class="칸이름">챙길 것</div>
-      <div class="출전줄"><div class="자리 넓게${(S.약수 ?? 0) > 0 ? " 켬" : ""}">
-        <b>별빛 회복약</b>
-        <span class="수조절">
-          <span class="덜" data-약="-1">−</span>
-          <b class="몇">${S.약수 ?? 0}</b>
-          <span class="더" data-약="1">+</span>
-        </span>
-        <i>가진 것 ${S.가방.약}개</i></div></div>
+      <div class="칸이름">전투 준비</div>
+      <div class="준비줄">
+        <div class="준비칸">
+          <div class="준비머리">${아이콘("i-약")} 물약</div>
+          <div class="준비속">
+            <b>별빛 회복약 ${S.가방.약}</b>
+            <span class="수조절">
+              <span data-약="-1">−</span><b class="몇">${S.약수 ?? 0}</b><span data-약="1">+</span>
+            </span></div>
+        </div>
+        <div class="준비칸 흐림">
+          <div class="준비머리">${아이콘("s-scroll")} 소모품</div>
+          <div class="준비속"><i>아직 없다</i></div>
+        </div>
+      </div>
       <div class="칸이름">자격</div>
       <div class="자격칸">${자격(층).줄.map((r) =>
         `<div class="조건줄${r.됨 ? " 참" : ""}"><span>${r.이름}</span><b>${r.지금}</b></div>`).join("")}</div>
       <!-- 10-09 사장님 구성: 올라가는 단추가 없다. 들어가서 되돌이로 돌며 자격을 채운다. -->
-      <div class="줄"><button class="btn" id="들어가기">들어간다</button></div>
+      <div class="줄"><button class="btn 큰단추" id="들어가기">전투 시작 (${층}층)</button></div>
       <div class="줄"><button class="btn" id="닫기">닫기</button></div>
     </div>`;
     덮.querySelectorAll("[data-넣]").forEach((b) => b.onclick = () => {
@@ -1531,6 +1594,7 @@ function 대원창(el){
     const 값 = 낀 ? Object.entries(레시피[낀.키].효과 ?? {}).map(([k, v]) => `${k} +${v}`).join(" · ") : "";
     // 10-10 사장님 "X 버튼 완전 삭제" — 슬롯을 누르면 가방이 열리고, 벗기는 것도 거기서 한다
     return `<div class="슬롯${낀 ? " 참" : ""}" data-슬롯="${슬롯}">
+      ${낀 && 물건아이콘[낀.키] ? 아이콘(물건아이콘[낀.키]) : ""}
       <div class="칸이름2">${슬롯}</div>
       ${낀 ? `<div class="템이름">${레시피[낀.키].이름}</div><div class="템값">${값}</div>`
            : `<div class="템이름" style="opacity:.4">비어 있음</div>`}</div>`;
@@ -1551,12 +1615,12 @@ function 대원창(el){
         <div class="힘">전투력 <b>${수(전투력(c))}</b></div>
         <div class="bar"><i style="width:${Math.min(100, c.경험/필요경험(c)*100)}%"></i></div></div>
     </div>
-    <div class="넉줄">
-      <span>체력 <b>${수(최대체력(c))}</b></span><span>공격 <b>${수(공격력(c))}</b></span>
-      <span>방어 <b>${수(방어력(c))}</b></span><span>속도 <b>${속도(c)}</b></span>
-    </div>
-    <div style="padding:0 11px"><div class="서브탭">${["장비", "강화", "기술"].map((t) =>
-      `<span class="${S.대원탭 === t ? "on" : ""}" data-대원탭="${t}">${t}</span>`).join("")}</div></div>
+    <div class="한줄자">체력 <b>${수(최대체력(c))}</b> · 공격 <b>${수(공격력(c))}</b>
+      · 방어 <b>${수(방어력(c))}</b> · 속도 <b>${속도(c)}</b></div>
+    <!-- 10-10 사장님 시안: **큰 전신 액자**. 작은 초상화만으로는 누구를 보고 있는지 와닿지 않는다 -->
+    <div class="액자"><div class="선것" style="background-image:url(art/${d.그림}.png)"></div></div>
+    <div style="padding:0 11px"><div class="서브탭">${[["장비","s-gear"], ["강화","s-grow"], ["기술","s-skill"]].map(([t, ic]) =>
+      `<span class="${S.대원탭 === t ? "on" : ""}" data-대원탭="${t}"><img src="art/icon/${ic}.png" alt="">${t}</span>`).join("")}</div></div>
     ${S.대원탭 === "장비"
       ? `<div class="슬롯줄">${["무기", "갑옷", "장신구"].map(슬롯칸).join("")}</div>
          ${S.가방슬롯 ? 가방패널(S.가방슬롯, c)
@@ -1632,6 +1696,7 @@ function 가방패널(슬롯, c){
         const 남 = x.누구 != null && !낌 ? S.대원.find((y) => y.id === x.누구) : null;
         const 차 = 값(x.키) - 지금값;
         return `<div class="칸짜리${낌 ? " 낌" : ""}" data-낄="${x.id}">
+          ${물건아이콘[x.키] ? 아이콘(물건아이콘[x.키]) : ""}
           <div class="이름">${r.이름}</div>
           <div class="수">${낌 ? "끼는 중" : 남 ? 카드(남).직업
             : 차 > 0 ? `<span style="color:#8fe08f">+${수(차)}</span>`
@@ -1657,7 +1722,7 @@ function 가방창(){
       const 들 = Object.keys(재료이름).filter((k) => (g[k] ?? 0) > 0);
       속 = 들.length
         ? `<div class="가방격자">${들.map((k) => `<div class="칸짜리" data-재료="${k}">
-            <div class="이름">${재료이름[k]}</div><div class="수">${수(g[k])}</div></div>`).join("")}</div>`
+            ${아이콘("m-" + k)}<div class="이름">${재료이름[k]}</div><div class="수">${수(g[k])}</div></div>`).join("")}</div>`
         : `<div class="풀이 on">아직 모은 재료가 없다. 탑을 돌면 쌓인다.</div>`;
     } else if (탭 === "장비") {
       const 들 = g.장비 ?? [];
@@ -1665,19 +1730,20 @@ function 가방창(){
         ? `<div class="가방격자">${들.map((x) => { const r = 레시피[x.키];
             const 쥔 = x.누구 != null ? S.대원.find((c) => c.id === x.누구) : null;
             return `<div class="칸짜리${쥔 ? " 낌" : ""}" data-템="${x.id}">
+              ${물건아이콘[x.키] ? 아이콘(물건아이콘[x.키]) : ""}
               <div class="이름">${r.이름}</div>
               <div class="수">${쥔 ? 카드(쥔).직업 : "안 낌"}</div></div>`; }).join("")}</div>`
         : `<div class="풀이 on">만든 장비가 없다. <b>대장간</b>에서 만든다.</div>`;
     } else {
       속 = `<div class="가방격자"><div class="칸짜리${g.약 > 0 ? "" : " 빔"}" data-소모="약">
-          <div class="이름">별빛 회복약</div><div class="수">${수(g.약 ?? 0)}</div></div></div>
+          ${아이콘("i-약")}<div class="이름">별빛 회복약</div><div class="수">${수(g.약 ?? 0)}</div></div></div>
         <div class="풀이 on">소모품은 <b>떠나기 전</b>에 몇 개 챙길지 고른다 — 탑에서 층을 고를 때.</div>`;
     }
     덮.innerHTML = `<div class="카드" onclick="event.stopPropagation()">
       <div class="nm"><b style="display:block;font-size:15px">가방</b>
         <i style="color:var(--흐림);font-size:12px">금화 ${수(S.금화)} · 별가루 ${수(g.별가루 ?? 0)}</i></div>
-      <div class="서브탭" style="margin-top:8px">${["재료", "장비", "소모품"].map((t) =>
-        `<span class="${탭 === t ? "on" : ""}" data-가방탭="${t}">${t}</span>`).join("")}</div>
+      <div class="서브탭" style="margin-top:8px">${[["재료","m-파편"], ["장비","s-gear"], ["소모품","i-약"]].map(([t, ic]) =>
+        `<span class="${탭 === t ? "on" : ""}" data-가방탭="${t}"><img src="art/icon/${ic}.png" alt="">${t}</span>`).join("")}</div>
       ${속}
       <div class="줄"><button class="btn" id="닫기">닫기</button></div></div>`;
     덮.querySelectorAll("[data-가방탭]").forEach((b) => b.onclick = () => { S.가방탭 = b.dataset.가방탭; 그리자(); });
@@ -1781,7 +1847,7 @@ function 칸(){
 
     const 칸들 = (r) => Object.entries(r.재료).map(([k, n]) => {
       const 가진 = g[k] ?? 0, 됨 = 가진 >= n;
-      return `<span class="재료칸${됨 ? " 참" : ""}">${재료이름[k] ?? k}
+      return `<span class="재료칸${됨 ? " 참" : ""}">${아이콘("m-" + k)}${재료이름[k] ?? k}
         <b>${가진}/${n}</b>${됨 ? "" : `<i>${n - 가진} 모자람</i>`}</span>`;
     }).concat(`<span class="재료칸${S.금화 >= r.금화 ? " 참" : ""}">금화 <b>${수(r.금화)}</b>${
       S.금화 >= r.금화 ? "" : `<i>${수(r.금화 - S.금화)} 모자람</i>`}</span>`).join("");
@@ -1796,6 +1862,7 @@ function 칸(){
       if (단계(r) !== 앞단계) { 앞단계 = 단계(r); 글 += `<div class="단계줄">${앞단계}</div>`; }
       const 쓸 = 된다 ? 쓸사람(k) : null;
       글 += `<div class="row${된다 ? " 된다" : ""}${잠김 ? " 잠김" : ""}">
+        ${물건아이콘[k] ? `<div class="템아이콘">${아이콘(물건아이콘[k])}</div>` : ""}
         <div class="nm"><b>${r.이름} <span class="tag">${r.슬롯}</span>${
           된다 ? `<span class="tag r">만들 수 있다</span>` : ""}</b>
           <i>${r.글}</i>
@@ -1817,7 +1884,9 @@ function 칸(){
         <i>금화 ${수(S.금화)} · 내일이면 다시 채워진다</i></div></div>`
       + Object.entries(매대).map(([k, m]) => {
           const 남 = 남은수(k), 살수있나 = 남 > 0 && S.금화 >= m.값;
-          return `<div class="row"><div class="nm"><b>${m.이름}
+          return `<div class="row">${재료이름[k] ? `<div class="템아이콘">${아이콘("m-" + k)}</div>`
+              : k === "약" ? `<div class="템아이콘">${아이콘("i-약")}</div>` : ""}
+            <div class="nm"><b>${m.이름}
             <span class="tag" style="color:${남 > 0 ? "var(--금)" : "#6e5d78"}">오늘 ${산수(k)}/${m.하루}</span></b>
             <i>${m.글}<br><span style="color:${S.금화 >= m.값 ? "#8fe08f" : "#ff8e7a"}">${수(m.값)} 금화</span></i></div>
             <button class="btn" data-사기="${k}" ${살수있나 ? "" : "disabled"}>사기</button></div>`; }).join("")
