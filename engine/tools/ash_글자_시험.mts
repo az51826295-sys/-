@@ -44,6 +44,10 @@ try {
     const 글: Record<string, string> = {};
     const 긁 = (이름: string, 어디: string) => { 글[이름] = (document.querySelector(어디)?.textContent ?? "").replace(/\s+/g, " "); };
 
+    // 갈래 카드 화면과 그 안쪽을 **둘 다** 훑는다 (10-10 사장님 시안 2차)
+    w.S.대장갈래 = null; w.S.시장갈래 = null;
+    for (const t of ["forge", "shop"]) { w.S.탭 = t; w.화면(); 긁(`${t}-갈래`, "#panel"); }
+    w.S.대장갈래 = "제작"; w.S.시장갈래 = "구매";
     for (const t of ["crew", "forge", "shop"]) { w.S.탭 = t; w.S.보는대원 = null; w.화면(); 긁(t, "#panel"); }
     w.S.탭 = "hall"; w.화면(); 긁("hall", "#hall");
 

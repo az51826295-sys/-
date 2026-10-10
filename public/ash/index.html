@@ -202,12 +202,7 @@
   .출전줄.고르기 .자리.켬{opacity:1}
   .출전줄 .넓게{flex:1 1 100%;display:flex;align-items:center;gap:10px;text-align:left;padding:8px 10px}
   .출전줄 .넓게 b{font-size:13px} .출전줄 .넓게 i{margin-left:auto;font-size:11px}
-  /* ── 전투 진입 — 사장님 시안(10-10): 진행 점 · 세로 슬롯 카드 · 전투 준비 두 칸 ── */
-  .점줄{display:flex;align-items:center;justify-content:center;gap:0;margin:2px 0 8px}
-  .점줄 .점{width:22px;height:22px;line-height:18px;text-align:center;font-size:11px;
-            border:2px solid #3a2c45;background:var(--창속);color:#55475e;border-radius:50%}
-  .점줄 .점.참{border-color:var(--초록);color:var(--초록);background:#1e2a1e}
-  .점줄 .선{flex:1;height:2px;background:#3a2c45;max-width:34px}
+  /* ── 전투 진입 — 사장님 시안(10-10): 세로 슬롯 카드 · 전투 준비 두 칸 ── */
   .슬롯판{display:flex;gap:4px}
   .칸슬롯{flex:1;min-height:104px;background:var(--창속);border:2px solid var(--테);position:relative;
           display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:4px 2px;cursor:pointer}
@@ -274,6 +269,28 @@
   .row{display:flex;align-items:center;gap:9px;padding:9px 11px;border-bottom:2px solid var(--창속)}
   .row.된다{background:#241c2e;box-shadow:inset 3px 0 0 var(--금)}   /* 지금 만들 수 있는 것 (10-10 사장님) */
   .row.잠김{opacity:.5}
+  /* 갈래 카드 — 대장간·시장이 먼저 두 갈래로 갈린다 (10-10 사장님 시안 2차) */
+  .갈래머리{text-align:center;padding:10px 0 2px;font-size:15px;color:var(--글)}
+  .갈래머리 span{color:var(--흐림);font-size:12px}
+  .갈래밑{text-align:center;margin:6px 11px 12px;padding:6px;font-size:12px;color:#8d7c99;
+          background:var(--창속);border:2px solid var(--테)}
+  .갈래줄{display:flex;gap:10px;padding:0 11px}
+  .갈래칸{flex:1;background:var(--창속);border:3px solid #3a2c45;position:relative;
+          padding:12px 8px 10px;text-align:center}
+  .갈래칸.열림{border-color:var(--초록);background:#1e2a1e;cursor:pointer;
+               box-shadow:0 0 0 1px var(--초록) inset}
+  .갈래칸.잠김{opacity:.6}
+  .갈래번호{position:absolute;top:-11px;left:50%;transform:translateX(-50%);
+            width:22px;height:22px;line-height:18px;font-size:11px;border-radius:50%;
+            border:2px solid #3a2c45;background:var(--창);color:#8d7c99}
+  .갈래칸.열림 .갈래번호{border-color:var(--금);background:#2a2033;color:var(--금)}
+  .갈래그림{height:92px;display:flex;align-items:center;justify-content:center}
+  .갈래그림 img{width:88px;height:88px;image-rendering:pixelated}
+  .갈래이름{margin-top:6px;padding:5px;font-size:13px;color:var(--글);background:var(--창);border:2px solid var(--테)}
+  .갈래칸.열림 .갈래이름{color:var(--초록);border-color:var(--초록)}
+  .갈래줄.쪽글{margin-top:6px}
+  .갈래쪽{flex:1;text-align:center;font-size:11px;color:#6e5d78;padding:4px;border:1px solid #3a2c45}
+  .갈래쪽.열림{color:var(--금);border-color:#4a3a55}
   /* 대장간 — 층대로 묶고 재료를 칸으로 (10-09 "디테일하게 처음부터 다시") */
   .단계줄{padding:7px 11px 4px;font-size:11px;color:#6e5d78;background:var(--창속);letter-spacing:.5px}
   .재료줄{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}
@@ -415,6 +432,8 @@ const 보호막층 = new Set([40,50,60,80,90,100]);
 const 역할계수 = { 방어:{체력:1.35,공격:.82,방어:1.35}, 공격:{체력:.92,공격:1.22,방어:.85},
                   지원:{체력:1,공격:.92,방어:.95},      제어:{체력:1,공격:.98,방어:1} };
 const 등급계수 = { 희귀:.9, 영웅:1, 전설:1.08 };
+/** **파티 한도** (10-10 사장님 "캐릭터는 4마리가 한계"). 숫자는 여기 한 곳에만 적는다. */
+const 파티한도 = 4;
 const 등급상한 = { 희귀:80, 영웅:100, 전설:120 };
 /**
  * **레벨 상한** — 등급으로도 막히고, **지금까지 연 층**으로도 막힌다 (10-09).
@@ -463,7 +482,7 @@ const 필요경험 = (c) => 80 + (c.레벨 - 1)*12;
  * `진행`은 이제 처음에 꺼져 있다. 시작하자마자 1층을 깨 버리면 **고를 틈이 없다**(사장님 지적).
  */
 const S = { 단계:1, 층:1, 금화:0, 대원:[], 파티:[], 탭:"hall", 진행:false, 쉼:0, 대표:null, 최고층:0, 사냥층:null,
-            무리:0, 무리수:1, 깸:{}, 보스깸:[], 자동오름:true, 장날:null, 산것:{}, 출석날:null, 버프:null, 보는대원:null, 대원탭:"장비", 가방슬롯:null, 가방탭:"재료",
+            무리:0, 무리수:1, 깸:{}, 보스깸:[], 자동오름:true, 장날:null, 산것:{}, 출석날:null, 버프:null, 보는대원:null, 대원탭:"장비", 가방슬롯:null, 가방탭:"재료", 대장갈래:null, 시장갈래:null,
             가방:{ 파편:0, 잔혼:0, 수호핵:0, 가죽:0, 강철:0, 이빨:0, 거인뼈:0, 별가루:0, 문장:{ 방어:0, 공격:0, 지원:0, 제어:0 } } };
 for (const k of ["기사","검사","회복술사"]) S.대원.push(대원만들기(k));
 S.파티 = S.대원.map((c) => c.id);
@@ -1083,7 +1102,7 @@ function 판끝(){
   if (보스판 && !S.대원.some((c) => c.키 === "흑마법사")) {
     const 새 = 대원만들기("흑마법사", Math.max(1, ...S.대원.map((c) => c.레벨)));
     S.대원.push(새);
-    if (S.파티.length < 5) S.파티.push(새.id);
+    if (S.파티.length < 파티한도) S.파티.push(새.id);
     장면(null, null, `골렘의 잔해 속에서 <b>흑마법사</b>(제어)가 걸어 나왔다.`, "big");
   }
   // **층을 안 올린다.** 같은 층을 다시 세운다 — 떠나는 것은 사장님이 탑에서 고른다.
@@ -1509,15 +1528,14 @@ function 출발창(층){
   const 그리자 = () => {
     덮.innerHTML = `<div class="카드" onclick="event.stopPropagation()">
       <div class="nm"><b><span style="color:var(--금)">${층}층</span>${층 % 10 === 0 ? ` <span class="tag r">보스</span>` : ""}</b>
-        <i>누구를 데려갈까 · ${S.파티.length}/5</i></div>
+        <i>누구를 데려갈까 · ${S.파티.length}/${파티한도}</i></div>
       <!-- 10-10 사장님: 글자 체크박스를 치우고 초상화 슬롯 다섯 칸으로.
            윗줄은 데려갈 자리, 아랫줄은 남은 대원. 누르면 오가고, 빈 칸이 몇인지 바로 보인다.
            (이 주석은 템플릿 문자열 안이다 — 여기에 백틱을 쓰면 템플릿이 끊긴다. 10-10 그래서 한 번 터졌다.) -->
-      <!-- 10-10 사장님 시안: **1~5 진행 점** + 세로 슬롯 카드. 빈 칸은 [+] 와 "대기 중". -->
-      <div class="점줄">${Array.from({ length: 5 }, (_, i) =>
-        `<span class="점${i < S.파티.length ? " 참" : ""}">${i + 1}</span>`).join('<i class="선"></i>')}</div>
-      <div class="칸이름">최대 5인 파티 편성</div>
-      <div class="슬롯판">${Array.from({ length: 5 }, (_, i) => {
+      <!-- 10-10 사장님: 진행 점은 뺐다 — 들어가고 나면 중간에 못 바꾸니 보여 줄 것이 없다.
+           파티는 **네 자리**가 한계(사장님). -->
+      <div class="칸이름">최대 ${파티한도}인 파티 편성</div>
+      <div class="슬롯판">${Array.from({ length: 파티한도 }, (_, i) => {
         const id = S.파티[i], c = id != null ? S.대원.find((x) => x.id === id) : null;
         const d = c ? 카드(c) : null;
         return `<div class="칸슬롯${c ? " 참" : ""}" ${c ? `data-넣="${c.id}"` : ""}>
@@ -1557,7 +1575,7 @@ function 출발창(층){
     덮.querySelectorAll("[data-넣]").forEach((b) => b.onclick = () => {
       const id = Number(b.dataset.넣);
       if (S.파티.includes(id)) S.파티 = S.파티.filter((x) => x !== id);
-      else if (S.파티.length < 5) S.파티.push(id);
+      else if (S.파티.length < 파티한도) S.파티.push(id);
       그리자();
     });
     덮.querySelectorAll("[data-약]").forEach((b) => b.onclick = (ev) => {
@@ -1802,6 +1820,24 @@ function 물건창(무엇){
   덮.querySelector("#닫기").onclick = () => 덮.remove();
 }
 
+/**
+ * **갈래 카드** (10-10 사장님 시안 2차). 대장간과 시장은 먼저 **두 갈래**로 갈린다.
+ * 진행 점은 넣지 않는다 — 들어가고 나면 중간에 못 바꾸니 보여 줄 것이 없다(사장님).
+ */
+const 단계표 = () => S.최고층 >= 20 ? "T3" : S.최고층 >= 10 ? "T2" : "T1";
+function 갈래판(제목, 밑글, 카드들){
+  return `<div class="갈래머리">${제목} <span>(${단계표()})</span></div>
+    <div class="갈래밑">${밑글}</div>
+    <div class="갈래줄">${카드들.map((c, i) => `
+      <div class="갈래칸${c.열림 ? " 열림" : " 잠김"}" ${c.열림 ? `data-갈래="${c.키}"` : ""}>
+        <span class="갈래번호">${i + 1}</span>
+        <div class="갈래그림">${아이콘(c.그림)}</div>
+        <div class="갈래이름">${c.이름}${c.열림 ? " ▶" : ""}</div>
+      </div>`).join("")}</div>
+    <div class="갈래줄 쪽글">${카드들.map((c) =>
+      `<div class="갈래쪽${c.열림 ? " 열림" : ""}">${c.쪽글}</div>`).join("")}</div>`;
+}
+
 function 칸(){
   const el = $("#panel");
   if (S.탭 === "run" || S.탭 === "hall") { el.className = ""; el.innerHTML = ""; return; }
@@ -1837,6 +1873,14 @@ function 칸(){
      */
     const g = S.가방;
     if (S.최고층 < 3) { el.innerHTML = `<div class="row"><div class="nm"><b>대장간</b><i>3층을 넘으면 대장간이 열린다. (지금 ${S.최고층}층)</i></div></div>`; return; }
+    if (!S.대장갈래) {
+      el.innerHTML = 갈래판("대장간", "매일 재료를 모아 여기서 벼린다", [
+        { 키:"강화", 이름:"장비 강화", 그림:"c-upgrade", 열림:false, 쪽글:"강화 재료 필요" },
+        { 키:"제작", 이름:"장비 제작", 그림:"c-craft", 열림:true, 쪽글:"재료로 새 장비를" },
+      ]);
+      el.querySelectorAll("[data-갈래]").forEach((b) => b.onclick = () => { S.대장갈래 = b.dataset.갈래; 칸(); });
+      return;
+    }
 
     const 단계 = (r) => r.열림 >= 20 ? "T3 · 20층 위" : r.열림 >= 10 ? "T2 · 10층 위" : "T1 · 처음";
     const 값 = (키) => Object.values(레시피[키].효과 ?? {}).reduce((a, b) => a + Number(b), 0);
@@ -1862,7 +1906,8 @@ function 칸(){
     const 가방줄 = Object.keys(재료이름).filter((k) => (g[k] ?? 0) > 0)
       .map((k) => `${재료이름[k]} ${g[k]}`).join(" · ") || "재료가 없다";
 
-    let 글 = `<div class="row"><div class="nm"><b>가방</b><i>${가방줄} · 금화 ${수(S.금화)}</i></div></div>`;
+    let 글 = `<div class="머리띠"><span class="뒤로" id="갈래뒤로">‹ 대장간</span></div>
+      <div class="row"><div class="nm"><b>가방</b><i>${가방줄} · 금화 ${수(S.금화)}</i></div></div>`;
     let 앞단계 = "";
     for (const [k, r] of Object.entries(레시피)) {
       const 없 = 모자람(k), 잠김 = S.최고층 < r.열림, 된다 = !잠김 && !없.length;
@@ -1880,6 +1925,7 @@ function 칸(){
     }
     글 += `<div class="row"><div class="nm"><i>만든 것은 <span style="color:#f2b45a">캐릭터</span> 탭에서 슬롯을 눌러 끼운다.</i></div></div>`;
     el.innerHTML = 글;
+    el.querySelector("#갈래뒤로").onclick = () => { S.대장갈래 = null; 칸(); };
     el.querySelectorAll("[data-make]").forEach((b) => b.onclick = () => {
       const 전 = 레시피[b.dataset.make].이름;
       if (만들기(b.dataset.make)) 적기(`대장간에서 <b>${전}</b>을 만들었다.`, "good");
@@ -1887,7 +1933,16 @@ function 칸(){
     });
   } else if (S.탭 === "shop") {
     매대확인();
-    el.innerHTML = `<div class="row"><div class="nm"><b>오늘의 매대</b>
+    if (!S.시장갈래) {
+      el.innerHTML = 갈래판("시장", "매일 물건이 바뀐다", [
+        { 키:"구매", 이름:"상점 구매", 그림:"c-shop", 열림:true, 쪽글:"금화로 물품 구매" },
+        { 키:"판매", 이름:"위탁 판매", 그림:"c-sell", 열림:false, 쪽글:"아이템 등록 대기 중" },
+      ]);
+      el.querySelectorAll("[data-갈래]").forEach((b) => b.onclick = () => { S.시장갈래 = b.dataset.갈래; 칸(); });
+      return;
+    }
+    el.innerHTML = `<div class="머리띠"><span class="뒤로" id="갈래뒤로">‹ 시장</span></div>
+      <div class="row"><div class="nm"><b>오늘의 매대</b>
         <i>금화 ${수(S.금화)} · 내일이면 다시 채워진다</i></div></div>`
       + Object.entries(매대).map(([k, m]) => {
           const 남 = 남은수(k), 살수있나 = 남 > 0 && S.금화 >= m.값;
@@ -1899,6 +1954,7 @@ function 칸(){
             <button class="btn" data-사기="${k}" ${살수있나 ? "" : "disabled"}>사기</button></div>`; }).join("")
       + `<div class="row"><div class="nm"><i>재료가 <span style="color:var(--글)">하나</span> 모자라 막혔을 때 쓰는 자리다.
           여기서 다 사는 것보다 탑을 도는 쪽이 늘 싸다.</i></div></div>`;
+    el.querySelector("#갈래뒤로").onclick = () => { S.시장갈래 = null; 칸(); };
     el.querySelectorAll("[data-사기]").forEach((b) => b.onclick = () => { 사기(b.dataset.사기); 칸(); });
   } else {
     const g = S.가방;
@@ -1993,7 +2049,7 @@ function 길드그리기(){
 }
 
 // 자가 창 안에서 턴을 직접 돌릴 수 있어야 한다 — 1.4초씩 기다리면 100층에 두 시간이다.
-Object.assign(window, { S, 맵그리기, 출발창, 화면, 한턴, 적만들기, 무리수, 판끝, 자격, 열린층, 필요판, 최대체력, 공격력, 방어력, 전멸, 기술표, 도감, 빛셈, 빛표, 대원만들기, 방어뒤, 결의배, 도감, 기술설명, 특성설명, 스킬들, 대원창, 가방패널, 가방창, 물건창, 전투력, 레벨상한, 필요경험, 벗기, 칸, 만들기, 모자람, 장착, 레시피, 구간, 구간들, 매대, 사기, 남은수, 산수, 매대확인, 전투준비, 저장, 불러오기, 지우기 });
+Object.assign(window, { S, 맵그리기, 출발창, 화면, 한턴, 적만들기, 무리수, 파티한도, 판끝, 자격, 열린층, 필요판, 최대체력, 공격력, 방어력, 전멸, 기술표, 도감, 빛셈, 빛표, 대원만들기, 방어뒤, 결의배, 도감, 기술설명, 특성설명, 스킬들, 대원창, 가방패널, 가방창, 물건창, 전투력, 레벨상한, 필요경험, 벗기, 칸, 만들기, 모자람, 장착, 레시피, 구간, 구간들, 매대, 사기, 남은수, 산수, 매대확인, 전투준비, 저장, 불러오기, 지우기 });
 Object.defineProperty(window, "행동순서", { get: () => 행동순서 });
 Object.defineProperty(window, "적들", { get: () => 적들 });
 

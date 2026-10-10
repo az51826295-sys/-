@@ -35,6 +35,12 @@ const 묶음들: Record<string, { 열: number; 줄: number; 칸: string[]; 말: 
          "a long knight's sword with a fanged crossguard, blade up", "a wooden staff with a dull stone on top",
          "a studded leather chest armor", "a grey steel plate chest armor",
          "a brown fur-lined chest armor", "a glass vial of pale blue liquid with a cork"] },
+  /* 10-10 사장님 시안 2차: 대장간·시장이 **큰 카드 두 갈래**로 갈린다 */
+  갈래: { 열: 2, 줄: 2, 말: "large RPG menu card illustrations",
+    칸: ["a cheerful middle-aged merchant, warm smile, brown vest over a cream shirt, seen from the waist up, holding a handful of bright gold coins in one palm and a bulging coin pouch in the other hand",
+         "an open wooden treasure chest overflowing with swords, colorful potion bottles and a helmet, a small paper price tag tied to the lid",
+         "a shining blacksmith hammer crossed in front of a polished steel chest armor, bright sparkles around them",
+         "a stone forge with a bright roaring fire inside and an iron anvil in front of it, tongs leaning against the side"] },
 };
 
 const 결 = [
@@ -56,13 +62,16 @@ const 묶 = (n: number) => Math.max(0, Math.min(255, Math.round(n)));
 for (const 이름 of 할것) {
   const m = 묶음들[이름];
   const 칸수 = m.열 * m.줄;
+  const 밝게 = 이름 === "갈래"
+    ? " These are menu card illustrations: a little brighter and more inviting than the rest, with clear warm highlights, but still the same pixel art style."
+    : "";
   const 주문 = [
     `A single image containing exactly ${칸수} separate ${m.말}, laid out in a strict ${m.열}x${m.줄} grid.`,
     `Each cell holds ONE icon, centered, the same size, with clear empty space between cells — the icons must NOT touch or overlap.`,
     `Reading left to right, top to bottom, the icons are: ${m.칸.map((c, i) => `(${i + 1}) ${c}`).join(", ")}.`,
     "The background everywhere, including between the icons, is FLAT SOLID pure magenta (#FF00FF) — no grid lines, no frames, no borders, no shadows, no labels.",
     "The icons themselves must contain no magenta or pink.",
-    결,
+    결 + 밝게,
   ].join(" ");
 
   console.log(`\n${이름} (${m.열}×${m.줄} = ${칸수}칸)…`);
@@ -92,10 +101,11 @@ for (const 이름 of 할것) {
     const { data: d2 } = await sharp(잘).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
     let 보임 = 0; for (let k = 3; k < d2.length; k += 4) if (d2[k] > 32) 보임++;
     if (보임 < 200) { 빈칸++; console.log(`  ${i + 1}번 칸이 비었다`); continue; }
+    const 끝변 = 이름 === "갈래" ? 160 : 64;          // 갈래는 카드에 크게 들어간다
     await sharp(잘).trim({ threshold: 1 })
-      .resize(56, 56, { fit: "inside", kernel: "nearest" })
+      .resize(끝변 - 8, 끝변 - 8, { fit: "inside", kernel: "nearest" })
       .extend({ top: 4, bottom: 4, left: 4, right: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } })
-      .resize(64, 64, { fit: "contain", background: { r: 0, g: 0, b: 0, alpha: 0 }, kernel: "nearest" })
+      .resize(끝변, 끝변, { fit: "contain", background: { r: 0, g: 0, b: 0, alpha: 0 }, kernel: "nearest" })
       .png().toFile(`${칸뿌리}/${이름}-${i + 1}.png`);
   }
   console.log(`  ${칸수 - 빈칸}/${칸수} 칸 나옴 → ${칸뿌리}/${이름}-*.png`);

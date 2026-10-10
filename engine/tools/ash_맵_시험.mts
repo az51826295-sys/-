@@ -136,6 +136,25 @@ try {
       맵높이: 맵.clientHeight, 스크롤: 맵.scrollHeight > 맵.clientHeight + 2 };
   });
   재기("층이 하나면 스크롤이 안 생긴다(포스터꼴 아님)", 한층.칸수 === 1 && !한층.스크롤, 한층);
+
+  /* ── 10-10 사장님 "캐릭터는 4마리가 한계" · "진행 점 없애" ──
+     **맨 뒤에서 잰다** — 중간에 창을 새로 열면 앞 단계의 흐름이 끊긴다(10-10 그래서 한 번 틀렸다). */
+  const 한도 = await page.evaluate(() => {
+    const w = window as any;
+    document.querySelectorAll("#덮개").forEach((x) => x.remove());
+    while (w.S.대원.length < 6) w.S.대원.push(w.대원만들기("검사", 5));
+    w.S.파티 = [];
+    w.출발창(1);
+    const 덮 = document.querySelector("#덮개")!;
+    const 칸수 = 덮.querySelectorAll(".칸슬롯").length;
+    for (const b of [...덮.querySelectorAll("[data-넣]")] as HTMLElement[]) b.click();
+    const 끝 = { 칸수, 파티: w.S.파티.length, 한도: w.파티한도, 점줄: !!document.querySelector("#덮개 .점줄") };
+    document.querySelectorAll("#덮개").forEach((x) => x.remove());
+    return 끝;
+  });
+  재기("파티 자리가 넷이다", 한도.칸수 === 4 && 한도.한도 === 4, 한도);
+  재기("넷을 넘겨 못 넣는다", 한도.파티 === 4, 한도);
+  재기("진행 점이 없다", 한도.점줄 === false, 한도);
 } finally { await 창.browser.close(); await 창.close?.(); }
 console.log(나쁨 === 0 ? "\n전부 통과" : `\n실패 ${나쁨}건`);
 process.exit(나쁨 === 0 ? 0 : 1);
