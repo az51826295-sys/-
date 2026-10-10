@@ -63,6 +63,14 @@ const 몹 = {
     "head bowed, long heavy arms. Two faint cold-white pinpricks for eyes.",
     "A BOSS: about 180% of a human's height, very tall and broad.",
   ].join(" "),
+  /* 10-11 뽑기 첫 동료 — 전투 사제 로제 (버퍼). 기사·회복술사와 **안 겹치게** 금과 흰빛. */
+  "전투 사제": [
+    "A battle priestess: a young woman in a long white-and-gold robe over light chainmail, a hooded mantle pushed back",
+    "so her face and short pale hair show. She holds a tall iron censer on a chain in one hand, raised,",
+    "and a closed prayer book at her hip. A thin gold circlet.",
+    "Warmer and cleaner than the others — pale cream, soft gold, muted blue — but still worn cloth, not shiny.",
+    "About the same height as a human, standing straight.",
+  ].join(" "),
   "동굴 암살자": [
     "A cave assassin monster: a lean human-shaped figure wrapped head to toe in dark grey-brown rags and worn leather straps,",
     "the face completely hidden by a wound cloth with only a thin dark slit. Dull iron dagger in a reverse grip.",
