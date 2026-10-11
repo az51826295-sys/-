@@ -65,3 +65,6 @@ engine/tools/bin/
 /data/unity_watch.last
 /test.mp4
 /engine/docs/store/*.zip
+
+# 로키 열쇠 (10-12) — 저장소에 올라가면 안 된다. 작업 스케줄러가 보는 유일한 자리라 여기 둔다
+.keys/
