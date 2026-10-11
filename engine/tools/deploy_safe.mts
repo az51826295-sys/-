@@ -110,6 +110,15 @@ for (const l of fail) console.log(`  ≠ ${l}`);
 if (behindOthers.length) {
   console.log(`\n  ! **다른 서비스가 뒤져 있다** — 그 일을 집는 쪽이 여기면 새 코드가 안 돈다:`);
   for (const l of behindOthers) console.log(`      ${l}`);
+  /* 10-12 **경고에서 문으로 올린다.**
+     10-11 에 rookery-worker-dev 가 104 커밋 뒤인 채로 이 줄이 `!` 로만 찍히고 배포가 그냥 나갔다.
+     09-26 "초록인데 옛 코드였다" 가 바로 이 칸인데, 경고로는 그 사고를 한 번도 못 막았다.
+     **막되 막다른 길은 만들지 않는다** — 급할 때는 `--뒤처져도` 를 손으로 붙여야 지나간다.
+     (기본이 통과면 아무도 안 고친다. 기본이 막힘이면 고치거나, 적어도 알고 지나간다.) */
+  if (!process.argv.includes("--뒤처져도"))
+    fail.push(`뒤처진 서비스 ${behindOthers.length}개 — 먼저 올리거나, 알고 지나가려면 --뒤처져도 를 붙인다`);
+  else
+    console.log(`      (--뒤처져도 — 알고 지나간다)`);
 }
 if (fail.length) { console.log(`\n**안 올린다** — 문 ${fail.length}개에 걸렸다.`); process.exit(1); }
 if (!UP) { console.log("\n문 전부 통과. --up 을 붙이면 실제로 올린다."); process.exit(0); }
