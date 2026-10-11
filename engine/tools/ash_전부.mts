@@ -42,6 +42,7 @@ const 자아님 = new Set([
   "ash_길드홀", "ash_icons", "ash_store_shots", "ash_공통", "ash_전부", "ash_난이도",
   "ash_후보판", "ash_보스사진", "ash_SR_사진", "ash_카드_사진", "ash_맵_사진", "ash_영혼석_사진",
   "ash_관문해부", "ash_제작막힘", "ash_snd_check", "ash_맵_시험", "ash_길드_시험",
+  "ash_구간배경",   // 10-11: 자가 바로 잡아냈다 — 그림 뽑는 도구다
 ]);
 
 const 느린것도 = process.argv.includes("--느린것도");
