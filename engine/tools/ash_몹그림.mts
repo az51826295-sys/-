@@ -71,6 +71,28 @@ const 몹 = {
     "Warmer and cleaner than the others — pale cream, soft gold, muted blue — but still worn cloth, not shiny.",
     "About the same height as a human, standing straight.",
   ].join(" "),
+  /* ── 31~45층 [침묵의 성소] — 4구간 (10-11 사장님·제미나이 명세).
+     결: 신성하되 **타락했다.** 금은 바래고, 석상은 금이 갔고, 아무도 말을 안 한다. ── */
+  "타락한 사제": [
+    "A fallen priest monster: a gaunt hooded figure in a once-white robe now grey and stained, frayed at the hem,",
+    "a heavy tarnished brass censer swinging from one hand and a cracked stone tablet clutched to the chest.",
+    "The hood hides the upper face entirely; only a slack jaw and a stitched-shut mouth show beneath.",
+    "Washed-out cream and dull brass, nothing gold or bright.",
+    "About 100% of a human's height, stooped and shuffling.",
+  ].join(" "),
+  "수호 돌조각": [
+    "A guardian stone fragment monster: a floating chunk of carved grey temple stone, roughly the shape of a broken",
+    "angel's torso and one outstretched arm, the face sheared clean off. Chipped carved robes and a cracked halo ring",
+    "hovering askew above it. Dust and old mortar in the grooves. Dull granite only, no glow.",
+    "About 90% of a human's height, hanging just above the ground.",
+  ].join(" "),
+  "침묵의 심판관": [
+    "A silent judge BOSS monster: a tall figure in heavy grey ceremonial plate over a long tattered vestment,",
+    "head replaced by a blank featureless stone mask with NO eyes and NO mouth — perfectly smooth.",
+    "It holds an enormous set of rusted iron scales in one hand and a judge's heavy iron rod in the other.",
+    "Faded ceremonial ribbons hang from the armor, all writing on them worn away.",
+    "A BOSS: about 125% of a human's height, broad-shouldered and utterly still.",
+  ].join(" "),
   /* 10-11 뽑기 SR 동료 둘 (사장님·제미나이 명세). 기존 다섯과 **안 겹치게**:
      로건은 붉은 바이저로 얼굴을 완전히 가린 중장갑(기사 세리안은 푸른 강철·얼굴 어둠),
      이브는 검은 가죽에 철제 스파이크(검사는 붉은 두건·정직한 직타). */

@@ -18,7 +18,7 @@ try {
   await 이름헬퍼(page);
   await page.goto(주소, { waitUntil: "networkidle2", timeout: 60_000 });
   await new Promise((r) => setTimeout(r, 1800));
-  for (const 층 of [10, 20, 30]) {
+  for (const 층 of [10, 20, 30, 40]) {
     const 잰 = await page.evaluate((f: number) => {
       const w = window as any;
       for (let i = 1; i < 9999; i++) clearInterval(i);
