@@ -19,12 +19,17 @@ const 주소 = process.env.ASH_URL ?? "https://rookery-web-production.up.railway
 /* 10-11: 기본 25 로 두니 **30층 판정 둘이 영영 못 잰 채 실패**로 찍혔다.
    자가 보는 마지막 관문보다 끝층이 낮으면 그 줄은 고장이 아니라 눈이 없는 것이다. */
 const 끝층 = Number(process.argv[2] ?? 32);
+/** `--끝만` — 맨 윗 티어 한 칸만 돌린다. 대조군 열한 개를 100층까지 돌리면 한 시간이 넘는데,
+    "끝이 닫히는가" 하나만 묻고 싶을 때가 있다(10-11: T10 줄이 턴 바닥으로 못 재졌다). */
+const 끝만 = process.argv.includes("--끝만");
 
 type 한판 = { 층: number; 깸: number; 전멸: number; 턴: number; 체력: number; 레벨: number; 공격: number; 금화: number };
 
 /* 대조군이 열 개 × 100층이라 한 번의 evaluate 가 몇 분 간다.
    puppeteer 기본 180초로는 **자가 잘린다** — 10-11 에 실제로 그렇게 죽었다(고장이 아니었다). */
-const 창 = await openHeadless({ width: 390, height: 844, protocolTimeout: 40 * 60_000 });
+/* `--끝만` 은 100층 꼭대기까지 자격(21판)을 다 채우며 올라가므로 **몇 시간** 간다.
+   10-11 에 40분으로 걸었다가 또 잘렸다 — 그것도 고장이 아니라 못 잰 것이었다. */
+const 창 = await openHeadless({ width: 390, height: 844, protocolTimeout: (끝만 ? 240 : 40) * 60_000 });
 if (!창) process.exit(1);
 try {
   const page = await 창.browser.newPage();
@@ -33,7 +38,7 @@ try {
   await page.goto(주소, { waitUntil: "networkidle2", timeout: 60_000 });
   await new Promise((r) => setTimeout(r, 1800));
 
-  const 본 = await page.evaluate((끝층: number) => {
+  const 본 = await page.evaluate(([끝층, 끝만]: [number, boolean]) => {
     const w = window as any;
     for (let i = 1; i < 9999; i++) clearInterval(i);
     try { localStorage.clear(); } catch { /* 없어도 된다 */ }
@@ -107,7 +112,7 @@ try {
       /* 10-11: 턴 한도가 400,000 고정이라 **80층대에서 바닥났다**(80층 한 층에만 67,790턴).
          그러면 '막힌층 0 · 닿은층 83' 이 나오는데, 그건 막힌 게 아니라 **못 잰 것**이다.
          끝층에 맞춰 늘리고, 바닥났는지를 따로 들고 나간다. */
-      const 턴한도 = Math.max(400_000, 끝층 * 60_000);
+      const 턴한도 = 끝만 ? 60_000_000 : Math.max(400_000, 끝층 * 60_000);
       while (턴 < 턴한도) {
         const 쉼앞 = w.S.쉼;
         w.한턴(); 턴++; 층턴++;
@@ -137,11 +142,12 @@ try {
        T2 만으로 30층을 넘어 버리면 T3 가 장식이 된다(T1 이 20층을 넘던 것과 같은 구멍). */
     /* 10-11 T4 가 생겼다(거인뼈, 열림 30). 전에는 `장비`(열림 제한 없음)가 곧 T3 였는데
        이제는 T4 다 — **T3 만 끼운 칸을 따로 두지 않으면** 넷째 관문 판정을 할 수가 없다. */
+    if (끝만) return { 장비: 오르기(true) } as any;
     return { 맨몸: 오르기(false), T1: 오르기(true, 5), T2: 오르기(true, 10), T3: 오르기(true, 20), T4: 오르기(true, 30), T5: 오르기(true, 40), T6: 오르기(true, 50), T7: 오르기(true, 60), T8: 오르기(true, 70), T9: 오르기(true, 80), 장비: 오르기(true) };
     void 0;
-  }, 끝층);
+  }, [끝층, 끝만] as any);
 
-  for (const 이름 of ["맨몸", "T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9", "장비"] as const) {
+  for (const 이름 of (끝만 ? ["장비"] : ["맨몸", "T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9", "장비"]) as any[]) {
     const r = (본 as any)[이름];
     console.log(`\n── ${이름} ──  닿은 층 ${r.닿은층} · 전멸 ${r.전멸}번${r.막힌층 ? ` · **${r.막힌층}층에서 막힘**` : " · 안 막힘"}`);
     /* 10-11: **금화 칸을 더한다.** T5 가 안 만들어진 판에서 자가 이유를 못 말해 줬다 —
@@ -155,6 +161,13 @@ try {
      "뭐든 모자라다"가 통과해 버린다(09-22 사장님 교훈). */
   let 나쁨 = 0;
   const 재기 = (n: string, ok: boolean, 본?: unknown) => { if (!ok) 나쁨++; console.log((ok ? "통과" : "실패"), n, ok ? "" : JSON.stringify(본)); };
+  if (끝만) {
+    const r = 본.장비 as any;
+    console.log(r.턴바닥
+      ? `  ⚠ 턴이 바닥나 ${r.닿은층}층에서 멈췄다 — 못 잼`
+      : `  T10 — 닿은 층 ${r.닿은층} · ${r.막힌층 ? `${r.막힌층}층에서 막힘` : "안 막힘"} · 100층 보스 ${(r.보스깸 ?? []).includes(100) ? "**깼다**" : "못 깼다"}`);
+    process.exit((r.보스깸 ?? []).includes(100) ? 0 : 1);
+  }
   const 맨 = 본.맨몸 as any, 티1 = (본 as any).T1, 티2 = (본 as any).T2, 티3 = (본 as any).T3, 티4 = (본 as any).T4, 티5 = (본 as any).T5, 티6 = (본 as any).T6, 티7 = (본 as any).T7, 티8 = (본 as any).T8, 티9 = (본 as any).T9, 장 = 본.장비 as any;
   // 첫 벽은 **10층**이어야 한다(사장님 10-09). 20층이면 너무 늦어서, 그때까지 정비 없이 오토만 돈다.
   재기("맨몸은 첫 관문(10층)에서 막힌다", 맨.막힌층 === 10, { 막힌층: 맨.막힌층, 닿은층: 맨.닿은층 });
