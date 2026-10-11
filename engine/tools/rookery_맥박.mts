@@ -30,13 +30,17 @@ for (const [이름, 표] of [["업무(assignments)", "assignments"], ["실행(wo
   console.log(`  ${이름.padEnd(22)} ${await 세기(표)}`);
 }
 
-// 회사별 지출 — 사장님 지갑과 개발 지갑을 갈라 본다
-const { data: 회사 } = await db.from("companies").select("id,name,spend_limit_usd,credits_started_at");
-for (const c of 회사 ?? []) {
-  const { data: 쓴 } = await db.from("model_usage").select("cost_usd").eq("company_id", c.id).gte("created_at", 어제(30));
-  const 합 = (쓴 ?? []).reduce((a: number, r: any) => a + Number(r.cost_usd ?? 0), 0);
-  console.log(`\n  회사 ${String(c.name).padEnd(12)} 30일 $${합.toFixed(2)} / 한도 $${c.spend_limit_usd ?? "?"}`
-    + (c.credits_started_at ? ` · 한도 시작 ${String(c.credits_started_at).slice(0, 10)}` : " · 한도 시작 없음"));
+/* **지갑은 내가 세지 않는다 — 문에게 묻는다.** (10-12)
+   날것 30일을 더해 "$28.71 / $14 두 배 넘침 · 막혀 있다" 고 보고했는데, 문은
+   **한도 시작점(09-25) 이전을 아예 안 센다.** 진짜 값은 $12.80 · **열려 있음** 이었다.
+   사장님과 제미나이가 그 거짓 숫자 위에 "초비상" 계획을 세웠다.
+   09-26 에 똑같은 사고를 적어 뒀는데(그때도 "막힘 $57.8" 이 실은 "$0.19 열림") 또 했다 —
+   **보고하는 자가 문을 안 부르면 반드시 어긋난다.** 그래서 여기서는 문을 그대로 부른다. */
+console.log("\n  지갑 — 문(allowance_look)이 보는 값:");
+{
+  const { spawnSync } = await import("node:child_process");
+  const p = spawnSync("npx", ["tsx", "engine/tools/allowance_look.mts"], { encoding: "utf8", shell: true, env: process.env });
+  for (const l of String(p.stdout ?? "").split("\n")) if (l.trim() && !l.includes("[로키 DB]")) console.log(`    ${l.trim()}`);
 }
 
 // 마지막으로 **진짜 일**이 언제였나 — 0 건일 때 "언제부터 0 인가"가 다음 질문이다
