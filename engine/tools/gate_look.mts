@@ -77,6 +77,16 @@ for (const t of 말들) {
   }
 }
 
+/* 10-12 **정답표가 있으면 맞춤/틀림을 센다.** 없으면 전처럼 눈으로 보라고만 한다.
+   0/40 이 "헛켜짐 없음"(좋음)인지 "한 번도 안 켜짐"(나쁨)인지는 정답표 없이는 못 가른다. */
+const 답길 = "engine/data/gate-answers.json";
+const 답 = new Map<string, string>();
+try {
+  const { readFileSync: 읽기 } = await import("node:fs");
+  const j = JSON.parse(읽기(답길, "utf8"));
+  for (const r of j.줄 ?? []) if (r.정답) 답.set(r.말, r.정답);
+} catch { /* 정답표가 아직 없다 */ }
+
 const 전부 = 켜짐.length + 꺼짐.length;
 console.log(`사장님이 실제로 친 말 ${전부}줄${떨어짐 ? ` (못 받은 것 ${떨어짐})` : ""}`);
 console.log(`  깊게 켜짐 ${켜짐.length}줄 (${((켜짐.length * 100) / 전부).toFixed(0)}%) · 꺼짐 ${꺼짐.length}줄\n`);
@@ -89,7 +99,20 @@ const 의심 = 꺼짐.filter((t) => /\d|계산|몇|확률|개수|넓이|속도|�
 for (const t of 의심.slice(0, 25)) console.log(`   · ${t.replace(/\s+/g, " ").slice(0, 90)}`);
 console.log(`   (숫자·계산이 든 꺼진 말 ${의심.length}줄 / 꺼진 것 ${꺼짐.length}줄)`);
 
-console.log(
-  "\n이 자는 **맞다/틀리다를 스스로 못 정한다** — 정답표가 없다. 위 목록을 사람이 보고" +
-    " 잘못 켜진 줄·잘못 꺼진 줄을 짚으면, 그때 그 줄들이 정답표가 된다.",
-);
+if (답.size) {
+  /* **두 가지 틀림을 갈라 센다.** 합쳐 세면 어느 쪽이 나쁜지 안 보인다 —
+     헛켜짐은 값이 새는 것이고, 못 켜짐은 **학생이 틀린 답을 받는 것**이다(더 나쁘다). */
+  let 맞 = 0, 헛켜짐 = 0, 못켜짐 = 0, 안잼 = 0;
+  for (const t of 켜짐) { const a2 = 답.get(t); if (!a2) { 안잼++; continue; } a2 === "깊게" ? 맞++ : 헛켜짐++; }
+  for (const t of 꺼짐) { const a2 = 답.get(t); if (!a2) { 안잼++; continue; } a2 === "그냥" ? 맞++ : 못켜짐++; }
+  const 잰것 = 맞 + 헛켜짐 + 못켜짐;
+  console.log(`\n**정답표로 재니** ${잰것}줄 중 맞춤 ${맞} · 헛켜짐 ${헛켜짐} · **못 켜짐 ${못켜짐}**`
+    + (안잼 ? ` (아직 안 정한 줄 ${안잼}개는 안 셌다)` : ""));
+  if (못켜짐) console.log("   못 켜짐이 더 나쁘다 — 학생이 판단 자리 없이 답을 받는다.");
+} else {
+  console.log(
+    "\n이 자는 **맞다/틀리다를 스스로 못 정한다** — 정답표가 비어 있다." +
+      ` 서식은 ${답길} 에 있다(gate_정답표.mts 가 만든다).` +
+      " 사장님이 '깊게'/'그냥' 을 채우면 그때부터 이 자가 맞춤·헛켜짐·못 켜짐을 센다.",
+  );
+}
