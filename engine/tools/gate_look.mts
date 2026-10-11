@@ -24,8 +24,15 @@ const 개수 = Number(process.argv.find((a) => /^\d+$/.test(a)) ?? 40);
 const db = createServiceClient();
 const { intakeInstructions } = await import("../../src/lib/chat/routing");
 const { firstPass } = await import("../../src/lib/chat/everydayService");
-const { defaultProviders } = await import("../../src/lib/execution/shared");
-const ai = defaultProviders().ai;
+/* 10-12 **장부 밖에 있었다.** 이 자는 말 한 줄마다 모델을 부르는데(40줄이면 40호출),
+   `defaultProviders()` 를 그냥 써서 **장부에도 안 적히고 한도에도 안 걸렸다.**
+   그래서 두 번 돌리고도 지갑이 안 움직여 "비용 $0" 이라고 보고했다 — 돈은 나갔는데 못 본 것이다.
+   `seatProviderForCompany` 는 meterProviders + 한도 검사를 함께 걸어 준다. 거기로 옮긴다. */
+const { account } = await import("./company.mjs");
+const { seatProviderForCompany } = await import("../../src/lib/skills/appBuild/seats");
+const 자리 = await seatProviderForCompany("gpt-5.6-luna", db, account().companyId);
+if (!자리.ai) { console.error(자리.why); process.exit(0); }   // 한도에 닿으면 **안 부르고 멈춘다**
+const ai = 자리.ai;
 
 const { data } = await db
   .from("conversation_messages")

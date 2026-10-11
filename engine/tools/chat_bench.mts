@@ -41,7 +41,18 @@ const db = createServiceClient();
  */
 const MINI = process.argv.includes("--mini");
 const { createOpenAIProvider } = await import("../../src/lib/providers/openai");
-const ai = MINI ? createOpenAIProvider() : defaultProviders().ai;
+/* 10-12 **장부 밖에 있었다** — 열 칸마다 모델을 부르는데 적히지도 막히지도 않았다.
+   `--mini` 는 **일부러 다른 자리를 앉혀 보는 것**이라 그대로 둔다(그 판은 비교용이고,
+   장부에 섞이면 "싼 자리가 얼마 썼나" 가 흐려진다). 평소 길만 장부 안으로 옮긴다. */
+const { account: 회사 } = await import("./company.mjs");
+const { seatProviderForCompany } = await import("../../src/lib/skills/appBuild/seats");
+let ai;
+if (MINI) ai = createOpenAIProvider();
+else {
+  const 자리 = await seatProviderForCompany("gpt-5.6-luna", db, 회사().companyId);
+  if (!자리.ai) { console.error(자리.why); process.exit(0); }   // 한도에 닿으면 안 부르고 멈춘다
+  ai = 자리.ai;
+}
 if (MINI) console.log("싼 자리를 gpt-5-mini 로 바꿔 앉혔다 (--mini)");
 
 // 226회차 09-27: 여기 스키마를 따로 적어 두었더니 제품에 새로 생긴 칸(깊게)을 **아예 못 쟀다**.

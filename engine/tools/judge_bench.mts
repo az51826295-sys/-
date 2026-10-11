@@ -14,8 +14,13 @@ const DRY = process.argv.includes("--dry");
 
 const { createServiceClient } = await import("../../src/lib/supabase/service");
 const { judgeWork, judgeLine } = await import("../../src/lib/genesis/judge");
-const { defaultProviders } = await import("../../src/lib/execution/shared");
-const ai = defaultProviders().ai;
+/* 10-12 **장부 밖에 있었다** — 심판 판마다 모델을 부르는데 적히지도 막히지도 않았다. */
+const { account: 회사 } = await import("./company.mjs");
+const { seatProviderForCompany } = await import("../../src/lib/skills/appBuild/seats");
+const db0 = createServiceClient();
+const 자리 = await seatProviderForCompany("gpt-5.6-luna", db0, 회사().companyId);
+if (!자리.ai) { console.error(자리.why); process.exit(0); }   // 한도에 닿으면 안 부르고 멈춘다
+const ai = 자리.ai;
 
 type Row = { id: string; at: string; truth: "통과" | "실패"; said: string; machine: "PASS" | "FAIL"; machineLine: string };
 

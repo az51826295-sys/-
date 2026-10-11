@@ -17,11 +17,17 @@ const db = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPAB
    Supabase 서버가 한 번에 주는 줄 수에 상한이 있기 때문이다.
    그걸 모르고 세면 "회사 셋이 $17 썼다" 같은 **잘린 숫자**를 사실로 적게 된다.
    (09-27 교훈: 받은 줄 수가 정확히 1000·500 처럼 둥글면 상한을 의심한다.) */
-const 끝 = new Date(new Date(`${날}T00:00:00Z`).getTime() + 날수 * 864e5).toISOString();
+/* 10-12 **날짜를 UTC 로 걸어 놓고 한국 날짜를 넣고 있었다.**
+   한국 아침 08시는 UTC 로 전날 23시다 — 그래서 방금 찍힌 2건을 "호출 없음" 이라고 읽었고,
+   하마터면 "장부 연결이 안 된다" 고 보고할 뻔했다. **적는 쪽은 UTC, 읽는 사람은 한국**이다.
+   주는 날짜를 한국 날짜로 보고 아홉 시간을 뺀다. */
+const 한국0시 = (d: string) => new Date(new Date(`${d}T00:00:00Z`).getTime() - 9 * 3600e3);
+const 시작 = 한국0시(날).toISOString();
+const 끝 = new Date(한국0시(날).getTime() + 날수 * 864e5).toISOString();
 const 들: any[] = [];
 for (let 쪽 = 0; ; 쪽++) {
   const { data, error } = await db.from("model_usage").select("*")
-    .gte("created_at", `${날}T00:00:00Z`).lt("created_at", 끝)
+    .gte("created_at", 시작).lt("created_at", 끝)
     .order("created_at", { ascending: true }).range(쪽 * 1000, 쪽 * 1000 + 999);
   if (error) { console.error("못 읽음:", error.message); process.exit(1); }
   들.push(...(data ?? []));
@@ -35,7 +41,7 @@ const 회사만 = process.argv.find((a) => a.startsWith("--회사="))?.slice("--
 if (회사만) { const 앞 = 들.length; 들.splice(0, 들.length, ...들.filter((r) => r.company_id === 회사만));
   console.log(`  (회사 ${회사만.slice(0, 8)} 만: ${앞} → ${들.length}건)`); }
 const 합 = (xs: any[]) => xs.reduce((a, r) => a + Number(r.cost_usd ?? 0), 0);
-console.log(`${날} 부터 ${날수}일 — 호출 ${들.length}건 · $${합(들).toFixed(2)}\n`);
+console.log(`${날}(한국) 부터 ${날수}일 — 호출 ${들.length}건 · $${합(들).toFixed(2)}\n`);
 console.log(`  장부 칸: ${Object.keys(들[0]).join(" · ")}\n`);
 
 /** 어떤 칸으로든 갈라서 센다 — 칸 이름을 짐작하지 않고 **있는 칸만** 돌린다 */
