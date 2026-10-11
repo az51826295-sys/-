@@ -35,8 +35,10 @@ try {
   await page.evaluate(() => { try { localStorage.clear(); } catch { /* */ } });
   const 뜬때 = Date.now();
   await page.goto(주소, { waitUntil: "networkidle2", timeout: 60_000 });
-  await new Promise((r) => setTimeout(r, 1800));
+  /* 10-12 **내가 넣은 대기를 같이 쟀다.** 첫 판에 "3.9초 · 실패" 가 나왔는데
+     그중 1.8초는 내가 그림 뜨라고 기다린 시간이었다. 재는 것은 goto 까지다. */
   const 로딩초 = (Date.now() - 뜬때) / 1000;
+  await new Promise((r) => setTimeout(r, 1800));
 
   if (process.argv.includes("--sabotage")) await page.evaluate(() => {
     /* 심은 고장: 첫 화면의 길잡이 글을 지운다. 게임은 멀쩡히 돌고 자 열여섯도 다 통과하지만,
@@ -51,8 +53,13 @@ try {
     const 눌릴것 = Array.from(document.querySelectorAll("button, .tab, [data-t], .btn, .칸짜리"))
       .filter((e) => (e as HTMLElement).offsetParent !== null)
       .map((e) => (e.textContent ?? "").replace(/\s+/g, " ").trim()).filter(Boolean);
+    /* **길잡이는 탭 이름이 아니다.** 첫 판에 "전투 라는 탭이 있다" 를 보고 통과시켰는데,
+       길잡이 글을 전부 지워도 그대로 통과했다(이빨이 없었다).
+       그래서 **길잡이 자리(풀이·로그·tip)의 글만** 따로 센다 — 거기에 문장이 있어야 길잡이다. */
+    const 길잡이 = Array.from(document.querySelectorAll(".풀이, #log, .tip"))
+      .map((e) => (e.textContent ?? "").replace(/\s+/g, " ").trim()).filter(Boolean).join(" ");
     return { 탭: w.S?.탭 ?? null, 진행: !!w.S?.진행, 대원수: w.S?.대원?.length ?? 0,
-             파티수: w.S?.파티?.length ?? 0, 글자수: 글.length, 글앞: 글.slice(0, 160), 눌릴것 };
+             파티수: w.S?.파티?.length ?? 0, 글자수: 글.length, 글앞: 글.slice(0, 160), 눌릴것, 길잡이 };
   });
   적기("첫 화면 탭", 첫화면.탭);
   적기("눌 수 있는 것", 첫화면.눌릴것.slice(0, 10));
@@ -102,8 +109,12 @@ try {
   적기("그 뒤 화면", { 진행: 길.진행, 층: 길.층 });
 
   재기("세 번 안에 전투가 시작된다", 길.진행 && 길.누름.length <= 3, { 누름: 길.누름.length, 진행: 길.진행 });
-  재기("누를 것을 화면이 가리킨다(전투·탑·출발 같은 말이 보인다)",
-    /전투|탑|출발|되돌이|층/.test(첫화면.글앞 + 첫화면.눌릴것.join(" ")), { 글앞: 첫화면.글앞 });
+  /* **처음 온 사람에게 "다음에 뭘 하라"고 말해 주는 문장이 있는가.**
+     탭 이름은 안 센다 — 그건 늘 있어서 이 줄이 빨개질 수가 없다(첫 판에 그래서 이빨이 없었다).
+     길잡이 자리에 **열 글자 넘는 글**이 있어야 문장으로 본다. */
+  적기("첫 화면 길잡이 글", 첫화면.길잡이.slice(0, 120) || "(없음)");
+  재기("첫 화면이 다음에 할 일을 말해 준다", (첫화면.길잡이 ?? "").length >= 10,
+    { 길잡이: 첫화면.길잡이 || "(없음)", 탭: 첫화면.탭 });
 
   /* ── ④ 첫 전멸이 몇 분째인가 ── */
   const 막힘 = await page.evaluate(async () => {
