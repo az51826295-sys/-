@@ -93,6 +93,41 @@ const 몹 = {
     "Faded ceremonial ribbons hang from the armor, all writing on them worn away.",
     "A BOSS: about 125% of a human's height, broad-shouldered and utterly still.",
   ].join(" "),
+  "이단 가고일": [
+    "A heretic gargoyle monster: a crouching stone beast of dark soot-stained granite, bat wings half-spread and torn,",
+    "a snarling horned head with the eyes CHISELED OUT — two blank gouges. Broken iron chains hang from its wrists",
+    "and a defaced stone plaque is bolted to its chest, the carving scratched away.",
+    "Darker and rougher than temple stone. No glow, no color.",
+    "About 95% of a human's height, hunched low on all fours.",
+  ].join(" "),
+  /* ── 46~60층 [맹독의 지하 늪] — 5구간 (10-11 사장님·제미나이 명세).
+     결: 썩은 물과 산성. 1·3구간의 슬라임·쥐·가고일과 **한눈에 달라야** 한다 —
+     그쪽은 마르고 먼지투성이, 여기는 **젖고 부풀고 녹아내린다.** ── */
+  "늪지 슬라임": [
+    "A bog slime monster: a large sagging blob of murky olive-brown sludge, half-melted and dripping, with bits of",
+    "bone, rusted metal and rotten reeds suspended inside it. Its surface is wet and pitted, sloughing off in strings.",
+    "Two dull sunken dark spots serve as eyes. Sickly desaturated green-brown, wet-looking but not glowing.",
+    "About 80% of a human's height, wide and low, slumping.",
+  ].join(" "),
+  "독니 쥐": [
+    "A venomfang rat monster: a bloated, mangy swamp rat the size of a dog, fur matted and slick with filth,",
+    "bare patches showing swollen blotched skin. Two overlong curved fangs drip a thick dull liquid.",
+    "Its tail is thick and ringed, trailing in muck. Sickly brown and grey-green, wet and heavy — not quick-looking.",
+    "About 70% of a human's height at the shoulder, long and low.",
+  ].join(" "),
+  "부식 가고일": [
+    "A corroded gargoyle monster: a stone beast whose surface is eaten away by acid — pitted, honeycombed,",
+    "half its face dissolved and one wing reduced to a bare ribbed frame. Streaks of dull rust-orange and sick green",
+    "run down the stone where the acid has pooled. It crouches lopsided on a crumbling limb.",
+    "No glow; the colors are stains, not light.",
+    "About 90% of a human's height, hunched and uneven.",
+  ].join(" "),
+  "맹독 히드라": [
+    "A venom hydra BOSS monster: a massive swamp serpent with THREE thick necks rising from a bloated scaled body",
+    "half-sunk in muck. Each head is blunt and eyeless with a gaping fanged maw, hide slick olive-black and crusted",
+    "with barnacles and rot. Thick dull liquid strings from the jaws. Torn membranes between the necks.",
+    "A BOSS: wide and heavy, about 140% of a human's height.",
+  ].join(" "),
   /* 10-11 뽑기 SR 동료 둘 (사장님·제미나이 명세). 기존 다섯과 **안 겹치게**:
      로건은 붉은 바이저로 얼굴을 완전히 가린 중장갑(기사 세리안은 푸른 강철·얼굴 어둠),
      이브는 검은 가죽에 철제 스파이크(검사는 붉은 두건·정직한 직타). */
