@@ -12,7 +12,7 @@ import { browserPath } from "./screen";
  * 우리가 직접 띄우고 포트로 붙는다. 서버(Railway)의 크로뮴도 같은 길. 브라우저가 없으면 **던지지 않고 null** —
  * 부르는 쪽이 "못 돌려 봤다" 로 적는다.
  */
-export async function openHeadless(opts?: { width?: number; height?: number; mobile?: boolean }): Promise<{ browser: Browser; close: () => Promise<void> } | null> {
+export async function openHeadless(opts?: { width?: number; height?: number; mobile?: boolean; protocolTimeout?: number }): Promise<{ browser: Browser; close: () => Promise<void> } | null> {
   const exe = browserPath();
   if (!exe) return null;
   const width = opts?.width ?? 1280, height = opts?.height ?? 720;
@@ -65,6 +65,10 @@ export async function openHeadless(opts?: { width?: number; height?: number; mob
   const browser = await puppeteer.connect({
     browserWSEndpoint: ws,
     defaultViewport: { width, height, isMobile: !!opts?.mobile, hasTouch: !!opts?.mobile, deviceScaleFactor: 1 },
+    /* 10-11: 한 번의 `page.evaluate` 가 길어지면 puppeteer 가 기본 180초에 **끊는다.**
+       잿빛 막힘 자가 대조군 열 개를 100층까지 돌리다 여기서 죽었다 — 고장이 아니라 자가 잘린 것이다.
+       부르는 쪽이 길어질 것을 아는 자리에서만 늘려 쓴다(기본은 그대로). */
+    protocolTimeout: opts?.protocolTimeout,
   });
   const close = async () => {
     process.off("exit", reap); process.off("SIGINT", reap); process.off("SIGTERM", reap);

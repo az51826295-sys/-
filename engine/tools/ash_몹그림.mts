@@ -155,6 +155,56 @@ const 몹 = {
     "the glow is deep and faint, like a dying forge.",
     "A BOSS: about 135% of a human's height, very broad.",
   ].join(" "),
+  /* ── 76~90층 [서리발의 빙벽] — 7구간. 실루엣을 넷 다 다르게(사장님 10-11 지적). ── */
+  "얼음 유령": [
+    "An ice wraith monster: a hovering tattered shroud of pale frost-blue, no legs — the lower half breaks into drifting",
+    "ice crystals. No face inside the hood, only two faint cold pinpricks. Thin frost-rimed arms reach out.",
+    "Washed-out pale blue and grey-white, dim; it does not light anything.",
+    "About 100% of a human's height, narrow and drifting.",
+  ].join(" "),
+  "설원 세이렌": [
+    "A snow siren monster: a gaunt bird-woman with a long feathered wingspan of dirty white and grey plumage,",
+    "clawed bird feet and a hunched avian posture. Her face is hidden behind a crust of frost and a draped frozen veil.",
+    "Icicles hang from the wing edges. Dull, dirty white — not glittering.",
+    "About 95% of a human's height, wide-winged and hunched forward.",
+  ].join(" "),
+  "서리 거인": [
+    "A frost giant monster: an enormous heavyset humanoid in crusted hide and iron, pale blue-grey frostbitten skin,",
+    "a matted frozen beard and a blunt ice-caked club held in both hands. A battered iron helm covers the upper face.",
+    "Thick, slow and heavy. Desaturated and dirty, no sparkle.",
+    "About 130% of a human's height, very broad.",
+  ].join(" "),
+  "서리 여왕": [
+    "A frost queen BOSS monster: a tall regal figure in a long pale gown of frozen layered cloth, a high jagged ice crown,",
+    "and a trailing frost-stiffened mantle. Her face is a smooth pale mask with hollow dark eyes — composed and still.",
+    "She holds a slender ice scepter at her side. Muted pale blue, bone white and tarnished silver; dignified, never sparkling.",
+    "A BOSS: about 120% of a human's height, slender and upright.",
+  ].join(" "),
+  /* ── 91~100층 [심연의 문] — 8구간, 마지막. ── */
+  "심연의 추적자": [
+    "An abyss stalker monster: a low, wrong-shaped creature of matte pitch black, like a four-limbed beast with too many",
+    "joints and no visible head — just a cluster of small pale eyes scattered across its back and shoulders.",
+    "Its edges blur into darkness. Pure black with faint bone-white eyes; no other color.",
+    "About 85% of a human's height, crouched and long.",
+  ].join(" "),
+  "공허의 주술사": [
+    "A void sorcerer monster: a tall figure in a heavy black mantle that hangs wrong, as if nothing fills it.",
+    "The hood opens onto empty dark. It leans on a long twisted dark staff topped with a dull cracked stone.",
+    "Faded grey sigils are stitched into the mantle's hem. Black and ash grey only.",
+    "About 105% of a human's height, upright and thin.",
+  ].join(" "),
+  "무명 왕의 망령": [
+    "A nameless king's wraith monster: a suit of tarnished royal plate armor, translucent and faintly seen through,",
+    "with a broken crown fused to the helm and a long straight sword held point-down. The armor's heraldry is worn blank.",
+    "Washed-out grey-blue, semi-transparent; dim, not glowing.",
+    "About 110% of a human's height, broad-shouldered and still.",
+  ].join(" "),
+  "심연의 주시자": [
+    "The abyss watcher FINAL BOSS monster: an enormous single dark eye set in a mass of matte black flesh, with thick",
+    "writhing tentacles spreading out beneath it and smaller lidless eyes opening along them. The great eye's iris is",
+    "a dull bone-white ring around a black pupil. No glow, no neon — only black, ash grey and bone.",
+    "A FINAL BOSS: about 145% of a human's height, very wide and sprawling.",
+  ].join(" "),
   /* 10-11 뽑기 SR 동료 둘 (사장님·제미나이 명세). 기존 다섯과 **안 겹치게**:
      로건은 붉은 바이저로 얼굴을 완전히 가린 중장갑(기사 세리안은 푸른 강철·얼굴 어둠),
      이브는 검은 가죽에 철제 스파이크(검사는 붉은 두건·정직한 직타). */
@@ -194,6 +244,8 @@ for (const n of 할것) if (!(n in 몹)) { console.error(`모르는 몹: ${n} (�
 console.log(`몹 ${할것.length}종 × ${장수}장 — gpt-image-2 · 1024×1024 · 투명`);
 if (!진짜) { console.log("--진짜 를 붙이면 뽑는다"); process.exit(0); }
 
+/** 안전 필터에 거절당한 것들 — 끝에 모아 적는다. 조용히 빠지면 "뽑았다"고 착각한다. */
+const 막힌것: string[] = [];
 const OpenAI = (await import("openai")).default;
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY!, maxRetries: 2 });
 
@@ -202,10 +254,21 @@ for (const 이름 of 할것) {
   mkdirSync(칸, { recursive: true });
   console.log(`\n${이름}…`);
   for (let i = 1; i <= 장수; i++) {
-    const r = await openai.images.generate({
-      model: "gpt-image-2", prompt: `${몹[이름 as keyof typeof 몹]} ${결}`,
-      n: 1, size: "1024x1024", quality: "low",
-    });
+    /* 10-11: 한 장이 안전 필터에 걸리면 **배치가 통째로 죽었다** —
+       8종을 걸어 놨는데 둘째에서 터져 나머지 일곱이 안 나왔다(그리고 앞서 뽑은 것만 남았다).
+       한 장의 거절은 그 장의 일이다. **적어 두고 다음으로 넘어간다.** */
+    let r: any;
+    try {
+      r = await openai.images.generate({
+        model: "gpt-image-2", prompt: `${몹[이름 as keyof typeof 몹]} ${결}`,
+        n: 1, size: "1024x1024", quality: "low",
+      });
+    } catch (e: any) {
+      const 까닭 = e?.error?.message ?? e?.message ?? String(e);
+      console.error(`  ⚠ ${i}장째 거절 — ${까닭.slice(0, 160)}`);
+      막힌것.push(`${이름} ${i}장`);
+      continue;
+    }
     const b64 = (r as any).data?.[0]?.b64_json;
     if (!b64) { console.error(`  ${i}장째가 안 왔다`); continue; }
     const 원본 = `${칸}/_원본-${i}.png`;
@@ -243,3 +306,4 @@ for (const 이름 of 할것) {
   }
 }
 console.log(`\n끝. ${뿌리}/<이름>/후보-*.png — 사장님이 고른 뒤 ash_적넣기.mts 로 넣는다.`);
+if (막힌것.length) console.log(`⚠ 거절돼 못 뽑은 것 ${막힌것.length}장: ${막힌것.join(" · ")} — 주문을 바꿔 다시 걸어라.`);
