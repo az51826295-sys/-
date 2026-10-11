@@ -50,7 +50,15 @@ let p: Proposal;
 if (arg("--ask")) p = { 이름: arg("--ask")!, 근거: "사람이 직접", 자: arg("--ruler") ?? "자 없음", 사람손: false, 값: "0" };
 else {
   const from = arg("--from") ?? "engine/work/anything/next-work-weekly.json";
-  if (!existsSync(from)) { log(`제안 파일이 없다: ${from}`); process.exit(2); }
+  /* 10-12: 제안 파일이 없는 것은 **고장이 아니라 위에서 안 만든 것**이다 —
+     next_work 가 한도에 닿아 멈추면 당연히 파일이 없다. 그런데 여기서 2 로 죽으니
+     주간 작업이 늘 "실패(Last Result 2)" 로 끝나, 진짜 고장과 구별이 안 됐다.
+     **손으로 부른 경우(--from 을 직접 준)는 그대로 실패**로 둔다 — 그건 사람이 기대한 파일이다. */
+  if (!existsSync(from)) {
+    const 스스로 = !arg("--from");
+    log(`제안 파일이 없다: ${from}${스스로 ? " — 위에서 안 만든 것이다(한도·실패 등). 건너뛴다." : ""}`);
+    process.exit(스스로 ? 0 : 2);
+  }
   const j = JSON.parse(readFileSync(from, "utf8")) as { output: { 일: Proposal[] } };
   const list = j.output.일;
   const pick = AUTO ? list.findIndex((w) => !w.사람손 && /^\s*0\s*$|^\$?0(\.0+)?$|코드만/.test(w.값) && !/자 없음/.test(w.자)) : Number(arg("--pick") ?? 1) - 1;
