@@ -54,10 +54,14 @@ try {
       t.합 += r.금화; t.것들.push(`${k} ${r.금화.toLocaleString()}`);
       티어.set(r.열림, t);
     }
+    /* 10-11 **한 벌 값만 보고 있었다.** 장비는 파티 넷이 **각자** 껴야 한다 —
+       체감 자가 10층을 15판 돌고도 T2 를 못 샀는데(금화 1,300 남음) 이 자는 "20%" 라며 통과시켰다.
+       한 사람 값이 아니라 **넷을 입히는 값**으로 센다. */
     return {
+      파티한도: w.파티한도,
       층별,
       티어: [...티어.entries()].sort((a, b) => a[0] - b[0])
-        .map(([열림, t]) => ({ 열림, 합: t.합, 것들: t.것들, 벌이: 벌이(열림) })),
+        .map(([열림, t]) => ({ 열림, 합: t.합 * w.파티한도, 한벌: t.합, 것들: t.것들, 벌이: 벌이(열림) })),
     };
   }, 재료판);
 
@@ -67,12 +71,12 @@ try {
   for (const r of 본.층별)
     console.log(`${String(r.층).padStart(4)} ${r.한판.toLocaleString().padStart(11)} ${r.보스판.toLocaleString().padStart(13)} ${String(r.필요판).padStart(8)}`);
 
-  console.log(`\n 열림   한 벌 값          ${재료판}판 벌이        몫`);
+  console.log(`\n 열림     한 벌     넷을 입히면       ${재료판}판 벌이        몫`);
   for (const t of 본.티어) {
     const 몫 = t.합 / Math.max(1, t.벌이);
     const 나쁜 = 몫 > 몫한도;
     if (나쁜) 나쁨++;
-    console.log(`${String(t.열림).padStart(5)} ${t.합.toLocaleString().padStart(14)} ${t.벌이.toLocaleString().padStart(16)} ${`${(몫 * 100).toFixed(0)}%`.padStart(8)}`
+    console.log(`${String(t.열림).padStart(5)} ${t.한벌.toLocaleString().padStart(10)} ${t.합.toLocaleString().padStart(15)} ${t.벌이.toLocaleString().padStart(16)} ${`${(몫 * 100).toFixed(0)}%`.padStart(8)}`
       + (나쁜 ? "  ← 못 산다" : ""));
   }
   if (process.argv.includes("--sabotage")) {

@@ -10,6 +10,8 @@ import { openHeadless } from "../../src/lib/video/headless";
 import { 이름헬퍼 } from "./ash_공통.mjs";
 const 주소 = process.env.ASH_URL ?? "https://rookery-web-production.up.railway.app/ash/index.html";
 const 층 = Number(process.argv[2] ?? 90);
+/** 둘째 인자 = 쓸 수 있는 레시피의 최대 열림. 티어를 하나씩 막아 보며 **어느 티어가 그 관문을 여는지** 본다. */
+const 최대열림 = Number(process.argv[3] ?? 99);
 
 const 창 = await openHeadless({ width: 390, height: 844, protocolTimeout: 10 * 60_000 });
 if (!창) process.exit(1);
@@ -19,7 +21,7 @@ try {
   await page.goto(주소, { waitUntil: "networkidle2", timeout: 60_000 });
   await new Promise((r) => setTimeout(r, 1800));
 
-  const 본 = await page.evaluate((f: number) => {
+  const 본 = await page.evaluate(([f, 최대열림]: number[]) => {
     const w = window as any;
     for (let i = 1; i < 9999; i++) clearInterval(i);
     w.requestAnimationFrame = () => 0;
@@ -31,7 +33,7 @@ try {
     w.S.최고층 = f; w.S.층 = f; w.S.사냥층 = f;
     const 값 = (k: string) => Object.values(w.레시피[k].효과 ?? {}).reduce((a: number, b: any) => a + Number(b), 0);
     for (const 슬롯 of ["무기", "갑옷"]) {
-      const 고를 = Object.keys(w.레시피).filter((k) => w.레시피[k].슬롯 === 슬롯 && !w.모자람(k).length)
+      const 고를 = Object.keys(w.레시피).filter((k) => w.레시피[k].슬롯 === 슬롯 && w.레시피[k].열림 <= 최대열림 && !w.모자람(k).length)
         .sort((a, b) => 값(b) - 값(a))[0];
       for (const c of w.S.대원) if (w.만들기(고를)) {
         const t = w.S.가방.장비[w.S.가방.장비.length - 1]; w.장착(t.id, c.id);
@@ -65,9 +67,9 @@ try {
       보호막남음: e ? e.보호막 : null,
       산아군: w.산아군().length, 전멸: !w.산아군().length,
     } };
-  }, 층);
+  }, [층, 최대열림]);
 
-  console.log(`${층}층 — 아군`);
+  console.log(`${층}층 (열림 ${최대열림} 까지) — 아군`);
   for (const c of 본.처음.아군) console.log(`  ${c.이름.padEnd(6)} Lv.${String(c.레벨).padStart(3)} 체력 ${String(c.체력).padStart(7)} 공격 ${String(c.공격).padStart(6)} 방어 ${String(c.방어).padStart(5)}`);
   console.log(`${층}층 — 적`);
   for (const e of 본.처음.적) console.log(`  ${e.이름.padEnd(10)} hp ${String(e.hp).padStart(9)} 공격 ${String(e.공격).padStart(7)} 방어 ${String(e.방어).padStart(5)} 보호막 ${e.보호막}`);
