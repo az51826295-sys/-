@@ -128,6 +128,33 @@ const 몹 = {
     "with barnacles and rot. Thick dull liquid strings from the jaws. Torn membranes between the necks.",
     "A BOSS: wide and heavy, about 140% of a human's height.",
   ].join(" "),
+  /* ── 61~75층 [용암의 대장간] — 6구간 (10-11 사장님·제미나이 명세).
+     결: 불은 **꺼져 가는 불**이다. 네온처럼 밝으면 결이 깨진다 — 식은 쇳물, 그을음, 잿빛 연기. ── */
+  "화염 정령": [
+    "A fire elemental monster: a hovering coil of smoldering ash and dim ember, roughly humanoid but with no face —",
+    "a hollow smoky torso and two thin arms trailing cinders. Cracks of dull orange glow deep inside, mostly covered",
+    "by grey-black soot. More smoke than flame; nothing bright, nothing neon.",
+    "About 85% of a human's height, drifting just off the ground.",
+  ].join(" "),
+  "용암 헬하운드": [
+    "A lava hound monster: a heavy four-legged beast of blackened cracked rock instead of flesh, dull orange seams",
+    "glowing faintly between the plates. Its head is a blunt wedge of stone with a jagged mouth and no eyes.",
+    "Soot and cooled slag crust its back; thin smoke rises from the seams. Dim and smoldering, not bright.",
+    "About 80% of a human's height at the shoulder, long and low.",
+  ].join(" "),
+  "대장장이 고블린": [
+    "A smith goblin monster: a short, thickset goblin in a scorched leather apron over patchwork iron plates,",
+    "a riveted helmet pulled low over its eyes and a soot-blackened face. It grips a heavy blacksmith's hammer",
+    "in both hands. Burn scars, cinder holes in the apron, dull hammered metal — nothing polished.",
+    "About 65% of a human's height, broad and squat.",
+  ].join(" "),
+  "고대 용암 골렘": [
+    "An ancient lava golem BOSS monster: a massive hulking figure built of fractured black basalt slabs with",
+    "dull cooling orange seams running between them. One arm ends in a huge blunt fist, the other in a jagged spur.",
+    "Its head is a low featureless block sunk between enormous shoulders. Slag and ash crust the whole body;",
+    "the glow is deep and faint, like a dying forge.",
+    "A BOSS: about 135% of a human's height, very broad.",
+  ].join(" "),
   /* 10-11 뽑기 SR 동료 둘 (사장님·제미나이 명세). 기존 다섯과 **안 겹치게**:
      로건은 붉은 바이저로 얼굴을 완전히 가린 중장갑(기사 세리안은 푸른 강철·얼굴 어둠),
      이브는 검은 가죽에 철제 스파이크(검사는 붉은 두건·정직한 직타). */
