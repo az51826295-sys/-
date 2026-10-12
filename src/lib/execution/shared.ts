@@ -111,7 +111,38 @@ export function defaultProviders(place?: Place | null): Providers {
       const { meterProviders } = require("@/lib/costs/meter") as typeof import("@/lib/costs/meter");
 
       const { createServiceClient } = require("@/lib/supabase/service") as typeof import("@/lib/supabase/service");
-      ai = meterProviders({ ai } as Providers, createServiceClient(), { companyId: 도구회사 }).ai;
+      const db = createServiceClient();
+      ai = meterProviders({ ai } as Providers, db, { companyId: 도구회사 }).ai;
+
+      /* **적는 것만으로는 안 막는다** (10-12 오후).
+         기록은 자리 하나로 덮었지만, 한도에 닿아도 도구는 그냥 불렀다 — 보이기만 하고 안 멈췄다.
+         도구 서른넷에 "반환값을 보고 멈추는 코드" 를 하나씩 넣는 대신, **여기서 문을 건다.**
+         `seatProviderForCompany` 를 쓰는 도구는 그쪽에서 먼저 멈추므로 여기까지 오지 않는다.
+
+         **첫 호출에서 막는다** — 반쯤 하다 멈추면 돈은 쓰고 결과는 없다.
+         한도는 한 판 동안 안 바뀌므로 한 번만 보고 기억한다(판마다 DB 를 두드리지 않는다). */
+      const 원래 = ai;
+      let 열렸나: boolean | null = null;
+      let 막힌까닭 = "";
+      const 문지기: AIProvider = {
+        name: 원래.name,
+        model: 원래.model,
+        async generateStructuredOutput(params) {
+          /* 10-12: 처음엔 `열렸나 === null` 일 때만 보고 던지게 썼다 —
+             **첫 호출만 막혔다.** 막은 뒤 열렸나 가 false 가 되니 다음 호출은 검사를 건너뛰고
+             그냥 지나갔다. routing_test 22판 중 **첫 판만 막히고 21판이 나갔다.**
+             문은 한 번 닫히면 **닫힌 채로 있어야** 한다. */
+          if (열렸나 === null) {
+            const { checkAllowance } = await import("@/lib/costs/allowance");
+            const a = await checkAllowance(db, 도구회사);
+            열렸나 = !a.exhausted;
+            막힌까닭 = 열렸나 ? "" : `한도에 닿았다: 최근 ${a.windowDays}일 $${a.spentUsd.toFixed(2)} / $${a.limitUsd} — 모델을 부르지 않았다.`;
+          }
+          if (!열렸나) throw new Error(막힌까닭);
+          return 원래.generateStructuredOutput(params);
+        },
+      };
+      ai = 문지기;
     } catch {
       // 장부에 못 붙어도 도구는 돌아야 한다. 다만 조용히 넘어가지는 않는다.
       console.warn("[장부] 도구 지출을 적지 못했다 — ROOKERY_TOOL_COMPANY 는 있으나 붙이지 못했다.");

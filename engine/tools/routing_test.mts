@@ -53,6 +53,7 @@ console.log(`이름표 ${known.size}개: ${[...known].join(", ")}\n`);
 
 const ai = defaultProviders().ai;
 let pass = 0;
+let 못물음 = 0;   // 한도·열쇠 때문에 **묻지도 못한** 판 — 통과로도 실패로도 안 센다
 const rows: string[] = [];
 for (const [text, want] of cases) {
   let got: string | null = null;
@@ -74,10 +75,18 @@ for (const [text, want] of cases) {
     why = `호출 실패: ${e instanceof Error ? e.message.replace(/s+/g, " ").slice(0, 500) : e}`;
   }
   const bad = got !== null && !known.has(got);
-  const ok = got === want && !bad;
+  /* 10-12 **못 물어본 판을 통과로 세고 있었다.**
+     한도에 닿아 모델을 못 부르면 got 이 null 로 남는데, 정답이 null 인 보기가 많아
+     22건 전부 막힌 판에서 "통과 4/22" 가 나왔다. 그 4 는 맞춘 것이 아니라 **못 잰 것**이다.
+     묻지 못한 것은 맞음도 틀림도 아니다(09-27: 0 은 "못 본다" 일 수 있다). */
+  const 못잼 = why.startsWith("호출 실패");
+  if (못잼) 못물음++;
+  const ok = !못잼 && got === want && !bad;
   if (ok) pass++;
-  rows.push(`${ok ? "✅" : "❌"} ${text.slice(0, 42).padEnd(42)} → ${String(got).padEnd(18)} (기대 ${String(want)})${bad ? " ⚠ 없는 id" : ""}  ${why.slice(0, 50)}`);
+  rows.push(`${못잼 ? "⚠" : ok ? "✅" : "❌"} ${text.slice(0, 42).padEnd(42)} → ${String(got).padEnd(18)} (기대 ${String(want)})${bad ? " ⚠ 없는 id" : ""}  ${why.slice(0, 50)}`);
   console.log(rows[rows.length - 1]);
 }
-console.log(`\n통과 ${pass} / ${cases.length}`);
-process.exit(pass === cases.length ? 0 : 1);
+const 잰것 = cases.length - 못물음;
+console.log(`\n통과 ${pass} / ${잰것}${못물음 ? `  (못 물어본 것 ${못물음}건은 안 셌다)` : ""}`);
+if (못물음 === cases.length) { console.log("**한 건도 못 물었다** — 이 판은 판정이 아니다."); process.exit(2); }
+process.exit(pass === 잰것 ? 0 : 1);
