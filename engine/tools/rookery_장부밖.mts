@@ -9,10 +9,11 @@
  * **적는 것과 막는 것은 다른 일이다.** 둘을 갈라 센다:
  *   · **적힌다** — `rookery_env.mts` 를 지나면 `ROOKERY_TOOL_COMPANY` 가 심기고,
  *     `defaultProviders()` 가 장부에 붙인다. 도구는 전부 그 자리를 지난다.
- *   · **막힌다** — 한도에 닿았을 때 **안 부르고 멈추는 것**은 `seatProviderForCompany` 만 한다.
- *     부르는 쪽이 멈출 줄 알아야 해서(반환값을 보고 `process.exit`) 아직 몇 개뿐이다.
+ *   · **막힌다** — 10-12 오후부터 `defaultProviders()` 안에 문이 있다. 첫 호출에서 한도를 보고
+ *     닿았으면 **모델을 안 부르고 던진다.** 그래서 도구 전부가 막힌다.
+ *     `seatProviderForCompany` 를 쓰는 것들은 **더 곱게** 멈춘다(던지지 않고 적고 끝낸다).
  *
- * 그래서 "적힘 100%, 막힘 10%" 같은 그림이 정상이다. 섞어 세면 어느 쪽이 빈 칸인지 안 보인다.
+ * 섞어 세면 어느 쪽이 빈 칸인지 안 보여서 갈라 센다.
  */
 import { readdirSync, readFileSync } from "node:fs";
 
@@ -36,12 +37,14 @@ console.log(`  ── 적힌다(장부에 남는다)`);
 console.log(`     **${모델부름.length}개 전부** — rookery_env.mts 를 지나면 자동으로 붙는다`);
 console.log(`     (10-12 확인: routing_test 가 장부에 routing_probe 22건으로 찍혔다. 전에는 0건이었다.)\n`);
 console.log(`  ── 막힌다(한도에 닿으면 안 부르고 멈춘다)`);
-console.log(`     ${막힘.length}개: ${줄(막힘) || "(없음)"}\n`);
-console.log(`  ── 아직 안 막히는 것 ${안막힘.length}개 — 적히기는 하지만, 한도를 넘어도 그냥 부른다`);
-console.log(`     ${줄(안막힘)}\n`);
+console.log(`     **${모델부름.length}개 전부** — 문이 defaultProviders() 안에 있다(첫 호출에서 보고 던진다)`);
+console.log(`     (10-12 확인: 막힌 지갑에서 routing_test 가 **통과 0/0 · 못 물어본 것 22건**, 모델 호출 0)\n`);
+console.log(`  ── 그중 **더 곱게 멈추는 것** ${막힘.length}개 — seatProviderForCompany 를 써서`);
+console.log(`     던지는 대신 "한도에 닿았다" 를 적고 조용히 끝낸다`);
+console.log(`     ${줄(막힘) || "(없음)"}\n`);
+console.log(`     나머지 ${안막힘.length}개는 **막히기는 하되 예외로 멈춘다** — 막는 것은 같고 끝맺는 모양만 거칠다.\n`);
 
-const 막는비율 = (막힘.length / Math.max(1, 모델부름.length)) * 100;
-console.log(`  한도가 **막는** 도구: ${막는비율.toFixed(0)}% (${막힘.length}/${모델부름.length})`);
 console.log(`  한도가 **보는** 도구: 100% (${모델부름.length}/${모델부름.length})`);
-console.log(`\n  이 자는 고치지 않고 **센다.** 남은 것을 한꺼번에 바꾸지 않는 까닭은,`);
-console.log(`  "막는다" 는 부르는 쪽이 **멈출 줄 알아야** 하기 때문이다(반환값을 보고 멈추는 코드가 필요하다).`);
+console.log(`  한도가 **막는** 도구: 100% (${모델부름.length}/${모델부름.length})`);
+console.log(`\n  **이 자는 글자를 세는 자다** — 코드에 그 이름이 있나만 본다.`);
+console.log(`  "진짜로 막히나" 는 막힌 지갑에서 도구를 돌려 봐야 안다(10-12 에 그렇게 확인했다).`);
