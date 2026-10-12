@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { pushState, enablePush, disablePush, type PushState } from "./push-client";
+import { 물어볼까 } from "@/lib/dot/pushAsk";
 import { SKUS, AD_REFILL_TURNS, type Balance } from "@/lib/dot/money";
 import { USER_STICKERS, USER_STICKER_KEYS } from "@/lib/dot/stickers";
 import { GIFTS } from "@/lib/dot/bond";
@@ -228,6 +229,30 @@ export default function DotChat({
   const [guide, setGuide] = useState(false);
   useEffect(() => { try { if (signedIn && !localStorage.getItem("dot-guide-v1")) setGuide(true); } catch { /* 저장소 없음 */ } }, [signedIn]);
   function closeGuide() { setGuide(false); try { localStorage.setItem("dot-guide-v1", "1"); } catch { /* 이번만 */ } }
+  /**
+   * **알림을 켜 달라고 한 번만 물어본다** (10-12).
+   *
+   * 장부로 세 보니 쓴 사람 18명 중 **알림을 켠 사람이 0명**이었다. 장치가 없어서가 아니다 —
+   * 방 ⋮ 메뉴 안에 "하루 한 번, 먼저 말을 걸어요" 가 분명히 있다. **아무도 못 찾은 것이다.**
+   * 알림은 이 앱에서 사람을 **돌아오게 만드는 유일한 장치**라, 못 찾으면 그걸로 끝이다.
+   *
+   * 그래서 메뉴에서 꺼내 **대화 흐름 안으로** 옮긴다. 다만 처음부터 들이밀지 않는다 —
+   * 몇 마디 나눠 본 뒤에야 "또 이야기하고 싶다" 가 말이 된다. 그리고 **한 번만** 묻는다.
+   * (거절한 사람에게 또 묻는 것은 알림을 끄게 만드는 가장 빠른 길이다.)
+   */
+  const [알림물음, set알림물음] = useState(false);
+  useEffect(() => {
+    /* **판단은 `push-ask.ts` 에 있다** — 화면은 로그인해야 볼 수 있어 자가 못 도는데,
+       이 기능의 진짜 위험은 모양이 아니라 **묻는 때를 틀리는 것**이기 때문이다. */
+    let 전에물음 = true;
+    try { 전에물음 = !!localStorage.getItem("dot-push-ask-v1"); } catch { 전에물음 = true; }
+    if (물어볼까({ 로그인: signedIn, 알림: push, 내가건말: lines.filter((l) => l.role === "user").length,
+                   전에물음, 이미띄움: 알림물음 })) set알림물음(true);
+  }, [signedIn, push, lines, 알림물음]);
+  function 알림그만(끈다: boolean) {
+    if (끈다) set알림물음(false);
+    try { localStorage.setItem("dot-push-ask-v1", "1"); } catch { /* 이번만 */ }
+  }
   async function send(preset?: string, stickerKey?: string, giftKey?: string) {
     const message = (preset ?? text).trim();
     if (!message || busy || !who) return;
@@ -417,6 +442,20 @@ export default function DotChat({
               </div>
             );
           })}
+          {/* 10-12: **메뉴에 있던 알림을 대화 안으로 꺼낸다.** 18명 중 0명이 켠 자리다.
+              몇 마디 나눈 뒤 한 번만 묻고, 어느 쪽을 눌러도 다시 안 묻는다. */}
+          {알림물음 && !busy && (
+            <div className="kk-ask">
+              <div className="kk-ask-body">
+                자주 이야기하고 싶다면 알림을 켜 두세요.<br />
+                <b>{who.name}</b>가 <b>먼저</b> 말을 걸어요.
+              </div>
+              <div className="kk-ask-btns">
+                <button className="kk-ask-btn" onClick={() => { 알림그만(true); void togglePush(); }}>알림 켜기</button>
+                <button className="kk-ask-later" onClick={() => 알림그만(true)}>나중에</button>
+              </div>
+            </div>
+          )}
           {/* 37회차: 30턴을 다 쓴 순간이 이 앱이 사람을 잃는 첫 자리다. 잠긴 입력창 대신 "언제 다시" 와 "먼저 말 걸어 줄게" 를 보인다. */}
           {signedIn && mounted && remaining <= 0 && !busy && (
             <div className="kk-limit">
@@ -782,6 +821,15 @@ const CSS = `
 .kk-day { align-self:center; background:rgba(0,0,0,.16); color:#fff; font-size:11px; padding:4px 12px; border-radius:999px; margin:4px 0 2px; }
 .kk-item { display:flex; flex-direction:column; gap:10px; }
 .kk-item.run { margin-top:-5px; }
+/* 10-12 알림 묻는 카드 — 말풍선과 섞이지 않게 가운데, 그러나 눈에 띄게 */
+.kk-ask { margin:14px 8px; padding:12px 14px; border-radius:12px; text-align:center;
+  background:rgba(255,255,255,.72); border:1px solid rgba(0,0,0,.08); }
+.kk-ask-body { font-size:13px; line-height:1.6; color:#333; }
+.kk-ask-btns { margin-top:10px; display:flex; gap:8px; justify-content:center; }
+.kk-ask-btn { padding:8px 16px; border-radius:999px; border:0; font-size:13px; font-weight:600;
+  background:#ff6b8a; color:#fff; cursor:pointer; }
+.kk-ask-later { padding:8px 14px; border-radius:999px; border:0; font-size:13px;
+  background:transparent; color:#888; cursor:pointer; }
 .kk-row { display:flex; align-items:flex-end; gap:8px; }
 .kk-row.them { justify-content:flex-start; align-items:flex-start; }
 .kk-row.me { justify-content:flex-end; }
