@@ -82,8 +82,41 @@ function selectAI(place?: Place | null): AIProvider {
     : primary;
 }
 
+/**
+ * **도구가 쓴 돈도 장부에 적는다** (10-12).
+ *
+ * 그날 세어 보니 모델을 부르는 도구 39개 중 **장부를 거치는 것은 3개뿐**이었다.
+ * 나머지 36개가 이 함수를 그냥 써서, 돈은 나가는데 `model_usage` 에 한 줄도 안 남았다 —
+ * `gate_look` 을 두 번 돌리고 "비용 $0" 이라고 보고한 일이 거기서 나왔다(실제로는 $0.125).
+ * **안 보이는 지출은 줄일 수도 막을 수도 없다.**
+ *
+ * 36개를 하나씩 고치는 대신 **지나는 자리 한 곳**에서 덮는다.
+ * `ROOKERY_TOOL_COMPANY` 는 `engine/tools/rookery_env.mts` 만 심는다 —
+ * 서버(웹·워커)는 이 값이 없으므로 **지금까지와 똑같이** 돈다.
+ *
+ * 두 번 세지 않는다: `meterAi` 는 덧씌우면 **scope 를 바꿔 끼운다**(쌓지 않는다).
+ * 그래서 이미 장부를 거치는 도구 셋에 이 길이 더해져도 값이 두 배가 되지 않는다.
+ *
+ * **이것은 "적는 것"까지다.** 한도에 닿았을 때 **막는 것**은 `seatProviderForCompany` 가 한다 —
+ * 그건 부르는 쪽이 멈출 줄 알아야 해서, 아직 셋만 그 길에 있다.
+ */
 export function defaultProviders(place?: Place | null): Providers {
-  const ai = selectAI(place);
+  let ai = selectAI(place);
+
+  const 도구회사 = process.env.ROOKERY_TOOL_COMPANY;
+  if (도구회사) {
+    try {
+      // 여기서만 늦게 불러온다 — 서버 길에 쓸데없는 짐을 지우지 않는다
+
+      const { meterProviders } = require("@/lib/costs/meter") as typeof import("@/lib/costs/meter");
+
+      const { createServiceClient } = require("@/lib/supabase/service") as typeof import("@/lib/supabase/service");
+      ai = meterProviders({ ai } as Providers, createServiceClient(), { companyId: 도구회사 }).ai;
+    } catch {
+      // 장부에 못 붙어도 도구는 돌아야 한다. 다만 조용히 넘어가지는 않는다.
+      console.warn("[장부] 도구 지출을 적지 못했다 — ROOKERY_TOOL_COMPANY 는 있으나 붙이지 못했다.");
+    }
+  }
 
   return {
     ai,

@@ -38,6 +38,24 @@ process.env.NEXT_PUBLIC_SUPABASE_URL = k.url;
 process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = k.anon;
 process.env.SUPABASE_SECRET_KEY = k.service;
 process.env.PRODUCT = "rookery";
+/**
+ * **도구가 쓴 돈을 장부에 적게 한다** (10-12).
+ *
+ * 10-12 에 세어 보니 모델을 부르는 도구 39개 중 장부를 거치는 것이 3개뿐이었다.
+ * 나머지는 `defaultProviders()` 를 그냥 써서, 돈은 나가는데 `model_usage` 에 한 줄도 안 남았다.
+ * 그래서 `gate_look` 두 판을 "비용 $0" 이라고 보고했다 — 실제로는 $0.125 였다.
+ *
+ * 도구 서른여섯을 하나씩 고치는 대신, **도구가 전부 지나는 이 자리**에서 회사를 알려 준다.
+ * 서버(웹·워커)는 여기를 안 지나므로 지금까지와 똑같이 돈다.
+ * 어느 지갑인지는 `company.mts` 가 정한다(기본은 개발 계정, `ROOKERY_ACCOUNT=owner` 면 사장님).
+ */
+try {
+  const { account } = await import("./company.mjs");
+  process.env.ROOKERY_TOOL_COMPANY ??= account().companyId;
+} catch {
+  // 개발 계정이 아직 없을 수 있다 — 그때는 적히지 않고, 적히지 않는다는 것만 알린다
+  console.warn("[장부] 도구 회사를 못 정했다 — 이번 판의 지출은 장부에 안 남는다.");
+}
 // 모델 열쇠는 .env.local 것 그대로(도구가 읽는다). AI_PROVIDER 는 mock 이 아니게.
 for (const l of readFileSync(".env.local", "utf8").split(String.fromCharCode(10))) { const i = l.indexOf("="); if (i > 0 && !l.startsWith("#")) { const key = l.slice(0, i).trim(); if (!(key in process.env) && !key.startsWith("NEXT_PUBLIC_SUPABASE") && key !== "SUPABASE_SECRET_KEY") process.env[key] = l.slice(i + 1).trim(); } }
 if (process.env.AI_PROVIDER === "mock") process.env.AI_PROVIDER = "deepseek";
