@@ -80,6 +80,11 @@ const behindOthers: string[] = [];
   const { data: all } = await db.from("service_heartbeat").select("service, commit_sha, seen_at");
   for (const r of (all ?? []) as { service: string; commit_sha: string | null; seen_at: string }[]) {
     if (r.service === svc || !r.commit_sha) continue;
+    /* 10-12 **제품을 가린다.** 두근도트를 올리려는데 뒤처진 로키 서비스 셋 때문에 문이 막았다 —
+       그쪽은 두근도트 일을 집지 않으므로 여기서 따질 일이 아니다.
+       같은 제품(이름 앞머리)끼리만 본다. 한 저장소에 두 제품이 살아서 생긴 일이다. */
+    const 집안 = (n: string) => (n.startsWith("dot") ? "dot" : n.startsWith("rookery") ? "rookery" : n);
+    if (집안(r.service) !== 집안(svc)) continue;
     const age = Math.round((Date.now() - Date.parse(r.seen_at)) / 60000);
     if (age > 30) continue;                                   // 안 도는 것은 여기서 따질 일이 아니다
     if (r.commit_sha.startsWith(head7) || head7.startsWith(r.commit_sha.slice(0, 7))) continue;
