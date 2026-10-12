@@ -11,6 +11,7 @@ import { frameStyle, styleLine } from "@/lib/video/style";
 import { lookSchema, safeLook, lookLine } from "@/lib/video/look";
 import { makeClip } from "@/lib/providers/sora";
 import { makeVeoClip, veoConfigured, nearestVeoSeconds, VEO_USD_PER_SECOND, type VeoTier } from "@/lib/providers/veo";
+import { 살수있나 } from "@/lib/costs/beforeBuy";
 import { speechRate, speechLine } from "@/lib/video/speechRate";
 import type { EmployeeSkill, SkillRunContext } from "@/lib/skills/types";
 
@@ -177,6 +178,11 @@ export const videoMakeSkill: EmployeeSkill = {
     let soraSeconds = 0;
     // 182회차: Sora 2 API 는 2026-09-24 에 사라진다(OpenAI 폐기표). 열쇠가 있으면 Veo 3.1(초당 ≈$0.05)로, 없으면 그날까지는 Sora 로.
     // `VIDEO_PROVIDER=sora` 로 되돌릴 수 있다(9/24 뒤엔 소용없다).
+    /* 10-12 **사기 전에 지갑을 본다.** 전에는 쓰고 나서 recordUsage 로 적기만 했다 —
+       적히니 나중에 보이지만 그때는 이미 나간 뒤다. 영상은 사장님 지갑에서 가장 큰 칸이었다($10.20/30일).
+       못 사면 **글자 카드로 간다** — 이 길은 아래에 이미 있다(장면이 빈 채로 끝나지 않는다). */
+    const 지갑 = await 살수있나(ctx.supabase, ctx.execution.company_id as string);
+    if (!지갑.ok) console.warn(`[video] 화면을 안 산다 — ${지갑.why}. 글자 카드로 간다.`);
     const useVeo = veoConfigured() && process.env.VIDEO_PROVIDER !== "sora";
     const veoTier = ((process.env.VEO_TIER as VeoTier | undefined) ?? "lite");
     let footageModel = useVeo ? `veo-3.1-${veoTier}` : "sora-2";
@@ -204,7 +210,7 @@ export const videoMakeSkill: EmployeeSkill = {
       // 외주 모드: 대본이 화면을 안 적은 장면도 영상 AI 에게 — 제목·글머리를 장면 설명으로 준다. 길이는 장면의 초(4·6·8 로 맞춤).
       const footagePrompt = sc.footage.trim() || `Cinematic advertisement shot, no on-screen text: ${sc.heading}. ${sc.bullets.join(". ")}`;
       const clipSec = outsource ? nearestVeoSeconds(sc.seconds) : 4;
-      if (wantsFootage && process.env.GENESIS_SPEND === "i-approve") {
+      if (wantsFootage && 지갑.ok && process.env.GENESIS_SPEND === "i-approve") {
         try {
           const made = useVeo ? await makeVeoClip({ prompt: footagePrompt, seconds: clipSec, tier: veoTier }) : await makeClip({ prompt: footagePrompt, seconds: clipSec });
           clip = made.mp4;

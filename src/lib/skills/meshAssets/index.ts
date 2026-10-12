@@ -1,6 +1,7 @@
 import { ExecutionError, setStep } from "@/lib/execution/shared";
 import { step } from "@/lib/execution/steps";
 import { recordUsage } from "@/lib/costs/meter";
+import { 살수있나 } from "@/lib/costs/beforeBuy";
 import type { EmployeeSkill, SkillRunContext } from "@/lib/skills/types";
 import { createImageProvider } from "@/lib/providers/images";
 import { defaultMeshProvider, MESHY_ACTIONS } from "@/lib/providers/meshy";
@@ -340,6 +341,11 @@ export const meshAssetsSkill: EmployeeSkill = {
       recordUsage(ctx.supabase, scope, { model: r.model ?? "gpt-image-2", purpose, inputTokens: r.inputTokens, outputTokens: r.outputTokens });
     const bookMeshy = (purpose: string, credits: number) =>
       recordUsage(ctx.supabase, scope, { model: "meshy-credit", purpose, inputTokens: 0, outputTokens: 0, quantity: credits });
+    /* 10-12 **사기 전에 지갑을 본다.** 3D 는 사장님 지갑의 두 번째 칸이었다($3.60/30일, 건당 $0.60).
+       전에는 쓰고 나서 적기만 했다 — 적히니 보이지만 그때는 이미 나간 뒤다.
+       영상과 달리 3D 는 **대신할 길이 없다.** 그러니 한도에 닿았으면 일을 시작하지 않고 멈춘다. */
+    const 지갑 = await 살수있나(ctx.supabase, execCompanyId);
+    if (!지갑.ok) throw new ExecutionError("SPEND_LIMIT_REACHED", `${지갑.why} — 3D 는 대신할 길이 없어 시작하지 않는다.`);
     // 그림은 base64 라 행에 못 넣는다 — 저장소 `<회사>/exec/<실행>/…` 에 두고 단계엔 경로만.
     const drawn = await step(ctx.supabase, ctx.executionId, "concept", async () => {
       const out: { front?: string; face?: string; back?: string; side?: string; byMachine: boolean; checks: typeof conceptChecks } = { byMachine: false, checks: [] };

@@ -1,5 +1,6 @@
 import { ExecutionError, setStep } from "@/lib/execution/shared";
 import { recordUsage } from "@/lib/costs/meter";
+import { 살수있나 } from "@/lib/costs/beforeBuy";
 import { storeDeliverableFile } from "@/lib/deliverables/files";
 import type { EmployeeSkill, SkillRunContext } from "@/lib/skills/types";
 import { createImageProvider } from "@/lib/providers/images";
@@ -131,6 +132,10 @@ export const gameAssetsSkill: EmployeeSkill = {
     let drawTokens = { input: 0, output: 0 };
     const made: { dataUrl: string; index: number }[] = [];
     const drawFailures: string[] = [];
+    /* 10-12 **사기 전에 지갑을 본다.** 전에는 넉 장을 다 그린 뒤에야 적었다 —
+       적히니 보이지만 그때는 이미 나간 뒤다. 한 판에 넉 장이라 한 번만 보면 된다. */
+    const 지갑 = await 살수있나(ctx.supabase, ctx.execution.company_id as string);
+    if (!지갑.ok) throw new ExecutionError("SPEND_LIMIT_REACHED", `${지갑.why} — 그림을 그리지 않았다.`);
     for (let i = 0; i < CANDIDATES; i++) {
       try {
         const img = await drawer.draw(FORM + " " + brief.prompt);
