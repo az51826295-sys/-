@@ -2,7 +2,7 @@ import { z } from "zod";
 import type { Supabase } from "@/lib/execution/shared";
 import type { AIProvider } from "@/lib/providers/types";
 import { collectCases, type LearnCase } from "./cases";
-import { countsFrom, decide, isHoldout, ADOPT, type Counts } from "./ruleStats";
+import { countsFrom, decide, isHoldout, ADOPT, type Counts, type 판정 } from "./ruleStats";
 
 /**
  * 검증된 규칙 고리 (100회차 09-14, 사장님 "2,3"의 3).
@@ -26,7 +26,9 @@ import { countsFrom, decide, isHoldout, ADOPT, type Counts } from "./ruleStats";
  */
 
 export type RuleCandidate = { title: string; rule: string; violation_test: string; violating_cases: number[] };
-export type RuleTrial = RuleCandidate & { counts: Counts; judged: number; lift: number | null; p: number; support: number; adopt: boolean; reason: string };
+/* 10-12: `판정` 이 붙었다 — **"못 잼" 과 "기각" 은 다른 일**이다.
+   전에는 둘 다 adopt:false 라 기각으로 묻혔고, 사례가 쌓인 뒤에도 그 규칙은 이미 죽어 있었다. */
+export type RuleTrial = RuleCandidate & { counts: Counts; judged: number; lift: number | null; p: number; support: number; adopt: boolean; 판정: 판정; reason: string };
 export type RuleRecheck = { knowledgeId: string; title: string; counts: Counts; judged: number; lift: number | null; p: number; holdoutBefore: number; holdoutNow: number; keep: boolean; reason: string };
 export type RuleLoopResult = {
   skipped?: string;
@@ -218,6 +220,61 @@ export async function runRuleLoop(
   let calls = 0;
   let wrote = false;
 
+  /* ── 보류 다시 재기 (10-12) ──────────────────────────────────────────
+   * "못 잼" 을 기각 대신 보류로 두기로 했는데, **그것만으로는 영원히 잠든다** —
+   * 보류 후보의 제목이 `existingRules` 의 "이미 있는 것" 에 들어가 다시 제안되지도 않는다.
+   * 기각보다 나쁠 뻔했다(기각은 적어도 정직하다).
+   *
+   * 그래서 사례가 **그때보다 늘었을 때만** 다시 잰다. 안 늘었으면 같은 답이 나오고 호출만 쓴다
+   * (채택 규칙 재검증이 `recheckDue` 로 막는 것과 같은 까닭이다).
+   */
+  const 보류다시: { title: string; before: number; now: number; 판정: 판정; reason: string }[] = [];
+  {
+    const { data: pend } = await db.from("learning_candidates")
+      .select("id, title, summary, reason").eq("company_id", companyId).eq("status", "pending")
+      .order("created_at", { ascending: true }).limit(40);
+    for (const r of (pend ?? []) as { id: string; title: string; summary: string; reason: string | null }[]) {
+      let 그때 = 0; let 시험 = "";
+      try { const j = JSON.parse(String(r.reason ?? "{}")); 그때 = Number(j.holdout ?? 0); 시험 = String(j.violation_test ?? ""); } catch { /* 옛 줄 */ }
+      if (!시험) continue;                                   // 어겼는지 가릴 길이 없으면 다시 재도 같다
+      if (!opts.forceRecheck && !recheckDue(그때, holdout.length)) continue;
+      if (보류다시.length >= RECHECK.maxPerRun) break;
+      let out: { counts: Counts; judged: number };
+      try { out = await judgeRule(ai, r.summary, 시험, holdout); }
+      catch { calls++; continue; }                            // 못 물었으면 보류 그대로 — 기각으로 바꾸지 않는다
+      calls++;
+      const d = decide(out.counts);
+      보류다시.push({ title: r.title, before: 그때, now: holdout.length, 판정: d.판정, reason: d.reason });
+      if (opts.dryRun) continue;
+      if (d.판정 === "못잼") {
+        // 아직도 못 잰다 — 다음에 또 보게 지금 보류분 크기만 적어 둔다
+        await db.from("learning_candidates").update({
+          reason: JSON.stringify({ ...(JSON.parse(String(r.reason ?? "{}")) as object), holdout: holdout.length }),
+          manager_note: `다시 잼(보류 ${holdout.length}건, 그때 ${그때}건): ${d.reason}`,
+        }).eq("id", r.id);
+        continue;
+      }
+      await db.from("learning_candidates").update({
+        status: d.판정 === "채택" ? "approved" : "rejected",
+        decided_at: new Date().toISOString(),
+        reason: JSON.stringify({ ...(JSON.parse(String(r.reason ?? "{}")) as object), holdout: holdout.length, counts: out.counts, judged: out.judged, lift: d.lift, p: d.p }),
+        manager_note: `다시 잼(보류 ${holdout.length}건, 그때 ${그때}건): ${d.reason}`,
+      }).eq("id", r.id);
+      if (d.판정 === "채택") {
+        const { error: ke } = await db.from("organization_knowledge").insert({
+          company_id: companyId,
+          title: `${r.title.slice(0, 100)} (검증된 규칙)`,
+          description: r.summary,
+          category: "quality_improvement",
+          status: "active",
+          learning_candidate_id: r.id,
+        });
+        if (ke) console.error("[rules] 보류분 채택 기록 실패:", ke.message);
+      }
+      wrote = true;
+    }
+  }
+
   // ── 재검증: 전에 채택한 규칙을 새 보류분에 다시 댄다
   const rechecks: RuleRecheck[] = [];
   const due = (await adoptedRules(db, companyId)).filter((r) => opts.forceRecheck || recheckDue(r.holdoutAtAdoption, holdout.length)).slice(0, RECHECK.maxPerRun);
@@ -293,8 +350,8 @@ export async function runRuleLoop(
     const c = cited(r);
     if (c.n < ADOPT.minSupport || c.bad < ADOPT.minBadViolators) {
       trials.push({
-        ...r, counts: { a: 0, b: 0, c: 0, d: 0 }, judged: 0, lift: null, p: 1, support: c.n, adopt: false,
-        reason: `제안자가 어긴 사례를 ${c.n}건(실패 ${c.bad}건)밖에 못 댔다 — 판정 안 함(호출 아낌)`,
+        ...r, counts: { a: 0, b: 0, c: 0, d: 0 }, judged: 0, lift: null, p: 1, support: c.n, adopt: false, 판정: "못잼" as 판정,
+        reason: `제안자가 어긴 사례를 ${c.n}건(실패 ${c.bad}건)밖에 못 댔다 — 판정 안 함(호출 아낌, 사례가 쌓이면 다시)`,
       });
       continue;
     }
@@ -304,11 +361,11 @@ export async function runRuleLoop(
     // 호출 하나가 죽어도(잘림·연결) 나머지 규칙과 회사는 계속 — 첫 자동 실행(09-15)이 한 호출 때문에 회사 전체를 failed 로 남겼다.
     let judgedOut: { counts: Counts; judged: number };
     try { judgedOut = await judgeRule(ai, r.rule, r.violation_test, holdout); }
-    catch (e) { calls++; trials.push({ ...r, counts: { a: 0, b: 0, c: 0, d: 0 }, judged: 0, lift: null, p: 1, support: 0, adopt: false, reason: `판정 호출 실패: ${e instanceof Error ? e.message : String(e)}` }); continue; }
+    catch (e) { calls++; trials.push({ ...r, counts: { a: 0, b: 0, c: 0, d: 0 }, judged: 0, lift: null, p: 1, support: 0, adopt: false, 판정: "못잼" as 판정, reason: `판정 호출 실패: ${e instanceof Error ? e.message : String(e)}` }); continue; }
     const { counts, judged } = judgedOut;
     calls++;
     const d = decide(counts);
-    trials.push({ ...r, counts, judged, lift: d.lift, p: d.p, support: d.support, adopt: d.adopt, reason: d.reason });
+    trials.push({ ...r, counts, judged, lift: d.lift, p: d.p, support: d.support, adopt: d.adopt, 판정: d.판정, reason: d.reason });
   }
 
   const adopted = trials.filter((t) => t.adopt).length;
@@ -325,9 +382,11 @@ export async function runRuleLoop(
         reason: JSON.stringify({ violation_test: t.violation_test, counts: t.counts, judged: t.judged, lift: t.lift, p: t.p, holdout: summary.holdout }),
         category: "quality_improvement",
         confidence: t.p <= 0.05 ? "high" : t.p <= 0.1 ? "medium" : "low",
-        status: t.adopt ? "approved" : "rejected",
+        /* 10-12 **못 잰 것은 기각이 아니다.** 보류로 두면 사례가 쌓인 뒤 다시 잴 수 있다.
+           전에는 78% 가 여기서 기각돼 영영 사라졌다(판정까지 가서 46% · 제안 단계에서 32%). */
+        status: t.판정 === "채택" ? "approved" : t.판정 === "못잼" ? "pending" : "rejected",
         manager_note: `자동 검증(보류 사례 ${t.judged}건): ${t.reason}`,
-        decided_at: now,
+        decided_at: t.판정 === "못잼" ? null : now,   // 보류는 아직 정해진 게 아니다
       })
       .select("id")
       .single();

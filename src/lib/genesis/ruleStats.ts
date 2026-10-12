@@ -58,16 +58,30 @@ export function fisherOneSided(k: Counts): number {
  */
 export const ADOPT = { minBadHoldout: 3, minOkHoldout: 3, minSupport: 3, minBadViolators: 2, minLift: 0.2, maxP: 0.1 } as const;
 
-export function decide(k: Counts): { adopt: boolean; reason: string; lift: number | null; p: number; support: number } {
+/**
+ * **판정은 셋이다** (10-12). 전에는 둘(채택/기각)뿐이라 **못 잰 것이 기각으로 갔다.**
+ *
+ * 실측: 후보 85개 중 **78%** 가 "어긴 사례 3건 미만" 으로 죽었다(46% 는 판정까지 가서, 32% 는
+ * 제안자가 못 대서). 통계 문(lift·p)에서 죽은 것은 6% 뿐이다 — 09-28 에도 79% 로 같았다.
+ * 그런데 그중 "판단 불가" 는 **틀렸다는 뜻이 아니라 아직 못 쟀다는 뜻**이다.
+ * 기각해 버리면 다음 달에 그 종류의 판이 쌓여도 그 규칙은 이미 죽어 있다.
+ *
+ * 내가 오늘 자에서 세 번 고친 것과 같은 모양이다 — **잴 수 없는 시험은 실패가 아니다.**
+ * 그래서 "못 잼" 을 따로 돌려주고, 부르는 쪽이 **보류**로 남긴다.
+ */
+export type 판정 = "채택" | "기각" | "못잼";
+
+export function decide(k: Counts): { adopt: boolean; 판정: 판정; reason: string; lift: number | null; p: number; support: number } {
   const L = lift(k);
   const p = fisherOneSided(k);
   const support = k.a + k.b;
   const fmt = (x: number | null) => (x === null ? "—" : x.toFixed(2));
-  if (support < ADOPT.minSupport) return { adopt: false, reason: `어긴 사례 ${support}건(<${ADOPT.minSupport}) — 판단 불가`, lift: L, p, support };
-  if (k.a < ADOPT.minBadViolators) return { adopt: false, reason: `어기고 실패한 사례 ${k.a}건(<${ADOPT.minBadViolators})`, lift: L, p, support };
-  if (L === null || L < ADOPT.minLift) return { adopt: false, reason: `효과 lift ${fmt(L)} (<${ADOPT.minLift})`, lift: L, p, support };
-  if (p > ADOPT.maxP) return { adopt: false, reason: `우연일 수 있음 p=${p.toFixed(3)} (>${ADOPT.maxP})`, lift: L, p, support };
-  return { adopt: true, reason: `채택: lift ${fmt(L)}, p=${p.toFixed(3)}, 어긴 사례 ${support}건`, lift: L, p, support };
+  if (support < ADOPT.minSupport) return { adopt: false, 판정: "못잼", reason: `어긴 사례 ${support}건(<${ADOPT.minSupport}) — 판단 불가(사례가 쌓이면 다시 잰다)`, lift: L, p, support };
+  if (k.a < ADOPT.minBadViolators) return { adopt: false, 판정: "못잼", reason: `어기고 실패한 사례 ${k.a}건(<${ADOPT.minBadViolators}) — 아직 못 잰다`, lift: L, p, support };
+  // 아래 둘은 **재 보고 떨어진 것**이다 — 그건 진짜 기각이다
+  if (L === null || L < ADOPT.minLift) return { adopt: false, 판정: "기각", reason: `효과 lift ${fmt(L)} (<${ADOPT.minLift})`, lift: L, p, support };
+  if (p > ADOPT.maxP) return { adopt: false, 판정: "기각", reason: `우연일 수 있음 p=${p.toFixed(3)} (>${ADOPT.maxP})`, lift: L, p, support };
+  return { adopt: true, 판정: "채택", reason: `채택: lift ${fmt(L)}, p=${p.toFixed(3)}, 어긴 사례 ${support}건`, lift: L, p, support };
 }
 
 /** 보류분(검증용) 인가. 사례 id 로 정해진다 — 날마다 같은 사례가 같은 쪽에 서야 제안에 쓴 사례로 검증하는 일이 없다. 약 40%. */
