@@ -1,6 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { LocaleProvider } from "@/lib/i18n/client";
+import { getLocale } from "@/lib/i18n/server";
+import type { Locale } from "@/lib/i18n/core";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -44,42 +47,55 @@ export const viewport: Viewport = {
   themeColor: 두근도트 ? "#ffffff" : "#0a0a0a",
 };
 
-export const metadata: Metadata = 두근도트
-  ? {
-      title: "두근도트",
-      description: "도트 캐릭터와 이야기하는 앱. 친해질수록 말투와 표정이 바뀝니다.",
+/** 10-13 다국어: 홈 화면·검색에 나오는 이름과 설명도 언어를 따른다. 두근도트라는 이름은 그대로 두고 옆에 읽는 법을 단다. */
+const DOT_META: Record<Locale, { title: string; description: string }> = {
+  ko: { title: "두근도트", description: "도트 캐릭터와 이야기하는 앱. 친해질수록 말투와 표정이 바뀝니다." },
+  en: { title: "Dugeun Dot", description: "Chat with pixel characters. The closer you get, the more their tone and faces change." },
+  ja: { title: "ドゥグンドット", description: "ドットキャラとおしゃべりするアプリ。仲良くなるほど話し方や表情が変わります。" },
+};
+
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocale();
+  if (두근도트) {
+    const m = DOT_META[locale];
+    return {
+      title: m.title,
+      description: m.description,
       appleWebApp: {
         capable: true,
-        title: "두근도트",
+        title: m.title,
         // 흰 바탕 앱이라 글자가 검게 나오는 쪽.
         statusBarStyle: "default",
       },
       icons: { apple: [{ url: "/dot-apple-touch-icon.png", sizes: "180x180" }] },
-    }
-  : {
-      title: "Rookery",
-      // Paddle 심사(09-14, 5번째 거절 "not a digital product or service"): "Hire AI employees" 가 사람 고용 서비스로 읽힐 수 있다 → 소프트웨어라고 말한다.
-      description: "AI software (SaaS) that turns requests into finished digital work — research, documents, small web apps and short explainer videos.",
-      appleWebApp: {
-        capable: true,
-        title: "Rookery",
-        // 까만 바탕이라 상태줄도 까맣게 이어 붙인다.
-        statusBarStyle: "black-translucent",
-      },
-      icons: { apple: [{ url: "/rookery-apple-touch-icon.png", sizes: "180x180" }] },
     };
+  }
+  return {
+    title: "Rookery",
+    // Paddle 심사(09-14, 5번째 거절 "not a digital product or service"): "Hire AI employees" 가 사람 고용 서비스로 읽힐 수 있다 → 소프트웨어라고 말한다.
+    description: "AI software (SaaS) that turns requests into finished digital work — research, documents, small web apps and short explainer videos.",
+    appleWebApp: {
+      capable: true,
+      title: "Rookery",
+      // 까만 바탕이라 상태줄도 까맣게 이어 붙인다.
+      statusBarStyle: "black-translucent",
+    },
+    icons: { apple: [{ url: "/rookery-apple-touch-icon.png", sizes: "180x180" }] },
+  };
+}
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getLocale();
   return (
     <html
-      lang="en"
+      lang={locale}
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col"><LocaleProvider locale={locale}>{children}</LocaleProvider></body>
     </html>
   );
 }
