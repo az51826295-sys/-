@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { listVersions } from "@/lib/chat/versions";
+import { makeT } from "@/lib/i18n/core";
+import { localeFromRequest } from "@/lib/i18n/server";
+import { ROOKERY } from "@/lib/i18n/dict/rookery";
 
 export const dynamic = "force-dynamic";
 
@@ -15,6 +18,7 @@ export async function POST(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
+  const t = makeT(ROOKERY, localeFromRequest(request));
   const { id } = await params;
   const supabase = await createClient();
   const {
@@ -33,11 +37,11 @@ export async function POST(
   let body: { deliverableId?: unknown } = {};
   try { body = await request.json(); } catch { /* 아래에서 거른다 */ }
   const deliverableId = typeof body.deliverableId === "string" ? body.deliverableId : null;
-  if (!deliverableId) return NextResponse.json({ error: "deliverableId 가 필요합니다." }, { status: 400 });
+  if (!deliverableId) return NextResponse.json({ error: t("deliverableId 가 필요합니다.") }, { status: 400 });
 
   const versions = await listVersions(supabase, id);
   const target = versions.find((v) => v.deliverableId === deliverableId);
-  if (!target) return NextResponse.json({ error: "이 대화의 판이 아닙니다." }, { status: 404 });
+  if (!target) return NextResponse.json({ error: t("이 대화의 판이 아닙니다.") }, { status: 404 });
   if (target.current) return NextResponse.json({ ok: true, already: true, n: target.n });
 
   // 그 판이 처음 돌아왔을 때의 파일 목록을 그대로 다시 붙인다 — 화면이 파일을 턴에서 읽는다.

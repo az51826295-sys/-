@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { listVersions } from "@/lib/chat/versions";
+import { makeT } from "@/lib/i18n/core";
+import { localeFromRequest } from "@/lib/i18n/server";
+import { ROOKERY } from "@/lib/i18n/dict/rookery";
 
 export const dynamic = "force-dynamic";
 
@@ -20,25 +23,26 @@ export async function POST(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
+  const t = makeT(ROOKERY, localeFromRequest(request));
   const { id } = await params;
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: "로그인이 필요해요." }, { status: 401 });
+  if (!user) return NextResponse.json({ error: t("로그인이 필요해요.") }, { status: 401 });
 
   const { data: owned } = await supabase
     .from("conversations").select("id").eq("id", id).eq("owner_id", user.id).maybeSingle();
-  if (!owned) return NextResponse.json({ error: "없는 대화예요." }, { status: 404 });
+  if (!owned) return NextResponse.json({ error: t("없는 대화예요.") }, { status: 404 });
 
   let body: { deliverableId?: unknown; undo?: unknown } = {};
   try { body = await request.json(); } catch { /* 아래에서 거른다 */ }
   const deliverableId = typeof body.deliverableId === "string" ? body.deliverableId : null;
   const undo = body.undo === true;
-  if (!deliverableId) return NextResponse.json({ error: "deliverableId 가 필요합니다." }, { status: 400 });
+  if (!deliverableId) return NextResponse.json({ error: t("deliverableId 가 필요합니다.") }, { status: 400 });
 
   // 버리기 전에 **이 대화의 판이 맞는지** 본다. 남의 판을 id 만으로 치우면 안 된다.
   const versions = await listVersions(supabase, id);
   if (!undo && !versions.some((v) => v.deliverableId === deliverableId)) {
-    return NextResponse.json({ error: "이 대화의 판이 아닙니다." }, { status: 404 });
+    return NextResponse.json({ error: t("이 대화의 판이 아닙니다.") }, { status: 404 });
   }
 
   // 그 판을 가리키는 결과 턴 전부(되돌리기로 여러 번 붙었을 수 있다).
@@ -48,7 +52,7 @@ export async function POST(
     .eq("conversation_id", id)
     .contains("attachments", { returned: { deliverableId } });
   const rows = (msgs ?? []) as { id: string; attachments: Record<string, unknown> }[];
-  if (!rows.length) return NextResponse.json({ error: "그 판의 기록이 없어요." }, { status: 404 });
+  if (!rows.length) return NextResponse.json({ error: t("그 판의 기록이 없어요.") }, { status: 404 });
 
   for (const m of rows) {
     const att = { ...(m.attachments ?? {}) } as Record<string, unknown>;

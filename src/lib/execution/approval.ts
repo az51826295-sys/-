@@ -113,8 +113,8 @@ export async function pendingApproval(db: Supabase, conversationId: string): Pro
   return { assignmentId: a.id as string, executionId: ap.executionId, title: a.title as string, round: ap.round ?? 0, companyEmployeeId: a.company_employee_id as string, unity: ap.unity === true };
 }
 
-const YES = /^\s*(시작|시작해|시작해요|시작하자|응|네|예|넵|맞아|맞아요|좋아|좋아요|그래|그래요|그대로|그렇게|ㅇㅇ|ㅇ|ok|okay|go|가자|진행|진행해|해|해줘|해 줘|고)\s*[.!~]*\s*$/i;
-const NO = /^\s*(취소|그만|하지 ?마|하지 마요|됐어|됐어요|안 해|멈춰)\s*[.!~]*\s*$/;
+const YES = /^\s*(시작|시작해|시작해요|시작하자|응|네|예|넵|맞아|맞아요|좋아|좋아요|그래|그래요|그대로|그렇게|ㅇㅇ|ㅇ|ok|okay|go|가자|진행|진행해|해|해줘|해 줘|고|yes|yep|yeah|sure|start|start it|go ahead|do it|let'?s go|sounds good|はい|うん|お願い|お願いします|始めて|進めて|それで|それでお願いします)\s*[.!~。！]*\s*$/i; // 10-14 영어·일본어 더함
+const NO = /^\s*(취소|그만|하지 ?마|하지 마요|됐어|됐어요|안 해|멈춰|cancel|stop|never ?mind|don'?t|forget it|キャンセル|やめて|やめる|中止|ストップ)\s*[.!~。！]*\s*$/i;
 
 export function classifyApprovalReply(text: string): "yes" | "cancel" | "correction" {
   if (YES.test(text)) return "yes";

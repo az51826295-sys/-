@@ -1,5 +1,8 @@
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
+import { makeT } from "@/lib/i18n/core";
+import { localeFromRequest } from "@/lib/i18n/server";
+import { ROOKERY } from "@/lib/i18n/dict/rookery";
 
 export const dynamic = "force-dynamic";
 
@@ -15,10 +18,11 @@ export const dynamic = "force-dynamic";
 type Metrics = { counts?: { a: number; b: number; c: number; d: number }; lift?: number | null; p?: number; holdout?: number; violation_test?: string };
 const parse = (s: string | null): Metrics => { try { return JSON.parse(s ?? "{}") as Metrics; } catch { return {}; } };
 
-export async function GET() {
+export async function GET(request: Request) {
+  const t = makeT(ROOKERY, localeFromRequest(request));
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return Response.json({ error: "로그인이 필요해요." }, { status: 401 });
+  if (!user) return Response.json({ error: t("로그인이 필요해요.") }, { status: 401 });
   const { data: co } = await supabase.from("companies").select("id").eq("owner_id", user.id).maybeSingle();
   if (!co) return Response.json({ rules: [], recent: [], runs: [] });
 
@@ -60,17 +64,18 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const t = makeT(ROOKERY, localeFromRequest(request));
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return Response.json({ error: "로그인이 필요해요." }, { status: 401 });
+  if (!user) return Response.json({ error: t("로그인이 필요해요.") }, { status: 401 });
   let body: { knowledgeId?: unknown } = {};
   try { body = await request.json(); } catch { /* 아래에서 거른다 */ }
   const id = typeof body.knowledgeId === "string" ? body.knowledgeId : null;
-  if (!id) return Response.json({ error: "knowledgeId 가 필요해요." }, { status: 400 });
+  if (!id) return Response.json({ error: t("knowledgeId 가 필요해요.") }, { status: 400 });
 
   // RLS 가 남의 회사 줄은 안 보여 준다 — 0줄이면 404.
   const { data: row } = await supabase.from("organization_knowledge").select("id, learning_candidate_id, status").eq("id", id).maybeSingle();
-  if (!row) return Response.json({ error: "없는 규칙이에요." }, { status: 404 });
+  if (!row) return Response.json({ error: t("없는 규칙이에요.") }, { status: 404 });
   if (row.status !== "active") return Response.json({ ok: true, already: true });
   const { error } = await supabase.from("organization_knowledge").update({ status: "deprecated" }).eq("id", id);
   if (error) return Response.json({ error: error.message }, { status: 500 });

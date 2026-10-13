@@ -106,7 +106,7 @@ async function runText(ctx: SkillRunContext, ask: string) {
   await setStep(ctx.supabase, ctx.executionId, "planning");
   const write = (failed: string[]) => ctx.providers.ai.generateStructuredOutput({
     systemInstructions: [
-      "너는 바깥 글 AI 다. 사람이 시킨 짧은 글(광고 문구·슬로건·소개 글·초안)을 한국어로 쓴다.",
+      "너는 바깥 글 AI 다. 사람이 시킨 짧은 글(광고 문구·슬로건·소개 글·초안)을 **주문이 쓰인 언어로** 쓴다(주문이 한국어면 한국어, 영어면 영어 — 10-14 다국어).",
       `- 정확히 ${want}개. 하나에 한 문구/단락.`,
       "- 사람이 준 사실만 쓴다. 주문에 없는 숫자·이름·기간·약속을 넣지 마라. '쓸 수 있는 사실' 줄이 있으면 그것으로만.",
       "- 광고 문구·슬로건이면 60자 이하. 말투는 하나로.",

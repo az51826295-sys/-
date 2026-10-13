@@ -320,10 +320,10 @@ export const analysisSkill: EmployeeSkill = {
     await setStep(ctx.supabase, ctx.executionId, "generating");
     const write = (failedBefore: string[]) => ctx.providers.ai.generateStructuredOutput({
       systemInstructions:
-        "너는 이 회사의 분석가다. 아래 자료를 읽고 한국어로 정리한다.\n\n" +
+        "너는 이 회사의 분석가다. 아래 자료를 읽고 **주문이 쓰인 언어로** 정리한다(주문이 한국어면 한국어 — 10-14 다국어).\n\n" +
         "- `summary` 3~6줄. 한 줄에 한 가지. 자료에 없는 말을 넣지 마라.\n" +
         "- `claims` 6~12개. 자료가 실제로 말한 것만. **`quote` 는 원문 글자 그대로 20~200자** — 기계가 원문에서 그 글자를 찾는다. " +
-        "요약하거나 번역하거나 고쳐 쓰면 떨어진다. 영어 자료면 영어 그대로 인용하고 `claim` 만 한국어로.\n" +
+        "요약하거나 번역하거나 고쳐 쓰면 떨어진다. 원문 언어 그대로 인용하고 `claim` 만 주문의 언어로.\n" +
         "- 영상이면 `at` 은 인용이 나오는 자리의 [mm:ss] 표시(그 인용 바로 앞의 표시). PDF 면 그 인용이 있는 쪽의 [p.N] 표시를 `p.N` 으로. 글이면 null.\n" +
         "- 자료가 여럿이면 `source` 에 그 인용이 나온 자료의 주소를 정확히 적는다. 여러 자료가 같은 말을 하면 자료마다 한 줄씩(인용은 각자 원문에서).\n" +
         "- `numbers`: 자료의 숫자(값·단위)를 인용과 함께. 없으면 빈 배열.\n" +

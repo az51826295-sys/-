@@ -1,15 +1,30 @@
+import { getLocale } from "@/lib/i18n/server";
 /**
  * 계정 삭제 안내 — Play 데이터 보안 설문이 요구하는 "삭제 요청 URL" (97회차 09-13).
  * 로그인 없이 열린다. 두근도트는 `/dot/delete-account`(별도).
  */
-export const metadata = { title: "로키 — 계정 삭제" };
+export async function generateMetadata() {
+  const locale = await getLocale();
+  return { title: { ko: "로키 — 계정 삭제", en: "Rookery — Delete account", ja: "Rookery — アカウント削除" }[locale] }; // i18n-skip: 세 언어를 이 줄에 같이 둔다
+}
 
-export default function RookeryDeleteAccount() {
+export default async function RookeryDeleteAccount() {
+  const locale = await getLocale();
   return (
     <div className="pv-root">
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
       <style>{CSS}</style>
       <div className="pv-phone">
+        {locale === "en" ? <EnBody /> : locale === "ja" ? <JaBody /> : <KoBody />}
+      </div>
+    </div>
+  );
+}
+
+/** 한국어 원본. */
+function KoBody() {
+  return (
+    <>
         <a href="/ask" className="pv-back">‹ 돌아가기</a>
         <h1>계정 삭제</h1>
         <p className="pv-date">로키 (개발자 az51826295)</p>
@@ -32,8 +47,67 @@ export default function RookeryDeleteAccount() {
         </ul>
 
         <p><a href="/privacy">개인정보 처리방침</a></p>
-      </div>
-    </div>
+    </>
+  );
+}
+
+/** 10-14 영어 번역. 확인 창에 치는 낱말은 화면 언어를 따른다(AskShell: 영어면 DELETE). */
+function EnBody() {
+  return (
+    <>
+        <a href="/ask" className="pv-back">‹ Back</a>
+        <h1>Delete account</h1>
+        <p className="pv-date">Rookery (developer az51826295)</p>
+
+        <h2>Delete it in the app</h2>
+        <ol>
+          <li>Tap the account menu at the top left.</li>
+          <li>Tap <b>Delete account</b> and type <b>DELETE</b> in the confirmation box.</li>
+          <li>It’s deleted immediately and cannot be undone.</li>
+        </ol>
+
+        <h2>Request by email</h2>
+        <p>If you can’t get into the app, send “Account deletion request” from the email address you signed up with to <a href="mailto:az51826295@gmail.com?subject=Rookery account deletion request">az51826295@gmail.com</a>. We’ll process it within 3 days and reply.</p>
+
+        <h2>What gets deleted</h2>
+        <ul>
+          <li>Your account (email, password)</li>
+          <li>The company you created and your AI worker setup</li>
+          <li>All chats, work and results (documents, images, code, etc.)</li>
+        </ul>
+
+        <p><a href="/privacy">Privacy Policy</a></p>
+    </>
+  );
+}
+
+/** 10-14 일본어 번역. */
+function JaBody() {
+  return (
+    <>
+        <a href="/ask" className="pv-back">‹ 戻る</a>
+        <h1>アカウント削除</h1>
+        <p className="pv-date">Rookery（開発者 az51826295）</p>
+
+        <h2>アプリですぐ削除する</h2>
+        <ol>
+          <li>左上のアカウントメニューを押します。</li>
+          <li><b>アカウント削除</b>を押し、確認欄に<b>削除</b>と入力します。</li>
+          <li>すぐに削除され、元に戻せません。</li>
+        </ol>
+
+        <h2>メールで依頼する</h2>
+        <p>アプリに入れない場合は、登録したメールアドレスから <a href="mailto:az51826295@gmail.com?subject=Rookery アカウント削除依頼">az51826295@gmail.com</a> に「アカウント削除依頼」と送ってください。3日以内に処理してご返信します。</p>
+
+        <h2>削除されるもの</h2>
+        <ul>
+          <li>アカウント（メールアドレス、パスワード）</li>
+          <li>作成した会社・登録したAIスタッフの構成</li>
+          <li>すべての会話・業務・成果物（文書・画像・コードなど）</li>
+        </ul>
+
+        <p><a href="/privacy">プライバシーポリシー</a></p>
+    </>
   );
 }
 

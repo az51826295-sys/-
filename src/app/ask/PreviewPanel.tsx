@@ -208,7 +208,7 @@ export default function PreviewPanel({
         <span className="shrink-0 font-bold">{cur ? t("미리보기 · v{n}", { n: cur.n }) : t("미리보기")}</span>
         <span className="flex min-w-0 items-baseline text-[11px] text-[var(--rk-600)]">
           <span className="min-w-0 truncate">
-          {cur ? [cur.kind, cur.who, new Date(cur.at).toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit" })].filter(Boolean).join(" · ") : ""}
+          {cur ? [t(cur.kind), cur.who, new Date(cur.at).toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit" })].filter(Boolean).join(" · ") : ""}
           </span>
           <button type="button" className="ml-3 shrink-0 whitespace-nowrap lg:hidden" onClick={() => setOpen(false)}>{t("▼ 닫기")}</button>
         </span>
@@ -228,7 +228,7 @@ export default function PreviewPanel({
         )}
         {Object.entries(plans).map(([id, pl]) => (
           <section key={id} className="border-b-2 border-[#E0703A] bg-[var(--rk-100)] px-3.5 py-2.5">
-            <div className="mb-1 text-[11px] text-[var(--rk-600)]">{t("계획 — {kind}", { kind: pl.kind })}{pl.who ? ` · ${pl.who}` : ""} · {steps[id]?.split(": ")[1] ?? t("진행 중")}</div>
+            <div className="mb-1 text-[11px] text-[var(--rk-600)]">{t("계획 — {kind}", { kind: t(pl.kind) })}{pl.who ? ` · ${pl.who}` : ""} · {steps[id]?.split(": ")[1] ?? t("진행 중")}</div>
             <div className="text-sm font-bold">{pl.title}</div>
             {pl.lines.length > 0 && (
               <ul className="mt-1 space-y-0.5 text-[11.5px] text-[var(--rk-600)]">
@@ -384,7 +384,7 @@ export default function PreviewPanel({
                     type="button"
                     disabled={busy !== null}
                     onClick={() => setViewing(v.current ? null : v.deliverableId)}
-                    title={`${v.kind} · ${v.who ?? ""} · ${v.title}${v.current ? t(" · 현재 판") : ""}`}
+                    title={`${t(v.kind)} · ${v.who ?? ""} · ${v.title}${v.current ? t(" · 현재 판") : ""}`}
                     className={"border-2 px-2 py-0.5 text-xs " + (shown ? "border-[#E0703A] text-[var(--rk-ink)]" : v.current ? "border-[var(--rk-ink)] text-[var(--rk-ink)]" : "border-[var(--rk-200)] text-[var(--rk-600)] hover:border-[var(--rk-ink)] hover:text-[var(--rk-ink)]")}
                   >
                     v{v.n} {v.title.slice(0, 14)}{v.title.length > 14 ? "…" : ""}{v.current ? " ●" : ""}

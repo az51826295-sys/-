@@ -1,4 +1,7 @@
 import { z } from "zod";
+import { makeT, type Locale } from "@/lib/i18n/core";
+import { ROOKERY } from "@/lib/i18n/dict/rookery";
+import { replyLanguageNote } from "@/lib/i18n/model";
 import { createClient } from "@/lib/supabase/server";
 import { blockedBySpendLimit } from "@/lib/costs/allowance";
 import { billingOpen } from "@/lib/billing/plans";
@@ -51,6 +54,8 @@ export type EverydayInput = {
   images?: string[];
   /** 173회차: 브라우저가 스스로 알려 준 기기 사실. 프롬프트에 한 줄로 실리고, 회사의 기기 기록에 적힌다. */
   device?: Record<string, unknown>;
+  /** 10-14 사람의 언어(요청의 쿠키·Accept-Language). 정해진 답 글은 이 언어로, 모델에게는 이 언어로 답하라고. 없으면 한국어. */
+  locale?: Locale;
   /**
    * 지금 무엇을 하는 중인지 알린다.
    *
@@ -165,7 +170,7 @@ const solvePass = z.object({ reply: z.string() });
 export async function solveDeeply(
   ai: ReturnType<typeof defaultProviders>["ai"],
   /** 자리. 기본은 판단 자리 — 226회차 실측에서 싼 자리는 3/10 이었다. 시험(suneung_bench)만 바꿔 끼운다. */
-  args: { input: string; images?: string[]; tier?: "judgment" | "conversation" },
+  args: { input: string; images?: string[]; tier?: "judgment" | "conversation"; locale?: Locale },
 ): Promise<string | null> {
   try {
     const { output } = await ai.generateStructuredOutput({
@@ -177,7 +182,7 @@ export async function solveDeeply(
         "- 답과 **어떻게 나왔는지**를 같이 쓴다. 학생이 다음 문제를 혼자 풀 수 있을 만큼.",
         "- 끝까지 못 갔으면 **어디서 막혔는지 그대로 말한다.** 짐작을 답처럼 내놓지 마라.",
         "- 짧게. 필요한 단계만.",
-      ].join(String.fromCharCode(10)),
+      ].join(String.fromCharCode(10)) + replyLanguageNote(args.locale ?? "ko"),
       input: args.input,
       // 사진으로 찍어 올린 문제도 여기서 푼다 — 사진을 빼면 문제를 못 본 채 답한다.
       images: args.images,
@@ -333,6 +338,8 @@ async function capabilityOfLastReturned(
 export async function runEverydayTurn(
   input: EverydayInput,
 ): Promise<EverydayResult> {
+  const locale: Locale = input.locale ?? "ko";
+  const tr = makeT(ROOKERY, locale);
   const supabase = await createClient();
   const {
     data: { user },
@@ -346,9 +353,9 @@ export async function runEverydayTurn(
   if (!user) {
     const visitor = (input.visitor ?? "").trim();
     if (!visitor) {
-      return { ok: false, error: "방문자 표시가 없습니다.", status: 400 };
+      return { ok: false, error: tr("방문자 표시가 없습니다."), status: 400 };
     }
-    const gate = await checkAnonymous(visitor);
+    const gate = await checkAnonymous(visitor, tr);
     if (!gate.allowed) {
       return { ok: false, error: gate.why, status: 429 };
     }
@@ -387,7 +394,7 @@ export async function runEverydayTurn(
   if (blocked) {
     return {
       ok: true,
-      reply: blocked.startsWith("크레딧") ? blocked : "이번 기간 지출 한도에 걸려 있습니다. 한도가 리셋되면 이어서 하겠습니다.",
+      reply: blocked.startsWith("크레딧") ? tr(blocked) : tr("이번 기간 지출 한도에 걸려 있습니다. 한도가 리셋되면 이어서 하겠습니다."),
       sources: [],
       searched: [],
       images: [],
@@ -443,7 +450,7 @@ export async function runEverydayTurn(
       let assignment: { id: string; title: string; queued: boolean } | null = { id: pending.assignmentId, title: pending.title, queued: true };
       if (kind === "cancel") {
         await cancelPending(supabase, pending);
-        reply = "네, 접을게요. 다시 시키실 때 말씀해 주세요.";
+        reply = tr("네, 접을게요. 다시 시키실 때 말씀해 주세요.");
         assignment = null;
       } else if (kind === "yes") {
         const r = await resumeApproved(supabase, pending, null);
@@ -451,15 +458,15 @@ export async function runEverydayTurn(
         // 175회차 사장님 "말투 좀 바꿔야 돼, 유니티가 잰다 그런 거" — 안쪽 낱말(재다·붙다)을 사람 말로.
         // 177회차: 다른 일 뒤에 줄 섰으면 "시작할게요" 라고 하면 거짓말이다 — 그 일이 끝나면 이어서 한다고 말한다.
         reply = r.behind
-          ? "네. 지금 앞에 하던 일이 하나 있어서, 그게 끝나면 바로 이어서 만들어요. 다 되면 여기에 올라와요."
-          : pending.unity ? "네, 그대로 시작할게요. 다 되면 여기에 결과가 올라오고, 사장님 컴퓨터의 유니티에서 자동으로 한 번 확인해요." : "네, 그대로 시작할게요. 다 되면 여기에 결과가 올라와요 — 올리기 전에 브라우저에서 돌려 보고 확인해요.";
+          ? tr("네. 지금 앞에 하던 일이 하나 있어서, 그게 끝나면 바로 이어서 만들어요. 다 되면 여기에 올라와요.")
+          : pending.unity ? tr("네, 그대로 시작할게요. 다 되면 여기에 결과가 올라오고, 사장님 컴퓨터의 유니티에서 자동으로 한 번 확인해요.") : tr("네, 그대로 시작할게요. 다 되면 여기에 결과가 올라와요 — 올리기 전에 브라우저에서 돌려 보고 확인해요.");
       } else {
         const r = await resumeApproved(supabase, pending, said);
         reply = r.mode === "replan"
-          ? "네, 그 말을 얹어서 계획을 다시 써 볼게요. 곧 다시 보여 드려요."
+          ? tr("네, 그 말을 얹어서 계획을 다시 써 볼게요. 곧 다시 보여 드려요.")
           : r.behind
-            ? "네, 그 말을 얹어서 만들게요. 앞에 하던 일이 끝나면 바로 이어서 해요."
-            : "네, 그 말을 얹어서 이번엔 바로 만들게요(계획은 두 번까지만 다시 써요).";
+            ? tr("네, 그 말을 얹어서 만들게요. 앞에 하던 일이 끝나면 바로 이어서 해요.")
+            : tr("네, 그 말을 얹어서 이번엔 바로 만들게요(계획은 두 번까지만 다시 써요).");
       }
       const conversationId = await saveTurn(supabase, user.id, {
         conversationId: input.conversationId,
@@ -481,8 +488,8 @@ export async function runEverydayTurn(
       const last = await lastReturnedFiles(supabase, input.conversationId);
       if (last && last.files.length) {
         const html = last.files.find((f) => /\.html?$/i.test(f.path));
-        const reply = `파일은 여기예요 — "${last.title}" (${last.files.length}개). ` +
-          (html ? `"${html.path}" 을 열기 로 누르면 브라우저에서 바로 돌아요. 오른쪽 미리보기 안에서도 바로 해 볼 수 있어요.` : `열기 · 저장 으로 받으세요.`);
+        const reply = tr("파일은 여기예요 — \"{title}\" ({n}개). ", { title: last.title, n: last.files.length }) +
+          (html ? tr("\"{path}\" 을 열기 로 누르면 브라우저에서 바로 돌아요. 오른쪽 미리보기 안에서도 바로 해 볼 수 있어요.", { path: html.path }) : tr("열기 · 저장 으로 받으세요."));
         const files = last.files.map((f) => ({ path: f.path, contents: f.contents }));
         const conversationId = await saveTurn(supabase, user.id, {
           conversationId: input.conversationId,
@@ -496,7 +503,7 @@ export async function runEverydayTurn(
     }
   }
 
-  say("생각하는 중");
+  say(tr("생각하는 중"));
 
   // 첫 판이 터지면 날 오류 코드가 화면에 그대로 나갔다("MODEL_OUTPUT_TRUNCATED",
   // 09-05 13:50). 사람이 읽을 말로 바꾸고, 잘린 것은 잘렸다고 말한다.
@@ -513,7 +520,7 @@ export async function runEverydayTurn(
   const withWork = deviceNote + liveNote + limitNote + (work.hasAny ? `${work.text}\n\n## 대화\n${transcript}` : transcript);
 
   const firstPassCall = () => providers.ai.generateStructuredOutput({
-    systemInstructions: intakeInstructions({ hasImages: seen.length > 0, speaker }),
+    systemInstructions: intakeInstructions({ hasImages: seen.length > 0, speaker }) + replyLanguageNote(locale),
     input: withWork,
     images: seen,
     schema: firstPass,
@@ -535,9 +542,8 @@ export async function runEverydayTurn(
     const msg = error instanceof Error ? error.message : String(error);
     const why =
       msg === "MODEL_OUTPUT_TRUNCATED"
-        ? "답이 너무 길어져서 끝까지 못 썼습니다. 코드나 긴 문서라면 \"만들어 줘\" 라고 " +
-          "맡겨 주시면 사람을 붙여 파일로 드립니다. 아니면 조금 나눠서 물어봐 주세요."
-        : `답을 만들다 막혔습니다: ${msg}`;
+        ? tr("답이 너무 길어져서 끝까지 못 썼습니다. 코드나 긴 문서라면 \"만들어 줘\" 라고 맡겨 주시면 사람을 붙여 파일로 드립니다. 아니면 조금 나눠서 물어봐 주세요.")
+        : tr("답을 만들다 막혔습니다: {msg}", { msg });
     return { ok: false, error: why, status: 502 };
   }
 
@@ -558,7 +564,7 @@ export async function runEverydayTurn(
       plan.capabilityId = named;
       plan.capabilityWhy = "매니저가 이름을 불렀다";
       plan.searches = [];
-      if (!plan.reply?.trim()) plan.reply = "그 사람에게 맡기겠습니다.";
+      if (!plan.reply?.trim()) plan.reply = tr("그 사람에게 맡기겠습니다.");
     }
   }
 
@@ -585,7 +591,7 @@ export async function runEverydayTurn(
         plan.capabilityId = null;
         plan.capabilityWhy = null;
         plan.searches = [];
-        plan.reply = `지금 "${busy.title}" 을(를) 만들고 있어요 — ${busy.minutes}분째예요. 다 되면 여기에 올라와요. 고칠 게 있으면 그냥 말씀하세요.`;
+        plan.reply = tr("지금 \"{title}\" 을(를) 만들고 있어요 — {n}분째예요. 다 되면 여기에 올라와요. 고칠 게 있으면 그냥 말씀하세요.", { title: busy.title, n: busy.minutes });
       }
     }
   }
@@ -601,7 +607,7 @@ export async function runEverydayTurn(
         plan.capabilityId = cap;
         plan.capabilityWhy = "이 대화에 돌아온 산출물을 고치는 요청";
         plan.searches = [];
-        if (!plan.reply?.trim()) plan.reply = "지난 산출물을 바탕으로 고치겠습니다.";
+        if (!plan.reply?.trim()) plan.reply = tr("지난 산출물을 바탕으로 고치겠습니다.");
       }
     }
   }
@@ -629,7 +635,7 @@ export async function runEverydayTurn(
     for (const prompt of wanted) {
       // 무엇을 그리는 중인지까지 말한다. "그림 그리는 중"만 있으면 여러 장일 때
       // 몇 번째인지 몰라 또 멈춘 것처럼 보인다.
-      say(`그리는 중: ${prompt.slice(0, 40)}`);
+      say(tr("그리는 중: {what}", { what: prompt.slice(0, 40) }));
       try {
         const made = await drawer.draw(prompt);
         images.push({ dataUrl: made.dataUrl, prompt });
@@ -645,11 +651,7 @@ export async function runEverydayTurn(
           });
         }
       } catch (error) {
-        drawFailures.push(
-          `("${prompt}" 그리기 실패: ${
-            error instanceof Error ? error.message : String(error)
-          })`,
-        );
+        drawFailures.push(tr("(\"{what}\" 그리기 실패: {why})", { what: prompt, why: error instanceof Error ? error.message : String(error) }));
       }
     }
   }
@@ -673,31 +675,32 @@ export async function runEverydayTurn(
     // 위 표 그대로 — 이 자리의 답은 3/10 이었다. 학생에게 틀린 답을 주는 것이 제일 나쁘다.
     let solved: string | null = null;
     if (plan.깊게) {
-      say("풀어 보는 중");
+      say(tr("풀어 보는 중"));
       solved = await solveDeeply(providers.ai, {
         input: (work.hasAny ? `${work.text}
 
 ` : "") + `대화:
 ${transcript}`,
         images: seen,
+        locale,
       });
     }
     reply =
       solved ??
       plan.reply ??
       (images.length
-        ? "그렸습니다."
+        ? tr("그렸습니다.")
         : work.hasAny
-          ? "방금 건 제가 답을 제대로 못 만들었어요. 다시 말씀해 주시겠어요?\n\n지금 이 회사에 있는 것은 이렇습니다:\n" +
+          ? tr("방금 건 제가 답을 제대로 못 만들었어요. 다시 말씀해 주시겠어요?\n\n지금 이 회사에 있는 것은 이렇습니다:\n") +
             work.text.split("\n").filter((l) => l.startsWith("- ")).slice(0, 6).join("\n")
-          : "방금 건 제가 답을 제대로 못 만들었어요. 다시 말씀해 주시겠어요?");
+          : tr("방금 건 제가 답을 제대로 못 만들었어요. 다시 말씀해 주시겠어요?"));
   } else {
     // 검색이 실패해도 대화는 계속된다. 찾아보려던 것이 안 됐다는 사실만 남긴다 —
     // 조용히 모델의 기억으로 답하면 사용자는 그것이 검색 결과인 줄 안다.
     const found: EverydaySource[] = [];
     const notes: string[] = [];
     for (const q of queries) {
-      say(`찾아보는 중: ${q}`);
+      say(tr("찾아보는 중: {q}", { q }));
       try {
         const results = await providers.search.search(q, RESULTS_PER_SEARCH);
         for (const r of results) {
@@ -715,7 +718,7 @@ ${transcript}`,
       }
     }
 
-    say("찾은 것으로 답 쓰는 중");
+    say(tr("찾은 것으로 답 쓰는 중"));
     const { output: answer } = await providers.ai.generateStructuredOutput({
       systemInstructions: [
         "아래 검색 결과를 근거로 답한다. 한국어로.",
@@ -724,7 +727,7 @@ ${transcript}`,
         "  무엇을 더 찾아보면 되는지 말한다.",
         "- 사실마다 어디서 왔는지 알 수 있게 쓰고, 실제로 쓴 출처만 `usedUrls` 에 담는다.",
         "- 검색이 실패했다고 적힌 항목이 있으면 그 사실을 답에 밝힌다.",
-      ].join("\n"),
+      ].join("\n") + replyLanguageNote(locale),
       input: (work.hasAny ? `${work.text}\n\n` : "") + `대화:\n${transcript}\n\n검색 결과:\n${notes.join("\n\n")}`,
       // 답을 쓸 때도 사진을 다시 보여 준다. 검색 결과만 주고 사진을 빼면,
       // 사진에 대해 물은 것을 검색 결과로만 답하게 된다.
@@ -755,7 +758,7 @@ ${transcript}`,
 
   if (plan.capabilityId && companyId) {
     try {
-      say("사람 붙이는 중");
+      say(tr("사람 붙이는 중"));
       const d = await delegate(
         supabase,
         companyId,
@@ -766,6 +769,7 @@ ${transcript}`,
         // 3D 생성기가 그 모양을 받는다.
         seen.map((b64) => `data:image/png;base64,${b64}`),
         input.conversationId ?? null,
+        tr,
       );
       hired = d.hired;
       assignment = d.assignment;
@@ -774,25 +778,23 @@ ${transcript}`,
       // 일은 실제로 시작됐으니 앞의 물음은 대답할 곳이 없는 물음이다. 일이 생겼으면 **그 일을 받은 쪽의 말 하나만** 남긴다.
       // (찾아본 답이나 그림이 앞 답에 실려 있을 때만 둘 다 둔다 — 그건 접수 확인이 아니라 내용이다.)
       if (d.tail && d.tail !== reply) reply = d.assignment && queries.length === 0 && images.length === 0 ? d.tail : `${reply}\n\n${d.tail}`;
-      if (d.why) reply += `\n\n(맡기지 못했습니다: ${d.why})`;
+      if (d.why) reply += tr("\n\n(맡기지 못했습니다: {why})", { why: d.why });
     } catch (e) {
       // 위임이 터져도 답은 나간다. 사용자가 물은 것에 대한 답은 이미 있다.
       // 다만 조용히 삼키면 "왜 업무가 안 생겼지" 를 아무도 모른다(08:02).
       console.error("[everyday] 위임 실패:", e instanceof Error ? e.message : e);
-      reply += "\n\n(맡기는 데서 막혔습니다 — 다시 한 번 말씀해 주세요.)";
+      reply += tr("\n\n(맡기는 데서 막혔습니다 — 다시 한 번 말씀해 주세요.)");
     }
   } else if (plan.capabilityId && !companyId) {
     // 여기 오는 것은 이제 로그인 안 한 사람뿐이다(로그인했으면 위에서 회사를
     // 만들었다). 그러니 "로그인하시면" 이 정확한 말이다.
-    reply +=
-      "\n\n(이건 시간이 드는 일이라 사람을 붙여야 합니다 — " +
-      "로그인하시면 이어서 맡길 수 있습니다.)";
+    reply += tr("\n\n(이건 시간이 드는 일이라 사람을 붙여야 합니다 — 로그인하시면 이어서 맡길 수 있습니다.)");
   }
 
   // ── 대화에서 회사 사실·규칙을 줍는다 ──────────────────────────
   if (companyId) {
     try {
-      say("배운 것 정리하는 중");
+      say(tr("배운 것 정리하는 중"));
       await learnFromChat(supabase, providers, companyId, lastUser);
     } catch {
       // 못 배운 것은 다음 턴에 다시 기회가 온다. 답을 삼킬 이유가 없다.

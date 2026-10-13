@@ -1,5 +1,7 @@
 import { createServiceClient } from "@/lib/supabase/service";
 import { costOf } from "@/lib/costs/pricing";
+import { makeT, type T } from "@/lib/i18n/core";
+// i18n-dict: rookery — t 는 부르는 쪽(everydayService)이 넘긴다. 기본은 한국어.
 
 /**
  * 로그인 없이 쓰는 대화의 안전장치.
@@ -32,7 +34,7 @@ function since(): string {
   return d.toISOString();
 }
 
-export async function checkAnonymous(visitor: string): Promise<AnonGate> {
+export async function checkAnonymous(visitor: string, t: T = makeT({}, "ko")): Promise<AnonGate> {
   const db = createServiceClient();
   const from = since();
 
@@ -46,7 +48,7 @@ export async function checkAnonymous(visitor: string): Promise<AnonGate> {
   if (spent >= ANON_DAILY_USD) {
     return {
       allowed: false,
-      why: "오늘 몫의 무료 대화가 다 찼습니다. 로그인하시면 이어서 쓸 수 있습니다.",
+      why: t("오늘 몫의 무료 대화가 다 찼습니다. 로그인하시면 이어서 쓸 수 있습니다."),
     };
   }
 
@@ -54,7 +56,7 @@ export async function checkAnonymous(visitor: string): Promise<AnonGate> {
   if (mine >= ANON_TURNS_PER_DAY) {
     return {
       allowed: false,
-      why: `로그인 없이는 하루 ${ANON_TURNS_PER_DAY}번까지 쓸 수 있습니다. 로그인하시면 제한이 없습니다.`,
+      why: t("로그인 없이는 하루 {n}번까지 쓸 수 있습니다. 로그인하시면 제한이 없습니다.", { n: ANON_TURNS_PER_DAY }),
     };
   }
 

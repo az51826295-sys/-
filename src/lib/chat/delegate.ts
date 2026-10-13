@@ -5,6 +5,8 @@ import { runChatTurn, type ChatOption } from "@/lib/chat/service";
 import { retrieveCompanyKnowledge } from "@/lib/knowledge/retrieval";
 import { releaseEmployee } from "@/lib/assignments/service";
 import { billingOpen } from "@/lib/billing/plans";
+import { makeT, type T } from "@/lib/i18n/core";
+// i18n-dict: rookery — t 는 부르는 쪽(everydayService)이 넘긴다. 기본은 한국어.
 
 /**
  * 능력 하나를 맡을 사람을 찾고, 없으면 뽑고, 일을 넘긴다.
@@ -58,6 +60,7 @@ export async function delegate(
   images: string[] = [],
   /** 이 대화의 id. 있으면 같은 직원의 지난 산출물을 찾아 "고치는 판" 으로 넘긴다. */
   conversationId: string | null = null,
+  t: T = makeT({}, "ko"),
 ): Promise<Delegation> {
   const matched = capabilityCatalogue().find((c) => c.capabilityId === capabilityId);
   // 모델이 지어낸 id 는 그냥 버린다. 답은 이미 나갔으므로 대화가 끊기지 않는다.
@@ -68,7 +71,7 @@ export async function delegate(
   // (일곱 번 거절의 가장 유력한 원인). 사이트에서 "유료 요금제에 그림·3D 생성은 없다" 고 적었으니 코드도 같아야 한다 —
   // 말과 실제가 다르면 그건 결제사에 거짓말이다. 돈 안 내는 회사(사장님 회사, billing_mode='limit')는 그대로 쓴다.
   if (PAID_SCOPE_OUT.has(capabilityId) && (await isPaidPlan(db, companyId))) {
-    return { ...NOTHING, why: NOT_IN_PLAN };
+    return { ...NOTHING, why: t(NOT_IN_PLAN) };
   }
 
   const { data: hires } = await db
@@ -97,14 +100,14 @@ export async function delegate(
     const candidate = ((catalog ?? []) as { id: string; slug: string; name: string }[])
       .find((e) => getEmployeeDefinition(e.slug)?.skillId === matched.skillId);
     if (!candidate) {
-      return { ...NOTHING, why: `${matched.label} 을(를) 할 사람이 카탈로그에 없습니다.` };
+      return { ...NOTHING, why: t("{what} 을(를) 할 사람이 카탈로그에 없습니다.", { what: t(matched.label) }) };
     }
     const { data: created } = await db
       .from("company_employees")
       .insert({ company_id: companyId, employee_id: candidate.id })
       .select("id, onboarding_status")
       .maybeSingle();
-    if (!created) return { ...NOTHING, why: "고용에 실패했습니다." };
+    if (!created) return { ...NOTHING, why: t("고용에 실패했습니다.") };
     hireId = created.id as string;
     hireName = candidate.name;
     onboardingDone = (created.onboarding_status as string) === "completed";

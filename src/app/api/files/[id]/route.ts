@@ -2,6 +2,9 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import { signedUrlFor } from "@/lib/deliverables/files";
+import { makeT } from "@/lib/i18n/core";
+import { localeFromRequest } from "@/lib/i18n/server";
+import { ROOKERY } from "@/lib/i18n/dict/rookery";
 
 /**
  * 저장된 파일 하나를 연다. 주인만.
@@ -11,9 +14,10 @@ import { signedUrlFor } from "@/lib/deliverables/files";
  * 보낸다. 남의 파일 id 를 넣으면 행이 안 보여서(RLS) 404 다.
  */
 export async function GET(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
+  const t = makeT(ROOKERY, localeFromRequest(request));
   const { id } = await params;
   const supabase = await createClient();
   const {
@@ -26,7 +30,7 @@ export async function GET(
     .select("storage_path")
     .eq("id", id)
     .maybeSingle();
-  if (!row) return NextResponse.json({ error: "그런 파일이 없어요. 링크가 오래됐거나 지워진 파일입니다." }, { status: 404 });
+  if (!row) return NextResponse.json({ error: t("그런 파일이 없어요. 링크가 오래됐거나 지워진 파일입니다.") }, { status: 404 });
 
   // 주인인지는 위의 행 조회(RLS)가 이미 가렸다. 서명은 서비스 열쇠로 — 사용자
   // 열쇠는 저장소 정책에 걸려 서명이 안 되는 경우가 있었다(09-05 20:26, 유니티
@@ -39,7 +43,7 @@ export async function GET(
   const dir = slash >= 0 ? storagePath.slice(0, slash) : "", name = storagePath.slice(slash + 1);
   const { data: listed } = await svc.storage.from("deliverable-files").list(dir, { search: name, limit: 5 });
   if (!listed?.some((f) => f.name === name)) {
-    return NextResponse.json({ error: "이 파일은 옛 저장소에 두고 왔어요(2026-09-11 이주 전 실험물). 다시 만들면 새로 생깁니다." }, { status: 404 });
+    return NextResponse.json({ error: t("이 파일은 옛 저장소에 두고 왔어요(2026-09-11 이주 전 실험물). 다시 만들면 새로 생깁니다.") }, { status: 404 });
   }
   const url = await signedUrlFor(svc, storagePath);
   if (!url) return NextResponse.json({ error: "Could not sign." }, { status: 500 });

@@ -68,7 +68,7 @@ for (const [ko, d] of Object.entries(ALL)) {
 function stripComments(s: string) {
   return s.replace(/\{\/\*[\s\S]*?\*\/\}/g, (m) => m.replace(/[^\n]/g, " ")).replace(/\/\*[\s\S]*?\*\//g, (m) => m.replace(/[^\n]/g, " ")).replace(/(^|[^:"'`])\/\/.*$/gm, "$1");
 }
-const SCREEN = (f: string) => /src\/app\/(dot|ask|login|signup|pricing|terms|privacy|refund|delete-account|auth)\b|src\/app\/(page|layout)\.tsx|src\/app\/api\/(dot|auth|billing)|src\/components\//.test(relative(ROOT, f));
+const SCREEN = (f: string) => /src\/app\/(dot|ask|login|signup|pricing|terms|privacy|refund|delete-account|auth)\b|src\/app\/(page|layout)\.tsx|src\/app\/api\/|src\/components\//.test(relative(ROOT, f));
 let leftTotal = 0;
 const leftByFile: [string, string[]][] = [];
 for (const f of files.filter(SCREEN)) {

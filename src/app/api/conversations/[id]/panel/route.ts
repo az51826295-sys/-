@@ -7,6 +7,9 @@ import { defaultMeshProvider } from "@/lib/providers/meshy";
 import { billingOpen } from "@/lib/billing/plans";
 import { creditBalance } from "@/lib/billing/ledger";
 import { latestFrame } from "@/lib/hand/screen";
+import { makeT } from "@/lib/i18n/core";
+import { localeFromRequest } from "@/lib/i18n/server";
+import { ROOKERY } from "@/lib/i18n/dict/rookery";
 
 export const dynamic = "force-dynamic";
 
@@ -17,15 +20,16 @@ export const dynamic = "force-dynamic";
  * `work/kinds.ts` 가 안다 — 이 문은 게임을 모른다. 대화의 주인만 부른다.
  */
 export async function GET(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
+  const t = makeT(ROOKERY, localeFromRequest(request));
   const { id } = await params;
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: "로그인이 필요해요." }, { status: 401 });
+  if (!user) return NextResponse.json({ error: t("로그인이 필요해요.") }, { status: 401 });
 
   const { data: owned } = await supabase
     .from("conversations")
@@ -33,7 +37,7 @@ export async function GET(
     .eq("id", id)
     .eq("owner_id", user.id)
     .maybeSingle();
-  if (!owned) return NextResponse.json({ error: "없는 대화예요." }, { status: 404 });
+  if (!owned) return NextResponse.json({ error: t("없는 대화예요.") }, { status: 404 });
 
   const versions = await listVersions(supabase, id);
   const ids = versions.map((v) => v.deliverableId);
@@ -125,7 +129,7 @@ export async function GET(
     screen,
     versions: versions.map((v) => {
       const r = byId.get(v.deliverableId);
-      return { ...v, title: r?.title ?? "(지워진 결과물)", kind: kindOf(r?.deliverable_type).label, who: r?.company_employees?.employees?.name ?? null };
+      return { ...v, title: r?.title ?? t("(지워진 결과물)"), kind: kindOf(r?.deliverable_type).label, who: r?.company_employees?.employees?.name ?? null };
     }),
     current: cur && current
       ? {

@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { listVersions } from "@/lib/chat/versions";
+import { makeT } from "@/lib/i18n/core";
+import { localeFromRequest } from "@/lib/i18n/server";
+import { ROOKERY } from "@/lib/i18n/dict/rookery";
 
 export const dynamic = "force-dynamic";
 
@@ -24,30 +27,31 @@ export async function POST(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
+  const t = makeT(ROOKERY, localeFromRequest(request));
   const { id } = await params;
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: "로그인이 필요해요." }, { status: 401 });
+  if (!user) return NextResponse.json({ error: t("로그인이 필요해요.") }, { status: 401 });
 
   const { data: owned } = await supabase.from("conversations").select("id").eq("id", id).eq("owner_id", user.id).maybeSingle();
-  if (!owned) return NextResponse.json({ error: "없는 대화예요." }, { status: 404 });
+  if (!owned) return NextResponse.json({ error: t("없는 대화예요.") }, { status: 404 });
 
   let body: { deliverableId?: unknown; decision?: unknown; feedback?: unknown } = {};
   try { body = await request.json(); } catch { /* 아래에서 거른다 */ }
   const deliverableId = typeof body.deliverableId === "string" ? body.deliverableId : null;
   const decision = body.decision === "approved" || body.decision === "needs_changes" ? body.decision : null;
   const feedback = typeof body.feedback === "string" ? body.feedback.trim() : "";
-  if (!deliverableId || !decision) return NextResponse.json({ error: "deliverableId 와 decision(approved | needs_changes) 이 필요해요." }, { status: 400 });
+  if (!deliverableId || !decision) return NextResponse.json({ error: t("deliverableId 와 decision(approved | needs_changes) 이 필요해요.") }, { status: 400 });
   if (decision === "needs_changes" && feedback.length < 10) {
-    return NextResponse.json({ error: "무엇을 고칠지 10자 이상 적어 주세요. 이유 없는 수정 요청은 직원이 배울 수 없어요." }, { status: 400 });
+    return NextResponse.json({ error: t("무엇을 고칠지 10자 이상 적어 주세요. 이유 없는 수정 요청은 직원이 배울 수 없어요.") }, { status: 400 });
   }
 
   const versions = await listVersions(supabase, id);
   const target = versions.find((v) => v.deliverableId === deliverableId);
-  if (!target) return NextResponse.json({ error: "이 대화의 판이 아니에요." }, { status: 404 });
+  if (!target) return NextResponse.json({ error: t("이 대화의 판이 아니에요.") }, { status: 404 });
 
   const { data: d } = await supabase.from("deliverables").select("id, company_id, assignment_id").eq("id", deliverableId).maybeSingle();
-  if (!d) return NextResponse.json({ error: "지워진 결과물이에요." }, { status: 404 });
+  if (!d) return NextResponse.json({ error: t("지워진 결과물이에요.") }, { status: 404 });
 
   // 한 업무에 첫 판정 하나 — 이 업무의 어느 판에든 판정이 있으면 끝난 업무다.
   const { data: siblings } = await supabase.from("deliverables").select("id").eq("assignment_id", d.assignment_id);
@@ -55,13 +59,13 @@ export async function POST(
   const { data: prior } = await supabase
     .from("deliverable_reviews").select("decision, created_at").in("deliverable_id", ids)
     .order("created_at", { ascending: true }).limit(1).maybeSingle();
-  if (prior) return NextResponse.json({ error: "이 업무는 이미 판정했어요. 고친 것은 새 판으로 올라와요.", decision: prior.decision, at: prior.created_at }, { status: 409 });
+  if (prior) return NextResponse.json({ error: t("이 업무는 이미 판정했어요. 고친 것은 새 판으로 올라와요."), decision: prior.decision, at: prior.created_at }, { status: 409 });
 
   const { data: review, error } = await supabase
     .from("deliverable_reviews")
     .insert({ company_id: d.company_id, deliverable_id: deliverableId, reviewer_user_id: user.id, decision, feedback: decision === "needs_changes" ? feedback : null })
     .select("id, decision, created_at").single();
-  if (error || !review) return NextResponse.json({ error: error?.message ?? "판정을 남기지 못했어요." }, { status: 500 });
+  if (error || !review) return NextResponse.json({ error: error?.message ?? t("판정을 남기지 못했어요.") }, { status: 500 });
 
   // 결과물 상태도 같이 — 판정 표가 진실이고 이건 화면용 요약이다. 실패해도 판정은 남는다.
   const now = new Date().toISOString();

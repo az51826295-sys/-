@@ -3,6 +3,9 @@ import QRCode from "qrcode";
 import { createClient } from "@/lib/supabase/server";
 import { publicOrigin } from "@/lib/http/origin";
 import { HANDOFF_TTL_MS, safeNext, sealHandoff } from "@/lib/auth/handoff";
+import { makeT } from "@/lib/i18n/core";
+import { localeFromRequest } from "@/lib/i18n/server";
+import { ROOKERY } from "@/lib/i18n/dict/rookery";
 
 export const dynamic = "force-dynamic";
 
@@ -14,9 +17,10 @@ export const dynamic = "force-dynamic";
  * 어떤 값도 누구의 링크를 만들지 정하지 못한다. 메일은 보내지 않는다(generateLink 는 발송 안 함).
  */
 export async function POST(request: Request) {
+  const t = makeT(ROOKERY, localeFromRequest(request));
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user || !user.email) return NextResponse.json({ error: "로그인한 계정에서만 폰으로 이어할 수 있어요." }, { status: 401 });
+  if (!user || !user.email) return NextResponse.json({ error: t("로그인한 계정에서만 폰으로 이어할 수 있어요.") }, { status: 401 });
 
   let body: { conversationId?: unknown } = {};
   try { body = await request.json(); } catch { /* 몸통 없이도 된다 */ }
@@ -29,7 +33,7 @@ export async function POST(request: Request) {
 
   const { createServiceClient } = await import("@/lib/supabase/service");
   const { data, error } = await createServiceClient().auth.admin.generateLink({ type: "magiclink", email: user.email });
-  if (error || !data?.properties?.hashed_token) return NextResponse.json({ error: "QR 을 만들지 못했어요. 잠시 뒤 다시 해 주세요." }, { status: 502 });
+  if (error || !data?.properties?.hashed_token) return NextResponse.json({ error: t("QR 을 만들지 못했어요. 잠시 뒤 다시 해 주세요.") }, { status: 502 });
 
   const url = `${publicOrigin(request)}/auth/handoff?t=${sealHandoff(data.properties.hashed_token, next)}`;
   const svg = await QRCode.toString(url, { type: "svg", margin: 1, errorCorrectionLevel: "M", color: { dark: "#0a0a0a", light: "#ffffff" } });

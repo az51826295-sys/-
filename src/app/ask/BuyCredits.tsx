@@ -191,9 +191,9 @@ export default function BuyCredits() {
                   >
                     <span className="min-w-0">
                       <span className="block text-sm font-bold">{s.name}</span>
-                      {s.note && <span className="block truncate text-[11px] text-[var(--rk-600)]">{s.note}</span>}
+                      {s.note && <span className="block truncate text-[11px] text-[var(--rk-600)]">{t(s.note)}</span>}
                     </span>
-                    <span className="shrink-0 whitespace-nowrap text-sm font-bold">{s.priceLabel}</span>
+                    <span className="shrink-0 whitespace-nowrap text-sm font-bold">{t(s.priceLabel)}</span>
                   </button>
                 ))}
               </div>

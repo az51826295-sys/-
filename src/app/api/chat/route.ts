@@ -1,4 +1,7 @@
 import { runEverydayTurn } from "@/lib/chat/everydayService";
+import { makeT } from "@/lib/i18n/core";
+import { localeFromRequest } from "@/lib/i18n/server";
+import { ROOKERY } from "@/lib/i18n/dict/rookery";
 
 /**
  * 대화 하나. **모드가 없다.**
@@ -15,6 +18,7 @@ import { runEverydayTurn } from "@/lib/chat/everydayService";
 export const maxDuration = 300;
 
 export async function POST(request: Request) {
+  const t = makeT(ROOKERY, localeFromRequest(request));
   let body: unknown;
   try {
     body = await request.json();
@@ -62,6 +66,7 @@ export async function POST(request: Request) {
             : undefined,
           onStatus: (text) => send({ type: "status", text }),
           device: device && typeof device === "object" ? (device as Record<string, unknown>) : undefined,
+          locale: localeFromRequest(request),
         });
 
         if (!result.ok) {
@@ -74,7 +79,7 @@ export async function POST(request: Request) {
         // 영영 "생각하는 중" 으로 남는다.
         send({
           type: "error",
-          error: error instanceof Error ? error.message : "문제가 생겼습니다.",
+          error: error instanceof Error ? error.message : t("문제가 생겼습니다."),
           status: 500,
         });
       } finally {

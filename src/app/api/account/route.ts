@@ -1,5 +1,8 @@
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
+import { makeT } from "@/lib/i18n/core";
+import { localeFromRequest } from "@/lib/i18n/server";
+import { ROOKERY } from "@/lib/i18n/dict/rookery";
 
 /**
  * 계정 삭제 (로키, 97회차 09-13) — 구글 플레이 등록 필수. **즉시, 전부, 되돌릴 수 없게.**
@@ -9,12 +12,13 @@ import { createServiceClient } from "@/lib/supabase/service";
  * 지우기 전에 몇 개였는지 세어 돌려준다 — 두근도트 계정 삭제(`api/dot/account`)와 같은 자리.
  */
 export async function DELETE(request: Request) {
+  const t = makeT(ROOKERY, localeFromRequest(request));
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return Response.json({ error: "로그인이 필요해요." }, { status: 401 });
+  if (!user) return Response.json({ error: t("로그인이 필요해요.") }, { status: 401 });
   let body: { confirm?: unknown } = {};
   try { body = (await request.json()) as typeof body; } catch { /* 몸통 없음 */ }
-  if (body.confirm !== "삭제") return Response.json({ error: "확인 문구가 필요해요." }, { status: 400 });
+  if (body.confirm !== "삭제") return Response.json({ error: t("확인 문구가 필요해요.") }, { status: 400 });
 
   const db = createServiceClient();
   const [{ count: conversations }, { count: companies }] = await Promise.all([

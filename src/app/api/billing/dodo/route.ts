@@ -19,7 +19,7 @@ export async function POST(request: Request) {
     return Response.json({ error: v.reason }, { status: 401 });
   }
   let event: DodoEvent;
-  try { event = JSON.parse(raw) as DodoEvent; } catch { return Response.json({ error: "JSON 이 아님" }, { status: 400 }); }
+  try { event = JSON.parse(raw) as DodoEvent; } catch { return Response.json({ error: "JSON 이 아님" }, { status: 400 }); } // i18n-skip (결제사 웹훅 — 사람에게 안 간다)
 
   const plan = await planDodoGrant(event);
   if ("skip" in plan) {
@@ -28,7 +28,7 @@ export async function POST(request: Request) {
   }
 
   const result = await recordGrant(createServiceClient(), plan);
-  if (result === "error") return Response.json({ error: "원장 기록 실패" }, { status: 500 });
+  if (result === "error") return Response.json({ error: "원장 기록 실패" }, { status: 500 }); // i18n-skip (결제사 웹훅 — 사람에게 안 간다)
   if (result === "no-company") console.error("[billing] 결제는 됐는데 회사가 없음 — 사람이 볼 것:", plan.ref, plan.companyId);
   return Response.json({ ok: true, result });
 }
