@@ -25,6 +25,7 @@ import {
 } from "./bond";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { shapeRule, tidyReply } from "./bubbles";
+import { assessCrisis, deepseekCrisisJudge, HELP_LINE, SAFETY_SYSTEM, withHelpLine, type Risk } from "./safety";
 import type { ChatCompletionCreateParamsStreaming } from "openai/resources/chat/completions";
 
 /**
@@ -293,16 +294,29 @@ export async function finishTurn(
   };
 }
 
+/**
+ * 10-13 안전 문지기(safety.ts). 위기로 보이면 캐릭터 설정 **뒤에** 안전 지시를 붙인다 —
+ * 뒤에 둔 지시가 앞선다고 그 안에 적었다(멘헤라 모드의 매달림도 이번 답에서는 끈다).
+ * 판정은 로그에만 남기고 DB 에는 쓰지 않는다(민감한 기록을 새로 쌓지 않는다).
+ */
+function applySafety(p: Prepared, risk: Risk) {
+  if (risk.crisis) p.system += SAFETY_SYSTEM;
+  if (risk.crisis || !risk.modelChecked) console.log(`[dot-safety] ${risk.crisis ? `위기(${risk.by})` : "통과(규칙만)"} · ${risk.ms}ms`);
+}
+
 /** 한 통으로 받는 길(옛 API·앱 호환). */
 export async function runDotTurn(db: SupabaseClient, userId: string, characterId: string, text: string, opts: TurnOpts = {}): Promise<TurnResult> {
-  const p = await prepareTurn(db, userId, characterId, text, opts);
+  // 10-13 안전 문지기: 준비와 **나란히** 본다(모델 판정이 준비 시간 안에 끝나면 늦어지지 않는다).
+  const [p, risk] = await Promise.all([prepareTurn(db, userId, characterId, text, opts), assessCrisis(text, deepseekCrisisJudge())]);
   if ("ok" in p) return p;
+  applySafety(p, risk);
   try {
     const t = Date.now();
     // 두근도트는 **싼 자리만** 쓴다. DeepSeek 이 죽으면 gpt-5 로 올리지 않고 사용자에게 "잠깐 쉬는 중" 을 보인다.
     // 무료 앱 한 마디에 20배 값을 낼 이유가 없고, 새는 것은 안 보이지만 쉬는 것은 보인다(09-10 사장님: 크레딧 차단).
     const ai = process.env.DEEPSEEK_API_KEY ? createDeepSeekProvider() : defaultProviders().ai;
     const out = await ai.generateStructuredOutput({ systemInstructions: p.system, input: p.input, schema: answer, schemaName: "dot_reply", maxTokens: 1200, tier: "conversation" });
+    if (risk.crisis) out.output.reply = withHelpLine(out.output.reply);
     return await finishTurn(db, userId, p, out.output, { model: out.model, inputTokens: out.inputTokens ?? 0, outputTokens: out.outputTokens ?? 0, routing: out.routing, tModel: Date.now() - t, tPrepare: t - p.t0, tFirst: null });
   } catch (e) {
     await p.giveBack();
@@ -323,8 +337,9 @@ export async function streamDotTurn(
   const key = process.env.DEEPSEEK_API_KEY;
   if (!key) return runDotTurn(db, userId, characterId, text);
 
-  const p = await prepareTurn(db, userId, characterId, text, opts);
+  const [p, risk] = await Promise.all([prepareTurn(db, userId, characterId, text, opts), assessCrisis(text, deepseekCrisisJudge())]);
   if ("ok" in p) return p;
+  applySafety(p, risk);
 
   try {
     const t = Date.now();
@@ -380,6 +395,8 @@ export async function streamDotTurn(
     }
     const parsed = answer.safeParse(JSON.parse(raw));
     if (!parsed.success) throw new Error("MODEL_OUTPUT_OFF_SCHEMA(stream)");
+    // 위기면 안내를 마지막 말풍선으로 흘려보내고, 저장되는 답에도 붙인다(모델이 뭐라 했든).
+    if (risk.crisis) { onDelta("\n" + HELP_LINE); parsed.data.reply = withHelpLine(parsed.data.reply); }
     return await finishTurn(db, userId, p, parsed.data, {
       model: "deepseek-v4-flash", inputTokens: usage?.prompt_tokens ?? 0, outputTokens: usage?.completion_tokens ?? 0, cachedTokens: usage?.prompt_cache_hit_tokens ?? 0, routing: "planned", tModel: Date.now() - t,
       tPrepare: t - p.t0, tFirst,
