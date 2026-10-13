@@ -1,7 +1,6 @@
 "use client";
 // i18n-ids: 로키 좁은창 작은창 창 작게 창단추 막힘
-import { useT } from "@/lib/i18n/client";
-import { ROOKERY } from "@/lib/i18n/dict/rookery";
+import type { T } from "@/lib/i18n/core";
 /**
  * **문자 띄워놓고 하듯** (228회차 10-02, 사장님 "컴퓨터에서 쓰는거니까 문자를 뛰어놓고 하는거랑 비슷해").
  *
@@ -56,8 +55,7 @@ export function 창으로띄우기() {
   return true;
 }
 
-export function 창단추({ 좁게, 바꾸기 }: { 좁게: boolean; 바꾸기: (v: boolean) => void }) {
-  const t = useT(ROOKERY);
+export function 창단추({ 좁게, 바꾸기, t }: { 좁게: boolean; 바꾸기: (v: boolean) => void; t: T }) {
   const [막힘, set막힘] = useState(false);
   /**
    * **그릴 때 `window` 를 읽으면 안 된다.** 서버는 주소줄을 모르니 단추를 그리고, 브라우저는

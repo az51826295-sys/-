@@ -465,6 +465,7 @@ export default function AskClient({
   const 화면 = use화면보기(
     useCallback((말: string) => setTurns((t) => [...t, { role: "assistant", content: 말, 먼저건말: true }]), []),
     useCallback(() => turnsRef.current.slice(-4).map((t) => `${t.role === "user" ? "사장님" : "로키"}: ${t.content.slice(0, 160)}`), []), // i18n-skip (서버 결과 모양·모델에 주는 글)
+    tr,
   );
   const 방금들어감 = use방금들어감(모드);
   const 하는일 = 도는일.length ? 도는일.map(([, v]) => v).join(" · ") : null;
@@ -531,7 +532,7 @@ export default function AskClient({
         **로키가 앞에 나와 있다.** 두근도트처럼 얼굴이 먼저고 말이 그 아래로 흐른다.
         조용할 때는 아무것도 안 보인다 — 할 일 없는데 서 있으면 장식이고, 장식은 제일 먼저 지겨워진다(08-31).
       */}
-      {결 === 2 && <큰얼굴 모드={모드} 하는일={하는일 ?? (시연 ? "Dev: 코드를 쓰는 중" : null)} 몇분={몇분 ?? (시연 === 2 ? 7 : null)} />}
+      {결 === 2 && <큰얼굴 t={tr} 모드={모드} 하는일={하는일 ?? (시연 ? "Dev: 코드를 쓰는 중" : null)} 몇분={몇분 ?? (시연 === 2 ? 7 : null)} />}
       {/*
         **처음 화면에서는 안 보인다**(228회차 10-03). 맨 윗줄 제일 좋은 자리를
         좁게·창으로 띄우기·화면 보여주기가 먹고 있었다 — 처음 온 사람에게 필요 없고,
@@ -542,10 +543,10 @@ export default function AskClient({
         {결 !== 2 && 모드 !== "조용함" && <로키얼굴 모드={모드} />}
         <div className="min-w-0 flex-1">
           {결 !== 2 && 모드 !== "조용함" && (
-            <모드띠 모드={모드} 하는일={하는일 ?? (시연 === 2 ? "Dev: 코드를 쓰는 중" : null)} 몇분={몇분 ?? (시연 === 2 ? 7 : null)} />
+            <모드띠 t={tr} 모드={모드} 하는일={하는일 ?? (시연 === 2 ? "Dev: 코드를 쓰는 중" : null)} 몇분={몇분 ?? (시연 === 2 ? 7 : null)} />
           )}
         </div>
-        <창단추 좁게={좁게} 바꾸기={창바꾸기} />
+        <창단추 t={tr} 좁게={좁게} 바꾸기={창바꾸기} />
       </div>
       )}
       {turns.length > 0 && (
@@ -571,7 +572,7 @@ export default function AskClient({
               **예시 셋**(228회차 10-03). 처음 쓰는 사람으로 들어가 재 보니 예시가 0개였다 —
               "무엇이든 물어보세요" 만 있고 뭘 물을지 보기가 없으면 사람은 거기서 멈춘다.
             */}
-            {!task && <예시 넣기={(글) => { setText(글); requestAnimationFrame(() => inputRef.current?.focus()); }} />}
+            {!task && <예시 t={tr} 넣기={(글) => { setText(글); requestAnimationFrame(() => inputRef.current?.focus()); }} />}
             {/* 100회차: Paddle 판매자 심사는 첫 화면에서 약관·개인정보·환불로 가는 길을 본다(루트 / 가 여기로 온다). */}
             {!task && (
               <p className="text-[11px] text-[var(--rk-400)]">

@@ -1,7 +1,6 @@
 "use client";
 // i18n-ids: 조용함 대화중 일하는중 전환 쓸기 점 하는일 분 큰얼굴칸 숨 큰이름 큰상태 결 모드띠 일인가 일 말 모드 얼굴칸 얼굴 큰얼굴 몇분
-import { useT } from "@/lib/i18n/client";
-import { ROOKERY } from "@/lib/i18n/dict/rookery";
+import type { T } from "@/lib/i18n/core";
 /**
  * **대화 중인가 일하는 중인가** (228회차 10-02, 사장님 "대화하고 있는지 개발하는지 구분해야 하고").
  *
@@ -63,8 +62,8 @@ export function 전환({ 보임 }: { 보임: boolean }) {
 }
 
 /** 지금 무엇을 하는 중인지 늘 보이는 띠. 일하는 중이면 빨강, 대화 중이면 수수하게. */
-export function 모드띠({ 모드, 하는일, 몇분 }: { 모드: 모드; 하는일?: string | null; 몇분?: number | null }) {
-  const t = useT(ROOKERY);
+// 10-14: 번역 t 는 부르는 쪽(AskClient)이 넘긴다 — 한국어 이름 컴포넌트 안에서 훅을 부르면 린트가 컴포넌트로 못 알아본다.
+export function 모드띠({ 모드, 하는일, 몇분, t }: { 모드: 모드; 하는일?: string | null; 몇분?: number | null; t: T }) {
   if (모드 === "조용함") return null;
   const 일인가 = 모드 === "일하는중";
   return (
@@ -122,8 +121,7 @@ export function use결(): 결 {
 }
 
 /** 결 2 — 두근도트처럼 얼굴이 크게 앞에 서고 말이 그 아래로 흐른다. */
-export function 큰얼굴({ 모드, 하는일, 몇분 }: { 모드: 모드; 하는일?: string | null; 몇분?: number | null }) {
-  const t = useT(ROOKERY);
+export function 큰얼굴({ 모드, 하는일, 몇분, t }: { 모드: 모드; 하는일?: string | null; 몇분?: number | null; t: T }) {
   return (
     <div className="rk-큰얼굴칸">
       <div className={`rk-큰얼굴 ${모드 === "일하는중" ? "rk-얼굴-일" : 모드 === "대화중" ? "rk-얼굴-말" : ""}`}>

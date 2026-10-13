@@ -1,7 +1,6 @@
 "use client";
 // i18n-ids: 꺼짐 켜는중 보는중 멈춤 화면띠 설명 잘못 눈 자리 무엇 높이비중
-import { useT } from "@/lib/i18n/client";
-import { ROOKERY } from "@/lib/i18n/dict/rookery";
+import type { T } from "@/lib/i18n/core";
 /**
  * **로키가 화면을 보고 있다가 말을 건다** (228회차 10-02, 사장님이 (가)를 고르심).
  *
@@ -41,8 +40,7 @@ async function 한장뜨기(v: HTMLVideoElement): Promise<string> {
   return c.toDataURL("image/jpeg", 0.72).split(",")[1];
 }
 
-export function use화면보기(말붙이기: (말: string) => void, 앞말: () => string[]) {
-  const t = useT(ROOKERY);
+export function use화면보기(말붙이기: (말: string) => void, 앞말: () => string[], t: T) {
   const [상태, set상태] = useState<상태>("꺼짐");
   const [본횟수, set본횟수] = useState(0);
   const [보낸횟수, set보낸횟수] = useState(0);
@@ -180,11 +178,10 @@ export function use화면보기(말붙이기: (말: string) => void, 앞말: () 
     set옮기는중(false);
   }, [옮기는중, 말붙이기, t]);
 
-  return { 상태, 본횟수, 보낸횟수, 잘못, 켜기, 끄기, 상한: 기본상한, 이거처럼, 옮기는중 };
+  return { 상태, 본횟수, 보낸횟수, 잘못, 켜기, 끄기, 상한: 기본상한, 이거처럼, 옮기는중, t };
 }
 
-export function 화면보기띠({ 상태, 본횟수, 보낸횟수, 상한, 잘못, 켜기, 끄기, 이거처럼, 옮기는중 }: ReturnType<typeof use화면보기>) {
-  const t = useT(ROOKERY);
+export function 화면보기띠({ 상태, 본횟수, 보낸횟수, 상한, 잘못, 켜기, 끄기, 이거처럼, 옮기는중, t }: ReturnType<typeof use화면보기>) {
   if (상태 === "꺼짐" || 상태 === "켜는중") {
     return (
       <div className="rk-화면띠">
