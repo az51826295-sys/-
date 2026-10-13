@@ -1,4 +1,5 @@
 import type { Dict } from "../core";
+import { COMMON } from "./common";
 
 /**
  * 두근도트 — 한국어 원문 → 영어·일본어. 열쇠는 화면에 쓰인 한국어 그대로다(core.ts 참고).
@@ -6,6 +7,7 @@ import type { Dict } from "../core";
  * "멘헤라" 는 일본에서 온 말이라 일본어는 メンヘラ, 영어는 Menhera 로 둔다.
  */
 export const DOT: Dict = {
+  ...COMMON,
   // ── 채팅방: 알림·토스트
   "광고를 못 열었어요": { en: "Couldn't open the ad", ja: "広告を開けませんでした" },
   "{n}번 더 이야기할 수 있어요": { en: "You can chat {n} more times", ja: "あと{n}回話せます" },
@@ -257,4 +259,44 @@ export const DOT: Dict = {
   "az51826295@gmail.com · 아동 안전 관련은 24시간 안에 확인해요": { en: "az51826295@gmail.com · child-safety reports are reviewed within 24 hours", ja: "az51826295@gmail.com・児童の安全に関するものは24時間以内に確認します" },
   "두근도트 {v}": { en: "Dugeun Dot {v}", ja: "ドゥグンドット {v}" },
   "알림·배경·멘헤라 모드는 각 대화방의 ≡ 메뉴에 있어요": { en: "Notifications, backgrounds and Menhera mode are in each chat's ≡ menu", ja: "通知・背景・メンヘラモードは各トークの ≡ メニューにあります" },
+  // ── 베타 모집
+  "두근도트 — 베타 테스터 모집": { en: "Dugeun Dot — Beta testers wanted", ja: "ドゥグンドット — ベータテスター募集" },
+  "두근도트 안드로이드 베타 테스터를 모집합니다. 세 단계면 설치됩니다.": { en: "We're looking for Android beta testers for Dugeun Dot. Three steps and it's installed.", ja: "ドゥグンドットのAndroidベータテスターを募集しています。3ステップでインストールできます。" },
+  "두근도트 베타 테스터": { en: "Dugeun Dot beta testers", ja: "ドゥグンドット ベータテスター" },
+  "도트 캐릭터랑 카톡하듯 이야기하는 앱이에요.": { en: "An app where you text pixel characters like you'd text a friend.", ja: "ドットキャラとメッセンジャー感覚でおしゃべりするアプリです。" },
+  "지금 유나 · 서하 · 린 · 도윤 네 명이 있어요.": { en: "Right now there are four: Yuna · Seoha · Rin · Doyun.", ja: "今はユナ・ソハ・リン・ドユンの4人がいます。" },
+  "순서대로 해 주세요.": { en: "Please go in order.", ja: "順番に進めてください。" },
+  "3번은 2번을 마쳐야 열려요. 바로 3번을 누르면 “페이지를 찾을 수 없음”이 떠요.": { en: "Step 3 only opens after step 2. If you tap step 3 right away, you'll see “Page not found.”", ja: "3は2を終えてから開きます。いきなり3を押すと「ページが見つかりません」と表示されます。" },
+  "반영되는 데 몇 분 걸릴 때도 있어요.": { en: "It can take a few minutes to go through.", ja: "反映まで数分かかることもあります。" },
+  "잘 안 되면 이 주소로 알려 주세요:": { en: "If something doesn't work, let us know at:", ja: "うまくいかないときはこちらまで:" },
+  "두근도트 베타 테스터 문의": { en: "Dugeun Dot beta tester question", ja: "ドゥグンドット ベータテスターのお問い合わせ" },
+  "구글 그룹 가입": { en: "Join the Google Group", ja: "Googleグループに参加" },
+  "테스터 명단이에요. 가입해야 다음 단계가 열려요.": { en: "This is the tester list. Join it to unlock the next step.", ja: "テスター名簿です。参加すると次のステップが開きます。" },
+  "그룹 가입하기": { en: "Join group", ja: "グループに参加する" },
+  "테스트 참여 동의": { en: "Agree to join the test", ja: "テスト参加に同意" },
+  "1번을 한 구글 계정으로 열어 주세요. 여기서 '테스터가 되기'를 누르면 끝이에요.": { en: "Open this with the Google account you used in step 1, then tap “Become a tester” and you're done.", ja: "1で使ったGoogleアカウントで開いてください。「テスターになる」を押せば完了です。" },
+  "참여 동의하기": { en: "Agree to join", ja: "参加に同意する" },
+  "앱 설치": { en: "Install the app", ja: "アプリをインストール" },
+  "2번을 마쳐야 이 페이지가 열려요. 안 열리면 2번을 다시 확인해 주세요.": { en: "This page opens only after step 2. If it doesn't, check step 2 again.", ja: "2を終えるとこのページが開きます。開かない場合は2をもう一度確認してください。" },
+  "플레이스토어에서 받기": { en: "Get it on Google Play", ja: "Google Playで入手" },
+
+  // ── 로그인 화면(두근도트)
+  "다시 왔네요": { en: "Welcome back", ja: "おかえりなさい" },
+  "처음이죠? 30초면 돼요": { en: "New here? It takes 30 seconds", ja: "はじめてですか？30秒で終わります" },
+  "구글로 들어가기": { en: "Sign in with Google", ja: "Googleでログイン" },
+  "구글로 시작하기": { en: "Start with Google", ja: "Googleではじめる" },
+  "또는 이메일로": { en: "or with email", ja: "またはメールで" },
+  "비밀번호": { en: "Password", ja: "パスワード" },
+  "들어가기": { en: "Sign in", ja: "ログイン" },
+  "시작하기": { en: "Get started", ja: "はじめる" },
+  "처음이에요?": { en: "New here?", ja: "はじめてですか？" },
+  "가입하기": { en: "Sign up", ja: "新規登録" },
+  "이미 있어요?": { en: "Already have an account?", ja: "アカウントをお持ちですか？" },
+  "로그인": { en: "Sign in", ja: "ログイン" },
+  "개인정보": { en: "Privacy", ja: "プライバシー" },
+  "이메일이나 비밀번호가 틀렸어요.": { en: "Wrong email or password.", ja: "メールアドレスかパスワードが違います。" },
+  "이미 가입된 이메일이에요. 로그인해 주세요.": { en: "That email is already registered. Please sign in.", ja: "そのメールアドレスは登録済みです。ログインしてください。" },
+  "비밀번호는 6자 이상이어야 해요.": { en: "Your password needs at least 6 characters.", ja: "パスワードは6文字以上にしてください。" },
+  "너무 여러 번 시도했어요. 잠시 뒤에 다시요.": { en: "Too many attempts. Try again in a bit.", ja: "試行回数が多すぎます。少ししてからもう一度どうぞ。" },
+  "이메일과 비밀번호를 적어 주세요.": { en: "Please enter your email and password.", ja: "メールアドレスとパスワードを入力してください。" },
 };

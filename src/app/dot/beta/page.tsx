@@ -13,11 +13,13 @@
  * 아직 계정이 없다.
  */
 import Link from "next/link";
+import { getT } from "@/lib/i18n/server";
+import { DOT } from "@/lib/i18n/dict/dot";
 
-export const metadata = {
-  title: "두근도트 — 베타 테스터 모집",
-  description: "두근도트 안드로이드 베타 테스터를 모집합니다. 세 단계면 설치됩니다.",
-};
+export async function generateMetadata() {
+  const t = await getT(DOT);
+  return { title: t("두근도트 — 베타 테스터 모집"), description: t("두근도트 안드로이드 베타 테스터를 모집합니다. 세 단계면 설치됩니다.") };
+}
 
 /** 사장님이 준 링크 셋. 순서가 곧 절차다. */
 const 단계 = [
@@ -44,7 +46,8 @@ const 단계 = [
   },
 ];
 
-export default function DotBeta() {
+export default async function DotBeta() {
+  const t = await getT(DOT);
   return (
     <div className="bt-root">
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
@@ -52,9 +55,9 @@ export default function DotBeta() {
       <div className="bt-phone">
         <div className="bt-head">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/dot-icon-192.png" alt="두근도트" className="bt-icon" />
-          <h1>두근도트 베타 테스터</h1>
-          <p className="bt-sub">도트 캐릭터랑 카톡하듯 이야기하는 앱이에요.<br />지금 유나 · 서하 · 린 · 도윤 네 명이 있어요.</p>
+          <img src="/dot-icon-192.png" alt={t("두근도트")} className="bt-icon" />
+          <h1>{t("두근도트 베타 테스터")}</h1>
+          <p className="bt-sub">{t("도트 캐릭터랑 카톡하듯 이야기하는 앱이에요.")}<br />{t("지금 유나 · 서하 · 린 · 도윤 네 명이 있어요.")}</p>
         </div>
 
         <ol className="bt-steps">
@@ -62,23 +65,23 @@ export default function DotBeta() {
             <li key={s.n}>
               <div className="bt-num">{s.n}</div>
               <div className="bt-body">
-                <div className="bt-title">{s.제목}</div>
-                <div className="bt-desc">{s.설명}</div>
-                <a className="bt-go" href={s.링크} target="_blank" rel="noopener noreferrer">{s.단추}</a>
+                <div className="bt-title">{t(s.제목)}</div>
+                <div className="bt-desc">{t(s.설명)}</div>
+                <a className="bt-go" href={s.링크} target="_blank" rel="noopener noreferrer">{t(s.단추)}</a>
               </div>
             </li>
           ))}
         </ol>
 
         <div className="bt-note">
-          <b>순서대로 해 주세요.</b> 3번은 2번을 마쳐야 열려요. 바로 3번을 누르면 “페이지를 찾을 수 없음”이 떠요.
-          반영되는 데 몇 분 걸릴 때도 있어요.
+          <b>{t("순서대로 해 주세요.")}</b> {t("3번은 2번을 마쳐야 열려요. 바로 3번을 누르면 “페이지를 찾을 수 없음”이 떠요.")}
+          {t("반영되는 데 몇 분 걸릴 때도 있어요.")}
         </div>
 
         <div className="bt-foot">
-          잘 안 되면 <a href="mailto:az51826295@gmail.com?subject=두근도트 베타 테스터 문의">az51826295@gmail.com</a> 으로 알려 주세요.
+          {t("잘 안 되면 이 주소로 알려 주세요:")} <a href={`mailto:az51826295@gmail.com?subject=${encodeURIComponent(t("두근도트 베타 테스터 문의"))}`}>az51826295@gmail.com</a>
           <br />
-          <Link href="/dot/privacy">개인정보 처리방침</Link>
+          <Link href="/dot/privacy">{t("개인정보 처리방침")}</Link>
         </div>
       </div>
     </div>

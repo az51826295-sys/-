@@ -2,13 +2,16 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { getT } from "@/lib/i18n/server";
+import { COMMON } from "@/lib/i18n/dict/common";
 
 export async function signup(formData: FormData) {
   const email = String(formData.get("email") ?? "");
   const password = String(formData.get("password") ?? "");
 
   if (!email || !password) {
-    redirect("/signup?error=" + encodeURIComponent("이메일과 비밀번호를 넣어 주세요."));
+    const t = await getT(COMMON);
+    redirect("/signup?error=" + encodeURIComponent(t("이메일과 비밀번호를 넣어 주세요.")));
   }
 
   const supabase = await createClient();
@@ -20,7 +23,8 @@ export async function signup(formData: FormData) {
 
   if (!data.session) {
     // Email confirmation is required before a session exists.
-    redirect("/login?message=" + encodeURIComponent("메일함에서 확인 링크를 누른 뒤 로그인해 주세요."));
+    const t = await getT(COMMON);
+    redirect("/login?message=" + encodeURIComponent(t("메일함에서 확인 링크를 누른 뒤 로그인해 주세요.")));
   }
 
   // 가입 직후에도 대화창으로. 회사 만들기는 회사 모드를 쓸 때 필요해지는 것이지

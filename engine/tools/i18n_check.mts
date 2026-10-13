@@ -27,23 +27,34 @@ function walk(dir: string, out: string[] = []): string[] {
 }
 
 const files = walk(join(ROOT, "src"));
+const direct: string[] = [];
 const used = new Map<string, string>(); // 원문 → 처음 쓰인 파일
+const DICTS: Record<string, Record<string, { en: string; ja: string }>> = { dot: DOT, rookery: ROOKERY, common: COMMON };
+/** 파일이 실제로 import 한 사전만 합친다. 다른 사전에만 있는 말은 그 화면에서 한국어로 나간다. */
+const dictOf = (src: string) => Object.assign({}, ...[...src.matchAll(/i18n\/dict\/(dot|rookery|common)"/g)].map((m) => DICTS[m[1]]));
+const perFile: { ko: string; f: string; dict: Record<string, { en: string; ja: string }> }[] = [];
 // t("…") / t('…') / t(`…`) — 첫 인자가 글자 그대로인 것만. 변수로 넘긴 것은 못 센다(그런 곳은 사전 열쇠를 직접 쓴다).
 const CALL = /\bt\(\s*(["'`])((?:\\.|(?!\1).)*?)\1/g;
 for (const f of files) {
   if (f.includes("/i18n/")) continue;
   const s = readFileSync(f, "utf8");
+  const fileDict = dictOf(s);
   for (const m of s.matchAll(CALL)) {
     const ko = m[2].replace(/\\n/g, "\n").replace(/\\(["'`])/g, "$1");
-    if (/[가-힣]/.test(ko) && !used.has(ko)) used.set(ko, relative(ROOT, f));
+    if (!/[가-힣]/.test(ko)) continue;
+    if (!used.has(ko)) used.set(ko, relative(ROOT, f));
+    perFile.push({ ko, f: relative(ROOT, f), dict: fileDict });
   }
+  // t 를 거치지 않고 (await getT(X))("…") 처럼 바로 부르면 위에서 못 센다 — 아예 못 쓰게 실패로 친다.
+  if (/\)\)\(\s*["'`]/.test(s.replace(/\/\/.*$/gm, ""))) direct.push(relative(ROOT, f));
 }
 
 const slots = (s: string) => [...s.matchAll(/\{([^{}]+)\}/g)].map((m) => m[1]).sort().join(",");
 const missing: string[] = [], empty: string[] = [], badSlots: string[] = [];
-for (const [ko, f] of used) {
-  const d = ALL[ko];
-  if (!d) { missing.push(`${f}: ${JSON.stringify(ko)}`); continue; }
+const reported = new Set<string>();
+for (const { ko, f, dict } of perFile) {
+  const d = dict[ko];
+  if (!d) { const k = `${f}: ${JSON.stringify(ko)}`; if (!reported.has(k)) { reported.add(k); missing.push(k); } continue; }
   if (!d.en?.trim() || !d.ja?.trim()) empty.push(`${f}: ${JSON.stringify(ko)}`);
   for (const lang of ["en", "ja"] as const) if (d[lang] && slots(d[lang]) !== slots(ko)) badSlots.push(`${lang} ${JSON.stringify(ko)} → ${JSON.stringify(d[lang])}`);
 }
@@ -62,7 +73,11 @@ for (const f of files.filter(SCREEN)) {
   const raw = readFileSync(f, "utf8").split("\n");
   const code = stripComments(raw.join("\n")).split("\n");
   const left: string[] = [];
+  // 한국어 원본을 통째로 둔 함수(법률 문서 등 KoBody)는 원래 한국어라 세지 않는다.
+  let inKo = false;
   code.forEach((line, i) => {
+    if (/function KoBody\(/.test(raw[i])) inKo = true;
+    if (inKo) { if (/^}/.test(raw[i])) inKo = false; return; }
     if (raw[i].includes("i18n-skip") || raw[i - 1]?.includes("i18n-skip-next")) return;
     if (/console\.(log|warn|error)/.test(line)) return;
     const noT = line.replace(CALL, "");
@@ -83,6 +98,7 @@ for (const [f, l] of leftByFile.sort((a, b) => b[1].length - a[1].length)) {
   console.log(`  ${l.length.toString().padStart(4)}  ${f}`);
   if (showLeft) for (const x of l) console.log("        " + x);
 }
+for (const f of direct) missing.push(`${f}: (await getT(…))("…") 처럼 바로 부른 곳 — const t = … 로 받아서 t("…") 로 쓴다`);
 const bad = missing.length + empty.length + badSlots.length;
 console.log(bad ? `\n실패 ${bad}` : "\n번역 검사 통과");
 process.exit(bad ? 1 : 0);

@@ -24,7 +24,8 @@ export const viewport = {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   // 캐시된 목록에서 꺼낸다 — 제목 하나 때문에 DB 를 또 왕복하지 않는다.
-  return { title: (await characterBySlug(slug))?.name ?? (await getT(DOT))("두근도트") };
+  const t = await getT(DOT);
+  return { title: (await characterBySlug(slug))?.name ?? t("두근도트") };
 }
 
 export default async function DotRoom({ params, searchParams }: { params: Promise<{ slug: string }>; searchParams: Promise<{ post?: string }> }) {

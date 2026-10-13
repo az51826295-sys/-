@@ -1,3 +1,5 @@
+import { getT } from "@/lib/i18n/server";
+import { COMMON } from "@/lib/i18n/dict/common";
 import RookeryAuth from "../login/RookeryAuth";
 import { signup } from "./actions";
 import DotAuth from "../login/DotAuth";
@@ -6,7 +8,10 @@ import { headers } from "next/headers";
 import { publicOriginFromHeaders } from "@/lib/http/origin";
 
 // 두근도트 서비스에서는 탭 제목도 두근도트. 루트 레이아웃의 "Rookery" 가 앱 안에 뜨면 딴 회사 페이지가 된다.
-export const metadata = process.env.PRODUCT === "dot" ? { title: "두근도트 — 가입" } : { title: "로키 — 가입" };
+export async function generateMetadata() {
+  const t = await getT(COMMON);
+  return { title: process.env.PRODUCT === "dot" ? t("두근도트 — 가입") : t("로키 — 가입") };
+}
 
 export default async function SignupPage({
   searchParams,

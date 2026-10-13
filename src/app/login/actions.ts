@@ -2,6 +2,8 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { getT } from "@/lib/i18n/server";
+import { COMMON } from "@/lib/i18n/dict/common";
 
 export async function login(formData: FormData) {
   const email = String(formData.get("email") ?? "");
@@ -12,8 +14,9 @@ export async function login(formData: FormData) {
 
   if (error) {
     // Supabase 는 영어로 준다. 흔한 둘만 우리말로 — 나머지는 원문 그대로(숨기지 않는다).
-    const why = /invalid login credentials/i.test(error.message) ? "이메일이나 비밀번호가 맞지 않아요."
-      : /email not confirmed/i.test(error.message) ? "메일함에서 확인 링크를 먼저 눌러 주세요."
+    const t = await getT(COMMON);
+    const why = /invalid login credentials/i.test(error.message) ? t("이메일이나 비밀번호가 맞지 않아요.")
+      : /email not confirmed/i.test(error.message) ? t("메일함에서 확인 링크를 먼저 눌러 주세요.")
       : error.message;
     redirect("/login?error=" + encodeURIComponent(why));
   }
@@ -34,7 +37,10 @@ export async function googleLogin(formData: FormData) {
     provider: "google",
     options: { redirectTo: `${origin}/auth/callback` },
   });
-  if (error || !data.url) redirect("/login?error=" + encodeURIComponent(error?.message ?? "구글 로그인 주소를 못 받았어요."));
+  if (error || !data.url) {
+    const t = await getT(COMMON);
+    redirect("/login?error=" + encodeURIComponent(error?.message ?? t("구글 로그인 주소를 못 받았어요.")));
+  }
   redirect(data.url);
 }
 

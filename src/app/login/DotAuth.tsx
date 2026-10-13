@@ -6,8 +6,11 @@
  * 같은 글꼴, 한국어. 서버 액션(로그인·가입)은 그대로 쓰고, 어디로 보낼지만 제품에 따라 갈린다.
  */
 import { PIXEL_CSS } from "@/app/dot/pixel-skin";
+import { getT } from "@/lib/i18n/server";
+import { DOT } from "@/lib/i18n/dict/dot";
+import type { T } from "@/lib/i18n/core";
 
-export default function DotAuth({
+export default async function DotAuth({
   mode, error, message, action, google, origin,
 }: {
   mode: "login" | "signup";
@@ -19,6 +22,7 @@ export default function DotAuth({
   origin?: string;
 }) {
   const isLogin = mode === "login";
+  const t = await getT(DOT);
   // 226회차 09-28, 사장님 *"구글로그인으로 바꿔 회원가입빼고"*.
   //
   // **새로 드는 사람은 구글로만 든다.** 다만 이미 이메일·비밀번호로 든 사람이 13명 있다 —
@@ -36,30 +40,30 @@ export default function DotAuth({
       <style>{PIXEL_CSS}</style>
       <div className="da-phone">
         <div className="da-logo">
-          <img src="/dot-icon-192.png" alt="두근도트" />
-          <div className="da-name">두근도트</div>
-          <div className="da-sub">{isLogin ? "다시 왔네요" : "처음이죠? 30초면 돼요"}</div>
+          <img src="/dot-icon-192.png" alt={t("두근도트")} />
+          <div className="da-name">{t("두근도트")}</div>
+          <div className="da-sub">{isLogin ? t("다시 왔네요") : t("처음이죠? 30초면 돼요")}</div>
         </div>
         {message && <div className="da-msg">{message}</div>}
-        {error && <div className="da-err">{koError(error)}</div>}
+        {error && <div className="da-err">{koError(error, t)}</div>}
         {google && (
           <form action={google} className="da-google">
             <input type="hidden" name="origin" value={origin ?? ""} />
-            <button type="submit"><span className="da-g">G</span> 구글로 {isLogin ? "들어가기" : "시작하기"}</button>
-            {이메일도 && <div className="da-or">또는 이메일로</div>}
+            <button type="submit"><span className="da-g">G</span> {isLogin ? t("구글로 들어가기") : t("구글로 시작하기")}</button>
+            {이메일도 && <div className="da-or">{t("또는 이메일로")}</div>}
           </form>
         )}
         {이메일도 && (
           <form action={action} className="da-form">
-            <label>이메일<input name="email" type="email" required autoComplete="email" inputMode="email" /></label>
-            <label>비밀번호<input name="password" type="password" required autoComplete={isLogin ? "current-password" : "new-password"} minLength={6} /></label>
-            <button type="submit">{isLogin ? "들어가기" : "시작하기"}</button>
+            <label>{t("이메일")}<input name="email" type="email" required autoComplete="email" inputMode="email" /></label>
+            <label>{t("비밀번호")}<input name="password" type="password" required autoComplete={isLogin ? "current-password" : "new-password"} minLength={6} /></label>
+            <button type="submit">{isLogin ? t("들어가기") : t("시작하기")}</button>
           </form>
         )}
         <div className="da-foot">
-          {가입권유 && (isLogin ? <>처음이에요? <a href="/signup">가입하기</a></> : <>이미 있어요? <a href="/login">로그인</a></>)}
+          {가입권유 && (isLogin ? <>{t("처음이에요?")} <a href="/signup">{t("가입하기")}</a></> : <>{t("이미 있어요?")} <a href="/login">{t("로그인")}</a></>)}
           {가입권유 && <span className="da-dot">·</span>}
-          <a href="/dot/privacy">개인정보</a>
+          <a href="/dot/privacy">{t("개인정보")}</a>
         </div>
       </div>
     </div>
@@ -67,13 +71,13 @@ export default function DotAuth({
 }
 
 /** Supabase 의 영어 오류를 한국어로. 모르는 건 그대로 — 지어내면 원인을 못 찾는다. */
-function koError(e: string): string {
+function koError(e: string, t: T): string {
   const m = e.toLowerCase();
-  if (m.includes("invalid login")) return "이메일이나 비밀번호가 틀렸어요.";
-  if (m.includes("already registered") || m.includes("already exists")) return "이미 가입된 이메일이에요. 로그인해 주세요.";
-  if (m.includes("password") && m.includes("6")) return "비밀번호는 6자 이상이어야 해요.";
-  if (m.includes("rate limit")) return "너무 여러 번 시도했어요. 잠시 뒤에 다시요.";
-  if (m.includes("required")) return "이메일과 비밀번호를 적어 주세요.";
+  if (m.includes("invalid login")) return t("이메일이나 비밀번호가 틀렸어요.");
+  if (m.includes("already registered") || m.includes("already exists")) return t("이미 가입된 이메일이에요. 로그인해 주세요.");
+  if (m.includes("password") && m.includes("6")) return t("비밀번호는 6자 이상이어야 해요.");
+  if (m.includes("rate limit")) return t("너무 여러 번 시도했어요. 잠시 뒤에 다시요.");
+  if (m.includes("required")) return t("이메일과 비밀번호를 적어 주세요.");
   return e;
 }
 
