@@ -1,4 +1,6 @@
 "use client";
+import { useT } from "@/lib/i18n/client";
+import { DOT } from "@/lib/i18n/dict/dot";
 import { useState } from "react";
 
 /**
@@ -7,7 +9,9 @@ import { useState } from "react";
  * 227회차 09-29: 사장님이 *"마음에들면 추가하는거야"* 라고 하셔서 **글자를 고를 수 있게** 했다.
  * 피드·프로필은 인스타 그대로 "팔로우", 검색은 사장님 말 그대로 "추가". 하는 일은 같다.
  */
-export default function FollowButton({ characterId, following: f0, name, size = "md", words = ["팔로우", "팔로잉"] }: { characterId: string; following: boolean; name?: string; size?: "sm" | "md"; words?: [string, string] }) {
+export default function FollowButton({ characterId, following: f0, name, size = "md", words: words0 }: { characterId: string; following: boolean; name?: string; size?: "sm" | "md"; words?: [string, string] }) {
+  const t = useT(DOT);
+  const words = words0 ?? [t("팔로우"), t("팔로잉")];
   const [following, setFollowing] = useState(f0);
   const [busy, setBusy] = useState(false);
   async function toggle() {

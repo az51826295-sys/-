@@ -20,21 +20,24 @@ const ICON: Record<string, string> = {
 };
 
 import Link from "next/link";
+import { getT } from "@/lib/i18n/server";
+import { DOT } from "@/lib/i18n/dict/dot";
 
-export default function DotTabs({ on }: { on: "search" | "chats" | "feed" | "me" }) {
+export default async function DotTabs({ on }: { on: "search" | "chats" | "feed" | "me" }) {
+  const t = await getT(DOT);
   const tabs = [
-    { key: "feed", href: "/dot/feed", label: "피드" },
-    { key: "search", href: "/dot/search", label: "검색" },
-    { key: "chats", href: "/dot/chats", label: "채팅" },
-    { key: "me", href: "/dot/me", label: "내 창" },
+    { key: "feed", href: "/dot/feed", label: t("피드") },
+    { key: "search", href: "/dot/search", label: t("검색") },
+    { key: "chats", href: "/dot/chats", label: t("채팅") },
+    { key: "me", href: "/dot/me", label: t("내 창") },
   ] as const;
   return (
-    <nav className="dt-tabs" aria-label="아래 탭">
+    <nav className="dt-tabs" aria-label={t("아래 탭")}>
       <style>{CSS}</style>
-      {tabs.map((t) => (
-        <Link key={t.key} href={t.href} className={`dt-tab${on === t.key ? " on" : ""}`} aria-current={on === t.key ? "page" : undefined}>
-          <svg className="dt-icon" width="24" height="24" viewBox="0 0 8 8" shapeRendering="crispEdges" aria-hidden><path d={ICON[t.key]} fill="currentColor" fillRule="evenodd" /></svg>
-          <span>{t.label}</span>
+      {tabs.map((tab) => (
+        <Link key={tab.key} href={tab.href} className={`dt-tab${on === tab.key ? " on" : ""}`} aria-current={on === tab.key ? "page" : undefined}>
+          <svg className="dt-icon" width="24" height="24" viewBox="0 0 8 8" shapeRendering="crispEdges" aria-hidden><path d={ICON[tab.key]} fill="currentColor" fillRule="evenodd" /></svg>
+          <span>{tab.label}</span>
         </Link>
       ))}
     </nav>

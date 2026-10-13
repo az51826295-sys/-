@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { getT } from "@/lib/i18n/server";
+import { DOT } from "@/lib/i18n/dict/dot";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
@@ -20,11 +22,13 @@ export const viewport = { width: "device-width", viewportFit: "cover" as const, 
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  return { title: `${(await characterBySlug(slug))?.name ?? "두근도트"} — 프로필` };
+  const t = await getT(DOT);
+  return { title: t("{name} — 프로필", { name: (await characterBySlug(slug))?.name ?? t("두근도트") }) };
 }
 
 export default async function DotProfile({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
+  const t = await getT(DOT);
   const supabase = await createClient();
   const [{ data: { user } }, found, inline] = await Promise.all([supabase.auth.getUser(), characterBySlug(slug), spriteDataUrls(slug)]);
   if (!found) notFound();
@@ -54,7 +58,7 @@ export default async function DotProfile({ params }: { params: Promise<{ slug: s
         <div className="pf-hero">
           <img className="pf-wall" src={wall} alt="" aria-hidden />
           <div className="pf-shade" />
-          <Link href={`/dot/${slug}`} className="pf-back" aria-label="뒤로">‹</Link>
+          <Link href={`/dot/${slug}`} className="pf-back" aria-label={t("뒤로")}>‹</Link>
           {/* 사진이 있으면 첫 장이 프로필 사진(전체), 없으면 흉상. 감정은 여기 없다(09-11 사장님). */}
           {photos.length ? <img className="pf-photo" src={photos[0].url} alt={found.name} /> : <div className="pf-portrait"><img src={sprites.happy ?? sprites.neutral} alt={found.name} /></div>}
         </div>
@@ -67,14 +71,14 @@ export default async function DotProfile({ params }: { params: Promise<{ slug: s
           {stage > 0 ? (
             <div className="pf-bond">
               <div className="pf-hearts">{"♥".repeat(stage)}{"♡".repeat(Math.max(0, 5 - stage))}</div>
-              <div className="pf-stage">{STAGE_WORD[stage]}</div>
+              <div className="pf-stage">{t(STAGE_WORD[stage])}</div>
               <div className="pf-bar"><div style={{ width: next ? `${Math.round((1 - next.need / next.total) * 100)}%` : "100%" }} /></div>
               <div className="pf-meta">
-                {next ? `다음 단계까지 ${next.need}` : "마지막 단계"} · 나눈 말 {talks}{streak >= 2 ? ` · ${streak}일 연속` : ""}
+                {next ? t("다음 단계까지 {n}", { n: next.need }) : t("마지막 단계")} · {t("나눈 말 {n}", { n: talks })}{streak >= 2 ? ` · ${t("{n}일 연속", { n: streak })}` : ""}
               </div>
             </div>
           ) : (
-            <div className="pf-bond muted">아직 이야기한 적이 없어요</div>
+            <div className="pf-bond muted">{t("아직 이야기한 적이 없어요")}</div>
           )}
 
           {photos.length > 0 ? (
@@ -91,8 +95,8 @@ export default async function DotProfile({ params }: { params: Promise<{ slug: s
             </div>
           )}
 
-          <Link href={`/dot/${slug}`} className="pf-go">채팅하기</Link>
-          <Link href="/dot/feed" className="pf-list">피드로</Link>
+          <Link href={`/dot/${slug}`} className="pf-go">{t("채팅하기")}</Link>
+          <Link href="/dot/feed" className="pf-list">{t("피드로")}</Link>
         </div>
       </div>
     </div>

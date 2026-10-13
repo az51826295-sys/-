@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { getT } from "@/lib/i18n/server";
+import { DOT } from "@/lib/i18n/dict/dot";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import DotTabs from "../DotTabs";
@@ -15,7 +17,7 @@ import { mineView, 맞팔_하트 } from "@/lib/dot/mine";
  * 그래서 이 화면은 **아직 안 된 쪽도 보여 준다**: "서하 3/5" 처럼. 문턱만 있고 진행이 안 보이면
  * 사람은 그 규칙이 있는 줄도 모른다 — 안 보이는 규칙은 없는 규칙이다.
  */
-export const metadata = { title: "두근도트 — 내 창" };
+export async function generateMetadata() { const t = await getT(DOT); return { title: t("두근도트 — 내 창") }; }
 export const viewport = {
   width: "device-width", viewportFit: "cover" as const, initialScale: 1, maximumScale: 1, userScalable: false, themeColor: "#ffffff",
 };
@@ -25,7 +27,8 @@ export default async function DotMe() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
   const v = await mineView(user.id);
-  const 이름 = (user.email ?? "나").split("@")[0];
+  const t = await getT(DOT);
+  const 이름 = (user.email ?? t("나")).split("@")[0];
 
   return (
     <div className="me-root">
@@ -34,22 +37,22 @@ export default async function DotMe() {
       <div className="me-phone">
         <header className="me-head">
           <div className="me-title">{이름}</div>
-          <Link href="/dot/settings" className="me-gear" aria-label="설정">
+          <Link href="/dot/settings" className="me-gear" aria-label={t("설정")}>
             <svg width="24" height="24" viewBox="0 0 8 8" shapeRendering="crispEdges" aria-hidden><path d="M3 0h2v1h1v1h1v2h-1v1h-1v1h-2v-1h-1v-1h-1v-2h1v-1h1z" fill="currentColor" fillRule="evenodd" /></svg>
           </Link>
         </header>
 
         <div className="me-body">
           <div className="me-nums">
-            <div><b>{v.posts.length}</b><span>게시물</span></div>
-            <div><b>{v.followers.length}</b><span>팔로워</span></div>
-            <div><b>{v.following}</b><span>팔로잉</span></div>
-            <div><b>{v.hearts}</b><span>받은 하트</span></div>
+            <div><b>{v.posts.length}</b><span>{t("게시물")}</span></div>
+            <div><b>{v.followers.length}</b><span>{t("팔로워")}</span></div>
+            <div><b>{v.following}</b><span>{t("팔로잉")}</span></div>
+            <div><b>{v.hearts}</b><span>{t("받은 하트")}</span></div>
           </div>
 
           {v.followers.length > 0 && (
             <div className="me-back">
-              <div className="me-sub">맞팔해 준 캐릭터</div>
+              <div className="me-sub">{t("맞팔해 준 캐릭터")}</div>
               <div className="me-chips">
                 {v.followers.map((c) => (
                   <Link key={c.slug} href={`/dot/${c.slug}`} className="me-chip">
@@ -64,7 +67,7 @@ export default async function DotMe() {
 
           {v.progress.length > 0 && (
             <div className="me-back">
-              <div className="me-sub">맞팔까지</div>
+              <div className="me-sub">{t("맞팔까지")}</div>
               {v.progress.map((c) => (
                 <div key={c.slug} className="me-prog">
                   <span className="me-prog-name">{c.name}</span>
@@ -79,8 +82,8 @@ export default async function DotMe() {
 
           {v.posts.length === 0 ? (
             <div className="me-empty">
-              아직 올린 게 없어요.
-              <div className="me-empty-sub">사진을 올리면 추가한 캐릭터들이 보고 하트를 줘요.<br />한 캐릭터에게 하트 {맞팔_하트}개를 받으면 맞팔해 줍니다.</div>
+              {t("아직 올린 게 없어요.")}
+              <div className="me-empty-sub">{t("사진을 올리면 추가한 캐릭터들이 보고 하트를 줘요.")}<br />{t("한 캐릭터에게 하트 {n}개를 받으면 맞팔해 줍니다.", { n: 맞팔_하트 })}</div>
             </div>
           ) : (
             <div className="me-grid">

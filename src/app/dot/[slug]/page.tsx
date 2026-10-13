@@ -1,3 +1,5 @@
+import { getT } from "@/lib/i18n/server";
+import { DOT } from "@/lib/i18n/dict/dot";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
@@ -22,7 +24,7 @@ export const viewport = {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   // 캐시된 목록에서 꺼낸다 — 제목 하나 때문에 DB 를 또 왕복하지 않는다.
-  return { title: (await characterBySlug(slug))?.name ?? "두근도트" };
+  return { title: (await characterBySlug(slug))?.name ?? (await getT(DOT))("두근도트") };
 }
 
 export default async function DotRoom({ params, searchParams }: { params: Promise<{ slug: string }>; searchParams: Promise<{ post?: string }> }) {

@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { getT } from "@/lib/i18n/server";
+import { DOT } from "@/lib/i18n/dict/dot";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import DotTabs from "../DotTabs";
@@ -15,12 +17,13 @@ import SearchList, { type SearchItem } from "./SearchList";
  * 설정(톱니)이 친구 탭 오른쪽 위에 있었는데([[kakao-placement-rule]]), 친구 탭이 없어지므로
  * 여기로 데려온다. **같은 목적지 단추는 하나**라는 규칙은 그대로 — 다른 탭엔 안 단다.
  */
-export const metadata = { title: "두근도트 — 검색" };
+export async function generateMetadata() { const t = await getT(DOT); return { title: t("두근도트 — 검색") }; }
 export const viewport = {
   width: "device-width", viewportFit: "cover" as const, initialScale: 1, maximumScale: 1, userScalable: false, themeColor: "#ffffff",
 };
 
 export default async function DotSearch() {
+  const t = await getT(DOT);
   const characters = await publicCharacters();
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -45,8 +48,8 @@ export default async function DotSearch() {
       <style>{CSS}</style>
       <div className="sc-phone">
         <header className="sc-head">
-          <div className="sc-title">검색</div>
-          <Link href="/dot/settings" className="sc-gear" aria-label="설정">
+          <div className="sc-title">{t("검색")}</div>
+          <Link href="/dot/settings" className="sc-gear" aria-label={t("설정")}>
             <svg width="24" height="24" viewBox="0 0 8 8" shapeRendering="crispEdges" aria-hidden><path d="M3 0h2v1h1v1h1v2h-1v1h-1v1h-2v-1h-1v-1h-1v-2h1v-1h1zM3 3v2h2v-2z" fill="currentColor" fillRule="evenodd" /></svg>
           </Link>
         </header>

@@ -1,4 +1,7 @@
 "use client";
+import { useT } from "@/lib/i18n/client";
+import type { T } from "@/lib/i18n/core";
+import { DOT } from "@/lib/i18n/dict/dot";
 import { useEffect, useState } from "react";
 
 import Link from "next/link";
@@ -8,6 +11,7 @@ export type FeedPost = { id: number; image: string; caption: string; likes: numb
 
 /** 게시물 카드 — 좋아요(한 번), 답장(그 게시물을 들고 방으로). 시각은 붙은 뒤에만(하이드레이션). */
 export default function FeedCard({ post, liked: liked0, signedIn }: { post: FeedPost; liked: boolean; signedIn: boolean }) {
+  const t = useT(DOT);
   const [liked, setLiked] = useState(liked0);
   const [likes, setLikes] = useState(post.likes);
   const [mounted, setMounted] = useState(false);
@@ -20,7 +24,7 @@ export default function FeedCard({ post, liked: liked0, signedIn }: { post: Feed
     const res = await fetch("/api/dot/posts", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ postId: post.id }) });
     if (!res.ok) { setLiked(false); setLikes((n) => n - 1); }
   }
-  const when = mounted ? ago(post.at) : "";
+  const when = mounted ? ago(post.at, t) : "";
 
   return (
     <article className="fc">
@@ -39,22 +43,22 @@ export default function FeedCard({ post, liked: liked0, signedIn }: { post: Feed
       </div>
       <img className="fc-img" src={post.image} alt={post.caption} />
       <div className="fc-actions">
-        <button className={`fc-like${liked ? " on" : ""}`} onClick={like} aria-pressed={liked} aria-label="좋아요">
+        <button className={`fc-like${liked ? " on" : ""}`} onClick={like} aria-pressed={liked} aria-label={t("좋아요")}>
           <span className="heart">{liked ? "♥" : "♡"}</span>
         </button>
         {/* 09-12 사장님 "채팅이랑 답장 똑같은 말 아니야?" — 하나로. 채팅은 이 게시물을 들고 방으로 간다. */}
-        <Link className="fc-reply" href={`/dot/${post.slug}?post=${post.id}`}>채팅</Link>
+        <Link className="fc-reply" href={`/dot/${post.slug}?post=${post.id}`}>{t("채팅")}</Link>
       </div>
-      {likes > 0 && <div className="fc-likes">좋아요 {likes}개</div>}
+      {likes > 0 && <div className="fc-likes">{t("좋아요 {n}개", { n: likes })}</div>}
       <div className="fc-cap"><b>{post.name}</b>{post.caption}</div>
     </article>
   );
 }
 
-function ago(iso: string): string {
+function ago(iso: string, t: T): string {
   const m = Math.max(0, Math.round((Date.now() - Date.parse(iso)) / 60000));
-  if (m < 1) return "방금";
-  if (m < 60) return `${m}분 전`;
-  const h = Math.round(m / 60); if (h < 24) return `${h}시간 전`;
-  const d = Math.round(h / 24); return d === 1 ? "어제" : `${d}일 전`;
+  if (m < 1) return t("방금");
+  if (m < 60) return t("{n}분 전", { n: m });
+  const h = Math.round(m / 60); if (h < 24) return t("{n}시간 전", { n: h });
+  const d = Math.round(h / 24); return d === 1 ? t("어제") : t("{n}일 전", { n: d });
 }

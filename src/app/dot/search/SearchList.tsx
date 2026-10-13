@@ -1,4 +1,6 @@
 "use client";
+import { useT } from "@/lib/i18n/client";
+import { DOT } from "@/lib/i18n/dict/dot";
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import FollowButton from "../FollowButton";
@@ -29,6 +31,7 @@ export type SearchItem = {
 const 납작 = (s: string) => s.toLowerCase().replace(/\s+/g, "");
 
 export default function SearchList({ items }: { items: SearchItem[] }) {
+  const t = useT(DOT);
   const [q, setQ] = useState("");
   const 찾는중 = q.trim().length > 0;
 
@@ -52,29 +55,29 @@ export default function SearchList({ items }: { items: SearchItem[] }) {
           className="sc-input"
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          placeholder="이름이나 분위기로 찾기"
-          aria-label="캐릭터 검색"
+          placeholder={t("이름이나 분위기로 찾기")}
+          aria-label={t("캐릭터 검색")}
           autoComplete="off"
           enterKeyHint="search"
         />
-        {q && <button className="sc-x" onClick={() => setQ("")} aria-label="지우기">×</button>}
+        {q && <button className="sc-x" onClick={() => setQ("")} aria-label={t("지우기")}>×</button>}
       </div>
 
       {결과.length === 0 && (
         <div className="sc-none">
           <b>&ldquo;{q}&rdquo;</b> 로는 아무도 안 나왔어요.
-          <div className="sc-none-sub">이름 말고 &ldquo;조용한&rdquo;, &ldquo;선배&rdquo; 같은 말로도 찾아보세요.</div>
+          <div className="sc-none-sub">{t("이름 말고 “조용한”, “선배” 같은 말로도 찾아보세요.")}</div>
         </div>
       )}
 
       {!찾는중 ? (
         <div className="sc-grid">
           {결과.map((c) => (
-            <Link key={c.id} href={`/dot/${c.slug}/profile`} className="sc-tile" aria-label={`${c.name} 프로필`}>
+            <Link key={c.id} href={`/dot/${c.slug}/profile`} className="sc-tile" aria-label={t("{name} 프로필", { name: c.name })}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               {c.avatar ? <img src={c.avatar} alt="" /> : <span className="sc-tile-none" />}
               <span className="sc-tile-name">{c.name}</span>
-              {c.following && <span className="sc-tile-on">추가됨</span>}
+              {c.following && <span className="sc-tile-on">{t("추가됨")}</span>}
             </Link>
           ))}
         </div>
@@ -82,7 +85,7 @@ export default function SearchList({ items }: { items: SearchItem[] }) {
         <ul className="sc-list">
           {결과.map((c) => (
             <li key={c.id}>
-              <Link href={`/dot/${c.slug}/profile`} className="sc-row" aria-label={`${c.name} 프로필`}>
+              <Link href={`/dot/${c.slug}/profile`} className="sc-row" aria-label={t("{name} 프로필", { name: c.name })}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 {c.avatar ? <img src={c.avatar} alt="" className="sc-av" /> : <span className="sc-av" />}
                 <span className="sc-text">
@@ -90,7 +93,7 @@ export default function SearchList({ items }: { items: SearchItem[] }) {
                   <span className="sc-tag">{c.tagline}</span>
                 </span>
               </Link>
-              <FollowButton characterId={c.id} following={c.following} name={c.name} size="sm" words={["추가", "추가됨"]} />
+              <FollowButton characterId={c.id} following={c.following} name={c.name} size="sm" words={[t("추가"), t("추가됨")]} />
             </li>
           ))}
         </ul>

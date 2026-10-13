@@ -1,4 +1,7 @@
 import Link from "next/link";
+import { getT } from "@/lib/i18n/server";
+import { DOT } from "@/lib/i18n/dict/dot";
+import LanguagePicker from "./LanguagePicker";
 import { createClient } from "@/lib/supabase/server";
 import SettingsActions from "./SettingsActions";
 
@@ -7,10 +10,11 @@ import SettingsActions from "./SettingsActions";
  * 카톡처럼: 방 메뉴엔 **이 방** 것만(알림·멘헤라·배경·대화 지우기·신고·도움말), 계정·약관·삭제는
  * 친구 탭 오른쪽 위 톱니바퀴 → 여기. 채팅 목록·피드는 아래 탭과 뒤로 가기가 있으니 메뉴에서 뺐다.
  */
-export const metadata = { title: "두근도트 — 설정" };
+export async function generateMetadata() { const t = await getT(DOT); return { title: t("두근도트 — 설정") }; }
 export const viewport = { width: "device-width", viewportFit: "cover" as const, initialScale: 1, maximumScale: 1, userScalable: false, themeColor: "#a5bccd" };
 
 export default async function DotSettings() {
+  const t = await getT(DOT);
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   const email = user?.email ?? null;
@@ -20,19 +24,22 @@ export default async function DotSettings() {
       <style>{CSS}</style>
       <div className="pk-phone">
         <header className="pk-head st-head">
-          <Link href="/dot/pick" className="st-back" aria-label="친구로">‹</Link>
-          <div className="pk-title">설정</div>
+          <Link href="/dot/pick" className="st-back" aria-label={t("친구로")}>‹</Link>
+          <div className="pk-title">{t("설정")}</div>
         </header>
         <div className="st-list">
-          <div className="st-group">계정</div>
-          <div className="st-row"><span>{email ?? "로그인 안 됨"}</span><small>로그인한 계정 · 폰을 바꿔도 이 계정으로 이어져요</small></div>
+          <div className="st-group">{t("계정")}</div>
+          <div className="st-row"><span>{email ?? t("로그인 안 됨")}</span><small>{t("로그인한 계정 · 폰을 바꿔도 이 계정으로 이어져요")}</small></div>
           <SettingsActions />
 
-          <div className="st-group">안내</div>
-          <Link className="st-row" href="/dot/privacy">개인정보 처리방침</Link>
-          <Link className="st-row" href="/dot/child-safety">아동 안전 기준</Link>
-          <a className="st-row" href={`mailto:az51826295@gmail.com?subject=${encodeURIComponent("두근도트 문의")}`}>문의·신고<small>az51826295@gmail.com · 아동 안전 관련은 24시간 안에 확인해요</small></a>
-          <div className="st-row st-dim"><span>두근도트 1.0.7</span><small>알림·배경·멘헤라 모드는 각 대화방의 ≡ 메뉴에 있어요</small></div>
+          <div className="st-group">{t("언어")}</div>
+          <LanguagePicker label={t("앱 언어")} />
+
+          <div className="st-group">{t("안내")}</div>
+          <Link className="st-row" href="/dot/privacy">{t("개인정보 처리방침")}</Link>
+          <Link className="st-row" href="/dot/child-safety">{t("아동 안전 기준")}</Link>
+          <a className="st-row" href={`mailto:az51826295@gmail.com?subject=${encodeURIComponent(t("두근도트 문의"))}`}>{t("문의·신고")}<small>{t("az51826295@gmail.com · 아동 안전 관련은 24시간 안에 확인해요")}</small></a>
+          <div className="st-row st-dim"><span>{t("두근도트 {v}", { v: "1.0.7" })}</span><small>{t("알림·배경·멘헤라 모드는 각 대화방의 ≡ 메뉴에 있어요")}</small></div>
         </div>
       </div>
     </div>
