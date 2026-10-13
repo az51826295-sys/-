@@ -58,7 +58,7 @@ export type WatchReport = {
 };
 
 /** 순수 계산. 목록을 못 읽은 공급자는 견주지 않는다(못 읽은 것과 없어진 것은 다르다). */
-export function compareWatch(prev: WatchSnapshot | null, now: ModelEntry[], okVendors: Set<Vendor>, inUse: { id: string; vendor: Vendor }[]): Omit<WatchReport, "vendors"> {
+export function compareWatch(prev: WatchSnapshot | null, now: ModelEntry[], okVendors: Set<Vendor>, inUse: { id: string; vendor: Vendor; calls?: boolean }[]): Omit<WatchReport, "vendors"> {
   const nowIds = new Set(now.map((m) => m.id));
   const prevModels = (prev?.models ?? []).filter((m) => okVendors.has(m.vendor));
   const prevIds = new Set(prevModels.map((m) => m.id));
@@ -67,12 +67,17 @@ export function compareWatch(prev: WatchSnapshot | null, now: ModelEntry[], okVe
   const gone = prevModels.filter((m) => !nowIds.has(m.id) && !nowFam.has(family(m.id)) && isWorkModel(m.id));
   // 날짜 꼬리가 붙은 판만 목록에 있을 수 있어 집안 이름으로도 찾는다.
   const nowFamilies = new Set(now.map((m) => family(m.id)));
-  const missingInUse = inUse.filter((u) => okVendors.has(u.vendor) && !nowIds.has(u.id) && !nowFamilies.has(family(u.id))).map((u) => u.id);
+  // 10-13: **14일 내내 같은 거짓 경보**가 났다 — "쓰고 있는 모델이 목록에서 사라졌어요: deepseek-chat".
+  // 그 줄은 `where: "안 부름(이름 가리기 목록에만)"` 이라고 자기 입으로 적어 두고도 이 검사에 들어와 있었다.
+  // 목록(IN_USE)은 **두 가지**를 겸하고 있다: ① 우리가 부르는 이름 ② 코드에 글자로 남은 이름.
+  // ②는 "곧 죽을 호출" 이 아니다. 그래서 `calls: false` 인 줄은 여기서 뺀다(목록에는 남는다 —
+  // model_watch 자가 코드를 훑어 빠진 이름을 찾는 일은 그대로 해야 한다).
+  const missingInUse = inUse.filter((u) => u.calls !== false && okVendors.has(u.vendor) && !nowIds.has(u.id) && !nowFamilies.has(family(u.id))).map((u) => u.id);
   return { fresh, gone, missingInUse, firstRun: !prev };
 }
 
 /** 로키가 실제로 부르는 이름들(코드에 적힌 글자). 바뀌면 여기도 바꾼다 — 자(`model_watch.mts`)가 코드를 훑어 빠진 게 없는지 본다. */
-export const IN_USE: { id: string; vendor: Vendor; where: string }[] = [
+export const IN_USE: { id: string; vendor: Vendor; where: string; calls?: boolean }[] = [
   { id: "gpt-5", vendor: "openai", where: "만들기·판단·심판" },
   { id: "gpt-5-mini", vendor: "openai", where: "싼 자리" },
   { id: "gpt-6-astra", vendor: "openai", where: "제일 비싼 자리" },
@@ -101,7 +106,7 @@ export const IN_USE: { id: string; vendor: Vendor; where: string }[] = [
   { id: "gpt-5.6-terra", vendor: "openai", where: "자리 겨루기" },
   { id: "gpt-5.3-codex", vendor: "openai", where: "코드 자리" },
   // 안 부른다 — head.ts 가 **이름을 가리려고** 들고 있는 것이라 코드에 글자가 남아 있다. 자가 정직하게 잡으니 정직하게 적는다.
-  { id: "deepseek-chat", vendor: "deepseek", where: "안 부름(이름 가리기 목록에만)" },
+  { id: "deepseek-chat", vendor: "deepseek", where: "안 부름(이름 가리기 목록에만)", calls: false },
 ];
 
 /**

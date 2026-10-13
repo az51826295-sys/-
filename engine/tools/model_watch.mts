@@ -24,6 +24,14 @@ if (process.argv.includes("--selftest")) {
   check("날짜 꼬리만 붙은 같은 집안은 없어진 게 아니다(claude-sonnet-5)", !r.missingInUse.includes("claude-sonnet-5"), r.missingInUse);
   check("고장: 목록을 못 읽은 공급자(deepseek)를 '없어졌다'로 읽지 않는다", !r.gone.some((x) => x.vendor === "deepseek") && !r.missingInUse.includes("deepseek-v4-pro"), { gone: r.gone, missing: r.missingInUse });
   check("고장: 첫 실행에 전부를 '새로 생김'으로 알리지 않는다", compareWatch(null, now, okV as never, []).fresh.length === 0);
+  /* 10-13: `calls: false` (코드에 글자만 남은 이름)는 "곧 죽을 호출" 이 아니다 —
+     그 줄 하나가 14일 내내 거짓 경보를 냈다. 그리고 **딱지가 아무거나 입을 막지 않는다**는
+     것까지 같이 잰다(딱지를 떼면 다시 잡혀야 한다). */
+  const 안부름 = [{ id: "gpt-6-astra", vendor: "openai" as const, calls: false }];
+  check("안 부르는 이름(calls:false)은 '곧 죽을 호출'로 안 센다",
+    !compareWatch(prev, now, okV as never, 안부름).missingInUse.includes("gpt-6-astra"));
+  check("딱지를 떼면 다시 잡힌다(이빨 확인)",
+    compareWatch(prev, now, okV as never, [{ id: "gpt-6-astra", vendor: "openai" as const }]).missingInUse.includes("gpt-6-astra"));
   check("집안 이름: 날짜·판 꼬리를 뗀다", family("gpt-5-2026-03-01") === "gpt-5" && family("claude-sonnet-5-20260601") === "claude-sonnet-5");
   check("일 모델 가르기", isWorkModel("gpt-7") && !isWorkModel("whisper-2") && !isWorkModel("text-embedding-4"));
   console.log(`\n본 줄 ${seen} · 어긋남 ${bad}`);
