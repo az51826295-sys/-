@@ -1,6 +1,6 @@
 /**
  * **한 층에 적이 연달아 나오는가** (10-09 사장님 "층마다 여러 적이 연달아 등장해"). 모델 0 · 값 0.
- *   ASH_URL=http://127.0.0.1:8124/ash/index.html npx tsx engine/tools/ash_무리_시험.mts [--sabotage]
+ *   ASH_URL='http://127.0.0.1:8124/ash/index.html?lang=ko' npx tsx engine/tools/ash_무리_시험.mts [--sabotage]
  *
  * 재는 것: 무리가 실제로 **갈라져** 나오나 · 한 무리가 두 마리를 안 넘나 ·
  * 무리 사이에 체력이 **안 차나**(차면 연달아 나오는 뜻이 없다) · 보스는 혼자 나오나 ·
@@ -10,7 +10,7 @@
  */
 import { openHeadless } from "../../src/lib/video/headless";
 import { 이름헬퍼 } from "./ash_공통.mjs";
-const 주소 = process.env.ASH_URL ?? "https://rookery-web-production.up.railway.app/ash/index.html";
+const 주소 = process.env.ASH_URL ?? "https://rookery-web-production.up.railway.app/ash/index.html?lang=ko";
 let 나쁨 = 0;
 const 재기 = (n: string, ok: boolean, 본?: unknown) => { if (!ok) 나쁨++; console.log(ok ? "통과" : "실패", n, ok ? "" : JSON.stringify(본)); };
 

@@ -1,6 +1,6 @@
 /**
  * **뽑기가 설계를 안 깨는가** (10-11). 모델 0 · 값 0.
- *   ASH_URL=http://127.0.0.1:8124/ash/index.html npx tsx engine/tools/ash_뽑기_시험.mts [--sabotage]
+ *   ASH_URL='http://127.0.0.1:8124/ash/index.html?lang=ko' npx tsx engine/tools/ash_뽑기_시험.mts [--sabotage]
  *
  * 이 자가 지키는 것은 **대전제 하나**다 — 뽑기는 **고를 수 있는 것**(동료)과 재료만 준다.
  * **레벨도 능력치도 팔지 않는다.** 그게 무너지면 "장비를 만들 이유"가 사라지고
@@ -10,7 +10,7 @@
  */
 import { openHeadless } from "../../src/lib/video/headless";
 import { 이름헬퍼 } from "./ash_공통.mjs";
-const 주소 = process.env.ASH_URL ?? "https://rookery-web-production.up.railway.app/ash/index.html";
+const 주소 = process.env.ASH_URL ?? "https://rookery-web-production.up.railway.app/ash/index.html?lang=ko";
 let 나쁨 = 0;
 const 재기 = (n: string, ok: boolean, 본?: unknown) => { if (!ok) 나쁨++; console.log(ok ? "통과" : "실패", n, ok ? "" : JSON.stringify(본)); };
 

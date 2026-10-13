@@ -1,7 +1,7 @@
 /**
  * **층이 스스로 오르지 않고, 자격으로 열리는가** (10-09 사장님 "다음 층으로 오를 자격을 얻는 거야").
  * 모델 0 · 값 0.
- *   ASH_URL=http://127.0.0.1:8124/ash/index.html npx tsx engine/tools/ash_자격_시험.mts [--sabotage]
+ *   ASH_URL='http://127.0.0.1:8124/ash/index.html?lang=ko' npx tsx engine/tools/ash_자격_시험.mts [--sabotage]
  *
  * 이 자가 지키는 것은 **사장님 구성 그 자체**다. 고치기 전 게임은 적을 눕히면 S.층++ 로
  * 멋대로 올라갔다 — 되돌이로 모으는 게임인데 한 판에 다음 층으로 가 버렸다.
@@ -11,7 +11,7 @@
  */
 import { openHeadless } from "../../src/lib/video/headless";
 import { 이름헬퍼 } from "./ash_공통.mjs";
-const 주소 = process.env.ASH_URL ?? "https://rookery-web-production.up.railway.app/ash/index.html";
+const 주소 = process.env.ASH_URL ?? "https://rookery-web-production.up.railway.app/ash/index.html?lang=ko";
 let 나쁨 = 0;
 const 재기 = (n: string, ok: boolean, 본?: unknown) => { if (!ok) 나쁨++; console.log(ok ? "통과" : "실패", n, ok ? "" : JSON.stringify(본)); };
 

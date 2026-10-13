@@ -1,6 +1,6 @@
 /**
  * **잡몹과 관문 보스 중 누가 더 센가** (10-11). 모델 0 · 값 0.
- *   ASH_URL=http://127.0.0.1:8124/ash/index.html npx tsx engine/tools/ash_성장곡선.mts
+ *   ASH_URL='http://127.0.0.1:8124/ash/index.html?lang=ko' npx tsx engine/tools/ash_성장곡선.mts
  *
  * 10-11 에 T5 를 +880 에서 +1020 으로 올려도 **막히는 층이 57 로 똑같았다.**
  * 장비로 안 움직이는 벽은 장비 탓이 아니다 — 그래서 층마다 **실제로 세워지는 것**을 재 본다.
@@ -10,7 +10,7 @@
  */
 import { openHeadless } from "../../src/lib/video/headless";
 import { 이름헬퍼 } from "./ash_공통.mjs";
-const 주소 = process.env.ASH_URL ?? "https://rookery-web-production.up.railway.app/ash/index.html";
+const 주소 = process.env.ASH_URL ?? "https://rookery-web-production.up.railway.app/ash/index.html?lang=ko";
 const 층들 = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
 
 const 창 = await openHeadless({ width: 390, height: 844 });

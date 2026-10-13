@@ -8,7 +8,7 @@
  */
 import { openHeadless } from "../../src/lib/video/headless";
 import { 이름헬퍼 } from "./ash_공통.mjs";
-const 주소 = process.env.ASH_URL ?? "https://rookery-web-production.up.railway.app/ash/index.html";
+const 주소 = process.env.ASH_URL ?? "https://rookery-web-production.up.railway.app/ash/index.html?lang=ko";
 const 층 = Number(process.argv[2] ?? 90);
 /** 둘째 인자 = 쓸 수 있는 레시피의 최대 열림. 티어를 하나씩 막아 보며 **어느 티어가 그 관문을 여는지** 본다. */
 const 최대열림 = Number(process.argv[3] ?? 99);

@@ -1,6 +1,6 @@
 /**
  * **난이도를 숫자로 잰다** (10-09 사장님 "지금 난이도가 너무 쉬워"). 모델 0 · 값 0.
- *   ASH_URL=http://127.0.0.1:8123/ash/index.html npx tsx engine/tools/ash_난이도.mts [끝층=40]
+ *   ASH_URL='http://127.0.0.1:8123/ash/index.html?lang=ko' npx tsx engine/tools/ash_난이도.mts [끝층=40]
  *
  * "쉽다/어렵다" 는 형용사라 자를 못 견딘다 — 실제로 돌려서 **층당 턴 수 · 전멸 횟수 ·
  * 층을 깬 순간 아군 체력 %** 를 센다. 고친 뒤 같은 자로 다시 재면 바뀐 것이 보인다.
@@ -10,7 +10,7 @@
 import { openHeadless } from "../../src/lib/video/headless";
 import { 이름헬퍼 } from "./ash_공통.mjs";
 
-const 주소 = process.env.ASH_URL ?? "https://rookery-web-production.up.railway.app/ash/index.html";
+const 주소 = process.env.ASH_URL ?? "https://rookery-web-production.up.railway.app/ash/index.html?lang=ko";
 const 끝층 = Number(process.argv[2] ?? 40);
 
 const 창 = await openHeadless({ width: 390, height: 844 });

@@ -15,7 +15,9 @@
 </head>
 <body>
 <main>
-  <h1>잿빛 원정대 개인정보 처리방침</h1>
+  <!-- 10-14 다국어: 한 장에 세 언어. 폰 언어가 영어·일본어면 그 단락으로 바로 내려간다(아래 스크립트). 한국어 원문이 우선한다. -->
+  <p style="font-size:13px"><a href="#ko">한국어</a> · <a href="#en">English</a> · <a href="#ja">日本語</a></p>
+  <h1 id="ko">잿빛 원정대 개인정보 처리방침</h1>
   <p>시행일: 2026년 10월 8일</p>
 
   <h2>1. 수집하는 정보</h2>
@@ -35,6 +37,42 @@
 
   <h2>6. 문의</h2>
   <p>개인정보에 관한 문의: <a href="mailto:az51826295@gmail.com">az51826295@gmail.com</a></p>
+
+  <hr style="border-color:#3a2c45;margin:40px 0">
+  <h1 id="en">Ashen Expedition Privacy Policy</h1>
+  <p>Effective: October 8, 2026 · This is a translation. If it differs from the Korean original, the Korean version applies.</p>
+  <h2>1. Information we collect</h2>
+  <p>Ashen Expedition <b>does not collect personal information</b> such as your name, email, phone number, location or contacts. There is no sign-up or login.</p>
+  <h2>2. Information stored on your device</h2>
+  <p>Game progress (floors, members, materials, gear, etc.) is stored only on your device. It is not sent to our servers, and it is deleted when you uninstall the app or clear its data.</p>
+  <h2>3. Third parties · ads · payments</h2>
+  <p>We do not share personal information with third parties. There are currently no ads or in-app purchases. If they are added later, we will update this policy first.</p>
+  <h2>4. Loading game files</h2>
+  <p>The app connects to our server to load game screens and image files. The server may briefly keep ordinary access logs (such as access time) for operations, and does not use them to identify individuals.</p>
+  <h2>5. Children</h2>
+  <p>Since we collect no personal information, we collect none from children either.</p>
+  <h2>6. Contact</h2>
+  <p>Privacy inquiries: <a href="mailto:az51826295@gmail.com">az51826295@gmail.com</a></p>
+
+  <hr style="border-color:#3a2c45;margin:40px 0">
+  <h1 id="ja">灰の遠征隊 プライバシーポリシー</h1>
+  <p>施行日：2026年10月8日 · これは翻訳です。韓国語の原文と異なる場合は、韓国語版が優先されます。</p>
+  <h2>1. 収集する情報</h2>
+  <p>灰の遠征隊は、氏名・メールアドレス・電話番号・位置情報・連絡先などの<b>個人情報を収集しません。</b>会員登録やログインはありません。</p>
+  <h2>2. 端末に保存される情報</h2>
+  <p>ゲームの進行状況（階・隊員・素材・装備など）は利用者の端末内にのみ保存されます。この情報は当社のサーバーには送信されず、アプリを削除するかアプリのデータを消去すると一緒に消えます。</p>
+  <h2>3. 第三者提供・広告・決済</h2>
+  <p>個人情報を第三者に提供しません。現在、広告とアプリ内課金はありません。今後追加する場合は、先にこのポリシーを改めます。</p>
+  <h2>4. ゲームファイルの読み込み</h2>
+  <p>ゲーム画面と画像ファイルを読み込むために当社のサーバーに接続します。その際サーバーは一般的なアクセス記録（アクセス時刻など）を運営目的で一時的に残すことがありますが、個人の識別には使いません。</p>
+  <h2>5. 子ども</h2>
+  <p>個人情報を収集しないため、子どもの個人情報も収集しません。</p>
+  <h2>6. お問い合わせ</h2>
+  <p>個人情報に関するお問い合わせ：<a href="mailto:az51826295@gmail.com">az51826295@gmail.com</a></p>
 </main>
+<script>
+  // 폰 언어가 영어·일본어면 그 단락으로(주소에 #이 이미 있으면 그대로 둔다)
+  if (!location.hash) { const n = (navigator.language || "").toLowerCase(); if (n.startsWith("ja")) location.hash = "ja"; else if (!n.startsWith("ko")) location.hash = "en"; }
+</script>
 </body>
 </html>

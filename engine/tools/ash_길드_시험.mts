@@ -1,6 +1,6 @@
 /**
  * **길드 단추가 살아 있는가** (10-10 사장님 "눌러도 반응이 없다"). 모델 0 · 값 0.
- *   ASH_URL=http://127.0.0.1:8124/ash/index.html npx tsx engine/tools/ash_길드_시험.mts [--sabotage]
+ *   ASH_URL='http://127.0.0.1:8124/ash/index.html?lang=ko' npx tsx engine/tools/ash_길드_시험.mts [--sabotage]
  *
  * 우편함·공지·설정은 HTML 에만 있고 **JS 연결이 한 줄도 없었다** — 눌러도 아무 일이 없는데
  * 화면에는 멀쩡한 단추로 보였다. 그래서 이 자는 **실제로 눌러서** 창이 뜨는지 본다.
@@ -8,7 +8,7 @@
  */
 import { openHeadless } from "../../src/lib/video/headless";
 import { 이름헬퍼 } from "./ash_공통.mjs";
-const 주소 = process.env.ASH_URL ?? "https://rookery-web-production.up.railway.app/ash/index.html";
+const 주소 = process.env.ASH_URL ?? "https://rookery-web-production.up.railway.app/ash/index.html?lang=ko";
 let 나쁨 = 0;
 const 재기 = (n: string, ok: boolean, 본?: unknown) => { if (!ok) 나쁨++; console.log(ok ? "통과" : "실패", n, ok ? "" : JSON.stringify(본)); };
 

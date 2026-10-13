@@ -1,6 +1,6 @@
 /**
  * **잿빛 음악이 실제로 도는가** (10-09). 모델 0 · 값 0.
- *   ASH_URL=http://127.0.0.1:8123/ash/index.html npx tsx engine/tools/ash_snd_check.mts
+ *   ASH_URL='http://127.0.0.1:8123/ash/index.html?lang=ko' npx tsx engine/tools/ash_snd_check.mts
  *
  * "넣었다" 는 코드가 있다는 뜻이고, 자는 **소리가 흐르는지**를 본다.
  * 브라우저는 사람이 건드리기 전에 소리를 막는다 — 그래서 손길을 흉내 내고(클릭) 그 뒤를 잰다.
@@ -9,7 +9,7 @@
 import { openHeadless } from "../../src/lib/video/headless";
 import { 이름헬퍼 } from "./ash_공통.mjs";
 
-const 주소 = process.env.ASH_URL ?? "https://rookery-web-production.up.railway.app/ash/index.html";
+const 주소 = process.env.ASH_URL ?? "https://rookery-web-production.up.railway.app/ash/index.html?lang=ko";
 let 나쁨 = 0;
 const 재기 = (이름: string, 괜찮: boolean, 본것?: unknown) => {
   if (!괜찮) 나쁨++;

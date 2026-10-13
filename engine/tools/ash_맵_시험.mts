@@ -1,11 +1,11 @@
 /**
  * **탑 맵이 되는가** (10-09). 모델 0 · 값 0.
- *   ASH_URL=http://127.0.0.1:8123/ash/index.html npx tsx engine/tools/ash_맵_시험.mts
+ *   ASH_URL='http://127.0.0.1:8123/ash/index.html?lang=ko' npx tsx engine/tools/ash_맵_시험.mts
  * 맵이 뜨나 · 꼭대기가 위인가 · 깬 층까지만 있나 · 누르면 출전 고르는 창이 뜨나 · 떠나면 맵이 사라지나.
  */
 import { openHeadless } from "../../src/lib/video/headless";
 import { 이름헬퍼 } from "./ash_공통.mjs";
-const 주소 = process.env.ASH_URL ?? "https://rookery-web-production.up.railway.app/ash/index.html";
+const 주소 = process.env.ASH_URL ?? "https://rookery-web-production.up.railway.app/ash/index.html?lang=ko";
 let 나쁨 = 0;
 const 재기 = (n: string, ok: boolean, 본?: unknown) => { if (!ok) 나쁨++; console.log(ok ? "통과" : "실패", n, ok ? "" : JSON.stringify(본)); };
 const 창 = await openHeadless({ width: 390, height: 844 });

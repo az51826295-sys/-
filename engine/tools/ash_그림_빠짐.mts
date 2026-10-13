@@ -1,6 +1,6 @@
 /**
  * **그림이 없는 칸을 전부 센다** (10-11 사장님 "그림 넣어 모든거"). 모델 0 · 값 0.
- *   ASH_URL=http://127.0.0.1:8124/ash/index.html npx tsx engine/tools/ash_그림_빠짐.mts
+ *   ASH_URL='http://127.0.0.1:8124/ash/index.html?lang=ko' npx tsx engine/tools/ash_그림_빠짐.mts
  *
  * 10구간·장비 20종·재료 13종·영혼석 6종까지 늘어나는 동안 **그림은 따라오지 못했다.**
  * 눈으로 훑으면 반드시 빠뜨리므로, 게임이 **실제로 찾는 이름**을 전부 모아
@@ -9,7 +9,7 @@
 import { readFileSync } from "node:fs";
 import { openHeadless } from "../../src/lib/video/headless";
 import { 이름헬퍼 } from "./ash_공통.mjs";
-const 주소 = process.env.ASH_URL ?? "https://rookery-web-production.up.railway.app/ash/index.html";
+const 주소 = process.env.ASH_URL ?? "https://rookery-web-production.up.railway.app/ash/index.html?lang=ko";
 const 있는것 = new Set<string>(JSON.parse(readFileSync("public/ash/art/manifest.json", "utf8")));
 
 const 창 = await openHeadless({ width: 390, height: 844 });

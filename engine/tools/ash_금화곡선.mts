@@ -1,6 +1,6 @@
 /**
  * **장비 값이 벌 수 있는 돈인가** (10-11). 모델 0 · 값 0.
- *   ASH_URL=http://127.0.0.1:8124/ash/index.html npx tsx engine/tools/ash_금화곡선.mts [--sabotage]
+ *   ASH_URL='http://127.0.0.1:8124/ash/index.html?lang=ko' npx tsx engine/tools/ash_금화곡선.mts [--sabotage]
  *
  * 10-11: 레시피 금화를 티어마다 ×5 로 올려 뒀는데, 벌이는 직선이었다 —
  * **100층까지 전부 모아도 170만인데 T10 한 벌이 12억**이었다.
@@ -16,7 +16,7 @@
  */
 import { openHeadless } from "../../src/lib/video/headless";
 import { 이름헬퍼 } from "./ash_공통.mjs";
-const 주소 = process.env.ASH_URL ?? "https://rookery-web-production.up.railway.app/ash/index.html";
+const 주소 = process.env.ASH_URL ?? "https://rookery-web-production.up.railway.app/ash/index.html?lang=ko";
 /** 한 티어 재료를 채우는 데 드는 판 수 — 재료가 35% 로 1~2개씩이고 60~160개가 필요하다 */
 const 재료판 = 120;
 /** 한 벌(무기+갑옷)이 그 돈의 몇 할까지면 되는가. 1.0 이면 딱 빠듯, 0.8 이면 조금 남는다 */

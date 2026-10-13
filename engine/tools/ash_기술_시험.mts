@@ -1,6 +1,6 @@
 /**
  * **기술이 글로만 있는 게 아니라 실제로 도는가** (10-10 사장님 명세). 모델 0 · 값 0.
- *   ASH_URL=http://127.0.0.1:8124/ash/index.html npx tsx engine/tools/ash_기술_시험.mts [--sabotage]
+ *   ASH_URL='http://127.0.0.1:8124/ash/index.html?lang=ko' npx tsx engine/tools/ash_기술_시험.mts [--sabotage]
  *
  * 기술을 도감에 적어 넣는 것과 **전투에서 불리는 것**은 다르다. 쿨이 안 돌거나 `쓸까`가
  * 늘 거짓이면 기술은 영영 안 나오는데, 카드 창에는 멀쩡히 보인다 — 사람이 속기 딱 좋다.
@@ -8,7 +8,7 @@
  */
 import { openHeadless } from "../../src/lib/video/headless";
 import { 이름헬퍼 } from "./ash_공통.mjs";
-const 주소 = process.env.ASH_URL ?? "https://rookery-web-production.up.railway.app/ash/index.html";
+const 주소 = process.env.ASH_URL ?? "https://rookery-web-production.up.railway.app/ash/index.html?lang=ko";
 let 나쁨 = 0;
 const 재기 = (n: string, ok: boolean, 본?: unknown) => { if (!ok) 나쁨++; console.log(ok ? "통과" : "실패", n, ok ? "" : JSON.stringify(본)); };
 

@@ -1,6 +1,6 @@
 /**
  * **처음 온 사람의 첫 십 분** (10-12 사장님·제미나이). 모델 0 · 값 0.
- *   ASH_URL=http://127.0.0.1:8124/ash/index.html npx tsx engine/tools/ash_첫십분.mts [--sabotage]
+ *   ASH_URL='http://127.0.0.1:8124/ash/index.html?lang=ko' npx tsx engine/tools/ash_첫십분.mts [--sabotage]
  *
  * 자 열여섯이 전부 통과하는데 **아무도 이 게임을 해 본 적이 없다.**
  * 내 자들은 전부 깊은 칸만 본다 — "T5 가 50 층을 여나", "관문이 벽인가".
@@ -18,7 +18,7 @@
  */
 import { openHeadless } from "../../src/lib/video/headless";
 import { 이름헬퍼 } from "./ash_공통.mjs";
-const 주소 = process.env.ASH_URL ?? "https://rookery-web-production.up.railway.app/ash/index.html";
+const 주소 = process.env.ASH_URL ?? "https://rookery-web-production.up.railway.app/ash/index.html?lang=ko";
 let 나쁨 = 0, 못잼수 = 0;
 const 재기 = (n: string, ok: boolean, 본?: unknown) => { if (!ok) 나쁨++; console.log(ok ? "통과" : "실패", n, ok ? "" : JSON.stringify(본)); };
 /* 10-13: **잴 수 없었던 것을 실패로 적지 않는다**(09-15 에 적어 둔 규칙). 시간 재기는

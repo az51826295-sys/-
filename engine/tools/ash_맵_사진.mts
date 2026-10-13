@@ -1,7 +1,7 @@
 /** 탑 맵과 출발 창을 한 장씩 (10-09). 모델 0 · 값 0. */
 import { openHeadless } from "../../src/lib/video/headless";
 import { 이름헬퍼 } from "./ash_공통.mjs";
-const 주소 = process.env.ASH_URL ?? "https://rookery-web-production.up.railway.app/ash/index.html";
+const 주소 = process.env.ASH_URL ?? "https://rookery-web-production.up.railway.app/ash/index.html?lang=ko";
 const 창 = await openHeadless({ width: 390, height: 844 });
 if (!창) process.exit(1);
 try {

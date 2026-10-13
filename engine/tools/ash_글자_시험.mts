@@ -1,6 +1,6 @@
 /**
  * **화면에 깨진 글자가 없는가** (10-10). 모델 0 · 값 0. **모든 탭의 글을 눈으로 훑는 자.**
- *   ASH_URL=http://127.0.0.1:8124/ash/index.html npx tsx engine/tools/ash_글자_시험.mts [--sabotage]
+ *   ASH_URL='http://127.0.0.1:8124/ash/index.html?lang=ko' npx tsx engine/tools/ash_글자_시험.mts [--sabotage]
  *
  * 왜 생겼나 — 10-10 에 T2·T3 재료를 더했더니 대장간에 **undefined 가 다섯 개** 찍혔다.
  * 대장간만 따로 `{파편,잔혼,수호핵}` 이름표를 들고 있었기 때문이다.
@@ -12,7 +12,7 @@
  */
 import { openHeadless } from "../../src/lib/video/headless";
 import { 이름헬퍼 } from "./ash_공통.mjs";
-const 주소 = process.env.ASH_URL ?? "https://rookery-web-production.up.railway.app/ash/index.html";
+const 주소 = process.env.ASH_URL ?? "https://rookery-web-production.up.railway.app/ash/index.html?lang=ko";
 let 나쁨 = 0;
 const 재기 = (n: string, ok: boolean, 본?: unknown) => { if (!ok) 나쁨++; console.log(ok ? "통과" : "실패", n, ok ? "" : JSON.stringify(본)); };
 

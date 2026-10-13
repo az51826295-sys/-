@@ -391,6 +391,337 @@
 </div>
 
 <script>
+/*
+ * 10-14 다국어(영어·일본어) — 사장님 "전세계화해줘 내앱".
+ *
+ * **화면에 나가는 글만 옮긴다.** 이름표·저장 열쇠·상태값(탭 이름 "장비", 몹 이름 등)은 한국어 그대로 둔다 —
+ * 저장 파일과 규칙이 그 글자를 열쇠로 쓴다. 옮기는 것은 그리는 자리에서:
+ *   T("하수도 거대 쥐")  이름·짧은 글. 사전(옮김표)에 없으면 한국어 그대로. 끝의 " 2" 같은 번호는 따로 붙인다.
+ *   말(`한국어`, `English`, `日本語`)  문장. 한국어 쪽은 원래 글 그대로(조사 고르기 포함)라 한국어 화면은 안 바뀐다.
+ * 언어는 ?lang= → 설정에서 고른 것(localStorage ash-lang) → 폰 언어(한국어·일본어가 아니면 영어).
+ */
+const 언어 = (() => {
+  const 됨 = (x) => x === "ko" || x === "en" || x === "ja";
+  try { const q = new URLSearchParams(location.search).get("lang"); if (됨(q)) return q; } catch {}
+  try { const s = localStorage.getItem("ash-lang"); if (됨(s)) return s; } catch {}
+  const n = String((navigator.languages && navigator.languages[0]) || navigator.language || "en").toLowerCase();
+  return n.startsWith("ko") ? "ko" : n.startsWith("ja") ? "ja" : "en";
+})();
+document.documentElement.lang = 언어;
+const 말 = (ko, en, ja) => 언어 === "en" ? en : 언어 === "ja" ? ja : ko;
+const 옮김표 = {
+  "침묵의 배수 회랑": ["Silent Drain Corridor", "沈黙の排水回廊"],
+  "쇠종의 회랑": ["Iron Bell Corridor", "鉄鐘の回廊"],
+  "물잠긴 암거": ["Flooded Culvert", "水没した暗渠"],
+  "재의 숙영지": ["Ash Encampment", "灰の野営地"],
+  "봉인된 현자의 전당": ["Hall of the Sealed Sage", "封印された賢者の殿堂"],
+  "무너진 비공정 창고": ["Collapsed Airship Hangar", "崩れた飛空艇倉庫"],
+  "검은 이삭 들판": ["Black Wheat Fields", "黒い穂の野"],
+  "번개샘 제단": ["Lightning Spring Altar", "雷泉の祭壇"],
+  "심층 봉인고": ["Deep Sealed Vault", "深層封印庫"],
+  "태고의 문턱": ["Threshold of Ages", "太古の敷居"],
+  "습한 지하 하수도": ["Damp Underground Sewer", "湿った地下下水道"],
+  "버려진 광산": ["Abandoned Mine", "打ち捨てられた鉱山"],
+  "통곡의 고탑 회랑": ["Corridor of the Wailing Tower", "慟哭の古塔回廊"],
+  "침묵의 성소": ["Silent Sanctum", "沈黙の聖所"],
+  "맹독의 지하 늪": ["Venomous Underground Swamp", "猛毒の地下沼"],
+  "용암의 대장간": ["Lava Forge", "溶岩の鍛冶場"],
+  "서리발의 빙벽": ["Frostfang Ice Wall", "霜牙の氷壁"],
+  "심연의 문": ["Gate of the Abyss", "深淵の門"],
+  "하수도 거대 쥐": ["Giant Sewer Rat", "下水道の大ネズミ"],
+  "버려진 슬라임": ["Discarded Slime", "捨てられたスライム"],
+  "음침한 박쥐": ["Gloomy Bat", "陰気なコウモリ"],
+  "녹슨 철 골렘": ["Rusted Iron Golem", "錆びた鉄のゴーレム"],
+  "코볼트 주술사": ["Kobold Shaman", "コボルトの呪術師"],
+  "광산 해골 인부": ["Skeleton Miner", "鉱山の骸骨鉱夫"],
+  "동굴 암살자": ["Cave Assassin", "洞窟の暗殺者"],
+  "지옥사냥개": ["Hellhound", "地獄の猟犬"],
+  "침묵의 기사": ["Silent Knight", "沈黙の騎士"],
+  "가고일 파수꾼": ["Gargoyle Sentinel", "ガーゴイルの番人"],
+  "원혼의 영체": ["Vengeful Spirit", "怨霊の霊体"],
+  "망령의 거인": ["Phantom Giant", "亡霊の巨人"],
+  "타락한 사제": ["Fallen Priest", "堕落した司祭"],
+  "수호 돌조각": ["Guardian Statue", "守護の石像"],
+  "이단 가고일": ["Heretic Gargoyle", "異端のガーゴイル"],
+  "침묵의 심판관": ["Silent Arbiter", "沈黙の審判官"],
+  "늪지 슬라임": ["Bog Slime", "沼地スライム"],
+  "독니 쥐": ["Fang Rat", "毒牙ネズミ"],
+  "부식 가고일": ["Corroded Gargoyle", "腐食ガーゴイル"],
+  "맹독 히드라": ["Venom Hydra", "猛毒ヒドラ"],
+  "화염 정령": ["Fire Spirit", "炎の精霊"],
+  "용암 헬하운드": ["Lava Hellhound", "溶岩ヘルハウンド"],
+  "대장장이 고블린": ["Goblin Smith", "鍛冶屋ゴブリン"],
+  "고대 용암 골렘": ["Ancient Lava Golem", "古代溶岩ゴーレム"],
+  "얼음 유령": ["Ice Wraith", "氷の幽霊"],
+  "설원 세이렌": ["Snowfield Siren", "雪原のセイレーン"],
+  "서리 거인": ["Frost Giant", "霜の巨人"],
+  "서리 여왕": ["Frost Queen", "霜の女王"],
+  "심연의 추적자": ["Abyssal Stalker", "深淵の追跡者"],
+  "공허의 주술사": ["Void Shaman", "虚無の呪術師"],
+  "무명 왕의 망령": ["Wraith of the Nameless King", "名無き王の亡霊"],
+  "심연의 주시자": ["Abyssal Watcher", "深淵の注視者"],
+  "기사": ["Knight", "騎士"],
+  "검사": ["Swordsman", "剣士"],
+  "회복술사": ["Healer", "回復術士"],
+  "흑마법사": ["Dark Mage", "黒魔導士"],
+  "전투사제": ["Battle Priest", "戦闘司祭"],
+  "성기사": ["Paladin", "聖騎士"],
+  "암살자": ["Assassin", "暗殺者"],
+  "칼리드": ["Khalid", "カリード"],
+  "로제": ["Rose", "ロゼ"],
+  "로건": ["Logan", "ローガン"],
+  "이브": ["Eve", "イヴ"],
+  "방어": ["Defense", "防御"],
+  "공격": ["Attack", "攻撃"],
+  "지원": ["Support", "支援"],
+  "제어": ["Control", "制御"],
+  "희귀": ["Rare", "レア"],
+  "영웅": ["Epic", "エピック"],
+  "전설": ["Legendary", "レジェンド"],
+  "체력": ["HP", "体力"],
+  "속도": ["Speed", "速度"],
+  "무기": ["Weapon", "武器"],
+  "갑옷": ["Armor", "鎧"],
+  "장신구": ["Accessory", "装飾品"],
+  "약": ["Potion", "薬"],
+  "푸른방패검": ["Azure Shield Blade", "蒼盾剣"],
+  "철벽의맹세": ["Ironwall Oath", "鉄壁の誓い"],
+  "새벽을가르는방패": ["Dawnsplitter Shield", "暁を裂く盾"],
+  "연속베기": ["Double Slash", "連続斬り"],
+  "처형": ["Execute", "処刑"],
+  "약점노리기": ["Seek Weakness", "弱点狙い"],
+  "치유의빛": ["Healing Light", "癒やしの光"],
+  "구원의진형": ["Salvation Formation", "救いの陣形"],
+  "화염구": ["Fireball", "火炎球"],
+  "사슬": ["Chain", "鎖"],
+  "부패의저주": ["Curse of Rot", "腐敗の呪い"],
+  "기도": ["Prayer", "祈り"],
+  "성스러운축복": ["Holy Blessing", "聖なる祝福"],
+  "빛의수호막": ["Light Barrier", "光の守護膜"],
+  "방패치기": ["Shield Bash", "シールドバッシュ"],
+  "성역의진형": ["Sanctuary Formation", "聖域の陣形"],
+  "급소베기": ["Vital Strike", "急所斬り"],
+  "그림자습격": ["Shadow Ambush", "影の襲撃"],
+  "관통폭풍참": ["Piercing Storm Slash", "貫通嵐斬"],
+  "혈의축복": ["Blood Blessing", "血の祝福"],
+  "영혼반전": ["Soul Reversal", "魂の反転"],
+  "마지막 수호자": ["Last Guardian", "最後の守護者"],
+  "푸른 강철의 결의": ["Resolve of Blue Steel", "蒼き鋼の決意"],
+  "결의": ["Resolve", "決意"],
+  "꺼지지 않는 등불": ["Undying Lamp", "消えない灯火"],
+  "손이 닿는 자리": ["Within Reach", "手の届く場所"],
+  "불굴의 의지": ["Indomitable Will", "不屈の意志"],
+  "맹독 바르기": ["Coat in Venom", "猛毒塗り"],
+  "마른 심지": ["Dry Wick", "乾いた芯"],
+  "검": ["sword", "剣"],
+  "칼": ["blade", "刃"],
+  "성화": ["holy fire", "聖火"],
+  "방패": ["shield", "盾"],
+  "단검": ["dagger", "短剣"],
+  "폭풍의 영혼석": ["Soulstone of Storms", "嵐の魂石"],
+  "혈의 영혼석": ["Soulstone of Blood", "血の魂石"],
+  "역천의 영혼석": ["Soulstone of Defiance", "逆天の魂石"],
+  "재기의 영혼석": ["Soulstone of Recovery", "再起の魂石"],
+  "찬란한 별가루 영혼석": ["Radiant Stardust Soulstone", "煌めく星屑の魂石"],
+  "신속의 영혼석": ["Soulstone of Haste", "迅速の魂石"],
+  "액티브": ["Active", "アクティブ"],
+  "패시브": ["Passive", "パッシブ"],
+  "균열 파편": ["Rift Shard", "亀裂の欠片"],
+  "짐승 잔혼": ["Beast Remnant", "獣の残魂"],
+  "수호핵": ["Guardian Core", "守護核"],
+  "단단한 가죽": ["Tough Hide", "硬い革"],
+  "강철 조각": ["Steel Scrap", "鋼の欠片"],
+  "사냥개의 이빨": ["Hound's Fang", "猟犬の牙"],
+  "거인의 뼈": ["Giant's Bone", "巨人の骨"],
+  "성소의 석편": ["Sanctum Stone Shard", "聖所の石片"],
+  "심판관의 저울추": ["Arbiter's Weight", "審判官の分銅"],
+  "늪지 독액": ["Bog Venom", "沼地の毒液"],
+  "히드라의 독주머니": ["Hydra's Venom Sac", "ヒドラの毒袋"],
+  "용암 결정": ["Lava Crystal", "溶岩の結晶"],
+  "골렘의 핵": ["Golem Core", "ゴーレムの核"],
+  "빙결의 결정": ["Frost Crystal", "氷結の結晶"],
+  "서리 여왕의 눈물": ["Frost Queen's Tear", "霜の女王の涙"],
+  "심연의 정수": ["Abyssal Essence", "深淵の精髄"],
+  "주시자의 마안": ["Watcher's Evil Eye", "注視者の魔眼"],
+  "별가루": ["Stardust", "星屑"],
+  "금화": ["Gold", "金貨"],
+  "승급 조각": ["Ascension Shard", "昇級の欠片"],
+  "수호의 문장": ["Guardian Crest", "守護の紋章"],
+  "아무 층에서나": ["Any floor", "どの階でも"],
+  "10층 위 아무 층": ["Any floor above 10", "10階より上のどの階でも"],
+  "20층 위 아무 층": ["Any floor above 20", "20階より上のどの階でも"],
+  "30층 위 아무 층": ["Any floor above 30", "30階より上のどの階でも"],
+  "40층 위 아무 층": ["Any floor above 40", "40階より上のどの階でも"],
+  "60층 위 아무 층": ["Any floor above 60", "60階より上のどの階でも"],
+  "70층 위 아무 층": ["Any floor above 70", "70階より上のどの階でも"],
+  "91층 위 아무 층": ["Any floor above 91", "91階より上のどの階でも"],
+  "10층 관문 보스": ["Floor 10 gate boss", "10階の関門ボス"],
+  "20층 관문 보스": ["Floor 20 gate boss", "20階の関門ボス"],
+  "30층 관문 보스": ["Floor 30 gate boss", "30階の関門ボス"],
+  "40층 관문 보스": ["Floor 40 gate boss", "40階の関門ボス"],
+  "50층 관문 보스": ["Floor 50 gate boss", "50階の関門ボス"],
+  "70층 관문 보스": ["Floor 70 gate boss", "70階の関門ボス"],
+  "80층 관문 보스": ["Floor 80 gate boss", "80階の関門ボス"],
+  "100층 최종 보스": ["Floor 100 final boss", "100階の最終ボス"],
+  "대장간 기본 재료": ["Basic forge material", "鍛冶場の基本素材"],
+  "관문 보스만 떨구는 것 — 막혔을 때 하루 한 개": ["Only gate bosses drop it — one a day for when you're stuck", "関門ボスしか落とさない物 — 詰まったときに1日1個"],
+  "10층 위에서 나오는 것 — T2 갑옷 재료": ["Found above floor 10 — T2 armor material", "10階より上で出る物 — T2防具の素材"],
+  "20층 위에서 나오는 것 — T3 무기 재료": ["Found above floor 20 — T3 weapon material", "20階より上で出る物 — T3武器の素材"],
+  "20층 관문 보스만 떨구는 것 — 막혔을 때 하루 한 개": ["Only the floor 20 gate boss drops it — one a day for when you're stuck", "20階の関門ボスしか落とさない物 — 詰まったときに1日1個"],
+  "별빛 회복약": ["Starlight Potion", "星明かりの回復薬"],
+  "전투에 한 개 챙겨 간다": ["Take one into battle", "戦闘に1つ持っていく"],
+  "견습자의 철검": ["Apprentice's Iron Sword", "見習いの鉄剣"],
+  "습지 가죽갑옷": ["Marsh Leather Armor", "湿地の革鎧"],
+  "수호자의 대검": ["Guardian's Greatsword", "守護者の大剣"],
+  "골렘의 강철 갑옷": ["Golem Steel Armor", "ゴーレムの鋼鎧"],
+  "사냥개의 엄니검": ["Houndfang Sword", "猟犬の牙剣"],
+  "맹수의 가죽 흉갑": ["Beast Hide Cuirass", "猛獣の革胸当て"],
+  "거인뼈 대검": ["Giantbone Greatsword", "巨人骨の大剣"],
+  "거인뼈 판금갑옷": ["Giantbone Plate Armor", "巨人骨の板金鎧"],
+  "심판의 성패검": ["Arbiter's Holy Blade", "審判の聖牌剣"],
+  "성소의 석판갑옷": ["Sanctum Slab Armor", "聖所の石板鎧"],
+  "히드라의 독아검": ["Hydra Fang Sword", "ヒドラの毒牙剣"],
+  "늪지 비늘갑옷": ["Marsh Scale Armor", "沼地の鱗鎧"],
+  "용암 대장간의 골렘검": ["Lava Forge Golem Sword", "溶岩鍛冶場のゴーレム剣"],
+  "현무암 골렘갑옷": ["Basalt Golem Armor", "玄武岩のゴーレム鎧"],
+  "골렘핵 쇄도검": ["Golemcore Onrush Sword", "ゴーレム核の殺到剣"],
+  "골렘핵 중갑": ["Golemcore Heavy Armor", "ゴーレム核の重鎧"],
+  "서리 여왕의 눈물검": ["Frost Queen's Tear Sword", "霜の女王の涙剣"],
+  "서리 여왕의 성에갑옷": ["Frost Queen's Rime Armor", "霜の女王の霜鎧"],
+  "심연을 여는 검": ["Abyss-Opening Sword", "深淵を開く剣"],
+  "심연의 흑요갑옷": ["Abyssal Obsidian Armor", "深淵の黒曜鎧"],
+  "장비": ["Gear", "装備"],
+  "강화": ["Growth", "強化"],
+  "기술": ["Skills", "技"],
+  "재료": ["Materials", "素材"],
+  "영혼석": ["Soulstones", "魂石"],
+  "소모품": ["Consumables", "消耗品"],
+  "길드": ["Guild", "ギルド"],
+  "캐릭터": ["Characters", "キャラクター"],
+  "전투": ["Battle", "戦闘"],
+  "대장간": ["Forge", "鍛冶場"],
+  "시장": ["Market", "市場"],
+  "커뮤니티 및 소식": ["Community & News", "コミュニティとお知らせ"],
+  "우편함": ["Mailbox", "郵便箱"],
+  "공지": ["Notice", "お知らせ"],
+  "거점": ["Base", "拠点"],
+  "소환": ["Summon", "召喚"],
+  "출석": ["Check-in", "出席"],
+  "식당": ["Mess Hall", "食堂"],
+  "설정": ["Settings", "設定"],
+  "가방": ["Bag", "かばん"],
+  "소리": ["Sound", "音"],
+  "관문": ["Gate", "関門"],
+  "자동 등반": ["Auto climb", "自動登攀"],
+  "▲ 탑": ["▲ Tower", "▲ 塔"],
+  "닫기": ["Close", "閉じる"],
+  "완료": ["Done", "完了"],
+  "아직": ["Not yet", "まだ"],
+  "구간 보스 처치": ["Defeat the zone boss", "区間ボス撃破"],
+  "졸업": ["Cleared", "卒業"],
+  "오르는 중": ["Climbing", "登攀中"],
+  "미완": ["Incomplete", "未完"],
+  "자동 등반 켬": ["Auto climb ON", "自動登攀 オン"],
+  "자동 등반 끔": ["Auto climb OFF", "自動登攀 オフ"],
+  "길드 식당": ["Guild Mess Hall", "ギルド食堂"],
+  "정말 지울까": ["Really delete?", "本当に消す？"],
+  "차리기": ["Prepare", "用意する"],
+  "저장 지우기": ["Delete save", "セーブを消す"],
+  "그래도 지운다": ["Delete anyway", "それでも消す"],
+  "소리 끄기": ["Sound off", "音を消す"],
+  "소리 켜기": ["Sound on", "音を出す"],
+  "야영지가 비었다": ["The camp is empty", "野営地は空っぽだ"],
+  "보스": ["Boss", "ボス"],
+  "출전 중": ["Deployed", "出撃中"],
+  "대기 중": ["Standby", "待機中"],
+  "출전": ["Out", "出撃"],
+  "대원이 없다": ["No members", "隊員がいない"],
+  "물약": ["Potions", "薬"],
+  "아직 없다": ["None yet", "まだない"],
+  "자격": ["Requirements", "資格"],
+  "전투 준비": ["Battle prep", "戦闘準備"],
+  "대원 — 누르면 넣고 뺀다": ["Members — tap to add or remove", "隊員 — 押すと入れ替え"],
+  "비어 있음": ["Empty", "空き"],
+  "‹ 캐릭터": ["‹ Characters", "‹ キャラクター"],
+  " · 출전 중": [" · Deployed", " · 出撃中"],
+  " · 대표": [" · Leader", " · 代表"],
+  "전투력": ["Power", "戦闘力"],
+  "자람": ["Growth", "成長"],
+  "지금 레벨": ["Current level", "現在レベル"],
+  "올릴 수 있는 끝": ["Level cap", "上げられる上限"],
+  "다음 레벨까지": ["To next level", "次のレベルまで"],
+  "겹친 카드": ["Duplicates", "重複カード"],
+  "눌러 보기": ["tap to view", "押して見る"],
+  "특성": ["Traits", "特性"],
+  "대표임": ["Leader", "代表中"],
+  "대표로": ["Make leader", "代表にする"],
+  "아직 설명이 없다.": ["No description yet.", "まだ説明がない。"],
+  "벗는다": ["Unequip", "外す"],
+  "빈 칸으로": ["Leave empty", "空きにする"],
+  "끼는 중": ["Equipped", "装備中"],
+  "같다": ["Same", "同じ"],
+  "없다": ["None", "ない"],
+  "대장간에서": ["At the forge", "鍛冶場で"],
+  "안 낌": ["Unequipped", "未装備"],
+  "가진 것": ["Owned", "所持数"],
+  "나오는 곳": ["Found at", "入手場所"],
+  "시장 값": ["Market price", "市場価格"],
+  "쓰는 곳": ["Used in", "使い道"],
+  "아직 쓰는 곳이 없다.": ["Not used anywhere yet.", "まだ使い道がない。"],
+  "칸": ["Slot", "枠"],
+  "지금": ["Now", "現在"],
+  "아무도 안 낌": ["No one", "誰も装備していない"],
+  "동료": ["Ally", "仲間"],
+  "조각": ["Shards", "欠片"],
+  "나온 것": ["Results", "出たもの"],
+  "SSR 동료": ["SSR ally", "SSR仲間"],
+  "SR 동료": ["SR ally", "SR仲間"],
+  "조각 · 재료 · 금화": ["Shards · materials · gold", "欠片・素材・金貨"],
+  "천장까지": ["Until pity", "天井まで"],
+  "매일 재료를 모아 여기서 벼린다": ["Gather materials daily and forge them here", "毎日素材を集めてここで鍛える"],
+  "장비 강화": ["Upgrade gear", "装備強化"],
+  "강화 재료 필요": ["Needs upgrade materials", "強化素材が必要"],
+  "제작": ["Craft", "製作"],
+  "장비 제작": ["Craft gear", "装備製作"],
+  "재료로 새 장비를": ["New gear from materials", "素材で新しい装備を"],
+  "T3 · 20층 위": ["T3 · above floor 20", "T3 · 20階より上"],
+  "T2 · 10층 위": ["T2 · above floor 10", "T2 · 10階より上"],
+  "T1 · 처음": ["T1 · starter", "T1 · 最初"],
+  "재료가 없다": ["No materials", "素材がない"],
+  "‹ 대장간": ["‹ Forge", "‹ 鍛冶場"],
+  "만들 수 있다": ["Can craft", "作れる"],
+  "만들기": ["Craft", "作る"],
+  "매일 물건이 바뀐다": ["Stock changes daily", "毎日品物が変わる"],
+  "구매": ["Buy", "購入"],
+  "상점 구매": ["Shop", "ショップ購入"],
+  "금화로 물품 구매": ["Buy goods with gold", "金貨で品物を買う"],
+  "판매": ["Sell", "販売"],
+  "위탁 판매": ["Consignment", "委託販売"],
+  "아이템 등록 대기 중": ["Listing coming soon", "出品準備中"],
+  "‹ 시장": ["‹ Market", "‹ 市場"],
+  "오늘의 매대": ["Today's stall", "今日の品揃え"],
+  "사기": ["Buy", "買う"],
+  "원정": ["Expedition", "遠征"],
+  "내려가는 중": ["Descending", "降りている"],
+  "멈춤": ["Stopped", "停止"],
+  "멈추기": ["Stop", "止める"],
+  "다시 가기": ["Resume", "再出発"],
+  "행동순서": ["Turn order", "行動順"]
+};
+const T = (x) => {
+  if (언어 === "ko" || x == null) return x;
+  const s = String(x), m = s.match(/^(.*?)( \d+)$/), 몸 = m ? m[1] : s, 짝 = 옮김표[몸];
+  return 짝 ? 짝[언어 === "en" ? 0 : 1] + (m ? m[2] : "") : s;
+};
+
+// 정적 글(HTML 안 단추·탭 이름)과 문서 제목 — 스크립트가 body 끝에 있어 이 자리에서 DOM 이 다 있다
+document.title = 말("잿빛 원정대", "Ashen Expedition", "灰の遠征隊");
+if (언어 !== "ko") {
+  const 걷기 = document.createTreeWalker(document.getElementById("app"), NodeFilter.SHOW_TEXT);
+  for (let n; (n = 걷기.nextNode()); ) { const s = n.nodeValue.trim(); if (s && 옮김표[s]) n.nodeValue = n.nodeValue.replace(s, T(s)); }
+  document.querySelectorAll("[aria-label]").forEach((e) => { const s = e.getAttribute("aria-label"); if (옮김표[s]) e.setAttribute("aria-label", T(s)); });
+}
+
 const $ = (s) => document.querySelector(s);
 const 그림 = {};
 /** 있는 그림만 부른다 — 없는 걸 부르면 404 가 쌓이고, 게임은 멀쩡한데 자가 떨어진다(10-04). */
@@ -526,19 +857,19 @@ const 도감 = {
 const 영혼석표 = {
   폭풍: { 이름:"폭풍의 영혼석", 종류:"액티브", 주인:"검사",
           바꿈:{ 연속베기:"관통폭풍참" },
-          글:"검사의 <b>연속 베기</b>가 <b>관통 폭풍 참</b>이 된다 — 적 <b>전원</b>을 치고 <b>방어 20%를 무시</b>한다." },
+          글:말("검사의 <b>연속 베기</b>가 <b>관통 폭풍 참</b>이 된다 — 적 <b>전원</b>을 치고 <b>방어 20%를 무시</b>한다.", "The Swordsman's <b>Double Slash</b> becomes <b>Piercing Storm Slash</b> — hits <b>all</b> enemies and <b>ignores 20% defense</b>.", "剣士の<b>連続斬り</b>が<b>貫通嵐斬</b>になる — 敵<b>全員</b>を攻撃し<b>防御20%を無視</b>する。") },
   혈:   { 이름:"혈의 영혼석", 종류:"액티브", 주인:"전투사제",
           바꿈:{ 성스러운축복:"혈의축복" },
-          글:"로제의 <b>성스러운 축복</b>이 <b>혈의 축복</b>이 된다 — 아군 체력을 <b>10%</b> 태우는 대신 공격 <b>+20% → +40%</b>." },
+          글:말("로제의 <b>성스러운 축복</b>이 <b>혈의 축복</b>이 된다 — 아군 체력을 <b>10%</b> 태우는 대신 공격 <b>+20% → +40%</b>.", "Rose's <b>Holy Blessing</b> becomes <b>Blood Blessing</b> — burns <b>10%</b> of allies' HP, but ATK <b>+20% → +40%</b>.", "ロゼの<b>聖なる祝福</b>が<b>血の祝福</b>になる — 味方の体力を<b>10%</b>燃やす代わりに攻撃<b>+20% → +40%</b>。") },
   역천: { 이름:"역천의 영혼석", 종류:"액티브", 주인:"흑마법사",
           바꿈:{ 사슬:"영혼반전" },
-          글:"칼리드의 <b>사슬</b>이 <b>영혼 반전</b>이 된다 — 적의 보호막을 끊고 <b>그만큼을 아군 전원의 막으로</b> 돌린다." },
+          글:말("칼리드의 <b>사슬</b>이 <b>영혼 반전</b>이 된다 — 적의 보호막을 끊고 <b>그만큼을 아군 전원의 막으로</b> 돌린다.", "Khalid's <b>Chain</b> becomes <b>Soul Reversal</b> — breaks an enemy barrier and turns <b>that much into shields for all allies</b>.", "カリードの<b>鎖</b>が<b>魂の反転</b>になる — 敵の障壁を断ち<b>その分を味方全員の膜に</b>変える。") },
   재기: { 이름:"재기의 영혼석", 종류:"패시브",
-          글:"쓰러질 피해를 맞으면 <b>한 판에 한 번</b> 체력 <b>10%</b>로 버틴다. 관문 보스의 한 방을 넘기는 자리." },
+          글:말("쓰러질 피해를 맞으면 <b>한 판에 한 번</b> 체력 <b>10%</b>로 버틴다. 관문 보스의 한 방을 넘기는 자리.", "When struck by a fatal blow, hold on with <b>10%</b> HP <b>once per battle</b>. For surviving a gate boss's big hit.", "倒れるほどのダメージを受けたとき、<b>1戦に1回</b>体力<b>10%</b>で耐える。関門ボスの一撃をしのぐためのもの。") },
   별빛: { 이름:"찬란한 별가루 영혼석", 종류:"패시브",
-          글:"관문 보스를 깰 때 별가루를 <b>50% 더</b> 받는다(50 → 75)." },
+          글:말("관문 보스를 깰 때 별가루를 <b>50% 더</b> 받는다(50 → 75).", "Get <b>50% more</b> Stardust when you beat a gate boss (50 → 75).", "関門ボスを倒すと星屑を<b>50%多く</b>もらえる(50 → 75)。") },
   신속: { 이름:"신속의 영혼석", 종류:"패시브",
-          글:"전투 <b>첫 턴</b>에 동료 전원의 기술 쿨이 <b>1턴</b> 줄어든 채로 시작한다." },
+          글:말("전투 <b>첫 턴</b>에 동료 전원의 기술 쿨이 <b>1턴</b> 줄어든 채로 시작한다.", "On the <b>first turn</b> of battle, all allies start with skill cooldowns <b>1 turn</b> shorter.", "戦闘の<b>最初のターン</b>、仲間全員の技のクールが<b>1ターン</b>短い状態で始まる。") },
 };
 const 영혼석들 = () => Object.keys(영혼석표);
 /** 가지고 있는가 */
@@ -673,8 +1004,8 @@ function 적만들기(무리 = 0){
     // 공격은 43(=표의 120)으로는 10층이 안 막혔다 — 실측 85%. 58 로 올려 첫 벽을 10층으로 당긴다.
     적들 = [{ 이름:b.이름, 그림:생김새(b.그림), hp:Math.floor(900*보스세기*관문배), 최대:Math.floor(900*보스세기*관문배), 공격:Math.floor(108*보스세기*관문배),
               속도:b.속도, 방어:보스방어, 보호막: 막힘 ? 100 : 0, 보스:true, 동작:"idle", 동작남음:0 }];
-    적기(`<b>${S.층}층</b> — ${b.이름}${조사(b.이름,"이","가")} 길을 막고 있다.`, "big");
-    if (막힘) 적기("보호막이 돌고 있다. <b>제어</b>라면 한 번에 벗긴다.", "bad");
+    적기(말(`<b>${S.층}층</b> — ${b.이름}${조사(b.이름,"이","가")} 길을 막고 있다.`, `<b>Floor ${S.층}</b> — ${T(b.이름)} blocks the way.`, `<b>${S.층}階</b> — ${T(b.이름)}が道をふさいでいる。`), "big");
+    if (막힘) 적기(말("보호막이 돌고 있다. <b>제어</b>라면 한 번에 벗긴다.", "A barrier is up. A <b>Control</b> member can strip it in one go.", "障壁が張られている。<b>制御</b>なら一度ではがせる。"), "bad");
   } else {
     // 마지막 무리가 한 마리 더 많다 — 끝이 제일 무거워야 "넘겼다"가 된다.
     // 한 무리는 두 마리까지. 셋을 세우면 캐릭터와 겹친다(10-09 사장님).
@@ -686,7 +1017,7 @@ function 적만들기(무리 = 0){
       return { 이름: m.이름 + (같은수 > 1 ? ` ${i+1}` : ""), 그림:생김새(m.그림), 속도:m.속도, 방어:0, 보호막:0,
                hp:Math.floor(120*세기*m.체력), 최대:Math.floor(120*세기*m.체력), 공격:Math.floor(18*세기*m.공격), 동작:"idle", 동작남음:0 };
     });
-    if (무리 > 0) 적기(`<b>${무리 + 1}번째 무리</b>가 어둠에서 걸어 나왔다. (${무리 + 1}/${S.무리수})`, "bad");
+    if (무리 > 0) 적기(말(`<b>${무리 + 1}번째 무리</b>가 어둠에서 걸어 나왔다. (${무리 + 1}/${S.무리수})`, `<b>Wave ${무리 + 1}</b> steps out of the dark. (${무리 + 1}/${S.무리수})`, `<b>${무리 + 1}番目の群れ</b>が闇から現れた。(${무리 + 1}/${S.무리수})`), "bad");
   }
   턴 = 0;
 }
@@ -800,7 +1131,7 @@ const 치명확률 = (c, e) => .12 + (c.키 === "암살자" && e?.출혈남음 >
 const 결의배 = (c) => c.키 === "검사" ? 1 + (1 - Math.max(0, c.hp) / 최대체력(c)) * .45 : 1;
 function 쓰러짐확인(e){
   if (e.hp > 0) return;
-  장면(null, null, `${e.이름}${조사(e.이름,"이","가")} 쓰러졌다.`);
+  장면(null, null, 말(`${e.이름}${조사(e.이름,"이","가")} 쓰러졌다.`, `${T(e.이름)} falls.`, `${T(e.이름)}は倒れた。`));
   적들 = 적들.filter((x) => x !== e);
 }
 const 과녁 = () => 적들.find((e) => e.hp > 0);
@@ -808,7 +1139,7 @@ const 가장다친 = () => 산아군().filter((x) => x.hp < 최대체력(x)).sor
 /** 보호막 두른 적을 치면 튕긴다 — 공용 */
 function 튕겼나(c, e, 글, 색){
   if (e.보호막 <= 0) return false;
-  장면(c, "attack", `<b>${c.이름}</b>의 ${글}${조사(글,"이","가")} 보호막에 튕겼다.`, "bad", { 종류:"튕김", 에서:자리(c), 에:자리(e), 색 });
+  장면(c, "attack", 말(`<b>${c.이름}</b>의 ${글}${조사(글,"이","가")} 보호막에 튕겼다.`, `<b>${T(c.이름)}</b>'s ${T(글)} glances off the barrier.`, `<b>${T(c.이름)}</b>の${T(글)}が障壁に弾かれた。`), "bad", { 종류:"튕김", 에서:자리(c), 에:자리(e), 색 });
   return true;
 }
 
@@ -822,7 +1153,7 @@ const 기술표 = {
     const e = 과녁(); if (!e) return;
     if (!튕겼나(c, e, "검", "#7aa8ff")) {
       const 피 = 적맞기(e, 공격력(c) * .95);
-      장면(c, "attack", `<b>${c.이름}</b>${조사(c.이름,"이","가")} 검과 방패를 함께 내질렀다. → ${e.이름} <span class="hit">${수(피)}</span>`, "",
+      장면(c, "attack", 말(`<b>${c.이름}</b>${조사(c.이름,"이","가")} 검과 방패를 함께 내질렀다. → ${e.이름} <span class="hit">${수(피)}</span>`, `<b>${T(c.이름)}</b> thrusts sword and shield together. → ${T(e.이름)} <span class="hit">${수(피)}</span>`, `<b>${T(c.이름)}</b>は剣と盾を同時に突き出した。→ ${T(e.이름)} <span class="hit">${수(피)}</span>`), "",
         { 종류:"탄", 에서:자리(c), 에:자리(e), 색:"#7ec8ff" });
       쓰러짐확인(e);
     }
@@ -833,22 +1164,22 @@ const 기술표 = {
     const 양 = 공격력(c) * (c.중복 >= 1 ? 1.55 : 1.4);
     const 빛 = 막주기(c, 산아군(), 양, "#7ec8ff");
     c.도발 = true;
-    장면(c, "attack", `<b>${c.이름}</b>${조사(c.이름,"이","가")} 철벽의 맹세를 세웠다. 아군 전원 막 <span class="good">${수(양)}</span> · 적의 눈이 방패로 쏠린다.`, "big", 빛);
+    장면(c, "attack", 말(`<b>${c.이름}</b>${조사(c.이름,"이","가")} 철벽의 맹세를 세웠다. 아군 전원 막 <span class="good">${수(양)}</span> · 적의 눈이 방패로 쏠린다.`, `<b>${T(c.이름)}</b> swears the Ironwall Oath. Shield to all allies <span class="good">${수(양)}</span> · enemies turn toward the shield.`, `<b>${T(c.이름)}</b>は鉄壁の誓いを立てた。味方全員に膜 <span class="good">${수(양)}</span> · 敵の目が盾に向く。`), "big", 빛);
   } },
   새벽을가르는방패: { 쓰기(c){
-    장면(c, "attack", `<b>${c.이름}</b>${조사(c.이름,"이","가")} 새벽을 가르는 방패를 펼쳤다.`, "big", { 종류:"섬광", 에서:자리(c), 색:"#bfe6ff" });
+    장면(c, "attack", 말(`<b>${c.이름}</b>${조사(c.이름,"이","가")} 새벽을 가르는 방패를 펼쳤다.`, `<b>${T(c.이름)}</b> raises the Dawnsplitter Shield.`, `<b>${T(c.이름)}</b>は暁を裂く盾を広げた。`), "big", { 종류:"섬광", 에서:자리(c), 색:"#bfe6ff" });
     for (const e of [...적들]) {
       if (e.보호막 > 0) {
         e.보호막 = Math.max(0, e.보호막 - 25);                       // 사장님: 궁극기는 보호막 25%만
-        장면(null, null, `${e.이름}의 보호막이 갈라졌다. (남은 ${e.보호막}%)`, "", { 종류:"맞음", 에:자리(e), 색:"#7aa8ff" });
+        장면(null, null, 말(`${e.이름}의 보호막이 갈라졌다. (남은 ${e.보호막}%)`, `${T(e.이름)}'s barrier cracks. (${e.보호막}% left)`, `${T(e.이름)}の障壁が割れた。(残り${e.보호막}%)`), "", { 종류:"맞음", 에:자리(e), 색:"#7aa8ff" });
         continue;
       }
       const 피 = 적맞기(e, 공격력(c) * (c.중복 >= 3 ? 2.2 : 1.8));
-      장면(null, null, `→ ${e.이름} <span class="hit">${수(피)}</span>`, "", { 종류:"맞음", 에:자리(e), 색:"#bfe6ff" });
+      장면(null, null, 말(`→ ${e.이름} <span class="hit">${수(피)}</span>`, `→ ${T(e.이름)} <span class="hit">${수(피)}</span>`, `→ ${T(e.이름)} <span class="hit">${수(피)}</span>`), "", { 종류:"맞음", 에:자리(e), 색:"#bfe6ff" });
       쓰러짐확인(e);
     }
     const 양 = 공격력(c) * 2.2;
-    장면(null, null, `아군 전원 막 <span class="good">${수(양)}</span>`, "good", 막주기(c, 산아군(), 양, "#bfe6ff"));
+    장면(null, null, 말(`아군 전원 막 <span class="good">${수(양)}</span>`, `Shield to all allies <span class="good">${수(양)}</span>`, `味方全員に膜 <span class="good">${수(양)}</span>`), "good", 막주기(c, 산아군(), 양, "#bfe6ff"));
     if (c.중복 >= 6) 막고정 = true;
   } },
   /* ── 검사 — 단일 누킹/처형형 딜러 (10-10 사장님 확정) ───────────────
@@ -856,13 +1187,13 @@ const 기술표 = {
   연속베기: { 쓰기(c){
     const e = 과녁(); if (!e) return;
     // 두 번 벤다. 한 번에 몰아 때리는 것보다 **막을 긁어내기** 좋다.
-    장면(c, "attack", `<b>${c.이름}</b>${조사(c.이름,"이","가")} 두 번 베었다.`, "", { 종류:"탄", 에서:자리(c), 에:자리(e), 색:"#e8f0ff" });
+    장면(c, "attack", 말(`<b>${c.이름}</b>${조사(c.이름,"이","가")} 두 번 베었다.`, `<b>${T(c.이름)}</b> slashes twice.`, `<b>${T(c.이름)}</b>は二度斬った。`), "", { 종류:"탄", 에서:자리(c), 에:자리(e), 색:"#e8f0ff" });
     for (let i = 0; i < 2; i++) {
       if (e.hp <= 0) break;
       if (튕겼나(c, e, "칼", "#7aa8ff")) continue;
       const 치명 = c.벼름 || Math.random() < .12;
       const 피 = 적맞기(e, 공격력(c) * 결의배(c) * .62 * (치명 ? 2 : 1), c.벼름 ? .4 : 0);
-      장면(null, null, `→ ${e.이름} <span class="hit">${수(피)}</span>${치명 ? " <span class='big'>치명타</span>" : ""}`, "",
+      장면(null, null, 말(`→ ${e.이름} <span class="hit">${수(피)}</span>${치명 ? " <span class='big'>치명타</span>" : ""}`, `→ ${T(e.이름)} <span class="hit">${수(피)}</span>${치명 ? " <span class='big'>Critical</span>" : ""}`, `→ ${T(e.이름)} <span class="hit">${수(피)}</span>${치명 ? " <span class='big'>会心</span>" : ""}`), "",
         { 종류:"맞음", 에:자리(e), 색: 치명 ? "#ffe66b" : "#e8f0ff", 세게:치명 });
     }
     c.벼름 = false;
@@ -870,7 +1201,7 @@ const 기술표 = {
   } },
   약점노리기: { 쿨:() => 3, 쓸까:(c) => !c.벼름, 쓰기(c){
     c.벼름 = true;
-    장면(c, "idle", `<b>${c.이름}</b>${조사(c.이름,"이","가")} 숨을 죽이고 틈을 노린다. <span class="good">다음 공격 치명타 · 방어 40% 무시</span>`, "big",
+    장면(c, "idle", 말(`<b>${c.이름}</b>${조사(c.이름,"이","가")} 숨을 죽이고 틈을 노린다. <span class="good">다음 공격 치명타 · 방어 40% 무시</span>`, `<b>${T(c.이름)}</b> holds their breath and waits for an opening. <span class="good">Next attack crits · ignores 40% defense</span>`, `<b>${T(c.이름)}</b>は息を殺して隙を狙う。<span class="good">次の攻撃は会心 · 防御40%無視</span>`), "big",
       { 종류:"섬광", 에서:자리(c), 색:"#ffe66b" });
   } },
   처형: { 쿨:() => 4, 쓸까:() => { const e = 과녁(); return !!e && e.hp / e.최대 < .55; }, 쓰기(c){
@@ -878,7 +1209,7 @@ const 기술표 = {
     // 남은 체력이 낮을수록 급격히 세진다 — 풀피 1.0배, 반피 2.1배, 10% 남으면 3.2배
     const 배 = 1 + (1 - Math.max(0, e.hp) / e.최대) * 2.45;
     const 피 = 적맞기(e, 공격력(c) * 결의배(c) * 1.1 * 배, .25);
-    장면(c, "attack", `<b>${c.이름}</b>의 <span class="big">처형</span> → ${e.이름} <span class="hit">${수(피)}</span>`, "big",
+    장면(c, "attack", 말(`<b>${c.이름}</b>의 <span class="big">처형</span> → ${e.이름} <span class="hit">${수(피)}</span>`, `<b>${T(c.이름)}</b>'s <span class="big">Execute</span> → ${T(e.이름)} <span class="hit">${수(피)}</span>`, `<b>${T(c.이름)}</b>の<span class="big">処刑</span> → ${T(e.이름)} <span class="hit">${수(피)}</span>`), "big",
       { 종류:"탄", 에서:자리(c), 에:자리(e), 색:"#ff7a5c", 세게:true });
     c.벼름 = false;
     쓰러짐확인(e);
@@ -887,16 +1218,16 @@ const 기술표 = {
   /* ── 회복술사 ───────────────────────────────────────────────── */
   "치유의빛": { 쓰기(c){
     const t = 가장다친();
-    if (!t) { 장면(c, "idle", `<b>${c.이름}</b>${조사(c.이름,"은","는")} 숨을 고르며 뒤를 살폈다.`); return; }
+    if (!t) { 장면(c, "idle", 말(`<b>${c.이름}</b>${조사(c.이름,"은","는")} 숨을 고르며 뒤를 살폈다.`, `<b>${T(c.이름)}</b> catches their breath and watches the rear.`, `<b>${T(c.이름)}</b>は息を整えて後ろを見渡した。`)); return; }
     // 10-09: 1.6 이면 회복이 보스 한 대(143)보다 컸다(105 vs 73 순손실) — 그래서 탱커가 안 죽었다
     const 양 = Math.floor(공격력(c) * .9);
     t.hp = Math.min(최대체력(t), t.hp + 양);
-    장면(c, "attack", `<b>${c.이름}</b>${조사(c.이름,"이","가")} ${t.이름}의 상처를 덮었다. <span class="good">+${수(양)}</span>`, "", { 종류:"회복", 에:자리(t), 색:"#9dff8a" });
+    장면(c, "attack", 말(`<b>${c.이름}</b>${조사(c.이름,"이","가")} ${t.이름}의 상처를 덮었다. <span class="good">+${수(양)}</span>`, `<b>${T(c.이름)}</b> tends ${T(t.이름)}'s wounds. <span class="good">+${수(양)}</span>`, `<b>${T(c.이름)}</b>は${T(t.이름)}の傷を癒やした。<span class="good">+${수(양)}</span>`), "", { 종류:"회복", 에:자리(t), 색:"#9dff8a" });
   } },
   "구원의진형": { 쿨:() => 3, 쓸까:() => 산아군().some((x) => x.hp < 최대체력(x) * .8), 쓰기(c){
     // 보스 광역(3턴마다 전원)에 맞서는 자리다. 한 명을 크게 살리는 대신 **전원을 조금씩**.
     const 양 = Math.floor(공격력(c) * .5);
-    장면(c, "attack", `<b>${c.이름}</b>${조사(c.이름,"이","가")} 구원의 진형을 펼쳤다. 아군 전원 <span class="good">+${수(양)}</span>`, "big",
+    장면(c, "attack", 말(`<b>${c.이름}</b>${조사(c.이름,"이","가")} 구원의 진형을 펼쳤다. 아군 전원 <span class="good">+${수(양)}</span>`, `<b>${T(c.이름)}</b> forms the Salvation Formation. All allies <span class="good">+${수(양)}</span>`, `<b>${T(c.이름)}</b>は救いの陣形を広げた。味方全員 <span class="good">+${수(양)}</span>`), "big",
       { 종류:"섬광", 에서:자리(c), 색:"#9dff8a" });
     for (const t of 산아군()) t.hp = Math.min(최대체력(t), t.hp + 양);
   } },
@@ -905,7 +1236,7 @@ const 기술표 = {
   "화염구": { 쓰기(c){
     const e = 과녁(); if (!e || 튕겼나(c, e, "화염구", "#c69bff")) return;
     const 피 = 적맞기(e, 공격력(c) * 1.25, .2);              // 마법은 방어를 조금 무시한다
-    장면(c, "attack", `<b>${c.이름}</b>의 화염구 → ${e.이름} <span class="hit">${수(피)}</span>`, "",
+    장면(c, "attack", 말(`<b>${c.이름}</b>의 화염구 → ${e.이름} <span class="hit">${수(피)}</span>`, `<b>${T(c.이름)}</b>'s Fireball → ${T(e.이름)} <span class="hit">${수(피)}</span>`, `<b>${T(c.이름)}</b>の火炎球 → ${T(e.이름)} <span class="hit">${수(피)}</span>`), "",
       { 종류:"탄", 에서:자리(c), 에:자리(e), 색:"#ff9a5c" });
     쓰러짐확인(e);
   } },
@@ -916,27 +1247,27 @@ const 기술표 = {
     if (t) {
       const 양 = Math.floor(공격력(c) * .55);
       t.hp = Math.min(최대체력(t), t.hp + 양);
-      장면(c, "attack", `<b>${c.이름}</b>${조사(c.이름,"이","가")} 조용히 기도했다. ${t.이름} <span class="good">+${수(양)}</span>`, "",
+      장면(c, "attack", 말(`<b>${c.이름}</b>${조사(c.이름,"이","가")} 조용히 기도했다. ${t.이름} <span class="good">+${수(양)}</span>`, `<b>${T(c.이름)}</b> prays quietly. ${T(t.이름)} <span class="good">+${수(양)}</span>`, `<b>${T(c.이름)}</b>は静かに祈った。${T(t.이름)} <span class="good">+${수(양)}</span>`), "",
         { 종류:"회복", 에:자리(t), 색:"#ffe9a0" });
       return;
     }
     const e = 과녁(); if (!e || 튕겼나(c, e, "성화", "#ffe9a0")) {
-      장면(c, "idle", `<b>${c.이름}</b>${조사(c.이름,"은","는")} 향로를 흔들었다.`); return;
+      장면(c, "idle", 말(`<b>${c.이름}</b>${조사(c.이름,"은","는")} 향로를 흔들었다.`, `<b>${T(c.이름)}</b> swings the censer.`, `<b>${T(c.이름)}</b>は香炉を揺らした。`)); return;
     }
     const 피 = 적맞기(e, 공격력(c) * .8);
-    장면(c, "attack", `<b>${c.이름}</b>의 성화 → ${e.이름} <span class="hit">${수(피)}</span>`, "",
+    장면(c, "attack", 말(`<b>${c.이름}</b>의 성화 → ${e.이름} <span class="hit">${수(피)}</span>`, `<b>${T(c.이름)}</b>'s holy fire → ${T(e.이름)} <span class="hit">${수(피)}</span>`, `<b>${T(c.이름)}</b>の聖火 → ${T(e.이름)} <span class="hit">${수(피)}</span>`), "",
       { 종류:"탄", 에서:자리(c), 에:자리(e), 색:"#ffe9a0" });
     쓰러짐확인(e);
   } },
   "성스러운축복": { 쿨:() => 4, 쓸까:() => 산아군().some((x) => !(x.축복 > 0)), 쓰기(c){
-    장면(c, "attack", `<b>${c.이름}</b>${조사(c.이름,"이","가")} 성스러운 축복을 내렸다. <span class="good">아군 전원 공격 +20% · 3턴</span>`, "big",
+    장면(c, "attack", 말(`<b>${c.이름}</b>${조사(c.이름,"이","가")} 성스러운 축복을 내렸다. <span class="good">아군 전원 공격 +20% · 3턴</span>`, `<b>${T(c.이름)}</b> bestows a Holy Blessing. <span class="good">All allies ATK +20% · 3 turns</span>`, `<b>${T(c.이름)}</b>は聖なる祝福を授けた。<span class="good">味方全員 攻撃+20% · 3ターン</span>`), "big",
       { 종류:"섬광", 에서:자리(c), 색:"#ffe08a" });
     for (const t of 산아군()) t.축복 = 3;
   } },
   "빛의수호막": { 쿨:() => 3, 쓸까:() => 산아군().some((x) => x.막 < 최대체력(x) * .2), 쓰기(c){
     // **체력에 비례한** 막 — 공격력이 아니라 받는 쪽의 몸집을 따른다. 탱커가 더 두꺼워진다
     const 빛 = { 종류:"막", 들:산아군().map(자리), 색:"#ffe9a0", 막들:막들(...산아군()) };
-    장면(c, "attack", `<b>${c.이름}</b>${조사(c.이름,"이","가")} 빛의 수호막을 펼쳤다. <span class="good">아군 전원 막</span>`, "big", 빛);
+    장면(c, "attack", 말(`<b>${c.이름}</b>${조사(c.이름,"이","가")} 빛의 수호막을 펼쳤다. <span class="good">아군 전원 막</span>`, `<b>${T(c.이름)}</b> spreads the Light Barrier. <span class="good">Shield to all allies</span>`, `<b>${T(c.이름)}</b>は光の守護膜を広げた。<span class="good">味方全員に膜</span>`), "big", 빛);
     for (const t of 산아군()) {
       const 양 = Math.floor(최대체력(t) * .14);
       t.막 = Math.min(t.막 + 양, Math.floor(최대체력(t) * .35));
@@ -945,14 +1276,14 @@ const 기술표 = {
 
   /* ── 영혼석이 바꿔 놓는 기술 셋 (10-11). 원래 기술은 그대로 두고 **여기로 갈아 끼운다** ── */
   "관통폭풍참": { 쓰기(c){
-    장면(c, "attack", `<b>${c.이름}</b>${조사(c.이름,"이","가")} 관통 폭풍 참을 휘둘렀다.`, "big",
+    장면(c, "attack", 말(`<b>${c.이름}</b>${조사(c.이름,"이","가")} 관통 폭풍 참을 휘둘렀다.`, `<b>${T(c.이름)}</b> unleashes the Piercing Storm Slash.`, `<b>${T(c.이름)}</b>は貫通嵐斬を振るった。`), "big",
       { 종류:"섬광", 에서:자리(c), 색:"#cfe3ff" });
     for (const e of [...적들]) {
       if (튕겼나(c, e, "칼", "#7aa8ff")) continue;
       const 치명 = Math.random() < 치명확률(c, e);
       // 광역이라 한 대는 연속베기 한 대(62%)보다 가볍다. 대신 전원을 친다 + 방어 20% 무시
       const 피 = 적맞기(e, 공격력(c) * 결의배(c) * .78 * (치명 ? 2 : 1), .2);
-      장면(null, null, `→ ${e.이름} <span class="hit">${수(피)}</span>${치명 ? " <span class='big'>치명타</span>" : ""}`, "",
+      장면(null, null, 말(`→ ${e.이름} <span class="hit">${수(피)}</span>${치명 ? " <span class='big'>치명타</span>" : ""}`, `→ ${T(e.이름)} <span class="hit">${수(피)}</span>${치명 ? " <span class='big'>Critical</span>" : ""}`, `→ ${T(e.이름)} <span class="hit">${수(피)}</span>${치명 ? " <span class='big'>会心</span>" : ""}`), "",
         { 종류:"맞음", 에:자리(e), 색: 치명 ? "#ffe66b" : "#cfe3ff", 세게:치명 });
       쓰러짐확인(e);
     }
@@ -967,7 +1298,7 @@ const 기술표 = {
       t.hp -= 깎; t.축복 = 3; t.축복배값 = 1.4;
       if (깎) 벤것.push(`${t.이름} −${수(깎)}`);
     }
-    장면(c, "attack", `<b>${c.이름}</b>${조사(c.이름,"이","가")} 혈의 축복을 내렸다. <span class="bad">체력 10%</span> → <span class="good">아군 전원 공격 +40% · 3턴</span>`
+    장면(c, "attack", 말(`<b>${c.이름}</b>${조사(c.이름,"이","가")} 혈의 축복을 내렸다. <span class="bad">체력 10%</span> → <span class="good">아군 전원 공격 +40% · 3턴</span>`, `<b>${T(c.이름)}</b> bestows the Blood Blessing. <span class="bad">10% HP</span> → <span class="good">All allies ATK +40% · 3 turns</span>`, `<b>${T(c.이름)}</b>は血の祝福を授けた。<span class="bad">体力10%</span> → <span class="good">味方全員 攻撃+40% · 3ターン</span>`)
       + (벤것.length ? `<br><i style="color:var(--흐림)">${벤것.join(" · ")}</i>` : ""), "big",
       { 종류:"섬광", 에서:자리(c), 색:"#ff8a8a" });
   } },
@@ -977,13 +1308,13 @@ const 기술표 = {
     e.보호막 = 0;
     /* 보호막은 0~100 의 **퍼센트**다. 그걸 그대로 막(체력 단위)으로 옮기면 뜻이 안 맞으므로
        **받는 쪽 최대체력의 그 퍼센트**로 돌린다. 막 천장(35%)은 그대로 먹는다. */
-    장면(c, "attack", `<b>${c.이름}</b>${조사(c.이름,"이","가")} 영혼을 뒤집었다. ${e.이름}의 보호막 <b>${뺏}</b>이 아군에게 넘어온다.`, "big",
+    장면(c, "attack", 말(`<b>${c.이름}</b>${조사(c.이름,"이","가")} 영혼을 뒤집었다. ${e.이름}의 보호막 <b>${뺏}</b>이 아군에게 넘어온다.`, `<b>${T(c.이름)}</b> reverses the soul. ${T(e.이름)}'s barrier <b>${뺏}</b> passes to the allies.`, `<b>${T(c.이름)}</b>は魂を反転させた。${T(e.이름)}の障壁<b>${뺏}</b>が味方に移る。`), "big",
       { 종류:"사슬", 에서:자리(c), 에:자리(e), 색:"#c69bff" });
     for (const t of 산아군()) {
       const 양 = Math.floor(최대체력(t) * (뺏 / 100) * .35);
       t.막 = Math.min(t.막 + 양, Math.floor(최대체력(t) * .35));
     }
-    장면(null, null, `아군 전원이 그 막을 둘렀다.`, "good",
+    장면(null, null, 말(`아군 전원이 그 막을 둘렀다.`, `All allies wrap themselves in that shield.`, `味方全員がその膜をまとった。`), "good",
       { 종류:"막", 들:산아군().map(자리), 색:"#c69bff", 막들:막들(...산아군()) });
   } },
 
@@ -994,13 +1325,13 @@ const 기술표 = {
     // 20% 로 적 공격력 −10% · 2턴. 보스전이 길어서 **쌓이지는 않아도 자주 걸린다**
     const 걸림 = Math.random() < .2;
     if (걸림) { e.약화남음 = 2; e.약화 = .10; }
-    장면(c, "attack", `<b>${c.이름}</b>${조사(c.이름,"이","가")} 방패로 들이받았다. → ${e.이름} <span class="hit">${수(피)}</span>`
-      + (걸림 ? ` <span class="good">· 공격 −10% (2턴)</span>` : ""), 걸림 ? "good" : "",
+    장면(c, "attack", 말(`<b>${c.이름}</b>${조사(c.이름,"이","가")} 방패로 들이받았다. → ${e.이름} <span class="hit">${수(피)}</span>`, `<b>${T(c.이름)}</b> rams with the shield. → ${T(e.이름)} <span class="hit">${수(피)}</span>`, `<b>${T(c.이름)}</b>は盾で体当たりした。→ ${T(e.이름)} <span class="hit">${수(피)}</span>`)
+      + (걸림 ? 말(` <span class="good">· 공격 −10% (2턴)</span>`, ` <span class="good">· ATK −10% (2 turns)</span>`, ` <span class="good">· 攻撃−10% (2ターン)</span>`) : ""), 걸림 ? "good" : "",
       { 종류:"탄", 에서:자리(c), 에:자리(e), 색:"#ff9a5c" });
     쓰러짐확인(e);
   } },
   "성역의진형": { 쿨:() => 4, 쓸까:() => 산아군().some((x) => !(x.진형 > 0)), 쓰기(c){
-    장면(c, "attack", `<b>${c.이름}</b>${조사(c.이름,"이","가")} 성역의 진형을 세웠다. <span class="good">아군 전원 방어 +35% · 받는 피해 −15% · 3턴</span>`, "big",
+    장면(c, "attack", 말(`<b>${c.이름}</b>${조사(c.이름,"이","가")} 성역의 진형을 세웠다. <span class="good">아군 전원 방어 +35% · 받는 피해 −15% · 3턴</span>`, `<b>${T(c.이름)}</b> sets the Sanctuary Formation. <span class="good">All allies DEF +35% · damage taken −15% · 3 turns</span>`, `<b>${T(c.이름)}</b>は聖域の陣形を敷いた。<span class="good">味方全員 防御+35% · 被ダメージ−15% · 3ターン</span>`), "big",
       { 종류:"섬광", 에서:자리(c), 색:"#ff9a5c" });
     for (const t of 산아군()) t.진형 = 3;
   } },
@@ -1011,8 +1342,8 @@ const 기술표 = {
     const e = 과녁(); if (!e || 튕겼나(c, e, "단검", "#c0c8d4")) return;
     const 치명 = Math.random() < 치명확률(c, e);
     const 피 = 적맞기(e, 공격력(c) * 1.0 * (치명 ? 2 : 1), .2);     // 방어 20% 무시
-    장면(c, "attack", `<b>${c.이름}</b>${조사(c.이름,"이","가")} 급소를 베었다. → ${e.이름} <span class="hit">${수(피)}</span>`
-      + (치명 ? " <span class='big'>치명타</span>" : ""), 치명 ? "big" : "",
+    장면(c, "attack", 말(`<b>${c.이름}</b>${조사(c.이름,"이","가")} 급소를 베었다. → ${e.이름} <span class="hit">${수(피)}</span>`, `<b>${T(c.이름)}</b> strikes a vital spot. → ${T(e.이름)} <span class="hit">${수(피)}</span>`, `<b>${T(c.이름)}</b>は急所を斬った。→ ${T(e.이름)} <span class="hit">${수(피)}</span>`)
+      + (치명 ? 말(" <span class='big'>치명타</span>", " <span class='big'>Critical</span>", " <span class='big'>会心</span>") : ""), 치명 ? "big" : "",
       { 종류:"탄", 에서:자리(c), 에:자리(e), 색: 치명 ? "#ffe66b" : "#c0c8d4", 세게:치명 });
     쓰러짐확인(e);
   } },
@@ -1020,21 +1351,21 @@ const 기술표 = {
     const e = 과녁(); if (!e || 튕겼나(c, e, "단검", "#c0c8d4")) return;
     const 피 = 적맞기(e, 공격력(c) * 1.6, .2);
     e.출혈남음 = 3; e.출혈피해 = Math.max(1, Math.floor(공격력(c) * .4));
-    장면(c, "attack", `<b>${c.이름}</b>${조사(c.이름,"이","가")} 그림자에서 덮쳤다. → ${e.이름} <span class="hit">${수(피)}</span> <span class="bad">· 출혈 3턴</span>`, "big",
+    장면(c, "attack", 말(`<b>${c.이름}</b>${조사(c.이름,"이","가")} 그림자에서 덮쳤다. → ${e.이름} <span class="hit">${수(피)}</span> <span class="bad">· 출혈 3턴</span>`, `<b>${T(c.이름)}</b> strikes from the shadows. → ${T(e.이름)} <span class="hit">${수(피)}</span> <span class="bad">· Bleed 3 turns</span>`, `<b>${T(c.이름)}</b>は影から襲いかかった。→ ${T(e.이름)} <span class="hit">${수(피)}</span> <span class="bad">· 出血3ターン</span>`), "big",
       { 종류:"탄", 에서:자리(c), 에:자리(e), 색:"#d9534f", 세게:true });
     쓰러짐확인(e);
   } },
 
   "부패의저주": { 쿨:() => 4, 쓸까:() => 적들.some((e) => !(e.독남음 > 0)), 쓰기(c){
     const 피턴 = Math.max(1, Math.floor(공격력(c) * .35));
-    장면(c, "attack", `<b>${c.이름}</b>${조사(c.이름,"이","가")} 부패의 저주를 뿌렸다. <span class="bad">적 전원 3턴 지속 피해 · 방어 15% 감소</span>`, "big",
+    장면(c, "attack", 말(`<b>${c.이름}</b>${조사(c.이름,"이","가")} 부패의 저주를 뿌렸다. <span class="bad">적 전원 3턴 지속 피해 · 방어 15% 감소</span>`, `<b>${T(c.이름)}</b> spreads the Curse of Rot. <span class="bad">All enemies: damage over 3 turns · DEF −15%</span>`, `<b>${T(c.이름)}</b>は腐敗の呪いを撒いた。<span class="bad">敵全員 3ターン継続ダメージ · 防御15%減少</span>`), "big",
       { 종류:"섬광", 에서:자리(c), 색:"#9fe06a" });
     for (const e of 적들) { e.독남음 = 3; e.독피해 = 피턴; e.방어썩음 = .15; }
   } },
   사슬: { 쿨:() => 3, 쓸까:() => 적들.some((e) => e.보호막 > 0), 쓰기(c){
     const e = 적들.find((x) => x.보호막 > 0);
     e.보호막 = 0;                                                     // 사장님: 제어는 완전 해제
-    장면(c, "attack", `<b>${c.이름}</b>${조사(c.이름,"이","가")} 사슬을 던져 보호막을 끊었다.`, "big", { 종류:"사슬", 에서:자리(c), 에:자리(e), 색:"#c69bff" });
+    장면(c, "attack", 말(`<b>${c.이름}</b>${조사(c.이름,"이","가")} 사슬을 던져 보호막을 끊었다.`, `<b>${T(c.이름)}</b> hurls a chain and breaks the barrier.`, `<b>${T(c.이름)}</b>は鎖を投げて障壁を断ち切った。`), "big", { 종류:"사슬", 에서:자리(c), 에:자리(e), 색:"#c69bff" });
   } },
 };
 
@@ -1046,37 +1377,37 @@ const 기술표 = {
  * 겹친 카드(중복)로 값이 변하는 기술은 **그 캐릭터의 지금 값**을 보여 준다.
  */
 const 기술설명 = {
-  푸른방패검: (c) => `일반공격 · 적 하나를 공격력 <b>95%</b>로 친다. 그 뒤 나에게 막을 두른다 — 최대체력 4% + 공격력 35%.`,
-  철벽의맹세: (c) => `기술 · <b>${c.중복 >= 5 ? 2 : 3}턴</b>마다. 아군 전원에게 막 <b>공격력 ${c.중복 >= 1 ? 155 : 140}%</b>를 씌우고, 적의 눈이 나에게 쏠린다(도발).`,
-  새벽을가르는방패: (c) => `궁극기 · 적 전원을 <b>공격력 ${c.중복 >= 3 ? 220 : 180}%</b>로 친다. 보호막을 두른 적은 피해 대신 <b>보호막 25</b>가 깎인다. 그 뒤 아군 전원에게 막 공격력 220%.${c.중복 >= 6 ? " 이 막은 <b>닳지 않는다</b>." : ""}`,
-  연속베기: (c) => `일반공격 · 적 하나를 <b>두 번</b> 벤다(각 공격력 62%). 한 대마다 <b>12%</b>로 치명타(2배). 몰아 때리는 것보다 <b>막을 긁어내기</b> 좋다.`,
-  약점노리기: (c) => `기술 · <b>3턴</b>마다. 다음 공격이 <b>반드시 치명타</b>가 되고 적 <b>방어 40%를 무시</b>한다.`,
-  처형: (c) => `기술 · <b>4턴</b>마다. 적의 남은 체력이 <b>절반 아래</b>일 때만 쓴다. 적이 다칠수록 세진다 — 반피에 <b>2.1배</b>, 10% 남으면 <b>3.2배</b>.`,
-  "치유의빛": (c) => `일반공격 · 가장 많이 다친 아군을 <b>공격력 90%</b>만큼 회복한다.`,
-  "구원의진형": (c) => `기술 · <b>3턴</b>마다. 아군 <b>전원</b>을 공격력 50%만큼 회복한다. 보스가 3턴마다 전원을 치는 것에 맞서는 자리다.`,
-  "화염구": (c) => `일반공격 · 적 하나를 <b>공격력 125%</b>로 친다. 마법이라 적 <b>방어 20%를 무시</b>한다.`,
-  "부패의저주": (c) => `기술 · <b>4턴</b>마다. 적 <b>전원</b>에게 3턴 동안 매 턴 공격력 35%의 피해를 주고, 그동안 <b>방어를 15% 깎는다</b>.`,
-  사슬: (c) => `기술 · <b>3턴</b>마다. 보호막을 두른 적 하나의 보호막을 <b>통째로</b> 없앤다.`,
-  방패치기: (c) => `일반공격 · 적 하나를 공격력 <b>100%</b>로 들이받는다. <b>20%</b>로 그 적의 공격력이 <b>10% 떨어진다</b>(2턴).`,
-  성역의진형: (c) => `기술 · <b>4턴</b>마다. <b>3턴</b> 동안 아군 전원 방어 <b>+35%</b>, 받는 피해 <b>−15%</b>. 둘은 따로 먹는다.`,
-  급소베기: (c) => `일반공격 · 적 하나를 공격력 <b>100%</b>로 베고 그 적의 <b>방어 20%를 무시</b>한다. <b>12%</b>로 치명타(2배) — 출혈 중인 적에겐 <b>27%</b>.`,
-  관통폭풍참: (c) => `일반공격 · <b>적 전원</b>을 공격력 <b>78%</b>로 베고 <b>방어 20%를 무시</b>한다. <i>(폭풍의 영혼석)</i>`,
-  혈의축복: (c) => `기술 · <b>4턴</b>마다. 아군 전원 체력을 <b>10%</b> 태우고 <b>3턴</b> 동안 공격 <b>+40%</b>. 이걸로는 쓰러지지 않는다. <i>(혈의 영혼석)</i>`,
-  영혼반전: (c) => `기술 · <b>3턴</b>마다. 적 하나의 보호막을 통째로 끊고, <b>그만큼을 아군 전원의 막</b>으로 돌린다. <i>(역천의 영혼석)</i>`,
-  그림자습격: (c) => `기술 · <b>4턴</b>마다. 적 하나를 공격력 <b>160%</b>·방어 20% 무시로 치고 <b>3턴 출혈</b>을 남긴다(턴마다 공격력 40%). 출혈은 칼리드의 저주와 <b>따로</b> 쌓인다.`,
-  "기도": (c) => `일반공격 · 다친 아군이 있으면 <b>공격력 55%</b>만큼 덮고, 아무도 안 다쳤으면 적을 공격력 80%로 친다.`,
-  "성스러운축복": (c) => `기술 · <b>4턴</b>마다. 아군 <b>전원</b>의 공격을 <b>3턴 동안 +20%</b>. 내 공격이 약한 대신 넷을 함께 키운다.`,
-  "빛의수호막": (c) => `기술 · <b>3턴</b>마다. 아군 전원에게 <b>각자 최대체력의 14%</b>만큼 막. 공격력이 아니라 <b>받는 쪽의 몸집</b>을 따르므로 탱커가 더 두꺼워진다.`,
+  푸른방패검: (c) => 말(`일반공격 · 적 하나를 공격력 <b>95%</b>로 친다. 그 뒤 나에게 막을 두른다 — 최대체력 4% + 공격력 35%.`, `Basic · Hits one enemy for <b>95%</b> ATK. Then shields self — 4% max HP + 35% ATK.`, `通常攻撃 · 敵1体に攻撃力<b>95%</b>で攻撃。その後自分に膜をまとう — 最大体力4% + 攻撃力35%。`),
+  철벽의맹세: (c) => 말(`기술 · <b>${c.중복 >= 5 ? 2 : 3}턴</b>마다. 아군 전원에게 막 <b>공격력 ${c.중복 >= 1 ? 155 : 140}%</b>를 씌우고, 적의 눈이 나에게 쏠린다(도발).`, `Skill · Every <b>${c.중복 >= 5 ? 2 : 3} turns</b>. Shields all allies for <b>${c.중복 >= 1 ? 155 : 140}% ATK</b> and draws enemy attention (taunt).`, `技 · <b>${c.중복 >= 5 ? 2 : 3}ターン</b>ごと。味方全員に膜<b>攻撃力${c.중복 >= 1 ? 155 : 140}%</b>をまとわせ、敵の目を自分に向ける(挑発)。`),
+  새벽을가르는방패: (c) => 말(`궁극기 · 적 전원을 <b>공격력 ${c.중복 >= 3 ? 220 : 180}%</b>로 친다. 보호막을 두른 적은 피해 대신 <b>보호막 25</b>가 깎인다. 그 뒤 아군 전원에게 막 공격력 220%.${c.중복 >= 6 ? " 이 막은 <b>닳지 않는다</b>." : ""}`, `Ultimate · Hits all enemies for <b>${c.중복 >= 3 ? 220 : 180}% ATK</b>. Barriered enemies lose <b>25 barrier</b> instead of taking damage. Then shields all allies for 220% ATK.${c.중복 >= 6 ? " This shield <b>does not wear down</b>." : ""}`, `必殺技 · 敵全員に<b>攻撃力${c.중복 >= 3 ? 220 : 180}%</b>で攻撃。障壁のある敵はダメージの代わりに<b>障壁25</b>が削れる。その後味方全員に膜 攻撃力220%。${c.중복 >= 6 ? "この膜は<b>すり減らない</b>。" : ""}`),
+  연속베기: (c) => 말(`일반공격 · 적 하나를 <b>두 번</b> 벤다(각 공격력 62%). 한 대마다 <b>12%</b>로 치명타(2배). 몰아 때리는 것보다 <b>막을 긁어내기</b> 좋다.`, `Basic · Slashes one enemy <b>twice</b> (62% ATK each). Each hit has a <b>12%</b> crit chance (2x). Better at <b>scraping off shields</b> than one big hit.`, `通常攻撃 · 敵1体を<b>2回</b>斬る(各攻撃力62%)。1発ごとに<b>12%</b>で会心(2倍)。まとめて殴るより<b>膜を削る</b>のに向く。`),
+  약점노리기: (c) => 말(`기술 · <b>3턴</b>마다. 다음 공격이 <b>반드시 치명타</b>가 되고 적 <b>방어 40%를 무시</b>한다.`, `Skill · Every <b>3 turns</b>. The next attack is a <b>guaranteed crit</b> and <b>ignores 40% defense</b>.`, `技 · <b>3ターン</b>ごと。次の攻撃が<b>必ず会心</b>になり、敵の<b>防御40%を無視</b>する。`),
+  처형: (c) => 말(`기술 · <b>4턴</b>마다. 적의 남은 체력이 <b>절반 아래</b>일 때만 쓴다. 적이 다칠수록 세진다 — 반피에 <b>2.1배</b>, 10% 남으면 <b>3.2배</b>.`, `Skill · Every <b>4 turns</b>. Used only when the enemy is <b>below half</b> HP. Stronger the more hurt they are — <b>2.1x</b> at half, <b>3.2x</b> at 10%.`, `技 · <b>4ターン</b>ごと。敵の残り体力が<b>半分以下</b>のときだけ使う。敵が傷つくほど強くなる — 半分で<b>2.1倍</b>、残り10%で<b>3.2倍</b>。`),
+  "치유의빛": (c) => 말(`일반공격 · 가장 많이 다친 아군을 <b>공격력 90%</b>만큼 회복한다.`, `Basic · Heals the most injured ally for <b>90% ATK</b>.`, `通常攻撃 · 最も傷ついた味方を<b>攻撃力90%</b>分回復する。`),
+  "구원의진형": (c) => 말(`기술 · <b>3턴</b>마다. 아군 <b>전원</b>을 공격력 50%만큼 회복한다. 보스가 3턴마다 전원을 치는 것에 맞서는 자리다.`, `Skill · Every <b>3 turns</b>. Heals <b>all</b> allies for 50% ATK. Counters the boss hitting everyone every 3 turns.`, `技 · <b>3ターン</b>ごと。味方<b>全員</b>を攻撃力50%分回復する。ボスが3ターンごとに全員を攻撃するのに対抗するもの。`),
+  "화염구": (c) => 말(`일반공격 · 적 하나를 <b>공격력 125%</b>로 친다. 마법이라 적 <b>방어 20%를 무시</b>한다.`, `Basic · Hits one enemy for <b>125% ATK</b>. Magic, so it <b>ignores 20% defense</b>.`, `通常攻撃 · 敵1体に<b>攻撃力125%</b>で攻撃。魔法なので敵の<b>防御20%を無視</b>する。`),
+  "부패의저주": (c) => 말(`기술 · <b>4턴</b>마다. 적 <b>전원</b>에게 3턴 동안 매 턴 공격력 35%의 피해를 주고, 그동안 <b>방어를 15% 깎는다</b>.`, `Skill · Every <b>4 turns</b>. Deals 35% ATK damage each turn to <b>all</b> enemies for 3 turns and <b>cuts their defense by 15%</b> meanwhile.`, `技 · <b>4ターン</b>ごと。敵<b>全員</b>に3ターンの間毎ターン攻撃力35%のダメージを与え、その間<b>防御を15%削る</b>。`),
+  사슬: (c) => 말(`기술 · <b>3턴</b>마다. 보호막을 두른 적 하나의 보호막을 <b>통째로</b> 없앤다.`, `Skill · Every <b>3 turns</b>. Removes one barriered enemy's barrier <b>entirely</b>.`, `技 · <b>3ターン</b>ごと。障壁をまとった敵1体の障壁を<b>丸ごと</b>消す。`),
+  방패치기: (c) => 말(`일반공격 · 적 하나를 공격력 <b>100%</b>로 들이받는다. <b>20%</b>로 그 적의 공격력이 <b>10% 떨어진다</b>(2턴).`, `Basic · Rams one enemy for <b>100%</b> ATK. <b>20%</b> chance to <b>lower</b> its ATK <b>by 10%</b> (2 turns).`, `通常攻撃 · 敵1体に攻撃力<b>100%</b>で体当たり。<b>20%</b>でその敵の攻撃力が<b>10%下がる</b>(2ターン)。`),
+  성역의진형: (c) => 말(`기술 · <b>4턴</b>마다. <b>3턴</b> 동안 아군 전원 방어 <b>+35%</b>, 받는 피해 <b>−15%</b>. 둘은 따로 먹는다.`, `Skill · Every <b>4 turns</b>. For <b>3 turns</b>, all allies get DEF <b>+35%</b> and damage taken <b>−15%</b>. The two stack separately.`, `技 · <b>4ターン</b>ごと。<b>3ターン</b>の間、味方全員 防御<b>+35%</b>、被ダメージ<b>−15%</b>。2つは別々に効く。`),
+  급소베기: (c) => 말(`일반공격 · 적 하나를 공격력 <b>100%</b>로 베고 그 적의 <b>방어 20%를 무시</b>한다. <b>12%</b>로 치명타(2배) — 출혈 중인 적에겐 <b>27%</b>.`, `Basic · Slashes one enemy for <b>100%</b> ATK, <b>ignoring 20% defense</b>. <b>12%</b> crit chance (2x) — <b>27%</b> against bleeding enemies.`, `通常攻撃 · 敵1体を攻撃力<b>100%</b>で斬り、その敵の<b>防御20%を無視</b>する。<b>12%</b>で会心(2倍) — 出血中の敵には<b>27%</b>。`),
+  관통폭풍참: (c) => 말(`일반공격 · <b>적 전원</b>을 공격력 <b>78%</b>로 베고 <b>방어 20%를 무시</b>한다. <i>(폭풍의 영혼석)</i>`, `Basic · Slashes <b>all enemies</b> for <b>78%</b> ATK, <b>ignoring 20% defense</b>. <i>(Soulstone of Storms)</i>`, `通常攻撃 · <b>敵全員</b>を攻撃力<b>78%</b>で斬り<b>防御20%を無視</b>する。<i>(嵐の魂石)</i>`),
+  혈의축복: (c) => 말(`기술 · <b>4턴</b>마다. 아군 전원 체력을 <b>10%</b> 태우고 <b>3턴</b> 동안 공격 <b>+40%</b>. 이걸로는 쓰러지지 않는다. <i>(혈의 영혼석)</i>`, `Skill · Every <b>4 turns</b>. Burns <b>10%</b> of all allies' HP and grants ATK <b>+40%</b> for <b>3 turns</b>. This can't knock anyone out. <i>(Soulstone of Blood)</i>`, `技 · <b>4ターン</b>ごと。味方全員の体力を<b>10%</b>燃やし<b>3ターン</b>の間 攻撃<b>+40%</b>。これで倒れることはない。<i>(血の魂石)</i>`),
+  영혼반전: (c) => 말(`기술 · <b>3턴</b>마다. 적 하나의 보호막을 통째로 끊고, <b>그만큼을 아군 전원의 막</b>으로 돌린다. <i>(역천의 영혼석)</i>`, `Skill · Every <b>3 turns</b>. Breaks one enemy's barrier entirely and turns <b>that much into shields for all allies</b>. <i>(Soulstone of Defiance)</i>`, `技 · <b>3ターン</b>ごと。敵1体の障壁を丸ごと断ち、<b>その分を味方全員の膜</b>に変える。<i>(逆天の魂石)</i>`),
+  그림자습격: (c) => 말(`기술 · <b>4턴</b>마다. 적 하나를 공격력 <b>160%</b>·방어 20% 무시로 치고 <b>3턴 출혈</b>을 남긴다(턴마다 공격력 40%). 출혈은 칼리드의 저주와 <b>따로</b> 쌓인다.`, `Skill · Every <b>4 turns</b>. Hits one enemy for <b>160%</b> ATK ignoring 20% defense and leaves <b>3 turns of bleed</b> (40% ATK per turn). Bleed stacks <b>separately</b> from Khalid's curse.`, `技 · <b>4ターン</b>ごと。敵1体を攻撃力<b>160%</b>・防御20%無視で攻撃し<b>3ターンの出血</b>を残す(毎ターン攻撃力40%)。出血はカリードの呪いと<b>別に</b>重なる。`),
+  "기도": (c) => 말(`일반공격 · 다친 아군이 있으면 <b>공격력 55%</b>만큼 덮고, 아무도 안 다쳤으면 적을 공격력 80%로 친다.`, `Basic · Heals an injured ally for <b>55% ATK</b>; if no one is hurt, hits an enemy for 80% ATK.`, `通常攻撃 · 傷ついた味方がいれば<b>攻撃力55%</b>分癒やし、誰も傷ついていなければ敵を攻撃力80%で攻撃する。`),
+  "성스러운축복": (c) => 말(`기술 · <b>4턴</b>마다. 아군 <b>전원</b>의 공격을 <b>3턴 동안 +20%</b>. 내 공격이 약한 대신 넷을 함께 키운다.`, `Skill · Every <b>4 turns</b>. <b>All</b> allies get ATK <b>+20% for 3 turns</b>. Weak on her own, she raises all four together.`, `技 · <b>4ターン</b>ごと。味方<b>全員</b>の攻撃を<b>3ターンの間+20%</b>。自分の攻撃は弱い代わりに4人をまとめて強くする。`),
+  "빛의수호막": (c) => 말(`기술 · <b>3턴</b>마다. 아군 전원에게 <b>각자 최대체력의 14%</b>만큼 막. 공격력이 아니라 <b>받는 쪽의 몸집</b>을 따르므로 탱커가 더 두꺼워진다.`, `Skill · Every <b>3 turns</b>. Shields all allies for <b>14% of each one's max HP</b>. Scales with <b>the receiver's size</b>, not ATK, so tanks get thicker shields.`, `技 · <b>3ターン</b>ごと。味方全員に<b>各自の最大体力の14%</b>分の膜。攻撃力ではなく<b>受ける側の体格</b>に従うので、タンクほど厚くなる。`),
 };
 const 특성설명 = {
-  "마지막 수호자": (c) => `가장 위태로운 아군이 맞기 직전, 내가 대신 막을 씌운다 — <b>내 최대체력의 ${c.중복 >= 2 ? 12 : 8}%</b>. 한 턴에 한 번, 나 자신에게는 안 걸린다. 궁 게이지도 <b>+34</b> 찬다.`,
-  "푸른 강철의 결의": (c) => `내가 막을 두르고 있는 동안 <b>받는 피해 ${c.중복 >= 4 ? 24 : 18}% 감소</b>.`,
-  "결의": (c) => `체력이 떨어질수록 공격이 오른다 — 체력이 다 닳기 직전이면 <b>+45%</b>. 벼랑에서 더 세진다.`,
-  "꺼지지 않는 등불": (c) => `전투가 이어지는 동안 쉬지 않고 가장 위태로운 아군을 찾는다. 기술 「구원의 진형」은 <b>누군가 20% 넘게 다쳤을 때만</b> 쓴다 — 아껴 두었다가 광역이 들어온 뒤에 편다.`,
-  "손이 닿는 자리": (c) => `뒤에 서서 넷을 본다. 축복과 막은 <b>살아 있는 아군 전원</b>에게 간다 — 누가 앞에 섰든.`,
-  "불굴의 의지": (c) => `체력이 <b>30% 아래로 떨어지는 그 순간</b>, 한 판에 딱 한 번 <b>최대체력의 25%</b>만큼 막을 두른다. 막 천장(35%)은 그대로 먹는다.`,
-  "맹독 바르기": (c) => `<b>출혈 중인 적</b>을 칠 때 치명타 확률이 <b>+15%</b>(12% → 27%). 그래서 「그림자 습격」을 먼저 넣고 베는 것이 세다.`,
-  "마른 심지": (c) => `불과 저주를 함께 쓴다. 「부패의 저주」가 깎아 둔 방어는 <b>내 화염구뿐 아니라 아군의 모든 공격</b>에 함께 먹는다.`,
+  "마지막 수호자": (c) => 말(`가장 위태로운 아군이 맞기 직전, 내가 대신 막을 씌운다 — <b>내 최대체력의 ${c.중복 >= 2 ? 12 : 8}%</b>. 한 턴에 한 번, 나 자신에게는 안 걸린다. 궁 게이지도 <b>+34</b> 찬다.`, `Right before the most endangered ally is hit, I shield them — <b>${c.중복 >= 2 ? 12 : 8}% of my max HP</b>. Once per turn, never on myself. Also fills the ultimate gauge by <b>+34</b>.`, `最も危うい味方が攻撃される直前、代わりに膜をまとわせる — <b>自分の最大体力の${c.중복 >= 2 ? 12 : 8}%</b>。1ターンに1回、自分には発動しない。必殺ゲージも<b>+34</b>たまる。`),
+  "푸른 강철의 결의": (c) => 말(`내가 막을 두르고 있는 동안 <b>받는 피해 ${c.중복 >= 4 ? 24 : 18}% 감소</b>.`, `While I have a shield, <b>damage taken −${c.중복 >= 4 ? 24 : 18}%</b>.`, `自分が膜をまとっている間、<b>被ダメージ${c.중복 >= 4 ? 24 : 18}%減少</b>。`),
+  "결의": (c) => 말(`체력이 떨어질수록 공격이 오른다 — 체력이 다 닳기 직전이면 <b>+45%</b>. 벼랑에서 더 세진다.`, `The lower my HP, the higher my ATK — up to <b>+45%</b> when nearly spent. Stronger at the edge.`, `体力が減るほど攻撃が上がる — 体力が尽きる直前なら<b>+45%</b>。崖っぷちでこそ強い。`),
+  "꺼지지 않는 등불": (c) => 말(`전투가 이어지는 동안 쉬지 않고 가장 위태로운 아군을 찾는다. 기술 「구원의 진형」은 <b>누군가 20% 넘게 다쳤을 때만</b> 쓴다 — 아껴 두었다가 광역이 들어온 뒤에 편다.`, `Throughout battle, always seeks the most endangered ally. Uses "Salvation Formation" <b>only when someone has lost over 20%</b> — saving it for after an area attack lands.`, `戦闘中は休まず最も危うい味方を探す。技「救いの陣形」は<b>誰かが20%以上傷ついたときだけ</b>使う — 温存して範囲攻撃の後に広げる。`),
+  "손이 닿는 자리": (c) => 말(`뒤에 서서 넷을 본다. 축복과 막은 <b>살아 있는 아군 전원</b>에게 간다 — 누가 앞에 섰든.`, `Stands at the back watching all four. Blessings and shields go to <b>every living ally</b> — whoever is in front.`, `後ろに立って4人を見る。祝福と膜は<b>生きている味方全員</b>に届く — 誰が前に立っていても。`),
+  "불굴의 의지": (c) => 말(`체력이 <b>30% 아래로 떨어지는 그 순간</b>, 한 판에 딱 한 번 <b>최대체력의 25%</b>만큼 막을 두른다. 막 천장(35%)은 그대로 먹는다.`, `<b>The moment HP drops below 30%</b>, once per battle, gains a shield of <b>25% max HP</b>. The shield cap (35%) still applies.`, `体力が<b>30%を下回ったその瞬間</b>、1戦にちょうど1回<b>最大体力の25%</b>分の膜をまとう。膜の上限(35%)はそのまま効く。`),
+  "맹독 바르기": (c) => 말(`<b>출혈 중인 적</b>을 칠 때 치명타 확률이 <b>+15%</b>(12% → 27%). 그래서 「그림자 습격」을 먼저 넣고 베는 것이 세다.`, `Crit chance <b>+15%</b> against <b>bleeding enemies</b> (12% → 27%). So it pays to land "Shadow Ambush" first, then slash.`, `<b>出血中の敵</b>を攻撃するとき会心率<b>+15%</b>(12% → 27%)。だから「影の襲撃」を先に入れてから斬るのが強い。`),
+  "마른 심지": (c) => 말(`불과 저주를 함께 쓴다. 「부패의 저주」가 깎아 둔 방어는 <b>내 화염구뿐 아니라 아군의 모든 공격</b>에 함께 먹는다.`, `Wields fire and curses together. The defense cut by "Curse of Rot" applies to <b>all allied attacks, not just my Fireball</b>.`, `炎と呪いを併せて使う。「腐敗の呪い」が削った防御は<b>自分の火炎球だけでなく味方のすべての攻撃</b>に効く。`),
 };
 
 /* ── 공방 (층과합성-지피티.md 3장, 1구간 레시피만) ── */
@@ -1186,16 +1517,16 @@ const 레시피 = {
   /* 10-11: 철검이 **수호핵**을 요구하고 있었다. 수호핵은 **10층 보스**만 떨구는데
      철검은 그 보스를 깨러 갈 때 드는 첫 무기다 — 철검 없이 10층을 못 깨고, 10층을 깨야 철검을 만들었다.
      **첫 장비는 아무 층에서나 나오는 것만으로** 만들어져야 한다. 수호핵은 T2 부터 쓴다. */
-  철검:   { 이름:"견습자의 철검", 슬롯:"무기", 열림:1, 재료:{ 파편:12, 잔혼:6 }, 금화:1000, 효과:{ 공격:18 }, 글:"공격 +18" },
-  가죽갑옷: { 이름:"습지 가죽갑옷", 슬롯:"갑옷", 열림:5, 재료:{ 파편:15, 잔혼:5 }, 금화:1200, 효과:{ 체력:120, 방어:10 }, 글:"체력 +120 · 방어 +10" },
-  회복약: { 이름:"별빛 회복약", 슬롯:"약", 열림:8, 재료:{ 잔혼:8, 파편:3 }, 금화:800, 글:"전투 중 처음 절반 아래로 떨어진 아군 체력 20% 회복 · 전투당 1개" },
+  철검:   { 이름:"견습자의 철검", 슬롯:"무기", 열림:1, 재료:{ 파편:12, 잔혼:6 }, 금화:1000, 효과:{ 공격:18 }, 글:말("공격 +18", "ATK +18", "攻撃 +18") },
+  가죽갑옷: { 이름:"습지 가죽갑옷", 슬롯:"갑옷", 열림:5, 재료:{ 파편:15, 잔혼:5 }, 금화:1200, 효과:{ 체력:120, 방어:10 }, 글:말("체력 +120 · 방어 +10", "HP +120 · DEF +10", "体力 +120 · 防御 +10") },
+  회복약: { 이름:"별빛 회복약", 슬롯:"약", 열림:8, 재료:{ 잔혼:8, 파편:3 }, 금화:800, 글:말("전투 중 처음 절반 아래로 떨어진 아군 체력 20% 회복 · 전투당 1개", "Restores 20% HP to the first ally who drops below half · 1 per battle", "戦闘中、最初に半分を下回った味方の体力を20%回復 · 1戦に1個") },
   /* ── T2 (10~19층) — 20층 관문을 넘기 위한 것 (10-10 사장님 명세가 출발점, 수치는 자로 맞춤) ──
      10층을 넘어서면 더 만들 게 없어서 파밍할 이유가 사라졌다. 그 구멍을 메운다. */
-  대검:   { 이름:"수호자의 대검", 슬롯:"무기", 열림:10, 재료:{ 파편:25, 수호핵:1 }, 금화:2550, 효과:{ 공격:52 }, 글:"공격 +52" },
-  강철갑옷: { 이름:"골렘의 강철 갑옷", 슬롯:"갑옷", 열림:10, 재료:{ 가죽:20, 수호핵:1 }, 금화:1950, 효과:{ 체력:450, 방어:35 }, 글:"체력 +450 · 방어 +35" },
+  대검:   { 이름:"수호자의 대검", 슬롯:"무기", 열림:10, 재료:{ 파편:25, 수호핵:1 }, 금화:2550, 효과:{ 공격:52 }, 글:말("공격 +52", "ATK +52", "攻撃 +52") },
+  강철갑옷: { 이름:"골렘의 강철 갑옷", 슬롯:"갑옷", 열림:10, 재료:{ 가죽:20, 수호핵:1 }, 금화:1950, 효과:{ 체력:450, 방어:35 }, 글:말("체력 +450 · 방어 +35", "HP +450 · DEF +35", "体力 +450 · 防御 +35") },
   /* ── T3 (20~29층) — 30층 관문을 넘기 위한 것. 핵심 재료는 20층 보스가 떨군다 ── */
-  엄니검: { 이름:"사냥개의 엄니검", 슬롯:"무기", 열림:20, 재료:{ 강철:30, 이빨:1 }, 금화:5700, 효과:{ 공격:150 }, 글:"공격 +150" },
-  맹수흉갑: { 이름:"맹수의 가죽 흉갑", 슬롯:"갑옷", 열림:20, 재료:{ 가죽:40, 이빨:1 }, 금화:4650, 효과:{ 체력:950, 방어:75 }, 글:"체력 +950 · 방어 +75" },
+  엄니검: { 이름:"사냥개의 엄니검", 슬롯:"무기", 열림:20, 재료:{ 강철:30, 이빨:1 }, 금화:5700, 효과:{ 공격:150 }, 글:말("공격 +150", "ATK +150", "攻撃 +150") },
+  맹수흉갑: { 이름:"맹수의 가죽 흉갑", 슬롯:"갑옷", 열림:20, 재료:{ 가죽:40, 이빨:1 }, 금화:4650, 효과:{ 체력:950, 방어:75 }, 글:말("체력 +950 · 방어 +75", "HP +950 · DEF +75", "体力 +950 · 防御 +75") },
   /* ── T4 (30~39층) — 40층 관문을 넘기 위한 것 (10-11).
      **여기가 비어 있었다.** 30층 보스가 거인뼈를 떨구는데 그걸 쓰는 레시피가 하나도 없어서,
      장비를 다 껴도 40층에서 전멸했다(자 실측: T3 닿은 층 40 · 전멸 1 · 최저체력 0%).
@@ -1203,29 +1534,29 @@ const 레시피 = {
        공격 18 → 52 → 150 (×2.9) → **435**
        체력 120 → 450 → 950 (×2.1) → **2,000** · 방어 10 → 35 → 75 (×2.14) → **160**
        금화 1,000 → 5,000 → 25,000 (×5) → **125,000** */
-  거인검: { 이름:"거인뼈 대검", 슬롯:"무기", 열림:30, 재료:{ 강철:60, 거인뼈:1 }, 금화:11600, 효과:{ 공격:435 }, 글:"공격 +435" },
-  거인갑옷: { 이름:"거인뼈 판금갑옷", 슬롯:"갑옷", 열림:30, 재료:{ 가죽:80, 거인뼈:1 }, 금화:9500, 효과:{ 체력:2000, 방어:160 }, 글:"체력 +2000 · 방어 +160" },
+  거인검: { 이름:"거인뼈 대검", 슬롯:"무기", 열림:30, 재료:{ 강철:60, 거인뼈:1 }, 금화:11600, 효과:{ 공격:435 }, 글:말("공격 +435", "ATK +435", "攻撃 +435") },
+  거인갑옷: { 이름:"거인뼈 판금갑옷", 슬롯:"갑옷", 열림:30, 재료:{ 가죽:80, 거인뼈:1 }, 금화:9500, 효과:{ 체력:2000, 방어:160 }, 글:말("체력 +2000 · 방어 +160", "HP +2000 · DEF +160", "体力 +2000 · 防御 +160") },
   /* ── T5 (40~49층) — 50층 관문을 넘기 위한 것.
      처음엔 앞 곡선을 그대로 이어 공격 +1260 을 줬는데, 자가 재 보니 **관문을 둘 연속으로**
      뚫고 61층까지 갔다(50·60). 그러면 구간 5 의 T6 가 만들 이유를 잃는다 —
      T1 이 20층을 넘던 것, T2 가 30층을 넘던 것과 **같은 구멍**이다.
      곡선은 참고일 뿐이고, **다음 관문 직전에서 멈추는가**가 값을 정한다. 숫자는 자로 맞췄다. */
-  성패검: { 이름:"심판의 성패검", 슬롯:"무기", 열림:40, 재료:{ 석편:60, 저울추:1 }, 금화:31500, 효과:{ 공격:1020 }, 글:"공격 +1020" },
-  성소갑옷: { 이름:"성소의 석판갑옷", 슬롯:"갑옷", 열림:40, 재료:{ 석편:80, 저울추:1 }, 금화:25500, 효과:{ 체력:3400, 방어:275 }, 글:"체력 +3400 · 방어 +275" },
+  성패검: { 이름:"심판의 성패검", 슬롯:"무기", 열림:40, 재료:{ 석편:60, 저울추:1 }, 금화:31500, 효과:{ 공격:1020 }, 글:말("공격 +1020", "ATK +1020", "攻撃 +1020") },
+  성소갑옷: { 이름:"성소의 석판갑옷", 슬롯:"갑옷", 열림:40, 재료:{ 석편:80, 저울추:1 }, 금화:25500, 효과:{ 체력:3400, 방어:275 }, 글:말("체력 +3400 · 방어 +275", "HP +3400 · DEF +275", "体力 +3400 · 防御 +275") },
   /* ── T6 (50~59층) — 60층 관문을 넘기 위한 것. 값은 자로 맞춘다(곡선은 참고일 뿐) ── */
-  독아검: { 이름:"히드라의 독아검", 슬롯:"무기", 열림:50, 재료:{ 독액:60, 독주머니:1 }, 금화:81700, 효과:{ 공격:1550 }, 글:"공격 +1550" },
-  늪갑옷: { 이름:"늪지 비늘갑옷", 슬롯:"갑옷", 열림:50, 재료:{ 독액:80, 독주머니:1 }, 금화:66700, 효과:{ 체력:5200, 방어:420 }, 글:"체력 +5200 · 방어 +420" },
+  독아검: { 이름:"히드라의 독아검", 슬롯:"무기", 열림:50, 재료:{ 독액:60, 독주머니:1 }, 금화:81700, 효과:{ 공격:1550 }, 글:말("공격 +1550", "ATK +1550", "攻撃 +1550") },
+  늪갑옷: { 이름:"늪지 비늘갑옷", 슬롯:"갑옷", 열림:50, 재료:{ 독액:80, 독주머니:1 }, 금화:66700, 효과:{ 체력:5200, 방어:420 }, 글:말("체력 +5200 · 방어 +420", "HP +5200 · DEF +420", "体力 +5200 · 防御 +420") },
   /* ── T7 (60~69층) — 70층 관문을 넘기 위한 것.
      **명세에는 재료가 「골렘의 핵」(70층 보스)이었는데 그건 데드락이다** —
      70층을 넘으려고 T7 이 필요한데, T7 을 만들려면 70층을 깨야 한다.
      (10-11 에 철검이 수호핵을 요구하던 것과 **같은 모양**이다.)
      그래서 골렘의 핵은 T8(열림 70)로 미루고, T7 은 60층 관문을 넘은 뒤
      61~69층에서 캐는 용암 결정 + 히드라 독주머니로 만든다. */
-  골렘검: { 이름:"용암 대장간의 골렘검", 슬롯:"무기", 열림:60, 재료:{ 용암결정:60, 독주머니:2 }, 금화:206000, 효과:{ 공격:2250 }, 글:"공격 +2250" },
-  골렘갑옷: { 이름:"현무암 골렘갑옷", 슬롯:"갑옷", 열림:60, 재료:{ 용암결정:80, 독주머니:2 }, 금화:168000, 효과:{ 체력:7600, 방어:610 }, 글:"체력 +7600 · 방어 +610" },
+  골렘검: { 이름:"용암 대장간의 골렘검", 슬롯:"무기", 열림:60, 재료:{ 용암결정:60, 독주머니:2 }, 금화:206000, 효과:{ 공격:2250 }, 글:말("공격 +2250", "ATK +2250", "攻撃 +2250") },
+  골렘갑옷: { 이름:"현무암 골렘갑옷", 슬롯:"갑옷", 열림:60, 재료:{ 용암결정:80, 독주머니:2 }, 금화:168000, 효과:{ 체력:7600, 방어:610 }, 글:말("체력 +7600 · 방어 +610", "HP +7600 · DEF +610", "体力 +7600 · 防御 +610") },
   /* ── T8 (70~79층) — 80층 관문. 70층 관문을 깨서 얻은 골렘의 핵을 **여기서** 쓴다 ── */
-  핵검: { 이름:"골렘핵 쇄도검", 슬롯:"무기", 열림:70, 재료:{ 용암결정:100, 골렘핵:1 }, 금화:509000, 효과:{ 공격:3200 }, 글:"공격 +3200" },
-  핵갑옷: { 이름:"골렘핵 중갑", 슬롯:"갑옷", 열림:70, 재료:{ 빙결정:60, 골렘핵:1 }, 금화:416000, 효과:{ 체력:10800, 방어:870 }, 글:"체력 +10800 · 방어 +870" },
+  핵검: { 이름:"골렘핵 쇄도검", 슬롯:"무기", 열림:70, 재료:{ 용암결정:100, 골렘핵:1 }, 금화:509000, 효과:{ 공격:3200 }, 글:말("공격 +3200", "ATK +3200", "攻撃 +3200") },
+  핵갑옷: { 이름:"골렘핵 중갑", 슬롯:"갑옷", 열림:70, 재료:{ 빙결정:60, 골렘핵:1 }, 금화:416000, 효과:{ 체력:10800, 방어:870 }, 글:말("체력 +10800 · 방어 +870", "HP +10800 · DEF +870", "体力 +10800 · 防御 +870") },
   /* ── T9 (80~89층) — 90층 관문.
      **명세의 표와 본문이 달랐다.** 표는 재료를 「심연의 정수」(91~99층)라 했는데 그러면 막힌다 —
      91층에 가려면 90층 관문을 넘어야 하고, 90층을 넘으려면 이 장비가 필요하다.
@@ -1233,15 +1564,15 @@ const 레시피 = {
   /* 명세는 +4500 이었는데 **자로 재 보니 90층을 못 넘었다**(T8 도 T9 도 90층에서 막힘).
      까닭: 관문 하나당 보스는 ×2.16 으로 자라는데 티어는 ×1.42 씩만 올랐다 —
      앞 칸들은 레벨 10 이 그 틈을 메워 줬지만 여기서 바닥났다. 그래서 **배율을 보스에 맞춘다.** */
-  여왕검: { 이름:"서리 여왕의 눈물검", 슬롯:"무기", 열림:80, 재료:{ 빙결정:100, 눈물:1 }, 금화:1237000, 효과:{ 공격:7000 }, 글:"공격 +7000" },
-  여왕갑옷: { 이름:"서리 여왕의 성에갑옷", 슬롯:"갑옷", 열림:80, 재료:{ 빙결정:140, 눈물:1 }, 금화:1012000, 효과:{ 체력:23800, 방어:1900 }, 글:"체력 +23800 · 방어 +1900" },
+  여왕검: { 이름:"서리 여왕의 눈물검", 슬롯:"무기", 열림:80, 재료:{ 빙결정:100, 눈물:1 }, 금화:1237000, 효과:{ 공격:7000 }, 글:말("공격 +7000", "ATK +7000", "攻撃 +7000") },
+  여왕갑옷: { 이름:"서리 여왕의 성에갑옷", 슬롯:"갑옷", 열림:80, 재료:{ 빙결정:140, 눈물:1 }, 금화:1012000, 효과:{ 체력:23800, 방어:1900 }, 글:말("체력 +23800 · 방어 +1900", "HP +23800 · DEF +1900", "体力 +23800 · 防御 +1900") },
   /* ── T10 (90~99층) — **마지막 장비.** 100층 최종 보스를 넘기 위한 것.
      명세는 T9 가 종결 장비였지만, 한 티어가 관문 둘(90·100)을 넘으면 그 앞 칸이 장식이 된다 —
      T1 이 20층을 넘던 것과 같은 구멍이다. 그리고 명세의 「심연의 정수」가 **쓸 데가 없어진다.**
      그래서 90층 관문을 넘은 뒤 91~99층에서 캐는 정수로 마지막 한 칸을 만든다.
      (정수가 90층에서 나오면 이 장비가 90층 관문과 **동시에** 열려 T9 가 장식이 되므로 91층부터다.) */
-  심연검: { 이름:"심연을 여는 검", 슬롯:"무기", 열림:90, 재료:{ 심연정수:120, 눈물:2 }, 금화:2970000, 효과:{ 공격:15400 }, 글:"공격 +15400" },
-  심연갑옷: { 이름:"심연의 흑요갑옷", 슬롯:"갑옷", 열림:90, 재료:{ 심연정수:160, 눈물:2 }, 금화:2430000, 효과:{ 체력:52000, 방어:4200 }, 글:"체력 +52000 · 방어 +4200" },
+  심연검: { 이름:"심연을 여는 검", 슬롯:"무기", 열림:90, 재료:{ 심연정수:120, 눈물:2 }, 금화:2970000, 효과:{ 공격:15400 }, 글:말("공격 +15400", "ATK +15400", "攻撃 +15400") },
+  심연갑옷: { 이름:"심연의 흑요갑옷", 슬롯:"갑옷", 열림:90, 재료:{ 심연정수:160, 눈물:2 }, 금화:2430000, 효과:{ 체력:52000, 방어:4200 }, 글:말("체력 +52000 · 방어 +4200", "HP +52000 · DEF +4200", "体力 +52000 · 防御 +4200") },
 };
 S.가방.장비 = []; S.가방.약 = 0; S.약수 = 1;
 let 다음템 = 1;
@@ -1277,11 +1608,11 @@ function 한턴(){
   if (장면흘리기()) return;
   if (S.쉼 > 0) {
     S.쉼--;
-    if (S.쉼 === 0) { 전투준비(); 적만들기(); 적기("원정대가 다시 섰다.", "good"); 그리기(); }
-    else 적기(`상처를 꿰매는 중… (${S.쉼})`, "turn");
+    if (S.쉼 === 0) { 전투준비(); 적만들기(); 적기(말("원정대가 다시 섰다.", "The expedition stands again.", "遠征隊は再び立ち上がった。"), "good"); 그리기(); }
+    else 적기(말(`상처를 꿰매는 중… (${S.쉼})`, `Stitching wounds… (${S.쉼})`, `傷を縫っている… (${S.쉼})`), "turn");
     return;
   }
-  if (!파티원().length) { S.진행 = false; 적기("원정대가 비었다. 캐릭터 탭에서 태워라.", "die"); return; }
+  if (!파티원().length) { S.진행 = false; 적기(말("원정대가 비었다. 캐릭터 탭에서 태워라.", "The expedition is empty. Add members in the Characters tab.", "遠征隊が空だ。キャラクタータブで編成しよう。"), "die"); return; }
   if (!산아군().length) { 전멸(); return; }
   // 무리를 다 눕혔다고 층이 끝난 게 아니다 — 다음 무리가 남았으면 그쪽을 세운다(체력은 안 찬다)
   if (!적들.length) {
@@ -1289,7 +1620,7 @@ function 한턴(){
     판끝(); return;
   }
   턴++;
-  장면(null, null, `턴 ${턴}`, "turn");
+  장면(null, null, 말(`턴 ${턴}`, `Turn ${턴}`, `ターン ${턴}`), "turn");
   const 세 = 세리안(); if (세) 세.수호씀 = false;
   // 로제의 축복, 로건의 진형은 턴마다 한 칸씩 닳는다 (10-11)
   for (const c of 산아군()) { if (c.축복 > 0) c.축복--; if (c.진형 > 0) c.진형--; }
@@ -1302,7 +1633,7 @@ function 한턴(){
     e.출혈남음--;
     const 피 = Math.max(1, Math.floor(e.출혈피해));
     e.hp -= 피;
-    장면(null, null, `${e.이름}의 상처가 벌어졌다. <span class="hit">${수(피)}</span>`, "",
+    장면(null, null, 말(`${e.이름}의 상처가 벌어졌다. <span class="hit">${수(피)}</span>`, `${T(e.이름)}'s wound tears open. <span class="hit">${수(피)}</span>`, `${T(e.이름)}の傷が開いた。<span class="hit">${수(피)}</span>`), "",
       { 종류:"맞음", 에:자리(e), 색:"#d9534f" });
     쓰러짐확인(e);
   }
@@ -1313,7 +1644,7 @@ function 한턴(){
     e.독남음--;
     const 피 = Math.max(1, Math.floor(e.독피해));
     e.hp -= 피;
-    장면(null, null, `${e.이름}${조사(e.이름,"이","가")} 부패에 갉아먹혔다. <span class="hit">${수(피)}</span>`, "",
+    장면(null, null, 말(`${e.이름}${조사(e.이름,"이","가")} 부패에 갉아먹혔다. <span class="hit">${수(피)}</span>`, `${T(e.이름)} is eaten away by rot. <span class="hit">${수(피)}</span>`, `${T(e.이름)}は腐敗に蝕まれた。<span class="hit">${수(피)}</span>`), "",
       { 종류:"맞음", 에:자리(e), 색:"#9fe06a" });
     if (e.독남음 <= 0) e.방어썩음 = 0;
     쓰러짐확인(e);
@@ -1362,17 +1693,17 @@ function 적행동(e){
   if (e.보스) {
     e.광역 = (e.광역 ?? 0) + 1;
     if (e.광역 % 3 === 0) {
-      장면(e, "attack", `<b>${e.이름}</b>${조사(e.이름,"이","가")} 바닥을 내리찍었다 — <span class="big">전원</span>`, "bad",
+      장면(e, "attack", 말(`<b>${e.이름}</b>${조사(e.이름,"이","가")} 바닥을 내리찍었다 — <span class="big">전원</span>`, `<b>${T(e.이름)}</b> slams the ground — <span class="big">everyone</span>`, `<b>${T(e.이름)}</b>は床を叩きつけた — <span class="big">全員</span>`), "bad",
         { 종류:"섬광", 에서:자리(e), 색:"#ff7a5c" });
       for (const t of [...산것]) {
         const { 피: 피2, 막음: 막2, 불굴: 불2, 재기: 재2 } = 아군맞기(t, 적공격(e) * .95);
-        장면(null, null, `→ <b>${t.이름}</b> <span class="bad">${수(피2)}</span>${막2 > 0 ? ` (막 ${수(막2)})` : ""}`, "",
+        장면(null, null, 말(`→ <b>${t.이름}</b> <span class="bad">${수(피2)}</span>${막2 > 0 ? ` (막 ${수(막2)})` : ""}`, `→ <b>${T(t.이름)}</b> <span class="bad">${수(피2)}</span>${막2 > 0 ? ` (shield ${수(막2)})` : ""}`, `→ <b>${T(t.이름)}</b> <span class="bad">${수(피2)}</span>${막2 > 0 ? ` (膜 ${수(막2)})` : ""}`), "",
           { 종류:"맞음", 에:자리(t), 색:"#ff7a5c" });
-        if (재2) 장면(null, null, `<b>${t.이름}</b>${조사(t.이름,"이","가")} 쓰러지려다 <span class="good">다시 섰다</span>. (체력 ${수(재2)})`, "good",
+        if (재2) 장면(null, null, 말(`<b>${t.이름}</b>${조사(t.이름,"이","가")} 쓰러지려다 <span class="good">다시 섰다</span>. (체력 ${수(재2)})`, `<b>${T(t.이름)}</b> nearly falls but <span class="good">stands back up</span>. (HP ${수(재2)})`, `<b>${T(t.이름)}</b>は倒れかけたが<span class="good">再び立った</span>。(体力 ${수(재2)})`), "good",
           { 종류:"회복", 에:자리(t), 색:"#ffe9a0" });
-        if (불2) 장면(null, null, `<b>${t.이름}</b>${조사(t.이름,"이","가")} 무릎을 꿇지 않았다 — 막 <span class="good">${수(불2)}</span>`, "good",
+        if (불2) 장면(null, null, 말(`<b>${t.이름}</b>${조사(t.이름,"이","가")} 무릎을 꿇지 않았다 — 막 <span class="good">${수(불2)}</span>`, `<b>${T(t.이름)}</b> refuses to kneel — shield <span class="good">${수(불2)}</span>`, `<b>${T(t.이름)}</b>は膝をつかなかった — 膜 <span class="good">${수(불2)}</span>`), "good",
           { 종류:"막", 들:[자리(t)], 색:"#ff9a5c", 막들:막들(t) });
-        if (t.hp <= 0) 장면(null, null, `<b>${t.이름}</b>${조사(t.이름,"이","가")} 주저앉았다.`, "bad");
+        if (t.hp <= 0) 장면(null, null, 말(`<b>${t.이름}</b>${조사(t.이름,"이","가")} 주저앉았다.`, `<b>${T(t.이름)}</b> collapses.`, `<b>${T(t.이름)}</b>は崩れ落ちた。`), "bad");
       }
       return;
     }
@@ -1381,23 +1712,23 @@ function 적행동(e){
   const 끌린 = 산것.filter((c) => c.도발).sort((a, b) => (역할(b) === "방어") - (역할(a) === "방어"))[0];
   const t = 끌린 ?? 산것[Math.floor(Math.random() * 산것.length)];
   const { 피, 막음, 수호, 불굴, 재기 } = 아군맞기(t, 적공격(e) * (0.9 + Math.random()*0.2));
-  if (수호) 장면(세리안(), "attack", `<b>기사</b>가 ${t.이름} 앞에 방패를 들었다. 막 <span class="good">${수(수호)}</span>`, "",
+  if (수호) 장면(세리안(), "attack", 말(`<b>기사</b>가 ${t.이름} 앞에 방패를 들었다. 막 <span class="good">${수(수호)}</span>`, `The <b>Knight</b> raises a shield before ${T(t.이름)}. Shield <span class="good">${수(수호)}</span>`, `<b>騎士</b>が${T(t.이름)}の前に盾を掲げた。膜 <span class="good">${수(수호)}</span>`), "",
     { 종류:"막", 들:[자리(t)], 색:"#7ec8ff" });
   const 글 = 막음 > 0
-    ? `${e.이름} → <b>${t.이름}</b> 막이 <span class="good">${수(막음)}</span> 받아냈다${피 > 0 ? ` · <span class="bad">${수(피)}</span>` : ""}${t.막 <= 0 ? " — 막이 깨졌다" : ""}`
-    : `${e.이름} → <b>${t.이름}</b> <span class="bad">${수(피)}</span>`;
+    ? 말(`${e.이름} → <b>${t.이름}</b> 막이 <span class="good">${수(막음)}</span> 받아냈다${피 > 0 ? ` · <span class="bad">${수(피)}</span>` : ""}${t.막 <= 0 ? " — 막이 깨졌다" : ""}`, `${T(e.이름)} → <b>${T(t.이름)}</b> shield absorbed <span class="good">${수(막음)}</span>${피 > 0 ? ` · <span class="bad">${수(피)}</span>` : ""}${t.막 <= 0 ? " — the shield broke" : ""}`, `${T(e.이름)} → <b>${T(t.이름)}</b> 膜が<span class="good">${수(막음)}</span>受け止めた${피 > 0 ? ` · <span class="bad">${수(피)}</span>` : ""}${t.막 <= 0 ? " — 膜が割れた" : ""}`)
+    : 말(`${e.이름} → <b>${t.이름}</b> <span class="bad">${수(피)}</span>`, `${T(e.이름)} → <b>${T(t.이름)}</b> <span class="bad">${수(피)}</span>`, `${T(e.이름)} → <b>${T(t.이름)}</b> <span class="bad">${수(피)}</span>`);
   장면(e, "attack", 글, "", { 종류: 막음 > 0 ? (t.막 <= 0 ? "막깨짐" : "막맞음") : "맞음",
     에서:자리(e), 에:자리(t), 색: 막음 > 0 ? "#7ec8ff" : "#ff7a5c", 막들:막들(t) });
-  if (재기) 장면(null, null, `<b>${t.이름}</b>${조사(t.이름,"이","가")} 쓰러지려다 <span class="good">다시 섰다</span>. (체력 ${수(재기)})`, "good",
+  if (재기) 장면(null, null, 말(`<b>${t.이름}</b>${조사(t.이름,"이","가")} 쓰러지려다 <span class="good">다시 섰다</span>. (체력 ${수(재기)})`, `<b>${T(t.이름)}</b> nearly falls but <span class="good">stands back up</span>. (HP ${수(재기)})`, `<b>${T(t.이름)}</b>は倒れかけたが<span class="good">再び立った</span>。(体力 ${수(재기)})`), "good",
     { 종류:"회복", 에:자리(t), 색:"#ffe9a0" });
-  if (불굴) 장면(null, null, `<b>${t.이름}</b>${조사(t.이름,"이","가")} 무릎을 꿇지 않았다 — 막 <span class="good">${수(불굴)}</span>`, "good",
+  if (불굴) 장면(null, null, 말(`<b>${t.이름}</b>${조사(t.이름,"이","가")} 무릎을 꿇지 않았다 — 막 <span class="good">${수(불굴)}</span>`, `<b>${T(t.이름)}</b> refuses to kneel — shield <span class="good">${수(불굴)}</span>`, `<b>${T(t.이름)}</b>は膝をつかなかった — 膜 <span class="good">${수(불굴)}</span>`), "good",
     { 종류:"막", 들:[자리(t)], 색:"#ff9a5c", 막들:막들(t) });
-  if (t.hp <= 0) 장면(null, null, `<b>${t.이름}</b>${조사(t.이름,"이","가")} 주저앉았다.`, "bad");
+  if (t.hp <= 0) 장면(null, null, 말(`<b>${t.이름}</b>${조사(t.이름,"이","가")} 주저앉았다.`, `<b>${T(t.이름)}</b> collapses.`, `<b>${T(t.이름)}</b>は崩れ落ちた。`), "bad");
   else if (약대기 > 0 && t.hp < 최대체력(t) * .5) {
     약대기--;
     const 양 = Math.floor(최대체력(t) * .2);
     t.hp = Math.min(최대체력(t), t.hp + 양);
-    장면(null, null, `별빛 회복약이 깨졌다. <b>${t.이름}</b> <span class="good">+${수(양)}</span>`, "good", { 종류:"회복", 에:자리(t), 색:"#ffe9a0" });
+    장면(null, null, 말(`별빛 회복약이 깨졌다. <b>${t.이름}</b> <span class="good">+${수(양)}</span>`, `A Starlight Potion shatters. <b>${T(t.이름)}</b> <span class="good">+${수(양)}</span>`, `星明かりの回復薬が割れた。<b>${T(t.이름)}</b> <span class="good">+${수(양)}</span>`), "good", { 종류:"회복", 에:자리(t), 색:"#ffe9a0" });
   }
 }
 
@@ -1428,8 +1759,8 @@ const 금화보상 = (층, 보스판) =>
   Math.round((80 + 층 * 20) * (층 <= 30 ? 1 : Math.pow(1.08, 층 - 30))) * (보스판 ? 7 : 1);
 const 깬수 = (층) => S.깸?.[층] ?? 0;
 function 자격(층){
-  const 줄 = [{ 이름:`${필요판(층)}번 깨기`, 됨: 깬수(층) >= 필요판(층), 지금:`${Math.min(깬수(층), 필요판(층))}/${필요판(층)}` }];
-  if (층 % 10 === 0) 줄.push({ 이름:"구간 보스 처치", 됨: (S.보스깸 ?? []).includes(층), 지금: (S.보스깸 ?? []).includes(층) ? "완료" : "아직" });
+  const 줄 = [{ 이름:말(`${필요판(층)}번 깨기`, `Clear ${필요판(층)} times`, `${필요판(층)}回クリア`), 됨: 깬수(층) >= 필요판(층), 지금:`${Math.min(깬수(층), 필요판(층))}/${필요판(층)}` }];
+  if (층 % 10 === 0) 줄.push({ 이름:T("구간 보스 처치"), 됨: (S.보스깸 ?? []).includes(층), 지금: (S.보스깸 ?? []).includes(층) ? T("완료") : T("아직") });
   return { 줄, 참: 줄.every((r) => r.됨) };
 }
 /** 열린 가장 높은 층. 1층은 늘 열려 있고, 그 위는 **아래층 자격을 채워야** 열린다. */
@@ -1451,7 +1782,7 @@ function 판끝(){
     c.경험 += S.파티.includes(c.id) ? 양 : Math.floor(양/2);
     while (c.레벨 < 레벨상한(c) && c.경험 >= 필요경험(c)) {
       c.경험 -= 필요경험(c); c.레벨++;
-      if (S.파티.includes(c.id)) 장면(c, "idle", `<b>${c.이름}</b> 레벨 ${c.레벨}`, "good");
+      if (S.파티.includes(c.id)) 장면(c, "idle", 말(`<b>${c.이름}</b> 레벨 ${c.레벨}`, `<b>${T(c.이름)}</b> Level ${c.레벨}`, `<b>${T(c.이름)}</b> レベル${c.레벨}`), "good");
     }
   }
   // 드롭(층과합성-지피티.md 2-1·2-4)
@@ -1460,7 +1791,7 @@ function 판끝(){
      T1 값과 시장값을 빼면 32판을 돌아도 모자랐다(실측). 보스를 도는 일에 값을 더 얹는다. */
   const g = 금화보상(층, 보스판), 파 = 보스판 ? 굴(8, 12) : 굴(2, 4), 잔 = 보스판 ? 굴(4, 6) : 굴(1, 2);
   S.금화 += g; S.가방.파편 += 파; S.가방.잔혼 += 잔;
-  let 줄 = `금화 <b>+${수(g)}</b> · 균열 파편 +${파} · 짐승 잔혼 +${잔}`;
+  let 줄 = 말(`금화 <b>+${수(g)}</b> · 균열 파편 +${파} · 짐승 잔혼 +${잔}`, `Gold <b>+${수(g)}</b> · Rift Shard +${파} · Beast Remnant +${잔}`, `金貨 <b>+${수(g)}</b> · 亀裂の欠片 +${파} · 獣の残魂 +${잔}`);
   // 10-10: **층대마다 재료가 달라야** 위층을 돌 이유가 생긴다. 단단한 가죽은 10층을 넘어야 나온다.
   /* 10-11 **20층 벽 완화.** 체감 자 실측: 10층을 30판(14.5분) 돌고도 T2 한 벌을 못 맞췄다.
      막은 것은 가죽이었다 — 넷을 입히려면 80개가 드는데 보스 판당 0.4×4 = 1.6개뿐이라 50판이 든다.
@@ -1468,33 +1799,33 @@ function 판끝(){
      확률은 관문이 아닌 층에만 남긴다(그쪽은 되돌이로 도는 곳이라 그대로 둔다). */
   if (층 >= 10) {
     const 가 = 보스판 ? 굴(4, 6) : (Math.random() < .4 ? 굴(1, 2) : 0);
-    if (가) { S.가방.가죽 = (S.가방.가죽 ?? 0) + 가; 줄 += ` · 단단한 가죽 +${가}`; }
+    if (가) { S.가방.가죽 = (S.가방.가죽 ?? 0) + 가; 줄 += 말(` · 단단한 가죽 +${가}`, ` · Tough Hide +${가}`, ` · 硬い革 +${가}`); }
   }
   if (층 >= 20 && Math.random() < .35) {
     const 강 = 보스판 ? 굴(4, 6) : 굴(1, 2);
-    S.가방.강철 = (S.가방.강철 ?? 0) + 강; 줄 += ` · 강철 조각 +${강}`;
+    S.가방.강철 = (S.가방.강철 ?? 0) + 강; 줄 += 말(` · 강철 조각 +${강}`, ` · Steel Scrap +${강}`, ` · 鋼の欠片 +${강}`);
   }
   if (층 >= 30 && Math.random() < .35) {
     const 석 = 보스판 ? 굴(4, 6) : 굴(1, 2);
-    S.가방.석편 = (S.가방.석편 ?? 0) + 석; 줄 += ` · 성소의 석편 +${석}`;
+    S.가방.석편 = (S.가방.석편 ?? 0) + 석; 줄 += 말(` · 성소의 석편 +${석}`, ` · Sanctum Stone Shard +${석}`, ` · 聖所の石片 +${석}`);
   }
   if (층 >= 40 && Math.random() < .35) {
     const 액 = 보스판 ? 굴(4, 6) : 굴(1, 2);
-    S.가방.독액 = (S.가방.독액 ?? 0) + 액; 줄 += ` · 늪지 독액 +${액}`;
+    S.가방.독액 = (S.가방.독액 ?? 0) + 액; 줄 += 말(` · 늪지 독액 +${액}`, ` · Bog Venom +${액}`, ` · 沼地の毒液 +${액}`);
   }
   /* 10-11: 용암 결정만 **60층 위**다(앞의 것들은 10·20·30·40). 6구간이 61층에서 시작하므로
      그 아래에서 나오면 늪에서 용암 결정이 떨어진다. T7 은 60층 관문을 넘은 뒤 61~69층에서 캔다. */
   if (층 >= 60 && Math.random() < .35) {
     const 결 = 보스판 ? 굴(4, 6) : 굴(1, 2);
-    S.가방.용암결정 = (S.가방.용암결정 ?? 0) + 결; 줄 += ` · 용암 결정 +${결}`;
+    S.가방.용암결정 = (S.가방.용암결정 ?? 0) + 결; 줄 += 말(` · 용암 결정 +${결}`, ` · Lava Crystal +${결}`, ` · 溶岩の結晶 +${결}`);
   }
   if (층 >= 70 && Math.random() < .35) {
     const 빙 = 보스판 ? 굴(4, 6) : 굴(1, 2);
-    S.가방.빙결정 = (S.가방.빙결정 ?? 0) + 빙; 줄 += ` · 빙결의 결정 +${빙}`;
+    S.가방.빙결정 = (S.가방.빙결정 ?? 0) + 빙; 줄 += 말(` · 빙결의 결정 +${빙}`, ` · Frost Crystal +${빙}`, ` · 氷結の結晶 +${빙}`);
   }
   if (층 >= 91 && Math.random() < .35) {
     const 수 = 보스판 ? 굴(4, 6) : 굴(1, 2);
-    S.가방.심연정수 = (S.가방.심연정수 ?? 0) + 수; 줄 += ` · 심연의 정수 +${수}`;
+    S.가방.심연정수 = (S.가방.심연정수 ?? 0) + 수; 줄 += 말(` · 심연의 정수 +${수}`, ` · Abyssal Essence +${수}`, ` · 深淵の精髄 +${수}`);
   }
   /* **관문 보스가 그 구간의 핵심 재료를 떨군다** — 다음 층대 장비는 이것이 있어야 만든다.
      10-11: 처음엔 판당 1개였는데, T2 한 벌에 **8개**가 필요해서 보스를 여덟 번 깨야 했다.
@@ -1508,19 +1839,19 @@ function 판끝(){
             : 층 >= 30 ? { 키:"거인뼈", 이름:"거인의 뼈" }
             : 층 >= 20 ? { 키:"이빨", 이름:"사냥개의 이빨" } : { 키:"수호핵", 이름:"수호핵" };
     const 수량 = 첫 ? 1 : 3;
-    S.가방[핵.키] = (S.가방[핵.키] ?? 0) + 수량; 줄 += ` · ${핵.이름} +${수량}`;
+    S.가방[핵.키] = (S.가방[핵.키] ?? 0) + 수량; 줄 += ` · ${T(핵.이름)} +${수량}`;
   }
   if (첫) {
     const 별 = 보스판 ? 100 : 15;
-    S.가방.별가루 += 별; 줄 += ` · <span class="big">별가루 +${별}</span> (첫 클리어)`;
-    if (보스판) { S.가방.문장.방어 += 3; 줄 += " · 수호의 문장 +3"; }
+    S.가방.별가루 += 별; 줄 += 말(` · <span class="big">별가루 +${별}</span> (첫 클리어)`, ` · <span class="big">Stardust +${별}</span> (first clear)`, ` · <span class="big">星屑 +${별}</span> (初クリア)`);
+    if (보스판) { S.가방.문장.방어 += 3; 줄 += 말(" · 수호의 문장 +3", " · Guardian Crest +3", " · 守護の紋章 +3"); }
   } else if (보스판) {
     /* 10-11: **보스를 다시 깨도 별가루가 나온다.** 전에는 첫 클리어뿐이라
        평생 모을 수 있는 별가루가 2,350개였다 — 10연차 한 번도 못 했다.
        수호핵과 **같이** 나오므로 "보스를 도는 일"이 장비와 뽑기를 한꺼번에 먹인다. */
     /* 패시브 영혼석 「찬란한 별가루」 — 50 → 75 (10-11) */
     const 별 = 낀패시브() === "별빛" ? 75 : 50;
-    S.가방.별가루 += 별; 줄 += ` · <b>별가루 +${별}</b>${별 > 50 ? " <i>(찬란한 별가루)</i>" : ""}`;
+    S.가방.별가루 += 별; 줄 += 말(` · <b>별가루 +${별}</b>${별 > 50 ? " <i>(찬란한 별가루)</i>" : ""}`, ` · <b>Stardust +${별}</b>${별 > 50 ? " <i>(Radiant Stardust)</i>" : ""}`, ` · <b>星屑 +${별}</b>${별 > 50 ? " <i>(煌めく星屑)</i>" : ""}`);
   }
   /* **영혼석 드롭** (10-11 사장님·제미나이 명세: 관문 보스 15~20%).
      이미 가진 것도 또 나온다 — 쌓아 두는 뜻은 없지만, "안 나오는 것 하나" 때문에
@@ -1536,20 +1867,20 @@ function 판끝(){
     const d = 영혼석표[석];
     if (d.종류 === "액티브") { if (!S.영혼석.낀액티브.includes(석)) S.영혼석.낀액티브.push(석); }
     else if (!S.영혼석.낀패시브) S.영혼석.낀패시브 = 석;
-    줄 += ` · <span class="big">${d.이름}</span>`;
+    줄 += ` · <span class="big">${T(d.이름)}</span>`;
   }
   장면(null, null, 줄, "good");
 
   /* ── 자격 (10-09) ─────────────────────────────────────────
      깬 횟수를 세고, 보스를 눕혔으면 적어 둔다. 층은 **안 올린다.** */
-  if (S.버프?.남은 > 0 && --S.버프.남은 === 0) 장면(null, null, "식당에서 받은 기운이 다했다.", "turn");
+  if (S.버프?.남은 > 0 && --S.버프.남은 === 0) 장면(null, null, 말("식당에서 받은 기운이 다했다.", "The mess hall's boost has worn off.", "食堂でもらった力が尽きた。"), "turn");
   S.깸 = S.깸 ?? {}; S.보스깸 = S.보스깸 ?? [];
   const 앞열림 = S.최고층;
   S.깸[층] = 깬수(층) + 1;
   if (보스판 && !S.보스깸.includes(층)) S.보스깸.push(층);
   S.최고층 = 열린층();
   if (S.최고층 > 앞열림) {
-    장면(null, null, `<b>${S.최고층}층</b>으로 오를 <span class="big">자격</span>을 얻었다.`, "big");
+    장면(null, null, 말(`<b>${S.최고층}층</b>으로 오를 <span class="big">자격</span>을 얻었다.`, `Earned the <span class="big">right</span> to climb to <b>floor ${S.최고층}</b>.`, `<b>${S.최고층}階</b>へ登る<span class="big">資格</span>を得た。`), "big");
     /**
      * **자동 등반** (10-09 사장님 선택 2번). 켜 두면 자격이 차는 **순간** 올라간다.
      * 자격을 건너뛰는 게 아니라 **자격이 찬 뒤에만** 움직이므로 구성을 안 깬다 —
@@ -1557,18 +1888,18 @@ function 판끝(){
      */
     if (S.자동오름 && 층 < S.최고층) {
       S.층 = 층 + 1; S.사냥층 = S.층; S.단계 = Math.floor((S.층 - 1)/10) + 1;
-      장면(null, null, `계단을 올라 <b>${S.층}층 · ${구간이름[(S.층 - 1) % 10]}</b>에 들어섰다.`, "big");
+      장면(null, null, 말(`계단을 올라 <b>${S.층}층 · ${구간이름[(S.층 - 1) % 10]}</b>에 들어섰다.`, `Climbed the stairs into <b>floor ${S.층} · ${T(구간이름[(S.층 - 1) % 10])}</b>.`, `階段を上り<b>${S.층}階 · ${T(구간이름[(S.층 - 1) % 10])}</b>に入った。`), "big");
     }
   } else {
     const 남 = 자격(층).줄.filter((r) => !r.됨);
-    if (남.length) 장면(null, null, `${층}층 자격 — ${자격(층).줄.map((r) => `${r.이름} ${r.지금}`).join(" · ")}`, "turn");
+    if (남.length) 장면(null, null, 말(`${층}층 자격 — ${자격(층).줄.map((r) => `${r.이름} ${r.지금}`).join(" · ")}`, `Floor ${층} requirements — ${자격(층).줄.map((r) => `${r.이름} ${r.지금}`).join(" · ")}`, `${층}階の資格 — ${자격(층).줄.map((r) => `${r.이름} ${r.지금}`).join(" · ")}`), "turn");
   }
   // 10층 보스: 흑마법사(제어) 합류 — 뽑기가 생기기 전까지 임시
   if (보스판 && !S.대원.some((c) => c.키 === "흑마법사")) {
     const 새 = 대원만들기("흑마법사", Math.max(1, ...S.대원.map((c) => c.레벨)));
     S.대원.push(새);
     if (S.파티.length < 파티한도) S.파티.push(새.id);
-    장면(null, null, `골렘의 잔해 속에서 <b>흑마법사</b>(제어)가 걸어 나왔다.`, "big");
+    장면(null, null, 말(`골렘의 잔해 속에서 <b>흑마법사</b>(제어)가 걸어 나왔다.`, `From the golem's wreckage, a <b>Dark Mage</b> (Control) steps out.`, `ゴーレムの残骸から<b>黒魔導士</b>(制御)が歩み出た。`), "big");
   }
   // **층을 안 올린다.** 같은 층을 다시 세운다 — 떠나는 것은 사장님이 탑에서 고른다.
   전투준비(); 적만들기(); 윗줄(); 그리기(); 저장();
@@ -1583,8 +1914,8 @@ function 전멸(){
    */
   if (S.층 % 10 === 0 && S.층 > 1) {
     const 아래 = S.층 - 1;
-    적기(`<b>${S.층}층</b> 관문에서 무너졌다. 자동 등반을 끄고 <b>${아래}층</b>으로 물러나 힘을 모은다.`, "die");
-    적기("대장간에서 장비를 갖추고 다시 오면 된다.", "turn");
+    적기(말(`<b>${S.층}층</b> 관문에서 무너졌다. 자동 등반을 끄고 <b>${아래}층</b>으로 물러나 힘을 모은다.`, `Fell at the <b>floor ${S.층}</b> gate. Auto climb is off — falling back to <b>floor ${아래}</b> to build strength.`, `<b>${S.층}階</b>の関門で崩れた。自動登攀を切り、<b>${아래}階</b>へ退いて力を蓄える。`), "die");
+    적기(말("대장간에서 장비를 갖추고 다시 오면 된다.", "Gear up at the forge and come back.", "鍛冶場で装備を整えてまた来ればいい。"), "turn");
     S.자동오름 = false;
     S.층 = 아래; S.사냥층 = 아래; S.단계 = Math.floor((아래 - 1)/10) + 1;
     S.쉼 = 4;
@@ -1593,12 +1924,12 @@ function 전멸(){
   }
   // 10-09 사장님 "켜 둔 동안 계속 도전" — 되돌이 사냥 중엔 구간 처음으로 밀려나지 않는다
   if (S.사냥층) {
-    적기(`원정대가 쓰러졌다. 숨을 고르고 <b>${S.사냥층}층</b>에 다시 든다.`, "die");
+    적기(말(`원정대가 쓰러졌다. 숨을 고르고 <b>${S.사냥층}층</b>에 다시 든다.`, `The expedition fell. Catching breath, then back into <b>floor ${S.사냥층}</b>.`, `遠征隊が倒れた。息を整えて<b>${S.사냥층}階</b>に再び入る。`), "die");
     S.쉼 = 4;
     for (const c of 파티원()) { c.막 = 0; c.보임막 = 0; }
     윗줄(); 그리기(); return;
   }
-  적기("원정대가 물러났다. 구간 처음으로 돌아간다.", "die");
+  적기(말("원정대가 물러났다. 구간 처음으로 돌아간다.", "The expedition retreats to the start of the zone.", "遠征隊は退いた。区間の最初に戻る。"), "die");
   S.층 = Math.max(1, Math.floor((S.층 - 1)/10)*10 + 1);
   S.단계 = Math.floor((S.층 - 1)/10) + 1;
   S.쉼 = 4;
@@ -1838,9 +2169,9 @@ function 그리기(){
 
 /* ── 아래 칸 ──────────────────────────────────────── */
 function 윗줄(){
-  $("#zone").textContent = `${구간이름[(S.단계-1)%10]} · ${S.층}층`
-    + (S.진행 && S.무리수 > 1 ? ` · 무리 ${S.무리 + 1}/${S.무리수}` : "")
-    + (S.사냥층 ? " · 되돌이" : "");
+  $("#zone").textContent = 말(`${구간이름[(S.단계-1)%10]} · ${S.층}층`, `${T(구간이름[(S.단계-1)%10])} · F${S.층}`, `${T(구간이름[(S.단계-1)%10])} · ${S.층}階`)
+    + (S.진행 && S.무리수 > 1 ? 말(` · 무리 ${S.무리 + 1}/${S.무리수}`, ` · Wave ${S.무리 + 1}/${S.무리수}`, ` · 群れ ${S.무리 + 1}/${S.무리수}`) : "")
+    + (S.사냥층 ? 말(" · 되돌이", " · Farming", " · 周回") : "");
   $("#gold").textContent = 수(S.금화); $("#shard").textContent = 수(S.가방.별가루);
   맵그리기();
 }
@@ -1862,12 +2193,12 @@ function 맵그리기(){
     자격단추.classList.toggle("on", 문);
     if (문) { const 자 = 자격(S.층);
       자격단추.classList.toggle("참", 자.참);
-      자격단추.textContent = 자.참 ? `${S.층}층 자격 · 참` : `${S.층}층 자격`; }
+      자격단추.textContent = 자.참 ? 말(`${S.층}층 자격 · 참`, `F${S.층} reqs · met`, `${S.층}階の資格 · 達成`) : 말(`${S.층}층 자격`, `F${S.층} reqs`, `${S.층}階の資格`); }
   }
   const 자동단추 = $("#자동버튼");
   if (자동단추) { 자동단추.classList.toggle("on", S.진행 && S.탭 === "run");
     자동단추.classList.toggle("켬", !!S.자동오름);
-    자동단추.textContent = S.자동오름 ? "자동 등반 켬" : "자동 등반 끔"; }
+    자동단추.textContent = S.자동오름 ? T("자동 등반 켬") : T("자동 등반 끔"); }
   // 10-09 사장님 "탑 고를 때 전투 화면이 왜 있냐고" — 멈춰 있는 동안 전투 칸을 접는다.
   // 싸우지도 않는 전투 화면이 위에 붙어 있으면 탑이 반쪽만 보이고, 고르는 중인지 싸우는 중인지도 헷갈린다.
   const 판 = $("#board"); if (판) 판.classList.toggle("접음", !S.진행 && S.탭 === "run");
@@ -1892,9 +2223,9 @@ function 맵그리기(){
     <div class="층들">${층들.map((f) => {
       const 보스 = f % 10 === 0, 자 = 자격(f), 꼭대기층 = f === 끝;
       return `<div class="층칸${보스 ? " 보스" : ""}${자.참 ? "" : " 새"}" data-f="${f}">
-        <div class="머리줄"><b>${f}층</b>
-          <i>${보스 ? 구간(f).보스.이름 : 구간이름[(f - 1) % 10]}</i>
-          <span class="표">${자.참 ? "졸업" : 꼭대기층 ? "오르는 중" : "미완"}</span></div>
+        <div class="머리줄"><b>${말(`${f}층`, `F${f}`, `${f}階`)}</b>
+          <i>${T(보스 ? 구간(f).보스.이름 : 구간이름[(f - 1) % 10])}</i>
+          <span class="표">${자.참 ? T("졸업") : 꼭대기층 ? T("오르는 중") : T("미완")}</span></div>
         <div class="자격줄">${자.줄.map((r) => `<span class="조건${r.됨 ? " 참" : ""}">${r.이름} <b>${r.지금}</b></span>`).join("")}</div>
       </div>`;
     }).join("")}</div></div>`;
@@ -1906,15 +2237,21 @@ $("#소환단추").onclick = () => 뽑기창();
 
 $("#자격버튼").onclick = () => {
   const 층 = S.층, 자 = 자격(층);
-  쪽창(`${층}층 관문`, `<div class="자격칸">${자.줄.map((r) =>
+  쪽창(말(`${층}층 관문`, `Floor ${층} gate`, `${층}階の関門`), `<div class="자격칸">${자.줄.map((r) =>
       `<div class="조건줄${r.됨 ? " 참" : ""}"><span>${r.이름}</span><b>${r.지금}</b></div>`).join("")}</div>
     <div class="풀이 on">${자.참
-      ? `자격이 찼다. <b>${층 + 1}층</b>으로 오를 수 있다 — 탑에서 고르거나, 자동 등반을 켜 두면 바로 올라간다.`
-      : `아직 못 오른다. 위에 남은 것을 채우면 <b>${층 + 1}층</b>이 열린다.<br>
-         관문에서 지면 자동 등반이 꺼지고 한 층 내려가 모으게 된다.`}</div>`);
+      ? 말(`자격이 찼다. <b>${층 + 1}층</b>으로 오를 수 있다 — 탑에서 고르거나, 자동 등반을 켜 두면 바로 올라간다.`,
+          `Requirements met. You can climb to <b>floor ${층 + 1}</b> — pick it in the tower, or keep auto climb on to go right away.`,
+          `資格がそろった。<b>${층 + 1}階</b>へ登れる — 塔で選ぶか、自動登攀をオンにしておけばすぐ登る。`)
+      : 말(`아직 못 오른다. 위에 남은 것을 채우면 <b>${층 + 1}층</b>이 열린다.<br>
+         관문에서 지면 자동 등반이 꺼지고 한 층 내려가 모으게 된다.`,
+          `Can't climb yet. Fill what's left above and <b>floor ${층 + 1}</b> opens.<br>
+         Lose at a gate and auto climb turns off; you drop a floor to gather strength.`,
+          `まだ登れない。上の残りを満たせば<b>${층 + 1}階</b>が開く。<br>
+         関門で負けると自動登攀が切れ、1階下りて力を集めることになる。`)}</div>`);
 };
 
-$("#자동버튼").onclick = () => { S.자동오름 = !S.자동오름; 적기(S.자동오름 ? "자격이 차면 바로 올라간다." : "자격이 차도 이 층에 머문다.", "turn"); 맵그리기(); 저장(); };
+$("#자동버튼").onclick = () => { S.자동오름 = !S.자동오름; 적기(S.자동오름 ? 말("자격이 차면 바로 올라간다.", "Will climb as soon as requirements are met.", "資格がそろったらすぐ登る。") : 말("자격이 차도 이 층에 머문다.", "Will stay on this floor even when requirements are met.", "資格がそろってもこの階にとどまる。"), "turn"); 맵그리기(); 저장(); };
 
 /* ── 길드 (10-10 사장님) ─────────────────────────────────────────
    우편함·공지·설정은 HTML 에만 있고 **눌러도 아무 일이 없었다**. 셋을 살리고
@@ -1923,7 +2260,7 @@ function 쪽창(제목, 속, 꾸밈){
   const 덮 = document.createElement("div"); 덮.id = "덮개";
   덮.innerHTML = `<div class="카드" onclick="event.stopPropagation()">
     <div class="nm"><b>${제목}</b></div>${속}
-    <div class="줄"><button class="btn" id="닫기">닫기</button></div></div>`;
+    <div class="줄"><button class="btn" id="닫기">${T("닫기")}</button></div></div>`;
   덮.onclick = () => 덮.remove();
   document.body.appendChild(덮);
   덮.querySelector("#닫기").onclick = () => 덮.remove();
@@ -1933,13 +2270,17 @@ function 쪽창(제목, 속, 꾸밈){
 const 오늘날 = () => new Date().toISOString().slice(0, 10);
 
 $("#출석단추").onclick = () => {
-  if (S.출석날 === 오늘날()) { 쪽창("출석", `<div class="풀이 on">오늘은 이미 받았다. 내일 다시 오면 된다.</div>`); return; }
+  if (S.출석날 === 오늘날()) { 쪽창(T("출석"), 말(`<div class="풀이 on">오늘은 이미 받았다. 내일 다시 오면 된다.</div>`, `<div class="풀이 on">Already claimed today. Come back tomorrow.</div>`, `<div class="풀이 on">今日はもう受け取った。明日また来よう。</div>`)); return; }
   S.출석날 = 오늘날();
   S.가방.별가루 += 50; S.금화 += 2000;
   윗줄(); 저장(); 길드그리기();
-  쪽창("출석", `<div class="풀이 on">원정대 장부에 이름을 적었다.<br>
+  쪽창(T("출석"), 말(`<div class="풀이 on">원정대 장부에 이름을 적었다.<br>
     <b style="color:var(--금)">별가루 +50</b> · <b style="color:var(--금)">금화 +2,000</b><br>
-    지금 별가루 ${수(S.가방.별가루)}</div>`);
+    지금 별가루 ${수(S.가방.별가루)}</div>`, `<div class="풀이 on">You signed the expedition ledger.<br>
+    <b style="color:var(--금)">Stardust +50</b> · <b style="color:var(--금)">Gold +2,000</b><br>
+    Stardust now ${수(S.가방.별가루)}</div>`, `<div class="풀이 on">遠征隊の帳簿に名前を書いた。<br>
+    <b style="color:var(--금)">星屑 +50</b> · <b style="color:var(--금)">金貨 +2,000</b><br>
+    現在の星屑 ${수(S.가방.별가루)}</div>`));
 };
 
 /** 식당 — 재료를 밥으로 바꾼다. 잔혼은 쌓이기만 하던 재료였다. */
@@ -1947,49 +2288,71 @@ const 식당값 = { 잔혼: 10, 금화: 3000 };
 $("#식당단추").onclick = () => {
   const 됨 = S.가방.잔혼 >= 식당값.잔혼 && S.금화 >= 식당값.금화;
   const 남 = S.버프?.남은 ?? 0;
-  쪽창("길드 식당", `<div class="풀이 on">
-      ${남 > 0 ? `지금 <b style="color:var(--초록)">공격 +${Math.round(S.버프.몫*100)}%</b> · 남은 <b>${남}판</b><br>` : ""}
-      한 끼를 차리면 <b>다음 10판</b> 동안 파티 <b style="color:var(--초록)">공격 +5%</b>.<br>
-      드는 것: 짐승 잔혼 <span style="color:${S.가방.잔혼 >= 식당값.잔혼 ? "#8fe08f" : "#ff8e7a"}">${S.가방.잔혼}/${식당값.잔혼}</span>
-      · 금화 <span style="color:${S.금화 >= 식당값.금화 ? "#8fe08f" : "#ff8e7a"}">${수(식당값.금화)}</span>
+  쪽창(T("길드 식당"), `<div class="풀이 on">
+      ${남 > 0 ? 말(`지금 <b style="color:var(--초록)">공격 +${Math.round(S.버프.몫*100)}%</b> · 남은 <b>${남}판</b><br>`, `Now <b style="color:var(--초록)">ATK +${Math.round(S.버프.몫*100)}%</b> · <b>${남}</b> battles left<br>`, `現在 <b style="color:var(--초록)">攻撃 +${Math.round(S.버프.몫*100)}%</b> · 残り<b>${남}戦</b><br>`) : ""}
+      ${말(`한 끼를 차리면 <b>다음 10판</b> 동안 파티 <b style="color:var(--초록)">공격 +5%</b>.<br>
+      드는 것: 짐승 잔혼`, `A hearty meal gives the party <b style="color:var(--초록)">ATK +5%</b> for <b>the next 10 battles</b>.<br>
+      Cost: Beast Remnant`, `食事を用意すると<b>次の10戦</b>の間 パーティの<b style="color:var(--초록)">攻撃 +5%</b>。<br>
+      必要なもの: 獣の残魂`)} <span style="color:${S.가방.잔혼 >= 식당값.잔혼 ? "#8fe08f" : "#ff8e7a"}">${S.가방.잔혼}/${식당값.잔혼}</span>
+      · ${T("금화")} <span style="color:${S.금화 >= 식당값.금화 ? "#8fe08f" : "#ff8e7a"}">${수(식당값.금화)}</span>
     </div>
-    <div class="줄"><button class="btn" id="차리기" ${됨 ? "" : "disabled"}>차리기</button></div>`,
+    <div class="줄"><button class="btn" id="차리기" ${됨 ? "" : "disabled"}>${T("차리기")}</button></div>`,
     (덮) => { const b = 덮.querySelector("#차리기"); if (!b) return;
       b.onclick = () => {
         if (S.가방.잔혼 < 식당값.잔혼 || S.금화 < 식당값.금화) return;
         S.가방.잔혼 -= 식당값.잔혼; S.금화 -= 식당값.금화;
         S.버프 = { 남은: 10, 몫: .05 };
         윗줄(); 저장(); 덮.remove();
-        적기("식당에서 한 끼를 차렸다. <b>다음 10판 공격 +5%</b>", "good");
+        적기(말("식당에서 한 끼를 차렸다. <b>다음 10판 공격 +5%</b>", "Served a meal at the mess hall. <b>ATK +5% for the next 10 battles</b>", "食堂で食事を用意した。<b>次の10戦 攻撃 +5%</b>"), "good");
       }; });
 };
 
-$("#mailBtn").onclick = () => 쪽창("우편함",
-  `<div class="풀이 on">수령할 우편이 없다.<br>나중에 보상이 오면 여기에 쌓인다.</div>`);
+$("#mailBtn").onclick = () => 쪽창(T("우편함"),
+  말(`<div class="풀이 on">수령할 우편이 없다.<br>나중에 보상이 오면 여기에 쌓인다.</div>`, `<div class="풀이 on">No mail to collect.<br>Rewards will pile up here later.</div>`, `<div class="풀이 on">受け取る郵便はない。<br>あとで報酬が届くとここにたまる。</div>`));
 
-$("#공지단추").onclick = () => 쪽창("공지",
-  `<div class="풀이 on"><b>탑은 100층이다.</b> 층은 스스로 오르지 않는다 —
+$("#공지단추").onclick = () => 쪽창(T("공지"),
+  말(`<div class="풀이 on"><b>탑은 100층이다.</b> 층은 스스로 오르지 않는다 —
     그 층을 되돌이로 돌아 <b>자격</b>을 채워야 다음 층이 열린다.<br><br>
     10·20·30… 층은 <b>관문</b>이다. 보스를 눕혀야 지나간다. 관문에서 지면
     자동 등반이 꺼지고 한 층 내려가 모으게 된다.<br><br>
-    막히면 <b>대장간</b>에서 장비를 만들어라. 재료가 하나 모자라면 <b>시장</b>에 하루치가 있다.</div>`);
+    막히면 <b>대장간</b>에서 장비를 만들어라. 재료가 하나 모자라면 <b>시장</b>에 하루치가 있다.</div>`,
+  `<div class="풀이 on"><b>The tower has 100 floors.</b> Floors don't climb themselves —
+    farm a floor until its <b>requirements</b> are met, and the next floor opens.<br><br>
+    Floors 10, 20, 30… are <b>gates</b>. You must defeat the boss to pass. Lose at a gate and
+    auto climb turns off; you drop a floor to gather strength.<br><br>
+    When stuck, craft gear at the <b>Forge</b>. If you're one material short, the <b>Market</b> has a day's supply.</div>`,
+  `<div class="풀이 on"><b>塔は100階だ。</b> 階は勝手には登らない —
+    その階を周回して<b>資格</b>を満たすと次の階が開く。<br><br>
+    10・20・30…階は<b>関門</b>だ。ボスを倒さないと通れない。関門で負けると
+    自動登攀が切れ、1階下りて力を集めることになる。<br><br>
+    詰まったら<b>鍛冶場</b>で装備を作れ。素材が1つ足りないなら<b>市場</b>に1日分ある。</div>`));
 
-$("#설정단추").onclick = () => 쪽창("설정",
-  `<div class="풀이 on">소리는 위쪽 <b>♪</b> 로 끄고 켠다.<br>
-     아래는 <b>되돌릴 수 없다.</b> 대원·층·재료가 모두 사라지고 처음부터 시작한다.</div>
-   <div class="줄"><button class="btn" id="지우기단추">저장 지우기</button></div>`,
-  (덮) => { 덮.querySelector("#지우기단추").onclick = () => {
+$("#설정단추").onclick = () => 쪽창(T("설정"),
+  `<div class="풀이 on">${말("언어", "Language", "言語")}</div>
+   <div class="줄">${[["ko","한국어"],["en","English"],["ja","日本語"]].map(([k, n]) =>
+     `<button class="btn" data-언어="${k}"${k === 언어 ? " disabled" : ""}>${n}</button>`).join("")}</div>
+   ${말(`<div class="풀이 on">소리는 위쪽 <b>♪</b> 로 끄고 켠다.<br>
+     아래는 <b>되돌릴 수 없다.</b> 대원·층·재료가 모두 사라지고 처음부터 시작한다.</div>`,
+     `<div class="풀이 on">Turn sound on and off with <b>♪</b> at the top.<br>
+     The button below <b>can't be undone.</b> All members, floors and materials are lost and you start over.</div>`,
+     `<div class="풀이 on">音は上の<b>♪</b>で切り替える。<br>
+     下は<b>元に戻せない。</b> 隊員・階・素材がすべて消え、最初からやり直しになる。</div>`)}
+   <div class="줄"><button class="btn" id="지우기단추">${T("저장 지우기")}</button></div>`,
+  (덮) => {
+    // 10-14 언어 바꾸기: 고른 것을 남기고 새로 그린다(저장은 그대로 — 글만 바뀐다)
+    덮.querySelectorAll("[data-언어]").forEach((b) => b.onclick = () => { try { localStorage.setItem("ash-lang", b.dataset.언어); } catch {} 저장(); location.reload(); });
+    덮.querySelector("#지우기단추").onclick = () => {
     덮.remove();
     // 한 번 더 묻는다 — 실수로 눌러서 몇 달치가 날아가면 돌이킬 수 없다
-    쪽창("정말 지울까", `<div class="풀이 on">지금까지 깬 층과 모은 것이 <b>전부</b> 사라진다. 되돌릴 수 없다.</div>
-      <div class="줄"><button class="btn" id="진짜">그래도 지운다</button></div>`,
+    쪽창(T("정말 지울까"), 말(`<div class="풀이 on">지금까지 깬 층과 모은 것이 <b>전부</b> 사라진다. 되돌릴 수 없다.</div>`, `<div class="풀이 on">Every floor you've cleared and everything you've gathered will be <b>gone</b>. This can't be undone.</div>`, `<div class="풀이 on">これまでに突破した階と集めたものが<b>すべて</b>消える。元に戻せない。</div>`) + `
+      <div class="줄"><button class="btn" id="진짜">${T("그래도 지운다")}</button></div>`,
       (덮2) => { 덮2.querySelector("#진짜").onclick = () => { 지우기(); location.reload(); }; });
   }; });
 
 /* 전투를 멈추고 탑으로 — 되돌이도 여기서 끊는다. 이 길이 없어서 한번 떠나면 맵을 못 봤다. */
 $("#탑버튼").onclick = () => {
   S.진행 = false; S.사냥층 = null;
-  적기("발을 멈추고 탑을 올려다본다.", "");
+  적기(말("발을 멈추고 탑을 올려다본다.", "You stop and look up at the tower.", "足を止めて塔を見上げる。"), "");
   맵그리기(); 윗줄(); 저장();
 };
 
@@ -2001,50 +2364,50 @@ function 출발창(층){
   const 덮 = document.createElement("div"); 덮.id = "덮개";
   const 그리자 = () => {
     덮.innerHTML = `<div class="카드" onclick="event.stopPropagation()">
-      <div class="nm"><b><span style="color:var(--금)">${층}층</span>${층 % 10 === 0 ? ` <span class="tag r">보스</span>` : ""}</b>
-        <i>누구를 데려갈까 · ${S.파티.length}/${파티한도}</i></div>
+      <div class="nm"><b><span style="color:var(--금)">${말(`${층}층`, `Floor ${층}`, `${층}階`)}</span>${층 % 10 === 0 ? ` <span class="tag r">${T("보스")}</span>` : ""}</b>
+        <i>${말("누구를 데려갈까", "Who's coming along?", "誰を連れていく？")} · ${S.파티.length}/${파티한도}</i></div>
       <!-- 10-10 사장님: 글자 체크박스를 치우고 초상화 슬롯 다섯 칸으로.
            윗줄은 데려갈 자리, 아랫줄은 남은 대원. 누르면 오가고, 빈 칸이 몇인지 바로 보인다.
            (이 주석은 템플릿 문자열 안이다 — 여기에 백틱을 쓰면 템플릿이 끊긴다. 10-10 그래서 한 번 터졌다.) -->
       <!-- 10-10 사장님: 진행 점은 뺐다 — 들어가고 나면 중간에 못 바꾸니 보여 줄 것이 없다.
            파티는 **네 자리**가 한계(사장님). -->
-      <div class="칸이름">최대 ${파티한도}인 파티 편성</div>
+      <div class="칸이름">${말(`최대 ${파티한도}인 파티 편성`, `Party of up to ${파티한도}`, `最大${파티한도}人のパーティ編成`)}</div>
       <div class="슬롯판">${Array.from({ length: 파티한도 }, (_, i) => {
         const id = S.파티[i], c = id != null ? S.대원.find((x) => x.id === id) : null;
         const d = c ? 카드(c) : null;
         return `<div class="칸슬롯${c ? " 참" : ""}" ${c ? `data-넣="${c.id}"` : ""}>
           <span class="번호">${i + 1}</span>
           ${c ? `<div class="큰낯" style="border-color:${등급색[d.등급]};background-image:url(${얼굴(d.그림)})"></div>
-                 <b>${d.직업} Lv.${c.레벨}</b><i class="참">출전 중</i>`
-              : `<div class="더하기">+</div><i>대기 중</i>`}</div>`;
+                 <b>${T(d.직업)} Lv.${c.레벨}</b><i class="참">${T("출전 중")}</i>`
+              : `<div class="더하기">+</div><i>${T("대기 중")}</i>`}</div>`;
       }).join("")}</div>
-      <div class="칸이름">대원 — 누르면 넣고 뺀다</div>
+      <div class="칸이름">${T("대원 — 누르면 넣고 뺀다")}</div>
       <div class="출전줄 고르기">${S.대원.map((c) => { const d = 카드(c), 안 = S.파티.includes(c.id);
         return `<div class="자리${안 ? " 켬" : ""}" data-넣="${c.id}">
           <div class="낯" style="border-color:${안 ? 등급색[d.등급] : "#3a2c45"};background-image:url(${얼굴(d.그림)})"></div>
-          <b>${d.직업}</b><i>${안 ? "출전" : `Lv.${c.레벨}`}</i></div>`; }).join("")
-        || `<div class="자리 빈자리"><i>대원이 없다</i></div>`}</div>
-      <div class="칸이름">전투 준비</div>
+          <b>${T(d.직업)}</b><i>${안 ? T("출전") : `Lv.${c.레벨}`}</i></div>`; }).join("")
+        || `<div class="자리 빈자리"><i>${T("대원이 없다")}</i></div>`}</div>
+      <div class="칸이름">${T("전투 준비")}</div>
       <div class="준비줄">
         <div class="준비칸">
-          <div class="준비머리">${아이콘("i-약")} 물약</div>
+          <div class="준비머리">${아이콘("i-약")} ${T("물약")}</div>
           <div class="준비속">
-            <b>별빛 회복약 ${S.가방.약}</b>
+            <b>${T("별빛 회복약")} ${S.가방.약}</b>
             <span class="수조절">
               <span data-약="-1">−</span><b class="몇">${S.약수 ?? 0}</b><span data-약="1">+</span>
             </span></div>
         </div>
         <div class="준비칸 흐림">
-          <div class="준비머리">${아이콘("s-scroll")} 소모품</div>
-          <div class="준비속"><i>아직 없다</i></div>
+          <div class="준비머리">${아이콘("s-scroll")} ${T("소모품")}</div>
+          <div class="준비속"><i>${T("아직 없다")}</i></div>
         </div>
       </div>
-      <div class="칸이름">자격</div>
+      <div class="칸이름">${T("자격")}</div>
       <div class="자격칸">${자격(층).줄.map((r) =>
         `<div class="조건줄${r.됨 ? " 참" : ""}"><span>${r.이름}</span><b>${r.지금}</b></div>`).join("")}</div>
       <!-- 10-09 사장님 구성: 올라가는 단추가 없다. 들어가서 되돌이로 돌며 자격을 채운다. -->
-      <div class="줄"><button class="btn 큰단추" id="들어가기">전투 시작 (${층}층)</button></div>
-      <div class="줄"><button class="btn" id="닫기">닫기</button></div>
+      <div class="줄"><button class="btn 큰단추" id="들어가기">${말(`전투 시작 (${층}층)`, `Start battle (F${층})`, `戦闘開始 (${층}階)`)}</button></div>
+      <div class="줄"><button class="btn" id="닫기">${T("닫기")}</button></div>
     </div>`;
     덮.querySelectorAll("[data-넣]").forEach((b) => b.onclick = () => {
       const id = Number(b.dataset.넣);
@@ -2062,7 +2425,7 @@ function 출발창(층){
       S.층 = 층; S.단계 = Math.floor((층 - 1)/10) + 1;
       S.사냥층 = 층; S.진행 = true; S.쉼 = 0;          // 되돌이가 기본이다 — 층은 스스로 안 오른다
       덮.remove();
-      적기(`<b>${층}층 · ${구간이름[(층 - 1) % 10]}</b>에 들어섰다.`, "big");
+      적기(말(`<b>${층}층 · ${구간이름[(층 - 1) % 10]}</b>에 들어섰다.`, `Entered <b>floor ${층} · ${T(구간이름[(층 - 1) % 10])}</b>.`, `<b>${층}階 · ${T(구간이름[(층 - 1) % 10])}</b>に入った。`), "big");
       // 윗줄()이 전투 칸을 다시 펴므로, 크기()는 그 뒤에 불러야 한다 — 접힌 칸은 폭이 0이다
       전투준비(); 적만들기(); 윗줄(); 크기(); 그리기(); 화면(); 저장();
     };
@@ -2090,61 +2453,69 @@ function 대원창(el){
 
   const 슬롯칸 = (슬롯) => {
     const 낀 = 장비들(c).find((x) => 레시피[x.키].슬롯 === 슬롯);
-    const 값 = 낀 ? Object.entries(레시피[낀.키].효과 ?? {}).map(([k, v]) => `${k} +${v}`).join(" · ") : "";
+    const 값 = 낀 ? Object.entries(레시피[낀.키].효과 ?? {}).map(([k, v]) => `${T(k)} +${v}`).join(" · ") : "";
     // 10-10 사장님 "X 버튼 완전 삭제" — 슬롯을 누르면 가방이 열리고, 벗기는 것도 거기서 한다
     return `<div class="슬롯${낀 ? " 참" : ""}" data-슬롯="${슬롯}">
       ${낀 && 물건아이콘[낀.키] ? 아이콘(물건아이콘[낀.키]) : ""}
-      <div class="칸이름2">${슬롯}</div>
-      ${낀 ? `<div class="템이름">${레시피[낀.키].이름}</div><div class="템값">${값}</div>`
-           : `<div class="템이름" style="opacity:.4">비어 있음</div>`}</div>`;
+      <div class="칸이름2">${T(슬롯)}</div>
+      ${낀 ? `<div class="템이름">${T(레시피[낀.키].이름)}</div><div class="템값">${값}</div>`
+           : `<div class="템이름" style="opacity:.4">${T("비어 있음")}</div>`}</div>`;
   };
 
   el.innerHTML = `<div class="머리띠">
-      <span class="뒤로" id="뒤로">‹ 캐릭터</span>
+      <span class="뒤로" id="뒤로">${T("‹ 캐릭터")}</span>
       <div class="넘김">
         <span id="앞사람" class="${자리 === 0 ? "꺼짐" : ""}">‹</span>
         <span id="뒷사람" class="${자리 === 줄.length - 1 ? "꺼짐" : ""}">›</span>
       </div></div>
     <div class="큰머리">
       <div class="얼굴" style="border-color:${등급색[d.등급]};background-image:url(${얼굴(d.그림)})"></div>
-      <div class="nm"><b class="큰이름"><span style="color:${등급색[d.등급]}">${d.직업}</span>
+      <div class="nm"><b class="큰이름"><span style="color:${등급색[d.등급]}">${T(d.직업)}</span>
         <span style="color:#a8977f">Lv.${c.레벨}</span>
-        <span class="tag" style="color:${등급색[d.등급]}">${d.등급}</span></b>
-        <i>${d.역할}${안에 ? " · 출전 중" : ""}${S.대표 === c.id ? " · 대표" : ""}</i>
-        <div class="힘">전투력 <b>${수(전투력(c))}</b></div>
+        <span class="tag" style="color:${등급색[d.등급]}">${T(d.등급)}</span></b>
+        <i>${T(d.역할)}${안에 ? T(" · 출전 중") : ""}${S.대표 === c.id ? T(" · 대표") : ""}</i>
+        <div class="힘">${T("전투력")} <b>${수(전투력(c))}</b></div>
         <div class="bar"><i style="width:${Math.min(100, c.경험/필요경험(c)*100)}%"></i></div></div>
     </div>
-    <div class="한줄자">체력 <b>${수(최대체력(c))}</b> · 공격 <b>${수(공격력(c))}</b>
-      · 방어 <b>${수(방어력(c))}</b> · 속도 <b>${속도(c)}</b></div>
+    <div class="한줄자">${T("체력")} <b>${수(최대체력(c))}</b> · ${T("공격")} <b>${수(공격력(c))}</b>
+      · ${T("방어")} <b>${수(방어력(c))}</b> · ${T("속도")} <b>${속도(c)}</b></div>
     <!-- 10-10 사장님 시안: **큰 전신 액자**. 작은 초상화만으로는 누구를 보고 있는지 와닿지 않는다 -->
     <div class="액자"><div class="선것" style="background-image:url(art/${d.그림}.png)"></div></div>
     <div style="padding:0 11px"><div class="서브탭">${[["장비","s-gear"], ["강화","s-grow"], ["기술","s-skill"]].map(([t, ic]) =>
-      `<span class="${S.대원탭 === t ? "on" : ""}" data-대원탭="${t}"><img src="art/icon/${ic}.png" alt="">${t}</span>`).join("")}</div></div>
+      `<span class="${S.대원탭 === t ? "on" : ""}" data-대원탭="${t}"><img src="art/icon/${ic}.png" alt="">${T(t)}</span>`).join("")}</div></div>
     ${S.대원탭 === "장비"
       ? `<div class="슬롯줄">${["무기", "갑옷", "장신구"].map(슬롯칸).join("")}</div>
          ${S.가방슬롯 ? 가방패널(S.가방슬롯, c)
-           : `<div class="row"><div class="nm"><i>슬롯을 누르면 아래에 가방이 펼쳐진다.</i></div></div>`}`
+           : `<div class="row"><div class="nm"><i>${말("슬롯을 누르면 아래에 가방이 펼쳐진다.", "Tap a slot to open your bag below.", "スロットを押すと下にかばんが開く。")}</i></div></div>`}`
       : S.대원탭 === "강화"
       ? `<div style="padding:4px 11px 0">
-          <div class="칸이름">자람</div>
+          <div class="칸이름">${T("자람")}</div>
           <div class="자격칸">
-            <div class="조건줄 참"><span>지금 레벨</span><b>Lv.${c.레벨}</b></div>
-            <div class="조건줄${c.레벨 >= 레벨상한(c) ? "" : " 참"}"><span>올릴 수 있는 끝</span><b>Lv.${레벨상한(c)}</b></div>
-            <div class="조건줄"><span>다음 레벨까지</span><b>${수(Math.max(0, 필요경험(c) - c.경험))}</b></div>
-            <div class="조건줄"><span>겹친 카드</span><b>${c.중복}</b></div>
+            <div class="조건줄 참"><span>${T("지금 레벨")}</span><b>Lv.${c.레벨}</b></div>
+            <div class="조건줄${c.레벨 >= 레벨상한(c) ? "" : " 참"}"><span>${T("올릴 수 있는 끝")}</span><b>Lv.${레벨상한(c)}</b></div>
+            <div class="조건줄"><span>${T("다음 레벨까지")}</span><b>${수(Math.max(0, 필요경험(c) - c.경험))}</b></div>
+            <div class="조건줄"><span>${T("겹친 카드")}</span><b>${c.중복}</b></div>
           </div>
-          <div class="풀이 on">레벨은 <b>싸워서</b> 오른다. 그리고 <b>지금까지 연 층</b>까지만 오른다 —
+          <div class="풀이 on">${말(`레벨은 <b>싸워서</b> 오른다. 그리고 <b>지금까지 연 층</b>까지만 오른다 —
             지금은 <b>Lv.${레벨상한(c)}</b> 이 끝이고, 층을 열면 그만큼 더 오른다.<br>
             되돌이로 레벨을 밀어 올리는 길을 일부러 막아 뒀다. 그게 막혀 있어야 <b>장비를 만들 이유</b>가 생긴다.
-            <br><br>경험치 주입·승급은 <b>아직 없다</b> — 넣으면 이 설계가 깨지므로 사장님 결정을 기다린다.</div>
+            <br><br>경험치 주입·승급은 <b>아직 없다</b> — 넣으면 이 설계가 깨지므로 사장님 결정을 기다린다.`,
+            `Levels rise by <b>fighting</b>, and only up to <b>the floors you've opened</b> —
+            right now <b>Lv.${레벨상한(c)}</b> is the cap; open more floors to raise it.<br>
+            Farming your way past the cap is blocked on purpose. That's what gives you <b>a reason to craft gear</b>.
+            <br><br>EXP items and promotion <b>aren't in yet</b>.`,
+            `レベルは<b>戦って</b>上がる。そして<b>これまでに開いた階</b>までしか上がらない —
+            今は<b>Lv.${레벨상한(c)}</b>が上限で、階を開けばその分上がる。<br>
+            周回でレベルを押し上げる道はわざと塞いである。それがあるから<b>装備を作る理由</b>が生まれる。
+            <br><br>経験値注入・昇級は<b>まだない</b>。`)}</div>
         </div>`
-      : `<div style="padding:4px 11px 0"><div class="칸이름">기술 <span class="귀띔">눌러 보기</span></div>
-         <div class="기술">${기술.map((k) => `<span class="tag r" data-풀이="기술:${k}">${k}</span>`).join("")}</div>
-         ${d.특성?.length ? `<div class="칸이름">특성 <span class="귀띔">눌러 보기</span></div>
-           <div class="기술">${d.특성.map((k) => `<span class="tag" data-풀이="특성:${k}">${k}</span>`).join("")}</div>` : ""}
+      : `<div style="padding:4px 11px 0"><div class="칸이름">${T("기술")} <span class="귀띔">${T("눌러 보기")}</span></div>
+         <div class="기술">${기술.map((k) => `<span class="tag r" data-풀이="기술:${k}">${T(k)}</span>`).join("")}</div>
+         ${d.특성?.length ? `<div class="칸이름">${T("특성")} <span class="귀띔">${T("눌러 보기")}</span></div>
+           <div class="기술">${d.특성.map((k) => `<span class="tag" data-풀이="특성:${k}">${T(k)}</span>`).join("")}</div>` : ""}
          <div class="풀이" id="풀이"></div></div>`}
     <div class="row" style="border:0">
-      <button class="btn" id="대표로" style="flex:1">${S.대표 === c.id ? "대표임" : "대표로"}</button>
+      <button class="btn" id="대표로" style="flex:1">${S.대표 === c.id ? T("대표임") : T("대표로")}</button>
     </div>`;
 
   const 다시 = () => 칸();
@@ -2168,7 +2539,7 @@ function 대원창(el){
     if (켜짐) { 풀이칸.classList.remove("on"); 풀이칸.innerHTML = ""; return; }
     b.classList.add("펴짐");
     const 글 = (종류 === "기술" ? 기술설명 : 특성설명)[이름];
-    풀이칸.innerHTML = `<b>${이름}</b><br>${글 ? 글(c) : "아직 설명이 없다."}`;
+    풀이칸.innerHTML = `<b>${T(이름)}</b><br>${글 ? 글(c) : T("아직 설명이 없다.")}`;
     풀이칸.classList.add("on");
   });
 }
@@ -2186,22 +2557,22 @@ function 가방패널(슬롯, c){
   const 값 = (키) => Object.values(레시피[키].효과 ?? {}).reduce((a, b) => a + Number(b), 0);
   const 지금값 = 낀것 ? 값(낀것.키) : 0;
   return `<div class="가방패널">
-    <div class="가방머리">가방 · ${슬롯} <span>${들.length}개</span></div>
+    <div class="가방머리">${T("가방")} · ${T(슬롯)} <span>${말(`${들.length}개`, `${들.length}`, `${들.length}個`)}</span></div>
     <div class="가방격자">
       ${낀것 ? `<div class="칸짜리 벗기" data-벗김="${낀것.id}">
-          <div class="이름">벗는다</div><div class="수">빈 칸으로</div></div>` : ""}
+          <div class="이름">${T("벗는다")}</div><div class="수">${T("빈 칸으로")}</div></div>` : ""}
       ${들.length ? 들.map((x) => {
         const r = 레시피[x.키], 낌 = x.누구 === c.id;
         const 남 = x.누구 != null && !낌 ? S.대원.find((y) => y.id === x.누구) : null;
         const 차 = 값(x.키) - 지금값;
         return `<div class="칸짜리${낌 ? " 낌" : ""}" data-낄="${x.id}">
           ${물건아이콘[x.키] ? 아이콘(물건아이콘[x.키]) : ""}
-          <div class="이름">${r.이름}</div>
-          <div class="수">${낌 ? "끼는 중" : 남 ? 카드(남).직업
+          <div class="이름">${T(r.이름)}</div>
+          <div class="수">${낌 ? T("끼는 중") : 남 ? T(카드(남).직업)
             : 차 > 0 ? `<span style="color:#8fe08f">+${수(차)}</span>`
-            : 차 < 0 ? `<span style="color:#ff8e7a">${수(차)}</span>` : "같다"}</div></div>`;
-      }).join("") : `<div class="칸짜리 빔"><div class="이름">없다</div>
-          <div class="수">대장간에서</div></div>`}
+            : 차 < 0 ? `<span style="color:#ff8e7a">${수(차)}</span>` : T("같다")}</div></div>`;
+      }).join("") : `<div class="칸짜리 빔"><div class="이름">${T("없다")}</div>
+          <div class="수">${T("대장간에서")}</div></div>`}
     </div></div>`;
 }
 /**
@@ -2221,8 +2592,8 @@ function 가방창(){
       const 들 = Object.keys(재료이름).filter((k) => (g[k] ?? 0) > 0);
       속 = 들.length
         ? `<div class="가방격자">${들.map((k) => `<div class="칸짜리" data-재료="${k}">
-            ${아이콘("m-" + k)}<div class="이름">${재료이름[k]}</div><div class="수">${수(g[k])}</div></div>`).join("")}</div>`
-        : `<div class="풀이 on">아직 모은 재료가 없다. 탑을 돌면 쌓인다.</div>`;
+            ${아이콘("m-" + k)}<div class="이름">${T(재료이름[k])}</div><div class="수">${수(g[k])}</div></div>`).join("")}</div>`
+        : 말(`<div class="풀이 on">아직 모은 재료가 없다. 탑을 돌면 쌓인다.</div>`, `<div class="풀이 on">No materials yet. Run the tower to collect them.</div>`, `<div class="풀이 on">まだ素材がない。塔を回るとたまる。</div>`);
     } else if (탭 === "장비") {
       const 들 = g.장비 ?? [];
       속 = 들.length
@@ -2230,9 +2601,9 @@ function 가방창(){
             const 쥔 = x.누구 != null ? S.대원.find((c) => c.id === x.누구) : null;
             return `<div class="칸짜리${쥔 ? " 낌" : ""}" data-템="${x.id}">
               ${물건아이콘[x.키] ? 아이콘(물건아이콘[x.키]) : ""}
-              <div class="이름">${r.이름}</div>
-              <div class="수">${쥔 ? 카드(쥔).직업 : "안 낌"}</div></div>`; }).join("")}</div>`
-        : `<div class="풀이 on">만든 장비가 없다. <b>대장간</b>에서 만든다.</div>`;
+              <div class="이름">${T(r.이름)}</div>
+              <div class="수">${쥔 ? T(카드(쥔).직업) : T("안 낌")}</div></div>`; }).join("")}</div>`
+        : 말(`<div class="풀이 on">만든 장비가 없다. <b>대장간</b>에서 만든다.</div>`, `<div class="풀이 on">No gear crafted yet. Make some at the <b>Forge</b>.</div>`, `<div class="풀이 on">作った装備がない。<b>鍛冶場</b>で作る。</div>`);
     } else if (탭 === "영혼석") {
       /* **영혼석 칸** (10-11). 액티브는 주인이 정해져 있어 칸 다툼이 없으므로 켜고 끄기만 하고,
          패시브는 **한 칸뿐**이라 고르게 한다 — 그게 이 시스템의 선택지다. */
@@ -2243,22 +2614,22 @@ function 가방창(){
             const 낌 = d.종류 === "액티브" ? (S.영혼석?.낀액티브 ?? []).includes(k) : 낀패시브() === k;
             return `<div class="칸짜리${낌 ? " 낌" : ""}" data-영혼석="${k}">
               ${영혼석아이콘[k] ? 아이콘(영혼석아이콘[k]) : ""}
-              <div class="이름">${d.이름}</div>
-              <div class="수">${낌 ? "끼는 중" : d.종류 === "액티브" ? d.주인 : "패시브"}</div></div>`; }).join("")}</div>
-          <div class="풀이 on">누르면 끼우고 뺀다. <b>액티브</b>는 주인의 기술을 바꾸고, <b>패시브</b>는 <b>한 칸만</b> 켤 수 있다.</div>`
-        : `<div class="풀이 on">아직 영혼석이 없다. <b>관문 보스</b>를 깨면 가끔 떨어진다.</div>`;
+              <div class="이름">${T(d.이름)}</div>
+              <div class="수">${낌 ? T("끼는 중") : d.종류 === "액티브" ? T(d.주인) : T("패시브")}</div></div>`; }).join("")}</div>
+          ${말(`<div class="풀이 on">누르면 끼우고 뺀다. <b>액티브</b>는 주인의 기술을 바꾸고, <b>패시브</b>는 <b>한 칸만</b> 켤 수 있다.</div>`, `<div class="풀이 on">Tap to equip or remove. <b>Active</b> stones change their owner's skill; only <b>one</b> <b>Passive</b> can be on.</div>`, `<div class="풀이 on">押すと付け外しする。<b>アクティブ</b>は持ち主の技を変え、<b>パッシブ</b>は<b>1枠だけ</b>オンにできる。</div>`)}`
+        : 말(`<div class="풀이 on">아직 영혼석이 없다. <b>관문 보스</b>를 깨면 가끔 떨어진다.</div>`, `<div class="풀이 on">No soulstones yet. <b>Gate bosses</b> sometimes drop them.</div>`, `<div class="풀이 on">まだ魂石がない。<b>関門ボス</b>を倒すとたまに落ちる。</div>`);
     } else {
       속 = `<div class="가방격자"><div class="칸짜리${g.약 > 0 ? "" : " 빔"}" data-소모="약">
-          ${아이콘("i-약")}<div class="이름">별빛 회복약</div><div class="수">${수(g.약 ?? 0)}</div></div></div>
-        <div class="풀이 on">소모품은 <b>떠나기 전</b>에 몇 개 챙길지 고른다 — 탑에서 층을 고를 때.</div>`;
+          ${아이콘("i-약")}<div class="이름">${T("별빛 회복약")}</div><div class="수">${수(g.약 ?? 0)}</div></div></div>
+        ${말(`<div class="풀이 on">소모품은 <b>떠나기 전</b>에 몇 개 챙길지 고른다 — 탑에서 층을 고를 때.</div>`, `<div class="풀이 on">Choose how many consumables to bring <b>before you set out</b> — when picking a floor in the tower.</div>`, `<div class="풀이 on">消耗品は<b>出発前</b>にいくつ持つか選ぶ — 塔で階を選ぶときに。</div>`)}`;
     }
     덮.innerHTML = `<div class="카드" onclick="event.stopPropagation()">
-      <div class="nm"><b style="display:block;font-size:15px">가방</b>
-        <i style="color:var(--흐림);font-size:12px">금화 ${수(S.금화)} · 별가루 ${수(g.별가루 ?? 0)}</i></div>
+      <div class="nm"><b style="display:block;font-size:15px">${T("가방")}</b>
+        <i style="color:var(--흐림);font-size:12px">${T("금화")} ${수(S.금화)} · ${T("별가루")} ${수(g.별가루 ?? 0)}</i></div>
       <div class="서브탭" style="margin-top:8px">${[["재료","m-파편"], ["장비","s-gear"], ["영혼석","s-gear"], ["소모품","i-약"]].map(([t, ic]) =>
-        `<span class="${탭 === t ? "on" : ""}" data-가방탭="${t}"><img src="art/icon/${ic}.png" alt="">${t}</span>`).join("")}</div>
+        `<span class="${탭 === t ? "on" : ""}" data-가방탭="${t}"><img src="art/icon/${ic}.png" alt="">${T(t)}</span>`).join("")}</div>
       ${속}
-      <div class="줄"><button class="btn" id="닫기">닫기</button></div></div>`;
+      <div class="줄"><button class="btn" id="닫기">${T("닫기")}</button></div></div>`;
     덮.querySelectorAll("[data-가방탭]").forEach((b) => b.onclick = () => { S.가방탭 = b.dataset.가방탭; 그리자(); });
     덮.querySelectorAll("[data-재료]").forEach((b) => b.onclick = () => 물건창({ 종류: "재료", 키: b.dataset.재료 }));
     덮.querySelectorAll("[data-템]").forEach((b) => b.onclick = () => 물건창({ 종류: "장비", id: Number(b.dataset.템) }));
@@ -2287,35 +2658,37 @@ function 물건창(무엇){
   let 제목 = "", 속 = "";
   if (무엇.종류 === "재료") {
     const k = 무엇.키, 쓰는곳 = Object.values(레시피).filter((r) => r.재료[k]);
-    제목 = 재료이름[k];
+    제목 = T(재료이름[k]);
     속 = `<div class="자격칸">
-        <div class="조건줄 참"><span>가진 것</span><b>${수(S.가방[k] ?? 0)}</b></div>
-        <div class="조건줄"><span>나오는 곳</span><b>${재료출처[k] ?? "?"}</b></div>
-        ${매대[k] ? `<div class="조건줄"><span>시장 값</span><b>${수(매대[k].값)} 금화</b></div>` : ""}
+        <div class="조건줄 참"><span>${T("가진 것")}</span><b>${수(S.가방[k] ?? 0)}</b></div>
+        <div class="조건줄"><span>${T("나오는 곳")}</span><b>${T(재료출처[k] ?? "?")}</b></div>
+        ${매대[k] ? `<div class="조건줄"><span>${T("시장 값")}</span><b>${수(매대[k].값)} ${T("금화")}</b></div>` : ""}
       </div>
       <div class="풀이 on">${쓰는곳.length
-        ? `<b>쓰는 곳</b><br>${쓰는곳.map((r) => `· ${r.이름} (${r.재료[k]}개)`).join("<br>")}`
-        : "아직 쓰는 곳이 없다."}</div>`;
+        ? `<b>${T("쓰는 곳")}</b><br>${쓰는곳.map((r) => `· ${T(r.이름)} (${말(`${r.재료[k]}개`, `×${r.재료[k]}`, `${r.재료[k]}個`)})`).join("<br>")}`
+        : T("아직 쓰는 곳이 없다.")}</div>`;
   } else if (무엇.종류 === "장비") {
     const x = S.가방.장비.find((y) => y.id === 무엇.id); if (!x) return;
     const r = 레시피[x.키], 쥔 = x.누구 != null ? S.대원.find((c) => c.id === x.누구) : null;
-    제목 = r.이름;
+    제목 = T(r.이름);
     속 = `<div class="자격칸">
-        <div class="조건줄 참"><span>칸</span><b>${r.슬롯}</b></div>
-        ${Object.entries(r.효과 ?? {}).map(([칸, v]) => `<div class="조건줄 참"><span>${칸}</span><b>+${수(v)}</b></div>`).join("")}
-        <div class="조건줄${쥔 ? " 참" : ""}"><span>지금</span><b>${쥔 ? `${카드(쥔).직업}가 낌` : "아무도 안 낌"}</b></div>
+        <div class="조건줄 참"><span>${T("칸")}</span><b>${T(r.슬롯)}</b></div>
+        ${Object.entries(r.효과 ?? {}).map(([칸, v]) => `<div class="조건줄 참"><span>${T(칸)}</span><b>+${수(v)}</b></div>`).join("")}
+        <div class="조건줄${쥔 ? " 참" : ""}"><span>${T("지금")}</span><b>${쥔 ? 말(`${카드(쥔).직업}가 낌`, `Equipped by ${T(카드(쥔).직업)}`, `${T(카드(쥔).직업)}が装備中`) : T("아무도 안 낌")}</b></div>
       </div>
-      <div class="풀이 on">끼우고 벗는 것은 <b>캐릭터</b> 탭에서 그 칸을 눌러서 한다.</div>`;
+      ${말(`<div class="풀이 on">끼우고 벗는 것은 <b>캐릭터</b> 탭에서 그 칸을 눌러서 한다.</div>`, `<div class="풀이 on">Equip and unequip by tapping the slot in the <b>Characters</b> tab.</div>`, `<div class="풀이 on">付け外しは<b>キャラクター</b>タブでその枠を押して行う。</div>`)}`;
   } else {
-    제목 = "별빛 회복약";
-    속 = `<div class="자격칸"><div class="조건줄 참"><span>가진 것</span><b>${수(S.가방.약 ?? 0)}</b></div></div>
-      <div class="풀이 on">전투 중 처음으로 절반 아래로 떨어진 아군의 체력을 <b>20%</b> 되살린다.
-        한 병에 한 번. 떠나기 전에 몇 병 챙길지 고른다.</div>`;
+    제목 = T("별빛 회복약");
+    속 = `<div class="자격칸"><div class="조건줄 참"><span>${T("가진 것")}</span><b>${수(S.가방.약 ?? 0)}</b></div></div>
+      ${말(`<div class="풀이 on">전투 중 처음으로 절반 아래로 떨어진 아군의 체력을 <b>20%</b> 되살린다.
+        한 병에 한 번. 떠나기 전에 몇 병 챙길지 고른다.</div>`, `<div class="풀이 on">Restores <b>20%</b> HP to the first ally who drops below half in battle.
+        Once per bottle. Choose how many to bring before setting out.</div>`, `<div class="풀이 on">戦闘中、最初に半分を下回った味方の体力を<b>20%</b>回復する。
+        1本につき1回。出発前に何本持つか選ぶ。</div>`)}`;
   }
   const 덮 = document.createElement("div"); 덮.id = "덮개"; 덮.style.zIndex = "50";
   덮.innerHTML = `<div class="카드" onclick="event.stopPropagation()">
     <div class="nm"><b style="display:block;font-size:15px">${제목}</b></div>
-    ${속}<div class="줄"><button class="btn" id="닫기">닫기</button></div></div>`;
+    ${속}<div class="줄"><button class="btn" id="닫기">${T("닫기")}</button></div></div>`;
   덮.onclick = () => 덮.remove();
   document.body.appendChild(덮);
   덮.querySelector("#닫기").onclick = () => 덮.remove();
@@ -2327,16 +2700,16 @@ function 물건창(무엇){
  */
 const 단계표 = () => S.최고층 >= 20 ? "T3" : S.최고층 >= 10 ? "T2" : "T1";
 function 갈래판(제목, 밑글, 카드들){
-  return `<div class="갈래머리">${제목} <span>(${단계표()})</span></div>
-    <div class="갈래밑">${밑글}</div>
+  return `<div class="갈래머리">${T(제목)} <span>(${단계표()})</span></div>
+    <div class="갈래밑">${T(밑글)}</div>
     <div class="갈래줄">${카드들.map((c, i) => `
       <div class="갈래칸${c.열림 ? " 열림" : " 잠김"}" ${c.열림 ? `data-갈래="${c.키}"` : ""}>
         <span class="갈래번호">${i + 1}</span>
         <div class="갈래그림">${아이콘(c.그림)}</div>
-        <div class="갈래이름">${c.이름}${c.열림 ? " ▶" : ""}</div>
+        <div class="갈래이름">${T(c.이름)}${c.열림 ? " ▶" : ""}</div>
       </div>`).join("")}</div>
     <div class="갈래줄 쪽글">${카드들.map((c) =>
-      `<div class="갈래쪽${c.열림 ? " 열림" : ""}">${c.쪽글}</div>`).join("")}</div>`;
+      `<div class="갈래쪽${c.열림 ? " 열림" : ""}">${T(c.쪽글)}</div>`).join("")}</div>`;
 }
 
 /**
@@ -2366,7 +2739,7 @@ function 한번뽑기(){
     }
     if (들.length) {   // 이미 다 가졌다 → 조각
       S.조각 = (S.조각 ?? 0) + 30;
-      return { 급, 종류: "조각", 수: 30, 이름: `${급} 동료가 겹쳤다`, 새것: false };
+      return { 급, 종류: "조각", 수: 30, 이름: 말(`${급} 동료가 겹쳤다`, `Duplicate ${급} ally`, `${급}仲間が重複`), 새것: false };
     }
     급 = "R";          // 그 등급에 동료가 아직 없으면 R 로 떨어진다
   }
@@ -2405,27 +2778,33 @@ function 뽑기창(){
     const 별 = S.가방.별가루 ?? 0;
     const 남 = 뽑기값.천장 - ((S.뽑은수 ?? 0) % 뽑기값.천장);
     덮.innerHTML = `<div class="카드" onclick="event.stopPropagation()">
-      <div class="nm"><b style="display:block;font-size:15px">소환</b>
-        <i style="color:var(--흐림);font-size:12px">별가루 ${수(별)} · 승급 조각 ${수(S.조각 ?? 0)}</i></div>
+      <div class="nm"><b style="display:block;font-size:15px">${T("소환")}</b>
+        <i style="color:var(--흐림);font-size:12px">${T("별가루")} ${수(별)} · ${T("승급 조각")} ${수(S.조각 ?? 0)}</i></div>
       <div class="자격칸" style="margin-top:8px">
-        <div class="조건줄 참"><span>SSR 동료</span><b>5%</b></div>
-        <div class="조건줄 참"><span>SR 동료</span><b>25%</b></div>
-        <div class="조건줄"><span>조각 · 재료 · 금화</span><b>70%</b></div>
-        <div class="조건줄"><span>천장까지</span><b>${남}번</b></div>
+        <div class="조건줄 참"><span>${T("SSR 동료")}</span><b>5%</b></div>
+        <div class="조건줄 참"><span>${T("SR 동료")}</span><b>25%</b></div>
+        <div class="조건줄"><span>${T("조각 · 재료 · 금화")}</span><b>70%</b></div>
+        <div class="조건줄"><span>${T("천장까지")}</span><b>${말(`${남}번`, `${남}`, `${남}回`)}</b></div>
       </div>
-      ${결과 ? `<div class="칸이름">나온 것</div><div class="가방격자">${결과.map((x) => `
+      ${결과 ? `<div class="칸이름">${T("나온 것")}</div><div class="가방격자">${결과.map((x) => `
         <div class="칸짜리${x.종류 === "동료" ? " 낌" : ""}">
-          <div class="이름">${x.이름}</div>
-          <div class="수">${x.종류 === "동료" ? `<span style="color:var(--금)">${x.급} 합류</span>`
+          <div class="이름">${T(x.이름)}</div>
+          <div class="수">${x.종류 === "동료" ? `<span style="color:var(--금)">${말(`${x.급} 합류`, `${x.급} joined`, `${x.급} 加入`)}</span>`
             : x.종류 === "금화" ? `+${수(x.수)}` : `+${x.수}`}</div></div>`).join("")}</div>` : ""}
       <div class="줄">
-        <button class="btn" id="한번" ${별 >= 뽑기값.한번 ? "" : "disabled"}>1회 · ${수(뽑기값.한번)}</button>
-        <button class="btn" id="열번" ${별 >= 뽑기값.열번 ? "" : "disabled"}>10회 · ${수(뽑기값.열번)}</button>
+        <button class="btn" id="한번" ${별 >= 뽑기값.한번 ? "" : "disabled"}>${말("1회", "×1", "1回")} · ${수(뽑기값.한번)}</button>
+        <button class="btn" id="열번" ${별 >= 뽑기값.열번 ? "" : "disabled"}>${말("10회", "×10", "10回")} · ${수(뽑기값.열번)}</button>
       </div>
-      <div class="풀이 on">뽑기는 <b>동료와 재료</b>만 준다. 레벨과 능력치는 끝까지
+      ${말(`<div class="풀이 on">뽑기는 <b>동료와 재료</b>만 준다. 레벨과 능력치는 끝까지
         <b>대장간 장비</b>와 <b>층</b>으로만 오른다.<br>
-        별가루는 출석(50) · 첫 클리어(15, 보스 100) · <b>보스를 다시 깰 때마다 50</b>.</div>
-      <div class="줄"><button class="btn" id="닫기">닫기</button></div></div>`;
+        별가루는 출석(50) · 첫 클리어(15, 보스 100) · <b>보스를 다시 깰 때마다 50</b>.</div>`,
+        `<div class="풀이 on">Summons only give <b>allies and materials</b>. Levels and stats only ever rise through
+        <b>forge gear</b> and <b>floors</b>.<br>
+        Stardust: check-in (50) · first clear (15, boss 100) · <b>50 every time you beat a boss again</b>.</div>`,
+        `<div class="풀이 on">召喚で手に入るのは<b>仲間と素材</b>だけ。レベルと能力値は最後まで
+        <b>鍛冶場の装備</b>と<b>階</b>でしか上がらない。<br>
+        星屑は出席(50) · 初クリア(15、ボス100) · <b>ボスを再び倒すたびに50</b>。</div>`)}
+      <div class="줄"><button class="btn" id="닫기">${T("닫기")}</button></div></div>`;
     const 돌려 = (n) => { const r = 뽑기(n); if (r) { 결과 = r; 그리자(); 길드그리기(); } };
     덮.querySelector("#한번").onclick = () => 돌려(1);
     덮.querySelector("#열번").onclick = () => 돌려(10);
@@ -2453,9 +2832,9 @@ function 칸(){
       const 안에 = S.파티.includes(c.id), d = 카드(c);
       return `<div class="row 카드열기" data-카드="${c.id}" style="cursor:pointer">
         <div class="얼굴" style="border-color:${등급색[d.등급]};background-image:url(${얼굴(d.그림)})"></div>
-        <div class="nm"><b><span style="color:${등급색[d.등급]}">${d.직업}</span>
+        <div class="nm"><b><span style="color:${등급색[d.등급]}">${T(d.직업)}</span>
           <span style="color:#a8977f">Lv.${c.레벨}</span>
-          <span class="tag" style="color:${등급색[d.등급]}">${d.등급}</span>${안에 ? `<span class="tag r">출전</span>` : ""}${S.대표===c.id ? `<span class="tag">대표</span>` : ""}</b></div>
+          <span class="tag" style="color:${등급색[d.등급]}">${T(d.등급)}</span>${안에 ? `<span class="tag r">${T("출전")}</span>` : ""}${S.대표===c.id ? `<span class="tag">${말("대표", "Leader", "代表")}</span>` : ""}</b></div>
         <span style="color:#6e5d78;font-size:18px;padding:0 4px">›</span></div>`;
     }).join("");
     el.querySelectorAll("[data-카드]").forEach((b) => b.onclick = () => { S.보는대원 = Number(b.dataset.카드); 칸(); });
@@ -2470,7 +2849,7 @@ function 칸(){
      * 재료 이름은 `재료이름` 한 곳에서만 가져온다(두 군데 적었다가 undefined 가 다섯 개 찍혔다).
      */
     const g = S.가방;
-    if (S.최고층 < 3) { el.innerHTML = `<div class="row"><div class="nm"><b>대장간</b><i>3층을 넘으면 대장간이 열린다. (지금 ${S.최고층}층)</i></div></div>`; return; }
+    if (S.최고층 < 3) { el.innerHTML = `<div class="row"><div class="nm"><b>${T("대장간")}</b><i>${말(`3층을 넘으면 대장간이 열린다. (지금 ${S.최고층}층)`, `The forge opens after floor 3. (Now: floor ${S.최고층})`, `3階を越えると鍛冶場が開く。(現在 ${S.최고층}階)`)}</i></div></div>`; return; }
     if (!S.대장갈래) {
       el.innerHTML = 갈래판("대장간", "매일 재료를 모아 여기서 벼린다", [
         { 키:"강화", 이름:"장비 강화", 그림:"c-upgrade", 열림:false, 쪽글:"강화 재료 필요" },
@@ -2480,7 +2859,7 @@ function 칸(){
       return;
     }
 
-    const 단계 = (r) => r.열림 >= 20 ? "T3 · 20층 위" : r.열림 >= 10 ? "T2 · 10층 위" : "T1 · 처음";
+    const 단계 = (r) => T(r.열림 >= 20 ? "T3 · 20층 위" : r.열림 >= 10 ? "T2 · 10층 위" : "T1 · 처음");
     const 값 = (키) => Object.values(레시피[키].효과 ?? {}).reduce((a, b) => a + Number(b), 0);
     /** 이걸 만들면 **누가** 가장 좋아지나 — 그 슬롯이 비었거나 더 나쁜 것을 낀 대원 */
     const 쓸사람 = (키) => {
@@ -2496,16 +2875,16 @@ function 칸(){
 
     const 칸들 = (r) => Object.entries(r.재료).map(([k, n]) => {
       const 가진 = g[k] ?? 0, 됨 = 가진 >= n;
-      return `<span class="재료칸${됨 ? " 참" : ""}">${아이콘("m-" + k)}${재료이름[k] ?? k}
-        <b>${가진}/${n}</b>${됨 ? "" : `<i>${n - 가진} 모자람 · ${재료출처[k] ?? ""}</i>`}</span>`;
-    }).concat(`<span class="재료칸${S.금화 >= r.금화 ? " 참" : ""}">금화 <b>${수(r.금화)}</b>${
-      S.금화 >= r.금화 ? "" : `<i>${수(r.금화 - S.금화)} 모자람</i>`}</span>`).join("");
+      return `<span class="재료칸${됨 ? " 참" : ""}">${아이콘("m-" + k)}${T(재료이름[k] ?? k)}
+        <b>${가진}/${n}</b>${됨 ? "" : `<i>${말(`${n - 가진} 모자람`, `${n - 가진} short`, `${n - 가진}不足`)} · ${T(재료출처[k] ?? "")}</i>`}</span>`;
+    }).concat(`<span class="재료칸${S.금화 >= r.금화 ? " 참" : ""}">${T("금화")} <b>${수(r.금화)}</b>${
+      S.금화 >= r.금화 ? "" : `<i>${말(`${수(r.금화 - S.금화)} 모자람`, `${수(r.금화 - S.금화)} short`, `${수(r.금화 - S.금화)}不足`)}</i>`}</span>`).join("");
 
     const 가방줄 = Object.keys(재료이름).filter((k) => (g[k] ?? 0) > 0)
-      .map((k) => `${재료이름[k]} ${g[k]}`).join(" · ") || "재료가 없다";
+      .map((k) => `${T(재료이름[k])} ${g[k]}`).join(" · ") || T("재료가 없다");
 
-    let 글 = `<div class="머리띠"><span class="뒤로" id="갈래뒤로">‹ 대장간</span></div>
-      <div class="row"><div class="nm"><b>가방</b><i>${가방줄} · 금화 ${수(S.금화)}</i></div></div>`;
+    let 글 = `<div class="머리띠"><span class="뒤로" id="갈래뒤로">${T("‹ 대장간")}</span></div>
+      <div class="row"><div class="nm"><b>${T("가방")}</b><i>${가방줄} · ${T("금화")} ${수(S.금화)}</i></div></div>`;
     let 앞단계 = "";
     for (const [k, r] of Object.entries(레시피)) {
       const 없 = 모자람(k), 잠김 = S.최고층 < r.열림, 된다 = !잠김 && !없.length;
@@ -2513,20 +2892,20 @@ function 칸(){
       const 쓸 = 된다 ? 쓸사람(k) : null;
       글 += `<div class="row${된다 ? " 된다" : ""}${잠김 ? " 잠김" : ""}">
         ${물건아이콘[k] ? `<div class="템아이콘">${아이콘(물건아이콘[k])}</div>` : ""}
-        <div class="nm"><b>${r.이름} <span class="tag">${r.슬롯}</span>${
-          된다 ? `<span class="tag r">만들 수 있다</span>` : ""}</b>
+        <div class="nm"><b>${T(r.이름)} <span class="tag">${T(r.슬롯)}</span>${
+          된다 ? `<span class="tag r">${T("만들 수 있다")}</span>` : ""}</b>
           <i>${r.글}</i>
-          ${잠김 ? `<i style="color:#6e5d78">${r.열림}층을 넘으면 열린다</i>`
+          ${잠김 ? `<i style="color:#6e5d78">${말(`${r.열림}층을 넘으면 열린다`, `Unlocks after floor ${r.열림}`, `${r.열림}階を越えると開く`)}</i>`
                  : `<div class="재료줄">${칸들(r)}</div>`}
-          ${쓸 ? `<i style="color:var(--초록)">${쓸.누구}에게 끼우면 +${수(쓸.폭)}</i>` : ""}</div>
-        <button class="btn" data-make="${k}" ${잠김 || 없.length ? "disabled" : ""}>만들기</button></div>`;
+          ${쓸 ? `<i style="color:var(--초록)">${말(`${쓸.누구}에게 끼우면 +${수(쓸.폭)}`, `+${수(쓸.폭)} if equipped on ${T(쓸.누구)}`, `${T(쓸.누구)}に装備すると +${수(쓸.폭)}`)}</i>` : ""}</div>
+        <button class="btn" data-make="${k}" ${잠김 || 없.length ? "disabled" : ""}>${T("만들기")}</button></div>`;
     }
-    글 += `<div class="row"><div class="nm"><i>만든 것은 <span style="color:#f2b45a">캐릭터</span> 탭에서 슬롯을 눌러 끼운다.</i></div></div>`;
+    글 += 말(`<div class="row"><div class="nm"><i>만든 것은 <span style="color:#f2b45a">캐릭터</span> 탭에서 슬롯을 눌러 끼운다.</i></div></div>`, `<div class="row"><div class="nm"><i>Equip what you make by tapping a slot in the <span style="color:#f2b45a">Characters</span> tab.</i></div></div>`, `<div class="row"><div class="nm"><i>作ったものは<span style="color:#f2b45a">キャラクター</span>タブでスロットを押して装備する。</i></div></div>`);
     el.innerHTML = 글;
     el.querySelector("#갈래뒤로").onclick = () => { S.대장갈래 = null; 칸(); };
     el.querySelectorAll("[data-make]").forEach((b) => b.onclick = () => {
       const 전 = 레시피[b.dataset.make].이름;
-      if (만들기(b.dataset.make)) 적기(`대장간에서 <b>${전}</b>을 만들었다.`, "good");
+      if (만들기(b.dataset.make)) 적기(말(`대장간에서 <b>${전}</b>을 만들었다.`, `Crafted <b>${T(전)}</b> at the forge.`, `鍛冶場で<b>${T(전)}</b>を作った。`), "good");
       저장(); 칸();
     });
   } else if (S.탭 === "shop") {
@@ -2539,29 +2918,31 @@ function 칸(){
       el.querySelectorAll("[data-갈래]").forEach((b) => b.onclick = () => { S.시장갈래 = b.dataset.갈래; 칸(); });
       return;
     }
-    el.innerHTML = `<div class="머리띠"><span class="뒤로" id="갈래뒤로">‹ 시장</span></div>
-      <div class="row"><div class="nm"><b>오늘의 매대</b>
-        <i>금화 ${수(S.금화)} · 내일이면 다시 채워진다</i></div></div>`
+    el.innerHTML = `<div class="머리띠"><span class="뒤로" id="갈래뒤로">${T("‹ 시장")}</span></div>
+      <div class="row"><div class="nm"><b>${T("오늘의 매대")}</b>
+        <i>${T("금화")} ${수(S.금화)} · ${말("내일이면 다시 채워진다", "restocks tomorrow", "明日また補充される")}</i></div></div>`
       + Object.entries(매대).map(([k, m]) => {
           const 남 = 남은수(k), 살수있나 = 남 > 0 && S.금화 >= m.값;
           return `<div class="row">${재료이름[k] ? `<div class="템아이콘">${아이콘("m-" + k)}</div>`
               : k === "약" ? `<div class="템아이콘">${아이콘("i-약")}</div>` : ""}
-            <div class="nm"><b>${m.이름}
-            <span class="tag" style="color:${남 > 0 ? "var(--금)" : "#6e5d78"}">오늘 ${산수(k)}/${m.하루}</span></b>
-            <i>${m.글}<br><span style="color:${S.금화 >= m.값 ? "#8fe08f" : "#ff8e7a"}">${수(m.값)} 금화</span></i></div>
-            <button class="btn" data-사기="${k}" ${살수있나 ? "" : "disabled"}>사기</button></div>`; }).join("")
-      + `<div class="row"><div class="nm"><i>재료가 <span style="color:var(--글)">하나</span> 모자라 막혔을 때 쓰는 자리다.
-          여기서 다 사는 것보다 탑을 도는 쪽이 늘 싸다.</i></div></div>`;
+            <div class="nm"><b>${T(m.이름)}
+            <span class="tag" style="color:${남 > 0 ? "var(--금)" : "#6e5d78"}">${말(`오늘 ${산수(k)}/${m.하루}`, `Today ${산수(k)}/${m.하루}`, `本日 ${산수(k)}/${m.하루}`)}</span></b>
+            <i>${T(m.글)}<br><span style="color:${S.금화 >= m.값 ? "#8fe08f" : "#ff8e7a"}">${수(m.값)} ${T("금화")}</span></i></div>
+            <button class="btn" data-사기="${k}" ${살수있나 ? "" : "disabled"}>${T("사기")}</button></div>`; }).join("")
+      + 말(`<div class="row"><div class="nm"><i>재료가 <span style="color:var(--글)">하나</span> 모자라 막혔을 때 쓰는 자리다.
+          여기서 다 사는 것보다 탑을 도는 쪽이 늘 싸다.</i></div></div>`, `<div class="row"><div class="nm"><i>This is for when you're stuck <span style="color:var(--글)">one</span> material short.
+          Running the tower is always cheaper than buying everything here.</i></div></div>`, `<div class="row"><div class="nm"><i>素材が<span style="color:var(--글)">1つ</span>足りなくて詰まったときに使う場所だ。
+          ここで全部買うより塔を回るほうがいつも安い。</i></div></div>`);
     el.querySelector("#갈래뒤로").onclick = () => { S.시장갈래 = null; 칸(); };
     el.querySelectorAll("[data-사기]").forEach((b) => b.onclick = () => { 사기(b.dataset.사기); 칸(); });
   } else {
     const g = S.가방;
-    el.innerHTML = `<div class="row"><div class="nm"><b>길드</b>
-        <i>대원 ${S.대원.length}명 · 가장 깊이 ${S.최고층}층</i></div></div>
-      <div class="row"><div class="nm"><b>가방</b>
-        <i>균열 파편 ${g.파편} · 짐승 잔혼 ${g.잔혼} · 수호핵 ${g.수호핵} · 수호의 문장 ${g.문장.방어} · 별가루 ${g.별가루}</i></div></div>
-      <div class="row"><div class="nm"><b>원정</b><i>${S.진행?"내려가는 중":"멈춤"}</i></div>
-        <button class="btn" id="toggle">${S.진행?"멈추기":"다시 가기"}</button></div>`;
+    el.innerHTML = `<div class="row"><div class="nm"><b>${T("길드")}</b>
+        <i>${말(`대원 ${S.대원.length}명 · 가장 깊이 ${S.최고층}층`, `${S.대원.length} members · deepest floor ${S.최고층}`, `隊員${S.대원.length}人 · 最深${S.최고층}階`)}</i></div></div>
+      <div class="row"><div class="nm"><b>${T("가방")}</b>
+        <i>${T("균열 파편")} ${g.파편} · ${T("짐승 잔혼")} ${g.잔혼} · ${T("수호핵")} ${g.수호핵} · ${T("수호의 문장")} ${g.문장.방어} · ${T("별가루")} ${g.별가루}</i></div></div>
+      <div class="row"><div class="nm"><b>${T("원정")}</b><i>${S.진행?T("내려가는 중"):T("멈춤")}</i></div>
+        <button class="btn" id="toggle">${S.진행?T("멈추기"):T("다시 가기")}</button></div>`;
     $("#toggle").onclick = () => { S.진행 = !S.진행; 칸(); };
   }
 }
@@ -2629,7 +3010,7 @@ function 길드그리기(){
 
   const c = S.대원.find((x) => x.id === S.대표 && x.살아있나) ?? S.대원.find((x) => x.살아있나);
   if (!c) { hctx.fillStyle="#c9b48a"; hctx.font="14px Malgun Gothic"; hctx.textAlign="center";
-            hctx.fillText("야영지가 비었다", w/2, h/2); return; }
+            hctx.fillText(T("야영지가 비었다"), w/2, h/2); return; }
   S.대표 = c.id;
   const im = 칸고르기(카드(c).그림);
   if (im) {
@@ -2638,11 +3019,11 @@ function 길드그리기(){
     hctx.ellipse(발.x, 발.y, 크w*0.28, 3*s, 0, 0, 7); hctx.fillStyle="#000"; hctx.fill(); hctx.restore();
     hctx.drawImage(im, Math.round(발.x - 크w/2), Math.round(발.y - 크h + 2*s), 크w, 크h);
   }
-  $("#repName").textContent = c.이름;
+  $("#repName").textContent = T(c.이름);
   const 판 = 카드(c);
   $("#repName").style.color = 등급색[판.등급];
-  $("#repAge").textContent = `${판.등급} · ${판.직업} · Lv.${c.레벨}`;
-  $("#repRole").textContent = `체력 ${수(최대체력(c))} · 공격 ${수(공격력(c))} · 방어 ${수(방어력(c))} · 속도 ${속도(c)}`;
+  $("#repAge").textContent = `${T(판.등급)} · ${T(판.직업)} · Lv.${c.레벨}`;
+  $("#repRole").textContent = `${T("체력")} ${수(최대체력(c))} · ${T("공격")} ${수(공격력(c))} · ${T("방어")} ${수(방어력(c))} · ${T("속도")} ${속도(c)}`;
   $("#bondBar").style.width = Math.min(100, c.경험/필요경험(c)*100) + "%";
 }
 
@@ -2688,9 +3069,9 @@ S.최고층 = 열린층();
 S.사냥층 = S.사냥층 ?? S.층;                            // 되돌이가 기본
 setInterval(저장, 10_000);
 
-if (불러옴) 적기(`<b>${구간이름[(S.단계-1)%10]} · ${S.층}층</b>에서 다시 시작한다.`, "big");
-else 적기("<b>1구간 · 침묵의 배수 회랑</b>", "big");
-if (!불러옴) 적기("기사가 방패를 고쳐 메고 첫 계단을 내려갔다.");
+if (불러옴) 적기(말(`<b>${구간이름[(S.단계-1)%10]} · ${S.층}층</b>에서 다시 시작한다.`, `Resuming at <b>${T(구간이름[(S.단계-1)%10])} · floor ${S.층}</b>.`, `<b>${T(구간이름[(S.단계-1)%10])} · ${S.층}階</b>から再開する。`), "big");
+else 적기(말("<b>1구간 · 침묵의 배수 회랑</b>", "<b>Zone 1 · Silent Drain Corridor</b>", "<b>第1区間 · 沈黙の排水回廊</b>"), "big");
+if (!불러옴) 적기(말("기사가 방패를 고쳐 메고 첫 계단을 내려갔다.", "The Knight shoulders the shield and descends the first stair.", "騎士は盾を背負い直し、最初の階段を下りていった。"));
 크기(); 원정시작(); 윗줄(); 화면();
 /* 10-11 사장님: **420 → 150ms.** 33턴짜리 싸움에 4분이 걸렸다 —
    글을 넘기느라 한턴()을 585번 돌기 때문이다. 턴을 줄이는 대신 **넘김을 빠르게** 한다. */
@@ -2708,7 +3089,7 @@ const 음악 = new Audio("snd/beneath-the-flame.mp3");
 음악.hidden = true; document.body.appendChild(음악);
 const 소리단추 = $("#sndBtn");
 let 소리켬 = localStorage.getItem("ash-snd") !== "off";
-function 소리칠하기(){ 소리단추.classList.toggle("off", !소리켬); 소리단추.title = 소리켬 ? "소리 끄기" : "소리 켜기"; }
+function 소리칠하기(){ 소리단추.classList.toggle("off", !소리켬); 소리단추.title = 소리켬 ? T("소리 끄기") : T("소리 켜기"); }
 function 음악맞추기(){
   if (소리켬 && !document.hidden) { 음악.play().catch(() => {}); }
   else 음악.pause();

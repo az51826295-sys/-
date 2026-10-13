@@ -1,6 +1,6 @@
 /**
  * **SR 동료 둘이 설명대로 일하는가** (10-11). 모델 0 · 값 0.
- *   ASH_URL=http://127.0.0.1:8124/ash/index.html npx tsx engine/tools/ash_SR_시험.mts [--sabotage]
+ *   ASH_URL='http://127.0.0.1:8124/ash/index.html?lang=ko' npx tsx engine/tools/ash_SR_시험.mts [--sabotage]
  *
  * 로건·이브가 들고 온 **새 칸이 다섯 개**다 — 진형·약화·불굴·출혈·치명 보정.
  * 전부 카드 설명에 숫자로 적혀 있으므로, 그 숫자가 **실제로 그 값인지**를 잰다.
@@ -16,7 +16,7 @@
  */
 import { openHeadless } from "../../src/lib/video/headless";
 import { 이름헬퍼 } from "./ash_공통.mjs";
-const 주소 = process.env.ASH_URL ?? "https://rookery-web-production.up.railway.app/ash/index.html";
+const 주소 = process.env.ASH_URL ?? "https://rookery-web-production.up.railway.app/ash/index.html?lang=ko";
 let 나쁨 = 0;
 const 재기 = (n: string, ok: boolean, 본?: unknown) => { if (!ok) 나쁨++; console.log(ok ? "통과" : "실패", n, ok ? "" : JSON.stringify(본)); };
 

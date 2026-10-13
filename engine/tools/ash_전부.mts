@@ -1,6 +1,6 @@
 /**
  * **잿빛 자를 전부 돌린다** (10-11 사장님 "자 넣었어?"). 모델 0 · 값 0.
- *   ASH_URL=http://127.0.0.1:8124/ash/index.html npx tsx engine/tools/ash_전부.mts [--느린것도] [--sabotage]
+ *   ASH_URL='http://127.0.0.1:8124/ash/index.html?lang=ko' npx tsx engine/tools/ash_전부.mts [--느린것도] [--sabotage]
  *
  * 그동안 자는 **내가 매번 손으로 목록을 쳐서** 돌렸다. 그러면 두 가지가 샌다:
  *   ① 새로 만든 자를 목록에 안 넣으면 **영영 안 돈다**

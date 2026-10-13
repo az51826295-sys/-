@@ -1,6 +1,6 @@
 /**
  * **시장과 자물쇠** (10-09 사장님 "일일 제한 상점"). 모델 0 · 값 0.
- *   ASH_URL=http://127.0.0.1:8124/ash/index.html npx tsx engine/tools/ash_시장_시험.mts [--sabotage]
+ *   ASH_URL='http://127.0.0.1:8124/ash/index.html?lang=ko' npx tsx engine/tools/ash_시장_시험.mts [--sabotage]
  *
  * 이 자가 생긴 이유 — 내 자들이 전부 **재료를 심어 놓고** 쟀기 때문에 못 본 것이 있었다.
  * 실제로 1~9층만 돌면 금화 12,660 · 파편 158 · 잔혼 83 이 쌓이는데 **수호핵은 0** 이다.
@@ -11,7 +11,7 @@
  */
 import { openHeadless } from "../../src/lib/video/headless";
 import { 이름헬퍼 } from "./ash_공통.mjs";
-const 주소 = process.env.ASH_URL ?? "https://rookery-web-production.up.railway.app/ash/index.html";
+const 주소 = process.env.ASH_URL ?? "https://rookery-web-production.up.railway.app/ash/index.html?lang=ko";
 let 나쁨 = 0;
 const 재기 = (n: string, ok: boolean, 본?: unknown) => { if (!ok) 나쁨++; console.log(ok ? "통과" : "실패", n, ok ? "" : JSON.stringify(본)); };
 
