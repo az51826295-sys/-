@@ -8,6 +8,9 @@ import { SKUS, AD_REFILL_TURNS, type Balance } from "@/lib/dot/money";
 import { USER_STICKERS, USER_STICKER_KEYS } from "@/lib/dot/stickers";
 import { GIFTS } from "@/lib/dot/bond";
 import { splitBubbles } from "@/lib/dot/bubbles";
+import { useLocale, useT } from "@/lib/i18n/client";
+import { DOT } from "@/lib/i18n/dict/dot";
+import type { Locale, T } from "@/lib/i18n/core";
 
 /**
  * 도트 채팅 — **카톡 모양, 폰 전용.**
@@ -41,6 +44,8 @@ export default function DotChat({
   /** 피드에서 "답장" 으로 들어왔을 때 그 게시물. 첫 말과 함께 보내고 사라진다. */
   replyTo?: { id: number; caption: string; image: string } | null;
 }) {
+  const t = useT(DOT);
+  const locale = useLocale();
   const [lines, setLines] = useState<Line[]>(history);
   const [bond, setBond] = useState(bond0);
   const [remaining, setRemaining] = useState(remaining0);
@@ -100,18 +105,18 @@ export default function DotChat({
     try {
       const res = await fetch("/api/dot/ad", { method: "POST" });
       const j = (await res.json().catch(() => ({}))) as { error?: string; balance?: Balance };
-      if (!res.ok || !j.balance) { setToast(j.error ?? "광고를 못 열었어요"); return; }
+      if (!res.ok || !j.balance) { setToast(j.error ?? t("광고를 못 열었어요")); return; }
       setBalance(j.balance); setRemaining(j.balance.remaining);
-      setToast(`${AD_REFILL_TURNS}번 더 이야기할 수 있어요`);
-    } catch { setToast("광고를 못 열었어요"); } finally { setAdBusy(false); }
+      setToast(t("{n}번 더 이야기할 수 있어요", { n: AD_REFILL_TURNS }));
+    } catch { setToast(t("광고를 못 열었어요")); } finally { setAdBusy(false); }
   }
   /** 충전 — 결제 SDK 가 붙기 전엔 서버가 "곧 열려요" 를 돌려준다. */
   async function buy(sku: string) {
     const res = await fetch("/api/dot/buy", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ sku }) });
     const j = (await res.json().catch(() => ({}))) as { error?: string; balance?: Balance };
-    if (!res.ok || !j.balance) { setToast(j.error ?? "결제를 못 열었어요"); return; }
+    if (!res.ok || !j.balance) { setToast(j.error ?? t("결제를 못 열었어요")); return; }
     setBalance(j.balance); setRemaining(j.balance.remaining); setShopOpen(false); setPayOpen(false);
-    setToast("충전됐어요");
+    setToast(t("충전됐어요"));
   }
   const [linkOpen, setLinkOpen] = useState(false);
   const [linkEmail, setLinkEmail] = useState("");
@@ -134,9 +139,9 @@ export default function DotChat({
       const r = await fetch("/api/dot/google", { method: "POST" });
       const j = (await r.json().catch(() => ({}))) as { url?: string; error?: string };
       if (j.url) { window.location.href = j.url; return; }
-      setLinkErr(j.error ?? "구글 연결을 못 열었어요.");
+      setLinkErr(j.error ?? t("구글 연결을 못 열었어요."));
     } catch (e) {
-      setLinkErr(e instanceof Error ? e.message : "구글 연결을 못 열었어요.");
+      setLinkErr(e instanceof Error ? e.message : t("구글 연결을 못 열었어요."));
     } finally { setLinkBusy(false); }
   }
   async function linkAccount() {
@@ -145,11 +150,11 @@ export default function DotChat({
     try {
       const res = await fetch("/api/dot/link", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ email: linkEmail, password: linkPw }) });
       const j = (await res.json().catch(() => ({}))) as { ok?: boolean; email?: string; error?: string };
-      if (!res.ok || !j.ok) { setLinkErr(j.error ?? "연결하지 못했어요"); return; }
+      if (!res.ok || !j.ok) { setLinkErr(j.error ?? t("연결하지 못했어요")); return; }
       setAccount({ linked: true, email: j.email ?? linkEmail });
       setLinkOpen(false); setLinkPw("");
-      setToast("연결됐어요. 다른 폰에서는 이 이메일로 들어오면 이어져요");
-    } catch { setLinkErr("연결하지 못했어요"); }
+      setToast(t("연결됐어요. 다른 폰에서는 이 이메일로 들어오면 이어져요"));
+    } catch { setLinkErr(t("연결하지 못했어요")); }
     finally { setLinkBusy(false); }
   }
   const [push, setPush] = useState<PushState | null>(null);
@@ -160,9 +165,9 @@ export default function DotChat({
     try {
       const next = push === "on" ? await disablePush() : await enablePush();
       setPush(next);
-      setToast(next === "on" ? `${who.name}가 먼저 말을 걸어올 거예요` : next === "denied" ? "브라우저에서 알림이 막혀 있어요" : "알림을 껐어요");
+      setToast(next === "on" ? t("{name}가 먼저 말을 걸어올 거예요", { name: who.name }) : next === "denied" ? t("브라우저에서 알림이 막혀 있어요") : t("알림을 껐어요"));
     } catch {
-      setToast("알림을 켜지 못했어요");
+      setToast(t("알림을 켜지 못했어요"));
     }
   }
 
@@ -173,20 +178,20 @@ export default function DotChat({
     setMenu(false);
     const mode = bond.mode === "menhera" ? "normal" : "menhera";
     const res = await fetch("/api/dot/mode", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ characterId: who.id, mode }) });
-    if (res.ok) { setBond((b) => ({ ...b, mode })); setToast(mode === "menhera" ? `${who.name}가 이제 당신한테 매달려요` : "다시 담백해졌어요"); return; }
+    if (res.ok) { setBond((b) => ({ ...b, mode })); setToast(mode === "menhera" ? t("{name}가 이제 당신한테 매달려요", { name: who.name }) : t("다시 담백해졌어요")); return; }
     // 유료 — 값과 함께 안내 시트. 결제는 스토어가 붙는 날 이 시트의 단추가 한다.
     const j = (await res.json().catch(() => ({}))) as { paywall?: boolean; price?: string };
     if (res.status === 402 && j.paywall) { setPayPrice(j.price ?? ""); setPayOpen(true); return; }
-    setToast("바꾸지 못했어요");
+    setToast(t("바꾸지 못했어요"));
   }
 
   /** 대화방 나가기 — 말만 지운다. 사이(하트·기억)는 남는다. */
   async function leave() {
     setMenu(false);
-    if (!window.confirm("대화 내용을 지울까요? 친밀도는 그대로 남아요.")) return;
+    if (!window.confirm(t("대화 내용을 지울까요? 친밀도는 그대로 남아요."))) return;
     const res = await fetch(`/api/dot/history?characterId=${encodeURIComponent(who.id)}`, { method: "DELETE" });
-    if (res.ok) { setLines([]); setToast("대화를 지웠어요"); }
-    else setToast("지우지 못했어요");
+    if (res.ok) { setLines([]); setToast(t("대화를 지웠어요")); }
+    else setToast(t("지우지 못했어요"));
   }
   /**
    * **대화방 나가기** (227회차 09-29, 사장님 *"나가기 버튼 있어 대화방 나가기"*).
@@ -197,8 +202,7 @@ export default function DotChat({
    */
   async function 나가기() {
     setMenu(false);
-    if (!window.confirm(`${who.name} 님과의 방에서 나갈까요?
-대화와 친밀도는 남아 있어서, 다시 추가하면 이어집니다.`)) return;
+    if (!window.confirm(t("{name} 님과의 방에서 나갈까요?\n대화와 친밀도는 남아 있어서, 다시 추가하면 이어집니다.", { name: who.name }))) return;
     try {
       const res = await fetch("/api/dot/leave", {
         method: "POST",
@@ -206,10 +210,10 @@ export default function DotChat({
         body: JSON.stringify({ characterId: who.id }),
       });
       // 못 나갔으면 **그대로 둔다.** 조용히 목록으로 보내면 나간 줄 알았다가 다시 보인다.
-      if (!res.ok) { setToast("나가지 못했어요"); return; }
+      if (!res.ok) { setToast(t("나가지 못했어요")); return; }
       window.location.href = "/dot/chats";
     } catch {
-      setToast("나가지 못했어요");
+      setToast(t("나가지 못했어요"));
     }
   }
   const endRef = useRef<HTMLDivElement>(null);
@@ -273,7 +277,7 @@ export default function DotChat({
       setReplyTo(null);
       if (!res.ok || !res.body) {
         const data = await res.json().catch(() => ({}));
-        setToast(data.error ?? "문제가 생겼어요");
+        setToast(data.error ?? t("문제가 생겼어요"));
         return;
       }
       const reader = res.body.getReader();
@@ -298,7 +302,7 @@ export default function DotChat({
         } else if (ev.type === "error") {
           finished = true;
           setLive(null);
-          setToast(ev.reason === "limit" ? "오늘 대화는 다 썼어요. 내일 또 만나요" : ev.message ?? ev.error ?? "문제가 생겼어요");
+          setToast(ev.reason === "limit" ? t("오늘 대화는 다 썼어요. 내일 또 만나요") : ev.message ?? ev.error ?? t("문제가 생겼어요"));
           // 09-30 선물은 유료 — 크레딧이 모자라면 말만 하지 말고 **충전 창을 연다.** 막다른 길로 두지 않는다.
           if (ev.reason === "no_credits") setShopOpen(true);
         }
@@ -312,10 +316,10 @@ export default function DotChat({
         for (const ln of parts) handle(ln);
       }
       if (buf) handle(buf);
-      if (!finished) { setLive(null); setToast("답이 중간에 끊겼어요. 다시 보내 주세요"); }
+      if (!finished) { setLive(null); setToast(t("답이 중간에 끊겼어요. 다시 보내 주세요")); }
     } catch {
       setLive(null);
-      setToast("연결이 끊겼어요. 다시 보내 주세요");
+      setToast(t("연결이 끊겼어요. 다시 보내 주세요"));
     } finally {
       setBusy(false);
     }
@@ -337,11 +341,12 @@ export default function DotChat({
     const y = new Date(now); y.setDate(now.getDate() - 1);
     void y;
     // 09-11 사장님 "좀 더 카톡처럼": 카톡은 오늘도 날짜로 쓴다 — "2026년 9월 11일 목요일".
-    return `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일 ${"일월화수목금토"[d.getDay()]}요일`;
+    // 10-13 다국어: 브라우저 날짜 형식으로. 한국어면 위와 똑같이 "2026년 10월 13일 화요일" 이 나온다.
+    return new Intl.DateTimeFormat(locale, { year: "numeric", month: "long", day: "numeric", weekday: "long" }).format(d);
   };
   // 첫인사에는 시각이 없다 — 아직 아무도 말한 적이 없으니 지어낼 시각도 없다.
   const shown: Line[] = lines.length ? lines : [{ role: "character", content: who.greeting, emotion: "neutral" }];
-  const clock = (iso?: string) => (mounted && iso ? hhmm(iso) : "");
+  const clock = (iso?: string) => (mounted && iso ? hhmm(iso, locale) : "");
 
   return (
     <div className="kk-root">
@@ -355,32 +360,32 @@ export default function DotChat({
       }}>
         {/* ── 위 띠 ── */}
         <header className="kk-bar">
-          <Link className="kk-back" href="/dot/chats" aria-label="채팅 목록으로">‹</Link>
+          <Link className="kk-back" href="/dot/chats" aria-label={t("채팅 목록으로")}>‹</Link>
           <a className="kk-title" href={`/dot/${who.slug}/profile`} style={{ textDecoration: "none", color: "inherit" }}>{who.name}</a>
-          <a className="kk-hearts" href={`/dot/${who.slug}/profile`} aria-label={`친밀도 ${bond.stage}단계 · 프로필 보기`} title="친밀도 — 이야기할수록 차요">{"♥".repeat(bond.stage)}{"♡".repeat(Math.max(0, 5 - bond.stage))}</a>
-          {bond.mode === "menhera" && <span className="kk-mode">멘헤라</span>}
-          {signedIn && <button className="kk-more" aria-label="메뉴" onClick={() => setMenu((m) => !m)}>≡</button>}
+          <a className="kk-hearts" href={`/dot/${who.slug}/profile`} aria-label={t("친밀도 {n}단계 · 프로필 보기", { n: bond.stage })} title={t("친밀도 — 이야기할수록 차요")}>{"♥".repeat(bond.stage)}{"♡".repeat(Math.max(0, 5 - bond.stage))}</a>
+          {bond.mode === "menhera" && <span className="kk-mode">{t("멘헤라")}</span>}
+          {signedIn && <button className="kk-more" aria-label={t("메뉴")} onClick={() => setMenu((m) => !m)}>≡</button>}
         </header>
         {menu && (
           <div className="kk-menu">
             {push !== "unsupported" && (
               <button onClick={togglePush}>
-                {push === "on" ? "알림 끄기" : "알림 켜기"}
-                <small>{push === "on" ? "먼저 말 걸지 않아요" : "하루 한 번, 먼저 말을 걸어요"}</small>
+                {push === "on" ? t("알림 끄기") : t("알림 켜기")}
+                <small>{push === "on" ? t("먼저 말 걸지 않아요") : t("하루 한 번, 먼저 말을 걸어요")}</small>
               </button>
             )}
-            <button onClick={toggleMode}>{bond.mode === "menhera" ? "멘헤라 모드 끄기" : "멘헤라 모드 🔒"}<small>{bond.mode === "menhera" ? "다시 담백하게" : "유료 · 집착하고, 문자가 막 와요"}</small></button>
-            <button onClick={() => { setMenu(false); setThemeOpen(true); }}>배경·말풍선 바꾸기<small>이 폰에만 저장돼요</small></button>
-            <button onClick={leave}>대화 내용 지우기<small>친밀도는 남아요</small></button>
+            <button onClick={toggleMode}>{bond.mode === "menhera" ? t("멘헤라 모드 끄기") : t("멘헤라 모드 🔒")}<small>{bond.mode === "menhera" ? t("다시 담백하게") : t("유료 · 집착하고, 문자가 막 와요")}</small></button>
+            <button onClick={() => { setMenu(false); setThemeOpen(true); }}>{t("배경·말풍선 바꾸기")}<small>{t("이 폰에만 저장돼요")}</small></button>
+            <button onClick={leave}>{t("대화 내용 지우기")}<small>{t("친밀도는 남아요")}</small></button>
             {/* 아동 안전 신고 — Play 아동 안전 표준의 "앱 내 신고" (09-12). 이 방에 대한 신고라 여기 남긴다. */}
-            <a href={`mailto:az51826295@gmail.com?subject=${encodeURIComponent("두근도트 신고: " + who.name)}&body=${encodeURIComponent("어떤 문제인지 적어 주세요. 아동 안전 관련이면 24시간 안에 확인합니다.")}`}>신고하기<small>부적절한 내용·아동 안전 우려</small></a>
-            <button onClick={() => { setMenu(false); setGuide(true); }}>도움말<small>이 방의 단추들</small></button>
+            <a href={`mailto:az51826295@gmail.com?subject=${encodeURIComponent(t("두근도트 신고: {name}", { name: who.name }))}&body=${encodeURIComponent(t("어떤 문제인지 적어 주세요. 아동 안전 관련이면 24시간 안에 확인합니다."))}`}>{t("신고하기")}<small>{t("부적절한 내용·아동 안전 우려")}</small></a>
+            <button onClick={() => { setMenu(false); setGuide(true); }}>{t("도움말")}<small>{t("이 방의 단추들")}</small></button>
             {/*
               09-29: [[kakao-placement-rule]] 은 방 메뉴를 여섯 줄 이하로 두라고 했는데 이게 일곱 번째다.
               그래도 여기 둔다 — 사장님이 **방 안에** 나가기를 두라고 하셨고, 나가기는 그 방 것이다.
               헷갈릴 자리라 위의 "지우기" 와 말을 분명히 갈라 뒀다: 나가기는 남고, 지우기는 없앤다.
             */}
-            <button onClick={나가기} className="danger">나가기<small>방 목록에서 내려요 · 대화는 남아요</small></button>
+            <button onClick={나가기} className="danger">{t("나가기")}<small>{t("방 목록에서 내려요 · 대화는 남아요")}</small></button>
             {/* 95회차 사장님 "몰아놓지 말고 분산": 계정·약관·계정 삭제는 친구 탭 ⚙ 설정으로, 채팅 목록·피드는 뒤로 가기와 아래 탭으로. */}
           </div>
         )}
@@ -388,7 +393,7 @@ export default function DotChat({
         {/* ── 대화 ── */}
         {theme.wall && <img className="kk-wall" src={theme.wall} alt="" aria-hidden />}
         <div className="kk-log">
-          {!lines.length && <div className="kk-day">오늘</div>}
+          {!lines.length && <div className="kk-day">{t("오늘")}</div>}
           {shown.map((l, i) => {
             const prev = shown[i - 1];
             const label = dayLabel(l.at);
@@ -407,7 +412,7 @@ export default function DotChat({
                 {l.sticker && l.sticker.startsWith("user:") ? (
                   <div className="kk-row me">
                     <span className="kk-meta">{unread && <b className="kk-unread">1</b>}{showTime && <span className="kk-time">{clock(l.at)}</span>}</span>
-                    <StickerSvg k={l.sticker.slice(5)} size={96} />
+                    <StickerSvg k={l.sticker.slice(5)} size={96} t={t} />
                   </div>
                 ) : l.sticker ? (
                   /* 스티커: 말풍선 없이 표정 그림만 크게 — 카톡 이모티콘 자리(89회차) */
@@ -423,7 +428,7 @@ export default function DotChat({
                 ) : (
                   <div className="kk-row them">
                     {/* 프로필 사진 — **말풍선 바로 왼쪽.** 이 말을 할 때의 표정이 뜬다. 누르면 크게. */}
-                    <button className={`kk-face${isLast ? " pop" : ""}`} onClick={() => setPeek("open")} aria-label={`${who.name} 프로필`}>
+                    <button className={`kk-face${isLast ? " pop" : ""}`} onClick={() => setPeek("open")} aria-label={t("{name} 프로필", { name: who.name })}>
                       {/* 말풍선 옆은 **표정**(20:35 사장님 확정: "표정은 말풍선 옆에, 프로필 사진은 따로"). 사진은 목록·고르기·프로필 화면. */}
                       {face(l.emotion) ? <img src={face(l.emotion)} alt={who.name} /> : null}
                     </button>
@@ -447,32 +452,32 @@ export default function DotChat({
           {알림물음 && !busy && (
             <div className="kk-ask">
               <div className="kk-ask-body">
-                자주 이야기하고 싶다면 알림을 켜 두세요.<br />
-                <b>{who.name}</b>가 <b>먼저</b> 말을 걸어요.
+                {t("자주 이야기하고 싶다면 알림을 켜 두세요.")}<br />
+                {t("{name}가 먼저 말을 걸어요.", { name: who.name })}
               </div>
               <div className="kk-ask-btns">
-                <button className="kk-ask-btn" onClick={() => { 알림그만(true); void togglePush(); }}>알림 켜기</button>
-                <button className="kk-ask-later" onClick={() => 알림그만(true)}>나중에</button>
+                <button className="kk-ask-btn" onClick={() => { 알림그만(true); void togglePush(); }}>{t("알림 켜기")}</button>
+                <button className="kk-ask-later" onClick={() => 알림그만(true)}>{t("나중에")}</button>
               </div>
             </div>
           )}
           {/* 37회차: 30턴을 다 쓴 순간이 이 앱이 사람을 잃는 첫 자리다. 잠긴 입력창 대신 "언제 다시" 와 "먼저 말 걸어 줄게" 를 보인다. */}
           {signedIn && mounted && remaining <= 0 && !busy && (
             <div className="kk-limit">
-              <div className="kk-limit-title">오늘 이야기는 여기까지</div>
+              <div className="kk-limit-title">{t("오늘 이야기는 여기까지")}</div>
               <div className="kk-limit-body">
-                {who.name}도 내일 또 이야기하고 싶대요.<br />
-                <b>{untilReset()}</b> 뒤에 다시 {limit}번 이야기할 수 있어요.
+                {t("{name}도 내일 또 이야기하고 싶대요.", { name: who.name })}<br />
+                {t("{time} 뒤에 다시 {n}번 이야기할 수 있어요.", { time: untilReset(t), n: limit })}
               </div>
               {/* 돈: 광고 2번 → 충전. 그 다음이 "내일 먼저 말 걸게" 다. */}
               {balance.adLeft > 0 && (
-                <button className="kk-limit-btn" onClick={watchAd} disabled={adBusy}>광고 보고 {AD_REFILL_TURNS}번 더 <small>오늘 {balance.adLeft}번 남음</small></button>
+                <button className="kk-limit-btn" onClick={watchAd} disabled={adBusy}>{t("광고 보고 {n}번 더", { n: AD_REFILL_TURNS })} <small>{t("오늘 {n}번 남음", { n: balance.adLeft })}</small></button>
               )}
-              <button className="kk-limit-btn alt" onClick={() => setShopOpen(true)}>충전하기</button>
+              <button className="kk-limit-btn alt" onClick={() => setShopOpen(true)}>{t("충전하기")}</button>
               {push !== "unsupported" && push !== "on" && (
-                <button className="kk-limit-link" onClick={togglePush}>내일 {who.name}가 먼저 말 걸게 하기</button>
+                <button className="kk-limit-link" onClick={togglePush}>{t("내일 {name}가 먼저 말 걸게 하기", { name: who.name })}</button>
               )}
-              {push === "on" && <div className="kk-limit-note">내일 {who.name}가 먼저 말을 걸어요</div>}
+              {push === "on" && <div className="kk-limit-note">{t("내일 {name}가 먼저 말을 걸어요", { name: who.name })}</div>}
             </div>
           )}
           {busy && (
@@ -496,20 +501,20 @@ export default function DotChat({
 
         {/* ── 아래 입력 ── */}
         {/* 칩(대화 미리 골라 주기)은 09-11 사장님 지시로 뺐다. 자료 chips 는 표에 남아 있다. */}
-        {!signedIn && <div className="kk-warn">로그인하면 이어서 이야기할 수 있어요</div>}
+        {!signedIn && <div className="kk-warn">{t("로그인하면 이어서 이야기할 수 있어요")}</div>}
         {/* 카톡처럼: 답을 기다리는 동안에도 입력창은 열려 있다(보내기만 잠깐 막힌다). 줄이 늘면 네 줄까지 자란다. Enter 보내기, Shift+Enter 줄바꿈. */}
         {replyTo && (
           <div className="kk-quote">
             <img src={replyTo.image} alt="" />
-            <div className="kk-quote-text"><b>{who.name}의 게시물을 보고</b><span>{replyTo.caption}</span></div>
-            <button onClick={() => setReplyTo(null)} aria-label="답장 취소">×</button>
+            <div className="kk-quote-text"><b>{t("{name}의 게시물을 보고", { name: who.name })}</b><span>{replyTo.caption}</span></div>
+            <button onClick={() => setReplyTo(null)} aria-label={t("답장 취소")}>×</button>
           </div>
         )}
         {stickerOpen && (
           <div className="kk-stickers">
             {USER_STICKER_KEYS.map((k) => (
-              <button key={k} onClick={() => send(`(${USER_STICKERS[k].ko} 스티커)`, k)} aria-label={USER_STICKERS[k].ko} disabled={busy || remaining <= 0}>
-                <StickerSvg k={k} size={48} /><span>{USER_STICKERS[k].ko}</span>
+              <button key={k} /* i18n-skip: 서버로 가는 표식이라 안 옮긴다 */ onClick={() => send(`(${USER_STICKERS[k].ko} 스티커)`, k)} aria-label={t(USER_STICKERS[k].ko)} disabled={busy || remaining <= 0}>
+                <StickerSvg k={k} size={48} t={t} /><span>{t(USER_STICKERS[k].ko)}</span>
               </button>
             ))}
           </div>
@@ -521,26 +526,26 @@ export default function DotChat({
               횟수 제한 없음(09-30 "3번 풀어") — 크레딧이 한도. 좋아하는 걸 주면 두 배 — 어느 게 좋아하는 건지는 **안 알려 준다**.
               대화하다 알게 되는 것이 재미다(유나가 소금빵 얘기를 먼저 꺼낸다).
             */}
-            <div className="kk-gifts-title">{who.name}에게 선물하기 <small>보유 {balance.credits}크레딧</small></div>
+            <div className="kk-gifts-title">{t("{name}에게 선물하기", { name: who.name })} <small>{t("보유 {n}크레딧", { n: balance.credits })}</small></div>
             <div className="kk-gifts-grid">
               {GIFTS.map((g) => (
-                <button key={g.key} onClick={() => send(`🎁 ${g.name}`, undefined, g.key)} disabled={busy}>
-                  <span className="kk-gift-name">{g.name}</span>
+                <button key={g.key} onClick={() => send(`🎁 ${t(g.name)}`, undefined, g.key)} disabled={busy}>
+                  <span className="kk-gift-name">{t(g.name)}</span>
                   {/* 값을 **누르기 전에** 보여 준다 — 누르고 나서 "모자라요" 는 속은 기분이 든다. */}
-                  <span className="kk-gift-price">{g.price}크레딧</span>
+                  <span className="kk-gift-price">{t("{n}크레딧", { n: g.price })}</span>
                 </button>
               ))}
             </div>
           </div>
         )}
         <div className="kk-input-row">
-          <button className="kk-emo" aria-label="선물" onClick={() => { setGiftOpen((v) => !v); setStickerOpen(false); }} disabled={!mounted || !signedIn}>
+          <button className="kk-emo" aria-label={t("선물")} onClick={() => { setGiftOpen((v) => !v); setStickerOpen(false); }} disabled={!mounted || !signedIn}>
             <svg width="22" height="22" viewBox="0 0 12 12" shapeRendering="crispEdges" aria-hidden>
               <path fill="currentColor" d="M3 1h2v1h-2zM7 1h2v1h-2zM2 2h1v2h-1zM5 2h2v2h-2zM9 2h1v2h-1zM0 4h12v3h-12zM1 7h10v5h-10z" />
               <path fill="var(--bar, #fff)" d="M5 4h2v8h-2z" opacity="0.55" />
             </svg>
           </button>
-          <button className="kk-emo" aria-label="스티커" onClick={() => { setStickerOpen((v) => !v); setGiftOpen(false); }} disabled={!mounted || !signedIn}>
+          <button className="kk-emo" aria-label={t("스티커")} onClick={() => { setStickerOpen((v) => !v); setGiftOpen(false); }} disabled={!mounted || !signedIn}>
             <svg width="22" height="22" viewBox="0 0 12 12" shapeRendering="crispEdges" aria-hidden><path fill="currentColor" d={USER_STICKERS.smile.path} fillRule="evenodd" /></svg>
           </button>
           <textarea
@@ -549,7 +554,7 @@ export default function DotChat({
             rows={1}
             onChange={(e) => { setText(e.target.value); e.target.style.height = ""; e.target.style.height = Math.min(e.target.scrollHeight, 96) + "px"; }}
             onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) { e.preventDefault(); send(); } }}
-            placeholder={!mounted ? "잠시만요…" : remaining > 0 ? "메시지 입력" : "오늘 대화는 다 썼어요"}
+            placeholder={!mounted ? t("잠시만요…") : remaining > 0 ? t("메시지 입력") : t("오늘 대화는 다 썼어요")}
             disabled={!mounted || remaining <= 0 || !signedIn}
             className="kk-input"
             maxLength={200}
@@ -560,118 +565,118 @@ export default function DotChat({
             onClick={() => send()}
             disabled={!mounted || busy || !text.trim() || remaining <= 0 || !signedIn}
             className={`kk-send${text.trim() && !busy ? " ready" : ""}`}
-            aria-label="보내기"
+            aria-label={t("보내기")}
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M12 19V5" /><path d="M5 12l7-7 7 7" /></svg>
           </button>
         </div>
         {/* 남은 횟수는 얼마 안 남았을 때만 — 늘 보이면 미터기 옆에서 얘기하는 기분이다. 다음 단계까지는 얼굴을 눌렀을 때 보인다. */}
         {mounted && signedIn && remaining > 0 && remaining <= 10 && (
-          <div className="kk-foot">오늘 {remaining}번 더 이야기할 수 있어요{bond.streakDays >= 2 ? ` · ${bond.streakDays}일 연속` : ""}</div>
+          <div className="kk-foot">{t("오늘 {n}번 더 이야기할 수 있어요", { n: remaining })}{bond.streakDays >= 2 ? ` · ${t("{n}일 연속", { n: bond.streakDays })}` : ""}</div>
         )}
       </div>
 
       {toast && <div className="kk-toast">{toast}</div>}
 
       {guide && (
-        <div className="kk-peek" onClick={closeGuide} role="dialog" aria-label="도움말">
+        <div className="kk-peek" onClick={closeGuide} role="dialog" aria-label={t("도움말")}>
           <div className="kk-peek-card kk-guide" onClick={(e) => e.stopPropagation()}>
-            <div className="kk-peek-name">이 방 쓰는 법</div>
+            <div className="kk-peek-name">{t("이 방 쓰는 법")}</div>
             <ul>
-              <li><b>얼굴</b>을 누르면 {who.name}의 사진·프로필</li>
-              <li><b>♥♥♡♡♡</b>는 친밀도 — 이야기할수록 차고, 말투와 표정이 바뀌어요</li>
-              <li><b>😊</b> 스티커 보내기 · <b>≡</b> 알림·배경·멘헤라 모드</li>
-              <li>알림을 켜면 {who.name}가 <b>먼저</b> 말을 걸어요</li>
-              <li>하루 30번 무료. 다 쓰면 카드가 떠요</li>
+              <li>{t("얼굴을 누르면 {name}의 사진·프로필", { name: who.name })}</li>
+              <li>{t("♥♥♡♡♡는 친밀도 — 이야기할수록 차고, 말투와 표정이 바뀌어요")}</li>
+              <li>{t("😊 스티커 보내기 · ≡ 알림·배경·멘헤라 모드")}</li>
+              <li>{t("알림을 켜면 {name}가 먼저 말을 걸어요", { name: who.name })}</li>
+              <li>{t("하루 {n}번 무료. 다 쓰면 카드가 떠요", { n: limit })}</li>
             </ul>
-            <button className="kk-peek-close" onClick={closeGuide}>알겠어요</button>
+            <button className="kk-peek-close" onClick={closeGuide}>{t("알겠어요")}</button>
           </div>
         </div>
       )}
       {payOpen && (
-        <div className="kk-peek" onClick={() => setPayOpen(false)} role="dialog" aria-label="멘헤라 모드">
+        <div className="kk-peek" onClick={() => setPayOpen(false)} role="dialog" aria-label={t("멘헤라 모드")}>
           <div className="kk-peek-card kk-pay" onClick={(e) => e.stopPropagation()}>
-            <div className="kk-pay-badge">멘헤라</div>
-            <div className="kk-peek-name">멘헤라 모드</div>
+            <div className="kk-pay-badge">{t("멘헤라")}</div>
+            <div className="kk-peek-name">{t("멘헤라 모드")}</div>
             <ul className="kk-pay-list">
-              <li>{who.name}가 당신한테 <b>매달려요</b> — 어디야, 누구랑 있어, 나 안 잊었지</li>
-              <li>답이 없으면 <b>하루 다섯 번까지</b> 먼저 문자가 와요</li>
-              <li>말이 길어지고, 질투하고, 확인받고 싶어 해요</li>
+              <li>{t("{name}가 당신한테 매달려요 — 어디야, 누구랑 있어, 나 안 잊었지", { name: who.name })}</li>
+              <li>{t("답이 없으면 하루 다섯 번까지 먼저 문자가 와요")}</li>
+              <li>{t("말이 길어지고, 질투하고, 확인받고 싶어 해요")}</li>
             </ul>
             <div className="kk-pay-price">{payPrice}</div>
-            <button className="kk-pay-go" onClick={() => buy("menhera_30")}>{payPrice ? `${payPrice}에 켜기` : "켜기"}</button>
-            <div className="kk-pay-note">30일 동안 · 언제든 끌 수 있어요</div>
+            <button className="kk-pay-go" onClick={() => buy("menhera_30")}>{payPrice ? t("{price}에 켜기", { price: payPrice }) : t("켜기")}</button>
+            <div className="kk-pay-note">{t("30일 동안 · 언제든 끌 수 있어요")}</div>
           </div>
         </div>
       )}
       {shopOpen && (
-        <div className="kk-peek" onClick={() => setShopOpen(false)} role="dialog" aria-label="충전">
+        <div className="kk-peek" onClick={() => setShopOpen(false)} role="dialog" aria-label={t("충전")}>
           <div className="kk-peek-card kk-shop" onClick={(e) => e.stopPropagation()}>
-            <div className="kk-peek-name">충전하기</div>
-            <div className="kk-shop-bal">지금 남은 대화 {remaining}번{balance.credits > 0 ? ` · 충전 ${balance.credits}` : ""}</div>
+            <div className="kk-peek-name">{t("충전하기")}</div>
+            <div className="kk-shop-bal">{t("지금 남은 대화 {n}번", { n: remaining })}{balance.credits > 0 ? ` · ${t("충전 {n}", { n: balance.credits })}` : ""}</div>
             {Object.entries(SKUS).map(([k, s]) => (
               <button key={k} className={`kk-sku${s.menheraDays ? " menhera" : ""}`} onClick={() => buy(k)}>
-                <span className="kk-sku-name">{s.name}{s.note && <small>{s.note}</small>}</span>
-                <span className="kk-sku-price">{s.price}</span>
+                <span className="kk-sku-name">{t(s.name)}{s.note && <small>{t(s.note)}</small>}</span>
+                <span className="kk-sku-price">{t(s.price)}</span>
               </button>
             ))}
-            <div className="kk-pay-note">공짜 {limit}번은 매일 자정에 다시 채워져요</div>
+            <div className="kk-pay-note">{t("공짜 {n}번은 매일 자정에 다시 채워져요", { n: limit })}</div>
           </div>
         </div>
       )}
       {linkOpen && (
-        <div className="kk-peek" onClick={() => setLinkOpen(false)} role="dialog" aria-label="계정 연결">
+        <div className="kk-peek" onClick={() => setLinkOpen(false)} role="dialog" aria-label={t("계정 연결")}>
           <div className="kk-peek-card kk-link" onClick={(e) => e.stopPropagation()}>
-            <div className="kk-peek-name">계정 연결하기</div>
+            <div className="kk-peek-name">{t("계정 연결하기")}</div>
             {/* 226회차 09-28 사장님 "구글로그인으로 바꿔 회원가입빼고".
                 구글이 켜져 있으면 **구글만** 내민다. 안 켜져 있으면 옛 길(이메일)을 그대로 둔다 —
                 09-28 현재 두근도트 Supabase 에 구글이 꺼져 있고, 이미 이메일로 붙은 사람이 13명이라
                 화면만 바꾸면 **아무도 연결 못 한다.** 켜지는 순간 저절로 바뀐다. */}
             {구글가능 === null ? (
-              <p className="kk-link-help">잠시만요…</p>
+              <p className="kk-link-help">{t("잠시만요…")}</p>
             ) : 구글가능 ? (
               <>
-                <p className="kk-link-help">지금까지의 대화와 친밀도가 구글 계정에 붙어요. 폰을 바꿔도 그대로예요.</p>
+                <p className="kk-link-help">{t("지금까지의 대화와 친밀도가 구글 계정에 붙어요. 폰을 바꿔도 그대로예요.")}</p>
                 {linkErr && <div className="kk-link-err">{linkErr}</div>}
-                <button className="kk-link-go" onClick={구글로연결} disabled={linkBusy}>{linkBusy ? "여는 중…" : "구글로 계속하기"}</button>
+                <button className="kk-link-go" onClick={구글로연결} disabled={linkBusy}>{linkBusy ? t("여는 중…") : t("구글로 계속하기")}</button>
               </>
             ) : (
               <>
-                <p className="kk-link-help">지금까지의 대화와 친밀도가 이 이메일에 붙어요. 폰을 바꿔도 로그인하면 그대로예요.</p>
-                <input type="email" placeholder="이메일" value={linkEmail} onChange={(e) => setLinkEmail(e.target.value)} autoComplete="email" inputMode="email" />
-                <input type="password" placeholder="비밀번호 (8자 이상)" value={linkPw} onChange={(e) => setLinkPw(e.target.value)} autoComplete="new-password" />
+                <p className="kk-link-help">{t("지금까지의 대화와 친밀도가 이 이메일에 붙어요. 폰을 바꿔도 로그인하면 그대로예요.")}</p>
+                <input type="email" placeholder={t("이메일")} value={linkEmail} onChange={(e) => setLinkEmail(e.target.value)} autoComplete="email" inputMode="email" />
+                <input type="password" placeholder={t("비밀번호 (8자 이상)")} value={linkPw} onChange={(e) => setLinkPw(e.target.value)} autoComplete="new-password" />
                 {linkErr && <div className="kk-link-err">{linkErr}</div>}
-                <button className="kk-link-go" onClick={linkAccount} disabled={linkBusy || !linkEmail || linkPw.length < 8}>{linkBusy ? "연결하는 중…" : "연결"}</button>
+                <button className="kk-link-go" onClick={linkAccount} disabled={linkBusy || !linkEmail || linkPw.length < 8}>{linkBusy ? t("연결하는 중…") : t("연결")}</button>
               </>
             )}
           </div>
         </div>
       )}
       {themeOpen && (
-        <div className="kk-peek" onClick={() => setThemeOpen(false)} role="dialog" aria-label="배경·말풍선">
+        <div className="kk-peek" onClick={() => setThemeOpen(false)} role="dialog" aria-label={t("배경·말풍선")}>
           <div className="kk-peek-card" onClick={(e) => e.stopPropagation()}>
-            <div className="kk-peek-name">배경</div>
+            <div className="kk-peek-name">{t("배경")}</div>
             <div className="kk-themes">
-              {Object.entries(THEMES).map(([k, t]) => (
+              {Object.entries(THEMES).map(([k, th]) => (
                 <button key={k} className={`kk-theme${k === themeKey ? " on" : ""}`} onClick={() => pickTheme(k)}
-                  style={{ background: t.wall ? `url(${t.wall}) center/cover` : t.bg, borderColor: t.line, imageRendering: "pixelated" }} aria-label={t.name}>
-                  {!t.wall && <span className="kk-theme-them" style={{ background: t.them }} />}
-                  {!t.wall && <span className="kk-theme-me" style={{ background: t.me }} />}
-                  <span className="kk-theme-name" style={{ color: t.ink, textShadow: t.wall ? "0 1px 0 #000" : "none" }}>{t.name}</span>
+                  style={{ background: th.wall ? `url(${th.wall}) center/cover` : th.bg, borderColor: th.line, imageRendering: "pixelated" }} aria-label={t(th.name)}>
+                  {!th.wall && <span className="kk-theme-them" style={{ background: th.them }} />}
+                  {!th.wall && <span className="kk-theme-me" style={{ background: th.me }} />}
+                  <span className="kk-theme-name" style={{ color: th.ink, textShadow: th.wall ? "0 1px 0 #000" : "none" }}>{t(th.name)}</span>
                 </button>
               ))}
             </div>
-            <div className="kk-peek-name" style={{ marginTop: 14 }}>말풍선</div>
+            <div className="kk-peek-name" style={{ marginTop: 14 }}>{t("말풍선")}</div>
             <div className="kk-bubbles">
               {Object.entries(BUBBLES).map(([k, b]) => (
                 <button key={k} className={`kk-bubble-pick${k === bubbleKey ? " on" : ""} ${b.cls}`} onClick={() => pickBubble(k)}>
-                  <span className="kk-bubble them">안녕</span>
-                  <span className="kk-bubble me">응!</span>
-                  <small>{b.name}</small>
+                  <span className="kk-bubble them">{t("안녕")}</span>
+                  <span className="kk-bubble me">{t("응!")}</span>
+                  <small>{t(b.name)}</small>
                 </button>
               ))}
             </div>
-            <button className="kk-peek-close" onClick={() => setThemeOpen(false)}>닫기</button>
+            <button className="kk-peek-close" onClick={() => setThemeOpen(false)}>{t("닫기")}</button>
           </div>
         </div>
       )}
@@ -682,14 +687,14 @@ export default function DotChat({
           <div className="kk-peek-card" onClick={(e) => e.stopPropagation()}>
             {who.photos?.[0] ? <img className="kk-peek-photo" src={who.photos[0].url} alt={who.name} /> : <img src={face("neutral")} alt={who.name} />}
             <div className="kk-peek-name">{who.name}</div>
-            <div className="kk-peek-stage">{"♥".repeat(bond.stage)}{"♡".repeat(Math.max(0, 5 - bond.stage))} · {STAGE_WORD[bond.stage] ?? ""}</div>
+            <div className="kk-peek-stage">{"♥".repeat(bond.stage)}{"♡".repeat(Math.max(0, 5 - bond.stage))} · {STAGE_WORD[bond.stage] ? t(STAGE_WORD[bond.stage]) : ""}</div>
             {(who.photos?.length ?? 0) > 1 && (
               <div className="kk-peek-photos">
                 {who.photos!.map((p, i) => <img key={i} src={p.url} alt="" />)}
               </div>
             )}
-            <a className="kk-peek-go" href={`/dot/${who.slug}/profile`}>프로필 보기</a>
-            <button className="kk-peek-close" onClick={() => setPeek(null)}>닫기</button>
+            <a className="kk-peek-go" href={`/dot/${who.slug}/profile`}>{t("프로필 보기")}</a>
+            <button className="kk-peek-close" onClick={() => setPeek(null)}>{t("닫기")}</button>
           </div>
         </div>
       )}
@@ -742,20 +747,17 @@ const THEME_KEY = "dot-theme";
 
 /** "오후 9:17". 브라우저에서만 부른다(위 `mounted` 설명 참고). */
 /** 한국 시간 자정까지 "N시간 M분". 한도는 한국 날짜로 초기화된다(dot_usage.day). */
-function untilReset(): string {
+function untilReset(t: T): string {
   const now = Date.now();
   const kst = new Date(now + 9 * 3_600_000);
   const nextMidnightKst = Date.UTC(kst.getUTCFullYear(), kst.getUTCMonth(), kst.getUTCDate() + 1) - 9 * 3_600_000;
   const min = Math.max(1, Math.round((nextMidnightKst - now) / 60_000));
-  return min >= 60 ? `${Math.floor(min / 60)}시간 ${min % 60}분` : `${min}분`;
+  return min >= 60 ? t("{h}시간 {m}분", { h: Math.floor(min / 60), m: min % 60 }) : t("{m}분", { m: min });
 }
 
-function hhmm(iso: string): string {
-  const d = new Date(iso);
-  const h = d.getHours();
-  const ap = h < 12 ? "오전" : "오후";
-  const hh = h % 12 === 0 ? 12 : h % 12;
-  return `${ap} ${hh}:${String(d.getMinutes()).padStart(2, "0")}`;
+/** 10-13 다국어: 브라우저 시각 형식. 한국어면 예전과 같은 "오후 9:17", 영어 "9:17 PM", 일본어 "午後9:17". */
+function hhmm(iso: string, locale: Locale): string {
+  return new Intl.DateTimeFormat(locale, { hour: "numeric", minute: "2-digit", hour12: true }).format(new Date(iso));
 }
 
 /**
@@ -981,7 +983,7 @@ const CSS = `
 `;
 
 /** 사람 스티커 그림 — 12×12 격자, 그림값 0. */
-function StickerSvg({ k, size }: { k: string; size: number }) {
+function StickerSvg({ k, size, t }: { k: string; size: number; t?: T }) {
   const st = USER_STICKERS[k]; if (!st) return null;
-  return <svg className="kk-usticker" width={size} height={size} viewBox="0 0 12 12" shapeRendering="crispEdges" aria-label={st.ko}><path d={st.path} fill={st.color} fillRule="evenodd" /></svg>;
+  return <svg className="kk-usticker" width={size} height={size} viewBox="0 0 12 12" shapeRendering="crispEdges" aria-label={t ? t(st.ko) : st.ko}><path d={st.path} fill={st.color} fillRule="evenodd" /></svg>;
 }
