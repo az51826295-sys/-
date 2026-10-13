@@ -1,4 +1,7 @@
 "use client";
+// i18n-ids: 꺼짐 켜는중 보는중 멈춤 화면띠 설명 잘못 눈 자리 무엇 높이비중
+import { useT } from "@/lib/i18n/client";
+import { ROOKERY } from "@/lib/i18n/dict/rookery";
 /**
  * **로키가 화면을 보고 있다가 말을 건다** (228회차 10-02, 사장님이 (가)를 고르심).
  *
@@ -39,6 +42,7 @@ async function 한장뜨기(v: HTMLVideoElement): Promise<string> {
 }
 
 export function use화면보기(말붙이기: (말: string) => void, 앞말: () => string[]) {
+  const t = useT(ROOKERY);
   const [상태, set상태] = useState<상태>("꺼짐");
   const [본횟수, set본횟수] = useState(0);
   const [보낸횟수, set보낸횟수] = useState(0);
@@ -76,7 +80,7 @@ export function use화면보기(말붙이기: (말: string) => void, 앞말: () 
     } catch (e) {
       // 사장님이 고르기를 취소한 것도 여기로 온다 — 그건 잘못이 아니다.
       const 취소인가 = e instanceof DOMException && (e.name === "NotAllowedError" || e.name === "AbortError");
-      set잘못(취소인가 ? "" : "화면을 못 받았어요");
+      set잘못(취소인가 ? "" : t("화면을 못 받았어요"));
       set상태("꺼짐");
     }
   }, [끄기]);
@@ -121,7 +125,7 @@ export function use화면보기(말붙이기: (말: string) => void, 앞말: () 
         });
         set보낸횟수((n) => {
           const 다음 = n + 1;
-          if (다음 >= 기본상한) { 끄기(); set상태("멈춤"); }
+          if (다음 >= 기본상한) { 끄기(); set상태("멈춤"); } // i18n-skip
           return 다음;
         });
         const j = await r.json();
@@ -146,47 +150,48 @@ export function use화면보기(말붙이기: (말: string) => void, 앞말: () 
         body: JSON.stringify({ 그림: await 한장뜨기(v) }),
       });
       const j = await r.json();
-      if (!r.ok || !j.구조) { set잘못(j.잘못 ?? "구조를 못 읽었어요"); set옮기는중(false); return; }
+      if (!r.ok || !j.구조) { set잘못(j.잘못 ?? t("구조를 못 읽었어요")); set옮기는중(false); return; }
       const k = j.구조 as {
         무엇: string; 뼈대: { 자리: string; 무엇: string; 높이비중: string }[];
         글자층: string; 색쓰임: string; 간격: string; 움직임: string;
         옮기면: string[]; 안가져올것: string[]; 못본것: string[];
       };
       말붙이기([
-        `**이 화면을 봤어요 — ${k.무엇}**`,
+        t("**이 화면을 봤어요 — {what}**", { what: k.무엇 }),
         "",
-        "**뼈대**",
+        t("**뼈대**"),
         ...k.뼈대.map((b) => `- [${b.자리}] ${b.무엇} (${b.높이비중})`),
         "",
-        `**글자 층** ${k.글자층}`,
-        `**색 쓰임** ${k.색쓰임}`,
-        `**간격** ${k.간격}`,
-        `**움직임** ${k.움직임}`,
+        t("**글자 층** {v}", { v: k.글자층 }),
+        t("**색 쓰임** {v}", { v: k.색쓰임 }),
+        t("**간격** {v}", { v: k.간격 }),
+        t("**움직임** {v}", { v: k.움직임 }),
         "",
-        "**우리 화면으로 옮기면**",
+        t("**우리 화면으로 옮기면**"),
         ...k.옮기면.map((x) => `- ${x}`),
         "",
-        "**안 가져올 것**(그 앱 고유의 것)",
+        t("**안 가져올 것**(그 앱 고유의 것)"),
         ...k.안가져올것.map((x) => `- ${x}`),
         "",
-        "**한 장으로는 못 본 것**",
+        t("**한 장으로는 못 본 것**"),
         ...k.못본것.map((x) => `- ${x}`),
       ].join(String.fromCharCode(10)));
-    } catch { set잘못("서버에 못 닿았어요"); }
+    } catch { set잘못(t("서버에 못 닿았어요")); }
     set옮기는중(false);
-  }, [옮기는중, 말붙이기]);
+  }, [옮기는중, 말붙이기, t]);
 
   return { 상태, 본횟수, 보낸횟수, 잘못, 켜기, 끄기, 상한: 기본상한, 이거처럼, 옮기는중 };
 }
 
 export function 화면보기띠({ 상태, 본횟수, 보낸횟수, 상한, 잘못, 켜기, 끄기, 이거처럼, 옮기는중 }: ReturnType<typeof use화면보기>) {
+  const t = useT(ROOKERY);
   if (상태 === "꺼짐" || 상태 === "켜는중") {
     return (
       <div className="rk-화면띠">
         <button type="button" onClick={() => void 켜기()} disabled={상태 === "켜는중"}>
-          {상태 === "켜는중" ? "화면 고르는 중…" : "화면 보여주기"}
+          {상태 === "켜는중" ? t("화면 고르는 중…") : t("화면 보여주기")}
         </button>
-        <span className="rk-설명">로키가 보고 있다가 말 걸 만할 때만 말해요</span>
+        <span className="rk-설명">{t("로키가 보고 있다가 말 걸 만할 때만 말해요")}</span>
         {잘못 && <span className="rk-잘못">{잘못}</span>}
       </div>
     );
@@ -194,20 +199,20 @@ export function 화면보기띠({ 상태, 본횟수, 보낸횟수, 상한, 잘�
   if (상태 === "멈춤") {
     return (
       <div className="rk-화면띠">
-        <span className="rk-설명">{상한}번을 채워서 멈췄어요</span>
-        <button type="button" onClick={() => void 켜기()}>다시 보기</button>
+        <span className="rk-설명">{t("{n}번을 채워서 멈췄어요", { n: 상한 })}</span>
+        <button type="button" onClick={() => void 켜기()}>{t("다시 보기")}</button>
       </div>
     );
   }
   return (
     <div className="rk-화면띠 rk-보는중" role="status" aria-live="polite">
       <span className="rk-눈" aria-hidden />
-      <b>화면 보는 중</b>
-      <span className="rk-설명">{본횟수}번 봄 · {보낸횟수}/{상한}번 물어봄</span>
-      <button type="button" onClick={() => void 이거처럼()} disabled={옮기는중} title="지금 보이는 화면을 베낄 수 있는 구조로 옮긴다">
-        {옮기는중 ? "보는 중…" : "이거처럼"}
+      <b>{t("화면 보는 중")}</b>
+      <span className="rk-설명">{t("{seen}번 봄 · {sent}/{max}번 물어봄", { seen: 본횟수, sent: 보낸횟수, max: 상한 })}</span>
+      <button type="button" onClick={() => void 이거처럼()} disabled={옮기는중} title={t("지금 보이는 화면을 베낄 수 있는 구조로 옮긴다")}>
+        {옮기는중 ? t("보는 중…") : t("이거처럼")}
       </button>
-      <button type="button" onClick={끄기}>그만 보기</button>
+      <button type="button" onClick={끄기}>{t("그만 보기")}</button>
     </div>
   );
 }

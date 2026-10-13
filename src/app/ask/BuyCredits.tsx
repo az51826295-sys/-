@@ -1,6 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { useT } from "@/lib/i18n/client";
+import { ROOKERY } from "@/lib/i18n/dict/rookery";
+import type { T } from "@/lib/i18n/core";
 
 /**
  * 결제창을 열어도 되는가 (140회차 09-16). **기본은 닫힘.**
@@ -42,7 +45,7 @@ type PaddleGlobal = {
 };
 
 let paddleReady: Promise<PaddleGlobal> | null = null;
-function loadPaddle(env: string, token: string, onEvent: (name: string) => void): Promise<PaddleGlobal> {
+function loadPaddle(env: string, token: string, onEvent: (name: string) => void, t: T): Promise<PaddleGlobal> {
   if (paddleReady) return paddleReady;
   paddleReady = new Promise((resolve, reject) => {
     const s = document.createElement("script");
@@ -50,12 +53,12 @@ function loadPaddle(env: string, token: string, onEvent: (name: string) => void)
     s.async = true;
     s.onload = () => {
       const P = (window as unknown as { Paddle?: PaddleGlobal }).Paddle;
-      if (!P) { reject(new Error("Paddle 을 못 불러왔어요.")); return; }
+      if (!P) { reject(new Error(t("Paddle 을 못 불러왔어요."))); return; }
       if (env === "sandbox") P.Environment.set("sandbox");
       P.Initialize({ token, eventCallback: (e) => onEvent(e.name ?? "") });
       resolve(P);
     };
-    s.onerror = () => { paddleReady = null; reject(new Error("결제 창을 불러오지 못했어요.")); };
+    s.onerror = () => { paddleReady = null; reject(new Error(t("결제 창을 불러오지 못했어요."))); };
     document.head.appendChild(s);
   });
   return paddleReady;
@@ -77,6 +80,7 @@ async function fetchInfo(): Promise<Info | null> {
 }
 
 export default function BuyCredits() {
+  const t = useT(ROOKERY);
   const [info, setInfo] = useState<Info | null>(null);
   const [show, setShow] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
@@ -107,24 +111,24 @@ export default function BuyCredits() {
     try {
       const r = await fetch("/api/billing/dodo/checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ sku: skuId }) });
       const j = (await r.json().catch(() => ({}))) as { url?: string; error?: string };
-      if (!r.ok || !j.url) { setMsg(j.error ?? "결제 창을 열지 못했어요."); return; }
+      if (!r.ok || !j.url) { setMsg(j.error ?? t("결제 창을 열지 못했어요.")); return; }
       window.location.assign(j.url);
-    } catch { setMsg("결제 창을 열지 못했어요."); }
+    } catch { setMsg(t("결제 창을 열지 못했어요.")); }
     finally { setBusy(false); }
   }
 
   async function buy(priceId: string) {
-    if (!info?.paddle?.clientToken || !info.companyId) { setMsg("결제 준비가 아직 안 됐어요."); return; }
+    if (!info?.paddle?.clientToken || !info.companyId) { setMsg(t("결제 준비가 아직 안 됐어요.")); return; }
     setBusy(true); setMsg(null);
     try {
       const P = await loadPaddle(info.paddle.env, info.paddle.clientToken, (name) => {
         if (name === "checkout.completed") {
-          setMsg("구독됐어요. 크레딧이 들어오는 데 몇 초 걸려요.");
+          setMsg(t("구독됐어요. 크레딧이 들어오는 데 몇 초 걸려요."));
           // 웹훅이 원장에 쓰는 것을 기다렸다 다시 읽는다 — 화면이 잔고를 지어내지 않는다.
           setTimeout(() => void load(), 4000);
           setTimeout(() => void load(), 12000);
         }
-      });
+      }, t);
       P.Checkout.open({
         items: [{ priceId, quantity: 1 }],
         customer: info.email ? { email: info.email } : undefined,
@@ -132,7 +136,7 @@ export default function BuyCredits() {
         settings: { displayMode: "overlay", theme: "dark", locale: "ko" },
       });
     } catch (e) {
-      setMsg(e instanceof Error ? e.message : "결제 창을 열지 못했어요.");
+      setMsg(e instanceof Error ? e.message : t("결제 창을 열지 못했어요."));
     } finally { setBusy(false); }
   }
 
@@ -146,8 +150,8 @@ export default function BuyCredits() {
   if (info.inApp) {
     return (
       <div className="px-3 py-2 text-[11px] leading-relaxed text-[var(--rk-400)]">
-        크레딧 {credits}
-        <span className="mt-0.5 block">앱 안에서는 결제를 못 열어요(구글 정책). 브라우저에서 열면 됩니다.</span>
+        {t("크레딧 {n}", { n: credits })}
+        <span className="mt-0.5 block">{t("앱 안에서는 결제를 못 열어요(구글 정책). 브라우저에서 열면 됩니다.")}</span>
       </div>
     );
   }
@@ -160,20 +164,20 @@ export default function BuyCredits() {
         onClick={() => { setShow(true); void load(); }}
         className="w-full px-3 py-2 text-left text-sm hover:bg-[var(--rk-100)]"
       >
-        크레딧 {credits}
+        {t("크레딧 {n}", { n: credits })}
         <span className="block text-[11px] text-[var(--rk-400)]">
-          {info.inApp ? "일을 맡길 때마다 쓴 만큼 빠져요" : "구독하기 · 매달 새로 채워져요"}
+          {info.inApp ? t("일을 맡길 때마다 쓴 만큼 빠져요") : t("구독하기 · 매달 새로 채워져요")}
         </span>
       </button>
       {show && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4" onClick={() => setShow(false)} role="dialog" aria-label="크레딧">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4" onClick={() => setShow(false)} role="dialog" aria-label={t("크레딧")}>
           <div className="w-full max-w-sm border-2 border-[#E0703A] bg-[var(--rk-paper)] p-4 text-[var(--rk-ink)]" onClick={(e) => e.stopPropagation()}>
             <div className="mb-1 flex items-baseline justify-between gap-2">
-              <span className="text-sm font-bold">크레딧</span>
+              <span className="text-sm font-bold">{t("크레딧")}</span>
               <span className="text-lg font-bold tabular-nums">{credits}</span>
             </div>
             <p className="mb-3 text-[11.5px] leading-relaxed text-[var(--rk-600)]">
-              답하기는 거의 안 들고, 조사·문서·그림·앱처럼 일을 맡기면 실제로 든 만큼 빠져요. 보통 업무 하나에 30~40 크레딧이에요. 구독하면 매달 크레딧이 새로 채워지고, 남은 크레딧은 다음 달로 넘어가지 않아요.
+              {t("답하기는 거의 안 들고, 조사·문서·그림·앱처럼 일을 맡기면 실제로 든 만큼 빠져요. 보통 업무 하나에 30~40 크레딧이에요. 구독하면 매달 크레딧이 새로 채워지고, 남은 크레딧은 다음 달로 넘어가지 않아요.")}
             </p>
             {!info.inApp && (info.skus?.length ? (
               <div className="flex flex-col gap-2">
@@ -194,16 +198,16 @@ export default function BuyCredits() {
                 ))}
               </div>
             ) : (
-              <p className="text-xs text-[var(--rk-600)]">구독은 곧 열려요.</p>
+              <p className="text-xs text-[var(--rk-600)]">{t("구독은 곧 열려요.")}</p>
             ))}
             {msg && <p className="mt-2 text-xs text-[#7ED9A0]">{msg}</p>}
             {!info.inApp && (
               <p className="mt-3 text-[10.5px] leading-relaxed text-[var(--rk-400)]">
-                {info.testMode ? "[시험 모드 — 실제 돈은 안 나가요] " : ""}결제와 영수증은 판매 대행사 {info.provider === "dodo" ? "Dodo Payments" : "Paddle"} 가 처리해요. 구독은 언제든 해지할 수 있어요. <a href="/pricing" className="underline">요금</a> · <a href="/terms" className="underline">약관</a> · <a href="/refund" className="underline">환불</a>
+                {info.testMode ? t("[시험 모드 — 실제 돈은 안 나가요] ") : ""}{t("결제와 영수증은 판매 대행사 {who} 가 처리해요. 구독은 언제든 해지할 수 있어요.", { who: info.provider === "dodo" ? "Dodo Payments" : "Paddle" })} <a href="/pricing" className="underline">{t("요금")}</a> · <a href="/terms" className="underline">{t("약관")}</a> · <a href="/refund" className="underline">{t("환불")}</a>
               </p>
             )}
             <div className="mt-3 flex justify-end">
-              <button type="button" onClick={() => setShow(false)} className="border-2 border-[var(--rk-ink)] px-2.5 py-1 text-xs">닫기</button>
+              <button type="button" onClick={() => setShow(false)} className="border-2 border-[var(--rk-ink)] px-2.5 py-1 text-xs">{t("닫기")}</button>
             </div>
           </div>
         </div>

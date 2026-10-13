@@ -35,7 +35,8 @@ const DICTS: Record<string, Record<string, { en: string; ja: string }>> = { dot:
 const dictOf = (src: string) => Object.assign({}, ...[...src.matchAll(/i18n\/dict\/(dot|rookery|common)"|i18n-dict:\s*(dot|rookery|common)\b/g)].map((m) => DICTS[m[1] ?? m[2]]));
 const perFile: { ko: string; f: string; dict: Record<string, { en: string; ja: string }> }[] = [];
 // t("…") / t('…') / t(`…`) — 첫 인자가 글자 그대로인 것만. 변수로 넘긴 것은 못 센다(그런 곳은 사전 열쇠를 직접 쓴다).
-const CALL = /\bt\(\s*(["'`])((?:\\.|(?!\1).)*?)\1/g;
+// `t` 가 이미 다른 뜻(대화 한 턴 등)으로 쓰이는 파일은 `tr` 로 받는다.
+const CALL = /\b(?:t|tr)\(\s*(["'`])((?:\\.|(?!\1).)*?)\1/g;
 for (const f of files) {
   if (f.includes("/i18n/")) continue;
   const s = readFileSync(f, "utf8");
@@ -72,8 +73,13 @@ let leftTotal = 0;
 const leftByFile: [string, string[]][] = [];
 for (const f of files.filter(SCREEN)) {
   const raw = readFileSync(f, "utf8").split("\n");
+  // 화면에 안 붙은 파일(만들어 두고 안 쓰는 것)은 `// i18n-file-skip` 로 통째로 뺀다.
+  if (raw.some((l) => l.includes("i18n-file-skip"))) continue;
   const code = stripComments(raw.join("\n")).split("\n");
   const left: string[] = [];
+  // 화면에 안 나가는 한국어 이름표(상태값 "꺼짐"·"일하는중", 클래스 "rk-얼굴칸", 한국어 변수 이름)는
+  // 파일에 `// i18n-ids: 꺼짐 켜는중 …` 로 적어 두면 세지 않는다. 글 안의 한글 덩어리가 **전부** 이 목록에 있을 때만 뺀다.
+  const ids = new Set([...raw.join("\n").matchAll(/i18n-ids:([^\n]*)/g)].flatMap((m) => m[1].trim().split(/\s+/)));
   // 한국어 원본을 통째로 둔 함수(법률 문서 등 KoBody)는 원래 한국어라 세지 않는다.
   let inKo = false;
   code.forEach((line, i) => {
@@ -84,8 +90,11 @@ for (const f of files.filter(SCREEN)) {
     const noT = line.replace(CALL, "");
     // 화면에 나가는 한국어만 센다: 따옴표 안의 글, JSX 글(>…<), 글만 있는 줄. 한국어로 지은 변수·함수 이름은 안 센다.
     // 따옴표 안이라도 그 글이 사전 열쇠면(자료표의 이름처럼 t(변수) 로 옮기는 것) 이미 옮긴 것으로 친다.
-    const lits = [...noT.matchAll(/(["'`])((?:\\.|(?!\1).)*?)\1/g)].map((m) => m[2]).filter((x) => /[가-힣]/.test(x) && !(x in ALL));
-    const jsx = /[>}][^<>{}"'`]*[가-힣][^<>{}"'`]*[<{]/.test(noT) || /^\s*[가-힣][^=();{}<>"'`]*$/.test(noT);
+    const lits = [...noT.matchAll(/(["'`])((?:\\.|(?!\1).)*?)\1/g)].map((m) => m[2]).filter((x) => /[가-힣]/.test(x) && !(x in ALL) && !(x.match(/[가-힣]+/g) ?? []).every((w) => ids.has(w)));
+    // 줄 머리에서 시작해 {…}·<…> 로 이어지는 JSX 글("작업 시작 · {제목}")도 센다 — 10-14 로키 화면에서 놓친 꼴.
+    const real = (seg: string) => !(seg.match(/[가-힣]+/g) ?? []).every((w) => ids.has(w));
+    const jsx = [/[>}][^<>{}"'`]*[가-힣][^<>{}"'`]*[<{]/g, /^\s*[가-힣][^=();{}<>"'`]*$/g, /^\s*[가-힣][^=();{}<>"'`.]*[{<]/g]
+      .some((re) => [...noT.matchAll(re)].some((m) => real(m[0])));
     if (lits.length || jsx) left.push(`${i + 1}: ${raw[i].trim().slice(0, 110)}`);
   });
   if (left.length) { leftByFile.push([relative(ROOT, f), left]); leftTotal += left.length; }

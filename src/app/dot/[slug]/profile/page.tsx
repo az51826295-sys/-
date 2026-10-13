@@ -90,7 +90,7 @@ export default async function DotProfile({ params }: { params: Promise<{ slug: s
           ) : (
             <div className="pf-faces">
               {Object.entries(sprites).map(([e, url]) => (
-                <div key={e} className="pf-face"><img src={url} alt={e} /><span>{EMO_KO[e] ?? e}</span></div>
+                <div key={e} className="pf-face"><img src={url} alt={e} /><span>{EMO_KO[e] ? t(EMO_KO[e]) : e}</span></div>
               ))}
             </div>
           )}

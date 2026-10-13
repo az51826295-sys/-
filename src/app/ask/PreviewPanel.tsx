@@ -1,6 +1,10 @@
 "use client";
+// i18n-ids: 어긋남 맞음 못 잼
 
 import { useCallback, useEffect, useState } from "react";
+import { useLocale, useT } from "@/lib/i18n/client";
+import { ROOKERY } from "@/lib/i18n/dict/rookery";
+import type { T } from "@/lib/i18n/core";
 
 /**
  * 미리보기 — 대화 옆의 현재 버전 (UI B, 2026-09-06 사장님 승인).
@@ -50,12 +54,12 @@ export function usePreview(conversationId: string | null, refreshKey: number) {
   return { data, setData, load };
 }
 
-export function previewSummary(data: Panel | null, steps: Record<string, string>): string {
+export function previewSummary(data: Panel | null, steps: Record<string, string>, t: T): string {
   const working = Object.values(steps)[0];
   const cur = data?.current ?? null;
   return cur
-    ? `미리보기 · v${cur.n} ${cur.title}` + (cur.checks.length ? ` · 걸린 것 ${cur.checks.filter((c) => c.result === "어긋남").length}` : "")
-    : working ? `작업 중 · ${working}` : "미리보기 · 아직 결과가 없어요";
+    ? t("미리보기 · v{n} {title}", { n: cur.n, title: cur.title }) + (cur.checks.length ? t(" · 걸린 것 {n}", { n: cur.checks.filter((c) => c.result === "어긋남").length }) : "")
+    : working ? t("작업 중 · {what}", { what: working }) : t("미리보기 · 아직 결과가 없어요");
 }
 
 /**
@@ -125,6 +129,8 @@ export default function PreviewPanel({
   onFix?: (feedback: string) => void;
 }) {
   const { data, setData, load } = preview;
+  const t = useT(ROOKERY);
+  const locale = useLocale();
   const setOpen = onOpenChange;
   const [busy, setBusy] = useState<string | null>(null);
   const [showPassed, setShowPassed] = useState(false);
@@ -135,7 +141,7 @@ export default function PreviewPanel({
 
   async function revert(deliverableId: string, n: number) {
     if (!conversationId || busy) return;
-    if (!confirm(`v${n} 으로 복원할까요? 다음 수정은 그 버전 위에서 해요.`)) return;
+    if (!confirm(t("v{n} 으로 복원할까요? 다음 수정은 그 버전 위에서 해요.", { n }))) return;
     setBusy(deliverableId);
     try {
       const r = await fetch(`/api/conversations/${conversationId}/revert`, {
@@ -151,15 +157,13 @@ export default function PreviewPanel({
    */
   async function discard(deliverableId: string, n: number) {
     if (!conversationId || busy) return;
-    if (!confirm(`v${n} 을 버릴까요?
-
-목록에서 내려가고 그 앞 판이 현재 판이 돼요. 파일은 안 지워요.`)) return;
+    if (!confirm(t("v{n} 을 버릴까요?\n\n목록에서 내려가고 그 앞 판이 현재 판이 돼요. 파일은 안 지워요.", { n }))) return;
     setBusy(deliverableId);
     try {
       const r = await fetch(`/api/conversations/${conversationId}/discard`, {
         method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ deliverableId }),
       });
-      if (!r.ok) { const j = (await r.json().catch(() => ({}))) as { error?: string }; alert(j.error ?? "버리지 못했어요."); }
+      if (!r.ok) { const j = (await r.json().catch(() => ({}))) as { error?: string }; alert(j.error ?? t("버리지 못했어요.")); }
       setData(await load());
       onReverted?.();
     } finally { setBusy(null); }
@@ -174,19 +178,19 @@ export default function PreviewPanel({
     if (!conversationId || busy) return;
     let feedback = "";
     if (decision === "approved") {
-      if (!confirm("이 결과를 승인할까요? 승인은 되돌리지 않아요.")) return;
+      if (!confirm(t("이 결과를 승인할까요? 승인은 되돌리지 않아요."))) return;
     } else {
-      const typed = prompt("무엇을 고칠지 적어 주세요 (10자 이상). 이 말이 직원의 다음 기준이 돼요.");
+      const typed = prompt(t("무엇을 고칠지 적어 주세요 (10자 이상). 이 말이 직원의 다음 기준이 돼요."));
       if (typed === null) return;
       feedback = typed.trim();
-      if (feedback.length < 10) { alert("10자 이상 적어 주세요."); return; }
+      if (feedback.length < 10) { alert(t("10자 이상 적어 주세요.")); return; }
     }
     setBusy(deliverableId);
     try {
       const r = await fetch(`/api/conversations/${conversationId}/review`, {
         method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ deliverableId, decision, feedback }),
       });
-      if (!r.ok) { const j = (await r.json().catch(() => ({}))) as { error?: string }; alert(j.error ?? "판정을 남기지 못했어요."); }
+      if (!r.ok) { const j = (await r.json().catch(() => ({}))) as { error?: string }; alert(j.error ?? t("판정을 남기지 못했어요.")); }
       setData(await load());
       // 판정이 남았으면 이유를 그대로 직원에게 — "수정 요청: …" 은 FIX_WORDS 규칙에 걸려
       // 현재 판을 낸 직원이 그 판 위에서 고친다. 새 경로가 아니라 사람이 치는 것과 같은 경로다.
@@ -201,12 +205,12 @@ export default function PreviewPanel({
     <div className="flex h-full flex-col text-sm">
       {/* 100회차: 폰 폭(360px)에서 "▼ 닫기" 가 오른쪽 끝에 붙었다 — 설명은 줄이고 단추는 줄지 않게. */}
       <div className="flex items-baseline justify-between gap-2 border-b-2 border-[var(--rk-ink)] px-3.5 py-2.5">
-        <span className="shrink-0 font-bold">{cur ? `미리보기 · v${cur.n}` : "미리보기"}</span>
+        <span className="shrink-0 font-bold">{cur ? t("미리보기 · v{n}", { n: cur.n }) : t("미리보기")}</span>
         <span className="flex min-w-0 items-baseline text-[11px] text-[var(--rk-600)]">
           <span className="min-w-0 truncate">
-          {cur ? [cur.kind, cur.who, new Date(cur.at).toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit" })].filter(Boolean).join(" · ") : ""}
+          {cur ? [cur.kind, cur.who, new Date(cur.at).toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit" })].filter(Boolean).join(" · ") : ""}
           </span>
-          <button type="button" className="ml-3 shrink-0 whitespace-nowrap lg:hidden" onClick={() => setOpen(false)}>▼ 닫기</button>
+          <button type="button" className="ml-3 shrink-0 whitespace-nowrap lg:hidden" onClick={() => setOpen(false)}>{t("▼ 닫기")}</button>
         </span>
       </div>
       <div className="flex-1 overflow-y-auto">
@@ -215,16 +219,16 @@ export default function PreviewPanel({
         {shot && (
           <section className="border-b-2 border-[var(--rk-ink)] px-3.5 py-2.5">
             <div className="mb-1.5 flex items-baseline justify-between text-[11px] text-[var(--rk-600)]">
-              <span><span className="mr-1 inline-block h-2 w-2 rounded-full bg-[#E07070] align-middle" />사장님 화면 · 실시간 · {shot.host}</span>
-              <span>로키가 같이 보고 있어요</span>
+              <span><span className="mr-1 inline-block h-2 w-2 rounded-full bg-[#E07070] align-middle" />{t("사장님 화면 · 실시간 · {host}", { host: shot.host })}</span>
+              <span>{t("로키가 같이 보고 있어요")}</span>
             </div>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={shot.url} alt="사장님 화면" className="w-full border-2 border-[var(--rk-ink)]" />
+            <img src={shot.url} alt={t("사장님 화면")} className="w-full border-2 border-[var(--rk-ink)]" />
           </section>
         )}
         {Object.entries(plans).map(([id, pl]) => (
           <section key={id} className="border-b-2 border-[#E0703A] bg-[var(--rk-100)] px-3.5 py-2.5">
-            <div className="mb-1 text-[11px] text-[var(--rk-600)]">계획 — {pl.kind}{pl.who ? ` · ${pl.who}` : ""} · {steps[id]?.split(": ")[1] ?? "진행 중"}</div>
+            <div className="mb-1 text-[11px] text-[var(--rk-600)]">{t("계획 — {kind}", { kind: pl.kind })}{pl.who ? ` · ${pl.who}` : ""} · {steps[id]?.split(": ")[1] ?? t("진행 중")}</div>
             <div className="text-sm font-bold">{pl.title}</div>
             {pl.lines.length > 0 && (
               <ul className="mt-1 space-y-0.5 text-[11.5px] text-[var(--rk-600)]">
@@ -236,7 +240,7 @@ export default function PreviewPanel({
         ))}
         {!cur && (
           <p className="px-3.5 py-6 text-xs text-[var(--rk-600)]">
-            {working ? `${working}… 끝나면 여기 나타나요.` : "일을 시키면 결과가 여기 나타나요. 화면, 검사 결과, 버전 기록."}
+            {working ? t("{what}… 끝나면 여기 나타나요.", { what: working }) : t("일을 시키면 결과가 여기 나타나요. 화면, 검사 결과, 버전 기록.")}
           </p>
         )}
         {cur && (
@@ -244,36 +248,36 @@ export default function PreviewPanel({
             {cur.review ? (
               <div className="text-xs">
                 <span className={cur.review.decision === "approved" ? "font-bold text-[#7ED9A0]" : "font-bold text-[#E0703A]"}>
-                  {cur.review.decision === "approved" ? "✓ 승인됨" : "✎ 수정 요청됨"}
+                  {cur.review.decision === "approved" ? t("✓ 승인됨") : t("✎ 수정 요청됨")}
                 </span>
-                <span className="ml-2 text-[var(--rk-600)]">{new Date(cur.review.at).toLocaleString("ko-KR", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" })}</span>
+                <span className="ml-2 text-[var(--rk-600)]">{new Date(cur.review.at).toLocaleString(locale, { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" })}</span>
                 {cur.review.feedback && <div className="mt-1 text-[11.5px] text-[var(--rk-600)]">{cur.review.feedback}</div>}
               </div>
             ) : (
               <div className="flex items-center gap-2">
                 <span className="mr-auto min-w-0 text-[11px] text-[var(--rk-600)]">
-                  이 결과, 어때요?
+                  {t("이 결과, 어때요?")}
                   {/* 100회차: 플레이 AI 생성 콘텐츠 정책 — 결과물도 앱 안에서 신고할 수 있게. */}
                   <a
-                    href={`mailto:az51826295@gmail.com?subject=${encodeURIComponent("로키 신고: 결과물 " + cur.title)}&body=${encodeURIComponent(`대화: ${conversationId}\n결과물: ${cur.deliverableId} (v${cur.n})\n\n무엇이 문제인지 적어 주세요:\n`)}`}
+                    href={`mailto:az51826295@gmail.com?subject=${encodeURIComponent(t("로키 신고: 결과물 {title}", { title: cur.title }))}&body=${encodeURIComponent(t("대화: {id}\n결과물: {deliverable} (v{n})\n\n무엇이 문제인지 적어 주세요:\n", { id: conversationId ?? "", deliverable: cur.deliverableId, n: cur.n }))}`}
                     className="ml-2 underline hover:text-[var(--rk-ink)]"
-                  >신고</a>
+                  >{t("신고")}</a>
                 </span>
                 {/* 136회차(사장님): "승인버튼 수정버튼 밖에없고 삭제 버튼 없음."
                     승인도 수정 요청도 아닌 것이 있다 — 그냥 아니었던 것. 지우지 않고 목록에서 내린다. */}
                 <button type="button" disabled={busy !== null} onClick={() => void discard(cur.deliverableId, cur.n)}
-                  className="shrink-0 whitespace-nowrap border-2 border-[var(--rk-600)] px-2.5 py-1 text-xs text-[var(--rk-600)] hover:bg-[var(--rk-100)] disabled:opacity-50">버리기</button>
+                  className="shrink-0 whitespace-nowrap border-2 border-[var(--rk-600)] px-2.5 py-1 text-xs text-[var(--rk-600)] hover:bg-[var(--rk-100)] disabled:opacity-50">{t("버리기")}</button>
                 <button type="button" disabled={busy !== null} onClick={() => void judge(cur.deliverableId, "needs_changes")}
-                  className="shrink-0 whitespace-nowrap border-2 border-[var(--rk-ink)] px-2.5 py-1 text-xs hover:bg-[var(--rk-100)] disabled:opacity-50">수정 요청</button>
+                  className="shrink-0 whitespace-nowrap border-2 border-[var(--rk-ink)] px-2.5 py-1 text-xs hover:bg-[var(--rk-100)] disabled:opacity-50">{t("수정 요청")}</button>
                 <button type="button" disabled={busy !== null} onClick={() => void judge(cur.deliverableId, "approved")}
-                  className="shrink-0 whitespace-nowrap border-2 border-[#E0703A] bg-[#E0703A] px-2.5 py-1 text-xs font-bold text-[var(--rk-paper)] disabled:opacity-50">승인</button>
+                  className="shrink-0 whitespace-nowrap border-2 border-[#E0703A] bg-[#E0703A] px-2.5 py-1 text-xs font-bold text-[var(--rk-paper)] disabled:opacity-50">{t("승인")}</button>
               </div>
             )}
           </section>
         )}
         {cur && cur.photos.length > 0 && (
           <section className="border-b border-[var(--rk-200)] px-3.5 py-2.5">
-            <div className="mb-1.5 text-[11px] text-[var(--rk-600)]">화면</div>
+            <div className="mb-1.5 text-[11px] text-[var(--rk-600)]">{t("화면")}</div>
             <div className="grid gap-1.5">
               {cur.photos.map((p, i) => (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -290,13 +294,13 @@ export default function PreviewPanel({
             열린 채로 고장 난다, 09-16 조사). 사람이 읽고 **누르는 것**이 받는 쪽이다. */}
         {cur && cur.judge && (
           <section className="border-b border-[var(--rk-200)] px-3.5 py-2.5">
-            <div className="mb-1.5 text-[11px] text-[var(--rk-600)]">처음 보는 사람이라면 — 막지 않아요, 읽고 정하세요</div>
+            <div className="mb-1.5 text-[11px] text-[var(--rk-600)]">{t("처음 보는 사람이라면 — 막지 않아요, 읽고 정하세요")}</div>
             <div className="grid gap-1 text-[11.5px] leading-snug">
-              <div><span className="text-[var(--rk-600)]">3초만 봤을 때</span> {cur.judge.firstGlance}</div>
-              <div><span className="text-[var(--rk-600)]">멈출까 넘길까</span> {cur.judge.wouldStop}</div>
-              {cur.judge.awkward && <div><span className="text-[var(--rk-600)]">어색한 곳</span> {cur.judge.awkward}</div>}
-              {cur.judge.soulless && <div><span className="text-[var(--rk-600)]">고른 흔적</span> {cur.judge.soulless}</div>}
-              <div className="mt-0.5"><span className="text-[var(--rk-600)]">하나만 바꾼다면</span> <b>{cur.judge.oneChange}</b></div>
+              <div><span className="text-[var(--rk-600)]">{t("3초만 봤을 때")}</span> {cur.judge.firstGlance}</div>
+              <div><span className="text-[var(--rk-600)]">{t("멈출까 넘길까")}</span> {cur.judge.wouldStop}</div>
+              {cur.judge.awkward && <div><span className="text-[var(--rk-600)]">{t("어색한 곳")}</span> {cur.judge.awkward}</div>}
+              {cur.judge.soulless && <div><span className="text-[var(--rk-600)]">{t("고른 흔적")}</span> {cur.judge.soulless}</div>}
+              <div className="mt-0.5"><span className="text-[var(--rk-600)]">{t("하나만 바꾼다면")}</span> <b>{cur.judge.oneChange}</b></div>
             </div>
             {onFix && (
               <button
@@ -304,10 +308,10 @@ export default function PreviewPanel({
                 disabled={busy !== null}
                 onClick={() => {
                   const j = cur.judge!;
-                  onFix(j.oneChange + (j.awkward ? ` (어색한 곳: ${j.awkward})` : ""));
+                  onFix(j.oneChange + (j.awkward ? t(" (어색한 곳: {what})", { what: j.awkward }) : ""));
                 }}
                 className="mt-2 w-full border-2 border-[var(--rk-ink)] px-2.5 py-1 text-xs hover:bg-[var(--rk-100)] disabled:opacity-50"
-              >이 말대로 고쳐 줘</button>
+              >{t("이 말대로 고쳐 줘")}</button>
             )}
           </section>
         )}
@@ -315,7 +319,7 @@ export default function PreviewPanel({
           <section className="border-b border-[var(--rk-200)] px-3.5 py-2.5">
             <div className="mb-1.5 text-[11px] text-[var(--rk-600)]">
               {/* 157회차: 딱지를 뗐다. "통과 N · 실패 M · 해당 없음 K" 는 판정처럼 읽히는데 센 것이지 판단이 아니다. 못 잼은 세지 않는다. */}
-              자동 확인 {cur.checks.filter((c) => c.result !== "못 잼").length}가지 · 걸린 것 {cur.checks.filter((c) => c.result === "어긋남").length}가지 <span className="text-[var(--rk-400)]">(기계가 잰 값이에요 — 좋고 나쁨은 사장님이 정해요)</span>
+              {t("자동 확인 {n}가지 · 걸린 것 {bad}가지", { n: cur.checks.filter((c) => c.result !== "못 잼").length, bad: cur.checks.filter((c) => c.result === "어긋남").length })} <span className="text-[var(--rk-400)]">{t("(기계가 잰 값이에요 — 좋고 나쁨은 사장님이 정해요)")}</span>
             </div>
             {/* 45회차: 통과한 줄은 접는다. 여덟 줄이 다 펴져 있으면 실패 한 줄이 안 보인다. */}
             {cur.checks
@@ -327,14 +331,14 @@ export default function PreviewPanel({
               ))}
             {cur.checks.some((c) => c.result === "맞음") && (
               <button type="button" className="mt-1 text-[11px] text-[var(--rk-600)] underline" onClick={() => setShowPassed((v) => !v)}>
-                {showPassed ? "맞은 줄 접기" : `맞은 줄 ${cur.checks.filter((c) => c.result === "맞음").length}개 보기`}
+                {showPassed ? t("맞은 줄 접기") : t("맞은 줄 {n}개 보기", { n: cur.checks.filter((c) => c.result === "맞음").length })}
               </button>
             )}
           </section>
         )}
         {cur && cur.files.length > 0 && (
           <section className="border-b border-[var(--rk-200)] px-3.5 py-2.5">
-            <div className="mb-1.5 text-[11px] text-[var(--rk-600)]">파일</div>
+            <div className="mb-1.5 text-[11px] text-[var(--rk-600)]">{t("파일")}</div>
             <div className="flex flex-wrap gap-x-2.5 gap-y-1 text-[11.5px]">
               {cur.files.slice(0, 8).map((f) => (
                 <a key={f.href} href={f.href} target="_blank" rel="noopener" className="underline">{f.name}</a>
@@ -351,17 +355,17 @@ export default function PreviewPanel({
           return (
             <section className="border-b border-[var(--rk-200)] px-3.5 py-2.5">
               <div className="mb-1.5 flex items-center gap-2 text-[11px] text-[var(--rk-600)]">
-                <span className="mr-auto">{viewing && viewing !== cur.deliverableId ? `v${v?.n ?? "?"} 보는 중 · 현재는 v${cur.n}` : "바로 해 보기 — 창 안을 한 번 누르면 키가 먹어요"}</span>
+                <span className="mr-auto">{viewing && viewing !== cur.deliverableId ? t("v{n} 보는 중 · 현재는 v{cur}", { n: v?.n ?? "?", cur: cur.n }) : t("바로 해 보기 — 창 안을 한 번 누르면 키가 먹어요")}</span>
                 {viewing && viewing !== cur.deliverableId && (
-                  <button type="button" disabled={busy !== null} onClick={() => void revert(id, v?.n ?? 0)} className="border border-[#E0703A] px-1.5 py-0.5 text-[#E0703A]">이 버전으로 복원</button>
+                  <button type="button" disabled={busy !== null} onClick={() => void revert(id, v?.n ?? 0)} className="border border-[#E0703A] px-1.5 py-0.5 text-[#E0703A]">{t("이 버전으로 복원")}</button>
                 )}
-                <button type="button" onClick={() => setPlayKey((k) => k + 1)} className="border border-[var(--rk-200)] px-1.5 py-0.5 hover:border-[var(--rk-ink)]">다시 시작</button>
-                <a href={src} target="_blank" rel="noopener" className="border border-[var(--rk-200)] px-1.5 py-0.5 hover:border-[var(--rk-ink)]">새 창에서 열기</a>
+                <button type="button" onClick={() => setPlayKey((k) => k + 1)} className="border border-[var(--rk-200)] px-1.5 py-0.5 hover:border-[var(--rk-ink)]">{t("다시 시작")}</button>
+                <a href={src} target="_blank" rel="noopener" className="border border-[var(--rk-200)] px-1.5 py-0.5 hover:border-[var(--rk-ink)]">{t("새 창에서 열기")}</a>
               </div>
               <iframe
                 key={`${id}-${playKey}`}
                 src={src}
-                title={`v${v?.n ?? ""} 미리보기`}
+                title={t("v{n} 미리보기", { n: v?.n ?? "" })}
                 sandbox="allow-scripts allow-pointer-lock allow-popups allow-forms"
                 className="h-[360px] w-full border-2 border-[var(--rk-ink)] bg-black"
               />
@@ -370,7 +374,7 @@ export default function PreviewPanel({
         })()}
         {data && data.versions.length > 0 && (
           <section className="border-b border-[var(--rk-200)] px-3.5 py-2.5">
-            <div className="mb-1.5 text-[11px] text-[var(--rk-600)]">버전 기록 — 누르면 그 버전이 위에 보여요. 복원은 위의 단추로.</div>
+            <div className="mb-1.5 text-[11px] text-[var(--rk-600)]">{t("버전 기록 — 누르면 그 버전이 위에 보여요. 복원은 위의 단추로.")}</div>
             <div className="flex flex-wrap gap-1.5">
               {data.versions.map((v) => {
                 const shown = (viewing ?? cur?.deliverableId) === v.deliverableId;
@@ -380,7 +384,7 @@ export default function PreviewPanel({
                     type="button"
                     disabled={busy !== null}
                     onClick={() => setViewing(v.current ? null : v.deliverableId)}
-                    title={`${v.kind} · ${v.who ?? ""} · ${v.title}${v.current ? " · 현재 판" : ""}`}
+                    title={`${v.kind} · ${v.who ?? ""} · ${v.title}${v.current ? t(" · 현재 판") : ""}`}
                     className={"border-2 px-2 py-0.5 text-xs " + (shown ? "border-[#E0703A] text-[var(--rk-ink)]" : v.current ? "border-[var(--rk-ink)] text-[var(--rk-ink)]" : "border-[var(--rk-200)] text-[var(--rk-600)] hover:border-[var(--rk-ink)] hover:text-[var(--rk-ink)]")}
                   >
                     v{v.n} {v.title.slice(0, 14)}{v.title.length > 14 ? "…" : ""}{v.current ? " ●" : ""}
@@ -394,11 +398,11 @@ export default function PreviewPanel({
       {data && (
         <div className="flex justify-between border-t-2 border-[var(--rk-ink)] px-3.5 py-2 text-[11px] text-[var(--rk-600)]" title={data.spend.note}>
           {data.spend.credits != null ? (
-            <span>남은 크레딧 <b className="text-[var(--rk-ink)]">{data.spend.credits.toLocaleString("ko-KR")}</b></span>
+            <span>{t("남은 크레딧")} <b className="text-[var(--rk-ink)]">{data.spend.credits.toLocaleString(locale)}</b></span>
           ) : (
             <>
-              <span>{data.spend.limitDays ? `최근 ${data.spend.limitDays}일 사용` : "이번 달 사용"} <b className="text-[var(--rk-ink)]">${data.spend.monthUsd.toFixed(2)}</b>{data.spend.limitUsd != null ? <> · 한도 ${data.spend.limitUsd}{data.spend.monthUsd >= data.spend.limitUsd ? " · 한도에 닿아 새 일을 못 시작해요" : ""}</> : null}</span>
-              <span>Meshy 크레딧 <b className="text-[var(--rk-ink)]">{data.spend.meshyCredits === null ? "—" : data.spend.meshyCredits.toLocaleString()}</b></span>
+              <span>{data.spend.limitDays ? t("최근 {n}일 사용", { n: data.spend.limitDays }) : t("이번 달 사용")} <b className="text-[var(--rk-ink)]">${data.spend.monthUsd.toFixed(2)}</b>{data.spend.limitUsd != null ? <>{t(" · 한도 ${n}", { n: data.spend.limitUsd })}{data.spend.monthUsd >= data.spend.limitUsd ? t(" · 한도에 닿아 새 일을 못 시작해요") : ""}</> : null}</span>
+              <span>{t("Meshy 크레딧")} <b className="text-[var(--rk-ink)]">{data.spend.meshyCredits === null ? "—" : data.spend.meshyCredits.toLocaleString()}</b></span>
             </>
           )}
         </div>

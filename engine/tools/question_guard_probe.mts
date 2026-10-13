@@ -5,6 +5,10 @@ const cases: [string, boolean][] = [
   ["오늘 몇 시야?", true], ["실시간으로 폰을 원격조종할 수 있어?", true],
   ["터치로 하는 간단한 게임 하나 만들어 줘", false], ["공이 너무 빨라. 속도를 절반으로 줄여 줘.", false], ["아니 오른쪽 눌렀는 데 왼쪽으로 가고 왼", false],
   ["폰 게임도 만들 수 있어?", false], ["이거 고칠 수 있어?", false], ["다시 해 줄래?", false], ["시작", false],
+  // 10-14 영어·일본어
+  ["what does unity measure mean?", true], ["Is it done yet?", true], ["what time is it", true], ["これってどういう意味？", true], ["もう終わりましたか", true],
+  ["make me a simple tap game", false], ["the ball is too fast, make it half speed", false], ["can you build a phone game?", false], ["can you fix this?", false],
+  ["タップで遊べる簡単なゲームを作って", false], ["ボールが速すぎる、半分にして直して", false], ["スマホのゲームも作ってくれる？", false],
 ];
 let bad = 0;
 for (const [s, want] of cases) { const got = isPureQuestion(s); if (got !== want) bad++; console.log(got === want ? "맞음  " : "어긋남", JSON.stringify(s), "→", got ? "물음" : "일"); }

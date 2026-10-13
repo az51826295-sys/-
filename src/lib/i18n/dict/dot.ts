@@ -347,4 +347,11 @@ export const DOT: Dict = {
   "길게 말해 줌 +1": { en: "Long message +1", ja: "長めに話してくれた +1" },
   "{n}단계가 됐어요": { en: "Reached stage {n}", ja: "ステージ{n}になりました" },
   "{n}단계로 멀어졌어요": { en: "Dropped to stage {n}", ja: "ステージ{n}に下がりました" },
+  // 프로필 표정 이름
+  "평소": { en: "Usual", ja: "いつも" },
+  "기쁨": { en: "Happy", ja: "うれしい" },
+  "부끄": { en: "Shy", ja: "てれ" },
+  "시무룩": { en: "Down", ja: "しょんぼり" },
+  "툴툴": { en: "Grumpy", ja: "ぷんぷん" },
+  "깜짝": { en: "Surprised", ja: "びっくり" },
 };

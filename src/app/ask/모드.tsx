@@ -1,4 +1,7 @@
 "use client";
+// i18n-ids: 조용함 대화중 일하는중 전환 쓸기 점 하는일 분 큰얼굴칸 숨 큰이름 큰상태 결 모드띠 일인가 일 말 모드 얼굴칸 얼굴 큰얼굴 몇분
+import { useT } from "@/lib/i18n/client";
+import { ROOKERY } from "@/lib/i18n/dict/rookery";
 /**
  * **대화 중인가 일하는 중인가** (228회차 10-02, 사장님 "대화하고 있는지 개발하는지 구분해야 하고").
  *
@@ -61,15 +64,16 @@ export function 전환({ 보임 }: { 보임: boolean }) {
 
 /** 지금 무엇을 하는 중인지 늘 보이는 띠. 일하는 중이면 빨강, 대화 중이면 수수하게. */
 export function 모드띠({ 모드, 하는일, 몇분 }: { 모드: 모드; 하는일?: string | null; 몇분?: number | null }) {
+  const t = useT(ROOKERY);
   if (모드 === "조용함") return null;
   const 일인가 = 모드 === "일하는중";
   return (
     <div className={`rk-모드띠 ${일인가 ? "rk-일" : "rk-말"}`} role="status" aria-live="polite">
       <span className="rk-점" />
-      <b>{일인가 ? "일하는 중" : "대화 중"}</b>
+      <b>{일인가 ? t("일하는 중") : t("대화 중")}</b>
       {일인가 && 하는일 ? <span className="rk-하는일">{하는일}</span> : null}
-      {일인가 && 몇분 != null ? <span className="rk-분">{몇분}분째</span> : null}
-      {!일인가 ? <span className="rk-하는일">답을 쓰는 중이에요</span> : null}
+      {일인가 && 몇분 != null ? <span className="rk-분">{t("{n}분째", { n: 몇분 })}</span> : null}
+      {!일인가 ? <span className="rk-하는일">{t("답을 쓰는 중이에요")}</span> : null}
     </div>
   );
 }
@@ -101,9 +105,9 @@ export function 로키얼굴({ 모드 }: { 모드: 모드 }) {
  */
 export type 결 = 1 | 2 | 3;
 export const 결이름: Record<결, string> = {
-  1: "지금 것 — 얼굴 작게, 띠 하나",
-  2: "두근도트처럼 — 얼굴 크게 위에",
-  3: "메신저처럼 — 얼굴은 옆에, 대화가 주인공",
+  1: "지금 것 — 얼굴 작게, 띠 하나", // i18n-skip (시험용 결 고르기 이름 — 화면에 안 나간다)
+  2: "두근도트처럼 — 얼굴 크게 위에", // i18n-skip (시험용 결 고르기 이름 — 화면에 안 나간다)
+  3: "메신저처럼 — 얼굴은 옆에, 대화가 주인공", // i18n-skip (시험용 결 고르기 이름 — 화면에 안 나간다)
 };
 
 export function use결(): 결 {
@@ -119,6 +123,7 @@ export function use결(): 결 {
 
 /** 결 2 — 두근도트처럼 얼굴이 크게 앞에 서고 말이 그 아래로 흐른다. */
 export function 큰얼굴({ 모드, 하는일, 몇분 }: { 모드: 모드; 하는일?: string | null; 몇분?: number | null }) {
+  const t = useT(ROOKERY);
   return (
     <div className="rk-큰얼굴칸">
       <div className={`rk-큰얼굴 ${모드 === "일하는중" ? "rk-얼굴-일" : 모드 === "대화중" ? "rk-얼굴-말" : ""}`}>
@@ -126,10 +131,10 @@ export function 큰얼굴({ 모드, 하는일, 몇분 }: { 모드: 모드; 하�
         <img src="/logo/rookery-mark-white.svg" alt="" />
         <span className="rk-숨" aria-hidden />
       </div>
-      <div className="rk-큰이름">로키</div>
+      <div className="rk-큰이름">{t("로키")}</div>
       <div className="rk-큰상태">
-        {모드 === "일하는중" ? (하는일 ?? "일하는 중") : 모드 === "대화중" ? "답을 쓰는 중이에요" : "무엇이든 물어보세요"}
-        {모드 === "일하는중" && 몇분 != null ? ` · ${몇분}분째` : ""}
+        {모드 === "일하는중" ? (하는일 ?? t("일하는 중")) : 모드 === "대화중" ? t("답을 쓰는 중이에요") : t("무엇이든 물어보세요")}
+        {모드 === "일하는중" && 몇분 != null ? ` · ${t("{n}분째", { n: 몇분 })}` : ""}
       </div>
     </div>
   );

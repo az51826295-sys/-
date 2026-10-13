@@ -1,4 +1,7 @@
 "use client";
+// i18n-ids: 로키 좁은창 작은창 창 작게 창단추 막힘
+import { useT } from "@/lib/i18n/client";
+import { ROOKERY } from "@/lib/i18n/dict/rookery";
 /**
  * **문자 띄워놓고 하듯** (228회차 10-02, 사장님 "컴퓨터에서 쓰는거니까 문자를 뛰어놓고 하는거랑 비슷해").
  *
@@ -54,6 +57,7 @@ export function 창으로띄우기() {
 }
 
 export function 창단추({ 좁게, 바꾸기 }: { 좁게: boolean; 바꾸기: (v: boolean) => void }) {
+  const t = useT(ROOKERY);
   const [막힘, set막힘] = useState(false);
   /**
    * **그릴 때 `window` 를 읽으면 안 된다.** 서버는 주소줄을 모르니 단추를 그리고, 브라우저는
@@ -66,15 +70,15 @@ export function 창단추({ 좁게, 바꾸기 }: { 좁게: boolean; 바꾸기: (
   }, []);
   return (
     <div className="rk-창단추">
-      <button type="button" onClick={() => 바꾸기(!좁게)} title={좁게 ? "넓게 보기" : "좁게 — 켜 두고 쓰기"}>
-        {좁게 ? "넓게" : "좁게"}
+      <button type="button" onClick={() => 바꾸기(!좁게)} title={좁게 ? t("넓게 보기") : t("좁게 — 켜 두고 쓰기")}>
+        {좁게 ? t("넓게") : t("좁게")}
       </button>
       {!작은창인가 && (
-        <button type="button" onClick={() => set막힘(!창으로띄우기())} title="작은 창으로 띄워 켜 두기">
-          창으로 띄우기
+        <button type="button" onClick={() => set막힘(!창으로띄우기())} title={t("작은 창으로 띄워 켜 두기")}>
+          {t("창으로 띄우기")}
         </button>
       )}
-      {막힘 && <span className="rk-막힘">브라우저가 창을 막았어요 — 주소창 오른쪽에서 허용해 주세요</span>}
+      {막힘 && <span className="rk-막힘">{t("브라우저가 창을 막았어요 — 주소창 오른쪽에서 허용해 주세요")}</span>}
     </div>
   );
 }

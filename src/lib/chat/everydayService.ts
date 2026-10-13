@@ -241,23 +241,24 @@ function clipTranscript(messages: { role: string; content: string }[]): string {
 }
 
 /** 고쳐 달라는 말. 넓게 잡는다 — 못 잡으면 채팅이 코드 조각으로 답하고 끝난다. */
-export const FIX_WORDS = /고쳐|고치|수정|다시\s*해|바꿔|추가해|넣어\s*줘|빼\s*줘|늘려|줄여|fix|change/i;
+// 10-14 영어·일본어 사용자: 같은 뜻의 말을 더한다(한국어 쪽은 그대로).
+export const FIX_WORDS = /고쳐|고치|수정|다시\s*해|바꿔|추가해|넣어\s*줘|빼\s*줘|늘려|줄여|fix|change|update|tweak|redo|\bedit\b|\badd\b|\bremove\b|make (it|the|this|that)\b|直して|なおして|修正|変えて|変更して|追加して|足して|消して|増やして|減らして|やり直して/i;
 
 /** 로키의 답이 일을 **약속**하는 말(169회차). 약속했는데 업무가 안 생기면 아무 일도 안 일어난다 — 그때 고치는 일로 넘긴다. */
-export const PROMISE_WORDS = /고칠게|고치겠|고쳐서|반영(해서|할게|하겠)|다시 (돌릴|만들|올릴|짤)|수정(할게|하겠|해서)|바꿀게|바꾸겠|줄일게|늘릴게|넣을게|추가할게|손볼게/;
+export const PROMISE_WORDS = /고칠게|고치겠|고쳐서|반영(해서|할게|하겠)|다시 (돌릴|만들|올릴|짤)|수정(할게|하겠|해서)|바꿀게|바꾸겠|줄일게|늘릴게|넣을게|추가할게|손볼게|I'?ll (fix|update|change|add|redo|rebuild|adjust|tweak)|I will (fix|update|change|add|redo|rebuild|adjust)|let me (fix|update|change|redo)|直します|修正します|変更します|追加します|作り直します|反映します/i;
 
 /** 물음표로 끝나거나 묻는 낱말이 있고, 시키는 동사가 없으면 **물음**이다(174회차). 물음은 답할 것이지 맡길 것이 아니다. */
 export function isPureQuestion(text: string): boolean {
   const last = text.trim();
   // 물음표 뒤에 짧은 꼬리("그런가? 안돼")가 붙어도 물음이다.
-  const isQuestion = /[?？]\s*\S{0,6}$/.test(last) || /뭔\s?뜻|무슨 뜻|뭐야|뭐예요|왜\s|어떻게\s|알 수 있어|되는 거야|그런가/.test(last);
+  const isQuestion = /[?？]\s*\S{0,6}$/.test(last) || /뭔\s?뜻|무슨 뜻|뭐야|뭐예요|왜\s|어떻게\s|알 수 있어|되는 거야|그런가|^(what|why|how|is|are|does|do|can|could)\b|どういう意味|なんで|なぜ|どうやって|[ぁ-んァ-ヶ一-龯](か|かな)$/i.test(last);
   // "만들었어?"(지난 일을 묻는 것)는 시키는 게 아니다 — 지난 꼴(었/았)은 뺀다.
-  const asksWork = /만들(?!었)|해\s?줘|해줘|고쳐|고치|고칠|바꿔|바꿀|넣어|추가|빼\s?줘|조사|찾아\s?줘|써\s?줘|그려|다시\s?(해|돌)|시작|진행/.test(last);
+  const asksWork = /만들(?!었)|해\s?줘|해줘|고쳐|고치|고칠|바꿔|바꿀|넣어|추가|빼\s?줘|조사|찾아\s?줘|써\s?줘|그려|다시\s?(해|돌)|시작|진행|\b(make|build|create|fix|change|add|write|draw|research|redo|start)\b|作って|直して|変えて|追加|書いて|描いて|調べて|始めて|やって/i.test(last);
   return isQuestion && !asksWork;
 }
 
 /** "파일 줘·올려 줘·다운로드" — 지난 결과물의 파일을 달라는 말(185회차). 고치는 말이 섞여 있으면 아니다. */
-export const FILE_WORDS = /(파일|html|압축|zip)\s*(로|을|를|은|는)?\s*(올려|줘|주세요|보내|내놔|다시|다운|받)|다운로드|파일\s*(어디|없)|링크\s*(줘|보내)/i;
+export const FILE_WORDS = /(파일|html|압축|zip)\s*(로|을|를|은|는)?\s*(올려|줘|주세요|보내|내놔|다시|다운|받)|다운로드|파일\s*(어디|없)|링크\s*(줘|보내)|\bdownload\b|(send|give) me the (files?|zip|html|link)|where('s| is| are) the (files?|download|link)|ダウンロード|ファイル(を|は)?\s*(ください|送って|ちょうだい|どこ)|リンク(を)?(ください|送って)/i;
 
 /** 이 대화에 마지막으로 돌아온 결과물의 파일(글 파일만). 없으면 null. */
 async function lastReturnedFiles(
@@ -280,7 +281,7 @@ async function lastReturnedFiles(
 }
 
 /** 재촉·맞장구 한마디 — 새 내용이 없는 말(177회차). 이 말은 도는 일이 있으면 그 일에 대한 것이다. */
-export const GO_WORDS = /^\s*(만들어|만들어\s*줘|만들자|만들어요|해\s*줘|해|시작|시작해|시작하자|시작해요|고|가자|ㄱ|ㄱㄱ|ㄱㄱㄱ|응|네|넵|예|ㅇㅇ|ㅇ|ok|okay|go|진행|진행해|그래|좋아|좋아요|빨리|빨리해|얼른)\s*[.!~]*\s*$/i;
+export const GO_WORDS = /^\s*(만들어|만들어\s*줘|만들자|만들어요|해\s*줘|해|시작|시작해|시작하자|시작해요|고|가자|ㄱ|ㄱㄱ|ㄱㄱㄱ|응|네|넵|예|ㅇㅇ|ㅇ|ok|okay|go|진행|진행해|그래|좋아|좋아요|빨리|빨리해|얼른|yes|yep|yeah|sure|do it|start|let'?s go|go ahead|build it|make it|please do|はい|うん|お願い|お願いします|やって|始めて|作って|進めて|どうぞ)\s*[.!~。！]*\s*$/i;
 
 /** 이 대화에서 아직 결과가 안 돌아온 일(돌고 있거나 차례·확인을 기다리거나 방금 끝나 안 붙은 것). 없으면 null. */
 export async function inProgressAssignment(

@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useT } from "@/lib/i18n/client";
+import { ROOKERY } from "@/lib/i18n/dict/rookery";
 
 /**
  * 기다리는 동안 **살아 있다고 말하는 자리.**
@@ -36,6 +38,7 @@ export function Waiting({
   stage?: string | null;
   className?: string;
 }) {
+  const t = useT(ROOKERY);
   const [seconds, setSeconds] = useState(0);
   const [dots, setDots] = useState(1);
 
@@ -55,7 +58,7 @@ export function Waiting({
 
   return (
     <p className={"text-sm leading-relaxed " + className}>
-      <span>{stage?.trim() || "생각하는 중"}</span>
+      <span>{stage?.trim() || t("생각하는 중")}</span>
       {/* 자리를 세 칸으로 잡아 둔다. 점이 늘었다 줄 때 뒤 글자가 흔들리면
           그것 자체가 조급해 보인다. */}
       <span className="inline-block w-[1.6em] text-left">
@@ -63,11 +66,11 @@ export function Waiting({
       </span>
       {/* 1초 전에는 안 적는다. 0초가 잠깐 보였다 사라지면 깜빡임이 된다. */}
       {seconds >= 1 && (
-        <span className="tabular-nums opacity-60">{seconds}초</span>
+        <span className="tabular-nums opacity-60">{t("{n}초", { n: seconds })}</span>
       )}
       {seconds >= LONG_SECONDS && (
         <span className="opacity-60">
-          {" · 오래 걸리고 있습니다"}
+          {t(" · 오래 걸리고 있습니다")}
         </span>
       )}
     </p>

@@ -1,4 +1,5 @@
 "use client";
+// i18n-ids: 모드계산 일판 코드를 쓰는 중 방금들어감 전환 모드띠 로키얼굴 결 큰얼굴 좁은창 창단추 화면보기 화면보기띠 예시 시연 대화중 일하는중 조용함 좁게 먼저 먼저건말 딱지 시작 모드 하는일 몇분 바꾸기 창바꾸기 도는일
 
 import { Waiting } from "@/components/Waiting";
 import { 모드계산, use방금들어감, 전환, 모드띠, 로키얼굴, use결, 큰얼굴 } from "./모드";
@@ -10,6 +11,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Icon from "@/components/Icon";
 import PreviewPanel, { PreviewStrip, previewSummary, usePreview, type PlanCard } from "@/app/ask/PreviewPanel";
 import { ChatMarkdown } from "@/components/ChatMarkdown";
+import { useT } from "@/lib/i18n/client";
+import { ROOKERY } from "@/lib/i18n/dict/rookery";
 
 /**
  * 회사에게 말을 거는 화면.
@@ -30,14 +33,14 @@ import { ChatMarkdown } from "@/components/ChatMarkdown";
  */
 /** 결과 본문의 "## 파일 N개" 아래 코드 전문을 목록 한 줄로 바꾼다(옛 턴용). */
 function stripFileBodies(md: string): string {
-  const i = md.indexOf("\n## 파일 ");
+  const i = md.indexOf("\n## 파일 "); // i18n-skip (서버 결과 모양·모델에 주는 글)
   if (i < 0) return md;
   const head = md.slice(0, i);
   const rest = md.slice(i);
   if (!/```/.test(rest)) return md;
   const names = [...rest.matchAll(/### `([^`]+)`/g)].map((m) => "- `" + m[1] + "`");
   const tail = rest.split(/\n---\n/).slice(1).join("\n---\n");
-  return head + "\n## 파일 " + names.length + "개\n\n" + names.join("\n") + "\n(아래 열기 · 저장, 또는 오른쪽 미리보기)" + (tail ? "\n\n---\n" + tail : "");
+  return head + "\n## 파일 " + names.length + "개\n\n" + names.join("\n") + "\n(아래 열기 · 저장, 또는 오른쪽 미리보기)" + (tail ? "\n\n---\n" + tail : ""); // i18n-skip (서버 결과 모양·모델에 주는 글)
 }
 
 function visitorId(): string {
@@ -129,6 +132,8 @@ export default function AskClient({
   /** 226회차: 폰에서 글을 긁어 로키로 넘겼을 때 그 글. 입력칸에 미리 담아 두고 보낼지는 사람이 정한다. */
   prefill?: string | null;
 } = {}) {
+  // 이 파일은 `t` 가 대화 한 턴(map 의 t)이라 번역은 `tr` 로 받는다.
+  const tr = useT(ROOKERY);
   /** 익명일 때 남은 횟수. 로그인 상태면 null 이라 아무것도 안 보인다. */
   const [turnsLeft, setTurnsLeft] = useState<number | null>(null);
   /** 이어서 저장할 대화. 새 대화면 null 이고 첫 턴 뒤에 서버가 채워 준다. */
@@ -328,7 +333,7 @@ export default function AskClient({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           // 188회차: 대화 전체(455턴·10MB)를 매번 보내고 있었다. 서버는 어차피 턴당 3천 자·전체 6만 자만 읽는다(clipTranscript).
-          messages: history.slice(-30).map((t) => ({ role: t.role, content: t.content.length > 3000 ? t.content.slice(0, 3000) + " …(잘림)" : t.content })),
+          messages: history.slice(-30).map((t) => ({ role: t.role, content: t.content.length > 3000 ? t.content.slice(0, 3000) + " …(잘림)" : t.content })), // i18n-skip (서버 결과 모양·모델에 주는 글)
           visitor: visitorId(),
           conversationId,
           taskId: task?.id ?? null,
@@ -338,7 +343,7 @@ export default function AskClient({
       });
 
       if (!res.body) {
-        setTurns([...history, { role: "assistant", content: "답이 오지 않았습니다." }]);
+        setTurns([...history, { role: "assistant", content: tr("답이 오지 않았습니다.") }]);
         return;
       }
 
@@ -377,7 +382,7 @@ export default function AskClient({
             landed = true;
             setTurns([
               ...history,
-              { role: "assistant", content: String(event.error ?? "문제가 생겼습니다.") },
+              { role: "assistant", content: String(event.error ?? tr("문제가 생겼습니다.")) },
             ]);
           } else if (event.type === "done") {
             landed = true;
@@ -421,11 +426,11 @@ export default function AskClient({
       if (!landed) {
         setTurns([
           ...history,
-          { role: "assistant", content: "답이 끊겼습니다. 다시 보내 주십시오." },
+          { role: "assistant", content: tr("답이 끊겼습니다. 다시 보내 주십시오.") },
         ]);
       }
     } catch {
-      setTurns([...history, { role: "assistant", content: "연결이 끊겼습니다." }]);
+      setTurns([...history, { role: "assistant", content: tr("연결이 끊겼습니다.") }]);
     } finally {
       setBusy(false);
       setDoing(null);
@@ -459,7 +464,7 @@ export default function AskClient({
   // **로키가 화면을 보고 있다가 말을 건다.** 사장님이 한 번 눌러야 켜지고, 켜져 있는 동안 늘 보인다.
   const 화면 = use화면보기(
     useCallback((말: string) => setTurns((t) => [...t, { role: "assistant", content: 말, 먼저건말: true }]), []),
-    useCallback(() => turnsRef.current.slice(-4).map((t) => `${t.role === "user" ? "사장님" : "로키"}: ${t.content.slice(0, 160)}`), []),
+    useCallback(() => turnsRef.current.slice(-4).map((t) => `${t.role === "user" ? "사장님" : "로키"}: ${t.content.slice(0, 160)}`), []), // i18n-skip (서버 결과 모양·모델에 주는 글)
   );
   const 방금들어감 = use방금들어감(모드);
   const 하는일 = 도는일.length ? 도는일.map(([, v]) => v).join(" · ") : null;
@@ -493,16 +498,16 @@ export default function AskClient({
     <div className={`flex h-full min-h-0 min-w-0 flex-1 flex-col${좁게 ? "" : " lg:max-w-2xl"}`}>
       {task && (
         <p className="pt-2 text-center text-xs text-[var(--rk-400)]">
-          과제 · {task.title}
+          {tr("과제 · {title}", { title: task.title })}
         </p>
       )}
       {turnsLeft !== null && (
         <p className="pt-2 text-center text-xs text-[var(--rk-400)]">
-          로그인 없이 {turnsLeft}번 더 쓸 수 있습니다 ·{" "}
+          {tr("로그인 없이 {n}번 더 쓸 수 있습니다 ·", { n: turnsLeft })}{" "}
           <a className="underline" href="/login">
-            로그인
+            {tr("로그인")}
           </a>
-          하면 제한 없이, 대화도 저장됩니다.
+          {tr("하면 제한 없이, 대화도 저장됩니다.")}
         </p>
       )}
 
@@ -559,8 +564,8 @@ export default function AskClient({
           <div className="space-y-3">
             <p className="text-sm text-[var(--rk-600)]">
               {task
-                ? `"${task.title}" 안에서 나눈 이야기만 여기 모입니다.`
-                : "무엇이든 물어보세요. 찾아봐야 할 것은 찾아보고, 시간이 드는 일은 AI가 업무로 맡아 자동으로 만들어요."}
+                ? tr("\"{title}\" 안에서 나눈 이야기만 여기 모입니다.", { title: task.title })
+                : tr("무엇이든 물어보세요. 찾아봐야 할 것은 찾아보고, 시간이 드는 일은 AI가 업무로 맡아 자동으로 만들어요.")}
             </p>
             {/*
               **예시 셋**(228회차 10-03). 처음 쓰는 사람으로 들어가 재 보니 예시가 0개였다 —
@@ -570,13 +575,13 @@ export default function AskClient({
             {/* 100회차: Paddle 판매자 심사는 첫 화면에서 약관·개인정보·환불로 가는 길을 본다(루트 / 가 여기로 온다). */}
             {!task && (
               <p className="text-[11px] text-[var(--rk-400)]">
-                <a href="/pricing" className="underline">요금</a>
+                <a href="/pricing" className="underline">{tr("요금")}</a>
                 <span className="mx-1.5">·</span>
-                <a href="/terms" className="underline">이용약관</a>
+                <a href="/terms" className="underline">{tr("이용약관")}</a>
                 <span className="mx-1.5">·</span>
-                <a href="/refund" className="underline">환불 정책</a>
+                <a href="/refund" className="underline">{tr("환불 정책")}</a>
                 <span className="mx-1.5">·</span>
-                <a href="/privacy" className="underline">개인정보 처리방침</a>
+                <a href="/privacy" className="underline">{tr("개인정보 처리방침")}</a>
               </p>
             )}
             {/*
@@ -606,7 +611,7 @@ export default function AskClient({
                 (t.먼저건말 ? " rk-먼저" : "")
               }
             >
-              {t.먼저건말 && <div className="rk-먼저-딱지">화면을 보고</div>}
+              {t.먼저건말 && <div className="rk-먼저-딱지">{tr("화면을 보고")}</div>}
               {/* 188회차: 옛 결과 턴엔 파일 전문이 본문에 실려 있다(새 결과는 목록만). 그리는 쪽에서 "## 파일" 아래를 자른다 — 파일은 아래 열기·저장으로. */}
               {t.role === "assistant" ? <ChatMarkdown>{t.returnedWork ? stripFileBodies(t.content) : t.content}</ChatMarkdown> : t.content}
             </div>
@@ -614,10 +619,10 @@ export default function AskClient({
               // 100회차: 구글 플레이 AI 생성 콘텐츠 정책 — 앱을 나가지 않고 AI 결과를 신고할 수 있어야 한다.
               // 두근도트와 같은 방식(메일 앱으로, 무엇을 신고하는지 미리 채워서). 표를 새로 만들지 않았다.
               <a
-                href={`mailto:az51826295@gmail.com?subject=${encodeURIComponent("로키 신고: AI 답변")}&body=${encodeURIComponent(`대화: ${conversationId ?? "(저장 전)"}\n답변 앞부분: ${t.content.slice(0, 200)}\n\n무엇이 문제인지 적어 주세요:\n`)}`}
+                href={`mailto:az51826295@gmail.com?subject=${encodeURIComponent(tr("로키 신고: AI 답변"))}&body=${encodeURIComponent(tr("대화: {id}\n답변 앞부분: {head}\n\n무엇이 문제인지 적어 주세요:\n", { id: conversationId ?? tr("(저장 전)"), head: t.content.slice(0, 200) }))}`}
                 className="mt-0.5 block text-[10.5px] text-[var(--rk-400)] hover:text-[var(--rk-ink)]"
               >
-                신고
+                {tr("신고")}
               </a>
             )}
             {t.files?.some((f) => f.href && IMG_RX.test(f.path)) && (
@@ -644,15 +649,15 @@ export default function AskClient({
                     <code className="px-1">{f.path}</code>
                     {f.href ? (
                       <a className="underline" href={f.href} target="_blank" rel="noopener">
-                        받기
+                        {tr("받기")}
                       </a>
                     ) : (
                       <>
                         <button type="button" className="underline" onClick={() => openFile(f)}>
-                          열기
+                          {tr("열기")}
                         </button>
                         <button type="button" className="underline" onClick={() => saveFile(f)}>
-                          저장
+                          {tr("저장")}
                         </button>
                       </>
                     )}
@@ -687,27 +692,27 @@ export default function AskClient({
             )}
             {t.hired && (
               <p className="mt-1.5 text-xs text-[var(--rk-400)]">
-                {t.hired.name} 고용 — {t.hired.why}
+                {tr("{name} 고용 — {why}", { name: t.hired.name, why: t.hired.why })}
               </p>
             )}
             {t.assignment && (
               <div className="mt-1.5 text-xs text-[var(--rk-400)]">
                 <p>
-                  작업 시작 · {t.assignment.title}
-                  {t.assignment.queued && !steps[t.assignment.id] && !t.assignment.returned ? " (차례 기다리는 중)" : ""}
+                  {tr("작업 시작 · {title}", { title: t.assignment.title })}
+                  {t.assignment.queued && !steps[t.assignment.id] && !t.assignment.returned ? tr(" (차례 기다리는 중)") : ""}
                   {t.assignment.returned
-                    ? " — 작업 완료"
+                    ? tr(" — 작업 완료")
                     : steps[t.assignment.id]
                       ? ` — ${steps[t.assignment.id]}…`
-                      : " — 끝나면 여기 붙어요"}
+                      : tr(" — 끝나면 여기 붙어요")}
                 </p>
                 {!t.assignment.returned && steps[t.assignment.id] && (
                   <p className="mt-1 flex items-center gap-2" aria-live="polite">
                     <span className="rk-progress" aria-hidden="true"><span /></span>
                     <span>
                       {startedAt[t.assignment.id]
-                        ? `${Math.max(0, Math.round((Date.now() - new Date(startedAt[t.assignment.id]).getTime()) / 60_000))}분째`
-                        : "돌아가는 중"}
+                        ? tr("{n}분째", { n: Math.max(0, Math.round((Date.now() - new Date(startedAt[t.assignment.id]).getTime()) / 60_000)) })
+                        : tr("돌아가는 중")}
                     </span>
                   </p>
                 )}
@@ -728,7 +733,7 @@ export default function AskClient({
             )}
             {t.searched && t.searched.length > 0 && (
               <p className="mt-1.5 text-xs text-[var(--rk-400)]">
-                찾아본 것: {t.searched.join(" · ")}
+                {tr("찾아본 것: {list}", { list: t.searched.join(" · ") })}
               </p>
             )}
             {t.sources && t.sources.length > 0 && (
@@ -744,7 +749,7 @@ export default function AskClient({
             )}
             {t.needsOnboarding && (
               <p className="mt-1.5 text-xs text-amber-600">
-                {t.needsOnboarding.name} 은(는) 아직 교육 전입니다 — 끝나야 일을 받을 수 있습니다.
+                {tr("{name} 은(는) 아직 교육 전입니다 — 끝나야 일을 받을 수 있습니다.", { name: t.needsOnboarding.name })}
               </p>
             )}
           </div>
@@ -789,7 +794,7 @@ export default function AskClient({
                 onClick={() =>
                   setAttached((prev) => prev.filter((_, k) => k !== i))
                 }
-                aria-label="빼기"
+                aria-label={tr("빼기")}
                 className="absolute -right-1.5 -top-1.5 h-5 w-5 rounded-full bg-[var(--rk-ink)] text-xs text-[var(--rk-paper)]"
               >
                 ×
@@ -799,7 +804,7 @@ export default function AskClient({
         </div>
       )}
 
-      {conversationId && <PreviewStrip summary={previewSummary(preview.data, steps)} onOpen={() => setPreviewOpen(true)} />}
+      {conversationId && <PreviewStrip summary={previewSummary(preview.data, steps, tr)} onOpen={() => setPreviewOpen(true)} />}
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -814,12 +819,12 @@ export default function AskClient({
           ref={inputRef}
           value={text}
           onChange={(e) => setText(e.target.value)}
-          placeholder="무엇이든 물어보세요"
+          placeholder={tr("무엇이든 물어보세요")}
           className="w-full bg-transparent px-2 py-2.5 text-sm text-[var(--rk-ink)] outline-none placeholder:text-[var(--rk-400)]"
         />
         <div className="flex items-center gap-2">
           <label
-            aria-label="그림 붙이기"
+            aria-label={tr("그림 붙이기")}
             className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full border border-[var(--rk-200)] bg-[var(--rk-paper)] text-[var(--rk-ink)] hover:bg-[var(--rk-200)]"
           >
             <Icon name="attach" size={18} />
@@ -836,8 +841,8 @@ export default function AskClient({
           </label>
           <div className="min-w-0 flex-1" />
           <button
-            aria-label="보내기"
-            title="보내기"
+            aria-label={tr("보내기")}
+            title={tr("보내기")}
             disabled={busy || !text.trim()}
             className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[var(--rk-ink)] text-[var(--rk-paper)] disabled:opacity-30"
           >
@@ -854,7 +859,7 @@ export default function AskClient({
       open={previewOpen}
       onOpenChange={setPreviewOpen}
       onReverted={() => { setPanelKey((k) => k + 1); }}
-      onFix={(feedback) => { setPreviewOpen(false); void send(`수정 요청: ${feedback}`); }}
+      onFix={(feedback) => { setPreviewOpen(false); void send(tr("수정 요청: {feedback}", { feedback })); }}
     />}
     </div>
     </>

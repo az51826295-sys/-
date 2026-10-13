@@ -1,4 +1,7 @@
 "use client";
+// i18n-ids: 예시 말
+import { useT } from "@/lib/i18n/client";
+import { ROOKERY } from "@/lib/i18n/dict/rookery";
 /**
  * **처음 온 사람에게 보기 세 개** (228회차 10-03, 사장님 "사람이 쓰기 편하게 만들 거야").
  *
@@ -22,12 +25,13 @@ const 보기들 = [
 ];
 
 export default function 예시({ 넣기 }: { 넣기: (글: string) => void }) {
+  const t = useT(ROOKERY);
   return (
     <div className="rk-예시">
-      <span className="rk-예시-말">이런 걸 시킬 수 있어요</span>
+      <span className="rk-예시-말">{t("이런 걸 시킬 수 있어요")}</span>
       {보기들.map((b) => (
-        <button key={b.짧게} type="button" onClick={() => 넣기(b.주문)} title={b.주문}>
-          {b.짧게}
+        <button key={b.짧게} type="button" onClick={() => 넣기(t(b.주문))} title={t(b.주문)}>
+          {t(b.짧게)}
         </button>
       ))}
     </div>

@@ -5,6 +5,9 @@ import Icon from "@/components/Icon";
 import BuyCredits from "./BuyCredits";
 import Learned from "./Learned";
 import { disablePush, enablePush, pushState, type PushState } from "@/lib/push/client";
+import { setLocaleCookie, useLocale, useT } from "@/lib/i18n/client";
+import { LOCALES, LOCALE_NAMES, type Locale } from "@/lib/i18n/core";
+import { ROOKERY } from "@/lib/i18n/dict/rookery";
 
 type Saved = { id: string; title: string | null; mode: string; updated_at: string };
 /**
@@ -24,6 +27,8 @@ export default function AskShell({
   /** 지금 열려 있는 과제. 없으면 과제 밖의 대화다. */
   children: React.ReactNode;
 }) {
+  const t = useT(ROOKERY);
+  const locale = useLocale();
   const [open, setOpen] = useState(false);
   const [saved, setSaved] = useState<Saved[]>([]);
   const box = useRef<HTMLDivElement>(null);
@@ -61,21 +66,23 @@ export default function AskShell({
     try {
       const r = await fetch("/api/handoff", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ conversationId }) });
       const j = (await r.json().catch(() => ({}))) as { svg?: string; expiresInSec?: number; error?: string };
-      if (!r.ok || !j.svg) { setHandoffErr(j.error ?? "QR 을 만들지 못했어요."); return; }
+      if (!r.ok || !j.svg) { setHandoffErr(j.error ?? t("QR 을 만들지 못했어요.")); return; }
       setNow(Date.now());
       setHandoff({ svg: j.svg, until: Date.now() + (j.expiresInSec ?? 120) * 1000 });
-    } catch { setHandoffErr("QR 을 만들지 못했어요."); }
+    } catch { setHandoffErr(t("QR 을 만들지 못했어요.")); }
   }
 
   /** 계정 삭제 — 구글 플레이 등록 필수(97회차). 되돌릴 수 없다. 두 번 묻고, 문구를 치게 한다. */
   async function deleteAccount() {
-    if (!window.confirm("계정을 지우면 회사·직원·대화·산출물이 전부 사라지고 되돌릴 수 없어요. 계속할까요?")) return;
-    const typed = window.prompt("정말 지우려면 '삭제' 라고 적어 주세요.");
-    if (typed !== "삭제") return;
+    if (!window.confirm(t("계정을 지우면 회사·직원·대화·산출물이 전부 사라지고 되돌릴 수 없어요. 계속할까요?"))) return;
+    // 치는 낱말은 그 사람 언어로(영어면 DELETE), 서버에는 늘 정해진 "삭제" 를 보낸다.
+    const word = t("삭제");
+    const typed = window.prompt(t("정말 지우려면 '{word}' 라고 적어 주세요.", { word }));
+    if (typed?.trim() !== word) return;
     setDeleting(true);
     try {
       const res = await fetch("/api/account", { method: "DELETE", headers: { "content-type": "application/json" }, body: JSON.stringify({ confirm: "삭제" }) });
-      if (res.ok) window.location.href = "/login?message=" + encodeURIComponent("계정이 지워졌어요. 그동안 고마웠어요.");
+      if (res.ok) window.location.href = "/login?message=" + encodeURIComponent(t("계정이 지워졌어요. 그동안 고마웠어요."));
       else setDeleting(false);
     } catch { setDeleting(false); }
   }
@@ -139,7 +146,7 @@ export default function AskShell({
       <div ref={box} className="absolute left-3 top-3 z-20">
         <button
           onClick={() => setOpen((v) => !v)}
-          aria-label="설정"
+          aria-label={t("설정")}
           className="flex h-9 w-9 items-center justify-center text-[var(--rk-600)] hover:bg-[var(--rk-100)]"
         >
           <Icon name="settings" size={18} />
@@ -158,14 +165,14 @@ export default function AskShell({
                 */}
                 <section>
                   <p className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] uppercase tracking-wide text-[var(--rk-400)]">
-                    <Icon name="history" size={12} />대화
+                    <Icon name="history" size={12} />{t("대화")}
                   </p>
                   <a
                     className="block px-3 py-2 text-sm hover:bg-[var(--rk-100)]"
                     href="/ask"
                   >
                     <span className="flex items-center gap-2">
-                      <Icon name="chat" size={16} />새 대화
+                      <Icon name="chat" size={16} />{t("새 대화")}
                     </span>
                   </a>
                   {saved.length > 0 && (
@@ -179,7 +186,7 @@ export default function AskShell({
                             href={`/ask?c=${c.id}`}
                             className="min-w-0 flex-1 truncate px-3 py-1.5 text-sm text-[var(--rk-600)] dark:text-[var(--rk-400)]"
                           >
-                            {c.title || "(제목 없음)"}
+                            {c.title || t("(제목 없음)")}
                           </a>
                           {/*
                             지우기는 **가리켰을 때만** 보인다. 목록마다 ✕ 가
@@ -190,11 +197,11 @@ export default function AskShell({
                           */}
                           <button
                             type="button"
-                            title="이 대화 지우기"
+                            title={t("이 대화 지우기")}
                             onClick={() => void removeSaved(c.id)}
                             className="shrink-0 px-2.5 py-1.5 text-xs text-[var(--rk-400)] opacity-0 hover:text-[var(--rk-ink)] focus:opacity-100 group-hover:opacity-100 dark:hover:text-white"
                           >
-                            {killing === c.id ? "정말?" : "✕"}
+                            {killing === c.id ? t("정말?") : "✕"}
                           </button>
                         </li>
                       ))}
@@ -215,9 +222,9 @@ export default function AskShell({
                     disabled={push === "unsupported" || push === "denied" || push === "loading"}
                     className="w-full px-3 py-2 text-left text-sm hover:bg-[var(--rk-100)] disabled:opacity-60"
                   >
-                    {push === "on" ? "알림 끄기" : "알림 켜기"}
+                    {push === "on" ? t("알림 끄기") : t("알림 켜기")}
                     <span className="block text-[11px] text-[var(--rk-400)]">
-                      {push === "on" ? "일이 끝나거나 아침 정리가 오면 이 기기로 알려요" : push === "denied" ? "이 브라우저에서 알림이 막혀 있어요 — 설정에서 풀어야 해요" : push === "unsupported" ? "이 브라우저는 알림을 못 받아요 — 폰 앱에서 켜 주세요" : push === "loading" ? "잠시만요" : "일 끝남·아침 정리·자가 고침을 이 기기로 받아요"}
+                      {push === "on" ? t("일이 끝나거나 아침 정리가 오면 이 기기로 알려요") : push === "denied" ? t("이 브라우저에서 알림이 막혀 있어요 — 설정에서 풀어야 해요") : push === "unsupported" ? t("이 브라우저는 알림을 못 받아요 — 폰 앱에서 켜 주세요") : push === "loading" ? t("잠시만요") : t("일 끝남·아침 정리·자가 고침을 이 기기로 받아요")}
                     </span>
                   </button>
                   {bubble && (
@@ -226,8 +233,8 @@ export default function AskShell({
                       onClick={() => { window.location.href = "rookery://bubble"; }}
                       className="w-full px-3 py-2 text-left text-sm hover:bg-[var(--rk-100)]"
                     >
-                      떠 있게 하기
-                      <span className="block text-[11px] text-[var(--rk-400)]">다른 앱을 쓰는 중에도 동그라미를 눌러 불러요 · 다시 누르면 내려가요</span>
+                      {t("떠 있게 하기")}
+                      <span className="block text-[11px] text-[var(--rk-400)]">{t("다른 앱을 쓰는 중에도 동그라미를 눌러 불러요 · 다시 누르면 내려가요")}</span>
                     </button>
                   )}
                   <button
@@ -235,43 +242,50 @@ export default function AskShell({
                     onClick={() => void openHandoff()}
                     className="w-full px-3 py-2 text-left text-sm hover:bg-[var(--rk-100)]"
                   >
-                    폰으로 이어하기
-                    <span className="block text-[11px] text-[var(--rk-400)]">QR 을 찍으면 폰 앱이 이 계정으로 열려요</span>
+                    {t("폰으로 이어하기")}
+                    <span className="block text-[11px] text-[var(--rk-400)]">{t("QR 을 찍으면 폰 앱이 이 계정으로 열려요")}</span>
                   </button>
                   {(handoff || handoffErr) && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4" onClick={() => { setHandoff(null); setHandoffErr(null); }} role="dialog" aria-label="폰으로 이어하기">
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4" onClick={() => { setHandoff(null); setHandoffErr(null); }} role="dialog" aria-label={t("폰으로 이어하기")}>
                       <div className="w-full max-w-xs border-2 border-[#E0703A] bg-[var(--rk-paper)] p-4 text-[var(--rk-ink)]" onClick={(e) => e.stopPropagation()}>
-                        <div className="mb-1 text-sm font-bold">폰으로 이어하기</div>
+                        <div className="mb-1 text-sm font-bold">{t("폰으로 이어하기")}</div>
                         {handoffErr ? (
                           <p className="text-xs text-[#E07070]">{handoffErr}</p>
                         ) : handoff && now < handoff.until ? (
                           <>
                             <p className="mb-3 text-[11.5px] leading-relaxed text-[var(--rk-600)]">
-                              폰 카메라로 찍으면 비밀번호 없이 이 계정으로 로키 앱이 열려요.
-                              <b className="text-[var(--rk-ink)]"> 한 번만, {Math.ceil((handoff.until - now) / 1000)}초 안에</b> 쓸 수 있어요. 남에게 보여 주지 마세요.
+                              {t("폰 카메라로 찍으면 비밀번호 없이 이 계정으로 로키 앱이 열려요.")}
+                              <b className="text-[var(--rk-ink)]">{t(" 한 번만, {n}초 안에", { n: Math.ceil((handoff.until - now) / 1000) })}</b>{t(" 쓸 수 있어요. 남에게 보여 주지 마세요.")}
                             </p>
                             {/* 서버가 우리 주소로만 만든 SVG(qrcode 라이브러리). 흰 바탕이어야 카메라가 읽는다. */}
                             <div className="mx-auto w-56 bg-white p-2" dangerouslySetInnerHTML={{ __html: handoff.svg }} />
                           </>
                         ) : (
-                          <p className="text-xs text-[var(--rk-600)]">QR 이 만료됐어요.</p>
+                          <p className="text-xs text-[var(--rk-600)]">{t("QR 이 만료됐어요.")}</p>
                         )}
                         <div className="mt-3 flex justify-end gap-2">
                           {(!handoff || now >= handoff.until || handoffErr) && (
-                            <button type="button" onClick={() => void openHandoff()} className="border-2 border-[#E0703A] bg-[#E0703A] px-2.5 py-1 text-xs font-bold text-[var(--rk-paper)]">새로 만들기</button>
+                            <button type="button" onClick={() => void openHandoff()} className="border-2 border-[#E0703A] bg-[#E0703A] px-2.5 py-1 text-xs font-bold text-[var(--rk-paper)]">{t("새로 만들기")}</button>
                           )}
-                          <button type="button" onClick={() => { setHandoff(null); setHandoffErr(null); }} className="border-2 border-[var(--rk-ink)] px-2.5 py-1 text-xs">닫기</button>
+                          <button type="button" onClick={() => { setHandoff(null); setHandoffErr(null); }} className="border-2 border-[var(--rk-ink)] px-2.5 py-1 text-xs">{t("닫기")}</button>
                         </div>
                       </div>
                     </div>
                   )}
+                  {/* 10-14 언어 — 폰 언어와 다르게 쓰고 싶은 사람(두근도트 설정과 같은 쿠키). */}
+                  <label className="flex w-full items-center justify-between gap-2 px-3 py-2 text-sm">
+                    <span>{t("언어")}</span>
+                    <select value={locale} onChange={(e) => setLocaleCookie(e.target.value as Locale)} className="border-2 border-[var(--rk-ink)] bg-[var(--rk-paper)] px-1.5 py-0.5 text-xs">
+                      {LOCALES.map((l) => <option key={l} value={l}>{LOCALE_NAMES[l]}</option>)}
+                    </select>
+                  </label>
                   <form action="/api/auth/signout" method="post">
                     <button
                       type="submit"
                       className="w-full px-3 py-2 text-left text-sm text-[var(--rk-600)] hover:bg-[var(--rk-100)]"
                     >
                       <span className="flex items-center gap-2">
-                        <Icon name="signout" size={16} />로그아웃
+                        <Icon name="signout" size={16} />{t("로그아웃")}
                       </span>
                     </button>
                   </form>
@@ -281,26 +295,26 @@ export default function AskShell({
                     onClick={() => void deleteAccount()}
                     className="w-full px-3 py-2 text-left text-sm text-[#E07070] hover:bg-[var(--rk-100)] disabled:opacity-50"
                   >
-                    {deleting ? "지우는 중…" : "계정 삭제"}
+                    {deleting ? t("지우는 중…") : t("계정 삭제")}
                   </button>
                 </section>
               </>
             ) : (
               <>
                 <p className="px-3 py-2 text-xs text-[var(--rk-600)]">
-                  로그인하면 제한 없이 쓰고, 대화가 저장됩니다.
+                  {t("로그인하면 제한 없이 쓰고, 대화가 저장됩니다.")}
                 </p>
                 <a
                   className="block px-3 py-2 text-sm hover:bg-[var(--rk-100)]"
                   href="/login"
                 >
-                  로그인
+                  {t("로그인")}
                 </a>
                 <a
                   className="block px-3 py-2 text-sm hover:bg-[var(--rk-100)]"
                   href="/signup"
                 >
-                  가입하기
+                  {t("가입하기")}
                 </a>
               </>
             )}

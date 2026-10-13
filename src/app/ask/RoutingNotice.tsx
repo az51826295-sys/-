@@ -1,4 +1,5 @@
 "use client";
+// i18n-file-skip — 어디에도 안 붙어 있다(09-17 사장님 지시로 대화 화면에서 뺐다). 다시 붙이면 이 줄을 지우고 옮긴다.
 
 import { useEffect, useState } from "react";
 
