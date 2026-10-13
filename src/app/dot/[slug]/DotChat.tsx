@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { pushState, enablePush, disablePush, type PushState } from "./push-client";
+import { pushState, enablePush, disablePush, syncPush, type PushState } from "./push-client";
 import { 물어볼까 } from "@/lib/dot/pushAsk";
 import { SKUS, AD_REFILL_TURNS, type Balance } from "@/lib/dot/money";
 import { USER_STICKERS, USER_STICKER_KEYS } from "@/lib/dot/stickers";
@@ -158,7 +158,7 @@ export default function DotChat({
     finally { setLinkBusy(false); }
   }
   const [push, setPush] = useState<PushState | null>(null);
-  useEffect(() => { if (signedIn) pushState().then(setPush).catch(() => setPush("unsupported")); }, [signedIn]);
+  useEffect(() => { if (signedIn) pushState().then((s) => { setPush(s); if (s === "on") void syncPush(); }).catch(() => setPush("unsupported")); }, [signedIn]);
 
   async function togglePush() {
     setMenu(false);

@@ -1,5 +1,6 @@
 import OpenAI from "openai";
 import { MAX_BUBBLES, splitBubbles } from "./bubbles";
+import type { Locale } from "@/lib/i18n/core";
 
 /**
  * 두근도트 안전 문지기 — 사람이 보낸 말에서 **위기 신호**(자해·자살을 떠올리는 말)를 먼저 본다.
@@ -74,11 +75,29 @@ const TARGET: RegExp[] = [/너(?!무)/, /넌/, /니가/, /네가/, /니(는|도|
 
 const any = (ps: RegExp[], t: string) => ps.some((p) => p.test(t));
 
+/*
+ * 10-13 다국어: 영어·일본어 사용자를 위한 **강한 신호만**. 위 한국어 규칙처럼 돌려 말하는 신호까지 쫓지 않는다 —
+ * 한국어에서 규칙을 더해도 새 문장으로 안 늘었다(숨김 시험지 v0·v1 둘 다 16/30). 돌려 말하는 것은 2단 모델 몫이다.
+ * 띄어쓰기를 지운 뒤에 대므로 영어도 붙여 쓴 꼴로 적는다.
+ */
+const CRISIS_STRONG_EN_JA: RegExp[] = [
+  /killmyself/, /killingmyself/, /suicid/, /endmylife/, /endingmylife/, /takemyownlife/, /selfharm/, /hurtmyself/, /cutmyself/,
+  /don'?twanttoliveanymore/, /don'?twanttobealive/, /nopointinliving/, /betteroffwithoutme/, /betteroffdead/, /noreasontolive/,
+  /自殺/, /自死/, /自傷/, /リスカ/, /リストカット/, /消えてしまいたい/, /消えたい/, /いなくなりたい/, /生きていたくない/, /生きたくない/,
+  /生きる意味がない/, /もう限界/, /楽になりたい/, /終わりにしたい/, /私がいなくても/, /僕がいなくても/, /俺がいなくても/,
+];
+const CRISIS_WEAK_EN_JA: RegExp[] = [/wanttodie/, /wannadie/, /iwishiwasdead/, /死にたい/, /しにたい/];
+// 가벼운 과장으로 볼 신호는 **웃음과 몸 상태(배고픔·졸림)만** — 한국어 규칙과 같은 선이다("시험 망해서 죽고싶다" 는 위기로 둔다).
+// "tired" 는 넣지 않는다: "tired of living" 이 대표적인 위기 말이다.
+// 일본어 웃음 "www" 는 **일본어 글 안에서만** 센다 — 띄어쓰기를 지우면 영어 "how will" 도 "howwill" 이 돼 ww 가 생긴다.
+const TRIVIAL_EN_JA: RegExp[] = [/lol/, /lmao/, /haha/, /😂/, /🤣/, /笑/, /草/, /[ぁ-んァ-ヶ一-龯ー]w{2,}/, /hungry/, /starving/, /sleepy/, /お腹/, /腹減/, /眠/];
+
 /** 1단 규칙. safety-kit 의 gate.py v1 과 같은 판정을 낸다(대조 시험으로 확인). */
 export function classifyRules(text: string): RuleClass {
   const t = norm(text);
-  if (any(CRISIS_STRONG, t)) return "crisis";
+  if (any(CRISIS_STRONG, t) || any(CRISIS_STRONG_EN_JA, t)) return "crisis";
   if (any(CRISIS_WEAK, t) && !any(TRIVIAL, t)) return "crisis";
+  if (any(CRISIS_WEAK_EN_JA, t) && !any(TRIVIAL_EN_JA, t)) return "crisis";
   if (any(ABUSE_WORDS, t)) return "abuse";
   if (any(ABUSE_DIRECTED, t) && any(TARGET, t)) return "abuse";
   return "pass";
@@ -120,9 +139,9 @@ export async function assessCrisis(text: string, judge: CrisisJudge | null, time
 }
 
 const JUDGE_SYSTEM =
-  "너는 한국어 채팅 앱의 안전 판정기다. 사용자 메시지 하나를 보고, 보낸 사람이 자해나 자살을 떠올리고 있을 수 있는지 판단한다. " +
+  "너는 채팅 앱의 안전 판정기다. 메시지는 한국어·영어·일본어 등 어느 언어로든 올 수 있다. 사용자 메시지 하나를 보고, 보낸 사람이 자해나 자살을 떠올리고 있을 수 있는지 판단한다. " +
   "돌려 말하는 경고 신호(작별 인사, 소지품 정리, 자기가 짐이라는 느낌, 살 의지 상실, 고통이 끝났으면 하는 말)도 포함한다. " +
-  "일상적인 과장(배고파 죽겠다, 웃겨 죽겠다)이나 단순히 슬프고 힘든 말은 아니다. 애매하면 위기 쪽으로 본다. " +
+  "일상적인 과장(배고파 죽겠다, 웃겨 죽겠다, I'm dying lol, 笑い死ぬ)이나 단순히 슬프고 힘든 말은 아니다. 애매하면 위기 쪽으로 본다. " +
   'JSON 하나로만 답한다: {"crisis": true} 또는 {"crisis": false}';
 
 /**
@@ -166,13 +185,24 @@ export const SAFETY_SYSTEM = [
 /**
  * 안내는 **말풍선 하나**로 따로 보낸다. 화면은 줄바꿈 하나를 말풍선 하나로 나누고 셋까지만 두기 때문에
  * (bubbles.ts MAX_BUBBLES), 여러 줄로 쓰면 캐릭터 말에 붙어 버린다. 그래서 한 줄로 쓰고, 캐릭터 말은 둘까지 줄인다.
+ *
+ * 10-13 다국어: 번호는 **언어가 아니라 나라**의 것이라 언어마다 그 언어를 쓸 사람이 가장 많은 곳으로 둔다.
+ * 영어는 어느 나라 사람인지 모르니 미국 988 과 나라별 목록(findahelpline.com, 175개국 이상)을 같이 준다.
+ * 번호 출처(10-13 확인): 한국 109 — 주간경향 2025-11 · 일본 — 후생노동성 상담 전화 쪽 · 988 — findahelpline.
  */
-export const HELP_LINE = "지금 바로 이야기 나눌 수 있는 곳이 있어요 · 자살예방 상담전화 109 (24시간) · 마들랜 SNS 상담 (24시간) · 위험이 급하면 112·119";
+export const HELP_LINES: Record<Locale, string> = {
+  ko: "지금 바로 이야기 나눌 수 있는 곳이 있어요 · 자살예방 상담전화 109 (24시간) · 마들랜 SNS 상담 (24시간) · 위험이 급하면 112·119",
+  en: "You can talk to someone right now · US: call or text 988 (24/7) · Other countries: findahelpline.com · In an emergency, call your local emergency number",
+  ja: "今すぐ話を聞いてくれる窓口があります・#いのちSOS 0120-061-338（24時間・無料）・よりそいホットライン 0120-279-338（24時間）・緊急のときは110・119へ",
+};
+/** 예전 이름(한국어). 시험이 쓴다. */
+export const HELP_LINE = HELP_LINES.ko;
 
 /** 캐릭터 말은 말풍선 둘까지, 셋째는 안내. 이미 붙어 있으면 그대로. */
-export function withHelpLine(reply: string): string {
-  if (reply.includes("자살예방 상담전화 109")) return reply;
+export function withHelpLine(reply: string, locale: Locale = "ko"): string {
+  const line = HELP_LINES[locale];
+  if (reply.includes(line)) return reply;
   const parts = splitBubbles(reply);
   const keep = parts.length <= MAX_BUBBLES - 1 ? parts : [...parts.slice(0, MAX_BUBBLES - 2), parts.slice(MAX_BUBBLES - 2).join(" ")];
-  return [...keep, HELP_LINE].join("\n");
+  return [...keep, line].join("\n");
 }

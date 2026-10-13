@@ -333,4 +333,18 @@ export const DOT: Dict = {
   "그 게시물이 없어요.": { en: "That post doesn't exist.", ja: "その投稿はありません。" },
   "postId 가 필요해요.": { en: "postId is required.", ja: "postId が必要です。" },
   "구독 모양이 아니에요.": { en: "That's not a valid subscription.", ja: "購読の形式ではありません。" },
+  // 10-13 대화 한 턴(turn.ts)·친밀도 이유(bond.ts — 토스트에 뜬다)
+  "빈 메시지": { en: "Empty message", ja: "メッセージが空です" },
+  "그런 캐릭터가 없어요.": { en: "That character doesn't exist.", ja: "そのキャラクターはいません。" },
+  "그런 선물은 없어요.": { en: "That gift doesn't exist.", ja: "そのプレゼントはありません。" },
+  "크레딧이 모자라요. {gift}은(는) {price}크레딧이에요.": { en: "Not enough credits. {gift} costs {price} credits.", ja: "クレジットが足りません。{gift}は{price}クレジットです。" },
+  "{day} 자정(한국 시간)": { en: "{day} midnight (Korea time)", ja: "{day} 0時（韓国時間）" },
+  "{days}일 만이에요 −{lost}": { en: "First time in {days} days −{lost}", ja: "{days}日ぶり −{lost}" },
+  "{gift} 선물(좋아하는 거!) +{n}": { en: "Gift: {gift} (a favorite!) +{n}", ja: "{gift}のプレゼント（大好物！） +{n}" },
+  "{gift} 선물 +{n}": { en: "Gift: {gift} +{n}", ja: "{gift}のプレゼント +{n}" },
+  "오늘 첫 대화 +5": { en: "First chat today +5", ja: "今日はじめての会話 +5" },
+  "{n}일 연속 +{bonus}": { en: "{n}-day streak +{bonus}", ja: "{n}日連続 +{bonus}" },
+  "길게 말해 줌 +1": { en: "Long message +1", ja: "長めに話してくれた +1" },
+  "{n}단계가 됐어요": { en: "Reached stage {n}", ja: "ステージ{n}になりました" },
+  "{n}단계로 멀어졌어요": { en: "Dropped to stage {n}", ja: "ステージ{n}に下がりました" },
 };

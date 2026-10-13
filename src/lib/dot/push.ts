@@ -3,6 +3,8 @@ import { z } from "zod";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { defaultProviders } from "@/lib/execution/shared";
 import { MENHERA_MAX_PINGS, MENHERA_REPING_MIN, stageVoiceFor, toVoiceLadder, timeOfDayKST, toEmotion, toMode, todayKST, type Mode } from "./bond";
+import { isLocale, type Locale } from "@/lib/i18n/core";
+import { nameIn } from "./i18n";
 
 /**
  * 먼저 말 걸기 — **캐릭터가 하루 한 번, 사람마다 다른 시각에, 짧게.**
@@ -42,6 +44,45 @@ function setup() {
 export function minuteKST(now: Date = new Date()): number {
   const k = new Date(now.getTime() + 9 * 3_600_000);
   return k.getUTCHours() * 60 + k.getUTCMinutes();
+}
+
+/**
+ * 10-13 다국어: 그 사람 시간대의 지금(하루 몇 분째·몇 시·무슨 요일). 시간대가 없거나 이상하면 한국 시간.
+ * 한국·일본은 같은 시각이라 일본 사람은 예전과 같다. 미국 사람에게 한국 낮에 울리면 새벽 알림이 된다.
+ */
+export function localClock(tz: string | null | undefined, now: Date = new Date()): { minute: number; hour: number; dow: number } {
+  if (tz) {
+    try {
+      const parts = new Intl.DateTimeFormat("en-US", { timeZone: tz, hour: "numeric", minute: "numeric", weekday: "short", hourCycle: "h23" }).formatToParts(now);
+      const get = (k: string) => parts.find((p) => p.type === k)?.value ?? "";
+      const hour = Number(get("hour")) % 24, minute = Number(get("minute"));
+      const dow = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(get("weekday"));
+      if (Number.isFinite(hour) && Number.isFinite(minute) && dow >= 0) return { minute: hour * 60 + minute, hour, dow };
+    } catch { /* 아래 한국 시간 */ }
+  }
+  const k = new Date(now.getTime() + 9 * 3_600_000);
+  return { minute: k.getUTCHours() * 60 + k.getUTCMinutes(), hour: k.getUTCHours(), dow: k.getUTCDay() };
+}
+
+/** 모델에게 주는 "지금" 한 줄(그 사람 시간). timeOfDayKST 와 같은 말로. */
+export function timeOfDayAt(tz: string | null | undefined, now: Date = new Date()): string {
+  if (!tz) return `한국 시간 ${timeOfDayKST(now)}`;
+  const { hour: h, dow } = localClock(tz, now);
+  const part = h < 5 ? "새벽(보통 자는 시간)" : h < 9 ? "이른 아침" : h < 12 ? "오전" : h < 14 ? "점심 무렵" : h < 18 ? "오후" : h < 21 ? "저녁" : "밤(늦은 시간)";
+  return `그 사람 쪽 시간으로 ${"일월화수목금토"[dow]}요일 ${part}, ${h}시`;
+}
+
+/** 먼저 거는 한 줄의 언어 지시(대화 한 턴의 languageRule 의 짧은 판). 한국어면 빈 줄. */
+export function openerLanguageRule(locale: Locale, localName: string): string {
+  if (locale === "ko") return "";
+  const lang = locale === "en" ? "영어" : "일본어";
+  return [
+    "", `## 언어 — 가장 중요`,
+    `이 사람은 **${lang}**를 쓴다. \`text\` 는 **자연스러운 ${lang}로만** 쓴다(한국어를 섞지 않는다). 네 이름은 이 언어로 "${localName}".`,
+    locale === "en"
+      ? "- 존댓말 단계는 정중한 영어, 반말 단계는 친구끼리의 편한 영어. 한 문장, 열두 단어 안."
+      : "- 존댓말 단계는 です・ます, 반말 단계는 タメ口. 한 문장, 30자 안.",
+  ].join("\n");
 }
 
 /** 창 안의 무작위 분. 같은 날 같은 사람은 한 번만 뽑는다. */
@@ -106,11 +147,17 @@ export async function pingTick(db: SupabaseClient, log: (s: string) => void = co
   if (!pushConfigured()) return { drawn: 0, sent: 0, dead: 0 };
   setup();
   const day = todayKST();
-  const nowMin = minuteKST();
 
   // 1) 오늘 시각을 아직 안 뽑은 사이에 시각을 준다. 구독이 있는 사람만.
-  const { data: subs } = await db.from("dot_push_subs").select("user_id").is("dead_at", null);
-  const users = Array.from(new Set(((subs ?? []) as { user_id: string }[]).map((s) => s.user_id)));
+  // 10-13: "*" — 언어(lang)·시간대(tz) 칸을 아직 안 만든 DB 에서도 돈다. 사람마다 가장 최근 구독의 것을 쓴다.
+  const { data: subs } = await db.from("dot_push_subs").select("*").is("dead_at", null).order("created_at", { ascending: true });
+  const subRows = (subs ?? []) as { user_id: string; lang?: string | null; tz?: string | null }[];
+  const users = Array.from(new Set(subRows.map((s) => s.user_id)));
+  const where = new Map<string, { locale: Locale; tz: string | null }>();
+  for (const s of subRows) {
+    const prev = where.get(s.user_id);
+    where.set(s.user_id, { locale: isLocale(s.lang) ? s.lang : prev?.locale ?? "ko", tz: s.tz || prev?.tz || null });
+  }
   if (users.length === 0) return { drawn: 0, sent: 0, dead: 0 };
 
   const { data: bonds } = await db
@@ -130,6 +177,8 @@ export async function pingTick(db: SupabaseClient, log: (s: string) => void = co
 
   let drawn = 0, sent = 0, dead = 0;
   for (const b of best.values()) {
+    const { locale, tz } = where.get(b.user_id) ?? { locale: "ko" as Locale, tz: null };
+    const nowMin = localClock(tz).minute;
     if (b.ping_day !== day) {
       const m = drawPingMinute();
       await db.from("dot_bonds").update({ ping_day: day, ping_minute: m, pings_today: 0 }).eq("user_id", b.user_id).eq("character_id", b.character_id);
@@ -163,8 +212,9 @@ export async function pingTick(db: SupabaseClient, log: (s: string) => void = co
     const { data: claimed } = await claim.select("user_id").maybeSingle();
     if (!claimed) continue;
 
-    const { data: ch } = await db.from("dot_characters").select("id, slug, name, persona, speech, formal_start, voice_ladder").eq("id", b.character_id).maybeSingle();
+    const { data: ch } = await db.from("dot_characters").select("*").eq("id", b.character_id).maybeSingle();   // "*": i18n 칸이 없는 DB 에서도
     if (!ch) continue;
+    const shownName = nameIn(ch as { name: string; i18n?: unknown }, locale);
 
     // 3) 한 문장 만든다.
     let text = "", emotion = "neutral";
@@ -176,7 +226,7 @@ export async function pingTick(db: SupabaseClient, log: (s: string) => void = co
           // 09-30: 여기는 모든 캐릭터에 존댓말 사다리를 쓰고 있었다 — 린이 먼저 말을 걸 때 존댓말로 걸었다.
           "", "## 지금 이 사람과의 사이", `${b.stage}단계. ${stageVoiceFor(toVoiceLadder(ch.voice_ladder, ch.formal_start as boolean | undefined), b.stage)}`,
           memoForToday(b.memo) ? `\n오늘은 이 기억 하나를 **꼭** 살짝 건드린다(그 낱말을 써서): ${memoForToday(b.memo)}` : "",
-          "", "## 지금", `한국 시간 ${timeOfDayKST()}. 이 시간에 어울리는 한마디여야 한다.`,
+          "", "## 지금", `${timeOfDayAt(tz)}. 이 시간에 어울리는 한마디여야 한다.`,
           mode === "menhera" ? `\n## 멘헤라 모드\n${pingsToday === 0 ? "너는 매달리는 쪽이다 — 보고 싶다·뭐 해·나 생각했어 같은 말." : `아까 말을 걸었는데 **답이 없다**(${pingsToday}번째 다시 거는 것). 서운하고 불안하다 — 왜 답 없냐·어디냐·나 잊었냐. 무섭지 않게, 귀엽게 서운해한다. 자해·죽음·협박은 절대 안 한다.`}` : "",
           "", "## 어떻게 말하나",
           "- **딱 한 문장**, 40자 이내. 알림 한 줄로 뜬다.",
@@ -184,11 +234,12 @@ export async function pingTick(db: SupabaseClient, log: (s: string) => void = co
           "- 위에 '오늘 건드릴 기억' 이 있으면 그 얘기로 시작한다(예: 등산은 어땠어요?). 없는 것은 지어내지 않는다.",
           "- 네가 AI 라는 말, 성적인 내용은 안 한다.",
           "", "## 답의 모양 (json)", "- `text` 그 한 문장", "- `emotion` neutral/happy/shy/sad/angry/surprised 중 하나",
+          openerLanguageRule(locale, shownName),
         ].filter(Boolean).join("\n"),
         input: "(먼저 말을 건다)",
         schema: opener, schemaName: "dot_opener", maxTokens: 400, tier: "conversation",
       });
-      text = out.output.text.trim().slice(0, 60);
+      text = out.output.text.trim().slice(0, locale === "en" ? 120 : 60);   // 영어는 같은 말이 글자로 두 배쯤 길다
       emotion = toEmotion(out.output.emotion);
     } catch (e) {
       log(`[먼저말걸기] ${ch.name} 문장 실패: ${e instanceof Error ? e.message : e}`);
@@ -200,7 +251,7 @@ export async function pingTick(db: SupabaseClient, log: (s: string) => void = co
     await db.from("dot_messages").insert({ user_id: b.user_id, character_id: ch.id, role: "character", content: text, emotion });
 
     const { data: mySubs } = await db.from("dot_push_subs").select("id, endpoint, p256dh, auth").eq("user_id", b.user_id).is("dead_at", null);
-    const payload = JSON.stringify({ title: ch.name, body: text, url: `/dot/${ch.slug}`, tag: `dot-${ch.slug}` });
+    const payload = JSON.stringify({ title: shownName, body: text, url: `/dot/${ch.slug}`, tag: `dot-${ch.slug}` });
     for (const s of (mySubs ?? []) as { id: string; endpoint: string; p256dh: string; auth: string }[]) {
       try {
         await webpush.sendNotification({ endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } }, payload, { TTL: 6 * 3600 });

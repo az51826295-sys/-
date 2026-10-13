@@ -15,16 +15,26 @@
  * 전부 세면 나오는 것이다. 모델도 DB 도 없이 시험한다.
  */
 
-/** 낱말 뿌리: 2글자 이상 한글·영숫자 덩어리의 **앞 두 글자**. "고양이를"·"고양이" 가 같은 뿌리가 된다(조사 무시). */
+/**
+ * 낱말 뿌리: 2글자 이상 한글·영숫자 덩어리의 **앞 두 글자**. "고양이를"·"고양이" 가 같은 뿌리가 된다(조사 무시).
+ * 10-13 일본어: 띄어쓰기가 없어 덩어리로 못 자른다. **한자는 한 글자씩, 가타카나는 덩어리의 앞 두 글자**를 뿌리로 —
+ * 히라가나는 대개 조사·어미라 뺀다("猫を飼っている" ← "猫飼ってるよ" 는 猫·飼 가 둘 다 있어 통과).
+ * 이 규칙이 없으면 일본어 기억은 뿌리가 0개라 전부 버려진다.
+ */
 export function roots(text: string): Set<string> {
   const out = new Set<string>();
   for (const m of text.matchAll(/[가-힣A-Za-z0-9]{2,}/g)) out.add(m[0].slice(0, 2).toLowerCase());
+  for (const m of text.matchAll(/[\u4e00-\u9fff\u3400-\u4dbf]/g)) out.add(m[0]);
+  for (const m of text.matchAll(/[\u30a1-\u30fa\u30fc]{2,}/g)) out.add(m[0].slice(0, 2));
   return out;
 }
 
+/** 이름 기억의 머리말(영어·일본어). "Name: Alex" 의 Name 은 사용자가 안 한 말이라 대조에서 뺀다 — 한국어 "이름은" 은 예전대로 둔다. */
+const NAME_LABEL = /^\s*(?:name\s*(?:is|:)|名前\s*(?:は|:|：))\s*/i;
+
 /** 기억 문장의 뿌리 중 몇 할이 사용자 말에 있나. */
 export function support(fact: string, userText: string): number {
-  const f = roots(fact);
+  const f = roots(fact.replace(NAME_LABEL, ""));
   if (f.size === 0) return 0;
   const u = roots(userText);
   let hit = 0;

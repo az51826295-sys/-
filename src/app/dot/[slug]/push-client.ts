@@ -42,12 +42,30 @@ export async function enablePush(): Promise<PushState> {
     (await reg.pushManager.getSubscription()) ??
     (await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64ToBytes(publicKey) as BufferSource }));
 
+  return (await postSub(sub)) ? "on" : "off";
+}
+
+/**
+ * 10-13 다국어: 구독과 함께 **시간대**를 보낸다(언어는 서버가 요청의 쿠키·Accept-Language 로 안다).
+ * 먼저 말 걸기가 그 사람의 낮 시간에, 그 사람의 언어로 오게.
+ */
+async function postSub(sub: PushSubscription): Promise<boolean> {
+  let tz = "";
+  try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone ?? ""; } catch { /* 없으면 서버가 한국 시간으로 */ }
   const res = await fetch("/api/dot/push", {
     method: "POST",
     headers: { "content-type": "application/json" },
-    body: JSON.stringify(sub.toJSON()),
+    body: JSON.stringify({ ...sub.toJSON(), tz }),
   });
-  return res.ok ? "on" : "off";
+  return res.ok;
+}
+
+/** 이미 켠 사람: 방을 열 때 한 번 다시 적는다 — 설정에서 언어를 바꿨거나 다른 나라로 갔어도 알림이 따라가게. 묻지 않는다. */
+export async function syncPush(): Promise<void> {
+  if (!pushSupported() || Notification.permission !== "granted") return;
+  const reg = await navigator.serviceWorker.getRegistration("/sw.js");
+  const sub = await reg?.pushManager.getSubscription();
+  if (sub) await postSub(sub).catch(() => {});
 }
 
 export async function disablePush(): Promise<PushState> {

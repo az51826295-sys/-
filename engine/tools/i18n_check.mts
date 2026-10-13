@@ -31,7 +31,8 @@ const direct: string[] = [];
 const used = new Map<string, string>(); // 원문 → 처음 쓰인 파일
 const DICTS: Record<string, Record<string, { en: string; ja: string }>> = { dot: DOT, rookery: ROOKERY, common: COMMON };
 /** 파일이 실제로 import 한 사전만 합친다. 다른 사전에만 있는 말은 그 화면에서 한국어로 나간다. */
-const dictOf = (src: string) => Object.assign({}, ...[...src.matchAll(/i18n\/dict\/(dot|rookery|common)"/g)].map((m) => DICTS[m[1]]));
+// 사전을 import 하지 않고 t 를 받아 쓰는 파일(bond.ts 처럼)은 `// i18n-dict: dot` 으로 어느 사전인지 적는다.
+const dictOf = (src: string) => Object.assign({}, ...[...src.matchAll(/i18n\/dict\/(dot|rookery|common)"|i18n-dict:\s*(dot|rookery|common)\b/g)].map((m) => DICTS[m[1] ?? m[2]]));
 const perFile: { ko: string; f: string; dict: Record<string, { en: string; ja: string }> }[] = [];
 // t("…") / t('…') / t(`…`) — 첫 인자가 글자 그대로인 것만. 변수로 넘긴 것은 못 센다(그런 곳은 사전 열쇠를 직접 쓴다).
 const CALL = /\bt\(\s*(["'`])((?:\\.|(?!\1).)*?)\1/g;

@@ -25,7 +25,10 @@ import {
 } from "./bond";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { shapeRule, tidyReply } from "./bubbles";
-import { assessCrisis, deepseekCrisisJudge, HELP_LINE, SAFETY_SYSTEM, withHelpLine, type Risk } from "./safety";
+import { assessCrisis, deepseekCrisisJudge, HELP_LINES, SAFETY_SYSTEM, withHelpLine, type Risk } from "./safety";
+import { makeT, type Locale } from "@/lib/i18n/core";
+import { DOT } from "@/lib/i18n/dict/dot";
+import { nameIn } from "./i18n";
 import type { ChatCompletionCreateParamsStreaming } from "openai/resources/chat/completions";
 
 /**
@@ -81,7 +84,7 @@ export type TurnResult =
   | { ok: false; reason: "limit"; remaining: 0; resetsAt: string }
   | { ok: false; reason: "no_character" | "failed" | "gift_limit" | "no_credits"; message: string };
 
-type Character = { id: string; name: string; persona: string; speech: string; sprites: Record<string, string>; formal_start?: boolean; default_emotion?: string; voice_ladder?: string | null };
+type Character = { id: string; name: string; persona: string; speech: string; sprites: Record<string, string>; formal_start?: boolean; default_emotion?: string; voice_ladder?: string | null; i18n?: unknown };
 
 /** 모델을 부르기 **전까지** 한 것. 실패하면 `giveBack` 으로 턴을 돌려준다. */
 export type Prepared = {
@@ -101,17 +104,54 @@ export type Prepared = {
   userSticker: string | null;
   /** 09-30: 선물이면 그 이름·점수·좋아하는 것인지. applyTurn 이 얹는다. */
   gift: { key: string; name: string; points: number; liked: boolean } | null;
+  /** 10-13 이 사람의 언어. 캐릭터가 이 언어로 말하고, 친밀도 이유·안내 글도 이 언어로. */
+  locale: Locale;
 };
 
 export type TurnOpts = {
   postCaption?: string | null;
   /** 사람이 보낸 스티커 키(90회차). 있으면 사람 말은 그 뜻으로 건넨다. */ userSticker?: string | null;
   /** 09-30 선물 키(bond.ts GIFTS). 스티커처럼 **말 대신 건네는 것**이라 같은 길을 탄다. */ gift?: string | null;
+  /** 10-13 사람의 언어(요청의 쿠키·Accept-Language). 없으면 한국어 — 옛 호출·시험 그대로. */ locale?: Locale;
 };
+
+/**
+ * 10-13 "전세계화": 캐릭터가 사람의 언어로 말하게 하는 지시. 시스템 맨 **뒤에** 붙인다 — 위의 설정·말투 예시가
+ * 전부 한국어라, 뒤에서 "답은 영어로" 를 못 박지 않으면 모델이 한국어로 돌아간다.
+ * 한국어 사용자에게는 아무것도 안 붙는다(프롬프트·캐시가 예전과 같다).
+ */
+export function languageRule(locale: Locale, characterName: string, localName: string): string {
+  if (locale === "ko") return "";
+  const nameLine = localName !== characterName
+    ? `- 네 이름 "${characterName}" 은 이 언어로 **"${localName}"** 이다. 이름을 말할 땐 그렇게 쓴다.`
+    : `- 네 이름 "${characterName}" 은 이 언어 글자로 옮겨 쓴다(소리 나는 대로).`;
+  if (locale === "en") return [
+    "", "## 언어 — 가장 중요 (위 규칙보다 앞선다)",
+    "이 사람은 **영어**를 쓴다. `reply` 는 **자연스러운 영어로만** 쓴다. 위 설정·말투 예시가 한국어여도 한국어를 한 글자도 섞지 않는다.",
+    nameLine,
+    "- 성격·말버릇·관계 단계는 그대로 옮긴다: 존댓말 단계는 정중하고 조금 조심스러운 영어, 반말 단계는 친한 친구끼리의 편한 영어(줄임말·소문자 시작 OK).",
+    "- 웃음·감탄은 영어식으로(lol, haha, omg, aww, hehe) — ㅋㅋ·ㅠㅠ 는 쓰지 않는다.",
+    "- 한 말풍선 = 한 호흡 = 짧은 한 문장(대략 열 단어 안). 마침표 규칙은 그대로(끝에 마침표 안 찍음).",
+    "- 한국 음식·장소 이름은 써도 되지만, 처음 듣는 사람도 알게 짧게 풀어 준다.",
+    "- `remember` 도 영어로 적는다. 이름이면 \"Name: OO\".",
+  ].join("\n");
+  return [
+    "", "## 언어 — 가장 중요 (위 규칙보다 앞선다)",
+    "이 사람은 **일본어**를 쓴다. `reply` 는 **자연스러운 일본어로만** 쓴다. 위 설정·말투 예시가 한국어여도 한국어를 한 글자도 섞지 않는다.",
+    nameLine,
+    "- 성격·말버릇·관계 단계는 그대로 옮긴다: 존댓말 단계는 です・ます, 반말 단계는 タメ口.",
+    "- 웃음·감탄은 일본식으로(笑, w, えへへ, うぅ) — ㅋㅋ·ㅠㅠ 는 쓰지 않는다.",
+    "- 한 말풍선 = 한 호흡(20자 안팎). 끝에 「。」 를 찍지 않는다(LINE 글 모양).",
+    "- 한국 음식·장소 이름은 써도 되지만, 처음 듣는 사람도 알게 짧게 풀어 준다.",
+    "- `remember` 도 일본어로 적는다. 이름이면 \"名前はOO\".",
+  ].join("\n");
+}
 
 export async function prepareTurn(db: SupabaseClient, userId: string, characterId: string, text: string, opts: TurnOpts = {}): Promise<Prepared | Exclude<TurnResult, { ok: true }>> {
   const message = text.trim();
-  if (!message) return { ok: false, reason: "failed", message: "빈 메시지" };
+  const locale: Locale = opts.locale ?? "ko";
+  const t = makeT(DOT, locale);
+  if (!message) return { ok: false, reason: "failed", message: t("빈 메시지") };
   const t0 = Date.now();
 
   const day = todayKST();
@@ -121,7 +161,8 @@ export async function prepareTurn(db: SupabaseClient, userId: string, characterI
   // 턴 세기가 먼저여야 하는 것은 **모델 호출**보다 먼저라는 뜻이지, 사이를 읽는 것보다 먼저일
   // 필요는 없다 — 한도에 걸리면 읽은 것을 버리면 된다.
   const [chRes, takeRes, bondRes, recentRes, countRes] = await Promise.all([
-    db.from("dot_characters").select("id, name, persona, speech, sprites, formal_start, default_emotion, voice_ladder").eq("id", characterId).maybeSingle(),
+    // 10-13: "*" — i18n 칸(영어·일본어 이름)을 아직 안 만든 DB 에서도 깨지지 않게. 서버 안에서만 쓴다.
+    db.from("dot_characters").select("*").eq("id", characterId).maybeSingle(),
     // 09-30 사장님 "선물은 돈내고 하는 거야" — 선물은 **크레딧**으로 산다. 대화 턴까지 가져가면 두 번 받는다.
     opts.gift ? Promise.resolve({ data: 1, error: null }) : db.rpc("dot_take_turn", { p_user: userId, p_day: day, p_limit: FREE_TURNS_PER_DAY }),
     db.from("dot_bonds").select("points, stage, streak_days, last_talked_on, memo, mode, last_gift_on").eq("user_id", userId).eq("character_id", characterId).maybeSingle(),
@@ -141,11 +182,11 @@ export async function prepareTurn(db: SupabaseClient, userId: string, characterI
   };
 
   const character = chRes.data ? (chRes.data as unknown as Character) : null;
-  if (!character) { if (Number(takeRes.data ?? 0) > 0) await giveBack(); return { ok: false, reason: "no_character", message: "그런 캐릭터가 없다" }; }
+  if (!character) { if (Number(takeRes.data ?? 0) > 0) await giveBack(); return { ok: false, reason: "no_character", message: t("그런 캐릭터가 없어요.") }; }
 
   if (takeRes.error) return { ok: false, reason: "failed", message: takeRes.error.message };
   const used = Number(takeRes.data ?? 0);
-  if (used <= 0) return { ok: false, reason: "limit", remaining: 0, resetsAt: `${day} 자정(한국 시간)` };
+  if (used <= 0) return { ok: false, reason: "limit", remaining: 0, resetsAt: t("{day} 자정(한국 시간)", { day }) };
 
   try {
     const bondRow = bondRes.data, recent = recentRes.data;
@@ -160,13 +201,13 @@ export async function prepareTurn(db: SupabaseClient, userId: string, characterI
     // 09-30 사장님 "3번 풀어" — 하루 한 번 제한을 뗐다. 돈을 내고 사는 것이라 크레딧이 곧 한도다.
     // last_gift_on 은 계속 적는다(누가 언제 선물했는지 볼 수 있게) — 막는 데는 안 쓴다.
     const 선물 = giftFor(opts.gift);
-    if (opts.gift && !선물) { await giveBack(); return { ok: false, reason: "failed", message: "그런 선물은 없어요." }; }
+    if (opts.gift && !선물) { await giveBack(); return { ok: false, reason: "failed", message: t("그런 선물은 없어요.") }; }
     const 선물점 = 선물 ? giftPoints(선물, character.persona ?? "") : null;
     if (선물) {
       // **원자적으로** 뺀다(dot_spend_credits) — 두 번 눌러도 잔고가 모자라면 두 번째는 막힌다.
       const { data: 남음, error: se } = await db.rpc("dot_spend_credits", { p_user: userId, p_amount: 선물.price, p_sku: `gift:${선물.key}` });
       if (se) return { ok: false, reason: "failed", message: se.message };
-      if (Number(남음) < 0) return { ok: false, reason: "no_credits", message: `크레딧이 모자라요. ${선물.name}은(는) ${선물.price}크레딧이에요.` };
+      if (Number(남음) < 0) return { ok: false, reason: "no_credits", message: t("크레딧이 모자라요. {gift}은(는) {price}크레딧이에요.", { gift: t(선물.name), price: 선물.price }) };
       돌려줄크레딧 = 선물.price; 선물키 = 선물.key;   // 이 뒤로 실패하면 돌려준다
     }
     const mode = toMode(bondRow?.mode);
@@ -195,7 +236,7 @@ export async function prepareTurn(db: SupabaseClient, userId: string, characterI
       // 96회차 사장님 "현실성 추가": 마침표 없이, 한 호흡씩, 줄바꿈 = 말풍선.
       shapeRule(),
       // 88회차: 카톡 친구처럼 이름을 묻고·기억하고·부른다. 기억에 이름이 있으면 가끔 부르고, 없으면 첫 한두 마디 안에 묻는다.
-      memo.some((m) => /이름/.test(m))
+      memo.some((m) => /이름|^\s*name\b|名前/i.test(m))
         ? "- 이 사람 이름을 안다(위 '네가 아는 것'). **가끔** 이름을 부른다 — 매번은 아니고, 반가울 때나 챙길 때."
         : history.length < 4
           ? "- 이 사람 이름을 아직 모른다. **이번 답에서 이름을 묻는다**(짧게 받아 주고, 뭐라고 부르면 좋을지 하나만 묻는다). 이름을 말하면 `remember` 에 \"이름은 OO\" 로 적는다."
@@ -212,6 +253,7 @@ export async function prepareTurn(db: SupabaseClient, userId: string, characterI
       `- **\`emotion\` 을 첫 번째 칸에** — 먼저 표정을 정하고 그 표정으로 말한다. 반드시 이 중 하나: ${EMOTIONS.join(", ")}. neutral 은 여섯 번에 한 번꼴이면 많다.`,
       "- `reply` 그 표정으로 하는 말. 화면이 이 칸을 글자 나오는 대로 보여 준다.",
       "- `remember` 이 사람이 **방금 말한** 것 중 기억해 둘 사실 한 줄(예: \"고양이를 키운다\"). 없으면 빈 문자열.",
+      languageRule(locale, character.name, nameIn(character, locale)),
     ].filter(Boolean).join("\n");
 
     // 피드 답장이면 사람 말 앞에 그 게시물을 붙인다 — 모델은 "내 게시물을 보고 하는 말" 로 받는다.
@@ -225,7 +267,7 @@ export async function prepareTurn(db: SupabaseClient, userId: string, characterI
       // 94회차: 시간 힌트는 방금 한 말을 보고 정한다 — 새벽 1시에 네 답 연속 새벽 타령 + "밥은 먹었어" 가 나왔다.
       timeHint(new Date(), history.filter((h) => h.role !== "user").slice(-4).map((h) => h.content))].join("\n");
     return { character, day, used, prev, memo, system, input, message, t0, giveBack, sinceSticker, userSticker: opts.userSticker && USER_STICKERS[opts.userSticker] ? opts.userSticker : null,
-      gift: 선물 && 선물점 ? { key: 선물.key, name: 선물.name, points: 선물점.points, liked: 선물점.liked } : null };
+      gift: 선물 && 선물점 ? { key: 선물.key, name: 선물.name, points: 선물점.points, liked: 선물점.liked } : null, locale };
   } catch (e) {
     await giveBack();
     return { ok: false, reason: "failed", message: e instanceof Error ? e.message : String(e) };
@@ -244,7 +286,7 @@ export async function finishTurn(
   // 67회차: 시큰둥이 기본인 인물(린)은 모델이 neutral 을 자주 낸다(15턴 중 8). 그 인물의 "무표정" 은
   // 무표정 그림이 아니라 시큰둥 그림이다 — 인물별 기본 표정으로 바꿔 보여 준다(글은 안 건드린다).
   if (emotion === "neutral" && p.character.default_emotion && p.character.default_emotion !== "neutral") emotion = toEmotion(p.character.default_emotion);
-  const gain = applyTurn(p.prev, p.day, p.message, p.gift);
+  const gain = applyTurn(p.prev, p.day, p.message, p.gift, makeT(DOT, p.locale));
   // 기억은 **문을 거친다**(memo.ts): 방금 말에 없는 낱말로 된 것은 버리고, 같은 얘기는 갈아 끼운다.
   // 09-11 운영 표에서 지어낸 기억("RPG 를 좋아한다")과 같은 말 세 번을 봤다.
   const decided = mergeMemo(p.memo, said.remember, p.message);
@@ -316,7 +358,7 @@ export async function runDotTurn(db: SupabaseClient, userId: string, characterId
     // 무료 앱 한 마디에 20배 값을 낼 이유가 없고, 새는 것은 안 보이지만 쉬는 것은 보인다(09-10 사장님: 크레딧 차단).
     const ai = process.env.DEEPSEEK_API_KEY ? createDeepSeekProvider() : defaultProviders().ai;
     const out = await ai.generateStructuredOutput({ systemInstructions: p.system, input: p.input, schema: answer, schemaName: "dot_reply", maxTokens: 1200, tier: "conversation" });
-    if (risk.crisis) out.output.reply = withHelpLine(out.output.reply);
+    if (risk.crisis) out.output.reply = withHelpLine(out.output.reply, p.locale);
     return await finishTurn(db, userId, p, out.output, { model: out.model, inputTokens: out.inputTokens ?? 0, outputTokens: out.outputTokens ?? 0, routing: out.routing, tModel: Date.now() - t, tPrepare: t - p.t0, tFirst: null });
   } catch (e) {
     await p.giveBack();
@@ -335,7 +377,7 @@ export async function streamDotTurn(
   onDelta: (chunk: string) => void, opts: TurnOpts = {},
 ): Promise<TurnResult> {
   const key = process.env.DEEPSEEK_API_KEY;
-  if (!key) return runDotTurn(db, userId, characterId, text);
+  if (!key) return runDotTurn(db, userId, characterId, text, opts);
 
   const [p, risk] = await Promise.all([prepareTurn(db, userId, characterId, text, opts), assessCrisis(text, deepseekCrisisJudge())]);
   if ("ok" in p) return p;
@@ -396,7 +438,7 @@ export async function streamDotTurn(
     const parsed = answer.safeParse(JSON.parse(raw));
     if (!parsed.success) throw new Error("MODEL_OUTPUT_OFF_SCHEMA(stream)");
     // 위기면 안내를 마지막 말풍선으로 흘려보내고, 저장되는 답에도 붙인다(모델이 뭐라 했든).
-    if (risk.crisis) { onDelta("\n" + HELP_LINE); parsed.data.reply = withHelpLine(parsed.data.reply); }
+    if (risk.crisis) { onDelta("\n" + HELP_LINES[p.locale]); parsed.data.reply = withHelpLine(parsed.data.reply, p.locale); }
     return await finishTurn(db, userId, p, parsed.data, {
       model: "deepseek-v4-flash", inputTokens: usage?.prompt_tokens ?? 0, outputTokens: usage?.completion_tokens ?? 0, cachedTokens: usage?.prompt_cache_hit_tokens ?? 0, routing: "planned", tModel: Date.now() - t,
       tPrepare: t - p.t0, tFirst,
@@ -404,7 +446,8 @@ export async function streamDotTurn(
   } catch (e) {
     // 흐르다 깨졌다 — 턴을 돌려주고 한 통 길로. 여기서 이미 턴을 셌으니 두 번 세지 않게 돌려준 뒤 다시 센다.
     console.warn(`[dot] 흘려보내기 실패 → 한 통으로: ${e instanceof Error ? e.message : e}`);
+    // 10-13: opts 를 넘긴다 — 예전엔 빠져서 한 통 길로 넘어가면 선물·스티커·게시물 답장·언어가 사라졌다.
     await p.giveBack();
-    return runDotTurn(db, userId, characterId, text);
+    return runDotTurn(db, userId, characterId, text, opts);
   }
 }

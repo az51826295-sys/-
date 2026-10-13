@@ -21,6 +21,8 @@
  * 셀 수가 없다 — 셀 수 없는 때에 세면 늘 0 이다([[unmeasurable-test-is-not-a-failure]]).
  */
 import { createServiceClient } from "@/lib/supabase/service";
+import type { Locale } from "@/lib/i18n/core";
+import { nameIn } from "./i18n";
 
 /** 맞팔이 되는 하트 수. 사장님이 정한 값. */
 export const 맞팔_하트 = 5;
@@ -87,7 +89,7 @@ export type MineView = {
 };
 
 /** 내 창에 쓸 것 전부. 읽으면서 맞팔 판정도 같이 한다. */
-export async function mineView(userId: string): Promise<MineView> {
+export async function mineView(userId: string, locale: Locale = "ko"): Promise<MineView> {
   const db = createServiceClient();
   const 이제 = new Date().toISOString();
   const [{ data: ps }, { data: fs }] = await Promise.all([
@@ -124,9 +126,9 @@ export async function mineView(userId: string): Promise<MineView> {
   const 볼사람 = new Set<string>([...맞팔목록, ...사람별.keys(), ...((fs ?? []) as { character_id: string }[]).map((f) => f.character_id)]);
   const 정보 = new Map<string, { slug: string; name: string; avatar: string }>();
   if (볼사람.size) {
-    const { data: cs } = await db.from("dot_characters").select("id, slug, name, photos").in("id", [...볼사람]);
-    for (const c of (cs ?? []) as { id: string; slug: string; name: string; photos: { url: string }[] | null }[]) {
-      정보.set(c.id, { slug: c.slug, name: c.name, avatar: c.photos?.[0]?.url ?? "" });
+    const { data: cs } = await db.from("dot_characters").select("*").in("id", [...볼사람]);   // "*": i18n 칸이 없는 DB 에서도
+    for (const c of (cs ?? []) as { id: string; slug: string; name: string; photos: { url: string }[] | null; i18n?: unknown }[]) {
+      정보.set(c.id, { slug: c.slug, name: nameIn(c, locale), avatar: c.photos?.[0]?.url ?? "" });
     }
   }
 

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getT } from "@/lib/i18n/server";
+import { getLocale, getT } from "@/lib/i18n/server";
 import { DOT } from "@/lib/i18n/dict/dot";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
@@ -22,15 +22,15 @@ export const viewport = { width: "device-width", viewportFit: "cover" as const, 
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const t = await getT(DOT);
-  return { title: t("{name} — 프로필", { name: (await characterBySlug(slug))?.name ?? t("두근도트") }) };
+  const [t, locale] = await Promise.all([getT(DOT), getLocale()]);
+  return { title: t("{name} — 프로필", { name: (await characterBySlug(slug, locale))?.name ?? t("두근도트") }) };
 }
 
 export default async function DotProfile({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const t = await getT(DOT);
+  const [t, locale] = await Promise.all([getT(DOT), getLocale()]);
   const supabase = await createClient();
-  const [{ data: { user } }, found, inline] = await Promise.all([supabase.auth.getUser(), characterBySlug(slug), spriteDataUrls(slug)]);
+  const [{ data: { user } }, found, inline] = await Promise.all([supabase.auth.getUser(), characterBySlug(slug, locale), spriteDataUrls(slug)]);
   if (!found) notFound();
   const sprites: Record<string, string> = { ...found.sprites };
   for (const [k, v] of Object.entries(inline)) if (!k.startsWith("face:")) sprites[k] = v;

@@ -1,9 +1,10 @@
-import { getT } from "@/lib/i18n/server";
+import { getLocale, getT } from "@/lib/i18n/server";
 import { DOT } from "@/lib/i18n/dict/dot";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import { characterBySlug, spriteDataUrls } from "@/lib/dot/load";
+import { captionIn } from "@/lib/dot/i18n";
 import DotChat from "./DotChat";
 import { FREE_TURNS_PER_DAY, todayKST, toMode, toNextStage } from "@/lib/dot/bond";
 import { balanceFor, type Balance } from "@/lib/dot/money";
@@ -24,8 +25,8 @@ export const viewport = {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   // 캐시된 목록에서 꺼낸다 — 제목 하나 때문에 DB 를 또 왕복하지 않는다.
-  const t = await getT(DOT);
-  return { title: (await characterBySlug(slug))?.name ?? t("두근도트") };
+  const [t, locale] = await Promise.all([getT(DOT), getLocale()]);
+  return { title: (await characterBySlug(slug, locale))?.name ?? t("두근도트") };
 }
 
 export default async function DotRoom({ params, searchParams }: { params: Promise<{ slug: string }>; searchParams: Promise<{ post?: string }> }) {
@@ -34,9 +35,10 @@ export default async function DotRoom({ params, searchParams }: { params: Promis
 
   // 누구인지와 이 캐릭터가 누구인지는 **서로 필요 없다** — 나란히 묻는다.
   const supabase = await createClient();
+  const locale = await getLocale();
   const [{ data: { user } }, found, inline] = await Promise.all([
     supabase.auth.getUser(),
-    characterBySlug(slug),
+    characterBySlug(slug, locale),
     spriteDataUrls(slug),
   ]);
   if (!found) notFound();
@@ -76,8 +78,8 @@ export default async function DotRoom({ params, searchParams }: { params: Promis
   // 피드의 "답장" — 그 게시물을 방에 들고 온다(78회차). 첫 말에 붙여 보내면 모델이 그 사진 얘기로 받는다.
   let replyTo: { id: number; caption: string; image: string } | null = null;
   if (postParam && /^\d+$/.test(postParam)) {
-    const { data: p } = await db.from("dot_posts").select("id, caption, image_url").eq("id", Number(postParam)).eq("character_id", who.id).maybeSingle();
-    if (p) replyTo = { id: p.id as number, caption: p.caption as string, image: p.image_url as string };
+    const { data: p } = await db.from("dot_posts").select("*").eq("id", Number(postParam)).eq("character_id", who.id).maybeSingle();
+    if (p) replyTo = { id: p.id as number, caption: captionIn(p as { caption: string; i18n?: unknown }, locale), image: p.image_url as string };
   }
 
   return (

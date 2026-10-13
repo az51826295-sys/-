@@ -23,4 +23,14 @@ ok("12개를 넘으면 오래된 것부터 버린다", m.length === 12 && m[0] =
 ok("support: 낱말 뿌리 절반 이상", support("고양이를 키운다", "고양이 키우는데") >= 0.5, support("고양이를 키운다", "고양이 키우는데"));
 ok("sameFact: 말만 바꾼 같은 얘기", sameFact("RPG 장르를 좋아한다고 함", "사용자가 RPG 장르를 좋아함"));
 ok("sameFact: 다른 얘기", !sameFact("고양이를 키운다", "회사에서 힘든 하루를 보냈다"));
+// 10-13 영어·일본어 사용자
+ok("일본어: 말한 것은 받는다 (猫を飼っている ← 猫飼ってるよ)", mergeMemo([], "猫を飼っている", "うち猫飼ってるよ").accepted === true);
+ok("일본어: 가타카나 낱말 (ゲームが好き ← ゲーム大好き)", mergeMemo([], "ゲームが好き", "ゲーム大好きなんだ").accepted === true);
+ok("일본어: 지어낸 기억은 버린다 (RPGが好き ← どんなゲーム？)", mergeMemo([], "RPGが好き", "どんなゲームって聞かれても").accepted === false);
+ok("일본어: 이름 (名前はアレックス ← アレックスだよ)", mergeMemo([], "名前はアレックス", "アレックスだよ").accepted === true);
+ok("일본어: 지어낸 이름은 버린다", mergeMemo([], "名前はケンタ", "名前？内緒").accepted === false);
+ok("영어: 말한 것은 받는다", mergeMemo([], "Has a cat", "i have a cat lol").accepted === true);
+ok("영어: 이름 (Name: Alex ← I'm Alex)", mergeMemo([], "Name: Alex", "I'm Alex").accepted === true);
+ok("영어: 지어낸 기억은 버린다 (Likes RPGs)", mergeMemo([], "Likes RPG games", "what kind of stuff do you do").accepted === false);
+ok("한국어 이름은 예전 그대로 (이름은 민수 ← 나 민수야)", mergeMemo([], "이름은 민수", "나 민수야").accepted === true);
 console.log(fail ? `\n${fail}개 실패` : "\n모두 통과"); process.exit(fail ? 1 : 0);

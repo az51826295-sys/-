@@ -15,7 +15,8 @@ import { runDotTurn } from "@/lib/dot/turn";
 export const maxDuration = 60;
 
 export async function POST(request: Request) {
-  const t = makeT(DOT, localeFromRequest(request));
+  const locale = localeFromRequest(request);
+  const t = makeT(DOT, locale);
   const userId = await userIdFrom(request);
   if (!userId) return Response.json({ error: t("로그인이 필요해요.") }, { status: 401 });
 
@@ -36,7 +37,7 @@ export async function POST(request: Request) {
 
   // 09-30 선물 — 안드로이드 앱(Bearer)도 같은 길로 선물한다.
   const gift = typeof body.gift === "string" ? body.gift : null;
-  const result = await runDotTurn(createServiceClient(), userId, characterId, message, { gift });
+  const result = await runDotTurn(createServiceClient(), userId, characterId, message, { gift, locale });
   if (result.ok) return Response.json(result);
   if (result.reason === "limit") return Response.json(result, { status: 429 });
   if (result.reason === "no_character") return Response.json(result, { status: 404 });

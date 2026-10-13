@@ -1,5 +1,7 @@
 import { unstable_cache } from "next/cache";
 import { createServiceClient } from "@/lib/supabase/service";
+import type { Locale } from "@/lib/i18n/core";
+import { localizeCharacter } from "./i18n";
 
 /**
  * 화면 하나를 그리는 데 **네트워크를 몇 번 왕복하는가.**
@@ -24,6 +26,8 @@ export type PublicCharacter = {
   faces: Record<string, string>;
   /** 개인 스냅사진(카톡 프로필 사진). 여행·카페·취미. 프로필·목록이 쓴다. 표정 얼굴은 말풍선 옆에서만. */
   photos: { url: string; caption: string }[];
+  /** 10-13 영어·일본어 칸(schema_dot_i18n.sql). 없으면 한국어 그대로. */
+  i18n?: unknown;
 };
 
 /**
@@ -34,19 +38,28 @@ export type PublicCharacter = {
 export const publicCharacters = unstable_cache(
   async (): Promise<PublicCharacter[]> => {
     const db = createServiceClient();
+    // 10-13: "*" 로 읽는다 — i18n 칸을 아직 안 만든 DB 에서도 깨지지 않게. 화면에 나갈 칸만 골라 담는다(persona 는 안 내보낸다).
     const { data } = await db
       .from("dot_characters")
-      .select("id, slug, name, tagline, greeting, sprites, chips, faces, photos")
+      .select("*")
       .eq("is_public", true)
       .order("created_at", { ascending: true });
-    return (data ?? []) as unknown as PublicCharacter[];
+    return ((data ?? []) as Record<string, unknown>[]).map((r) => ({
+      id: r.id, slug: r.slug, name: r.name, tagline: r.tagline, greeting: r.greeting, sprites: r.sprites, chips: r.chips, faces: r.faces, photos: r.photos, i18n: r.i18n,
+    })) as unknown as PublicCharacter[];
   },
   ["dot-public-characters"],
   { revalidate: 60, tags: ["dot-characters"] },
 );
 
-export async function characterBySlug(slug: string): Promise<PublicCharacter | null> {
-  return (await publicCharacters()).find((c) => c.slug === slug) ?? null;
+/** 그 언어로 옮긴 목록(이름·소개·첫인사·고를 말·사진 설명). */
+export async function charactersIn(locale: Locale): Promise<PublicCharacter[]> {
+  return (await publicCharacters()).map((c) => localizeCharacter(c, locale));
+}
+
+export async function characterBySlug(slug: string, locale: Locale = "ko"): Promise<PublicCharacter | null> {
+  const c = (await publicCharacters()).find((x) => x.slug === slug);
+  return c ? localizeCharacter(c, locale) : null;
 }
 
 /**

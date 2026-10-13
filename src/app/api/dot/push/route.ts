@@ -16,10 +16,11 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const t = makeT(DOT, localeFromRequest(request));
+  const locale = localeFromRequest(request);
+  const t = makeT(DOT, locale);
   const userId = await userIdFrom(request);
   if (!userId) return Response.json({ error: t("로그인이 필요해요.") }, { status: 401 });
-  let body: { endpoint?: unknown; keys?: { p256dh?: unknown; auth?: unknown } };
+  let body: { endpoint?: unknown; keys?: { p256dh?: unknown; auth?: unknown }; tz?: unknown };
   try { body = (await request.json()) as typeof body; } catch { return Response.json({ error: t("요청을 읽지 못했어요.") }, { status: 400 }); }
   const endpoint = typeof body.endpoint === "string" ? body.endpoint : "";
   const p256dh = typeof body.keys?.p256dh === "string" ? body.keys.p256dh : "";
@@ -27,13 +28,24 @@ export async function POST(request: Request) {
   if (!endpoint || !p256dh || !auth) return Response.json({ error: t("구독 모양이 아니에요.") }, { status: 400 });
 
   const db = createServiceClient();
+  // 10-13: 언어·시간대도 적는다(먼저 말 걸기가 그 사람 언어로, 그 사람 낮에). 시간대는 진짜 이름일 때만.
+  const tz = typeof body.tz === "string" && validTimeZone(body.tz) ? body.tz : null;
   // 같은 주소가 다시 오면 산 것으로 되돌린다(앱을 지웠다 다시 깔면 주소가 같을 수 있다).
-  const { error } = await db.from("dot_push_subs").upsert(
-    { user_id: userId, endpoint, p256dh, auth, dead_at: null },
+  let { error } = await db.from("dot_push_subs").upsert(
+    { user_id: userId, endpoint, p256dh, auth, dead_at: null, lang: locale, tz },
     { onConflict: "endpoint" },
   );
+  // schema_dot_i18n.sql 을 아직 안 돌린 DB: 칸이 없다고 하면 예전 모양으로 다시 — 알림 켜기가 막히면 안 된다.
+  if (error && /lang|tz|column/i.test(error.message)) {
+    ({ error } = await db.from("dot_push_subs").upsert({ user_id: userId, endpoint, p256dh, auth, dead_at: null }, { onConflict: "endpoint" }));
+  }
   if (error) return Response.json({ error: error.message }, { status: 500 });
   return Response.json({ ok: true });
+}
+
+function validTimeZone(tz: string): boolean {
+  if (tz.length > 64) return false;
+  try { new Intl.DateTimeFormat("en", { timeZone: tz }); return true; } catch { return false; }
 }
 
 export async function DELETE(request: Request) {

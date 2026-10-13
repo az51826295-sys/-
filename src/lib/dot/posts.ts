@@ -2,6 +2,7 @@ import { z } from "zod";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { defaultProviders } from "@/lib/execution/shared";
 import { todayKST, timeOfDayKST, toVoiceLadder } from "./bond";
+import { translatePair } from "./translate";
 
 /**
  * 게시물 — 캐릭터가 하루 한 장 올린다 (78회차 09-11).
@@ -76,8 +77,14 @@ export async function postTick(db: SupabaseClient, log: (s: string) => void = co
     let caption = "";
     try { caption = await writeCaption(c, photo); } catch (e) { log(`[게시물] ${c.name} 한 줄 실패: ${e instanceof Error ? e.message : e}`); continue; }
     if (!caption) continue;
+    // 10-13: 영어·일본어 한 줄도 같이 만든다(피드가 그 사람 언어로 보인다). 실패하면 한국어만 — 글을 못 올리는 것보다 낫다.
+    let i18n: { en: string; ja: string } | null = null;
+    try { i18n = await translatePair(caption, { name: c.name, speech: c.speech, polite: toVoiceLadder(c.voice_ladder, c.formal_start) === "polite" }, "SNS 게시물 한 줄"); }
+    catch (e) { log(`[게시물] ${c.name} 번역 실패(한국어만 올림): ${e instanceof Error ? e.message : e}`); }
     // unique(character_id, published_on) 이 두 워커의 경주를 막는다.
-    const { error } = await db.from("dot_posts").insert({ character_id: c.id, image_url: photo.url, caption, published_on: day });
+    let { error } = await db.from("dot_posts").insert({ character_id: c.id, image_url: photo.url, caption, published_on: day, ...(i18n ? { i18n } : {}) });
+    // schema_dot_i18n.sql 을 아직 안 돌린 DB 면 i18n 칸 없이 다시.
+    if (error && i18n && /i18n|column/i.test(error.message)) ({ error } = await db.from("dot_posts").insert({ character_id: c.id, image_url: photo.url, caption, published_on: day }));
     if (error) { if (!/duplicate|unique/i.test(error.message)) log(`[게시물] ${c.name} 저장 실패: ${error.message}`); continue; }
     posted++;
     log(`[게시물] ${c.name} "${caption}" (${photo.caption})`);

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getT } from "@/lib/i18n/server";
+import { getLocale, getT } from "@/lib/i18n/server";
 import { DOT } from "@/lib/i18n/dict/dot";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
@@ -26,8 +26,8 @@ export default async function DotMe() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
-  const v = await mineView(user.id);
-  const t = await getT(DOT);
+  const [t, locale] = await Promise.all([getT(DOT), getLocale()]);
+  const v = await mineView(user.id, locale);
   const 이름 = (user.email ?? t("나")).split("@")[0];
 
   return (

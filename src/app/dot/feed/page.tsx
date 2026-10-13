@@ -1,7 +1,8 @@
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import Link from "next/link";
-import { getT } from "@/lib/i18n/server";
+import { getLocale, getT } from "@/lib/i18n/server";
+import { captionIn, nameIn } from "@/lib/dot/i18n";
 import { DOT } from "@/lib/i18n/dict/dot";
 import DotTabs from "../DotTabs";
 import FeedCard, { type FeedPost } from "./FeedCard";
@@ -16,16 +17,17 @@ export async function generateMetadata() { const t = await getT(DOT); return { t
 export const viewport = { width: "device-width", viewportFit: "cover" as const, initialScale: 1, maximumScale: 1, userScalable: false, themeColor: "#ffffff" };
 
 export default async function DotFeed({ searchParams }: { searchParams: Promise<{ all?: string }> }) {
-  const t = await getT(DOT);
+  const [t, locale] = await Promise.all([getT(DOT), getLocale()]);
   const { all } = await searchParams;
   const showAll = all === "1";
   const supabase = await createClient();
   const db = createServiceClient();
   const [{ data: { user } }, { data: rows }] = await Promise.all([
     supabase.auth.getUser(),
-    db.from("dot_posts").select("id, image_url, caption, likes, created_at, character_id, dot_characters(slug, name, photos, is_public)").order("id", { ascending: false }).limit(60),
+    // 10-13: "*" — 다국어 칸(i18n)을 아직 안 만든 DB 에서도 깨지지 않게. 화면엔 아래 map 에서 고른 것만 나간다.
+    db.from("dot_posts").select("*, dot_characters(*)").order("id", { ascending: false }).limit(60),
   ]);
-  type Row = { id: number; image_url: string; caption: string; likes: number; created_at: string; character_id: string; dot_characters: { slug: string; name: string; photos: { url: string }[] | null; is_public: boolean } | null };
+  type Row = { id: number; image_url: string; caption: string; likes: number; created_at: string; character_id: string; i18n?: unknown; dot_characters: { slug: string; name: string; photos: { url: string }[] | null; is_public: boolean; i18n?: unknown } | null };
   // 팔로우 — 기본은 팔로잉한 캐릭터만. 아무도 안 하면 전체를 보여 주고 "팔로우하면 여기 모여요".
   let follows = new Set<string>();
   if (user) {
@@ -38,12 +40,12 @@ export default async function DotFeed({ searchParams }: { searchParams: Promise<
   const filterFollowing = !showAll && follows.size > 0;
   const posts: FeedPost[] = ((rows ?? []) as unknown as Row[])
     .filter((r) => r.dot_characters?.is_public && (!filterFollowing || follows.has(r.character_id)))
-    .map((r) => ({ id: r.id, image: r.image_url, caption: r.caption, likes: r.likes, at: r.created_at, slug: r.dot_characters!.slug, name: r.dot_characters!.name, avatar: r.dot_characters!.photos?.[0]?.url ?? "", characterId: r.character_id, following: follows.has(r.character_id) }));
+    .map((r) => ({ id: r.id, image: r.image_url, caption: captionIn(r, locale), likes: r.likes, at: r.created_at, slug: r.dot_characters!.slug, name: nameIn(r.dot_characters!, locale), avatar: r.dot_characters!.photos?.[0]?.url ?? "", characterId: r.character_id, following: follows.has(r.character_id) }));
   // ── 스토리 줄: 추가한 캐릭터 + 안 읽은 말 수 (227회차 09-29) ──
   let stories: StoryItem[] = [];
   if (user && follows.size) {
     const [{ data: cs }, { data: bs }, { data: ms }] = await Promise.all([
-      db.from("dot_characters").select("id, slug, name, photos").in("id", [...follows]),
+      db.from("dot_characters").select("*").in("id", [...follows]),
       db.from("dot_bonds").select("character_id, last_seen_at").eq("user_id", user.id),
       db.from("dot_messages").select("character_id, role, created_at").eq("user_id", user.id).order("id", { ascending: false }).limit(60),
     ]);
@@ -55,8 +57,8 @@ export default async function DotFeed({ searchParams }: { searchParams: Promise<
       const at = 본때.get(m.character_id);
       if (!at || m.created_at > at) 안읽음.set(m.character_id, (안읽음.get(m.character_id) ?? 0) + 1);
     }
-    stories = ((cs ?? []) as { id: string; slug: string; name: string; photos: { url: string }[] | null }[])
-      .map((c) => ({ slug: c.slug, name: c.name, avatar: c.photos?.[0]?.url ?? "", unread: 안읽음.get(c.id) ?? 0 }));
+    stories = ((cs ?? []) as { id: string; slug: string; name: string; photos: { url: string }[] | null; i18n?: unknown }[])
+      .map((c) => ({ slug: c.slug, name: nameIn(c, locale), avatar: c.photos?.[0]?.url ?? "", unread: 안읽음.get(c.id) ?? 0 }));
   }
 
   let liked = new Set<number>();

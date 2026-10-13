@@ -9,6 +9,10 @@
  * 그래서 여기 있는 것은 전부 **세면 나오는 것**이다: 몇 번 말했나, 며칠 연달아 왔나,
  * 성의 있게 썼나. 순수 함수라 모델도 데이터베이스도 없이 시험할 수 있다.
  */
+import { makeT, type T } from "@/lib/i18n/core";
+
+// i18n-dict: dot — 아래 t("…") 의 영어·일본어는 dict/dot.ts 에 있다(부르는 쪽이 makeT(DOT, locale) 를 넘긴다).
+const KO: T = makeT({}, "ko");
 
 export const EMOTIONS = ["neutral", "happy", "shy", "sad", "angry", "surprised"] as const;
 export type Emotion = (typeof EMOTIONS)[number];
@@ -135,31 +139,32 @@ export function giftPoints(gift: Gift, persona: string): { points: number; liked
  * 09-30: 안 온 날만큼 **먼저 깎고**(decayFor), 선물이면 **얹는다**. 이유는 전부 reasons 에 남긴다 —
  * 화면이 "3일 만이에요 −5" 를 보여 줘야 사람이 왜 줄었는지 안다. 말없이 줄면 고장으로 읽힌다.
  */
-export function applyTurn(prev: BondState, today: string, userText: string, gift?: { name: string; points: number; liked: boolean } | null): BondGain {
+export function applyTurn(prev: BondState, today: string, userText: string, gift?: { name: string; points: number; liked: boolean } | null, t: T = KO): BondGain {
+  // 10-13: 이유 글은 화면 토스트에 그대로 뜬다 — 사람의 언어로(t). 기본은 한국어(시험·옛 호출 그대로).
   const reasons: string[] = [];
   let gained = 1;
   const 멀어짐 = prev.lastTalkedOn !== today ? decayFor(prev.lastTalkedOn, today) : { lost: 0, daysAway: 0 };
-  if (멀어짐.lost > 0) reasons.push(`${멀어짐.daysAway}일 만이에요 −${멀어짐.lost}`);
-  if (gift) reasons.push(`${gift.name} 선물${gift.liked ? "(좋아하는 거!)" : ""} +${gift.points}`);
+  if (멀어짐.lost > 0) reasons.push(t("{days}일 만이에요 −{lost}", { days: 멀어짐.daysAway, lost: 멀어짐.lost }));
+  if (gift) reasons.push(gift.liked ? t("{gift} 선물(좋아하는 거!) +{n}", { gift: t(gift.name), n: gift.points }) : t("{gift} 선물 +{n}", { gift: t(gift.name), n: gift.points }));
 
   const firstToday = prev.lastTalkedOn !== today;
   let streak = prev.streakDays;
 
   if (firstToday) {
     gained += 5;
-    reasons.push("오늘 첫 대화 +5");
+    reasons.push(t("오늘 첫 대화 +5"));
     streak = prev.lastTalkedOn === yesterdayOf(today) ? prev.streakDays + 1 : 1;
     if (streak >= 2) {
       const bonus = Math.min(streak, 7);
       gained += bonus;
-      reasons.push(`${streak}일 연속 +${bonus}`);
+      reasons.push(t("{n}일 연속 +{bonus}", { n: streak, bonus }));
     }
   }
 
   // 성의. 한 글자짜리 "ㅇㅇ" 로도 친밀도가 오르면 숫자가 아무 뜻이 없어진다.
   if (userText.trim().length >= 15) {
     gained += 1;
-    reasons.push("길게 말해 줌 +1");
+    reasons.push(t("길게 말해 줌 +1"));
   }
 
   if (gift) gained += gift.points;
@@ -167,9 +172,9 @@ export function applyTurn(prev: BondState, today: string, userText: string, gift
   const 남은 = Math.max(0, prev.points - 멀어짐.lost);
   const points = 남은 + gained;
   const stage = stageFor(points);
-  if (stage > prev.stage) reasons.push(`${stage}단계가 됐어요`);
+  if (stage > prev.stage) reasons.push(t("{n}단계가 됐어요", { n: stage }));
   // 내려간 것도 말한다. 하트가 말없이 한 칸 줄면 사람은 고장인 줄 안다.
-  if (stage < prev.stage) reasons.push(`${stage}단계로 멀어졌어요`);
+  if (stage < prev.stage) reasons.push(t("{n}단계로 멀어졌어요", { n: stage }));
 
   return { next: { points, stage, streakDays: streak, lastTalkedOn: today }, gained: points - prev.points, reasons };
 }

@@ -18,6 +18,8 @@ import FollowButton from "../FollowButton";
  * 그때 서버로 옮긴다 — 지금 옮기면 왕복만 늘고 느려진다([[felt-latency-is-first-token]]).
  */
 export type SearchItem = {
+  /** 찾을 때만 쓰는 다른 언어 이름(화면에 안 나간다). */
+  alt?: string;
   id: string;
   slug: string;
   name: string;
@@ -41,7 +43,7 @@ export default function SearchList({ items }: { items: SearchItem[] }) {
       return [...items].sort((a, b) => Number(a.following) - Number(b.following));
     }
     const k = 납작(q);
-    return items.filter((c) => 납작(`${c.name} ${c.tagline} ${c.greeting}`).includes(k));
+    return items.filter((c) => 납작(`${c.name} ${c.tagline} ${c.greeting} ${c.alt ?? ""}`).includes(k));
   }, [items, q, 찾는중]);
 
   return (

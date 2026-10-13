@@ -1,10 +1,11 @@
 import Link from "next/link";
-import { getT } from "@/lib/i18n/server";
+import { getLocale, getT } from "@/lib/i18n/server";
 import { DOT } from "@/lib/i18n/dict/dot";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import DotTabs from "../DotTabs";
 import { publicCharacters } from "@/lib/dot/load";
+import { localizeCharacter } from "@/lib/dot/i18n";
 import SearchList, { type SearchItem } from "./SearchList";
 
 /**
@@ -23,8 +24,9 @@ export const viewport = {
 };
 
 export default async function DotSearch() {
-  const t = await getT(DOT);
-  const characters = await publicCharacters();
+  const [t, locale] = await Promise.all([getT(DOT), getLocale()]);
+  const originals = await publicCharacters();
+  const characters = originals.map((c) => localizeCharacter(c, locale));
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   let follows = new Set<string>();
@@ -32,7 +34,7 @@ export default async function DotSearch() {
     const { data: f } = await createServiceClient().from("dot_follows").select("character_id").eq("user_id", user.id);
     follows = new Set(((f ?? []) as { character_id: string }[]).map((x) => x.character_id));
   }
-  const items: SearchItem[] = characters.map((c) => ({
+  const items: SearchItem[] = characters.map((c, i) => ({
     id: c.id,
     slug: c.slug,
     name: c.name,
@@ -40,6 +42,8 @@ export default async function DotSearch() {
     greeting: c.greeting ?? "",
     avatar: c.photos?.[0]?.url ?? c.faces?.neutral ?? c.sprites?.neutral ?? "",
     following: follows.has(c.id),
+    // 10-13: 옮긴 이름으로도, 한국어 원래 이름으로도 찾히게(한국어 이름을 아는 사람도 있다).
+    alt: locale === "ko" ? "" : [originals[i].name, originals[i].tagline].join(" "),
   }));
 
   return (

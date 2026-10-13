@@ -5,7 +5,7 @@ import type { Locale, T } from "@/lib/i18n/core";
 import DotTabs from "../DotTabs";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
-import { publicCharacters } from "@/lib/dot/load";
+import { charactersIn } from "@/lib/dot/load";
 
 /**
  * 목록 — **카톡 친구목록.**
@@ -28,7 +28,7 @@ export default async function DotList() {
   const supabase = await createClient();
   const [{ data: { user } }, characters] = await Promise.all([
     supabase.auth.getUser(),
-    publicCharacters(),
+    charactersIn(locale),
   ]);
   const db = createServiceClient();
 
