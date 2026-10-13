@@ -1,0 +1,50 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>알림 카드 미리보기</title>
+<!--
+  10-13: 두근도트 대화창은 로그인해야 보여서 자가 못 띄운다.
+  **언제 뜨는가**는 dot_알림물음_시험.mts 가 재고, **어떻게 보이는가**는 여기서 본다.
+  아래 CSS 는 DotChat.tsx 에서 **그대로 베껴 온 것**이다 — 다르면 이 미리보기가 거짓말이 된다.
+-->
+<style>
+  body { margin:0; background:#1b1430; font-family:system-ui,-apple-system,"Malgun Gothic",sans-serif; }
+  .phone { width:390px; margin:0 auto; min-height:300px; padding:12px 0;
+    background:linear-gradient(#2a2140,#1b1430); }
+  /* 앞뒤 말풍선 — 카드가 대화 흐름 안에서 어떻게 보이는지 보려고 */
+  .kk-row { display:flex; align-items:flex-end; gap:8px; margin:6px 10px; }
+  .kk-row.me { justify-content:flex-end; }
+  .kk-bubble { max-width:74%; padding:8px 12px; border-radius:14px; font-size:14px; line-height:1.5; }
+  .kk-bubble.them { background:#fff; color:#222; }
+  .kk-bubble.me { background:#ffd9e2; color:#222; }
+  .kk-face { width:40px; height:40px; border-radius:13px; background:#fff; flex:0 0 40px; }
+
+  /* ── 여기부터 DotChat.tsx 에서 그대로 ── */
+  .kk-ask { margin:14px 8px; padding:12px 14px; border-radius:12px; text-align:center;
+    background:rgba(255,255,255,.72); border:1px solid rgba(0,0,0,.08); }
+  .kk-ask-body { font-size:13px; line-height:1.6; color:#333; }
+  .kk-ask-btns { margin-top:10px; display:flex; gap:8px; justify-content:center; }
+  .kk-ask-btn { padding:8px 16px; border-radius:999px; border:0; font-size:13px; font-weight:600;
+    background:#ff6b8a; color:#fff; cursor:pointer; }
+  .kk-ask-later { padding:8px 14px; border-radius:999px; border:0; font-size:13px;
+    background:transparent; color:#888; cursor:pointer; }
+</style>
+<div class="phone">
+  <div class="kk-row"><div class="kk-face"></div><div class="kk-bubble them">오늘 뭐 했어요?</div></div>
+  <div class="kk-row me"><div class="kk-bubble me">학교 갔다 왔어</div></div>
+  <div class="kk-row"><div class="kk-face"></div><div class="kk-bubble them">고생했네요. 시험 공부는요?</div></div>
+  <div class="kk-row me"><div class="kk-bubble me">아직</div></div>
+
+  <div class="kk-ask">
+    <div class="kk-ask-body">
+      자주 이야기하고 싶다면 알림을 켜 두세요.<br>
+      <b>서하</b>가 <b>먼저</b> 말을 걸어요.
+    </div>
+    <div class="kk-ask-btns">
+      <button class="kk-ask-btn">알림 켜기</button>
+      <button class="kk-ask-later">나중에</button>
+    </div>
+  </div>
+
+  <div class="kk-row"><div class="kk-face"></div><div class="kk-bubble them">그래도 조금은 해야죠</div></div>
+</div>
