@@ -1,4 +1,5 @@
 "use client";
+// i18n-dict: rookery (t 는 AskClient 가 넘긴다)
 // i18n-ids: 예시 말
 import type { T } from "@/lib/i18n/core";
 /**

@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { SKUS, TRIAL_USD, toCredits } from "@/lib/billing/plans";
+import { getLocale, getT } from "@/lib/i18n/server";
+import { ROOKERY } from "@/lib/i18n/dict/rookery";
 
 /**
  * 정문 (100회차 09-13 다시 세움). 09-05 에는 "정문은 대화다" 로 여기서 /ask 로 바로 보냈다.
@@ -35,7 +37,8 @@ const STEPS: { title: string; body: string }[] = [
   { title: "Review", body: "The result appears in the preview panel with versions. Approve it, or request a fix and the AI revises it." },
 ];
 
-export default function Home() {
+export default async function Home() {
+  const [t, locale] = await Promise.all([getT(ROOKERY), getLocale()]);
   return (
     <div className="lp-root">
       <style>{CSS}</style>
@@ -46,8 +49,8 @@ export default function Home() {
           Rookery
         </span>
         <nav className="lp-nav">
-          <Link href="/pricing">요금</Link>
-          <Link href="/login">로그인</Link>
+          <Link href="/pricing">{t("요금")}</Link>
+          <Link href="/login">{t("로그인")}</Link>
         </nav>
       </header>
 
@@ -56,26 +59,26 @@ export default function Home() {
             패들은 09-15 에 우리를 거절했다. 지금 이 페이지를 볼 사람은 **사장님이 링크를 건넬 한국 학생**이다.
             영어 설명은 아래에 그대로 남긴다 — 다음 결제 대행사 심사도 이 주소를 열어 볼 테니까. */}
         <section className="lp-hero">
-          <h1>말로 시키면 끝난 파일로 돌려주는 AI.</h1>
+          <h1>{t("말로 시키면 끝난 파일로 돌려주는 AI.")}</h1>
           <p className="lp-lead">
-            발표용 60초 설명 영상, 출처 달린 자료 정리, 간단한 웹 도구. 대화창에 말하면 로키가 여러 AI를 시켜 만들고,
-            결과는 mp4·문서 같은 <b>진짜 파일</b>로 나와요. 이상한 곳을 말해 주면 그 부분만 다시 만들어요.
+            {t("발표용 60초 설명 영상, 출처 달린 자료 정리, 간단한 웹 도구. 대화창에 말하면 로키가 여러 AI를 시켜 만들고, 결과는 mp4·문서 같은 ")}<b>{t("진짜 파일")}</b>{t("로 나와요. 이상한 곳을 말해 주면 그 부분만 다시 만들어요.")}
           </p>
           <div className="lp-cta">
-            <Link href="/ask" className="lp-btn">그냥 써보기</Link>
-            <Link href="/pricing" className="lp-link">요금 보기</Link>
+            <Link href="/ask" className="lp-btn">{t("그냥 써보기")}</Link>
+            <Link href="/pricing" className="lp-link">{t("요금 보기")}</Link>
           </div>
-          <p className="lp-ko">가입은 이메일과 비밀번호만. <b>카드도, 결제 정보도 받지 않아요</b> — 지금은 무료 체험 크레딧으로만 써요.</p>
+          <p className="lp-ko">{t("가입은 이메일과 비밀번호만. ")}<b>{t("카드도, 결제 정보도 받지 않아요")}</b>{t(" — 지금은 무료 체험 크레딧으로만 써요.")}</p>
         </section>
 
-        <section className="lp-hero lp-hero-en">
+        {/* 10-14: 영어 사용자는 위 첫 칸이 이미 영어라 같은 말을 두 번 보지 않게 뺀다. 한국어·일본어는 심사용 영어 설명을 그대로 둔다. */}
+        {locale !== "en" && <section className="lp-hero lp-hero-en">
           <h2>An AI workspace that turns requests into finished digital work.</h2>
           <p className="lp-lead">
             Rookery is a software service (SaaS). You describe what you need, and AI models automatically produce research,
             documents, small web apps and short explainer videos. Everything is created by software and delivered digitally
             in your browser.
           </p>
-        </section>
+        </section>}
 
         <section className="lp-shots" aria-label="Screenshots">
           <figure>

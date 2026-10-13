@@ -1,4 +1,5 @@
 "use client";
+// i18n-dict: rookery (t 는 AskClient 가 넘긴다)
 // i18n-ids: 조용함 대화중 일하는중 전환 쓸기 점 하는일 분 큰얼굴칸 숨 큰이름 큰상태 결 모드띠 일인가 일 말 모드 얼굴칸 얼굴 큰얼굴 몇분
 import type { T } from "@/lib/i18n/core";
 /**

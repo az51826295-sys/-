@@ -1,4 +1,5 @@
 "use client";
+// i18n-dict: rookery (t 는 AskClient 가 넘긴다)
 // i18n-ids: 로키 좁은창 작은창 창 작게 창단추 막힘
 import type { T } from "@/lib/i18n/core";
 /**

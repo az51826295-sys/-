@@ -1,4 +1,5 @@
 "use client";
+// i18n-dict: rookery (t 는 AskClient 가 넘긴다)
 // i18n-ids: 꺼짐 켜는중 보는중 멈춤 화면띠 설명 잘못 눈 자리 무엇 높이비중
 import type { T } from "@/lib/i18n/core";
 /**
