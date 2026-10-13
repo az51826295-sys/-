@@ -1,3 +1,6 @@
+import { makeT } from "@/lib/i18n/core";
+import { ROOKERY } from "@/lib/i18n/dict/rookery";
+import { conversationLocale } from "@/lib/chat/conversationLocale";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { conversationOfAssignment } from "@/lib/execution/approval";
 import { releaseEmployee } from "@/lib/assignments/service";
@@ -47,10 +50,11 @@ export async function scheduleAutoRetry(
     // 42회차: 조용히 그만두면 사장님은 세 판이 돌았다는 것도, 멈췄다는 것도 모른다.
     const convoDone = await conversationOfAssignment(db, d.assignment_id as string);
     if (convoDone) {
+      const t = makeT(ROOKERY, await conversationLocale(db, convoDone));
       await db.from("conversation_messages").insert({
         conversation_id: convoDone,
         role: "assistant",
-        content: `스스로 ${MAX_AUTO_RETRIES}번 고쳐 봤는데 아직 떨어진 줄이 남았어요:\n${failedLines.map((f) => `- ${f}`).join("\n")}\n\n여기서 멈출게요. 어떻게 할지 말씀해 주세요.`,
+        content: t("스스로 {n}번 고쳐 봤는데 아직 떨어진 줄이 남았어요:\n{lines}\n\n여기서 멈출게요. 어떻게 할지 말씀해 주세요.", { n: MAX_AUTO_RETRIES, lines: failedLines.map((f) => `- ${f}`).join("\n") }),
         attachments: { autoRetryExhausted: MAX_AUTO_RETRIES },
       });
     }

@@ -62,5 +62,18 @@ export function makeT(dict: Dict, locale: Locale): T {
   return (ko, vars) => translate(dict, locale, ko, vars);
 }
 
+/**
+ * 10-14 글로 언어를 짐작한다 — 요청이 없는 자리(워커가 나중에 대화에 붙이는 말)에서 쓴다.
+ * 가나가 있으면 일본어, 한글이 있으면 한국어, 로마자만 있으면 영어. 아무것도 없으면 한국어(예전 그대로).
+ * 한자만 있는 글은 일본어·중국어를 못 가르니 한국어로 둔다(틀려도 예전과 같다).
+ */
+export function guessLocale(text: string | null | undefined): Locale {
+  const s = text ?? "";
+  if (/[\u3040-\u30ff]/.test(s)) return "ja";
+  if (/[가-힣]/.test(s)) return "ko";
+  if (/[A-Za-z]{2,}/.test(s)) return "en";
+  return "ko";
+}
+
 /** 모델에게 "이 언어로 말하라" 고 할 때 쓰는 이름. */
 export const LANGUAGE_FOR_MODEL: Record<Locale, string> = { ko: "한국어", en: "English", ja: "日本語" };

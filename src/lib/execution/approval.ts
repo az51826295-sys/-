@@ -1,3 +1,6 @@
+import { makeT } from "@/lib/i18n/core";
+import { ROOKERY } from "@/lib/i18n/dict/rookery";
+import { conversationLocale } from "@/lib/chat/conversationLocale";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 type Supabase = SupabaseClient;
@@ -48,12 +51,14 @@ export async function conversationOfAssignment(db: Supabase, assignmentId: strin
 export async function showPlan(db: Supabase, args: { assignmentId: string; who: string; card: ApprovalCard }): Promise<void> {
   const conversationId = await conversationOfAssignment(db, args.assignmentId);
   if (!conversationId) return;
+  // 10-14: 요청 없이 붙는 말이라 그 대화에서 사람이 쓴 언어로(conversationLocale).
+  const t = makeT(ROOKERY, await conversationLocale(db, conversationId));
   const content =
-    `**${args.who} · 이렇게 만들고 있어요**\n\n` +
+    t("**{who} · 이렇게 만들고 있어요**\n\n", { who: args.who }) +
     `**${args.card.title}**\n` +
     args.card.lines.map((l) => `- ${l}`).join("\n") +
     `\n\n${args.card.estimate}\n\n` +
-    `고칠 게 있으면 그냥 말씀하세요 — 만드는 중이어도 그다음에 바로 고쳐요.`;
+    t("고칠 게 있으면 그냥 말씀하세요 — 만드는 중이어도 그다음에 바로 고쳐요.");
   await db.from("conversation_messages").insert({
     conversation_id: conversationId,
     role: "assistant",
@@ -69,13 +74,14 @@ export async function askApproval(
 ): Promise<never> {
   const conversationId = await conversationOfAssignment(db, args.assignmentId);
   if (conversationId) {
+    const t = makeT(ROOKERY, await conversationLocale(db, conversationId));
     const content =
-      `**${args.who} · 이렇게 만들게요** — 맞는지 봐 주세요.\n\n` +
+      t("**{who} · 이렇게 만들게요** — 맞는지 봐 주세요.\n\n", { who: args.who }) +
       `**${args.card.title}**\n` +
       args.card.lines.map((l) => `- ${l}`).join("\n") +
       `\n\n${args.card.estimate}\n\n` +
-      `맞으면 **'시작'** 이라고 해 주세요. 고칠 게 있으면 그냥 말해 주시면 계획을 다시 써요.` +
-      (args.round > 0 ? ` (다시 쓴 계획 ${args.round}번째 — 한 번 더 고치면 그대로 시작해요)` : "");
+      t("맞으면 **'시작'** 이라고 해 주세요. 고칠 게 있으면 그냥 말해 주시면 계획을 다시 써요.") +
+      (args.round > 0 ? t(" (다시 쓴 계획 {n}번째 — 한 번 더 고치면 그대로 시작해요)", { n: args.round }) : "");
     await db.from("conversation_messages").insert({
       conversation_id: conversationId,
       role: "assistant",

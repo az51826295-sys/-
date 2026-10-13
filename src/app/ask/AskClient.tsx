@@ -681,7 +681,7 @@ export default function AskClient({
                     }}
                     className={
                       "rounded-full border-2 px-3 py-1 text-xs disabled:opacity-40 " +
-                      (b.label === "시작"
+                      (b.label === "시작" || b.label === tr("시작")
                         ? "border-[#E0703A] bg-[#E0703A] text-[var(--rk-paper)]"
                         : "border-[var(--rk-ink)] bg-[var(--rk-paper)] text-[var(--rk-ink)] hover:bg-[var(--rk-100)]")
                     }

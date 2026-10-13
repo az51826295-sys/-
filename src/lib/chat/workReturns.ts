@@ -1,5 +1,9 @@
 import type { Supabase } from "@/lib/execution/shared";
 import { releaseEmployee } from "@/lib/assignments/service";
+import { makeT, type Locale, type T } from "@/lib/i18n/core";
+import { ROOKERY } from "@/lib/i18n/dict/rookery";
+import { replyLanguageNote } from "@/lib/i18n/model";
+import { conversationLocale } from "@/lib/chat/conversationLocale";
 
 /**
  * 시킨 일이 끝나면 **그 대화로** 돌아온다.
@@ -89,7 +93,7 @@ const STEP_LABEL: Record<string, string> = {
  * 그래서 묻는 것을 바꿨다: **주문에 없는데 로키가 자기가 정해 버린 것 하나.** 결과물마다 다르고
  * 본문에 이미 적혀 있으므로 싼 자리에서 한 줄 뽑는다(결과물당 ≈$0.005).
  */
-async function askOneThing(title: string, body: string): Promise<{ q: string; yes: string; no: string } | null> {
+async function askOneThing(title: string, body: string, locale: Locale): Promise<{ q: string; yes: string; no: string } | null> {
   try {
     const { defaultProviders } = await import("@/lib/execution/shared");
     const { z } = await import("zod");
@@ -102,7 +106,7 @@ async function askOneThing(title: string, body: string): Promise<{ q: string; ye
         "  좋은 예: 투구 높이를 17cm 로 잡았어요. 게임에서 이 크기가 맞나요?",
         "  나쁜 예: 투구가 어떠세요?",
         "- 물을 것이 정말 없으면 q 를 빈 문자열로 둔다. 억지로 만들지 마라.",
-      ].join(String.fromCharCode(10)),
+      ].join(String.fromCharCode(10)) + replyLanguageNote(locale),
       input: `제목: ${title}\n\n결과물:\n${body.slice(0, 2500)}`,
       schema: z.object({
         q: z.string().describe("한 문장. 네가 정한 값을 대고 묻는다. 물을 것이 없으면 빈 문자열."),
@@ -123,7 +127,9 @@ export async function collectUnityChecks(
   db: Supabase,
   conversationId: string,
   since: string,
+  locale?: Locale,
 ): Promise<ReturnedTurn[]> {
+  const t = makeT(ROOKERY, locale ?? await conversationLocale(db, conversationId));
   const { data } = await db
     .from("conversation_messages")
     .select("content, attachments, created_at")
@@ -138,9 +144,10 @@ export async function collectUnityChecks(
     // 계획 확인 턴은 눌러서 답한다. 35회차에 되묻기를 만들어 놓고 '시작' 을 타자로 쳐야 했다.
     actions: m.attachments?.approval
       ? [
-          { label: "시작", text: "시작" },
-          { label: "고칠게요", text: "" },
-          { label: "취소", text: "취소" },
+          // 보내는 말("시작"·"취소")은 사람 언어로 — 되묻기 판정(approval.ts YES/NO)이 영어·일본어도 받는다.
+          { label: t("시작"), text: t("시작") },
+          { label: t("고칠게요"), text: "" },
+          { label: t("취소"), text: t("취소") },
         ]
       : undefined,
     files: m.attachments?.files ?? undefined,
@@ -148,12 +155,12 @@ export async function collectUnityChecks(
 }
 
 /** 붙일 글. 사람 이름을 앞에 둔다 — 누가 한 일인지가 첫 줄이다. */
-function finishedText(name: string, title: string, body: string): string {
-  return `**${name} · 작업 완료 · ${title}**\n\n${body.trim()}`;
+function finishedText(t: T, name: string, title: string, body: string): string {
+  return t("**{name} · 작업 완료 · {title}**\n\n", { name, title }) + body.trim();
 }
 
-function failedText(name: string, title: string, why: string | null): string {
-  return `**${name} · 작업 실패 · ${title}**\n\n${why?.trim() || "이유가 남지 않았어요. 다시 시켜 주세요."}`;
+function failedText(t: T, name: string, title: string, why: string | null): string {
+  return t("**{name} · 작업 실패 · {title}**\n\n", { name, title }) + (why?.trim() || t("이유가 남지 않았어요. 다시 시켜 주세요."));
 }
 
 // 끝난 것으로 치는 상태. `submitted` 는 산출물이 나온 것이고, 승인은 사람이
@@ -164,6 +171,8 @@ const DEAD = new Set(["failed", "cancelled"]);
 export async function collectWorkReturns(
   db: Supabase,
   conversationId: string,
+  /** 10-14 화면이 부를 땐 요청의 언어, 워커가 부를 땐 없음 → 대화에서 사람이 쓴 언어로 짐작. */
+  locale?: Locale,
 ): Promise<WorkReturns> {
   // 6초마다 도는 조회다. **필요한 두 칸만** 꺼낸다 — attachments 전체를 끌면 파일
   // 본문·그림이 딸려와 대화 하나에 수 MB 가 매 폴링마다 오갔고, 09-06 19:30 그 IO 로
@@ -181,6 +190,8 @@ export async function collectWorkReturns(
     .filter((x): x is string => !!x && !returned.has(x));
 
   if (waiting.length === 0) return { pending: 0, posted: [], steps: [] };
+  const lang: Locale = locale ?? await conversationLocale(db, conversationId);
+  const t = makeT(ROOKERY, lang);
 
   const { data: assignments } = await db
     .from("assignments")
@@ -208,7 +219,7 @@ export async function collectWorkReturns(
   let pending = 0;
 
   for (const a of (assignments ?? []) as unknown as A[]) {
-    const name = a.company_employees?.employees?.name ?? "담당자";
+    const name = a.company_employees?.employees?.name ?? t("담당자");
     let text: string | null = null;
     let deliverableId: string | null = null;
     // Dev 가 만든 파일. 본문에도 코드 블록으로 있지만, 사람이 쓰는 것은 파일이다
@@ -232,12 +243,12 @@ export async function collectWorkReturns(
       const startedAgo = d ? Date.now() - new Date((d as { created_at?: string }).created_at ?? 0).getTime() : 0;
       if (d && pendingFiles && startedAgo < 10 * 60_000) {
         pending += 1;
-        steps.push({ assignmentId: a.id, who: name, step: "파일을 저장하는 중" });
+        steps.push({ assignmentId: a.id, who: name, step: t("파일을 저장하는 중") });
         continue;
       }
       if (d) {
         deliverableId = d.id as string;
-        text = finishedText(name, (d.title as string) || a.title, d.content_markdown as string);
+        text = finishedText(t, name, (d.title as string) || a.title, d.content_markdown as string);
         // 45회차: 결과에 대고 바로 시킬 수 있는 것. 사장님: "예시 버튼은 편의가 아니다" — 편의는 눈앞의 것에 대고 누르는 것이다.
         const dtype = ((d as { deliverable_type?: string }).deliverable_type) ?? "";
         const dverdict = ((d.content_json as { verdict?: { verdict?: string } } | null)?.verdict?.verdict) ?? "";
@@ -261,57 +272,55 @@ export async function collectWorkReturns(
               // 남은 것은 **이 결과물에서 지우고** 다음 판이 이어받게 넘긴다 — 안 지우면 같은 조각이 계속 나간다.
               // 이 결과물에서는 지운다 — 나머지는 방금 만든 업무가 들고 간다(사슬은 거기서 이어진다).
               await db.from("deliverables").update({ content_json: { ...(d.content_json as object), pendingPieces: null } }).eq("id", deliverableId);
-              text += `
-
-다음 조각을 시작했어요: **${next.주문.slice(0, 40)}**${rest.length ? ` (뒤에 ${rest.length}개 더)` : ""}`;
+              text += "\n\n" + t("다음 조각을 시작했어요: **{what}**", { what: next.주문.slice(0, 40) }) + (rest.length ? t(" (뒤에 {n}개 더)", { n: rest.length }) : "");
             } catch (e) { console.warn("[workReturns] 다음 조각 못 냄:", e instanceof Error ? e.message : e); }
           }
         }
 
-        const ask = await askOneThing((d.title as string) || a.title, (d.content_markdown as string) ?? "");
+        const ask = await askOneThing((d.title as string) || a.title, (d.content_markdown as string) ?? "", lang);
         if (ask) {
           text += `\n\n---\n\n${ask.q}`;
-          actions.push({ label: "그대로 좋아요", text: ask.yes });
-          actions.push({ label: "아니에요", text: ask.no });
+          actions.push({ label: t("그대로 좋아요"), text: ask.yes });
+          actions.push({ label: t("아니에요"), text: ask.no });
         }
-        if (dtype === "mesh_assets" && dverdict === "DRAFT") actions.push({ label: "고화질로 만들기", text: "고화질로 만들어 줘" });
-        if (dtype === "analysis" || dtype === "market_research_report") actions.push({ label: "이걸로 영상 만들기", text: "이걸로 60초 영상 만들어 줘" });
+        if (dtype === "mesh_assets" && dverdict === "DRAFT") actions.push({ label: t("고화질로 만들기"), text: t("고화질로 만들어 줘") });
+        if (dtype === "analysis" || dtype === "market_research_report") actions.push({ label: t("이걸로 영상 만들기"), text: t("이걸로 60초 영상 만들어 줘") });
         // 46회차(사장님 지시): 게임은 단계로 간다 — 프로토타입 → 맵 → 캐릭터 → 다듬기.
         // 판이 붙을 때마다 **다음 단계를 묻고**, 사장님이 눌러야 다음으로 간다. 체험은 유니티에서 Play.
         if (dtype === "app_build") {
           const stage = ((d.content_json as { stage?: string } | null)?.stage) ?? "prototype";
           const NEXT: Record<string, { ask: string; buttons: { label: string; text: string }[] }> = {
             prototype: {
-              ask: "유니티에서 Play 로 한 번 해 보세요. 이대로 가도 될까요?",
+              ask: t("유니티에서 Play 로 한 번 해 보세요. 이대로 가도 될까요?"),
               buttons: [
-                { label: "맵 구성하기", text: "이 프로토타입으로 확정. 이제 맵을 구성해 줘 — 지형·구역·동선." },
-                { label: "캐릭터 넣기", text: "이 프로토타입으로 확정. 캐릭터를 넣어 줘." },
+                { label: t("맵 구성하기"), text: t("이 프로토타입으로 확정. 이제 맵을 구성해 줘 — 지형·구역·동선.") },
+                { label: t("캐릭터 넣기"), text: t("이 프로토타입으로 확정. 캐릭터를 넣어 줘.") },
               ],
             },
             map: {
-              ask: "맵을 둘러보세요. 이대로 확정할까요?",
+              ask: t("맵을 둘러보세요. 이대로 확정할까요?"),
               buttons: [
-                { label: "캐릭터 넣기", text: "맵 확정. 캐릭터를 넣어 줘." },
-                { label: "맵 더 다듬기", text: "" },
+                { label: t("캐릭터 넣기"), text: t("맵 확정. 캐릭터를 넣어 줘.") },
+                { label: t("맵 더 다듬기"), text: "" },
               ],
             },
             character: {
-              ask: "캐릭터를 움직여 보세요. 다음은 뭘 할까요?",
+              ask: t("캐릭터를 움직여 보세요. 다음은 뭘 할까요?"),
               buttons: [
-                { label: "다듬기(소리·연출)", text: "캐릭터 확정. 이제 다듬어 줘 — 소리·연출·손맛." },
-                { label: "맵 더 손보기", text: "" },
+                { label: t("다듬기(소리·연출)"), text: t("캐릭터 확정. 이제 다듬어 줘 — 소리·연출·손맛.") },
+                { label: t("맵 더 손보기"), text: "" },
               ],
             },
             polish: {
-              ask: "해 보시고 더 손댈 곳을 말씀해 주세요.",
-              buttons: [{ label: "이겼다·졌다 넣기", text: "이기고 지는 조건을 넣어 줘." }],
+              ask: t("해 보시고 더 손댈 곳을 말씀해 주세요."),
+              buttons: [{ label: t("이겼다·졌다 넣기"), text: t("이기고 지는 조건을 넣어 줘.") }],
             },
           };
           const step = NEXT[stage] ?? NEXT.prototype;
           text += `\n\n---\n\n**${step.ask}**`;
           actions.push(...step.buttons);
         }
-        actions.push({ label: "고칠 게 있어요", text: "" });
+        actions.push({ label: t("고칠 게 있어요"), text: "" });
         const made = (d.content_json as { files?: unknown } | null)?.files;
         if (Array.isArray(made)) {
           files = made
@@ -334,11 +343,11 @@ export async function collectWorkReturns(
       } else {
         // 끝났다는데 산출물이 없다. 그것도 말한다 — 없는 것을 있는 것처럼
         // 기다리게 두면 사람은 영영 기다린다.
-        text = failedText(name, a.title, "끝났다고 적혀 있는데 결과물이 없어요.");
+        text = failedText(t, name, a.title, t("끝났다고 적혀 있는데 결과물이 없어요."));
       }
     } else if (a.status === "cancelled") {
       // 사장님이 접은 계획(되묻기에서 '취소'). 실패가 아니다.
-      text = `**${name} · 접었어요 · ${a.title}**\n\n다시 시키실 때 말씀해 주세요.`;
+      text = t("**{name} · 접었어요 · {title}**\n\n다시 시키실 때 말씀해 주세요.", { name, title: a.title });
     } else if (DEAD.has(a.status)) {
       // failure_reason 은 코드(UNKNOWN_ERROR)뿐이라 사람이 읽을 게 없다. 실행 행의
       // 오류 문장을 같이 보여 준다 — 09-05 에 "UNKNOWN_ERROR" 만 보고 아무도 무엇이
@@ -351,12 +360,12 @@ export async function collectWorkReturns(
         .limit(1)
         .maybeSingle();
       const detail = (ex?.error_message as string | null)?.slice(0, 300);
-      text = failedText(name, a.title, detail ? `${a.failure_reason ?? ""} — ${detail}` : a.failure_reason);
+      text = failedText(t, name, a.title, detail ? `${a.failure_reason ?? ""} — ${detail}` : a.failure_reason);
     }
 
     if (text === null) {
       pending += 1;
-      steps.push({ assignmentId: a.id, who: name, startedAt: (a as { created_at?: string }).created_at, ...(await stepOf(db, a.id, a.status, (a.role_input_json as { awaitingApproval?: boolean } | null)?.awaitingApproval === true)) });
+      steps.push({ assignmentId: a.id, who: name, startedAt: (a as { created_at?: string }).created_at, ...(await stepOf(t, db, a.id, a.status, (a.role_input_json as { awaitingApproval?: boolean } | null)?.awaitingApproval === true)) });
       // **죽은 실행을 죽었다고 적는다.** 서버가 배포로 재시작되면 그 안에서 돌던
       // 실행은 그냥 사라진다 — 행은 'running' 인 채로(09-05 17:57 에 실제로 그랬다:
       // Dev 의 유니티 판이 18분째 '생성 중'). 그러면 사람은 영영 기다리고 그 직원은
@@ -414,7 +423,7 @@ export async function collectWorkReturns(
       // 223회차: 붙은 그 순간 주인 폰으로 한 줄. 실패해도 붙이기는 이미 끝났다 — 알림은 덤이다.
       try {
         const { pushToCompanyOwner } = await import("@/lib/push/send");
-        await pushToCompanyOwner(db, a.company_id as string, { title: a.status === "failed" ? "로키 — 못 끝냈어요" : "로키 — 끝났어요", body: String(a.title ?? "").slice(0, 80), url: `/ask?c=${conversationId}`, tag: `work-${a.id}` });
+        await pushToCompanyOwner(db, a.company_id as string, { title: a.status === "failed" ? t("로키 — 못 끝냈어요") : t("로키 — 끝났어요"), body: String(a.title ?? "").slice(0, 80), url: `/ask?c=${conversationId}`, tag: `work-${a.id}` });
       } catch (e) { console.warn("[push] 알림 실패", e instanceof Error ? e.message : e); }
       // 대화에 붙은 것이 곧 승인이다(끝난 것) / 접는 것이다(실패). 그래야 그
       // 사람이 다음 일을 받는다. 기다리던 일이 있으면 여기서 시작된다.
@@ -425,7 +434,7 @@ export async function collectWorkReturns(
   return { pending, posted, steps };
 }
 
-async function stepOf(db: Supabase, assignmentId: string, status: string, awaitingApproval = false): Promise<{ step: string; plan?: PlanCard }> {
+async function stepOf(t: T, db: Supabase, assignmentId: string, status: string, awaitingApproval = false): Promise<{ step: string; plan?: PlanCard }> {
   const { data } = await db
     .from("work_executions")
     .select("current_step, status, steps:metrics_json->steps, decision:metrics_json->decision, loop:metrics_json->loop")
@@ -437,11 +446,11 @@ async function stepOf(db: Supabase, assignmentId: string, status: string, awaiti
   const row = data as { steps?: unknown; decision?: HeadDecision | null; loop?: { round: number; met: number; total: number } | null } | null;
   // 177회차: waiting 은 "사람 답 대기" 와 "차례 대기" 둘 다다. 표시가 있는 것만 "확인을 기다리는 중" — 차례를 기다리는 일에까지
   // "'시작' 이라고 하면 시작해요" 라고 적혀 사장님이 '시작' 을 세 번 쳤다(09-18 13:01).
-  if (status === "waiting") return { step: awaitingApproval ? STEP_LABEL.waiting : STEP_LABEL.queued, plan: withHead(planCardOf(row?.steps), row?.decision) };
+  if (status === "waiting") return { step: t(awaitingApproval ? STEP_LABEL.waiting : STEP_LABEL.queued), plan: withHead(planCardOf(row?.steps), row?.decision) };
   const raw = (data?.current_step as string | null) ?? (data ? "running" : "queued");
   // 179회차: 돌려 보며 고치는 고리는 몇 바퀴째인지·확인 목록이 몇 개 맞는지를 보인다.
-  if (raw === "looping") { const l = row?.loop; return { step: l ? `실제로 돌려 보며 고치는 중 · ${l.round}바퀴째 · 확인 목록 ${l.met}/${l.total}` : "실제로 돌려 보며 고치는 중 · 1바퀴째", plan: withHead(planCardOf(row?.steps), row?.decision) }; }
-  return { step: STEP_LABEL[raw] ?? raw, plan: withHead(planCardOf(row?.steps), row?.decision) };
+  if (raw === "looping") { const l = row?.loop; return { step: l ? t("실제로 돌려 보며 고치는 중 · {round}바퀴째 · 확인 목록 {met}/{total}", { round: l.round, met: l.met, total: l.total }) : t("실제로 돌려 보며 고치는 중 · 1바퀴째"), plan: withHead(planCardOf(row?.steps), row?.decision) }; }
+  return { step: STEP_LABEL[raw] ? t(STEP_LABEL[raw]) : raw, plan: withHead(planCardOf(row?.steps), row?.decision) };
 }
 
 type HeadDecision = { title?: string; kind?: string; showToPerson?: string; estimate?: string; machine?: string; setup?: string; size?: string; materials?: string; /** 184회차: 왜 이 AI인가(모델 이름 없이). */ whyAi?: string; /** 189회차: 어디에 짓나와 이유. */ engine?: string; engineWhy?: string };

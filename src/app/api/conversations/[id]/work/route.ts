@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { collectUnityChecks, collectWorkReturns } from "@/lib/chat/workReturns";
+import { localeFromRequest } from "@/lib/i18n/server";
 
 /**
  * 이 대화에서 시킨 일 중 끝난 것을 대화에 붙이고, 아직 안 끝난 것의 수를 준다.
@@ -28,8 +29,9 @@ export async function GET(
   if (!owned) return NextResponse.json({ error: "Not found." }, { status: 404 });
 
   const since = new URL(request.url).searchParams.get("since");
-  const returns = await collectWorkReturns(supabase, id);
+  const locale = localeFromRequest(request);
+  const returns = await collectWorkReturns(supabase, id, locale);
   // 유니티 창이 그 사이에 붙인 결과(사진 포함)도 같이. since 가 없으면 안 본다.
-  const checks = since ? await collectUnityChecks(supabase, id, since) : [];
+  const checks = since ? await collectUnityChecks(supabase, id, since, locale) : [];
   return NextResponse.json({ ...returns, posted: [...returns.posted, ...checks] });
 }
