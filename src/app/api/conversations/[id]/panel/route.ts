@@ -83,7 +83,7 @@ export async function GET(
     if (paths.some((f) => typeof f.path === "string" && /\.html?$/i.test(f.path) && typeof f.contents === "string")) play = `/api/deliverables/${current.deliverableId}/play/`;
   }
   // 157회차: 딱지를 뗐다 — 통과/실패가 아니라 **맞음/어긋남/못 잼**. 잰 값이지 판정이 아니다(판정은 심판자와 사장님).
-  const RESULT: Record<string, string> = { Passed: "맞음", Failed: "어긋남", Inconclusive: "못 잼" };
+  const RESULT: Record<string, string> = { Passed: "맞음", Failed: "어긋남", Inconclusive: "못 잼" }; // i18n-skip (화면이 비교하는 값·운영 메모)
 
   const { data: company } = await supabase.from("companies").select("id").eq("owner_id", user.id).maybeSingle();
   // 100회차: 충전식 회사에게는 달러·Meshy 잔액(우리 내부 거래처 잔고) 대신 자기 크레딧을 보여 준다.
@@ -157,6 +157,6 @@ export async function GET(
           review,
         }
       : null,
-    spend: { monthUsd: Math.round(monthUsd * 100) / 100, limitUsd: limit?.usd ?? null, limitDays: limit?.days ?? null, meshyCredits, credits: prepaid ? credits : null, note: "글 모델 + 그림 + Meshy(09-07 부터). 공표 단가 기준, 청구서와 대조 전" },
+    spend: { monthUsd: Math.round(monthUsd * 100) / 100, limitUsd: limit?.usd ?? null, limitDays: limit?.days ?? null, meshyCredits, credits: prepaid ? credits : null, note: "글 모델 + 그림 + Meshy(09-07 부터). 공표 단가 기준, 청구서와 대조 전" }, // i18n-skip (화면이 비교하는 값·운영 메모)
   });
 }

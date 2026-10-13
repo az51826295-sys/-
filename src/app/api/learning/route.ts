@@ -45,17 +45,18 @@ export async function GET(request: Request) {
   const { data: g } = await svc.from("genesis_runs").select("run_date, status, result").order("run_date", { ascending: false }).limit(7);
   const runs = ((g ?? []) as { run_date: string; status: string; result: Record<string, { evolution?: Record<string, unknown>; rules?: Record<string, unknown> }> & { video?: { ok: boolean; error?: string } } }[]).map((r) => {
     const mine = r.result?.[co.id as string];
-    const video = r.result?.video ? (r.result.video.ok ? "정상" : `고장${r.result.video.error ? ` (${r.result.video.error.slice(0, 80)})` : ""}`) : null;
+    // "정상" 은 화면이 비교하는 값이라 그대로 두고(화면이 옮긴다), 고장 문구만 옮긴다.
+    const video = r.result?.video ? (r.result.video.ok ? "정상" : t("고장") + (r.result.video.error ? ` (${r.result.video.error.slice(0, 80)})` : "")) : null; // i18n-skip
     const rl = mine?.rules as { skipped?: string; adopted?: number; tried?: { title: string; adopt: boolean }[]; rechecked?: { title: string; keep: boolean }[] } | undefined;
     const ev = mine?.evolution as { adopted?: boolean; reason?: string } | undefined;
     const rulersRaw = (mine as { rulers?: { check: string; kind: string }[] } | undefined)?.rulers;
     const rulers = Array.isArray(rulersRaw) && rulersRaw.length
-      ? `${rulersRaw.length}개 — ${rulersRaw.slice(0, 2).map((r) => `${r.check}(${r.kind})`).join(", ")}`
+      ? t("{n}개 — {list}", { n: rulersRaw.length, list: rulersRaw.slice(0, 2).map((r) => `${r.check}(${r.kind})`).join(", ") })
       : null;
     return {
       date: r.run_date, status: r.status,
-      rules: !rl ? "안 돌았어요" : rl.skipped ? rl.skipped : `시험 ${rl.tried?.length ?? 0}개 · 채택 ${rl.adopted ?? 0}개${rl.rechecked?.length ? ` · 다시 잰 것 ${rl.rechecked.length}개(${rl.rechecked.filter((x) => !x.keep).length}개 내림)` : ""}`,
-      prediction: !ev ? "안 돌았어요" : ev.adopted ? "예측 방식이 바뀌었어요" : (ev.reason ?? ""),
+      rules: !rl ? t("안 돌았어요") : rl.skipped ? rl.skipped : t("시험 {n}개 · 채택 {a}개", { n: rl.tried?.length ?? 0, a: rl.adopted ?? 0 }) + (rl.rechecked?.length ? t(" · 다시 잰 것 {n}개({d}개 내림)", { n: rl.rechecked.length, d: rl.rechecked.filter((x) => !x.keep).length }) : ""),
+      prediction: !ev ? t("안 돌았어요") : ev.adopted ? t("예측 방식이 바뀌었어요") : (ev.reason ?? ""),
       video,
       rulers,
     };
@@ -81,7 +82,7 @@ export async function POST(request: Request) {
   if (error) return Response.json({ error: error.message }, { status: 500 });
   if (row.learning_candidate_id) {
     const { data: cand } = await supabase.from("learning_candidates").select("manager_note").eq("id", row.learning_candidate_id).maybeSingle();
-    await supabase.from("learning_candidates").update({ status: "rejected", manager_note: `${cand?.manager_note ?? ""}\n사장님이 껐어요`.trim(), decided_at: new Date().toISOString() }).eq("id", row.learning_candidate_id);
+    await supabase.from("learning_candidates").update({ status: "rejected", manager_note: `${cand?.manager_note ?? ""}\n사장님이 껐어요`.trim(), decided_at: new Date().toISOString() }).eq("id", row.learning_candidate_id); // i18n-skip (내부 기록)
   }
   return Response.json({ ok: true });
 }

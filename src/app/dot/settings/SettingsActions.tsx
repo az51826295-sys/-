@@ -18,7 +18,7 @@ export default function SettingsActions() {
   }
   return (
     <>
-      <form action="/api/auth/signout" method="post"><input type="hidden" name="next" value="/login" /><button type="submit" className="st-row">로그아웃<small>대화와 친밀도는 계정에 남아요</small></button></form>
+      <form action="/api/auth/signout" method="post"><input type="hidden" name="next" value="/login" /><button type="submit" className="st-row">{t("로그아웃")}<small>{t("대화와 친밀도는 계정에 남아요")}</small></button></form>
       <button type="button" className="st-row danger" onClick={deleteAccount}>{t("계정 삭제")}<small>{t("되돌릴 수 없어요")}</small></button>
       {toast && <div className="st-row st-dim" role="status">{toast}</div>}
     </>

@@ -354,4 +354,8 @@ export const DOT: Dict = {
   "시무룩": { en: "Down", ja: "しょんぼり" },
   "툴툴": { en: "Grumpy", ja: "ぷんぷん" },
   "깜짝": { en: "Surprised", ja: "びっくり" },
+  // 10-14 검사기가 새로 찾은 것
+  "취소": { en: "Cancel", ja: "キャンセル" },
+  "로그아웃": { en: "Log out", ja: "ログアウト" },
+  "대화와 친밀도는 계정에 남아요": { en: "Your chats and closeness stay with your account", ja: "会話と親密度はアカウントに残ります" },
 };

@@ -417,4 +417,13 @@ export const ROOKERY: Dict = {
   "로키 — 끝났어요": { en: "Rookery — done", ja: "Rookery — 完了しました" },
   "실제로 돌려 보며 고치는 중 · {round}바퀴째 · 확인 목록 {met}/{total}": { en: "Running and fixing it · round {round} · checklist {met}/{total}", ja: "実際に動かしながら直しています · {round}周目 · 確認リスト {met}/{total}" },
   "실제로 돌려 보며 고치는 중 · 1바퀴째": { en: "Running and fixing it · round 1", ja: "実際に動かしながら直しています · 1周目" },
+  // 로키 배운 것 서버·복원
+  "정상": { en: "OK", ja: "正常" },
+  "고장": { en: "Broken", ja: "故障" },
+  "{n}개 — {list}": { en: "{n} — {list}", ja: "{n}個 — {list}" },
+  "안 돌았어요": { en: "Didn't run", ja: "実行されませんでした" },
+  "시험 {n}개 · 채택 {a}개": { en: "{n} trials · {a} adopted", ja: "試験 {n}個 · 採用 {a}個" },
+  " · 다시 잰 것 {n}개({d}개 내림)": { en: " · {n} re-measured ({d} dropped)", ja: " · 測り直し {n}個（{d}個取り下げ）" },
+  "예측 방식이 바뀌었어요": { en: "Prediction method changed", ja: "予測方式が変わりました" },
+  "**v{n} 으로 복원했어요 · {title}**\n\n다음 수정은 이 버전 위에서 해요. 유니티도 이 버전을 받아요.": { en: "**Restored v{n} · {title}**\n\nThe next change will build on this version. Unity gets this version too.", ja: "**v{n}に戻しました · {title}**\n\n次の修正はこのバージョンの上で行います。Unityもこのバージョンを受け取ります。" },
 };

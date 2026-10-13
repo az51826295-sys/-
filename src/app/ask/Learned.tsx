@@ -122,7 +122,7 @@ export default function Learned() {
                         <span className="font-bold text-[var(--rk-ink)]">{r.date.slice(5).replace("-", ".")}</span>
                         <span className="ml-1.5">{t("규칙: {v}", { v: r.rules })}</span>
                         <span className="ml-1.5">{t("· 예측: {v}", { v: r.prediction })}</span>
-                        {r.video && <span className={r.video === "정상" ? "ml-1.5" : "ml-1.5 font-bold text-[#E0703A]"}>{t("· 영상 배관: {v}", { v: r.video })}</span>}
+                        {r.video && <span className={r.video === "정상" ? "ml-1.5" : "ml-1.5 font-bold text-[#E0703A]"}>{t("· 영상 배관: {v}", { v: t(r.video) })}</span>}
                         {r.rulers && <span className="ml-1.5">{t("· 수상한 검사: {v}", { v: r.rulers })}</span>}
                       </li>
                     ))}

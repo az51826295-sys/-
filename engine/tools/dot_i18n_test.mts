@@ -2,7 +2,7 @@
  * 두근도트 다국어 시험 (10-13). 모델·DB 없음.
  * 언어 고르기, 캐릭터·게시물 덮어쓰기(칸이 없거나 비면 한국어 그대로), 캐릭터에게 주는 언어 지시.
  */
-import { pickLocale, makeT } from "../../src/lib/i18n/core";
+import { pickLocale, makeT, guessLocale } from "../../src/lib/i18n/core";
 import { localizeCharacter, nameIn, captionIn } from "../../src/lib/dot/i18n";
 import { languageRule } from "../../src/lib/dot/turn";
 import { applyTurn } from "../../src/lib/dot/bond";
@@ -20,6 +20,12 @@ ok("q 가 높은 쪽", pickLocale("en;q=0.5,ja;q=0.9", null) === "ja");
 ok("모르는 언어(스페인어)면 영어", pickLocale("es-ES,es;q=0.9", null) === "en");
 ok("이상한 쿠키는 무시", pickLocale("ko", "fr") === "ko");
 ok("아무것도 없으면 영어", pickLocale(null, null) === "en");
+
+// 글로 언어 짐작(요청 없이 나중에 붙는 로키 말)
+ok("가나 → 일본어", guessLocale("ゲームを作って") === "ja" && guessLocale("これ、OK?") === "ja");
+ok("한글 → 한국어", guessLocale("게임 만들어 줘") === "ko" && guessLocale("make it 빨갛게") === "ko");
+ok("로마자 → 영어", guessLocale("make a game please") === "en");
+ok("빈 글·숫자·한자만 → 한국어(예전 그대로)", guessLocale("") === "ko" && guessLocale("123 !!") === "ko" && guessLocale("漢字") === "ko");
 
 // 캐릭터 덮어쓰기
 const yuna = { name: "유나", tagline: "카페 알바생", greeting: "안녕!", chips: ["뭐 해?"], photos: [{ url: "a.png", caption: "카페" }, { url: "b.png", caption: "바다" }],

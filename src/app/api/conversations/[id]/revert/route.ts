@@ -58,9 +58,7 @@ export async function POST(
   const { error } = await supabase.from("conversation_messages").insert({
     conversation_id: id,
     role: "assistant",
-    content: `**v${target.n} 으로 복원했어요 · ${d?.title ?? ""}**
-
-다음 수정은 이 버전 위에서 해요. 유니티도 이 버전을 받아요.`,
+    content: t("**v{n} 으로 복원했어요 · {title}**\n\n다음 수정은 이 버전 위에서 해요. 유니티도 이 버전을 받아요.", { n: target.n, title: d?.title ?? "" }),
     attachments: {
       returned: { assignmentId: target.assignmentId, deliverableId },
       revert: true,

@@ -1,3 +1,4 @@
+// i18n-file-skip — 유니티 창(사장님 컴퓨터) 전용. 일반 사용자 화면에 안 나간다(10-14 다국어 범위 밖).
 import { NextResponse } from "next/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import { BUCKET } from "@/lib/deliverables/files";

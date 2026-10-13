@@ -1,3 +1,4 @@
+// i18n-ids: 맞팔 하트
 import Link from "next/link";
 import { getLocale, getT } from "@/lib/i18n/server";
 import { DOT } from "@/lib/i18n/dict/dot";

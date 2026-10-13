@@ -86,7 +86,7 @@ for (const f of files.filter(SCREEN)) {
     if (/function KoBody\(/.test(raw[i])) inKo = true;
     if (inKo) { if (/^}/.test(raw[i])) inKo = false; return; }
     if (raw[i].includes("i18n-skip") || raw[i - 1]?.includes("i18n-skip-next")) return;
-    if (/console\.(log|warn|error)/.test(line)) return;
+    if (/console\.(log|warn|error)/.test(line) || /^\s*import\s/.test(line)) return;
     const noT = line.replace(CALL, "");
     // 화면에 나가는 한국어만 센다: 따옴표 안의 글, JSX 글(>…<), 글만 있는 줄. 한국어로 지은 변수·함수 이름은 안 센다.
     // 따옴표 안이라도 그 글이 사전 열쇠면(자료표의 이름처럼 t(변수) 로 옮기는 것) 이미 옮긴 것으로 친다.

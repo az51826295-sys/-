@@ -49,7 +49,7 @@ export const viewport: Viewport = {
 
 /** 10-13 다국어: 홈 화면·검색에 나오는 이름과 설명도 언어를 따른다. 두근도트라는 이름은 그대로 두고 옆에 읽는 법을 단다. */
 const DOT_META: Record<Locale, { title: string; description: string }> = {
-  ko: { title: "두근도트", description: "도트 캐릭터와 이야기하는 앱. 친해질수록 말투와 표정이 바뀝니다." },
+  ko: { title: "두근도트", description: "도트 캐릭터와 이야기하는 앱. 친해질수록 말투와 표정이 바뀝니다." }, // i18n-skip (한국어 칸)
   en: { title: "Dugeun Dot", description: "Chat with pixel characters. The closer you get, the more their tone and faces change." },
   ja: { title: "ドゥグンドット", description: "ドットキャラとおしゃべりするアプリ。仲良くなるほど話し方や表情が変わります。" },
 };

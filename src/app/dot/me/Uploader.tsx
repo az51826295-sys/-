@@ -1,4 +1,5 @@
 "use client";
+// i18n-ids: 골랐다 파일칸 올리는중
 import { useT } from "@/lib/i18n/client";
 import { DOT } from "@/lib/i18n/dict/dot";
 import { useRef, useState } from "react";
@@ -55,7 +56,7 @@ export default function Uploader() {
           <textarea className="up-cap" value={caption} onChange={(e) => setCaption(e.target.value)}
             placeholder={t("무슨 사진인가요?")} rows={2} maxLength={600} />
           <div className="up-go">
-            <button onClick={() => { 골랐다(null); if (파일칸.current) 파일칸.current.value = ""; }} className="up-cancel" disabled={올리는중}>취소</button>
+            <button onClick={() => { 골랐다(null); if (파일칸.current) 파일칸.current.value = ""; }} className="up-cancel" disabled={올리는중}>{t("취소")}</button>
             <button onClick={올리기} className="up-post" disabled={올리는중}>{올리는중 ? t("올리는 중…") : t("올리기")}</button>
           </div>
         </>
