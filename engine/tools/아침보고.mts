@@ -39,6 +39,22 @@ console.log(쪽(`최근 7일 — 업무 ${await 셈("assignments", 7)} · 결과
   console.log(쪽(`  (10-13부터 **못 잰 것은 pending** 으로 남아 사례가 쌓이면 다시 잰다)`));
 }
 {
+  /* 10-13: 자가진화가 12일 굶은 증거가 **장부에 매일 적혀 있었는데** 마지막 한 줄만 봐서 못 봤다.
+     쌓여야 하는 칸이 멈춰 있으면 여기 한 줄로 뜬다. 셈은 자(장부_멈춘칸)를 **그대로 불러** 쓴다. */
+  const { 멈춘칸찾기, 쌓임만 } = await import("./장부_멈춘칸_셈.mjs");
+  const { data } = await db.from("genesis_runs").select("result").eq("kind", "daily")
+    .order("run_date", { ascending: false }).limit(14);
+  const 판들 = (data ?? []).filter((r) => r.result).map((r) => r.result as Record<string, unknown>);
+  if (판들.length < 5) console.log(쪽("장부 — 판이 5개가 안 된다(못 잼)"));
+  else {
+    const 것 = 쌓임만(멈춘칸찾기(판들, 5));
+    console.log(쪽(것.length
+      ? `**쌓여야 하는데 ${판들.length}판 내내 멈춘 칸 ${것.length}개** — ${것.slice(0, 4).map((x) => x.길.split(".").slice(-2).join(".")).join(", ")}${것.length > 4 ? " …" : ""}`
+      : `장부 — 쌓여야 하는 칸은 전부 움직인다(${판들.length}판)`));
+    console.log(쪽("  자세히: npx tsx engine/tools/rookery_env.mts engine/tools/장부_멈춘칸.mts 14"));
+  }
+}
+{
   const { data } = await db.from("service_heartbeat").select("service, commit_sha, seen_at");
   const 머리 = spawnSync("git", ["rev-parse", "--short", "HEAD"], { encoding: "utf8" }).stdout.trim();
   /* 10-13: 첫 판이 "뒤처진 서비스 4개" 라 해서 놀랐는데, 그중 하나는 `practice_summary` —
