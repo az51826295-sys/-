@@ -15,8 +15,8 @@ const 뜬때 = new Date().toISOString();
 
 export function GET() {
   return Response.json({
-    commit: (process.env.ROOKERY_COMMIT ?? "").slice(0, 7) || "모름",
-    product: process.env.PRODUCT ?? "모름",
+    commit: (process.env.ROOKERY_COMMIT ?? "").slice(0, 7) || "모름", // i18n-skip: 개발용
+    product: process.env.PRODUCT ?? "모름", // i18n-skip: 개발용
     startedAt: 뜬때,
   });
 }

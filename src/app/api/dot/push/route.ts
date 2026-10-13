@@ -1,3 +1,6 @@
+import { makeT } from "@/lib/i18n/core";
+import { localeFromRequest } from "@/lib/i18n/server";
+import { DOT } from "@/lib/i18n/dict/dot";
 import { userIdFrom } from "@/lib/dot/auth";
 import { createServiceClient } from "@/lib/supabase/service";
 
@@ -13,14 +16,15 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const t = makeT(DOT, localeFromRequest(request));
   const userId = await userIdFrom(request);
-  if (!userId) return Response.json({ error: "로그인이 필요해요." }, { status: 401 });
+  if (!userId) return Response.json({ error: t("로그인이 필요해요.") }, { status: 401 });
   let body: { endpoint?: unknown; keys?: { p256dh?: unknown; auth?: unknown } };
-  try { body = (await request.json()) as typeof body; } catch { return Response.json({ error: "요청을 읽지 못했어요." }, { status: 400 }); }
+  try { body = (await request.json()) as typeof body; } catch { return Response.json({ error: t("요청을 읽지 못했어요.") }, { status: 400 }); }
   const endpoint = typeof body.endpoint === "string" ? body.endpoint : "";
   const p256dh = typeof body.keys?.p256dh === "string" ? body.keys.p256dh : "";
   const auth = typeof body.keys?.auth === "string" ? body.keys.auth : "";
-  if (!endpoint || !p256dh || !auth) return Response.json({ error: "구독 모양이 아니에요." }, { status: 400 });
+  if (!endpoint || !p256dh || !auth) return Response.json({ error: t("구독 모양이 아니에요.") }, { status: 400 });
 
   const db = createServiceClient();
   // 같은 주소가 다시 오면 산 것으로 되돌린다(앱을 지웠다 다시 깔면 주소가 같을 수 있다).
@@ -33,8 +37,9 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
+  const t = makeT(DOT, localeFromRequest(request));
   const userId = await userIdFrom(request);
-  if (!userId) return Response.json({ error: "로그인이 필요해요." }, { status: 401 });
+  if (!userId) return Response.json({ error: t("로그인이 필요해요.") }, { status: 401 });
   const endpoint = new URL(request.url).searchParams.get("endpoint") ?? "";
   const db = createServiceClient();
   await db.from("dot_push_subs").delete().eq("user_id", userId).eq("endpoint", endpoint);

@@ -1,3 +1,6 @@
+import { makeT } from "@/lib/i18n/core";
+import { localeFromRequest } from "@/lib/i18n/server";
+import { DOT } from "@/lib/i18n/dict/dot";
 /**
  * **내가 올리는 게시물** (227회차 09-29, 사장님 "자신의 창도 있어야지").
  *
@@ -15,26 +18,27 @@ const 되는형식: Record<string, string> = { "image/png": "png", "image/jpeg":
 const 최대 = 4 * 1024 * 1024;
 
 export async function POST(request: Request) {
+  const t = makeT(DOT, localeFromRequest(request));
   const userId = await userIdFrom(request);
-  if (!userId) return Response.json({ error: "로그인이 필요해요." }, { status: 401 });
+  if (!userId) return Response.json({ error: t("로그인이 필요해요.") }, { status: 401 });
 
   let form: FormData;
   try { form = await request.formData(); }
-  catch { return Response.json({ error: "사진을 못 읽었어요." }, { status: 400 }); }
+  catch { return Response.json({ error: t("사진을 못 읽었어요.") }, { status: 400 }); }
 
   const file = form.get("image");
   const caption = String(form.get("caption") ?? "").slice(0, 600);
-  if (!(file instanceof File) || file.size === 0) return Response.json({ error: "사진을 골라 주세요." }, { status: 400 });
+  if (!(file instanceof File) || file.size === 0) return Response.json({ error: t("사진을 골라 주세요.") }, { status: 400 });
   const 확장 = 되는형식[file.type];
-  if (!확장) return Response.json({ error: "png · jpg · webp 만 올릴 수 있어요." }, { status: 400 });
-  if (file.size > 최대) return Response.json({ error: "사진이 4MB 를 넘어요." }, { status: 400 });
+  if (!확장) return Response.json({ error: t("png · jpg · webp 만 올릴 수 있어요.") }, { status: 400 });
+  if (file.size > 최대) return Response.json({ error: t("사진이 4MB 를 넘어요.") }, { status: 400 }); // i18n-skip-line: 최대는 변수 이름
 
   const db = createServiceClient();
-  const path = `${userId}/${Date.now().toString(36)}.${확장}`;
+  const path = `${userId}/${Date.now().toString(36)}.${확장}`; // i18n-skip: 파일 경로
   const { error: ue } = await db.storage.from("dot-user-posts")
     .upload(path, new Uint8Array(await file.arrayBuffer()), { contentType: file.type, upsert: false });
   // **오류를 그대로 전한다.** 삼키면 화면이 말없이 아무 일도 안 한다.
-  if (ue) return Response.json({ error: `사진을 못 올렸어요: ${ue.message}` }, { status: 500 });
+  if (ue) return Response.json({ error: t("사진을 못 올렸어요: {e}", { e: ue.message }) }, { status: 500 });
 
   const image_url = db.storage.from("dot-user-posts").getPublicUrl(path).data.publicUrl;
   const { data, error } = await db.from("dot_user_posts")
@@ -42,7 +46,7 @@ export async function POST(request: Request) {
   if (error || !data) {
     // 줄을 못 만들었으면 올린 사진도 지운다 — 아무도 못 보는 파일이 통에 쌓이면 용량만 먹는다.
     await db.storage.from("dot-user-posts").remove([path]);
-    return Response.json({ error: `게시물을 못 만들었어요: ${error?.message ?? ""}` }, { status: 500 });
+    return Response.json({ error: t("게시물을 못 만들었어요: {e}", { e: error?.message ?? "" }) }, { status: 500 });
   }
   const 예약 = await 하트예약(userId, data.id as number);
   return Response.json({ ok: true, id: data.id, 예약 });
@@ -50,15 +54,16 @@ export async function POST(request: Request) {
 
 /** 내 게시물 지우기. 사진도 같이 지운다. */
 export async function DELETE(request: Request) {
+  const t = makeT(DOT, localeFromRequest(request));
   const userId = await userIdFrom(request);
-  if (!userId) return Response.json({ error: "로그인이 필요해요." }, { status: 401 });
+  if (!userId) return Response.json({ error: t("로그인이 필요해요.") }, { status: 401 });
   const id = Number(new URL(request.url).searchParams.get("id"));
-  if (!Number.isFinite(id)) return Response.json({ error: "id 가 필요해요." }, { status: 400 });
+  if (!Number.isFinite(id)) return Response.json({ error: t("id 가 필요해요.") }, { status: 400 });
   const db = createServiceClient();
   // **남의 것을 못 지우게** user_id 를 같이 건다.
   const { data, error } = await db.from("dot_user_posts").delete().eq("id", id).eq("user_id", userId).select("image_url").maybeSingle();
   if (error) return Response.json({ error: error.message }, { status: 500 });
-  if (!data) return Response.json({ error: "그 게시물이 없어요." }, { status: 404 });
+  if (!data) return Response.json({ error: t("그 게시물이 없어요.") }, { status: 404 });
   const url = String((data as { image_url: string }).image_url);
   const at = url.indexOf("/dot-user-posts/");
   if (at >= 0) await db.storage.from("dot-user-posts").remove([url.slice(at + "/dot-user-posts/".length)]);

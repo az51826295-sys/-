@@ -1,13 +1,17 @@
+import { makeT } from "@/lib/i18n/core";
+import { localeFromRequest } from "@/lib/i18n/server";
+import { DOT } from "@/lib/i18n/dict/dot";
 import { userIdFrom } from "@/lib/dot/auth";
 import { createServiceClient } from "@/lib/supabase/service";
 
 /** 좋아요 — 한 번만. 그 캐릭터와의 사이 +1. */
 export async function POST(request: Request) {
+  const t = makeT(DOT, localeFromRequest(request));
   const userId = await userIdFrom(request);
-  if (!userId) return Response.json({ error: "로그인이 필요해요." }, { status: 401 });
+  if (!userId) return Response.json({ error: t("로그인이 필요해요.") }, { status: 401 });
   const body = (await request.json().catch(() => ({}))) as { postId?: number };
   const postId = Number(body.postId);
-  if (!postId) return Response.json({ error: "postId 가 필요해요." }, { status: 400 });
+  if (!postId) return Response.json({ error: t("postId 가 필요해요.") }, { status: 400 });
   const db = createServiceClient();
   const { data, error } = await db.rpc("dot_like_post", { p_user: userId, p_post: postId });
   if (error) return Response.json({ error: error.message }, { status: 500 });

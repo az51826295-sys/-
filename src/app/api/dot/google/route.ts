@@ -1,3 +1,6 @@
+import { makeT } from "@/lib/i18n/core";
+import { localeFromRequest } from "@/lib/i18n/server";
+import { DOT } from "@/lib/i18n/dict/dot";
 /**
  * **두근도트 계정을 구글에 붙인다** (226회차 2026-09-28, 사장님 "구글로그인으로 바꿔 회원가입빼고").
  *
@@ -16,25 +19,26 @@ import { createClient } from "@/lib/supabase/server";
 /** 구글이 켜져 있나. 화면이 이걸 보고 무엇을 내밀지 정한다. */
 export async function GET() {
   const base = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  if (!base) return Response.json({ google: false, why: "Supabase 주소가 없다" });
+  if (!base) return Response.json({ google: false, why: "Supabase 주소가 없다" }); // i18n-skip: 개발용 진단
   try {
     const r = await fetch(`${base}/auth/v1/authorize?provider=google`, { redirect: "manual" });
     const loc = r.headers.get("location") ?? "";
     const 켜짐 = r.status >= 300 && r.status < 400 && loc.includes("google");
-    return Response.json({ google: 켜짐, why: 켜짐 ? "켜져 있다" : `안 켜졌다 (HTTP ${r.status})` });
+    return Response.json({ google: 켜짐, why: 켜짐 ? "켜져 있다" : `안 켜졌다 (HTTP ${r.status})` }); // i18n-skip: 개발용 진단
   } catch (e) {
     // 못 물어봤으면 **켜졌다고 하지 않는다.** 0 을 "없다" 로 읽지 않는 것과 같은 결이다.
-    return Response.json({ google: false, why: `못 물어봤다: ${e instanceof Error ? e.message.slice(0, 60) : e}` });
+    return Response.json({ google: false, why: `못 물어봤다: ${e instanceof Error ? e.message.slice(0, 60) : e}` }); // i18n-skip: 개발용 진단
   }
 }
 
 /** 지금 계정에 구글을 붙인다. 이미 붙은 사람은 그대로 둔다. */
 export async function POST(request: Request) {
+  const t = makeT(DOT, localeFromRequest(request));
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return Response.json({ error: "로그인 정보가 없어요." }, { status: 401 });
+  if (!user) return Response.json({ error: t("로그인 정보가 없어요.") }, { status: 401 });
   const already = (user.identities ?? []).some((i) => i.provider === "google");
-  if (already) return Response.json({ error: "이미 구글에 연결돼 있어요." }, { status: 400 });
+  if (already) return Response.json({ error: t("이미 구글에 연결돼 있어요.") }, { status: 400 });
 
   const origin = new URL(request.url).origin;
   const { data, error } = await supabase.auth.linkIdentity({
@@ -43,7 +47,7 @@ export async function POST(request: Request) {
   });
   // **오류를 그대로 전한다.** 구글이 꺼져 있으면 여기서 그 말이 나온다 — 삼키면 화면이 말없이 아무 일도 안 한다.
   if (error || !data?.url) {
-    return Response.json({ error: error?.message ?? "구글 연결 주소를 못 받았어요." }, { status: 400 });
+    return Response.json({ error: error?.message ?? t("구글 연결 주소를 못 받았어요.") }, { status: 400 });
   }
   return Response.json({ url: data.url });
 }

@@ -1,3 +1,6 @@
+import { makeT } from "@/lib/i18n/core";
+import { localeFromRequest } from "@/lib/i18n/server";
+import { DOT } from "@/lib/i18n/dict/dot";
 import { userIdFrom } from "@/lib/dot/auth";
 import { createServiceClient } from "@/lib/supabase/service";
 import { todayKST, toMode, toNextStage } from "@/lib/dot/bond";
@@ -5,11 +8,12 @@ import { balanceFor } from "@/lib/dot/money";
 
 /** 앱을 열었을 때 한 번. 지난 대화 + 지금 사이 + 오늘 남은 횟수. */
 export async function GET(request: Request) {
+  const t = makeT(DOT, localeFromRequest(request));
   const userId = await userIdFrom(request);
-  if (!userId) return Response.json({ error: "로그인이 필요해요." }, { status: 401 });
+  if (!userId) return Response.json({ error: t("로그인이 필요해요.") }, { status: 401 });
 
   const characterId = new URL(request.url).searchParams.get("characterId") ?? "";
-  if (!characterId) return Response.json({ error: "characterId 가 필요해요." }, { status: 400 });
+  if (!characterId) return Response.json({ error: t("characterId 가 필요해요.") }, { status: 400 });
 
   const db = createServiceClient();
   const day = todayKST();
@@ -39,10 +43,11 @@ export async function GET(request: Request) {
  * 그동안 쌓은 것이 헛것이 된다.
  */
 export async function DELETE(request: Request) {
+  const t = makeT(DOT, localeFromRequest(request));
   const userId = await userIdFrom(request);
-  if (!userId) return Response.json({ error: "로그인이 필요해요." }, { status: 401 });
+  if (!userId) return Response.json({ error: t("로그인이 필요해요.") }, { status: 401 });
   const characterId = new URL(request.url).searchParams.get("characterId") ?? "";
-  if (!characterId) return Response.json({ error: "characterId 가 필요해요." }, { status: 400 });
+  if (!characterId) return Response.json({ error: t("characterId 가 필요해요.") }, { status: 400 });
   const db = createServiceClient();
   const { error, count } = await db
     .from("dot_messages")

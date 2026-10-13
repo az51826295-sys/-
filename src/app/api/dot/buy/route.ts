@@ -1,3 +1,6 @@
+import { makeT } from "@/lib/i18n/core";
+import { localeFromRequest } from "@/lib/i18n/server";
+import { DOT } from "@/lib/i18n/dict/dot";
 import { userIdFrom } from "@/lib/dot/auth";
 import { createServiceClient } from "@/lib/supabase/service";
 import { todayKST } from "@/lib/dot/bond";
@@ -10,18 +13,19 @@ import { SKUS, balanceFor } from "@/lib/dot/money";
  * `dot_grant` 를 부른다(원장 `dot_purchases` 에 토큰을 남겨 두 번 주지 않는다). 그 전엔 `engine/tools/dot_grant.mts` 로 손으로 준다.
  */
 export async function POST(request: Request) {
+  const t = makeT(DOT, localeFromRequest(request));
   const userId = await userIdFrom(request);
-  if (!userId) return Response.json({ error: "로그인이 필요해요." }, { status: 401 });
+  if (!userId) return Response.json({ error: t("로그인이 필요해요.") }, { status: 401 });
   const body = (await request.json().catch(() => ({}))) as { sku?: string; purchaseToken?: string };
   const sku = SKUS[body.sku ?? ""];
-  if (!sku) return Response.json({ error: "그런 상품은 없어요." }, { status: 400 });
-  if (process.env.BILLING_OPEN !== "1") return Response.json({ error: "결제는 곧 열려요. 조금만 기다려 주세요." }, { status: 503 });
+  if (!sku) return Response.json({ error: t("그런 상품은 없어요.") }, { status: 400 });
+  if (process.env.BILLING_OPEN !== "1") return Response.json({ error: t("결제는 곧 열려요. 조금만 기다려 주세요.") }, { status: 503 });
 
   // TODO(스토어): body.purchaseToken 을 Google Play Developer API 로 확인. 같은 토큰이 원장에 있으면 다시 주지 않는다.
   const db = createServiceClient();
   if (body.purchaseToken) {
     const { data: dup } = await db.from("dot_purchases").select("id").eq("ref", body.purchaseToken).maybeSingle();
-    if (dup) return Response.json({ error: "이미 처리된 결제예요." }, { status: 409 });
+    if (dup) return Response.json({ error: t("이미 처리된 결제예요.") }, { status: 409 });
   }
   const { error } = await db.rpc("dot_grant", { p_user: userId, p_sku: body.sku, p_credits: sku.credits, p_menhera_days: sku.menheraDays, p_source: "play", p_ref: body.purchaseToken ?? null });
   if (error) return Response.json({ error: error.message }, { status: 500 });

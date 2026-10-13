@@ -1,3 +1,6 @@
+import { makeT } from "@/lib/i18n/core";
+import { localeFromRequest } from "@/lib/i18n/server";
+import { COMMON } from "@/lib/i18n/dict/common";
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { publicOrigin } from "@/lib/http/origin";
@@ -10,11 +13,12 @@ import { publicOrigin } from "@/lib/http/origin";
  * 실패하면 로그인 화면으로 돌려보내되 **이유를 붙인다** — 조용히 로그인 화면만 다시 뜨면 사람은 자기가 뭘 잘못한 줄 안다.
  */
 export async function GET(request: Request) {
+  const t = makeT(COMMON, localeFromRequest(request));
   const url = new URL(request.url);
   const origin = publicOrigin(request);   // request.url 은 프록시 뒤에서 localhost:8080 이다(97회차)
   const code = url.searchParams.get("code");
   const home = process.env.PRODUCT === "dot" ? "/dot" : "/ask";
-  if (!code) return NextResponse.redirect(new URL("/login?error=" + encodeURIComponent("구글에서 돌아온 값이 없어요."), origin));
+  if (!code) return NextResponse.redirect(new URL("/login?error=" + encodeURIComponent(t("구글에서 돌아온 값이 없어요.")), origin));
   const supabase = await createClient();
   const { error } = await supabase.auth.exchangeCodeForSession(code);
   if (error) return NextResponse.redirect(new URL("/login?error=" + encodeURIComponent(error.message), origin));

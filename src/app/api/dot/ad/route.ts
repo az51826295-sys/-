@@ -1,3 +1,6 @@
+import { makeT } from "@/lib/i18n/core";
+import { localeFromRequest } from "@/lib/i18n/server";
+import { DOT } from "@/lib/i18n/dict/dot";
 import { userIdFrom } from "@/lib/dot/auth";
 import { createServiceClient } from "@/lib/supabase/service";
 import { todayKST } from "@/lib/dot/bond";
@@ -10,14 +13,15 @@ import { AD_REFILLS_PER_DAY, AD_REFILL_TURNS, balanceFor } from "@/lib/dot/money
  * 앱에 AdMob 보상형 광고가 붙는 날 이 자리에 **서버 검증(SSV)** 한 줄이 들어온다. 검증 없이 열면 단추가 곧 공짜 20번이다.
  */
 export async function POST(request: Request) {
+  const t = makeT(DOT, localeFromRequest(request));
   const userId = await userIdFrom(request);
-  if (!userId) return Response.json({ error: "로그인이 필요해요." }, { status: 401 });
-  if (process.env.AD_REWARD_OPEN !== "1") return Response.json({ error: "광고는 곧 열려요. 조금만 기다려 주세요." }, { status: 503 });
+  if (!userId) return Response.json({ error: t("로그인이 필요해요.") }, { status: 401 });
+  if (process.env.AD_REWARD_OPEN !== "1") return Response.json({ error: t("광고는 곧 열려요. 조금만 기다려 주세요.") }, { status: 503 });
 
   const db = createServiceClient();
   const day = todayKST();
   const { data, error } = await db.rpc("dot_ad_refill", { p_user: userId, p_day: day, p_max: AD_REFILLS_PER_DAY, p_turns: AD_REFILL_TURNS });
   if (error) return Response.json({ error: error.message }, { status: 500 });
-  if (Number(data) < 0) return Response.json({ error: "오늘 광고는 다 봤어요. 내일 또 볼 수 있어요." }, { status: 429 });
+  if (Number(data) < 0) return Response.json({ error: t("오늘 광고는 다 봤어요. 내일 또 볼 수 있어요.") }, { status: 429 });
   return Response.json({ ok: true, balance: await balanceFor(db, userId, day) });
 }

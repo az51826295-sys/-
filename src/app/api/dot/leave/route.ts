@@ -1,3 +1,6 @@
+import { makeT } from "@/lib/i18n/core";
+import { localeFromRequest } from "@/lib/i18n/server";
+import { DOT } from "@/lib/i18n/dict/dot";
 /**
  * **대화방 나가기 전용 문** (227회차 09-29).
  *
@@ -12,11 +15,12 @@ import { userIdFrom } from "@/lib/dot/auth";
 import { createServiceClient } from "@/lib/supabase/service";
 
 export async function POST(request: Request) {
+  const t = makeT(DOT, localeFromRequest(request));
   const userId = await userIdFrom(request);
-  if (!userId) return Response.json({ error: "로그인이 필요해요." }, { status: 401 });
+  if (!userId) return Response.json({ error: t("로그인이 필요해요.") }, { status: 401 });
   const body = (await request.json().catch(() => ({}))) as { characterId?: string };
   const characterId = body.characterId ?? "";
-  if (!characterId) return Response.json({ error: "characterId 가 필요해요." }, { status: 400 });
+  if (!characterId) return Response.json({ error: t("characterId 가 필요해요.") }, { status: 400 });
 
   const db = createServiceClient();
   // 피드에서도 안 보이게 팔로우를 끄고, 방에는 **나갔다는 표시**를 남긴다.

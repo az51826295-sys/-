@@ -1,3 +1,6 @@
+import { makeT } from "@/lib/i18n/core";
+import { localeFromRequest } from "@/lib/i18n/server";
+import { DOT } from "@/lib/i18n/dict/dot";
 import { userIdFrom } from "@/lib/dot/auth";
 import { createServiceClient } from "@/lib/supabase/service";
 
@@ -9,11 +12,12 @@ import { createServiceClient } from "@/lib/supabase/service";
  * 숫자로 답할 수 있어야 한다.
  */
 export async function DELETE(request: Request) {
+  const t = makeT(DOT, localeFromRequest(request));
   const userId = await userIdFrom(request);
-  if (!userId) return Response.json({ error: "로그인이 필요해요." }, { status: 401 });
+  if (!userId) return Response.json({ error: t("로그인이 필요해요.") }, { status: 401 });
   let body: { confirm?: unknown } = {};
   try { body = (await request.json()) as typeof body; } catch { /* 몸통 없음 */ }
-  if (body.confirm !== "삭제") return Response.json({ error: "확인 문구가 필요해요." }, { status: 400 });
+  if (body.confirm !== "삭제") return Response.json({ error: t("확인 문구가 필요해요.") }, { status: 400 });
 
   const db = createServiceClient();
   const [{ count: messages }, { count: bonds }, { count: subs }] = await Promise.all([

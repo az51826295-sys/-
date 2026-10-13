@@ -1,3 +1,6 @@
+import { makeT } from "@/lib/i18n/core";
+import { localeFromRequest } from "@/lib/i18n/server";
+import { DOT } from "@/lib/i18n/dict/dot";
 import { userIdFrom } from "@/lib/dot/auth";
 import { createServiceClient } from "@/lib/supabase/service";
 import { streamDotTurn } from "@/lib/dot/turn";
@@ -16,15 +19,16 @@ import { isUserSticker } from "@/lib/dot/stickers";
 export const maxDuration = 60;
 
 export async function POST(request: Request) {
+  const t = makeT(DOT, localeFromRequest(request));
   const userId = await userIdFrom(request);
-  if (!userId) return Response.json({ error: "로그인이 필요해요." }, { status: 401 });
+  if (!userId) return Response.json({ error: t("로그인이 필요해요.") }, { status: 401 });
 
   let body: { characterId?: unknown; message?: unknown; postId?: unknown; sticker?: unknown; gift?: unknown };
-  try { body = (await request.json()) as typeof body; } catch { return Response.json({ error: "요청을 읽지 못했어요." }, { status: 400 }); }
+  try { body = (await request.json()) as typeof body; } catch { return Response.json({ error: t("요청을 읽지 못했어요.") }, { status: 400 }); }
   const characterId = typeof body.characterId === "string" ? body.characterId : "";
   const message = typeof body.message === "string" ? body.message : "";
-  if (!characterId || !message.trim()) return Response.json({ error: "characterId 와 message 가 필요해요." }, { status: 400 });
-  if (message.length > 1000) return Response.json({ error: "메시지가 너무 길어요(1000자)." }, { status: 400 });
+  if (!characterId || !message.trim()) return Response.json({ error: t("characterId 와 message 가 필요해요.") }, { status: 400 });
+  if (message.length > 1000) return Response.json({ error: t("메시지가 너무 길어요(1000자).") }, { status: 400 });
 
   // 피드 답장: 그 게시물의 한 줄을 모델에게 건넨다(사진은 못 보니 장면 글로).
   let postCaption: string | null = null;
@@ -47,10 +51,10 @@ export async function POST(request: Request) {
         else if (r.reason === "limit") send({ type: "error", ...r });
         // 선물 하루 한 번 — 이유를 그대로 전한다("잠깐 문제" 로 뭉치면 사람은 고장인 줄 안다).
         else if (r.reason === "gift_limit" || r.reason === "no_credits") send({ type: "error", reason: r.reason, message: r.message });
-        else { console.error("[dot] 턴 실패:", r.message); send({ type: "error", reason: "failed", message: "잠깐 문제가 생겼어요. 다시 말해 줄래요?" }); }
+        else { console.error("[dot] 턴 실패:", r.message); send({ type: "error", reason: "failed", message: t("잠깐 문제가 생겼어요. 다시 말해 줄래요?") }); }
       } catch (e) {
         console.error("[dot] 흘려보내기 예외:", e instanceof Error ? e.message : e);
-        send({ type: "error", reason: "failed", message: "잠깐 문제가 생겼어요." });
+        send({ type: "error", reason: "failed", message: t("잠깐 문제가 생겼어요.") });
       } finally {
         try { controller.close(); } catch { /* 이미 닫힘 */ }
       }
