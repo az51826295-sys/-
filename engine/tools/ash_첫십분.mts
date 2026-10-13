@@ -19,8 +19,11 @@
 import { openHeadless } from "../../src/lib/video/headless";
 import { 이름헬퍼 } from "./ash_공통.mjs";
 const 주소 = process.env.ASH_URL ?? "https://rookery-web-production.up.railway.app/ash/index.html";
-let 나쁨 = 0;
+let 나쁨 = 0, 못잼수 = 0;
 const 재기 = (n: string, ok: boolean, 본?: unknown) => { if (!ok) 나쁨++; console.log(ok ? "통과" : "실패", n, ok ? "" : JSON.stringify(본)); };
+/* 10-13: **잴 수 없었던 것을 실패로 적지 않는다**(09-15 에 적어 둔 규칙). 시간 재기는
+   기계가 한가해야 뜻이 있다 — 옆에서 다른 자가 돌면 숫자가 내 탓으로 커진다. */
+const 못잼 = (n: string, 본?: unknown) => { 못잼수++; console.log("못잼", n, JSON.stringify(본)); };
 const 적기 = (n: string, 값: unknown) => console.log(`     ${n} — ${JSON.stringify(값)}`);
 
 const 창 = await openHeadless({ width: 390, height: 844 });
@@ -33,10 +36,29 @@ try {
   /* **맨땅에서 연다.** 저장이 남아 있으면 "처음 온 사람" 이 아니다 — 이 자의 전부가 거기 달렸다. */
   await page.goto(주소, { waitUntil: "domcontentloaded", timeout: 60_000 });
   await page.evaluate(() => { try { localStorage.clear(); } catch { /* */ } });
+  /* **기계가 한가한가** — 시간을 재기 전에 먼저 잰다. 10-13 에 이 자가 "3.1초 · 실패" 를
+     냈는데, 게임은 멀쩡했고 옆에서 내 다른 자(492초짜리)가 돌고 있었다. 정해진 일거리를
+     재서 기준보다 많이 느리면 **시간 칸은 못 잼** 으로 적는다. */
+  const 일거리 = () => { const t = Date.now(); let x = 0; for (let i = 0; i < 6e6; i++) x += i % 7; return Date.now() - t + (x ? 0 : 0); };
+  일거리();
+  const 바쁨 = Math.min(일거리(), 일거리());
+
+  /* 그림은 **망으로 센다** — 페이지 안의 `그림` 은 모듈 안이라 밖에서 안 보인다 */
+  let 그림장 = 0, 그림끝 = 0, 그림무게 = 0;
   const 뜬때 = Date.now();
-  await page.goto(주소, { waitUntil: "networkidle2", timeout: 60_000 });
+  page.on("response", (r) => {
+    if (!/\/art\/.+\.png$/.test(r.url())) return;
+    그림장++; 그림끝 = Date.now() - 뜬때;
+    const b = Number(r.headers()["content-length"] ?? 0); if (Number.isFinite(b)) 그림무게 += b;
+  });
+
   /* 10-12 **내가 넣은 대기를 같이 쟀다.** 첫 판에 "3.9초 · 실패" 가 나왔는데
-     그중 1.8초는 내가 그림 뜨라고 기다린 시간이었다. 재는 것은 goto 까지다. */
+     그중 1.8초는 내가 그림 뜨라고 기다린 시간이었다.
+     10-13 **또 어긋났다**: `networkidle2` 는 **그림 168장 2.96MB 가 다 내려온 때**다.
+     사람이 느끼는 것은 **읽을 글이 뜬 때**(실측 0.31초)다 — 문은 그쪽에 단다.
+     그림 전부는 **적기만** 한다(막히면 보이되, 자가 흔들리지는 않게). */
+  await page.goto(주소, { waitUntil: "domcontentloaded", timeout: 60_000 });
+  await page.waitForFunction(() => (document.body.innerText ?? "").length >= 40, { timeout: 60_000, polling: 50 });
   const 로딩초 = (Date.now() - 뜬때) / 1000;
   await new Promise((r) => setTimeout(r, 1800));
 
@@ -65,7 +87,9 @@ try {
   적기("눌 수 있는 것", 첫화면.눌릴것.slice(0, 10));
   적기("첫 글", 첫화면.글앞);
 
-  재기("첫 화면이 3초 안에 뜬다", 로딩초 <= 3, { 초: +로딩초.toFixed(1) });
+  적기("그림", `${그림장}장 · ${(그림무게 / 1048576).toFixed(2)}MB · 마지막 ${(그림끝 / 1000).toFixed(2)}초`);
+  if (바쁨 > 60) 못잼("첫 화면이 2초 안에 뜬다", { 초: +로딩초.toFixed(2), 기계일거리ms: 바쁨, 까닭: "기계가 바쁘다 — 옆에서 도는 것을 끄고 다시 재야 한다" });
+  else 재기("첫 화면이 2초 안에 뜬다", 로딩초 <= 2, { 초: +로딩초.toFixed(2), 기계일거리ms: 바쁨 });
   재기("첫 화면에 읽을 글이 있다", 첫화면.글자수 >= 40, { 글자수: 첫화면.글자수 });
   재기("처음부터 대원이 있다(빈 화면이 아니다)", 첫화면.대원수 >= 1, 첫화면);
 
@@ -141,5 +165,5 @@ try {
   재기("첫 5분 안에는 지지 않는다", 막힘.첫전멸턴 === 0 || 분(막힘.첫전멸턴) >= 5,
     { 분: 분(막힘.첫전멸턴), 층: 막힘.그때층 });
 } finally { await 창.browser.close(); await 창.close?.(); }
-console.log(나쁨 === 0 ? "전부 통과" : `실패 ${나쁨}건`);
+console.log(나쁨 === 0 ? (못잼수 ? `전부 통과 (못 잰 것 ${못잼수}건)` : "전부 통과") : `실패 ${나쁨}건${못잼수 ? ` · 못 잼 ${못잼수}건` : ""}`);
 process.exit(나쁨 === 0 ? 0 : 1);

@@ -61,6 +61,14 @@ console.log(`잿빛 자 ${목록.length}개${느린것도 ? "" : " (느린 둘�
 if (샌것.length) console.log(`⚠ **목록에 없는 자 ${샌것.length}개** — 이대로면 영영 안 돈다: ${샌것.join(", ")}\n`);
 if (없는것.length) console.log(`⚠ 목록에 적혔는데 파일이 없다: ${없는것.join(", ")}\n`);
 
+/* 10-13: 묶음 판에서 `ash_첫십분` 이 "3.1초 · 실패" 를 냈다. 게임은 멀쩡했고, 옆에서
+   내 다른 일거리가 기계를 먹고 있었다. 시간을 재는 자는 **한가한 기계**가 있어야 뜻이 있다 —
+   그래서 묶음 시작에 기계가 바쁜지 한 번 적는다(자마다 다시 재서 "못 잼" 으로 적는다). */
+const 일거리 = () => { const t = Date.now(); let x = 0; for (let i = 0; i < 6e6; i++) x += i % 7; return Date.now() - t + (x ? 0 : 0); };
+일거리();
+const 바쁨 = Math.min(일거리(), 일거리());
+if (바쁨 > 60) console.log(`⚠ **기계가 바쁘다**(일거리 ${바쁨}ms · 한가하면 20ms 안) — 시간 재는 칸은 믿지 말 것\n`);
+
 const 결과: Array<{ 이름: string; 됨: boolean; 끝줄: string; 초: number }> = [];
 for (const r of 목록) {
   if (r.느림 && !느린것도) { console.log(`${r.이름.padEnd(16)} 건너뜀 (${r.까닭})`); continue; }
