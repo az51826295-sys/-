@@ -9,7 +9,7 @@
 --   dot_push_subs.lang = 'ko' | 'en' | 'ja'   — 먼저 보내는 말을 그 사람 언어로
 --
 -- 칸이 비어 있으면 화면은 한국어 원래 글을 보인다(깨지지 않는다). 채우는 것은
--- `npx tsx engine/tools/dot_i18n_fill.mts` (모델로 옮긴다 — 실행 전 --dry 로 볼 수 있다).
+-- `npx tsx engine/tools/dot_i18n_fill.mts` (모델로 옮긴다 — 인자 없이 돌리면 보기만, --write 로 채운다).
 -- 코드는 이 파일을 안 돌린 DB 에서도 돈다(select("*") 로 읽어서 칸이 없으면 없는 대로).
 
 alter table dot_characters add column if not exists i18n jsonb not null default '{}'::jsonb;
