@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { getLocale } from "@/lib/i18n/server";
 /**
  * 개인정보 처리방침 — 스토어 등록에 필수(38회차, 09-11).
@@ -79,7 +80,7 @@ function KoBody() {
 function EnBody() {
   return (
     <>
-        <a href="/dot" className="pv-back">‹ Back</a>
+        <Link href="/dot" className="pv-back">‹ Back</Link>
         <h1>Privacy Policy</h1>
         <p className="pv-date">Effective 2026-09-11 (draft)</p>
 
@@ -119,7 +120,7 @@ function EnBody() {
 function JaBody() {
   return (
     <>
-        <a href="/dot" className="pv-back">‹ 戻る</a>
+        <Link href="/dot" className="pv-back">‹ 戻る</Link>
         <h1>プライバシーポリシー</h1>
         <p className="pv-date">施行日 2026-09-11（草案）</p>
 

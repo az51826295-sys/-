@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { getLocale } from "@/lib/i18n/server";
 /** 아동 안전 표준(CSAE) — Play 콘솔 아동 안전 선언이 요구하는 공개 페이지. 로그인 없이 열린다(proxy 예외). */
 export async function generateMetadata() {
@@ -68,7 +69,7 @@ function KoBody() {
 function EnBody() {
   return (
     <>
-        <a href="/dot" className="pv-back">‹ Back</a>
+        <Link href="/dot" className="pv-back">‹ Back</Link>
         <h1>Child Safety Standards</h1>
         <p className="pv-date">Dugeun Dot · Effective 2026-09-12</p>
 
@@ -92,7 +93,7 @@ function EnBody() {
 
         <h2>6. Contact</h2>
         <p>Child safety contact: az51826295@gmail.com</p>
-        <p><a href="/dot/privacy">Privacy policy</a></p>
+        <p><Link href="/dot/privacy">Privacy policy</Link></p>
         <p className="pv-date">This is a translation. If it differs from the Korean original, the Korean version applies.</p>
     </>
   );
@@ -102,7 +103,7 @@ function EnBody() {
 function JaBody() {
   return (
     <>
-        <a href="/dot" className="pv-back">‹ 戻る</a>
+        <Link href="/dot" className="pv-back">‹ 戻る</Link>
         <h1>児童の安全に関する基準</h1>
         <p className="pv-date">ドゥグンドット・施行日 2026-09-12</p>
 
@@ -126,7 +127,7 @@ function JaBody() {
 
         <h2>6. 担当者</h2>
         <p>児童の安全担当：az51826295@gmail.com</p>
-        <p><a href="/dot/privacy">プライバシーポリシー</a></p>
+        <p><Link href="/dot/privacy">プライバシーポリシー</Link></p>
         <p className="pv-date">これは翻訳です。韓国語の原文と異なる場合は、韓国語版が優先されます。</p>
     </>
   );

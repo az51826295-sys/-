@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { getLocale } from "@/lib/i18n/server";
 /**
  * 계정 삭제 안내 — Play 데이터 보안 설문이 요구하는 "삭제 요청 URL" (09-12).
@@ -69,7 +70,7 @@ function KoBody() {
 function EnBody() {
   return (
     <>
-        <a href="/dot" className="pv-back">‹ Back</a>
+        <Link href="/dot" className="pv-back">‹ Back</Link>
         <h1>Delete Account</h1>
         <p className="pv-date">Dugeun Dot (developer az51826295)</p>
 
@@ -81,7 +82,7 @@ function EnBody() {
         </ol>
 
         <h2>Request by email</h2>
-        <p>If you can't get into the app, email <a href="mailto:az51826295@gmail.com?subject=Dugeun Dot account deletion request">az51826295@gmail.com</a> from the address you signed up with and write “Account deletion request”. We'll process it within 3 days and reply.</p>
+        <p>If you can’t get into the app, email <a href="mailto:az51826295@gmail.com?subject=Dugeun Dot account deletion request">az51826295@gmail.com</a> from the address you signed up with and write “Account deletion request”. We’ll process it within 3 days and reply.</p>
 
         <h2>What gets deleted</h2>
         <ul>
@@ -91,7 +92,7 @@ function EnBody() {
         </ul>
         <p>Nothing else is kept. If a payment receipt must be kept by law, only that is kept for the legally required period.</p>
 
-        <p><a href="/dot/privacy">View privacy policy</a></p>
+        <p><Link href="/dot/privacy">View privacy policy</Link></p>
         <p className="pv-date">This is a translation. If it differs from the Korean original, the Korean version applies.</p>
     </>
   );
@@ -101,7 +102,7 @@ function EnBody() {
 function JaBody() {
   return (
     <>
-        <a href="/dot" className="pv-back">‹ 戻る</a>
+        <Link href="/dot" className="pv-back">‹ 戻る</Link>
         <h1>アカウント削除</h1>
         <p className="pv-date">ドゥグンドット（開発者 az51826295）</p>
 
@@ -123,7 +124,7 @@ function JaBody() {
         </ul>
         <p>ほかに残るものはありません。法律で保管が必要な決済の領収書が発生した場合は、それのみ法定期間保管します。</p>
 
-        <p><a href="/dot/privacy">プライバシーポリシーを見る</a></p>
+        <p><Link href="/dot/privacy">プライバシーポリシーを見る</Link></p>
         <p className="pv-date">これは翻訳です。韓国語の原文と異なる場合は、韓国語版が優先されます。</p>
     </>
   );
