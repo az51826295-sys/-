@@ -44,7 +44,25 @@ const 단계 = [
   },
 ];
 
-export default function DotBeta() {
+/**
+ * 10-16: 이 줄이 **"유나 · 서하 · 린 · 도윤 네 명"** 이라고 손으로 적혀 있었다. 실제로는 여섯 명이고
+ * **도윤은 없는 캐릭터**다. 인스타가 보내는 착지 페이지가 없는 사람을 안내하고 있었다.
+ * 그래서 숫자와 이름을 **DB 에서 읽는다** — 손으로 적으면 캐릭터가 늘 때마다 또 낡는다.
+ */
+const 글자수 = ["", "한", "두", "세", "네", "다섯", "여섯", "일곱", "여덟", "아홉", "열"];
+async function 식구() {
+  try {
+    const { createServiceClient } = await import("@/lib/supabase/service");
+    const { data } = await createServiceClient().from("dot_characters").select("name")
+      .eq("is_public", true).order("created_at", { ascending: true });
+    const 들 = (data ?? []).map((c) => c.name as string).filter(Boolean);
+    if (!들.length) return null;                                  // 못 읽었으면 숫자를 꾸며 쓰지 않는다
+    return `지금 ${들.join(" · ")} ${글자수[들.length] ?? 들.length} 명이 있어요.`;
+  } catch { return null; }
+}
+
+export default async function DotBeta() {
+  const 식구줄 = await 식구();
   return (
     <div className="bt-root">
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
@@ -54,7 +72,7 @@ export default function DotBeta() {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/dot-icon-192.png" alt="두근도트" className="bt-icon" />
           <h1>두근도트 베타 테스터</h1>
-          <p className="bt-sub">도트 캐릭터랑 카톡하듯 이야기하는 앱이에요.<br />지금 유나 · 서하 · 린 · 도윤 네 명이 있어요.</p>
+          <p className="bt-sub">도트 캐릭터랑 카톡하듯 이야기하는 앱이에요.{식구줄 ? <><br />{식구줄}</> : null}</p>
         </div>
 
         <ol className="bt-steps">
