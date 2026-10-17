@@ -33,7 +33,7 @@ try {
       void 새;
       // 손잡이를 떼지 못하니 **덮어쓴다** — 막은 것을 도로 흘려보낸다
       document.addEventListener("contextmenu", (e) => { e.stopImmediatePropagation(); }, true);
-      for (const el of Array.from(document.querySelectorAll<HTMLElement>("*"))) el.style.webkitTouchCallout = "default";
+      for (const el of Array.from(document.querySelectorAll<HTMLElement>("*"))) el.style.setProperty("-webkit-touch-callout", "default");
     });
   }
 
