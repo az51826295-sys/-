@@ -12,8 +12,17 @@
    * 캐릭터가 늙고 죽는 것은 도트가 사라지는 것보다 **문장으로 읽을 때** 훨씬 세다.
    * 그래서 그림 50장이 아니라 7장으로도 게임이 선다. 이게 사장님이 말한 효율이다.
    */
+  /*
+   * 10-17 사장님: 전투 화면을 **꾹 누르면** 안드로이드 브라우저의 이미지 메뉴가 떴다
+   * ("이미지 공유 · 다운로드 · 복사 · 보기"). 게임에서 꾹 누르기는 아무 일도 없어야 한다.
+   * `user-select:none` 만으로는 안 막힌다 — 그건 **글자 선택**만 막는다.
+   * 그림 메뉴는 `-webkit-touch-callout` 과 contextmenu 를 같이 막아야 한다(아래 스크립트).
+   * 이 창엔 글자 입력칸이 하나도 없어서 전부에 걸어도 깨지는 곳이 없다(세어 봤다).
+   */
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;
+    -webkit-touch-callout:none;-webkit-user-drag:none;
     font-family:"Malgun Gothic",sans-serif}
+  img,canvas{-webkit-user-drag:none;user-drag:none}
   /*
    * **도트 RPG 창** (10-07 사장님). 색은 야영지 배경에서 뽑았다 — 저녁 보라 + 모닥불 주황.
    * 창 하나 = 진한 테두리 3px + 안쪽 밝은 선/어두운 선(볼록) + 모서리 한 칸 깎기.
@@ -391,6 +400,15 @@
 </div>
 
 <script>
+/*
+ * 10-17 사장님 "꼭 누르면 이미지 나오는 거 고쳐".
+ * 폰에서 전투 화면을 꾹 누르면 안드로이드가 **그림 메뉴**를 띄웠다 — 게임 위에 덮여서
+ * 다음 턴이 안 보인다. CSS 의 touch-callout 과 **이 한 줄**이 같이 있어야 막힌다
+ * (WebView 는 contextmenu 를 막아야 긴 누름 메뉴를 안 띄운다).
+ * 글자 입력칸이 없는 창이라 잃는 것이 없다.
+ */
+document.addEventListener("contextmenu", (e) => e.preventDefault());
+
 const $ = (s) => document.querySelector(s);
 const 그림 = {};
 /** 있는 그림만 부른다 — 없는 걸 부르면 404 가 쌓이고, 게임은 멀쩡한데 자가 떨어진다(10-04). */
