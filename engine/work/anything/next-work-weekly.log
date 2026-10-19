@@ -235,3 +235,17 @@ Node.js v24.18.0
 한도에 닿았다: 최근 30일 $7.68 / $7
 [로키 DB] https://cwkzdn….supabase.co · engine/tools/self_fix.mts
 제안 파일이 없다: engine/work/anything/next-work-weekly.json — 위에서 안 만든 것이다(한도·실패 등). 건너뛴다.
+===== 2026-10-18  9:30:00.75 
+[로키 DB] https://cwkzdn….supabase.co · engine/tools/next_work.mts
+[allowance] 장부를 못 읽었다 — 한도에 걸린 것으로 본다: Service for this project is restricted due to the following violations: exceed_egress_quota. The project owner must upgrade their plan or remove spend caps to restore service.
+한도에 닿았다: 최근 30일 $0.00 / $0
+[로키 DB] https://cwkzdn….supabase.co · engine/tools/next_work.mts
+[allowance] 장부를 못 읽었다 — 한도에 걸린 것으로 본다: Service for this project is restricted due to the following violations: exceed_egress_quota. The project owner must upgrade their plan or remove spend caps to restore service.
+한도에 닿았다: 최근 30일 $0.00 / $0
+npm notice
+npm notice New major version of npm available! 11.16.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+[로키 DB] https://cwkzdn….supabase.co · engine/tools/self_fix.mts
+제안 파일이 없다: engine/work/anything/next-work-weekly.json — 위에서 안 만든 것이다(한도·실패 등). 건너뛴다.
