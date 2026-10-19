@@ -353,7 +353,7 @@
 <body>
 <div id="app">
   <div id="top">
-    <span class="zone" id="zone">1구간 · 1층</span>
+    <span class="zone" id="zone"></span>
     <span class="res"><span><img src="art/coin.png">&nbsp;<b id="gold">0</b></span>
                       <span><img src="art/shard.png">&nbsp;<b id="shard">0</b></span>
                       <button id="가방단추" type="button" aria-label="가방" data-말="bag">가방</button>
@@ -382,7 +382,7 @@
   </div>
 
   <div id="battle">
-    <div id="board"><canvas id="cv"></canvas><button id="자격버튼" type="button">관문</button><button id="자동버튼" type="button">자동 등반</button><button id="탑버튼" type="button" data-말="board.tower">▲ 탑</button></div>
+    <div id="board"><canvas id="cv"></canvas><button id="자격버튼" type="button"></button><button id="자동버튼" type="button">자동 등반</button><button id="탑버튼" type="button" data-말="board.tower">▲ 탑</button></div>
     <!-- 10-09 사장님: 시작하자마자 깨지 말고 **고르고 시작**한다. 멈춰 있을 때만 뜬다. -->
     <div id="맵"></div>
     <div id="log"></div>
@@ -509,6 +509,12 @@ const 말표 = {
   "log.stairs": { ko: "계단을 올라 <b>{n}층 · {z}</b>에 들어섰다.", en: "Climbed the stairs into <b>Floor {n} · {z}</b>." },
   "log.enter": { ko: "<b>{n}층 · {z}</b>에 들어섰다.", en: "Entered <b>Floor {n} · {z}</b>." },
   "log.resume": { ko: "<b>{z} · {n}층</b>에서 다시 시작한다.", en: "Resuming at <b>{z} · Floor {n}</b>." },
+  "log.open": { ko: "기사가 방패를 고쳐 메고 첫 계단을 내려갔다.", en: "The knight shoulders their shield and takes the first step down." },
+  /* 탑 지도 — "뭘 해야 하는지" 가 적힌 자리다(10-09 사장님). 여기가 한국어면 길을 잃는다. */
+  "map.done": { ko: "졸업", en: "Cleared" },
+  "map.climbing": { ko: "오르는 중", en: "Climbing" },
+  "map.todo": { ko: "미완", en: "Locked" },
+  "map.clears": { ko: "{n}번 깨기", en: "Clear {n}×" },
 };
 const 말키 = "ash.lang";
 let 쓰는말 = (() => {
@@ -1581,7 +1587,7 @@ const 금화보상 = (층, 보스판) =>
   Math.round((80 + 층 * 20) * (층 <= 30 ? 1 : Math.pow(1.08, 층 - 30))) * (보스판 ? 7 : 1);
 const 깬수 = (층) => S.깸?.[층] ?? 0;
 function 자격(층){
-  const 줄 = [{ 이름:`${필요판(층)}번 깨기`, 됨: 깬수(층) >= 필요판(층), 지금:`${Math.min(깬수(층), 필요판(층))}/${필요판(층)}` }];
+  const 줄 = [{ 이름:말("map.clears", { n: 필요판(층) }), 됨: 깬수(층) >= 필요판(층), 지금:`${Math.min(깬수(층), 필요판(층))}/${필요판(층)}` }];
   if (층 % 10 === 0) 줄.push({ 이름:"구간 보스 처치", 됨: (S.보스깸 ?? []).includes(층), 지금: (S.보스깸 ?? []).includes(층) ? "완료" : "아직" });
   return { 줄, 참: 줄.every((r) => r.됨) };
 }
@@ -2047,9 +2053,9 @@ function 맵그리기(){
     <div class="층들">${층들.map((f) => {
       const 보스 = f % 10 === 0, 자 = 자격(f), 꼭대기층 = f === 끝;
       return `<div class="층칸${보스 ? " 보스" : ""}${자.참 ? "" : " 새"}" data-f="${f}">
-        <div class="머리줄"><b>${f}층</b>
+        <div class="머리줄"><b>${말("top.floor", { n: f })}</b>
           <i>${보스 ? 구간(f).보스.이름 : 말(`zone.${((f - 1) % 10) + 1}`)}</i>
-          <span class="표">${자.참 ? "졸업" : 꼭대기층 ? "오르는 중" : "미완"}</span></div>
+          <span class="표">${말(자.참 ? "map.done" : 꼭대기층 ? "map.climbing" : "map.todo")}</span></div>
         <div class="자격줄">${자.줄.map((r) => `<span class="조건${r.됨 ? " 참" : ""}">${r.이름} <b>${r.지금}</b></span>`).join("")}</div>
       </div>`;
     }).join("")}</div></div>`;
@@ -2852,8 +2858,8 @@ S.사냥층 = S.사냥층 ?? S.층;                            // 되돌이가 �
 setInterval(저장, 10_000);
 
 if (불러옴) 적기(말("log.resume", { n: S.층, z: 말(`zone.${((S.단계 - 1) % 10) + 1}`) }), "big");
-else 적기("<b>1구간 · 침묵의 배수 회랑</b>", "big");
-if (!불러옴) 적기("기사가 방패를 고쳐 메고 첫 계단을 내려갔다.");
+else 적기(`<b>${말("zone.1")}</b>`, "big");
+if (!불러옴) 적기(말("log.open"));
 크기(); 원정시작(); 윗줄(); 화면();
 /* 10-11 사장님: **420 → 150ms.** 33턴짜리 싸움에 4분이 걸렸다 —
    글을 넘기느라 한턴()을 585번 돌기 때문이다. 턴을 줄이는 대신 **넘김을 빠르게** 한다. */

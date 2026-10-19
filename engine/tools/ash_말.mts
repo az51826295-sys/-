@@ -78,6 +78,17 @@ try {
   const 한글남음 = 영.들.filter((x) => /[가-힣]/.test(x.글));
   재기("옮긴 자리에 한국어가 안 남았다", 한글남음.length === 0, 한글남음.slice(0, 6).map((x) => `${x.키}=${x.글}`));
 
+  /* **여기서 센다 — 영어로 연 화면에서.** 10-20 에 이 줄을 아래(한국어 판 뒤)에 두는 바람에
+     한국어 화면을 세고 "아직 61자 남았다" 고 적었다. 세 겹을 옮겨도 숫자가 61 에서 꿈쩍 안 해
+     들통났다(진짜 남은 것은 2자였다). **재는 자리가 틀리면 숫자가 안 움직인다.** */
+  const 남은 = await page.evaluate(() => {
+    const 글 = document.body.innerText ?? "";
+    return {
+      자수: (글.match(/[가-힣]/g) ?? []).length,
+      줄: [...new Set((글.match(/[^\n]*[가-힣][^\n]*/g) ?? []).map((s) => s.trim()))].slice(0, 5),
+    };
+  });
+
   /* ── ② 한국어로 돌아오나 ── */
   await 열기("ko");
   const 한 = await 걷기();
@@ -86,13 +97,9 @@ try {
   재기("한국어로 열면 한국어로 돌아온다", 한안됨.length === 0, 한안됨.slice(0, 6));
 
   /* ── ③ 아직 얼마나 남았나 (판정하지 않는다 — 숫자만) ── */
-  const 남은 = await page.evaluate(() => {
-    const 글 = (document.body.innerText ?? "");
-    return { 화면한글자: (글.match(/[가-힣]/g) ?? []).length };
-  });
-  const 표크기 = 영.표크기;
-  console.log(`     말 표 ${표크기}줄 · 옮긴 자리 ${영.들.length}개`);
-  console.log(`     첫 화면에 아직 남은 한국어 ${남은.화면한글자}자 — **못 옮긴 것이지 고장이 아니다**`);
+  console.log(`     말 표 ${영.표크기}줄 · 옮긴 자리 ${영.들.length}개`);
+  console.log(`     **영어로 연 첫 화면**에 남은 한국어 ${남은.자수}자 — 못 옮긴 것이지 고장이 아니다`);
+  for (const l of 남은.줄) console.log(`       · ${l.slice(0, 60)}`);
 } finally { await 창.browser.close(); await 창.close?.(); }
 
 console.log(나쁨 === 0 ? "전부 통과" : `실패 ${나쁨}건`);
