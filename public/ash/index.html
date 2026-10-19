@@ -444,6 +444,71 @@ const 말표 = {
   "board.autoOn": { ko: "자동 등반 켬", en: "Auto climb ON" },
   "board.autoOff": { ko: "자동 등반 끔", en: "Auto climb OFF" },
   "set.lang": { ko: "언어 / Language", en: "Language / 언어" },
+  /* ── 둘째 겹 (10-20): **늘 보이는 줄**부터. 탭마다 25~44자인데 그 절반이 이 윗줄이었다. */
+  "top.floor": { ko: "{n}층", en: "Floor {n}" },
+  "top.pack": { ko: "무리 {i}/{n}", en: "Pack {i}/{n}" },
+  "top.grind": { ko: "되돌이", en: "Grinding" },
+  "stat.hp": { ko: "체력", en: "HP" },
+  "stat.atk": { ko: "공격", en: "ATK" },
+  "stat.def": { ko: "방어", en: "DEF" },
+  "stat.spd": { ko: "속도", en: "SPD" },
+  /* 구간 이름 — 윗줄에 늘 떠 있다. 분위기가 반이라 뜻을 옮기되 결을 지킨다. */
+  "zone.1": { ko: "침묵의 배수 회랑", en: "Silent Drain Corridor" },
+  "zone.2": { ko: "쇠종의 회랑", en: "Hall of Iron Bells" },
+  "zone.3": { ko: "물잠긴 암거", en: "Flooded Culvert" },
+  "zone.4": { ko: "재의 숙영지", en: "Camp of Ash" },
+  "zone.5": { ko: "봉인된 현자의 전당", en: "Sealed Sage's Hall" },
+  "zone.6": { ko: "무너진 비공정 창고", en: "Fallen Airship Depot" },
+  "zone.7": { ko: "검은 이삭 들판", en: "Blackgrain Fields" },
+  "zone.8": { ko: "번개샘 제단", en: "Lightning Spring Altar" },
+  "zone.9": { ko: "심층 봉인고", en: "Deep Vault" },
+  "zone.10": { ko: "태고의 문턱", en: "Threshold of the First Age" },
+  /* 탭을 열면 바로 보이는 안내 — 처음 온 사람이 "여기서 뭘 하나" 를 읽는 자리 */
+  "forge.locked": { ko: "3층을 넘으면 대장간이 열린다. (지금 {n}층)", en: "The forge opens past floor 3. (now floor {n})" },
+  "forge.sub": { ko: "매일 재료를 모아 여기서 벼린다", en: "Gather materials, forge them here" },
+  "forge.upgrade": { ko: "장비 강화", en: "Upgrade gear" },
+  "forge.upgradeSub": { ko: "강화 재료 필요", en: "Needs upgrade materials" },
+  "forge.craft": { ko: "장비 제작", en: "Craft gear" },
+  "forge.craftSub": { ko: "재료로 새 장비를", en: "New gear from materials" },
+  "shop.sub": { ko: "매일 물건이 바뀐다", en: "Stock changes daily" },
+  "shop.buy": { ko: "상점 구매", en: "Buy" },
+  "shop.buySub": { ko: "금화로 물품 구매", en: "Spend gold on goods" },
+  "shop.sell": { ko: "위탁 판매", en: "Consign" },
+  "shop.sellSub": { ko: "아이템 등록 대기 중", en: "Coming soon" },
+  /** 규칙은 이 창에만 적혀 있다 — 여기가 한국어면 처음 온 사람은 게임을 영영 모른다 */
+  "notice.body": {
+    ko: `<b>탑은 100층이다.</b> 층은 스스로 오르지 않는다 —
+    그 층을 되돌이로 돌아 <b>자격</b>을 채워야 다음 층이 열린다.<br><br>
+    10·20·30… 층은 <b>관문</b>이다. 보스를 눕혀야 지나간다. 관문에서 지면
+    자동 등반이 꺼지고 한 층 내려가 모으게 된다.<br><br>
+    막히면 <b>대장간</b>에서 장비를 만들어라. 재료가 하나 모자라면 <b>시장</b>에 하루치가 있다.`,
+    en: `<b>The tower is 100 floors.</b> You don't climb on your own —
+    grind the floor you're on until you meet its <b>entry requirement</b>, and the next floor opens.<br><br>
+    Floors 10, 20, 30… are <b>gates</b>. You must put the boss down to pass. Lose at a gate and
+    auto climb switches off, dropping you a floor to regroup.<br><br>
+    Stuck? Forge gear at the <b>Forge</b>. One material short — the <b>Market</b> carries a daily stock.`,
+  },
+  "set.sound": {
+    ko: `소리는 위쪽 <b>♪</b> 로 끄고 켠다.<br>아래는 <b>되돌릴 수 없다.</b> 대원·층·재료가 모두 사라지고 처음부터 시작한다.`,
+    en: `Toggle sound with <b>♪</b> at the top.<br>Below is <b>permanent.</b> Heroes, floors and materials all vanish and you start over.`,
+  },
+  "set.wipe": { ko: "저장 지우기", en: "Erase save" },
+  /* 자료 안에 글자로 들어 있는 낱말들 — `말값()` 이 **표에 있는 것만** 옮긴다.
+     로건·이브·로제·칼리드는 **사람 이름**이라 표에 없고, 그래서 그대로 간다. */
+  "v.전설": { ko: "전설", en: "Legendary" },
+  "v.영웅": { ko: "영웅", en: "Epic" },
+  "v.기사": { ko: "기사", en: "Knight" },
+  "v.검사": { ko: "검사", en: "Swordsman" },
+  "v.회복술사": { ko: "회복술사", en: "Healer" },
+  "v.공격": { ko: "공격", en: "Attacker" },
+  "v.방어": { ko: "방어", en: "Defender" },
+  "v.제어": { ko: "제어", en: "Control" },
+  "v.지원": { ko: "지원", en: "Support" },
+  /* 전투 글 중 **조사가 안 걸리는** 문장들 — "에 / 에서" 는 받침을 안 따진다.
+     `조사(이름,"은","는")` 가 들어간 줄은 문장 틀째 갈아야 해서 아직 안 건드린다. */
+  "log.stairs": { ko: "계단을 올라 <b>{n}층 · {z}</b>에 들어섰다.", en: "Climbed the stairs into <b>Floor {n} · {z}</b>." },
+  "log.enter": { ko: "<b>{n}층 · {z}</b>에 들어섰다.", en: "Entered <b>Floor {n} · {z}</b>." },
+  "log.resume": { ko: "<b>{z} · {n}층</b>에서 다시 시작한다.", en: "Resuming at <b>{z} · Floor {n}</b>." },
 };
 const 말키 = "ash.lang";
 let 쓰는말 = (() => {
@@ -455,6 +520,12 @@ const 말 = (키, 칸) => {
   const s = 말표[키]?.[쓰는말] ?? 말표[키]?.ko ?? 키;
   return 칸 ? s.replace(/\{(\w+)\}/g, (_, k) => String(칸[k] ?? `{${k}}`)) : s;
 };
+/**
+ * 자료 안에 글자로 박힌 낱말을 옮긴다 — **표에 있는 것만.**
+ * 없으면 그대로 돌려준다. 그래야 사람 이름(로건·이브…)이 안 뭉개진다.
+ */
+const 말값 = (v) => (말표[`v.${v}`] ? 말(`v.${v}`) : v);
+
 /** `data-말` 이 붙은 자리를 전부 다시 쓴다. 그림(<img>)은 건드리지 않는다. */
 function 말바르기() {
   for (const el of document.querySelectorAll("[data-말]")) {
@@ -1639,7 +1710,7 @@ function 판끝(){
      */
     if (S.자동오름 && 층 < S.최고층) {
       S.층 = 층 + 1; S.사냥층 = S.층; S.단계 = Math.floor((S.층 - 1)/10) + 1;
-      장면(null, null, `계단을 올라 <b>${S.층}층 · ${구간이름[(S.층 - 1) % 10]}</b>에 들어섰다.`, "big");
+      장면(null, null, 말("log.stairs", { n: S.층, z: 말(`zone.${((S.층 - 1) % 10) + 1}`) }), "big");
     }
   } else {
     const 남 = 자격(층).줄.filter((r) => !r.됨);
@@ -1920,9 +1991,11 @@ function 그리기(){
 
 /* ── 아래 칸 ──────────────────────────────────────── */
 function 윗줄(){
-  $("#zone").textContent = `${구간이름[(S.단계-1)%10]} · ${S.층}층`
-    + (S.진행 && S.무리수 > 1 ? ` · 무리 ${S.무리 + 1}/${S.무리수}` : "")
-    + (S.사냥층 ? " · 되돌이" : "");
+  /* 10-20: 이 줄은 **어느 탭에서도 보인다** — 탭마다 센 한국어의 절반이 여기였다. */
+  const 구간칸 = (S.단계 - 1) % 10;
+  $("#zone").textContent = `${말(`zone.${구간칸 + 1}`)} · ${말("top.floor", { n: S.층 })}`
+    + (S.진행 && S.무리수 > 1 ? ` · ${말("top.pack", { i: S.무리 + 1, n: S.무리수 })}` : "")
+    + (S.사냥층 ? ` · ${말("top.grind")}` : "");
   $("#gold").textContent = 수(S.금화); $("#shard").textContent = 수(S.가방.별가루);
   맵그리기();
 }
@@ -1975,7 +2048,7 @@ function 맵그리기(){
       const 보스 = f % 10 === 0, 자 = 자격(f), 꼭대기층 = f === 끝;
       return `<div class="층칸${보스 ? " 보스" : ""}${자.참 ? "" : " 새"}" data-f="${f}">
         <div class="머리줄"><b>${f}층</b>
-          <i>${보스 ? 구간(f).보스.이름 : 구간이름[(f - 1) % 10]}</i>
+          <i>${보스 ? 구간(f).보스.이름 : 말(`zone.${((f - 1) % 10) + 1}`)}</i>
           <span class="표">${자.참 ? "졸업" : 꼭대기층 ? "오르는 중" : "미완"}</span></div>
         <div class="자격줄">${자.줄.map((r) => `<span class="조건${r.됨 ? " 참" : ""}">${r.이름} <b>${r.지금}</b></span>`).join("")}</div>
       </div>`;
@@ -2049,19 +2122,15 @@ $("#식당단추").onclick = () => {
 $("#mailBtn").onclick = () => 쪽창("우편함",
   `<div class="풀이 on">수령할 우편이 없다.<br>나중에 보상이 오면 여기에 쌓인다.</div>`);
 
-$("#공지단추").onclick = () => 쪽창("공지",
-  `<div class="풀이 on"><b>탑은 100층이다.</b> 층은 스스로 오르지 않는다 —
-    그 층을 되돌이로 돌아 <b>자격</b>을 채워야 다음 층이 열린다.<br><br>
-    10·20·30… 층은 <b>관문</b>이다. 보스를 눕혀야 지나간다. 관문에서 지면
-    자동 등반이 꺼지고 한 층 내려가 모으게 된다.<br><br>
-    막히면 <b>대장간</b>에서 장비를 만들어라. 재료가 하나 모자라면 <b>시장</b>에 하루치가 있다.</div>`);
+/* 10-20: **규칙은 여기에만 적혀 있다.** 영어로 열었는데 이 창이 한국어면 처음 온 사람은
+   게임이 어떻게 굴러가는지 영영 모른다 — 그래서 둘째 겹에서 제일 먼저 옮겼다. */
+$("#공지단추").onclick = () => 쪽창(말("side.notice"), `<div class="풀이 on">${말("notice.body")}</div>`);
 
 $("#설정단추").onclick = () => 쪽창(말("side.settings"),
   `<div class="줄"><b>${말("set.lang")}</b></div>
    <div class="줄"><button class="btn" id="말ko">한국어</button><button class="btn" id="말en">English</button></div>
-   <div class="풀이 on">소리는 위쪽 <b>♪</b> 로 끄고 켠다.<br>
-     아래는 <b>되돌릴 수 없다.</b> 대원·층·재료가 모두 사라지고 처음부터 시작한다.</div>
-   <div class="줄"><button class="btn" id="지우기단추">저장 지우기</button></div>`,
+   <div class="풀이 on">${말("set.sound")}</div>
+   <div class="줄"><button class="btn" id="지우기단추">${말("set.wipe")}</button></div>`,
   (덮) => {
     /* 10-19: 말을 바꾸면 **창을 닫는다** — 열린 창 안의 글자는 이미 그려진 것이라 안 바뀐다.
        반쯤 바뀐 창을 보여 주느니 닫고 새로 열게 하는 쪽이 덜 헷갈린다. */
@@ -2155,7 +2224,7 @@ function 출발창(층){
       S.층 = 층; S.단계 = Math.floor((층 - 1)/10) + 1;
       S.사냥층 = 층; S.진행 = true; S.쉼 = 0;          // 되돌이가 기본이다 — 층은 스스로 안 오른다
       덮.remove();
-      적기(`<b>${층}층 · ${구간이름[(층 - 1) % 10]}</b>에 들어섰다.`, "big");
+      적기(말("log.enter", { n: 층, z: 말(`zone.${((층 - 1) % 10) + 1}`) }), "big");
       // 윗줄()이 전투 칸을 다시 펴므로, 크기()는 그 뒤에 불러야 한다 — 접힌 칸은 폭이 0이다
       전투준비(); 적만들기(); 윗줄(); 크기(); 그리기(); 화면(); 저장();
     };
@@ -2563,11 +2632,11 @@ function 칸(){
      * 재료 이름은 `재료이름` 한 곳에서만 가져온다(두 군데 적었다가 undefined 가 다섯 개 찍혔다).
      */
     const g = S.가방;
-    if (S.최고층 < 3) { el.innerHTML = `<div class="row"><div class="nm"><b>대장간</b><i>3층을 넘으면 대장간이 열린다. (지금 ${S.최고층}층)</i></div></div>`; return; }
+    if (S.최고층 < 3) { el.innerHTML = `<div class="row"><div class="nm"><b>${말("tab.forge")}</b><i>${말("forge.locked", { n: S.최고층 })}</i></div></div>`; return; }
     if (!S.대장갈래) {
-      el.innerHTML = 갈래판("대장간", "매일 재료를 모아 여기서 벼린다", [
-        { 키:"강화", 이름:"장비 강화", 그림:"c-upgrade", 열림:false, 쪽글:"강화 재료 필요" },
-        { 키:"제작", 이름:"장비 제작", 그림:"c-craft", 열림:true, 쪽글:"재료로 새 장비를" },
+      el.innerHTML = 갈래판(말("tab.forge"), 말("forge.sub"), [
+        { 키:"강화", 이름:말("forge.upgrade"), 그림:"c-upgrade", 열림:false, 쪽글:말("forge.upgradeSub") },
+        { 키:"제작", 이름:말("forge.craft"), 그림:"c-craft", 열림:true, 쪽글:말("forge.craftSub") },
       ]);
       el.querySelectorAll("[data-갈래]").forEach((b) => b.onclick = () => { S.대장갈래 = b.dataset.갈래; 칸(); });
       return;
@@ -2625,9 +2694,9 @@ function 칸(){
   } else if (S.탭 === "shop") {
     매대확인();
     if (!S.시장갈래) {
-      el.innerHTML = 갈래판("시장", "매일 물건이 바뀐다", [
-        { 키:"구매", 이름:"상점 구매", 그림:"c-shop", 열림:true, 쪽글:"금화로 물품 구매" },
-        { 키:"판매", 이름:"위탁 판매", 그림:"c-sell", 열림:false, 쪽글:"아이템 등록 대기 중" },
+      el.innerHTML = 갈래판(말("tab.shop"), 말("shop.sub"), [
+        { 키:"구매", 이름:말("shop.buy"), 그림:"c-shop", 열림:true, 쪽글:말("shop.buySub") },
+        { 키:"판매", 이름:말("shop.sell"), 그림:"c-sell", 열림:false, 쪽글:말("shop.sellSub") },
       ]);
       el.querySelectorAll("[data-갈래]").forEach((b) => b.onclick = () => { S.시장갈래 = b.dataset.갈래; 칸(); });
       return;
@@ -2734,8 +2803,9 @@ function 길드그리기(){
   $("#repName").textContent = c.이름;
   const 판 = 카드(c);
   $("#repName").style.color = 등급색[판.등급];
-  $("#repAge").textContent = `${판.등급} · ${판.직업} · Lv.${c.레벨}`;
-  $("#repRole").textContent = `체력 ${수(최대체력(c))} · 공격 ${수(공격력(c))} · 방어 ${수(방어력(c))} · 속도 ${속도(c)}`;
+  $("#repAge").textContent = `${말값(판.등급)} · ${말값(판.직업)} · Lv.${c.레벨}`;
+  $("#repRole").textContent = `${말("stat.hp")} ${수(최대체력(c))} · ${말("stat.atk")} ${수(공격력(c))}`
+    + ` · ${말("stat.def")} ${수(방어력(c))} · ${말("stat.spd")} ${속도(c)}`;
   $("#bondBar").style.width = Math.min(100, c.경험/필요경험(c)*100) + "%";
 }
 
@@ -2781,7 +2851,7 @@ S.최고층 = 열린층();
 S.사냥층 = S.사냥층 ?? S.층;                            // 되돌이가 기본
 setInterval(저장, 10_000);
 
-if (불러옴) 적기(`<b>${구간이름[(S.단계-1)%10]} · ${S.층}층</b>에서 다시 시작한다.`, "big");
+if (불러옴) 적기(말("log.resume", { n: S.층, z: 말(`zone.${((S.단계 - 1) % 10) + 1}`) }), "big");
 else 적기("<b>1구간 · 침묵의 배수 회랑</b>", "big");
 if (!불러옴) 적기("기사가 방패를 고쳐 메고 첫 계단을 내려갔다.");
 크기(); 원정시작(); 윗줄(); 화면();
