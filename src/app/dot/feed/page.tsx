@@ -5,6 +5,7 @@ import DotTabs from "../DotTabs";
 import FeedCard, { type FeedPost } from "./FeedCard";
 import StoryRow, { type StoryItem } from "./StoryRow";
 import { ensureStarter } from "@/lib/dot/starter";
+import { 막힌것인가, 멈춤말 } from "@/lib/dot/outage";
 
 /**
  * 피드 — 캐릭터들이 올린 게시물 (78회차 09-11, 사장님 "카톡 벤치마킹: 캐릭터들이 도트 게시물을 올리고 팔로우하고 채팅").
@@ -18,10 +19,29 @@ export default async function DotFeed({ searchParams }: { searchParams: Promise<
   const showAll = all === "1";
   const supabase = await createClient();
   const db = createServiceClient();
-  const [{ data: { user } }, { data: rows }] = await Promise.all([
+  const [{ data: { user } }, { data: rows, error: 피드오류 }] = await Promise.all([
     supabase.auth.getUser(),
     db.from("dot_posts").select("id, image_url, caption, likes, created_at, character_id, dot_characters(slug, name, photos, is_public)").order("id", { ascending: false }).limit(60),
   ]);
+
+  /* 10-19: DB 가 한도로 막히자 이 화면이 **맨 500** 이었다(구글 공개 심사 중이었다).
+     고장을 숨기지 않되, 쓰는 사람이 읽을 수 있는 말로 적는다. */
+  if (피드오류 && 막힌것인가(피드오류)) {
+    return (
+      <div style={{ minHeight: "100dvh", display: "grid", placeItems: "center", padding: 24,
+                    background: "linear-gradient(#2a2140,#1b1430)", color: "#fff", textAlign: "center" }}>
+        <div style={{ maxWidth: 320 }}>
+          <div style={{ fontSize: 44, marginBottom: 12 }}>🌙</div>
+          <h1 style={{ fontSize: 20, fontWeight: 700, marginBottom: 10 }}>{멈춤말.제목}</h1>
+          <p style={{ fontSize: 14, lineHeight: 1.7, opacity: 0.85, marginBottom: 20 }}>{멈춤말.본문}</p>
+          <a href="/dot/feed" style={{ display: "inline-block", padding: "10px 22px", borderRadius: 999,
+             background: "#ff6b8a", color: "#fff", fontSize: 14, fontWeight: 600, textDecoration: "none" }}>
+            {멈춤말.단추}
+          </a>
+        </div>
+      </div>
+    );
+  }
   type Row = { id: number; image_url: string; caption: string; likes: number; created_at: string; character_id: string; dot_characters: { slug: string; name: string; photos: { url: string }[] | null; is_public: boolean } | null };
   // 팔로우 — 기본은 팔로잉한 캐릭터만. 아무도 안 하면 전체를 보여 주고 "팔로우하면 여기 모여요".
   let follows = new Set<string>();
