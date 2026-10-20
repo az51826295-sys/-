@@ -59,6 +59,17 @@ export async function collectCases(db: Supabase, companyId: string, opts: { limi
     expectations: { measure?: string; min?: number | null; max?: number | null; equals?: unknown }[] | null; coverage: { met?: boolean; where?: string; criterionId?: string }[] | null;
   };
   const delRows = (dels ?? []) as DelRow[];
+  /*
+   * 10-20: Supabase 가 **전송량 한도**로 막혔다. 사람 0명인데 찼으면 쓴 것은 우리 기계다.
+   * 이 줄은 **결과물을 통째로**(본문 `content_markdown` 포함) 매일 다시 내려받는다 —
+   * 본문은 어차피 600자로 잘라 쓰는데도 전부 받는다.
+   *
+   * **그런데 지금 자르면 안 된다.** 아래에서 "실패 사례는 전부 남긴다" 고 해서, 행을 잘라 받으면
+   * 옛 실패가 빠지고 **판정이 달라진다**(10-19 에 창을 357 로 넓혀 놓고 예측까지 적어 둔 참이다).
+   * DB 가 막혀 확인도 못 하는 지금 그걸 건드리는 것은 추측이다. **재기부터 한다** —
+   * 숫자가 나오면 그때 어디를 자를지 정한다.
+   */
+  console.log(`[cases] 결과물 ${delRows.length}줄 · 받은 것 ${(JSON.stringify(dels ?? []).length / 1048576).toFixed(2)}MB`);
   const unityOutput = (d: DelRow): string => {
     const paths = (d.vfiles ?? []).map((f) => f.path ?? "").filter(Boolean);
     const parts = [

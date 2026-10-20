@@ -84,11 +84,28 @@ export async function loadImplicit(db: Supabase, companyId: string, ai: AIProvid
   const { data: convs } = await db.from("conversations").select("id").eq("owner_id", co.owner_id as string).limit(500);
   const ids = ((convs ?? []) as { id: string }[]).map((c) => c.id);
   if (!ids.length) return { verdicts: [], returned: 0, withReply: 0, read: 0 };
+  /*
+   * 10-20: Supabase 두 개가 **전송량 한도**로 막혔다(exceed_egress_quota). 사람은 0명인데
+   * 찼다면 쓴 것은 우리 기계다 — 이 고리가 **매일 대화 전부를 통째로** 다시 내려받는다.
+   *
+   * `attachments` 를 통째로 받고 있었는데 **실제로 쓰는 것은 네 조각**이다
+   * (returned · assignment · approval · reaction). 나머지엔 `unityChecks` 같은 큰 덩어리가
+   * 들어 있고 그게 날마다 따라 나왔다. 조각만 집어 온다 — 보는 것은 그대로다.
+   */
   const messages: Msg[] = [];
+  let 받은바이트 = 0;
   for (let i = 0; i < ids.length; i += 50) {
-    const { data } = await db.from("conversation_messages").select("id, conversation_id, role, content, attachments, created_at").in("conversation_id", ids.slice(i, i + 50)).order("created_at", { ascending: true }).limit(5000);
-    messages.push(...((data ?? []) as Msg[]));
+    const { data } = await db.from("conversation_messages")
+      .select("id, conversation_id, role, content, created_at, ret:attachments->returned, asg:attachments->assignment, apv:attachments->approval, rxn:attachments->reaction")
+      .in("conversation_id", ids.slice(i, i + 50)).order("created_at", { ascending: true }).limit(5000);
+    받은바이트 += JSON.stringify(data ?? []).length;
+    type 쪽 = { ret?: unknown; asg?: unknown; apv?: unknown; rxn?: unknown };
+    for (const r of (data ?? []) as (Msg & 쪽)[]) {
+      messages.push({ ...r, attachments: { returned: r.ret, assignment: r.asg, approval: r.apv, reaction: r.rxn } });
+    }
   }
+  /* **얼마나 받았는지 남긴다.** 이게 없어서 한도가 찰 때까지 아무도 몰랐다(10-20). */
+  console.log(`[implicit] 대화 ${ids.length}개 · 줄 ${messages.length} · 받은 것 ${(받은바이트 / 1048576).toFixed(2)}MB`);
   const turns = returnedTurns(messages);
   const withNext = turns.filter((t) => t.next && !t.discarded);
   const asTurns: Turn[] = withNext.map((t) => ({ id: t.next!.id, order: t.order, answer: t.answer, reply: t.next!.content, attachments: t.next!.attachments }));
