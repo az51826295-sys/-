@@ -54,13 +54,30 @@ export async function postUnattendedFeed(db: Supabase, log: (m: string) => void)
   const { data: asg } = await db.from("assignments").select("id, company_id").eq("role_input_json->>unattended", "true").limit(200);
   const ids = (asg ?? []).map((a) => a.id as string);
   if (!ids.length) return 0;
-  const { data: dls } = await db.from("deliverables").select("id, title, company_id, content_json, assignment_id, created_at").in("assignment_id", ids).order("created_at");
-  if (!dls?.length) return 0;
-  // 이미 붙인 것 거르기
+  /*
+   * 10-20: **이 줄이 Supabase 전송량 한도를 혼자 다 먹었다.**
+   *
+   * 이 함수는 **1분마다** 돈다. 그런데 무인 결과물을 `content_json`(본문 통째 — 게임 코드,
+   * 검사 기록까지)째로 전부 받아 온 **다음에** "이미 붙인 것" 을 걸렀다. 붙일 게 없어도
+   * 매분 수백 KB 가 나갔다.
+   *
+   * 실측(대시보드): 로키가 조직 전송량 14.07GB 중 **13.996GB**, 그중 **PostgREST 100%**,
+   * 9/28~10/17 **매일 똑같이 ~650MB**. 450KB × 1440분 ≈ 650MB — 숫자가 맞는다.
+   *
+   * 고침: **먼저 거르고, 남은 것만 본문을 받는다.** 보통 남는 게 0개라 본문 요청이 아예 안 나간다.
+   */
   const { data: posted } = await db.from("conversation_messages").select("did:attachments->unattended->>deliverableId").not("attachments->unattended", "is", null).limit(500);
   const done = new Set(((posted ?? []) as unknown as { did: string | null }[]).map((p) => p.did).filter(Boolean));
-  const fresh = (dls as unknown as Row[]).filter((d) => !done.has(d.id));
-  if (!fresh.length) return 0;
+
+  // ① 가벼운 칸만 — 본문은 안 받는다
+  const { data: 가벼운 } = await db.from("deliverables").select("id").in("assignment_id", ids).order("created_at");
+  const 남은ids = ((가벼운 ?? []) as { id: string }[]).map((d) => d.id).filter((id) => !done.has(id));
+  if (!남은ids.length) return 0;
+
+  // ② 진짜 붙일 것만 본문째로
+  const { data: dls } = await db.from("deliverables").select("id, title, company_id, content_json, assignment_id, created_at").in("id", 남은ids).order("created_at");
+  if (!dls?.length) return 0;
+  const fresh = dls as unknown as Row[];
 
   // 회사별로 한 턴
   let total = 0;
