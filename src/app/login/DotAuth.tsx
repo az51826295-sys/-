@@ -6,9 +6,10 @@
  * 같은 글꼴, 한국어. 서버 액션(로그인·가입)은 그대로 쓰고, 어디로 보낼지만 제품에 따라 갈린다.
  */
 import { PIXEL_CSS } from "@/app/dot/pixel-skin";
+import { 멈춤말 } from "@/lib/dot/outage";
 
 export default function DotAuth({
-  mode, error, message, action, google, origin,
+  mode, error, message, action, google, origin, 멈춤,
 }: {
   mode: "login" | "signup";
   error?: string;
@@ -17,6 +18,8 @@ export default function DotAuth({
   /** 구글로 들어가기. 없으면 단추를 안 그린다. */
   google?: (formData: FormData) => Promise<void>;
   origin?: string;
+  /** 10-23: 서버가 한도로 막혔나 — 처음 까는 사람이 제일 먼저 보는 화면이라 여기서 미리 말한다 */
+  멈춤?: boolean;
 }) {
   const isLogin = mode === "login";
   // 226회차 09-28, 사장님 *"구글로그인으로 바꿔 회원가입빼고"*.
@@ -40,6 +43,7 @@ export default function DotAuth({
           <div className="da-name">두근도트</div>
           <div className="da-sub">{isLogin ? "다시 왔네요" : "처음이죠? 30초면 돼요"}</div>
         </div>
+        {멈춤 && <div className="da-msg">⚠️ {멈춤말.제목} — {멈춤말.짧게}</div>}
         {message && <div className="da-msg">{message}</div>}
         {error && <div className="da-err">{koError(error)}</div>}
         {google && (

@@ -28,7 +28,21 @@ export default async function LoginPage({
 
   // 두근도트 서비스에서는 도트 화면. 로키 화면이 앱 안에 뜨면 딴 회사 페이지가 된다.
   if (process.env.PRODUCT === "dot") {
-    return <DotAuth mode="login" error={error} message={message} action={login} google={구글} origin={origin} />;
+    /*
+     * 10-23: 앱이 스토어에 올라간 날 서버는 아직 한도로 막혀 있었다. **새로 깐 사람이 처음 보는
+     * 화면이 바로 여기**인데(피드는 로그인으로 넘긴다) 여기선 아무 말이 없었다 — 구글 단추를
+     * 눌러야 그제서야 실패했다. 미리 말해 주고, **언제 열리는지**까지 적는다.
+     * 한 줄짜리 가벼운 조회다(머리만 세고 줄은 안 받는다).
+     */
+    let 멈춤 = false;
+    try {
+      const { createServiceClient } = await import("@/lib/supabase/service");
+      const { 막힌것인가 } = await import("@/lib/dot/outage");
+      const { error: e } = await createServiceClient()
+        .from("dot_characters").select("id", { count: "exact", head: true }).limit(1);
+      멈춤 = !!e && 막힌것인가(e);
+    } catch { /* 못 물어봤으면 조용히 넘어간다 — 안내를 띄우려다 로그인 화면을 죽이면 안 된다 */ }
+    return <DotAuth mode="login" error={error} message={message} action={login} google={구글} origin={origin} 멈춤={멈춤} />;
   }
 
   // 99회차: 로키도 한국어·검은 화면. 폰에서 처음 여는 사람에게 QR 이어하기를 먼저 알린다.
