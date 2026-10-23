@@ -532,6 +532,23 @@ const 말표 = {
     ko: `<b>{name}</b>{이가} {who}의 상처를 덮었다. <span class="good">+{n}</span>`,
     en: `<b>{name}</b> closes {who}'s wounds. <span class="good">+{n}</span>`,
   },
+  /* 둘째 판 (10-23) — 기사·검사·회복술사가 첫 열 층에서 쓰는 나머지 */
+  "fight.blocked": { ko: "<b>{name}</b>의 {what}{이가} 보호막에 튕겼다.", en: "<b>{name}</b>'s {what} glances off the barrier." },
+  "fight.vow": {
+    ko: `<b>{name}</b>{이가} 철벽의 맹세를 세웠다. 아군 전원 막 <span class="good">{n}</span> · 적의 눈이 방패로 쏠린다.`,
+    en: `<b>{name}</b> swears the ironwall oath. Shield <span class="good">{n}</span> to all · the enemy's eyes turn to the shield.`,
+  },
+  "fight.dawnShield": { ko: "<b>{name}</b>{이가} 새벽을 가르는 방패를 펼쳤다.", en: "<b>{name}</b> raises the dawn-splitting shield." },
+  "fight.catchBreath": { ko: "<b>{name}</b>{은는} 숨을 고르며 뒤를 살폈다.", en: "<b>{name}</b> catches their breath and watches the rear." },
+  "fight.salvation": {
+    ko: `<b>{name}</b>{이가} 구원의 진형을 펼쳤다. 아군 전원 <span class="good">+{n}</span>`,
+    en: `<b>{name}</b> forms the salvation array. All allies <span class="good">+{n}</span>`,
+  },
+  "fight.pray": {
+    ko: `<b>{name}</b>{이가} 조용히 기도했다. {who} <span class="good">+{n}</span>`,
+    en: `<b>{name}</b> prays quietly. {who} <span class="good">+{n}</span>`,
+  },
+  "fight.censer": { ko: "<b>{name}</b>{은는} 향로를 흔들었다.", en: "<b>{name}</b> swings the censer." },
 };
 const 말키 = "ash.lang";
 let 쓰는말 = (() => {
@@ -1000,7 +1017,7 @@ const 가장다친 = () => 산아군().filter((x) => x.hp < 최대체력(x)).sor
 /** 보호막 두른 적을 치면 튕긴다 — 공용 */
 function 튕겼나(c, e, 글, 색){
   if (e.보호막 <= 0) return false;
-  장면(c, "attack", `<b>${c.이름}</b>의 ${글}${조사(글,"이","가")} 보호막에 튕겼다.`, "bad", { 종류:"튕김", 에서:자리(c), 에:자리(e), 색 });
+  장면(c, "attack", 말("fight.blocked", { name: c.이름, what: 글 }), "bad", { 종류:"튕김", 에서:자리(c), 에:자리(e), 색 });
   return true;
 }
 
@@ -1025,10 +1042,10 @@ const 기술표 = {
     const 양 = 공격력(c) * (c.중복 >= 1 ? 1.55 : 1.4);
     const 빛 = 막주기(c, 산아군(), 양, "#7ec8ff");
     c.도발 = true;
-    장면(c, "attack", `<b>${c.이름}</b>${조사(c.이름,"이","가")} 철벽의 맹세를 세웠다. 아군 전원 막 <span class="good">${수(양)}</span> · 적의 눈이 방패로 쏠린다.`, "big", 빛);
+    장면(c, "attack", 말("fight.vow", { name: c.이름, n: 수(양) }), "big", 빛);
   } },
   새벽을가르는방패: { 쓰기(c){
-    장면(c, "attack", `<b>${c.이름}</b>${조사(c.이름,"이","가")} 새벽을 가르는 방패를 펼쳤다.`, "big", { 종류:"섬광", 에서:자리(c), 색:"#bfe6ff" });
+    장면(c, "attack", 말("fight.dawnShield", { name: c.이름 }), "big", { 종류:"섬광", 에서:자리(c), 색:"#bfe6ff" });
     for (const e of [...적들]) {
       if (e.보호막 > 0) {
         e.보호막 = Math.max(0, e.보호막 - 25);                       // 사장님: 궁극기는 보호막 25%만
@@ -1079,7 +1096,7 @@ const 기술표 = {
   /* ── 회복술사 ───────────────────────────────────────────────── */
   "치유의빛": { 쓰기(c){
     const t = 가장다친();
-    if (!t) { 장면(c, "idle", `<b>${c.이름}</b>${조사(c.이름,"은","는")} 숨을 고르며 뒤를 살폈다.`); return; }
+    if (!t) { 장면(c, "idle", 말("fight.catchBreath", { name: c.이름 })); return; }
     // 10-09: 1.6 이면 회복이 보스 한 대(143)보다 컸다(105 vs 73 순손실) — 그래서 탱커가 안 죽었다
     const 양 = Math.floor(공격력(c) * .9);
     t.hp = Math.min(최대체력(t), t.hp + 양);
@@ -1088,7 +1105,7 @@ const 기술표 = {
   "구원의진형": { 쿨:() => 3, 쓸까:() => 산아군().some((x) => x.hp < 최대체력(x) * .8), 쓰기(c){
     // 보스 광역(3턴마다 전원)에 맞서는 자리다. 한 명을 크게 살리는 대신 **전원을 조금씩**.
     const 양 = Math.floor(공격력(c) * .5);
-    장면(c, "attack", `<b>${c.이름}</b>${조사(c.이름,"이","가")} 구원의 진형을 펼쳤다. 아군 전원 <span class="good">+${수(양)}</span>`, "big",
+    장면(c, "attack", 말("fight.salvation", { name: c.이름, n: 수(양) }), "big",
       { 종류:"섬광", 에서:자리(c), 색:"#9dff8a" });
     for (const t of 산아군()) t.hp = Math.min(최대체력(t), t.hp + 양);
   } },
@@ -1108,12 +1125,12 @@ const 기술표 = {
     if (t) {
       const 양 = Math.floor(공격력(c) * .55);
       t.hp = Math.min(최대체력(t), t.hp + 양);
-      장면(c, "attack", `<b>${c.이름}</b>${조사(c.이름,"이","가")} 조용히 기도했다. ${t.이름} <span class="good">+${수(양)}</span>`, "",
+      장면(c, "attack", 말("fight.pray", { name: c.이름, who: t.이름, n: 수(양) }), "",
         { 종류:"회복", 에:자리(t), 색:"#ffe9a0" });
       return;
     }
     const e = 과녁(); if (!e || 튕겼나(c, e, "성화", "#ffe9a0")) {
-      장면(c, "idle", `<b>${c.이름}</b>${조사(c.이름,"은","는")} 향로를 흔들었다.`); return;
+      장면(c, "idle", 말("fight.censer", { name: c.이름 })); return;
     }
     const 피 = 적맞기(e, 공격력(c) * .8);
     장면(c, "attack", `<b>${c.이름}</b>의 성화 → ${e.이름} <span class="hit">${수(피)}</span>`, "",
