@@ -38,9 +38,9 @@ export default async function LoginPage({
     try {
       const { createServiceClient } = await import("@/lib/supabase/service");
       const { 막힌것인가 } = await import("@/lib/dot/outage");
-      const { error: e } = await createServiceClient()
+      const r = await createServiceClient()
         .from("dot_characters").select("id", { count: "exact", head: true }).limit(1);
-      멈춤 = !!e && 막힌것인가(e);
+      멈춤 = 막힌것인가(r.error, r.status);   // head:true 는 본문이 없어 글자가 빈다 → 상태를 본다
     } catch { /* 못 물어봤으면 조용히 넘어간다 — 안내를 띄우려다 로그인 화면을 죽이면 안 된다 */ }
     return <DotAuth mode="login" error={error} message={message} action={login} google={구글} origin={origin} 멈춤={멈춤} />;
   }

@@ -9,8 +9,19 @@
  * 쓰는 사람에게 `exceed_egress_quota` 는 아무 뜻도 없다.
  */
 
-/** Supabase 가 "이 프로젝트는 막혔다" 로 거절한 것인가 (요금·한도) */
-export function 막힌것인가(e: { message?: string; code?: string } | null | undefined): boolean {
+/**
+ * Supabase 가 "이 프로젝트는 막혔다" 로 거절한 것인가 (요금·한도)
+ *
+ * 10-23: 처음엔 **오류 글자만** 봤는데 로그인 화면 띠가 안 떴다. 까닭은
+ * `select(..., { head: true })` 가 **본문을 안 받아** `error.message` 가 **빈 글자**였던 것.
+ * 글이 비었다고 멀쩡한 게 아니다 — 진짜 신호는 **상태 402** 인데 그걸 안 보고 있었다.
+ * (빈 값을 "문제 없음" 으로 읽는 것은 09-27 에 적어 둔 사고와 같은 모양이다.)
+ */
+export function 막힌것인가(
+  e: { message?: string; code?: string } | null | undefined,
+  status?: number,
+): boolean {
+  if (status === 402) return true;
   const m = (e?.message ?? "").toLowerCase();
   return m.includes("restricted") || m.includes("exceed_egress") || m.includes("quota")
     || m.includes("payment required") || e?.code === "402";
