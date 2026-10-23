@@ -34,7 +34,9 @@ const { data: running, error: re } = await db
    "모르면 안 올린다" 는 맞지만 **이 경우엔 모르는 게 아니다** — DB 가 막혀 있으면 워커가
    일을 집을 수도, 이어 갈 수도 없다. 즉 도는 일이 **없다는 것이 증명된다.**
    그래서 이 거절만 따로 알아보고 지나간다(다른 못 셈은 그대로 막는다). */
-const DB막힘 = /restricted|exceed_egress|quota|payment required/i.test(re?.message ?? "");
+/* 10-24: 로키 DB 를 **멈추자**(pause) 이 문이 "fetch failed" 로 모든 배포를 막았다.
+   402(한도)만 알아보고 "아예 안 뜨는 것"은 몰랐다 — 둘 다 **일이 돌 수 없다**는 뜻은 같다. */
+const DB막힘 = /restricted|exceed_egress|quota|payment required|fetch failed|ENOTFOUND|ECONNREFUSED|paused/i.test(re?.message ?? "");
 if (re && DB막힘) ok.push(`DB 가 한도로 막혀 있다 — **일이 돌 수 없으므로 도는 일 없음**(${re.message.slice(0, 60)}…)`);
 else if (re) fail.push(`도는 일을 못 셌다: ${re.message}`);      // 못 세면 막는다 — 모르면 안 올린다
 else if (running?.length) {
