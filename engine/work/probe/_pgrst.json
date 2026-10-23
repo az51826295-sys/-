@@ -1,0 +1,20 @@
+{
+  "PGRST_APP_SETTINGS_JWT_EXP": "3600",
+  "PGRST_DB_ANON_ROLE": "anon",
+  "PGRST_DB_EXTRA_SEARCH_PATH": "public",
+  "PGRST_DB_MAX_ROWS": "1000",
+  "PGRST_DB_SCHEMAS": "public,graphql_public",
+  "PGRST_DB_URI": "postgres://authenticator:awtwd41u8923x3r1j0bxr2rivggrxtq7glf2loz0xilts8bz63cen5ns2ncm5xj6@postgres.railway.internal:5432/postgres",
+  "PGRST_DB_USE_LEGACY_GUCS": "false",
+  "PGRST_SERVER_HOST": "*",
+  "RAILWAY_ENVIRONMENT": "production",
+  "RAILWAY_ENVIRONMENT_ID": "e7ab52c5-a3c2-4e27-9016-bdf34a2c2fcf",
+  "RAILWAY_ENVIRONMENT_NAME": "production",
+  "RAILWAY_PRIVATE_DOMAIN": "postgrest.railway.internal",
+  "RAILWAY_PROJECT_ID": "2ae32deb-e251-4606-976d-f15400bb45c0",
+  "RAILWAY_PROJECT_NAME": "cooperative-patience",
+  "RAILWAY_SERVICE_ENVOY_URL": "envoy-production-564b.up.railway.app",
+  "RAILWAY_SERVICE_ID": "bd8972d0-a8ea-4d29-b31c-98a375e7f8c9",
+  "RAILWAY_SERVICE_NAME": "Postgrest",
+  "ROOT_SECRET": "n2o6wbil05v7p9rl3oqh06zzqxe8058t9lktfa4mb5ao0ddta3ngbu928f3o6v8flsbdvrrrsc42m09psb0zuuxay42q7vn7i22q8zcdydgo2zvthk9exnn1546rk62m"
+}
