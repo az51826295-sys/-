@@ -12,20 +12,16 @@
  * 켜는 것은 사장님 손이다(Supabase 대시보드 + 구글 클라우드 OAuth 클라이언트).
  */
 import { createClient } from "@/lib/supabase/server";
+import { 구글켜졌나 } from "@/lib/auth/googleEnabled";
 
-/** 구글이 켜져 있나. 화면이 이걸 보고 무엇을 내밀지 정한다. */
+/**
+ * 구글이 켜져 있나. 화면이 이걸 보고 무엇을 내밀지 정한다.
+ * 10-24: 묻는 법을 `lib/auth/googleEnabled` **한 곳**으로 옮겼다 — 로그인 화면도 같은 것을 본다.
+ * 둘이 따로 물으면 한쪽만 고쳐 놓고 다른 쪽에서 생 JSON 이 뜬다(실제로 그랬다).
+ */
 export async function GET() {
-  const base = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  if (!base) return Response.json({ google: false, why: "Supabase 주소가 없다" });
-  try {
-    const r = await fetch(`${base}/auth/v1/authorize?provider=google`, { redirect: "manual" });
-    const loc = r.headers.get("location") ?? "";
-    const 켜짐 = r.status >= 300 && r.status < 400 && loc.includes("google");
-    return Response.json({ google: 켜짐, why: 켜짐 ? "켜져 있다" : `안 켜졌다 (HTTP ${r.status})` });
-  } catch (e) {
-    // 못 물어봤으면 **켜졌다고 하지 않는다.** 0 을 "없다" 로 읽지 않는 것과 같은 결이다.
-    return Response.json({ google: false, why: `못 물어봤다: ${e instanceof Error ? e.message.slice(0, 60) : e}` });
-  }
+  const { 켜짐, 까닭 } = await 구글켜졌나();
+  return Response.json({ google: 켜짐, why: 까닭 });
 }
 
 /** 지금 계정에 구글을 붙인다. 이미 붙은 사람은 그대로 둔다. */

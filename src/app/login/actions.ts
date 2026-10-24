@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { 구글켜졌나, 구글꺼짐말 } from "@/lib/auth/googleEnabled";
 
 export async function login(formData: FormData) {
   const email = String(formData.get("email") ?? "");
@@ -29,6 +30,14 @@ export async function login(formData: FormData) {
  */
 export async function googleLogin(formData: FormData) {
   const origin = String(formData.get("origin") ?? "");
+  /**
+   * 10-24: **보내기 전에 켜졌는지 묻는다.** `signInWithOAuth()` 는 주소를 만들어 줄 뿐이라
+   * 아래 `if (error)` 가 한 번도 안 걸렸고, 브라우저가 그 주소로 가서 **생 JSON** 을 띄웠다
+   * (이사한 새 프로젝트에 구글 provider 가 안 켜져 있었다 — 자료는 옮겨도 Auth 설정은 안 따라온다).
+   */
+  const { 켜짐 } = await 구글켜졌나();
+  if (!켜짐) redirect("/login?error=" + encodeURIComponent(구글꺼짐말));
+
   const supabase = await createClient();
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
