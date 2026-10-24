@@ -11,6 +11,7 @@ export default function FeedCard({ post, liked: liked0, signedIn }: { post: Feed
   const [liked, setLiked] = useState(liked0);
   const [likes, setLikes] = useState(post.likes);
   const [mounted, setMounted] = useState(false);
+  const [그림깨짐, 그림깨짐설정] = useState(false);
   useEffect(() => { setMounted(true); }, []);
 
   async function like() {
@@ -37,7 +38,12 @@ export default function FeedCard({ post, liked: liked0, signedIn }: { post: Feed
         <span className="fc-when">{when}</span>
         {signedIn && <span className="fc-fb"><FollowButton characterId={post.characterId} following={post.following} name={post.name} size="sm" /></span>}
       </div>
-      <img className="fc-img" src={post.image} alt={post.caption} />
+      {/**
+        * 10-24: 이사 뒤 사진 111장이 **죽은 주소**를 가리킨다(옛 스토리지, 10-27 에 가져온다).
+        * 그대로 두면 피드가 **깨진 그림 아이콘 벽**이 된다 — 글은 멀쩡한데 앱이 고장난 것처럼 보인다.
+        * 그래서 못 받아 온 사진은 **칸째 숨기고 글만 남긴다.** 없는 것을 있는 척하지 않는다.
+        */}
+      {!그림깨짐 && <img className="fc-img" src={post.image} alt={post.caption} onError={() => 그림깨짐설정(true)} />}
       <div className="fc-actions">
         <button className={`fc-like${liked ? " on" : ""}`} onClick={like} aria-pressed={liked} aria-label="좋아요">
           <span className="heart">{liked ? "♥" : "♡"}</span>
