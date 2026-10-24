@@ -8,11 +8,33 @@
  *
  *   node engine/work/dot-이사/복원_SQL_만들기.mjs
  *   → engine/work/dot-이사/복원.sql  (Supabase SQL 편집기에 통째로 붙여넣기)
+ *
+ * **비밀번호까지 옮기려면** 사장님이 직접:
+ *   node engine/work/dot-이사/복원_SQL_만들기.mjs --비밀번호도
+ * 그러면 17명 중 **이메일로 가입한 12명**이 쓰던 비밀번호 그대로 들어온다.
+ * 안 켜면 그 12명은 "비밀번호 찾기" 를 한 번 해야 한다(구글로 가입한 5명은 어느 쪽이든 그대로).
+ * 켠 판은 **해시가 들어 있으니 git 에 두지 말고, 쓰고 지운다**(이미 gitignore 에 있다).
  */
 import { readFileSync, writeFileSync } from "node:fs";
 
 const 뿌리 = "C:/Users/az518/Desktop/ai-workforce/engine/work/dot-이사";
 const d = JSON.parse(readFileSync(뿌리 + "/dot-dump.json", "utf8"));
+
+/**
+ * **비밀 칸은 아예 빼고 만든다** (10-24 2판).
+ *
+ * 1판은 `auth.users` 를 통째로 실었다 — 거기엔 **비밀번호 해시와 재설정 토큰**이 들어 있다.
+ * 그런 파일은 git 에 둘 수도, 채팅으로 주고받을 수도 없다(실제로 10-24 에 추적되고 있었다).
+ *
+ * 빼도 되는 까닭: 옛 계정 22명 중 **17명이 구글**이다(`auth_identities`). 구글은 해시를 안 쓰고
+ * `provider_id` 로 사람을 가리므로, 신원만 되살리면 **같은 user id 로 돌아온다** — 대화도 친밀도도 그대로다.
+ * 이메일로 가입한 분들은 "비밀번호 찾기" 를 한 번 하시면 된다. 해시를 옮기는 것보다 이쪽이 낫다.
+ */
+const 비밀칸 = new Set(process.argv.includes("--비밀번호도") ? [] : [
+  "encrypted_password", "confirmation_token", "recovery_token",
+  "email_change_token_new", "email_change_token_current", "email_change",
+  "phone_change", "phone_change_token", "reauthentication_token",
+]);
 
 /** 넣을 순서 — 참조하는 쪽이 뒤에 온다 */
 const 순서 = [
@@ -53,11 +75,17 @@ for (const [표, 키] of 순서) {
   const 줄들 = d[키];
   if (!줄들 || !줄들.length) { 줄.push("-- " + 표 + ": 옮길 줄 없음"); continue; }
   합 += 줄들.length;
-  const 칸 = Object.keys(줄들[0]);
+  /* 비밀 칸은 **값까지 통째로 버린다** — 파일에 안 남는다 */
+  const 칸 = Object.keys(줄들[0]).filter((c) => !비밀칸.has(c));
+  const 깎은것 = Object.keys(줄들[0]).filter((c) => 비밀칸.has(c));
+  const 줄들_안전 = 깎은것.length
+    ? 줄들.map((r) => Object.fromEntries(칸.map((c) => [c, r[c]])))
+    : 줄들;
+  if (깎은것.length) 줄.push("-- (" + 표 + " 에서 비밀 칸 " + 깎은것.length + "개를 뺐다: " + 깎은것.join(", ") + ")");
   줄.push("-- " + 표 + " — " + 줄들.length + "줄");
   줄.push("insert into " + 표 + " (" + 칸.map((c) => '"' + c + '"').join(", ") + ")");
   줄.push("select " + 칸.map((c) => '"' + c + '"').join(", "));
-  줄.push("from json_populate_recordset(null::" + 표 + ", " + 인용(JSON.stringify(줄들)) + "::json)");
+  줄.push("from json_populate_recordset(null::" + 표 + ", " + 인용(JSON.stringify(줄들_안전)) + "::json)");
   줄.push("on conflict do nothing;");
   줄.push("");
 }

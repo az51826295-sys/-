@@ -14,7 +14,23 @@
  */
 export type 구글상태 = { 켜짐: boolean; 까닭: string };
 
+/**
+ * **5분만 기억한다.** 로그인 화면은 새로 깐 사람이 처음 보는 자리라 느리면 안 된다
+ * (두근도트는 "느림 = 첫 글자까지" 다). 그렇다고 영영 기억하면 사장님이 구글을 켜도
+ * 단추가 안 돌아온다 — 5분이면 켠 뒤 금방 보이고, 평소엔 한 번만 묻는다.
+ */
+let 기억: { 때: number; 값: 구글상태 } | null = null;
+const 기억시간 = 5 * 60 * 1000;
+
 export async function 구글켜졌나(): Promise<구글상태> {
+  if (기억 && Date.now() - 기억.때 < 기억시간) return 기억.값;
+  const 값 = await 물어보기();
+  /* 못 물어본 것은 기억하지 않는다 — 한 번 끊긴 것 때문에 5분간 단추가 사라지면 안 된다 */
+  if (값.켜짐 || !값.까닭.startsWith("못 물어봤다")) 기억 = { 때: Date.now(), 값 };
+  return 값;
+}
+
+async function 물어보기(): Promise<구글상태> {
   const base = process.env.NEXT_PUBLIC_SUPABASE_URL;
   if (!base) return { 켜짐: false, 까닭: "Supabase 주소가 없다" };
   try {

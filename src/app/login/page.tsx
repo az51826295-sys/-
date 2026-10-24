@@ -3,6 +3,7 @@ import { login, googleLogin } from "./actions";
 import { headers } from "next/headers";
 import { publicOriginFromHeaders } from "@/lib/http/origin";
 import DotAuth from "./DotAuth";
+import { 구글켜졌나 } from "@/lib/auth/googleEnabled";
 
 // 두근도트 서비스에서는 탭 제목도 두근도트. 루트 레이아웃의 "Rookery" 가 앱 안에 뜨면 딴 회사 페이지가 된다.
 export const metadata = process.env.PRODUCT === "dot" ? { title: "두근도트 — 로그인" } : { title: "로키 — 로그인" };
@@ -24,7 +25,12 @@ export default async function LoginPage({
   const h = await headers();
   // **x-forwarded-host 를 먼저 본다.** Railway 뒤에서 `host` 는 내부 이름이라 localhost 가 된다(97회차·10-03 두 번).
   const origin = publicOriginFromHeaders(h) ?? "";
-  const 구글 = process.env.GOOGLE_LOGIN === "1" ? googleLogin : undefined;
+  /**
+   * 10-24: 스위치만 보고 단추를 내밀면 **죽은 단추**가 된다. 이사한 새 프로젝트에
+   * 구글 provider 가 안 켜져 있어서, 사장님이 눌렀더니 생 JSON 이 떴다.
+   * 그래서 **스위치 + 실제로 켜졌나** 둘 다 본다 — 켜는 순간 단추가 저절로 돌아온다.
+   */
+  const 구글 = process.env.GOOGLE_LOGIN === "1" && (await 구글켜졌나()).켜짐 ? googleLogin : undefined;
 
   // 두근도트 서비스에서는 도트 화면. 로키 화면이 앱 안에 뜨면 딴 회사 페이지가 된다.
   if (process.env.PRODUCT === "dot") {

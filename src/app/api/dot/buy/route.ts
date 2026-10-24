@@ -17,6 +17,21 @@ export async function POST(request: Request) {
   if (!sku) return Response.json({ error: "그런 상품은 없어요." }, { status: 400 });
   if (process.env.BILLING_OPEN !== "1") return Response.json({ error: "결제는 곧 열려요. 조금만 기다려 주세요." }, { status: 503 });
 
+  /**
+   * **검증이 없으면 주지 않는다** (10-24).
+   *
+   * 여기는 `BILLING_OPEN=1` 만 켜면 **아무나 이 주소로 POST 해서 크레딧을 받아 가는** 자리였다.
+   * 구매 토큰 확인이 TODO 로 남아 있었기 때문이다 — 스위치 하나가 지갑을 여는 구조는 안 된다.
+   * 그래서 **확인할 열쇠가 없으면 막는다.** 손으로 주는 길(`engine/tools/dot_grant.mts`)은 그대로 있다.
+   */
+  const 확인할수있나 = !!process.env.PLAY_VERIFY_KEY;
+  if (!확인할수있나) {
+    return Response.json({ error: "결제 확인이 아직 준비되지 않았어요. 조금만 기다려 주세요." }, { status: 503 });
+  }
+  if (!body.purchaseToken) {
+    return Response.json({ error: "결제 정보가 없어요." }, { status: 400 });
+  }
+
   // TODO(스토어): body.purchaseToken 을 Google Play Developer API 로 확인. 같은 토큰이 원장에 있으면 다시 주지 않는다.
   const db = createServiceClient();
   if (body.purchaseToken) {
