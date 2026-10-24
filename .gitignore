@@ -68,3 +68,7 @@ engine/tools/bin/
 
 # 로키 열쇠 (10-12) — 저장소에 올라가면 안 된다. 작업 스케줄러가 보는 유일한 자리라 여기 둔다
 .keys/
+
+# 두근도트 이사 덤프·복원 SQL — **계정 비밀번호 해시와 이메일이 들어 있다.** git 에 두지 않는다 (10-24)
+engine/work/dot-이사/dot-dump.json
+engine/work/dot-이사/복원.sql

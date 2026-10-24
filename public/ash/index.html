@@ -549,6 +549,340 @@ const 말표 = {
     en: `<b>{name}</b> prays quietly. {who} <span class="good">+{n}</span>`,
   },
   "fight.censer": { ko: "<b>{name}</b>{은는} 향로를 흔들었다.", en: "<b>{name}</b> swings the censer." },
+
+  /* ── 자료에 글자로 박힌 낱말 (10-24 전세계화 2판) ──
+     `말값()` 이 이 표를 보고 옮긴다. 표에 없으면 한국어가 그대로 나온다 — 빈 화면보다 낫다. */
+  "v.침묵의 배수 회랑": { ko: "침묵의 배수 회랑", en: "Silent Drain Gallery" },
+  "v.쇠종의 회랑": { ko: "쇠종의 회랑", en: "Gallery of the Iron Bell" },
+  "v.물잠긴 암거": { ko: "물잠긴 암거", en: "Flooded Culvert" },
+  "v.재의 숙영지": { ko: "재의 숙영지", en: "Ashen Encampment" },
+  "v.봉인된 현자의 전당": { ko: "봉인된 현자의 전당", en: "Sealed Hall of Sages" },
+  "v.무너진 비공정 창고": { ko: "무너진 비공정 창고", en: "Collapsed Airship Depot" },
+  "v.검은 이삭 들판": { ko: "검은 이삭 들판", en: "Field of Black Grain" },
+  "v.번개샘 제단": { ko: "번개샘 제단", en: "Altar of the Lightning Spring" },
+  "v.심층 봉인고": { ko: "심층 봉인고", en: "Deep Sealing Vault" },
+  "v.태고의 문턱": { ko: "태고의 문턱", en: "Threshold of the Primeval" },
+  "v.습한 지하 하수도": { ko: "습한 지하 하수도", en: "Damp Underground Sewer" },
+  "v.버려진 광산": { ko: "버려진 광산", en: "Abandoned Mine" },
+  "v.통곡의 고탑 회랑": { ko: "통곡의 고탑 회랑", en: "Wailing Tower Gallery" },
+  "v.침묵의 성소": { ko: "침묵의 성소", en: "Sanctum of Silence" },
+  "v.맹독의 지하 늪": { ko: "맹독의 지하 늪", en: "Venomous Underswamp" },
+  "v.용암의 대장간": { ko: "용암의 대장간", en: "Forge of Lava" },
+  "v.서리발의 빙벽": { ko: "서리발의 빙벽", en: "Frostfoot Ice Wall" },
+  "v.심연의 문": { ko: "심연의 문", en: "Gate of the Abyss" },
+  "v.하수도 거대 쥐": { ko: "하수도 거대 쥐", en: "Sewer Giant Rat" },
+  "v.버려진 슬라임": { ko: "버려진 슬라임", en: "Forsaken Slime" },
+  "v.음침한 박쥐": { ko: "음침한 박쥐", en: "Gloomy Bat" },
+  "v.녹슨 철 골렘": { ko: "녹슨 철 골렘", en: "Rusted Iron Golem" },
+  "v.코볼트 주술사": { ko: "코볼트 주술사", en: "Kobold Shaman" },
+  "v.광산 해골 인부": { ko: "광산 해골 인부", en: "Skeleton Miner" },
+  "v.동굴 암살자": { ko: "동굴 암살자", en: "Cave Assassin" },
+  "v.지옥사냥개": { ko: "지옥사냥개", en: "Hellhound" },
+  "v.침묵의 기사": { ko: "침묵의 기사", en: "Silent Knight" },
+  "v.가고일 파수꾼": { ko: "가고일 파수꾼", en: "Gargoyle Sentinel" },
+  "v.원혼의 영체": { ko: "원혼의 영체", en: "Vengeful Wraith" },
+  "v.망령의 거인": { ko: "망령의 거인", en: "Revenant Giant" },
+  "v.타락한 사제": { ko: "타락한 사제", en: "Fallen Priest" },
+  "v.수호 돌조각": { ko: "수호 돌조각", en: "Guardian Stone Shard" },
+  "v.이단 가고일": { ko: "이단 가고일", en: "Heretic Gargoyle" },
+  "v.침묵의 심판관": { ko: "침묵의 심판관", en: "Silent Judicator" },
+  "v.늪지 슬라임": { ko: "늪지 슬라임", en: "Marsh Slime" },
+  "v.독니 쥐": { ko: "독니 쥐", en: "Fangtooth Rat" },
+  "v.부식 가고일": { ko: "부식 가고일", en: "Corroded Gargoyle" },
+  "v.맹독 히드라": { ko: "맹독 히드라", en: "Venom Hydra" },
+  "v.화염 정령": { ko: "화염 정령", en: "Flame Spirit" },
+  "v.용암 헬하운드": { ko: "용암 헬하운드", en: "Lava Hellhound" },
+  "v.대장장이 고블린": { ko: "대장장이 고블린", en: "Blacksmith Goblin" },
+  "v.고대 용암 골렘": { ko: "고대 용암 골렘", en: "Ancient Lava Golem" },
+  "v.얼음 유령": { ko: "얼음 유령", en: "Ice Phantom" },
+  "v.설원 세이렌": { ko: "설원 세이렌", en: "Snowfield Siren" },
+  "v.서리 거인": { ko: "서리 거인", en: "Frost Giant" },
+  "v.서리 여왕": { ko: "서리 여왕", en: "Frost Queen" },
+  "v.심연의 추적자": { ko: "심연의 추적자", en: "Abyss Stalker" },
+  "v.공허의 주술사": { ko: "공허의 주술사", en: "Void Shaman" },
+  "v.무명 왕의 망령": { ko: "무명 왕의 망령", en: "Revenant of the Nameless King" },
+  "v.심연의 주시자": { ko: "심연의 주시자", en: "Abyss Watcher" },
+  "v.칼리드": { ko: "칼리드", en: "Kalid" },
+  "v.로제": { ko: "로제", en: "Rose" },
+  "v.로건": { ko: "로건", en: "Logan" },
+  "v.이브": { ko: "이브", en: "Eve" },
+  "v.흑마법사": { ko: "흑마법사", en: "Dark Mage" },
+  "v.전투사제": { ko: "전투사제", en: "Battle Priest" },
+  "v.푸른방패검": { ko: "푸른방패검", en: "Azure Shield Blade" },
+  "v.철벽의맹세": { ko: "철벽의맹세", en: "Oath of the Iron Wall" },
+  "v.새벽을가르는방패": { ko: "새벽을가르는방패", en: "Dawn-Cleaving Shield" },
+  "v.연속베기": { ko: "연속베기", en: "Double Slash" },
+  "v.처형": { ko: "처형", en: "Execute" },
+  "v.약점노리기": { ko: "약점노리기", en: "Mark Weakness" },
+  "v.치유의빛": { ko: "치유의빛", en: "Healing Light" },
+  "v.구원의진형": { ko: "구원의진형", en: "Formation of Salvation" },
+  "v.화염구": { ko: "화염구", en: "Fireball" },
+  "v.사슬": { ko: "사슬", en: "Chains" },
+  "v.부패의저주": { ko: "부패의저주", en: "Curse of Decay" },
+  "v.기도": { ko: "기도", en: "Prayer" },
+  "v.성스러운축복": { ko: "성스러운축복", en: "Holy Blessing" },
+  "v.빛의수호막": { ko: "빛의수호막", en: "Ward of Light" },
+  "v.방패치기": { ko: "방패치기", en: "Shield Bash" },
+  "v.성역의진형": { ko: "성역의진형", en: "Formation of Sanctuary" },
+  "v.급소베기": { ko: "급소베기", en: "Vital Strike" },
+  "v.그림자습격": { ko: "그림자습격", en: "Shadow Ambush" },
+  "v.맹독 바르기": { ko: "맹독 바르기", en: "Apply Venom" },
+  "v.관통폭풍참": { ko: "관통폭풍참", en: "Piercing Tempest Cut" },
+  "v.혈의축복": { ko: "혈의축복", en: "Blessing of Blood" },
+  "v.영혼반전": { ko: "영혼반전", en: "Soul Inversion" },
+  "v.마지막 수호자": { ko: "마지막 수호자", en: "The Last Guardian" },
+  "v.푸른 강철의 결의": { ko: "푸른 강철의 결의", en: "Resolve of Azure Steel" },
+  "v.결의": { ko: "결의", en: "Resolve" },
+  "v.꺼지지 않는 등불": { ko: "꺼지지 않는 등불", en: "Unquenched Lantern" },
+  "v.마른 심지": { ko: "마른 심지", en: "Dry Wick" },
+  "v.손이 닿는 자리": { ko: "손이 닿는 자리", en: "Within Reach" },
+  "v.불굴의 의지": { ko: "불굴의 의지", en: "Indomitable Will" },
+  "v.폭풍의 영혼석": { ko: "폭풍의 영혼석", en: "Soulstone of the Tempest" },
+  "v.혈의 영혼석": { ko: "혈의 영혼석", en: "Soulstone of Blood" },
+  "v.역천의 영혼석": { ko: "역천의 영혼석", en: "Soulstone of Defiance" },
+  "v.재기의 영혼석": { ko: "재기의 영혼석", en: "Soulstone of Rally" },
+  "v.찬란한 별가루 영혼석": { ko: "찬란한 별가루 영혼석", en: "Radiant Stardust Soulstone" },
+  "v.신속의 영혼석": { ko: "신속의 영혼석", en: "Soulstone of Haste" },
+  "v.액티브": { ko: "액티브", en: "Active" },
+  "v.패시브": { ko: "패시브", en: "Passive" },
+  "v.견습자의 철검": { ko: "견습자의 철검", en: "Apprentice's Iron Sword" },
+  "v.습지 가죽갑옷": { ko: "습지 가죽갑옷", en: "Marsh Leather Armor" },
+  "v.별빛 회복약": { ko: "별빛 회복약", en: "Starlight Potion" },
+  "v.수호자의 대검": { ko: "수호자의 대검", en: "Guardian's Greatsword" },
+  "v.골렘의 강철 갑옷": { ko: "골렘의 강철 갑옷", en: "Golem Steel Armor" },
+  "v.사냥개의 엄니검": { ko: "사냥개의 엄니검", en: "Hound Fang Sword" },
+  "v.맹수의 가죽 흉갑": { ko: "맹수의 가죽 흉갑", en: "Beast Hide Cuirass" },
+  "v.거인뼈 대검": { ko: "거인뼈 대검", en: "Giantbone Greatsword" },
+  "v.거인뼈 판금갑옷": { ko: "거인뼈 판금갑옷", en: "Giantbone Plate Armor" },
+  "v.심판의 성패검": { ko: "심판의 성패검", en: "Judgment Sigil Blade" },
+  "v.성소의 석판갑옷": { ko: "성소의 석판갑옷", en: "Sanctum Tablet Armor" },
+  "v.히드라의 독아검": { ko: "히드라의 독아검", en: "Hydra Venomfang Sword" },
+  "v.늪지 비늘갑옷": { ko: "늪지 비늘갑옷", en: "Marsh Scale Armor" },
+  "v.용암 대장간의 골렘검": { ko: "용암 대장간의 골렘검", en: "Lavaforge Golem Sword" },
+  "v.현무암 골렘갑옷": { ko: "현무암 골렘갑옷", en: "Basalt Golem Armor" },
+  "v.골렘핵 쇄도검": { ko: "골렘핵 쇄도검", en: "Golemcore Rush Sword" },
+  "v.골렘핵 중갑": { ko: "골렘핵 중갑", en: "Golemcore Heavy Armor" },
+  "v.서리 여왕의 눈물검": { ko: "서리 여왕의 눈물검", en: "Frost Queen's Tear Sword" },
+  "v.서리 여왕의 성에갑옷": { ko: "서리 여왕의 성에갑옷", en: "Frost Queen's Rime Armor" },
+  "v.심연을 여는 검": { ko: "심연을 여는 검", en: "Abyss-Opening Sword" },
+  "v.심연의 흑요갑옷": { ko: "심연의 흑요갑옷", en: "Abyssal Obsidian Armor" },
+  "v.무기": { ko: "무기", en: "Weapon" },
+  "v.갑옷": { ko: "갑옷", en: "Armor" },
+  "v.약": { ko: "약", en: "Potion" },
+  "v.균열 파편": { ko: "균열 파편", en: "Rift Shard" },
+  "v.짐승 잔혼": { ko: "짐승 잔혼", en: "Beast Remnant" },
+  "v.수호핵": { ko: "수호핵", en: "Guardian Core" },
+  "v.단단한 가죽": { ko: "단단한 가죽", en: "Tough Hide" },
+  "v.강철 조각": { ko: "강철 조각", en: "Steel Fragment" },
+  "v.사냥개의 이빨": { ko: "사냥개의 이빨", en: "Hound Tooth" },
+  "v.거인의 뼈": { ko: "거인의 뼈", en: "Giant's Bone" },
+  "v.성소의 석편": { ko: "성소의 석편", en: "Sanctum Stone Piece" },
+  "v.심판관의 저울추": { ko: "심판관의 저울추", en: "Judicator's Weight" },
+  "v.늪지 독액": { ko: "늪지 독액", en: "Marsh Venom" },
+  "v.히드라의 독주머니": { ko: "히드라의 독주머니", en: "Hydra Venom Sac" },
+  "v.용암 결정": { ko: "용암 결정", en: "Lava Crystal" },
+  "v.골렘의 핵": { ko: "골렘의 핵", en: "Golem Core" },
+  "v.빙결의 결정": { ko: "빙결의 결정", en: "Frozen Crystal" },
+  "v.서리 여왕의 눈물": { ko: "서리 여왕의 눈물", en: "Frost Queen's Tear" },
+  "v.심연의 정수": { ko: "심연의 정수", en: "Abyssal Essence" },
+  "v.주시자의 마안": { ko: "주시자의 마안", en: "Watcher's Evil Eye" },
+  "v.대장간 기본 재료": { ko: "대장간 기본 재료", en: "Basic forge material" },
+  "v.전투에 한 개 챙겨 간다": { ko: "전투에 한 개 챙겨 간다", en: "Carry one into battle" },
+  "v.아무 층에서나": { ko: "아무 층에서나", en: "Any floor" },
+  "v.10층 위 아무 층": { ko: "10층 위 아무 층", en: "Any floor above 10" },
+  "v.20층 위 아무 층": { ko: "20층 위 아무 층", en: "Any floor above 20" },
+  "v.30층 위 아무 층": { ko: "30층 위 아무 층", en: "Any floor above 30" },
+  "v.40층 위 아무 층": { ko: "40층 위 아무 층", en: "Any floor above 40" },
+  "v.60층 위 아무 층": { ko: "60층 위 아무 층", en: "Any floor above 60" },
+  "v.70층 위 아무 층": { ko: "70층 위 아무 층", en: "Any floor above 70" },
+  "v.91층 위 아무 층": { ko: "91층 위 아무 층", en: "Any floor above 91" },
+  "v.10층 관문 보스": { ko: "10층 관문 보스", en: "Floor 10 gate boss" },
+  "v.20층 관문 보스": { ko: "20층 관문 보스", en: "Floor 20 gate boss" },
+  "v.30층 관문 보스": { ko: "30층 관문 보스", en: "Floor 30 gate boss" },
+  "v.40층 관문 보스": { ko: "40층 관문 보스", en: "Floor 40 gate boss" },
+  "v.50층 관문 보스": { ko: "50층 관문 보스", en: "Floor 50 gate boss" },
+  "v.70층 관문 보스": { ko: "70층 관문 보스", en: "Floor 70 gate boss" },
+  "v.80층 관문 보스": { ko: "80층 관문 보스", en: "Floor 80 gate boss" },
+  "v.100층 최종 보스": { ko: "100층 최종 보스", en: "Floor 100 final boss" },
+  "v.공격 +18": { ko: "공격 +18", en: "ATK +18" },
+  "v.공격 +52": { ko: "공격 +52", en: "ATK +52" },
+  "v.공격 +150": { ko: "공격 +150", en: "ATK +150" },
+  "v.공격 +435": { ko: "공격 +435", en: "ATK +435" },
+  "v.공격 +1020": { ko: "공격 +1020", en: "ATK +1020" },
+  "v.공격 +1550": { ko: "공격 +1550", en: "ATK +1550" },
+  "v.공격 +2250": { ko: "공격 +2250", en: "ATK +2250" },
+  "v.공격 +3200": { ko: "공격 +3200", en: "ATK +3200" },
+  "v.공격 +7000": { ko: "공격 +7000", en: "ATK +7000" },
+  "v.공격 +15400": { ko: "공격 +15400", en: "ATK +15400" },
+
+  /* ── 전투 글줄 (10-24 전세계화 2판) ── */
+  "fight.barrierCrack": { ko: "{foe}의 보호막이 갈라졌다. (남은 {n}%)", en: "{foe}'s barrier splits. ({n}% left)" },
+  "fight.hitArrow": { ko: "→ {foe} <span class=\"hit\">{dmg}</span>", en: "→ {foe} <span class=\"hit\">{dmg}</span>" },
+  "fight.hitArrowCrit": { ko: "→ {foe} <span class=\"hit\">{dmg}</span> <span class='big'>치명타</span>", en: "→ {foe} <span class=\"hit\">{dmg}</span> <span class='big'>CRIT</span>" },
+  "fight.allyBarrier": { ko: "아군 전원 막 <span class=\"good\">{n}</span>", en: "Barrier on all allies <span class=\"good\">{n}</span>" },
+  "fight.execute": { ko: "<b>{name}</b>의 <span class=\"big\">처형</span> → {foe} <span class=\"hit\">{dmg}</span>", en: "<b>{name}</b>'s <span class=\"big\">Execute</span> → {foe} <span class=\"hit\">{dmg}</span>" },
+  "fight.fireball": { ko: "<b>{name}</b>의 화염구 → {foe} <span class=\"hit\">{dmg}</span>", en: "<b>{name}</b>'s fireball → {foe} <span class=\"hit\">{dmg}</span>" },
+  "fight.holyFire": { ko: "<b>{name}</b>의 성화 → {foe} <span class=\"hit\">{dmg}</span>", en: "<b>{name}</b>'s holy flame → {foe} <span class=\"hit\">{dmg}</span>" },
+  "fight.holyBless": { ko: "<b>{name}</b>{이가} 성스러운 축복을 내렸다. <span class=\"good\">아군 전원 공격 +20% · 3턴</span>", en: "<b>{name}</b> grants a holy blessing. <span class=\"good\">All allies ATK +20% · 3 turns</span>" },
+  "fight.lightWard": { ko: "<b>{name}</b>{이가} 빛의 수호막을 펼쳤다. <span class=\"good\">아군 전원 막</span>", en: "<b>{name}</b> spreads a ward of light. <span class=\"good\">Barrier on all allies</span>" },
+  "fight.tempestCut": { ko: "<b>{name}</b>{이가} 관통 폭풍 참을 휘둘렀다.", en: "<b>{name}</b> swings a piercing tempest cut." },
+  "fight.bloodBless": { ko: "<b>{name}</b>{이가} 혈의 축복을 내렸다. <span class=\"bad\">체력 10%</span> → <span class=\"good\">아군 전원 공격 +40% · 3턴</span>", en: "<b>{name}</b> grants a blessing of blood. <span class=\"bad\">10% HP</span> → <span class=\"good\">All allies ATK +40% · 3 turns</span>" },
+  "fight.soulFlip": { ko: "<b>{name}</b>{이가} 영혼을 뒤집었다. {foe}의 보호막 <b>{n}</b>이 아군에게 넘어온다.", en: "<b>{name}</b> inverts the soul. {foe}'s barrier <b>{n}</b> passes to the allies." },
+  "fight.allyTookBarrier": { ko: "아군 전원이 그 막을 둘렀다.", en: "Every ally takes up that barrier." },
+  "fight.shieldBash": { ko: "<b>{name}</b>{이가} 방패로 들이받았다. → {foe} <span class=\"hit\">{dmg}</span>", en: "<b>{name}</b> rams with the shield. → {foe} <span class=\"hit\">{dmg}</span>" },
+  "fight.atkDown": { ko: " <span class=\"good\">· 공격 −10% (2턴)</span>", en: " <span class=\"good\">· ATK −10% (2 turns)</span>" },
+  "fight.sanctuary": { ko: "<b>{name}</b>{이가} 성역의 진형을 세웠다. <span class=\"good\">아군 전원 방어 +35% · 받는 피해 −15% · 3턴</span>", en: "<b>{name}</b> sets the formation of sanctuary. <span class=\"good\">All allies DEF +35% · damage taken −15% · 3 turns</span>" },
+  "fight.vitalStrike": { ko: "<b>{name}</b>{이가} 급소를 베었다. → {foe} <span class=\"hit\">{dmg}</span>", en: "<b>{name}</b> cuts a vital spot. → {foe} <span class=\"hit\">{dmg}</span>" },
+  "fight.shadowAmbush": { ko: "<b>{name}</b>{이가} 그림자에서 덮쳤다. → {foe} <span class=\"hit\">{dmg}</span> <span class=\"bad\">· 출혈 3턴</span>", en: "<b>{name}</b> strikes from the shadows. → {foe} <span class=\"hit\">{dmg}</span> <span class=\"bad\">· bleed 3 turns</span>" },
+  "fight.decayCurse": { ko: "<b>{name}</b>{이가} 부패의 저주를 뿌렸다. <span class=\"bad\">적 전원 3턴 지속 피해 · 방어 15% 감소</span>", en: "<b>{name}</b> casts the curse of decay. <span class=\"bad\">All foes take damage for 3 turns · DEF −15%</span>" },
+  "fight.chainsBreak": { ko: "<b>{name}</b>{이가} 사슬을 던져 보호막을 끊었다.", en: "<b>{name}</b> throws chains and severs the barrier." },
+  "fight.bleedOpen": { ko: "{foe}의 상처가 벌어졌다. <span class=\"hit\">{dmg}</span>", en: "{foe}'s wound tears open. <span class=\"hit\">{dmg}</span>" },
+  "fight.decayGnaw": { ko: "{foe}{이가} 부패에 갉아먹혔다. <span class=\"hit\">{dmg}</span>", en: "{foe} is gnawed by decay. <span class=\"hit\">{dmg}</span>" },
+  "fight.bossSlam": { ko: "<b>{foe}</b>{이가} 바닥을 내리찍었다 — <span class=\"big\">전원</span>", en: "<b>{foe}</b> slams the ground — <span class=\"big\">everyone</span>" },
+  "fight.hitAlly": { ko: "→ <b>{who}</b> <span class=\"bad\">{dmg}</span>", en: "→ <b>{who}</b> <span class=\"bad\">{dmg}</span>" },
+  "fight.hitAllyBlocked": { ko: "→ <b>{who}</b> <span class=\"bad\">{dmg}</span> (막 {blocked})", en: "→ <b>{who}</b> <span class=\"bad\">{dmg}</span> (barrier {blocked})" },
+  "fight.stoodBackUp": { ko: "<b>{who}</b>{이가} 쓰러지려다 <span class=\"good\">다시 섰다</span>. (체력 {n})", en: "<b>{who}</b> nearly falls but <span class=\"good\">stands again</span>. (HP {n})" },
+  "fight.didNotKneel": { ko: "<b>{who}</b>{이가} 무릎을 꿇지 않았다 — 막 <span class=\"good\">{n}</span>", en: "<b>{who}</b> refuses to kneel — barrier <span class=\"good\">{n}</span>" },
+  "fight.collapsed": { ko: "<b>{who}</b>{이가} 주저앉았다.", en: "<b>{who}</b> slumps down." },
+  "fight.knightGuards": { ko: "<b>기사</b>가 {who} 앞에 방패를 들었다. 막 <span class=\"good\">{n}</span>", en: "The <b>Knight</b> raises a shield before {who}. Barrier <span class=\"good\">{n}</span>" },
+  "fight.foeBlocked": { ko: "{foe} → <b>{who}</b> 막이 <span class=\"good\">{blocked}</span> 받아냈다", en: "{foe} → <b>{who}</b> the barrier absorbed <span class=\"good\">{blocked}</span>" },
+  "fight.foeBlockedLeak": { ko: " · <span class=\"bad\">{dmg}</span>", en: " · <span class=\"bad\">{dmg}</span>" },
+  "fight.barrierBroke": { ko: " — 막이 깨졌다", en: " — the barrier broke" },
+  "fight.foeHit": { ko: "{foe} → <b>{who}</b> <span class=\"bad\">{dmg}</span>", en: "{foe} → <b>{who}</b> <span class=\"bad\">{dmg}</span>" },
+  "fight.potionBroke": { ko: "별빛 회복약이 깨졌다. <b>{who}</b> <span class=\"good\">+{n}</span>", en: "A starlight potion shatters. <b>{who}</b> <span class=\"good\">+{n}</span>" },
+  "fight.packArrives": { ko: "<b>{i}번째 무리</b>가 어둠에서 걸어 나왔다. ({i}/{n})", en: "<b>Pack {i}</b> walks out of the dark. ({i}/{n})" },
+  "fight.levelUp": { ko: "<b>{name}</b> 레벨 {n}", en: "<b>{name}</b> level {n}" },
+  "v.검": { ko: "검", en: "sword" },
+  "v.칼": { ko: "칼", en: "blade" },
+  "v.단검": { ko: "단검", en: "dagger" },
+  "v.방패": { ko: "방패", en: "shield" },
+  "v.성화": { ko: "성화", en: "holy flame" },
+
+  /* ── 기술·특성 설명글 (10-24 전세계화 3판) ── */
+  "desc.푸른방패검": { ko: "일반공격 · 적 하나를 공격력 <b>95%</b>로 친다. 그 뒤 나에게 막을 두른다 — 최대체력 4% + 공격력 35%.", en: "Basic · Hits one foe for <b>95%</b> ATK, then wraps a barrier on self — 4% max HP + 35% ATK." },
+  "desc.철벽의맹세": { ko: "기술 · <b>{turns}턴</b>마다. 아군 전원에게 막 <b>공격력 {pct}%</b>를 씌우고, 적의 눈이 나에게 쏠린다(도발).", en: "Skill · Every <b>{turns} turns</b>. Barriers all allies for <b>{pct}% ATK</b> and pulls every foe's eye onto me (taunt)." },
+  "desc.새벽을가르는방패": { ko: "궁극기 · 적 전원을 <b>공격력 {pct}%</b>로 친다. 보호막을 두른 적은 피해 대신 <b>보호막 25</b>가 깎인다. 그 뒤 아군 전원에게 막 공격력 220%.", en: "Ultimate · Hits all foes for <b>{pct}% ATK</b>. A barriered foe loses <b>25 barrier</b> instead of taking damage. Then barriers all allies for 220% ATK." },
+  "desc.새벽을가르는방패.6": { ko: " 이 막은 <b>닳지 않는다</b>.", en: " That barrier <b>does not wear down</b>." },
+  "desc.연속베기": { ko: "일반공격 · 적 하나를 <b>두 번</b> 벤다(각 공격력 62%). 한 대마다 <b>12%</b>로 치명타(2배). 몰아 때리는 것보다 <b>막을 긁어내기</b> 좋다.", en: "Basic · Cuts one foe <b>twice</b> (62% ATK each). Each hit crits at <b>12%</b> (2x). Better at <b>scraping barriers off</b> than one heavy blow." },
+  "desc.약점노리기": { ko: "기술 · <b>3턴</b>마다. 다음 공격이 <b>반드시 치명타</b>가 되고 적 <b>방어 40%를 무시</b>한다.", en: "Skill · Every <b>3 turns</b>. The next attack is a <b>guaranteed crit</b> and <b>ignores 40% DEF</b>." },
+  "desc.처형": { ko: "기술 · <b>4턴</b>마다. 적의 남은 체력이 <b>절반 아래</b>일 때만 쓴다. 적이 다칠수록 세진다 — 반피에 <b>2.1배</b>, 10% 남으면 <b>3.2배</b>.", en: "Skill · Every <b>4 turns</b>. Used only when the foe is <b>below half HP</b>. The more hurt they are, the harder it lands — <b>2.1x</b> at half, <b>3.2x</b> at 10% left." },
+  "desc.치유의빛": { ko: "일반공격 · 가장 많이 다친 아군을 <b>공격력 90%</b>만큼 회복한다.", en: "Basic · Heals the most wounded ally for <b>90% ATK</b>." },
+  "desc.구원의진형": { ko: "기술 · <b>3턴</b>마다. 아군 <b>전원</b>을 공격력 50%만큼 회복한다. 보스가 3턴마다 전원을 치는 것에 맞서는 자리다.", en: "Skill · Every <b>3 turns</b>. Heals <b>all</b> allies for 50% ATK. This is the answer to a boss sweeping the party every third turn." },
+  "desc.화염구": { ko: "일반공격 · 적 하나를 <b>공격력 125%</b>로 친다. 마법이라 적 <b>방어 20%를 무시</b>한다.", en: "Basic · Hits one foe for <b>125% ATK</b>. Being magic, it <b>ignores 20% DEF</b>." },
+  "desc.부패의저주": { ko: "기술 · <b>4턴</b>마다. 적 <b>전원</b>에게 3턴 동안 매 턴 공격력 35%의 피해를 주고, 그동안 <b>방어를 15% 깎는다</b>.", en: "Skill · Every <b>4 turns</b>. Deals 35% ATK to <b>all</b> foes each turn for 3 turns and <b>shaves 15% DEF</b> while it lasts." },
+  "desc.사슬": { ko: "기술 · <b>3턴</b>마다. 보호막을 두른 적 하나의 보호막을 <b>통째로</b> 없앤다.", en: "Skill · Every <b>3 turns</b>. Strips one barriered foe's barrier <b>entirely</b>." },
+  "desc.방패치기": { ko: "일반공격 · 적 하나를 공격력 <b>100%</b>로 들이받는다. <b>20%</b>로 그 적의 공격력이 <b>10% 떨어진다</b>(2턴).", en: "Basic · Rams one foe for <b>100%</b> ATK. <b>20%</b> chance to drop that foe's ATK by <b>10%</b> (2 turns)." },
+  "desc.성역의진형": { ko: "기술 · <b>4턴</b>마다. <b>3턴</b> 동안 아군 전원 방어 <b>+35%</b>, 받는 피해 <b>−15%</b>. 둘은 따로 먹는다.", en: "Skill · Every <b>4 turns</b>. For <b>3 turns</b>, all allies gain <b>+35%</b> DEF and take <b>−15%</b> damage. The two stack separately." },
+  "desc.급소베기": { ko: "일반공격 · 적 하나를 공격력 <b>100%</b>로 베고 그 적의 <b>방어 20%를 무시</b>한다. <b>12%</b>로 치명타(2배) — 출혈 중인 적에겐 <b>27%</b>.", en: "Basic · Cuts one foe for <b>100%</b> ATK and <b>ignores 20% DEF</b>. Crits at <b>12%</b> (2x) — <b>27%</b> against a bleeding foe." },
+  "desc.관통폭풍참": { ko: "일반공격 · <b>적 전원</b>을 공격력 <b>78%</b>로 베고 <b>방어 20%를 무시</b>한다. <i>(폭풍의 영혼석)</i>", en: "Basic · Cuts <b>all foes</b> for <b>78%</b> ATK and <b>ignores 20% DEF</b>. <i>(Soulstone of the Tempest)</i>" },
+  "desc.혈의축복": { ko: "기술 · <b>4턴</b>마다. 아군 전원 체력을 <b>10%</b> 태우고 <b>3턴</b> 동안 공격 <b>+40%</b>. 이걸로는 쓰러지지 않는다. <i>(혈의 영혼석)</i>", en: "Skill · Every <b>4 turns</b>. Burns <b>10%</b> of every ally's HP for <b>+40%</b> ATK over <b>3 turns</b>. It cannot drop anyone. <i>(Soulstone of Blood)</i>" },
+  "desc.영혼반전": { ko: "기술 · <b>3턴</b>마다. 적 하나의 보호막을 통째로 끊고, <b>그만큼을 아군 전원의 막</b>으로 돌린다. <i>(역천의 영혼석)</i>", en: "Skill · Every <b>3 turns</b>. Severs one foe's whole barrier and turns <b>that much into a barrier for every ally</b>. <i>(Soulstone of Defiance)</i>" },
+  "desc.그림자습격": { ko: "기술 · <b>4턴</b>마다. 적 하나를 공격력 <b>160%</b>·방어 20% 무시로 치고 <b>3턴 출혈</b>을 남긴다(턴마다 공격력 40%). 출혈은 칼리드의 저주와 <b>따로</b> 쌓인다.", en: "Skill · Every <b>4 turns</b>. Hits one foe for <b>160%</b> ATK ignoring 20% DEF and leaves <b>3 turns of bleed</b> (40% ATK per turn). Bleed stacks <b>separately</b> from Kalid's curse." },
+  "desc.기도": { ko: "일반공격 · 다친 아군이 있으면 <b>공격력 55%</b>만큼 덮고, 아무도 안 다쳤으면 적을 공격력 80%로 친다.", en: "Basic · Mends a wounded ally for <b>55% ATK</b>; if nobody is hurt, hits a foe for 80% ATK instead." },
+  "desc.성스러운축복": { ko: "기술 · <b>4턴</b>마다. 아군 <b>전원</b>의 공격을 <b>3턴 동안 +20%</b>. 내 공격이 약한 대신 넷을 함께 키운다.", en: "Skill · Every <b>4 turns</b>. Raises <b>every</b> ally's ATK by <b>+20% for 3 turns</b>. My own blows are weak; I lift all four instead." },
+  "desc.빛의수호막": { ko: "기술 · <b>3턴</b>마다. 아군 전원에게 <b>각자 최대체력의 14%</b>만큼 막. 공격력이 아니라 <b>받는 쪽의 몸집</b>을 따르므로 탱커가 더 두꺼워진다.", en: "Skill · Every <b>3 turns</b>. Barriers every ally for <b>14% of their own max HP</b>. It follows <b>the receiver's size</b>, not my ATK, so the tank gets the thickest shell." },
+  "desc.마지막 수호자": { ko: "가장 위태로운 아군이 맞기 직전, 내가 대신 막을 씌운다 — <b>내 최대체력의 {pct}%</b>. 한 턴에 한 번, 나 자신에게는 안 걸린다. 궁 게이지도 <b>+34</b> 찬다.", en: "Just before the most endangered ally is struck, I throw a barrier over them instead — <b>{pct}% of my max HP</b>. Once per turn, never on myself. It also charges <b>+34</b> ultimate." },
+  "desc.푸른 강철의 결의": { ko: "내가 막을 두르고 있는 동안 <b>받는 피해 {pct}% 감소</b>.", en: "While I hold a barrier, <b>damage taken is reduced {pct}%</b>." },
+  "desc.결의": { ko: "체력이 떨어질수록 공격이 오른다 — 체력이 다 닳기 직전이면 <b>+45%</b>. 벼랑에서 더 세진다.", en: "The lower my HP, the harder I hit — <b>+45%</b> on the brink. Stronger at the cliff edge." },
+  "desc.꺼지지 않는 등불": { ko: "전투가 이어지는 동안 쉬지 않고 가장 위태로운 아군을 찾는다. 기술 「구원의 진형」은 <b>누군가 20% 넘게 다쳤을 때만</b> 쓴다 — 아껴 두었다가 광역이 들어온 뒤에 편다.", en: "Through the whole fight I keep looking for whoever is closest to falling. I spend Formation of Salvation <b>only once someone is over 20% hurt</b> — held back for after a sweep lands." },
+  "desc.손이 닿는 자리": { ko: "뒤에 서서 넷을 본다. 축복과 막은 <b>살아 있는 아군 전원</b>에게 간다 — 누가 앞에 섰든.", en: "I stand at the back and watch all four. Blessings and barriers reach <b>every living ally</b> — whoever is up front." },
+  "desc.불굴의 의지": { ko: "체력이 <b>30% 아래로 떨어지는 그 순간</b>, 한 판에 딱 한 번 <b>최대체력의 25%</b>만큼 막을 두른다. 막 천장(35%)은 그대로 먹는다.", en: "<b>The moment HP falls under 30%</b>, once per battle, I wrap a barrier of <b>25% max HP</b>. The barrier cap (35%) still applies." },
+  "desc.맹독 바르기": { ko: "<b>출혈 중인 적</b>을 칠 때 치명타 확률이 <b>+15%</b>(12% → 27%). 그래서 「그림자 습격」을 먼저 넣고 베는 것이 세다.", en: "Against a <b>bleeding foe</b>, crit chance is <b>+15%</b> (12% → 27%). So landing Shadow Ambush first and then cutting is the stronger line." },
+  "desc.마른 심지": { ko: "불과 저주를 함께 쓴다. 「부패의 저주」가 깎아 둔 방어는 <b>내 화염구뿐 아니라 아군의 모든 공격</b>에 함께 먹는다.", en: "I wield fire and curse together. The DEF that Curse of Decay shaves off applies to <b>every ally's attack, not just my fireball</b>." },
+
+  /* ── 남은 UI 글 (10-24 전세계화 4판) ── */
+  "log.barrierUp": { ko: "보호막이 돌고 있다. <b>제어</b>라면 한 번에 벗긴다.", en: "A barrier is running. A <b>Control</b> unit strips it in one go." },
+  "log.partyRose": { ko: "원정대가 다시 섰다.", en: "The company is back on its feet." },
+  "log.partyEmpty": { ko: "원정대가 비었다. 캐릭터 탭에서 태워라.", en: "The company is empty. Field someone from the Roster tab." },
+  "log.stitching": { ko: "상처를 꿰매는 중… ({n})", en: "Stitching wounds… ({n})" },
+  "log.turn": { ko: "턴 {n}", en: "Turn {n}" },
+  "log.buffGone": { ko: "식당에서 받은 기운이 다했다.", en: "The strength from the canteen has run out." },
+  "log.qualified": { ko: "<b>{n}층</b>으로 오를 <span class=\"big\">자격</span>을 얻었다.", en: "You have earned the <span class=\"big\">right</span> to climb to <b>floor {n}</b>." },
+  "log.qualProgress": { ko: "{n}층 자격 — {rows}", en: "Floor {n} requirements — {rows}" },
+  "log.darkMageJoins": { ko: "골렘의 잔해 속에서 <b>흑마법사</b>(제어)가 걸어 나왔다.", en: "Out of the golem's wreckage walks a <b>Dark Mage</b> (Control)." },
+  "log.gateFell": { ko: "<b>{n}층</b> 관문에서 무너졌다. 자동 등반을 끄고 <b>{m}층</b>으로 물러나 힘을 모은다.", en: "You fell at the <b>floor {n}</b> gate. Auto-climb is off; falling back to <b>floor {m}</b> to gather strength." },
+  "log.forgeUp": { ko: "대장간에서 장비를 갖추고 다시 오면 된다.", en: "Kit out at the forge and come back." },
+  "log.retryFloor": { ko: "원정대가 쓰러졌다. 숨을 고르고 <b>{n}층</b>에 다시 든다.", en: "The company fell. Catch your breath and re-enter <b>floor {n}</b>." },
+  "log.pushedBack": { ko: "원정대가 물러났다. 구간 처음으로 돌아간다.", en: "The company retreats. Back to the start of the stretch." },
+  "log.autoOn": { ko: "자격이 차면 바로 올라간다.", en: "You will climb the moment you qualify." },
+  "log.autoOff": { ko: "자격이 차도 이 층에 머문다.", en: "You will stay on this floor even once you qualify." },
+  "log.mealServed": { ko: "식당에서 한 끼를 차렸다. <b>다음 10판 공격 +5%</b>", en: "A meal is served. <b>+5% ATK for the next 10 rounds</b>" },
+  "log.lookUp": { ko: "발을 멈추고 탑을 올려다본다.", en: "You stop and look up at the tower." },
+  "loot.base": { ko: "금화 <b>+{g}</b> · {shard} +{a} · {remnant} +{b}", en: "Gold <b>+{g}</b> · {shard} +{a} · {remnant} +{b}" },
+  "loot.more": { ko: " · {what} +{n}", en: " · {what} +{n}" },
+  "loot.firstStar": { ko: " · <span class=\"big\">별가루 +{n}</span> (첫 클리어)", en: " · <span class=\"big\">Stardust +{n}</span> (first clear)" },
+  "loot.crest": { ko: " · 수호의 문장 +3", en: " · Crest of Guarding +3" },
+  "loot.star": { ko: " · <b>별가루 +{n}</b>", en: " · <b>Stardust +{n}</b>" },
+  "loot.starRadiant": { ko: " <i>(찬란한 별가루)</i>", en: " <i>(Radiant Stardust)</i>" },
+  "loot.soulstone": { ko: " · <span class=\"big\">{what}</span>", en: " · <span class=\"big\">{what}</span>" },
+  "qual.bossKill": { ko: "구간 보스 처치", en: "Slay the stretch boss" },
+  "qual.done": { ko: "완료", en: "done" },
+  "qual.notYet": { ko: "아직", en: "not yet" },
+  "qual.gate": { ko: "{n}층 관문", en: "Floor {n} gate" },
+  "qual.ready": { ko: "자격이 찼다. <b>{n}층</b>으로 오를 수 있다 — 탑에서 고르거나, 자동 등반을 켜 두면 바로 올라간다.", en: "You qualify. You may climb to <b>floor {n}</b> — pick it on the tower, or leave auto-climb on and you go straight up." },
+  "qual.notReady": { ko: "아직 못 오른다. 위에 남은 것을 채우면 <b>{n}층</b>이 열린다.<br>\n         관문에서 지면 자동 등반이 꺼지고 한 층 내려가 모으게 된다.", en: "Not yet. Fill what is left above and <b>floor {n}</b> opens.<br>\n         Lose at a gate and auto-climb switches off, dropping you a floor to gather." },
+  "guild.checkedIn": { ko: "오늘은 이미 받았다. 내일 다시 오면 된다.", en: "Already claimed today. Come back tomorrow." },
+  "guild.mealNow": { ko: "지금 <b style=\"color:var(--초록)\">공격 +{pct}%</b> · 남은 <b>{n}판</b><br>", en: "Now <b style=\"color:var(--초록)\">ATK +{pct}%</b> · <b>{n} rounds</b> left<br>" },
+  "guild.noMail": { ko: "수령할 우편이 없다.<br>나중에 보상이 오면 여기에 쌓인다.", en: "No mail to collect.<br>Rewards will pile up here later." },
+  "ui.checkin": { ko: "출석", en: "Check-in" },
+  "ui.boss": { ko: "보스", en: "Boss" },
+  "ui.waiting": { ko: "대기 중", en: "Empty" },
+  "ui.noMember": { ko: "대원이 없다", en: "No member" },
+  "ui.empty": { ko: "비어 있음", en: "Empty" },
+  "ui.slotHint": { ko: "슬롯을 누르면 아래에 가방이 펼쳐진다.", en: "Tap a slot and the bag opens below." },
+  "ui.noDesc": { ko: "아직 설명이 없다.", en: "No description yet." },
+  "ui.noMats": { ko: "아직 모은 재료가 없다. 탑을 돌면 쌓인다.", en: "No materials yet. They pile up as you run the tower." },
+  "ui.noGear": { ko: "만든 장비가 없다. <b>대장간</b>에서 만든다.", en: "No gear made yet. Make it at the <b>forge</b>." },
+  "ui.noStones": { ko: "아직 영혼석이 없다. <b>관문 보스</b>를 깨면 가끔 떨어진다.", en: "No soulstones yet. <b>Gate bosses</b> drop them now and then." },
+  "ui.marketPrice": { ko: "시장 값", en: "Market price" },
+  "ui.usedIn": { ko: "쓰는 곳", en: "Used in" },
+  "ui.equippedBy": { ko: "{who}가 낌", en: "Equipped by {who}" },
+  "ui.fielded": { ko: "출전", en: "Fielded" },
+  "ui.leader": { ko: "대표", en: "Leader" },
+  "ui.dupe": { ko: "{g} 동료가 겹쳤다", en: "Duplicate {g} companion" },
+  "ui.joined": { ko: "{g} 합류", en: "{g} joins" },
+  "ui.pulled": { ko: "나온 것", en: "What you got" },
+  "ui.short": { ko: "{n} 모자람 · {where}", en: "{n} short · {where}" },
+  "ui.shortGold": { ko: "{n} 모자람", en: "{n} short" },
+  "ui.canMake": { ko: "만들 수 있다", en: "Can make" },
+  "ui.opensAbove": { ko: "{n}층을 넘으면 열린다", en: "Opens above floor {n}" },
+  "ui.fitGain": { ko: "{who}에게 끼우면 +{n}", en: "Fit on {who} for +{n}" },
+  "ui.forgeHint": { ko: "만든 것은 <span style=\"color:#f2b45a\">캐릭터</span> 탭에서 슬롯을 눌러 끼운다.", en: "What you make is fitted from the <span style=\"color:#f2b45a\">Roster</span> tab by tapping a slot." },
+  "ui.forged": { ko: "대장간에서 <b>{what}</b>을 만들었다.", en: "The forge produced <b>{what}</b>." },
+
+  /* ── 전세계화 5판 (10-24) ── */
+  "ui.bag": { ko: "가방", en: "Bag" },
+  "ui.close": { ko: "닫기", en: "Close" },
+  "ui.gold": { ko: "금화", en: "Gold" },
+  "ui.stardust": { ko: "별가루", en: "Stardust" },
+  "ui.bagHead": { ko: "{gold} {g} · {dust} {d}", en: "{gold} {g} · {dust} {d}" },
+  "ui.consumHint": { ko: "소모품은 <b>떠나기 전</b>에 몇 개 챙길지 고른다 — 탑에서 층을 고를 때.", en: "You pick how many consumables to carry <b>before you set out</b> — when choosing a floor on the tower." },
+  "ui.supplies": { ko: "소모품", en: "Consumables" },
+  "ui.growth": { ko: "자람", en: "Growth" },
+  "ui.levelNow": { ko: "지금 레벨", en: "Level now" },
+  "ui.levelCap": { ko: "올릴 수 있는 끝", en: "Level cap" },
+  "ui.toNext": { ko: "다음 레벨까지", en: "To next level" },
+  "ui.onField": { ko: "출전 중", en: "On field" },
+  "v.재료": { ko: "재료", en: "Materials" },
+  "v.장비": { ko: "장비", en: "Gear" },
+  "v.영혼석": { ko: "영혼석", en: "Soulstones" },
+  "v.소모품": { ko: "소모품", en: "Consumables" },
+  "v.강화": { ko: "강화", en: "Upgrade" },
+  "v.기술": { ko: "기술", en: "Skills" },
+  "v.장신구": { ko: "장신구", en: "Trinket" },
+
+  /* ── 캐릭터 상세 (10-24 전세계화 6판) ── */
+  "ui.power": { ko: "전투력", en: "Power" },
+  "ui.fitHint": { ko: "끼우고 벗는 것은 <b>캐릭터</b> 탭에서 그 칸을 눌러서 한다.", en: "Fitting and removing is done from the <b>Heroes</b> tab by tapping that slot." },
+  "ui.oneLine": { ko: "체력 <b>{hp}</b> · 공격 <b>{atk}</b> · 방어 <b>{def}</b> · 속도 <b>{spd}</b>", en: "HP <b>{hp}</b> · ATK <b>{atk}</b> · DEF <b>{def}</b> · SPD <b>{spd}</b>" },
+  "ui.tapToSee": { ko: "눌러 보기", en: "tap to read" },
+  "ui.skills": { ko: "기술", en: "Skills" },
+  "ui.traits": { ko: "특성", en: "Traits" },
+  "ui.isLeader": { ko: "대표임", en: "Is leader" },
+  "ui.makeLeader": { ko: "대표로", en: "Make leader" },
+  "ui.dupeCards": { ko: "겹친 카드", en: "Duplicate cards" },
+  "ui.growNote": { ko: "레벨은 <b>싸워서</b> 오른다. 그리고 <b>지금까지 연 층</b>까지만 오른다 —\n            지금은 <b>Lv.{cap}</b> 이 끝이고, 층을 열면 그만큼 더 오른다.<br>\n            되돌이로 레벨을 밀어 올리는 길을 일부러 막아 뒀다. 그게 막혀 있어야 <b>장비를 만들 이유</b>가 생긴다.\n            <br><br>경험치 주입·승급은 <b>아직 없다</b> — 넣으면 이 설계가 깨지므로 사장님 결정을 기다린다.", en: "Levels come from <b>fighting</b>, and only up to <b>the floors you have opened</b> —\n            right now <b>Lv.{cap}</b> is the ceiling, and opening floors raises it.<br>\n            Grinding levels up is blocked on purpose. That block is what gives you <b>a reason to forge gear</b>.\n            <br><br>XP injection and promotion are <b>not in yet</b> — adding them would break this design, so it waits on the owner's call." },
+  "v.장신구2": { ko: "장신구", en: "Trinket" },
 };
 const 말키 = "ash.lang";
 let 쓰는말 = (() => {
@@ -883,7 +1217,7 @@ function 적만들기(무리 = 0){
     적들 = [{ 이름:b.이름, 그림:생김새(b.그림), hp:Math.floor(900*보스세기*관문배), 최대:Math.floor(900*보스세기*관문배), 공격:Math.floor(108*보스세기*관문배),
               속도:b.속도, 방어:보스방어, 보호막: 막힘 ? 100 : 0, 보스:true, 동작:"idle", 동작남음:0 }];
     적기(말("fight.boss", { n: S.층, name: b.이름 }), "big");
-    if (막힘) 적기("보호막이 돌고 있다. <b>제어</b>라면 한 번에 벗긴다.", "bad");
+    if (막힘) 적기(말("log.barrierUp"), "bad");
   } else {
     // 마지막 무리가 한 마리 더 많다 — 끝이 제일 무거워야 "넘겼다"가 된다.
     // 한 무리는 두 마리까지. 셋을 세우면 캐릭터와 겹친다(10-09 사장님).
@@ -895,7 +1229,7 @@ function 적만들기(무리 = 0){
       return { 이름: m.이름 + (같은수 > 1 ? ` ${i+1}` : ""), 그림:생김새(m.그림), 속도:m.속도, 방어:0, 보호막:0,
                hp:Math.floor(120*세기*m.체력), 최대:Math.floor(120*세기*m.체력), 공격:Math.floor(18*세기*m.공격), 동작:"idle", 동작남음:0 };
     });
-    if (무리 > 0) 적기(`<b>${무리 + 1}번째 무리</b>가 어둠에서 걸어 나왔다. (${무리 + 1}/${S.무리수})`, "bad");
+    if (무리 > 0) 적기(말("fight.packArrives", { i: 무리 + 1, n: S.무리수 }), "bad");
   }
   턴 = 0;
 }
@@ -1029,7 +1363,7 @@ const 기술표 = {
   /* 세리안 (캐릭터/기사.md 확정) */
   푸른방패검: { 쓰기(c){
     const e = 과녁(); if (!e) return;
-    if (!튕겼나(c, e, "검", "#7aa8ff")) {
+    if (!튕겼나(c, e, 말값("검"), "#7aa8ff")) {
       const 피 = 적맞기(e, 공격력(c) * .95);
       장면(c, "attack", 말("fight.knightHit", { name: c.이름, foe: e.이름, dmg: 수(피) }), "",
         { 종류:"탄", 에서:자리(c), 에:자리(e), 색:"#7ec8ff" });
@@ -1049,15 +1383,15 @@ const 기술표 = {
     for (const e of [...적들]) {
       if (e.보호막 > 0) {
         e.보호막 = Math.max(0, e.보호막 - 25);                       // 사장님: 궁극기는 보호막 25%만
-        장면(null, null, `${e.이름}의 보호막이 갈라졌다. (남은 ${e.보호막}%)`, "", { 종류:"맞음", 에:자리(e), 색:"#7aa8ff" });
+        장면(null, null, 말("fight.barrierCrack", { foe: 말값(e.이름), n: e.보호막 }), "", { 종류:"맞음", 에:자리(e), 색:"#7aa8ff" });
         continue;
       }
       const 피 = 적맞기(e, 공격력(c) * (c.중복 >= 3 ? 2.2 : 1.8));
-      장면(null, null, `→ ${e.이름} <span class="hit">${수(피)}</span>`, "", { 종류:"맞음", 에:자리(e), 색:"#bfe6ff" });
+      장면(null, null, 말("fight.hitArrow", { foe: 말값(e.이름), dmg: 수(피) }), "", { 종류:"맞음", 에:자리(e), 색:"#bfe6ff" });
       쓰러짐확인(e);
     }
     const 양 = 공격력(c) * 2.2;
-    장면(null, null, `아군 전원 막 <span class="good">${수(양)}</span>`, "good", 막주기(c, 산아군(), 양, "#bfe6ff"));
+    장면(null, null, 말("fight.allyBarrier", { n: 수(양) }), "good", 막주기(c, 산아군(), 양, "#bfe6ff"));
     if (c.중복 >= 6) 막고정 = true;
   } },
   /* ── 검사 — 단일 누킹/처형형 딜러 (10-10 사장님 확정) ───────────────
@@ -1068,10 +1402,10 @@ const 기술표 = {
     장면(c, "attack", 말("fight.twoCuts", { name: c.이름 }), "", { 종류:"탄", 에서:자리(c), 에:자리(e), 색:"#e8f0ff" });
     for (let i = 0; i < 2; i++) {
       if (e.hp <= 0) break;
-      if (튕겼나(c, e, "칼", "#7aa8ff")) continue;
+      if (튕겼나(c, e, 말값("칼"), "#7aa8ff")) continue;
       const 치명 = c.벼름 || Math.random() < .12;
       const 피 = 적맞기(e, 공격력(c) * 결의배(c) * .62 * (치명 ? 2 : 1), c.벼름 ? .4 : 0);
-      장면(null, null, `→ ${e.이름} <span class="hit">${수(피)}</span>${치명 ? " <span class='big'>치명타</span>" : ""}`, "",
+      장면(null, null, 말(치명 ? "fight.hitArrowCrit" : "fight.hitArrow", { foe: 말값(e.이름), dmg: 수(피) }), "",
         { 종류:"맞음", 에:자리(e), 색: 치명 ? "#ffe66b" : "#e8f0ff", 세게:치명 });
     }
     c.벼름 = false;
@@ -1083,11 +1417,11 @@ const 기술표 = {
       { 종류:"섬광", 에서:자리(c), 색:"#ffe66b" });
   } },
   처형: { 쿨:() => 4, 쓸까:() => { const e = 과녁(); return !!e && e.hp / e.최대 < .55; }, 쓰기(c){
-    const e = 과녁(); if (!e || 튕겼나(c, e, "칼", "#7aa8ff")) return;
+    const e = 과녁(); if (!e || 튕겼나(c, e, 말값("칼"), "#7aa8ff")) return;
     // 남은 체력이 낮을수록 급격히 세진다 — 풀피 1.0배, 반피 2.1배, 10% 남으면 3.2배
     const 배 = 1 + (1 - Math.max(0, e.hp) / e.최대) * 2.45;
     const 피 = 적맞기(e, 공격력(c) * 결의배(c) * 1.1 * 배, .25);
-    장면(c, "attack", `<b>${c.이름}</b>의 <span class="big">처형</span> → ${e.이름} <span class="hit">${수(피)}</span>`, "big",
+    장면(c, "attack", 말("fight.execute", { name: c.이름, foe: 말값(e.이름), dmg: 수(피) }), "big",
       { 종류:"탄", 에서:자리(c), 에:자리(e), 색:"#ff7a5c", 세게:true });
     c.벼름 = false;
     쓰러짐확인(e);
@@ -1112,9 +1446,9 @@ const 기술표 = {
 
   /* ── 흑마법사 ───────────────────────────────────────────────── */
   "화염구": { 쓰기(c){
-    const e = 과녁(); if (!e || 튕겼나(c, e, "화염구", "#c69bff")) return;
+    const e = 과녁(); if (!e || 튕겼나(c, e, 말값("화염구"), "#c69bff")) return;
     const 피 = 적맞기(e, 공격력(c) * 1.25, .2);              // 마법은 방어를 조금 무시한다
-    장면(c, "attack", `<b>${c.이름}</b>의 화염구 → ${e.이름} <span class="hit">${수(피)}</span>`, "",
+    장면(c, "attack", 말("fight.fireball", { name: c.이름, foe: 말값(e.이름), dmg: 수(피) }), "",
       { 종류:"탄", 에서:자리(c), 에:자리(e), 색:"#ff9a5c" });
     쓰러짐확인(e);
   } },
@@ -1129,23 +1463,23 @@ const 기술표 = {
         { 종류:"회복", 에:자리(t), 색:"#ffe9a0" });
       return;
     }
-    const e = 과녁(); if (!e || 튕겼나(c, e, "성화", "#ffe9a0")) {
+    const e = 과녁(); if (!e || 튕겼나(c, e, 말값("성화"), "#ffe9a0")) {
       장면(c, "idle", 말("fight.censer", { name: c.이름 })); return;
     }
     const 피 = 적맞기(e, 공격력(c) * .8);
-    장면(c, "attack", `<b>${c.이름}</b>의 성화 → ${e.이름} <span class="hit">${수(피)}</span>`, "",
+    장면(c, "attack", 말("fight.holyFire", { name: c.이름, foe: 말값(e.이름), dmg: 수(피) }), "",
       { 종류:"탄", 에서:자리(c), 에:자리(e), 색:"#ffe9a0" });
     쓰러짐확인(e);
   } },
   "성스러운축복": { 쿨:() => 4, 쓸까:() => 산아군().some((x) => !(x.축복 > 0)), 쓰기(c){
-    장면(c, "attack", `<b>${c.이름}</b>${조사(c.이름,"이","가")} 성스러운 축복을 내렸다. <span class="good">아군 전원 공격 +20% · 3턴</span>`, "big",
+    장면(c, "attack", 말("fight.holyBless", { name: c.이름 }), "big",
       { 종류:"섬광", 에서:자리(c), 색:"#ffe08a" });
     for (const t of 산아군()) t.축복 = 3;
   } },
   "빛의수호막": { 쿨:() => 3, 쓸까:() => 산아군().some((x) => x.막 < 최대체력(x) * .2), 쓰기(c){
     // **체력에 비례한** 막 — 공격력이 아니라 받는 쪽의 몸집을 따른다. 탱커가 더 두꺼워진다
     const 빛 = { 종류:"막", 들:산아군().map(자리), 색:"#ffe9a0", 막들:막들(...산아군()) };
-    장면(c, "attack", `<b>${c.이름}</b>${조사(c.이름,"이","가")} 빛의 수호막을 펼쳤다. <span class="good">아군 전원 막</span>`, "big", 빛);
+    장면(c, "attack", 말("fight.lightWard", { name: c.이름 }), "big", 빛);
     for (const t of 산아군()) {
       const 양 = Math.floor(최대체력(t) * .14);
       t.막 = Math.min(t.막 + 양, Math.floor(최대체력(t) * .35));
@@ -1154,14 +1488,14 @@ const 기술표 = {
 
   /* ── 영혼석이 바꿔 놓는 기술 셋 (10-11). 원래 기술은 그대로 두고 **여기로 갈아 끼운다** ── */
   "관통폭풍참": { 쓰기(c){
-    장면(c, "attack", `<b>${c.이름}</b>${조사(c.이름,"이","가")} 관통 폭풍 참을 휘둘렀다.`, "big",
+    장면(c, "attack", 말("fight.tempestCut", { name: c.이름 }), "big",
       { 종류:"섬광", 에서:자리(c), 색:"#cfe3ff" });
     for (const e of [...적들]) {
-      if (튕겼나(c, e, "칼", "#7aa8ff")) continue;
+      if (튕겼나(c, e, 말값("칼"), "#7aa8ff")) continue;
       const 치명 = Math.random() < 치명확률(c, e);
       // 광역이라 한 대는 연속베기 한 대(62%)보다 가볍다. 대신 전원을 친다 + 방어 20% 무시
       const 피 = 적맞기(e, 공격력(c) * 결의배(c) * .78 * (치명 ? 2 : 1), .2);
-      장면(null, null, `→ ${e.이름} <span class="hit">${수(피)}</span>${치명 ? " <span class='big'>치명타</span>" : ""}`, "",
+      장면(null, null, 말(치명 ? "fight.hitArrowCrit" : "fight.hitArrow", { foe: 말값(e.이름), dmg: 수(피) }), "",
         { 종류:"맞음", 에:자리(e), 색: 치명 ? "#ffe66b" : "#cfe3ff", 세게:치명 });
       쓰러짐확인(e);
     }
@@ -1174,9 +1508,9 @@ const 기술표 = {
     for (const t of 산아군()) {
       const 깎 = Math.min(Math.max(0, t.hp - 1), Math.floor(최대체력(t) * .1));
       t.hp -= 깎; t.축복 = 3; t.축복배값 = 1.4;
-      if (깎) 벤것.push(`${t.이름} −${수(깎)}`);
+      if (깎) 벤것.push(`${말값(t.이름)} −${수(깎)}`);
     }
-    장면(c, "attack", `<b>${c.이름}</b>${조사(c.이름,"이","가")} 혈의 축복을 내렸다. <span class="bad">체력 10%</span> → <span class="good">아군 전원 공격 +40% · 3턴</span>`
+    장면(c, "attack", 말("fight.bloodBless", { name: c.이름 })
       + (벤것.length ? `<br><i style="color:var(--흐림)">${벤것.join(" · ")}</i>` : ""), "big",
       { 종류:"섬광", 에서:자리(c), 색:"#ff8a8a" });
   } },
@@ -1186,30 +1520,30 @@ const 기술표 = {
     e.보호막 = 0;
     /* 보호막은 0~100 의 **퍼센트**다. 그걸 그대로 막(체력 단위)으로 옮기면 뜻이 안 맞으므로
        **받는 쪽 최대체력의 그 퍼센트**로 돌린다. 막 천장(35%)은 그대로 먹는다. */
-    장면(c, "attack", `<b>${c.이름}</b>${조사(c.이름,"이","가")} 영혼을 뒤집었다. ${e.이름}의 보호막 <b>${뺏}</b>이 아군에게 넘어온다.`, "big",
+    장면(c, "attack", 말("fight.soulFlip", { name: c.이름, foe: 말값(e.이름), n: 뺏 }), "big",
       { 종류:"사슬", 에서:자리(c), 에:자리(e), 색:"#c69bff" });
     for (const t of 산아군()) {
       const 양 = Math.floor(최대체력(t) * (뺏 / 100) * .35);
       t.막 = Math.min(t.막 + 양, Math.floor(최대체력(t) * .35));
     }
-    장면(null, null, `아군 전원이 그 막을 둘렀다.`, "good",
+    장면(null, null, 말("fight.allyTookBarrier"), "good",
       { 종류:"막", 들:산아군().map(자리), 색:"#c69bff", 막들:막들(...산아군()) });
   } },
 
   /* ── 로건 (성기사) — **방어 버퍼**. 세리안이 "나 하나가 버틴다" 면 로건은 "넷이 같이 버틴다" ── */
   "방패치기": { 쓰기(c){
-    const e = 과녁(); if (!e || 튕겼나(c, e, "방패", "#ff9a5c")) return;
+    const e = 과녁(); if (!e || 튕겼나(c, e, 말값("방패"), "#ff9a5c")) return;
     const 피 = 적맞기(e, 공격력(c) * 1.0);
     // 20% 로 적 공격력 −10% · 2턴. 보스전이 길어서 **쌓이지는 않아도 자주 걸린다**
     const 걸림 = Math.random() < .2;
     if (걸림) { e.약화남음 = 2; e.약화 = .10; }
-    장면(c, "attack", `<b>${c.이름}</b>${조사(c.이름,"이","가")} 방패로 들이받았다. → ${e.이름} <span class="hit">${수(피)}</span>`
-      + (걸림 ? ` <span class="good">· 공격 −10% (2턴)</span>` : ""), 걸림 ? "good" : "",
+    장면(c, "attack", 말("fight.shieldBash", { name: c.이름, foe: 말값(e.이름), dmg: 수(피) })
+      + (걸림 ? 말("fight.atkDown") : ""), 걸림 ? "good" : "",
       { 종류:"탄", 에서:자리(c), 에:자리(e), 색:"#ff9a5c" });
     쓰러짐확인(e);
   } },
   "성역의진형": { 쿨:() => 4, 쓸까:() => 산아군().some((x) => !(x.진형 > 0)), 쓰기(c){
-    장면(c, "attack", `<b>${c.이름}</b>${조사(c.이름,"이","가")} 성역의 진형을 세웠다. <span class="good">아군 전원 방어 +35% · 받는 피해 −15% · 3턴</span>`, "big",
+    장면(c, "attack", 말("fight.sanctuary", { name: c.이름 }), "big",
       { 종류:"섬광", 에서:자리(c), 색:"#ff9a5c" });
     for (const t of 산아군()) t.진형 = 3;
   } },
@@ -1217,33 +1551,33 @@ const 기술표 = {
   /* ── 이브 (암살자) — **방어 무시 + 출혈**. 검사가 큰 한 방이면 이브는 **깎아 내는** 자리다.
      보스 방어가 층마다 7씩 오르므로(40 + 층×7) 30층이면 250 — 정직한 직타가 반 토막 나는 구간이다. */
   "급소베기": { 쓰기(c){
-    const e = 과녁(); if (!e || 튕겼나(c, e, "단검", "#c0c8d4")) return;
+    const e = 과녁(); if (!e || 튕겼나(c, e, 말값("단검"), "#c0c8d4")) return;
     const 치명 = Math.random() < 치명확률(c, e);
     const 피 = 적맞기(e, 공격력(c) * 1.0 * (치명 ? 2 : 1), .2);     // 방어 20% 무시
-    장면(c, "attack", `<b>${c.이름}</b>${조사(c.이름,"이","가")} 급소를 베었다. → ${e.이름} <span class="hit">${수(피)}</span>`
+    장면(c, "attack", 말("fight.vitalStrike", { name: c.이름, foe: 말값(e.이름), dmg: 수(피) })
       + (치명 ? " <span class='big'>치명타</span>" : ""), 치명 ? "big" : "",
       { 종류:"탄", 에서:자리(c), 에:자리(e), 색: 치명 ? "#ffe66b" : "#c0c8d4", 세게:치명 });
     쓰러짐확인(e);
   } },
   "그림자습격": { 쿨:() => 4, 쓸까:() => { const e = 과녁(); return !!e && !(e.출혈남음 > 0); }, 쓰기(c){
-    const e = 과녁(); if (!e || 튕겼나(c, e, "단검", "#c0c8d4")) return;
+    const e = 과녁(); if (!e || 튕겼나(c, e, 말값("단검"), "#c0c8d4")) return;
     const 피 = 적맞기(e, 공격력(c) * 1.6, .2);
     e.출혈남음 = 3; e.출혈피해 = Math.max(1, Math.floor(공격력(c) * .4));
-    장면(c, "attack", `<b>${c.이름}</b>${조사(c.이름,"이","가")} 그림자에서 덮쳤다. → ${e.이름} <span class="hit">${수(피)}</span> <span class="bad">· 출혈 3턴</span>`, "big",
+    장면(c, "attack", 말("fight.shadowAmbush", { name: c.이름, foe: 말값(e.이름), dmg: 수(피) }), "big",
       { 종류:"탄", 에서:자리(c), 에:자리(e), 색:"#d9534f", 세게:true });
     쓰러짐확인(e);
   } },
 
   "부패의저주": { 쿨:() => 4, 쓸까:() => 적들.some((e) => !(e.독남음 > 0)), 쓰기(c){
     const 피턴 = Math.max(1, Math.floor(공격력(c) * .35));
-    장면(c, "attack", `<b>${c.이름}</b>${조사(c.이름,"이","가")} 부패의 저주를 뿌렸다. <span class="bad">적 전원 3턴 지속 피해 · 방어 15% 감소</span>`, "big",
+    장면(c, "attack", 말("fight.decayCurse", { name: c.이름 }), "big",
       { 종류:"섬광", 에서:자리(c), 색:"#9fe06a" });
     for (const e of 적들) { e.독남음 = 3; e.독피해 = 피턴; e.방어썩음 = .15; }
   } },
   사슬: { 쿨:() => 3, 쓸까:() => 적들.some((e) => e.보호막 > 0), 쓰기(c){
     const e = 적들.find((x) => x.보호막 > 0);
     e.보호막 = 0;                                                     // 사장님: 제어는 완전 해제
-    장면(c, "attack", `<b>${c.이름}</b>${조사(c.이름,"이","가")} 사슬을 던져 보호막을 끊었다.`, "big", { 종류:"사슬", 에서:자리(c), 에:자리(e), 색:"#c69bff" });
+    장면(c, "attack", 말("fight.chainsBreak", { name: c.이름 }), "big", { 종류:"사슬", 에서:자리(c), 에:자리(e), 색:"#c69bff" });
   } },
 };
 
@@ -1255,37 +1589,38 @@ const 기술표 = {
  * 겹친 카드(중복)로 값이 변하는 기술은 **그 캐릭터의 지금 값**을 보여 준다.
  */
 const 기술설명 = {
-  푸른방패검: (c) => `일반공격 · 적 하나를 공격력 <b>95%</b>로 친다. 그 뒤 나에게 막을 두른다 — 최대체력 4% + 공격력 35%.`,
-  철벽의맹세: (c) => `기술 · <b>${c.중복 >= 5 ? 2 : 3}턴</b>마다. 아군 전원에게 막 <b>공격력 ${c.중복 >= 1 ? 155 : 140}%</b>를 씌우고, 적의 눈이 나에게 쏠린다(도발).`,
-  새벽을가르는방패: (c) => `궁극기 · 적 전원을 <b>공격력 ${c.중복 >= 3 ? 220 : 180}%</b>로 친다. 보호막을 두른 적은 피해 대신 <b>보호막 25</b>가 깎인다. 그 뒤 아군 전원에게 막 공격력 220%.${c.중복 >= 6 ? " 이 막은 <b>닳지 않는다</b>." : ""}`,
-  연속베기: (c) => `일반공격 · 적 하나를 <b>두 번</b> 벤다(각 공격력 62%). 한 대마다 <b>12%</b>로 치명타(2배). 몰아 때리는 것보다 <b>막을 긁어내기</b> 좋다.`,
-  약점노리기: (c) => `기술 · <b>3턴</b>마다. 다음 공격이 <b>반드시 치명타</b>가 되고 적 <b>방어 40%를 무시</b>한다.`,
-  처형: (c) => `기술 · <b>4턴</b>마다. 적의 남은 체력이 <b>절반 아래</b>일 때만 쓴다. 적이 다칠수록 세진다 — 반피에 <b>2.1배</b>, 10% 남으면 <b>3.2배</b>.`,
-  "치유의빛": (c) => `일반공격 · 가장 많이 다친 아군을 <b>공격력 90%</b>만큼 회복한다.`,
-  "구원의진형": (c) => `기술 · <b>3턴</b>마다. 아군 <b>전원</b>을 공격력 50%만큼 회복한다. 보스가 3턴마다 전원을 치는 것에 맞서는 자리다.`,
-  "화염구": (c) => `일반공격 · 적 하나를 <b>공격력 125%</b>로 친다. 마법이라 적 <b>방어 20%를 무시</b>한다.`,
-  "부패의저주": (c) => `기술 · <b>4턴</b>마다. 적 <b>전원</b>에게 3턴 동안 매 턴 공격력 35%의 피해를 주고, 그동안 <b>방어를 15% 깎는다</b>.`,
-  사슬: (c) => `기술 · <b>3턴</b>마다. 보호막을 두른 적 하나의 보호막을 <b>통째로</b> 없앤다.`,
-  방패치기: (c) => `일반공격 · 적 하나를 공격력 <b>100%</b>로 들이받는다. <b>20%</b>로 그 적의 공격력이 <b>10% 떨어진다</b>(2턴).`,
-  성역의진형: (c) => `기술 · <b>4턴</b>마다. <b>3턴</b> 동안 아군 전원 방어 <b>+35%</b>, 받는 피해 <b>−15%</b>. 둘은 따로 먹는다.`,
-  급소베기: (c) => `일반공격 · 적 하나를 공격력 <b>100%</b>로 베고 그 적의 <b>방어 20%를 무시</b>한다. <b>12%</b>로 치명타(2배) — 출혈 중인 적에겐 <b>27%</b>.`,
-  관통폭풍참: (c) => `일반공격 · <b>적 전원</b>을 공격력 <b>78%</b>로 베고 <b>방어 20%를 무시</b>한다. <i>(폭풍의 영혼석)</i>`,
-  혈의축복: (c) => `기술 · <b>4턴</b>마다. 아군 전원 체력을 <b>10%</b> 태우고 <b>3턴</b> 동안 공격 <b>+40%</b>. 이걸로는 쓰러지지 않는다. <i>(혈의 영혼석)</i>`,
-  영혼반전: (c) => `기술 · <b>3턴</b>마다. 적 하나의 보호막을 통째로 끊고, <b>그만큼을 아군 전원의 막</b>으로 돌린다. <i>(역천의 영혼석)</i>`,
-  그림자습격: (c) => `기술 · <b>4턴</b>마다. 적 하나를 공격력 <b>160%</b>·방어 20% 무시로 치고 <b>3턴 출혈</b>을 남긴다(턴마다 공격력 40%). 출혈은 칼리드의 저주와 <b>따로</b> 쌓인다.`,
-  "기도": (c) => `일반공격 · 다친 아군이 있으면 <b>공격력 55%</b>만큼 덮고, 아무도 안 다쳤으면 적을 공격력 80%로 친다.`,
-  "성스러운축복": (c) => `기술 · <b>4턴</b>마다. 아군 <b>전원</b>의 공격을 <b>3턴 동안 +20%</b>. 내 공격이 약한 대신 넷을 함께 키운다.`,
-  "빛의수호막": (c) => `기술 · <b>3턴</b>마다. 아군 전원에게 <b>각자 최대체력의 14%</b>만큼 막. 공격력이 아니라 <b>받는 쪽의 몸집</b>을 따르므로 탱커가 더 두꺼워진다.`,
+  푸른방패검: (c) => 말("desc.푸른방패검"),
+  철벽의맹세: (c) => 말("desc.철벽의맹세", { turns: c.중복 >= 5 ? 2 : 3, pct: c.중복 >= 1 ? 155 : 140 }),
+  새벽을가르는방패: (c) => 말("desc.새벽을가르는방패", { pct: c.중복 >= 3 ? 220 : 180 })
+    + (c.중복 >= 6 ? 말("desc.새벽을가르는방패.6") : ""),
+  연속베기: (c) => 말("desc.연속베기"),
+  약점노리기: (c) => 말("desc.약점노리기"),
+  처형: (c) => 말("desc.처형"),
+  "치유의빛": (c) => 말("desc.치유의빛"),
+  "구원의진형": (c) => 말("desc.구원의진형"),
+  "화염구": (c) => 말("desc.화염구"),
+  "부패의저주": (c) => 말("desc.부패의저주"),
+  사슬: (c) => 말("desc.사슬"),
+  방패치기: (c) => 말("desc.방패치기"),
+  성역의진형: (c) => 말("desc.성역의진형"),
+  급소베기: (c) => 말("desc.급소베기"),
+  관통폭풍참: (c) => 말("desc.관통폭풍참"),
+  혈의축복: (c) => 말("desc.혈의축복"),
+  영혼반전: (c) => 말("desc.영혼반전"),
+  그림자습격: (c) => 말("desc.그림자습격"),
+  "기도": (c) => 말("desc.기도"),
+  "성스러운축복": (c) => 말("desc.성스러운축복"),
+  "빛의수호막": (c) => 말("desc.빛의수호막"),
 };
 const 특성설명 = {
-  "마지막 수호자": (c) => `가장 위태로운 아군이 맞기 직전, 내가 대신 막을 씌운다 — <b>내 최대체력의 ${c.중복 >= 2 ? 12 : 8}%</b>. 한 턴에 한 번, 나 자신에게는 안 걸린다. 궁 게이지도 <b>+34</b> 찬다.`,
-  "푸른 강철의 결의": (c) => `내가 막을 두르고 있는 동안 <b>받는 피해 ${c.중복 >= 4 ? 24 : 18}% 감소</b>.`,
-  "결의": (c) => `체력이 떨어질수록 공격이 오른다 — 체력이 다 닳기 직전이면 <b>+45%</b>. 벼랑에서 더 세진다.`,
-  "꺼지지 않는 등불": (c) => `전투가 이어지는 동안 쉬지 않고 가장 위태로운 아군을 찾는다. 기술 「구원의 진형」은 <b>누군가 20% 넘게 다쳤을 때만</b> 쓴다 — 아껴 두었다가 광역이 들어온 뒤에 편다.`,
-  "손이 닿는 자리": (c) => `뒤에 서서 넷을 본다. 축복과 막은 <b>살아 있는 아군 전원</b>에게 간다 — 누가 앞에 섰든.`,
-  "불굴의 의지": (c) => `체력이 <b>30% 아래로 떨어지는 그 순간</b>, 한 판에 딱 한 번 <b>최대체력의 25%</b>만큼 막을 두른다. 막 천장(35%)은 그대로 먹는다.`,
-  "맹독 바르기": (c) => `<b>출혈 중인 적</b>을 칠 때 치명타 확률이 <b>+15%</b>(12% → 27%). 그래서 「그림자 습격」을 먼저 넣고 베는 것이 세다.`,
-  "마른 심지": (c) => `불과 저주를 함께 쓴다. 「부패의 저주」가 깎아 둔 방어는 <b>내 화염구뿐 아니라 아군의 모든 공격</b>에 함께 먹는다.`,
+  "마지막 수호자": (c) => 말("desc.마지막 수호자", { pct: c.중복 >= 2 ? 12 : 8 }),
+  "푸른 강철의 결의": (c) => 말("desc.푸른 강철의 결의", { pct: c.중복 >= 4 ? 24 : 18 }),
+  "결의": (c) => 말("desc.결의"),
+  "꺼지지 않는 등불": (c) => 말("desc.꺼지지 않는 등불"),
+  "손이 닿는 자리": (c) => 말("desc.손이 닿는 자리"),
+  "불굴의 의지": (c) => 말("desc.불굴의 의지"),
+  "맹독 바르기": (c) => 말("desc.맹독 바르기"),
+  "마른 심지": (c) => 말("desc.마른 심지"),
 };
 
 /* ── 공방 (층과합성-지피티.md 3장, 1구간 레시피만) ── */
@@ -1486,11 +1821,11 @@ function 한턴(){
   if (장면흘리기()) return;
   if (S.쉼 > 0) {
     S.쉼--;
-    if (S.쉼 === 0) { 전투준비(); 적만들기(); 적기("원정대가 다시 섰다.", "good"); 그리기(); }
-    else 적기(`상처를 꿰매는 중… (${S.쉼})`, "turn");
+    if (S.쉼 === 0) { 전투준비(); 적만들기(); 적기(말("log.partyRose"), "good"); 그리기(); }
+    else 적기(말("log.stitching", { n: S.쉼 }), "turn");
     return;
   }
-  if (!파티원().length) { S.진행 = false; 적기("원정대가 비었다. 캐릭터 탭에서 태워라.", "die"); return; }
+  if (!파티원().length) { S.진행 = false; 적기(말("log.partyEmpty"), "die"); return; }
   if (!산아군().length) { 전멸(); return; }
   // 무리를 다 눕혔다고 층이 끝난 게 아니다 — 다음 무리가 남았으면 그쪽을 세운다(체력은 안 찬다)
   if (!적들.length) {
@@ -1498,7 +1833,7 @@ function 한턴(){
     판끝(); return;
   }
   턴++;
-  장면(null, null, `턴 ${턴}`, "turn");
+  장면(null, null, 말("log.turn", { n: 턴 }), "turn");
   const 세 = 세리안(); if (세) 세.수호씀 = false;
   // 로제의 축복, 로건의 진형은 턴마다 한 칸씩 닳는다 (10-11)
   for (const c of 산아군()) { if (c.축복 > 0) c.축복--; if (c.진형 > 0) c.진형--; }
@@ -1511,7 +1846,7 @@ function 한턴(){
     e.출혈남음--;
     const 피 = Math.max(1, Math.floor(e.출혈피해));
     e.hp -= 피;
-    장면(null, null, `${e.이름}의 상처가 벌어졌다. <span class="hit">${수(피)}</span>`, "",
+    장면(null, null, 말("fight.bleedOpen", { foe: 말값(e.이름), dmg: 수(피) }), "",
       { 종류:"맞음", 에:자리(e), 색:"#d9534f" });
     쓰러짐확인(e);
   }
@@ -1522,7 +1857,7 @@ function 한턴(){
     e.독남음--;
     const 피 = Math.max(1, Math.floor(e.독피해));
     e.hp -= 피;
-    장면(null, null, `${e.이름}${조사(e.이름,"이","가")} 부패에 갉아먹혔다. <span class="hit">${수(피)}</span>`, "",
+    장면(null, null, 말("fight.decayGnaw", { foe: 말값(e.이름), dmg: 수(피) }), "",
       { 종류:"맞음", 에:자리(e), 색:"#9fe06a" });
     if (e.독남음 <= 0) e.방어썩음 = 0;
     쓰러짐확인(e);
@@ -1571,17 +1906,17 @@ function 적행동(e){
   if (e.보스) {
     e.광역 = (e.광역 ?? 0) + 1;
     if (e.광역 % 3 === 0) {
-      장면(e, "attack", `<b>${e.이름}</b>${조사(e.이름,"이","가")} 바닥을 내리찍었다 — <span class="big">전원</span>`, "bad",
+      장면(e, "attack", 말("fight.bossSlam", { foe: 말값(e.이름) }), "bad",
         { 종류:"섬광", 에서:자리(e), 색:"#ff7a5c" });
       for (const t of [...산것]) {
         const { 피: 피2, 막음: 막2, 불굴: 불2, 재기: 재2 } = 아군맞기(t, 적공격(e) * .95);
-        장면(null, null, `→ <b>${t.이름}</b> <span class="bad">${수(피2)}</span>${막2 > 0 ? ` (막 ${수(막2)})` : ""}`, "",
+        장면(null, null, 막2 > 0 ? 말("fight.hitAllyBlocked", { who: t.이름, dmg: 수(피2), blocked: 수(막2) }) : 말("fight.hitAlly", { who: t.이름, dmg: 수(피2) }), "",
           { 종류:"맞음", 에:자리(t), 색:"#ff7a5c" });
-        if (재2) 장면(null, null, `<b>${t.이름}</b>${조사(t.이름,"이","가")} 쓰러지려다 <span class="good">다시 섰다</span>. (체력 ${수(재2)})`, "good",
+        if (재2) 장면(null, null, 말("fight.stoodBackUp", { who: t.이름, n: 수(재2) }), "good",
           { 종류:"회복", 에:자리(t), 색:"#ffe9a0" });
-        if (불2) 장면(null, null, `<b>${t.이름}</b>${조사(t.이름,"이","가")} 무릎을 꿇지 않았다 — 막 <span class="good">${수(불2)}</span>`, "good",
+        if (불2) 장면(null, null, 말("fight.didNotKneel", { who: t.이름, n: 수(불2) }), "good",
           { 종류:"막", 들:[자리(t)], 색:"#ff9a5c", 막들:막들(t) });
-        if (t.hp <= 0) 장면(null, null, `<b>${t.이름}</b>${조사(t.이름,"이","가")} 주저앉았다.`, "bad");
+        if (t.hp <= 0) 장면(null, null, 말("fight.collapsed", { who: t.이름 }), "bad");
       }
       return;
     }
@@ -1590,23 +1925,24 @@ function 적행동(e){
   const 끌린 = 산것.filter((c) => c.도발).sort((a, b) => (역할(b) === "방어") - (역할(a) === "방어"))[0];
   const t = 끌린 ?? 산것[Math.floor(Math.random() * 산것.length)];
   const { 피, 막음, 수호, 불굴, 재기 } = 아군맞기(t, 적공격(e) * (0.9 + Math.random()*0.2));
-  if (수호) 장면(세리안(), "attack", `<b>기사</b>가 ${t.이름} 앞에 방패를 들었다. 막 <span class="good">${수(수호)}</span>`, "",
+  if (수호) 장면(세리안(), "attack", 말("fight.knightGuards", { who: t.이름, n: 수(수호) }), "",
     { 종류:"막", 들:[자리(t)], 색:"#7ec8ff" });
   const 글 = 막음 > 0
-    ? `${e.이름} → <b>${t.이름}</b> 막이 <span class="good">${수(막음)}</span> 받아냈다${피 > 0 ? ` · <span class="bad">${수(피)}</span>` : ""}${t.막 <= 0 ? " — 막이 깨졌다" : ""}`
-    : `${e.이름} → <b>${t.이름}</b> <span class="bad">${수(피)}</span>`;
+    ? 말("fight.foeBlocked", { foe: 말값(e.이름), who: t.이름, blocked: 수(막음) })
+      + (피 > 0 ? 말("fight.foeBlockedLeak", { dmg: 수(피) }) : "") + (t.막 <= 0 ? 말("fight.barrierBroke") : "")
+    : 말("fight.foeHit", { foe: 말값(e.이름), who: t.이름, dmg: 수(피) });
   장면(e, "attack", 글, "", { 종류: 막음 > 0 ? (t.막 <= 0 ? "막깨짐" : "막맞음") : "맞음",
     에서:자리(e), 에:자리(t), 색: 막음 > 0 ? "#7ec8ff" : "#ff7a5c", 막들:막들(t) });
-  if (재기) 장면(null, null, `<b>${t.이름}</b>${조사(t.이름,"이","가")} 쓰러지려다 <span class="good">다시 섰다</span>. (체력 ${수(재기)})`, "good",
+  if (재기) 장면(null, null, 말("fight.stoodBackUp", { who: t.이름, n: 수(재기) }), "good",
     { 종류:"회복", 에:자리(t), 색:"#ffe9a0" });
-  if (불굴) 장면(null, null, `<b>${t.이름}</b>${조사(t.이름,"이","가")} 무릎을 꿇지 않았다 — 막 <span class="good">${수(불굴)}</span>`, "good",
+  if (불굴) 장면(null, null, 말("fight.didNotKneel", { who: t.이름, n: 수(불굴) }), "good",
     { 종류:"막", 들:[자리(t)], 색:"#ff9a5c", 막들:막들(t) });
-  if (t.hp <= 0) 장면(null, null, `<b>${t.이름}</b>${조사(t.이름,"이","가")} 주저앉았다.`, "bad");
+  if (t.hp <= 0) 장면(null, null, 말("fight.collapsed", { who: t.이름 }), "bad");
   else if (약대기 > 0 && t.hp < 최대체력(t) * .5) {
     약대기--;
     const 양 = Math.floor(최대체력(t) * .2);
     t.hp = Math.min(최대체력(t), t.hp + 양);
-    장면(null, null, `별빛 회복약이 깨졌다. <b>${t.이름}</b> <span class="good">+${수(양)}</span>`, "good", { 종류:"회복", 에:자리(t), 색:"#ffe9a0" });
+    장면(null, null, 말("fight.potionBroke", { who: t.이름, n: 수(양) }), "good", { 종류:"회복", 에:자리(t), 색:"#ffe9a0" });
   }
 }
 
@@ -1638,7 +1974,7 @@ const 금화보상 = (층, 보스판) =>
 const 깬수 = (층) => S.깸?.[층] ?? 0;
 function 자격(층){
   const 줄 = [{ 이름:말("map.clears", { n: 필요판(층) }), 됨: 깬수(층) >= 필요판(층), 지금:`${Math.min(깬수(층), 필요판(층))}/${필요판(층)}` }];
-  if (층 % 10 === 0) 줄.push({ 이름:"구간 보스 처치", 됨: (S.보스깸 ?? []).includes(층), 지금: (S.보스깸 ?? []).includes(층) ? "완료" : "아직" });
+  if (층 % 10 === 0) 줄.push({ 이름:말("qual.bossKill"), 됨: (S.보스깸 ?? []).includes(층), 지금: 말((S.보스깸 ?? []).includes(층) ? "qual.done" : "qual.notYet") });
   return { 줄, 참: 줄.every((r) => r.됨) };
 }
 /** 열린 가장 높은 층. 1층은 늘 열려 있고, 그 위는 **아래층 자격을 채워야** 열린다. */
@@ -1660,7 +1996,7 @@ function 판끝(){
     c.경험 += S.파티.includes(c.id) ? 양 : Math.floor(양/2);
     while (c.레벨 < 레벨상한(c) && c.경험 >= 필요경험(c)) {
       c.경험 -= 필요경험(c); c.레벨++;
-      if (S.파티.includes(c.id)) 장면(c, "idle", `<b>${c.이름}</b> 레벨 ${c.레벨}`, "good");
+      if (S.파티.includes(c.id)) 장면(c, "idle", 말("fight.levelUp", { name: c.이름, n: c.레벨 }), "good");
     }
   }
   // 드롭(층과합성-지피티.md 2-1·2-4)
@@ -1669,7 +2005,7 @@ function 판끝(){
      T1 값과 시장값을 빼면 32판을 돌아도 모자랐다(실측). 보스를 도는 일에 값을 더 얹는다. */
   const g = 금화보상(층, 보스판), 파 = 보스판 ? 굴(8, 12) : 굴(2, 4), 잔 = 보스판 ? 굴(4, 6) : 굴(1, 2);
   S.금화 += g; S.가방.파편 += 파; S.가방.잔혼 += 잔;
-  let 줄 = `금화 <b>+${수(g)}</b> · 균열 파편 +${파} · 짐승 잔혼 +${잔}`;
+  let 줄 = 말("loot.base", { g: 수(g), shard: 말값("균열 파편"), a: 파, remnant: 말값("짐승 잔혼"), b: 잔 });
   // 10-10: **층대마다 재료가 달라야** 위층을 돌 이유가 생긴다. 단단한 가죽은 10층을 넘어야 나온다.
   /* 10-11 **20층 벽 완화.** 체감 자 실측: 10층을 30판(14.5분) 돌고도 T2 한 벌을 못 맞췄다.
      막은 것은 가죽이었다 — 넷을 입히려면 80개가 드는데 보스 판당 0.4×4 = 1.6개뿐이라 50판이 든다.
@@ -1677,33 +2013,33 @@ function 판끝(){
      확률은 관문이 아닌 층에만 남긴다(그쪽은 되돌이로 도는 곳이라 그대로 둔다). */
   if (층 >= 10) {
     const 가 = 보스판 ? 굴(4, 6) : (Math.random() < .4 ? 굴(1, 2) : 0);
-    if (가) { S.가방.가죽 = (S.가방.가죽 ?? 0) + 가; 줄 += ` · 단단한 가죽 +${가}`; }
+    if (가) { S.가방.가죽 = (S.가방.가죽 ?? 0) + 가; 줄 += 말("loot.more", { what: 말값("단단한 가죽"), n: 가 }); }
   }
   if (층 >= 20 && Math.random() < .35) {
     const 강 = 보스판 ? 굴(4, 6) : 굴(1, 2);
-    S.가방.강철 = (S.가방.강철 ?? 0) + 강; 줄 += ` · 강철 조각 +${강}`;
+    S.가방.강철 = (S.가방.강철 ?? 0) + 강; 줄 += 말("loot.more", { what: 말값("강철 조각"), n: 강 });
   }
   if (층 >= 30 && Math.random() < .35) {
     const 석 = 보스판 ? 굴(4, 6) : 굴(1, 2);
-    S.가방.석편 = (S.가방.석편 ?? 0) + 석; 줄 += ` · 성소의 석편 +${석}`;
+    S.가방.석편 = (S.가방.석편 ?? 0) + 석; 줄 += 말("loot.more", { what: 말값("성소의 석편"), n: 석 });
   }
   if (층 >= 40 && Math.random() < .35) {
     const 액 = 보스판 ? 굴(4, 6) : 굴(1, 2);
-    S.가방.독액 = (S.가방.독액 ?? 0) + 액; 줄 += ` · 늪지 독액 +${액}`;
+    S.가방.독액 = (S.가방.독액 ?? 0) + 액; 줄 += 말("loot.more", { what: 말값("늪지 독액"), n: 액 });
   }
   /* 10-11: 용암 결정만 **60층 위**다(앞의 것들은 10·20·30·40). 6구간이 61층에서 시작하므로
      그 아래에서 나오면 늪에서 용암 결정이 떨어진다. T7 은 60층 관문을 넘은 뒤 61~69층에서 캔다. */
   if (층 >= 60 && Math.random() < .35) {
     const 결 = 보스판 ? 굴(4, 6) : 굴(1, 2);
-    S.가방.용암결정 = (S.가방.용암결정 ?? 0) + 결; 줄 += ` · 용암 결정 +${결}`;
+    S.가방.용암결정 = (S.가방.용암결정 ?? 0) + 결; 줄 += 말("loot.more", { what: 말값("용암 결정"), n: 결 });
   }
   if (층 >= 70 && Math.random() < .35) {
     const 빙 = 보스판 ? 굴(4, 6) : 굴(1, 2);
-    S.가방.빙결정 = (S.가방.빙결정 ?? 0) + 빙; 줄 += ` · 빙결의 결정 +${빙}`;
+    S.가방.빙결정 = (S.가방.빙결정 ?? 0) + 빙; 줄 += 말("loot.more", { what: 말값("빙결의 결정"), n: 빙 });
   }
   if (층 >= 91 && Math.random() < .35) {
     const 수 = 보스판 ? 굴(4, 6) : 굴(1, 2);
-    S.가방.심연정수 = (S.가방.심연정수 ?? 0) + 수; 줄 += ` · 심연의 정수 +${수}`;
+    S.가방.심연정수 = (S.가방.심연정수 ?? 0) + 수; 줄 += 말("loot.more", { what: 말값("심연의 정수"), n: 수 });
   }
   /* **관문 보스가 그 구간의 핵심 재료를 떨군다** — 다음 층대 장비는 이것이 있어야 만든다.
      10-11: 처음엔 판당 1개였는데, T2 한 벌에 **8개**가 필요해서 보스를 여덟 번 깨야 했다.
@@ -1717,19 +2053,19 @@ function 판끝(){
             : 층 >= 30 ? { 키:"거인뼈", 이름:"거인의 뼈" }
             : 층 >= 20 ? { 키:"이빨", 이름:"사냥개의 이빨" } : { 키:"수호핵", 이름:"수호핵" };
     const 수량 = 첫 ? 1 : 3;
-    S.가방[핵.키] = (S.가방[핵.키] ?? 0) + 수량; 줄 += ` · ${핵.이름} +${수량}`;
+    S.가방[핵.키] = (S.가방[핵.키] ?? 0) + 수량; 줄 += 말("loot.more", { what: 말값(핵.이름), n: 수량 });
   }
   if (첫) {
     const 별 = 보스판 ? 100 : 15;
-    S.가방.별가루 += 별; 줄 += ` · <span class="big">별가루 +${별}</span> (첫 클리어)`;
-    if (보스판) { S.가방.문장.방어 += 3; 줄 += " · 수호의 문장 +3"; }
+    S.가방.별가루 += 별; 줄 += 말("loot.firstStar", { n: 별 });
+    if (보스판) { S.가방.문장.방어 += 3; 줄 += 말("loot.crest"); }
   } else if (보스판) {
     /* 10-11: **보스를 다시 깨도 별가루가 나온다.** 전에는 첫 클리어뿐이라
        평생 모을 수 있는 별가루가 2,350개였다 — 10연차 한 번도 못 했다.
        수호핵과 **같이** 나오므로 "보스를 도는 일"이 장비와 뽑기를 한꺼번에 먹인다. */
     /* 패시브 영혼석 「찬란한 별가루」 — 50 → 75 (10-11) */
     const 별 = 낀패시브() === "별빛" ? 75 : 50;
-    S.가방.별가루 += 별; 줄 += ` · <b>별가루 +${별}</b>${별 > 50 ? " <i>(찬란한 별가루)</i>" : ""}`;
+    S.가방.별가루 += 별; 줄 += 말("loot.star", { n: 별 }) + (별 > 50 ? 말("loot.starRadiant") : "");
   }
   /* **영혼석 드롭** (10-11 사장님·제미나이 명세: 관문 보스 15~20%).
      이미 가진 것도 또 나온다 — 쌓아 두는 뜻은 없지만, "안 나오는 것 하나" 때문에
@@ -1745,20 +2081,20 @@ function 판끝(){
     const d = 영혼석표[석];
     if (d.종류 === "액티브") { if (!S.영혼석.낀액티브.includes(석)) S.영혼석.낀액티브.push(석); }
     else if (!S.영혼석.낀패시브) S.영혼석.낀패시브 = 석;
-    줄 += ` · <span class="big">${d.이름}</span>`;
+    줄 += 말("loot.soulstone", { what: 말값(d.이름) });
   }
   장면(null, null, 줄, "good");
 
   /* ── 자격 (10-09) ─────────────────────────────────────────
      깬 횟수를 세고, 보스를 눕혔으면 적어 둔다. 층은 **안 올린다.** */
-  if (S.버프?.남은 > 0 && --S.버프.남은 === 0) 장면(null, null, "식당에서 받은 기운이 다했다.", "turn");
+  if (S.버프?.남은 > 0 && --S.버프.남은 === 0) 장면(null, null, 말("log.buffGone"), "turn");
   S.깸 = S.깸 ?? {}; S.보스깸 = S.보스깸 ?? [];
   const 앞열림 = S.최고층;
   S.깸[층] = 깬수(층) + 1;
   if (보스판 && !S.보스깸.includes(층)) S.보스깸.push(층);
   S.최고층 = 열린층();
   if (S.최고층 > 앞열림) {
-    장면(null, null, `<b>${S.최고층}층</b>으로 오를 <span class="big">자격</span>을 얻었다.`, "big");
+    장면(null, null, 말("log.qualified", { n: S.최고층 }), "big");
     /**
      * **자동 등반** (10-09 사장님 선택 2번). 켜 두면 자격이 차는 **순간** 올라간다.
      * 자격을 건너뛰는 게 아니라 **자격이 찬 뒤에만** 움직이므로 구성을 안 깬다 —
@@ -1770,14 +2106,14 @@ function 판끝(){
     }
   } else {
     const 남 = 자격(층).줄.filter((r) => !r.됨);
-    if (남.length) 장면(null, null, `${층}층 자격 — ${자격(층).줄.map((r) => `${r.이름} ${r.지금}`).join(" · ")}`, "turn");
+    if (남.length) 장면(null, null, 말("log.qualProgress", { n: 층, rows: 자격(층).줄.map((r) => `${r.이름} ${r.지금}`).join(" · ") }), "turn");
   }
   // 10층 보스: 흑마법사(제어) 합류 — 뽑기가 생기기 전까지 임시
   if (보스판 && !S.대원.some((c) => c.키 === "흑마법사")) {
     const 새 = 대원만들기("흑마법사", Math.max(1, ...S.대원.map((c) => c.레벨)));
     S.대원.push(새);
     if (S.파티.length < 파티한도) S.파티.push(새.id);
-    장면(null, null, `골렘의 잔해 속에서 <b>흑마법사</b>(제어)가 걸어 나왔다.`, "big");
+    장면(null, null, 말("log.darkMageJoins"), "big");
   }
   // **층을 안 올린다.** 같은 층을 다시 세운다 — 떠나는 것은 사장님이 탑에서 고른다.
   전투준비(); 적만들기(); 윗줄(); 그리기(); 저장();
@@ -1792,8 +2128,8 @@ function 전멸(){
    */
   if (S.층 % 10 === 0 && S.층 > 1) {
     const 아래 = S.층 - 1;
-    적기(`<b>${S.층}층</b> 관문에서 무너졌다. 자동 등반을 끄고 <b>${아래}층</b>으로 물러나 힘을 모은다.`, "die");
-    적기("대장간에서 장비를 갖추고 다시 오면 된다.", "turn");
+    적기(말("log.gateFell", { n: S.층, m: 아래 }), "die");
+    적기(말("log.forgeUp"), "turn");
     S.자동오름 = false;
     S.층 = 아래; S.사냥층 = 아래; S.단계 = Math.floor((아래 - 1)/10) + 1;
     S.쉼 = 4;
@@ -1802,12 +2138,12 @@ function 전멸(){
   }
   // 10-09 사장님 "켜 둔 동안 계속 도전" — 되돌이 사냥 중엔 구간 처음으로 밀려나지 않는다
   if (S.사냥층) {
-    적기(`원정대가 쓰러졌다. 숨을 고르고 <b>${S.사냥층}층</b>에 다시 든다.`, "die");
+    적기(말("log.retryFloor", { n: S.사냥층 }), "die");
     S.쉼 = 4;
     for (const c of 파티원()) { c.막 = 0; c.보임막 = 0; }
     윗줄(); 그리기(); return;
   }
-  적기("원정대가 물러났다. 구간 처음으로 돌아간다.", "die");
+  적기(말("log.pushedBack"), "die");
   S.층 = Math.max(1, Math.floor((S.층 - 1)/10)*10 + 1);
   S.단계 = Math.floor((S.층 - 1)/10) + 1;
   S.쉼 = 4;
@@ -2104,7 +2440,7 @@ function 맵그리기(){
       const 보스 = f % 10 === 0, 자 = 자격(f), 꼭대기층 = f === 끝;
       return `<div class="층칸${보스 ? " 보스" : ""}${자.참 ? "" : " 새"}" data-f="${f}">
         <div class="머리줄"><b>${말("top.floor", { n: f })}</b>
-          <i>${보스 ? 구간(f).보스.이름 : 말(`zone.${((f - 1) % 10) + 1}`)}</i>
+          <i>${보스 ? 말값(구간(f).보스.이름) : 말(`zone.${((f - 1) % 10) + 1}`)}</i>
           <span class="표">${말(자.참 ? "map.done" : 꼭대기층 ? "map.climbing" : "map.todo")}</span></div>
         <div class="자격줄">${자.줄.map((r) => `<span class="조건${r.됨 ? " 참" : ""}">${r.이름} <b>${r.지금}</b></span>`).join("")}</div>
       </div>`;
@@ -2117,15 +2453,14 @@ $("#소환단추").onclick = () => 뽑기창();
 
 $("#자격버튼").onclick = () => {
   const 층 = S.층, 자 = 자격(층);
-  쪽창(`${층}층 관문`, `<div class="자격칸">${자.줄.map((r) =>
+  쪽창(말("qual.gate", { n: 층 }), `<div class="자격칸">${자.줄.map((r) =>
       `<div class="조건줄${r.됨 ? " 참" : ""}"><span>${r.이름}</span><b>${r.지금}</b></div>`).join("")}</div>
     <div class="풀이 on">${자.참
-      ? `자격이 찼다. <b>${층 + 1}층</b>으로 오를 수 있다 — 탑에서 고르거나, 자동 등반을 켜 두면 바로 올라간다.`
-      : `아직 못 오른다. 위에 남은 것을 채우면 <b>${층 + 1}층</b>이 열린다.<br>
-         관문에서 지면 자동 등반이 꺼지고 한 층 내려가 모으게 된다.`}</div>`);
+      ? 말("qual.ready", { n: 층 + 1 })
+      : 말("qual.notReady", { n: 층 + 1 })}</div>`);
 };
 
-$("#자동버튼").onclick = () => { S.자동오름 = !S.자동오름; 적기(S.자동오름 ? "자격이 차면 바로 올라간다." : "자격이 차도 이 층에 머문다.", "turn"); 맵그리기(); 저장(); };
+$("#자동버튼").onclick = () => { S.자동오름 = !S.자동오름; 적기(말(S.자동오름 ? "log.autoOn" : "log.autoOff"), "turn"); 맵그리기(); 저장(); };
 
 /* ── 길드 (10-10 사장님) ─────────────────────────────────────────
    우편함·공지·설정은 HTML 에만 있고 **눌러도 아무 일이 없었다**. 셋을 살리고
@@ -2134,7 +2469,7 @@ function 쪽창(제목, 속, 꾸밈){
   const 덮 = document.createElement("div"); 덮.id = "덮개";
   덮.innerHTML = `<div class="카드" onclick="event.stopPropagation()">
     <div class="nm"><b>${제목}</b></div>${속}
-    <div class="줄"><button class="btn" id="닫기">닫기</button></div></div>`;
+    <div class="줄"><button class="btn" id="닫기">${말("ui.close")}</button></div></div>`;
   덮.onclick = () => 덮.remove();
   document.body.appendChild(덮);
   덮.querySelector("#닫기").onclick = () => 덮.remove();
@@ -2144,7 +2479,7 @@ function 쪽창(제목, 속, 꾸밈){
 const 오늘날 = () => new Date().toISOString().slice(0, 10);
 
 $("#출석단추").onclick = () => {
-  if (S.출석날 === 오늘날()) { 쪽창("출석", `<div class="풀이 on">오늘은 이미 받았다. 내일 다시 오면 된다.</div>`); return; }
+  if (S.출석날 === 오늘날()) { 쪽창(말("ui.checkin"), `<div class="풀이 on">${말("guild.checkedIn")}</div>`); return; }
   S.출석날 = 오늘날();
   S.가방.별가루 += 50; S.금화 += 2000;
   윗줄(); 저장(); 길드그리기();
@@ -2159,7 +2494,7 @@ $("#식당단추").onclick = () => {
   const 됨 = S.가방.잔혼 >= 식당값.잔혼 && S.금화 >= 식당값.금화;
   const 남 = S.버프?.남은 ?? 0;
   쪽창("길드 식당", `<div class="풀이 on">
-      ${남 > 0 ? `지금 <b style="color:var(--초록)">공격 +${Math.round(S.버프.몫*100)}%</b> · 남은 <b>${남}판</b><br>` : ""}
+      ${남 > 0 ? 말("guild.mealNow", { pct: Math.round(S.버프.몫*100), n: 남 }) : ""}
       한 끼를 차리면 <b>다음 10판</b> 동안 파티 <b style="color:var(--초록)">공격 +5%</b>.<br>
       드는 것: 짐승 잔혼 <span style="color:${S.가방.잔혼 >= 식당값.잔혼 ? "#8fe08f" : "#ff8e7a"}">${S.가방.잔혼}/${식당값.잔혼}</span>
       · 금화 <span style="color:${S.금화 >= 식당값.금화 ? "#8fe08f" : "#ff8e7a"}">${수(식당값.금화)}</span>
@@ -2171,12 +2506,12 @@ $("#식당단추").onclick = () => {
         S.가방.잔혼 -= 식당값.잔혼; S.금화 -= 식당값.금화;
         S.버프 = { 남은: 10, 몫: .05 };
         윗줄(); 저장(); 덮.remove();
-        적기("식당에서 한 끼를 차렸다. <b>다음 10판 공격 +5%</b>", "good");
+        적기(말("log.mealServed"), "good");
       }; });
 };
 
 $("#mailBtn").onclick = () => 쪽창("우편함",
-  `<div class="풀이 on">수령할 우편이 없다.<br>나중에 보상이 오면 여기에 쌓인다.</div>`);
+  `<div class="풀이 on">${말("guild.noMail")}</div>`);
 
 /* 10-20: **규칙은 여기에만 적혀 있다.** 영어로 열었는데 이 창이 한국어면 처음 온 사람은
    게임이 어떻게 굴러가는지 영영 모른다 — 그래서 둘째 겹에서 제일 먼저 옮겼다. */
@@ -2207,7 +2542,7 @@ $("#설정단추").onclick = () => 쪽창(말("side.settings"),
 /* 전투를 멈추고 탑으로 — 되돌이도 여기서 끊는다. 이 길이 없어서 한번 떠나면 맵을 못 봤다. */
 $("#탑버튼").onclick = () => {
   S.진행 = false; S.사냥층 = null;
-  적기("발을 멈추고 탑을 올려다본다.", "");
+  적기(말("log.lookUp"), "");
   맵그리기(); 윗줄(); 저장();
 };
 
@@ -2219,7 +2554,7 @@ function 출발창(층){
   const 덮 = document.createElement("div"); 덮.id = "덮개";
   const 그리자 = () => {
     덮.innerHTML = `<div class="카드" onclick="event.stopPropagation()">
-      <div class="nm"><b><span style="color:var(--금)">${층}층</span>${층 % 10 === 0 ? ` <span class="tag r">보스</span>` : ""}</b>
+      <div class="nm"><b><span style="color:var(--금)">${층}층</span>${층 % 10 === 0 ? ` <span class="tag r">${말("ui.boss")}</span>` : ""}</b>
         <i>누구를 데려갈까 · ${S.파티.length}/${파티한도}</i></div>
       <!-- 10-10 사장님: 글자 체크박스를 치우고 초상화 슬롯 다섯 칸으로.
            윗줄은 데려갈 자리, 아랫줄은 남은 대원. 누르면 오가고, 빈 칸이 몇인지 바로 보인다.
@@ -2233,15 +2568,15 @@ function 출발창(층){
         return `<div class="칸슬롯${c ? " 참" : ""}" ${c ? `data-넣="${c.id}"` : ""}>
           <span class="번호">${i + 1}</span>
           ${c ? `<div class="큰낯" style="border-color:${등급색[d.등급]};background-image:url(${얼굴(d.그림)})"></div>
-                 <b>${d.직업} Lv.${c.레벨}</b><i class="참">출전 중</i>`
-              : `<div class="더하기">+</div><i>대기 중</i>`}</div>`;
+                 <b>${말값(d.직업)} Lv.${c.레벨}</b><i class="참">${말("ui.onField")}</i>`
+              : `<div class="더하기">+</div><i>${말("ui.waiting")}</i>`}</div>`;
       }).join("")}</div>
       <div class="칸이름">대원 — 누르면 넣고 뺀다</div>
       <div class="출전줄 고르기">${S.대원.map((c) => { const d = 카드(c), 안 = S.파티.includes(c.id);
         return `<div class="자리${안 ? " 켬" : ""}" data-넣="${c.id}">
           <div class="낯" style="border-color:${안 ? 등급색[d.등급] : "#3a2c45"};background-image:url(${얼굴(d.그림)})"></div>
-          <b>${d.직업}</b><i>${안 ? "출전" : `Lv.${c.레벨}`}</i></div>`; }).join("")
-        || `<div class="자리 빈자리"><i>대원이 없다</i></div>`}</div>
+          <b>${말값(d.직업)}</b><i>${안 ? 말("ui.fielded") : `Lv.${c.레벨}`}</i></div>`; }).join("")
+        || `<div class="자리 빈자리"><i>${말("ui.noMember")}</i></div>`}</div>
       <div class="칸이름">전투 준비</div>
       <div class="준비줄">
         <div class="준비칸">
@@ -2253,7 +2588,7 @@ function 출발창(층){
             </span></div>
         </div>
         <div class="준비칸 흐림">
-          <div class="준비머리">${아이콘("s-scroll")} 소모품</div>
+          <div class="준비머리">${아이콘("s-scroll")} ${말("ui.supplies")}</div>
           <div class="준비속"><i>아직 없다</i></div>
         </div>
       </div>
@@ -2262,7 +2597,7 @@ function 출발창(층){
         `<div class="조건줄${r.됨 ? " 참" : ""}"><span>${r.이름}</span><b>${r.지금}</b></div>`).join("")}</div>
       <!-- 10-09 사장님 구성: 올라가는 단추가 없다. 들어가서 되돌이로 돌며 자격을 채운다. -->
       <div class="줄"><button class="btn 큰단추" id="들어가기">전투 시작 (${층}층)</button></div>
-      <div class="줄"><button class="btn" id="닫기">닫기</button></div>
+      <div class="줄"><button class="btn" id="닫기">${말("ui.close")}</button></div>
     </div>`;
     덮.querySelectorAll("[data-넣]").forEach((b) => b.onclick = () => {
       const id = Number(b.dataset.넣);
@@ -2308,61 +2643,57 @@ function 대원창(el){
 
   const 슬롯칸 = (슬롯) => {
     const 낀 = 장비들(c).find((x) => 레시피[x.키].슬롯 === 슬롯);
-    const 값 = 낀 ? Object.entries(레시피[낀.키].효과 ?? {}).map(([k, v]) => `${k} +${v}`).join(" · ") : "";
+    const 값 = 낀 ? Object.entries(레시피[낀.키].효과 ?? {}).map(([k, v]) => `${말값(k)} +${v}`).join(" · ") : "";
     // 10-10 사장님 "X 버튼 완전 삭제" — 슬롯을 누르면 가방이 열리고, 벗기는 것도 거기서 한다
     return `<div class="슬롯${낀 ? " 참" : ""}" data-슬롯="${슬롯}">
       ${낀 && 물건아이콘[낀.키] ? 아이콘(물건아이콘[낀.키]) : ""}
-      <div class="칸이름2">${슬롯}</div>
-      ${낀 ? `<div class="템이름">${레시피[낀.키].이름}</div><div class="템값">${값}</div>`
-           : `<div class="템이름" style="opacity:.4">비어 있음</div>`}</div>`;
+      <div class="칸이름2">${말값(슬롯)}</div>
+      ${낀 ? `<div class="템이름">${말값(레시피[낀.키].이름)}</div><div class="템값">${값}</div>`
+           : `<div class="템이름" style="opacity:.4">${말("ui.empty")}</div>`}</div>`;
   };
 
   el.innerHTML = `<div class="머리띠">
-      <span class="뒤로" id="뒤로">‹ 캐릭터</span>
+      <span class="뒤로" id="뒤로">‹ ${말("tab.crew")}</span>
       <div class="넘김">
         <span id="앞사람" class="${자리 === 0 ? "꺼짐" : ""}">‹</span>
         <span id="뒷사람" class="${자리 === 줄.length - 1 ? "꺼짐" : ""}">›</span>
       </div></div>
     <div class="큰머리">
       <div class="얼굴" style="border-color:${등급색[d.등급]};background-image:url(${얼굴(d.그림)})"></div>
-      <div class="nm"><b class="큰이름"><span style="color:${등급색[d.등급]}">${d.직업}</span>
+      <div class="nm"><b class="큰이름"><span style="color:${등급색[d.등급]}">${말값(d.직업)}</span>
         <span style="color:#a8977f">Lv.${c.레벨}</span>
-        <span class="tag" style="color:${등급색[d.등급]}">${d.등급}</span></b>
-        <i>${d.역할}${안에 ? " · 출전 중" : ""}${S.대표 === c.id ? " · 대표" : ""}</i>
-        <div class="힘">전투력 <b>${수(전투력(c))}</b></div>
+        <span class="tag" style="color:${등급색[d.등급]}">${말값(d.등급)}</span></b>
+        <i>${말값(d.역할)}${안에 ? " · " + 말("ui.onField") : ""}${S.대표 === c.id ? " · " + 말("ui.leader") : ""}</i>
+        <div class="힘">${말("ui.power")} <b>${수(전투력(c))}</b></div>
         <div class="bar"><i style="width:${Math.min(100, c.경험/필요경험(c)*100)}%"></i></div></div>
     </div>
-    <div class="한줄자">체력 <b>${수(최대체력(c))}</b> · 공격 <b>${수(공격력(c))}</b>
-      · 방어 <b>${수(방어력(c))}</b> · 속도 <b>${속도(c)}</b></div>
+    <div class="한줄자">${말("ui.oneLine", { hp: 수(최대체력(c)), atk: 수(공격력(c)), def: 수(방어력(c)), spd: 속도(c) })}</div>
     <!-- 10-10 사장님 시안: **큰 전신 액자**. 작은 초상화만으로는 누구를 보고 있는지 와닿지 않는다 -->
     <div class="액자"><div class="선것" style="background-image:url(art/${d.그림}.png)"></div></div>
     <div style="padding:0 11px"><div class="서브탭">${[["장비","s-gear"], ["강화","s-grow"], ["기술","s-skill"]].map(([t, ic]) =>
-      `<span class="${S.대원탭 === t ? "on" : ""}" data-대원탭="${t}"><img src="art/icon/${ic}.png" alt="">${t}</span>`).join("")}</div></div>
+      `<span class="${S.대원탭 === t ? "on" : ""}" data-대원탭="${t}"><img src="art/icon/${ic}.png" alt="">${말값(t)}</span>`).join("")}</div></div>
     ${S.대원탭 === "장비"
       ? `<div class="슬롯줄">${["무기", "갑옷", "장신구"].map(슬롯칸).join("")}</div>
          ${S.가방슬롯 ? 가방패널(S.가방슬롯, c)
-           : `<div class="row"><div class="nm"><i>슬롯을 누르면 아래에 가방이 펼쳐진다.</i></div></div>`}`
+           : `<div class="row"><div class="nm"><i>${말("ui.slotHint")}</i></div></div>`}`
       : S.대원탭 === "강화"
       ? `<div style="padding:4px 11px 0">
-          <div class="칸이름">자람</div>
+          <div class="칸이름">${말("ui.growth")}</div>
           <div class="자격칸">
-            <div class="조건줄 참"><span>지금 레벨</span><b>Lv.${c.레벨}</b></div>
-            <div class="조건줄${c.레벨 >= 레벨상한(c) ? "" : " 참"}"><span>올릴 수 있는 끝</span><b>Lv.${레벨상한(c)}</b></div>
-            <div class="조건줄"><span>다음 레벨까지</span><b>${수(Math.max(0, 필요경험(c) - c.경험))}</b></div>
-            <div class="조건줄"><span>겹친 카드</span><b>${c.중복}</b></div>
+            <div class="조건줄 참"><span>${말("ui.levelNow")}</span><b>Lv.${c.레벨}</b></div>
+            <div class="조건줄${c.레벨 >= 레벨상한(c) ? "" : " 참"}"><span>${말("ui.levelCap")}</span><b>Lv.${레벨상한(c)}</b></div>
+            <div class="조건줄"><span>${말("ui.toNext")}</span><b>${수(Math.max(0, 필요경험(c) - c.경험))}</b></div>
+            <div class="조건줄"><span>${말("ui.dupeCards")}</span><b>${c.중복}</b></div>
           </div>
-          <div class="풀이 on">레벨은 <b>싸워서</b> 오른다. 그리고 <b>지금까지 연 층</b>까지만 오른다 —
-            지금은 <b>Lv.${레벨상한(c)}</b> 이 끝이고, 층을 열면 그만큼 더 오른다.<br>
-            되돌이로 레벨을 밀어 올리는 길을 일부러 막아 뒀다. 그게 막혀 있어야 <b>장비를 만들 이유</b>가 생긴다.
-            <br><br>경험치 주입·승급은 <b>아직 없다</b> — 넣으면 이 설계가 깨지므로 사장님 결정을 기다린다.</div>
+          <div class="풀이 on">${말("ui.growNote", { cap: 레벨상한(c) })}</div>
         </div>`
-      : `<div style="padding:4px 11px 0"><div class="칸이름">기술 <span class="귀띔">눌러 보기</span></div>
-         <div class="기술">${기술.map((k) => `<span class="tag r" data-풀이="기술:${k}">${k}</span>`).join("")}</div>
-         ${d.특성?.length ? `<div class="칸이름">특성 <span class="귀띔">눌러 보기</span></div>
-           <div class="기술">${d.특성.map((k) => `<span class="tag" data-풀이="특성:${k}">${k}</span>`).join("")}</div>` : ""}
+      : `<div style="padding:4px 11px 0"><div class="칸이름">${말("ui.skills")} <span class="귀띔">${말("ui.tapToSee")}</span></div>
+         <div class="기술">${기술.map((k) => `<span class="tag r" data-풀이="기술:${k}">${말값(k)}</span>`).join("")}</div>
+         ${d.특성?.length ? `<div class="칸이름">${말("ui.traits")} <span class="귀띔">${말("ui.tapToSee")}</span></div>
+           <div class="기술">${d.특성.map((k) => `<span class="tag" data-풀이="특성:${k}">${말값(k)}</span>`).join("")}</div>` : ""}
          <div class="풀이" id="풀이"></div></div>`}
     <div class="row" style="border:0">
-      <button class="btn" id="대표로" style="flex:1">${S.대표 === c.id ? "대표임" : "대표로"}</button>
+      <button class="btn" id="대표로" style="flex:1">${말(S.대표 === c.id ? "ui.isLeader" : "ui.makeLeader")}</button>
     </div>`;
 
   const 다시 = () => 칸();
@@ -2386,7 +2717,7 @@ function 대원창(el){
     if (켜짐) { 풀이칸.classList.remove("on"); 풀이칸.innerHTML = ""; return; }
     b.classList.add("펴짐");
     const 글 = (종류 === "기술" ? 기술설명 : 특성설명)[이름];
-    풀이칸.innerHTML = `<b>${이름}</b><br>${글 ? 글(c) : "아직 설명이 없다."}`;
+    풀이칸.innerHTML = `<b>${말값(이름)}</b><br>${글 ? 글(c) : 말("ui.noDesc")}`;
     풀이칸.classList.add("on");
   });
 }
@@ -2440,7 +2771,7 @@ function 가방창(){
       속 = 들.length
         ? `<div class="가방격자">${들.map((k) => `<div class="칸짜리" data-재료="${k}">
             ${아이콘("m-" + k)}<div class="이름">${재료이름[k]}</div><div class="수">${수(g[k])}</div></div>`).join("")}</div>`
-        : `<div class="풀이 on">아직 모은 재료가 없다. 탑을 돌면 쌓인다.</div>`;
+        : `<div class="풀이 on">${말("ui.noMats")}</div>`;
     } else if (탭 === "장비") {
       const 들 = g.장비 ?? [];
       속 = 들.length
@@ -2450,7 +2781,7 @@ function 가방창(){
               ${물건아이콘[x.키] ? 아이콘(물건아이콘[x.키]) : ""}
               <div class="이름">${r.이름}</div>
               <div class="수">${쥔 ? 카드(쥔).직업 : "안 낌"}</div></div>`; }).join("")}</div>`
-        : `<div class="풀이 on">만든 장비가 없다. <b>대장간</b>에서 만든다.</div>`;
+        : `<div class="풀이 on">${말("ui.noGear")}</div>`;
     } else if (탭 === "영혼석") {
       /* **영혼석 칸** (10-11). 액티브는 주인이 정해져 있어 칸 다툼이 없으므로 켜고 끄기만 하고,
          패시브는 **한 칸뿐**이라 고르게 한다 — 그게 이 시스템의 선택지다. */
@@ -2464,19 +2795,19 @@ function 가방창(){
               <div class="이름">${d.이름}</div>
               <div class="수">${낌 ? "끼는 중" : d.종류 === "액티브" ? d.주인 : "패시브"}</div></div>`; }).join("")}</div>
           <div class="풀이 on">누르면 끼우고 뺀다. <b>액티브</b>는 주인의 기술을 바꾸고, <b>패시브</b>는 <b>한 칸만</b> 켤 수 있다.</div>`
-        : `<div class="풀이 on">아직 영혼석이 없다. <b>관문 보스</b>를 깨면 가끔 떨어진다.</div>`;
+        : `<div class="풀이 on">${말("ui.noStones")}</div>`;
     } else {
       속 = `<div class="가방격자"><div class="칸짜리${g.약 > 0 ? "" : " 빔"}" data-소모="약">
-          ${아이콘("i-약")}<div class="이름">별빛 회복약</div><div class="수">${수(g.약 ?? 0)}</div></div></div>
-        <div class="풀이 on">소모품은 <b>떠나기 전</b>에 몇 개 챙길지 고른다 — 탑에서 층을 고를 때.</div>`;
+          ${아이콘("i-약")}<div class="이름">${말값("별빛 회복약")}</div><div class="수">${수(g.약 ?? 0)}</div></div></div>
+        <div class="풀이 on">${말("ui.consumHint")}</div>`;
     }
     덮.innerHTML = `<div class="카드" onclick="event.stopPropagation()">
-      <div class="nm"><b style="display:block;font-size:15px">가방</b>
-        <i style="color:var(--흐림);font-size:12px">금화 ${수(S.금화)} · 별가루 ${수(g.별가루 ?? 0)}</i></div>
+      <div class="nm"><b style="display:block;font-size:15px">${말("ui.bag")}</b>
+        <i style="color:var(--흐림);font-size:12px">${말("ui.bagHead", { gold: 말("ui.gold"), g: 수(S.금화), dust: 말("ui.stardust"), d: 수(g.별가루 ?? 0) })}</i></div>
       <div class="서브탭" style="margin-top:8px">${[["재료","m-파편"], ["장비","s-gear"], ["영혼석","s-gear"], ["소모품","i-약"]].map(([t, ic]) =>
-        `<span class="${탭 === t ? "on" : ""}" data-가방탭="${t}"><img src="art/icon/${ic}.png" alt="">${t}</span>`).join("")}</div>
+        `<span class="${탭 === t ? "on" : ""}" data-가방탭="${t}"><img src="art/icon/${ic}.png" alt="">${말값(t)}</span>`).join("")}</div>
       ${속}
-      <div class="줄"><button class="btn" id="닫기">닫기</button></div></div>`;
+      <div class="줄"><button class="btn" id="닫기">${말("ui.close")}</button></div></div>`;
     덮.querySelectorAll("[data-가방탭]").forEach((b) => b.onclick = () => { S.가방탭 = b.dataset.가방탭; 그리자(); });
     덮.querySelectorAll("[data-재료]").forEach((b) => b.onclick = () => 물건창({ 종류: "재료", 키: b.dataset.재료 }));
     덮.querySelectorAll("[data-템]").forEach((b) => b.onclick = () => 물건창({ 종류: "장비", id: Number(b.dataset.템) }));
@@ -2509,10 +2840,10 @@ function 물건창(무엇){
     속 = `<div class="자격칸">
         <div class="조건줄 참"><span>가진 것</span><b>${수(S.가방[k] ?? 0)}</b></div>
         <div class="조건줄"><span>나오는 곳</span><b>${재료출처[k] ?? "?"}</b></div>
-        ${매대[k] ? `<div class="조건줄"><span>시장 값</span><b>${수(매대[k].값)} 금화</b></div>` : ""}
+        ${매대[k] ? `<div class="조건줄"><span>${말("ui.marketPrice")}</span><b>${수(매대[k].값)} 금화</b></div>` : ""}
       </div>
       <div class="풀이 on">${쓰는곳.length
-        ? `<b>쓰는 곳</b><br>${쓰는곳.map((r) => `· ${r.이름} (${r.재료[k]}개)`).join("<br>")}`
+        ? `<b>${말("ui.usedIn")}</b><br>${쓰는곳.map((r) => `· ${r.이름} (${r.재료[k]}개)`).join("<br>")}`
         : "아직 쓰는 곳이 없다."}</div>`;
   } else if (무엇.종류 === "장비") {
     const x = S.가방.장비.find((y) => y.id === 무엇.id); if (!x) return;
@@ -2521,9 +2852,9 @@ function 물건창(무엇){
     속 = `<div class="자격칸">
         <div class="조건줄 참"><span>칸</span><b>${r.슬롯}</b></div>
         ${Object.entries(r.효과 ?? {}).map(([칸, v]) => `<div class="조건줄 참"><span>${칸}</span><b>+${수(v)}</b></div>`).join("")}
-        <div class="조건줄${쥔 ? " 참" : ""}"><span>지금</span><b>${쥔 ? `${카드(쥔).직업}가 낌` : "아무도 안 낌"}</b></div>
+        <div class="조건줄${쥔 ? " 참" : ""}"><span>지금</span><b>${쥔 ? `${말("ui.equippedBy", { who: 말값(카드(쥔).직업) })}` : "아무도 안 낌"}</b></div>
       </div>
-      <div class="풀이 on">끼우고 벗는 것은 <b>캐릭터</b> 탭에서 그 칸을 눌러서 한다.</div>`;
+      <div class="풀이 on">${말("ui.fitHint")}</div>`;
   } else {
     제목 = "별빛 회복약";
     속 = `<div class="자격칸"><div class="조건줄 참"><span>가진 것</span><b>${수(S.가방.약 ?? 0)}</b></div></div>
@@ -2533,7 +2864,7 @@ function 물건창(무엇){
   const 덮 = document.createElement("div"); 덮.id = "덮개"; 덮.style.zIndex = "50";
   덮.innerHTML = `<div class="카드" onclick="event.stopPropagation()">
     <div class="nm"><b style="display:block;font-size:15px">${제목}</b></div>
-    ${속}<div class="줄"><button class="btn" id="닫기">닫기</button></div></div>`;
+    ${속}<div class="줄"><button class="btn" id="닫기">${말("ui.close")}</button></div></div>`;
   덮.onclick = () => 덮.remove();
   document.body.appendChild(덮);
   덮.querySelector("#닫기").onclick = () => 덮.remove();
@@ -2584,7 +2915,7 @@ function 한번뽑기(){
     }
     if (들.length) {   // 이미 다 가졌다 → 조각
       S.조각 = (S.조각 ?? 0) + 30;
-      return { 급, 종류: "조각", 수: 30, 이름: `${급} 동료가 겹쳤다`, 새것: false };
+      return { 급, 종류: "조각", 수: 30, 이름: `${말("ui.dupe", { g: 급 })}`, 새것: false };
     }
     급 = "R";          // 그 등급에 동료가 아직 없으면 R 로 떨어진다
   }
@@ -2631,10 +2962,10 @@ function 뽑기창(){
         <div class="조건줄"><span>조각 · 재료 · 금화</span><b>70%</b></div>
         <div class="조건줄"><span>천장까지</span><b>${남}번</b></div>
       </div>
-      ${결과 ? `<div class="칸이름">나온 것</div><div class="가방격자">${결과.map((x) => `
+      ${결과 ? `<div class="칸이름">${말("ui.pulled")}</div><div class="가방격자">${결과.map((x) => `
         <div class="칸짜리${x.종류 === "동료" ? " 낌" : ""}">
           <div class="이름">${x.이름}</div>
-          <div class="수">${x.종류 === "동료" ? `<span style="color:var(--금)">${x.급} 합류</span>`
+          <div class="수">${x.종류 === "동료" ? `<span style="color:var(--금)">${말("ui.joined", { g: x.급 })}</span>`
             : x.종류 === "금화" ? `+${수(x.수)}` : `+${x.수}`}</div></div>`).join("")}</div>` : ""}
       <div class="줄">
         <button class="btn" id="한번" ${별 >= 뽑기값.한번 ? "" : "disabled"}>1회 · ${수(뽑기값.한번)}</button>
@@ -2643,7 +2974,7 @@ function 뽑기창(){
       <div class="풀이 on">뽑기는 <b>동료와 재료</b>만 준다. 레벨과 능력치는 끝까지
         <b>대장간 장비</b>와 <b>층</b>으로만 오른다.<br>
         별가루는 출석(50) · 첫 클리어(15, 보스 100) · <b>보스를 다시 깰 때마다 50</b>.</div>
-      <div class="줄"><button class="btn" id="닫기">닫기</button></div></div>`;
+      <div class="줄"><button class="btn" id="닫기">${말("ui.close")}</button></div></div>`;
     const 돌려 = (n) => { const r = 뽑기(n); if (r) { 결과 = r; 그리자(); 길드그리기(); } };
     덮.querySelector("#한번").onclick = () => 돌려(1);
     덮.querySelector("#열번").onclick = () => 돌려(10);
@@ -2671,9 +3002,9 @@ function 칸(){
       const 안에 = S.파티.includes(c.id), d = 카드(c);
       return `<div class="row 카드열기" data-카드="${c.id}" style="cursor:pointer">
         <div class="얼굴" style="border-color:${등급색[d.등급]};background-image:url(${얼굴(d.그림)})"></div>
-        <div class="nm"><b><span style="color:${등급색[d.등급]}">${d.직업}</span>
+        <div class="nm"><b><span style="color:${등급색[d.등급]}">${말값(d.직업)}</span>
           <span style="color:#a8977f">Lv.${c.레벨}</span>
-          <span class="tag" style="color:${등급색[d.등급]}">${d.등급}</span>${안에 ? `<span class="tag r">출전</span>` : ""}${S.대표===c.id ? `<span class="tag">대표</span>` : ""}</b></div>
+          <span class="tag" style="color:${등급색[d.등급]}">${말값(d.등급)}</span>${안에 ? `<span class="tag r">${말("ui.fielded")}</span>` : ""}${S.대표===c.id ? `<span class="tag">${말("ui.leader")}</span>` : ""}</b></div>
         <span style="color:#6e5d78;font-size:18px;padding:0 4px">›</span></div>`;
     }).join("");
     el.querySelectorAll("[data-카드]").forEach((b) => b.onclick = () => { S.보는대원 = Number(b.dataset.카드); 칸(); });
@@ -2715,12 +3046,12 @@ function 칸(){
     const 칸들 = (r) => Object.entries(r.재료).map(([k, n]) => {
       const 가진 = g[k] ?? 0, 됨 = 가진 >= n;
       return `<span class="재료칸${됨 ? " 참" : ""}">${아이콘("m-" + k)}${재료이름[k] ?? k}
-        <b>${가진}/${n}</b>${됨 ? "" : `<i>${n - 가진} 모자람 · ${재료출처[k] ?? ""}</i>`}</span>`;
+        <b>${가진}/${n}</b>${됨 ? "" : `<i>${말("ui.short", { n: n - 가진, where: 말값(재료출처[k] ?? "") })}</i>`}</span>`;
     }).concat(`<span class="재료칸${S.금화 >= r.금화 ? " 참" : ""}">금화 <b>${수(r.금화)}</b>${
-      S.금화 >= r.금화 ? "" : `<i>${수(r.금화 - S.금화)} 모자람</i>`}</span>`).join("");
+      S.금화 >= r.금화 ? "" : `<i>${말("ui.shortGold", { n: 수(r.금화 - S.금화) })}</i>`}</span>`).join("");
 
     const 가방줄 = Object.keys(재료이름).filter((k) => (g[k] ?? 0) > 0)
-      .map((k) => `${재료이름[k]} ${g[k]}`).join(" · ") || "재료가 없다";
+      .map((k) => `${말값(재료이름[k])} ${g[k]}`).join(" · ") || "재료가 없다";
 
     let 글 = `<div class="머리띠"><span class="뒤로" id="갈래뒤로">‹ 대장간</span></div>
       <div class="row"><div class="nm"><b>가방</b><i>${가방줄} · 금화 ${수(S.금화)}</i></div></div>`;
@@ -2732,19 +3063,19 @@ function 칸(){
       글 += `<div class="row${된다 ? " 된다" : ""}${잠김 ? " 잠김" : ""}">
         ${물건아이콘[k] ? `<div class="템아이콘">${아이콘(물건아이콘[k])}</div>` : ""}
         <div class="nm"><b>${r.이름} <span class="tag">${r.슬롯}</span>${
-          된다 ? `<span class="tag r">만들 수 있다</span>` : ""}</b>
+          된다 ? `<span class="tag r">${말("ui.canMake")}</span>` : ""}</b>
           <i>${r.글}</i>
-          ${잠김 ? `<i style="color:#6e5d78">${r.열림}층을 넘으면 열린다</i>`
+          ${잠김 ? `<i style="color:#6e5d78">${말("ui.opensAbove", { n: r.열림 })}</i>`
                  : `<div class="재료줄">${칸들(r)}</div>`}
-          ${쓸 ? `<i style="color:var(--초록)">${쓸.누구}에게 끼우면 +${수(쓸.폭)}</i>` : ""}</div>
+          ${쓸 ? `<i style="color:var(--초록)">${말("ui.fitGain", { who: 말값(쓸.누구), n: 수(쓸.폭) })}</i>` : ""}</div>
         <button class="btn" data-make="${k}" ${잠김 || 없.length ? "disabled" : ""}>만들기</button></div>`;
     }
-    글 += `<div class="row"><div class="nm"><i>만든 것은 <span style="color:#f2b45a">캐릭터</span> 탭에서 슬롯을 눌러 끼운다.</i></div></div>`;
+    글 += `<div class="row"><div class="nm"><i>${말("ui.forgeHint")}</i></div></div>`;
     el.innerHTML = 글;
     el.querySelector("#갈래뒤로").onclick = () => { S.대장갈래 = null; 칸(); };
     el.querySelectorAll("[data-make]").forEach((b) => b.onclick = () => {
       const 전 = 레시피[b.dataset.make].이름;
-      if (만들기(b.dataset.make)) 적기(`대장간에서 <b>${전}</b>을 만들었다.`, "good");
+      if (만들기(b.dataset.make)) 적기(`${말("ui.forged", { what: 말값(전) })}`, "good");
       저장(); 칸();
     });
   } else if (S.탭 === "shop") {
@@ -2856,7 +3187,7 @@ function 길드그리기(){
     hctx.ellipse(발.x, 발.y, 크w*0.28, 3*s, 0, 0, 7); hctx.fillStyle="#000"; hctx.fill(); hctx.restore();
     hctx.drawImage(im, Math.round(발.x - 크w/2), Math.round(발.y - 크h + 2*s), 크w, 크h);
   }
-  $("#repName").textContent = c.이름;
+  $("#repName").textContent = 말값(c.이름);
   const 판 = 카드(c);
   $("#repName").style.color = 등급색[판.등급];
   $("#repAge").textContent = `${말값(판.등급)} · ${말값(판.직업)} · Lv.${c.레벨}`;

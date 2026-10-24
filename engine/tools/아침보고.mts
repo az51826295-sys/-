@@ -15,11 +15,20 @@ import { createClient } from "@supabase/supabase-js";
 
 const db = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SECRET_KEY!, { auth: { persistSession: false } });
 const 쪽 = (s: string) => `  ${s}`;
-const 셈 = async (표: string, 날: number) => {
-  const { count } = await db.from(표).select("*", { count: "exact", head: true })
+/**
+ * 10-24: 이 자가 **DB 가 죽었는데 "업무 0"이라고 적었다.** 로키 DB 를 pause 해 둔 날이었고
+ * `fetch failed` 가 왔는데 `count ?? 0` 이 그걸 0 으로 삼켰다 — 보고를 읽은 나는
+ * "로키가 7일째 아무 일도 안 했다" 로 읽었다. **0 은 "못 본다" 일 수 있다**(09-27 과 같은 사고).
+ * 그래서 못 센 것은 `null` 로 올리고, 찍을 때 **"못 잼"** 으로 가른다.
+ */
+const 셈 = async (표: string, 날: number): Promise<number | null> => {
+  const { count, error } = await db.from(표).select("*", { count: "exact", head: true })
     .gte("created_at", new Date(Date.now() - 날 * 864e5).toISOString());
+  if (error) return null;
   return count ?? 0;
 };
+/** 못 잰 것을 0 으로 보이게 하지 않는다 */
+const 셈글 = (n: number | null) => (n === null ? "못 잼" : String(n));
 
 console.log("\n══ 로키 ════════════════════════════════");
 {
@@ -30,7 +39,13 @@ console.log("\n══ 로키 ═════════════════
     if (/권혁수|로키 개발/.test(t) || t.startsWith("→")) console.log(쪽(t));
   }
 }
-console.log(쪽(`최근 7일 — 업무 ${await 셈("assignments", 7)} · 결과물 ${await 셈("deliverables", 7)} · 모델 호출 ${await 셈("model_usage", 7)}`));
+{
+  const [업무, 결과물, 호출] = [await 셈("assignments", 7), await 셈("deliverables", 7), await 셈("model_usage", 7)];
+  console.log(쪽(`최근 7일 — 업무 ${셈글(업무)} · 결과물 ${셈글(결과물)} · 모델 호출 ${셈글(호출)}`));
+  /* 셋 다 못 쟀으면 DB 가 안 열린 것이다. 그 아래 숫자도 전부 못 믿으니 **먼저** 말한다. */
+  if (업무 === null && 결과물 === null && 호출 === null)
+    console.log(쪽("**로키 DB 가 응답하지 않는다** — 아래 로키 숫자는 전부 못 잼이다(pause? 전송량?)"));
+}
 {
   const { data } = await db.from("learning_candidates").select("status");
   const m: Record<string, number> = {};
