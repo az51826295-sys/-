@@ -14,7 +14,7 @@ export const EMOTIONS = ["neutral", "happy", "shy", "sad", "angry", "surprised"]
 export type Emotion = (typeof EMOTIONS)[number];
 
 /** 무료로 하루에 주고받을 수 있는 턴. */
-export const FREE_TURNS_PER_DAY = 30;
+export const FREE_TURNS_PER_DAY = 10;   // 10-25: 30 → 10. 가운데값 2회라 30 은 체험판이 아니라 무제한이었다(실측 한도 도달 3%)
 
 /**
  * 단계가 올라가는 점수. 1단계부터 5단계까지.

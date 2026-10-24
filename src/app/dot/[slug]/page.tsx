@@ -48,7 +48,7 @@ export default async function DotRoom({ params, searchParams }: { params: Promis
 
   let bond = { points: 0, stage: 1, streakDays: 0, toNext: toNextStage(0), mode: "normal" as "normal" | "menhera" };
   let remaining = FREE_TURNS_PER_DAY;
-  let balance: Balance = { remaining, freeLeft: remaining, credits: 0, adLeft: 2, menheraUntil: null };
+  let balance: Balance = { remaining, freeLeft: remaining, credits: 0, adLeft: 0, menheraUntil: null, 구독중: false };
   let history: { role: string; content: string; emotion: string | null; sticker?: string | null; at?: string }[] = [];
 
   if (user) {

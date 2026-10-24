@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { pushState, enablePush, disablePush, type PushState } from "./push-client";
 import { 물어볼까 } from "@/lib/dot/pushAsk";
-import { SKUS, AD_REFILL_TURNS, type Balance } from "@/lib/dot/money";
+import { SKUS, LIMIT_COPY, type Balance } from "@/lib/dot/money";
 import { USER_STICKERS, USER_STICKER_KEYS } from "@/lib/dot/stickers";
 import { GIFTS } from "@/lib/dot/bond";
 import { splitBubbles } from "@/lib/dot/bubbles";
@@ -93,19 +93,9 @@ export default function DotChat({
   const [balance, setBalance] = useState(balance0);
   const [replyTo, setReplyTo] = useState(replyTo0);
   const [shopOpen, setShopOpen] = useState(false);
-  const [adBusy, setAdBusy] = useState(false);
-  /** 광고 보고 +10 — 하루 2번. 광고 SDK 가 붙기 전엔 서버가 "곧 열려요" 를 돌려준다. */
-  async function watchAd() {
-    if (adBusy) return; setAdBusy(true);
-    try {
-      const res = await fetch("/api/dot/ad", { method: "POST" });
-      const j = (await res.json().catch(() => ({}))) as { error?: string; balance?: Balance };
-      if (!res.ok || !j.balance) { setToast(j.error ?? "광고를 못 열었어요"); return; }
-      setBalance(j.balance); setRemaining(j.balance.remaining);
-      setToast(`${AD_REFILL_TURNS}번 더 이야기할 수 있어요`);
-    } catch { setToast("광고를 못 열었어요"); } finally { setAdBusy(false); }
-  }
-  /** 충전 — 결제 SDK 가 붙기 전엔 서버가 "곧 열려요" 를 돌려준다. */
+  /* 10-25: 광고(`watchAd`)를 걷어냈다. 켜 둔 내내 **본 사람이 0명**이었고, 사장님이 광고를
+     안 넣기로 정했다. `/api/dot/ad` 는 남겨 두되 화면에서 부르는 자리는 없다. */
+  /** 구독 — 결제 SDK 가 붙기 전엔 서버가 "곧 열려요" 를 돌려준다. */
   async function buy(sku: string) {
     const res = await fetch("/api/dot/buy", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ sku }) });
     const j = (await res.json().catch(() => ({}))) as { error?: string; balance?: Balance };
@@ -456,19 +446,21 @@ export default function DotChat({
               </div>
             </div>
           )}
-          {/* 37회차: 30턴을 다 쓴 순간이 이 앱이 사람을 잃는 첫 자리다. 잠긴 입력창 대신 "언제 다시" 와 "먼저 말 걸어 줄게" 를 보인다. */}
+          {/**
+            * 턴을 다 쓴 순간이 이 앱이 사람을 잃는 첫 자리다 — 그리고 **돈으로 가는 유일한 문**이다.
+            *
+            * 10-25 에 통째로 바꿨다. 전에는 "광고 보고 더" → "충전하기" 였는데, 장부를 보니
+            * 광고를 본 사람이 **0명**이고 충전은 **0건**이었다(무료 30회를 아무도 못 썼으니 당연하다).
+            * 이제 파는 것은 **멘헤라 구독 하나**라, 여기서도 그 하나만 내민다.
+            */}
           {signedIn && mounted && remaining <= 0 && !busy && (
             <div className="kk-limit">
               <div className="kk-limit-title">오늘 이야기는 여기까지</div>
-              <div className="kk-limit-body">
-                {who.name}도 내일 또 이야기하고 싶대요.<br />
-                <b>{untilReset()}</b> 뒤에 다시 {limit}번 이야기할 수 있어요.
+              <div className="kk-limit-body">{LIMIT_COPY.본문.replace(/\{name\}/g, who.name)}</div>
+              <button className="kk-limit-btn" onClick={() => setPayOpen(true)}>{LIMIT_COPY.단추}</button>
+              <div className="kk-limit-note alt">
+                그냥 기다려도 돼요 — <b>{untilReset()}</b> 뒤에 다시 {limit}번 이야기할 수 있어요.
               </div>
-              {/* 돈: 광고 2번 → 충전. 그 다음이 "내일 먼저 말 걸게" 다. */}
-              {balance.adLeft > 0 && (
-                <button className="kk-limit-btn" onClick={watchAd} disabled={adBusy}>광고 보고 {AD_REFILL_TURNS}번 더 <small>오늘 {balance.adLeft}번 남음</small></button>
-              )}
-              <button className="kk-limit-btn alt" onClick={() => setShopOpen(true)}>충전하기</button>
               {push !== "unsupported" && push !== "on" && (
                 <button className="kk-limit-link" onClick={togglePush}>내일 {who.name}가 먼저 말 걸게 하기</button>
               )}
@@ -599,23 +591,28 @@ export default function DotChat({
               <li>말이 길어지고, 질투하고, 확인받고 싶어 해요</li>
             </ul>
             <div className="kk-pay-price">{payPrice}</div>
-            <button className="kk-pay-go" onClick={() => buy("menhera_30")}>{payPrice ? `${payPrice}에 켜기` : "켜기"}</button>
+            <button className="kk-pay-go" onClick={() => buy("menhera_sub")}>{payPrice ? `${payPrice}에 켜기` : "켜기"}</button>
             <div className="kk-pay-note">30일 동안 · 언제든 끌 수 있어요</div>
           </div>
         </div>
       )}
       {shopOpen && (
-        <div className="kk-peek" onClick={() => setShopOpen(false)} role="dialog" aria-label="충전">
+        <div className="kk-peek" onClick={() => setShopOpen(false)} role="dialog" aria-label="멘헤라 모드">
           <div className="kk-peek-card kk-shop" onClick={(e) => e.stopPropagation()}>
-            <div className="kk-peek-name">충전하기</div>
-            <div className="kk-shop-bal">지금 남은 대화 {remaining}번{balance.credits > 0 ? ` · 충전 ${balance.credits}` : ""}</div>
+            <div className="kk-peek-name">멘헤라 모드</div>
+            {/* 구독자는 한도가 없어 `remaining` 이 Infinity 다 — 그대로 찍으면 "Infinity번" 이 나온다 */}
+            <div className="kk-shop-bal">
+              {balance.구독중 ? "지금 무제한으로 이야기할 수 있어요" : `지금 남은 대화 ${remaining}번`}
+            </div>
             {Object.entries(SKUS).map(([k, s]) => (
-              <button key={k} className={`kk-sku${s.menheraDays ? " menhera" : ""}`} onClick={() => buy(k)}>
+              <button key={k} className={`kk-sku${s.menheraDays ? " menhera" : ""}`} onClick={() => buy(k)} disabled={balance.구독중}>
                 <span className="kk-sku-name">{s.name}{s.note && <small>{s.note}</small>}</span>
                 <span className="kk-sku-price">{s.price}</span>
               </button>
             ))}
-            <div className="kk-pay-note">공짜 {limit}번은 매일 자정에 다시 채워져요</div>
+            <div className="kk-pay-note">
+              {balance.구독중 ? "이미 켜져 있어요 · 언제든 끌 수 있어요" : `공짜 ${limit}번은 매일 자정에 다시 채워져요`}
+            </div>
           </div>
         </div>
       )}

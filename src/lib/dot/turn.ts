@@ -3,7 +3,7 @@ import { z } from "zod";
 import { defaultProviders } from "@/lib/execution/shared";
 import { createDeepSeekProvider } from "@/lib/providers/deepseek";
 import { mergeMemo } from "./memo";
-import { balanceFor } from "./money";
+import { balanceFor, SUB_DAILY_RAIL } from "./money";
 import { USER_STICKERS } from "./stickers";
 import {
   EMOTIONS,
@@ -119,13 +119,15 @@ export async function prepareTurn(db: SupabaseClient, userId: string, characterI
   // 왕복했기 때문(서버↔DB 가 먼 날은 한 번에 0.5초). 넷을 **나란히** 묻는다(왕복 1).
   // 턴 세기가 먼저여야 하는 것은 **모델 호출**보다 먼저라는 뜻이지, 사이를 읽는 것보다 먼저일
   // 필요는 없다 — 한도에 걸리면 읽은 것을 버리면 된다.
-  const [chRes, takeRes, bondRes, recentRes, countRes] = await Promise.all([
+  const [chRes, takeRes, bondRes, recentRes, countRes, entRes] = await Promise.all([
     db.from("dot_characters").select("id, name, persona, speech, sprites, formal_start, default_emotion, voice_ladder").eq("id", characterId).maybeSingle(),
     // 09-30 사장님 "선물은 돈내고 하는 거야" — 선물은 **크레딧**으로 산다. 대화 턴까지 가져가면 두 번 받는다.
     opts.gift ? Promise.resolve({ data: 1, error: null }) : db.rpc("dot_take_turn", { p_user: userId, p_day: day, p_limit: FREE_TURNS_PER_DAY }),
     db.from("dot_bonds").select("points, stage, streak_days, last_talked_on, memo, mode, last_gift_on").eq("user_id", userId).eq("character_id", characterId).maybeSingle(),
     db.from("dot_messages").select("role, content, sticker").eq("user_id", userId).eq("character_id", characterId).order("id", { ascending: false }).limit(HISTORY_TURNS * 2 + HISTORY_BLOCK),
     db.from("dot_messages").select("id", { count: "exact", head: true }).eq("user_id", userId).eq("character_id", characterId),
+    /* 10-25: 구독자는 한도가 없다. **같은 묶음에서** 읽어 왕복을 안 늘린다(첫 글자 속도가 이 앱의 전부다). */
+    db.from("dot_entitlements").select("menhera_until").eq("user_id", userId).maybeSingle(),
   ]);
   /** 실패하면 **받은 것을 돌려준다.** 대화면 턴 하나, 선물이면 낸 크레딧(아래서 값이 정해지면 바뀐다). */
   let 돌려줄크레딧 = 0, 선물키 = "";
@@ -144,7 +146,23 @@ export async function prepareTurn(db: SupabaseClient, userId: string, characterI
 
   if (takeRes.error) return { ok: false, reason: "failed", message: takeRes.error.message };
   const used = Number(takeRes.data ?? 0);
-  if (used <= 0) return { ok: false, reason: "limit", remaining: 0, resetsAt: `${day} 자정(한국 시간)` };
+  /**
+   * 10-25: **구독자는 무료 한도에 안 걸린다.**
+   * 날짜만 보고 가른다(시각까지 보면 자정 근처에서 흔들린다).
+   * 무료분을 다 쓴 뒤에만 한 번 더 부르므로, 평소 턴에는 왕복이 안 늘어난다.
+   * 난간(`SUB_DAILY_RAIL`)까지 올려 부르는 까닭: 매크로가 종일 돌리면 거기서 손해가 나므로
+   * **장부에 남기되 막지는 않는다** — 진짜 열성 사용자를 끊는 쪽이 더 손해다.
+   */
+  const 구독중 = (() => {
+    const until = (entRes.data as { menhera_until?: string } | null)?.menhera_until;
+    return !!until && String(until).slice(0, 10) >= day;
+  })();
+  if (used <= 0) {
+    if (!구독중) return { ok: false, reason: "limit", remaining: 0, resetsAt: `${day} 자정(한국 시간)` };
+    const 다시 = await db.rpc("dot_take_turn", { p_user: userId, p_day: day, p_limit: SUB_DAILY_RAIL });
+    /* 난간마저 넘었으면 그냥 통과시킨다. 숫자는 `dot_usage` 에 남아 사장님이 볼 수 있다. */
+    if (다시.error) return { ok: false, reason: "failed", message: 다시.error.message };
+  }
 
   try {
     const bondRow = bondRes.data, recent = recentRes.data;
