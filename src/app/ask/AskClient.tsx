@@ -8,6 +8,7 @@ import 예시 from "./예시";
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Icon from "@/components/Icon";
+import { canUseFolder, folderName, pickFolder, putFiles, withPrefix } from "@/lib/hand/folder";
 import PreviewPanel, { PreviewStrip, previewSummary, usePreview, type PlanCard } from "@/app/ask/PreviewPanel";
 import { ChatMarkdown } from "@/components/ChatMarkdown";
 
@@ -273,6 +274,38 @@ export default function AskClient({
     a.href = blobUrl(f);
     a.download = f.path.split("/").pop() ?? "file";
     a.click();
+  }
+
+  /* ── 컴퓨터 폴더에 넣기 (10-25) ───────────────────────────── */
+  const [폴더쓸수있나, 폴더쓸수있나설정] = useState(false);
+  const [폴더, 폴더설정] = useState<string | null>(null);
+  const [넣는중, 넣는중설정] = useState(false);
+  const [넣은말, 넣은말설정] = useState<string | null>(null);
+  useEffect(() => {
+    폴더쓸수있나설정(canUseFolder());
+    void folderName().then(폴더설정);
+  }, []);
+
+  /**
+   * 그 턴의 파일을 **한 번에** 넣는다. 폴더를 아직 안 골랐으면 먼저 고른다 —
+   * 고르기 창은 **사람이 누른 그 순간**에만 뜨므로 이 함수 안에서 바로 불러야 한다.
+   */
+  async function 컴퓨터에넣기(files: { path: string; contents?: string; href?: string }[]) {
+    if (넣는중) return;
+    넣는중설정(true); 넣은말설정(null);
+    try {
+      let 이름 = 폴더 ?? (await folderName());
+      if (!이름) { 이름 = await pickFolder(); 폴더설정(이름); }
+      if (!이름) { 넣은말설정("폴더를 안 골랐어요"); return; }
+      const r = await putFiles(withPrefix(files, task?.title ?? null));
+      폴더설정(await folderName());
+      넣은말설정(
+        r.탈.length ? `${r.넣음}개 넣고 ${r.탈.length}개 못 넣음 — ${r.탈[0]}`
+        : `${r.넣음}개 넣었어요`,
+      );
+    } catch (e) {
+      넣은말설정("못 넣었어요: " + (e instanceof Error ? e.message : String(e)).slice(0, 50));
+    } finally { 넣는중설정(false); }
   }
 
   /**
@@ -635,6 +668,20 @@ export default function AskClient({
                       className="max-h-80 rounded-xl border-2 border-[var(--rk-ink)]"
                     />
                   ))}
+              </div>
+            )}
+            {/**
+              * 10-25 사장님 "컴퓨터랑 같이 써야 하는데 파일도 그 컴터에 넣고":
+              * 저장은 파일을 **하나씩** 다운로드 폴더로 떨어뜨리고 경로까지 납작하게 만든다.
+              * 이 단추는 **그 턴의 파일 전부를 경로 그대로** 고른 폴더에 넣는다.
+              * 크로미움 데스크톱에서만 되므로, 안 되는 데서는 아예 안 보인다(기존 저장은 그대로 남는다).
+              */}
+            {t.files && t.files.length > 0 && 폴더쓸수있나 && (
+              <div className="mt-1.5">
+                <button type="button" className="underline text-xs" onClick={() => 컴퓨터에넣기(t.files!)}>
+                  {넣는중 ? "넣는 중…" : 폴더 ? `컴퓨터에 넣기 (${폴더})` : "컴퓨터에 넣기 — 폴더 고르기"}
+                </button>
+                {넣은말 && <span className="ml-2 text-xs opacity-70">{넣은말}</span>}
               </div>
             )}
             {t.files && t.files.length > 0 && (

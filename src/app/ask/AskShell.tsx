@@ -5,6 +5,7 @@ import Icon from "@/components/Icon";
 import BuyCredits from "./BuyCredits";
 import Learned from "./Learned";
 import { disablePush, enablePush, pushState, type PushState } from "@/lib/push/client";
+import { canUseFolder, folderName, forgetFolder, getSettings, pickFolder, setSettings, type 설정 as 설정꼴 } from "@/lib/hand/folder";
 
 type Saved = { id: string; title: string | null; mode: string; updated_at: string };
 /**
@@ -41,6 +42,17 @@ export default function AskShell({
     setBubble(/android/i.test(navigator.userAgent) && window.matchMedia("(display-mode: standalone)").matches);
   }, []);
   useEffect(() => { if (open && push === null) void pushState().then(setPush); }, [open, push]);
+
+  /* 10-25: 결과물을 넣을 컴퓨터 폴더. 상태는 **메뉴를 열 때** 읽는다(IndexedDB 조회라 처음 그릴 때 안 한다). */
+  const [폴더됨, 폴더됨설정] = useState(false);
+  const [폴더, 폴더설정] = useState<string | null>(null);
+  const [설정, 설정설정] = useState<설정꼴>(() => getSettings());
+  useEffect(() => { 폴더됨설정(canUseFolder()); }, []);
+  useEffect(() => { if (open) { void folderName().then(폴더설정); 설정설정(getSettings()); } }, [open]);
+  const 설정바꾸기 = (바꿀것: Partial<설정꼴>) => 설정설정(setSettings(바꿀것));
+  /** 고르기 창은 **사람이 누른 그 순간**에만 뜬다 — 이 함수 안에서 바로 불러야 한다. */
+  async function 폴더고르기() { const n = await pickFolder(); if (n) 폴더설정(n); }
+  async function 폴더끊기() { await forgetFolder(); 폴더설정(null); }
   async function togglePush() {
     if (push === "loading") return;
     const was = push; setPush("loading");
@@ -220,6 +232,57 @@ export default function AskShell({
                       {push === "on" ? "일이 끝나거나 아침 정리가 오면 이 기기로 알려요" : push === "denied" ? "이 브라우저에서 알림이 막혀 있어요 — 설정에서 풀어야 해요" : push === "unsupported" ? "이 브라우저는 알림을 못 받아요 — 폰 앱에서 켜 주세요" : push === "loading" ? "잠시만요" : "일 끝남·아침 정리·자가 고침을 이 기기로 받아요"}
                     </span>
                   </button>
+                  {/**
+                    * 10-25 사장님 "컴퓨터랑 같이 써야 하는데 파일도 그 컴터에 넣고".
+                    * 폴더를 한 번 고르면 결과물이 **경로 그대로** 거기로 들어간다.
+                    * 크로미움 데스크톱에서만 되므로 안 되는 데선 아예 안 보인다.
+                    */}
+                  {폴더됨 && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => void 폴더고르기()}
+                        className="w-full px-3 py-2 text-left text-sm hover:bg-[var(--rk-100)]"
+                      >
+                        {폴더 ? "넣을 폴더 바꾸기" : "넣을 폴더 고르기"}
+                        <span className="block text-[11px] text-[var(--rk-400)]">
+                          {폴더 ? `지금 ${폴더} 로 들어가요` : "결과물을 컴퓨터 폴더에 바로 넣어요 · 유니티 프로젝트를 고르면 그 안으로"}
+                        </span>
+                      </button>
+                      {폴더 && (
+                        <>
+                          <button
+                            type="button"
+                            onClick={() => 설정바꾸기({ 대화별폴더: !설정.대화별폴더 })}
+                            className="w-full px-3 py-2 text-left text-sm hover:bg-[var(--rk-100)]"
+                          >
+                            대화마다 하위 폴더 {설정.대화별폴더 ? "끄기" : "켜기"}
+                            <span className="block text-[11px] text-[var(--rk-400)]">
+                              {설정.대화별폴더 ? "지금은 대화 이름으로 폴더를 따로 만들어요" : "지금은 고른 폴더에 그대로 쌓여요"}
+                            </span>
+                          </button>
+                          <label className="block px-3 py-2 text-sm">
+                            앞에 붙일 자리
+                            <input
+                              value={설정.앞길}
+                              onChange={(e) => 설정바꾸기({ 앞길: e.target.value })}
+                              placeholder="예: Assets/Rookery"
+                              className="mt-1 w-full rounded border border-[var(--rk-300)] px-2 py-1 text-xs"
+                            />
+                            <span className="block text-[11px] text-[var(--rk-400)]">비우면 고른 폴더 바로 아래에 넣어요</span>
+                          </label>
+                          <button
+                            type="button"
+                            onClick={() => void 폴더끊기()}
+                            className="w-full px-3 py-2 text-left text-sm hover:bg-[var(--rk-100)]"
+                          >
+                            폴더 끊기
+                            <span className="block text-[11px] text-[var(--rk-400)]">다시 고르기 전까지 컴퓨터에 안 넣어요</span>
+                          </button>
+                        </>
+                      )}
+                    </>
+                  )}
                   {bubble && (
                     <button
                       type="button"
