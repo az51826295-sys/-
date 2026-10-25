@@ -6,6 +6,8 @@ import BuyCredits from "./BuyCredits";
 import Learned from "./Learned";
 import { disablePush, enablePush, pushState, type PushState } from "@/lib/push/client";
 import { canUseFolder, folderName, forgetFolder, getSettings, pickFolder, setSettings, type 설정 as 설정꼴 } from "@/lib/hand/folder";
+import ThemeControls from "./ThemeControls";
+import { applyTheme } from "@/lib/ui/theme";
 
 type Saved = { id: string; title: string | null; mode: string; updated_at: string };
 /**
@@ -47,7 +49,7 @@ export default function AskShell({
   const [폴더됨, 폴더됨설정] = useState(false);
   const [폴더, 폴더설정] = useState<string | null>(null);
   const [설정, 설정설정] = useState<설정꼴>(() => getSettings());
-  useEffect(() => { 폴더됨설정(canUseFolder()); }, []);
+  useEffect(() => { 폴더됨설정(canUseFolder()); applyTheme(); }, []);
   useEffect(() => { if (open) { void folderName().then(폴더설정); 설정설정(getSettings()); } }, [open]);
   const 설정바꾸기 = (바꿀것: Partial<설정꼴>) => 설정설정(setSettings(바꿀것));
   /** 고르기 창은 **사람이 누른 그 순간**에만 뜬다 — 이 함수 안에서 바로 불러야 한다. */
@@ -232,6 +234,7 @@ export default function AskShell({
                       {push === "on" ? "일이 끝나거나 아침 정리가 오면 이 기기로 알려요" : push === "denied" ? "이 브라우저에서 알림이 막혀 있어요 — 설정에서 풀어야 해요" : push === "unsupported" ? "이 브라우저는 알림을 못 받아요 — 폰 앱에서 켜 주세요" : push === "loading" ? "잠시만요" : "일 끝남·아침 정리·자가 고침을 이 기기로 받아요"}
                     </span>
                   </button>
+                  <ThemeControls />
                   {/**
                     * 10-25 사장님 "컴퓨터랑 같이 써야 하는데 파일도 그 컴터에 넣고".
                     * 폴더를 한 번 고르면 결과물이 **경로 그대로** 거기로 들어간다.

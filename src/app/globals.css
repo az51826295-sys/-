@@ -159,6 +159,25 @@ body {
   color: var(--rk-ink);
 }
 
+/* ── 사장님이 돌리는 것 (10-25) ──────────────────────────────
+   `lib/ui/theme.ts` 가 `:root` 에 배율을 꽂으면 여기서 받는다.
+   화면마다 박힌 px 를 다 고치는 대신 **뿌리에서 한 번에** 돌린다.
+   값이 없으면 1 이라 지금 화면과 똑같다 — 꾸미기를 안 쓰면 아무것도 안 바뀐다. */
+:root { --rk-글자배: 1; --rk-여백배: 1; }
+
+.pixel, .pixel-type { font-size: calc(1em * var(--rk-글자배, 1)); }
+
+/* 픽셀 글꼴을 끄면 읽기 쉬운 글꼴로 돌아간다. 자간은 그때만 기본값을 쓴다 —
+   픽셀 글꼴의 격자를 깨지 않으려고 0 으로 묶어 둔 것이라, 다른 글꼴엔 해당이 없다. */
+:root[data-rk-pixel="off"] .pixel,
+:root[data-rk-pixel="off"] .pixel-type {
+  font-family: ui-sans-serif, system-ui, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  letter-spacing: normal;
+}
+
+/* 빽빽함 — 대화 줄 사이. 1 보다 작으면 촘촘, 크면 널찍. */
+:root { --rk-줄간: calc(0.375rem * var(--rk-여백배, 1)); }
+
 /* 이 화면이 열린 문서는 바탕까지 어둡다.
    `.pixel` 은 자기 상자만 칠하므로, 내용이 짧거나 스크롤이 튀면 그 밖으로
    흰 바탕이 비친다 — 검은 화면에서 흰 띠가 한 줄만 보여도 그게 먼저 보인다. */
