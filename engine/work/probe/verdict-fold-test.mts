@@ -6,7 +6,7 @@
  *   · 못 잼을 **어긋남**으로 두면 만족 불가 조건으로 멀쩡한 걸 고치러 들어간다(지금 고치는 병)
  *   · 못 잼을 **맞음**으로 올리면 열린 채 고장이 된다 — 이쪽이 더 나쁘다
  */
-import { foldVerdict, type RawVerdict } from "../../../src/lib/hand/verdictFold";
+import { foldVerdict, type Kind, type RawVerdict } from "../../../src/lib/hand/verdictFold";
 
 const 심기 = process.argv.includes("--sabotage");
 let 나쁨 = 0;
@@ -15,9 +15,10 @@ const 재기 = (n: string, ok: boolean, 본?: unknown) => {
   console.log((ok ? "통과" : "실패") + " " + n + (본 === undefined ? "" : "  " + JSON.stringify(본)));
 };
 
-/* 심은 판: 못 잼을 맞음으로 올려 버리는 접기. 자가 멀쩡하면 떨어져야 한다. */
-const 접기 = 심기
-  ? (v: RawVerdict) => ({ ...v, verdict: "PASS", fail: [], undefined: [] })
+/* 심은 판: 못 잼을 맞음으로 올려 버리는 접기. 자가 멀쩡하면 떨어져야 한다.
+   **돌아오는 꼴을 박아 둔다** — 안 박으면 심은 쪽이 좁은 꼴이 되어 빌드가 깨진다. */
+const 접기: (v: RawVerdict, kind: Kind, n: number) => RawVerdict = 심기
+  ? (v) => ({ ...v, verdict: "PASS", fail: [], undefined: [] })
   : foldVerdict;
 
 const 바닥만 = (): RawVerdict => ({
