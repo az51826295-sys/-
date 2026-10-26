@@ -3,6 +3,7 @@ import { judgeCharacter, judgeMesh, JudgeUnavailable } from "@/lib/providers/jud
 import { noteConnected } from "@/lib/hand/connected";
 import { createServiceClient } from "@/lib/supabase/service";
 import { authenticateMcp, mcpRefusal, readMcpKey } from "@/lib/hand/mcpAuth";
+import { foldVerdict, type RawVerdict } from "@/lib/hand/verdictFold";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 120;
@@ -63,11 +64,24 @@ const 도구들 = [
   {
     name: "measure_image",
     description:
-      "만든 그림이 기준에 맞는지 잰다. base64 PNG/JPG 를 주면 맞음·어긋남·못 잼과 **잰 숫자**를 돌려준다. "
-      + "어긋나면 무엇이 몇인지 말해 주므로 그걸 보고 고쳐서 다시 내면 된다.",
+      "만든 그림이 기준에 맞는지 잰다. 맞음·어긋남·못 잼과 **잰 숫자**를 돌려주므로, "
+      + "어긋나면 무엇이 몇인지 보고 고쳐서 다시 내면 된다.\n"
+      /* 10-26: 내가 붙는 쪽이 되어 돌려 보니 이 한 줄이 없어서 세 판을 헛돌았다.
+         알파가 없으면 캐릭터를 배경에서 못 갈라서 채도가 10 으로 눌린다(알파 넣으면 62). */
+      + "**캐릭터는 배경을 투명하게 비운 PNG 로 내라.** 투명도로 캐릭터를 배경에서 가른다 — "
+      + "배경이 칠해져 있으면 배경까지 캐릭터로 세어서 채도·명암이 엉뚱하게 나온다.\n"
+      + "`kind` 로 무엇을 낸 것인지 말해라. 스프라이트만 내면 바닥 대비는 **못 잼**이 된다 "
+      + "(바닥이 그림에 없으니 잴 수가 없다). 바닥 대비까지 보려면 배경 위에 올린 그림을 "
+      + "`in_context` 로 한 번 더 내라.",
     inputSchema: {
       type: "object",
-      properties: { image_base64: { type: "string", description: "그림 하나, base64 (데이터 URL 접두사 없이)" } },
+      properties: {
+        image_base64: { type: "string", description: "그림 하나, base64 (데이터 URL 접두사 없이)" },
+        kind: {
+          type: "string", enum: ["sprite", "in_context"],
+          description: "sprite = 배경 투명한 캐릭터 한 장(기본) · in_context = 배경 위에 올린 장면",
+        },
+      },
       required: ["image_base64"], additionalProperties: false,
     },
   },
@@ -95,6 +109,12 @@ async function 도구부르기(name: string, args: Record<string, unknown>): Pro
       + "아래 숫자에 맞춰 만들어라. 만든 뒤에는 `measure_image` 로 재서 확인해라.\n\n"
       + "```json\n" + JSON.stringify(th, null, 2) + "\n```\n\n"
       + (th.basis ? `근거: ${th.basis}\n\n` : "")
+      /* 10-26: 이 두 줄이 없어서 내가 붙는 쪽으로 써 볼 때 세 판을 헛돌았다. */
+      + "## 내는 법\n\n"
+      + "- **캐릭터는 배경을 투명하게 비운 PNG** 로 낸다. 투명도로 캐릭터를 배경에서 가른다.\n"
+      + "- `character` 칸은 캐릭터만 보고 잰다. `min_ground_contrast` 는 **바닥이 있어야** 재므로,\n"
+      + "  배경 위에 올린 그림을 `measure_image` 에 `kind: \"in_context\"` 로 한 번 더 내야 잰다.\n"
+      + "- `max_color_spread` 는 그림 **여러 장**을 견주는 값이다. 한 장만 내면 못 잼이다.\n\n"
       + "판정은 세 값이다 — 맞음 · 어긋남 · **못 잼**. 못 잰 것을 어긋남으로 읽지 마라.",
     );
   }
@@ -102,8 +122,11 @@ async function 도구부르기(name: string, args: Record<string, unknown>): Pro
   if (name === "measure_image") {
     const b64 = String(args.image_base64 ?? "").replace(/^data:[^,]+,/, "");
     if (!b64) throw new Error("image_base64 가 비었다");
+    const kind = args.kind === "in_context" ? "in_context" : "sprite";
     const v = await judgeCharacter([b64]);
-    return 글(요약(v as unknown as Record<string, unknown>));
+    /* 스프라이트 하나로는 만족할 수 없는 조건으로 떨어뜨리지 않는다 — 못 잼으로 옮긴다. */
+    const 접힘 = foldVerdict(v as unknown as RawVerdict, kind, 1);
+    return 글(요약(접힘 as Record<string, unknown>));
   }
 
   if (name === "measure_mesh") {
