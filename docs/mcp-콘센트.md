@@ -45,18 +45,41 @@ min_colors 16 · min_saturation 25 · min_luma_spread 120 · min_ground_contrast
 판정 서비스에 못 닿은 것을 "어긋남" 으로 읽으면 **멀쩡한 자산을 고치러 들어간다** —
 09-30 에 그래서 세 바퀴를 헛돌았다. 그래서 `JudgeUnavailable` 은 FAIL 이 아니라 못 잼이다.
 
-## 붙이는 법
+## 붙이는 법 — 끝이 둘이다
 
 열쇠가 없으면 **문이 닫힌다**(`MCP_TOKEN` 없으면 전부 401). 남이 우리 판정 서비스를
 공짜로 쓰지 못하게 하려고 그렇게 했다.
 
-1. 서버 쪽: Railway `rookery-web` 에 두 개를 넣는다.
-   - `MCP_TOKEN` — `.keys/mcp.json` 에 만들어 둔 값
-   - `JUDGE_URL` — `https://judge-production-3d80.up.railway.app`
-     (**안 넣으면 `127.0.0.1:8000` 을 찾다가 전부 "못 잼" 이 된다.**)
-2. 쓰는 쪽: 이 저장소의 `.mcp.json` 이 이미 로키를 가리킨다.
-   열쇠만 환경변수로 둔다 — `ROOKERY_MCP_TOKEN`. (파일에 열쇠를 안 적는다.)
-3. 다른 폴더에서 쓰려면 `.mcp.json` 을 거기로 복사하면 된다.
+### 서버 끝 — 로키가 어디서 도나
+
+| | 주소 | 필요한 것 |
+|---|---|---|
+| 지금 당장 | `npm run dev` → `http://127.0.0.1:3000` | 배포 안 기다림. `ROOKERY_URL` 을 그 주소로 |
+| 배포 후 | `rookery-web-production.up.railway.app` | 아래 두 환경변수 |
+
+Railway `rookery-web` 에 둘:
+- `MCP_TOKEN` — `.keys/mcp.json` 값
+- `JUDGE_URL` — `https://judge-production-3d80.up.railway.app`
+  (**안 넣으면 `127.0.0.1:8000` 을 찾다가 전부 "못 잼" 이 된다.**)
+
+### 쓰는 끝 — 클로드 코드
+
+`.mcp.json` 을 클로드 코드로 여는 폴더에 두면 된다(이 저장소엔 이미 있다).
+앱이 **처음 열 때 "이 MCP 서버 믿어?" 를 묻고**, 예를 누르면 붙는다
+(`~/.claude.json` 의 `enabledMcpjsonServers` 에 기록된다).
+열쇠는 파일에 안 적고 `${ROOKERY_MCP_TOKEN}` 로 뺀다 — 확인된 문법이다.
+주소도 `${ROOKERY_URL:-배포주소}` 라서 그 변수만 놓으면 로컬로 돈다.
+
+### 셋째 끝 — **부를 이유를 줘야 부른다**
+
+도구를 쥐여 줘도 **쓸 이유가 없으면 안 쓴다.** 09-16 에 심판자가 152건 중 2건에만
+말한 것과 같은 모양이다([[judge-needs-a-receiver]]). 그래서 쓰는 폴더의 `CLAUDE.md`
+에 이 두 줄을 같이 둔다:
+
+```md
+그림이나 .glb 를 만들 때는 먼저 로키의 `get_standard` 로 기준을 받고,
+만든 뒤엔 `measure_image`/`measure_mesh` 로 재서 어긋난 숫자를 고친 다음 낸다.
+```
 
 ## 잰 것 / 못 잰 것
 

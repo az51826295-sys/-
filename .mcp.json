@@ -2,7 +2,7 @@
   "mcpServers": {
     "rookery": {
       "type": "http",
-      "url": "https://rookery-web-production.up.railway.app/api/mcp",
+      "url": "${ROOKERY_URL:-https://rookery-web-production.up.railway.app}/api/mcp",
       "headers": {
         "Authorization": "Bearer ${ROOKERY_MCP_TOKEN}"
       }
