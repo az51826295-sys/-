@@ -21,20 +21,36 @@ export const maxDuration = 60;
  * 칸 이름은 ASCII 다(`prompt`·`folder`…) — 한글 칸은 Supabase select 파서가 거부한다.
  */
 
-async function 회사(request: Request): Promise<{ id: string } | null> {
+/**
+ * 열쇠로 회사를 찾는다.
+ *
+ * **세 값으로 돌려준다.** 처음엔 `{ data }` 만 보고 null 이면 "열쇠가 틀렸다" 로
+ * 적었는데, 그러면 **DB 에 못 닿은 것도 "열쇠가 틀렸다" 로 나온다** — 실제로 10-26 에
+ * 그 답을 보고 DB 가 살았는지 가릴 수 없었다. 같은 병을 세 번째 적는다
+ * ([[db-constraint-errors-must-be-read]] · [[zero-can-mean-i-cannot-see]]).
+ */
+type 누구 = { kind: "회사"; id: string } | { kind: "열쇠틀림" } | { kind: "DB못닿음"; why: string };
+
+async function 회사(request: Request): Promise<누구> {
   const key = request.headers.get("x-rookery-key");
-  if (!key) return null;
-  const { data } = await createServiceClient()
+  if (!key) return { kind: "열쇠틀림" };
+  const { data, error } = await createServiceClient()
     .from("companies").select("id").eq("unity_key", key).maybeSingle();
-  return (data as { id: string } | null) ?? null;
+  if (error) return { kind: "DB못닿음", why: error.message };
+  if (!data) return { kind: "열쇠틀림" };
+  return { kind: "회사", id: (data as { id: string }).id };
 }
 
-const 막음 = () => NextResponse.json({ error: "열쇠가 맞지 않습니다." }, { status: 403 });
+/** 못 닿은 것과 틀린 것을 가른다 — 503 과 403 은 받는 쪽이 달리 행동해야 한다. */
+const 막음 = (who: 누구) =>
+  who.kind === "DB못닿음"
+    ? NextResponse.json({ error: "DB 에 못 닿았어요 — 열쇠가 틀린 게 아니에요: " + who.why.slice(0, 160) }, { status: 503 })
+    : NextResponse.json({ error: "열쇠가 맞지 않습니다." }, { status: 403 });
 
 /** 앱이 주문을 넣는다. */
 export async function POST(request: Request) {
   const c = await 회사(request);
-  if (!c) return 막음();
+  if (c.kind !== "회사") return 막음(c);
 
   const body = (await request.json().catch(() => ({}))) as { 주문?: string; prompt?: string; 폴더?: string; folder?: string };
   const 주문 = (body.주문 ?? body.prompt ?? "").trim();
@@ -56,7 +72,7 @@ export async function POST(request: Request) {
 /** 노트북이 하나 집어 간다. */
 export async function GET(request: Request) {
   const c = await 회사(request);
-  if (!c) return 막음();
+  if (c.kind !== "회사") return 막음(c);
   /* 물어보러 온 것 자체가 "듣고 있다" 는 사실이다 — 일거리가 없어도 붙어 있다. */
   noteConnected("laptop", "일거리를 물어보러 왔어요");
   const db = createServiceClient();
@@ -89,7 +105,7 @@ export async function GET(request: Request) {
 /** 노트북이 결과를 적는다. */
 export async function PATCH(request: Request) {
   const c = await 회사(request);
-  if (!c) return 막음();
+  if (c.kind !== "회사") return 막음(c);
 
   const body = (await request.json().catch(() => ({}))) as
     { id?: string; 결과?: string; 탈?: string | null; 걸린초?: number };
