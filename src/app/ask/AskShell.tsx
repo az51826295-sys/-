@@ -9,6 +9,7 @@ import { canUseFolder, folderName, forgetFolder, getSettings, pickFolder, setSet
 import ThemeControls from "./ThemeControls";
 import MeasurePanel from "./MeasurePanel";
 import ConnectionStatus from "./ConnectionStatus";
+import MyKey from "./MyKey";
 import { applyTheme } from "@/lib/ui/theme";
 
 type Saved = { id: string; title: string | null; mode: string; updated_at: string };
@@ -230,6 +231,8 @@ export default function AskShell({
                     열려만 있는 것을 붙은 줄 알고 기다리게 된다.
                   */}
                   <ConnectionStatus />
+                  {/* 붙어 있는 것 바로 아래 — "뭐가 붙었나" 를 보고 "어떻게 붙이나" 로 간다 */}
+                  <MyKey />
                   <BuyCredits />
                   <Learned />
                   <button

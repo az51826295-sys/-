@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { judgeCharacter, judgeMesh, JudgeUnavailable } from "@/lib/providers/judge";
 import { noteConnected } from "@/lib/hand/connected";
+import { createServiceClient } from "@/lib/supabase/service";
+import { authenticateMcp, mcpRefusal, readMcpKey } from "@/lib/hand/mcpAuth";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 120;
@@ -25,12 +27,29 @@ export const maxDuration = 120;
 const 이름 = "rookery";
 const 판 = "2024-11-05";
 
-/** 열쇠. 없으면 아무나 우리 판정 서비스를 쓰게 되므로 **없으면 닫는다.** */
-function 들여보낼까(request: Request): boolean {
-  const 열쇠 = process.env.MCP_TOKEN;
-  if (!열쇠) return false;
-  const h = request.headers.get("authorization") ?? "";
-  return h === `Bearer ${열쇠}` || request.headers.get("x-rookery-mcp") === 열쇠;
+/**
+ * 열쇠는 **사람별**이다 (10-26 고침).
+ *
+ * 오전 판은 `process.env.MCP_TOKEN` 하나였다 — 남에게 주면 모두가 같은 열쇠를 쓰고
+ * 사장님 것도 같이 열린다. 사장님이 "다른 사용자가 연결하는 과정이 구현 돼 있어?" 라고
+ * 물어서 드러났다. 새 열쇠를 만들지 않고 **이미 회사별로 있는 `companies.unity_key`** 를 쓴다.
+ *
+ * 전역 열쇠는 남겨 둔다 — 내 시험·배치용이고, **DB 가 죽어도 통해야** 고치러 들어갈 수 있다.
+ * 판단 갈래는 `src/lib/hand/mcpAuth.ts` 에 있고 자가 20/20 으로 돌려 봤다.
+ */
+async function 누구인가(request: Request) {
+  const key = readMcpKey((n) => request.headers.get(n));
+  return authenticateMcp(key, {
+    globalToken: process.env.MCP_TOKEN ?? null,
+    async findCompany(k) {
+      const { data, error } = await createServiceClient()
+        .from("companies").select("id").eq("unity_key", k).maybeSingle();
+      /* 오류를 읽는다 — 안 읽으면 DB 가 죽은 것이 "열쇠가 틀렸다" 로 나온다(오늘 세 번째) */
+      if (error) return { kind: "DB못닿음" as const, why: error.message };
+      if (!data) return { kind: "없음" as const };
+      return { kind: "회사" as const, id: (data as { id: string }).id };
+    },
+  });
 }
 
 const 도구들 = [
@@ -120,8 +139,10 @@ function 요약(v: Record<string, unknown>): string {
 }
 
 export async function POST(request: Request) {
-  if (!들여보낼까(request)) {
-    return NextResponse.json({ error: "열쇠가 필요해요" }, { status: 401 });
+  const who = await 누구인가(request);
+  if (who.kind !== "회사" && who.kind !== "서버열쇠") {
+    const r = mcpRefusal(who);
+    return NextResponse.json({ error: r.error }, { status: r.status });
   }
 
   const req = (await request.json().catch(() => null)) as
@@ -170,6 +191,7 @@ export async function GET() {
     protocol: 판,
     tools: 도구들.map((t) => t.name),
     열쇠필요: true,
-    쓰는법: "claude mcp add --transport http rookery <이 주소> --header \"Authorization: Bearer <MCP_TOKEN>\"",
+    열쇠받는곳: "로키 메뉴 → 내 연결 열쇠",
+    쓰는법: "claude mcp add --transport http rookery <이 주소> --header \"Authorization: Bearer <내 연결 열쇠>\"",
   });
 }
