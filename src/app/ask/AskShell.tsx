@@ -8,6 +8,7 @@ import { disablePush, enablePush, pushState, type PushState } from "@/lib/push/c
 import { canUseFolder, folderName, forgetFolder, getSettings, pickFolder, setSettings, type 설정 as 설정꼴 } from "@/lib/hand/folder";
 import ThemeControls from "./ThemeControls";
 import MeasurePanel from "./MeasurePanel";
+import ConnectionStatus from "./ConnectionStatus";
 import { applyTheme } from "@/lib/ui/theme";
 
 type Saved = { id: string; title: string | null; mode: string; updated_at: string };
@@ -222,6 +223,13 @@ export default function AskShell({
                   <p className="truncate px-3 py-1.5 text-[11px] text-[var(--rk-400)]">
                     {me.email}
                   </p>
+                  {/*
+                    10-26 사장님: "연결된거 유아이로 표시해야해."
+                    단추가 아니라 **읽는 칸**이라 맨 위에 둔다 — 아래 단추 수는 그대로다.
+                    붙음·열림·닫힘·모름 네 값으로 그린다. "연결됨" 하나로 묶으면
+                    열려만 있는 것을 붙은 줄 알고 기다리게 된다.
+                  */}
+                  <ConnectionStatus />
                   <BuyCredits />
                   <Learned />
                   <button

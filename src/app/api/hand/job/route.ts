@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createServiceClient } from "@/lib/supabase/service";
+import { noteConnected } from "@/lib/hand/connected";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -56,6 +57,8 @@ export async function POST(request: Request) {
 export async function GET(request: Request) {
   const c = await 회사(request);
   if (!c) return 막음();
+  /* 물어보러 온 것 자체가 "듣고 있다" 는 사실이다 — 일거리가 없어도 붙어 있다. */
+  noteConnected("laptop", "일거리를 물어보러 왔어요");
   const db = createServiceClient();
 
   const { data: 후보, error: 볼때탈 } = await db

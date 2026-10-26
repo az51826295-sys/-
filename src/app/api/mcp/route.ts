@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { judgeCharacter, judgeMesh, JudgeUnavailable } from "@/lib/providers/judge";
+import { noteConnected } from "@/lib/hand/connected";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 120;
@@ -141,10 +142,15 @@ export async function POST(request: Request) {
     }
     /* 알림은 답을 안 바란다 — 빈 200 을 준다 */
     if (req.method.startsWith("notifications/")) return new NextResponse(null, { status: 204 });
-    if (req.method === "tools/list") return 답({ tools: 도구들 });
+    if (req.method === "tools/list") {
+      /* 붙었다는 사실을 남긴다 — 화면이 "열려 있다" 와 "붙어 있다" 를 가르려면 이게 필요하다. */
+      noteConnected("mcp", "도구 목록을 받아 갔어요");
+      return 답({ tools: 도구들 });
+    }
     if (req.method === "tools/call") {
       const name = String(req.params?.name ?? "");
       const args = (req.params?.arguments ?? {}) as Record<string, unknown>;
+      noteConnected("mcp", name === "get_standard" ? "기준을 받아 갔어요" : "만든 것을 재 갔어요");
       return 답(await 도구부르기(name, args));
     }
     return 탈(-32601, `모르는 길: ${req.method}`);
