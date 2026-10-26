@@ -7,6 +7,7 @@ import Learned from "./Learned";
 import { disablePush, enablePush, pushState, type PushState } from "@/lib/push/client";
 import { canUseFolder, folderName, forgetFolder, getSettings, pickFolder, setSettings, type 설정 as 설정꼴 } from "@/lib/hand/folder";
 import ThemeControls from "./ThemeControls";
+import MeasurePanel from "./MeasurePanel";
 import { applyTheme } from "@/lib/ui/theme";
 
 type Saved = { id: string; title: string | null; mode: string; updated_at: string };
@@ -282,6 +283,7 @@ export default function AskShell({
                             폴더 끊기
                             <span className="block text-[11px] text-[var(--rk-400)]">다시 고르기 전까지 컴퓨터에 안 넣어요</span>
                           </button>
+                          <MeasurePanel />
                         </>
                       )}
                     </>

@@ -130,6 +130,73 @@ export async function pickFolder(): Promise<string | null> {
 /** 이어 둔 폴더를 끊는다 */
 export async function forgetFolder(): Promise<void> { await 넣어두기(null); }
 
+/* ── 받는 쪽 — 폴더에 떨군 것을 로키가 읽는다 (10-26) ──────────
+   사장님: "그 사람이 쓰던 AI 도 붙을 수 있어야 한다."
+   API 도 MCP 도 없는 도구(웹에서만 되는 그림 AI·블렌더·손그림)는 **파일로만** 나온다.
+   그래서 **폴더가 가장 넓은 콘센트**다 — 무엇으로 만들었든 떨구면 로키가 잰다. */
+
+export type 들어온것 = { path: string; size: number; mtime: number };
+
+const 그림꼴 = /\.(png|jpe?g|webp|gif)$/i;
+const 메시꼴 = /\.(glb|gltf)$/i;
+/** 로키가 **자기가 쓴 것**을 다시 재지 않게 — 넣기로 만든 자리는 건너뛴다 */
+const 건너뛸폴더 = /^(node_modules|\.git|Library|Temp|obj|build)$/i;
+
+/** 폴더를 훑어 그림·메시 파일을 모은다. 너무 깊이 안 들어간다(깊은 프로젝트에서 멈춰 보인다). */
+export async function listIncoming(최대깊이 = 3): Promise<들어온것[]> {
+  const root = await 꺼내기();
+  if (!root || !(await 권한있나(root, false))) return [];
+  const 모음: 들어온것[] = [];
+  async function 훑기(d: FileSystemDirectoryHandle, 앞: string, 깊이: number): Promise<void> {
+    if (깊이 > 최대깊이 || 모음.length > 500) return;
+    for await (const [이름, h] of (d as unknown as { entries(): AsyncIterable<[string, FileSystemHandle]> }).entries()) {
+      if (h.kind === "directory") {
+        if (건너뛸폴더.test(이름)) continue;
+        await 훑기(h as FileSystemDirectoryHandle, 앞 ? 앞 + "/" + 이름 : 이름, 깊이 + 1);
+      } else if (그림꼴.test(이름) || 메시꼴.test(이름)) {
+        try {
+          const f = await (h as FileSystemFileHandle).getFile();
+          모음.push({ path: 앞 ? 앞 + "/" + 이름 : 이름, size: f.size, mtime: f.lastModified });
+        } catch { /* 읽는 중에 사라졌으면 넘어간다 */ }
+      }
+    }
+  }
+  await 훑기(root, "", 0);
+  return 모음.sort((a, b) => b.mtime - a.mtime);
+}
+
+/** 한 파일을 base64 로 — 판정에 보내려면 글자여야 한다 */
+export async function readAsBase64(길: string): Promise<{ base64: string; mime: string } | null> {
+  const root = await 꺼내기();
+  if (!root || !(await 권한있나(root, false))) return null;
+  const 조각 = 길.split("/").filter(Boolean);
+  const 이름 = 조각.pop();
+  if (!이름) return null;
+  try {
+    let 여기 = root;
+    for (const c of 조각) 여기 = await 여기.getDirectoryHandle(c);
+    const f = await (await 여기.getFileHandle(이름)).getFile();
+    const buf = new Uint8Array(await f.arrayBuffer());
+    let s = "";
+    for (let i = 0; i < buf.length; i += 0x8000) s += String.fromCharCode(...buf.subarray(i, i + 0x8000));
+    return { base64: btoa(s), mime: f.type || (메시꼴.test(이름) ? "model/gltf-binary" : "image/png") };
+  } catch { return null; }
+}
+
+/** 이미 재 본 것은 또 안 잰다 — 경로+바뀐시각으로 기억한다 */
+const 잰것키 = "rookery.hand.measured";
+export function seenBefore(it: 들어온것): boolean {
+  try { return (JSON.parse(localStorage.getItem(잰것키) ?? "{}") as Record<string, number>)[it.path] === it.mtime; }
+  catch { return false; }
+}
+export function markSeen(it: 들어온것): void {
+  try {
+    const m = JSON.parse(localStorage.getItem(잰것키) ?? "{}") as Record<string, number>;
+    m[it.path] = it.mtime;
+    localStorage.setItem(잰것키, JSON.stringify(m));
+  } catch { /* 저장소 없음 */ }
+}
+
 /** `a/b/c.txt` 에서 `a/b` 를 따라 내려가며 없으면 만든다 */
 async function 길따라(root: FileSystemDirectoryHandle, 길: string[]): Promise<FileSystemDirectoryHandle> {
   let 여기 = root;
