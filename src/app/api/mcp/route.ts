@@ -143,19 +143,25 @@ async function 도구부르기(name: string, args: Record<string, unknown>): Pro
 function 요약(v: Record<string, unknown>): string {
   const 판정 = String(v.verdict ?? "UNDEFINED");
   const 표 = 판정 === "PASS" ? "· 맞음" : 판정 === "FAIL" ? "≠ 어긋남" : "– 못 잼";
-  const 까닭 = [
+  /* **어긋난 것과 못 잰 것을 한 칸에 섞지 않는다** (10-26 고침).
+     섞어 놓으니 "바닥 대비 → 못 잼" 이 고쳐야 할 것처럼 보였다. 붙은 도구는
+     못 잰 것을 고치러 들어간다 — 그게 세 값을 가르는 뜻을 없앤다. */
+  const 규칙 = ((v.rules as { id: string; verdict: string; why: string }[]) ?? []);
+  const 어긋난것 = [
     ...((v.fail as string[]) ?? []),
+    ...규칙.filter((r) => r.verdict === "FAIL").map((r) => `${r.id}: ${r.why}`),
+  ];
+  const 못잰것 = [
     ...((v.undefined as string[]) ?? []),
-    ...(((v.rules as { id: string; verdict: string; why: string }[]) ?? [])
-      .filter((r) => r.verdict !== "PASS")
-      .map((r) => `${r.id}: ${r.why}`)),
+    ...규칙.filter((r) => r.verdict !== "FAIL" && r.verdict !== "PASS").map((r) => `${r.id}: ${r.why}`),
   ];
   const 숫자 = Object.fromEntries(
     Object.entries(v).filter(([k, x]) => typeof x === "number" && k !== "verdict"),
   );
   return [
     `## ${표}`,
-    까닭.length ? "\n### 까닭\n" + 까닭.map((c) => "- " + c).join("\n") : "",
+    어긋난것.length ? "\n### 고쳐야 할 것 (어긋남)\n" + 어긋난것.map((c) => "- " + c).join("\n") : "",
+    못잰것.length ? "\n### 못 잰 것 — **고치지 마라**\n" + 못잰것.map((c) => "- " + c).join("\n") : "",
     Object.keys(숫자).length ? "\n### 잰 값\n```json\n" + JSON.stringify(숫자, null, 2) + "\n```" : "",
     판정 === "UNDEFINED" ? "\n**못 잰 것이지 어긋난 게 아니다.** 고치러 들어가기 전에 왜 못 쟀는지 먼저 봐라." : "",
   ].filter(Boolean).join("\n");
