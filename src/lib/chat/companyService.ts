@@ -7,6 +7,7 @@ import { meterProviders } from "@/lib/costs/meter";
 import { defaultProviders } from "@/lib/execution/shared";
 import { runChatTurn, type ChatOption } from "@/lib/chat/service";
 import { selfNote, speakerFor, speakerNote } from "@/lib/chat/persona";
+import { secretaryNote } from "@/lib/chat/voice";
 import { capabilityCatalogue } from "@/lib/chat/routing";
 import { learnFromChat } from "@/lib/chat/learnFromChat";
 
@@ -152,6 +153,9 @@ export async function runCompanyChatTurn(
       "3. 한국어로 답한다. 길어야 하는 질문이면 길게 답해도 된다 —",
       "   짧게 자르는 것이 친절이 아니다.",
       selfNote(),
+      // 10-26: 비서 말투. 위 3번("짧게 자르는 것이 친절이 아니다")과 싸우지 않는다 —
+      // 여기 규칙은 길이가 아니라 **순서**다(됐는지 먼저 · 부탁은 뒤에).
+      secretaryNote(),
       speakerNote(speaker),
     ].join("\n"),
     input: input.messages.map((m) => `${m.role}: ${m.content}`).join("\n"),

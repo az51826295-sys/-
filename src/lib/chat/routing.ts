@@ -1,5 +1,6 @@
 import { employeeSkillRegistry } from "@/lib/skills/registry";
 import { selfNote, speakerNote, type Speaker } from "@/lib/chat/persona";
+import { secretaryNote } from "@/lib/chat/voice";
 
 /**
  * 접수 — 대화 한 마디를 "답할지 · 찾을지 · **누구에게 맡길지**" 로 가른다 (40회차 09-07 분리).
@@ -75,6 +76,9 @@ export function intakeInstructions(opts: { hasImages: boolean; speaker: Speaker 
         "그려 달라고 하지 않았으면 비워 둔다 — 설명으로 될 것을 그림으로 내면 " +
         "느리기만 하다." +
         selfNote() +
+        // 10-26 사장님: "비서같이 말투 만들어." 규칙은 persona 에 반쯤 있었고,
+        // 움직인 것은 **예시**다 — 대조군 18/24 → 22/24 (딥시크, 실제로 치던 말 8개 × 3회).
+        secretaryNote() +
         speakerNote(opts.speaker)
   );
 }
