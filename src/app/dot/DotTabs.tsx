@@ -9,6 +9,8 @@
  * 아이콘은 8×8 격자 SVG(crispEdges) — 이모지는 폰마다 다르게 그려져 도트 화면에서 튄다.
  */
 const ICON: Record<string, string> = {
+  // 타로(오늘의 카드) — 10-28. 매일 올 이유라 피드 바로 옆에 둔다.
+  tarot: "M1 0h6v1h1v6h-1v1h-6v-1h-1v-6h1zM2 1v6h4v-6zM3 2h2v1h-2zM3 5h2v1h-2z",
   // 돋보기(인스타 가운데 탭)
   search: "M1 0h4v1h1v4h-1v1h-4v-1h-1v-4h1zM2 1v4h2v-4zM6 6h1v1h1v1h-2z",
   // 말풍선
@@ -21,9 +23,10 @@ const ICON: Record<string, string> = {
 
 import Link from "next/link";
 
-export default function DotTabs({ on }: { on: "search" | "chats" | "feed" | "me" }) {
+export default function DotTabs({ on }: { on: "search" | "chats" | "feed" | "me" | "tarot" }) {
   const tabs = [
     { key: "feed", href: "/dot/feed", label: "피드" },
+    { key: "tarot", href: "/dot/tarot", label: "타로" },
     { key: "search", href: "/dot/search", label: "검색" },
     { key: "chats", href: "/dot/chats", label: "채팅" },
     { key: "me", href: "/dot/me", label: "내 창" },
