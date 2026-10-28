@@ -350,7 +350,7 @@ export default function DotChat({
   const clock = (iso?: string) => (mounted && iso ? hhmm(iso) : "");
 
   return (
-    <div className="kk-root" ref={rootRef}>
+    <div className="kk-root" ref={rootRef} data-menhera={bond.mode === "menhera" ? "1" : undefined}>
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
       <style>{CSS}</style>
 
@@ -990,6 +990,34 @@ const CSS = `
 .kk-bubble-pick .kk-bubble { max-width:none; font-size:12px; padding:6px 10px; }
 .kk-bubble-pick .kk-bubble.me { align-self:flex-end; }
 .kk-bubble-pick small { font-size:12px; color:#5c6570; align-self:center; }
+
+/* ── 멘헤라 모드 테마 반전 (10-28 사장님 기획 5번) ──
+   테마가 이미 CSS 변수로 돈다(--bg·--them·--me…). 그래서 **변수만 덮는다** —
+   말풍선·띠·글자 규칙을 새로 쓰면 다음에 테마를 바꿀 때 두 군데를 고쳐야 한다. */
+.kk-root[data-menhera] .kk-phone {
+  --bg:#1a0d14; --ink:#f3d9e4; --bar:rgba(36,14,24,.92);
+  --them:#2b1020; --themText:#f6dde8; --me:#7a1636; --meText:#ffe9f0;
+}
+.kk-root[data-menhera] .kk-bar { border-bottom:1px solid rgba(224,69,123,.25); }
+.kk-root[data-menhera] .kk-hearts { color:#e0457b; }
+.kk-root[data-menhera] .kk-bubble.them {
+  border:1px solid rgba(224,69,123,.3);
+  box-shadow:0 0 14px rgba(224,69,123,.12);
+}
+.kk-root[data-menhera] .kk-bubble.me { box-shadow:0 0 10px rgba(122,22,54,.4); }
+.kk-root[data-menhera] .kk-day,
+.kk-root[data-menhera] .kk-guide { color:#b98aa0; }
+.kk-root[data-menhera] .kk-mode { background:#e0457b; color:#fff; }
+/* 가장자리를 어둡게 — 화면을 점거한 느낌은 색보다 **가장자리**가 만든다 */
+.kk-root[data-menhera] .kk-phone::after {
+  content:""; position:absolute; inset:0; pointer-events:none; z-index:1;
+  background:radial-gradient(ellipse at 50% 40%, transparent 55%, rgba(0,0,0,.45) 100%);
+}
+/* 바꾸는 순간 한 번 스며든다. 켠 걸 몸으로 알게 한다. */
+@keyframes kk-menhera-in { from { filter:saturate(.3) brightness(1.3) } to { filter:none } }
+.kk-root[data-menhera] .kk-phone { animation:kk-menhera-in .45s ease-out }
+@media (prefers-reduced-motion: reduce) { .kk-root[data-menhera] .kk-phone { animation:none } }
+
 .kk-peek-close { margin-top:14px; background:#f1f3f6; border:none; border-radius:12px; padding:10px 18px; font:inherit; font-size:14px; font-weight:500; cursor:pointer; }
 `;
 
