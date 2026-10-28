@@ -72,7 +72,13 @@ const 도구들 = [
       + "배경이 칠해져 있으면 배경까지 캐릭터로 세어서 채도·명암이 엉뚱하게 나온다.\n"
       + "`kind` 로 무엇을 낸 것인지 말해라. 스프라이트만 내면 바닥 대비는 **못 잼**이 된다 "
       + "(바닥이 그림에 없으니 잴 수가 없다). 바닥 대비까지 보려면 배경 위에 올린 그림을 "
-      + "`in_context` 로 한 번 더 내라.",
+      + "`in_context` 로 한 번 더 내라.\n"
+      /* 10-28: 도트 크기 자를 붙였다. 사장님 기획안이 짚은 칸 — 색·명암이 다 통과해도
+         도트가 뭉개져 있으면 화면에서 혼자 뜬다. */
+      + "**도트 그림은 최근접 이웃(nearest)으로만 키워라.** 바이큐빅으로 키우거나 "
+      + "안티에일리어싱을 켜면 도트 한 칸이 여러 색이 되고(믹스드 픽셀) 떨어진다. "
+      + "여러 조각을 한 캐릭터로 쓸 거면 `measure_set` 으로 **같이** 내라 — "
+      + "투구 도트 16 · 몸 도트 12 는 낱장으로는 둘 다 통과한다.",
     inputSchema: {
       type: "object",
       properties: {
@@ -81,8 +87,32 @@ const 도구들 = [
           type: "string", enum: ["sprite", "in_context"],
           description: "sprite = 배경 투명한 캐릭터 한 장(기본) · in_context = 배경 위에 올린 장면",
         },
+        want_texel: {
+          type: "integer",
+          description: "주문한 도트 크기(논리 화소 하나가 실제 몇 화소인가). 주면 '맞냐'까지 잰다. "
+            + "안 주면 '같으냐'만 보고 맞는지는 못 잼이다.",
+        },
       },
       required: ["image_base64"], additionalProperties: false,
+    },
+  },
+  {
+    name: "measure_set",
+    description:
+      "그림 **여러 장을 한 세트로** 잰다. 낱장으로는 절대 못 잡는 두 가지가 여기서 잡힌다 — "
+      + "① 도트 크기가 조각마다 다른 것(투구 16 · 몸 12) ② 방향마다 색 수가 튀는 것. "
+      + "한 캐릭터의 여러 방향, 또는 한 캐릭터를 이루는 조각들을 같이 내라.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        images_base64: {
+          type: "array", items: { type: "string" }, minItems: 2, maxItems: 12,
+          description: "그림 2~12장, base64. 배경은 투명하게 비운다.",
+        },
+        kind: { type: "string", enum: ["sprite", "in_context"] },
+        want_texel: { type: "integer", description: "주문한 도트 크기" },
+      },
+      required: ["images_base64"], additionalProperties: false,
     },
   },
   {
@@ -114,7 +144,13 @@ async function 도구부르기(name: string, args: Record<string, unknown>): Pro
       + "- **캐릭터는 배경을 투명하게 비운 PNG** 로 낸다. 투명도로 캐릭터를 배경에서 가른다.\n"
       + "- `character` 칸은 캐릭터만 보고 잰다. `min_ground_contrast` 는 **바닥이 있어야** 재므로,\n"
       + "  배경 위에 올린 그림을 `measure_image` 에 `kind: \"in_context\"` 로 한 번 더 내야 잰다.\n"
-      + "- `max_color_spread` 는 그림 **여러 장**을 견주는 값이다. 한 장만 내면 못 잼이다.\n\n"
+      + "- `max_color_spread` 는 그림 **여러 장**을 견주는 값이다. 한 장만 내면 못 잼이다.\n"
+      /* 10-28: 도트 자. 숫자만 주고 세는 법을 안 주면 과녁을 가리고 쏘라는 것이다. */
+      + "- `texel` 칸은 **도트 크기**다. 논리 크기(예: 32x32)로 그려서 **최근접 이웃**으로만 키운다.\n"
+      + "  `min_purity` 는 도트 한 칸이 한 색인 비율이고 **알파도 색으로 센다** — 가장자리를\n"
+      + "  부드럽게 하면 떨어진다. 도트 그림의 테두리는 계단이 정상이다.\n"
+      + "  한 캐릭터를 여러 조각으로 만들면 `measure_set` 으로 같이 내라. 도트 크기가\n"
+      + "  조각마다 다른 것은 **낱장으로는 절대 안 잡힌다**.\n\n"
       + "판정은 세 값이다 — 맞음 · 어긋남 · **못 잼**. 못 잰 것을 어긋남으로 읽지 마라.",
     );
   }
@@ -123,9 +159,22 @@ async function 도구부르기(name: string, args: Record<string, unknown>): Pro
     const b64 = String(args.image_base64 ?? "").replace(/^data:[^,]+,/, "");
     if (!b64) throw new Error("image_base64 가 비었다");
     const kind = args.kind === "in_context" ? "in_context" : "sprite";
-    const v = await judgeCharacter([b64]);
+    const want = Number.isFinite(Number(args.want_texel)) ? Number(args.want_texel) : null;
+    const v = await judgeCharacter([b64], { wantTexel: want });
     /* 스프라이트 하나로는 만족할 수 없는 조건으로 떨어뜨리지 않는다 — 못 잼으로 옮긴다. */
     const 접힘 = foldVerdict(v as unknown as RawVerdict, kind, 1);
+    return 글(요약(접힘 as Record<string, unknown>));
+  }
+
+  if (name === "measure_set") {
+    const list = (Array.isArray(args.images_base64) ? args.images_base64 : [])
+      .map((x) => String(x ?? "").replace(/^data:[^,]+,/, ""))
+      .filter(Boolean);
+    if (list.length < 2) throw new Error("세트는 두 장 이상이다 — 한 장이면 measure_image 를 써라");
+    const kind = args.kind === "in_context" ? "in_context" : "sprite";
+    const want = Number.isFinite(Number(args.want_texel)) ? Number(args.want_texel) : null;
+    const v = await judgeCharacter(list, { wantTexel: want });
+    const 접힘 = foldVerdict(v as unknown as RawVerdict, kind, list.length);
     return 글(요약(접힘 as Record<string, unknown>));
   }
 
@@ -158,6 +207,17 @@ function 요약(v: Record<string, unknown>): string {
   const 숫자 = Object.fromEntries(
     Object.entries(v).filter(([k, x]) => typeof x === "number" && k !== "verdict"),
   );
+  /* 도트 자가 잰 값은 `texel` 안에 있어서 위의 걸러내기에 안 걸린다. 꺼내 올린다 —
+     **잰 숫자를 안 주면 못 고친다**(이 파일의 첫 규칙). */
+  const 도트 = (v.texel as Record<string, unknown> | undefined) ?? {};
+  for (const k of ["texel", "align", "purity", "trace", "mixed_dots"]) {
+    if (typeof 도트[k] === "number") 숫자["도트_" + k] = 도트[k] as number;
+  }
+  /* **안 물은 것은 못 잼과 다른 칸이다** (10-28). "두 장 이상 주면 잰다" 를 못 잼에
+     섞으면 한 장 요청이 영원히 못 잼이 되고, 늘 같은 답을 내는 판정은 정보가 0 이다.
+     그리고 붙은 도구가 "더 달라" 를 "너 틀렸다" 로 읽는다. */
+  const 안물은것 = [...((v.not_asked as string[]) ?? []),
+                   ...((도트.not_asked as string[]) ?? [])];
   /* **얼마나 가까운가** (10-28). 어긋남 한 글자만 주면 나아지는지 알 수 없어서
      붙은 도구가 포기한다 — 내가 색을 3→7→12 로 올리고도 네 판 내내 같은 글자를 봤다. */
   const 가까움 = (v.progress as { id: string; got: number; need: number; ok: boolean; ratio: number; 방향: string }[] | undefined) ?? [];

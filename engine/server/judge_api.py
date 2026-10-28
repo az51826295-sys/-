@@ -31,6 +31,7 @@ from genesis import mesh_judge as mj                           # noqa: E402
 from genesis import context_view as cv                         # noqa: E402
 from genesis import prompt_book as pb                          # noqa: E402
 from genesis import style_bible as sb                          # noqa: E402
+from genesis import texel_judge as tx                          # noqa: E402
 
 router = APIRouter(prefix="/api/judge")
 
@@ -55,6 +56,8 @@ class CharacterRequest(BaseModel):
     images: list[str]
     ground: str | None = None
     bible: str | None = None
+    # 주문한 도트 크기. 안 주면 "같으냐"만 보고 "맞냐"는 **못 잼**이다.
+    want_texel: int | None = None
 
 
 @router.post("/character")
@@ -74,6 +77,26 @@ def judge_character(req: CharacterRequest) -> dict:
         if ctx["verdict"] == "FAIL":
             out["verdict"] = "FAIL"
             out.setdefault("fail", []).extend(ctx["fail"])
+
+    # 10-28: **도트 크기 자.** 색·명암이 다 통과해도 도트가 뭉개져 있으면 화면에서
+    # 혼자 뜬다 — 그 칸을 지금까지 아무 자도 안 봤다(사장님 기획안이 짚은 자리).
+    # 못 잼은 판정을 FAIL 로 바꾸지 않는다. 자가 눈이 없는 것을 그림 탓으로 돌리지 않는다.
+    try:
+        t = tx.judge(paths, want_texel=req.want_texel)
+        out["texel"] = t
+        if t["verdict"] == "FAIL":
+            out["verdict"] = "FAIL"
+            out.setdefault("fail", []).extend(t["fail"])
+        elif t["blind"] and out.get("verdict") == "PASS":
+            out["verdict"] = "UNDEFINED"
+        # **자가 못 본 것만** 못 잼 칸에 넣는다. "두 장 이상 주면 잰다" 같은
+        # 줄까지 넣으면 한 장 요청은 **영원히 못 잼**이 되고, 늘 같은 답을 내는
+        # 판정은 정보가 0 이다(09-16). 안 물은 것은 따로 적어 화면에만 띄운다.
+        out.setdefault("undefined", []).extend(t["blind"])
+        if t["not_asked"]:
+            out["not_asked"] = t["not_asked"]
+    except Exception as e:                                        # noqa: BLE001
+        out["texel_error"] = str(e)[:160]
 
     # 스타일 성경이 있으면 "같은 세계인가" 도 잰다. 좋은가를 묻지 않는다.
     if req.bible:
@@ -136,6 +159,21 @@ def adopt_bible(req: BibleRequest) -> dict:
     return {"ok": True, **doc}
 
 
+class TexelRequest(BaseModel):
+    """도트만 따로 재고 싶을 때. 캐릭터 판정 없이 그림 아무거나 받는다 —
+    UI 조각·타일·아이콘도 같은 자로 재야 한 세계로 보인다."""
+    images: list[str]
+    want_texel: int | None = None
+
+
+@router.post("/texel")
+def judge_texel(req: TexelRequest) -> dict:
+    paths = _write(req.images, "judge_texel_")
+    if not paths:
+        return {"verdict": "UNDEFINED", "undefined": ["그림이 없다"]}
+    return tx.judge(paths, want_texel=req.want_texel)
+
+
 @router.get("/thresholds")
 def thresholds() -> dict:
     """무엇으로 거르는지, 그 수가 어디서 왔는지. 감출 이유가 없다."""
@@ -151,6 +189,15 @@ def thresholds() -> dict:
         "in_context": {
             "min_edge_contrast": cv.MIN_EDGE_CONTRAST,
             "min_silhouette": cv.MIN_SILHOUETTE,
+        },
+        # 10-28: 도트 크기 자. 일치율·순도는 **도트 그림의 정의**라 지어낸 수가
+        # 아니다(진짜 도트는 둘 다 1.0). 흔적 문턱만 실측으로 정했다.
+        "texel": {
+            "min_align": tx.MIN_ALIGN,
+            "min_purity": tx.MIN_PURITY,
+            "min_trace": tx.MIN_TRACE,
+            "edge_delta": tx.EDGE_DELTA,
+            "min_edges": tx.MIN_EDGES,
         },
         "basis": "사장님이 가리킨 레퍼런스 화면 실측 (명암폭 172 · 캐릭터-바닥 대비 99)",
         # 10-28: 내가 붙는 쪽이 되어 네 판 돌려 보니 **숫자만 있고 세는 법이 없었다.**
@@ -188,6 +235,22 @@ HOW = {
         "방향": "클수록 좋다",
         "필요한것": "바닥이 있어야 잰다. 투명 스프라이트만 내면 **못 잼**이다.",
     },
+    "texel": {
+        "세는법": "색이 바뀌는 자리(경계)가 어느 격자에 앉는지로 찾는다. 16배로 키운 도트 그림은 경계가 **전부 16의 배수**에 있다. 그 조건을 만족하는 **가장 큰** 격자가 도트 크기다.",
+        "고치는법": "논리 크기(예: 32x32)로 그리고 **최근접 이웃(nearest neighbor)**으로만 키워라. 바이큐빅·바이리니어로 키우면 격자가 뭉개진다. 비정수 배율(15.5배)도 안 된다.",
+        "방향": "세트 안에서 **같아야** 한다(크거나 작은 것이 좋은 게 아니다)",
+    },
+    "align": {
+        "세는법": "경계 중 그 격자에 앉은 것의 비율. 깨끗한 도트는 1.0 이다.",
+        "고치는법": "원본 논리 그림에서 다시 키워라. 한 번 줄였다 늘린 그림은 되돌릴 수 없다 — 중간색이 이미 섞였다.",
+        "방향": "클수록 좋다",
+    },
+    "purity": {
+        "세는법": "도트 한 칸이 **한 색**인 비율. **알파도 색으로 센다** — 실루엣 가장자리의 반투명이 제일 흔한 고장이다.",
+        "고치는법": "안티에일리어싱을 끄고 뽑아라. 가장자리를 부드럽게 하지 마라 — 도트 그림의 테두리는 **계단**이 정상이다.",
+        "방향": "클수록 좋다",
+        "필요한것": "격자가 있어야 잰다. 도트 1 짜리 그림은 **못 잼**이다.",
+    },
     "color_spread": {
         "세는법": "그림 **여러 장** 사이의 색 개수 차이 `(최대-최소)/최대`.",
         "고치는법": "방향마다 쓰는 색 수를 비슷하게 맞춰라. 한 방향만 단순하면 튄다.",
@@ -209,7 +272,12 @@ def _progress(m: dict) -> list:
         ("luma_spread", cj.MIN_LUMA_SPREAD, "min"),
         ("ground_contrast", cj.MIN_GROUND_CONTRAST, "min"),
         ("color_spread", cj.MAX_COLOR_SPREAD, "max"),
+        # 10-28: 도트 자의 두 칸. `m` 의 맨 위가 아니라 `m["texel"]` 안에 있어서
+        # 꺼내 올려 둔다 — 안 꺼내면 조용히 빠지고, 빠진 칸은 화면에서 안 보인다.
+        ("align", tx.MIN_ALIGN, "min"),
+        ("purity", tx.MIN_PURITY, "min"),
     ]
+    m = {**(m.get("texel") or {}), **m} if isinstance(m.get("texel"), dict) else m
     out = []
     for key, need, kind in 규칙:
         got = m.get(key)

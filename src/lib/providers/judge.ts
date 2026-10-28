@@ -22,6 +22,15 @@ export type CharacterVerdict = {
   ground_contrast?: number;
   in_context?: { verdict: string; edge_contrast?: number; fail?: string[] };
   vs_bible?: { palette_distance?: number; shared_ramp_bands?: number };
+  /* 10-28 도트 크기 자. `blind` 는 **자가 눈이 없는 칸**이고 `not_asked` 는
+     재료를 안 준 칸이다 — 섞으면 "더 달라"가 "너 틀렸다"로 읽힌다. */
+  texel?: {
+    verdict: "PASS" | "FAIL" | "UNDEFINED";
+    texel?: number | null; align?: number | null; purity?: number | null;
+    match?: boolean | null; grids?: string[]; mixed_dots?: number;
+    texel_min?: number | null; texel_max?: number | null;
+    fail?: string[]; undefined?: string[]; blind?: string[]; not_asked?: string[];
+  };
 };
 
 export type PromptVerdict = {
@@ -58,11 +67,12 @@ async function call<T>(path: string, body: unknown, timeoutMs = 120_000): Promis
 /** 한 후보의 방향들을 함께 낸다 — 낱장이 아니라 **세트가 판정 단위**다. */
 export function judgeCharacter(
   images: string[],
-  opts: { bible?: string } = {},
+  opts: { bible?: string; wantTexel?: number | null } = {},
 ): Promise<CharacterVerdict> {
   return call<CharacterVerdict>("/api/judge/character", {
     images,
     bible: opts.bible ?? null,
+    want_texel: opts.wantTexel ?? null,
   });
 }
 
