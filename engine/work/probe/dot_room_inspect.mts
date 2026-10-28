@@ -17,7 +17,7 @@ try {
   p.on("pageerror", (e) => 오류.push("throw: " + String(e).slice(0, 160)));
   await p.setViewport({ width: 390, height: 844, deviceScaleFactor: 2 });
   await p.goto(BASE + "/dot/nabi", { waitUntil: "networkidle2", timeout: 60000 });
-  await new Promise((r) => setTimeout(r, 3000));
+  await new Promise((r) => setTimeout(r, Number(process.argv[2] ?? 3000)));
 
   const 본 = await p.evaluate(() => {
     const bs = [...document.querySelectorAll("button, a, [role=button]")].map((e) => {
