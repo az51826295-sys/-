@@ -96,13 +96,17 @@ export default function DotChat({
   const [shopOpen, setShopOpen] = useState(false);
   /* 10-25: 광고(`watchAd`)를 걷어냈다. 켜 둔 내내 **본 사람이 0명**이었고, 사장님이 광고를
      안 넣기로 정했다. `/api/dot/ad` 는 남겨 두되 화면에서 부르는 자리는 없다. */
-  /** 구독 — 결제 SDK 가 붙기 전엔 서버가 "곧 열려요" 를 돌려준다. */
-  async function buy(sku: string) {
-    const res = await fetch("/api/dot/buy", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ sku }) });
-    const j = (await res.json().catch(() => ({}))) as { error?: string; balance?: Balance };
-    if (!res.ok || !j.balance) { setToast(j.error ?? "결제를 못 열었어요"); return; }
-    setBalance(j.balance); setRemaining(j.balance.remaining); setShopOpen(false); setPayOpen(false);
-    setToast("충전됐어요");
+  /**
+   * 구독 — **결제창으로 보낸다** (10-28).
+   *
+   * 전에는 여기서 바로 `/api/dot/buy` 를 불렀는데, 그 길은 **앱 안의 Play Billing** 용이다.
+   * 구매 토큰을 만드는 코드가 없어서 늘 503 "곧 열려요" 가 돌아왔다 — 즉 **누를 때마다
+   * 아무 일도 안 일어나는 단추**였다. 지금 실제로 돈을 받을 수 있는 길은 웹 결제고,
+   * 그 창은 `/dot/pay` 에 있다. Play 길은 새 APK 가 올라가는 날 여기로 돌아온다.
+   */
+  function buy(_sku: string) {
+    setShopOpen(false); setPayOpen(false);
+    window.location.href = "/dot/pay";
   }
   const [linkOpen, setLinkOpen] = useState(false);
   const [linkEmail, setLinkEmail] = useState("");
