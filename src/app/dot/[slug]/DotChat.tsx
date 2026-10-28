@@ -540,16 +540,34 @@ export default function DotChat({
               횟수 제한 없음(09-30 "3번 풀어") — 크레딧이 한도. 좋아하는 걸 주면 두 배 — 어느 게 좋아하는 건지는 **안 알려 준다**.
               대화하다 알게 되는 것이 재미다(유나가 소금빵 얘기를 먼저 꺼낸다).
             */}
-            <div className="kk-gifts-title">{who.name}에게 선물하기 <small>보유 {balance.credits}크레딧</small></div>
-            <div className="kk-gifts-grid">
-              {GIFTS.map((g) => (
-                <button key={g.key} onClick={() => send(`🎁 ${g.name}`, undefined, g.key)} disabled={busy}>
-                  <span className="kk-gift-name">{g.name}</span>
-                  {/* 값을 **누르기 전에** 보여 준다 — 누르고 나서 "모자라요" 는 속은 기분이 든다. */}
-                  <span className="kk-gift-price">{g.price}크레딧</span>
-                </button>
-              ))}
+            <div className="kk-gifts-title">
+              {lang === "en" ? `Give ${who.name} something` : `${who.name}에게 선물하기`}
+              <small>{lang === "en" ? `${balance.credits} credits` : `보유 ${balance.credits}크레딧`}</small>
             </div>
+            <div className="kk-gifts-grid">
+              {GIFTS.map((g) => {
+                /* 10-28 사장님 "크레딧없는데 선물줄 수 있는거 고쳐".
+                   값은 보여 주면서 **못 사는 것을 누를 수 있게** 뒀었다. 서버가 막아 주긴 했지만
+                   사람에게는 눌리는 단추였고, 눌러 봐야 오류가 떴다. 못 사면 안 내민다. */
+                const 못삼 = balance.credits < g.price;
+                return (
+                  <button key={g.key} onClick={() => send(`🎁 ${g.name}`, undefined, g.key)} disabled={busy || 못삼}
+                    title={못삼 ? (lang === "en" ? `You need ${g.price - balance.credits} more credits` : `${g.price - balance.credits}크레딧 더 필요해요`) : undefined}>
+                    <span className="kk-gift-name">{g.name}</span>
+                    {/* 값을 **누르기 전에** 보여 준다 — 누르고 나서 "모자라요" 는 속은 기분이 든다. */}
+                    <span className="kk-gift-price">{g.price}{lang === "en" ? "" : "크레딧"}</span>
+                  </button>
+                );
+              })}
+            </div>
+            {/* 전부 못 사면 **왜 다 꺼져 있는지** 적는다 — 꺼진 단추만 있으면 고장으로 보인다. */}
+            {GIFTS.every((g) => balance.credits < g.price) && (
+              <div className="kk-gifts-none">
+                {lang === "en"
+                  ? `Not enough credits — the cheapest is ${Math.min(...GIFTS.map((g) => g.price))}.`
+                  : `크레딧이 모자라요 — 제일 싼 선물이 ${Math.min(...GIFTS.map((g) => g.price))}크레딧이에요.`}
+              </div>
+            )}
           </div>
         )}
         <div className="kk-input-row">
@@ -944,6 +962,7 @@ const CSS = `
 .kk-gifts { position:relative; z-index:2; padding:10px 10px 12px; background:var(--bar, #fff); border-top:1px solid rgba(0,0,0,.06); }
 .kk-gifts-title { font-size:13px; font-weight:700; color:var(--ink, #3c434b); margin:0 2px 8px; }
 .kk-gifts-title small { font-weight:400; color:#8a919a; margin-left:6px; }
+.kk-gifts-none { margin:8px 2px 0; font-size:12px; color:#8a919a; }
 .kk-gifts-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:6px; }
 .kk-gifts-grid button { min-height:52px; border:1.5px solid rgba(0,0,0,.14); border-radius:12px; background:#fff; font:inherit; font-size:14px; color:#141414; cursor:pointer; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; }
 .kk-gift-price { font-size:11px; color:#ff5c7a; font-weight:600; }
