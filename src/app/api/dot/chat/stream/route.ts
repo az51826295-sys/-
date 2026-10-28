@@ -19,7 +19,7 @@ export async function POST(request: Request) {
   const userId = await userIdFrom(request);
   if (!userId) return Response.json({ error: "로그인이 필요해요." }, { status: 401 });
 
-  let body: { characterId?: unknown; message?: unknown; postId?: unknown; sticker?: unknown; gift?: unknown };
+  let body: { characterId?: unknown; message?: unknown; postId?: unknown; sticker?: unknown; gift?: unknown; lang?: unknown };
   try { body = (await request.json()) as typeof body; } catch { return Response.json({ error: "요청을 읽지 못했어요." }, { status: 400 }); }
   const characterId = typeof body.characterId === "string" ? body.characterId : "";
   const message = typeof body.message === "string" ? body.message : "";
@@ -36,13 +36,16 @@ export async function POST(request: Request) {
   const userSticker = isUserSticker(body.sticker) ? body.sticker : null;
   // 09-30 선물. 키 확인은 turn 이 한다(없는 선물이면 턴을 돌려주고 거절).
   const gift = typeof body.gift === "string" ? body.gift : null;
+  /* 10-28: 이 기기가 고른 언어. **매 턴 같이 온다** — 로그인 없이 쓰는 앱이라 계정에 못 묶는다.
+     모르는 값은 한국어로 본다(영어를 기본으로 두면 기존 사용자가 어느 날 영어를 보게 된다). */
+  const lang = body.lang === "en" ? "en" as const : "ko" as const;
 
   const enc = new TextEncoder();
   const stream = new ReadableStream<Uint8Array>({
     async start(controller) {
       const send = (o: unknown) => { try { controller.enqueue(enc.encode(JSON.stringify(o) + "\n")); } catch { /* 창을 닫았다 */ } };
       try {
-        const r = await streamDotTurn(createServiceClient(), userId, characterId, message, (text) => send({ type: "delta", text }), { postCaption, userSticker, gift });
+        const r = await streamDotTurn(createServiceClient(), userId, characterId, message, (text) => send({ type: "delta", text }), { postCaption, userSticker, gift, lang });
         if (r.ok) send({ type: "done", ...r });
         else if (r.reason === "limit") send({ type: "error", ...r });
         // 선물 하루 한 번 — 이유를 그대로 전한다("잠깐 문제" 로 뭉치면 사람은 고장인 줄 안다).

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { getLang } from "@/lib/dot/lang";
 import { BUZZ, SFX, buzz, shake } from "@/lib/dot/feel";
 import Link from "next/link";
 import { pushState, enablePush, disablePush, type PushState } from "./push-client";
@@ -269,7 +270,8 @@ export default function DotChat({
       const res = await fetch("/api/dot/chat/stream", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ characterId: who.id, message, postId: replyTo?.id ?? null, sticker: stickerKey ?? null, gift: giftKey ?? null }),
+        /* 10-28: 이 기기가 고른 언어를 **매 턴** 같이 보낸다. 기기에만 남는 값이라 서버가 기억하지 못한다. */
+        body: JSON.stringify({ characterId: who.id, message, postId: replyTo?.id ?? null, sticker: stickerKey ?? null, gift: giftKey ?? null, lang: getLang() }),
       });
       setReplyTo(null);
       if (!res.ok || !res.body) {

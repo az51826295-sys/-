@@ -25,6 +25,7 @@ import {
 } from "./bond";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { shapeRule, tidyReply } from "./bubbles";
+import { enLanguageBlock, enName, enStageVoice } from "./enVoice";
 import type { ChatCompletionCreateParamsStreaming } from "openai/resources/chat/completions";
 
 /**
@@ -80,7 +81,7 @@ export type TurnResult =
   | { ok: false; reason: "limit"; remaining: 0; resetsAt: string }
   | { ok: false; reason: "no_character" | "failed" | "gift_limit" | "no_credits"; message: string };
 
-type Character = { id: string; name: string; persona: string; speech: string; sprites: Record<string, string>; formal_start?: boolean; default_emotion?: string; voice_ladder?: string | null };
+type Character = { id: string; slug: string; name: string; persona: string; speech: string; sprites: Record<string, string>; formal_start?: boolean; default_emotion?: string; voice_ladder?: string | null };
 
 /** 모델을 부르기 **전까지** 한 것. 실패하면 `giveBack` 으로 턴을 돌려준다. */
 export type Prepared = {
@@ -106,6 +107,13 @@ export type TurnOpts = {
   postCaption?: string | null;
   /** 사람이 보낸 스티커 키(90회차). 있으면 사람 말은 그 뜻으로 건넨다. */ userSticker?: string | null;
   /** 09-30 선물 키(bond.ts GIFTS). 스티커처럼 **말 대신 건네는 것**이라 같은 길을 탄다. */ gift?: string | null;
+  /**
+   * 10-28 사장님 "영어로". 이 사람이 고른 언어. 기본은 한국어.
+   *
+   * 기기에만 남는 값이라(lang.ts) **매 턴 같이 온다.** 계정에 묶지 않는 것은 로그인 없이
+   * 쓰는 앱이기 때문이고, 그래서 서버는 이걸 기억하지 않는다.
+   */
+  lang?: "ko" | "en";
 };
 
 export async function prepareTurn(db: SupabaseClient, userId: string, characterId: string, text: string, opts: TurnOpts = {}): Promise<Prepared | Exclude<TurnResult, { ok: true }>> {
@@ -120,7 +128,7 @@ export async function prepareTurn(db: SupabaseClient, userId: string, characterI
   // 턴 세기가 먼저여야 하는 것은 **모델 호출**보다 먼저라는 뜻이지, 사이를 읽는 것보다 먼저일
   // 필요는 없다 — 한도에 걸리면 읽은 것을 버리면 된다.
   const [chRes, takeRes, bondRes, recentRes, countRes, entRes] = await Promise.all([
-    db.from("dot_characters").select("id, name, persona, speech, sprites, formal_start, default_emotion, voice_ladder").eq("id", characterId).maybeSingle(),
+    db.from("dot_characters").select("id, slug, name, persona, speech, sprites, formal_start, default_emotion, voice_ladder").eq("id", characterId).maybeSingle(),
     // 09-30 사장님 "선물은 돈내고 하는 거야" — 선물은 **크레딧**으로 산다. 대화 턴까지 가져가면 두 번 받는다.
     opts.gift ? Promise.resolve({ data: 1, error: null }) : db.rpc("dot_take_turn", { p_user: userId, p_day: day, p_limit: FREE_TURNS_PER_DAY }),
     db.from("dot_bonds").select("points, stage, streak_days, last_talked_on, memo, mode, last_gift_on").eq("user_id", userId).eq("character_id", characterId).maybeSingle(),
@@ -196,13 +204,19 @@ export async function prepareTurn(db: SupabaseClient, userId: string, characterI
     const drop = Math.floor(Math.max(0, total - keep) / HISTORY_BLOCK) * HISTORY_BLOCK;   // 앞에서 버리는 줄 수 — 8 단위로만 바뀐다
     const history = fetched.slice(Math.max(0, drop - Math.max(0, total - fetched.length)));
 
+    /* 10-28: 영어로 말하는 판. 인물 설정은 한국어 그대로 두고 **말투 사다리와 언어 지시만** 바꾼다.
+       사다리를 안 바꾸면 1단계와 5단계가 같은 영어가 나와서, 파는 것(친해지면 말투가 바뀐다)이 사라진다. */
+    const 영어 = opts.lang === "en";
+    const 부르는이름 = 영어 ? enName(character.slug, character.name) : character.name;
+    const 사다리 = toVoiceLadder(character.voice_ladder, character.formal_start);
+
     const system = [
       `너는 "${character.name}" 다. 사람과 일대일로 이야기한다.`,
       "", "## 너는 누구인가", character.persona, character.speech ? `말투: ${character.speech}` : "",
       // 소꿉친구(린)처럼 **처음부터 반말**인 인물은 단계 말투를 4단계부터 시작한다 — 1단계 존댓말 규칙이 인물 설정을 이기면 안 된다.
       // 09-30: 반말 캐릭터를 `Math.max(stage, 4)` 로 올려 두던 꼼수를 뺐다 — 그 때문에 린은 단계가 몇이든
       // 같은 말투였다. 캐릭터마다 자기 사다리를 탄다(bond.ts stageVoiceFor).
-      "", "## 지금 이 사람과의 사이", `${prev.stage}단계. ${stageVoiceFor(toVoiceLadder(character.voice_ladder, character.formal_start), prev.stage)}`,
+      "", "## 지금 이 사람과의 사이", `${prev.stage}단계. ${영어 ? enStageVoice(사다리, prev.stage) : stageVoiceFor(사다리, prev.stage)}`,
       memo.length ? `\n이 사람에 대해 네가 아는 것:\n${memo.map((m) => `- ${m}`).join("\n")}` : "",
       "", modeVoice(mode),
       // "지금 몇 시" 는 여기 두지 않는다 — 시간대가 바뀔 때마다 앞부분 캐시가 깨진다(79회차 캐시 45%). 입력 맨 끝에 붙인다.
@@ -229,6 +243,8 @@ export async function prepareTurn(db: SupabaseClient, userId: string, characterI
       `- **\`emotion\` 을 첫 번째 칸에** — 먼저 표정을 정하고 그 표정으로 말한다. 반드시 이 중 하나: ${EMOTIONS.join(", ")}. neutral 은 여섯 번에 한 번꼴이면 많다.`,
       "- `reply` 그 표정으로 하는 말. 화면이 이 칸을 글자 나오는 대로 보여 준다.",
       "- `remember` 이 사람이 **방금 말한** 것 중 기억해 둘 사실 한 줄(예: \"고양이를 키운다\"). 없으면 빈 문자열.",
+      // **맨 끝**이어야 한다 — 모델은 뒤에 온 지시를 더 따른다. 위 한국어 규칙 사이에 끼우면 덮인다.
+      영어 ? enLanguageBlock(부르는이름) : "",
     ].filter(Boolean).join("\n");
 
     // 피드 답장이면 사람 말 앞에 그 게시물을 붙인다 — 모델은 "내 게시물을 보고 하는 말" 로 받는다.
@@ -238,7 +254,11 @@ export async function prepareTurn(db: SupabaseClient, userId: string, characterI
       // 선물은 **네가 좋아하는 것인지**까지 모델에게 알린다 — 좋아하는 걸 받았을 때와 아닐 때 반응이 달라야 산다.
       ? `(사람이 너에게 ${선물.tell}을(를) 선물했다.${선물점!.liked ? " 네가 정말 좋아하는 거다." : ""} 네 말투 그대로, 받은 기분을 짧게 말한다. 고맙다는 말만 하지 말고 네 성격대로.)`
       : opts.userSticker && USER_STICKERS[opts.userSticker] ? `(${USER_STICKERS[opts.userSticker].tell}. 말 없이 스티커만 보냈다 — 그 기분에 맞춰 짧게 받아 준다)` : message;
-    const input = [...history.map((h) => `${h.role === "user" ? "사람" : character.name}: ${h.content}`), `${quoted}사람: ${said}`,
+    /* 지난 대화의 이름표. 영어 판에서 한국어 이름표를 그대로 두면 모델이 한국어로 되돌아간다 —
+       바로 앞에 놓인 글이 제일 세게 끈다. */
+    const 나표 = 영어 ? 부르는이름 : character.name;
+    const 너표 = 영어 ? "Person" : "사람";
+    const input = [...history.map((h) => `${h.role === "user" ? 너표 : 나표}: ${h.content}`), `${quoted}${너표}: ${said}`,
       // 94회차: 시간 힌트는 방금 한 말을 보고 정한다 — 새벽 1시에 네 답 연속 새벽 타령 + "밥은 먹었어" 가 나왔다.
       timeHint(new Date(), history.filter((h) => h.role !== "user").slice(-4).map((h) => h.content))].join("\n");
     return { character, day, used, prev, memo, system, input, message, t0, giveBack, sinceSticker, userSticker: opts.userSticker && USER_STICKERS[opts.userSticker] ? opts.userSticker : null,

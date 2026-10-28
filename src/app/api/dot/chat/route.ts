@@ -15,7 +15,7 @@ export async function POST(request: Request) {
   const userId = await userIdFrom(request);
   if (!userId) return Response.json({ error: "로그인이 필요해요." }, { status: 401 });
 
-  let body: { characterId?: unknown; message?: unknown; gift?: unknown };
+  let body: { characterId?: unknown; message?: unknown; gift?: unknown; lang?: unknown };
   try {
     body = (await request.json()) as typeof body;
   } catch {
@@ -32,7 +32,9 @@ export async function POST(request: Request) {
 
   // 09-30 선물 — 안드로이드 앱(Bearer)도 같은 길로 선물한다.
   const gift = typeof body.gift === "string" ? body.gift : null;
-  const result = await runDotTurn(createServiceClient(), userId, characterId, message, { gift });
+  /* 10-28: 흘려보내는 길과 **같은 읽기**를 쓴다. 한쪽만 영어를 알면 어느 길로 갔느냐에 따라 언어가 바뀐다. */
+  const lang = body.lang === "en" ? "en" as const : "ko" as const;
+  const result = await runDotTurn(createServiceClient(), userId, characterId, message, { gift, lang });
   if (result.ok) return Response.json(result);
   if (result.reason === "limit") return Response.json(result, { status: 429 });
   if (result.reason === "no_character") return Response.json(result, { status: 404 });
