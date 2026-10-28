@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { BUZZ, SFX, buzz, shake } from "@/lib/dot/feel";
 import Link from "next/link";
 import { pushState, enablePush, disablePush, type PushState } from "./push-client";
 import { 물어볼까 } from "@/lib/dot/pushAsk";
@@ -212,6 +213,9 @@ export default function DotChat({
   }, [toast]);
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  /* 10-28 손맛 */
+  const rootRef = useRef<HTMLDivElement>(null);
+  const 마지막타자음 = useRef(0);
   const [stickerOpen, setStickerOpen] = useState(false);
   /** 09-30 선물 판. 스티커 판과 동시에 안 열린다. */
   const [giftOpen, setGiftOpen] = useState(false);
@@ -252,6 +256,9 @@ export default function DotChat({
     setLines((l) => [...l, { role: "user", content: message, emotion: null, sticker: stickerKey ? `user:${stickerKey}` : null, at: new Date().toISOString() }]);
     setBusy(true);
     setLive("");
+    /* 10-28 손맛: 보낼 때 소리·진동. 말풍선이 뜨는 그 순간에 같이 나야 "보냈다" 로 느껴진다. */
+    SFX.send();
+    buzz(BUZZ.send);
     try {
       // 09-10 사장님 "왜 이렇게 느려?": 답 한 통 2~4초 동안 점 세 개만 보였다.
       // 이제 글자가 나오는 대로 받는다 — 첫 글자가 0.5초쯤 뜨면 같은 3초도 기다림이 아니다.
@@ -273,13 +280,22 @@ export default function DotChat({
         if (!line.trim()) return;
         let ev: { type: string; text?: string; reply?: string; emotion?: string; sticker?: string | null; bond?: Bond & { reasons?: string[] }; remaining?: number; reason?: string; message?: string; error?: string };
         try { ev = JSON.parse(line); } catch { return; }
-        if (ev.type === "delta" && ev.text) { acc += ev.text; setLive(acc); }
+        if (ev.type === "delta" && ev.text) {
+          acc += ev.text;
+          setLive(acc);
+          /* 글자마다 내면 귀가 아프다 — 60ms 에 한 번만. 타자기 결이 그 정도다. */
+          const 지금 = Date.now();
+          if (지금 - 마지막타자음.current > 60) { 마지막타자음.current = 지금; SFX.type(); }
+        }
         else if (ev.type === "done") {
           finished = true;
           setLive(null);
           setLines((l) => [...l, { role: "character", content: ev.reply ?? acc, emotion: ev.emotion ?? null, at: new Date().toISOString() },
             ...(ev.sticker ? [{ role: "character", content: "", emotion: ev.emotion ?? null, sticker: ev.sticker, at: new Date().toISOString() }] : [])]);
-          try { navigator.vibrate?.(12); } catch { /* 지원 안 하면 조용히 */ }
+          /* 10-28 손맛: 받을 때. 집착·멘헤라 감정이면 소리도 진동도 화면도 한 칸 더 간다. */
+          const 센감정 = ["집착", "불안", "질투", "분노", "obsession", "jealous", "angry"].includes(String(ev.emotion ?? ""));
+          if (센감정) { SFX.menhera(); buzz(BUZZ.menhera); shake(rootRef.current, 7); }
+          else { SFX.recv(); buzz(BUZZ.heart); }
           if (ev.bond) setBond((b) => ({ ...b, ...ev.bond }));  // 턴 결과엔 mode 가 없다 — 덮어쓰지 말고 합친다
           if (typeof ev.remaining === "number") setRemaining(ev.remaining);
           if (ev.bond?.reasons?.length) setToast(ev.bond.reasons.join("  "));
@@ -334,7 +350,7 @@ export default function DotChat({
   const clock = (iso?: string) => (mounted && iso ? hhmm(iso) : "");
 
   return (
-    <div className="kk-root">
+    <div className="kk-root" ref={rootRef}>
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
       <style>{CSS}</style>
 

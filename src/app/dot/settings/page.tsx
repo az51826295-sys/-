@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import SettingsActions from "./SettingsActions";
+import Preferences from "./Preferences";
 
 /**
  * 설정 (95회차 09-13) — 사장님 "여기(방 메뉴)에 몰아놓지 말고 분산시켜".
@@ -27,6 +28,10 @@ export default async function DotSettings() {
           <div className="st-group">계정</div>
           <div className="st-row"><span>{email ?? "로그인 안 됨"}</span><small>로그인한 계정 · 폰을 바꿔도 이 계정으로 이어져요</small></div>
           <SettingsActions />
+
+          {/* 10-28: 언어·손맛. 로그인 없이 쓰는 앱이라 이 기기에 남는다. */}
+          <div className="st-group">앱</div>
+          <Preferences />
 
           <div className="st-group">안내</div>
           <Link className="st-row" href="/dot/privacy">개인정보 처리방침</Link>
