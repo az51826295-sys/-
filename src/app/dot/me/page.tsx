@@ -23,7 +23,8 @@ export const viewport = {
 export default async function DotMe() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/login");
+  /* 로그인 화면을 치웠으므로 설정으로 보낸다 — 거기가 나중에 '계정 연결' 이 들어갈 자리다(10-28). */
+  if (!user) redirect("/dot/settings");
   const v = await mineView(user.id);
   const 이름 = (user.email ?? "나").split("@")[0];
 

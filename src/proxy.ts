@@ -75,6 +75,29 @@ export async function proxy(request: NextRequest) {
    * 로그인은 앞을 막는 문이 아니라 **설정 안의 한 줄**로 내린다.
    */
   const 로그인필요 = false;
+
+  /*
+   * **로그인 화면 자체를 치운다** (10-28 사장님: "로그인 창 자체를 없애죠").
+   *
+   * 문만 열면 화면은 남아서, 설정이나 옛 링크로 들어가면 여전히 죽은 단추를 본다.
+   * 두근도트에서는 `/login`·`/signup` 을 아예 앱 안으로 돌려보낸다.
+   * 로그인은 나중에 **설정 안의 한 줄**로 다시 만든다.
+   *
+   * `?force=1` 은 남겨 둔다 — 사장님과 내가 들어갈 뒷문이다. 화면에 안 보이니
+   * 사용자는 만날 일이 없고, 구글 주소가 등록되면 이 돌려보내기만 지우면 된다.
+   * 되돌릴 수 없게 지우지 않는다.
+   *
+   * `/auth/*`(구글 돌아오는 자리·메일 링크)는 **건드리지 않는다** — 막으면
+   * 로그인이 영영 안 끝난다. 09-13 에 `/auth` 가 빠져서 같은 사고가 났다.
+   */
+  const 로그인화면 = path === "/login" || path === "/signup";
+  if (PRODUCT === "dot" && 로그인화면 && request.nextUrl.searchParams.get("force") !== "1") {
+    const url = request.nextUrl.clone();
+    url.pathname = "/dot";
+    url.search = "";
+    return NextResponse.redirect(url);
+  }
+
   const res = await updateSession(request, { requireLogin: 로그인필요 && isDotPage && PRODUCT !== "rookery" });
 
   // 100회차: 안드로이드 앱(TWA)으로 들어왔는지 표시한다. 구글 플레이 정책상 앱 안에서는 디지털 상품을 우리 결제로 못 판다 →
