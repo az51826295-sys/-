@@ -30,8 +30,17 @@ import { SKUS } from "./money";
 export const dotProductId = (env: Record<string, string | undefined> = process.env) =>
   env.DOT_DODO_PRODUCT_MENHERA ?? null;
 
+/**
+ * **웹훅 열쇠도 있어야 연다.**
+ *
+ * 10-28 에 내가 만든 구멍: 처음엔 API 열쇠와 상품만 봤다. 그러면 웹훅 비밀이 없어도
+ * 단추가 살아나는데, 웹훅 길은 서명이 안 맞아 **전부 401 로 버린다** — 즉 사람은 돈을
+ * 내고 구독은 안 켜진다. 결제에서 제일 나쁜 상태다.
+ *
+ * 받는 쪽이 준비되기 전에는 **파는 쪽을 열지 않는다.**
+ */
 export const 결제켜짐 = (env: Record<string, string | undefined> = process.env) =>
-  Boolean(env.DOT_DODO_API_KEY && dotProductId(env));
+  Boolean(env.DOT_DODO_API_KEY && dotProductId(env) && env.DOT_DODO_WEBHOOK_SECRET);
 
 /** 다음 결제일을 모르면 이만큼 준다. 한 달 + 이틀 — 결제가 하루 늦어도 끊기지 않게. */
 export const FALLBACK_DAYS = 32;
@@ -50,6 +59,8 @@ export function payState(
   const 막는것: string[] = [];
   if (!env.DOT_DODO_API_KEY) 막는것.push("결제 열쇠가 아직 없어요");
   if (!dotProductId(env)) 막는것.push("상품이 아직 등록되지 않았어요");
+  /* 돈을 받고도 못 켜는 상태를 막는다 — 위 `결제켜짐` 주석 참고. */
+  if (!env.DOT_DODO_WEBHOOK_SECRET) 막는것.push("결제 확인 통로가 아직 안 열렸어요");
   if (!o.signedIn) 막는것.push("계정이 있어야 결제한 걸 폰을 바꿔도 이어 쓸 수 있어요");
   const s = SKUS.menhera_sub;
   return {

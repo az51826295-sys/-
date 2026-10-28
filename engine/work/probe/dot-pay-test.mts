@@ -143,6 +143,11 @@ const 결제 = (over: Record<string, unknown> = {}) => JSON.stringify({
     !열쇠없음.열림 && 열쇠없음.막는것.some((m) => m.includes("열쇠")), 열쇠없음.막는것);
   const 상품없음 = pay.payState({ signedIn: true }, { ...ENV, DOT_DODO_PRODUCT_MENHERA: undefined });
   재기("상품이 없으면 막는다", !상품없음.열림);
+  /* **돈만 받고 안 켜 주는 상태를 막는 칸.** 웹훅 비밀이 없으면 받는 쪽이 전부 401 이다.
+     10-28 에 내가 만든 구멍이라 여기 자를 박아 둔다. */
+  const 웹훅없음 = pay.payState({ signedIn: true }, { ...ENV, DOT_DODO_WEBHOOK_SECRET: undefined });
+  재기("받는 쪽(웹훅)이 없으면 파는 쪽을 안 연다",
+    !웹훅없음.열림 && 웹훅없음.막는것.some((m) => m.includes("확인 통로")), 웹훅없음.막는것);
   재기("값은 상품표에서 온다(화면에 박지 않는다)", 다있음.상품.price === "월 4,900원", 다있음.상품);
 }
 
