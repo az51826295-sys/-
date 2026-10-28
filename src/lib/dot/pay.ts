@@ -14,9 +14,21 @@ import { SKUS } from "./money";
  * 열쇠가 풀리는 날 켜고, 그때까지는 이 길로 받는다. **두 길은 같은 `dot_grant` 로 모인다** —
  * 주는 자리가 둘이면 언젠가 서로 다른 날짜를 준다.
  *
- * 받는 곳은 로키가 쓰는 **Dodo Payments** 다(판매 대행사 — 사업자등록 없이 받고 세금·영수증을
- * Dodo 가 낸다. Paddle 이 여덟 번 거절한 뒤 09-18 에 승인됐다). 서명 검사·HMAC 은
- * `lib/billing/dodo.ts` 것을 **그대로 가져다 쓴다** — 암호 코드를 두 벌 두면 한쪽만 고쳐진다.
+ * ## 받는 곳이 아직 없다 — **Dodo 로는 못 받는다**
+ *
+ * 10-28 에 내가 Dodo 에 붙여 놨다가 사장님이 바로잡으셨다. **09-18 에 내가 직접 읽고
+ * 적어 둔 것**이 있다: Dodo 판매자 정책은 *"AI-generated relationship companions"* 를
+ * 금지하고, 그때 "두근도트는 Dodo 로 못 받는다(계정에 넣지 말 것)" 라고 써 뒀다.
+ * 그런데 10-16 자 문서가 그 줄 없이 "Dodo 로 붙일 수 있다" 고만 적어 뒀고, 오늘 그걸
+ * 읽고 움직였다. 금지된 상품을 **심사 중인 계정에** 만들어 둔 셈이라 지웠다.
+ *
+ * 그래서 이 파일의 Dodo 부분은 **잠들어 있다.** 지우지 않는 이유는 받는 곳이 바뀌어도
+ * 바뀌는 것은 `createDotCheckout`·`planDotGrant` 둘뿐이기 때문이다 — 결제창·계정 연결·
+ * 주는 자리(`dot_grant`)·자는 그대로 쓴다. 서명 검사·HMAC 은 `lib/billing/dodo.ts` 것을
+ * 그대로 가져다 쓴다(암호 코드를 두 벌 두면 한쪽만 고쳐진다).
+ *
+ * **다음 대행사를 고르기 전에 그쪽 금지 업종 목록부터 읽는다.** 그게 09-18 에 한 일이고,
+ * 오늘 안 한 일이다.
  *
  * ## 이 파일이 안 하는 것
  *
@@ -57,10 +69,14 @@ export function payState(
   env: Record<string, string | undefined> = process.env,
 ): 결제상태 {
   const 막는것: string[] = [];
-  if (!env.DOT_DODO_API_KEY) 막는것.push("결제 열쇠가 아직 없어요");
-  if (!dotProductId(env)) 막는것.push("상품이 아직 등록되지 않았어요");
-  /* 돈을 받고도 못 켜는 상태를 막는다 — 위 `결제켜짐` 주석 참고. */
-  if (!env.DOT_DODO_WEBHOOK_SECRET) 막는것.push("결제 확인 통로가 아직 안 열렸어요");
+  /* **왜 못 사는지를 사실대로 적는다.** "열쇠가 없어요" 는 곧 생긴다는 뜻으로 읽히는데,
+     지금은 받아 줄 대행사 자체가 없다. 곧 될 것처럼 적으면 사람이 기다린다. */
+  if (!env.DOT_DODO_API_KEY || !dotProductId(env)) {
+    막는것.push("아직 결제를 받아 줄 곳을 못 구했어요");
+  } else if (!env.DOT_DODO_WEBHOOK_SECRET) {
+    /* 돈을 받고도 못 켜는 상태를 막는다 — 위 `결제켜짐` 주석 참고. */
+    막는것.push("결제 확인 통로가 아직 안 열렸어요");
+  }
   if (!o.signedIn) 막는것.push("계정이 있어야 결제한 걸 폰을 바꿔도 이어 쓸 수 있어요");
   const s = SKUS.menhera_sub;
   return {

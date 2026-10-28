@@ -139,8 +139,11 @@ const 결제 = (over: Record<string, unknown> = {}) => JSON.stringify({
   재기("계정이 없으면 막고 그 까닭을 적는다",
     !로그인없음.열림 && 로그인없음.막는것.some((m) => m.includes("계정")), 로그인없음.막는것);
   const 열쇠없음 = pay.payState({ signedIn: true }, { ...ENV, DOT_DODO_API_KEY: undefined });
-  재기("열쇠가 없으면 막고 그 까닭을 적는다",
-    !열쇠없음.열림 && 열쇠없음.막는것.some((m) => m.includes("열쇠")), 열쇠없음.막는것);
+  /* 10-28: 원래 "열쇠가 없어요" 를 기대했는데, 그 말은 **곧 생긴다**는 뜻으로 읽힌다.
+     지금은 받아 줄 대행사 자체가 없다(Dodo 는 AI 연애 상대를 금지한다). 사실대로 적게 바꿨고
+     자도 같이 바꾼다 — 자가 옛 문구를 지키면 거짓말을 지키는 자가 된다. */
+  재기("받아 줄 곳이 없으면 그렇게 적는다",
+    !열쇠없음.열림 && 열쇠없음.막는것.some((m) => m.includes("받아 줄 곳")), 열쇠없음.막는것);
   const 상품없음 = pay.payState({ signedIn: true }, { ...ENV, DOT_DODO_PRODUCT_MENHERA: undefined });
   재기("상품이 없으면 막는다", !상품없음.열림);
   /* **돈만 받고 안 켜 주는 상태를 막는 칸.** 웹훅 비밀이 없으면 받는 쪽이 전부 401 이다.
