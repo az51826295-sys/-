@@ -2,6 +2,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import FollowButton from "../FollowButton";
+import { t, type Lang } from "@/lib/dot/lang";
 
 /**
  * 검색 — 인스타 돋보기 탭의 그 결 (227회차 09-29).
@@ -28,7 +29,7 @@ export type SearchItem = {
 /** 띄어쓰기·대소문자를 무시하고 견준다. "유 나" 로 쳐도 유나가 나오게. */
 const 납작 = (s: string) => s.toLowerCase().replace(/\s+/g, "");
 
-export default function SearchList({ items }: { items: SearchItem[] }) {
+export default function SearchList({ items, lang = "ko" }: { items: SearchItem[]; lang?: Lang }) {
   const [q, setQ] = useState("");
   const 찾는중 = q.trim().length > 0;
 
@@ -52,18 +53,18 @@ export default function SearchList({ items }: { items: SearchItem[] }) {
           className="sc-input"
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          placeholder="이름이나 분위기로 찾기"
-          aria-label="캐릭터 검색"
+          placeholder={t("search_placeholder", lang)}
+          aria-label={t("search_aria", lang)}
           autoComplete="off"
           enterKeyHint="search"
         />
-        {q && <button className="sc-x" onClick={() => setQ("")} aria-label="지우기">×</button>}
+        {q && <button className="sc-x" onClick={() => setQ("")} aria-label={t("search_clear", lang)}>×</button>}
       </div>
 
       {결과.length === 0 && (
         <div className="sc-none">
-          <b>&ldquo;{q}&rdquo;</b> 로는 아무도 안 나왔어요.
-          <div className="sc-none-sub">이름 말고 &ldquo;조용한&rdquo;, &ldquo;선배&rdquo; 같은 말로도 찾아보세요.</div>
+          {lang === "en" ? <>No one matches <b>&ldquo;{q}&rdquo;</b>.</> : <><b>&ldquo;{q}&rdquo;</b> 로는 아무도 안 나왔어요.</>}
+          <div className="sc-none-sub">{t("search_none_sub", lang)}</div>
         </div>
       )}
 
@@ -74,7 +75,7 @@ export default function SearchList({ items }: { items: SearchItem[] }) {
               {/* eslint-disable-next-line @next/next/no-img-element */}
               {c.avatar ? <img src={c.avatar} alt="" /> : <span className="sc-tile-none" />}
               <span className="sc-tile-name">{c.name}</span>
-              {c.following && <span className="sc-tile-on">추가됨</span>}
+              {c.following && <span className="sc-tile-on">{t("search_added", lang)}</span>}
             </Link>
           ))}
         </div>
@@ -90,7 +91,7 @@ export default function SearchList({ items }: { items: SearchItem[] }) {
                   <span className="sc-tag">{c.tagline}</span>
                 </span>
               </Link>
-              <FollowButton characterId={c.id} following={c.following} name={c.name} size="sm" words={["추가", "추가됨"]} />
+              <FollowButton characterId={c.id} following={c.following} name={c.name} size="sm" words={[t("search_add", lang), t("search_added", lang)]} />
             </li>
           ))}
         </ul>

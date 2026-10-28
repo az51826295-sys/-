@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import DotTabs from "../DotTabs";
+import { t, type Lang } from "@/lib/dot/lang";
+import { langFromCookie } from "@/lib/dot/langServer";
 import Uploader from "./Uploader";
 import { mineView, 맞팔_하트 } from "@/lib/dot/mine";
 import MeSignIn from "./MeSignIn";
@@ -31,7 +33,8 @@ export default async function DotMe() {
    * 여기 올 이유를 적고, 계정을 만들 길을 같이 준다 — 계정이 있어야 폰을 바꿔도
    * 이어지고, 결제도 그걸로 이어진다.
    */
-  if (!user) return <MeEmpty />;
+  const lang = await langFromCookie();
+  if (!user) return <MeEmpty lang={lang} />;
   const v = await mineView(user.id);
   const 이름 = (user.email ?? "나").split("@")[0];
 
@@ -42,22 +45,22 @@ export default async function DotMe() {
       <div className="me-phone">
         <header className="me-head">
           <div className="me-title">{이름}</div>
-          <Link href="/dot/settings" className="me-gear" aria-label="설정">
+          <Link href="/dot/settings" className="me-gear" aria-label={t("settings_aria", lang)}>
             <svg width="24" height="24" viewBox="0 0 8 8" shapeRendering="crispEdges" aria-hidden><path d="M3 0h2v1h1v1h1v2h-1v1h-1v1h-2v-1h-1v-1h-1v-2h1v-1h1z" fill="currentColor" fillRule="evenodd" /></svg>
           </Link>
         </header>
 
         <div className="me-body">
           <div className="me-nums">
-            <div><b>{v.posts.length}</b><span>게시물</span></div>
-            <div><b>{v.followers.length}</b><span>팔로워</span></div>
-            <div><b>{v.following}</b><span>팔로잉</span></div>
-            <div><b>{v.hearts}</b><span>받은 하트</span></div>
+            <div><b>{v.posts.length}</b><span>{t("me_posts", lang)}</span></div>
+            <div><b>{v.followers.length}</b><span>{t("me_followers", lang)}</span></div>
+            <div><b>{v.following}</b><span>{t("me_following", lang)}</span></div>
+            <div><b>{v.hearts}</b><span>{t("me_hearts", lang)}</span></div>
           </div>
 
           {v.followers.length > 0 && (
             <div className="me-back">
-              <div className="me-sub">맞팔해 준 캐릭터</div>
+              <div className="me-sub">{t("me_mutual", lang)}</div>
               <div className="me-chips">
                 {v.followers.map((c) => (
                   <Link key={c.slug} href={`/dot/${c.slug}`} className="me-chip">
@@ -72,7 +75,7 @@ export default async function DotMe() {
 
           {v.progress.length > 0 && (
             <div className="me-back">
-              <div className="me-sub">맞팔까지</div>
+              <div className="me-sub">{t("me_until_mutual", lang)}</div>
               {v.progress.map((c) => (
                 <div key={c.slug} className="me-prog">
                   <span className="me-prog-name">{c.name}</span>
@@ -87,8 +90,10 @@ export default async function DotMe() {
 
           {v.posts.length === 0 ? (
             <div className="me-empty">
-              아직 올린 게 없어요.
-              <div className="me-empty-sub">사진을 올리면 추가한 캐릭터들이 보고 하트를 줘요.<br />한 캐릭터에게 하트 {맞팔_하트}개를 받으면 맞팔해 줍니다.</div>
+              {t("me_empty", lang)}
+              <div className="me-empty-sub">{lang === "en"
+                ? `Post a photo and the characters you added will see it and leave hearts. ${맞팔_하트} hearts from one character and they follow you back.`
+                : <>사진을 올리면 추가한 캐릭터들이 보고 하트를 줘요.<br />한 캐릭터에게 하트 {맞팔_하트}개를 받으면 맞팔해 줍니다.</>}</div>
             </div>
           ) : (
             <div className="me-grid">
@@ -149,28 +154,28 @@ const CSS = `
  * 계정이 없을 때의 내 창. **숫자를 0 으로 보여 주지 않는다** — 0 은 "없다" 로 읽히는데
  * 사실은 "아직 안 모은다" 다. 무엇이 여기 모이는지 적고, 만들 길을 하나 준다.
  */
-function MeEmpty() {
+function MeEmpty({ lang }: { lang: Lang }) {
   return (
     <div className="me-root">
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
       <style>{CSS}</style>
       <div className="me-phone">
         <header className="me-head">
-          <div className="me-title">내 창</div>
-          <Link href="/dot/settings" className="me-gear" aria-label="설정">
+          <div className="me-title">{t("tab_me", lang)}</div>
+          <Link href="/dot/settings" className="me-gear" aria-label={t("settings_aria", lang)}>
             <svg width="24" height="24" viewBox="0 0 8 8" shapeRendering="crispEdges" aria-hidden><path d="M3 0h2v1h1v1h1v2h-1v1h-1v1h-2v-1h-1v-1h-1v-2h1v-1h1z" fill="currentColor" fillRule="evenodd" /></svg>
           </Link>
         </header>
         <div className="me-body">
           <div className="me-empty">
-            <b>계정을 만들면 여기에 모여요</b>
+            <b>{t("me_signup_title", lang)}</b>
             <ul>
-              <li>내가 올린 게시물</li>
-              <li>맞팔해 준 캐릭터와 받은 하트</li>
-              <li>맞팔까지 얼마나 남았는지</li>
+              <li>{t("me_signup_1", lang)}</li>
+              <li>{t("me_signup_2", lang)}</li>
+              <li>{t("me_signup_3", lang)}</li>
             </ul>
-            <small>지금 대화와 친밀도는 <b>이 기기에만</b> 있어요. 폰을 바꾸면 안 따라와요.</small>
-            <MeSignIn />
+            <small>{t("st_device_sub", lang)}</small>
+            <MeSignIn lang={lang} />
           </div>
         </div>
         <DotTabs on="me" />

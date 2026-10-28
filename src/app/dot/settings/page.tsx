@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { t } from "@/lib/dot/lang";
+import { langFromCookie } from "@/lib/dot/langServer";
 import { createClient } from "@/lib/supabase/server";
 import SettingsActions from "./SettingsActions";
 import Preferences from "./Preferences";
@@ -12,6 +14,7 @@ export const metadata = { title: "두근도트 — 설정" };
 export const viewport = { width: "device-width", viewportFit: "cover" as const, initialScale: 1, maximumScale: 1, userScalable: false, themeColor: "#a5bccd" };
 
 export default async function DotSettings() {
+  const lang = await langFromCookie();
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   const email = user?.email ?? null;
@@ -21,25 +24,25 @@ export default async function DotSettings() {
       <style>{CSS}</style>
       <div className="pk-phone">
         <header className="pk-head st-head">
-          <Link href="/dot/pick" className="st-back" aria-label="친구로">‹</Link>
-          <div className="pk-title">설정</div>
+          <Link href="/dot/pick" className="st-back" aria-label={t("back", lang)}>‹</Link>
+          <div className="pk-title">{t("settings_aria", lang)}</div>
         </header>
         <div className="st-list">
-          <div className="st-group">계정</div>
+          <div className="st-group">{t("st_account", lang)}</div>
           {/* 10-28: 로그인 화면을 없앴으니 "로그인 안 됨" 은 **고칠 수 없는 상태**다.
               고칠 수 없는 것을 문제처럼 적지 않는다 — 지금 참인 것만 적는다. */}
-          <div className="st-row"><span>{email ?? "이 기기로 쓰는 중"}</span><small>{email ? "로그인한 계정 · 폰을 바꿔도 이 계정으로 이어져요" : "대화와 친밀도가 이 기기에 저장돼요 · 폰을 바꾸면 안 따라와요"}</small></div>
-          <SettingsActions signedIn={Boolean(email)} />
+          <div className="st-row"><span>{email ?? t("st_device", lang)}</span><small>{email ? t("st_account_sub", lang) : t("st_device_sub", lang)}</small></div>
+          <SettingsActions signedIn={Boolean(email)} lang={lang} />
 
           {/* 10-28: 언어·손맛. 로그인 없이 쓰는 앱이라 이 기기에 남는다. */}
-          <div className="st-group">앱</div>
+          <div className="st-group">{t("st_app", lang)}</div>
           <Preferences />
 
-          <div className="st-group">안내</div>
-          <Link className="st-row" href="/dot/privacy">개인정보 처리방침</Link>
-          <Link className="st-row" href="/dot/child-safety">아동 안전 기준</Link>
-          <a className="st-row" href={`mailto:az51826295@gmail.com?subject=${encodeURIComponent("두근도트 문의")}`}>문의·신고<small>az51826295@gmail.com · 아동 안전 관련은 24시간 안에 확인해요</small></a>
-          <div className="st-row st-dim"><span>두근도트 1.0.7</span><small>알림·배경·멘헤라 모드는 각 대화방의 ≡ 메뉴에 있어요</small></div>
+          <div className="st-group">{t("st_info", lang)}</div>
+          <Link className="st-row" href="/dot/privacy">{t("st_privacy", lang)}</Link>
+          <Link className="st-row" href="/dot/child-safety">{t("st_child", lang)}</Link>
+          <a className="st-row" href={`mailto:az51826295@gmail.com?subject=${encodeURIComponent("두근도트 문의")}`}>{t("st_contact", lang)}<small>az51826295@gmail.com{lang === "en" ? " · child-safety reports answered within 24 hours" : " · 아동 안전 관련은 24시간 안에 확인해요"}</small></a>
+          <div className="st-row st-dim"><span>{t("app_name", lang)} 1.0.7</span><small>{t("st_menu_note", lang)}</small></div>
         </div>
       </div>
     </div>

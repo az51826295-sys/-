@@ -3,11 +3,12 @@ import { useEffect, useState } from "react";
 
 import Link from "next/link";
 import FollowButton from "../FollowButton";
+import { t, likesLine, agoLine, type Lang } from "@/lib/dot/lang";
 
 export type FeedPost = { id: number; image: string; caption: string; likes: number; at: string; slug: string; name: string; avatar: string; characterId: string; following: boolean };
 
 /** 게시물 카드 — 좋아요(한 번), 답장(그 게시물을 들고 방으로). 시각은 붙은 뒤에만(하이드레이션). */
-export default function FeedCard({ post, liked: liked0, signedIn }: { post: FeedPost; liked: boolean; signedIn: boolean }) {
+export default function FeedCard({ post, liked: liked0, signedIn, lang = "ko" }: { post: FeedPost; liked: boolean; signedIn: boolean; lang?: Lang }) {
   const [liked, setLiked] = useState(liked0);
   const [likes, setLikes] = useState(post.likes);
   const [mounted, setMounted] = useState(false);
@@ -21,7 +22,7 @@ export default function FeedCard({ post, liked: liked0, signedIn }: { post: Feed
     const res = await fetch("/api/dot/posts", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ postId: post.id }) });
     if (!res.ok) { setLiked(false); setLikes((n) => n - 1); }
   }
-  const when = mounted ? ago(post.at) : "";
+  const when = mounted ? agoLine(Date.parse(post.at), lang) : "";
 
   return (
     <article className="fc">
@@ -45,22 +46,17 @@ export default function FeedCard({ post, liked: liked0, signedIn }: { post: Feed
         */}
       {!그림깨짐 && <img className="fc-img" src={post.image} alt={post.caption} onError={() => 그림깨짐설정(true)} />}
       <div className="fc-actions">
-        <button className={`fc-like${liked ? " on" : ""}`} onClick={like} aria-pressed={liked} aria-label="좋아요">
+        <button className={`fc-like${liked ? " on" : ""}`} onClick={like} aria-pressed={liked} aria-label={t("feed_like", lang)}>
           <span className="heart">{liked ? "♥" : "♡"}</span>
         </button>
         {/* 09-12 사장님 "채팅이랑 답장 똑같은 말 아니야?" — 하나로. 채팅은 이 게시물을 들고 방으로 간다. */}
-        <Link className="fc-reply" href={`/dot/${post.slug}?post=${post.id}`}>채팅</Link>
+        <Link className="fc-reply" href={`/dot/${post.slug}?post=${post.id}`}>{t("feed_chat", lang)}</Link>
       </div>
-      {likes > 0 && <div className="fc-likes">좋아요 {likes}개</div>}
+      {likes > 0 && <div className="fc-likes">{likesLine(likes, lang)}</div>}
       <div className="fc-cap"><b>{post.name}</b>{post.caption}</div>
     </article>
   );
 }
 
-function ago(iso: string): string {
-  const m = Math.max(0, Math.round((Date.now() - Date.parse(iso)) / 60000));
-  if (m < 1) return "방금";
-  if (m < 60) return `${m}분 전`;
-  const h = Math.round(m / 60); if (h < 24) return `${h}시간 전`;
-  const d = Math.round(h / 24); return d === 1 ? "어제" : `${d}일 전`;
-}
+/* 10-28: "N분 전" 은 lang.agoLine 이 만든다 — 영어는 하나일 때 글자가 달라서(1 minute)
+   화면마다 따로 쓰면 "1 minutes ago" 가 나온다. */

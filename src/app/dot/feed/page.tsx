@@ -2,6 +2,8 @@ import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import Link from "next/link";
 import DotTabs from "../DotTabs";
+import { t } from "@/lib/dot/lang";
+import { langFromCookie } from "@/lib/dot/langServer";
 import FeedCard, { type FeedPost } from "./FeedCard";
 import StoryRow, { type StoryItem } from "./StoryRow";
 import { ensureStarter } from "@/lib/dot/starter";
@@ -15,6 +17,7 @@ export const metadata = { title: "두근도트 — 피드" };
 export const viewport = { width: "device-width", viewportFit: "cover" as const, initialScale: 1, maximumScale: 1, userScalable: false, themeColor: "#ffffff" };
 
 export default async function DotFeed({ searchParams }: { searchParams: Promise<{ all?: string }> }) {
+  const lang = await langFromCookie();
   const { all } = await searchParams;
   const showAll = all === "1";
   const supabase = await createClient();
@@ -89,17 +92,17 @@ export default async function DotFeed({ searchParams }: { searchParams: Promise<
       <div className="fd-phone">
         <header className="fd-bar">
           {/* 09-29: "피드" 라는 글자 대신 **이름**을 둔다 — 인스타 맨 위가 그렇다. */}
-          <span className="fd-title">두근도트</span>
+          <span className="fd-title">{t("app_name", lang)}</span>
           <nav className="fd-tabs">
-            <Link href="/dot/feed" className={!showAll ? "on" : ""}>팔로잉</Link>
-            <Link href="/dot/feed?all=1" className={showAll ? "on" : ""}>전체</Link>
+            <Link href="/dot/feed" className={!showAll ? "on" : ""}>{t("feed_following", lang)}</Link>
+            <Link href="/dot/feed?all=1" className={showAll ? "on" : ""}>{t("feed_all", lang)}</Link>
           </nav>
         </header>
-        {!showAll && follows.size === 0 && <div className="fd-hint">아직 팔로우한 캐릭터가 없어요. 팔로우하면 여기에 모여요.</div>}
+        {!showAll && follows.size === 0 && <div className="fd-hint">{t("feed_no_follow", lang)}</div>}
         <div className="fd-list">
           <StoryRow items={stories} />
-          {posts.length === 0 && <div className="fd-empty">아직 올라온 게시물이 없어요. 캐릭터들이 곧 올릴 거예요.</div>}
-          {posts.map((p) => <FeedCard key={p.id} post={p} liked={liked.has(p.id)} signedIn={!!user} />)}
+          {posts.length === 0 && <div className="fd-empty">{t("feed_empty", lang)}</div>}
+          {posts.map((p) => <FeedCard key={p.id} post={p} liked={liked.has(p.id)} signedIn={!!user} lang={lang} />)}
         </div>
         <DotTabs on="feed" />
       </div>

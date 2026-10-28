@@ -22,17 +22,21 @@ const ICON: Record<string, string> = {
 };
 
 import Link from "next/link";
+import { t } from "@/lib/dot/lang";
+import { langFromCookie } from "@/lib/dot/langServer";
 
-export default function DotTabs({ on }: { on: "search" | "chats" | "feed" | "me" | "tarot" }) {
+/* 10-28: 탭은 **모든 화면에 뜬다** — 여기가 한국어면 어느 화면도 영어가 될 수 없다. */
+export default async function DotTabs({ on }: { on: "search" | "chats" | "feed" | "me" | "tarot" }) {
+  const lang = await langFromCookie();
   const tabs = [
-    { key: "feed", href: "/dot/feed", label: "피드" },
-    { key: "tarot", href: "/dot/tarot", label: "타로" },
-    { key: "search", href: "/dot/search", label: "검색" },
-    { key: "chats", href: "/dot/chats", label: "채팅" },
-    { key: "me", href: "/dot/me", label: "내 창" },
+    { key: "feed", href: "/dot/feed", label: t("tab_feed", lang) },
+    { key: "tarot", href: "/dot/tarot", label: t("tab_tarot", lang) },
+    { key: "search", href: "/dot/search", label: t("tab_search", lang) },
+    { key: "chats", href: "/dot/chats", label: t("tab_chats", lang) },
+    { key: "me", href: "/dot/me", label: t("tab_me", lang) },
   ] as const;
   return (
-    <nav className="dt-tabs" aria-label="아래 탭">
+    <nav className="dt-tabs" aria-label={t("tabs_aria", lang)}>
       <style>{CSS}</style>
       {tabs.map((t) => (
         <Link key={t.key} href={t.href} className={`dt-tab${on === t.key ? " on" : ""}`} aria-current={on === t.key ? "page" : undefined}>

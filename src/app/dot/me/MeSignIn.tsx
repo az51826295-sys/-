@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { t, type Lang } from "@/lib/dot/lang";
 
 /**
  * 내 창의 "계정 만들기" 한 단추 (10-28).
@@ -9,7 +10,7 @@ import { useState } from "react";
  *
  * 오류를 삼키지 않는다 — 삼키면 눌러도 **말없이 아무 일도 안 일어난다**.
  */
-export default function MeSignIn() {
+export default function MeSignIn({ lang = "ko" }: { lang?: Lang }) {
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
@@ -19,16 +20,16 @@ export default function MeSignIn() {
       const r = await fetch("/api/dot/google", { method: "POST" });
       const j = (await r.json().catch(() => ({}))) as { url?: string; error?: string };
       if (j.url) { window.location.href = j.url; return; }
-      setErr(j.error ?? "구글 연결을 못 열었어요.");
+      setErr(j.error ?? t("me_google_err", lang));
     } catch (e) {
-      setErr(e instanceof Error ? e.message : "구글 연결을 못 열었어요.");
+      setErr(e instanceof Error ? e.message : t("me_google_err", lang));
     } finally { setBusy(false); }
   }
 
   return (
     <>
       <button className="me-signin" onClick={구글로} disabled={busy}>
-        {busy ? "여는 중…" : "구글로 계정 만들기"}
+        {busy ? t("me_opening", lang) : t("me_google", lang)}
       </button>
       {err && <p className="me-signin-err" role="alert">{err}</p>}
       <style>{`

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { getLang } from "@/lib/dot/lang";
+import { getLang, t, type Lang } from "@/lib/dot/lang";
 import { BUZZ, SFX, buzz, shake } from "@/lib/dot/feel";
 import Link from "next/link";
 import { pushState, enablePush, disablePush, type PushState } from "./push-client";
@@ -84,8 +84,10 @@ export default function DotChat({
    * 보이는데 **이벤트가 하나도 안 붙어서** 버튼이 안 눌렸다 — 눌러도 아무 일이
    * 없고 오류도 화면에 없다. 콘솔을 봐야만 알 수 있는 종류의 고장이다.
    */
+  /* 10-28: 이 기기의 언어. 붙은 뒤에 읽는다 — 서버가 그린 첫 판과 달라지면 깜빡인다. */
+  const [lang, setLangState] = useState<Lang>("ko");
   const [mounted, setMounted] = useState(false);
-  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => { setMounted(true); setLangState(getLang()); }, []);
   // ⋮ 메뉴 — 알림, 나가기. 카톡의 그 자리.
   const [menu, setMenu] = useState(false);
   // 계정 연결 — 익명 계정에 이메일을 붙인다. 로그인 화면은 없앴지만(09-11) 잃기 전에 붙일 문은 있어야 한다.
@@ -400,7 +402,7 @@ export default function DotChat({
         {/* ── 대화 ── */}
         {theme.wall && <img className="kk-wall" src={theme.wall} alt="" aria-hidden />}
         <div className="kk-log">
-          {!lines.length && <div className="kk-day">오늘</div>}
+          {!lines.length && <div className="kk-day">{t("room_today", lang)}</div>}
           {shown.map((l, i) => {
             const prev = shown[i - 1];
             const label = dayLabel(l.at);
@@ -513,7 +515,7 @@ export default function DotChat({
         {/* 10-28: "로그인하면 이어서" 라고 적어 뒀는데 **로그인 화면을 오늘 없앴다.**
             할 수 없는 일을 시키는 띠가 됐다. 지금 참인 것만 적는다 — 대화는 이 기기에
             남고, 폰을 바꾸면 안 따라온다. 화면 점검에서 잡혔다. */}
-        {!signedIn && <div className="kk-warn">대화는 이 기기에 저장돼요 · 폰을 바꾸면 안 따라와요</div>}
+        {!signedIn && <div className="kk-warn">{t("room_device_note", lang)}</div>}
         {/* 카톡처럼: 답을 기다리는 동안에도 입력창은 열려 있다(보내기만 잠깐 막힌다). 줄이 늘면 네 줄까지 자란다. Enter 보내기, Shift+Enter 줄바꿈. */}
         {replyTo && (
           <div className="kk-quote">
@@ -566,7 +568,9 @@ export default function DotChat({
             rows={1}
             onChange={(e) => { setText(e.target.value); e.target.style.height = ""; e.target.style.height = Math.min(e.target.scrollHeight, 96) + "px"; }}
             onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) { e.preventDefault(); send(); } }}
-            placeholder={!mounted ? "잠시만요…" : remaining > 0 ? "메시지 입력" : "오늘 대화는 다 썼어요"}
+            placeholder={!mounted ? (lang === "en" ? "One moment…" : "잠시만요…")
+              : remaining > 0 ? t("room_input", lang)
+              : (lang === "en" ? "You are out of messages for today" : "오늘 대화는 다 썼어요")}
             disabled={!mounted || remaining <= 0 || !signedIn}
             className="kk-input"
             maxLength={200}

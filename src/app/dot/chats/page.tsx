@@ -1,5 +1,7 @@
 import Link from "next/link";
 import DotTabs from "../DotTabs";
+import { t, whenLine } from "@/lib/dot/lang";
+import { langFromCookie } from "@/lib/dot/langServer";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import { publicCharacters } from "@/lib/dot/load";
@@ -20,6 +22,7 @@ export const viewport = {
 };
 
 export default async function DotList() {
+  const lang = await langFromCookie();
   // 누구인지와 캐릭터 목록은 서로 필요 없다 — 나란히. 목록은 60초 캐시라 대개 왕복이 없다.
   const supabase = await createClient();
   const [{ data: { user } }, characters] = await Promise.all([
@@ -84,7 +87,7 @@ export default async function DotList() {
       <style>{CSS}</style>
       <div className="kl-phone">
         <header className="kl-bar">
-          <span className="kl-title">두근도트</span>
+          <span className="kl-title">{t("app_name", lang)}</span>
           {/*
             226회차 09-28, 사장님 *"오늘 남은 대화는 표시하지말고"*.
             베타 테스터를 받는 참이다. 방 목록 맨 위에 늘 붙어 있는 "오늘 남은 대화 12/15" 는
@@ -97,8 +100,8 @@ export default async function DotList() {
         <div className="kl-list">
           {방들.length === 0 && (
             <div className="kl-empty">
-              아직 추가한 사람이 없어요.
-              <Link href="/dot/search" className="kl-empty-go">검색에서 찾아보기</Link>
+              {t("chats_empty", lang)}
+              <Link href="/dot/search" className="kl-empty-go">{t("chats_empty_go", lang)}</Link>
             </div>
           )}
           {[...방들]
@@ -116,37 +119,26 @@ export default async function DotList() {
                 </div>
                 <div className="kl-text">
                   <div className="kl-name">{c.name}</div>
-                  <div className="kl-say">{l ? (l.mine ? "나: " : "") + l.text : c.tagline}</div>
+                  <div className="kl-say">{l ? (l.mine ? t("chats_mine", lang) : "") + l.text : c.tagline}</div>
                 </div>
                 <div className="kl-right">
-                  {l && <div className="kl-when">{whenLabel(l.at)}</div>}
-                  {(unread.get(c.id) ?? 0) > 0 ? <div className="kl-badge">{unread.get(c.id)}</div> : <div className="kl-hearts">{stage > 0 ? "♥".repeat(stage) + "♡".repeat(Math.max(0, 5 - stage)) : "처음"}</div>}
+                  {l && <div className="kl-when">{whenLine(l.at, lang)}</div>}
+                  {(unread.get(c.id) ?? 0) > 0 ? <div className="kl-badge">{unread.get(c.id)}</div> : <div className="kl-hearts">{stage > 0 ? "♥".repeat(stage) + "♡".repeat(Math.max(0, 5 - stage)) : (lang === "en" ? "New" : "처음")}</div>}
                 </div>
               </Link>
             );
           })}
         </div>
 
-        {!user && <div className="kl-warn">로그인하면 이야기를 이어서 할 수 있어요</div>}
+        {!user && <div className="kl-warn">{t("chats_signin", lang)}</div>}
         <DotTabs on="chats" />
       </div>
     </div>
   );
 }
 
-/**
- * 목록의 시각 — 카톡 규칙: 오늘이면 "오후 9:17", 어제면 "어제", 그 전은 "9월 9일".
- * 서버에서 만든다(한국 시간으로 고정). 목록은 시각이 어긋나도 화면이 죽지 않는 자리라 서버에서 해도 된다.
- */
-function whenLabel(iso: string): string {
-  const k = new Date(new Date(iso).getTime() + 9 * 3_600_000);
-  const now = new Date(Date.now() + 9 * 3_600_000);
-  const key = (x: Date) => `${x.getUTCFullYear()}-${x.getUTCMonth()}-${x.getUTCDate()}`;
-  const y = new Date(now); y.setUTCDate(now.getUTCDate() - 1);
-  if (key(k) === key(now)) { const h = k.getUTCHours(); return `${h < 12 ? "오전" : "오후"} ${h % 12 === 0 ? 12 : h % 12}:${String(k.getUTCMinutes()).padStart(2, "0")}`; }
-  if (key(k) === key(y)) return "어제";
-  return `${k.getUTCMonth() + 1}월 ${k.getUTCDate()}일`;
-}
+/* 10-28: 목록의 시각은 `lang.whenLine` 이 만든다 — 날짜 차례와 오전/오후가 언어마다 달라
+   화면마다 따로 쓰면 한쪽만 영어가 된다. 여기 있던 whenLabel 은 그리로 옮겼다. */
 
 const CSS = `
 * { box-sizing:border-box; }
