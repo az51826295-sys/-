@@ -182,11 +182,27 @@ def measure_one(path: str) -> dict:
         out["trace"] = round(min(tx["trace"] or 0, ty["trace"] or 0), 2)
     elif (tx["trace"] or 0) >= MIN_TRACE and (ty["trace"] or 0) >= MIN_TRACE:
         # 격자는 있는데 경계가 흘렀다. **이 가지가 비정수 배율·재리샘플을 잡는다.**
+        #
+        # **여기서 도트 크기를 말하지 않는다.** 10-28 운영에서 잡힌 것: 진짜 도트가
+        # 16 인 흐린 그림에 "도트 48" 이라고 적었다. 격자가 망가지면 진짜 주기의
+        # 배수도 똑같이 흔적을 남겨서(16의 배수는 48에도 앉는다) 어느 쪽이 원본인지
+        # 가릴 수가 없다 — 실측으로 확인했다:
+        #   줄였다 늘림(진짜 16): 후보 16·24·32… → 작은 쪽이 맞다
+        #   비정수 15.5배(진짜 31): 후보 20·23·31… → 큰 쪽이 맞다
+        # 둘 다 맞는 규칙이 없다. 그러면 **모른다고 적는 것이 맞다.** 틀린 수를
+        # 주면 붙은 도구가 그 수에 맞춰 고치다 세 바퀴를 돈다([[making-outruns-measuring]]).
         out["grid"] = "흐트러짐"
-        out["square"] = tx["texel"] == ty["texel"]
         s, ox, oy = min(tx["texel"], ty["texel"]), tx["offset"], ty["offset"]
         out["align"] = round(min(tx["align"], ty["align"]), 4)
         out["trace"] = round(min(tx["trace"], ty["trace"]), 2)
+        out["texel"] = None                      # 못 읽는다. 지어내지 않는다.
+        out["texel_guess"] = [int(min(tx["texel"], ty["texel"])),
+                              int(max(tx["texel"], ty["texel"]))]
+        out["purity_at"] = int(s)                # 순도를 어느 격자에서 쟀는지
+        out.update({k: v for k, v in _purity(a, s, ox, oy).items()
+                    if k not in ("why", "logical")})
+        out["logical"] = None                    # 도트를 모르면 논리 크기도 모른다
+        return out
     else:
         out["grid"] = "없음"
         out["texel"] = 1
@@ -217,7 +233,12 @@ def measure(paths: list, want_texel: int | None = None) -> dict:
     # 격자가 "없음"인 장은 도트 1 로 세는데, 그걸 세트 일치에 섞으면 깨끗한 8 짜리
     # 옆에서 "1~8 로 다르다"가 된다. 그건 맞는 말이지만 **원인이 다른 고장**이라
     # 따로 센다.
-    gridded = [d["texel"] for d in per if d.get("grid") in ("깨끗", "흐트러짐")]
+    # **흐트러진 그림은 세트 일치 셈에서 뺀다.** 그 그림의 도트 크기는 못 읽은
+    # 것이고(위 주석), 못 읽은 수로 "서로 다르다" 를 말하면 지어낸 어긋남이다.
+    gridded = [d["texel"] for d in per if d.get("grid") == "깨끗" and d.get("texel")]
+    # 네모냐도 격자를 깨끗하게 읽은 그림에서만 묻는다. 안 그러면 흐트러진 그림마다
+    # "직사각이다" 가 하나씩 더 붙는다 — 멀쩡한 코드를 고치게 만드는 틀린 '틀림'이다.
+    네모판단 = [d["square"] for d in per if "square" in d]
     return {"n": len(per), "per_image": per,
             "texels": got,
             "texel": min(gridded) if gridded else (min(got) if got else None),
@@ -227,7 +248,7 @@ def measure(paths: list, want_texel: int | None = None) -> dict:
             "align": round(min(aligns), 4) if aligns else None,
             "purity": round(min(purities), 4) if purities else None,
             "grids": [d.get("grid") for d in per],
-            "square": all(d.get("square") for d in per) if gridded else None,
+            "square": all(네모판단) if 네모판단 else None,
             "no_grid": [d["path"] for d in per if d.get("grid") == "없음"],
             "mixed_dots": sum(d.get("mixed_dots") or 0 for d in per),
             "want_texel": want_texel}
@@ -255,9 +276,14 @@ def judge(paths: list, want_texel: int | None = None) -> dict:
     흐트러진 = [d for d in m["per_image"] if d.get("grid") == "흐트러짐"]
     if 흐트러진:
         d = 흐트러진[0]
-        fail.append(f"도트 격자가 흐트러졌다 — 도트 {d['texel']} 로 보이는데 경계의 "
+        g = d.get("texel_guess") or []
+        fail.append(f"도트 격자가 흐트러졌다 — 제일 잘 맞는 격자에서도 경계의 "
                     f"{int(d['align'] * 100)}%만 격자에 앉았다(흔적 {d['trace']}). "
-                    f"비정수 배율로 늘리거나 줄였다 다시 늘린 그림이다")
+                    f"비정수 배율로 늘리거나, 줄였다 다시 늘린 그림이다. "
+                    f"**도트 크기는 못 읽는다** — 망가진 격자에서는 진짜 주기의 배수도 "
+                    f"똑같이 보여서 지어내는 수가 된다"
+                    + (f" (후보 {g[0]}~{g[1]})" if len(g) == 2 else "")
+                    + ". 원본 논리 그림에서 최근접 이웃으로 다시 키워라")
     elif m["align"] is not None and m["align"] < MIN_ALIGN:
         fail.append(f"격자 일치율 {m['align']} < {MIN_ALIGN} — 도트 경계가 흘렀다")
 
@@ -272,8 +298,15 @@ def judge(paths: list, want_texel: int | None = None) -> dict:
         else:
             blind.append("칸 안을 못 잼 — 격자를 아예 못 읽었다")
     elif m["purity"] < MIN_PURITY:
+        # 격자가 흐트러진 그림의 순도는 **제일 잘 맞는 격자에서 잰 값**이다.
+        # 그 격자가 원본이라고 주장하지 않는다 — 그래도 "칸이 한 색이 아니다" 는
+        # 참이고, 그게 고쳐야 할 것이다.
+        어디 = next((d.get("purity_at") for d in m["per_image"]
+                     if d.get("purity_at")), None)
         fail.append(f"도트 순도 {m['purity']} < {MIN_PURITY} — 칸 {m['mixed_dots']}개가 "
-                    f"한 색이 아니다(믹스드 픽셀). 안티에일리어싱을 끄고 뽑아야 한다")
+                    f"한 색이 아니다(믹스드 픽셀). 안티에일리어싱을 끄고 뽑아야 한다"
+                    + (f" (제일 잘 맞는 격자 {어디} 에서 쟀다 — 그 격자가 원본이라는 "
+                       f"뜻은 아니다)" if 어디 else ""))
 
     if m["square"] is False:
         fail.append("가로와 세로 도트 크기가 다르다 — 도트가 네모가 아니라 직사각이다")

@@ -72,16 +72,24 @@ elif 심기 == "5":
 
 @pytest.fixture(scope="module")
 def art() -> Image.Image:
+    """**색을 18개 쓴다.** 처음엔 5색이었는데, 운영에서 돌려 보니 `colors 5 < 16`
+    이 먼저 떨어져서 도트 칸이 통과했는지 어긋났는지 글만 보고는 알 수가 없었다.
+    다른 축이 떨어지는 그림으로는 이 축을 못 잰다(09-21: 심은 고장이 잘 만들어져야).
+    """
     n = 24
     img = Image.new("RGBA", (n, n), (0, 0, 0, 0))
     px = img.load()
     pal = [(40, 30, 60, 255), (120, 60, 90, 255), (220, 180, 120, 255),
-           (70, 110, 140, 255), (240, 240, 230, 255)]
+           (70, 110, 140, 255), (240, 240, 230, 255), (200, 70, 70, 255),
+           (90, 160, 90, 255), (160, 140, 200, 255), (250, 210, 80, 255),
+           (30, 90, 110, 255), (180, 100, 140, 255), (110, 110, 60, 255),
+           (60, 60, 150, 255), (230, 140, 60, 255), (140, 200, 210, 255),
+           (85, 40, 40, 255), (205, 205, 160, 255), (20, 20, 35, 255)]
     for y in range(n):
         for x in range(n):
             if (x - n / 2) ** 2 + (y - n / 2) ** 2 > (n / 2 - 1) ** 2:
                 continue
-            px[x, y] = pal[(x // 3 + y // 4) % len(pal)]
+            px[x, y] = pal[(x // 3 + y * 7 // 4) % len(pal)]
     return img
 
 
@@ -157,6 +165,44 @@ def test_비정수_배율은_흐트러짐으로_잡힌다(art, tmp_path, w):
     r = tj.judge([p])
     assert r["verdict"] == "FAIL"
     assert any("흐트러" in f for f in r["fail"])
+
+
+def test_흐트러진_격자는_도트_크기를_지어내지_않는다(art, tmp_path):
+    """**운영에서 잡힌 것.** 진짜 도트 16 인 흐린 그림에 "도트 48" 이라고 적었다.
+
+    망가진 격자에서는 진짜 주기의 배수도 똑같이 흔적을 남긴다. 실측으로 확인했다 —
+    줄였다 늘린 것(진짜 16)은 작은 후보가 맞고, 비정수 15.5배(진짜 31)는 큰 후보가
+    맞다. 둘 다 맞는 규칙이 없으면 **모른다고 적는 것이 맞다.**
+
+    같이 본다: 모르는 수로 "직사각이다"·"세트가 다르다" 를 말하지 않는지.
+    틀린 '틀림' 하나가 멀쩡한 코드를 세 바퀴 고치게 만든다.
+    """
+    from PIL import ImageFilter
+    big = art.resize((384, 384), Image.NEAREST).filter(ImageFilter.GaussianBlur(1.2))
+    p = _save(big, tmp_path, "blur_guess")
+    m = tj.measure_one(p)
+    assert m["grid"] == "흐트러짐", m
+    assert m["texel"] is None, m           # 48 이라고 적던 자리
+    assert m["logical"] is None, m
+    assert len(m["texel_guess"]) == 2
+    assert m["purity_at"] and m["purity"] is not None
+    r = tj.judge([p], want_texel=16)
+    assert r["verdict"] == "FAIL"
+    assert any("도트 크기는 못 읽는다" in f for f in r["fail"]), r["fail"]
+    assert not any("네모가 아니라" in f for f in r["fail"]), r["fail"]
+    assert not any("≠ 주문" in f for f in r["fail"]), r["fail"]
+
+
+def test_흐트러진_것은_세트_일치_셈에_안_들어간다(art, tmp_path):
+    """깨끗한 16 짜리 하나 + 흐트러진 것 하나. "도트 크기가 다르다" 가 나오면
+    못 읽은 수로 어긋남을 지어낸 것이다."""
+    from PIL import ImageFilter
+    a = _save(art.resize((384, 384), Image.NEAREST), tmp_path, "mix_clean")
+    b = _save(art.resize((384, 384), Image.NEAREST)
+                 .filter(ImageFilter.GaussianBlur(1.2)), tmp_path, "mix_blur")
+    r = tj.judge([a, b])
+    assert not any("도트 크기가 다르다" in f for f in r["fail"]), r["fail"]
+    assert any("흐트러" in f for f in r["fail"]), r["fail"]
 
 
 def test_줄였다_늘린_것도_잡힌다(art, tmp_path):
