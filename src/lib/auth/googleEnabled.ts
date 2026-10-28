@@ -37,8 +37,38 @@ async function 물어보기(): Promise<구글상태> {
     const r = await fetch(`${base}/auth/v1/authorize?provider=google`, { redirect: "manual" });
     /* 켜져 있으면 구글 동의 화면으로 **넘겨 준다**. 꺼져 있으면 400 과 함께 그 JSON 이 온다. */
     const loc = r.headers.get("location") ?? "";
-    const 켜짐 = r.status >= 300 && r.status < 400 && loc.includes("google");
-    return { 켜짐, 까닭: 켜짐 ? "켜져 있다" : `안 켜졌다 (HTTP ${r.status})` };
+    const 넘겨준다 = r.status >= 300 && r.status < 400 && loc.includes("google");
+    if (!넘겨준다) return { 켜짐: false, 까닭: `안 켜졌다 (HTTP ${r.status})` };
+
+    /*
+     * **넘겨 준다고 들어가지는 건 아니다** (10-28).
+     *
+     * 10-28 에 사장님이 구글 단추를 눌렀더니 구글이 거절했다:
+     *   `400 redirect_uri_mismatch` — "액세스 차단됨: 이 앱의 요청이 잘못되었습니다"
+     * 이사하면서 **새 프로젝트의 콜백 주소가 구글에 등록이 안 됐다.** 위 검사는
+     * Supabase 가 넘겨 주는 데까지만 봐서 **죽은 단추를 멀쩡하다고 말했다** —
+     * 열린 것과 붙은 것을 섞으면 안 된다는 것과 같은 자리다.
+     *
+     * 그래서 구글에게도 한 번 물어본다. 거절하면 단추를 숨기고 이메일로 보낸다.
+     */
+    try {
+      const g = await fetch(loc, { redirect: "manual", signal: AbortSignal.timeout(4000) });
+      const 구글답 = g.headers.get("location") ?? "";
+      const 거절 = 구글답.includes("/signin/oauth/error") || 구글답.includes("error=redirect_uri_mismatch");
+      if (거절) return { 켜짐: false, 까닭: "구글에 이 주소가 등록 안 됐다 (redirect_uri_mismatch)" };
+      return { 켜짐: true, 까닭: "켜져 있다" };
+    } catch (e) {
+      /*
+       * **구글에 못 닿은 것은 거절이 아니다.** 여기서 숨기면 네트워크가 한 번 흔들릴 때마다
+       * 멀쩡한 단추가 사라진다. Supabase 가 넘겨 준다는 증거는 이미 봤으니 켜진 쪽으로 둔다.
+       * 대신 **"못 물어봤다" 로 적어 기억하지 않게 한다** — 다음 사람이 다시 묻는다.
+       *
+       * 이 try 를 바깥 것과 **따로 둔다.** 처음엔 하나로 묶었는데, 그러면 Supabase 에
+       * 못 닿은 것까지 "켜짐" 이 돼 버린다 — 못 잼을 맞음으로 올리는 짓이다.
+       */
+      const 왜 = e instanceof Error ? e.message.slice(0, 60) : String(e);
+      return { 켜짐: true, 까닭: `못 물어봤다: 구글 쪽 확인 실패 (${왜})` };
+    }
   } catch (e) {
     return { 켜짐: false, 까닭: `못 물어봤다: ${e instanceof Error ? e.message.slice(0, 60) : String(e)}` };
   }

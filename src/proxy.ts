@@ -62,7 +62,20 @@ export async function proxy(request: NextRequest) {
   // `/dot/beta` 는 인스타 모집 글이 보내는 곳이다. 아직 계정이 없는 사람이 오므로 로그인을 물으면 안 된다.
   const 로그인없이열림 = new Set(["/dot/privacy", "/dot/delete-account", "/dot/child-safety", "/dot/beta"]);
   const isDotPage = (path === "/dot" || path.startsWith("/dot/")) && !로그인없이열림.has(path);
-  const res = await updateSession(request, { requireLogin: isDotPage && PRODUCT !== "rookery" });
+
+  /*
+   * **로그인을 문으로 쓰지 않는다** (10-28 사장님: "로그인 창 자체를 없애고 나중에 설정창 안에서").
+   *
+   * 10-24 에 새 Supabase 로 옮기면서 구글 콜백 주소가 구글에 등록이 안 됐다. 그래서 단추를
+   * 누르면 구글이 "액세스 차단됨" 을 띄운다. 그 동안 **앱에 아예 못 들어온다** — 문을
+   * 로그인에 걸어 놨기 때문이다. 들어올 길이 하나뿐인데 그게 막히면 제품이 멈춘다.
+   *
+   * 화면들은 이미 로그인 없이 견딘다(`if (user && …)` · `user?.email ?? null` 로 확인).
+   * 계정이 꼭 필요한 `/dot/me` 는 **자기가 알아서** `/login` 으로 보낸다 — 그게 맞는 자리다.
+   * 로그인은 앞을 막는 문이 아니라 **설정 안의 한 줄**로 내린다.
+   */
+  const 로그인필요 = false;
+  const res = await updateSession(request, { requireLogin: 로그인필요 && isDotPage && PRODUCT !== "rookery" });
 
   // 100회차: 안드로이드 앱(TWA)으로 들어왔는지 표시한다. 구글 플레이 정책상 앱 안에서는 디지털 상품을 우리 결제로 못 판다 →
   // 이 표시가 있으면 충전 단추를 안 보인다(/api/billing 의 inApp). TWA 는 첫 요청에 Referer `android-app://<패키지>/` 를 싣는다.
