@@ -2,7 +2,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import DotTabs from "../DotTabs";
-import { publicCharacters } from "@/lib/dot/load";
+import { publicCharacters, inLang } from "@/lib/dot/load";
 import SearchList, { type SearchItem } from "./SearchList";
 import { t } from "@/lib/dot/lang";
 import { langFromCookie } from "@/lib/dot/langServer";
@@ -24,7 +24,7 @@ export const viewport = {
 
 export default async function DotSearch() {
   const lang = await langFromCookie();
-  const characters = await publicCharacters();
+  const characters = (await publicCharacters()).map((c) => inLang(c, lang));
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   let follows = new Set<string>();

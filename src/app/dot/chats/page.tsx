@@ -4,7 +4,7 @@ import { t, whenLine } from "@/lib/dot/lang";
 import { langFromCookie } from "@/lib/dot/langServer";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
-import { publicCharacters } from "@/lib/dot/load";
+import { publicCharacters, inLang } from "@/lib/dot/load";
 
 /**
  * 목록 — **카톡 친구목록.**
@@ -79,7 +79,8 @@ export default async function DotList() {
    * 그때만 `dot_bonds.left_at` 이 찍히고, 그것만 목록에서 내린다.
    * (팔로우 하나로 둘을 다 하려다 "쓰던 사람의 방이 사라지는 것" 과 "나가기" 가 같은 일이 됐다.)
    */
-  const 방들 = characters.filter((c) => (follows.has(c.id) || bonds.has(c.id)) && !나간방.has(c.id));
+  /* 10-28: 목록에 보일 이름·한 줄을 그 언어로. 영어 칸이 비면 한국어 그대로. */
+  const 방들 = characters.map((c) => inLang(c, lang)).filter((c) => (follows.has(c.id) || bonds.has(c.id)) && !나간방.has(c.id));
 
   return (
     <div className="kl-root">

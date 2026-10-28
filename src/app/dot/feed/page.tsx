@@ -2,7 +2,12 @@ import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import Link from "next/link";
 import DotTabs from "../DotTabs";
-import { t } from "@/lib/dot/lang";
+import { t, type Lang } from "@/lib/dot/lang";
+
+/** 영어판 이름은 slug 에서 만든다 — 나비 → Nabi. 표에 또 적어 두면 한쪽만 고쳐진다. */
+function 보일이름(slug: string, name: string, lang: Lang): string {
+  return lang === "en" && slug ? slug.charAt(0).toUpperCase() + slug.slice(1) : name;
+}
 import { langFromCookie } from "@/lib/dot/langServer";
 import FeedCard, { type FeedPost } from "./FeedCard";
 import StoryRow, { type StoryItem } from "./StoryRow";
@@ -24,7 +29,7 @@ export default async function DotFeed({ searchParams }: { searchParams: Promise<
   const db = createServiceClient();
   const [{ data: { user } }, { data: rows, error: 피드오류 }] = await Promise.all([
     supabase.auth.getUser(),
-    db.from("dot_posts").select("id, image_url, caption, likes, created_at, character_id, dot_characters(slug, name, photos, is_public)").order("id", { ascending: false }).limit(60),
+    db.from("dot_posts").select("id, image_url, caption, caption_en, likes, created_at, character_id, dot_characters(slug, name, photos, is_public)").order("id", { ascending: false }).limit(60),
   ]);
 
   /* 10-19: DB 가 한도로 막히자 이 화면이 **맨 500** 이었다(구글 공개 심사 중이었다).
@@ -45,7 +50,7 @@ export default async function DotFeed({ searchParams }: { searchParams: Promise<
       </div>
     );
   }
-  type Row = { id: number; image_url: string; caption: string; likes: number; created_at: string; character_id: string; dot_characters: { slug: string; name: string; photos: { url: string }[] | null; is_public: boolean } | null };
+  type Row = { id: number; image_url: string; caption: string; caption_en: string | null; likes: number; created_at: string; character_id: string; dot_characters: { slug: string; name: string; photos: { url: string }[] | null; is_public: boolean } | null };
   // 팔로우 — 기본은 팔로잉한 캐릭터만. 아무도 안 하면 전체를 보여 주고 "팔로우하면 여기 모여요".
   let follows = new Set<string>();
   if (user) {
@@ -58,7 +63,8 @@ export default async function DotFeed({ searchParams }: { searchParams: Promise<
   const filterFollowing = !showAll && follows.size > 0;
   const posts: FeedPost[] = ((rows ?? []) as unknown as Row[])
     .filter((r) => r.dot_characters?.is_public && (!filterFollowing || follows.has(r.character_id)))
-    .map((r) => ({ id: r.id, image: r.image_url, caption: r.caption, likes: r.likes, at: r.created_at, slug: r.dot_characters!.slug, name: r.dot_characters!.name, avatar: r.dot_characters!.photos?.[0]?.url ?? "", characterId: r.character_id, following: follows.has(r.character_id) }));
+    /* 10-28: 영어 칸이 비면 한국어 그대로 — 빈 글보다 낫다. 이름은 slug 에서 만든다(표에 또 적지 않는다). */
+    .map((r) => ({ id: r.id, image: r.image_url, caption: (lang === "en" ? r.caption_en : null) ?? r.caption, likes: r.likes, at: r.created_at, slug: r.dot_characters!.slug, name: 보일이름(r.dot_characters!.slug, r.dot_characters!.name, lang), avatar: r.dot_characters!.photos?.[0]?.url ?? "", characterId: r.character_id, following: follows.has(r.character_id) }));
   // ── 스토리 줄: 추가한 캐릭터 + 안 읽은 말 수 (227회차 09-29) ──
   let stories: StoryItem[] = [];
   if (user && follows.size) {
@@ -76,7 +82,7 @@ export default async function DotFeed({ searchParams }: { searchParams: Promise<
       if (!at || m.created_at > at) 안읽음.set(m.character_id, (안읽음.get(m.character_id) ?? 0) + 1);
     }
     stories = ((cs ?? []) as { id: string; slug: string; name: string; photos: { url: string }[] | null }[])
-      .map((c) => ({ slug: c.slug, name: c.name, avatar: c.photos?.[0]?.url ?? "", unread: 안읽음.get(c.id) ?? 0 }));
+      .map((c) => ({ slug: c.slug, name: 보일이름(c.slug, c.name, lang), avatar: c.photos?.[0]?.url ?? "", unread: 안읽음.get(c.id) ?? 0 }));
   }
 
   let liked = new Set<number>();

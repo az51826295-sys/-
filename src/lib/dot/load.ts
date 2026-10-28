@@ -24,7 +24,27 @@ export type PublicCharacter = {
   faces: Record<string, string>;
   /** 개인 스냅사진(카톡 프로필 사진). 여행·카페·취미. 프로필·목록이 쓴다. 표정 얼굴은 말풍선 옆에서만. */
   photos: { url: string; caption: string }[];
+  /** 10-28: 영어 칸(없으면 한국어로 보여 준다). `inLang` 이 이걸 덮어씌운다. */
+  en?: { tagline?: string; greeting?: string; chips?: string[] } | null;
 };
+
+/**
+ * 캐릭터를 그 언어로. **없으면 한국어 그대로** 돌려준다 — 빈칸을 보여 주느니 한국어가 낫다.
+ *
+ * 이름은 표에 안 둔다. `slug` 가 이미 로마자라 그것을 쓴다(enVoice.enName 과 같은 규칙) —
+ * 두 군데 적어 두면 한쪽만 고쳐지는 날이 온다.
+ */
+export function inLang<T extends PublicCharacter>(c: T, lang: "ko" | "en"): T {
+  if (lang !== "en") return c;
+  const en = c.en ?? {};
+  return {
+    ...c,
+    name: c.slug ? c.slug.charAt(0).toUpperCase() + c.slug.slice(1) : c.name,
+    tagline: en.tagline ?? c.tagline,
+    greeting: en.greeting ?? c.greeting,
+    chips: en.chips ?? c.chips,
+  };
+}
 
 /**
  * 내보내는 캐릭터 목록. 60초 캐시.
@@ -36,7 +56,7 @@ export const publicCharacters = unstable_cache(
     const db = createServiceClient();
     const { data } = await db
       .from("dot_characters")
-      .select("id, slug, name, tagline, greeting, sprites, chips, faces, photos")
+      .select("id, slug, name, tagline, greeting, sprites, chips, faces, photos, en")
       .eq("is_public", true)
       .order("created_at", { ascending: true });
     return (data ?? []) as unknown as PublicCharacter[];

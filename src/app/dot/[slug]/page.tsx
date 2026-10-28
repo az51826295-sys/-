@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
-import { characterBySlug, spriteDataUrls } from "@/lib/dot/load";
+import { characterBySlug, spriteDataUrls, inLang } from "@/lib/dot/load";
+import { langFromCookie } from "@/lib/dot/langServer";
 import DotChat from "./DotChat";
 import { FREE_TURNS_PER_DAY, todayKST, toMode, toNextStage } from "@/lib/dot/bond";
 import { balanceFor, type Balance } from "@/lib/dot/money";
@@ -37,13 +38,15 @@ export default async function DotRoom({ params, searchParams }: { params: Promis
     spriteDataUrls(slug),
   ]);
   if (!found) notFound();
+  /* 10-28: 이름·첫 인사·추천 단어를 그 언어로. 영어 칸이 비면 한국어 그대로. */
+  const 캐릭 = inLang(found, await langFromCookie());
   // 그림을 HTML 에 같이 실어 보낸다 — 방 하나에 최대 여섯 번 하던 싱가포르 왕복이 0 이 된다.
   // `face:<표정>` 키는 얼굴 크롭. 동봉된 것이 있으면 그걸, 없으면 저장소 주소.
-  const faces: Record<string, string> = { ...found.faces };
+  const faces: Record<string, string> = { ...캐릭.faces };
   for (const [k, v] of Object.entries(inline)) if (k.startsWith("face:")) faces[k.slice(5)] = v;
   const bust: Record<string, string> = {};
   for (const [k, v] of Object.entries(inline)) if (!k.startsWith("face:")) bust[k] = v;
-  const who = { ...found, sprites: Object.keys(bust).length ? bust : found.sprites, faces };
+  const who = { ...캐릭, sprites: Object.keys(bust).length ? bust : 캐릭.sprites, faces };
   const db = createServiceClient();
 
   let bond = { points: 0, stage: 1, streakDays: 0, toNext: toNextStage(0), mode: "normal" as "normal" | "menhera" };
