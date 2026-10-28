@@ -249,3 +249,17 @@ npm notice To update run: npm install -g npm@12.2.0
 npm notice
 [로키 DB] https://cwkzdn….supabase.co · engine/tools/self_fix.mts
 제안 파일이 없다: engine/work/anything/next-work-weekly.json — 위에서 안 만든 것이다(한도·실패 등). 건너뛴다.
+===== 2026-10-25  9:30:00.65 
+[로키 DB] https://cwkzdn….supabase.co · engine/tools/next_work.mts
+[allowance] 장부를 못 읽었다 — 한도에 걸린 것으로 본다: TypeError: fetch failed
+한도에 닿았다: 최근 30일 $0.00 / $0
+[로키 DB] https://cwkzdn….supabase.co · engine/tools/next_work.mts
+[allowance] 장부를 못 읽었다 — 한도에 걸린 것으로 본다: TypeError: fetch failed
+한도에 닿았다: 최근 30일 $0.00 / $0
+npm notice
+npm notice New major version of npm available! 11.16.0 -> 12.2.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.1
+npm notice To update run: npm install -g npm@12.2.1
+npm notice
+[로키 DB] https://cwkzdn….supabase.co · engine/tools/self_fix.mts
+제안 파일이 없다: engine/work/anything/next-work-weekly.json — 위에서 안 만든 것이다(한도·실패 등). 건너뛴다.
