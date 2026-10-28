@@ -216,8 +216,10 @@ function 요약(v: Record<string, unknown>): string {
   /* **안 물은 것은 못 잼과 다른 칸이다** (10-28). "두 장 이상 주면 잰다" 를 못 잼에
      섞으면 한 장 요청이 영원히 못 잼이 되고, 늘 같은 답을 내는 판정은 정보가 0 이다.
      그리고 붙은 도구가 "더 달라" 를 "너 틀렸다" 로 읽는다. */
-  const 안물은것 = [...((v.not_asked as string[]) ?? []),
-                   ...((도트.not_asked as string[]) ?? [])];
+  /* 같은 줄이 맨 위와 `texel` 안에 둘 다 있다(판정 서비스가 꺼내 올려 둔다).
+     겹치면 지워 둔다 — 두 번 적힌 줄은 두 가지 문제처럼 읽힌다. */
+  const 안물은것 = [...new Set([...((v.not_asked as string[]) ?? []),
+                               ...((도트.not_asked as string[]) ?? [])])];
   /* **얼마나 가까운가** (10-28). 어긋남 한 글자만 주면 나아지는지 알 수 없어서
      붙은 도구가 포기한다 — 내가 색을 3→7→12 로 올리고도 네 판 내내 같은 글자를 봤다. */
   const 가까움 = (v.progress as { id: string; got: number; need: number; ok: boolean; ratio: number; 방향: string }[] | undefined) ?? [];
