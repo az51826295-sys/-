@@ -162,8 +162,12 @@ function 요약(v: Record<string, unknown>): string {
      붙은 도구가 포기한다 — 내가 색을 3→7→12 로 올리고도 네 판 내내 같은 글자를 봤다. */
   const 가까움 = (v.progress as { id: string; got: number; need: number; ok: boolean; ratio: number; 방향: string }[] | undefined) ?? [];
   const 막대 = (r: number) => "█".repeat(Math.round(r * 10)) + "░".repeat(10 - Math.round(r * 10));
-  const 가까움칸 = 가까움.length
-    ? "\n### 얼마나 왔나\n" + 가까움.map((p) =>
+  /* **못 잰 칸은 막대에서 뺀다.** 안 빼면 "고치지 마라" 라고 적어 놓고 바로 밑에서
+     2/10 짜리 막대를 보여 주게 된다 — 그건 고치라고 부르는 것이다(10-28 에 내가 만든 구멍). */
+  const 못잰말 = 못잰것.join(" ");
+  const 잴수있는것 = 가까움.filter((p) => !못잰말.includes(p.id) && !(p.id === "ground_contrast" && 못잰말.includes("바닥")));
+  const 가까움칸 = 잴수있는것.length
+    ? "\n### 얼마나 왔나\n" + 잴수있는것.map((p) =>
         `- ${p.ok ? "·" : " "} \`${막대(p.ratio)}\` ${p.id} ${p.got} / ${p.need} ${p.방향}`).join("\n")
       + (v.closest ? `\n\n**${String(v.closest)}**` : "")
     : "";
