@@ -99,6 +99,18 @@ export default function PayClient(
     );
   }
 
+  /* **아직 모르는 동안은 단추를 안 보여 준다.**
+     `앱` 이 정해지기 전엔 어느 길인지 모르는데, 그때 결제 단추를 띄우면 웹에서 연 사람이
+     **눌러도 안 되는 단추를 한 번 본다**(지금 웹 결제는 막혀 있다). 짧아도 거짓말이다. */
+  if (앱 === null) {
+    return (
+      <>
+        <div className="py-go py-ghost" aria-busy="true">불러오는 중…</div>
+        <style>{CSS}</style>
+      </>
+    );
+  }
+
   /* **앱 안이면 Play 결제.** 웹 결제가 아직 못 열린 것과 상관없이 이 길은 따로 산다 —
      구글 정책상 앱 안에서는 어차피 이 길이어야 한다. */
   if (앱 === true) {
@@ -162,6 +174,7 @@ export default function PayClient(
 const CSS = `
 .py-go { width:100%; border:none; border-radius:14px; padding:17px; font-size:16px; font-weight:700; font-family:inherit; color:#fff; background:#e0457b; cursor:pointer; box-shadow:0 6px 20px rgba(224,69,123,.3); }
 .py-go:disabled { opacity:.6; cursor:default; }
+.py-ghost { background:rgba(255,255,255,.07); box-shadow:none; color:#b98aa0; text-align:center; font-weight:400; }
 .py-go:active { transform:translateY(1px); }
 .py-note { font-size:12px; color:#b98aa0; line-height:1.6; margin:10px 2px 0; }
 .py-err { font-size:13px; color:#ff9db8; margin:10px 2px 0; }
