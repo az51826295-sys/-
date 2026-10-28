@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { BUZZ, SFX, burst, buzz, shake } from "@/lib/dot/feel";
 import { collectedLine, getLang, t, type Lang } from "@/lib/dot/lang";
-import { cardFor, cardName, cardText, collectionFor, dayKey, TAROT, type Deck, type TarotCard } from "@/lib/dot/tarot";
+import { cardFor, cardName, cardText, collectionFor, dayKey, TAROT, markFlipped, flippedDays, type Deck, type TarotCard } from "@/lib/dot/tarot";
 
 /**
  * **하루 한 장 타로** — 대화 턴을 다 쓴 사람도 매일 올 이유 (10-28).
@@ -23,6 +23,8 @@ export default function TarotClient({ userId, menhera }: { userId: string | null
   const [deck, setDeck] = useState<Deck>("white");
   const [flipped, setFlipped] = useState(false);
   const [showAll, setShowAll] = useState(false);
+  /* 내가 실제로 뒤집은 날들. 기기에 남는다 — 서버가 모르는 값이라 화면에서 읽는다. */
+  const [본날들, set본날들] = useState<string[]>([]);
   const cardRef = useRef<HTMLButtonElement>(null);
   const rootRef = useRef<HTMLDivElement>(null);
 
@@ -37,9 +39,12 @@ export default function TarotClient({ userId, menhera }: { userId: string | null
     } catch { setWho("dev-anon"); }
   }, [userId]);
 
+  /* 화면이 뜬 뒤에 읽는다 — 서버에서 그린 첫 글과 달라지면 React 가 경고한다 */
+  useEffect(() => { set본날들(flippedDays()); }, []);
+
   const day = dayKey();
   const card = useMemo(() => (who ? cardFor(who, day, deck) : null), [who, day, deck]);
-  const 모음 = useMemo(() => (who ? collectionFor(who, deck, 90) : []), [who, deck]);
+  const 모음 = useMemo(() => (who ? collectionFor(who, deck, 본날들) : []), [who, deck, 본날들]);
   const 모은수 = 모음.filter((x) => x.seen).length;
 
   /* 덱을 바꾸면 다시 덮는다 — 안 덮으면 블랙으로 바꿔서 두 장을 보게 된다 */
@@ -48,6 +53,9 @@ export default function TarotClient({ userId, menhera }: { userId: string | null
   function 뒤집기() {
     if (flipped) return;
     setFlipped(true);
+    /* **여기서 도감이 는다.** 안 적으면 모은 카드가 영원히 0 이고, 지난날을 되짚어
+       세면 처음 켠 사람도 22/22 가 된다(10-28 에 그러고 있었다). */
+    set본날들(markFlipped(day));
     SFX.flip();
     buzz(BUZZ.heart);
     burst(cardRef.current, { n: 14, color: deck === "black" ? "#e0457b" : "#7b5ea7", size: 5 });

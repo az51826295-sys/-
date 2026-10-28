@@ -211,15 +211,45 @@ export function cardName(c: TarotCard, lang: "ko" | "en"): string {
  * 저장을 안 하므로 **되짚어 만든다.** 가입일을 모르면 오늘부터 거꾸로 센다.
  * 모은 장수는 "며칠 왔나" 와 같은 뜻이라, 그 자체가 다시 오게 하는 이유가 된다.
  */
-export function collectionFor(who: string, deck: Deck, days: number, today = dayKey()): {
+export function collectionFor(who: string, deck: Deck, 뒤집은날들: string[]): {
   card: TarotCard; day: string; seen: boolean;
 }[] {
   const 본것 = new Map<number, string>();
-  const t = new Date(today + "T00:00:00Z");
-  for (let i = 0; i < days; i++) {
-    const d = new Date(t.getTime() - i * 86400000).toISOString().slice(0, 10);
+  /* 오래된 날부터 넣어서, 같은 카드를 여러 번 받았으면 **처음 받은 날**이 남게 한다 */
+  for (const d of [...new Set(뒤집은날들)].sort()) {
     const c = cardFor(who, d, deck);
     if (!본것.has(c.id)) 본것.set(c.id, d);
   }
   return TAROT.map((card) => ({ card, day: 본것.get(card.id) ?? "", seen: 본것.has(card.id) }));
+}
+
+/**
+ * **모은 카드는 사람이 뒤집은 날에서 온다** (10-28 고침).
+ *
+ * 처음엔 지난 90일을 해시로 되짚어 "그날이면 이 카드였겠지" 로 세었다. 카드가 22장인데
+ * 90일을 훑으니 **처음 켠 사람에게도 22장 중 22장**이 떴다 — 모으는 재미가 첫날에 끝난다.
+ * 안 본 것을 가졌다고 세면 그건 도감이 아니라 그냥 카드 목록이다.
+ *
+ * 그래서 뒤집은 날짜만 적어 둔다. 기기에 남으므로 폰을 바꾸면 안 따라오는데,
+ * 이 앱은 대화도 그렇다 — **없는 것을 있는 척하는 것보다 적게 가진 쪽이 맞다.**
+ */
+/* **이름은 ASCII 로.** 한글 export 는 tsx 가 조용히 흘려서 자가 import 를 못 한다 —
+   제품은 멀쩡한데 자만 안 돈다(10-25 에 배워 놓고 10-28 에 또 걸렸다). */
+const 뒤집음키 = "dot_tarot_flipped";
+
+export function flippedDays(): string[] {
+  try {
+    const raw = localStorage.getItem(뒤집음키);
+    const v: unknown = raw ? JSON.parse(raw) : [];
+    return Array.isArray(v) ? v.filter((x): x is string => typeof x === "string") : [];
+  } catch { return []; }
+}
+
+/** 오늘 뒤집었다고 적는다. 같은 날 여러 번 눌러도 한 번만 들어간다. */
+export function markFlipped(day: string = dayKey()): string[] {
+  const 전 = flippedDays();
+  if (전.includes(day)) return 전;
+  const 다음 = [...전, day];
+  try { localStorage.setItem(뒤집음키, JSON.stringify(다음)); } catch { /* 못 적어도 화면은 돈다 */ }
+  return 다음;
 }

@@ -1,9 +1,9 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import DotTabs from "../DotTabs";
 import Uploader from "./Uploader";
 import { mineView, 맞팔_하트 } from "@/lib/dot/mine";
+import MeSignIn from "./MeSignIn";
 
 /**
  * **내 창** (227회차 09-29, 사장님 *"자신의 창도 있어야지"*).
@@ -23,8 +23,15 @@ export const viewport = {
 export default async function DotMe() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  /* 로그인 화면을 치웠으므로 설정으로 보낸다 — 거기가 나중에 '계정 연결' 이 들어갈 자리다(10-28). */
-  if (!user) redirect("/dot/settings");
+  /**
+   * **로그인 안 한 사람을 말없이 튕기지 않는다** (10-28 화면 점검에서 잡힘).
+   *
+   * 전에는 설정으로 `redirect` 했는데, 아래 탭에서 "내 창" 을 누른 사람 입장에서는
+   * **탭이 고장 난 것**으로 보인다(글자 수가 설정과 똑같아서 자가 찾아냈다).
+   * 여기 올 이유를 적고, 계정을 만들 길을 같이 준다 — 계정이 있어야 폰을 바꿔도
+   * 이어지고, 결제도 그걸로 이어진다.
+   */
+  if (!user) return <MeEmpty />;
   const v = await mineView(user.id);
   const 이름 = (user.email ?? "나").split("@")[0];
 
@@ -103,6 +110,11 @@ export default async function DotMe() {
 }
 
 const CSS = `
+.me-empty { margin:28px 4px; display:flex; flex-direction:column; gap:12px; }
+.me-empty > b { font-size:17px; color:#111; }
+.me-empty ul { margin:0; padding-left:18px; display:flex; flex-direction:column; gap:6px; font-size:14px; color:#5c6570; }
+.me-empty small { font-size:12px; color:#8a8f98; line-height:1.6; }
+
 * { box-sizing:border-box; }
 .me-root { min-height:100dvh; background:#0b0f14; display:flex; justify-content:center; font-family:"Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Segoe UI", Roboto, sans-serif; -webkit-font-smoothing:antialiased; }
 .me-phone { width:100%; max-width:430px; min-height:100dvh; background:#fff; color:#141414; display:flex; flex-direction:column; }
@@ -132,3 +144,37 @@ const CSS = `
 .me-tile img { width:100%; height:100%; object-fit:cover; display:block; }
 .me-tile-n { position:absolute; right:5px; bottom:5px; font-size:11px; font-weight:600; color:#fff; text-shadow:0 1px 3px rgba(0,0,0,.6); }
 `;
+
+/**
+ * 계정이 없을 때의 내 창. **숫자를 0 으로 보여 주지 않는다** — 0 은 "없다" 로 읽히는데
+ * 사실은 "아직 안 모은다" 다. 무엇이 여기 모이는지 적고, 만들 길을 하나 준다.
+ */
+function MeEmpty() {
+  return (
+    <div className="me-root">
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+      <style>{CSS}</style>
+      <div className="me-phone">
+        <header className="me-head">
+          <div className="me-title">내 창</div>
+          <Link href="/dot/settings" className="me-gear" aria-label="설정">
+            <svg width="24" height="24" viewBox="0 0 8 8" shapeRendering="crispEdges" aria-hidden><path d="M3 0h2v1h1v1h1v2h-1v1h-1v1h-2v-1h-1v-1h-1v-2h1v-1h1z" fill="currentColor" fillRule="evenodd" /></svg>
+          </Link>
+        </header>
+        <div className="me-body">
+          <div className="me-empty">
+            <b>계정을 만들면 여기에 모여요</b>
+            <ul>
+              <li>내가 올린 게시물</li>
+              <li>맞팔해 준 캐릭터와 받은 하트</li>
+              <li>맞팔까지 얼마나 남았는지</li>
+            </ul>
+            <small>지금 대화와 친밀도는 <b>이 기기에만</b> 있어요. 폰을 바꾸면 안 따라와요.</small>
+            <MeSignIn />
+          </div>
+        </div>
+        <DotTabs on="me" />
+      </div>
+    </div>
+  );
+}
