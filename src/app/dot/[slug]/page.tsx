@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import { characterBySlug, spriteDataUrls, inLang } from "@/lib/dot/load";
 import { langFromCookie } from "@/lib/dot/langServer";
+import GuestSession from "../GuestSession";
 import DotChat from "./DotChat";
 import { FREE_TURNS_PER_DAY, todayKST, toMode, toNextStage } from "@/lib/dot/bond";
 import { balanceFor, type Balance } from "@/lib/dot/money";
@@ -81,6 +82,8 @@ export default async function DotRoom({ params, searchParams }: { params: Promis
   }
 
   return (
+    <>
+    <GuestSession signedIn={!!user} />
     <DotChat
       replyTo={replyTo}
       signedIn={!!user}
@@ -92,5 +95,6 @@ export default async function DotRoom({ params, searchParams }: { params: Promis
       history={history}
       limit={FREE_TURNS_PER_DAY}
     />
+    </>
   );
 }
