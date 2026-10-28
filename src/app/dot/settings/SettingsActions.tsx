@@ -1,8 +1,15 @@
 "use client";
 import { useState } from "react";
 
-/** 설정의 단추 둘 — 로그아웃, 계정 삭제. 계정 삭제는 대화방에 있던 것을 그대로 옮겼다(확인 두 번). */
-export default function SettingsActions() {
+/**
+ * 설정의 단추 둘 — 로그아웃, 계정 삭제. 계정 삭제는 대화방에 있던 것을 그대로 옮겼다(확인 두 번).
+ *
+ * **로그인 안 한 사람에게는 둘 다 안 보인다** (10-28 화면 점검). 오늘 로그인 화면을
+ * 없앴더니 설정에 "로그인 안 됨" 밑으로 *로그아웃* 과 *계정 삭제* 가 그대로 떠 있었다 —
+ * 없는 계정을 지우라는 단추다. 지울 것이 없는 사람에게 "되돌릴 수 없어요" 는 겁만 준다.
+ */
+export default function SettingsActions({ signedIn }: { signedIn: boolean }) {
+  if (!signedIn) return null;
   const [toast, setToast] = useState<string | null>(null);
   async function deleteAccount() {
     if (!window.confirm("계정을 지우면 대화·기억·친밀도가 전부 사라지고 되돌릴 수 없어요. 계속할까요?")) return;

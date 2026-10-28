@@ -26,8 +26,10 @@ export default async function DotSettings() {
         </header>
         <div className="st-list">
           <div className="st-group">계정</div>
-          <div className="st-row"><span>{email ?? "로그인 안 됨"}</span><small>로그인한 계정 · 폰을 바꿔도 이 계정으로 이어져요</small></div>
-          <SettingsActions />
+          {/* 10-28: 로그인 화면을 없앴으니 "로그인 안 됨" 은 **고칠 수 없는 상태**다.
+              고칠 수 없는 것을 문제처럼 적지 않는다 — 지금 참인 것만 적는다. */}
+          <div className="st-row"><span>{email ?? "이 기기로 쓰는 중"}</span><small>{email ? "로그인한 계정 · 폰을 바꿔도 이 계정으로 이어져요" : "대화와 친밀도가 이 기기에 저장돼요 · 폰을 바꾸면 안 따라와요"}</small></div>
+          <SettingsActions signedIn={Boolean(email)} />
 
           {/* 10-28: 언어·손맛. 로그인 없이 쓰는 앱이라 이 기기에 남는다. */}
           <div className="st-group">앱</div>
