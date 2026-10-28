@@ -1,5 +1,6 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { playService, 앱에서사기, 못받은것찾기 } from "@/lib/dot/playClient";
 
 /**
  * 결제 단추 — **막는 것을 숨기지 않는다.**
@@ -14,6 +15,53 @@ export default function PayClient(
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const [계정필요, set계정필요] = useState(!로그인);
+  /* 앱 안인가. `null` 은 **아직 모른다** — 모르는 것을 "아니다" 로 보여 주면
+     앱에서 연 사람에게 잠깐 웹 결제가 깜빡인다(그건 정책 위반 쪽 화면이다). */
+  const [앱, set앱] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    let 살아있음 = true;
+    void (async () => {
+      const svc = await playService();
+      if (!살아있음) return;
+      set앱(Boolean(svc));
+      /* 앱이면, 돈은 냈는데 우리가 못 받은 구매가 있나 한 번 훑는다.
+         결제 직후에 앱이 죽으면 생기는 구멍이다. */
+      if (svc && 로그인) {
+        const n = await 못받은것찾기(서버에확인);
+        if (살아있음 && n > 0) window.location.reload();
+      }
+    })();
+    return () => { 살아있음 = false; };
+  }, [로그인]);
+
+  /** 구매 토큰을 서버에 내민다. **여기서만** 구독이 켜진다 — 화면 말은 안 믿는다. */
+  async function 서버에확인(purchaseToken: string): Promise<boolean> {
+    const r = await fetch("/api/dot/buy", {
+      method: "POST", headers: { "content-type": "application/json" },
+      body: JSON.stringify({ sku: "menhera_sub", purchaseToken }),
+    });
+    if (r.ok) return true;
+    /* 409 = 이미 처리된 결제. 다시 내민 것이고 **성공이다**(못 받은 것 훑기가 여기로 온다). */
+    if (r.status === 409) return true;
+    const j = (await r.json().catch(() => ({}))) as { error?: string };
+    setErr(j.error ?? "결제를 확인하지 못했어요.");
+    return false;
+  }
+
+  /** 앱 안에서 산다 — Play 결제. 구글 정책상 앱 안에서는 이 길이어야 한다. */
+  async function 앱결제() {
+    setBusy(true); setErr(null);
+    try {
+      const r = await 앱에서사기("menhera_sub", 서버에확인);
+      if (r.ok) { window.location.href = "/dot/pay"; return; }
+      if (r.까닭 === "취소") return;                 // 사람이 닫은 것 — 오류가 아니다
+      if (r.까닭 === "앱아님") { set앱(false); return; }
+      setErr(r.까닭 === "상품없음"
+        ? "스토어에 상품이 아직 올라가지 않았어요."
+        : (r.글 ?? "결제를 끝내지 못했어요."));
+    } finally { setBusy(false); }
+  }
 
   async function 결제하기() {
     setBusy(true); setErr(null);
@@ -51,9 +99,33 @@ export default function PayClient(
     );
   }
 
-  /* 우리가 고칠 것(열쇠·상품)만 남았을 때는 단추를 눌러도 소용이 없다. 그대로 적는다. */
+  /* **앱 안이면 Play 결제.** 웹 결제가 아직 못 열린 것과 상관없이 이 길은 따로 산다 —
+     구글 정책상 앱 안에서는 어차피 이 길이어야 한다. */
+  if (앱 === true) {
+    return (
+      <>
+        {계정필요 ? (
+          <>
+            <button className="py-go" onClick={구글로연결} disabled={busy}>
+              {busy ? "여는 중…" : "구글로 계정 만들고 시작하기"}
+            </button>
+            <p className="py-note">계정이 있어야 결제한 게 폰을 바꿔도 따라와요.</p>
+          </>
+        ) : (
+          <button className="py-go" onClick={앱결제} disabled={busy}>
+            {busy ? "결제 창을 여는 중…" : "멘헤라 모드 켜기"}
+          </button>
+        )}
+        {err && <p className="py-err" role="alert">{err}</p>}
+        <p className="py-note">구글 플레이로 결제돼요 · 구독 관리와 해지도 플레이에서 해요.</p>
+        <style>{CSS}</style>
+      </>
+    );
+  }
+
+  /* 우리가 고칠 것(대행사·상품)만 남았을 때는 단추를 눌러도 소용이 없다. 그대로 적는다. */
   const 우리것 = 막는것.filter((m) => !m.includes("계정"));
-  if (!열림 && 우리것.length) {
+  if (앱 === false && !열림 && 우리것.length) {
     return (
       <div className="py-blocked">
         <b>아직 결제를 열지 못했어요</b>

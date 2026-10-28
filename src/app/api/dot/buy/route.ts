@@ -2,7 +2,7 @@ import { userIdFrom } from "@/lib/dot/auth";
 import { createServiceClient } from "@/lib/supabase/service";
 import { todayKST } from "@/lib/dot/bond";
 import { SKUS, balanceFor } from "@/lib/dot/money";
-import { 구독확인, 확인할수있나 } from "@/lib/dot/playVerify";
+import { 구독확인, 구독승인, 확인할수있나 } from "@/lib/dot/playVerify";
 
 /**
  * 안드로이드 앱의 패키지 이름. 구글에 구독을 물을 때 이 이름으로 묻는다.
@@ -67,5 +67,16 @@ export async function POST(request: Request) {
     p_menhera_days: 남은날, p_source: "play", p_ref: body.purchaseToken,
   });
   if (error) return Response.json({ error: error.message }, { status: 500 });
+
+  /**
+   * **승인한다.** 사흘 안에 승인 안 하면 구글이 돈을 돌려주고 구독을 거둬 간다 —
+   * 그러면 우리는 돈을 못 받고 혜택만 30일 준 셈이 된다. 주고 나서 바로 한다.
+   * 실패해도 준 것은 안 거둔다(사람 탓이 아니다). 장부에만 남긴다 — 구글이 사흘 동안
+   * 다시 받아 주므로 그 사이에 손으로 다시 부를 수 있다.
+   */
+  if (!확인.승인됨) {
+    const ack = await 구독승인(패키지이름, body.sku!, body.purchaseToken);
+    if (!ack.ok) console.error("[dot/buy] 승인 실패 — 사흘 안에 다시 해야 한다", { ref: body.purchaseToken, 글: ack.글 });
+  }
   return Response.json({ ok: true, 만료: 확인.만료, balance: await balanceFor(db, userId, todayKST()) });
 }

@@ -11,7 +11,7 @@
  */
 
 export type 확인결과 =
-  | { ok: true; 만료: string; 자동갱신: boolean; 주문: string | null }
+  | { ok: true; 만료: string; 자동갱신: boolean; 주문: string | null; 승인됨: boolean }
   | { ok: false; 까닭: "열쇠없음" | "못물어봄" | "거절" | "안삼"; 글?: string };
 
 type 열쇠 = { client_email: string; private_key: string };
@@ -70,6 +70,7 @@ export async function 구독확인(패키지: string, 상품: string, 토큰: st
 
   const j = (await r.json().catch(() => ({}))) as {
     expiryTimeMillis?: string; autoRenewing?: boolean; orderId?: string; paymentState?: number;
+    acknowledgementState?: number;
   };
   const 만료ms = Number(j.expiryTimeMillis ?? 0);
   if (!만료ms) return { ok: false, 까닭: "거절", 글: "만료 시각이 없다" };
@@ -85,7 +86,39 @@ export async function 구독확인(패키지: string, 상품: string, 토큰: st
     만료: new Date(만료ms).toISOString().slice(0, 10),
     자동갱신: !!j.autoRenewing,
     주문: j.orderId ?? null,
+    /* 1 = 이미 승인됨. 0 이면 **우리가 승인해야 한다** — 아래 `구독승인` 참고. */
+    승인됨: j.acknowledgementState === 1,
   };
+}
+
+/**
+ * **구독을 승인한다** (10-28 에 빠져 있던 것을 채움).
+ *
+ * 구글은 산 지 **3일 안에 승인하지 않으면 자동으로 환불하고 구독을 거둬 간다.**
+ * 즉 승인을 안 하면 사람은 돈을 냈다가 사흘 뒤에 돌려받고 구독이 꺼지는데,
+ * 우리 쪽 `menhera_until` 은 30일로 남아 있다 — **돈은 안 받고 혜택만 주는** 상태가 된다.
+ * 확인만 하고 승인을 안 하는 것은 결제를 반만 붙인 것이다.
+ *
+ * 실패해도 준 것을 거두지 않는다. 사람 탓이 아니고, 구글이 3일 동안 다시 받아 준다 —
+ * 그 사이에 우리가 다시 부를 수 있다. 대신 **장부에 남긴다**(안 남기면 아무도 모른다).
+ */
+export async function 구독승인(패키지: string, 상품: string, 토큰: string): Promise<{ ok: boolean; 글?: string }> {
+  const k = 열쇠읽기();
+  if (!k) return { ok: false, 글: "열쇠없음" };
+  const at = await 구글토큰(k);
+  if (!at) return { ok: false, 글: "서비스 계정 토큰을 못 받았다" };
+  const url = `https://androidpublisher.googleapis.com/androidpublisher/v3/applications/${encodeURIComponent(패키지)}`
+    + `/purchases/subscriptions/${encodeURIComponent(상품)}/tokens/${encodeURIComponent(토큰)}:acknowledge`;
+  const r = await fetch(url, {
+    method: "POST",
+    headers: { authorization: `Bearer ${at}`, "content-type": "application/json" },
+    body: JSON.stringify({}),
+  });
+  /* 이미 승인된 것을 또 승인하면 400 이 온다. 그건 **성공이다**(09-27 의 23505 와 같은 집안). */
+  if (r.ok) return { ok: true };
+  const t = await r.text().catch(() => "");
+  if (r.status === 400 && /alread/i.test(t)) return { ok: true };
+  return { ok: false, 글: `HTTP ${r.status} ${t.slice(0, 120)}` };
 }
 
 /** 열쇠가 꽂혀 있나 — 화면·문이 "결제를 열어도 되나" 를 이걸로 묻는다 */
