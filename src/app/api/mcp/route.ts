@@ -237,6 +237,7 @@ function 요약(v: Record<string, unknown>): string {
     어긋난것.length ? "\n### 고쳐야 할 것 (어긋남)\n" + 어긋난것.map((c) => "- " + c).join("\n") : "",
     가까움칸,
     못잰것.length ? "\n### 못 잰 것 — **고치지 마라**\n" + 못잰것.map((c) => "- " + c).join("\n") : "",
+    안물은것.length ? "\n### 안 물은 것 (재료를 더 내면 잰다)\n" + 안물은것.map((c) => "- " + c).join("\n") : "",
     Object.keys(숫자).length ? "\n### 잰 값\n```json\n" + JSON.stringify(숫자, null, 2) + "\n```" : "",
     판정 === "UNDEFINED" ? "\n**못 잰 것이지 어긋난 게 아니다.** 고치러 들어가기 전에 왜 못 쟀는지 먼저 봐라." : "",
   ].filter(Boolean).join("\n");
