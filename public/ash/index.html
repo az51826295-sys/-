@@ -2273,12 +2273,62 @@ const 빛표 = {
     날것.push({ x:f.에.x, y:f.에.y, 목:f.에, t:0, 걸림:.2, 숨김:true,
       도착: () => { 터짐(f.에, "#7aa8ff", 28, 100, 260); 터짐(f.에, f.색, 10, 50); } }); },
 };
+/* ── 손맛 (10-29) ──────────────────────────────────────────────────────
+   10-28 설계서: "조잡하고 밋밋한 숫자 교환". 빛(알갱이)은 이미 있었는데 **때린 순간이
+   없었다** — 맞아도 화면이 가만히 있고 맞은 쪽이 아무 반응을 안 했다.
+   세 가지만 넣는다: 잠깐 멈추고(히트스톱) · 화면이 흔들리고 · 맞은 쪽이 번쩍한다.
+   숫자는 안 건드린다. 밸런스는 10-11~10-28 에 자로 맞춰 둔 것이다. */
+let 멈춤 = 0;        // 히트스톱: 이 동안 움직임이 안 흐른다(그리기는 계속한다)
+let 흔들 = 0;        // 화면 흔들림: 남은 시간
+let 흔x = 0, 흔y = 0;
+/** 맞은 쪽을 **자리로** 찾는다. 효과마다 대상을 들려 보내려면 부르는 곳 일곱 군데를 고쳐야 한다. */
+function 맞은이(에){
+  if (!에) return null;
+  for (const e of 적들) { const p = 자리(e); if (Math.abs(p.x - 에.x) < 6 && Math.abs(p.y - 에.y) < 24) return e; }
+  for (const c of S.대원) { const p = 자리(c); if (Math.abs(p.x - 에.x) < 6 && Math.abs(p.y - 에.y) < 24) return c; }
+  return null;
+}
 function 터뜨리기(f){
   if (!f) return;
   if (f.막들) for (const [c, v] of f.막들) c.보임막 = v;
   if (!빛표[f.종류]) return;
   빛셈[f.종류] = (빛셈[f.종류] ?? 0) + 1;
   빛표[f.종류](f);
+  /* 때린 순간에만 준다. 회복·막까지 흔들면 화면이 늘 떨려서 **아무 뜻도 없어진다.**
+     `__손맛끄기` 는 **자를 위한 스위치**다. 손맛을 담는 값(멈춤·흔들)이 모듈 안 let 이라
+     바깥에서 못 끄는데, 못 끄면 자가 "눈이 있나" 를 확인할 길이 없다(10-29 에 사보타주가
+     통째로 헛돌았다). 평소엔 undefined 라 아무 일도 안 한다. */
+  if (f.종류 === "맞음" && !window.__손맛끄기) {
+    const 세 = f.세게 ? 1.6 : 1;
+    멈춤 = Math.max(멈춤, .07 * 세);
+    흔들 = Math.max(흔들, .12 * 세);
+    const 대 = 맞은이(f.에);
+    if (대) 대.번쩍 = Math.max(대.번쩍 ?? 0, .09);
+  }
+  움직이는동안();
+}
+
+/**
+ * **움직이는 동안만 도는 고리** (10-29).
+ *
+ * 이 게임엔 매 틀 도는 고리가 없었다 — `그리기()` 는 장면이 흐를 때만 불렸다. 그래서
+ * 흔들림을 넣어도 **다시 그리는 틀이 없어서 화면이 안 떨렸다**(자가 0틀로 잡았다).
+ * 알갱이도 같은 이유로 뚝뚝 끊겼다.
+ *
+ * 늘 도는 고리는 안 만든다 — 가만히 있는 화면에서 배터리를 태운다.
+ * **움직일 것이 남아 있는 동안만** 돌고 스스로 멈춘다.
+ */
+let 고리돈다 = false;
+function 움직이는동안(){
+  if (고리돈다) return;
+  고리돈다 = true;
+  const 한틀 = () => {
+    그리기();
+    const 남음 = 흔들 > 0 || 멈춤 > 0 || 알갱이.length > 0 || 날것.length > 0
+      || S.대원.some((c) => c.번쩍 > 0) || 적들.some((e) => e.번쩍 > 0);
+    if (남음) requestAnimationFrame(한틀); else 고리돈다 = false;
+  };
+  requestAnimationFrame(한틀);
 }
 function 빛흘리기(dt){
   for (const q of 알갱이) {
@@ -2332,13 +2382,30 @@ function 크기(){ const r = cv.getBoundingClientRect(), d = devicePixelRatio||1
 addEventListener("resize", () => { 크기(); 그리기(); });
 let 앞그린 = Date.now();
 function 그리기(){
-  const dt = Math.min(.12, (Date.now()-앞그린)/1000); 앞그린 = Date.now();
-  for (const c of S.대원) if (c.동작남음 > 0) c.동작남음 -= dt;
-  for (const e of 적들) if (e.동작남음 > 0) e.동작남음 -= dt;
+  const dt0 = Math.min(.12, (Date.now()-앞그린)/1000); 앞그린 = Date.now();
+  /* 히트스톱: **움직임만** 멈춘다. 그리기까지 멈추면 화면이 죽은 것처럼 보인다. */
+  const 멈췄나 = 멈춤 > 0;
+  if (멈췄나) 멈춤 -= dt0;
+  const dt = 멈췄나 ? 0 : dt0;
+  for (const c of S.대원) { if (c.동작남음 > 0) c.동작남음 -= dt; if (c.번쩍 > 0) c.번쩍 -= dt0; }
+  for (const e of 적들) { if (e.동작남음 > 0) e.동작남음 -= dt; if (e.번쩍 > 0) e.번쩍 -= dt0; }
+  /* 흔들림은 멈춘 동안에도 흐른다 — 멈춰 있는 화면이 떨려야 "맞았다" 로 읽힌다. */
+  if (흔들 > 0) {
+    흔들 -= dt0;
+    const 세기 = Math.max(0, 흔들) / .12 * 5;
+    흔x = 무작(-세기, 세기); 흔y = 무작(-세기, 세기) * .6;
+  } else { 흔x = 0; 흔y = 0; }
+  /* 자가 "흔들렸나" 를 **그림으로** 재는데, 못 잡았을 때 '안 걸린 것'인지 '못 본 것'인지
+     갈려야 한다. 그래서 그리기가 실제로 민 틀을 센다(그림 검사를 대신하지는 않는다). */
+  if (흔x !== 0 || 흔y !== 0) { const q = (window.__손맛 ||= { 흔든틀:0, 번쩍틀:0, 멈춘틀:0 }); q.흔든틀++; }
+  if (멈췄나) { const q = (window.__손맛 ||= { 흔든틀:0, 번쩍틀:0, 멈춘틀:0 }); q.멈춘틀++; }
   const w = cv.getBoundingClientRect().width, h = cv.getBoundingClientRect().height;
   if (w > 0 && h > 0) { 판폭 = w; 판높이 = h; }
   빛흘리기(dt);
   ctx.clearRect(0,0,w,h);
+  /* 10-29: 흔들림은 **화면 전체**에 건다. 처음엔 사람 그림에만 걸었더니 배경이 가만히 있어서
+     자가 "0틀 흔들림" 으로 잡았다 — 배경이 화면의 대부분이라 사람만 떨면 안 떨린 것이다. */
+  ctx.save(); ctx.translate(흔x, 흔y);
   // 탑 안 복도(396×168 도트) — 바닥이 그림의 아래 29% 라 캐릭터 발(h-16)이 바닥 위에 선다
   /* 10-11 **구간마다 터가 다른데 배경은 하나였다** — 하수도도 용암 대장간도 같은 돌복도였다.
      이제 그 구간 그림을 쓰고, 아직 없으면 옛 복도(tower)로 버틴다. */
@@ -2365,8 +2432,15 @@ function 그리기(){
     const x = 아군x(i), 밀림 = c.동작남음 > 0 && c.동작 === "attack" ? 6 : 0;
     const 너비 = im.naturalWidth*칸, 높이 = im.naturalHeight*칸;
     ctx.globalAlpha = c.hp > 0 ? 1 : .28;
-    ctx.save(); ctx.setTransform(1,0,0,1,0,0);
-    ctx.drawImage(im, Math.round((x + 밀림)*dd - 너비/2), 발 - 높이, 너비, 높이);
+    ctx.save(); ctx.setTransform(1,0,0,1,Math.round(흔x*dd), Math.round(흔y*dd));
+    const 그x = Math.round((x + 밀림)*dd - 너비/2), 그y = 발 - 높이;
+    ctx.drawImage(im, 그x, 그y, 너비, 높이);
+    /* 맞은 쪽을 하얗게 띄운다. 도트 그림이라 **같은 그림을 lighter 로 겹쳐** 올린다 —
+       흰 실루엣을 따로 만들면 틀마다 캔버스를 하나 더 써야 한다. */
+    if (c.번쩍 > 0) { (window.__손맛 ||= { 흔든틀:0, 번쩍틀:0, 멈춘틀:0 }).번쩍틀++;
+      ctx.globalCompositeOperation = "lighter"; ctx.globalAlpha = Math.min(1, c.번쩍/.09)*.85;
+      ctx.drawImage(im, 그x, 그y, 너비, 높이); ctx.drawImage(im, 그x, 그y, 너비, 높이);
+      ctx.globalAlpha = 1; ctx.globalCompositeOperation = "source-over"; }
     ctx.restore();
     ctx.globalAlpha = 1;
     ctx.fillStyle = "#222a35"; ctx.fillRect(x-18, h-13, 36, 4);
@@ -2381,13 +2455,20 @@ function 그리기(){
     const 폭CSS = im.naturalWidth*칸/dd;
     const x = Math.min(적x(i), 판폭 - 2 - 폭CSS/2), 밀림 = e.동작남음 > 0 && e.동작 === "attack" ? -6 : 0;
     const 너비 = im.naturalWidth*칸, 높이 = im.naturalHeight*칸;
-    ctx.save(); ctx.setTransform(1,0,0,1,0,0);
+    ctx.save(); ctx.setTransform(1,0,0,1,Math.round(흔x*dd), Math.round(흔y*dd));
     ctx.translate(Math.round((x + 밀림)*dd), 발); ctx.scale(-1, 1);
-    ctx.drawImage(im, -Math.round(너비/2), -높이, 너비, 높이); ctx.restore();
+    ctx.drawImage(im, -Math.round(너비/2), -높이, 너비, 높이);
+    if (e.번쩍 > 0) { (window.__손맛 ||= { 흔든틀:0, 번쩍틀:0, 멈춘틀:0 }).번쩍틀++;
+      ctx.globalCompositeOperation = "lighter"; ctx.globalAlpha = Math.min(1, e.번쩍/.09)*.85;
+      ctx.drawImage(im, -Math.round(너비/2), -높이, 너비, 높이);
+      ctx.drawImage(im, -Math.round(너비/2), -높이, 너비, 높이);
+      ctx.globalAlpha = 1; ctx.globalCompositeOperation = "source-over"; }
+    ctx.restore();
     ctx.fillStyle = "#222a35"; ctx.fillRect(x-20, h-13, 40, 4);
     ctx.fillStyle = e.보호막 > 0 ? "#7aa8ff" : "#d9534f"; ctx.fillRect(x-20, h-13, 40*Math.max(0, e.hp/e.최대), 4);
   });
   빛그리기(ctx);
+  ctx.restore();
 }
 
 /* ── 아래 칸 ──────────────────────────────────────── */
