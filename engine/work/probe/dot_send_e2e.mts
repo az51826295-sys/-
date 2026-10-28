@@ -60,7 +60,8 @@ try {
   재기("자가 끝까지 돌았다", false, String(e).slice(0, 120));
 } finally {
   await browser.close();
-  rmSync(profile, { recursive: true, force: true });
+  /* 치우다 실패하는 것은 **시험 결과가 아니다** — EPERM 하나에 판정이 통째로 날아갔다. */
+  try { rmSync(profile, { recursive: true, force: true }); } catch { /* 윈도가 잠깐 쥐고 있다 */ }
 }
 console.log(나쁨 === 0 ? "\n전부 맞음" : `\n${나쁨}개 어긋남`);
 process.exit(나쁨 === 0 ? 0 : 1);

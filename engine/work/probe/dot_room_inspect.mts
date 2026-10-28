@@ -46,5 +46,6 @@ try {
   if (오류.length) { console.log("\n콘솔 오류:"); for (const e of [...new Set(오류)].slice(0, 6)) console.log("  " + e); }
 } finally {
   await browser.close();
-  rmSync(profile, { recursive: true, force: true });
+  /* 치우다 실패하는 것은 **시험 결과가 아니다** — EPERM 하나에 판정이 통째로 날아갔다. */
+  try { rmSync(profile, { recursive: true, force: true }); } catch { /* 윈도가 잠깐 쥐고 있다 */ }
 }

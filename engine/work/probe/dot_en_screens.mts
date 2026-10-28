@@ -51,5 +51,6 @@ try {
   console.log(`\n전체 글자 ${합글자} 중 한글 ${합한글} — **${((합한글 / Math.max(1, 합글자)) * 100).toFixed(0)}%**` + (못잼 ? `  (못 잰 화면 ${못잼}개)` : ""));
 } finally {
   await browser.close();
-  rmSync(profile, { recursive: true, force: true });
+  /* 치우다 실패하는 것은 **시험 결과가 아니다** — EPERM 하나에 판정이 통째로 날아갔다. */
+  try { rmSync(profile, { recursive: true, force: true }); } catch { /* 윈도가 잠깐 쥐고 있다 */ }
 }

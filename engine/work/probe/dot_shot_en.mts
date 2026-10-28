@@ -26,5 +26,6 @@ try {
   }
 } finally {
   await browser.close();
-  rmSync(profile, { recursive: true, force: true });
+  /* 치우다 실패하는 것은 **시험 결과가 아니다** — EPERM 하나에 판정이 통째로 날아갔다. */
+  try { rmSync(profile, { recursive: true, force: true }); } catch { /* 윈도가 잠깐 쥐고 있다 */ }
 }
