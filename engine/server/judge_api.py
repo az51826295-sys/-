@@ -82,6 +82,17 @@ def judge_character(req: CharacterRequest) -> dict:
         except FileNotFoundError:
             out["vs_bible"] = {"error": f"성경이 없다: {req.bible}"}
 
+    # 10-28: **얼마나 가까운가**를 같이 낸다. 더하기만 한다 — 판정은 안 건드린다.
+    try:
+        out["progress"] = _progress(out)
+        덜된것 = [p for p in out["progress"] if not p["ok"]]
+        if 덜된것:
+            가장가까운 = max(덜된것, key=lambda p: p["ratio"])
+            out["closest"] = f"{가장가까운['id']} 이 제일 가깝다 — {가장가까운['got']} / {가장가까운['need']} ({int(가장가까운['ratio'] * 100)}%)"
+    except Exception as e:                                        # noqa: BLE001
+        # 가까움은 덤이다. 여기서 터져서 **판정 전체를 못 받게** 하면 안 된다.
+        out["progress_error"] = str(e)[:120]
+
     out["note"] = ("기계는 걸렀을 뿐 고르지 않았다. 마지막 칸은 사람이 고른다")
     return out
 
@@ -142,7 +153,80 @@ def thresholds() -> dict:
             "min_silhouette": cv.MIN_SILHOUETTE,
         },
         "basis": "사장님이 가리킨 레퍼런스 화면 실측 (명암폭 172 · 캐릭터-바닥 대비 99)",
+        # 10-28: 내가 붙는 쪽이 되어 네 판 돌려 보니 **숫자만 있고 세는 법이 없었다.**
+        # 색을 3→7→12 로 올리고도 16 을 못 넘겼다 — 무엇의 개수인지 몰라서 겨냥을 못 했다.
+        # 숫자를 주면서 세는 법을 안 주는 것은 과녁을 가리고 쏘라는 것과 같다.
+        "how": HOW,
+        "input": (
+            "**캐릭터는 배경을 투명하게 비운 PNG** 로 낸다. 투명도(alpha>0)인 화소만 센다 — "
+            "배경이 칠해져 있으면 배경까지 캐릭터로 세어서 채도·명암이 엉뚱해진다."
+        ),
     }
+
+
+# 세는 법과 고치는 법. 재는 코드(`character_judge.measure`)와 **같은 말**이어야 한다 —
+# 어긋나면 시키는 대로 고쳤는데 숫자가 안 움직이는 일이 생긴다.
+HOW = {
+    "colors": {
+        "세는법": "투명하지 않은 화소의 **서로 다른 RGB 값 개수**. 그림이 여러 장이면 그 중앙값.",
+        "고치는법": "같은 면을 2~3톤으로 나눠라(밝은 면·어두운 면·테두리). 그라데이션 말고 **단을 나누는** 쪽이 빨리 는다. 작은 장식(버클·눈동자·금속)이 한 톤씩 보탠다.",
+        "방향": "클수록 좋다",
+    },
+    "saturation": {
+        "세는법": "화소마다 `max(R,G,B) - min(R,G,B)` 를 구해 그 **중앙값**. 0~255.",
+        "고치는법": "회색을 줄여라. 어두운 칸도 완전한 회색 말고 **색을 띤 어둠**(보라빛·푸른빛)으로 두면 오른다.",
+        "방향": "클수록 좋다",
+    },
+    "luma_spread": {
+        "세는법": "밝기 `0.299R+0.587G+0.114B` 를 줄 세워 **95번째에서 5번째를 뺀 값**. 끝값 하나에 안 흔들리게 양끝 5%를 버린다.",
+        "고치는법": "제일 밝은 칸과 제일 어두운 칸을 **더 벌려라**. 하이라이트 한 점과 깊은 그림자 한 칸이면 크게 는다.",
+        "방향": "클수록 좋다",
+    },
+    "ground_contrast": {
+        "세는법": "캐릭터 밝기 중앙값과 바닥 밝기(기본 169)의 **차이의 절대값**.",
+        "고치는법": "캐릭터를 바닥보다 **뚜렷하게 어둡게 하거나 밝게** 해라. 중간 밝기로 모으면 땅에 묻힌다.",
+        "방향": "클수록 좋다",
+        "필요한것": "바닥이 있어야 잰다. 투명 스프라이트만 내면 **못 잼**이다.",
+    },
+    "color_spread": {
+        "세는법": "그림 **여러 장** 사이의 색 개수 차이 `(최대-최소)/최대`.",
+        "고치는법": "방향마다 쓰는 색 수를 비슷하게 맞춰라. 한 방향만 단순하면 튄다.",
+        "방향": "작을수록 좋다",
+        "필요한것": "두 장 이상이어야 잰다. 한 장이면 **못 잼**이다.",
+    },
+}
+
+
+def _progress(m: dict) -> list:
+    """**얼마나 가까운가.** 어긋남 한 글자만 주면 나아지는지 알 수 없다.
+
+    10-28 에 내가 색을 3→7→12 로 올렸는데 네 판 모두 "어긋남" 이었다. 좋아지고
+    있었는데 화면에 그게 없어서, 붙은 도구는 포기하는 게 합리적인 상태였다.
+    """
+    규칙 = [
+        ("colors", cj.MIN_COLORS, "min"),
+        ("saturation", cj.MIN_SATURATION, "min"),
+        ("luma_spread", cj.MIN_LUMA_SPREAD, "min"),
+        ("ground_contrast", cj.MIN_GROUND_CONTRAST, "min"),
+        ("color_spread", cj.MAX_COLOR_SPREAD, "max"),
+    ]
+    out = []
+    for key, need, kind in 규칙:
+        got = m.get(key)
+        if got is None:          # 안 잰 칸은 0 으로 적지 않는다 — 0 은 "못 본다" 일 수 있다
+            continue
+        if kind == "min":
+            ok = got >= need
+            ratio = min(1.0, got / need) if need else 1.0
+            gap = round(max(0.0, need - got), 2)
+        else:
+            ok = got <= need
+            ratio = min(1.0, need / got) if got else 1.0
+            gap = round(max(0.0, got - need), 3)
+        out.append({"id": key, "got": got, "need": need, "ok": ok,
+                    "ratio": round(ratio, 3), "gap": gap,
+                    "방향": HOW.get(key, {}).get("방향", "")})
+    return out
 
 
 class MeshRequest(BaseModel):

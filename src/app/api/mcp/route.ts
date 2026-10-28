@@ -158,9 +158,20 @@ function 요약(v: Record<string, unknown>): string {
   const 숫자 = Object.fromEntries(
     Object.entries(v).filter(([k, x]) => typeof x === "number" && k !== "verdict"),
   );
+  /* **얼마나 가까운가** (10-28). 어긋남 한 글자만 주면 나아지는지 알 수 없어서
+     붙은 도구가 포기한다 — 내가 색을 3→7→12 로 올리고도 네 판 내내 같은 글자를 봤다. */
+  const 가까움 = (v.progress as { id: string; got: number; need: number; ok: boolean; ratio: number; 방향: string }[] | undefined) ?? [];
+  const 막대 = (r: number) => "█".repeat(Math.round(r * 10)) + "░".repeat(10 - Math.round(r * 10));
+  const 가까움칸 = 가까움.length
+    ? "\n### 얼마나 왔나\n" + 가까움.map((p) =>
+        `- ${p.ok ? "·" : " "} \`${막대(p.ratio)}\` ${p.id} ${p.got} / ${p.need} ${p.방향}`).join("\n")
+      + (v.closest ? `\n\n**${String(v.closest)}**` : "")
+    : "";
+
   return [
     `## ${표}`,
     어긋난것.length ? "\n### 고쳐야 할 것 (어긋남)\n" + 어긋난것.map((c) => "- " + c).join("\n") : "",
+    가까움칸,
     못잰것.length ? "\n### 못 잰 것 — **고치지 마라**\n" + 못잰것.map((c) => "- " + c).join("\n") : "",
     Object.keys(숫자).length ? "\n### 잰 값\n```json\n" + JSON.stringify(숫자, null, 2) + "\n```" : "",
     판정 === "UNDEFINED" ? "\n**못 잰 것이지 어긋난 게 아니다.** 고치러 들어가기 전에 왜 못 쟀는지 먼저 봐라." : "",
