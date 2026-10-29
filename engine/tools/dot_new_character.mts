@@ -66,6 +66,25 @@ mkdirSync(`${SHEET}/faces`, { recursive: true });
  */
 const 시트다시 = args.includes("--use-sheet");
 console.log(`1) 시트 — 본: ${ref} · 품질 ${quality}${시트다시 ? " · **이미 있는 시트를 쓴다(그림값 0)**" : ""}`);
+/**
+ * **그림 열쇠가 살아 있나부터 본다** (10-29).
+ *
+ * 열쇠가 죽어 있으면 지금까지 모델 호출 자리에서 날 raw 스택이 떴다 — 401 인지 잔액인지
+ * 읽기 전에는 알 수 없고, "캐릭터를 못 만들었다" 와 "열쇠가 죽었다" 가 같은 화면으로 보인다.
+ * 10-29 에 OpenAI 는 401(키가 틀림), fal 은 403(잔액 소진)이었다. 둘 다 사장님 손이 필요한 일이라
+ * **먼저, 한 줄로** 말해야 한다. 작은 모델 목록 호출은 값이 0 이다.
+ */
+if (!시트다시) {
+  const key = process.env.OPENAI_API_KEY;
+  if (!key) { console.error("OPENAI_API_KEY 가 없다 — .env.local 에 넣어야 그림이 나온다."); process.exit(1); }
+  const r = await fetch("https://api.openai.com/v1/models", { headers: { authorization: `Bearer ${key}` } });
+  if (!r.ok) {
+    const 글 = await r.text().catch(() => "");
+    console.error(`그림 열쇠가 안 받아들여진다 — HTTP ${r.status}. ${글.slice(0, 160)}`);
+    console.error("  이 앞에서 멈춘다. 뒤 단계(자르기·자·올리기)는 그림이 있어야 뜻이 있다.");
+    process.exit(1);
+  }
+}
 const drawer = createImageProvider();
 const look = { name: spec.name, appearance: spec.look };
 const t0 = Date.now();
