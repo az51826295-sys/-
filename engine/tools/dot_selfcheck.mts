@@ -18,6 +18,7 @@
  *   9 돈(적자 판정)               원가(캐시 반영) vs 수입(원장)   사람 10명 넘으면 원가 > 수입이면 ✗
  *  10 게시물                      dot_posts                     공개 캐릭터×일수의 90% 이상
  *  11 멘헤라                      dot_entitlements·dot_bonds     (보고만)
+ *  12 인물 설정 칸                dot_characters.voice_ladder·en  비면 ✗ — 빈 칸은 조용히 **다른 사람**을 만든다
  */
 import { readFileSync, mkdirSync, writeFileSync } from "node:fs";
 for (const l of readFileSync(".env.local", "utf8").split(String.fromCharCode(10))) { const i = l.indexOf("="); if (i > 0 && !l.startsWith("#")) process.env[l.slice(0,i).trim()] = l.slice(i+1).trim(); }
@@ -199,6 +200,33 @@ let cacheRate: number | null = null;
     db.from("dot_bonds").select("user_id", { count: "exact", head: true }).eq("mode", "menhera"),
   ]);
   add("멘헤라", "자격", (ents ?? []).length, [], `살아 있는 자격 ${(ents ?? []).length} · 켜 둔 사이 ${on ?? 0}`);
+}
+
+/**
+ * 12) **인물 설정 칸** — 빈 칸은 0 이 아니라 **딴 사람**이다 (10-29).
+ *
+ * `voice_ladder` 가 비면 {@link toVoiceLadder} 가 `formal_start` 만 보고 메운다:
+ * 반말로 시작하는 사람은 전부 `blunt`("한 문장, 15자 이하, 감정 표현은 하지 않는다") 가 된다.
+ * 10-29 에 재 보니 **나비(발랄한 버튜버)와 하루(온몸으로 반가워하는 사람)가 그 줄을 받고 있었다** —
+ * 성격이 깨진 것이고, 09-30 에 서하를 고치며 바로 그 사고를 막으려고 만든 칸이 비어 있었다.
+ * 원인은 `dot_new_character.mts` 가 이 칸을 **한 번도 쓰지 않은 것**이다(그래서 그쪽도 같이 고쳤다).
+ *
+ * 영어 칸(`en`)도 같이 센다 — 비면 영어 사용자에게 **한국어**가 나가고,
+ * 소개 영상은 그 사람을 아예 뺀다([[ruler-scope-must-match-product]]).
+ */
+{
+  const { toVoiceLadder, VOICE_LADDERS } = await import("../../src/lib/dot/bond");
+  const { data } = await db.from("dot_characters").select("name, voice_ladder, formal_start, en").eq("is_public", true);
+  const rows = (data ?? []) as { name: string; voice_ladder: unknown; formal_start: boolean | null; en: { greeting?: string } | null }[];
+  const bad: string[] = [];
+  let 적힌사람 = 0;
+  for (const r of rows) {
+    const 적힘 = typeof r.voice_ladder === "string" && (VOICE_LADDERS as readonly string[]).includes(r.voice_ladder);
+    if (적힘) 적힌사람++;
+    else bad.push(`${r.name} 말투 사다리 칸이 빔 → 지금 **${toVoiceLadder(r.voice_ladder, r.formal_start ?? undefined)}** 로 말하고 있다`);
+    if (!r.en?.greeting) bad.push(`${r.name} 영어 칸이 빔 → 영어판에서 한국어가 나간다`);
+  }
+  add("인물 설정 칸", "공개 인물", rows.length, bad, `사다리 적힌 사람 ${적힌사람}/${rows.length}`);
 }
 
 // ── 보고 ──

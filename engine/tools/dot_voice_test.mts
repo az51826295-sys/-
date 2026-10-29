@@ -29,7 +29,12 @@ const BASE = "https://dot-web-production-7e03.up.railway.app";
 const svc = createServiceClient();
 const anon = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, { auth: { persistSession: false } });
 
-const 캐릭터 = ["yuna", "seoha", "rin"];
+/**
+ * 누구를 재나. 기본은 09-30 의 셋이고, `--인물 nabi,haru` 로 바꾼다 (10-29).
+ * 사다리를 고칠 때마다 이 줄을 손대면 대조군 판과 인물이 어긋난다 — 그래서 인자로 뺐다.
+ */
+const 인물칸 = process.argv.indexOf("--인물");
+const 캐릭터 = 인물칸 > 0 && process.argv[인물칸 + 1] ? process.argv[인물칸 + 1].split(",") : ["yuna", "seoha", "rin"];
 const 단계점수: Record<number, number> = { 1: 0, 3: 120, 5: 1000 };
 /** 사람 쪽 말은 반말 — 두근도트 쓰는 사람 대부분이 그렇게 말한다. 다섯 마디가 **모든 판에서 같다.** */
 const 할말 = [
@@ -103,7 +108,8 @@ for (const slug of 캐릭터) {
 }
 
 // ── 잰다 ────────────────────────────────────────────────────
-type 잰것 = { 캐릭터: string; 단계: number; 존댓말: number | null; 길이: number; 질문: number; 부정: number; 단계맞음: boolean };
+/** `느낌표` 는 `bright` 사다리의 축이다 — 10-29 에 네 번째 사다리를 만들며 같이 세기 시작했다. */
+type 잰것 = { 캐릭터: string; 단계: number; 존댓말: number | null; 길이: number; 질문: number; 부정: number; 느낌표: number; 단계맞음: boolean };
 const 결과: 잰것[] = 판들.map((p) => {
   const 좋은답 = p.답.filter((a) => !a.startsWith("(실패"));
   let 존 = 0, 반 = 0;
@@ -115,15 +121,17 @@ const 결과: 잰것[] = 판들.map((p) => {
     길이: 좋은답.reduce((s, a) => s + a.replace(/\s+/g, "").length, 0) / n,
     질문: 좋은답.filter((a) => /\?/.test(a)).length / n,
     부정: 좋은답.filter((a) => 부정.test(a)).length / n,
+    // 답 하나에 평균 몇 개인가(비율이 아니다 — 사다리가 "두 번 이상·한 번" 으로 적혀 있다).
+    느낌표: 좋은답.reduce((s, a) => s + (a.match(/!/g) ?? []).length, 0) / n,
     // **심은 단계가 진짜 들어갔나.** 서버가 다른 단계로 봤으면 이 판은 무효다.
     단계맞음: p.서버가본단계.length > 0 && p.서버가본단계.every((s) => s === p.단계),
   };
 });
 
 console.log(`\n── ${표} ──`);
-console.log("캐릭터 단계  존댓말   글자수  질문   부정   단계");
+console.log("캐릭터 단계  존댓말   글자수  질문   부정   느낌표  단계");
 for (const r of 결과) {
-  console.log(`${r.캐릭터.padEnd(4)} ${String(r.단계).padStart(3)}   ${r.존댓말 === null ? "  —  " : `${(r.존댓말 * 100).toFixed(0).padStart(3)}%`}   ${r.길이.toFixed(0).padStart(4)}   ${(r.질문 * 100).toFixed(0).padStart(3)}%  ${(r.부정 * 100).toFixed(0).padStart(3)}%   ${r.단계맞음 ? "맞음" : "**틀림**"}`);
+  console.log(`${r.캐릭터.padEnd(4)} ${String(r.단계).padStart(3)}   ${r.존댓말 === null ? "  —  " : `${(r.존댓말 * 100).toFixed(0).padStart(3)}%`}   ${r.길이.toFixed(0).padStart(4)}   ${(r.질문 * 100).toFixed(0).padStart(3)}%  ${(r.부정 * 100).toFixed(0).padStart(3)}%   ${r.느낌표.toFixed(1).padStart(4)}   ${r.단계맞음 ? "맞음" : "**틀림**"}`);
 }
 mkdirSync("engine/work/voice", { recursive: true });
 writeFileSync(`engine/work/voice/${표}.json`, JSON.stringify({ 표, 때: new Date().toISOString(), 할말, 판들, 결과 }, null, 1));

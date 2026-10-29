@@ -5,10 +5,21 @@
  *
  * 설정.json:
  *   { "slug": "doyun", "name": "도윤", "tagline": "…", "look": "<영어 겉모습>", "persona": "…", "speech": "…",
- *     "greeting": "…", "chips": ["…","…","…"], "formal_start": true, "default_emotion": "neutral" }
+ *     "greeting": "…", "chips": ["…","…","…"], "formal_start": true, "default_emotion": "neutral",
+ *     "voice_ladder": "polite" | "tsundere" | "blunt" }
  *
  * 하는 일(사람 손 0회): 시트 한 장(참조 시트로 화풍 맞춤) → 여섯 칸 자르기 → 자 7개 → 얼굴 크롭 → 저장소 →
  * dot_characters 행(기본은 is_public=false — 사장님이 보고 켠다). 자가 하나라도 떨어지면 **올리지 않는다.**
+ *
+ * ## `voice_ladder` 는 **없으면 멈춘다** (10-29)
+ *
+ * 이 도구는 그 칸을 **한 번도 쓰지 않았다.** 그래서 이 도구로 만든 나비·하루·연우는 칸이 빈 채로 올라갔고,
+ * 빈 칸은 `formal_start` 만 보고 메워진다 — 반말로 시작하는 사람은 전부 `blunt`
+ * ("한 문장, 15자 이하, 감정 표현은 하지 않는다") 가 된다. **발랄한 버튜버 나비와 온몸으로 반가워하는 하루가
+ * 두 달 동안 그 줄로 말하고 있었다.** 09-30 에 서하의 성격이 깨진 걸 고치며 만든 칸인데, 만드는 길에 없었다.
+ *
+ * 비어도 돌아가는 칸은 비어 있게 된다. 그래서 **그림값을 쓰기 전에** 막는다.
+ * 어느 사다리인지는 사장님 것이다([[creative-direction-is-users]]) — 내가 성격에서 짐작해 채우지 않는다.
  */
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 for (const l of readFileSync(".env.local", "utf8").split(String.fromCharCode(10))) { const i = l.indexOf("="); if (i > 0 && !l.startsWith("#")) process.env[l.slice(0,i).trim()] = l.slice(i+1).trim(); }
@@ -26,8 +37,18 @@ const qAt = args.indexOf("--quality"); const quality = (qAt > 0 ? args[qAt + 1] 
 const makePublic = args.includes("--public");
 const spec = JSON.parse(readFileSync(specPath, "utf8")) as {
   slug: string; name: string; tagline: string; look: string; persona: string; speech: string; greeting: string;
-  chips?: string[]; formal_start?: boolean; default_emotion?: string;
+  chips?: string[]; formal_start?: boolean; default_emotion?: string; voice_ladder?: string;
 };
+/** **그림값을 쓰기 전에** 칸을 본다 — 윗주석의 까닭. 짐작해 메우지 않고 멈춘다. */
+{
+  const { VOICE_LADDERS } = await import("../../src/lib/dot/bond");
+  if (!spec.voice_ladder || !(VOICE_LADDERS as readonly string[]).includes(spec.voice_ladder)) {
+    console.error(`설정에 "voice_ladder" 가 없거나 모르는 값이다: ${JSON.stringify(spec.voice_ladder)}`);
+    console.error(`  쓸 수 있는 것: ${VOICE_LADDERS.join(" · ")}`);
+    console.error(`  이 칸이 비면 ${spec.formal_start === false ? "blunt(한 문장·15자 이하·감정 표현 없음)" : "polite(전부 존댓말로 시작)"} 로 말하게 된다 — 성격이 깨진다.`);
+    process.exit(1);
+  }
+}
 /**
  * **시트가 사는 곳** (228회차 10-03 고침).
  *
@@ -114,8 +135,12 @@ for (const [i, c] of cells.entries()) {
   }
 }
 const row = { slug: spec.slug, name: spec.name, tagline: spec.tagline, look: spec.look, persona: spec.persona, speech: spec.speech, greeting: spec.greeting,
-  chips: spec.chips ?? [], formal_start: spec.formal_start ?? true, default_emotion: spec.default_emotion ?? "neutral", sprites, faces: faceUrls, is_public: makePublic };
+  chips: spec.chips ?? [], formal_start: spec.formal_start ?? true, default_emotion: spec.default_emotion ?? "neutral", sprites, faces: faceUrls, is_public: makePublic,
+  voice_ladder: spec.voice_ladder };
 const { error } = await db.from("dot_characters").upsert(row, { onConflict: "slug" });
 if (error) throw new Error(error.message);
 console.log(`\n끝: ${spec.name} · 공개 ${makePublic ? "함" : "안 함(사장님이 보고 켠다)"} · 미리보기 ${SHEET}/${spec.slug}-strip.png`);
 console.log(`   순서: ${SHEET_ORDER.join(" · ")}`);
+/* 영어 칸(`en`)은 여기서 안 채운다 — 번역은 모델을 부르는 딴 길이고, 안 채우면 영어판에
+   한국어가 나간다. 잊지 않도록 **다음 명령을 적어 둔다**(10-29). */
+console.log(`   영어 칸: AI_PROVIDER=openai npx tsx engine/tools/dot_translate_content.mts --진짜`);
