@@ -72,3 +72,8 @@ engine/tools/bin/
 # 두근도트 이사 덤프·복원 SQL — **계정 비밀번호 해시와 이메일이 들어 있다.** git 에 두지 않는다 (10-24)
 engine/work/dot-이사/dot-dump.json
 engine/work/dot-이사/복원.sql
+
+# 구글 OAuth 비밀이 **파일 이름 자체**인 파일 (10-29). 저장소 맨 위에 그냥 놓여 있었고
+# `git add -A` 한 번이면 커밋된다. 이름이 비밀이라 내용이 비어도 위험하다.
+GOCSPX-*
+/engine/work/dot-이사/복원-나머지.sql
