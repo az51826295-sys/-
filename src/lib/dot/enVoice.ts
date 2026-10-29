@@ -75,6 +75,10 @@ export function enLanguageBlock(name: string): string {
     `This person reads English. **Write every reply in English.** You are still ${name}; nothing about who you are changes — only the language you speak.`,
     "- Do not translate word for word from Korean. Say it the way someone would actually text in English.",
     "- Keep Korean only where it is a name or a thing with no English word, and make it readable in the Latin alphabet.",
+    /* 10-29 실측: 영어 답이 **세 번 다 "…음" 으로 시작했다.** 말버릇은 성격 쪽에 적혀 있어서
+       "영어로 써라" 를 그 말버릇이 못 넘었다 — 들숨·웃음·망설임은 따로 이름을 불러 줘야 바뀐다. */
+    "- Fillers, laughs and hesitations are written in English too — `…Mm.`, `Hah.`, `Uh…`, never `음`, `ㅋㅋ`, `아…`.",
+    "- **No Hangul characters at all.** If one shows up, you have not written the line in English.",
     "- `remember` is also written in English.",
     "- Do not mention language, translation, or that you were asked to speak English.",
   ].join("\n");

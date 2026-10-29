@@ -351,11 +351,14 @@ export default function DotChat({
     const y = new Date(now); y.setDate(now.getDate() - 1);
     void y;
     // 09-11 사장님 "좀 더 카톡처럼": 카톡은 오늘도 날짜로 쓴다 — "2026년 9월 11일 목요일".
+    /* 10-29: 영어 화면에서도 이 줄만 한국어였다. 대화 화면에서 제일 위에 뜨는 글이라
+       영어 영상 첫 장면에 그대로 찍혔다 — 자가 글자 수로 잡았다. */
+    if (lang === "en") return d.toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
     return `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일 ${"일월화수목금토"[d.getDay()]}요일`;
   };
   // 첫인사에는 시각이 없다 — 아직 아무도 말한 적이 없으니 지어낼 시각도 없다.
   const shown: Line[] = lines.length ? lines : [{ role: "character", content: who.greeting, emotion: "neutral" }];
-  const clock = (iso?: string) => (mounted && iso ? hhmm(iso) : "");
+  const clock = (iso?: string) => (mounted && iso ? hhmm(iso, lang) : "");
 
   return (
     <div className="kk-root" ref={rootRef} data-menhera={bond.mode === "menhera" ? "1" : undefined}>
@@ -606,7 +609,9 @@ export default function DotChat({
         </div>
         {/* 남은 횟수는 얼마 안 남았을 때만 — 늘 보이면 미터기 옆에서 얘기하는 기분이다. 다음 단계까지는 얼굴을 눌렀을 때 보인다. */}
         {mounted && signedIn && remaining > 0 && remaining <= 10 && (
-          <div className="kk-foot">오늘 {remaining}번 더 이야기할 수 있어요{bond.streakDays >= 2 ? ` · ${bond.streakDays}일 연속` : ""}</div>
+          <div className="kk-foot">{lang === "en"
+            ? `${remaining} more ${remaining === 1 ? "message" : "messages"} today${bond.streakDays >= 2 ? ` · ${bond.streakDays}-day streak` : ""}`
+            : `오늘 ${remaining}번 더 이야기할 수 있어요${bond.streakDays >= 2 ? ` · ${bond.streakDays}일 연속` : ""}`}</div>
         )}
       </div>
 
@@ -615,15 +620,29 @@ export default function DotChat({
       {guide && (
         <div className="kk-peek" onClick={closeGuide} role="dialog" aria-label="도움말">
           <div className="kk-peek-card kk-guide" onClick={(e) => e.stopPropagation()}>
-            <div className="kk-peek-name">이 방 쓰는 법</div>
-            <ul>
-              <li><b>얼굴</b>을 누르면 {who.name}의 사진·프로필</li>
-              <li><b>♥♥♡♡♡</b>는 친밀도 — 이야기할수록 차고, 말투와 표정이 바뀌어요</li>
-              <li><b>😊</b> 스티커 보내기 · <b>≡</b> 알림·배경·멘헤라 모드</li>
-              <li>알림을 켜면 {who.name}가 <b>먼저</b> 말을 걸어요</li>
-              <li>하루 30번 무료. 다 쓰면 카드가 떠요</li>
-            </ul>
-            <button className="kk-peek-close" onClick={closeGuide}>알겠어요</button>
+            {/* 10-29: 이 판은 **영어 화면에서도 한국어로 떴다**. 처음 온 사람에게 제일 먼저 뜨는 판인데
+                자가 못 봤다 — 안 열린 판은 0 으로 세진다([[ruler-scope-must-match-product]]). */}
+            <div className="kk-peek-name">{lang === "en" ? "How this room works" : "이 방 쓰는 법"}</div>
+            {lang === "en" ? (
+              <ul>
+                <li>Tap the <b>face</b> for {who.name}&apos;s photos and profile</li>
+                <li><b>♥♥♡♡♡</b> is closeness — it fills as you talk, and the voice and the face change with it</li>
+                <li><b>😊</b> send a sticker · <b>≡</b> notifications, wallpaper, Menhera Mode</li>
+                <li>Turn notifications on and {who.name} messages you <b>first</b></li>
+                <li>{limit} messages a day, free. After that a card comes up</li>
+              </ul>
+            ) : (
+              <ul>
+                <li><b>얼굴</b>을 누르면 {who.name}의 사진·프로필</li>
+                <li><b>♥♥♡♡♡</b>는 친밀도 — 이야기할수록 차고, 말투와 표정이 바뀌어요</li>
+                <li><b>😊</b> 스티커 보내기 · <b>≡</b> 알림·배경·멘헤라 모드</li>
+                <li>알림을 켜면 {who.name}가 <b>먼저</b> 말을 걸어요</li>
+                {/* 10-29: **30 은 옛 숫자다**(10-25 에 10 으로 내렸다). 안내판만 고치지 않고 남아
+                    새로 온 사람에게 석 달째 거짓말을 하고 있었다 — 숫자는 상수에서 읽는다. */}
+                <li>하루 {limit}번 무료. 다 쓰면 카드가 떠요</li>
+              </ul>
+            )}
+            <button className="kk-peek-close" onClick={closeGuide}>{lang === "en" ? "Got it" : "알겠어요"}</button>
           </div>
         </div>
       )}
@@ -794,12 +813,14 @@ function untilReset(): string {
   return min >= 60 ? `${Math.floor(min / 60)}시간 ${min % 60}분` : `${min}분`;
 }
 
-function hhmm(iso: string): string {
+function hhmm(iso: string, lang: Lang = "ko"): string {
   const d = new Date(iso);
   const h = d.getHours();
-  const ap = h < 12 ? "오전" : "오후";
   const hh = h % 12 === 0 ? 12 : h % 12;
-  return `${ap} ${hh}:${String(d.getMinutes()).padStart(2, "0")}`;
+  const mm = String(d.getMinutes()).padStart(2, "0");
+  /* 말풍선마다 하나씩 붙는 글이라, 여기 하나가 한국어면 화면 전체가 번역이 덜 된 것처럼 보인다. */
+  if (lang === "en") return `${hh}:${mm} ${h < 12 ? "AM" : "PM"}`;
+  return `${h < 12 ? "오전" : "오후"} ${hh}:${mm}`;
 }
 
 /**
