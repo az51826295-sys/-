@@ -23,6 +23,7 @@ import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
  *   polite   — 1단계 존댓말이 많고 5단계가 적을수록
  *   tsundere — 1단계 부정("딱히…")이 있고 5단계가 없을수록, 5단계가 길수록
  *   blunt    — 5단계가 1단계보다 길수록
+ *   bright   — 1단계 느낌표가 많고 5단계가 적을수록, 5단계가 먼저 물을수록 (10-29)
  * 방향이 거꾸로인 쌍은 **아예 못 고른다.** 세 판을 합쳐 잰 평균이 이 방향이었으므로(dot_voice_sum),
  * 그 평균을 보여 주는 한 쌍을 고르는 것이다 — 평균과 반대인 예를 고르면 그게 거짓말이다.
  */
@@ -34,7 +35,26 @@ for (const 표 of 표들) {
   자료.할말 = j.할말;
   자료.판들.push(...j.판들);
 }
-const 사다리: Record<string, "polite" | "tsundere" | "blunt"> = { 유나: "polite", 서하: "tsundere", 린: "blunt", 도윤: "polite" };
+/**
+ * **사다리는 표에서 읽는다** (10-29). 전에는 여기 이름 넷이 박혀 있었고, 없는 이름은
+ * 조용히 `polite` 로 떨어졌다 — 나비·하루(반말)에게 "존댓말이 줄었나" 자를 대면
+ * 둘 다 0 이라 점수가 아무 쌍이나 고른다. 자가 **틀린 축으로 말없이** 재는 꼴이다.
+ * 사다리가 사는 곳은 `dot_characters.voice_ladder` 한 군데다(bond.ts 가 그렇게 적어 뒀다).
+ * 칸이 빈 사람은 `polite` 로 메우지 않고 **카드를 안 만든다** — 어느 축으로 재야 할지 모르는 것이다.
+ */
+const 사다리 = await (async () => {
+  for (const l of readFileSync(".env.local", "utf8").split(String.fromCharCode(10))) {
+    const i = l.indexOf("="); if (i > 0 && !l.startsWith("#")) process.env[l.slice(0, i).trim()] ||= l.slice(i + 1).trim();
+  }
+  const { createServiceClient } = await import("../../src/lib/supabase/service");
+  const { VOICE_LADDERS } = await import("../../src/lib/dot/bond");
+  const { data } = await createServiceClient().from("dot_characters").select("name, voice_ladder");
+  const m = new Map<string, string>();
+  for (const r of (data ?? []) as { name: string; voice_ladder: unknown }[]) {
+    if (typeof r.voice_ladder === "string" && (VOICE_LADDERS as readonly string[]).includes(r.voice_ladder)) m.set(r.name, r.voice_ladder);
+  }
+  return m;
+})();
 const 부정말 = /딱히|별로|아니거든|아니야|뭐래|그런 거 아니/u;
 const OUT = "C:/Users/az518/Desktop/두근도트-인스타/말투비교";
 mkdirSync(OUT, { recursive: true });
@@ -86,7 +106,9 @@ for (const 이름 of 이름들) {
   const 나중들 = 자료.판들.filter((p) => p.캐릭터 === 이름 && p.단계 === 5);
   if (!처음들.length || !나중들.length) { console.log(`${이름}: 1단계나 5단계 답이 없다`); continue; }
   const 길이 = (t: string) => t.replace(/\s+/g, "").length;
-  const 결 = 사다리[이름] ?? "polite";
+  const 느낌표수 = (t: string) => (t.match(/!/g) ?? []).length;
+  const 결 = 사다리.get(이름);
+  if (!결) { console.log(`${이름}: 말투 사다리 칸이 비었다 — 어느 축으로 재야 할지 모른다. 카드를 안 만든다.`); continue; }
 
   // 같은 판·같은 물음끼리만 짝짓는다(판 순서가 같다: 처음들[k] 와 나중들[k] 는 같은 판)
   let 고른: { 물음: string; a: string; b: string } | null = null, 최고 = -Infinity;
@@ -97,6 +119,8 @@ for (const 이름 of 이름들) {
       let 점: number;
       if (결 === "polite") 점 = (존대비(a) - 존대비(b)) * 10 + (길이(b) >= 12 ? 1 : 0);
       else if (결 === "tsundere") 점 = (부정말.test(a) ? 3 : 0) - (부정말.test(b) ? 3 : 0) + (길이(b) - 길이(a)) / 8;
+      // bright(나비·하루, 10-29): 느낌표가 **줄고** 먼저 묻는다. bond.ts 의 사다리와 같은 축이다.
+      else if (결 === "bright") 점 = (느낌표수(a) - 느낌표수(b)) * 2 + (/\?/.test(b) ? 1 : 0);
       else 점 = (길이(b) - 길이(a)) / 4 + (/\?/.test(b) ? 1 : 0);
       if (점 <= 0) continue;                              // **약속한 방향이 아니면 못 고른다**
       if (길이(a) > 70 || 길이(b) > 70) continue;        // 카드 한 장에 안 들어가면 못 읽는다
