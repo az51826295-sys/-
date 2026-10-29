@@ -29,7 +29,10 @@ import { join } from "node:path";
 import ffmpegPath from "ffmpeg-static";
 
 const BASE = "https://dot-web-production-7e03.up.railway.app";
-const 나온칸 = "C:/Users/az518/Desktop/두근도트-영상/영어";
+/** 누구 편인가. 한 명씩 돌리면 **올릴 것이 여러 편**이 된다(캐릭터마다 결이 다르다). */
+const SLUG = (process.argv.slice(2).find((a) => !a.startsWith("--")) ?? "doyun").toLowerCase();
+const 이름 = SLUG.charAt(0).toUpperCase() + SLUG.slice(1);
+const 나온칸 = `C:/Users/az518/Desktop/두근도트-영상/영어/${SLUG}`;
 const 장면칸 = `${나온칸}/장면`;
 const 찍은칸 = `${나온칸}/찍은것`;
 const FF = ffmpegPath as unknown as string;
@@ -81,7 +84,7 @@ if (다시안찍기) {
     const page = await browser.newPage();
     /* 쿠키가 서버가 읽을 수 있는 유일한 자리다 — localStorage 만 두면 서버가 그린 글은 한국어로 남는다. */
     await page.setCookie({ name: "dot_lang", value: "en", domain: new URL(BASE).hostname, path: "/" });
-    await page.goto(`${BASE}/dot/doyun`, { waitUntil: "networkidle2", timeout: 90_000 });
+    await page.goto(`${BASE}/dot/${SLUG}`, { waitUntil: "networkidle2", timeout: 90_000 });
     await 쉬기(4000);
 
     /* 처음 온 사람에게 뜨는 안내판을 닫는다 — 화면을 반쯤 덮는다. */
@@ -95,7 +98,18 @@ if (다시안찍기) {
     }
 
     /** 영어로 말을 건다. **내가 대사를 지어 넣는 게 아니라** 앱이 답한 것을 쓴다. */
-    const 보냄 = ["hey, still at the office?", "that sounds rough. did you eat anything?", "take a break. i will stay here"];
+    /* 10-29: 첫마디가 **그 사람에게 맞아야** 대화가 산다. "still at the office?" 는 도윤에게만 맞는 말이다.
+       사람마다 따로 적되, **답은 손대지 않는다** — 광고에 쓰는 건 앱이 돌려준 쪽이다. */
+    const 첫마디: Record<string, string[]> = {
+      doyun: ["hey, still at the office?", "that sounds rough. did you eat anything?", "take a break. i will stay here"],
+      seoha: ["hey, how was school today?", "that bad huh. want to talk about it?", "i'm around if you need me"],
+      rin: ["hey, you busy?", "i had a rough day today", "thanks for listening"],
+      yuna: ["hi! how was your day?", "mine was long. yours?", "glad i caught you"],
+      nabi: ["are you streaming today?", "how many people showed up?", "your voice okay after all that?"],
+      haru: ["hey, want to go for a walk?", "the weather is nice out", "let's go tomorrow then"],
+      yeonu: ["hey, what are you making?", "that smells good from here", "save me some"],
+    };
+    const 보냄 = 첫마디[SLUG] ?? ["hey, what are you up to?", "rough day today", "i'm here if you want to talk"];
     const 답 = [];
     for (const [i, 말] of 보냄.entries()) {
       const 칸 = await page.$("textarea, input[type=text]");
@@ -151,7 +165,7 @@ async function 폰에담기(파일: string, 바탕 = 밤): Promise<Buffer> {
 // ① 훅 — 앱이 실제로 한 말. 뒤에 도윤 사진을 크게 깔고 어둡게 덮는다.
 const 훅글 = process.env.DOT_HOOK || 찍힘.훅 || "…Mm. You're here? I'm working overtime right now.";
 {
-  const 사진 = `public/dot-sprites/doyun/photo/1.png`;
+  const 사진 = `public/dot-sprites/${SLUG}/photo/1.png`;
   const 바닥 = existsSync(사진)
     ? await sharp(사진).resize(W, H, { fit: "cover", position: "top" }).modulate({ brightness: 0.42 }).blur(9).png().toBuffer()
     : await sharp({ create: { width: W, height: H, channels: 4, background: 밤 } }).png().toBuffer();
@@ -165,7 +179,7 @@ const 훅글 = process.env.DOT_HOOK || 찍힘.훅 || "…Mm. You're here? I'm wo
   컷들.push({
     파일: 쓰기(await sharp(바닥).composite([{ input: Buffer.from(`<svg width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">
       ${줄.map((l, i) => 글자(W / 2, 시작 + i * 글크기 * 1.25, l, 글크기, "#ffffff")).join("")}
-      ${글자(W / 2, H / 2 + 300, "— Doyun, in the app, just now", 42, "#ffd9e2", 600, 8)}
+      ${글자(W / 2, H / 2 + 300, `— ${이름}, in the app, just now`, 42, "#ffd9e2", 600, 8)}
     </svg>`) }]).png().toBuffer()),
     초: 2.4, 움직임: "들어가기", 전환: "fade",
   });
@@ -191,7 +205,7 @@ async function 몸칸(slug: string, 표정: string, 바탕: string, 글svg: stri
 
 // ③ 친해지면 표정이 바뀐다 — 이 앱의 알맹이
 컷들.push({
-  파일: 쓰기(await 몸칸("doyun", "neutral", "#1d2430", `<svg width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">
+  파일: 쓰기(await 몸칸(SLUG, "neutral", "#1d2430", `<svg width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">
     ${글자(W / 2, H - 430, "♥♡♡♡♡", 86, "#ff5c7a")}
     ${글자(W / 2, H - 320, "The voice and the face", 52, "#ffffff", 700, 10)}
     ${글자(W / 2, H - 250, "change as you get closer", 52, "#ffffff", 700, 10)}
@@ -199,7 +213,7 @@ async function 몸칸(slug: string, 표정: string, 바탕: string, 글svg: stri
   초: 1.9, 움직임: "들어가기", 전환: "fadewhite",
 });
 컷들.push({
-  파일: 쓰기(await 몸칸("doyun", "happy", "#2b2135", `<svg width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">
+  파일: 쓰기(await 몸칸(SLUG, "happy", "#2b2135", `<svg width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">
     ${글자(W / 2, H - 430, "♥♥♥♡♡", 86, "#ff5c7a")}
   </svg>`)),
   초: 1.4, 움직임: "나오기", 전환: "slideleft",
@@ -268,7 +282,7 @@ for (let i = 1; i < 컷들.length; i++) {
   누적 += 컷들[i].초 - 겹침; 앞 = 나옴;
 }
 
-const 결과 = `${나온칸}/dot-english-reel.mp4`;
+const 결과 = `${나온칸}/dot-en-${SLUG}.mp4`;
 execFileSync(FF, ["-y", ...입력, "-filter_complex", 거르기.join(";"), "-map", "[out]",
   "-c:v", "libx264", "-pix_fmt", "yuv420p", "-preset", "veryfast", "-crf", "21", "-r", String(FPS), "-movflags", "+faststart", 결과],
   { stdio: ["ignore", "ignore", "pipe"] });
