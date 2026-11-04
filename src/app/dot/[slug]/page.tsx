@@ -94,6 +94,9 @@ export default async function DotRoom({ params, searchParams }: { params: Promis
       balance={balance}
       history={history}
       limit={FREE_TURNS_PER_DAY}
+      /* 광고 단추를 그릴까 — **서버만 아는 스위치다.** 꺼져 있으면 단추를 아예 안 그린다.
+         켜졌다고 넘겨짚지 않는다(10-28 화면 점검: 못 하는 일을 시키는 자리를 남기지 않는다). */
+      adOpen={process.env.AD_REWARD_OPEN === "1"}
     />
     </>
   );

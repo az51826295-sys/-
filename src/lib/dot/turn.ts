@@ -326,7 +326,7 @@ export async function finishTurn(
   return {
     ok: true, reply: said.reply, emotion, sticker,
     bond: { points: gain.next.points, stage: gain.next.stage, gained: gain.gained, reasons: gain.reasons, toNext: toNextStage(gain.next.points) },
-    // 공짜 30 + 광고 + 충전 — 한 곳(money.ts)에서 센다. used 만으로는 충전 턴을 모른다.
+    // 공짜 + 광고 + 충전 — 한 곳(money.ts)에서 센다. used 만으로는 광고·충전 턴을 모른다.
     remaining: (await balanceFor(db, userId, p.day)).remaining,
   };
 }

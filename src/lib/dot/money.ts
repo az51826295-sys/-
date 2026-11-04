@@ -18,9 +18,25 @@ import { FREE_TURNS_PER_DAY } from "./bond";
  * 다만 매크로 한 명이 종일 돌리면 거기서 손해가 나므로 **난간**(`구독_하루난간`)을 남긴다.
  */
 
-/** 광고 충전은 **안 쓴다**(10-25). 켠 적은 있으나 쓴 사람이 0명이었고, 사장님이 광고를 안 넣기로 했다. */
-export const AD_REFILLS_PER_DAY = 0;
-export const AD_REFILL_TURNS = 0;
+/**
+ * 광고 보고 +1회 — **11-04 사장님 지시로 되살렸다.** ("광고로 돈 버는 건 사업자 등록 없이도 할 수 있데")
+ *
+ * 10-25 에 껐던 이유는 "본 사람이 0명" 이었는데, **그때는 조건이 달랐다.** 무료가 30회라
+ * 한도에 닿는 날이 3% 였다 — 아무도 한도를 못 봤으니 광고 단추를 볼 일도 없었다.
+ * 같은 날 무료를 10회로 좁혔고 지금은 **11%** 가 한도에 닿는다. 단추를 볼 사람이 생겼다.
+ *
+ * 숫자는 사장님이 "니가 정해" 라 해서 내가 골랐다(조정 전제). 근거:
+ *   · **+1회/번** 은 사장님이 정한 것이다. 한 번에 +10 이면 광고 하나로 하루가 끝나 두 번째를 안 본다.
+ *   · **하루 5번** → 최대 15회. 한 턴 0.457원이라 광고분 비용은 하루 **2.3원**.
+ *     한국 보상형 광고가 노출당 대략 3~7원이면 5번에 **15~35원** — 비용의 6~15배다.
+ *     위험은 돈이 아니라 **구독을 안 사게 되는 것**이라, 15회는 가운데값 2회보다 넉넉하면서
+ *     무제한(구독)과는 분명히 다른 자리에 둔다. 구독 본전은 하루 358턴이므로 한참 아래다.
+ *
+ * ⚠ 아직 **광고 SDK 가 없다.** `AD_REWARD_OPEN=1` 이 꺼져 있으면 서버가 503 을 주고
+ * 화면도 단추를 안 그린다([[feature-removal-leaves-dead-ends]] — 못 하는 일을 시키는 단추를 두지 않는다).
+ */
+export const AD_REFILLS_PER_DAY = 5;   // 하루 광고 횟수
+export const AD_REFILL_TURNS = 1;      // 한 번에 늘어나는 대화 횟수 (사장님 지시)
 
 /**
  * 구독자가 하루에 이만큼을 넘기면 **사람이 아니라고 본다**(매크로·자동 돌리기).
@@ -51,7 +67,7 @@ export type Balance = {
   remaining: number;
   freeLeft: number;
   credits: number;
-  /** 광고는 안 쓴다 — 늘 0. 화면이 옛 값을 읽어도 안 깨지게 칸은 남긴다. */
+  /** 오늘 더 볼 수 있는 광고 수. 화면은 이게 0 보다 클 때만 광고 단추를 그린다. */
   adLeft: number;
   menheraUntil: string | null;
   /** 지금 구독 중인가 — 화면은 이걸 보고 한도 안내를 숨긴다 */
@@ -66,18 +82,25 @@ export async function balanceFor(db: SupabaseClient, userId: string, day: string
     db.from("dot_entitlements").select("menhera_until").eq("user_id", userId).maybeSingle(),
   ]);
   const turns = Number(u?.turns ?? 0), bonus = Number(u?.bonus_turns ?? 0);
+  const adsSeen = Number(u?.ad_refills ?? 0);
   const credits = Number(w?.credits ?? 0);
   const menheraUntil = (e?.menhera_until as string) ?? null;
 
   /** 구독 중이면 한도가 없다. 날짜만 보고 가른다(시각까지 보면 자정 근처에서 흔들린다). */
   const 구독중 = !!menheraUntil && menheraUntil >= day;
 
+  /**
+   * 광고로 받은 턴은 이미 `bonus_turns` 에 들어가 있다(`dot_ad_refill` 이 거기에 더한다).
+   * 그래서 남은 횟수는 따로 더하지 않는다 — 더하면 **두 번 세는 것**이다.
+   */
   const freeLeft = Math.max(0, FREE_TURNS_PER_DAY + bonus - turns);
+  /** 구독자에게는 광고를 권하지 않는다 — 무제한인 사람에게 광고는 그냥 짜증이다. */
+  const adLeft = 구독중 ? 0 : Math.max(0, AD_REFILLS_PER_DAY - adsSeen);
   return {
     remaining: 구독중 ? Number.POSITIVE_INFINITY : freeLeft + credits,
     freeLeft,
     credits,
-    adLeft: 0,
+    adLeft,
     menheraUntil,
     구독중,
   };
@@ -90,4 +113,10 @@ export async function balanceFor(db: SupabaseClient, userId: string, day: string
 export const LIMIT_COPY = {   // 한도 문구
   본문: "오늘 준비한 대화는 여기까지야… 나랑 계속 이야기하고 싶다면, ‘멘헤라 모드’로 날 묶어줄래?",
   단추: "멘헤라 모드 구독하고 무제한 대화하기 (월 4,900원)",
+  /**
+   * 광고 단추는 **아래**에 둔다(11-04). 구독이 위다 — 광고는 공짜라 위에 두면 아무도
+   * 구독을 안 본다. 남은 횟수를 같이 적는 이유: 안 적으면 "계속 볼 수 있다" 로 읽히고
+   * 다 쓴 순간 **아무 일도 안 일어나는 단추**가 된다.
+   */
+  광고단추: (남음: number) => `광고 보고 ${AD_REFILL_TURNS}번 더 이야기하기 (오늘 ${남음}번 남음)`,
 };

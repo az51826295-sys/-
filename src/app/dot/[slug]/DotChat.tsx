@@ -6,7 +6,7 @@ import { BUZZ, SFX, buzz, shake } from "@/lib/dot/feel";
 import Link from "next/link";
 import { pushState, enablePush, disablePush, type PushState } from "./push-client";
 import { 물어볼까 } from "@/lib/dot/pushAsk";
-import { SKUS, LIMIT_COPY, type Balance } from "@/lib/dot/money";
+import { SKUS, LIMIT_COPY, AD_REFILL_TURNS, type Balance } from "@/lib/dot/money";
 import { USER_STICKERS, USER_STICKER_KEYS } from "@/lib/dot/stickers";
 import { GIFTS } from "@/lib/dot/bond";
 import { splitBubbles } from "@/lib/dot/bubbles";
@@ -33,9 +33,11 @@ type Bond = { points: number; stage: number; streakDays: number; toNext: { need:
 type Line = { role: string; content: string; emotion: string | null; sticker?: string | null; at?: string };
 
 export default function DotChat({
-  signedIn, who, bond: bond0, remaining: remaining0, history, limit, account: account0, balance: balance0, replyTo: replyTo0 = null,
+  signedIn, who, bond: bond0, remaining: remaining0, history, limit, account: account0, balance: balance0, replyTo: replyTo0 = null, adOpen = false,
 }: {
   signedIn: boolean; who: Character; bond: Bond; remaining: number; history: Line[]; limit: number;
+  /** 광고 보상이 켜져 있나(`AD_REWARD_OPEN`). 꺼져 있으면 단추를 그리지 않는다 — 서버가 503 을 줄 단추다. */
+  adOpen?: boolean;
   /** 익명이면 linked=false. 연결하면 폰을 바꿔도 이어진다(76회차). */
   account: { linked: boolean; email: string | null };
   /** 잔고 — 광고 남은 횟수·충전. 한도 카드가 이걸로 단추를 고른다(09-11 돈). */
@@ -97,8 +99,32 @@ export default function DotChat({
   const [balance, setBalance] = useState(balance0);
   const [replyTo, setReplyTo] = useState(replyTo0);
   const [shopOpen, setShopOpen] = useState(false);
-  /* 10-25: 광고(`watchAd`)를 걷어냈다. 켜 둔 내내 **본 사람이 0명**이었고, 사장님이 광고를
-     안 넣기로 정했다. `/api/dot/ad` 는 남겨 두되 화면에서 부르는 자리는 없다. */
+  /**
+   * 광고 보고 +1회 — **11-04 되살렸다.** (10-25 에 "본 사람 0명" 으로 걷어냈는데, 그때는
+   * 무료가 30회라 한도를 본 사람이 3% 였다. 10회로 좁힌 지금은 11% 가 본다.)
+   *
+   * 광고를 **실제로 띄우는 코드는 아직 없다.** 그래서 지금은 "틀" 만 맞춰 둔다 —
+   * 광고망이 붙는 날 `광고보기()` 안의 가짜 기다림 자리에 그 SDK 호출이 들어온다.
+   * 충전은 끝까지 **서버가** 한다(`/api/dot/ad`), 화면은 결과만 받아 그린다.
+   */
+  const [adBusy, setAdBusy] = useState(false);
+  async function watchAd() {
+    if (adBusy) return;
+    setAdBusy(true);
+    try {
+      /* ── 여기에 광고 SDK 가 들어온다 ── 광고가 끝까지 재생됐을 때만 아래로 내려가야 한다. */
+      const res = await fetch("/api/dot/ad", { method: "POST" });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) { setToast(data.error ?? "광고를 불러오지 못했어요"); return; }
+      /* 서버가 센 잔고로 **갈아 끼운다.** 화면에서 +1 을 더하면 서버와 어긋날 수 있다. */
+      if (data.balance) { setBalance(data.balance); setRemaining(data.balance.remaining); }
+      setToast(`${who.name}와 ${AD_REFILL_TURNS}번 더 이야기할 수 있어요`);
+    } catch {
+      setToast("광고를 불러오지 못했어요");
+    } finally {
+      setAdBusy(false);
+    }
+  }
   /**
    * 구독 — **결제창으로 보낸다** (10-28).
    *
@@ -481,18 +507,10 @@ export default function DotChat({
             * 이제 파는 것은 **멘헤라 구독 하나**라, 여기서도 그 하나만 내민다.
             */}
           {signedIn && mounted && remaining <= 0 && !busy && (
-            <div className="kk-limit">
-              <div className="kk-limit-title">오늘 이야기는 여기까지</div>
-              <div className="kk-limit-body">{LIMIT_COPY.본문.replace(/\{name\}/g, who.name)}</div>
-              <button className="kk-limit-btn" onClick={() => setPayOpen(true)}>{LIMIT_COPY.단추}</button>
-              <div className="kk-limit-note alt">
-                그냥 기다려도 돼요 — <b>{untilReset()}</b> 뒤에 다시 {limit}번 이야기할 수 있어요.
-              </div>
-              {push !== "unsupported" && push !== "on" && (
-                <button className="kk-limit-link" onClick={togglePush}>내일 {who.name}가 먼저 말 걸게 하기</button>
-              )}
-              {push === "on" && <div className="kk-limit-note">내일 {who.name}가 먼저 말을 걸어요</div>}
-            </div>
+            <LimitCard
+              name={who.name} limit={limit} adOpen={adOpen} adLeft={balance.adLeft} adBusy={adBusy}
+              push={push} onPay={() => setPayOpen(true)} onAd={watchAd} onPush={togglePush}
+            />
           )}
           {busy && (
             <div className="kk-row them">
@@ -805,6 +823,46 @@ const THEME_KEY = "dot-theme";
 
 /** "오후 9:17". 브라우저에서만 부른다(위 `mounted` 설명 참고). */
 /** 한국 시간 자정까지 "N시간 M분". 한도는 한국 날짜로 초기화된다(dot_usage.day). */
+/**
+ * 한도 카드 — **따로 꺼내 둔 이유는 재려고다**(11-04).
+ *
+ * 이 카드는 `mounted` 가 참일 때만 그려진다(하이드레이션 안전장치). 그래서 서버 렌더로는
+ * 영영 안 나오고, **단추가 그려지는지 사진으로 확인할 길이 없었다.** 조각으로 꺼내면
+ * `engine/tools/dot_limit_card_shot.mts` 가 **제품 컴포넌트 그대로** 그려서 잰다 —
+ * HTML 을 베껴 적는 자는 제품이 바뀐 날 사진만 맞는다.
+ *
+ * 들어오는 값만 보고 그린다(상태 없음). 누르면 할 일은 부모가 준다.
+ */
+export function LimitCard({
+  name, limit, adOpen, adLeft, adBusy, push, onPay, onAd, onPush,
+}: {
+  name: string; limit: number; adOpen: boolean; adLeft: number; adBusy: boolean;
+  /** 알림 상태(`on`·`denied`·`unsupported`·아직 모름 `null`). 꺼낼 때 그대로 옮긴 조건이다. */
+  push: string | null; onPay: () => void; onAd: () => void; onPush: () => void;
+}) {
+  return (
+    <div className="kk-limit">
+      <div className="kk-limit-title">오늘 이야기는 여기까지</div>
+      <div className="kk-limit-body">{LIMIT_COPY.본문.replace(/\{name\}/g, name)}</div>
+      <button className="kk-limit-btn" onClick={onPay}>{LIMIT_COPY.단추}</button>
+      {/* 광고는 구독 **아래**. 공짜라 위에 두면 구독을 아무도 안 본다.
+          스위치가 꺼졌거나 오늘 다 봤으면 **그리지 않는다** — 누르면 503 이 오는 단추는 안 둔다. */}
+      {adOpen && adLeft > 0 && (
+        <button className="kk-limit-ad" onClick={onAd} disabled={adBusy}>
+          {adBusy ? "광고를 불러오는 중…" : LIMIT_COPY.광고단추(adLeft)}
+        </button>
+      )}
+      <div className="kk-limit-note alt">
+        그냥 기다려도 돼요 — <b>{untilReset()}</b> 뒤에 다시 {limit}번 이야기할 수 있어요.
+      </div>
+      {push !== "unsupported" && push !== "on" && (
+        <button className="kk-limit-link" onClick={onPush}>내일 {name}가 먼저 말 걸게 하기</button>
+      )}
+      {push === "on" && <div className="kk-limit-note">내일 {name}가 먼저 말을 걸어요</div>}
+    </div>
+  );
+}
+
 function untilReset(): string {
   const now = Date.now();
   const kst = new Date(now + 9 * 3_600_000);
@@ -959,6 +1017,11 @@ const CSS = `
 .kk-limit-btn.alt { background:#ff5c7a; color:#fff; margin-top:8px; }
 .kk-limit-btn:disabled { opacity:.6; }
 .kk-limit-link { margin-top:10px; background:none; border:none; color:#5c6570; font:inherit; font-size:13px; text-decoration:underline; cursor:pointer; }
+/* 광고 단추(11-04) — 구독 단추와 **다른 무게**로 둔다. 노란 단추가 둘이면 어느 쪽이 공짜인지 안 보인다. */
+/* 높이 44px 이상 — 회사가 늘 재는 줄이다(dot_ui_audit ⑤ "너무 작은 누를 자리").
+   처음 padding:9px 로 두니 37px 이었고 자에 걸렸다. */
+.kk-limit-ad { display:block; width:100%; margin-top:8px; background:#fff; color:#3c434b; border:1px solid #d8dde3; border-radius:12px; padding:13px 14px; font:inherit; font-size:13px; line-height:1.3; cursor:pointer; }
+.kk-limit-ad:disabled { opacity:.6; cursor:default; }
 .kk-shop { display:flex; flex-direction:column; gap:8px; }
 .kk-shop-bal { font-size:13px; color:#5c6570; margin-bottom:4px; }
 .kk-sku { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:12px 14px; background:#f5f7fa; border:none; border-radius:14px; font:inherit; color:#141414; cursor:pointer; text-align:left; }
