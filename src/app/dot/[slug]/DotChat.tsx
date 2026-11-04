@@ -845,16 +845,23 @@ export function LimitCard({
       <div className="kk-limit-title">오늘 이야기는 여기까지</div>
       <div className="kk-limit-body">{LIMIT_COPY.본문.replace(/\{name\}/g, name)}</div>
       <button className="kk-limit-btn" onClick={onPay}>{LIMIT_COPY.단추}</button>
-      {/* 광고는 구독 **아래**. 공짜라 위에 두면 구독을 아무도 안 본다.
-          스위치가 꺼졌거나 오늘 다 봤으면 **그리지 않는다** — 누르면 503 이 오는 단추는 안 둔다. */}
+      <div className="kk-limit-note alt">
+        그냥 기다려도 돼요 — <b>{untilReset()}</b> 뒤에 다시 {limit}번 이야기할 수 있어요.
+      </div>
+      {/**
+        * 광고는 구독 **바로 아래가 아니라 안내문 아래**다 (11-05 사장님 지시).
+        *
+        * 처음엔 구독 단추 바로 밑에 붙여 뒀는데, 그러면 손가락이 내려오다 **공짜를 먼저 만난다.**
+        * 숨기지는 않는다 — 숨기면 10-25 와 같은 자리로 돌아간다(본 사람 0명). 안내문 하나를
+        * 사이에 두고, 생김새도 구독과 다르게 둔다. 손가락 자리는 44px 그대로.
+        *
+        * 스위치가 꺼졌거나 오늘 다 봤으면 **그리지 않는다** — 누르면 503 이 오는 단추는 안 둔다.
+        */}
       {adOpen && adLeft > 0 && (
         <button className="kk-limit-ad" onClick={onAd} disabled={adBusy}>
           {adBusy ? "광고를 불러오는 중…" : LIMIT_COPY.광고단추(adLeft)}
         </button>
       )}
-      <div className="kk-limit-note alt">
-        그냥 기다려도 돼요 — <b>{untilReset()}</b> 뒤에 다시 {limit}번 이야기할 수 있어요.
-      </div>
       {push !== "unsupported" && push !== "on" && (
         <button className="kk-limit-link" onClick={onPush}>내일 {name}가 먼저 말 걸게 하기</button>
       )}

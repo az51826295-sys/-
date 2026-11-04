@@ -63,12 +63,16 @@ try {
     const 잰것 = await page.evaluate(() => {
       const b = document.querySelector(".kk-limit-ad") as HTMLElement | null;
       const 구독 = document.querySelector(".kk-limit-btn") as HTMLElement | null;
-      const r = b?.getBoundingClientRect(), s = 구독?.getBoundingClientRect();
+      const 안내 = document.querySelector(".kk-limit-note.alt") as HTMLElement | null;
+      const r = b?.getBoundingClientRect(), s = 구독?.getBoundingClientRect(), n = 안내?.getBoundingClientRect();
       return {
         넘침: document.documentElement.scrollWidth > window.innerWidth,
         광고: r ? { w: Math.round(r.width), h: Math.round(r.height), text: (b!.textContent ?? "").trim() } : null,
-        /* 광고가 구독 **아래**인가 — 순서가 뒤집히면 공짜가 위라 아무도 구독을 안 본다. */
-        아래: !!r && !!s && r.top > s.top,
+        /* 광고가 구독 **바로 아래가 아니라 안내문 아래**인가 (11-05).
+           순서만 보면 "구독 밑에 딱 붙은" 것도 통과한다 — 손가락이 내려오다 공짜를 먼저 만나는 자리다.
+           그래서 **사이에 안내문이 있는지**를 잰다. 틈 px 도 같이 적는다. */
+        안내아래: !!r && !!n && r.top >= n.bottom,
+        틈: !!r && !!s ? Math.round(r.top - s.bottom) : null,
       };
     });
     await page.screenshot({ path: `${OUT}/${이름}.png` });
@@ -76,10 +80,10 @@ try {
     const 맞나 = adOpen
       /* 44px — 회사 기준(dot_ui_audit ⑤). 처음에 36 으로 뒀는데 그건 자를 제품보다
          느슨하게 둔 것이다: 37px 단추가 이 자는 통과하고 화면 점검에는 걸린다. */
-      ? 있나 && !!잰것.광고 && 잰것.광고.h >= 44 && 잰것.아래 && !잰것.넘침
+      ? 있나 && !!잰것.광고 && 잰것.광고.h >= 44 && 잰것.안내아래 && !잰것.넘침
       : !있나 && !잰것.넘침;
     적은것.push(`${맞나 ? "✅" : "❌"} ${이름}: 광고 단추 ${있나 ? "있음" : "없음"}` +
-      (잰것.광고 ? ` ${잰것.광고.w}×${잰것.광고.h}px · 구독 아래 ${잰것.아래} · "${잰것.광고.text}"` : "") +
+      (잰것.광고 ? ` ${잰것.광고.w}×${잰것.광고.h}px · 안내문 아래 ${잰것.안내아래} · 구독과 틈 ${잰것.틈}px · "${잰것.광고.text}"` : "") +
       (잰것.넘침 ? " ⚠ 가로 넘침" : ""));
   }
 } finally {
