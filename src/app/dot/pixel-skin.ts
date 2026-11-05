@@ -21,6 +21,19 @@ body { background: #fff !important; }
 .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root, .dt-tabs, .fb {
   font-family: Galmuri14, Galmuri11, "Apple SD Gothic Neo", sans-serif !important; -webkit-font-smoothing: none !important; font-smooth: never; letter-spacing: 0 !important; }
 .kl-root *, .pk-root *, .fd-root *, .pf-root *, .kk-root *, .da-root *, .pv-root * { letter-spacing: 0 !important; }
+
+/* ── 줄바꿈: 낱말째 내려간다 ──
+   기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+   *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+   anywhere 를 같이 두는 이유(이 글은 템플릿 문자열 안이라 백틱을 못 쓴다 — 11-06 에 그걸로 앱이 500 났다):
+   긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+   가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다.
+   11-06: 껍데기의 뿌리 목록은 kl/pk/fd/pf/kk/da/pv 일곱인데 화면 뿌리는 열하나다 —
+   bt(베타)·me(내 창)·py(결제)·sc(검색)·tr(타로) 는 나중에 생기고 목록에 안 들어갔다.
+   **줄바꿈만** 열하나 모두에 건다. 글꼴·바탕까지 입히면 다섯 화면의 보기가 바뀌는 일이라
+   그건 사장님이 정할 몫으로 남긴다(검색 화면은 지금 아래 탭만 도트 글꼴이다). */
+.kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root,
+.bt-root, .me-root, .py-root, .sc-root, .tr-root { word-break: keep-all; overflow-wrap: anywhere; }
 /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
 .kl-title, .pk-title, .fd-title, .da-name { font-family: Galmuri14, sans-serif !important; font-size: 28px !important; font-weight: 400 !important; line-height: 1.2 !important; }
 .pf-name { font-family: Galmuri14, sans-serif !important; font-size: 28px !important; font-weight: 400 !important; }

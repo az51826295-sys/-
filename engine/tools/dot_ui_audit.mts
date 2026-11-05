@@ -9,8 +9,18 @@
  *  ① **넘침** — 보이는 요소의 오른쪽 끝이 화면 폭을 넘나(가로 스크롤이 생기는 자리)
  *  ② **깨진 그림** — `naturalWidth === 0` 인 img
  *  ③ **가로 스크롤** — `scrollWidth > clientWidth`
- *  ④ **너무 작은 누를 자리** — 44px 미만(손가락이 못 맞힌다, 애플·구글 권고)
+ *  ④ **너무 작은 누를 자리** — 손가락이 못 맞힌다
+ *     11-06 에 이 자를 고쳤다. 전에는 **재고도 안 셌다**(74개를 적어 놓고 끝 줄은 "전부 깨끗"),
+ *     게다가 문턱이 **내가 지어낸 36px** 이었다(문서엔 44 라 써 놓고 코드는 36 을 쟀고,
+ *     `dot_limit_card_shot` 은 그 44 를 "회사 기준" 이라고 인용하고 있었다 — 없는 기준이었다).
+ *     지금은 **바깥 기준**을 쓴다:
+ *       · **24×24 미만 = 어긋남** (WCAG 2.2 AA, 2.5.8 Target Size Minimum)
+ *       · 24~44 = "아슬" (AAA 2.5.5 를 못 맞춘 것) — 적고 세지는 않는다
+ *       · **문장 속 링크는 예외** (2.5.8 의 inline 예외). 기계로 가리는 법: 바로 옆에 글자 노드가
+ *         있으면 문장 속이다 — 줄 높이에 묶여 있으니 크게 만들 수가 없다.
+ *     한 번에 44 로 전부 올리면 글자 링크까지 빨개진다([[rule-blast-radius]]).
  *  ⑤ **아래 탭에 가린 것** — 탭 높이 안에 들어가 버린 누를 자리
+ *  ⑦ **낱말 잘림** — 한국어가 글자 단위로 줄바꿈되나(11-06 에 41군데였다. 지금 0)
  *  ⑥ **빈 글자 단추** — 이름도 aria-label 도 없는 단추(읽어 주는 기계가 못 읽는다)
  *
  * 화면 그림도 같이 저장한다 — 자가 통과해도 눈이 아니라고 하면 아닌 것이다.
@@ -20,9 +30,18 @@ import { mkdtempSync, rmSync, mkdirSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-const magic = process.argv[2];
-if (!magic) { console.error("사용: <magicLink>"); process.exit(1); }
-const BASE = "https://dot-web-production-7e03.up.railway.app";
+const magic0 = process.argv[2];
+if (!magic0) { console.error("사용: <magicLink>  (DOT_BASE=http://localhost:3000 이면 로컬을 잰다)"); process.exit(1); }
+
+/**
+ * 11-06: **고친 것을 재려면 로컬을 볼 수 있어야 한다.** 전에는 운영 주소가 박혀 있어서
+ * 내가 고친 CSS 를 재려면 먼저 배포해야 했다 — 안 재고 올리는 순서가 된다([[unrun-code-is-unmeasured]]).
+ * `DOT_BASE` 를 주면 그 서버를 잰다. 로그인 링크는 **같은 Supabase 열쇠**로 만든 것이라
+ * 토큰은 그대로 쓰고 **주소만 바꿔** 들어간다(그 길은 로컬 서버가 처리한다).
+ */
+const BASE = (process.env.DOT_BASE ?? "https://dot-web-production-7e03.up.railway.app").replace(/\/$/, "");
+const magic = BASE + magic0.slice(magic0.indexOf("/auth/confirm"));
+if (!magic0.includes("/auth/confirm")) { console.error("로그인 링크가 /auth/confirm 이 아니다"); process.exit(1); }
 const OUT = "C:/Users/az518/Desktop/두근도트-화면점검";
 mkdirSync(OUT, { recursive: true });
 
@@ -39,45 +58,10 @@ const 화면: [string, string][] = [
   ["개인정보", "/dot/privacy"],
 ];
 
-type 잰것 = { 넘침: string[]; 깨짐: string[]; 작음: string[]; 가림: string[]; 빈단추: string[]; 가로스크롤: boolean; 폭: number };
+import { CHECK_CODE, WORDBREAK_CODE, split, group, type Measured, type WordBreak } from "./dot_ui_checks.js";
 
-/**
- * 검사는 **글자로 넘긴다.**
- *
- * `page.evaluate(() => {...})` 에 화살표 함수를 넣으면 tsx(esbuild)가 그 안에 `__name(...)` 헬퍼를
- * 끼워 넣는데, 브라우저 안에는 그 헬퍼가 없어서 `__name is not defined` 로 죽는다(09-29 실제로 죽었다).
- * 글자로 주면 esbuild 가 건드리지 않는다.
- */
-const 검사코드 = `(() => {
-  var W = document.documentElement.clientWidth;
-  var tabs = document.querySelector('.dt-tabs');
-  var tabTop = tabs ? tabs.getBoundingClientRect().top : Infinity;
-  var over = [], broken = [], small = [], hidden = [], unnamed = [];
-  var all = document.querySelectorAll('*');
-  for (var i = 0; i < all.length; i++) {
-    var el = all[i];
-    var cs = getComputedStyle(el);
-    if (cs.display === 'none' || cs.visibility === 'hidden' || cs.opacity === '0') continue;
-    var r = el.getBoundingClientRect();
-    if (r.width === 0 && r.height === 0) continue;
-    var name = (el.textContent || '').trim().slice(0, 18) || el.getAttribute('aria-label') || el.tagName.toLowerCase();
-    if (r.right > W + 1 && r.width <= W) over.push(name + ' (오른쪽 ' + Math.round(r.right) + ' > 폭 ' + W + ')');
-    if (el.tagName === 'IMG' && el.naturalWidth === 0) broken.push(String(el.src).slice(-50));
-    if (el.matches('button, a[href], input, textarea, [role=button]')) {
-      if (!String(name).trim()) unnamed.push(el.tagName.toLowerCase() + '.' + String(el.className).split(' ')[0]);
-      if (r.height > 0 && (r.height < 36 || r.width < 36)) small.push(name + ' ' + Math.round(r.width) + 'x' + Math.round(r.height));
-      if (r.top < tabTop && r.bottom > tabTop + r.height / 2) hidden.push(name);
-    }
-  }
-  return {
-    넘침: over, 깨짐: broken, 작음: small, 가림: hidden, 빈단추: unnamed,
-    가로스크롤: document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
-    폭: W
-  };
-})()`;
-
-async function 재기(page: Page): Promise<잰것> {
-  return page.evaluate(검사코드) as Promise<잰것>;
+async function 재기(page: Page): Promise<Measured> {
+  return page.evaluate(CHECK_CODE) as Promise<Measured>;
 }
 
 const profile = mkdtempSync(join(tmpdir(), "dot-ui-"));
@@ -105,6 +89,9 @@ try {
     await sleep(2200);
     const r = await 재기(page);
     await page.screenshot({ path: `${OUT}/${이름}.png` as `${string}.png` });
+    const { 어긋남: 작음, 아슬, 예외 } = split(r.작음);
+    const 잘림 = await page.evaluate(WORDBREAK_CODE) as WordBreak[];
+
     const 탈난것: string[] = [];
     if (res && res.status() >= 400) 탈난것.push(`HTTP ${res.status()}`);
     if (r.가로스크롤) 탈난것.push("가로 스크롤");
@@ -112,10 +99,15 @@ try {
     if (r.깨짐.length) 탈난것.push(`깨진 그림 ${r.깨짐.length} (${r.깨짐[0]})`);
     if (r.빈단추.length) 탈난것.push(`이름 없는 단추 ${r.빈단추.length} (${r.빈단추[0]})`);
     if (r.가림.length) 탈난것.push(`탭에 가림 ${r.가림.length} (${r.가림[0]})`);
+    if (작음.length) 탈난것.push(`작은 누를 자리 ${작음.length} (24px 미만, 조각 ${group(작음).length}가지)`);
+    if (잘림.length) 탈난것.push(`낱말 잘림 ${잘림.length} ("${잘림[0].자리}")`);
     if (콘솔.length) 탈난것.push(`콘솔 오류 ${콘솔.length} (${콘솔[0]})`);
     탈 += 탈난것.length;
     console.log(`${탈난것.length ? "어긋남" : "맞음  "} ${이름.padEnd(9)} ${탈난것.length ?탈난것.join(" · ") : "깨끗"}`);
-    if (r.작음.length) console.log(`         작은 누를 자리 ${r.작음.length}개: ${r.작음.slice(0, 3).join(", ")}`);
+    if (작음.length) console.log(`         24px 미만(AA 어긋남): ${group(작음).join(" · ")}`);
+    if (아슬.length) console.log(`         아슬(24~44, AAA 못 맞춤): ${group(아슬).join(" · ")}`);
+    if (예외.length) console.log(`         문장 속 예외: ${group(예외).join(" · ")}`);
+    if (잘림.length) console.log(`         낱말 잘림 ${잘림.length}: ${잘림.slice(0, 3).map((x) => `${x.어디} "${x.자리}"`).join(" · ")}`);
   }
 } finally {
   await browser.close();

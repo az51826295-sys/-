@@ -19,10 +19,15 @@ export default function FollowButton({ characterId, following: f0, name, size = 
     } catch { setFollowing(!next); } finally { setBusy(false); }
   }
   return (
-    <button className={`fb ${size}${following ? " on" : ""}`} onClick={toggle} disabled={busy} aria-pressed={following} aria-label={`${name ?? ""} ${following ? words[1] : words[0]}`}>
+    /* `<style>` 가 **단추 안에** 있었다(11-06 화면 점검) — `<button>` 안에 들어갈 수 없는 꼬리표라
+       브라우저는 참아 주지만 단추의 글자가 CSS 가 된다: 화면을 글로 읽는 것(자·읽어 주는 기계)에
+       단추 이름이 `.fb { border:none;` 으로 보였다. 밖으로 꺼낸다 — 보이는 것은 그대로다. */
+    <>
       <style>{CSS}</style>
-      {following ? words[1] : words[0]}
-    </button>
+      <button className={`fb ${size}${following ? " on" : ""}`} onClick={toggle} disabled={busy} aria-pressed={following} aria-label={`${name ?? ""} ${following ? words[1] : words[0]}`}>
+        {following ? words[1] : words[0]}
+      </button>
+    </>
   );
 }
 

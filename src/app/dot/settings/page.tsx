@@ -55,7 +55,11 @@ const CSS = `
 .pk-phone { width:100%; max-width:430px; min-height:100dvh; max-height:940px; background:#f5f7fa; display:flex; flex-direction:column; overflow:hidden; }
 .pk-head { padding:28px 22px 12px; }
 .st-head { display:flex; align-items:center; gap:10px; }
-.st-back { font-size:26px; line-height:1; color:#111; text-decoration:none; width:32px; }
+/* 뒤로 단추만 32×26 이었다 — 대화방·프로필의 뒤로는 둘 다 40×40 이다(11-06 화면 점검).
+   같은 일을 하는 단추가 화면마다 크기가 다르면 손가락이 한 번 헛나간다. */
+.st-back { font-size:26px; line-height:1; color:#111; text-decoration:none;
+  width:40px; height:40px; display:flex; align-items:center; justify-content:center; border-radius:50%; }
+.st-back:active { background:rgba(0,0,0,.06); }
 .pk-title { font-size:24px; font-weight:700; letter-spacing:-.4px; color:#111; }
 .st-list { flex:1; min-height:0; overflow-y:auto; padding:4px 16px 32px; display:flex; flex-direction:column; gap:8px; }
 .st-group { font-size:12px; color:#8a8f98; padding:14px 6px 2px; }

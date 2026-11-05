@@ -9,11 +9,19 @@
  * CSS 는 `DotChat` 을 통째로 렌더해서 그 안의 `<style>` 을 꺼내 쓴다 — 베껴 적지 않는다.
  *
  * 못 보는 것(정직하게): 누르는 것·광고 호출·토스트. 그건 `dot_ad_route_test.mts` 가 잰다.
+ *
+ * 11-06: 도트 껍데기 규칙은 `.kk-root *` 로 겨냥돼 있어서, 카드만 맨바닥에 그리면
+ * **껍데기가 닿지 않는다** — 그래서 광고 단추를 45px 로 쟀는데 방 안에서는 62px 였다.
+ * 지금은 `.kk-root` 로 감싸서 규칙이 닿게 한다. 그래도 **절대 크기는 `dot_room_shot` 이 더 참이다**
+ * (그쪽은 제품이 그리는 상자 안에 들어 있다). 이 자는 "있나/안내문 아래인가" 를 본다.
  */
 import { renderToStaticMarkup } from "react-dom/server";
 import React from "react";
 import puppeteer from "puppeteer-core";
 import { mkdirSync, rmSync } from "node:fs";
+/** 11-06: `/dot` 화면이 실제로 입는 **도트 껍데기**를 같이 입힌다 — 안 입히고 재면
+ *  사람이 보는 크기가 아니다(광고 단추를 45px 로 쟀는데 껍데기를 입히면 62px 였다). */
+import { dotSkin } from "./dot_ui_checks.js";
 
 const OUT = "C:/Users/az518/Desktop/두근도트-광고단추";
 mkdirSync(OUT, { recursive: true });
@@ -42,10 +50,11 @@ const 카드 = (adOpen: boolean, adLeft: number) =>
   }));
 
 /** 대화방과 같은 배경·폭(390px 폰)에 올린다. 흰 바탕에 띄우면 카드 테두리가 안 보인다. */
+const 스킨 = await dotSkin();
 const 껍데기 = (속: string) => `<!doctype html><meta charset="utf-8">
-<meta name="viewport" content="width=390,initial-scale=1">
+<meta name="viewport" content="width=390,initial-scale=1">${스킨.앞}
 <body style="margin:0;background:#b2c7d9;font-family:system-ui,sans-serif;padding:16px 0">
-<div style="display:flex;flex-direction:column;align-items:center">${style}${속}</div></body>`;
+<div class="kk-root" style="min-height:0;display:block"><div style="display:flex;flex-direction:column;align-items:center">${style}${속}</div></div>${스킨.뒤}</body>`;
 
 const 프로필 = `${process.env.TEMP}/rk-hl-adshot-${process.pid}`;   // rk-hl- 로 시작 = 내 것
 const browser = await puppeteer.launch({
@@ -60,6 +69,8 @@ try {
     const page = await browser.newPage();
     await page.setViewport({ width: 390, height: 560, deviceScaleFactor: 2 });
     await page.setContent(껍데기(html), { waitUntil: "domcontentloaded" });
+    /* 글꼴을 기다린다 — 갈무리가 뜨기 전에 재면 글자가 좁아서 **줄바꿈이 안 보인다**(11-06). */
+    await page.evaluate(() => document.fonts.ready);
     const 잰것 = await page.evaluate(() => {
       const b = document.querySelector(".kk-limit-ad") as HTMLElement | null;
       const 구독 = document.querySelector(".kk-limit-btn") as HTMLElement | null;

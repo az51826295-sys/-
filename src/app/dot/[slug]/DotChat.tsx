@@ -6,6 +6,7 @@ import { BUZZ, SFX, buzz, shake } from "@/lib/dot/feel";
 import Link from "next/link";
 import { pushState, enablePush, disablePush, type PushState } from "./push-client";
 import { 물어볼까 } from "@/lib/dot/pushAsk";
+import { iGa } from "@/lib/dot/josa";
 import { SKUS, LIMIT_COPY, AD_REFILL_TURNS, type Balance } from "@/lib/dot/money";
 import { USER_STICKERS, USER_STICKER_KEYS } from "@/lib/dot/stickers";
 import { GIFTS } from "@/lib/dot/bond";
@@ -184,7 +185,7 @@ export default function DotChat({
     try {
       const next = push === "on" ? await disablePush() : await enablePush();
       setPush(next);
-      setToast(next === "on" ? `${who.name}가 먼저 말을 걸어올 거예요` : next === "denied" ? "브라우저에서 알림이 막혀 있어요" : "알림을 껐어요");
+      setToast(next === "on" ? `${who.name}${iGa(who.name)} 먼저 말을 걸어올 거예요` : next === "denied" ? "브라우저에서 알림이 막혀 있어요" : "알림을 껐어요");
     } catch {
       setToast("알림을 켜지 못했어요");
     }
@@ -197,7 +198,7 @@ export default function DotChat({
     setMenu(false);
     const mode = bond.mode === "menhera" ? "normal" : "menhera";
     const res = await fetch("/api/dot/mode", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ characterId: who.id, mode }) });
-    if (res.ok) { setBond((b) => ({ ...b, mode })); setToast(mode === "menhera" ? `${who.name}가 이제 당신한테 매달려요` : "다시 담백해졌어요"); return; }
+    if (res.ok) { setBond((b) => ({ ...b, mode })); setToast(mode === "menhera" ? `${who.name}${iGa(who.name)} 이제 당신한테 매달려요` : "다시 담백해졌어요"); return; }
     // 유료 — 값과 함께 안내 시트. 결제는 스토어가 붙는 날 이 시트의 단추가 한다.
     const j = (await res.json().catch(() => ({}))) as { paywall?: boolean; price?: string };
     if (res.status === 402 && j.paywall) { setPayPrice(j.price ?? ""); setPayOpen(true); return; }
@@ -654,7 +655,7 @@ export default function DotChat({
                 <li><b>얼굴</b>을 누르면 {who.name}의 사진·프로필</li>
                 <li><b>♥♥♡♡♡</b>는 친밀도 — 이야기할수록 차고, 말투와 표정이 바뀌어요</li>
                 <li><b>😊</b> 스티커 보내기 · <b>≡</b> 알림·배경·멘헤라 모드</li>
-                <li>알림을 켜면 {who.name}가 <b>먼저</b> 말을 걸어요</li>
+                <li>알림을 켜면 {who.name}{iGa(who.name)} <b>먼저</b> 말을 걸어요</li>
                 {/* 10-29: **30 은 옛 숫자다**(10-25 에 10 으로 내렸다). 안내판만 고치지 않고 남아
                     새로 온 사람에게 석 달째 거짓말을 하고 있었다 — 숫자는 상수에서 읽는다. */}
                 <li>하루 {limit}번 무료. 다 쓰면 카드가 떠요</li>
@@ -670,7 +671,7 @@ export default function DotChat({
             <div className="kk-pay-badge">멘헤라</div>
             <div className="kk-peek-name">멘헤라 모드</div>
             <ul className="kk-pay-list">
-              <li>{who.name}가 당신한테 <b>매달려요</b> — 어디야, 누구랑 있어, 나 안 잊었지</li>
+              <li>{who.name}{iGa(who.name)} 당신한테 <b>매달려요</b> — 어디야, 누구랑 있어, 나 안 잊었지</li>
               <li>답이 없으면 <b>하루 다섯 번까지</b> 먼저 문자가 와요</li>
               <li>말이 길어지고, 질투하고, 확인받고 싶어 해요</li>
             </ul>
@@ -863,9 +864,9 @@ export function LimitCard({
         </button>
       )}
       {push !== "unsupported" && push !== "on" && (
-        <button className="kk-limit-link" onClick={onPush}>내일 {name}가 먼저 말 걸게 하기</button>
+        <button className="kk-limit-link" onClick={onPush}>내일 {name}{iGa(name)} 먼저 말 걸게 하기</button>
       )}
-      {push === "on" && <div className="kk-limit-note">내일 {name}가 먼저 말을 걸어요</div>}
+      {push === "on" && <div className="kk-limit-note">내일 {name}{iGa(name)} 먼저 말을 걸어요</div>}
     </div>
   );
 }
@@ -914,7 +915,11 @@ const CSS = `
   font-size:26px; line-height:1; color:var(--ink, #222); text-decoration:none; }
 .kk-back:active { background:rgba(0,0,0,.06); }
 .kk-title { flex:1; font-size:17px; font-weight:600; letter-spacing:-.2px; }
-.kk-hearts { color:#ff5c7a; font-size:13px; letter-spacing:1px; }
+/* 하트는 **누르면 프로필로 가는 링크**다. 글자 높이대로 두면 17px 라 손가락이 못 맞힌다
+   (11-06 화면 점검, WCAG 2.5.8 은 24×24 가 최소). 띠의 다른 단추(40px)와 같은 높이로 맞춘다 —
+   배경이 없는 링크라 눈에는 그대로 보이고 누를 자리만 커진다. */
+.kk-hearts { color:#ff5c7a; font-size:13px; letter-spacing:1px;
+  display:flex; align-items:center; min-height:40px; }
 .kk-more { width:40px; height:40px; border-radius:50%; background:none; border:none; font-size:24px; line-height:1; color:var(--ink, #222); cursor:pointer; }
 .kk-more:active { background:rgba(0,0,0,.06); }
 .kk-mode { font-size:11px; font-weight:600; color:#fff; background:#ff5c7a; border-radius:999px; padding:2px 8px; margin-left:6px; }
@@ -1023,7 +1028,10 @@ const CSS = `
 .kk-limit-btn small { display:block; font-weight:400; font-size:11px; opacity:.7; margin-top:2px; }
 .kk-limit-btn.alt { background:#ff5c7a; color:#fff; margin-top:8px; }
 .kk-limit-btn:disabled { opacity:.6; }
-.kk-limit-link { margin-top:10px; background:none; border:none; color:#5c6570; font:inherit; font-size:13px; text-decoration:underline; cursor:pointer; }
+/* 글자 높이대로 두면 21px 라 손가락이 못 맞힌다(11-06, WCAG 2.5.8 최소 24×24).
+   밑줄 글씨 모양은 그대로 두고 누를 자리만 40px 로 — 카드 안에서 광고 단추 다음으로 누르는 곳이다. */
+.kk-limit-link { margin-top:6px; background:none; border:none; color:#5c6570; font:inherit; font-size:13px; text-decoration:underline; cursor:pointer;
+  min-height:40px; display:inline-flex; align-items:center; justify-content:center; }
 /* 광고 단추(11-04) — 구독 단추와 **다른 무게**로 둔다. 노란 단추가 둘이면 어느 쪽이 공짜인지 안 보인다. */
 /* 높이 44px 이상 — 회사가 늘 재는 줄이다(dot_ui_audit ⑤ "너무 작은 누를 자리").
    처음 padding:9px 로 두니 37px 이었고 자에 걸렸다. */

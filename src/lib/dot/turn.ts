@@ -3,6 +3,7 @@ import { z } from "zod";
 import { defaultProviders } from "@/lib/execution/shared";
 import { createDeepSeekProvider } from "@/lib/providers/deepseek";
 import { mergeMemo } from "./memo";
+import { eunNeun } from "./josa";
 import { balanceFor, SUB_DAILY_RAIL } from "./money";
 import { USER_STICKERS } from "./stickers";
 import {
@@ -191,7 +192,7 @@ export async function prepareTurn(db: SupabaseClient, userId: string, characterI
       // **원자적으로** 뺀다(dot_spend_credits) — 두 번 눌러도 잔고가 모자라면 두 번째는 막힌다.
       const { data: 남음, error: se } = await db.rpc("dot_spend_credits", { p_user: userId, p_amount: 선물.price, p_sku: `gift:${선물.key}` });
       if (se) return { ok: false, reason: "failed", message: se.message };
-      if (Number(남음) < 0) return { ok: false, reason: "no_credits", message: `크레딧이 모자라요. ${선물.name}은(는) ${선물.price}크레딧이에요.` };
+      if (Number(남음) < 0) return { ok: false, reason: "no_credits", message: `크레딧이 모자라요. ${선물.name}${eunNeun(선물.name)} ${선물.price}크레딧이에요.` };
       돌려줄크레딧 = 선물.price; 선물키 = 선물.key;   // 이 뒤로 실패하면 돌려준다
     }
     const mode = toMode(bondRow?.mode);

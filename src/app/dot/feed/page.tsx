@@ -131,7 +131,9 @@ const CSS = `
 .fc { border-bottom:1px solid #f1f3f6; padding-bottom:12px; margin-bottom:6px; }
 .fc-head { display:flex; align-items:center; gap:10px; padding:10px 16px; }
 .fc-avatar { width:34px; height:34px; border-radius:50%; object-fit:cover; object-position:center top; image-rendering:pixelated; background:#f1f3f6; }
-.fc-name { font-size:14px; font-weight:600; color:#111; text-decoration:none; }
+/* 이름이 한 글자면("린") 누를 자리가 14px 가 된다 — 이름 길이가 손가락 크기를 정하고 있었다
+   (11-06 화면 점검). min-width 만 준다: 두 글자 이상은 아무것도 안 바뀌고 한 글자만 넓어진다. */
+.fc-name { font-size:14px; font-weight:600; color:#111; text-decoration:none; min-width:26px; }
 .fc-dot { font-size:12px; color:#a3aab3; }
 .fc-when { font-size:12px; color:#a3aab3; }
 .fc-fb { margin-left:auto; }

@@ -20,6 +20,9 @@ import { renderToStaticMarkup } from "react-dom/server";
 import React from "react";
 import puppeteer from "puppeteer-core";
 import { mkdirSync, readFileSync, rmSync } from "node:fs";
+/** 11-06: 화면 점검과 **같은 자**를 댄다. 광고 단추가 그려진 방은 서버에서 보려면
+ *  한도에 닿은 계정을 공유 DB 에 심어야 해서, 조각으로 그린 이 방이 그 화면을 재는 유일한 자리다. */
+import { CHECK_CODE, split, group, dotSkin, type Measured } from "./dot_ui_checks.js";
 
 const OUT = "C:/Users/az518/Desktop/두근도트-광고단추";
 mkdirSync(OUT, { recursive: true });
@@ -68,6 +71,7 @@ function 끼우기(html: string, card: string) {
   return html.slice(0, i) + card + html.slice(i);
 }
 
+const 껍데기 = await dotSkin();
 const 프로필 = `${process.env.TEMP}/rk-hl-roomshot-${process.pid}`;   // rk-hl- = 내 것
 const browser = await puppeteer.launch({
   executablePath: "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe",
@@ -80,7 +84,9 @@ try {
     if (!html) { 적은것.push(`❌ ${이름}: 메시지 목록 끝을 못 찾았다 — 카드를 못 끼운다`); continue; }
     const page = await browser.newPage();
     await page.setViewport({ width: 390, height: 844, deviceScaleFactor: 2 });
-    await page.setContent(`<!doctype html><meta charset="utf-8"><body style="margin:0">${html}</body>`, { waitUntil: "networkidle0" });
+    /* 껍데기를 입혀서 잰다 — `/dot` 레이아웃과 같은 순서(화면 CSS 뒤에 PIXEL_CSS). */
+    await page.setContent(`<!doctype html><meta charset="utf-8">${껍데기.앞}<body style="margin:0">${html}${껍데기.뒤}</body>`, { waitUntil: "networkidle0" });
+    await page.evaluate(() => document.fonts.ready);
     /* 방은 아래가 "지금" 이다 — 카드가 보이게 끝까지 내린다. */
     await page.evaluate(() => { for (const el of document.querySelectorAll("*")) if (el.scrollHeight > el.clientHeight + 8) el.scrollTop = el.scrollHeight; });
     const 잰것 = await page.evaluate(() => {
@@ -92,11 +98,17 @@ try {
         깨진그림: 깨짐, 넘침: document.documentElement.scrollWidth > window.innerWidth,
       };
     });
+    const 전체 = await page.evaluate(CHECK_CODE) as Measured;
     await page.screenshot({ path: `${OUT}/${이름}.png` });
     await page.close();
-    const 맞나 = (adOpen ? !!잰것.광고 && 잰것.광고.보임 && 잰것.광고.h >= 44 : !잰것.광고) && 잰것.깨진그림 === 0 && !잰것.넘침;
+    const { 어긋남, 아슬 } = split(전체.작음);
+    const 맞나 = (adOpen ? !!잰것.광고 && 잰것.광고.보임 && 잰것.광고.h >= 44 : !잰것.광고)
+      && 잰것.깨진그림 === 0 && !잰것.넘침 && 어긋남.length === 0 && 전체.빈단추.length === 0;
     적은것.push(`${맞나 ? "✅" : "❌"} ${이름}: 광고 ${잰것.광고 ? `${잰것.광고.w}×${잰것.광고.h}px 화면 안 ${잰것.광고.보임}` : "없음"}` +
-      ` · 깨진 그림 ${잰것.깨진그림}` + (잰것.넘침 ? " ⚠ 가로 넘침" : ""));
+      ` · 깨진 그림 ${잰것.깨진그림}` + (잰것.넘침 ? " ⚠ 가로 넘침" : "") +
+      ` · 24px 미만 ${어긋남.length}${어긋남.length ? ` (${group(어긋남).join(", ")})` : ""}` +
+      ` · 이름 없는 단추 ${전체.빈단추.length}${전체.빈단추.length ? ` (${전체.빈단추.slice(0, 2).join(", ")})` : ""}` +
+      `\n      아슬(24~44): ${아슬.length ? group(아슬).join(" · ") : "없음"}`);
   }
 } finally {
   await browser.close();
