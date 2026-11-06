@@ -45,7 +45,14 @@ if (!magic0.includes("/auth/confirm")) { console.error("로그인 링크가 /aut
 const OUT = "C:/Users/az518/Desktop/두근도트-화면점검";
 mkdirSync(OUT, { recursive: true });
 
+/**
+ * 11-06: **출석 판이 첫 화면을 덮는다.** 하루 첫 입장이면 `/dot` 어디로 들어와도 뜨기 때문에,
+ * 그대로 돌리면 열 화면이 전부 "판 사진" 이 되고 뒤는 **못 본 채로 통과**한다
+ * ([[rulers-must-not-share-a-screen]]). 그래서 판을 **제 화면으로 먼저 재고**, 받아서 치운 다음
+ * 나머지를 돈다. 판을 안 재고 닫기만 하면 새로 생긴 화면 하나가 자 밖에 남는다.
+ */
 const 화면: [string, string][] = [
+  ["출석판", "/dot/chats"],
   ["피드", "/dot/feed"],
   ["피드-전체", "/dot/feed?all=1"],
   ["검색", "/dot/search"],
@@ -108,6 +115,14 @@ try {
     if (아슬.length) console.log(`         아슬(24~44, AAA 못 맞춤): ${group(아슬).join(" · ")}`);
     if (예외.length) console.log(`         문장 속 예외: ${group(예외).join(" · ")}`);
     if (잘림.length) console.log(`         낱말 잘림 ${잘림.length}: ${잘림.slice(0, 3).map((x) => `${x.어디} "${x.자리}"`).join(" · ")}`);
+
+    /* 판을 쟀으면 **받아서 치운다** — 안 치우면 뒤의 아홉 화면이 전부 판에 덮인다.
+       판이 안 떴으면(이미 출석) 그냥 지나간다. 눌린 뒤 서버가 답할 때까지 넉넉히 기다린다. */
+    if (이름 === "출석판") {
+      const 있나 = await page.$(".ci-go");
+      if (있나) { await 있나.click(); await sleep(6000); }
+      else console.log("         (판이 안 떴다 — 이미 출석한 계정이면 맞다)");
+    }
   }
 } finally {
   await browser.close();

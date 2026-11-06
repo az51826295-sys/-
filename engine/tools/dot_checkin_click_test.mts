@@ -1,16 +1,15 @@
 /**
- * **출석 단추를 진짜로 눌러 본다** (11-06).
+ * **출석 판이 저절로 뜨고, 눌러서 받아진다** — 브라우저로 진짜 눌러 본다 (11-06).
  *
  *   node engine/work/ui-audit/peek_make.mjs            ← 로그인 링크 하나
  *   DOT_BASE=http://localhost:3010 npx tsx engine/tools/dot_checkin_click_test.mts <magicLink>
  *
- * `dot_checkin_test.mts` 는 라우트 함수를 **토큰으로** 불렀다. 그런데 사람이 누르는 길은
- * **쿠키**다 — 그 길은 Next 요청 안에서만 읽히므로 라우트를 직접 부르는 자로는 못 쟀다
- * (그래서 그 자에 "못 재는 것" 으로 적어 뒀다). 여기서는 브라우저로 로그인해 **화면의 단추를
- * 눌러** 숫자가 바뀌는 것까지 본다 — 쿠키·서버 액션·새로고침이 다 끼어 있는 진짜 길이다.
+ * `dot_checkin_test.mts` 는 라우트 함수를 **토큰으로** 불렀다. 사람이 지나는 길은 **쿠키**이고,
+ * 그 길은 Next 요청 안에서만 읽히므로 라우트를 직접 부르는 자로는 못 쟀다. 여기서는
+ * 로그인한 브라우저로 들어가 **판이 뜨는지**, **눌러서 받아지는지**, **머리 숫자가 바뀌는지**,
+ * **다시 안 뜨는지**까지 본다.
  *
- * 재는 것: ① 머리에 "출석 ♥+5" 가 있다 ② 누르면 하트가 5가 된다 ③ 다시 열어도 5다(서버에 남았다)
- *          ④ 그 자리에 단추가 더는 없다(두 번 받을 자리가 안 남는다)
+ * 못 재는 것: 자정이 지나 다음 날 다시 뜨는가(날이 바뀌어야 잰다).
  */
 import puppeteer from "puppeteer-core";
 import { mkdtempSync, rmSync } from "node:fs";
@@ -32,36 +31,39 @@ const browser = await puppeteer.launch({
 });
 const 줄: [boolean, string][] = [];
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
-/** 머리의 하트 칸을 글자로 읽는다. 단추면 "출석…", 숫자면 "♥5". */
+/** 화면에서 읽는 것: 출석 판이 떴나 · 머리의 하트 숫자. */
 const 읽기 = `(() => {
-  var el = document.querySelector('.hb');
-  return el ? { 글: (el.textContent || '').trim(), 단추: el.tagName === 'BUTTON' } : null;
+  var card = document.querySelector('.ci-card');
+  var hb = document.querySelector('.hb');
+  return { 판: !!card, 판글: card ? (card.textContent || '').replace(/\\s+/g, ' ').trim().slice(0, 40) : '',
+           하트: hb ? (hb.textContent || '').trim() : '없음' };
 })()`;
 
 try {
   const page = await browser.newPage();
   await page.goto(magic, { waitUntil: "networkidle2", timeout: 60_000 });
   await page.goto(`${BASE}/dot/chats`, { waitUntil: "networkidle2", timeout: 60_000 });
-  await sleep(800);
+  await sleep(1200);
 
-  const 전 = await page.evaluate(읽기) as { 글: string; 단추: boolean } | null;
-  줄.push([!!전?.단추 && (전?.글 ?? "").includes(String(CHECKIN_HEARTS)),
-    `머리에 출석 단추: "${전?.글 ?? "없음"}" (단추 ${전?.단추})`]);
+  const 전 = await page.evaluate(읽기) as { 판: boolean; 판글: string; 하트: string };
+  줄.push([전.판, `하루 첫 입장에 출석 판이 뜬다: ${전.판} "${전.판글}"`]);
+  줄.push([전.하트.includes("0"), `그때 머리 숫자는 0: "${전.하트}"`]);
 
-  if (전?.단추) {
-    await page.click(".hb-get");
-    await sleep(8000);   /* 개발 서버는 이 길을 처음 불릴 때 컴파일한다 — 1.5초로는 "받는 중…" 에서 끝난다 */
+  if (전.판) {
+    await page.click(".ci-go");
+    /* 개발 서버는 이 길을 처음 불릴 때 컴파일한다 — 짧게 기다리면 "받는 중…" 에서 끝난다. */
+    await sleep(9000);
   }
-  const 후 = await page.evaluate(읽기) as { 글: string; 단추: boolean } | null;
-  줄.push([(후?.글 ?? "").includes(String(CHECKIN_HEARTS)) && !후?.단추,
-    `누른 뒤: "${후?.글 ?? "없음"}" (단추 ${후?.단추} — false 여야)`]);
+  const 후 = await page.evaluate(읽기) as { 판: boolean; 판글: string; 하트: string };
+  줄.push([!후.판 && 후.하트.includes(String(CHECKIN_HEARTS)),
+    `받고 나면 판이 닫히고 머리가 바뀐다: 판 ${후.판}(false) · "${후.하트}"(♥${CHECKIN_HEARTS})`]);
 
-  /* 새로고침해도 남아 있나 — 화면에서만 바뀐 것이면 여기서 들통난다. */
+  /* 다른 화면으로 가도 안 뜨고 숫자는 남아 있다 — 화면에서만 바뀐 것이면 여기서 들통난다. */
   await page.goto(`${BASE}/dot/me`, { waitUntil: "networkidle2", timeout: 60_000 });
-  await sleep(600);
-  const 다시 = await page.evaluate(읽기) as { 글: string; 단추: boolean } | null;
-  줄.push([(다시?.글 ?? "").includes(String(CHECKIN_HEARTS)) && !다시?.단추,
-    `다른 화면에서도: "${다시?.글 ?? "없음"}" (서버에 남았다)`]);
+  await sleep(1000);
+  const 다시 = await page.evaluate(읽기) as { 판: boolean; 판글: string; 하트: string };
+  줄.push([!다시.판 && 다시.하트.includes(String(CHECKIN_HEARTS)),
+    `다른 화면: 판 ${다시.판}(false) · "${다시.하트}" (서버에 남았다)`]);
 } finally {
   await browser.close();
   rmSync(profile, { recursive: true, force: true });

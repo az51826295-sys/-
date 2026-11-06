@@ -17,7 +17,7 @@ export default async function HeartBadgeServer() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return null;
     const b = await balanceFor(createServiceClient(), user.id, todayKST());
-    return <HeartBadge hearts0={Number.isFinite(b.remaining) ? b.remaining : 0} checkedIn0={b.출석함} />;
+    return <HeartBadge hearts={Number.isFinite(b.remaining) ? b.remaining : 0} />;
   } catch {
     return null;
   }
