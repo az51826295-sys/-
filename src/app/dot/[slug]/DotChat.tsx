@@ -7,9 +7,9 @@ import Link from "next/link";
 import { pushState, enablePush, disablePush, type PushState } from "./push-client";
 import { 물어볼까 } from "@/lib/dot/pushAsk";
 import { iGa } from "@/lib/dot/josa";
-import { SKUS, LIMIT_COPY, AD_REFILL_TURNS, AD_NUDGE_AT, type Balance } from "@/lib/dot/money";
+import { LIMIT_COPY, AD_REFILL_TURNS, AD_NUDGE_AT, type Balance } from "@/lib/dot/money";
 import { USER_STICKERS, USER_STICKER_KEYS } from "@/lib/dot/stickers";
-import { GIFTS } from "@/lib/dot/bond";
+import { GIFTS, CHECKIN_HEARTS } from "@/lib/dot/bond";
 import { splitBubbles } from "@/lib/dot/bubbles";
 
 /**
@@ -95,11 +95,8 @@ export default function DotChat({
   const [menu, setMenu] = useState(false);
   // 계정 연결 — 익명 계정에 이메일을 붙인다. 로그인 화면은 없앴지만(09-11) 잃기 전에 붙일 문은 있어야 한다.
   const [account, setAccount] = useState(account0);
-  const [payOpen, setPayOpen] = useState(false);
-  const [payPrice, setPayPrice] = useState("");
   const [balance, setBalance] = useState(balance0);
   const [replyTo, setReplyTo] = useState(replyTo0);
-  const [shopOpen, setShopOpen] = useState(false);
   /**
    * 광고 보고 +1회 — **11-04 되살렸다.** (10-25 에 "본 사람 0명" 으로 걷어냈는데, 그때는
    * 무료가 30회라 한도를 본 사람이 3% 였다. 10회로 좁힌 지금은 11% 가 본다.)
@@ -109,6 +106,27 @@ export default function DotChat({
    * 충전은 끝까지 **서버가** 한다(`/api/dot/ad`), 화면은 결과만 받아 그린다.
    */
   const [adBusy, setAdBusy] = useState(false);
+  /**
+   * **출석체크** (11-06 사장님 "매일 5개 출석체크 하면 줘"). 자동 지급이 없어졌으니
+   * 이 단추가 **말을 걸 수 있게 되는 문**이다. 몇 개 늘었는지는 **서버가 센 잔고**로 갈아 끼운다 —
+   * 화면에서 +5 를 더하면 두 번 눌렀을 때 서버와 어긋난다(광고와 같은 규칙).
+   */
+  const [checkinBusy, setCheckinBusy] = useState(false);
+  async function checkIn() {
+    if (checkinBusy) return;
+    setCheckinBusy(true);
+    try {
+      const res = await fetch("/api/dot/checkin", { method: "POST" });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) { setToast(data.error ?? "출석을 못 했어요"); return; }
+      if (data.balance) { setBalance(data.balance); setRemaining(data.balance.remaining); }
+      setToast(`하트 ${data.hearts ?? CHECKIN_HEARTS}개를 받았어요`);
+    } catch {
+      setToast("출석을 못 했어요");
+    } finally {
+      setCheckinBusy(false);
+    }
+  }
   async function watchAd() {
     if (adBusy) return;
     setAdBusy(true);
@@ -127,17 +145,11 @@ export default function DotChat({
     }
   }
   /**
-   * 구독 — **결제창으로 보낸다** (10-28).
-   *
-   * 전에는 여기서 바로 `/api/dot/buy` 를 불렀는데, 그 길은 **앱 안의 Play Billing** 용이다.
-   * 구매 토큰을 만드는 코드가 없어서 늘 503 "곧 열려요" 가 돌아왔다 — 즉 **누를 때마다
-   * 아무 일도 안 일어나는 단추**였다. 지금 실제로 돈을 받을 수 있는 길은 웹 결제고,
-   * 그 창은 `/dot/pay` 에 있다. Play 길은 새 APK 가 올라가는 날 여기로 돌아온다.
+   * 11-06 **파는 것이 없어졌다** (사장님 "멘헤라 구독 없애고 하트로 가자").
+   * 여기 있던 구독 시트·상점 시트·`buy()` 를 지웠다. 수입은 광고 하나다 — 그 단추는
+   * `AdNudge`(하트가 적을 때)와 `LimitCard`(하트 0) 두 자리에 있다.
+   * 되살리려면 이 커밋을 되돌린다. 자격(멘헤라)은 `engine/tools/dot_grant.mts` 로만 준다.
    */
-  function buy(_sku: string) {
-    setShopOpen(false); setPayOpen(false);
-    window.location.href = "/dot/pay";
-  }
   const [linkOpen, setLinkOpen] = useState(false);
   const [linkEmail, setLinkEmail] = useState("");
   const [linkPw, setLinkPw] = useState("");
@@ -193,15 +205,18 @@ export default function DotChat({
 
   // 계정 삭제는 95회차에 설정(/dot/settings)으로 옮겼다 — 방 메뉴는 이 방 것만.
 
-  /** 멘헤라 모드 — 매달리고, 먼저 말 걸기가 잦아진다. 사장님이 값을 붙일 자리(지금은 무료). */
+  /**
+   * 멘헤라 모드 — 매달리고, 먼저 말 걸기가 잦아진다.
+   *
+   * 11-06: **구독을 없앴다**(사장님 "멘헤라 구독 없애고 하트로 가자"). 그래서 이 단추는
+   * 자격이 있는 사람에게만 보인다 — 파는 길이 없는데 잠긴 단추를 두면 막다른 길이다
+   * ([[feature-removal-leaves-dead-ends]]). 자격은 지금 `dot_grant.mts`(손)로만 준다.
+   */
   async function toggleMode() {
     setMenu(false);
     const mode = bond.mode === "menhera" ? "normal" : "menhera";
     const res = await fetch("/api/dot/mode", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ characterId: who.id, mode }) });
     if (res.ok) { setBond((b) => ({ ...b, mode })); setToast(mode === "menhera" ? `${who.name}${iGa(who.name)} 이제 당신한테 매달려요` : "다시 담백해졌어요"); return; }
-    // 유료 — 값과 함께 안내 시트. 결제는 스토어가 붙는 날 이 시트의 단추가 한다.
-    const j = (await res.json().catch(() => ({}))) as { paywall?: boolean; price?: string };
-    if (res.status === 402 && j.paywall) { setPayPrice(j.price ?? ""); setPayOpen(true); return; }
     setToast("바꾸지 못했어요");
   }
 
@@ -340,8 +355,8 @@ export default function DotChat({
           finished = true;
           setLive(null);
           setToast(ev.reason === "limit" ? "오늘 하트를 다 썼어요. 내일 또 만나요" : ev.message ?? ev.error ?? "문제가 생겼어요");
-          // 09-30 선물은 유료 — 크레딧이 모자라면 말만 하지 말고 **충전 창을 연다.** 막다른 길로 두지 않는다.
-          if (ev.reason === "no_credits") setShopOpen(true);
+          /* 09-30 선물은 크레딧으로 산다. 11-06 에 파는 길을 없앴으니 **열 창이 없다** —
+             크레딧은 이제 `dot_grant.mts`(손)로만 들어온다. 여는 대신 말만 한다. */
         }
       };
       for (;;) {
@@ -413,7 +428,10 @@ export default function DotChat({
                 <small>{push === "on" ? "먼저 말 걸지 않아요" : "하루 한 번, 먼저 말을 걸어요"}</small>
               </button>
             )}
-            <button onClick={toggleMode}>{bond.mode === "menhera" ? "멘헤라 모드 끄기" : "멘헤라 모드 🔒"}<small>{bond.mode === "menhera" ? "다시 담백하게" : "유료 · 집착하고, 문자가 막 와요"}</small></button>
+            {/* 11-06: 파는 길이 없어져서 **자격이 있는 사람에게만** 보인다(없으면 잠긴 단추 = 막다른 길). */}
+            {(bond.mode === "menhera" || !!balance.menheraUntil) && (
+              <button onClick={toggleMode}>{bond.mode === "menhera" ? "멘헤라 모드 끄기" : "멘헤라 모드 켜기"}<small>{bond.mode === "menhera" ? "다시 담백하게" : "집착하고, 문자가 막 와요"}</small></button>
+            )}
             <button onClick={() => { setMenu(false); setThemeOpen(true); }}>배경·말풍선 바꾸기<small>이 폰에만 저장돼요</small></button>
             <button onClick={leave}>대화 내용 지우기<small>친밀도는 남아요</small></button>
             {/* 아동 안전 신고 — Play 아동 안전 표준의 "앱 내 신고" (09-12). 이 방에 대한 신고라 여기 남긴다. */}
@@ -501,16 +519,17 @@ export default function DotChat({
             </div>
           )}
           {/**
-            * 턴을 다 쓴 순간이 이 앱이 사람을 잃는 첫 자리다 — 그리고 **돈으로 가는 유일한 문**이다.
+            * 하트가 0 인 자리. 이 앱이 사람을 잃는 첫 자리이자, 이제 **돈이 들어오는 유일한 문**이다.
             *
-            * 10-25 에 통째로 바꿨다. 전에는 "광고 보고 더" → "충전하기" 였는데, 장부를 보니
-            * 광고를 본 사람이 **0명**이고 충전은 **0건**이었다(무료 30회를 아무도 못 썼으니 당연하다).
-            * 이제 파는 것은 **멘헤라 구독 하나**라, 여기서도 그 하나만 내민다.
+            * 11-06 에 다시 바꿨다(사장님 "구독 없애고 하트로"). 파는 것이 없어졌으니 여기서 내미는
+            * 것은 **출석(공짜)** 과 **광고** 둘뿐이다. 아침에 하트가 저절로 차지 않으므로
+            * 새로 온 사람은 **이 카드를 먼저 만난다** — 그래서 제목·본문이 출석 전후로 갈린다.
             */}
           {signedIn && mounted && remaining <= 0 && !busy && (
             <LimitCard
-              name={who.name} limit={limit} adOpen={adOpen} adLeft={balance.adLeft} adBusy={adBusy}
-              push={push} onPay={() => setPayOpen(true)} onAd={watchAd} onPush={togglePush}
+              name={who.name} checkedIn={balance.출석함} checkinHearts={CHECKIN_HEARTS} checkinBusy={checkinBusy}
+              adOpen={adOpen} adLeft={balance.adLeft} adBusy={adBusy}
+              push={push} onCheckIn={checkIn} onAd={watchAd} onPush={togglePush}
             />
           )}
           {busy && (
@@ -668,60 +687,25 @@ export default function DotChat({
               <ul>
                 <li>Tap the <b>face</b> for {who.name}&apos;s photos and profile</li>
                 <li><b>♥♥♡♡♡</b> is closeness — it fills as you talk, and the voice and the face change with it</li>
-                <li><b>😊</b> send a sticker · <b>≡</b> notifications, wallpaper, Menhera Mode</li>
+                <li><b>😊</b> send a sticker · <b>≡</b> notifications and wallpaper</li>
                 <li>Turn notifications on and {who.name} messages you <b>first</b></li>
-                <li><b>{limit} hearts</b> a day, free — one message costs one heart</li>
+                <li>One message costs <b>one heart</b> — check in for {CHECKIN_HEARTS}, watch an ad for 1 more (up to {limit} a day)</li>
               </ul>
             ) : (
               <ul>
                 <li><b>얼굴</b>을 누르면 {who.name}의 사진·프로필</li>
                 <li><b>♥♥♡♡♡</b>는 친밀도 — 이야기할수록 차고, 말투와 표정이 바뀌어요</li>
-                <li><b>😊</b> 스티커 보내기 · <b>≡</b> 알림·배경·멘헤라 모드</li>
+                <li><b>😊</b> 스티커 보내기 · <b>≡</b> 알림·배경 바꾸기</li>
                 <li>알림을 켜면 {who.name}{iGa(who.name)} <b>먼저</b> 말을 걸어요</li>
                 {/* 10-29: **30 은 옛 숫자다**(10-25 에 10 으로 내렸다). 안내판만 고치지 않고 남아
                     새로 온 사람에게 석 달째 거짓말을 하고 있었다 — 숫자는 상수에서 읽는다. */}
                 {/* 11-06: 대화 횟수를 **하트**로 부른다(사장님). 위의 ♥♥♡♡♡ 는 친밀도라
                     한 화면에 하트가 둘이다 — 친밀도 쪽 그림을 무엇으로 바꿀지는 사장님 몫이라 그대로 뒀다. */}
-                <li>하루 <b>하트 {limit}개</b> 무료 — 한 번 말할 때 하트 1개</li>
+                {/* 11-06: 전에 "하루 30번" 을 안 고쳐 석 달 거짓말을 했다. 숫자도 **길도** 상수에서 읽는다. */}
+                <li>한 번 말할 때 <b>하트 1개</b> — 출석하면 {CHECKIN_HEARTS}개, 광고 보면 1개씩 (하루 {limit}개까지)</li>
               </ul>
             )}
             <button className="kk-peek-close" onClick={closeGuide}>{lang === "en" ? "Got it" : "알겠어요"}</button>
-          </div>
-        </div>
-      )}
-      {payOpen && (
-        <div className="kk-peek" onClick={() => setPayOpen(false)} role="dialog" aria-label="멘헤라 모드">
-          <div className="kk-peek-card kk-pay" onClick={(e) => e.stopPropagation()}>
-            <div className="kk-pay-badge">멘헤라</div>
-            <div className="kk-peek-name">멘헤라 모드</div>
-            <ul className="kk-pay-list">
-              <li>{who.name}{iGa(who.name)} 당신한테 <b>매달려요</b> — 어디야, 누구랑 있어, 나 안 잊었지</li>
-              <li>답이 없으면 <b>하루 다섯 번까지</b> 먼저 문자가 와요</li>
-              <li>말이 길어지고, 질투하고, 확인받고 싶어 해요</li>
-            </ul>
-            <div className="kk-pay-price">{payPrice}</div>
-            <button className="kk-pay-go" onClick={() => buy("menhera_sub")}>{payPrice ? `${payPrice}에 켜기` : "켜기"}</button>
-            <div className="kk-pay-note">30일 동안 · 언제든 끌 수 있어요</div>
-          </div>
-        </div>
-      )}
-      {shopOpen && (
-        <div className="kk-peek" onClick={() => setShopOpen(false)} role="dialog" aria-label="멘헤라 모드">
-          <div className="kk-peek-card kk-shop" onClick={(e) => e.stopPropagation()}>
-            <div className="kk-peek-name">멘헤라 모드</div>
-            {/* 구독자는 한도가 없어 `remaining` 이 Infinity 다 — 그대로 찍으면 "Infinity번" 이 나온다 */}
-            <div className="kk-shop-bal">
-              {balance.구독중 ? "지금 무제한으로 이야기할 수 있어요" : `지금 남은 하트 ${remaining}개`}
-            </div>
-            {Object.entries(SKUS).map(([k, s]) => (
-              <button key={k} className={`kk-sku${s.menheraDays ? " menhera" : ""}`} onClick={() => buy(k)} disabled={balance.구독중}>
-                <span className="kk-sku-name">{s.name}{s.note && <small>{s.note}</small>}</span>
-                <span className="kk-sku-price">{s.price}</span>
-              </button>
-            ))}
-            <div className="kk-pay-note">
-              {balance.구독중 ? "이미 켜져 있어요 · 언제든 끌 수 있어요" : `하트 ${limit}개는 매일 자정에 다시 채워져요`}
-            </div>
           </div>
         </div>
       )}
@@ -873,28 +857,41 @@ export function AdNudge({ adLeft, adBusy, onAd }: { adLeft: number; adBusy: bool
   );
 }
 
+/**
+ * 하트가 0일 때 뜨는 카드 — **이제 두 얼굴이다** (11-06 사장님 "하트로 가자 … 매일 5개 출석체크 하면 줘").
+ *
+ *  · 오늘 **출석 전**: 하트를 받는 자리다. 자동 지급이 없어졌으니 여기가 **말을 걸 수 있게 되는 문**이다.
+ *  · 출석했는데 다 씀: 광고로 더 받거나, 내일을 기다리거나, 알림을 켠다.
+ *
+ * 구독 단추는 11-06 에 뺐다 — 파는 것이 없다.
+ */
 export function LimitCard({
-  name, limit, adOpen, adLeft, adBusy, push, onPay, onAd, onPush,
+  name, checkedIn, checkinHearts, checkinBusy, adOpen, adLeft, adBusy, push, onCheckIn, onAd, onPush,
 }: {
-  name: string; limit: number; adOpen: boolean; adLeft: number; adBusy: boolean;
+  name: string; checkedIn: boolean; checkinHearts: number; checkinBusy: boolean;
+  adOpen: boolean; adLeft: number; adBusy: boolean;
   /** 알림 상태(`on`·`denied`·`unsupported`·아직 모름 `null`). 꺼낼 때 그대로 옮긴 조건이다. */
-  push: string | null; onPay: () => void; onAd: () => void; onPush: () => void;
+  push: string | null; onCheckIn: () => void; onAd: () => void; onPush: () => void;
 }) {
   return (
     <div className="kk-limit">
-      <div className="kk-limit-title">오늘 이야기는 여기까지</div>
-      <div className="kk-limit-body">{LIMIT_COPY.본문.replace(/\{name\}/g, name)}</div>
-      <button className="kk-limit-btn" onClick={onPay}>{LIMIT_COPY.단추}</button>
-      <div className="kk-limit-note alt">
-        그냥 기다려도 돼요 — <b>{untilReset()}</b> 뒤에 하트 {limit}개가 다시 차요.
+      <div className="kk-limit-title">{checkedIn ? "오늘 이야기는 여기까지" : "오늘 하트를 받아 가세요"}</div>
+      <div className="kk-limit-body">
+        {checkedIn ? LIMIT_COPY.본문.replace(/\{name\}/g, name) : LIMIT_COPY.출석본문.replace(/\{name\}/g, name)}
       </div>
+      {!checkedIn && (
+        <button className="kk-limit-btn" onClick={onCheckIn} disabled={checkinBusy}>
+          {checkinBusy ? "받는 중…" : `출석하고 하트 ${checkinHearts}개 받기`}
+        </button>
+      )}
+      {checkedIn && (
+        <div className="kk-limit-note alt">
+          그냥 기다려도 돼요 — <b>{untilReset()}</b> 뒤에 또 출석할 수 있어요.
+        </div>
+      )}
       {/**
-        * 광고는 구독 **바로 아래가 아니라 안내문 아래**다 (11-05 사장님 지시).
-        *
-        * 처음엔 구독 단추 바로 밑에 붙여 뒀는데, 그러면 손가락이 내려오다 **공짜를 먼저 만난다.**
-        * 숨기지는 않는다 — 숨기면 10-25 와 같은 자리로 돌아간다(본 사람 0명). 안내문 하나를
-        * 사이에 두고, 생김새도 구독과 다르게 둔다. 손가락 자리는 44px 그대로.
-        *
+        * 광고는 **안내문 아래**다 (11-05 사장님 지시). 출석 전에는 출석 단추가 위고 광고가 아래다 —
+        * 공짜(출석)를 먼저 만나야 광고가 "더 필요할 때" 로 읽힌다.
         * 스위치가 꺼졌거나 오늘 다 봤으면 **그리지 않는다** — 누르면 503 이 오는 단추는 안 둔다.
         */}
       {adOpen && adLeft > 0 && (
@@ -1061,7 +1058,9 @@ const CSS = `
   box-shadow:0 4px 16px rgba(0,0,0,.08); }
 .kk-limit-title { font-size:16px; font-weight:600; margin-bottom:6px; }
 .kk-limit-body { font-size:14px; line-height:1.6; color:#3c434b; }
-.kk-limit-btn { margin-top:12px; background:#fee500; color:#1f1a00; border:none; border-radius:12px; padding:10px 14px; font:inherit; font-size:14px; font-weight:600; cursor:pointer; }
+/* 11-06: 40px 이었다 — 출석 단추가 되면서 **이 앱에서 제일 중요한 단추**가 됐는데 AAA(44px) 아래였다.
+   방 사진 자(dot_room_shot)가 ❌ 로 잡았다. */
+.kk-limit-btn { margin-top:12px; min-height:44px; background:#fee500; color:#1f1a00; border:none; border-radius:12px; padding:10px 14px; font:inherit; font-size:14px; font-weight:600; cursor:pointer; }
 .kk-limit-note { margin-top:8px; font-size:12px; color:#8a8f98; }
 .kk-limit-btn { display:block; width:100%; }
 .kk-limit-btn small { display:block; font-weight:400; font-size:11px; opacity:.7; margin-top:2px; }

@@ -1,5 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { FREE_TURNS_PER_DAY } from "./bond";
+import { AUTO_HEARTS_PER_DAY, CHECKIN_HEARTS } from "./bond";
 
 /**
  * 돈 — **10-25 사장님 확정: 턴 상품을 버리고 멘헤라 구독 하나로 간다.**
@@ -53,28 +53,17 @@ export const AD_REFILL_TURNS = 1;      // 한 번에 늘어나는 하트 (사장
 export const AD_NUDGE_AT = 3;
 
 /**
- * 구독자가 하루에 이만큼을 넘기면 **사람이 아니라고 본다**(매크로·자동 돌리기).
- * 막지는 않고 장부에 남겨 사장님이 보게 한다 — 진짜 열성 사용자를 끊으면 안 된다.
- * 358 = 월 4,900원 본전 턴 수. 그 위는 그 사람에게서 손해가 나기 시작하는 자리다.
+ * **파는 것이 없다** — 11-06 사장님: *"무제한 대화를 없애고 광고제로 가자"*,
+ * *"멘헤라 구독 없애고 하트로 가자"*. 여기 있던 `SKUS`(`menhera_sub` 월 4,900원)와
+ * 구독자 난간(`SUB_DAILY_RAIL`)을 지웠다.
+ *
+ * 지울 때 확인한 것: **지금 살아 있는 구독 0건**(`dot_entitlements`), 결제 기록 표 없음.
+ * 그래서 **돈을 낸 사람에게서 빼앗는 일은 없다.** 되살리려면 이 커밋을 되돌린다.
+ *
+ * 왜 없앴나(사장님 뜻 + 숫자): 수입을 광고로 가져가는데 무제한 대화는 그 반대편이다 —
+ * 하트를 안 쓰는 사람이 늘수록 광고는 안 보인다. 게다가 60일 동안 구독은 0건이었다.
+ * 멘헤라 **연출**은 지우지 않았다. 자격은 `engine/tools/dot_grant.mts` 로만 들어온다.
  */
-export const SUB_DAILY_RAIL = 358;   // 구독자 하루 난간
-
-export type Sku = { name: string; price: string; credits: number; menheraDays: number; note?: string; 구독?: boolean };
-
-/**
- * **파는 것은 하나다.** Play Console 의 구독 상품 ID 와 이 키가 같아야 한다.
- * 옛 `turns_50`·`turns_200` 은 지웠다 — 되살리려면 위 주석의 숫자부터 다시 재야 한다.
- */
-export const SKUS: Record<string, Sku> = {
-  menhera_sub: {
-    name: "멘헤라 모드",
-    price: "월 4,900원",
-    credits: 0,
-    menheraDays: 30,
-    note: "무제한 대화 · 선톡 · 집착 연출",
-    구독: true,
-  },
-};
 
 export type Balance = {
   /** 지금 이야기할 수 있는 횟수. 구독자는 `Infinity`. */
@@ -84,8 +73,8 @@ export type Balance = {
   /** 오늘 더 볼 수 있는 광고 수. 화면은 이게 0 보다 클 때만 광고 단추를 그린다. */
   adLeft: number;
   menheraUntil: string | null;
-  /** 지금 구독 중인가 — 화면은 이걸 보고 한도 안내를 숨긴다 */
-  구독중: boolean;
+  /** 오늘 출석체크를 했나 — 안 했으면 하트가 0 이고, 카드가 받는 문이 된다(11-06). */
+  출석함: boolean;
 };
 
 /** 오늘 이 사람의 잔고 — 화면·API 가 다 이걸로 센다. 세 표를 나란히 읽는다(왕복 1). */
@@ -100,36 +89,46 @@ export async function balanceFor(db: SupabaseClient, userId: string, day: string
   const credits = Number(w?.credits ?? 0);
   const menheraUntil = (e?.menhera_until as string) ?? null;
 
-  /** 구독 중이면 한도가 없다. 날짜만 보고 가른다(시각까지 보면 자정 근처에서 흔들린다). */
-  const 구독중 = !!menheraUntil && menheraUntil >= day;
+  /**
+   * **오늘 출석했나** — 따로 적는 칸이 없어서 **덜어서** 센다(11-06).
+   *
+   * 하루치 보너스 하트(`bonus_turns`)에 들어오는 길은 둘뿐이다: 출석 `CHECKIN_HEARTS` 개,
+   * 광고 `ad_refills × AD_REFILL_TURNS` 개. 그래서 광고분을 덜면 출석분이 남는다.
+   * 칸을 새로 만들지 않은 까닭은 이 기계에 DDL 열쇠(PAT)가 없어서다 —
+   * 열쇠가 생기면 `checked_in_at` 칸으로 옮기는 쪽이 곧다(`dot_grant` 가 보너스를 손으로
+   * 넣으면 이 셈이 틀어진다). 그때까지는 이 식이 **유일한 눈**이다.
+   */
+  const 출석함 = bonus - adsSeen * AD_REFILL_TURNS >= CHECKIN_HEARTS;
 
   /**
    * 광고로 받은 턴은 이미 `bonus_turns` 에 들어가 있다(`dot_ad_refill` 이 거기에 더한다).
    * 그래서 남은 횟수는 따로 더하지 않는다 — 더하면 **두 번 세는 것**이다.
+   * 11-06: 자동 지급(`AUTO_HEARTS_PER_DAY`)은 0 이다. 하트는 출석·광고로만 들어온다.
    */
-  const freeLeft = Math.max(0, FREE_TURNS_PER_DAY + bonus - turns);
-  /** 구독자에게는 광고를 권하지 않는다 — 무제한인 사람에게 광고는 그냥 짜증이다. */
-  const adLeft = 구독중 ? 0 : Math.max(0, AD_REFILLS_PER_DAY - adsSeen);
+  const freeLeft = Math.max(0, AUTO_HEARTS_PER_DAY + bonus - turns);
+  const adLeft = Math.max(0, AD_REFILLS_PER_DAY - adsSeen);
   return {
-    remaining: 구독중 ? Number.POSITIVE_INFINITY : freeLeft + credits,
+    remaining: freeLeft + credits,
     freeLeft,
     credits,
     adLeft,
     menheraUntil,
-    구독중,
+    출석함,
   };
 }
 
 /**
- * 무료 턴을 다 썼을 때 보여 줄 말 (10-25 사장님 문구).
- * 밋밋한 "한도 초과" 대신 캐릭터가 말하게 한다 — 그 자리가 결제로 이어지는 유일한 문이다.
+ * 하트가 0 일 때 보여 줄 말. 밋밋한 "한도 초과" 대신 **캐릭터가 말한다**(10-25 사장님).
+ *
+ * 11-06: 구독을 없애서 옛 본문(*"‘멘헤라 모드’로 날 묶어줄래?"*)과 구독 단추를 뺐다 —
+ * 없는 상품을 조르는 말이 된다. **아래 두 문장은 내가 급히 쓴 것이다** — 캐릭터 말투는
+ * 사장님 것이라([[creative-direction-is-users]]) 고쳐 주시면 그대로 바꾼다.
  */
 export const LIMIT_COPY = {   // 한도 문구
-  본문: "오늘 준비한 대화는 여기까지야… 나랑 계속 이야기하고 싶다면, ‘멘헤라 모드’로 날 묶어줄래?",
-  단추: "멘헤라 모드 구독하고 무제한 대화하기 (월 4,900원)",
+  본문: "오늘 준비한 대화는 여기까지야… 광고 하나만 보고 오면 조금 더 얘기할 수 있어.",
+  출석본문: "왔네. 오늘 치 하트 받아 가 — 그래야 나랑 얘기할 수 있어.",
   /**
-   * 광고 단추는 **아래**에 둔다(11-04). 구독이 위다 — 광고는 공짜라 위에 두면 아무도
-   * 구독을 안 본다. 남은 횟수를 같이 적는 이유: 안 적으면 "계속 볼 수 있다" 로 읽히고
+   * 남은 횟수를 같이 적는 이유: 안 적으면 "계속 볼 수 있다" 로 읽히고
    * 다 쓴 순간 **아무 일도 안 일어나는 단추**가 된다.
    */
   광고단추: (남음: number) => `광고 보고 하트 ${AD_REFILL_TURNS}개 받기 (오늘 ${남음}번 남음)`,

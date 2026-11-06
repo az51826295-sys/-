@@ -28,8 +28,8 @@ process.env.NEXT_PUBLIC_SUPABASE_URL = vars.NEXT_PUBLIC_SUPABASE_URL;
 process.env.SUPABASE_SECRET_KEY = vars.SUPABASE_SECRET_KEY;
 
 const { createServiceClient } = await import("../../src/lib/supabase/service");
-const { balanceFor, AD_REFILLS_PER_DAY, AD_REFILL_TURNS, SKUS } = await import("../../src/lib/dot/money");
-const { FREE_TURNS_PER_DAY } = await import("../../src/lib/dot/bond");
+const { balanceFor, AD_REFILLS_PER_DAY, AD_REFILL_TURNS } = await import("../../src/lib/dot/money");
+const { AUTO_HEARTS_PER_DAY } = await import("../../src/lib/dot/bond");
 
 const db = createServiceClient();
 const day = "2026-01-02";   // 오늘과 안 겹치는 날. 다른 자·진짜 사용자와 섞이지 않게.
@@ -41,7 +41,7 @@ if (eu) throw eu;
 const uid = made.user.id;
 
 /** 한 턴 쓰기. 돌아오는 값은 **몇 번째 턴인가**, 막히면 0. */
-const take = async () => Number((await db.rpc("dot_take_turn", { p_user: uid, p_day: day, p_limit: FREE_TURNS_PER_DAY })).data ?? 0);
+const take = async () => Number((await db.rpc("dot_take_turn", { p_user: uid, p_day: day, p_limit: AUTO_HEARTS_PER_DAY })).data ?? 0);
 /** 광고 한 번. 돌아오는 값은 **오늘 남은 광고 수**, 이미 다 봤으면 -1. */
 const ad = async () => Number((await db.rpc("dot_ad_refill", {
   p_user: uid, p_day: day,
@@ -55,9 +55,9 @@ const 재다 = (ok: boolean, s: string) => 줄.push([ok, s]);
 
 try {
   // (1) 무료분 — 다 쓰면 그다음은 막힌다
-  for (let i = 0; i < FREE_TURNS_PER_DAY; i++) await take();
+  for (let i = 0; i < AUTO_HEARTS_PER_DAY; i++) await take();
   const 넘김 = await take();
-  재다(넘김 === 0, `무료 ${FREE_TURNS_PER_DAY}회 뒤 다음 턴 = ${넘김} (0 이어야)`);
+  재다(넘김 === 0, `무료 ${AUTO_HEARTS_PER_DAY}회 뒤 다음 턴 = ${넘김} (0 이어야)`);
 
   const b0 = await bal();
   재다(b0.freeLeft === 0 && b0.remaining === 0 && b0.adLeft === AD_REFILLS_PER_DAY,
@@ -84,21 +84,22 @@ try {
   재다(더 === -1, `${AD_REFILLS_PER_DAY + 1}번째 광고 = ${더} (-1 이어야)`);
 
   // (4) 하루 최대치 — 무료 + 광고. **사장님에게 보일 숫자가 이것이다.**
-  let 총 = FREE_TURNS_PER_DAY + AD_REFILL_TURNS;   // 여기까지 이미 쓴 턴
+  let 총 = AUTO_HEARTS_PER_DAY + AD_REFILL_TURNS;   // 여기까지 이미 쓴 턴
   while ((await take()) > 0) 총++;
-  const 기대 = FREE_TURNS_PER_DAY + AD_REFILLS_PER_DAY * AD_REFILL_TURNS;
-  재다(총 === 기대, `하루 최대 = ${총}회 (무료 ${FREE_TURNS_PER_DAY} + 광고 ${AD_REFILLS_PER_DAY}×${AD_REFILL_TURNS} = ${기대})`);
+  const 기대 = AUTO_HEARTS_PER_DAY + AD_REFILLS_PER_DAY * AD_REFILL_TURNS;
+  재다(총 === 기대, `하루 최대 = ${총}회 (무료 ${AUTO_HEARTS_PER_DAY} + 광고 ${AD_REFILLS_PER_DAY}×${AD_REFILL_TURNS} = ${기대})`);
 
   // (5) 두 번 세지 않나 — 광고분이 bonus_turns 에도, 따로도 더해지면 여기서 어긋난다
   const b2 = await bal();
   재다(b2.remaining === b2.freeLeft + b2.credits,
     `남은 ${b2.remaining} = 공짜 ${b2.freeLeft} + 충전 ${b2.credits} (광고분 중복 없음)`);
 
-  // (6) 구독자에게는 광고를 권하지 않는다
-  await db.rpc("dot_grant", { p_user: uid, p_sku: "menhera_sub", p_credits: SKUS.menhera_sub.credits, p_menhera_days: SKUS.menhera_sub.menheraDays, p_source: "manual", p_ref: null });
+  /* (6) 11-06: 구독이 없어졌다. 자격(멘헤라)을 가진 사람도 **하트를 똑같이 쓰고 광고를 본다** —
+     무제한이 사라졌으니 여기서 볼 것은 "자격이 한도를 뚫지 않는다" 이다. */
+  await db.rpc("dot_grant", { p_user: uid, p_sku: "menhera", p_credits: 0, p_menhera_days: 30, p_source: "manual", p_ref: null });
   const b3 = await bal();
-  재다(b3.구독중 && b3.adLeft === 0 && b3.remaining === Number.POSITIVE_INFINITY,
-    `구독자: 무제한 ${b3.remaining === Number.POSITIVE_INFINITY}, 광고 단추 ${b3.adLeft} (0 — 안 권한다)`);
+  재다(Number.isFinite(b3.remaining) && !!b3.menheraUntil,
+    `멘헤라 자격자도 한도 안: 남은 ${b3.remaining}(유한해야) · 자격 ${b3.menheraUntil ? "있음" : "없음"}`);
 } finally {
   await db.auth.admin.deleteUser(uid).catch(() => {});
   await db.from("dot_usage").delete().eq("user_id", uid);

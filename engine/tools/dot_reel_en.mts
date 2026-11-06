@@ -245,13 +245,13 @@ async function 몸칸(slug: string, 표정: string, 바탕: string, 글svg: stri
 
 // ⑤ 끝카드 — 할 일 하나만. 숫자는 코드에서 읽은 것만 적는다(하루 10번).
 {
-  const { FREE_TURNS_PER_DAY } = await import("../../src/lib/dot/bond");
+  const { AUTO_HEARTS_PER_DAY } = await import("../../src/lib/dot/bond");
   컷들.push({
     파일: 쓰기(await sharp(Buffer.from(`<svg width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">
       <rect width="${W}" height="${H}" fill="${분홍}"/>
       ${글자(W / 2, H / 2 - 200, "Dot", 170, "#ffffff", 900, 0)}
       ${글자(W / 2, H / 2 - 70, "now in English", 68, "#fff0f3", 700, 0)}
-      ${글자(W / 2, H / 2 + 90, `${FREE_TURNS_PER_DAY} free messages a day`, 50, "#ffffff", 700, 0)}
+      ${글자(W / 2, H / 2 + 90, `${AUTO_HEARTS_PER_DAY} free messages a day`, 50, "#ffffff", 700, 0)}
       ${글자(W / 2, H / 2 + 165, "no install · opens in the browser", 44, "#ffe3e9", 600, 0)}
       ${글자(W / 2, H / 2 + 330, "link in bio", 62, "#ffffff", 800, 0)}
     </svg>`)).png().toBuffer()),

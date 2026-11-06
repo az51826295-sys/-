@@ -1,4 +1,4 @@
-import { applyTurn, stageFor, toNextStage, todayKST, FREE_TURNS_PER_DAY, type BondState } from "../../src/lib/dot/bond";
+import { applyTurn, stageFor, toNextStage, todayKST, AUTO_HEARTS_PER_DAY, type BondState } from "../../src/lib/dot/bond";
 
 let fail = 0;
 const ok = (name: string, cond: boolean, got?: unknown) => {
@@ -37,8 +37,8 @@ ok("19점이면 2단계까지 1점", toNextStage(19)?.need === 1, toNextStage(19
 
 // 하루치로 2단계에 닿는가 (제품 판단: 첫날 안에 뭔가 바뀌어야 안 나간다)
 let day1: BondState = { points: 0, stage: 1, streakDays: 0, lastTalkedOn: null };
-for (let i = 0; i < FREE_TURNS_PER_DAY; i++) day1 = applyTurn(day1, "2026-09-09", "오늘 있었던 일을 얘기해 줄게 진짜 길게").next;
-ok(`하루 ${FREE_TURNS_PER_DAY}턴이면 2단계 이상 (${day1.points}점 ${day1.stage}단계)`, day1.stage >= 2, day1);
+for (let i = 0; i < AUTO_HEARTS_PER_DAY; i++) day1 = applyTurn(day1, "2026-09-09", "오늘 있었던 일을 얘기해 줄게 진짜 길게").next;
+ok(`하루 ${AUTO_HEARTS_PER_DAY}턴이면 2단계 이상 (${day1.points}점 ${day1.stage}단계)`, day1.stage >= 2, day1);
 
 // 한국 시간
 ok("UTC 15:00 은 이미 다음 날(KST)", todayKST(new Date("2026-09-09T15:30:00Z")) === "2026-09-10", todayKST(new Date("2026-09-09T15:30:00Z")));

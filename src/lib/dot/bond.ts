@@ -13,8 +13,17 @@
 export const EMOTIONS = ["neutral", "happy", "shy", "sad", "angry", "surprised"] as const;
 export type Emotion = (typeof EMOTIONS)[number];
 
-/** 무료로 하루에 주고받을 수 있는 턴. */
-export const FREE_TURNS_PER_DAY = 10;   // 10-25: 30 → 10. 가운데값 2회라 30 은 체험판이 아니라 무제한이었다(실측 한도 도달 3%)
+/**
+ * **하트** — 한 번 말하면 하나 쓴다. 들어오는 길은 **출석과 광고 둘뿐**이다.
+ *
+ * 11-06 사장님: *"하트로 가자 … 일단 하트당 광고 하고 매일 5개 출석체크 하면 줘"*.
+ * 그래서 **그냥 들어오면 0개**다(`AUTO_HEARTS_PER_DAY`). 전에는 아침마다 10개가
+ * 저절로 있었다(10-25 에 30 → 10).
+ *
+ * 하루 최대 = 출석 5 + 광고 5×1 = **10개**. 쓰는 날 평균이 3턴이라 보통은 출석만으로 남는다.
+ */
+export const AUTO_HEARTS_PER_DAY = 0;   // 그냥 들어왔을 때 주는 하트 — 없다
+export const CHECKIN_HEARTS = 5;        // 출석체크 한 번에 주는 하트 (사장님 지시)
 
 /**
  * 단계가 올라가는 점수. 1단계부터 5단계까지.

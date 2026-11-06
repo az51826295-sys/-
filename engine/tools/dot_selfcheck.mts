@@ -161,13 +161,12 @@ let cacheRate: number | null = null;
   const rows = (t ?? []) as { input_tokens: number; cached_tokens: number; output_tokens: number }[];
   const modelKrw = rows.reduce((a, r) => a + ((r.input_tokens - (r.cached_tokens ?? 0)) * IN_USD + (r.cached_tokens ?? 0) * CACHE_USD + r.output_tokens * OUT_USD), 0) * KRW;
   const fixedKrw = DAYS * (10 * KRW / 30);   // Railway ≈ $10/월
-  const { SKUS } = await import("../../src/lib/dot/money");
-  const won = (s: string) => Number((SKUS[s]?.price ?? "0").replace(/[^0-9]/g, ""));
+  /* 11-06: **파는 것이 없다**(구독 삭제). 수입으로 셀 것은 광고뿐이고, 옛 결제 기록은
+     값을 매길 상품표가 사라졌으니 0 으로 둔다 — 지어낸 값을 더하면 적자 판정이 거짓이 된다. */
   let income = 0; const by = { play: 0, ad: 0, manual: 0 } as Record<string, number>;
   for (const r of (p ?? []) as { sku: string; source: string }[]) {
     by[r.source] = (by[r.source] ?? 0) + 1;
-    if (r.source === "play") income += won(r.sku) * 0.85;
-    else if (r.source === "ad") income += 12;   // KR 보상형 광고 시세 자리표
+    if (r.source === "ad") income += 10;   // 노출당 10원 — 바깥 벤치마크에서 가져온 자리표(11-06)
   }
   const users = new Set(((u ?? []) as { user_id: string }[]).map((x) => x.user_id)).size;
   const loss = modelKrw + fixedKrw - income;

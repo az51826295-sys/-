@@ -28,7 +28,6 @@ mkdirSync(OUT, { recursive: true });
 type 칸 = { 이름: string; url: string; 기다림?: number };
 const 두근도트: 칸[] = [
   { 이름: "dot-피드", url: DOT + "/dot/feed" },
-  { 이름: "dot-타로", url: DOT + "/dot/tarot", 기다림: 2500 },
   { 이름: "dot-채팅목록", url: DOT + "/dot/chats" },
   { 이름: "dot-설정", url: DOT + "/dot/settings" },
   { 이름: "dot-내창", url: DOT + "/dot/me" },

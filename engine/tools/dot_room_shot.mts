@@ -30,7 +30,7 @@ mkdirSync(OUT, { recursive: true });
 const vars = JSON.parse(readFileSync(process.env.SCRATCH + "/dotvars.json", "utf8")) as Record<string, string>;
 const mod = await import("../../src/app/dot/[slug]/DotChat");
 const DotChat = mod.default, LimitCard = mod.LimitCard;
-const { FREE_TURNS_PER_DAY } = await import("../../src/lib/dot/bond");
+const { AUTO_HEARTS_PER_DAY, CHECKIN_HEARTS } = await import("../../src/lib/dot/bond");
 const { AD_REFILLS_PER_DAY } = await import("../../src/lib/dot/money");
 
 /** 캐릭터는 **진짜 표에서** 가져온다. 지어낸 캐릭터로 찍으면 그림이 다 깨진 사진이 나온다. */
@@ -53,16 +53,17 @@ const history = [
 /** 남은 하트를 바꿔 렌더한다 — 0개(벽)와 3개(벽 앞)는 **다른 화면**이다(11-06 광고 자리). */
 const 방 = (하트: number) => renderToStaticMarkup(React.createElement(DotChat, {
   signedIn: true, who, bond: { points: 140, stage: 3, streakDays: 4, toNext: { need: 260, total: 280 } },
-  remaining: 하트, history, limit: FREE_TURNS_PER_DAY,
+  remaining: 하트, history, limit: AUTO_HEARTS_PER_DAY,
   account: { linked: true, email: "me@example.com" },
-  balance: { remaining: 하트, freeLeft: 하트, credits: 0, adLeft: AD_REFILLS_PER_DAY, menheraUntil: null, 구독중: false },
+  balance: { remaining: 하트, freeLeft: 하트, credits: 0, adLeft: AD_REFILLS_PER_DAY, menheraUntil: null, 출석함: 하트 > 0 },
   adOpen: true,
 } as never));
 
-const 카드 = (adOpen: boolean) => renderToStaticMarkup(React.createElement(LimitCard, {
-  name: who.name as unknown as string, limit: FREE_TURNS_PER_DAY, adOpen,
+/** 카드는 두 얼굴이다(11-06) — **출석 전**(하트 받는 문)과 **출석 후**(다 씀). 둘 다 잰다. */
+const 카드 = (adOpen: boolean, checkedIn = true) => renderToStaticMarkup(React.createElement(LimitCard, {
+  name: who.name as unknown as string, checkedIn, checkinHearts: CHECKIN_HEARTS, checkinBusy: false, adOpen,
   adLeft: AD_REFILLS_PER_DAY, adBusy: false, push: "off",
-  onPay: () => {}, onAd: () => {}, onPush: () => {},
+  onCheckIn: () => {}, onAd: () => {}, onPush: () => {},
 }));
 
 /** 메시지 목록의 끝 표시(`<div ref={endRef}>`)가 제품이 카드를 그리는 바로 뒤다. 그 앞에 끼운다. */
@@ -100,6 +101,7 @@ try {
    * 셋째가 11-06 에 생긴 자리다: 한도에 닿는 날이 0일이라 벽 안의 단추는 아무도 못 봤다.
    */
   const 판: [string, string | null, string | null][] = [
+    ["방-출석전", 끼우기(방(0), 카드(true, false)), ".kk-limit-btn"],
     ["방-광고켜짐", 끼우기(방(0), 카드(true)), ".kk-limit-ad"],
     ["방-광고꺼짐", 끼우기(방(0), 카드(false)), null],
     ["방-하트3-광고켜짐", 끼우기_입력뒤(방(3), 하트광고), ".kk-foot-ad"],

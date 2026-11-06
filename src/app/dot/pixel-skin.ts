@@ -91,6 +91,10 @@ img { image-rendering: pixelated; }
 .fb, .fc-like, .fc-chat, .fc-reply, .pk-go, .pf-go, .kk-limit-btn, .kk-pay-go, .kk-link-go, .kk-peek-go, .kk-peek-close, .da-form button, .da-google button, .kk-send, .kk-plus, .kk-back, .kk-more, .pf-back {
   min-height: 40px !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; box-sizing: border-box; }
 .fb.sm { min-height: 40px !important; padding: 0 12px !important; }
+/* 11-06: 위 규칙이 40px 로 **못 박아** 두어서, 화면 CSS 에서 44px 를 줘도 안 먹었다.
+   하트를 받는 단추 둘(출석·광고)만 44px(WCAG 2.5.5 AAA)로 올린다 — 이 둘이 이 앱에서
+   제일 많이 눌리는 자리이고, 전부 올리면 화면 열 개가 같이 움직인다. */
+.kk-limit-btn, .kk-limit-ad, .kk-foot-ad { min-height: 44px !important; }
 .fb.md { padding: 0 18px !important; }
 .fc-chat, .fc-reply, .pk-go { padding: 0 14px !important; font-family: Galmuri14, sans-serif !important; font-size: 14px !important; text-decoration: none !important; }
 .fc-chat { background: #fff !important; color: #1c1c1c !important; }

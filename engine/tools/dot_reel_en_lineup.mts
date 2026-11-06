@@ -83,13 +83,13 @@ for (const [i, c] of 쓸사람.entries()) {
 }
 
 // ③ 끝카드 — 할 일 하나만
-const { FREE_TURNS_PER_DAY } = await import("../../src/lib/dot/bond");
+const { AUTO_HEARTS_PER_DAY } = await import("../../src/lib/dot/bond");
 컷들.push({
   파일: 쓰기(await sharp(Buffer.from(`<svg width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">
     <rect width="${W}" height="${H}" fill="${PINK}"/>
     ${text(W / 2, H / 2 - 190, "Who is yours?", 92, "#ffffff", 900, 0)}
     ${text(W / 2, H / 2 - 70, "drop the name in the comments", 46, "#fff0f3", 600, 0)}
-    ${text(W / 2, H / 2 + 110, `Dot · ${FREE_TURNS_PER_DAY} free messages a day`, 50, "#ffffff", 700, 0)}
+    ${text(W / 2, H / 2 + 110, `Dot · ${AUTO_HEARTS_PER_DAY} free messages a day`, 50, "#ffffff", 700, 0)}
     ${text(W / 2, H / 2 + 250, "link in bio", 62, "#ffffff", 800, 0)}
   </svg>`)).png().toBuffer()),
   초: 2.8, 움직임: "들어가기", 전환: "",

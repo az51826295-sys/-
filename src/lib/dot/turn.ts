@@ -4,11 +4,11 @@ import { defaultProviders } from "@/lib/execution/shared";
 import { createDeepSeekProvider } from "@/lib/providers/deepseek";
 import { mergeMemo } from "./memo";
 import { eunNeun } from "./josa";
-import { balanceFor, SUB_DAILY_RAIL } from "./money";
+import { balanceFor } from "./money";
 import { USER_STICKERS } from "./stickers";
 import {
   EMOTIONS,
-  FREE_TURNS_PER_DAY,
+  AUTO_HEARTS_PER_DAY,
   applyTurn,
   stageVoiceFor,
   toVoiceLadder,
@@ -128,15 +128,16 @@ export async function prepareTurn(db: SupabaseClient, userId: string, characterI
   // 왕복했기 때문(서버↔DB 가 먼 날은 한 번에 0.5초). 넷을 **나란히** 묻는다(왕복 1).
   // 턴 세기가 먼저여야 하는 것은 **모델 호출**보다 먼저라는 뜻이지, 사이를 읽는 것보다 먼저일
   // 필요는 없다 — 한도에 걸리면 읽은 것을 버리면 된다.
-  const [chRes, takeRes, bondRes, recentRes, countRes, entRes] = await Promise.all([
+  const [chRes, takeRes, bondRes, recentRes, countRes, usageRes] = await Promise.all([
     db.from("dot_characters").select("id, slug, name, persona, speech, sprites, formal_start, default_emotion, voice_ladder").eq("id", characterId).maybeSingle(),
     // 09-30 사장님 "선물은 돈내고 하는 거야" — 선물은 **크레딧**으로 산다. 대화 턴까지 가져가면 두 번 받는다.
-    opts.gift ? Promise.resolve({ data: 1, error: null }) : db.rpc("dot_take_turn", { p_user: userId, p_day: day, p_limit: FREE_TURNS_PER_DAY }),
+    opts.gift ? Promise.resolve({ data: 1, error: null }) : db.rpc("dot_take_turn", { p_user: userId, p_day: day, p_limit: AUTO_HEARTS_PER_DAY }),
     db.from("dot_bonds").select("points, stage, streak_days, last_talked_on, memo, mode, last_gift_on").eq("user_id", userId).eq("character_id", characterId).maybeSingle(),
     db.from("dot_messages").select("role, content, sticker").eq("user_id", userId).eq("character_id", characterId).order("id", { ascending: false }).limit(HISTORY_TURNS * 2 + HISTORY_BLOCK),
     db.from("dot_messages").select("id", { count: "exact", head: true }).eq("user_id", userId).eq("character_id", characterId),
-    /* 10-25: 구독자는 한도가 없다. **같은 묶음에서** 읽어 왕복을 안 늘린다(첫 글자 속도가 이 앱의 전부다). */
-    db.from("dot_entitlements").select("menhera_until").eq("user_id", userId).maybeSingle(),
+    /* 11-06: 오늘 받은 하트(출석·광고)를 **같은 묶음에서** 읽는다 — 왕복을 안 늘린다
+       (첫 글자 속도가 이 앱의 전부다). 왜 필요한지는 아래 `새줄구멍` 주석에 적었다. */
+    db.from("dot_usage").select("bonus_turns").eq("user_id", userId).eq("day", day).maybeSingle(),
   ]);
   /** 실패하면 **받은 것을 돌려준다.** 대화면 턴 하나, 선물이면 낸 크레딧(아래서 값이 정해지면 바뀐다). */
   let 돌려줄크레딧 = 0, 선물키 = "";
@@ -147,7 +148,7 @@ export async function prepareTurn(db: SupabaseClient, userId: string, characterI
       return;
     }
     if (opts.gift) return;   // 선물은 턴을 안 가져갔다 — 돌려줄 턴도 없다
-    await db.rpc("dot_give_back_turn", { p_user: userId, p_day: day, p_limit: FREE_TURNS_PER_DAY }).then(() => {}, () => {});
+    await db.rpc("dot_give_back_turn", { p_user: userId, p_day: day, p_limit: AUTO_HEARTS_PER_DAY }).then(() => {}, () => {});
   };
 
   const character = chRes.data ? (chRes.data as unknown as Character) : null;
@@ -155,22 +156,21 @@ export async function prepareTurn(db: SupabaseClient, userId: string, characterI
 
   if (takeRes.error) return { ok: false, reason: "failed", message: takeRes.error.message };
   const used = Number(takeRes.data ?? 0);
+  if (used <= 0) return { ok: false, reason: "limit", remaining: 0, resetsAt: `${day} 자정(한국 시간)` };
   /**
-   * 10-25: **구독자는 무료 한도에 안 걸린다.**
-   * 날짜만 보고 가른다(시각까지 보면 자정 근처에서 흔들린다).
-   * 무료분을 다 쓴 뒤에만 한 번 더 부르므로, 평소 턴에는 왕복이 안 늘어난다.
-   * 난간(`SUB_DAILY_RAIL`)까지 올려 부르는 까닭: 매크로가 종일 돌리면 거기서 손해가 나므로
-   * **장부에 남기되 막지는 않는다** — 진짜 열성 사용자를 끊는 쪽이 더 손해다.
+   * **새 줄 구멍** (11-06). `dot_take_turn` 의 INSERT 가지는 `p_limit` 을 안 본다 —
+   * 오늘 줄이 아직 없으면 **무조건 1턴을 내준다.** 한도가 10 이던 때는 어차피 한도 안이라
+   * 티가 안 났는데, 자동 지급이 0 이 된 지금은 **출석 안 한 사람에게 공짜 한 턴**이 된다.
+   *
+   * DB 함수를 고치는 게 곧지만 이 기계에 DDL 열쇠가 없다. 그래서 **받은 하트보다 많이
+   * 쓴 턴이면 되돌린다** — 보너스는 같은 묶음에서 읽었고 `take_turn` 이 건드리지 않는 값이라
+   * 경주가 나지 않는다. 열쇠가 생기면 함수를 고치고 이 가드는 그대로 두면 된다(두 겹).
    */
-  const 구독중 = (() => {
-    const until = (entRes.data as { menhera_until?: string } | null)?.menhera_until;
-    return !!until && String(until).slice(0, 10) >= day;
-  })();
-  if (used <= 0) {
-    if (!구독중) return { ok: false, reason: "limit", remaining: 0, resetsAt: `${day} 자정(한국 시간)` };
-    const 다시 = await db.rpc("dot_take_turn", { p_user: userId, p_day: day, p_limit: SUB_DAILY_RAIL });
-    /* 난간마저 넘었으면 그냥 통과시킨다. 숫자는 `dot_usage` 에 남아 사장님이 볼 수 있다. */
-    if (다시.error) return { ok: false, reason: "failed", message: 다시.error.message };
+  const 줄없었다 = !usageRes.data;   // 오늘 줄이 아예 없었다 = 출석도 광고도 없었다
+  const 받은하트 = AUTO_HEARTS_PER_DAY + Number((usageRes.data as { bonus_turns?: number } | null)?.bonus_turns ?? 0);
+  if (!opts.gift && 줄없었다 && 받은하트 <= 0) {
+    await giveBack();
+    return { ok: false, reason: "limit", remaining: 0, resetsAt: `${day} 자정(한국 시간)` };
   }
 
   try {
@@ -322,7 +322,7 @@ export async function finishTurn(
     });
     if (error) console.warn("[dot] dot_turns 기록 실패:", error.message);
   } catch (e) { console.warn("[dot] dot_turns 기록 실패:", e instanceof Error ? e.message : e); }
-  console.log(`[dot] ${p.character.name} · ${meta.model} · in ${meta.inputTokens} out ${meta.outputTokens} · ${p.used}/${FREE_TURNS_PER_DAY}턴 · 모델 ${meta.tModel}ms 저장 ${Date.now() - tSave0}ms 합 ${total}ms${meta.routing && meta.routing !== "planned" ? " · 경로 " + meta.routing : ""}`);
+  console.log(`[dot] ${p.character.name} · ${meta.model} · in ${meta.inputTokens} out ${meta.outputTokens} · ${p.used}/${AUTO_HEARTS_PER_DAY}턴 · 모델 ${meta.tModel}ms 저장 ${Date.now() - tSave0}ms 합 ${total}ms${meta.routing && meta.routing !== "planned" ? " · 경로 " + meta.routing : ""}`);
 
   return {
     ok: true, reply: said.reply, emotion, sticker,

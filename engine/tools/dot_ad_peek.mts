@@ -30,7 +30,7 @@ process.env.SUPABASE_SECRET_KEY = vars.SUPABASE_SECRET_KEY;
 
 const { createServiceClient } = await import("../../src/lib/supabase/service");
 const { AD_REFILLS_PER_DAY, AD_REFILL_TURNS, AD_NUDGE_AT } = await import("../../src/lib/dot/money");
-const { FREE_TURNS_PER_DAY } = await import("../../src/lib/dot/bond");
+const { AUTO_HEARTS_PER_DAY } = await import("../../src/lib/dot/bond");
 
 const db = createServiceClient();
 const 부터 = new Date(Date.now() - 날수 * 86_400_000).toISOString().slice(0, 10);
@@ -42,14 +42,14 @@ const { data, error } = await db
 if (error) { console.log(`  ❌ 못 셌다: ${error.message}`); process.exit(1); }
 const rows = (data ?? []) as Row[];
 
-const 닿음 = (r: Row) => r.turns >= FREE_TURNS_PER_DAY + Number(r.bonus_turns ?? 0);
+const 닿음 = (r: Row) => r.turns >= AUTO_HEARTS_PER_DAY + Number(r.bonus_turns ?? 0);
 /**
  * 11-06: **자의 범위를 제품에 맞춘다**([[ruler-scope-must-match-product]]).
  * 이 자는 "벽에 닿은 날" 만 셌는데, 같은 날 광고 단추를 **벽 앞**(하트 `AD_NUDGE_AT` 개 이하)으로
  * 옮겼다. 자를 그대로 두면 단추가 보이는 날을 0 으로 세고, 옮긴 보람이 장부에 안 나타난다.
  */
 const 볼수있던날 = (r: Row) =>
-  r.turns >= FREE_TURNS_PER_DAY + Number(r.bonus_turns ?? 0) - AD_NUDGE_AT;
+  r.turns >= AUTO_HEARTS_PER_DAY + Number(r.bonus_turns ?? 0) - AD_NUDGE_AT;
 const 사람 = new Set(rows.map((r) => r.user_id));
 const 닿은날 = rows.filter(닿음);
 const 본날 = rows.filter(볼수있던날);
@@ -66,7 +66,7 @@ const 자주 = [...사람별닿음.values()].filter((n) => n >= 3).length;
 const pct = (a: number, b: number) => (b === 0 ? "—" : `${((a / b) * 100).toFixed(1)}%`);
 
 console.log(`\n=== 광고를 볼 사람 (최근 ${날수}일, ${부터}부터) ===`);
-console.log(`  무료 한도 ${FREE_TURNS_PER_DAY}회 · 광고 하루 ${AD_REFILLS_PER_DAY}번 · 한 번에 +${AD_REFILL_TURNS}`);
+console.log(`  무료 한도 ${AUTO_HEARTS_PER_DAY}회 · 광고 하루 ${AD_REFILLS_PER_DAY}번 · 한 번에 +${AD_REFILL_TURNS}`);
 console.log(`  · 쓴 날 ${rows.length}일 · 사람 ${사람.size}명 · 턴 ${턴합}회`);
 console.log(`  · **한도에 닿은 날 ${닿은날.length}일** (${pct(닿은날.length, rows.length)}) — 한도 카드가 뜬 날`);
 console.log(`  · **단추가 보인 날 ${본날.length}일** (${pct(본날.length, rows.length)}) — 하트 ${AD_NUDGE_AT}개 이하까지 내려간 날`);

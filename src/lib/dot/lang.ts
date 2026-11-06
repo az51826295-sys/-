@@ -58,13 +58,6 @@ export function syncLangCookie(): boolean {
 
 /** 화면 글. 키를 한글로 적으면 tsx 가 흘릴 수 있어 ASCII 로 둔다. */
 const 말 = {
-  tarot_title: { ko: "오늘의 카드", en: "Today's Card" },
-  tarot_tap: { ko: "카드를 눌러 뒤집어", en: "Tap the card to flip" },
-  tarot_again: { ko: "내일 다시 올 수 있어?", en: "Will you come again tomorrow?" },
-  tarot_black: { ko: "블랙 덱", en: "Black Deck" },
-  tarot_black_locked: { ko: "멘헤라 모드에서만 열려", en: "Opens with Menhera Mode" },
-  tarot_collection: { ko: "모은 카드", en: "Collected" },
-  tarot_locked_card: { ko: "아직", en: "Not yet" },
   lang_label: { ko: "언어", en: "Language" },
   feel_label: { ko: "소리와 진동", en: "Sound & vibration" },
   feel_on: { ko: "켬", en: "On" },
@@ -76,7 +69,6 @@ const 말 = {
 
   /* 아래 탭 */
   tab_feed: { ko: "피드", en: "Feed" },
-  tab_tarot: { ko: "타로", en: "Tarot" },
   tab_search: { ko: "검색", en: "Search" },
   tab_chats: { ko: "채팅", en: "Chats" },
   tab_me: { ko: "내 창", en: "Me" },

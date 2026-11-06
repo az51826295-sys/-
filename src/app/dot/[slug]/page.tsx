@@ -5,8 +5,8 @@ import { characterBySlug, spriteDataUrls, inLang } from "@/lib/dot/load";
 import { langFromCookie } from "@/lib/dot/langServer";
 import GuestSession from "../GuestSession";
 import DotChat from "./DotChat";
-import { FREE_TURNS_PER_DAY, todayKST, toMode, toNextStage } from "@/lib/dot/bond";
-import { balanceFor, type Balance } from "@/lib/dot/money";
+import { AUTO_HEARTS_PER_DAY, CHECKIN_HEARTS, todayKST, toMode, toNextStage } from "@/lib/dot/bond";
+import { balanceFor, AD_REFILLS_PER_DAY, AD_REFILL_TURNS, type Balance } from "@/lib/dot/money";
 
 /**
  * 한 사람과의 대화방. 카톡처럼 목록(`/dot`)에서 눌러 들어온다.
@@ -51,8 +51,8 @@ export default async function DotRoom({ params, searchParams }: { params: Promis
   const db = createServiceClient();
 
   let bond = { points: 0, stage: 1, streakDays: 0, toNext: toNextStage(0), mode: "normal" as "normal" | "menhera" };
-  let remaining = FREE_TURNS_PER_DAY;
-  let balance: Balance = { remaining, freeLeft: remaining, credits: 0, adLeft: 0, menheraUntil: null, 구독중: false };
+  let remaining = AUTO_HEARTS_PER_DAY;
+  let balance: Balance = { remaining, freeLeft: remaining, credits: 0, adLeft: 0, menheraUntil: null, 출석함: false };
   let history: { role: string; content: string; emotion: string | null; sticker?: string | null; at?: string }[] = [];
 
   if (user) {
@@ -93,7 +93,9 @@ export default async function DotRoom({ params, searchParams }: { params: Promis
       remaining={remaining}
       balance={balance}
       history={history}
-      limit={FREE_TURNS_PER_DAY}
+      /* 11-06: 하루에 받을 수 있는 하트 — 출석 5 + 광고 5. 자동 지급은 0 이라 `limit` 은
+         "오늘 최대 이만큼" 을 뜻한다(전에는 "아침에 주는 수" 였다). */
+      limit={AUTO_HEARTS_PER_DAY + CHECKIN_HEARTS + AD_REFILLS_PER_DAY * AD_REFILL_TURNS}
       /* 광고 단추를 그릴까 — **서버만 아는 스위치다.** 꺼져 있으면 단추를 아예 안 그린다.
          켜졌다고 넘겨짚지 않는다(10-28 화면 점검: 못 하는 일을 시키는 자리를 남기지 않는다). */
       adOpen={process.env.AD_REWARD_OPEN === "1"}

@@ -75,7 +75,7 @@ const 날별 = new Map<string, number>();
 for (const m of 말) if (m.role === "user") { const d = 한국(m.created_at); 날별.set(d, (날별.get(d) ?? 0) + 1); }
 const 최대 = Math.max(0, ...날별.values());
 /* **사람마다 하루에 몇 줄인가** — 합쳐 센 94줄은 여러 사람이 섞인 것이라
-   "제한에 닿았나" 를 못 말한다. 제한은 **한 사람 하루 30줄**이다(FREE_TURNS_PER_DAY). */
+   "제한에 닿았나" 를 못 말한다. 제한은 **한 사람 하루 30줄**이다(AUTO_HEARTS_PER_DAY). */
 const 사람날 = new Map<string, number>();
 for (const m of 말) if (m.role === "user") { const k = `${m.user_id}|${한국(m.created_at)}`; 사람날.set(k, (사람날.get(k) ?? 0) + 1); }
 const 한사람최대 = Math.max(0, ...사람날.values());

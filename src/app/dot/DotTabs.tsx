@@ -8,9 +8,9 @@
  * 서버 컴포넌트. 어느 탭인지는 부모가 말해 준다(경로로 짐작하지 않는다 — /dot/yuna 같은 방은 탭이 없다).
  * 아이콘은 8×8 격자 SVG(crispEdges) — 이모지는 폰마다 다르게 그려져 도트 화면에서 튄다.
  */
+/* 11-06: **타로 탭을 뺐다** (사장님 "타로 화면을 통째로 없애자"). 블랙 덱이 구독 전용이었는데
+   구독을 없애서 열 길이 사라졌고, 사장님이 화면째 정리하기로 하셨다. 탭은 이제 넷이다. */
 const ICON: Record<string, string> = {
-  // 타로(오늘의 카드) — 10-28. 매일 올 이유라 피드 바로 옆에 둔다.
-  tarot: "M1 0h6v1h1v6h-1v1h-6v-1h-1v-6h1zM2 1v6h4v-6zM3 2h2v1h-2zM3 5h2v1h-2z",
   // 돋보기(인스타 가운데 탭)
   search: "M1 0h4v1h1v4h-1v1h-4v-1h-1v-4h1zM2 1v4h2v-4zM6 6h1v1h1v1h-2z",
   // 말풍선
@@ -26,11 +26,10 @@ import { t } from "@/lib/dot/lang";
 import { langFromCookie } from "@/lib/dot/langServer";
 
 /* 10-28: 탭은 **모든 화면에 뜬다** — 여기가 한국어면 어느 화면도 영어가 될 수 없다. */
-export default async function DotTabs({ on }: { on: "search" | "chats" | "feed" | "me" | "tarot" }) {
+export default async function DotTabs({ on }: { on: "search" | "chats" | "feed" | "me" }) {
   const lang = await langFromCookie();
   const tabs = [
     { key: "feed", href: "/dot/feed", label: t("tab_feed", lang) },
-    { key: "tarot", href: "/dot/tarot", label: t("tab_tarot", lang) },
     { key: "search", href: "/dot/search", label: t("tab_search", lang) },
     { key: "chats", href: "/dot/chats", label: t("tab_chats", lang) },
     { key: "me", href: "/dot/me", label: t("tab_me", lang) },

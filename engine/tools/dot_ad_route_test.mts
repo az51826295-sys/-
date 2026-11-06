@@ -19,7 +19,7 @@ process.env.SUPABASE_SECRET_KEY = vars.SUPABASE_SECRET_KEY;
 const { createClient } = await import("@supabase/supabase-js");
 const { createServiceClient } = await import("../../src/lib/supabase/service");
 const { AD_REFILLS_PER_DAY, AD_REFILL_TURNS } = await import("../../src/lib/dot/money");
-const { FREE_TURNS_PER_DAY, todayKST } = await import("../../src/lib/dot/bond");
+const { AUTO_HEARTS_PER_DAY, todayKST } = await import("../../src/lib/dot/bond");
 
 const db = createServiceClient();
 const email = `adroute-${Date.now()}@dugeun.local`, pw = "ad-route-pass-1";
@@ -59,7 +59,7 @@ try {
   줄.push([가짜.status === 401, `가짜 토큰 → ${가짜.status} (401) "${가짜.body.error ?? ""}"`]);
 
   // (3) 켜면 한 번에 +1 이 들어온다
-  for (let i = 0; i < FREE_TURNS_PER_DAY; i++) await db.rpc("dot_take_turn", { p_user: uid, p_day: day, p_limit: FREE_TURNS_PER_DAY });
+  for (let i = 0; i < AUTO_HEARTS_PER_DAY; i++) await db.rpc("dot_take_turn", { p_user: uid, p_day: day, p_limit: AUTO_HEARTS_PER_DAY });
   const 한번 = await 부르기(token);
   const b = (한번.body.balance ?? {}) as Record<string, number>;
   줄.push([한번.status === 200 && b.remaining === AD_REFILL_TURNS && b.adLeft === AD_REFILLS_PER_DAY - 1,
