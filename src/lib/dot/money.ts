@@ -65,6 +65,33 @@ export const AD_NUDGE_AT = 3;
  * 멘헤라 **연출**은 지우지 않았다. 자격은 `engine/tools/dot_grant.mts` 로만 들어온다.
  */
 
+/**
+ * **하트 묶음** — 11-06 사장님 "하트 누르면 광고보기, 하트 결제창으로 넘어가자".
+ * 구독 대신 **쓰는 만큼 사는** 쪽이다.
+ *
+ * ⚠ **아직 돈을 받을 길이 없다.** Play 는 열쇠(`PLAY_VERIFY_KEY`)와 은행 계좌 인증이 남았고
+ * (금융이라 내가 안 누른다), 웹 결제도 승인 대기다. 사장님이 *"결제창까지 보이고 준비 중"*
+ * 으로 정하셔서 **화면에는 내밀되 누르면 "곧 열려요"** 로 답한다. 파는 스위치는
+ * `HEART_BILLING_OPEN=1` 이고 지금은 꺼져 있다 — 받는 쪽이 생기는 날 켠다([[dot-web-payment]]).
+ *
+ * 값은 **내가 고른 자리표다**(조정 전제). 근거:
+ *   · 한 턴 원가 **0.578원**(실측, deepseek-v4-flash 캐시 포함) — 값의 몸통은 원가가 아니다.
+ *   · 광고 1회가 대략 **10원**(바깥 벤치마크) 에 하트 1개다. 돈으로 사는 하트를 그보다
+ *     **열 배쯤 비싸게** 두면 "시간을 내면 공짜, 급하면 돈" 이 성립한다.
+ *   · 옛 구독이 월 4,900원 무제한이었다. 제일 큰 묶음을 그 아래(3,900원)에 둬서
+ *     나중에 구독이 돌아와도 값이 안 꼬이게 한다.
+ *   · 묶음이 셋인 까닭: 하나면 비싸 보이고, 넷이면 고르다 지친다.
+ */
+export type HeartPack = { key: string; hearts: number; price: string; won: number; note?: string };
+export const HEART_PACKS: HeartPack[] = [
+  { key: "hearts_10", hearts: 10, price: "1,200원", won: 1200 },
+  { key: "hearts_30", hearts: 30, price: "2,900원", won: 2900, note: "제일 많이 고르는 값" },
+  { key: "hearts_60", hearts: 60, price: "3,900원", won: 3900, note: "하트당 제일 쌈" },
+];
+
+/** 파는 길이 열렸나 — 꺼져 있으면 화면은 "준비 중" 으로 답한다(틀은 그대로 둔다). */
+export const heartBillingOpen = () => process.env.HEART_BILLING_OPEN === "1";
+
 export type Balance = {
   /** 지금 이야기할 수 있는 횟수. 구독자는 `Infinity`. */
   remaining: number;

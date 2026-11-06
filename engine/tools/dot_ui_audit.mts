@@ -51,8 +51,11 @@ mkdirSync(OUT, { recursive: true });
  * ([[rulers-must-not-share-a-screen]]). 그래서 판을 **제 화면으로 먼저 재고**, 받아서 치운 다음
  * 나머지를 돈다. 판을 안 재고 닫기만 하면 새로 생긴 화면 하나가 자 밖에 남는다.
  */
-const 화면: [string, string][] = [
+const 화면: [string, string, string?][] = [
   ["출석판", "/dot/chats"],
+  /* 눌러야 열리는 자리도 **화면 하나**로 센다 — 안 열어 보면 0 으로 세진다([[zero-can-mean-i-cannot-see]]). */
+  ["하트시트", "/dot/chats", ".hb"],
+  ["결제창", "/dot/pay"],
   ["피드", "/dot/feed"],
   ["피드-전체", "/dot/feed?all=1"],
   ["검색", "/dot/search"],
@@ -90,10 +93,16 @@ try {
   await page.goto(magic, { waitUntil: "networkidle2", timeout: 60_000 });
   await sleep(2500);
 
-  for (const [이름, 길] of 화면) {
+  for (const [이름, 길, 누를] of 화면) {
     콘솔.length = 0;
     const res = await page.goto(BASE + 길, { waitUntil: "networkidle2", timeout: 60_000 });
     await sleep(2200);
+    /* 시트·판처럼 **눌러야 보이는 화면**은 여기서 연다. 못 열면 통과로 적지 않고 적어 둔다. */
+    if (누를) {
+      const el = await page.$(누를);
+      if (el) { await el.click(); await sleep(900); }
+      else console.log(`         (${누를} 를 못 찾아 못 열었다 — 이 줄은 뒤 화면을 잰 것이다)`);
+    }
     const r = await 재기(page);
     await page.screenshot({ path: `${OUT}/${이름}.png` as `${string}.png` });
     const { 어긋남: 작음, 아슬, 예외 } = split(r.작음);

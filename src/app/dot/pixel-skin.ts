@@ -37,9 +37,9 @@ body { background: #fff !important; }
 /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
 .kl-title, .pk-title, .fd-title, .da-name { font-family: Galmuri14, sans-serif !important; font-size: 28px !important; font-weight: 400 !important; line-height: 1.2 !important; }
 .pf-name { font-family: Galmuri14, sans-serif !important; font-size: 28px !important; font-weight: 400 !important; }
-.kk-title, .kl-name, .pk-name, .fc-name, .fc-cap, .kk-bubble, .kk-input, .pk-say, .pf-tag, .pf-stage, .kk-menu button, .kk-menu a, .kk-limit-title, .kk-limit-body, .kk-peek-name, .kk-sku-name, .da-form input, .da-form button, .da-google button, .pv-phone p, .pv-phone li, .pv-phone h2, .pv-phone h1, .fb, .kk-send, .kk-limit-btn, .pf-go, .pk-go, .fc-reply, .kk-pay-go, .kk-link-go, .kk-peek-go, .kk-peek-close, .fd-hint, .fd-empty, .kl-empty, .kl-warn, .kk-warn, .kk-quote-text, .kk-pay-list, .kk-link-help, .kk-shop-bal, .kk-pay-price, .fd-tabs a, .hb, .ci-title, .ci-go, .ci-later {
+.kk-title, .kl-name, .pk-name, .fc-name, .fc-cap, .kk-bubble, .kk-input, .pk-say, .pf-tag, .pf-stage, .kk-menu button, .kk-menu a, .kk-limit-title, .kk-limit-body, .kk-peek-name, .kk-sku-name, .da-form input, .da-form button, .da-google button, .pv-phone p, .pv-phone li, .pv-phone h2, .pv-phone h1, .fb, .kk-send, .kk-limit-btn, .pf-go, .pk-go, .fc-reply, .kk-pay-go, .kk-link-go, .kk-peek-go, .kk-peek-close, .fd-hint, .fd-empty, .kl-empty, .kl-warn, .kk-warn, .kk-quote-text, .kk-pay-list, .kk-link-help, .kk-shop-bal, .kk-pay-price, .fd-tabs a, .hb, .ci-title, .ci-go, .ci-later, .hb-now, .hb-row-t, .py-title, .py-now, .py-pack-n, .py-pack-p {
   font-family: Galmuri14, sans-serif !important; font-size: 14px !important; font-weight: 400 !important; }
-.kl-say, .kl-when, .kl-turns, .pk-sub, .pk-line, .fc-when, .kk-time, .kk-name, .kk-day, .kk-foot, .kk-menu small, .kk-limit-note, .kk-pay-note, .kk-mode, .kk-unread, .pf-meta, .pv-date, .da-sub, .da-foot, .da-form label, .dt-tab, .kk-limit-btn small, .kk-sku-name small, .pk-fl, .fb.sm, .kk-peek-stage, .kl-hearts, .kk-hearts, .pf-hearts, .kk-theme-name, .da-or, .da-msg, .da-err, .kk-link-err, .ci-body, .ci-err {
+.kl-say, .kl-when, .kl-turns, .pk-sub, .pk-line, .fc-when, .kk-time, .kk-name, .kk-day, .kk-foot, .kk-menu small, .kk-limit-note, .kk-pay-note, .kk-mode, .kk-unread, .pf-meta, .pv-date, .da-sub, .da-foot, .da-form label, .dt-tab, .kk-limit-btn small, .kk-sku-name small, .pk-fl, .fb.sm, .kk-peek-stage, .kl-hearts, .kk-hearts, .pf-hearts, .kk-theme-name, .da-or, .da-msg, .da-err, .kk-link-err, .ci-body, .ci-err, .hb-row-s, .hb-close, .py-pack-l small, .py-free, .py-soon {
   font-family: Galmuri11, Galmuri14, sans-serif !important; font-size: 11px !important; font-weight: 400 !important; }
 .kk-bubble { line-height: 1.5 !important; }
 
@@ -96,7 +96,7 @@ img { image-rendering: pixelated; }
    제일 많이 눌리는 자리이고, 전부 올리면 화면 열 개가 같이 움직인다. */
 .kk-limit-btn, .kk-limit-ad, .kk-foot-ad { min-height: 44px !important; }
 /* 머리에 붙는 하트 수(11-06). 받는 단추 쪽만 44px — 숫자는 누르는 자리가 아니다. */
-.ci-go, .ci-later { min-height: 44px !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; }
+.ci-go, .ci-later, .hb-close { min-height: 44px !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; }
 .fb.md { padding: 0 18px !important; }
 .fc-chat, .fc-reply, .pk-go { padding: 0 14px !important; font-family: Galmuri14, sans-serif !important; font-size: 14px !important; text-decoration: none !important; }
 .fc-chat { background: #fff !important; color: #1c1c1c !important; }

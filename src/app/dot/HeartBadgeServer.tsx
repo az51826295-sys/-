@@ -17,7 +17,15 @@ export default async function HeartBadgeServer() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return null;
     const b = await balanceFor(createServiceClient(), user.id, todayKST());
-    return <HeartBadge hearts={Number.isFinite(b.remaining) ? b.remaining : 0} />;
+    /* 광고 스위치는 **서버만 안다**. 꺼져 있으면 시트에 광고 줄을 안 그린다 —
+       켜졌다고 넘겨짚지 않는다(못 하는 일을 시키는 자리를 안 남긴다). */
+    return (
+      <HeartBadge
+        hearts={Number.isFinite(b.remaining) ? b.remaining : 0}
+        adOpen={process.env.AD_REWARD_OPEN === "1"}
+        adLeft={b.adLeft}
+      />
+    );
   } catch {
     return null;
   }
