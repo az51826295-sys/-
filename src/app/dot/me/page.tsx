@@ -92,8 +92,10 @@ export default async function DotMe() {
             <div className="me-empty">
               {t("me_empty", lang)}
               <div className="me-empty-sub">{lang === "en"
-                ? `Post a photo and the characters you added will see it and leave hearts. ${맞팔_하트} hearts from one character and they follow you back.`
-                : <>사진을 올리면 추가한 캐릭터들이 보고 하트를 줘요.<br />한 캐릭터에게 하트 {맞팔_하트}개를 받으면 맞팔해 줍니다.</>}</div>
+                /* 11-06: 여기 "하트" 는 **좋아요**다. 같은 날 대화 횟수를 하트라 부르기로 해서
+                   한 앱에 하트가 셋이 됐다 — 이쪽은 글자를 좋아요로 바꿔 가른다. */
+                ? `Post a photo and the characters you added will see it and leave likes. ${맞팔_하트} likes from one character and they follow you back.`
+                : <>사진을 올리면 추가한 캐릭터들이 보고 좋아요를 눌러요.<br />한 캐릭터에게 좋아요 {맞팔_하트}개를 받으면 맞팔해 줍니다.</>}</div>
             </div>
           ) : (
             <div className="me-grid">

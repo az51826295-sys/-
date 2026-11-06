@@ -416,7 +416,7 @@ export default function DotChat({
         <header className="kk-bar">
           <Link className="kk-back" href="/dot/chats" aria-label="채팅 목록으로">‹</Link>
           <a className="kk-title" href={`/dot/${who.slug}/profile`} style={{ textDecoration: "none", color: "inherit" }}>{who.name}</a>
-          <a className="kk-hearts" href={`/dot/${who.slug}/profile`} aria-label={`친밀도 ${bond.stage}단계 · 프로필 보기`} title="친밀도 — 이야기할수록 차요">{"♥".repeat(bond.stage)}{"♡".repeat(Math.max(0, 5 - bond.stage))}</a>
+          <a className="kk-hearts" href={`/dot/${who.slug}/profile`} aria-label={`친밀도 ${bond.stage}단계 · 프로필 보기`} title="친밀도 — 이야기할수록 차요">{"★".repeat(bond.stage)}{"☆".repeat(Math.max(0, 5 - bond.stage))}</a>
           {bond.mode === "menhera" && <span className="kk-mode">멘헤라</span>}
           {signedIn && <button className="kk-more" aria-label="메뉴" onClick={() => setMenu((m) => !m)}>≡</button>}
         </header>
@@ -686,7 +686,7 @@ export default function DotChat({
             {lang === "en" ? (
               <ul>
                 <li>Tap the <b>face</b> for {who.name}&apos;s photos and profile</li>
-                <li><b>♥♥♡♡♡</b> is closeness — it fills as you talk, and the voice and the face change with it</li>
+                <li><b>★★☆☆☆</b> is closeness — it fills as you talk, and the voice and the face change with it</li>
                 <li><b>😊</b> send a sticker · <b>≡</b> notifications and wallpaper</li>
                 <li>Turn notifications on and {who.name} messages you <b>first</b></li>
                 <li>One message costs <b>one heart</b> — check in for {CHECKIN_HEARTS}, watch an ad for 1 more (up to {limit} a day)</li>
@@ -694,13 +694,14 @@ export default function DotChat({
             ) : (
               <ul>
                 <li><b>얼굴</b>을 누르면 {who.name}의 사진·프로필</li>
-                <li><b>♥♥♡♡♡</b>는 친밀도 — 이야기할수록 차고, 말투와 표정이 바뀌어요</li>
+                <li><b>★★☆☆☆</b>는 친밀도 — 이야기할수록 차고, 말투와 표정이 바뀌어요</li>
                 <li><b>😊</b> 스티커 보내기 · <b>≡</b> 알림·배경 바꾸기</li>
                 <li>알림을 켜면 {who.name}{iGa(who.name)} <b>먼저</b> 말을 걸어요</li>
                 {/* 10-29: **30 은 옛 숫자다**(10-25 에 10 으로 내렸다). 안내판만 고치지 않고 남아
                     새로 온 사람에게 석 달째 거짓말을 하고 있었다 — 숫자는 상수에서 읽는다. */}
-                {/* 11-06: 대화 횟수를 **하트**로 부른다(사장님). 위의 ♥♥♡♡♡ 는 친밀도라
-                    한 화면에 하트가 둘이다 — 친밀도 쪽 그림을 무엇으로 바꿀지는 사장님 몫이라 그대로 뒀다. */}
+                {/* 11-06: 한 앱에 하트가 셋이 됐다(대화권·친밀도·좋아요). 사장님이 "니가 해" 라 하셔서
+                    **하트는 대화권 하나만** 쓰기로 가르고, 친밀도는 ★☆(단계로 읽힌다), 피드 쪽은
+                    글자를 "좋아요" 로 바꿨다(아이콘 ♡ 는 보편이라 그대로). */}
                 {/* 11-06: 전에 "하루 30번" 을 안 고쳐 석 달 거짓말을 했다. 숫자도 **길도** 상수에서 읽는다. */}
                 <li>한 번 말할 때 <b>하트 1개</b> — 출석하면 {CHECKIN_HEARTS}개, 광고 보면 1개씩 (하루 {limit}개까지)</li>
               </ul>
@@ -772,7 +773,7 @@ export default function DotChat({
           <div className="kk-peek-card" onClick={(e) => e.stopPropagation()}>
             {who.photos?.[0] ? <img className="kk-peek-photo" src={who.photos[0].url} alt={who.name} /> : <img src={face("neutral")} alt={who.name} />}
             <div className="kk-peek-name">{who.name}</div>
-            <div className="kk-peek-stage">{"♥".repeat(bond.stage)}{"♡".repeat(Math.max(0, 5 - bond.stage))} · {STAGE_WORD[bond.stage] ?? ""}</div>
+            <div className="kk-peek-stage">{"★".repeat(bond.stage)}{"☆".repeat(Math.max(0, 5 - bond.stage))} · {STAGE_WORD[bond.stage] ?? ""}</div>
             {(who.photos?.length ?? 0) > 1 && (
               <div className="kk-peek-photos">
                 {who.photos!.map((p, i) => <img key={i} src={p.url} alt="" />)}

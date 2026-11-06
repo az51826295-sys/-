@@ -124,7 +124,7 @@ export default async function DotList() {
                 </div>
                 <div className="kl-right">
                   {l && <div className="kl-when">{whenLine(l.at, lang)}</div>}
-                  {(unread.get(c.id) ?? 0) > 0 ? <div className="kl-badge">{unread.get(c.id)}</div> : <div className="kl-hearts">{stage > 0 ? "♥".repeat(stage) + "♡".repeat(Math.max(0, 5 - stage)) : (lang === "en" ? "New" : "처음")}</div>}
+                  {(unread.get(c.id) ?? 0) > 0 ? <div className="kl-badge">{unread.get(c.id)}</div> : <div className="kl-hearts">{stage > 0 ? "★".repeat(stage) + "☆".repeat(Math.max(0, 5 - stage)) : (lang === "en" ? "New" : "처음")}</div>}
                 </div>
               </Link>
             );

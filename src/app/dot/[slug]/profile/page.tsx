@@ -66,7 +66,7 @@ export default async function DotProfile({ params }: { params: Promise<{ slug: s
 
           {stage > 0 ? (
             <div className="pf-bond">
-              <div className="pf-hearts">{"♥".repeat(stage)}{"♡".repeat(Math.max(0, 5 - stage))}</div>
+              <div className="pf-hearts">{"★".repeat(stage)}{"☆".repeat(Math.max(0, 5 - stage))}</div>
               <div className="pf-stage">{STAGE_WORD[stage]}</div>
               <div className="pf-bar"><div style={{ width: next ? `${Math.round((1 - next.need / next.total) * 100)}%` : "100%" }} /></div>
               <div className="pf-meta">
