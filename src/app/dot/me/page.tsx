@@ -6,6 +6,7 @@ import { langFromCookie } from "@/lib/dot/langServer";
 import Uploader from "./Uploader";
 import { mineView, 맞팔_하트 } from "@/lib/dot/mine";
 import MeSignIn from "./MeSignIn";
+import HeartBadgeServer from "../HeartBadgeServer";
 
 /**
  * **내 창** (227회차 09-29, 사장님 *"자신의 창도 있어야지"*).
@@ -45,6 +46,7 @@ export default async function DotMe() {
       <div className="me-phone">
         <header className="me-head">
           <div className="me-title">{이름}</div>
+          <HeartBadgeServer />
           <Link href="/dot/settings" className="me-gear" aria-label={t("settings_aria", lang)}>
             <svg width="24" height="24" viewBox="0 0 8 8" shapeRendering="crispEdges" aria-hidden><path d="M3 0h2v1h1v1h1v2h-1v1h-1v1h-2v-1h-1v-1h-1v-2h1v-1h1z" fill="currentColor" fillRule="evenodd" /></svg>
           </Link>
@@ -164,6 +166,7 @@ function MeEmpty({ lang }: { lang: Lang }) {
       <div className="me-phone">
         <header className="me-head">
           <div className="me-title">{t("tab_me", lang)}</div>
+          <HeartBadgeServer />
           <Link href="/dot/settings" className="me-gear" aria-label={t("settings_aria", lang)}>
             <svg width="24" height="24" viewBox="0 0 8 8" shapeRendering="crispEdges" aria-hidden><path d="M3 0h2v1h1v1h1v2h-1v1h-1v1h-2v-1h-1v-1h-1v-2h1v-1h1z" fill="currentColor" fillRule="evenodd" /></svg>
           </Link>

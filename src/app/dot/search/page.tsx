@@ -6,6 +6,7 @@ import { publicCharacters, inLang } from "@/lib/dot/load";
 import SearchList, { type SearchItem } from "./SearchList";
 import { t } from "@/lib/dot/lang";
 import { langFromCookie } from "@/lib/dot/langServer";
+import HeartBadgeServer from "../HeartBadgeServer";
 
 /**
  * 검색 탭 (227회차 09-29, 사장님 *"트위터나 인스타를 모방해서 검색이랑 피드있고"*).
@@ -49,6 +50,7 @@ export default async function DotSearch() {
       <div className="sc-phone">
         <header className="sc-head">
           <div className="sc-title">{t("tab_search", lang)}</div>
+          <HeartBadgeServer />
           <Link href="/dot/settings" className="sc-gear" aria-label={t("settings_aria", lang)}>
             <svg width="24" height="24" viewBox="0 0 8 8" shapeRendering="crispEdges" aria-hidden><path d="M3 0h2v1h1v1h1v2h-1v1h-1v1h-2v-1h-1v-1h-1v-2h1v-1h1zM3 3v2h2v-2z" fill="currentColor" fillRule="evenodd" /></svg>
           </Link>

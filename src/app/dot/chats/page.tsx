@@ -5,6 +5,7 @@ import { langFromCookie } from "@/lib/dot/langServer";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import { publicCharacters, inLang } from "@/lib/dot/load";
+import HeartBadgeServer from "../HeartBadgeServer";
 
 /**
  * 목록 — **카톡 친구목록.**
@@ -90,12 +91,14 @@ export default async function DotList() {
         <header className="kl-bar">
           <span className="kl-title">{t("app_name", lang)}</span>
           {/*
-            226회차 09-28, 사장님 *"오늘 남은 대화는 표시하지말고"*.
-            베타 테스터를 받는 참이다. 방 목록 맨 위에 늘 붙어 있는 "오늘 남은 대화 12/15" 는
-            들어오자마자 **미터기부터 보여 주는 것**이다 — 처음 온 사람에게 먼저 보일 것이 아니다.
-            숫자를 아예 없애지는 않았다: 다 쓰면 그때 카드가 뜨고, 얼굴을 누르면 잔고가 보인다
-            (DotChat.tsx 의 "지금 남은 대화 N번" — 그건 사람이 **눌러서** 보는 자리다).
+            09-28 사장님 *"오늘 남은 대화는 표시하지말고"* → 여기 있던 "오늘 남은 대화 12/15" 를 뺐다.
+            들어오자마자 **미터기부터 보여 주는 것**이라는 이유였다.
+
+            11-06 사장님 *"유아이에 하트 수 표시"* → 다시 단다. **조건이 바뀌었다**:
+            그때는 아침마다 저절로 차는 수라 미터기였고, 지금은 **받아야 생기는 값**이라
+            안 보이면 받을 수가 없다(출석 전에는 이 자리가 받는 단추다).
           */}
+          <HeartBadgeServer />
         </header>
 
         <div className="kl-list">

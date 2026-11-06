@@ -13,6 +13,7 @@ import FeedCard, { type FeedPost } from "./FeedCard";
 import StoryRow, { type StoryItem } from "./StoryRow";
 import { ensureStarter } from "@/lib/dot/starter";
 import { 막힌것인가, 멈춤말 } from "@/lib/dot/outage";
+import HeartBadgeServer from "../HeartBadgeServer";
 
 /**
  * 피드 — 캐릭터들이 올린 게시물 (78회차 09-11, 사장님 "카톡 벤치마킹: 캐릭터들이 도트 게시물을 올리고 팔로우하고 채팅").
@@ -103,6 +104,7 @@ export default async function DotFeed({ searchParams }: { searchParams: Promise<
             <Link href="/dot/feed" className={!showAll ? "on" : ""}>{t("feed_following", lang)}</Link>
             <Link href="/dot/feed?all=1" className={showAll ? "on" : ""}>{t("feed_all", lang)}</Link>
           </nav>
+          <HeartBadgeServer />
         </header>
         {!showAll && follows.size === 0 && <div className="fd-hint">{t("feed_no_follow", lang)}</div>}
         <div className="fd-list">
@@ -125,7 +127,9 @@ const CSS = `
 .fd-tabs a { padding:6px 12px; border-radius:999px; font-size:13px; color:#7b8590; text-decoration:none; }
 .fd-tabs a.on { background:#fff; color:#111; font-weight:600; box-shadow:0 1px 2px rgba(0,0,0,.08); }
 .fd-hint { margin:0 16px 8px; padding:10px 12px; background:#fff8d6; color:#5a4a00; font-size:13px; border-radius:12px; }
-.fd-title { font-size:22px; font-weight:800; letter-spacing:-.6px; color:#111; }
+.fd-title { font-size:22px; font-weight:800; letter-spacing:-.6px; color:#111; white-space:nowrap; flex:0 0 auto; }
+/* 11-06: 하트 배지가 머리에 들어오면서 제목 칸이 좁아져 "두근도／트" 로 잘렸다 — 셋 다 안 줄어들게 못 박는다. */
+.fd-tabs { flex:0 0 auto; }
 .fd-list { flex:1; min-height:0; overflow-y:auto; }
 .fd-empty { padding:24px 20px; font-size:14px; color:#8a8f98; }
 .fc { border-bottom:1px solid #f1f3f6; padding-bottom:12px; margin-bottom:6px; }
