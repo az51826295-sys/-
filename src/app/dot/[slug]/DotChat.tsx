@@ -7,7 +7,8 @@ import Link from "next/link";
 import { pushState, enablePush, disablePush, type PushState } from "./push-client";
 import { 물어볼까 } from "@/lib/dot/pushAsk";
 import { iGa } from "@/lib/dot/josa";
-import { LIMIT_COPY, AD_REFILL_TURNS, AD_NUDGE_AT, type Balance } from "@/lib/dot/money";
+import { LIMIT_COPY, AD_REFILL_TURNS, AD_NUDGE_AT, type Balance, type AdConf } from "@/lib/dot/money";
+import { showRewardedAd, AD_FAIL_COPY } from "@/lib/dot/adbreak";
 import { USER_STICKERS, USER_STICKER_KEYS } from "@/lib/dot/stickers";
 import { GIFTS, CHECKIN_HEARTS } from "@/lib/dot/bond";
 import { splitBubbles } from "@/lib/dot/bubbles";
@@ -34,11 +35,14 @@ type Bond = { points: number; stage: number; streakDays: number; toNext: { need:
 type Line = { role: string; content: string; emotion: string | null; sticker?: string | null; at?: string };
 
 export default function DotChat({
-  signedIn, who, bond: bond0, remaining: remaining0, history, limit, account: account0, balance: balance0, replyTo: replyTo0 = null, adOpen = false,
+  signedIn, who, bond: bond0, remaining: remaining0, history, limit, account: account0, balance: balance0, replyTo: replyTo0 = null, ad = null,
 }: {
   signedIn: boolean; who: Character; bond: Bond; remaining: number; history: Line[]; limit: number;
-  /** 광고 보상이 켜져 있나(`AD_REWARD_OPEN`). 꺼져 있으면 단추를 그리지 않는다 — 서버가 503 을 줄 단추다. */
-  adOpen?: boolean;
+  /**
+   * 광고 설정(`adConfFromEnv()`) — 스위치와 광고주 번호가 **둘 다** 있을 때만 온다.
+   * null 이면 단추를 아예 안 그린다: 눌러도 광고가 안 뜨고 서버는 503 을 줄 자리다.
+   */
+  ad?: AdConf | null;
   /** 익명이면 linked=false. 연결하면 폰을 바꿔도 이어진다(76회차). */
   account: { linked: boolean; email: string | null };
   /** 잔고 — 광고 남은 횟수·충전. 한도 카드가 이걸로 단추를 고른다(09-11 돈). */
@@ -101,11 +105,12 @@ export default function DotChat({
    * 광고 보고 +1회 — **11-04 되살렸다.** (10-25 에 "본 사람 0명" 으로 걷어냈는데, 그때는
    * 무료가 30회라 한도를 본 사람이 3% 였다. 10회로 좁힌 지금은 11% 가 본다.)
    *
-   * 광고를 **실제로 띄우는 코드는 아직 없다.** 그래서 지금은 "틀" 만 맞춰 둔다 —
-   * 광고망이 붙는 날 `광고보기()` 안의 가짜 기다림 자리에 그 SDK 호출이 들어온다.
+   * 11-07: **광고를 띄우는 코드가 들어왔다**(`adbreak.ts`, AdSense H5 — TWA 안에서도 뜨는 길).
    * 충전은 끝까지 **서버가** 한다(`/api/dot/ad`), 화면은 결과만 받아 그린다.
    */
   const [adBusy, setAdBusy] = useState(false);
+  /** 광고 자리를 그릴지 — 설정이 온 때만. 아래 세 군데가 이걸로 갈린다. */
+  const adOpen = !!ad;
   /**
    * **출석체크** (11-06 사장님 "매일 5개 출석체크 하면 줘"). 자동 지급이 없어졌으니
    * 이 단추가 **말을 걸 수 있게 되는 문**이다. 몇 개 늘었는지는 **서버가 센 잔고**로 갈아 끼운다 —
@@ -128,10 +133,12 @@ export default function DotChat({
     }
   }
   async function watchAd() {
-    if (adBusy) return;
+    if (adBusy || !ad) return;
     setAdBusy(true);
     try {
-      /* ── 여기에 광고 SDK 가 들어온다 ── 광고가 끝까지 재생됐을 때만 아래로 내려가야 한다. */
+      /* **광고가 먼저다.** 끝까지 본 것(`viewed`)만 충전으로 내려간다 — 닫았으면 안 준다. */
+      const 결과 = await showRewardedAd(ad);
+      if (결과 !== "viewed") { setToast(AD_FAIL_COPY[결과]); return; }
       const res = await fetch("/api/dot/ad", { method: "POST" });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) { setToast(data.error ?? "광고를 불러오지 못했어요"); return; }

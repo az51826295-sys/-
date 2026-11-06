@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { AD_REFILL_TURNS } from "@/lib/dot/money";
+import { AD_REFILL_TURNS, type AdConf } from "@/lib/dot/money";
+import { showRewardedAd, AD_FAIL_COPY } from "@/lib/dot/adbreak";
 
 /**
  * **하트 수 표시 + 누르면 하트 늘리는 자리** (11-06).
@@ -14,11 +15,11 @@ import { AD_REFILL_TURNS } from "@/lib/dot/money";
  *   ③ *"하트 누르면 광고보기, 하트 결제창으로 넘어가자"* — 숫자를 **누를 수 있게** 하고,
  *      그 안에 하트를 늘리는 길 둘(광고·사기)을 둔다.
  *
- * 광고 스위치가 꺼져 있으면 광고 줄을 **안 그린다** — 누르면 503 이 오는 단추는 두지 않는다.
+ * 광고 창구가 안 열려 있으면 광고 줄을 **안 그린다** — 누르면 503 이 오는 단추는 두지 않는다.
  * 결제는 아직 받을 길이 없어 `/dot/pay` 가 "준비 중" 으로 답한다(사장님이 그렇게 정하셨다).
  */
-export default function HeartBadge({ hearts: hearts0, adOpen, adLeft: adLeft0 }: {
-  hearts: number; adOpen: boolean; adLeft: number;
+export default function HeartBadge({ hearts: hearts0, ad, adLeft: adLeft0 }: {
+  hearts: number; ad: AdConf | null; adLeft: number;
 }) {
   const router = useRouter();
   const [열림, set열림] = useState(false);
@@ -28,9 +29,13 @@ export default function HeartBadge({ hearts: hearts0, adOpen, adLeft: adLeft0 }:
   const [말, set말] = useState<string | null>(null);
 
   async function 광고보기() {
-    if (busy) return;
+    if (busy || !ad) return;
     setBusy(true);
     try {
+      /* **광고가 먼저다.** 끝까지 본 것만 서버에 충전을 부른다 — 닫았거나 광고가 없으면 여기서 끝난다
+         (11-07 까지는 이 줄이 없어서 단추를 누르면 광고 없이 하트가 찼다). */
+      const 결과 = await showRewardedAd(ad);
+      if (결과 !== "viewed") { set말(AD_FAIL_COPY[결과]); return; }
       const res = await fetch("/api/dot/ad", { method: "POST" });
       const data = await res.json().catch(() => ({})) as { balance?: { remaining: number; adLeft: number }; error?: string };
       if (!res.ok) { set말(data.error ?? "광고를 불러오지 못했어요"); return; }
@@ -58,7 +63,7 @@ export default function HeartBadge({ hearts: hearts0, adOpen, adLeft: adLeft0 }:
           <div className="hb-sheet" onClick={(e) => e.stopPropagation()}>
             <div className="hb-now"><b>♥</b> 지금 하트 {hearts}개</div>
 
-            {adOpen && adLeft > 0 && (
+            {ad && adLeft > 0 && (
               <button className="hb-row" onClick={광고보기} disabled={busy}>
                 <span className="hb-row-t">{busy ? "광고를 불러오는 중…" : `광고 보고 하트 +${AD_REFILL_TURNS}`}</span>
                 <span className="hb-row-s">오늘 {adLeft}번 남음</span>

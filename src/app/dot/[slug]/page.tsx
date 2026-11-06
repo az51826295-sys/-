@@ -6,7 +6,7 @@ import { langFromCookie } from "@/lib/dot/langServer";
 import GuestSession from "../GuestSession";
 import DotChat from "./DotChat";
 import { AUTO_HEARTS_PER_DAY, CHECKIN_HEARTS, todayKST, toMode, toNextStage } from "@/lib/dot/bond";
-import { balanceFor, AD_REFILLS_PER_DAY, AD_REFILL_TURNS, type Balance } from "@/lib/dot/money";
+import { balanceFor, AD_REFILLS_PER_DAY, AD_REFILL_TURNS, adConfFromEnv, type Balance } from "@/lib/dot/money";
 
 /**
  * 한 사람과의 대화방. 카톡처럼 목록(`/dot`)에서 눌러 들어온다.
@@ -96,9 +96,10 @@ export default async function DotRoom({ params, searchParams }: { params: Promis
       /* 11-06: 하루에 받을 수 있는 하트 — 출석 5 + 광고 5. 자동 지급은 0 이라 `limit` 은
          "오늘 최대 이만큼" 을 뜻한다(전에는 "아침에 주는 수" 였다). */
       limit={AUTO_HEARTS_PER_DAY + CHECKIN_HEARTS + AD_REFILLS_PER_DAY * AD_REFILL_TURNS}
-      /* 광고 단추를 그릴까 — **서버만 아는 스위치다.** 꺼져 있으면 단추를 아예 안 그린다.
-         켜졌다고 넘겨짚지 않는다(10-28 화면 점검: 못 하는 일을 시키는 자리를 남기지 않는다). */
-      adOpen={process.env.AD_REWARD_OPEN === "1"}
+      /* 광고 단추를 그릴까 — **서버만 아는 설정이다**(스위치 + 광고주 번호).
+         둘 중 하나라도 없으면 null 이 가고 단추를 아예 안 그린다 — 켜졌다고 넘겨짚지 않는다
+         (10-28 화면 점검: 못 하는 일을 시키는 자리를 남기지 않는다). */
+      ad={adConfFromEnv()}
     />
     </>
   );

@@ -32,11 +32,34 @@ import { AUTO_HEARTS_PER_DAY, CHECKIN_HEARTS } from "./bond";
  *     위험은 돈이 아니라 **구독을 안 사게 되는 것**이라, 15회는 가운데값 2회보다 넉넉하면서
  *     무제한(구독)과는 분명히 다른 자리에 둔다. 구독 본전은 하루 358턴이므로 한참 아래다.
  *
- * ⚠ 아직 **광고 SDK 가 없다.** `AD_REWARD_OPEN=1` 이 꺼져 있으면 서버가 503 을 주고
- * 화면도 단추를 안 그린다([[feature-removal-leaves-dead-ends]] — 못 하는 일을 시키는 단추를 두지 않는다).
+ * 11-07: **광고를 띄우는 코드가 들어왔다**(`adbreak.ts`, AdSense H5). 그래도 단추는
+ * 스위치 하나로 안 켜진다 — 아래 `adConfFromEnv()` 가 **광고주 번호까지** 봐야 켜진다.
  */
 export const AD_REFILLS_PER_DAY = 5;   // 하루 광고 횟수
 export const AD_REFILL_TURNS = 1;      // 한 번에 늘어나는 하트 (사장님 지시)
+
+/** 광고를 띄우려면 **둘 다** 있어야 한다: 스위치와 광고주 번호. */
+export type AdConf = { client: string; test: boolean };
+
+/**
+ * **광고 창구를 여는 조건** — 서버에서만 부른다(화면에서 부르면 `process.env` 가 비어 null 이다).
+ *
+ * 스위치 하나로 켜지 않는 까닭: `AD_REWARD_OPEN=1` 만 켜면 광고주 번호가 없어도 단추가 그려지고,
+ * 누르면 **광고 없이 하트가 찬다**(11-06 까지 실제로 그런 상태였다). 번호 모양까지 보고
+ * 아니면 **단추 자체를 안 그린다** — 못 하는 일을 시키는 자리를 안 남긴다
+ * ([[feature-removal-leaves-dead-ends]]).
+ *
+ *   `AD_REWARD_OPEN=1`  · `ADSENSE_CLIENT=ca-pub-…`  · (`ADSENSE_TEST=1` 이면 가짜 광고)
+ *
+ * `NEXT_PUBLIC_` 를 **안 쓴다**: 그 이름은 빌드할 때 코드에 박혀서, 번호를 바꾸려면 다시 빌드해야 한다.
+ * 서버가 읽어 화면으로 넘기면 Railway 변수만 고치고 다시 띄우면 된다.
+ */
+export function adConfFromEnv(): AdConf | null {
+  if (process.env.AD_REWARD_OPEN !== "1") return null;
+  const client = (process.env.ADSENSE_CLIENT ?? "").trim();
+  if (!/^ca-pub-\d{10,22}$/.test(client)) return null;
+  return { client, test: process.env.ADSENSE_TEST === "1" };
+}
 
 /**
  * **하트가 이만큼 아래로 내려가면 광고 단추를 미리 보여 준다** (11-06 사장님: "광고로 주로 벌 거고").
