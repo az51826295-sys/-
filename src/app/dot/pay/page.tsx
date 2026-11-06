@@ -48,7 +48,7 @@ export default async function DotPay({ searchParams }: { searchParams: Promise<{
           <p className="py-sub">하루 한도 없이, 먼저 말 걸어오는 그 애로.</p>
 
           <ul className="py-what">
-            <li><b>무제한 대화</b><span>하루 {FREE_TURNS_PER_DAY}번 제한이 사라져요</span></li>
+            <li><b>무제한 대화</b><span>하루 하트 {FREE_TURNS_PER_DAY}개 제한이 사라져요</span></li>
             <li><b>선톡</b><span>먼저 말을 걸어와요</span></li>
             <li><b>집착 연출</b><span>말투·배경·표정이 바뀌어요</span></li>
             <li><b>전용 타로 덱</b><span>블랙 덱이 열려요</span></li>

@@ -7,7 +7,7 @@ import Link from "next/link";
 import { pushState, enablePush, disablePush, type PushState } from "./push-client";
 import { 물어볼까 } from "@/lib/dot/pushAsk";
 import { iGa } from "@/lib/dot/josa";
-import { SKUS, LIMIT_COPY, AD_REFILL_TURNS, type Balance } from "@/lib/dot/money";
+import { SKUS, LIMIT_COPY, AD_REFILL_TURNS, AD_NUDGE_AT, type Balance } from "@/lib/dot/money";
 import { USER_STICKERS, USER_STICKER_KEYS } from "@/lib/dot/stickers";
 import { GIFTS } from "@/lib/dot/bond";
 import { splitBubbles } from "@/lib/dot/bubbles";
@@ -119,7 +119,7 @@ export default function DotChat({
       if (!res.ok) { setToast(data.error ?? "광고를 불러오지 못했어요"); return; }
       /* 서버가 센 잔고로 **갈아 끼운다.** 화면에서 +1 을 더하면 서버와 어긋날 수 있다. */
       if (data.balance) { setBalance(data.balance); setRemaining(data.balance.remaining); }
-      setToast(`${who.name}와 ${AD_REFILL_TURNS}번 더 이야기할 수 있어요`);
+      setToast(`하트 ${AD_REFILL_TURNS}개가 찼어요`);
     } catch {
       setToast("광고를 불러오지 못했어요");
     } finally {
@@ -339,7 +339,7 @@ export default function DotChat({
         } else if (ev.type === "error") {
           finished = true;
           setLive(null);
-          setToast(ev.reason === "limit" ? "오늘 대화는 다 썼어요. 내일 또 만나요" : ev.message ?? ev.error ?? "문제가 생겼어요");
+          setToast(ev.reason === "limit" ? "오늘 하트를 다 썼어요. 내일 또 만나요" : ev.message ?? ev.error ?? "문제가 생겼어요");
           // 09-30 선물은 유료 — 크레딧이 모자라면 말만 하지 말고 **충전 창을 연다.** 막다른 길로 두지 않는다.
           if (ev.reason === "no_credits") setShopOpen(true);
         }
@@ -610,7 +610,7 @@ export default function DotChat({
             onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) { e.preventDefault(); send(); } }}
             placeholder={!mounted ? (lang === "en" ? "One moment…" : "잠시만요…")
               : remaining > 0 ? t("room_input", lang)
-              : (lang === "en" ? "You are out of messages for today" : "오늘 대화는 다 썼어요")}
+              : (lang === "en" ? "You are out of hearts for today" : "오늘 하트를 다 썼어요")}
             disabled={!mounted || remaining <= 0 || !signedIn}
             className="kk-input"
             maxLength={200}
@@ -626,11 +626,33 @@ export default function DotChat({
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M12 19V5" /><path d="M5 12l7-7 7 7" /></svg>
           </button>
         </div>
-        {/* 남은 횟수는 얼마 안 남았을 때만 — 늘 보이면 미터기 옆에서 얘기하는 기분이다. 다음 단계까지는 얼굴을 눌렀을 때 보인다. */}
-        {mounted && signedIn && remaining > 0 && remaining <= 10 && (
+        {/**
+          * 남은 하트 — **늘 보인다** (11-06 사장님: "하트수 10 주어지는 거야").
+          *
+          * 전에는 `remaining <= 10` 일 때만 그렸다("얼마 안 남았을 때만"). 그건 무료가 30 이던
+          * 때의 조건인데 10-25 에 한도를 10 으로 내려서 **이미 늘 보이고 있었다** — 조건만 남아
+          * 읽는 사람을 속이고 있었다. 이제 하트는 쓰는 값이라 숨기지 않는다:
+          * 줄어드는 것이 보여야 광고를 볼 이유가 생긴다.
+          */}
+        {mounted && signedIn && remaining > 0 && (
           <div className="kk-foot">{lang === "en"
-            ? `${remaining} more ${remaining === 1 ? "message" : "messages"} today${bond.streakDays >= 2 ? ` · ${bond.streakDays}-day streak` : ""}`
-            : `오늘 ${remaining}번 더 이야기할 수 있어요${bond.streakDays >= 2 ? ` · ${bond.streakDays}일 연속` : ""}`}</div>
+            ? `${remaining} ${remaining === 1 ? "heart" : "hearts"} left today${bond.streakDays >= 2 ? ` · ${bond.streakDays}-day streak` : ""}`
+            : `하트 ${remaining}개 남았어요${bond.streakDays >= 2 ? ` · ${bond.streakDays}일 연속` : ""}`}</div>
+        )}
+        {/**
+          * **광고는 벽 앞에 둔다** (11-06 사장님: "광고로 주로 벌 거고").
+          *
+          * 전에는 광고 단추가 **한도 카드 안에만** 있었다. 그런데 장부를 세 보니 최근 30일
+          * 한도에 닿은 날이 **0일**(사람 16명·쓴 날 17일·턴 51회)이다 — 즉 **아무도 볼 수 없는
+          * 자리**였고, 스위치를 켜도 노출이 0 이다([[dot-ad-reward]]). 그래서 하트가
+          * `AD_NUDGE_AT` 개 아래로 내려가면 방 안에서 미리 보인다. 벽에 닿기 전이라 볼 사람이 생긴다.
+          *
+          * 잃는 것도 적는다: 한도 카드는 구독으로 가는 **유일한 문**인데 여기서 하트를 채우면
+          * 그 문을 보는 사람이 줄어든다. 지금 장부로는 구독 0건·광고 0건이라 잃을 것이 없지만,
+          * 구독이 팔리기 시작하면 이 자리를 **다시 재야 한다.**
+          */}
+        {mounted && signedIn && adOpen && balance.adLeft > 0 && remaining > 0 && remaining <= AD_NUDGE_AT && (
+          <AdNudge adLeft={balance.adLeft} adBusy={adBusy} onAd={watchAd} />
         )}
       </div>
 
@@ -648,7 +670,7 @@ export default function DotChat({
                 <li><b>♥♥♡♡♡</b> is closeness — it fills as you talk, and the voice and the face change with it</li>
                 <li><b>😊</b> send a sticker · <b>≡</b> notifications, wallpaper, Menhera Mode</li>
                 <li>Turn notifications on and {who.name} messages you <b>first</b></li>
-                <li>{limit} messages a day, free. After that a card comes up</li>
+                <li><b>{limit} hearts</b> a day, free — one message costs one heart</li>
               </ul>
             ) : (
               <ul>
@@ -658,7 +680,9 @@ export default function DotChat({
                 <li>알림을 켜면 {who.name}{iGa(who.name)} <b>먼저</b> 말을 걸어요</li>
                 {/* 10-29: **30 은 옛 숫자다**(10-25 에 10 으로 내렸다). 안내판만 고치지 않고 남아
                     새로 온 사람에게 석 달째 거짓말을 하고 있었다 — 숫자는 상수에서 읽는다. */}
-                <li>하루 {limit}번 무료. 다 쓰면 카드가 떠요</li>
+                {/* 11-06: 대화 횟수를 **하트**로 부른다(사장님). 위의 ♥♥♡♡♡ 는 친밀도라
+                    한 화면에 하트가 둘이다 — 친밀도 쪽 그림을 무엇으로 바꿀지는 사장님 몫이라 그대로 뒀다. */}
+                <li>하루 <b>하트 {limit}개</b> 무료 — 한 번 말할 때 하트 1개</li>
               </ul>
             )}
             <button className="kk-peek-close" onClick={closeGuide}>{lang === "en" ? "Got it" : "알겠어요"}</button>
@@ -687,7 +711,7 @@ export default function DotChat({
             <div className="kk-peek-name">멘헤라 모드</div>
             {/* 구독자는 한도가 없어 `remaining` 이 Infinity 다 — 그대로 찍으면 "Infinity번" 이 나온다 */}
             <div className="kk-shop-bal">
-              {balance.구독중 ? "지금 무제한으로 이야기할 수 있어요" : `지금 남은 대화 ${remaining}번`}
+              {balance.구독중 ? "지금 무제한으로 이야기할 수 있어요" : `지금 남은 하트 ${remaining}개`}
             </div>
             {Object.entries(SKUS).map(([k, s]) => (
               <button key={k} className={`kk-sku${s.menheraDays ? " menhera" : ""}`} onClick={() => buy(k)} disabled={balance.구독중}>
@@ -696,7 +720,7 @@ export default function DotChat({
               </button>
             ))}
             <div className="kk-pay-note">
-              {balance.구독중 ? "이미 켜져 있어요 · 언제든 끌 수 있어요" : `공짜 ${limit}번은 매일 자정에 다시 채워져요`}
+              {balance.구독중 ? "이미 켜져 있어요 · 언제든 끌 수 있어요" : `하트 ${limit}개는 매일 자정에 다시 채워져요`}
             </div>
           </div>
         </div>
@@ -834,6 +858,21 @@ const THEME_KEY = "dot-theme";
  *
  * 들어오는 값만 보고 그린다(상태 없음). 누르면 할 일은 부모가 준다.
  */
+/**
+ * **하트가 적을 때 미리 뜨는 광고 단추** (11-06).
+ *
+ * 왜 조각으로 꺼냈나: 방 안에서는 `mounted` 가 참일 때만 그려져서 **서버 렌더에 안 나온다** —
+ * 자(`dot_room_shot`)가 못 보는 칸이 되고, 안 본 화면은 0 으로 세진다([[zero-can-mean-i-cannot-see]]).
+ * `LimitCard` 를 꺼낸 것과 같은 까닭이다. 자는 이걸 그려서 크기를 재고, 제품은 같은 조각을 쓴다.
+ */
+export function AdNudge({ adLeft, adBusy, onAd }: { adLeft: number; adBusy: boolean; onAd: () => void }) {
+  return (
+    <button className="kk-foot-ad" onClick={onAd} disabled={adBusy}>
+      {adBusy ? "광고를 불러오는 중…" : `광고 보고 하트 +${AD_REFILL_TURNS} (오늘 ${adLeft}번 더)`}
+    </button>
+  );
+}
+
 export function LimitCard({
   name, limit, adOpen, adLeft, adBusy, push, onPay, onAd, onPush,
 }: {
@@ -847,7 +886,7 @@ export function LimitCard({
       <div className="kk-limit-body">{LIMIT_COPY.본문.replace(/\{name\}/g, name)}</div>
       <button className="kk-limit-btn" onClick={onPay}>{LIMIT_COPY.단추}</button>
       <div className="kk-limit-note alt">
-        그냥 기다려도 돼요 — <b>{untilReset()}</b> 뒤에 다시 {limit}번 이야기할 수 있어요.
+        그냥 기다려도 돼요 — <b>{untilReset()}</b> 뒤에 하트 {limit}개가 다시 차요.
       </div>
       {/**
         * 광고는 구독 **바로 아래가 아니라 안내문 아래**다 (11-05 사장님 지시).
@@ -1090,6 +1129,13 @@ const CSS = `
 .kk-send.ready:active { transform:scale(.92); }
 .kk-input:disabled { opacity:.6; }
 .kk-foot { background:var(--bar, rgba(255,255,255,.92)); color:var(--ink, #8a8f98); opacity:.8; font-size:12px; padding:0 14px 8px; text-align:center; }
+/* 하트가 적을 때 방 안에 미리 뜨는 광고 단추. 높이 **44px 이상**(WCAG 2.5.5) —
+   화면 점검(dot_ui_audit)이 24px 미만을 어긋남으로 센다. 구독 단추와 생김새를 다르게 둔다.
+   이 주석에 백틱을 쓰면 CSS 가 템플릿 문자열 밖으로 새어 앱 전체가 500 이 된다(11-06 에 또 밟았다). */
+.kk-foot-ad { display:block; margin:0 14px 10px; width:calc(100% - 28px); min-height:44px; background:var(--bar, #fff); color:var(--ink, #3c434b);
+  border:1px solid rgba(0,0,0,.12); border-radius:12px; padding:12px 14px; font:inherit; font-size:13px; line-height:1.3; cursor:pointer; }
+.kk-foot-ad:active { background:rgba(0,0,0,.05); }
+.kk-foot-ad:disabled { opacity:.6; cursor:default; }
 
 .kk-toast { position:fixed; left:50%; bottom:84px; transform:translateX(-50%); background:rgba(20,24,30,.92); color:#fff; padding:10px 16px; font-size:13px; border-radius:999px;
   box-shadow:0 6px 20px rgba(0,0,0,.25); }

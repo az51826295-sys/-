@@ -50,11 +50,12 @@ const history = [
   { role: "user", content: "응 고마워", emotion: null, at: 어제 },
 ];
 
-const 방 = renderToStaticMarkup(React.createElement(DotChat, {
+/** 남은 하트를 바꿔 렌더한다 — 0개(벽)와 3개(벽 앞)는 **다른 화면**이다(11-06 광고 자리). */
+const 방 = (하트: number) => renderToStaticMarkup(React.createElement(DotChat, {
   signedIn: true, who, bond: { points: 140, stage: 3, streakDays: 4, toNext: { need: 260, total: 280 } },
-  remaining: 0, history, limit: FREE_TURNS_PER_DAY,
+  remaining: 하트, history, limit: FREE_TURNS_PER_DAY,
   account: { linked: true, email: "me@example.com" },
-  balance: { remaining: 0, freeLeft: 0, credits: 0, adLeft: AD_REFILLS_PER_DAY, menheraUntil: null, 구독중: false },
+  balance: { remaining: 하트, freeLeft: 하트, credits: 0, adLeft: AD_REFILLS_PER_DAY, menheraUntil: null, 구독중: false },
   adOpen: true,
 } as never));
 
@@ -71,6 +72,21 @@ function 끼우기(html: string, card: string) {
   return html.slice(0, i) + card + html.slice(i);
 }
 
+/**
+ * **입력 줄 뒤**가 제품이 하트 광고 단추를 그리는 자리다(`.kk-foot` 다음, 같은 부모).
+ * 입력 줄 안에는 단추·입력칸뿐이라 그 뒤 첫 `</div>` 가 입력 줄의 닫는 태그다.
+ */
+const 하트광고 = renderToStaticMarkup(React.createElement(mod.AdNudge, {
+  adLeft: AD_REFILLS_PER_DAY, adBusy: false, onAd: () => {},
+}));
+function 끼우기_입력뒤(html: string, 조각: string) {
+  const i = html.indexOf('class="kk-input-row"');
+  if (i < 0) return null;
+  const j = html.indexOf("</div>", i);
+  if (j < 0) return null;
+  return html.slice(0, j + 6) + 조각 + html.slice(j + 6);
+}
+
 const 껍데기 = await dotSkin();
 const 프로필 = `${process.env.TEMP}/rk-hl-roomshot-${process.pid}`;   // rk-hl- = 내 것
 const browser = await puppeteer.launch({
@@ -79,9 +95,17 @@ const browser = await puppeteer.launch({
 });
 const 적은것: string[] = [];
 try {
-  for (const [이름, adOpen] of [["방-광고켜짐", true], ["방-광고꺼짐", false]] as const) {
-    const html = 끼우기(방, 카드(adOpen));
-    if (!html) { 적은것.push(`❌ ${이름}: 메시지 목록 끝을 못 찾았다 — 카드를 못 끼운다`); continue; }
+  /**
+   * 재는 자리 셋 — **벽**(하트 0, 광고 켜짐/꺼짐)과 **벽 앞**(하트 3).
+   * 셋째가 11-06 에 생긴 자리다: 한도에 닿는 날이 0일이라 벽 안의 단추는 아무도 못 봤다.
+   */
+  const 판: [string, string | null, string | null][] = [
+    ["방-광고켜짐", 끼우기(방(0), 카드(true)), ".kk-limit-ad"],
+    ["방-광고꺼짐", 끼우기(방(0), 카드(false)), null],
+    ["방-하트3-광고켜짐", 끼우기_입력뒤(방(3), 하트광고), ".kk-foot-ad"],
+  ];
+  for (const [이름, html, 어디] of 판) {
+    if (!html) { 적은것.push(`❌ ${이름}: 끼울 자리를 못 찾았다 — 사진이 거짓이 된다`); continue; }
     const page = await browser.newPage();
     await page.setViewport({ width: 390, height: 844, deviceScaleFactor: 2 });
     /* 껍데기를 입혀서 잰다 — `/dot` 레이아웃과 같은 순서(화면 CSS 뒤에 PIXEL_CSS). */
@@ -89,20 +113,20 @@ try {
     await page.evaluate(() => document.fonts.ready);
     /* 방은 아래가 "지금" 이다 — 카드가 보이게 끝까지 내린다. */
     await page.evaluate(() => { for (const el of document.querySelectorAll("*")) if (el.scrollHeight > el.clientHeight + 8) el.scrollTop = el.scrollHeight; });
-    const 잰것 = await page.evaluate(() => {
-      const b = document.querySelector(".kk-limit-ad") as HTMLElement | null;
+    const 잰것 = await page.evaluate((sel: string) => {
+      const b = document.querySelector(sel) as HTMLElement | null;
       const r2 = b?.getBoundingClientRect();
       const 깨짐 = [...document.querySelectorAll("img")].filter((i) => i.complete && i.naturalWidth === 0).length;
       return {
         광고: r2 ? { w: Math.round(r2.width), h: Math.round(r2.height), 보임: r2.top >= 0 && r2.bottom <= window.innerHeight } : null,
         깨진그림: 깨짐, 넘침: document.documentElement.scrollWidth > window.innerWidth,
       };
-    });
+    }, 어디 ?? ".kk-limit-ad");
     const 전체 = await page.evaluate(CHECK_CODE) as Measured;
     await page.screenshot({ path: `${OUT}/${이름}.png` });
     await page.close();
     const { 어긋남, 아슬 } = split(전체.작음);
-    const 맞나 = (adOpen ? !!잰것.광고 && 잰것.광고.보임 && 잰것.광고.h >= 44 : !잰것.광고)
+    const 맞나 = (어디 !== null ? !!잰것.광고 && 잰것.광고.보임 && 잰것.광고.h >= 44 : !잰것.광고)
       && 잰것.깨진그림 === 0 && !잰것.넘침 && 어긋남.length === 0 && 전체.빈단추.length === 0;
     적은것.push(`${맞나 ? "✅" : "❌"} ${이름}: 광고 ${잰것.광고 ? `${잰것.광고.w}×${잰것.광고.h}px 화면 안 ${잰것.광고.보임}` : "없음"}` +
       ` · 깨진 그림 ${잰것.깨진그림}` + (잰것.넘침 ? " ⚠ 가로 넘침" : "") +
