@@ -24,7 +24,7 @@ const check = (name: string, ok: boolean, got?: unknown) => { if (!ok) bad++; co
 
 // 브라우저 먼저 — 브라우저가 안 뜨면 씨앗 계정을 만들지 않는다(첫 판에 고아 계정이 하나 남았다).
 const profile = mkdtempSync(join(tmpdir(), "dot-ov-"));
-const browser = await puppeteer.launch({ executablePath: "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe", headless: true, userDataDir: profile, args: ["--no-first-run", "--lang=ko-KR", "--disable-gpu"], dumpio: process.argv.includes("--dumpio") });
+const browser = await puppeteer.launch({ executablePath: process.env.DOT_BROWSER ?? "C:/Program Files/Google/Chrome/Application/chrome.exe", headless: true, userDataDir: profile, args: ["--no-first-run", "--lang=ko-KR", "--disable-gpu"], dumpio: process.argv.includes("--dumpio") });
 const email = `overlap-${Date.now()}@dugeun.local`;
 const { data: made, error } = await svc.auth.admin.createUser({ email, password: `ov-${Math.random().toString(36).slice(2)}!`, email_confirm: true });
 if (error) { await browser.close(); throw error; }

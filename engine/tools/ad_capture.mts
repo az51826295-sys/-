@@ -22,7 +22,7 @@ if (!OUT) { console.error("저장 폴더를 달라"); process.exit(1); }
 mkdirSync(OUT, { recursive: true });
 
 const SITE = process.env.ROOKERY_SITE ?? "https://rookery-web-production.up.railway.app";
-const EDGE = "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe";
+const EDGE = process.env.DOT_BROWSER ?? "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
 const EMAIL = "demo-rookery@rookery.local";
 const PASSWORD = "Rookery-Demo-2026!aA";
 const ORDER = "기후변화가 농업에 미치는 영향 60초 설명 영상 만들어 줘";

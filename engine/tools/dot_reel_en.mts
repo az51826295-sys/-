@@ -74,7 +74,7 @@ if (다시안찍기) {
 } else {
   const profile = mkdtempSync(join(tmpdir(), "dot-reel-en-"));
   const browser = await puppeteer.launch({
-    executablePath: "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe",
+    executablePath: process.env.DOT_BROWSER ?? "C:/Program Files/Google/Chrome/Application/chrome.exe",
     headless: true, userDataDir: profile,
     args: ["--no-first-run", "--lang=en-US"],
     defaultViewport: { width: 430, height: 932, deviceScaleFactor: 2, isMobile: true, hasTouch: true },

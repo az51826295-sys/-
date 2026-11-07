@@ -45,7 +45,7 @@ export function browserPath(): string | null {
   const cands = [
     process.env.CHROMIUM_PATH ?? "",
     "/usr/bin/chromium", "/usr/bin/chromium-browser", "/usr/bin/google-chrome",
-    "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe",
+    process.env.DOT_BROWSER ?? "C:/Program Files/Google/Chrome/Application/chrome.exe",
     "C:/Program Files/Microsoft/Edge/Application/msedge.exe",
   ].filter(Boolean);
   return cands.find((c) => existsSync(c)) ?? null;

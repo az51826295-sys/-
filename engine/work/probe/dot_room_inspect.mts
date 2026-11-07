@@ -7,7 +7,7 @@ import { join } from "node:path";
 const BASE = "https://dot-web-production-7e03.up.railway.app";
 const profile = mkdtempSync(join(tmpdir(), "rk-hl-insp-"));
 const browser = await puppeteer.launch({
-  executablePath: "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe",
+  executablePath: process.env.DOT_BROWSER ?? "C:/Program Files/Google/Chrome/Application/chrome.exe",
   headless: true, userDataDir: profile, args: ["--no-sandbox", "--disable-dev-shm-usage"],
 });
 try {

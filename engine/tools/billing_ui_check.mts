@@ -22,7 +22,7 @@ const { data: made, error } = await svc.auth.admin.createUser({ email, password:
 if (error) throw error;
 const uid = made.user.id;
 const profile = mkdtempSync(join(tmpdir(), "rk-bill-"));
-const browser = await puppeteer.launch({ executablePath: "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe", headless: true, userDataDir: profile, args: ["--no-first-run", "--lang=ko-KR"], defaultViewport: { width: 1280, height: 800 } });
+const browser = await puppeteer.launch({ executablePath: process.env.DOT_BROWSER ?? "C:/Program Files/Google/Chrome/Application/chrome.exe", headless: true, userDataDir: profile, args: ["--no-first-run", "--lang=ko-KR"], defaultViewport: { width: 1280, height: 800 } });
 try {
   const co = (await svc.from("companies").insert({ owner_id: uid, name: "충전 화면 확인" }).select("id").single()).data!;
   await startPrepaid(svc, co.id);

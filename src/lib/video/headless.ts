@@ -36,7 +36,7 @@ export async function openHeadless(opts?: { width?: number; height?: number; mob
       if (process.platform === "win32") {
         const tag = path.basename(profile);
         spawn("powershell", ["-NoProfile", "-Command",
-          `Get-CimInstance Win32_Process -Filter "Name='msedge.exe'" | Where-Object { $_.CommandLine -match '${tag}' } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }`],
+          `Get-CimInstance Win32_Process -Filter "Name='msedge.exe' OR Name='chrome.exe'" | Where-Object { $_.CommandLine -match '${tag}' } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }`],
           { stdio: "ignore", windowsHide: true, detached: true })
           // spawn 의 실패는 `error` 이벤트로 온다 — try/catch 가 못 잡고, 받는 이가 없으면 **프로세스가 통째로 죽는다**.
           // 7a41b94(첫 고침)가 리눅스에서 taskkill 을 불러 `spawn taskkill ENOENT` 로 서버 워커를 떨어뜨렸다(09-24 판 9 시도 5).

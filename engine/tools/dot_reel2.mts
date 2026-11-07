@@ -34,7 +34,7 @@ const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replac
 // ── 화면 찍기 (대화방은 1판 것 재사용) ──────────────────────
 const profile = mkdtempSync(join(tmpdir(), "dot-reel2-"));
 const browser = await puppeteer.launch({
-  executablePath: "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe",
+  executablePath: process.env.DOT_BROWSER ?? "C:/Program Files/Google/Chrome/Application/chrome.exe",
   headless: true, userDataDir: profile,
   args: ["--no-first-run", "--lang=ko-KR"],
   defaultViewport: { width: 430, height: 932, deviceScaleFactor: 2, isMobile: true, hasTouch: true },

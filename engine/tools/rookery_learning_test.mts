@@ -54,7 +54,7 @@ try {
     const { mkdtempSync, rmSync } = await import("node:fs"); const { tmpdir } = await import("node:os"); const { join } = await import("node:path");
     await svc.from("organization_knowledge").update({ status: "active" }).eq("id", k.id);
     const profile = mkdtempSync(join(tmpdir(), "rk-learn-"));
-    const browser = await puppeteer.launch({ executablePath: "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe", headless: true, userDataDir: profile, args: ["--no-first-run", "--lang=ko-KR", "--disable-gpu"] });
+    const browser = await puppeteer.launch({ executablePath: process.env.DOT_BROWSER ?? "C:/Program Files/Google/Chrome/Application/chrome.exe", headless: true, userDataDir: profile, args: ["--no-first-run", "--lang=ko-KR", "--disable-gpu"] });
     try {
       const { data: link } = await svc.auth.admin.generateLink({ type: "magiclink", email });
       const page = await browser.newPage(); await page.setViewport({ width: 420, height: 860, deviceScaleFactor: 2 });

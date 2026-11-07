@@ -91,7 +91,7 @@ function 끼우기_입력뒤(html: string, 조각: string) {
 const 껍데기 = await dotSkin();
 const 프로필 = `${process.env.TEMP}/rk-hl-roomshot-${process.pid}`;   // rk-hl- = 내 것
 const browser = await puppeteer.launch({
-  executablePath: "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe",
+  executablePath: process.env.DOT_BROWSER ?? "C:/Program Files/Google/Chrome/Application/chrome.exe",
   headless: true, userDataDir: 프로필, args: ["--no-first-run", "--lang=ko-KR"],
 });
 const 적은것: string[] = [];

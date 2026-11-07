@@ -19,7 +19,7 @@ const 화면 = ["/dot/feed", "/dot/tarot", "/dot/search", "/dot/chats", "/dot/me
 
 const profile = mkdtempSync(join(tmpdir(), "rk-hl-en-"));
 const browser = await puppeteer.launch({
-  executablePath: "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe",
+  executablePath: process.env.DOT_BROWSER ?? "C:/Program Files/Google/Chrome/Application/chrome.exe",
   headless: true, userDataDir: profile,
   args: ["--no-sandbox", "--disable-dev-shm-usage"],
 });

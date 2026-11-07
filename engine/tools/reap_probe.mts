@@ -1,7 +1,7 @@
 /** reap v2 가 실제로 고아를 안 남기나 — 열고 닫은 뒤 rk-hl- 프로세스를 센다. */
 const { openHeadless } = await import("../../src/lib/video/headless");
 const { execSync } = await import("node:child_process");
-const count = () => Number(execSync(`powershell -NoProfile -Command "(Get-CimInstance Win32_Process -Filter \\"Name='msedge.exe'\\" | Where-Object { $_.CommandLine -match 'rk-hl-' }).Count"`, { encoding: "utf8" }).trim() || "0");
+const count = () => Number(execSync(`powershell -NoProfile -Command "(Get-CimInstance Win32_Process -Filter \\"Name='msedge.exe' OR Name='chrome.exe'\\" | Where-Object { $_.CommandLine -match 'rk-hl-' }).Count"`, { encoding: "utf8" }).trim() || "0");
 const before = count();
 const hl = await openHeadless({ width: 640, height: 360 });
 if (!hl) { console.log("브라우저 없음"); process.exit(1); }

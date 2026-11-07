@@ -73,7 +73,7 @@ async function 끝카드(): Promise<Buffer> {
 // ── 앱 화면을 진짜로 연다 ───────────────────────────────────
 const profile = mkdtempSync(join(tmpdir(), "dot-reel-"));
 const browser = await puppeteer.launch({
-  executablePath: "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe",
+  executablePath: process.env.DOT_BROWSER ?? "C:/Program Files/Google/Chrome/Application/chrome.exe",
   headless: true, userDataDir: profile,
   args: ["--no-first-run", "--lang=ko-KR"],
   defaultViewport: { width: 430, height: 932, deviceScaleFactor: 2, isMobile: true, hasTouch: true },

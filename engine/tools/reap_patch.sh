@@ -17,7 +17,7 @@ new='''  // **프로필 폴더로 찾아 죽인다**(09-24 두 번째 고침). �
       if (process.platform === "win32") {
         const tag = path.basename(profile);
         spawn("powershell", ["-NoProfile", "-Command",
-          `Get-CimInstance Win32_Process -Filter "Name='msedge.exe'" | Where-Object { $_.CommandLine -match '${tag}' } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }`],
+          `Get-CimInstance Win32_Process -Filter "Name='msedge.exe' OR Name='chrome.exe'" | Where-Object { $_.CommandLine -match '${tag}' } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }`],
           { stdio: "ignore", windowsHide: true, detached: true }).unref();
       }
       if (proc.pid && proc.exitCode == null) proc.kill();

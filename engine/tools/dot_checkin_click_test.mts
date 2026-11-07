@@ -25,7 +25,7 @@ const { CHECKIN_HEARTS } = await import("../../src/lib/dot/bond");
 
 const profile = mkdtempSync(join(tmpdir(), "dot-checkin-"));
 const browser = await puppeteer.launch({
-  executablePath: "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe",
+  executablePath: process.env.DOT_BROWSER ?? "C:/Program Files/Google/Chrome/Application/chrome.exe",
   headless: true, userDataDir: profile, args: ["--no-first-run", "--lang=ko-KR"],
   defaultViewport: { width: 390, height: 844, deviceScaleFactor: 2, isMobile: true, hasTouch: true },
 });

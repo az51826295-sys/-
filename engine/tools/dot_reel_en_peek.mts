@@ -8,7 +8,7 @@ const BASE = "https://dot-web-production-7e03.up.railway.app";
 const 길 = process.argv[2] ?? "/dot/doyun";
 const profile = mkdtempSync(join(tmpdir(), "dot-en-"));
 const browser = await puppeteer.launch({
-  executablePath: "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe",
+  executablePath: process.env.DOT_BROWSER ?? "C:/Program Files/Google/Chrome/Application/chrome.exe",
   headless: true, userDataDir: profile,
   args: ["--no-first-run", "--lang=en-US"],
   defaultViewport: { width: 430, height: 932, deviceScaleFactor: 2, isMobile: true, hasTouch: true },
