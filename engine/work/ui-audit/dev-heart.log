@@ -1,0 +1,50 @@
+▲ Next.js 16.2.12 (Turbopack)
+- Local:         http://localhost:3010
+- Network:       http://172.30.1.54:3010
+- Environments: .env.development.local, .env.local
+✓ Ready in 1732ms
+⚠ Slow filesystem detected. The benchmark took 655ms. If C:\Users\az518\Desktop\ai-workforce\.next/dev is a network drive, consider moving it to a local folder.
+See more: https://nextjs.org/docs/app/guides/local-development
+
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+○ Compiling /dot ...
+ GET /dot 200 in 21.9s (next.js: 20.2s, proxy.ts: 1037ms, application-code: 687ms)
+ GET /auth/confirm?token_hash=615deee72d5856d2d1c0e67175589b588c0d4dadd7967b785d861bdf&type=signup 307 in 1136ms (next.js: 337ms, proxy.ts: 186ms, application-code: 613ms)
+ GET /dot 200 in 364ms (next.js: 23ms, proxy.ts: 213ms, application-code: 128ms)
+ GET /manifest.webmanifest 200 in 303ms (next.js: 258ms, proxy.ts: 31ms, application-code: 14ms)
+ GET /dot 200 in 588ms (next.js: 15ms, proxy.ts: 473ms, application-code: 100ms)
+[browser] Uncaught Error: Rendered more hooks than during the previous render.
+ GET /dot 200 in 580ms (next.js: 16ms, proxy.ts: 462ms, application-code: 103ms)
+ GET /manifest.webmanifest 200 in 119ms (next.js: 83ms, proxy.ts: 19ms, application-code: 17ms)
+ GET /dot 200 in 624ms (next.js: 13ms, proxy.ts: 472ms, application-code: 140ms)
+ GET /dot/feed 200 in 3.7s (next.js: 201ms, proxy.ts: 471ms, application-code: 3.1s)
+ GET /manifest.webmanifest 200 in 202ms (next.js: 104ms, proxy.ts: 81ms, application-code: 17ms)
+ GET /dot 200 in 467ms (next.js: 13ms, proxy.ts: 297ms, application-code: 157ms)
+ GET /dot/feed 200 in 3.8s (next.js: 26ms, proxy.ts: 489ms, application-code: 3.3s)
+ GET /manifest.webmanifest 200 in 174ms (next.js: 82ms, proxy.ts: 62ms, application-code: 31ms)
+ GET /dot 200 in 2.4s (next.js: 82ms, proxy.ts: 303ms, application-code: 2.0s)
+ GET /dot/feed?all=1 200 in 5.7s (next.js: 12ms, proxy.ts: 452ms, application-code: 5.2s)
+ GET /manifest.webmanifest 200 in 59ms (next.js: 25ms, proxy.ts: 23ms, application-code: 11ms)
+ GET /dot/search 200 in 962ms (next.js: 215ms, proxy.ts: 193ms, application-code: 554ms)
+ GET /dot 200 in 618ms (next.js: 13ms, proxy.ts: 528ms, application-code: 77ms)
+ GET /manifest.webmanifest 200 in 111ms (next.js: 70ms, proxy.ts: 24ms, application-code: 16ms)
+ GET /dot 200 in 292ms (next.js: 10ms, proxy.ts: 190ms, application-code: 92ms)
+ GET /dot/chats 200 in 1406ms (next.js: 99ms, proxy.ts: 184ms, application-code: 1123ms)
+ GET /manifest.webmanifest 200 in 196ms (next.js: 86ms, proxy.ts: 79ms, application-code: 31ms)
+ GET /dot 200 in 903ms (next.js: 5ms, proxy.ts: 526ms, application-code: 372ms)
+ GET /dot/me 200 in 1701ms (next.js: 124ms, proxy.ts: 213ms, application-code: 1364ms)
+ GET /manifest.webmanifest 200 in 238ms (next.js: 102ms, proxy.ts: 90ms, application-code: 46ms)
+ GET /dot 200 in 1288ms (next.js: 168ms, proxy.ts: 369ms, application-code: 751ms)
+ GET /dot/yuna 200 in 4.7s (next.js: 1998ms, proxy.ts: 191ms, application-code: 2.5s)
+ GET /manifest.webmanifest 200 in 42ms (next.js: 12ms, proxy.ts: 17ms, application-code: 13ms)
+ GET /dot 200 in 400ms (next.js: 12ms, proxy.ts: 222ms, application-code: 167ms)
+ GET /dot/yuna/profile 200 in 4.3s (next.js: 2.5s, proxy.ts: 499ms, application-code: 1314ms)
+ GET /manifest.webmanifest 200 in 62ms (next.js: 36ms, proxy.ts: 16ms, application-code: 11ms)
+ GET /dot/settings 200 in 606ms (next.js: 93ms, proxy.ts: 189ms, application-code: 323ms)
+ GET /dot 200 in 562ms (next.js: 10ms, proxy.ts: 482ms, application-code: 70ms)
+ GET /manifest.webmanifest 200 in 60ms (next.js: 23ms, proxy.ts: 27ms, application-code: 9ms)
+ GET /dot/beta 200 in 646ms (next.js: 82ms, proxy.ts: 210ms, application-code: 354ms)
+ GET /dot 200 in 345ms (next.js: 9ms, proxy.ts: 209ms, application-code: 127ms)
+ GET /dot/privacy 200 in 506ms (next.js: 136ms, proxy.ts: 180ms, application-code: 190ms)
+ GET /manifest.webmanifest 200 in 153ms (next.js: 95ms, proxy.ts: 38ms, application-code: 20ms)
+ GET /dot 200 in 411ms (next.js: 29ms, proxy.ts: 249ms, application-code: 134ms)

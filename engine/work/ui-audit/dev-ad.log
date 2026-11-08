@@ -1,0 +1,2801 @@
+▲ Next.js 16.2.12 (Turbopack)
+- Local:         http://localhost:3010
+- Network:       http://172.30.1.54:3010
+- Environments: .env.development.local, .env.local
+✓ Ready in 1786ms
+⚠ Slow filesystem detected. The benchmark took 716ms. If C:\Users\az518\Desktop\ai-workforce\.next/dev is a network drive, consider moving it to a local folder.
+See more: https://nextjs.org/docs/app/guides/local-development
+
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+ GET /auth/confirm?token_hash=1dbb101f28eea71b228836aa70a29edfa9e5ce4f8d422a7c22211ce1&type=magiclink 307 in 1541ms (next.js: 442ms, proxy.ts: 512ms, application-code: 587ms)
+ GET /dot 200 in 942ms (next.js: 277ms, proxy.ts: 215ms, application-code: 450ms)
+ GET /manifest.webmanifest 200 in 155ms (next.js: 108ms, proxy.ts: 32ms, application-code: 15ms)
+ GET /dot 200 in 407ms (next.js: 27ms, proxy.ts: 237ms, application-code: 143ms)
+[browser] Uncaught Error: Rendered more hooks than during the previous render.
+ GET /dot 200 in 320ms (next.js: 13ms, proxy.ts: 183ms, application-code: 124ms)
+ GET /manifest.webmanifest 200 in 142ms (next.js: 104ms, proxy.ts: 27ms, application-code: 11ms)
+ GET /dot 200 in 662ms (next.js: 12ms, proxy.ts: 552ms, application-code: 99ms)
+ GET /dot/feed 200 in 3.2s (next.js: 182ms, proxy.ts: 457ms, application-code: 2.6s)
+ GET /manifest.webmanifest 200 in 367ms (next.js: 144ms, proxy.ts: 203ms, application-code: 20ms)
+ GET /dot 200 in 1272ms (next.js: 18ms, proxy.ts: 640ms, application-code: 614ms)
+ GET /dot/feed 200 in 2.9s (next.js: 16ms, proxy.ts: 180ms, application-code: 2.7s)
+ GET /manifest.webmanifest 200 in 136ms (next.js: 57ms, proxy.ts: 64ms, application-code: 15ms)
+ GET /dot 200 in 385ms (next.js: 18ms, proxy.ts: 239ms, application-code: 128ms)
+ GET /dot/feed?all=1 200 in 4.6s (next.js: 21ms, proxy.ts: 235ms, application-code: 4.3s)
+ GET /manifest.webmanifest 200 in 55ms (next.js: 25ms, proxy.ts: 19ms, application-code: 11ms)
+ GET /dot 200 in 298ms (next.js: 13ms, proxy.ts: 226ms, application-code: 58ms)
+ GET /dot/search 200 in 1118ms (next.js: 124ms, proxy.ts: 200ms, application-code: 795ms)
+ GET /manifest.webmanifest 200 in 89ms (next.js: 42ms, proxy.ts: 35ms, application-code: 12ms)
+ GET /dot/chats 200 in 1233ms (next.js: 103ms, proxy.ts: 183ms, application-code: 948ms)
+ GET /dot 200 in 742ms (next.js: 19ms, proxy.ts: 515ms, application-code: 208ms)
+ GET /manifest.webmanifest 200 in 364ms (next.js: 209ms, proxy.ts: 127ms, application-code: 28ms)
+ GET /dot 200 in 613ms (next.js: 13ms, proxy.ts: 425ms, application-code: 175ms)
+ GET /dot/me 200 in 2.3s (next.js: 212ms, proxy.ts: 178ms, application-code: 1955ms)
+ GET /manifest.webmanifest 200 in 111ms (next.js: 33ms, proxy.ts: 67ms, application-code: 12ms)
+ GET /dot 200 in 670ms (next.js: 170ms, proxy.ts: 389ms, application-code: 112ms)
+ GET /dot/yuna 200 in 3.8s (next.js: 2.1s, proxy.ts: 192ms, application-code: 1555ms)
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+ GET /manifest.webmanifest 200 in 75ms (next.js: 30ms, proxy.ts: 30ms, application-code: 15ms)
+ GET /dot 200 in 436ms (next.js: 10ms, proxy.ts: 302ms, application-code: 124ms)
+ GET /dot/yuna/profile 200 in 2.8s (next.js: 1564ms, proxy.ts: 185ms, application-code: 1041ms)
+ GET /manifest.webmanifest 200 in 54ms (next.js: 18ms, proxy.ts: 29ms, application-code: 7ms)
+ GET /dot 200 in 331ms (next.js: 8ms, proxy.ts: 234ms, application-code: 89ms)
+ GET /dot/settings 200 in 880ms (next.js: 93ms, proxy.ts: 183ms, application-code: 605ms)
+ GET /manifest.webmanifest 200 in 62ms (next.js: 31ms, proxy.ts: 15ms, application-code: 16ms)
+ GET /dot/beta 200 in 1085ms (next.js: 112ms, proxy.ts: 174ms, application-code: 799ms)
+ GET /dot 200 in 411ms (next.js: 25ms, proxy.ts: 181ms, application-code: 205ms)
+ GET /dot/privacy 200 in 581ms (next.js: 121ms, proxy.ts: 177ms, application-code: 283ms)
+ GET /manifest.webmanifest 200 in 147ms (next.js: 113ms, proxy.ts: 18ms, application-code: 15ms)
+ GET /dot 200 in 790ms (next.js: 418ms, proxy.ts: 202ms, application-code: 169ms)
+ GET /auth/confirm?token_hash=e83cf59e5a8ead84a656e12c138e566f73cc1132e729886547c9464f&type=magiclink 307 in 404ms (next.js: 60ms, proxy.ts: 50ms, application-code: 294ms)
+ GET /dot 200 in 351ms (next.js: 15ms, proxy.ts: 183ms, application-code: 154ms)
+ GET /manifest.webmanifest 200 in 87ms (next.js: 51ms, proxy.ts: 15ms, application-code: 21ms)
+ GET /dot 200 in 368ms (next.js: 29ms, proxy.ts: 207ms, application-code: 132ms)
+[browser] Uncaught Error: Rendered more hooks than during the previous render.
+ GET /dot 200 in 545ms (next.js: 10ms, proxy.ts: 455ms, application-code: 81ms)
+ GET /manifest.webmanifest 200 in 60ms (next.js: 36ms, proxy.ts: 14ms, application-code: 10ms)
+ GET /dot 200 in 707ms (next.js: 33ms, proxy.ts: 508ms, application-code: 166ms)
+ GET /dot/yuna 200 in 1480ms (next.js: 46ms, proxy.ts: 196ms, application-code: 1237ms)
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+ GET /auth/confirm?token_hash=14cebea433e94eb7c02499ffe157015152f6b588c4ab2380a1cd2ef2&type=magiclink 307 in 2.2s (next.js: 934ms, proxy.ts: 705ms, application-code: 578ms)
+ GET /dot 200 in 797ms (next.js: 149ms, proxy.ts: 457ms, application-code: 192ms)
+ GET /manifest.webmanifest 200 in 109ms (next.js: 74ms, proxy.ts: 23ms, application-code: 12ms)
+ GET /dot 200 in 561ms (next.js: 11ms, proxy.ts: 451ms, application-code: 99ms)
+[browser] Uncaught Error: Rendered more hooks than during the previous render.
+ GET /dot 200 in 359ms (next.js: 74ms, proxy.ts: 197ms, application-code: 89ms)
+ GET /manifest.webmanifest 200 in 95ms (next.js: 54ms, proxy.ts: 31ms, application-code: 10ms)
+ GET /dot 200 in 318ms (next.js: 11ms, proxy.ts: 220ms, application-code: 87ms)
+ GET /dot/feed 200 in 4.3s (next.js: 114ms, proxy.ts: 183ms, application-code: 4.0s)
+ GET /manifest.webmanifest 200 in 97ms (next.js: 43ms, proxy.ts: 41ms, application-code: 14ms)
+ GET /dot 200 in 304ms (next.js: 11ms, proxy.ts: 194ms, application-code: 99ms)
+ GET /dot/feed 200 in 3.1s (next.js: 27ms, proxy.ts: 201ms, application-code: 2.8s)
+ GET /manifest.webmanifest 200 in 120ms (next.js: 40ms, proxy.ts: 61ms, application-code: 19ms)
+ GET /dot 200 in 599ms (next.js: 11ms, proxy.ts: 504ms, application-code: 84ms)
+ GET /dot/feed?all=1 200 in 2.6s (next.js: 13ms, proxy.ts: 482ms, application-code: 2.1s)
+ GET /manifest.webmanifest 200 in 62ms (next.js: 26ms, proxy.ts: 27ms, application-code: 10ms)
+ GET /dot/search 200 in 860ms (next.js: 69ms, proxy.ts: 172ms, application-code: 619ms)
+ GET /dot 200 in 425ms (next.js: 11ms, proxy.ts: 339ms, application-code: 75ms)
+ GET /manifest.webmanifest 200 in 153ms (next.js: 114ms, proxy.ts: 27ms, application-code: 12ms)
+ GET /dot 200 in 582ms (next.js: 9ms, proxy.ts: 449ms, application-code: 123ms)
+ GET /dot/chats 200 in 1534ms (next.js: 93ms, proxy.ts: 178ms, application-code: 1263ms)
+ GET /manifest.webmanifest 200 in 168ms (next.js: 93ms, proxy.ts: 59ms, application-code: 15ms)
+ GET /dot 200 in 475ms (next.js: 10ms, proxy.ts: 297ms, application-code: 168ms)
+ GET /dot/me 200 in 1860ms (next.js: 88ms, proxy.ts: 187ms, application-code: 1585ms)
+ GET /manifest.webmanifest 200 in 92ms (next.js: 46ms, proxy.ts: 33ms, application-code: 14ms)
+ GET /dot 200 in 709ms (next.js: 28ms, proxy.ts: 403ms, application-code: 279ms)
+ GET /dot/yuna 200 in 2.0s (next.js: 283ms, proxy.ts: 173ms, application-code: 1586ms)
+ GET /manifest.webmanifest 200 in 70ms (next.js: 34ms, proxy.ts: 23ms, application-code: 14ms)
+ GET /dot/yuna/profile 200 in 890ms (next.js: 104ms, proxy.ts: 255ms, application-code: 531ms)
+ GET /dot 200 in 591ms (next.js: 8ms, proxy.ts: 518ms, application-code: 65ms)
+ GET /manifest.webmanifest 200 in 39ms (next.js: 16ms, proxy.ts: 10ms, application-code: 13ms)
+ GET /dot/settings 200 in 501ms (next.js: 47ms, proxy.ts: 179ms, application-code: 275ms)
+ GET /dot 200 in 281ms (next.js: 10ms, proxy.ts: 179ms, application-code: 91ms)
+ GET /manifest.webmanifest 200 in 262ms (next.js: 79ms, proxy.ts: 163ms, application-code: 20ms)
+ GET /dot/beta 200 in 1108ms (next.js: 54ms, proxy.ts: 176ms, application-code: 877ms)
+ GET /dot 200 in 807ms (next.js: 17ms, proxy.ts: 534ms, application-code: 256ms)
+ GET /dot/privacy 200 in 658ms (next.js: 62ms, proxy.ts: 307ms, application-code: 288ms)
+ GET /manifest.webmanifest 200 in 49ms (next.js: 28ms, proxy.ts: 10ms, application-code: 11ms)
+ GET /dot 200 in 332ms (next.js: 12ms, proxy.ts: 222ms, application-code: 99ms)
+○ Compiling /_error ...
+ GET /auth/confirm?token_hash=65ec9771dc786fe31947400927d1ae403d4e8a8ef72e1bbfb8c3425f&type=magiclink 500 in 4.4s (next.js: 3.5s, proxy.ts: 329ms, application-code: 533ms)
+[browser] Uncaught Error: ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx
+
+
+    at <unknown> (Error: ./src/app/dot/pixel-skin.ts:28:5)
+    at <unknown> (Error: (./src/app/dot/pixel-skin.ts:28:5)
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+⨯ ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  [90m26 |[0m [90m   기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,[0m
+  [90m27 |[0m [90m   *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).[0m
+[31m[1m>[0m [90m28 |[0m [90m   `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서[0m
+  [90m   |[0m     [31m[1m^^^^^^^^[0m
+  [90m29 |[0m [90m   가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */[0m
+  [90m30 |[0m .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-[36mbreak[0m: keep-al...
+  [90m31 |[0m [90m/* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */[0m
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx
+
+
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+ GET /dot/feed 500 in 132ms (next.js: 79ms, proxy.ts: 16ms, application-code: 37ms)
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] Uncaught Error: ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx
+
+
+    at <unknown> (Error: ./src/app/dot/pixel-skin.ts:28:5)
+    at <unknown> (Error: (./src/app/dot/pixel-skin.ts:28:5)
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+⨯ ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  [90m26 |[0m [90m   기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,[0m
+  [90m27 |[0m [90m   *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).[0m
+[31m[1m>[0m [90m28 |[0m [90m   `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서[0m
+  [90m   |[0m     [31m[1m^^^^^^^^[0m
+  [90m29 |[0m [90m   가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */[0m
+  [90m30 |[0m .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-[36mbreak[0m: keep-al...
+  [90m31 |[0m [90m/* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */[0m
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx
+
+
+ GET /dot/feed?all=1 500 in 71ms (next.js: 29ms, proxy.ts: 15ms, application-code: 26ms)
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] Uncaught Error: ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx
+
+
+    at <unknown> (Error: ./src/app/dot/pixel-skin.ts:28:5)
+    at <unknown> (Error: (./src/app/dot/pixel-skin.ts:28:5)
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+⨯ ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  [90m26 |[0m [90m   기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,[0m
+  [90m27 |[0m [90m   *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).[0m
+[31m[1m>[0m [90m28 |[0m [90m   `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서[0m
+  [90m   |[0m     [31m[1m^^^^^^^^[0m
+  [90m29 |[0m [90m   가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */[0m
+  [90m30 |[0m .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-[36mbreak[0m: keep-al...
+  [90m31 |[0m [90m/* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */[0m
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx
+
+
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+ GET /dot/search 500 in 107ms (next.js: 71ms, proxy.ts: 11ms, application-code: 25ms)
+[browser] Uncaught Error: ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx
+
+
+    at <unknown> (Error: ./src/app/dot/pixel-skin.ts:28:5)
+    at <unknown> (Error: (./src/app/dot/pixel-skin.ts:28:5)
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+⨯ ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  [90m26 |[0m [90m   기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,[0m
+  [90m27 |[0m [90m   *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).[0m
+[31m[1m>[0m [90m28 |[0m [90m   `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서[0m
+  [90m   |[0m     [31m[1m^^^^^^^^[0m
+  [90m29 |[0m [90m   가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */[0m
+  [90m30 |[0m .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-[36mbreak[0m: keep-al...
+  [90m31 |[0m [90m/* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */[0m
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx
+
+
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+ GET /dot/chats 500 in 258ms (next.js: 104ms, proxy.ts: 11ms, application-code: 142ms)
+[browser] Uncaught Error: ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx
+
+
+    at <unknown> (Error: ./src/app/dot/pixel-skin.ts:28:5)
+    at <unknown> (Error: (./src/app/dot/pixel-skin.ts:28:5)
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+⨯ ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  [90m26 |[0m [90m   기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,[0m
+  [90m27 |[0m [90m   *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).[0m
+[31m[1m>[0m [90m28 |[0m [90m   `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서[0m
+  [90m   |[0m     [31m[1m^^^^^^^^[0m
+  [90m29 |[0m [90m   가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */[0m
+  [90m30 |[0m .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-[36mbreak[0m: keep-al...
+  [90m31 |[0m [90m/* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */[0m
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx
+
+
+ GET /dot/me 500 in 68ms (next.js: 45ms, proxy.ts: 7ms, application-code: 16ms)
+[browser] Uncaught Error: ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx
+
+
+    at <unknown> (Error: ./src/app/dot/pixel-skin.ts:28:5)
+    at <unknown> (Error: (./src/app/dot/pixel-skin.ts:28:5)
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+⨯ ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  [90m26 |[0m [90m   기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,[0m
+  [90m27 |[0m [90m   *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).[0m
+[31m[1m>[0m [90m28 |[0m [90m   `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서[0m
+  [90m   |[0m     [31m[1m^^^^^^^^[0m
+  [90m29 |[0m [90m   가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */[0m
+  [90m30 |[0m .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-[36mbreak[0m: keep-al...
+  [90m31 |[0m [90m/* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */[0m
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx
+
+
+ GET /dot/yuna 500 in 89ms (next.js: 64ms, proxy.ts: 7ms, application-code: 19ms)
+[browser] Uncaught Error: ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx
+
+
+    at <unknown> (Error: ./src/app/dot/pixel-skin.ts:28:5)
+    at <unknown> (Error: (./src/app/dot/pixel-skin.ts:28:5)
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+⨯ ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  [90m26 |[0m [90m   기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,[0m
+  [90m27 |[0m [90m   *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).[0m
+[31m[1m>[0m [90m28 |[0m [90m   `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서[0m
+  [90m   |[0m     [31m[1m^^^^^^^^[0m
+  [90m29 |[0m [90m   가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */[0m
+  [90m30 |[0m .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-[36mbreak[0m: keep-al...
+  [90m31 |[0m [90m/* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */[0m
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx
+
+
+ GET /dot/yuna/profile 500 in 76ms (next.js: 52ms, proxy.ts: 7ms, application-code: 17ms)
+[browser] Uncaught Error: ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx
+
+
+    at <unknown> (Error: ./src/app/dot/pixel-skin.ts:28:5)
+    at <unknown> (Error: (./src/app/dot/pixel-skin.ts:28:5)
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+⨯ ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  [90m26 |[0m [90m   기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,[0m
+  [90m27 |[0m [90m   *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).[0m
+[31m[1m>[0m [90m28 |[0m [90m   `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서[0m
+  [90m   |[0m     [31m[1m^^^^^^^^[0m
+  [90m29 |[0m [90m   가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */[0m
+  [90m30 |[0m .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-[36mbreak[0m: keep-al...
+  [90m31 |[0m [90m/* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */[0m
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx
+
+
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+ GET /dot/settings 500 in 172ms (next.js: 115ms, proxy.ts: 18ms, application-code: 39ms)
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] Uncaught Error: ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx
+
+
+    at <unknown> (Error: ./src/app/dot/pixel-skin.ts:28:5)
+    at <unknown> (Error: (./src/app/dot/pixel-skin.ts:28:5)
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+⨯ ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  [90m26 |[0m [90m   기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,[0m
+  [90m27 |[0m [90m   *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).[0m
+[31m[1m>[0m [90m28 |[0m [90m   `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서[0m
+  [90m   |[0m     [31m[1m^^^^^^^^[0m
+  [90m29 |[0m [90m   가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */[0m
+  [90m30 |[0m .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-[36mbreak[0m: keep-al...
+  [90m31 |[0m [90m/* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */[0m
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx
+
+
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+ GET /dot/beta 500 in 97ms (next.js: 59ms, proxy.ts: 12ms, application-code: 26ms)
+[browser] Uncaught Error: ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx
+
+
+    at <unknown> (Error: ./src/app/dot/pixel-skin.ts:28:5)
+    at <unknown> (Error: (./src/app/dot/pixel-skin.ts:28:5)
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+⨯ ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  [90m26 |[0m [90m   기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,[0m
+  [90m27 |[0m [90m   *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).[0m
+[31m[1m>[0m [90m28 |[0m [90m   `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서[0m
+  [90m   |[0m     [31m[1m^^^^^^^^[0m
+  [90m29 |[0m [90m   가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */[0m
+  [90m30 |[0m .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-[36mbreak[0m: keep-al...
+  [90m31 |[0m [90m/* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */[0m
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx
+
+
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+ GET /dot/privacy 500 in 107ms (next.js: 65ms, proxy.ts: 15ms, application-code: 27ms)
+[browser] Uncaught Error: ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx
+
+
+    at <unknown> (Error: ./src/app/dot/pixel-skin.ts:28:5)
+    at <unknown> (Error: (./src/app/dot/pixel-skin.ts:28:5)
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+[browser] ./src/app/dot/pixel-skin.ts:28:5
+Expected a semicolon
+  26 |    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
+  27 |    *"다시 10번 이야／기할"* 처럼 41군데가 두 동강 나 있었다(영어는 원래 낱말째 내려간다).
+> 28 |    `anywhere` 를 같이 두는 이유: 긴 영어 낱말·주소가 혼자 한 줄을 넘을 때만 그때 잘라서
+     |     ^^^^^^^^
+  29 |    가로로 삐져나가는 것을 막는다. 삐져나가면 화면 점검의 넘침 자가 잡는다. */
+  30 | .kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { word-break: keep-al...
+  31 | /* 큰 제목 28px(=14×2), 본문 14px, 작은 글 11px */
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/app/dot/pixel-skin.ts
+    ./src/app/dot/layout.tsx 
+✓ Compiled in 3.8s
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+ GET /auth/confirm?token_hash=8a3da4c96e70d7d01efce1357372e8b9783d398ccc2ff0828e88d532&type=magiclink 307 in 1879ms (next.js: 418ms, proxy.ts: 972ms, application-code: 488ms)
+ GET /dot 200 in 862ms (next.js: 293ms, proxy.ts: 340ms, application-code: 229ms)
+ GET /manifest.webmanifest 200 in 206ms (next.js: 148ms, proxy.ts: 29ms, application-code: 29ms)
+ GET /dot 200 in 799ms (next.js: 35ms, proxy.ts: 604ms, application-code: 160ms)
+[browser] Uncaught Error: Rendered more hooks than during the previous render.
+ GET /dot 200 in 288ms (next.js: 15ms, proxy.ts: 189ms, application-code: 84ms)
+ GET /manifest.webmanifest 200 in 148ms (next.js: 116ms, proxy.ts: 17ms, application-code: 16ms)
+ GET /dot 200 in 477ms (next.js: 16ms, proxy.ts: 243ms, application-code: 218ms)
+ GET /dot/feed 200 in 3.2s (next.js: 324ms, proxy.ts: 211ms, application-code: 2.6s)
+ GET /manifest.webmanifest 200 in 197ms (next.js: 54ms, proxy.ts: 130ms, application-code: 13ms)
+ GET /dot 200 in 376ms (next.js: 10ms, proxy.ts: 273ms, application-code: 94ms)
+ GET /dot/feed 200 in 2.6s (next.js: 24ms, proxy.ts: 188ms, application-code: 2.4s)
+ GET /manifest.webmanifest 200 in 76ms (next.js: 30ms, proxy.ts: 31ms, application-code: 14ms)
+ GET /dot 200 in 400ms (next.js: 14ms, proxy.ts: 259ms, application-code: 127ms)
+ GET /dot/feed?all=1 200 in 2.2s (next.js: 10ms, proxy.ts: 204ms, application-code: 2.0s)
+ GET /manifest.webmanifest 200 in 66ms (next.js: 24ms, proxy.ts: 33ms, application-code: 8ms)
+ GET /dot 200 in 384ms (next.js: 22ms, proxy.ts: 249ms, application-code: 113ms)
+ GET /dot/search 200 in 1183ms (next.js: 186ms, proxy.ts: 176ms, application-code: 821ms)
+ GET /manifest.webmanifest 200 in 362ms (next.js: 223ms, proxy.ts: 56ms, application-code: 83ms)
+ GET /dot/chats 200 in 1948ms (next.js: 217ms, proxy.ts: 176ms, application-code: 1556ms)
+ GET /dot 200 in 1126ms (next.js: 45ms, proxy.ts: 801ms, application-code: 280ms)
+ GET /manifest.webmanifest 200 in 55ms (next.js: 28ms, proxy.ts: 11ms, application-code: 16ms)
+ GET /dot 200 in 372ms (next.js: 11ms, proxy.ts: 226ms, application-code: 134ms)
+ GET /dot/me 200 in 1650ms (next.js: 252ms, proxy.ts: 172ms, application-code: 1227ms)
+ GET /manifest.webmanifest 200 in 1209ms (next.js: 449ms, proxy.ts: 730ms, application-code: 30ms)
+ GET /dot 200 in 909ms (next.js: 23ms, proxy.ts: 730ms, application-code: 156ms)
+ GET /dot/yuna 200 in 3.2s (next.js: 319ms, proxy.ts: 173ms, application-code: 2.7s)
+ GET /manifest.webmanifest 200 in 208ms (next.js: 57ms, proxy.ts: 108ms, application-code: 43ms)
+ GET /dot/yuna/profile 200 in 1936ms (next.js: 516ms, proxy.ts: 183ms, application-code: 1237ms)
+ GET /dot 200 in 668ms (next.js: 44ms, proxy.ts: 410ms, application-code: 214ms)
+ GET /manifest.webmanifest 200 in 103ms (next.js: 42ms, proxy.ts: 51ms, application-code: 10ms)
+ GET /dot/settings 200 in 953ms (next.js: 273ms, proxy.ts: 174ms, application-code: 505ms)
+ GET /dot 200 in 410ms (next.js: 13ms, proxy.ts: 302ms, application-code: 95ms)
+ GET /manifest.webmanifest 200 in 45ms (next.js: 20ms, proxy.ts: 12ms, application-code: 14ms)
+ GET /dot/beta 200 in 823ms (next.js: 153ms, proxy.ts: 173ms, application-code: 497ms)
+ GET /dot 200 in 427ms (next.js: 40ms, proxy.ts: 203ms, application-code: 183ms)
+ GET /manifest.webmanifest 200 in 98ms (next.js: 29ms, proxy.ts: 52ms, application-code: 17ms)
+ GET /dot/privacy 200 in 2.5s (next.js: 628ms, proxy.ts: 431ms, application-code: 1442ms)
+ GET /dot 200 in 410ms (next.js: 12ms, proxy.ts: 291ms, application-code: 107ms)
+✓ Compiled in 4.7s
+ GET /auth/confirm?token_hash=382985eeca566026fb04973b68a0c79274eec301d02b11ff398e87f2&type=magiclink 307 in 2.8s (next.js: 737ms, proxy.ts: 1329ms, application-code: 729ms)
+ GET /dot 200 in 1611ms (next.js: 1099ms, proxy.ts: 302ms, application-code: 210ms)
+ GET /manifest.webmanifest 200 in 206ms (next.js: 163ms, proxy.ts: 28ms, application-code: 15ms)
+ GET /dot 200 in 502ms (next.js: 51ms, proxy.ts: 242ms, application-code: 210ms)
+[browser] Uncaught Error: Rendered more hooks than during the previous render.
+ GET /dot 200 in 326ms (next.js: 15ms, proxy.ts: 188ms, application-code: 122ms)
+ GET /manifest.webmanifest 200 in 149ms (next.js: 98ms, proxy.ts: 34ms, application-code: 17ms)
+ GET /dot 200 in 701ms (next.js: 20ms, proxy.ts: 528ms, application-code: 153ms)
+ GET /dot/feed 200 in 3.3s (next.js: 285ms, proxy.ts: 444ms, application-code: 2.6s)
+ GET /manifest.webmanifest 200 in 111ms (next.js: 59ms, proxy.ts: 37ms, application-code: 15ms)
+ GET /dot 200 in 475ms (next.js: 27ms, proxy.ts: 304ms, application-code: 144ms)
+ GET /dot/feed 200 in 2.4s (next.js: 87ms, proxy.ts: 311ms, application-code: 1975ms)
+ GET /manifest.webmanifest 200 in 122ms (next.js: 39ms, proxy.ts: 63ms, application-code: 20ms)
+ GET /dot 200 in 390ms (next.js: 11ms, proxy.ts: 224ms, application-code: 155ms)
+ GET /dot/feed?all=1 200 in 2.9s (next.js: 11ms, proxy.ts: 190ms, application-code: 2.7s)
+ GET /manifest.webmanifest 200 in 152ms (next.js: 106ms, proxy.ts: 35ms, application-code: 11ms)
+ GET /dot/search 200 in 1597ms (next.js: 294ms, proxy.ts: 226ms, application-code: 1076ms)
+ GET /dot 200 in 685ms (next.js: 11ms, proxy.ts: 578ms, application-code: 96ms)
+ GET /manifest.webmanifest 200 in 102ms (next.js: 62ms, proxy.ts: 22ms, application-code: 18ms)
+ GET /dot 200 in 346ms (next.js: 9ms, proxy.ts: 277ms, application-code: 60ms)
+ GET /dot/chats 200 in 1645ms (next.js: 231ms, proxy.ts: 456ms, application-code: 958ms)
+ GET /manifest.webmanifest 200 in 85ms (next.js: 22ms, proxy.ts: 48ms, application-code: 16ms)
+ GET /dot 200 in 628ms (next.js: 16ms, proxy.ts: 283ms, application-code: 330ms)
+ GET /dot/me 200 in 3.3s (next.js: 544ms, proxy.ts: 175ms, application-code: 2.6s)
+ GET /manifest.webmanifest 200 in 198ms (next.js: 86ms, proxy.ts: 74ms, application-code: 38ms)
+ GET /dot 200 in 868ms (next.js: 42ms, proxy.ts: 625ms, application-code: 201ms)
+ GET /dot/yuna 200 in 2.6s (next.js: 327ms, proxy.ts: 224ms, application-code: 2.1s)
+ GET /manifest.webmanifest 200 in 150ms (next.js: 57ms, proxy.ts: 66ms, application-code: 28ms)
+ GET /dot/yuna/profile 200 in 2.2s (next.js: 359ms, proxy.ts: 193ms, application-code: 1640ms)
+ GET /dot 200 in 1029ms (next.js: 20ms, proxy.ts: 608ms, application-code: 401ms)
+ GET /manifest.webmanifest 200 in 120ms (next.js: 63ms, proxy.ts: 44ms, application-code: 13ms)
+ GET /dot/settings 200 in 965ms (next.js: 230ms, proxy.ts: 169ms, application-code: 566ms)
+ GET /dot 200 in 382ms (next.js: 11ms, proxy.ts: 302ms, application-code: 69ms)
+ GET /manifest.webmanifest 200 in 51ms (next.js: 29ms, proxy.ts: 10ms, application-code: 11ms)
+ GET /dot/beta 200 in 706ms (next.js: 115ms, proxy.ts: 176ms, application-code: 414ms)
+ GET /dot 200 in 413ms (next.js: 8ms, proxy.ts: 319ms, application-code: 86ms)
+ GET /dot/privacy 200 in 485ms (next.js: 117ms, proxy.ts: 185ms, application-code: 183ms)
+ GET /manifest.webmanifest 200 in 68ms (next.js: 23ms, proxy.ts: 19ms, application-code: 27ms)
+ GET /dot 200 in 288ms (next.js: 9ms, proxy.ts: 199ms, application-code: 80ms)
+ GET /auth/confirm?token_hash=0bf4d1de72322590241d0fea73adc1c7d03fbbef39182a3d31311b58&type=magiclink 307 in 505ms (next.js: 122ms, proxy.ts: 64ms, application-code: 319ms)
+ GET /dot 200 in 695ms (next.js: 19ms, proxy.ts: 454ms, application-code: 221ms)
+ GET /manifest.webmanifest 200 in 180ms (next.js: 86ms, proxy.ts: 65ms, application-code: 29ms)
+ GET /dot 200 in 509ms (next.js: 63ms, proxy.ts: 211ms, application-code: 234ms)
+[browser] Uncaught Error: Rendered more hooks than during the previous render.
+ GET /dot 200 in 933ms (next.js: 223ms, proxy.ts: 185ms, application-code: 524ms)
+ GET /manifest.webmanifest 200 in 82ms (next.js: 52ms, proxy.ts: 19ms, application-code: 11ms)
+ GET /dot 200 in 339ms (next.js: 10ms, proxy.ts: 237ms, application-code: 92ms)
+ GET /dot/feed 200 in 3.6s (next.js: 26ms, proxy.ts: 260ms, application-code: 3.3s)
+ GET /manifest.webmanifest 200 in 175ms (next.js: 68ms, proxy.ts: 73ms, application-code: 34ms)
+ GET /dot 200 in 2.1s (next.js: 30ms, proxy.ts: 280ms, application-code: 1803ms)
+ GET /dot/feed 200 in 3.8s (next.js: 17ms, proxy.ts: 225ms, application-code: 3.5s)
+ GET /manifest.webmanifest 200 in 149ms (next.js: 56ms, proxy.ts: 69ms, application-code: 25ms)
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+ GET /dot 200 in 386ms (next.js: 11ms, proxy.ts: 260ms, application-code: 115ms)
+ GET /dot/feed?all=1 200 in 3.4s (next.js: 68ms, proxy.ts: 196ms, application-code: 3.1s)
+ GET /manifest.webmanifest 200 in 68ms (next.js: 38ms, proxy.ts: 19ms, application-code: 12ms)
+ GET /dot/search 200 in 932ms (next.js: 12ms, proxy.ts: 270ms, application-code: 650ms)
+ GET /dot 200 in 403ms (next.js: 10ms, proxy.ts: 322ms, application-code: 71ms)
+ GET /manifest.webmanifest 200 in 55ms (next.js: 28ms, proxy.ts: 14ms, application-code: 12ms)
+ GET /dot 200 in 291ms (next.js: 9ms, proxy.ts: 205ms, application-code: 77ms)
+ GET /dot/chats 200 in 847ms (next.js: 15ms, proxy.ts: 178ms, application-code: 654ms)
+ GET /manifest.webmanifest 200 in 154ms (next.js: 70ms, proxy.ts: 65ms, application-code: 19ms)
+ GET /dot 200 in 455ms (next.js: 20ms, proxy.ts: 282ms, application-code: 153ms)
+ GET /dot/me 200 in 2.7s (next.js: 76ms, proxy.ts: 389ms, application-code: 2.2s)
+ GET /manifest.webmanifest 200 in 354ms (next.js: 282ms, proxy.ts: 39ms, application-code: 34ms)
+ GET /dot 200 in 1406ms (next.js: 42ms, proxy.ts: 494ms, application-code: 870ms)
+ GET /dot/yuna 200 in 3.8s (next.js: 412ms, proxy.ts: 223ms, application-code: 3.1s)
+ GET /manifest.webmanifest 200 in 219ms (next.js: 54ms, proxy.ts: 143ms, application-code: 22ms)
+ GET /dot/yuna/profile 200 in 1302ms (next.js: 41ms, proxy.ts: 200ms, application-code: 1061ms)
+ GET /dot 200 in 602ms (next.js: 26ms, proxy.ts: 403ms, application-code: 174ms)
+ GET /manifest.webmanifest 200 in 108ms (next.js: 47ms, proxy.ts: 44ms, application-code: 17ms)
+ GET /dot/settings 200 in 1035ms (next.js: 34ms, proxy.ts: 173ms, application-code: 828ms)
+ GET /dot 200 in 330ms (next.js: 12ms, proxy.ts: 198ms, application-code: 120ms)
+ GET /manifest.webmanifest 200 in 71ms (next.js: 40ms, proxy.ts: 18ms, application-code: 12ms)
+ GET /dot/beta 200 in 676ms (next.js: 14ms, proxy.ts: 179ms, application-code: 483ms)
+ GET /dot 200 in 579ms (next.js: 20ms, proxy.ts: 304ms, application-code: 255ms)
+ GET /manifest.webmanifest 200 in 217ms (next.js: 108ms, proxy.ts: 84ms, application-code: 26ms)
+ GET /dot/privacy 200 in 792ms (next.js: 36ms, proxy.ts: 184ms, application-code: 572ms)
+ GET /dot 200 in 1708ms (next.js: 22ms, proxy.ts: 236ms, application-code: 1451ms)
+✓ Compiled in 9s
+ GET /auth/confirm?token_hash=ad2d192816ac880c184d55ee3955b9db08ea34834d7a24c2393d38ac&type=magiclink 307 in 1108ms (next.js: 313ms, proxy.ts: 473ms, application-code: 322ms)
+ GET /manifest.webmanifest 200 in 357ms (next.js: 208ms, proxy.ts: 79ms, application-code: 71ms)
+ GET /dot 200 in 2.8s (next.js: 238ms, proxy.ts: 191ms, application-code: 2.4s)
+ GET /dot 200 in 4.3s (next.js: 592ms, proxy.ts: 617ms, application-code: 3.0s)
+[browser] Uncaught Error: Rendered more hooks than during the previous render.
+ GET /dot 200 in 453ms (next.js: 31ms, proxy.ts: 231ms, application-code: 191ms)
+ GET /manifest.webmanifest 200 in 764ms (next.js: 214ms, proxy.ts: 506ms, application-code: 43ms)
+ GET /dot/feed 200 in 4.4s (next.js: 394ms, proxy.ts: 186ms, application-code: 3.8s)
+ GET /manifest.webmanifest 200 in 112ms (next.js: 56ms, proxy.ts: 24ms, application-code: 32ms)
+ GET /dot 200 in 4.1s (next.js: 99ms, proxy.ts: 536ms, application-code: 3.5s)
+ GET /dot/feed 200 in 6.2s (next.js: 39ms, proxy.ts: 985ms, application-code: 5.2s)
+ GET /manifest.webmanifest 200 in 119ms (next.js: 56ms, proxy.ts: 45ms, application-code: 18ms)
+ GET /dot 200 in 399ms (next.js: 17ms, proxy.ts: 241ms, application-code: 142ms)
+ GET /dot/feed?all=1 200 in 2.7s (next.js: 17ms, proxy.ts: 209ms, application-code: 2.5s)
+ GET /manifest.webmanifest 200 in 103ms (next.js: 69ms, proxy.ts: 15ms, application-code: 19ms)
+ GET /dot/search 200 in 1600ms (next.js: 341ms, proxy.ts: 226ms, application-code: 1033ms)
+ GET /dot 200 in 536ms (next.js: 26ms, proxy.ts: 364ms, application-code: 146ms)
+ GET /manifest.webmanifest 200 in 140ms (next.js: 87ms, proxy.ts: 27ms, application-code: 27ms)
+ GET /dot/chats 200 in 2.4s (next.js: 1008ms, proxy.ts: 274ms, application-code: 1167ms)
+ GET /dot 200 in 673ms (next.js: 35ms, proxy.ts: 373ms, application-code: 264ms)
+ GET /manifest.webmanifest 200 in 483ms (next.js: 272ms, proxy.ts: 163ms, application-code: 48ms)
+ GET /dot 200 in 983ms (next.js: 52ms, proxy.ts: 715ms, application-code: 217ms)
+ GET /dot/me 200 in 4.8s (next.js: 1632ms, proxy.ts: 186ms, application-code: 3.0s)
+ GET /manifest.webmanifest 200 in 301ms (next.js: 186ms, proxy.ts: 78ms, application-code: 37ms)
+ GET /dot 200 in 1002ms (next.js: 22ms, proxy.ts: 613ms, application-code: 367ms)
+ GET /dot/yuna 200 in 2.6s (next.js: 477ms, proxy.ts: 192ms, application-code: 1951ms)
+ GET /manifest.webmanifest 200 in 189ms (next.js: 116ms, proxy.ts: 56ms, application-code: 17ms)
+ GET /dot/yuna/profile 200 in 1512ms (next.js: 333ms, proxy.ts: 173ms, application-code: 1006ms)
+ GET /dot 200 in 739ms (next.js: 14ms, proxy.ts: 598ms, application-code: 127ms)
+ GET /manifest.webmanifest 200 in 1708ms (next.js: 355ms, proxy.ts: 1260ms, application-code: 93ms)
+ GET /dot/settings 200 in 4.4s (next.js: 1525ms, proxy.ts: 513ms, application-code: 2.4s)
+ GET /dot 200 in 3.5s (next.js: 114ms, proxy.ts: 1726ms, application-code: 1678ms)
+ GET /manifest.webmanifest 200 in 294ms (next.js: 172ms, proxy.ts: 95ms, application-code: 28ms)
+ GET /dot/beta 200 in 2.2s (next.js: 280ms, proxy.ts: 234ms, application-code: 1654ms)
+ GET /dot 200 in 1361ms (next.js: 50ms, proxy.ts: 654ms, application-code: 657ms)
+ GET /manifest.webmanifest 200 in 291ms (next.js: 112ms, proxy.ts: 138ms, application-code: 41ms)
+ GET /dot/privacy 200 in 1396ms (next.js: 222ms, proxy.ts: 202ms, application-code: 972ms)
+ GET /dot 200 in 719ms (next.js: 47ms, proxy.ts: 326ms, application-code: 345ms)
+✓ Compiled in 10.2s
+[?25h

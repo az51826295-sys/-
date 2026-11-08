@@ -1,0 +1,218 @@
+▲ Next.js 16.2.12 (Turbopack)
+- Local:         http://localhost:3010
+- Network:       http://172.30.1.54:3010
+- Environments: .env.development.local, .env.local
+✓ Ready in 1646ms
+⚠ Slow filesystem detected. The benchmark took 580ms. If C:\Users\az518\Desktop\ai-workforce\.next/dev is a network drive, consider moving it to a local folder.
+See more: https://nextjs.org/docs/app/guides/local-development
+
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+ GET /auth/confirm?token_hash=230773ee7d4b23513b1fa4a10cf39bc41e37219d17886c178bfdf25d&type=signup 307 in 1523ms (next.js: 507ms, proxy.ts: 629ms, application-code: 387ms)
+○ Compiling /ask ...
+ GET /ask 200 in 11.7s (next.js: 9.9s, proxy.ts: 509ms, application-code: 1332ms)
+ GET /manifest.webmanifest 200 in 2.5s (next.js: 618ms, proxy.ts: 1879ms, application-code: 38ms)
+ GET /api/hand/screen 404 in 3.3s (next.js: 1537ms, proxy.ts: 562ms, application-code: 1215ms)
+ GET /manifest.webmanifest 200 in 109ms (next.js: 67ms, proxy.ts: 19ms, application-code: 23ms)
+ GET /dot/chats 200 in 3.7s (next.js: 615ms, proxy.ts: 456ms, application-code: 2.7s)
+ GET /dot/chats 200 in 1938ms (next.js: 52ms, proxy.ts: 255ms, application-code: 1631ms)
+ GET /manifest.webmanifest 200 in 34ms (next.js: 11ms, proxy.ts: 10ms, application-code: 14ms)
+ POST /api/dot/checkin 200 in 2.2s (next.js: 415ms, proxy.ts: 497ms, application-code: 1276ms)
+ GET /dot/chats 200 in 1838ms (next.js: 34ms, proxy.ts: 180ms, application-code: 1623ms)
+ GET /manifest.webmanifest 200 in 37ms (next.js: 14ms, proxy.ts: 11ms, application-code: 12ms)
+ GET /manifest.webmanifest 200 in 109ms (next.js: 72ms, proxy.ts: 13ms, application-code: 23ms)
+ GET /dot/chats 200 in 1829ms (next.js: 22ms, proxy.ts: 268ms, application-code: 1539ms)
+ GET /manifest.webmanifest 200 in 137ms (next.js: 59ms, proxy.ts: 61ms, application-code: 17ms)
+ GET /dot/chats 200 in 2.1s (next.js: 35ms, proxy.ts: 287ms, application-code: 1804ms)
+ POST /api/dot/ad 200 in 4.7s (next.js: 1479ms, proxy.ts: 350ms, application-code: 2.9s)
+ GET /dot/chats 200 in 1158ms (next.js: 17ms, proxy.ts: 178ms, application-code: 963ms)
+ GET /manifest.webmanifest 200 in 65ms (next.js: 13ms, proxy.ts: 10ms, application-code: 43ms)
+ GET /auth/confirm?token_hash=f9add51d6daa837cee510b200c1b3df931014b186381623cd08dec50&type=signup 307 in 502ms (next.js: 156ms, proxy.ts: 45ms, application-code: 301ms)
+ GET /ask 200 in 850ms (next.js: 115ms, proxy.ts: 172ms, application-code: 562ms)
+ GET /manifest.webmanifest 200 in 210ms (next.js: 82ms, proxy.ts: 19ms, application-code: 110ms)
+ GET /api/hand/screen 404 in 1257ms (next.js: 34ms, proxy.ts: 176ms, application-code: 1047ms)
+ GET /manifest.webmanifest 200 in 150ms (next.js: 63ms, proxy.ts: 78ms, application-code: 8ms)
+ GET /dot/chats 200 in 1691ms (next.js: 16ms, proxy.ts: 197ms, application-code: 1477ms)
+ GET /dot/chats 200 in 1471ms (next.js: 10ms, proxy.ts: 174ms, application-code: 1287ms)
+ GET /manifest.webmanifest 200 in 29ms (next.js: 8ms, proxy.ts: 11ms, application-code: 10ms)
+ POST /api/dot/checkin 200 in 1346ms (next.js: 16ms, proxy.ts: 198ms, application-code: 1132ms)
+ GET /dot/chats 200 in 1181ms (next.js: 12ms, proxy.ts: 182ms, application-code: 986ms)
+ GET /manifest.webmanifest 200 in 49ms (next.js: 24ms, proxy.ts: 10ms, application-code: 15ms)
+ GET /manifest.webmanifest 200 in 154ms (next.js: 34ms, proxy.ts: 78ms, application-code: 42ms)
+ GET /dot/chats 200 in 4.2s (next.js: 29ms, proxy.ts: 237ms, application-code: 3.9s)
+ GET /manifest.webmanifest 200 in 213ms (next.js: 90ms, proxy.ts: 99ms, application-code: 23ms)
+ GET /dot/chats 200 in 1799ms (next.js: 15ms, proxy.ts: 553ms, application-code: 1231ms)
+ POST /api/dot/ad 200 in 975ms (next.js: 68ms, proxy.ts: 280ms, application-code: 626ms)
+ GET /dot/chats 200 in 1364ms (next.js: 16ms, proxy.ts: 169ms, application-code: 1179ms)
+ GET /manifest.webmanifest 200 in 58ms (next.js: 31ms, proxy.ts: 12ms, application-code: 15ms)
+ GET /auth/confirm?token_hash=8658b37aa9470235b03dbcec34f5925a5bec8fee486bc052bf376e8c&type=signup 307 in 345ms (next.js: 37ms, proxy.ts: 15ms, application-code: 294ms)
+ GET /ask 200 in 5.4s (next.js: 4.0s, proxy.ts: 182ms, application-code: 1205ms)
+ GET /manifest.webmanifest 200 in 1006ms (next.js: 159ms, proxy.ts: 807ms, application-code: 40ms)
+ GET /api/hand/screen 404 in 2.6s (next.js: 517ms, proxy.ts: 226ms, application-code: 1890ms)
+ GET /dot/chats 200 in 2.4s (next.js: 790ms, proxy.ts: 205ms, application-code: 1442ms)
+ GET /manifest.webmanifest 200 in 97ms (next.js: 45ms, proxy.ts: 26ms, application-code: 25ms)
+ GET /dot/chats 200 in 879ms (next.js: 29ms, proxy.ts: 170ms, application-code: 680ms)
+ GET /manifest.webmanifest 200 in 30ms (next.js: 7ms, proxy.ts: 12ms, application-code: 11ms)
+ POST /api/dot/checkin 200 in 1176ms (next.js: 98ms, proxy.ts: 187ms, application-code: 892ms)
+ GET /dot/chats 200 in 969ms (next.js: 12ms, proxy.ts: 172ms, application-code: 785ms)
+ GET /manifest.webmanifest 200 in 29ms (next.js: 8ms, proxy.ts: 11ms, application-code: 11ms)
+ GET /manifest.webmanifest 200 in 137ms (next.js: 56ms, proxy.ts: 53ms, application-code: 28ms)
+ GET /dot/chats 200 in 1261ms (next.js: 12ms, proxy.ts: 214ms, application-code: 1034ms)
+ GET /manifest.webmanifest 200 in 152ms (next.js: 38ms, proxy.ts: 69ms, application-code: 45ms)
+ GET /dot/chats 200 in 1627ms (next.js: 33ms, proxy.ts: 289ms, application-code: 1305ms)
+ POST /api/dot/ad 200 in 852ms (next.js: 87ms, proxy.ts: 184ms, application-code: 582ms)
+ GET /dot/chats 200 in 979ms (next.js: 12ms, proxy.ts: 179ms, application-code: 788ms)
+ GET /manifest.webmanifest 200 in 38ms (next.js: 13ms, proxy.ts: 9ms, application-code: 15ms)
+ POST /api/dot/ad 200 in 762ms (next.js: 6ms, proxy.ts: 191ms, application-code: 565ms)
+ GET /dot/chats 200 in 719ms (next.js: 9ms, proxy.ts: 187ms, application-code: 523ms)
+ GET /manifest.webmanifest 200 in 24ms (next.js: 6ms, proxy.ts: 10ms, application-code: 7ms)
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache

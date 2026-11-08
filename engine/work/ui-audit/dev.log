@@ -1,0 +1,50 @@
+▲ Next.js 16.2.12 (Turbopack)
+- Local:         http://localhost:3010
+- Network:       http://172.30.1.54:3010
+- Environments: .env.development.local, .env.local
+✓ Ready in 1857ms
+
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+ GET /auth/confirm?token_hash=4f798b4cd37949c0f475162a1651fb20f2ae7b7eefb3714c45eed5b1&type=magiclink 307 in 4.6s (next.js: 3.3s, proxy.ts: 565ms, application-code: 695ms)
+○ Compiling /dot ...
+ GET /dot 200 in 17.5s (next.js: 16.3s, proxy.ts: 491ms, application-code: 657ms)
+ GET /manifest.webmanifest 200 in 1556ms (next.js: 1494ms, proxy.ts: 27ms, application-code: 35ms)
+ GET /dot 200 in 1810ms (next.js: 490ms, proxy.ts: 618ms, application-code: 702ms)
+[browser] Uncaught Error: Rendered more hooks than during the previous render.
+ GET /dot 200 in 595ms (next.js: 84ms, proxy.ts: 316ms, application-code: 195ms)
+ GET /manifest.webmanifest 200 in 150ms (next.js: 74ms, proxy.ts: 42ms, application-code: 34ms)
+ GET /dot 200 in 324ms (next.js: 15ms, proxy.ts: 202ms, application-code: 107ms)
+ GET /dot/feed 200 in 7.1s (next.js: 2.5s, proxy.ts: 179ms, application-code: 4.4s)
+ GET /manifest.webmanifest 200 in 238ms (next.js: 146ms, proxy.ts: 50ms, application-code: 42ms)
+ GET /dot 200 in 622ms (next.js: 16ms, proxy.ts: 321ms, application-code: 285ms)
+ GET /dot/feed 200 in 3.7s (next.js: 381ms, proxy.ts: 466ms, application-code: 2.9s)
+ GET /manifest.webmanifest 200 in 61ms (next.js: 21ms, proxy.ts: 24ms, application-code: 15ms)
+ GET /dot 200 in 865ms (next.js: 13ms, proxy.ts: 728ms, application-code: 124ms)
+ GET /dot/feed?all=1 200 in 3.0s (next.js: 11ms, proxy.ts: 617ms, application-code: 2.3s)
+ GET /manifest.webmanifest 200 in 357ms (next.js: 308ms, proxy.ts: 15ms, application-code: 34ms)
+ GET /dot/search 200 in 3.7s (next.js: 2.4s, proxy.ts: 186ms, application-code: 1063ms)
+ GET /dot 200 in 769ms (next.js: 43ms, proxy.ts: 564ms, application-code: 162ms)
+ GET /manifest.webmanifest 200 in 82ms (next.js: 28ms, proxy.ts: 18ms, application-code: 36ms)
+ GET /dot 200 in 427ms (next.js: 10ms, proxy.ts: 325ms, application-code: 91ms)
+ GET /dot/chats 200 in 2.0s (next.js: 879ms, proxy.ts: 183ms, application-code: 953ms)
+○ Compiling /dot/me ...
+ GET /manifest.webmanifest 200 in 99ms (next.js: 29ms, proxy.ts: 45ms, application-code: 24ms)
+ GET /dot 200 in 372ms (next.js: 12ms, proxy.ts: 269ms, application-code: 91ms)
+ GET /dot/me 200 in 5.6s (next.js: 3.6s, proxy.ts: 207ms, application-code: 1731ms)
+○ Compiling /dot/[slug] ...
+ GET /manifest.webmanifest 200 in 396ms (next.js: 303ms, proxy.ts: 28ms, application-code: 66ms)
+ GET /dot 200 in 989ms (next.js: 20ms, proxy.ts: 838ms, application-code: 131ms)
+ GET /dot/yuna 200 in 8.9s (next.js: 5.7s, proxy.ts: 698ms, application-code: 2.4s)
+ GET /manifest.webmanifest 200 in 63ms (next.js: 27ms, proxy.ts: 20ms, application-code: 17ms)
+ GET /dot 200 in 439ms (next.js: 11ms, proxy.ts: 249ms, application-code: 178ms)
+ GET /dot/yuna/profile 200 in 3.2s (next.js: 2.0s, proxy.ts: 185ms, application-code: 994ms)
+ GET /manifest.webmanifest 200 in 666ms (next.js: 451ms, proxy.ts: 187ms, application-code: 28ms)
+ GET /dot/settings 200 in 3.8s (next.js: 2.2s, proxy.ts: 197ms, application-code: 1439ms)
+ GET /dot 200 in 1244ms (next.js: 23ms, proxy.ts: 737ms, application-code: 484ms)
+ GET /manifest.webmanifest 200 in 184ms (next.js: 129ms, proxy.ts: 18ms, application-code: 36ms)
+ GET /dot/beta 200 in 3.4s (next.js: 2.3s, proxy.ts: 268ms, application-code: 814ms)
+ GET /dot 200 in 778ms (next.js: 10ms, proxy.ts: 644ms, application-code: 124ms)
+ GET /dot/privacy 200 in 3.4s (next.js: 2.4s, proxy.ts: 467ms, application-code: 529ms)
+ GET /manifest.webmanifest 200 in 75ms (next.js: 29ms, proxy.ts: 30ms, application-code: 16ms)
+ GET /dot 200 in 584ms (next.js: 15ms, proxy.ts: 491ms, application-code: 79ms)
+[?25h

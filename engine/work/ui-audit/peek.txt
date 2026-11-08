@@ -1,0 +1,2 @@
+uid 7f235695-5047-4b80-bede-3a5d54fa3f31
+https://dot-web-production-7e03.up.railway.app/auth/confirm?token_hash=42ea359d8ea5eb150928b20365e6a131b33afb72643ed40b20f7bb00&type=magiclink
