@@ -1,76 +1,141 @@
 /**
- * **표정 여섯 장을 같은 자리에 세운다** (226회차 2026-09-27, 사장님 "도트 자르는 거 너무 못해").
+ * **일곱을 같은 바닥선에 세운다** — 11-08 사장님: *"하나로 정해 쿼리티를 일정하게"*.
  *
- * 시트를 3×2 로 **균등 분할**만 하고 있었다(`cutSheet`). 그림 모델은 칸마다 캐릭터를 조금씩 다른 자리에
- * 그리므로, 잘라 놓으면 표정을 바꿀 때마다 캐릭터가 위아래로 튄다 — 실제로 유나의 shy 는 머리가 위로
- * 잘려 있었다. 자르는 자리가 틀린 게 아니라 **자른 뒤에 세우는 일이 없었다.**
+ *   npx tsx engine/tools/dot_align.mts            ← 재 보기만(아무것도 안 바꾼다)
+ *   npx tsx engine/tools/dot_align.mts --up       ← 저장소에 올린다(같은 주소에 덮어쓴다)
+ *   npx tsx engine/tools/dot_align.mts --backup <폴더>   ← 올리기 전 원본을 받아 둔다
  *
- * 세로는 **발밑**을 맞춘다(서 있는 그림이라 발이 같은 높이면 안 튄다). 가로는 가운데.
- * 크기는 건드리지 않는다 — 도트는 정수배로만 늘릴 수 있어서, 크기가 다른 것은 다시 그리는 편이 낫다.
+ * ## 이 도구가 **지켜야 하는 것**
  *
- *   npx tsx engine/tools/dot_align.mts <폴더> [나갈폴더]
+ * 자리만 옮기고 **그림은 한 점도 바꾸지 않는다.** 그래서 옮긴 뒤에 셋을 견준다:
+ *   · 잉크 칸 수가 **똑같아야** 한다 — 달라지면 뭔가 잘려 나간 것이다
+ *   · 도트 크기가 **똑같아야** 한다 — 달라지면 격자가 밀린 것이다
+ *   · 순도가 **똑같아야** 한다 — 달라지면 픽셀을 다시 섞은 것이다
+ * 하나라도 달라지면 **올리지 않고 멈춘다.** 이 검사가 이 도구의 사보타주다 — 심은 고장을
+ * 따로 만들 필요가 없다. 옮기는 일 자체가 깨지면 바로 걸린다.
+ *
+ * ## 크기는 안 맞춘다
+ *
+ * 비정수 배율로 늘리면 도트 격자가 깨진다(`align.ts` 참조). 크기 퍼짐은 **재서 적기만** 하고,
+ * 맞추는 일은 다시 뽑는 판으로 넘긴다.
  */
-import fs from "node:fs";
-import path from "node:path";
-import sharp from "sharp";
+import { readFileSync, writeFileSync, mkdirSync, rmSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { join } from "node:path";
 
-const dir = process.argv[2];
-const out = process.argv[3] ?? dir + "-정렬";
-if (!dir) throw new Error("사용: dot_align.mts <폴더> [나갈폴더]");
-fs.mkdirSync(out, { recursive: true });
+for (const l of readFileSync(".env.local", "utf8").split(String.fromCharCode(10))) {
+  const i = l.indexOf("="); if (i > 0 && !l.startsWith("#")) process.env[l.slice(0, i).trim()] ||= l.slice(i + 1).trim();
+}
+const { alignSprite, FOOT_MARGIN } = await import("../../src/lib/dot/align");
+const { createClient } = await import("@supabase/supabase-js");
+const sharp = (await import("sharp")).default;
 
-type Box = { l: number; t: number; r: number; b: number };
-async function inkBox(buf: Buffer): Promise<{ box: Box; W: number; H: number }> {
-  const { data, info } = await sharp(buf).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
-  const W = info.width, H = info.height, ch = info.channels;
-  let l = W, t = H, r = -1, b = -1;
-  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
-    if (data[(y * W + x) * ch + 3] < 8) continue;           // 거의 투명은 배경으로 본다
-    if (x < l) l = x; if (x > r) r = x; if (y < t) t = y; if (y > b) b = y;
+const 올릴까 = process.argv.includes("--up");
+const 받아둘곳 = process.argv[process.argv.indexOf("--backup") + 1];
+const 받아두나 = process.argv.includes("--backup") && !!받아둘곳 && !받아둘곳.startsWith("--");
+
+const db = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SECRET_KEY!, {
+  auth: { autoRefreshToken: false, persistSession: false },
+});
+
+type Row = { slug: string; name: string; sprites: Record<string, string> | null; is_public: boolean | null };
+const { data, error } = await db.from("dot_characters").select("slug, name, sprites, is_public");
+if (error) { console.error("표를 못 읽었다:", error.message); process.exit(1); }
+const 사람 = (data as Row[]).filter((c) => c.is_public && c.sprites).sort((a, b) => a.slug.localeCompare(b.slug));
+
+const 전신인가 = (k: string) => !k.startsWith("face") && !k.includes(":") && !k.startsWith("sticker");
+const 터 = join(process.env.TEMP ?? ".", `dot-align-${Date.now()}`);
+mkdirSync(터, { recursive: true });
+if (받아두나) mkdirSync(받아둘곳!, { recursive: true });
+
+/** 파이썬 자에게 도트 크기·순도를 묻는다(그림을 바꾸지 않았는지 보는 용도). */
+function 도트재기(paths: string[]): { texel: number | null; purity: number | null }[] {
+  const py = [
+    "import sys, json",
+    "sys.path.insert(0, 'engine/genesis')",
+    "import texel_judge as T",
+    `paths = ${JSON.stringify(paths.map((p) => p.replace(/\\/g, "/")))}`,
+    "out = [T.measure_one(p) for p in paths]",
+    "print(json.dumps([{ 'texel': o.get('texel'), 'purity': o.get('purity') } for o in out]))",
+  ].join("\n");
+  const 글 = execFileSync("python", ["-c", py], { encoding: "utf8", cwd: process.cwd() }).trim();
+  return JSON.parse(글.split("\n").pop()!);
+}
+
+async function 잉크(png: Buffer) {
+  const { data: raw, info } = await sharp(png).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+  let n = 0; for (let i = 3; i < raw.length; i += info.channels) if (raw[i] > 16) n++;
+  return n;
+}
+
+type 한장 = { slug: string; name: string; emotion: string; 전: Buffer; 후: Buffer; 전길: string; 후길: string; 보고: Awaited<ReturnType<typeof alignSprite>>["report"] };
+const 장들: 한장[] = [];
+
+try {
+  for (const c of 사람) {
+    const keys = Object.keys(c.sprites!).filter(전신인가);
+    const dir = join(터, c.slug); mkdirSync(dir, { recursive: true });
+    for (const k of keys) {
+      const res = await fetch(c.sprites![k]);
+      if (!res.ok) { console.log(`못 받음  ${c.name} ${k} (${res.status})`); continue; }
+      const 전 = Buffer.from(await res.arrayBuffer());
+      const { png: 후, report } = await alignSprite(전);
+      const 전길 = join(dir, `${k}-before.png`), 후길 = join(dir, `${k}-after.png`);
+      writeFileSync(전길, 전); writeFileSync(후길, 후);
+      if (받아두나) { mkdirSync(join(받아둘곳!, c.slug), { recursive: true }); writeFileSync(join(받아둘곳!, c.slug, `${k}.png`), 전); }
+      장들.push({ slug: c.slug, name: c.name, emotion: k, 전, 후, 전길, 후길, 보고: report });
+    }
   }
-  return { box: { l, t, r, b }, W, H };
+
+  /* ── 그림이 안 바뀌었나 ── */
+  const 전도트 = 도트재기(장들.map((x) => x.전길));
+  const 후도트 = 도트재기(장들.map((x) => x.후길));
+  const 깨진것: string[] = [];
+  for (let i = 0; i < 장들.length; i++) {
+    const x = 장들[i];
+    const a = await 잉크(x.전), b = await 잉크(x.후);
+    if (a !== b) 깨진것.push(`${x.name} ${x.emotion}: 잉크 ${a}→${b} (잘려 나갔다)`);
+    if (전도트[i].texel !== 후도트[i].texel) 깨진것.push(`${x.name} ${x.emotion}: 도트 ${전도트[i].texel}→${후도트[i].texel} (격자가 밀렸다)`);
+    const p0 = 전도트[i].purity ?? 0, p1 = 후도트[i].purity ?? 0;
+    if (Math.abs(p0 - p1) > 0.0005) 깨진것.push(`${x.name} ${x.emotion}: 순도 ${p0.toFixed(3)}→${p1.toFixed(3)} (픽셀을 다시 섞었다)`);
+  }
+
+  /* ── 적기 ── */
+  console.log(`\n== 바닥선 맞추기 (${장들.length}장 · 목표 발밑 ${FOOT_MARGIN}px)\n`);
+  console.log("이름     장   발밑 전        옮김(세로/가로)     몸 너비×높이");
+  for (const c of 사람) {
+    const 내것 = 장들.filter((x) => x.slug === c.slug);
+    if (!내것.length) continue;
+    const 전여백 = [...new Set(내것.map((x) => x.보고.footBefore))].join("/");
+    const dy = [...new Set(내것.map((x) => x.보고.dy))].join("/");
+    const dx = [...new Set(내것.map((x) => x.보고.dx))].join("/");
+    const w = Math.round(내것.reduce((s, x) => s + x.보고.bodyW, 0) / 내것.length);
+    const h = Math.round(내것.reduce((s, x) => s + x.보고.bodyH, 0) / 내것.length);
+    const 잘림 = 내것.some((x) => x.보고.clamped) ? " ⚠잘릴까 봐 덜 옮김" : "";
+    console.log(`${c.name.padEnd(7)} ${String(내것.length).padStart(2)}   ${전여백.padEnd(12)}  ${dy.padEnd(8)}/${dx.padEnd(8)}  ${w}×${h}${잘림}`);
+  }
+
+  const 몸높이 = 사람.map((c) => { const 내것 = 장들.filter((x) => x.slug === c.slug); return 내것.length ? 내것.reduce((s, x) => s + x.보고.bodyH, 0) / 내것.length : 0; }).filter((x) => x > 0);
+  console.log(`\n   몸 높이 퍼짐 ${(Math.max(...몸높이) - Math.min(...몸높이)).toFixed(0)}px (${Math.min(...몸높이).toFixed(0)}~${Math.max(...몸높이).toFixed(0)}) — **이건 여기서 못 고친다**(다시 뽑는 판)`);
+
+  if (깨진것.length) {
+    console.log(`\n**그림이 바뀌었다 — 올리지 않는다** (${깨진것.length}건)`);
+    for (const g of 깨진것.slice(0, 10)) console.log(`   ${g}`);
+    process.exit(1);
+  }
+  console.log(`\n맞음   그림은 한 점도 안 바뀜 — 잉크·도트 크기·순도 ${장들.length}장 전부 그대로`);
+
+  if (!올릴까) { console.log("\n(재 보기만 했다. 올리려면 --up)\n"); process.exit(0); }
+
+  /* ── 올리기 ── */
+  let 올린수 = 0;
+  for (const x of 장들) {
+    const path = `${x.slug}/${x.emotion}.png`;
+    const { error: e } = await db.storage.from("dot-sprites").upload(path, x.후, { contentType: "image/png", upsert: true, cacheControl: "60" });
+    if (e) { console.error(`${path}: ${e.message}`); process.exit(1); }
+    올린수++;
+  }
+  console.log(`\n↑ ${올린수}장 올림 (같은 주소에 덮어씀 · cacheControl 60초)`);
+} finally {
+  try { rmSync(터, { recursive: true, force: true }); } catch { /* 지워지면 됐다 */ }
 }
-
-// 226회차: 원본 시트(_sheet.png)가 같은 폴더에 있으면 **캔버스가 시트 크기로 잡혀** 스프라이트가
-// 그 안에서 작아진다 — 첫 판에 그걸로 헛것을 봤다. 밑줄로 시작하는 것은 재료로 안 본다.
-const files = fs.readdirSync(dir).filter((f) => /\.png$/i.test(f) && !f.includes("menhera") && !f.startsWith("_"));
-if (!files.length) throw new Error("png 가 없다");
-
-const info = new Map<string, { buf: Buffer; box: Box; W: number; H: number }>();
-for (const f of files) {
-  const buf = fs.readFileSync(path.join(dir, f));
-  const m = await inkBox(buf);
-  info.set(f, { buf, ...m });
-}
-
-// 기준: 제일 넓은 그림이 들어갈 만큼. 발밑(b)과 가로 가운데를 맞춘다.
-const maxW = Math.max(...[...info.values()].map((v) => v.box.r - v.box.l + 1));
-const maxH = Math.max(...[...info.values()].map((v) => v.box.b - v.box.t + 1));
-// 칸은 가장 큰 그림보다 넉넉하게 — 원래 칸(512)보다 작아지지 않게 하되, 여백이 확보되도록 키운다.
-// 8의 배수로 맞춘다: 도트 한 칸이 8px 이라 그래야 격자가 안 어긋난다.
-const r8 = (n: number) => Math.ceil(n / 8) * 8;
-const CW = Math.max(r8(Math.round(maxW * 1.25)), ...[...info.values()].map((v) => v.W));
-const CH = Math.max(r8(Math.round(maxH * 1.25)), ...[...info.values()].map((v) => v.H));
-console.log(`칸 ${CW}×${CH} · 그림이 가장 큰 것 ${maxW}×${maxH}`);
-let cutCount = 0;
-console.log("그림마다 잰 것 (칸 안에서 차지한 자리):");
-
-for (const [f, v] of info) {
-  const w = v.box.r - v.box.l + 1, h = v.box.b - v.box.t + 1;
-  const cut = v.box.t === 0 || v.box.b === v.H - 1 || v.box.l === 0 || v.box.r === v.W - 1;
-  if (cut) cutCount++;
-  console.log(`  ${f.padEnd(16)} ${String(w).padStart(3)}×${String(h).padStart(3)} · 위 ${String(v.box.t).padStart(3)} 아래 ${String(v.H - 1 - v.box.b).padStart(3)} 좌 ${String(v.box.l).padStart(3)} 우 ${String(v.W - 1 - v.box.r).padStart(3)}${cut ? "  ≠ **잘림**" : "  · 안 잘림"}`);
-  // 내용만 떼어 같은 크기 칸에 다시 놓는다: 가로 가운데, 아래에서 같은 높이.
-  const body = await sharp(v.buf).ensureAlpha().extract({ left: v.box.l, top: v.box.t, width: w, height: h }).toBuffer();
-  // 09-27 사장님 "일부러 좀 남길래? 여유롭게". 그리는 쪽에 아래 여백을 **세 번** 시켰는데 모델은 계속
-  // 칸 바닥까지 그렸다(좌우는 104씩 남기면서 아래만 0). 말로 안 되는 것은 자른 뒤에 준다 —
-  // 내용을 칸 가운데에 놓고 위아래를 같게 비운다. 여기서 주는 여백은 도트를 건드리지 않는다(옮기기만 한다).
-  const left = Math.round((CW - w) / 2);
-  const top = Math.round((CH - h) / 2);
-  await sharp({ create: { width: CW, height: CH, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })
-    .composite([{ input: body, left, top }]).png().toFile(path.join(out, f));
-}
-// 226회차: **가장자리에 닿으면 잘린 것이다.** 사장님이 "다 자르면 어떡해" 라고 한 판에서 여섯 줄 다
-// 이 표시가 떠 있었는데 내가 "꽉 찼다" 로 읽었다. 숫자를 맨 끝에 한 줄로 못 박는다.
-console.log(`\n**잘린 것 ${cutCount}/${info.size}** ${cutCount ? "— 다시 그려야 한다" : "— 깨끗하다"}`);
-console.log(`${out} 에 세워 놨다.`);
