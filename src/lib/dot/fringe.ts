@@ -26,11 +26,34 @@
  */
 import sharp from "sharp";
 
-export const 배경기준 = 16;
+export const ALPHA_MIN = 16;
 /** 바깥 기준(CIE76). 2.3 = 겨우 구별, 10 = 누가 봐도 다른 색. */
 export const DELTA_E = 10;
 /** 가운데 밝기보다 이만큼 밝아야 "티끌"로 센다 (Lab L, 0~100). */
-export const L_위로 = 25;
+export const L_ABOVE = 25;
+/** 같은 색으로 묶는 경계. 가르는 경계(ΔE 10)와 **같은 수를 쓴다** — 2.3(JND)로 묶었더니
+ * 흰 셔츠의 비슷한 흰색들이 서로 다른 섬이 되어 옷깃이 티끌로 걸렸다(11-08). 한 가지 정의로
+ * "누가 봐도 다른 색"을 쓰면, 비슷한 흰색은 한 섬으로 뭉쳐 3칸을 넘어 그림으로 남는다. */
+export const SAME_COLOR = DELTA_E;
+/**
+ * 섬이 이보다 크면 티끌이 아니라 **그림**이다.
+ *
+ * 처음엔 잉크의 1%(≈25칸)까지 봤다. 그랬더니 도윤 셔츠 테두리를 통째로 먹었다(34.1% · 1,105칸).
+ * 사장님이 집은 것은 머리 옆에 붙은 **한두 칸짜리** 밝은 점이다. 그래서 **3칸**으로 못 박는다 —
+ * 그보다 큰 밝은 덩어리는 옷깃·머리 하이라이트처럼 그려진 것으로 본다.
+ */
+export const ISLAND_MAX = 3;
+/** 실루엣에서 이만큼 안쪽까지만 본다 — 얼굴·옷 안쪽은 자르기와 상관이 없다. */
+export const DEPTH_MAX = 2;
+/**
+ * **띠는 티끌이 아니다** — 한 칸 두께로 길게 이어진 섬은 옷·머리의 **윤곽선**이다.
+ *
+ * 조건 없이 돌렸더니 도윤 셔츠 테두리가 통째로 깎였다(11-08, 34.1% · 1,105칸). 둘레 비율로
+ * 가르려 했더니 이번엔 심은 고장을 12개 중 3개밖에 못 잡았다 — 머리카락 틈에 낀 티끌은 몸에
+ * 두 변으로 닿아서 같이 걸러졌기 때문이다. 그래서 **둘레가 아니라 모양**으로 가른다:
+ * 가로세로 중 하나가 1칸이면서 다른 쪽이 이 길이 이상이면 **띠**로 보고 건드리지 않는다.
+ */
+export const STRIP_LEN = 4;
 
 function srgb선형(v: number) {
   const c = v / 255;
@@ -71,31 +94,70 @@ export async function findFringe(png: Buffer, texel: number) {
   const 색: (null | [number, number, number])[] = new Array(가로 * 세로).fill(null);
   for (let gy = 0; gy < 세로; gy++) for (let gx = 0; gx < 가로; gx++) {
     const p = ((gy * texel + ((texel / 2) | 0)) * W + gx * texel + ((texel / 2) | 0)) * ch;
-    색[gy * 가로 + gx] = data[p + 3] >= 배경기준 ? [data[p], data[p + 1], data[p + 2]] : null;
+    색[gy * 가로 + gx] = data[p + 3] >= ALPHA_MIN ? [data[p], data[p + 1], data[p + 2]] : null;
   }
   const lab = 색.map((c) => (c ? toLab(c[0], c[1], c[2]) : null));
   /* 이 그림의 "보통 밝기" — 가운데값이라 흰 셔츠 같은 큰 덩어리에 끌려가지 않는다. */
   const L들 = lab.filter(Boolean).map((l) => l![0]).sort((a, b) => a - b);
   const 가운데L = L들.length ? L들[Math.floor(L들.length / 2)] : 0;
 
-  const 티끌칸: number[] = [];
-  let 테두리 = 0;
-  for (let gy = 0; gy < 세로; gy++) for (let gx = 0; gx < 가로; gx++) {
-    const i = gy * 가로 + gx;
-    if (!색[i]) continue;
-    const 이웃: number[] = [];
-    let 배경닿음 = false;
-    for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]] as const) {
+  const 옆 = [[1, 0], [-1, 0], [0, 1], [0, -1]] as const;
+  const 둘레칸 = (i: number) => {
+    const gx = i % 가로, gy = (i / 가로) | 0;
+    const 밖: number[] = [];
+    for (const [dx, dy] of 옆) {
       const nx = gx + dx, ny = gy + dy;
-      if (nx < 0 || ny < 0 || nx >= 가로 || ny >= 세로) { 배경닿음 = true; continue; }
-      const k = ny * 가로 + nx;
-      if (!색[k]) 배경닿음 = true; else 이웃.push(k);
+      if (nx < 0 || ny < 0 || nx >= 가로 || ny >= 세로) continue;
+      밖.push(ny * 가로 + nx);
     }
-    if (!배경닿음 || !이웃.length) continue;
-    테두리++;
-    let 제일가까운 = Infinity;
-    for (const k of 이웃) 제일가까운 = Math.min(제일가까운, deltaE(lab[i]!, lab[k]!));
-    if (제일가까운 > DELTA_E && lab[i]![0] > 가운데L + L_위로) 티끌칸.push(i);
+    return 밖;
+  };
+
+  /* 배경에서 몇 칸 들어왔나 — 얼굴·옷 안쪽을 빼기 위해. 배경이 0, 테두리가 1. */
+  const 깊이 = new Int32Array(가로 * 세로).fill(-1);
+  const 줄: number[] = [];
+  for (let i = 0; i < 가로 * 세로; i++) if (!색[i]) { 깊이[i] = 0; 줄.push(i); }
+  for (let h = 0; h < 줄.length; h++) for (const k of 둘레칸(줄[h])) if (깊이[k] < 0) { 깊이[k] = 깊이[줄[h]] + 1; 줄.push(k); }
+
+  let 잉크수 = 0, 테두리 = 0;
+  for (let i = 0; i < 가로 * 세로; i++) { if (색[i]) 잉크수++; if (깊이[i] === 1) 테두리++; }
+  const 섬최대 = ISLAND_MAX;
+
+  /*
+   * **섬 단위로 본다.** 한 칸씩 보면 같은 색 티끌이 둘만 붙어 있어도 서로를 이웃으로 삼아
+   * "색이 같다"가 되어 빠져나간다(11-08 에 린·유나에서 실제로 그랬다). 그래서 **같은 색끼리
+   * 먼저 묶고**(ΔE ≤ 2.3 = JND), 그 **섬 전체를 둘러싼 색**과 견준다.
+   */
+  const 섬번호 = new Int32Array(가로 * 세로).fill(-1);
+  const 티끌칸: number[] = [];
+  for (let s = 0; s < 가로 * 세로; s++) {
+    if (!색[s] || 섬번호[s] >= 0) continue;
+    const id = s;
+    const 식구: number[] = [s]; 섬번호[s] = id;
+    for (let h = 0; h < 식구.length; h++) for (const k of 둘레칸(식구[h])) {
+      if (색[k] && 섬번호[k] < 0 && deltaE(lab[식구[h]]!, lab[k]!) <= SAME_COLOR) { 섬번호[k] = id; 식구.push(k); }
+    }
+    if (식구.length > 섬최대) continue;                                   // 큰 것은 그림이다
+    if (!식구.some((i) => 깊이[i] >= 1 && 깊이[i] <= DEPTH_MAX)) continue;  // 실루엣 가까이만
+    if (lab[s]![0] <= 가운데L + L_ABOVE) continue;                        // 밝은 쪽만 — 사장님이 집은 것
+
+    /* 모양 보기 — 한 칸 두께로 긴 것은 윤곽선이다. */
+    let x0 = 가로, y0 = 세로, x1 = -1, y1 = -1;
+    for (const i of 식구) {
+      const x = i % 가로, y = (i / 가로) | 0;
+      if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y;
+    }
+    const 너비 = x1 - x0 + 1, 높이 = y1 - y0 + 1;
+    if (Math.min(너비, 높이) === 1 && Math.max(너비, 높이) >= STRIP_LEN) continue;
+
+    /* 섬 바깥에 닿은 잉크가 전부 뚜렷이 다른 색이어야 "섬"이다. 하나라도 비슷하면 그림의 일부다. */
+    let 섬인가 = true, 닿은잉크 = 0;
+    for (const i of 식구) for (const k of 둘레칸(i)) {
+      if (!색[k] || 섬번호[k] === id) continue;
+      닿은잉크++;
+      if (deltaE(lab[s]!, lab[k]!) <= DELTA_E) { 섬인가 = false; break; }
+    }
+    if (섬인가 && 닿은잉크) 티끌칸.push(...식구);
   }
   return { 가로, 세로, 티끌칸, 테두리, data, info };
 }

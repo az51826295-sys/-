@@ -1,6 +1,6 @@
 /** 남은 티끌은 왜 안 걸렸나 — 걸러낸 조건 중 무엇에서 떨어졌는지 하나씩 적는다. 11-08. */
 import sharp from "sharp";
-import { toLab, deltaE, DELTA_E, L_위로, 배경기준 } from "../../../src/lib/dot/fringe";
+import { toLab, deltaE, DELTA_E, L_ABOVE, ALPHA_MIN } from "../../../src/lib/dot/fringe";
 
 const 밑 = "C:/Users/az518/Desktop/로키-도트/티끌-20261108";
 for (const [슬러그, 감정] of [["rin", "neutral"], ["yuna", "neutral"]] as const) {
@@ -11,7 +11,7 @@ for (const [슬러그, 감정] of [["rin", "neutral"], ["yuna", "neutral"]] as c
   const 색: (null | [number, number, number])[] = [];
   for (let gy = 0; gy < 세로; gy++) for (let gx = 0; gx < 가로; gx++) {
     const p = ((gy * t + (t >> 1)) * W + gx * t + (t >> 1)) * ch;
-    색.push(data[p + 3] >= 배경기준 ? [data[p], data[p + 1], data[p + 2]] : null);
+    색.push(data[p + 3] >= ALPHA_MIN ? [data[p], data[p + 1], data[p + 2]] : null);
   }
   const lab = 색.map((c) => (c ? toLab(c[0], c[1], c[2]) : null));
   const L들 = lab.filter(Boolean).map((l) => l![0]).sort((a, b) => a - b);
@@ -31,10 +31,10 @@ for (const [슬러그, 감정] of [["rin", "neutral"], ["yuna", "neutral"]] as c
     }
   }
 
-  console.log(`\n${슬러그} ${감정} — 가운데 밝기 L=${가운데L.toFixed(0)} · 티끌 기준 L>${(가운데L + L_위로).toFixed(0)} · ΔE>${DELTA_E}`);
+  console.log(`\n${슬러그} ${감정} — 가운데 밝기 L=${가운데L.toFixed(0)} · 티끌 기준 L>${(가운데L + L_ABOVE).toFixed(0)} · ΔE>${DELTA_E}`);
   const 밝은것: string[] = [];
   for (let i = 0; i < 가로 * 세로; i++) {
-    if (!색[i] || lab[i]![0] <= 가운데L + L_위로) continue;
+    if (!색[i] || lab[i]![0] <= 가운데L + L_ABOVE) continue;
     const x = i % 가로, y = (i / 가로) | 0;
     let 가까움 = Infinity, 이웃수 = 0;
     for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]] as const) {
