@@ -267,8 +267,19 @@ async function placeAt(png: Buffer, box: { w: number; h: number; art: Buffer } |
  * 그래서 **최근접 이웃으로 줄였다가 최근접 이웃으로 키운다.** 줄이는 순간 진짜로
  * 정보가 버려지고, 키울 때 네모가 그대로 커진다. 조잡함이 주문이 아니라 계산이 된다.
  * (첫 판이 매끈해서 사장님이 "더 조잡하고 귀엽게" 라고 했다.)
+ *
+ * ## 격자 값은 아무 수나 못 쓴다 (11-08)
+ *
+ * `out / grid` 이 **정수**여야 도트가 정사각으로 떨어진다. 512 캔버스면 64(도트 8)·128(4)·
+ * 256(2)·512(1) 만 성립한다 — 96 은 5.33, 160 은 3.2 라 격자가 어긋나고, 그러면 도트 자가
+ * 순도를 못 재서 "못 잼"이 된다.
+ *
+ * 64 였던 것을 **256 으로 올린다**(사장님 11-08: *"격자는 많을수록 좋아"*). 까닭은 취향이
+ * 아니라 장부다 — 피드 사진이 약 5만 점인데 격자 64 는 4,096 점이라 **12배** 묽었다.
+ * 256 이면 65,536 점으로 피드와 같은 밀도가 된다. 발밑 정렬은 8 의 배수로 움직이는데
+ * 8 은 2 의 배수라 격자가 안 밀린다 — `align.ts` 는 그대로 둬도 된다.
  */
-export async function pixelize(png: Buffer, grid = 64, out = 512): Promise<Buffer> {
+export async function pixelize(png: Buffer, grid = 256, out = 512): Promise<Buffer> {
   const small = await sharp(png)
     .resize(grid, grid, { kernel: "nearest", fit: "contain", background: { r: 0, g: 0, b: 0, alpha: 0 } })
     .png({ palette: true, colors: 24, dither: 0 })   // 색도 같이 줄인다 — 그라데이션이 남으면 조잡해 보이지 않는다
