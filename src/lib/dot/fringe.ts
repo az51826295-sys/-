@@ -86,7 +86,7 @@ export type FringeReport = {
  * `texel` 은 밖에서 재서 넣는다(도트 자). 격자를 모르면 티끌 하나를 화소 64개로 세게 되어
  * 숫자가 부풀고, 지울 때도 멀쩡한 데를 긁는다.
  */
-export async function findFringe(png: Buffer, texel: number) {
+export async function findFringe(png: Buffer, texel: number, 섬한도 = ISLAND_MAX, 깊이한도 = DEPTH_MAX) {
   const { data, info } = await sharp(png).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
   const W = info.width, H = info.height, ch = info.channels;
   const 가로 = Math.floor(W / texel), 세로 = Math.floor(H / texel);
@@ -121,7 +121,7 @@ export async function findFringe(png: Buffer, texel: number) {
 
   let 잉크수 = 0, 테두리 = 0;
   for (let i = 0; i < 가로 * 세로; i++) { if (색[i]) 잉크수++; if (깊이[i] === 1) 테두리++; }
-  const 섬최대 = ISLAND_MAX;
+  const 섬최대 = 섬한도;
 
   /*
    * **섬 단위로 본다.** 한 칸씩 보면 같은 색 티끌이 둘만 붙어 있어도 서로를 이웃으로 삼아
@@ -138,7 +138,7 @@ export async function findFringe(png: Buffer, texel: number) {
       if (색[k] && 섬번호[k] < 0 && deltaE(lab[식구[h]]!, lab[k]!) <= SAME_COLOR) { 섬번호[k] = id; 식구.push(k); }
     }
     if (식구.length > 섬최대) continue;                                   // 큰 것은 그림이다
-    if (!식구.some((i) => 깊이[i] >= 1 && 깊이[i] <= DEPTH_MAX)) continue;  // 실루엣 가까이만
+    if (!식구.some((i) => 깊이[i] >= 1 && 깊이[i] <= 깊이한도)) continue;  // 실루엣 가까이만
     if (lab[s]![0] <= 가운데L + L_ABOVE) continue;                        // 밝은 쪽만 — 사장님이 집은 것
 
     /* 모양 보기 — 한 칸 두께로 긴 것은 윤곽선이다. */
@@ -163,8 +163,8 @@ export async function findFringe(png: Buffer, texel: number) {
 }
 
 /** 재기만 한다 — 안 고친다. */
-export async function measureFringe(png: Buffer, texel: number): Promise<FringeReport> {
-  const r = await findFringe(png, texel);
+export async function measureFringe(png: Buffer, texel: number, 섬한도 = ISLAND_MAX, 깊이한도 = DEPTH_MAX): Promise<FringeReport> {
+  const r = await findFringe(png, texel, 섬한도, 깊이한도);
   return { texel, 테두리: r.테두리, 티끌: r.티끌칸.length, 비율: r.테두리 ? r.티끌칸.length / r.테두리 : 0 };
 }
 
@@ -172,10 +172,10 @@ export async function measureFringe(png: Buffer, texel: number): Promise<FringeR
  * 티끌 칸을 **투명으로** 지운다. 안쪽은 건드리지 않으므로 그림이 줄지 않는다.
  * 한 번 지우면 새 테두리가 드러나므로 `돌림` 만큼 되풀이한다(기본 1 — 많이 돌리면 머리가 깎인다).
  */
-export async function removeFringe(png: Buffer, texel: number, 돌림 = 1): Promise<{ png: Buffer; 지움: number }> {
+export async function removeFringe(png: Buffer, texel: number, 돌림 = 1, 섬한도 = ISLAND_MAX, 깊이한도 = DEPTH_MAX): Promise<{ png: Buffer; 지움: number }> {
   let 그림 = png, 지움 = 0;
   for (let n = 0; n < 돌림; n++) {
-    const r = await findFringe(그림, texel);
+    const r = await findFringe(그림, texel, 섬한도, 깊이한도);
     if (!r.티끌칸.length) break;
     const buf = Buffer.from(r.data);
     const W = r.info.width, ch = r.info.channels;
@@ -190,4 +190,58 @@ export async function removeFringe(png: Buffer, texel: number, 돌림 = 1): Prom
     그림 = await sharp(buf, { raw: { width: W, height: r.info.height, channels: ch } }).png().toBuffer();
   }
   return { png: 그림, 지움 };
+}
+
+/**
+ * 티끌 칸을 **옆 색으로 메운다** — 지우는 것의 반대.
+ *
+ * 11-08 사장님: *"왜 지우는 게 깔끔하게 안 된다고 생각해?"* 답은 **방향**이었다. 그 티끌은
+ * 뭐가 더 붙은 게 아니라 **머리카락이 있어야 할 자리에 배경이 남은 것**이다. 지우면 흰 점이
+ * 구멍으로 바뀔 뿐 실루엣은 그대로 패인다. 그래서 **둘러싼 잉크 중 제일 많은 색**으로 덮는다.
+ *
+ * 배경에만 둘러싸인 칸(진짜로 떠 있는 조각)은 메울 색이 없으므로 **그때만 지운다.**
+ */
+export async function fillFringe(
+  png: Buffer, texel: number, 섬한도 = ISLAND_MAX, 깊이한도 = DEPTH_MAX,
+): Promise<{ png: Buffer; 메움: number; 지움: number }> {
+  const r = await findFringe(png, texel, 섬한도, 깊이한도);
+  if (!r.티끌칸.length) return { png, 메움: 0, 지움: 0 };
+  const buf = Buffer.from(r.data);
+  const W = r.info.width, ch = r.info.channels;
+  const 티끌 = new Set(r.티끌칸);
+  const 칸색 = (i: number): [number, number, number, number] => {
+    const gx = i % r.가로, gy = (i / r.가로) | 0;
+    const p = ((gy * texel + (texel >> 1)) * W + gx * texel + (texel >> 1)) * ch;
+    return [r.data[p], r.data[p + 1], r.data[p + 2], r.data[p + 3]];
+  };
+  let 메움 = 0, 지움 = 0;
+  for (const i of r.티끌칸) {
+    const gx = i % r.가로, gy = (i / r.가로) | 0;
+    /* 둘러싼 잉크 칸의 색을 센다 — 티끌끼리는 서로를 보지 않는다. */
+    const 표 = new Map<string, { 수: number; 색: [number, number, number] }>();
+    for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [1, -1], [-1, 1], [-1, -1]] as const) {
+      const nx = gx + dx, ny = gy + dy;
+      if (nx < 0 || ny < 0 || nx >= r.가로 || ny >= r.세로) continue;
+      const k = ny * r.가로 + nx;
+      if (티끌.has(k)) continue;
+      const c = 칸색(k);
+      if (c[3] < ALPHA_MIN) continue;
+      const key = `${c[0]},${c[1]},${c[2]}`;
+      const 있던것 = 표.get(key);
+      if (있던것) 있던것.수++;
+      else 표.set(key, { 수: 1, 색: [c[0], c[1], c[2]] });
+    }
+    let 고른색: [number, number, number] | null = null, 제일많음 = 0;
+    for (const { 수, 색 } of 표.values()) if (수 > 제일많음) { 제일많음 = 수; 고른색 = 색; }
+    for (let y = gy * texel; y < (gy + 1) * texel; y++) for (let x = gx * texel; x < (gx + 1) * texel; x++) {
+      const p = (y * W + x) * ch;
+      if (고른색) { buf[p] = 고른색[0]; buf[p + 1] = 고른색[1]; buf[p + 2] = 고른색[2]; buf[p + 3] = 255; }
+      else { buf[p] = 0; buf[p + 1] = 0; buf[p + 2] = 0; buf[p + 3] = 0; }
+    }
+    if (고른색) 메움++; else 지움++;
+  }
+  return {
+    png: await sharp(buf, { raw: { width: W, height: r.info.height, channels: ch } }).png().toBuffer(),
+    메움, 지움,
+  };
 }

@@ -21,9 +21,21 @@ for (const [k, v] of 적힌것) process.env[k] ||= v;
 
 const { createClient } = await import("@supabase/supabase-js");
 const sharp = (await import("sharp")).default;
-const { measureFringe, removeFringe, DELTA_E } = await import("../../src/lib/dot/fringe");
+const { measureFringe, removeFringe, fillFringe, DELTA_E, ISLAND_MAX, DEPTH_MAX } = await import("../../src/lib/dot/fringe");
 
+const 끌 = (이름: string) => {
+  const i = process.argv.indexOf(이름);
+  return i > 0 ? process.argv[i + 1] : undefined;
+};
+/** 사람 몇만 — `--only rin,yuna`. 머리 결이 저마다 달라서 섬 크기를 사람별로 달리 줄 수 있다. */
+const 누구만 = (끌("--only") ?? "").split(",").map((s) => s.trim()).filter(Boolean);
+/** 섬 크기 한도를 덮어쓴다 — 올릴 때마다 `_지운자리.png` 로 확인할 것. */
+const 섬크기 = 끌("--island") ? Number(끌("--island")) : undefined;
+/** 실루엣에서 몇 칸 안쪽까지 볼지 — `--depth`. */
+const 깊이 = 끌("--depth") ? Number(끌("--depth")) : undefined;
 const 고칠까 = process.argv.includes("--fix");
+/** 지우지 말고 **옆 색으로 메운다** — 티끌은 배경이 남은 자리라 지우면 구멍이 된다. */
+const 메울까 = process.argv.includes("--fill");
 const 올릴까 = process.argv.includes("--up");
 const 심기 = process.argv.includes("--sabotage");
 const 나갈곳 = "C:/Users/az518/Desktop/로키-도트/티끌-20261108";
@@ -52,12 +64,15 @@ const 공개 = (data as any[]).filter((c) => c.is_public && c.sprites).sort((a, 
 
 type 칸 = { slug: string; 이름: string; 감정: string; png: Buffer; 길: string; texel: number | null };
 const 칸들: 칸[] = [];
-for (const c of 공개) for (const [감정, url] of Object.entries(c.sprites as Record<string, string>)) {
+for (const c of 공개) {
+  if (누구만.length && !누구만.includes(c.slug)) continue;
+  for (const [감정, url] of Object.entries(c.sprites as Record<string, string>)) {
   const r = await fetch(url); if (!r.ok) { console.log(`  ⚠ ${c.name} ${감정} ${r.status}`); continue; }
   const png = Buffer.from(await r.arrayBuffer());
   const 길 = join(터, `${c.slug}__${감정.replace(":", "-")}.png`).split("\\").join("/");
   writeFileSync(길, png);
   칸들.push({ slug: c.slug, 이름: c.name, 감정, png, 길, texel: null });
+  }
 }
 const 도트 = 도트재기(칸들.map((x) => x.길));
 칸들.forEach((x, i) => (x.texel = 도트[i]));
@@ -98,12 +113,14 @@ const 사람합 = new Map<string, { 테: number; 티: number }>();
 const 고친것: { x: 칸; png: Buffer; 지움: number }[] = [];
 for (const x of 칸들) {
   if (!x.texel) { console.log(`${x.이름.padEnd(5)} ${x.감정.padEnd(18)} 격자를 못 재서 못 잼`); continue; }
-  const m = await measureFringe(x.png, x.texel);
+  const m = await measureFringe(x.png, x.texel, 섬크기 ?? ISLAND_MAX, 깊이 ?? DEPTH_MAX);
   const s = 사람합.get(x.이름) ?? { 테: 0, 티: 0 };
   s.테 += m.테두리; s.티 += m.티끌; 사람합.set(x.이름, s);
   console.log(`${x.이름.padEnd(5)} ${x.감정.padEnd(18)} ${String(m.테두리).padStart(5)} ${String(m.티끌).padStart(6)} ${(m.비율 * 100).toFixed(1).padStart(6)}%`);
   if (고칠까) {
-    const r = await removeFringe(x.png, x.texel);
+    const r = 메울까
+      ? await fillFringe(x.png, x.texel, 섬크기 ?? ISLAND_MAX, 깊이 ?? DEPTH_MAX).then((v) => ({ png: v.png, 지움: v.메움 + v.지움 }))
+      : await removeFringe(x.png, x.texel, 1, 섬크기 ?? ISLAND_MAX, 깊이 ?? DEPTH_MAX);
     고친것.push({ x, png: r.png, 지움: r.지움 });
   }
 }
