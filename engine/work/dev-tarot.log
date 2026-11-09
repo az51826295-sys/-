@@ -175,3 +175,6 @@ See more: https://nextjs.org/docs/app/guides/local-development
  GET /manifest.webmanifest 200 in 154ms (next.js: 52ms, proxy.ts: 47ms, application-code: 54ms)
  GET /dot/rin 200 in 5.9s (next.js: 1425ms, proxy.ts: 524ms, application-code: 3.9s)
 [heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+✓ Finished writing to filesystem cache in 22.8s
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
