@@ -88,7 +88,9 @@ for (const [i, s] of 사람.entries()) {
  * **기준** — `engine/docs/dot-character-standard.md`. 숫자는 일곱 명을 재서 뽑았고,
  * 바꾸려면 문서부터 고친다(여기만 고치면 글과 코드가 갈린다).
  */
-const 기준 = { 도트: 8, 높이칸: [57, 63] as const, 폭칸: [44, 63] as const, 색수: [12, 24] as const, 테두리: 0.9, 얼굴: [0.55, 0.8] as const, 아래여백: 0 };
+/* 11-09 사장님 *"화질도 잘 나오게 하자"* → 격자 128(도트 4). 열 명을 **같은 판에** 다시 뽑아
+   올렸다 — 한 명씩 올리면 또 갈린다. 칸 수 기준은 격자가 두 배라 그만큼 커진다. */
+const 기준 = { 도트: 4, 높이칸: [110, 128] as const, 폭칸: [85, 128] as const, 색수: [12, 24] as const, 테두리: 0.9, 얼굴: [0.55, 0.8] as const, 아래여백: 0 };
 if (process.argv.includes("--check")) {
   const 틀린것: string[] = [];
   for (const r of 표) {

@@ -46,7 +46,8 @@ const DB주소 = 적힌것.get("NEXT_PUBLIC_SUPABASE_URL")!;
 const DB열쇠 = 적힌것.get("SUPABASE_SECRET_KEY")!;
 const sharp = (await import("sharp")).default;
 const { createClient } = await import("@supabase/supabase-js");
-const { restylePrompt, cutSheet, measureCells, SHEET_ORDER } = await import("../../src/lib/dot/sprites");
+const { restylePrompt, cutSheet, measureCells, pixelize, SHEET_ORDER } = await import("../../src/lib/dot/sprites");
+const { outlineSprite } = await import("../../src/lib/dot/outline");
 const { createImageProvider } = await import("../../src/lib/providers/images");
 const { alignSprite } = await import("../../src/lib/dot/align");
 
@@ -55,6 +56,16 @@ const 기준slug = 끌("--ref") ?? "haru";
 const 한명만 = 끌("--only");
 const quality = (끌("--quality") ?? "medium") as "low" | "medium" | "high";
 const 올릴까 = process.argv.includes("--up");
+/**
+ * **격자** — 기준점(`engine/docs/dot-character-standard.md`)의 숫자. 512 를 나눠떨어뜨려야
+ * 도트가 정사각이다: 64(도트 8) · 128(도트 4) · 256(도트 2) 만 된다.
+ * 11-09 사장님 *"화질도 잘 나오게 하자"* → **128**(점 수 네 배).
+ */
+const 격자 = Number(끌("--grid") ?? 128);
+const 도트기준 = 512 / 격자;
+if (!Number.isInteger(도트기준)) { console.error(`격자 ${격자} 는 512 를 안 나눈다 — 64·128·256 중에서`); process.exit(1); }
+/** 본도 같이 다시 뽑는다 — 본만 옛 결로 남으면 그 한 명이 튄다. */
+const 본도 = process.argv.includes("--with-ref");
 const 나갈곳 = 끌("--out") ?? "C:/Users/az518/Desktop/로키-도트/다시-20261108";
 mkdirSync(나갈곳, { recursive: true });
 
@@ -82,7 +93,7 @@ writeFileSync(join(나갈곳, `_기준-${기준slug}.png`), 기준시트);
 console.log(`기준 시트 조립: ${기준.name} (${칸 * 3}×${칸 * 2}) → ${join(나갈곳, `_기준-${기준slug}.png`)}`);
 
 /* ── 그릴 사람 ── */
-const 그릴사람 = 모두.filter((c) => c.slug !== 기준slug && (!한명만 || c.slug === 한명만));
+const 그릴사람 = 모두.filter((c) => (본도 || c.slug !== 기준slug) && (!한명만 || c.slug === 한명만));
 if (!그릴사람.length) { console.error("그릴 사람이 없다"); process.exit(1); }
 console.log(`그릴 사람 ${그릴사람.length}명: ${그릴사람.map((c) => c.name).join(" · ")} · 품질 ${quality}\n`);
 
@@ -146,14 +157,25 @@ for (const c of 그릴사람) {
   writeFileSync(join(dir, "_sheet.png"), Buffer.from(made.dataUrl.split(",")[1], "base64"));
 
   const cells = await cutSheet(made.dataUrl);
-  const { cases, similarity } = await measureCells(cells);
+  /**
+   * **자는 내보낼 그림에 댄다.** 전에는 자른 직후(뭉개기 전)에 재서 "도트다" 가 늘 떨어졌다 —
+   * 그 그림은 아무도 안 쓴다. 기준점 마무리를 **먼저** 하고 그 결과를 잰다
+   * ([[unrun-code-is-unmeasured]] 와 같은 자리).
+   */
+  const 마무리: typeof cells = [];
+  for (const cell of cells) {
+    const 뭉갬 = await pixelize(cell.png, 격자);
+    const 둘름 = (await outlineSprite(뭉갬, 도트기준, { 식: "한색", 색: [255, 255, 255] }, 1)).png;
+    const { png } = await alignSprite(둘름);
+    마무리.push({ ...cell, png });
+  }
+  const { cases, similarity } = await measureCells(마무리);
   const 걸린것 = cases.filter((x) => x.result === "Failed");
   /* 자른 뒤 바로 바닥선까지 맞춘다 — 올리는 그림은 처음부터 정렬된 것이어야 한다. */
   const 발밑: number[] = [];
-  for (const cell of cells) {
-    const { png, report } = await alignSprite(cell.png);
-    writeFileSync(join(dir, `${cell.emotion}.png`), png);
-    발밑.push(report.footBefore);
+  for (const cell of 마무리) {
+    writeFileSync(join(dir, `${cell.emotion}.png`), cell.png);
+    발밑.push(0);
   }
   console.log(
     `${c.name.padEnd(5)} ${((Date.now() - t0) / 1000).toFixed(0)}s · 토큰 ${made.outputTokens} · ` +

@@ -13,10 +13,21 @@ for (const l of readFileSync(".env.local", "utf8").split(String.fromCharCode(10)
 import sharp from "sharp";
 import { createServiceClient } from "../../src/lib/supabase/service";
 import { createImageProvider } from "../../src/lib/providers/images";
-import { cutSheet, measureCells, SHEET_ORDER } from "../../src/lib/dot/sprites";
+import { cutSheet, measureCells, pixelize, SHEET_ORDER } from "../../src/lib/dot/sprites";
+import { outlineSprite } from "../../src/lib/dot/outline";
+import { alignSprite } from "../../src/lib/dot/align";
 import { faceCrop } from "./dot_faces_lib";
 
-const OUT = "C:/Users/az518/AppData/Local/Temp/claude/C--Users-az518-Desktop/d7b8eaa0-592d-4d32-a057-634ae1e64f74/scratchpad/sheet";
+/**
+ * **쓰고 버리는 자리에 두지 않는다** (11-09). 여기 박혀 있던 길은 옛 세션 임시폴더라
+ * 이미 사라졌다 — 그래서 이 도구는 부르는 순간 ENOENT 로 죽는 상태였다.
+ * 본 시트는 다시 뽑기 폴더에서 읽고, 결과는 바탕화면에 쌓는다.
+ */
+const OUT = "C:/Users/az518/Desktop/로키-도트/멘헤라-20261109";
+/** 본 시트가 있는 곳 — `dot_restyle_all` 이 `<slug>/_sheet.png` 로 남긴다. */
+const 본시트 = process.argv.includes("--from") ? process.argv[process.argv.indexOf("--from") + 1] : "C:/Users/az518/Desktop/로키-도트/다시뽑기2-20261109";
+/** 기준점의 격자 — 본과 같은 결이어야 한 사람 안에서 안 갈린다. */
+const 격자 = 128, 도트 = 512 / 격자;
 mkdirSync(OUT + "/faces", { recursive: true });
 const args = process.argv.slice(2);
 const reuse = args.includes("--reuse");
@@ -52,30 +63,50 @@ for (const slug of slugs) {
   if (reuse) dataUrl = "data:image/png;base64," + readFileSync(sheetPath).toString("base64");
   else {
     const t0 = Date.now();
-    const made = await drawer.edit("data:image/png;base64," + readFileSync(`${OUT}/${slug}-sheet.png`).toString("base64"), prompt, "1536x1024", quality);
+    const made = await drawer.edit("data:image/png;base64," + readFileSync(`${본시트}/${slug}/_sheet.png`).toString("base64"), prompt, "1536x1024", quality);
     console.log(`${ch.name} 멘헤라 시트 · ${((Date.now() - t0) / 1000).toFixed(1)}s`);
     dataUrl = made.dataUrl; writeFileSync(sheetPath, Buffer.from(made.dataUrl.split(",")[1], "base64"));
   }
-  const cut = await cutSheet(dataUrl);
+  const 자른것 = await cutSheet(dataUrl);
+  /**
+   * **자는 내보낼 그림에 댄다** (11-09). 전에는 자른 직후에 재서 "도트다" 가 420~598색으로
+   * 늘 떨어졌고, 그래서 멘헤라는 **한 번도 안 올라갔다** — 아무도 안 쓰는 그림을 재고 있었다.
+   * 기준점 마무리(뭉개기 → 테두리 → 발밑)를 먼저 하고, 그 결과를 잰다.
+   */
+  const cut: typeof 자른것 = [];
+  for (const c of 자른것) {
+    const 뭉갬 = await pixelize(c.png, 격자);
+    const 둘름 = (await outlineSprite(뭉갬, 도트, { 식: "한색", 색: [255, 255, 255] }, 1)).png;
+    const { png } = await alignSprite(둘름);
+    cut.push({ ...c, png });
+  }
   const { cases } = await measureCells(cut);
   for (const c of cases) console.log(`  ${c.result === "Passed" ? "✅" : c.result === "Failed" ? "❌" : "◻︎"} ${c.name} — ${c.message}`);
   if (cases.some((c) => c.result === "Failed")) { console.log(`  → ${slug} 자 떨어짐, 표에 안 올린다`); continue; }
 
   const sprites = { ...(ch.sprites as Record<string, string>) }, faces = { ...((ch.faces ?? {}) as Record<string, string>) };
   for (const c of cut) {
-    writeFileSync(`${OUT}/${slug}-menhera-${c.emotion}.png`, c.png);
-    const face = await faceCrop(c.png); writeFileSync(`${OUT}/faces/${slug}-menhera-${c.emotion}-face.png`, face);
-    const v = "?v=" + Date.now();
-    for (const [path, body, into] of [[`${slug}/menhera/${c.emotion}.png`, c.png, sprites], [`${slug}/menhera/face/${c.emotion}.png`, face, faces]] as const) {
+    const png = c.png;
+    const face = await faceCrop(png);
+    writeFileSync(`${OUT}/${slug}-menhera-${c.emotion}.png`, png);
+    writeFileSync(`${OUT}/faces/${slug}-menhera-${c.emotion}-face.png`, face);
+    /* **앱은 public 을 본다.** 통에는 백업으로만 둔다(11-09 에 이걸로 하루를 썼다). */
+    for (const [path, body, into] of [[`${slug}/menhera/${c.emotion}.png`, png, sprites], [`${slug}/menhera/face/${c.emotion}.png`, face, faces]] as const) {
+      mkdirSync(`public/dot-sprites/${path.split("/").slice(0, -1).join("/")}`, { recursive: true });
+      writeFileSync(`public/dot-sprites/${path}`, body);
+      into[`menhera:${c.emotion}`] = `https://dot-web-production-7e03.up.railway.app/dot-sprites/${path}`;
       const { error } = await db.storage.from("dot-sprites").upload(path, body, { contentType: "image/png", upsert: true });
-      if (error) throw new Error(`${path}: ${error.message}`);
-      into[`menhera:${c.emotion}`] = db.storage.from("dot-sprites").getPublicUrl(path).data.publicUrl + v;
+      if (error) console.warn(`   통 백업 실패(앱에는 영향 없음) ${path}: ${error.message}`);
     }
   }
   const { error } = await db.from("dot_characters").update({ sprites, faces }).eq("slug", slug);
   if (error) throw new Error(error.message);
   // 나란히 보기: 위 원래 · 아래 멘헤라
-  const row = async (pre: string) => Promise.all(SHEET_ORDER.map(async (e, i) => ({ input: await sharp(readFileSync(`${OUT}/${slug}-${pre}${e}.png`)).resize(200, 200, { fit: "contain", background: "#b2c7d9" }).png().toBuffer(), left: i * 200, top: pre ? 200 : 0 })));
+  const row = async (pre: string) => Promise.all(SHEET_ORDER.map(async (e, i) => ({
+    input: await sharp(readFileSync(pre ? `${OUT}/${slug}-menhera-${e}.png` : `${본시트}/${slug}/${e}.png`))
+      .resize(200, 200, { fit: "contain", background: "#b2c7d9" }).png().toBuffer(),
+    left: i * 200, top: pre ? 200 : 0,
+  })));
   const strip = await sharp({ create: { width: 1200, height: 400, channels: 3, background: "#b2c7d9" } }).composite([...(await row("")), ...(await row("menhera-"))]).png().toBuffer();
   writeFileSync(`${OUT}/${slug}-menhera-strip.png`, strip);
   console.log(`  → ${slug}: 멘헤라 6장 + 얼굴 6장 올림 · ${OUT}/${slug}-menhera-strip.png`);
