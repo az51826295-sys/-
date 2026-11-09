@@ -157,3 +157,45 @@ export function guessState(답: string, 사람말들: string[]): { 맞힘: boole
   const 쓴횟수 = 사람말들.length;
   return { 맞힘, 쓴횟수, 끝났나: 맞힘 || 쓴횟수 >= GUESS_LIMIT };
 }
+
+/* ───────────────────────── 지금 어떤 판이 도는가 ─────────────────────────
+ *
+ * 표가 없으니 **대화에서 읽는다.** 말머리(`🎮 …`) 아래로 끝 표시가 없으면 그 판이 도는 중이다.
+ * 화면도 서버도 같은 함수를 쓴다 — 두 군데가 따로 세면 사람은 놀이 중인데 서버는 아니라고 한다.
+ */
+export const GAME_END = "— 판 끝 —";
+
+export type LiveGame = { game: GameKey; 회차: number; 줄들: { role: string; content: string }[] };
+
+export function findLive(최근: { role: string; content: string }[]): LiveGame | null {
+  for (let i = 최근.length - 1; i >= 0; i--) {
+    const h = parseGameHead(최근[i].content);
+    if (!h) continue;
+    const 줄들 = 최근.slice(i);
+    if (줄들.some((l) => l.content.includes(GAME_END))) return null;
+    return { ...h, 줄들 };
+  }
+  return null;
+}
+
+/** 이 둘이 이 놀이를 몇 판째 하나 — 회차는 씨앗에 들어가므로 세어야 한다. */
+export function countRounds(최근: { role: string; content: string }[], game: GameKey): number {
+  return 최근.filter((l) => parseGameHead(l.content)?.game === game).length;
+}
+
+/**
+ * 끝말잇기에서 지금까지 나온 낱말들 — 말풍선이 곧 장부다.
+ *
+ * **첫 줄의 첫 낱말만** 본다. 캐릭터는 낱말을 늘 첫 줄에 두도록 서버가 못 박는다.
+ * 그렇게 안 했더니 "어, 왔네" 의 **"어" 가 낱말로 세어져** 다음 수가 전부 막혔다(11-09).
+ * 한글 두 글자 이상이 아니면 장부에 안 넣는다 — 한마디는 수가 아니다.
+ */
+export function wordsSoFar(live: LiveGame): string[] {
+  const 말: string[] = [];
+  for (const l of live.줄들) {
+    if (parseGameHead(l.content)) continue;
+    const w = l.content.replace(GAME_END, "").trim().split("\n")[0].trim().split(/\s+/)[0]?.replace(/[.,!?~…]/g, "") ?? "";
+    if (w && isHangul(w) && [...w].length >= 2) 말.push(w);
+  }
+  return 말;
+}

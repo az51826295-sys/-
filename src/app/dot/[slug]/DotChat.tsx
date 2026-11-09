@@ -14,6 +14,7 @@ import { GIFTS, CHECKIN_HEARTS } from "@/lib/dot/bond";
 import { splitBubbles } from "@/lib/dot/bubbles";
 import { parseReading } from "@/lib/dot/tarotCards";
 import { TarotSpread } from "../TarotSpread";
+import { GAMES, GAME_END, GAME_HOW, GAME_LABEL, findLive, parseGameHead, type GameKey } from "@/lib/dot/games";
 
 /**
  * 도트 채팅 — **카톡 모양, 폰 전용.**
@@ -324,9 +325,51 @@ export default function DotChat({
     if (끈다) set알림물음(false);
     try { localStorage.setItem("dot-push-ask-v1", "1"); } catch { /* 이번만 */ }
   }
+  /**
+   * **놀이 중인가** — 표가 없어서 말풍선에서 읽는다(서버도 같은 함수를 쓴다).
+   * 판이 도는 동안 사람 말은 대화가 아니라 `/api/dot/game` 으로 간다.
+   */
+  const 놀이 = findLive(lines.map((l) => ({ role: l.role, content: l.content })));
+  const [놀이판열림, set놀이판열림] = useState(false);
+
+  /** 놀이 한 수 — 규칙에 걸리면 서버가 409 로 막고 **하트는 안 쓴다.** */
+  async function 놀이보내기(opts: { game?: GameKey; message?: string }) {
+    if (busy || !who) return;
+    set놀이판열림(false);
+    if (opts.message) {
+      setLines((l) => [...l, { role: "user", content: opts.message!, emotion: null, at: new Date().toISOString() }]);
+      setText("");
+      if (inputRef.current) inputRef.current.style.height = "";
+      SFX.send(); buzz(BUZZ.send);
+    }
+    setBusy(true);
+    try {
+      const res = await fetch("/api/dot/game", {
+        method: "POST", headers: { "content-type": "application/json" },
+        body: JSON.stringify({ characterId: who.id, game: opts.game, message: opts.message, lang: getLang() }),
+      });
+      const d = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setToast(d.error ?? "지금은 안 돼요");
+        /* 규칙에 걸린 수는 내 말풍선도 도로 거둔다 — 안 두면 판에 안 들어간 말이 남는다. */
+        if (d.규칙 && opts.message) setLines((l) => l.slice(0, -1));
+        return;
+      }
+      /* 말머리는 **서버가 적은 줄 그대로** 쓴다 — 화면이 지어 붙이면 회차가 빠져 판을 못 읽는다. */
+      if (d.머리) setLines((l) => [...l, { role: "character", content: d.머리 as string, emotion: null, at: new Date().toISOString() }]);
+      setLines((l) => [...l, { role: "character", content: d.reply, emotion: d.emotion ?? null, at: new Date().toISOString() }]);
+      if (d.bond) setBond((b) => ({ ...b, ...d.bond }));
+      if (typeof d.remaining === "number") setRemaining(d.remaining);
+      SFX.recv(); buzz(BUZZ.heart);
+    } catch { setToast("지금은 안 돼요"); }
+    finally { setBusy(false); }
+  }
+
   async function send(preset?: string, stickerKey?: string, giftKey?: string) {
     const message = (preset ?? text).trim();
     if (!message || busy || !who) return;
+    /* 판이 도는 동안에는 말이 놀이로 간다 — 한 줄로 갈린다. */
+    if (놀이 && !stickerKey && !giftKey) { void 놀이보내기({ message }); return; }
     setText(""); setStickerOpen(false); setGiftOpen(false);
     // 09-11 사장님 "메시지 발송 부분이 어색해": 보내고 나서 입력창을 잠갔더니 폰 키보드가 내려갔다. 초점은 입력창에 남긴다.
     if (inputRef.current) { inputRef.current.style.height = ""; if (!preset) inputRef.current.focus(); }
@@ -514,6 +557,9 @@ export default function DotChat({
                     <span className="kk-meta">{unread && <b className="kk-unread">1</b>}{showTime && <span className="kk-time">{clock(l.at)}</span>}</span>
                     <div className="kk-bubble me">{l.content}</div>
                   </div>
+                ) : parseGameHead(l.content) ? (
+                  /* 놀이 말머리는 말풍선이 아니라 **가름줄**이다 — 날짜 줄과 같은 자리. */
+                  <div className="kk-day kk-gameday">🎮 {GAME_LABEL[parseGameHead(l.content)!.game]}</div>
                 ) : parseReading(l.content) ? (
                   /* 타로 — 말풍선이 아니라 **카드 세 장**으로 그린다. 글로만 두면 그냥 긴 말이 된다. */
                   <div className="kk-row them kk-tarot">
@@ -606,6 +652,21 @@ export default function DotChat({
             <button onClick={() => setReplyTo(null)} aria-label="답장 취소">×</button>
           </div>
         )}
+        {놀이판열림 && !놀이 && (
+          <div className="kk-games">
+            <div className="kk-games-title">{who.name}와 같이 놀기 <small>한 마디에 하트 1개</small></div>
+            {GAMES.map((g) => (
+              <button key={g} onClick={() => 놀이보내기({ game: g })} disabled={busy || remaining <= 0}>
+                <b>{GAME_LABEL[g]}</b><small>{GAME_HOW[g]}</small>
+              </button>
+            ))}
+          </div>
+        )}
+        {놀이 && (
+          <div className="kk-gameon">
+            <b>🎮 {GAME_LABEL[놀이.game]}</b> 하는 중 · {GAME_HOW[놀이.game]}
+          </div>
+        )}
         {stickerOpen && (
           <div className="kk-stickers">
             {USER_STICKER_KEYS.map((k) => (
@@ -659,7 +720,15 @@ export default function DotChat({
               <path fill="var(--bar, #fff)" d="M5 4h2v8h-2z" opacity="0.55" />
             </svg>
           </button>
-          <button className="kk-emo" aria-label="스티커" onClick={() => { setStickerOpen((v) => !v); setGiftOpen(false); }} disabled={!mounted || !signedIn}>
+          {/* 11-09 놀이 — 방 메뉴는 이미 일곱 줄이라 더 못 넣는다([[kakao-placement-rule]] ≤6).
+              스티커·선물과 같은 줄에 둔다: 셋 다 "말 대신 건네는 것" 이라 자리가 같다. */}
+          <button className="kk-emo" aria-label="놀이" onClick={() => { set놀이판열림((v) => !v); setStickerOpen(false); setGiftOpen(false); }} disabled={!mounted || !signedIn || !!놀이}>
+            <svg width="22" height="22" viewBox="0 0 12 12" shapeRendering="crispEdges" aria-hidden>
+              <path fill="currentColor" d="M1 1h10v10h-10zM2 2v8h8v-8z" />
+              <path fill="currentColor" d="M3 3h2v2h-2zM7 3h2v2h-2zM3 7h2v2h-2zM7 7h2v2h-2z" />
+            </svg>
+          </button>
+          <button className="kk-emo" aria-label="스티커" onClick={() => { setStickerOpen((v) => !v); setGiftOpen(false); set놀이판열림(false); }} disabled={!mounted || !signedIn}>
             <svg width="22" height="22" viewBox="0 0 12 12" shapeRendering="crispEdges" aria-hidden><path fill="currentColor" d={USER_STICKERS.smile.path} fillRule="evenodd" /></svg>
           </button>
           <textarea
@@ -737,6 +806,8 @@ export default function DotChat({
                 <li><b>얼굴</b>을 누르면 {who.name}의 사진·프로필</li>
                 <li><b>★★☆☆☆</b>는 친밀도 — 이야기할수록 차고, 말투와 표정이 바뀌어요</li>
                 <li><b>😊</b> 스티커 보내기 · <b>≡</b> 알림·배경 바꾸기</li>
+                {/* 11-09: 놀이를 넣고 도움말을 안 고치면 **아무도 못 찾는다** — 단추는 아이콘뿐이다. */}
+                <li><b>🎲</b> 같이 놀기 — 끝말잇기·스무고개·두 진실 한 거짓·초성 퀴즈</li>
                 <li>알림을 켜면 {who.name}{iGa(who.name)} <b>먼저</b> 말을 걸어요</li>
                 {/* 10-29: **30 은 옛 숫자다**(10-25 에 10 으로 내렸다). 안내판만 고치지 않고 남아
                     새로 온 사람에게 석 달째 거짓말을 하고 있었다 — 숫자는 상수에서 읽는다. */}
@@ -1135,6 +1206,21 @@ const CSS = `
 .kk-warn { background:#fff8d6; color:#5a4a00; font-size:13px; padding:8px 14px; }
 .kk-emo { flex:0 0 auto; width:40px; height:40px; border:none; background:none; color:var(--ink, #5c6570); opacity:.8; cursor:pointer; display:flex; align-items:center; justify-content:center; }
 /* 09-13 사장님 "배경 화면 있으면 이모티콘 안 보임": 배경 그림이 position:absolute z-index:0 이라 자리 안 잡은 이 판을 덮었다. 판을 위로. */
+/* 놀이 판 — 스티커 판과 같은 자리, 같은 결. 두 줄로 끊어 네 가지가 한눈에 들어오게 한다. */
+.kk-games { position:relative; z-index:2; display:grid; grid-template-columns:repeat(2, 1fr); gap:6px; padding:8px;
+  background:var(--bar, #fff); border-top:1px solid rgba(0,0,0,.06); }
+.kk-games-title { grid-column:1 / -1; font-size:12px; color:var(--ink, #8a8f98); padding:2px 2px 0; }
+.kk-games-title small { opacity:.7; }
+.kk-games button { display:flex; flex-direction:column; gap:2px; align-items:flex-start; text-align:left;
+  min-height:48px; padding:8px 10px; border:none; background:#1b1630; color:#ffd369; font:inherit; cursor:pointer;
+  box-shadow:inset 0 0 0 2px #1c1c1c; }
+.kk-games button b { font-size:13px; font-weight:400; }
+.kk-games button small { font-size:11px; color:#b9b0e0; line-height:1.4; }
+.kk-games button:active { transform:translate(2px,2px); }
+.kk-games button:disabled { opacity:.5; cursor:default; }
+.kk-gameday { color:#6b5bd2; }
+.kk-gameon { position:relative; z-index:2; padding:6px 12px; font-size:12px; background:#1b1630; color:#ffd369; }
+.kk-gameon b { font-weight:400; }
 .kk-stickers { position:relative; z-index:2; display:grid; grid-template-columns:repeat(6, 1fr); gap:4px; padding:8px; background:var(--bar, #fff); border-top:1px solid rgba(0,0,0,.06); }
 .kk-stickers button { background:none; border:none; display:flex; flex-direction:column; align-items:center; gap:2px; font:inherit; font-size:11px; color:var(--ink, #5c6570); cursor:pointer; padding:4px 0; }
 .kk-stickers button:disabled { opacity:.4; }
