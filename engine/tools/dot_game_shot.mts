@@ -60,17 +60,19 @@ try {
   적은것.push(막힘 ? "❌ 놀이 단추가 막혀 있다" : "✅ 놀이 단추가 눌린다");
   await page.screenshot({ path: `${OUT}/0-방.png` });
   await 놀이단추.click();
-  await page.waitForSelector(".kk-games", { timeout: 20_000 });
+  await page.waitForSelector(".gt-pick", { timeout: 20_000 });
   await page.screenshot({ path: `${OUT}/1-고르기.png` });
-  const 칸수 = await page.$$eval(".kk-games button", (e) => e.length);
+  const 칸수 = await page.$$eval(".gt-pick button", (e) => e.length);
   적은것.push(칸수 === 4 ? "✅ 놀이 넷이 보인다" : `❌ 놀이 ${칸수}개만 보인다`);
+  const 아이콘 = await page.$$eval(".gt-pick .gt-px i.on", (e) => e.length);
+  적은것.push(아이콘 >= 40 ? `✅ 도트 아이콘이 그려진다 (켜진 칸 ${아이콘})` : `❌ 아이콘이 안 그려진다 (${아이콘})`);
 
   /* 끝말잇기 고르기 */
-  for (const b of await page.$$(".kk-games button")) {
+  for (const b of await page.$$(".gt-pick button")) {
     const t = await page.evaluate((e) => e.textContent ?? "", b);
     if (t.includes("끝말잇기")) { await b.click(); break; }
   }
-  await page.waitForSelector(".kk-gameon", { timeout: 90_000 });
+  await page.waitForSelector(".gt-band", { timeout: 90_000 });
   await new Promise((r) => setTimeout(r, 800));
   await page.evaluate(() => { for (const el of document.querySelectorAll("*")) if (el.scrollHeight > el.clientHeight + 8) el.scrollTop = el.scrollHeight; });
   await page.screenshot({ path: `${OUT}/2-판열림.png` });

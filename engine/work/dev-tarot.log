@@ -127,3 +127,18 @@ See more: https://nextjs.org/docs/app/guides/local-development
  POST /api/dot/game 200 in 2.8s (next.js: 5ms, proxy.ts: 316ms, application-code: 2.5s)
 [heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
 [heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+ GET /auth/confirm?token_hash=6146aae9091587b1f942b0eeb1f0481531a2b4d4215ee3bd5423a113&type=magiclink&next=/dot/rin 307 in 5.0s (next.js: 732ms, proxy.ts: 3.1s, application-code: 1164ms)
+ GET /ask 200 in 2.5s (next.js: 645ms, proxy.ts: 682ms, application-code: 1205ms)
+ GET /manifest.webmanifest 200 in 502ms (next.js: 272ms, proxy.ts: 57ms, application-code: 173ms)
+ GET /api/hand/screen 200 in 2.1s (next.js: 804ms, proxy.ts: 878ms, application-code: 376ms)
+ GET /manifest.webmanifest 200 in 161ms (next.js: 55ms, proxy.ts: 88ms, application-code: 19ms)
+ GET /dot/rin 200 in 4.6s (next.js: 1086ms, proxy.ts: 466ms, application-code: 3.1s)
+ GET /dot/rin 200 in 3.4s (next.js: 450ms, proxy.ts: 338ms, application-code: 2.6s)
+ GET /manifest.webmanifest 200 in 941ms (next.js: 336ms, proxy.ts: 493ms, application-code: 112ms)
+[dot] 린 · deepseek-v4-flash · in 1507 out 24 · 1/0턴 · 모델 904ms 저장 917ms 합 2052ms
+ POST /api/dot/game 200 in 6.3s (next.js: 1944ms, proxy.ts: 206ms, application-code: 4.2s)
+[dot] 린 · deepseek-v4-flash · in 1606 out 34 · 2/0턴 · 모델 1149ms 저장 626ms 합 2136ms
+ POST /api/dot/game 200 in 3.8s (next.js: 17ms, proxy.ts: 213ms, application-code: 3.6s)

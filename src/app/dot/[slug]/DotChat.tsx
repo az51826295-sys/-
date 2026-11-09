@@ -14,7 +14,8 @@ import { GIFTS, CHECKIN_HEARTS } from "@/lib/dot/bond";
 import { splitBubbles } from "@/lib/dot/bubbles";
 import { parseReading } from "@/lib/dot/tarotCards";
 import { TarotSpread } from "../TarotSpread";
-import { GAMES, GAME_END, GAME_HOW, GAME_LABEL, findLive, parseGameHead, type GameKey } from "@/lib/dot/games";
+import { GAME_LABEL, findLive, parseGameHead, type GameKey } from "@/lib/dot/games";
+import { GameBand, GamePicker } from "../GameTray";
 
 /**
  * 도트 채팅 — **카톡 모양, 폰 전용.**
@@ -653,20 +654,9 @@ export default function DotChat({
           </div>
         )}
         {놀이판열림 && !놀이 && (
-          <div className="kk-games">
-            <div className="kk-games-title">{who.name}와 같이 놀기 <small>한 마디에 하트 1개</small></div>
-            {GAMES.map((g) => (
-              <button key={g} onClick={() => 놀이보내기({ game: g })} disabled={busy || remaining <= 0}>
-                <b>{GAME_LABEL[g]}</b><small>{GAME_HOW[g]}</small>
-              </button>
-            ))}
-          </div>
+          <GamePicker 이름={who.name} 막힘={busy || remaining <= 0} 고르기={(g) => 놀이보내기({ game: g })} />
         )}
-        {놀이 && (
-          <div className="kk-gameon">
-            <b>🎮 {GAME_LABEL[놀이.game]}</b> 하는 중 · {GAME_HOW[놀이.game]}
-          </div>
-        )}
+        {놀이 && <GameBand live={놀이} 막힘={busy || remaining <= 0} 보내기={(s) => 놀이보내기({ message: s })} />}
         {stickerOpen && (
           <div className="kk-stickers">
             {USER_STICKER_KEYS.map((k) => (
@@ -1206,21 +1196,6 @@ const CSS = `
 .kk-warn { background:#fff8d6; color:#5a4a00; font-size:13px; padding:8px 14px; }
 .kk-emo { flex:0 0 auto; width:40px; height:40px; border:none; background:none; color:var(--ink, #5c6570); opacity:.8; cursor:pointer; display:flex; align-items:center; justify-content:center; }
 /* 09-13 사장님 "배경 화면 있으면 이모티콘 안 보임": 배경 그림이 position:absolute z-index:0 이라 자리 안 잡은 이 판을 덮었다. 판을 위로. */
-/* 놀이 판 — 스티커 판과 같은 자리, 같은 결. 두 줄로 끊어 네 가지가 한눈에 들어오게 한다. */
-.kk-games { position:relative; z-index:2; display:grid; grid-template-columns:repeat(2, 1fr); gap:6px; padding:8px;
-  background:var(--bar, #fff); border-top:1px solid rgba(0,0,0,.06); }
-.kk-games-title { grid-column:1 / -1; font-size:12px; color:var(--ink, #8a8f98); padding:2px 2px 0; }
-.kk-games-title small { opacity:.7; }
-.kk-games button { display:flex; flex-direction:column; gap:2px; align-items:flex-start; text-align:left;
-  min-height:48px; padding:8px 10px; border:none; background:#1b1630; color:#ffd369; font:inherit; cursor:pointer;
-  box-shadow:inset 0 0 0 2px #1c1c1c; }
-.kk-games button b { font-size:13px; font-weight:400; }
-.kk-games button small { font-size:11px; color:#b9b0e0; line-height:1.4; }
-.kk-games button:active { transform:translate(2px,2px); }
-.kk-games button:disabled { opacity:.5; cursor:default; }
-.kk-gameday { color:#6b5bd2; }
-.kk-gameon { position:relative; z-index:2; padding:6px 12px; font-size:12px; background:#1b1630; color:#ffd369; }
-.kk-gameon b { font-weight:400; }
 .kk-stickers { position:relative; z-index:2; display:grid; grid-template-columns:repeat(6, 1fr); gap:4px; padding:8px; background:var(--bar, #fff); border-top:1px solid rgba(0,0,0,.06); }
 .kk-stickers button { background:none; border:none; display:flex; flex-direction:column; align-items:center; gap:2px; font:inherit; font-size:11px; color:var(--ink, #5c6570); cursor:pointer; padding:4px 0; }
 .kk-stickers button:disabled { opacity:.4; }
