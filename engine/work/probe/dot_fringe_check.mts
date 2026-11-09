@@ -1,3 +1,4 @@
+import type { OverlayOptions } from "sharp";
 /** 많이 지운 사람(도윤 34%)이 멀쩡한지 눈으로 — 안 지운 사람(나비 0%)을 대조군으로 같이 둔다. 11-08. */
 import { readFileSync } from "node:fs";
 for (const l of readFileSync(".env.local", "utf8").split(String.fromCharCode(10))) {
@@ -12,7 +13,7 @@ const { data } = await db.from("dot_characters").select("slug, name, sprites");
 const 밑 = "C:/Users/az518/Desktop/로키-도트/티끌-20261108";
 const 볼것: [string, string][] = [["doyun", "neutral"], ["doyun", "happy"], ["seoha", "neutral"], ["nabi", "neutral"]];
 const 칸 = 330;
-const 조각: sharp.OverlayOptions[] = [];
+const 조각: OverlayOptions[] = [];
 for (const [i, [슬러그, 감정]] of 볼것.entries()) {
   const c = (data as any[]).find((x) => x.slug === 슬러그);
   const 전 = Buffer.from(await (await fetch(c.sprites[감정])).arrayBuffer());

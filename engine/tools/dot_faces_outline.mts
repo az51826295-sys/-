@@ -1,3 +1,4 @@
+import type { OverlayOptions } from "sharp";
 /**
  * # 말풍선 옆 **얼굴**도 테두리 판으로 다시 자른다  (11-09)
  *
@@ -62,7 +63,7 @@ for (const { 길, png } of 새것) writeFileSync(길, png);
 console.log(`덮어씀 ${새것.length}개`);
 
 /* 눈으로 — 린·유나 얼굴 여섯을 전/후로 */
-const 줄: sharp.OverlayOptions[] = [];
+const 줄: OverlayOptions[] = [];
 const 칸 = 96 * 2, 머리 = 22;
 let 글 = "";
 for (const [i, slug] of ["rin", "yuna"].entries()) {

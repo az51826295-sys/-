@@ -1,3 +1,4 @@
+import type { OverlayOptions } from "sharp";
 /**
  * 테두리 고르기 — 린을 **방 배경 위에** 올려 놓고 본다. 사장님이 말한 문제는 배경 위에서만 보인다. 11-08.
  * 네 가지를 나란히: 지금 / 검정 1칸 / 어둡게 1칸 / 어둡게 2칸.
@@ -33,7 +34,7 @@ const 칸 = 380;
 const 바탕 = await sharp({
   create: { width: 칸, height: 칸, channels: 4, background: { r: 246, g: 237, b: 226, alpha: 1 } },
 }).png().toBuffer();
-const 조각: sharp.OverlayOptions[] = [];
+const 조각: OverlayOptions[] = [];
 for (const [i, [이름, png]] of 판.entries()) {
   const 올린것 = await sharp(바탕).composite([{ input: await sharp(png).resize(칸, 칸, { kernel: "nearest" }).png().toBuffer() }]).png().toBuffer();
   조각.push({ input: 올린것, left: i * 칸, top: 28 });

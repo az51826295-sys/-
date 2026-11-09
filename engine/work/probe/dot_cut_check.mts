@@ -1,3 +1,4 @@
+import type { OverlayOptions } from "sharp";
 /**
  * **자르기가 잘못된 칸 찾기** — 11-08 사장님: *"도트 자르기 잘 안 된 거 있어"*.
  *
@@ -85,7 +86,7 @@ console.log(`\n자르기가 어긋난 칸 ${나쁜것.length}개`);
 
 if (나쁜것.length) {
   const 칸 = 240, 줄 = Math.min(6, 나쁜것.length), 행 = Math.ceil(나쁜것.length / 줄);
-  const 조각: sharp.OverlayOptions[] = [];
+  const 조각: OverlayOptions[] = [];
   for (const [i, b] of 나쁜것.entries()) {
     조각.push({ input: await sharp(b.png).resize(칸, 칸).png().toBuffer(), left: (i % 줄) * 칸, top: Math.floor(i / 줄) * (칸 + 26) + 26 });
   }

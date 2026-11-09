@@ -1,3 +1,4 @@
+import type { OverlayOptions } from "sharp";
 /**
  * **밀도가 범인인가** — 피드 사진(도트 1)을 우리 `pixelize` 로 깎아 보면 스프라이트가 된다.
  * 돈 한 푼 안 쓰고, 기준점(격자 몇으로 할까)을 눈으로 고를 수 있게 한 줄로 세운다. 11-08.
@@ -30,7 +31,7 @@ async function 깎기(b: Buffer, grid: number) {
 
 const 격자 = [64, 96, 128, 160];
 const 폭 = 320 * (격자.length + 1), 높 = 400 + 44;
-const 조각: sharp.OverlayOptions[] = [{ input: await sharp(원본).resize(320, 400, { kernel: "nearest" }).png().toBuffer(), left: 0, top: 36 }];
+const 조각: OverlayOptions[] = [{ input: await sharp(원본).resize(320, 400, { kernel: "nearest" }).png().toBuffer(), left: 0, top: 36 }];
 for (let i = 0; i < 격자.length; i++) 조각.push({ input: await 깎기(원본, 격자[i]), left: (i + 1) * 320, top: 36 });
 
 const 글 = ["지금 피드 (도트 1)", ...격자.map((g) => `격자 ${g}${g === 64 ? " ← 지금 스프라이트` ".replace("`", "") : ""}`)];

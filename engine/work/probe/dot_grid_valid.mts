@@ -1,3 +1,4 @@
+import type { OverlayOptions } from "sharp";
 /**
  * **격자는 아무 수나 못 쓴다** — 512 캔버스에서 도트 크기가 정수로 나오는 수만 격자가 성립한다.
  * 512/64=8 · /128=4 · /256=2 · /512=1 ✅   그런데 512/96=5.33 · /160=3.2 ❌ → 격자가 깨진다.
@@ -26,7 +27,7 @@ async function 깎기(b: Buffer, grid: number) {
 
 const 격자 = [64, 128, 256];
 const 글 = ["격자 64 · 도트 8  ← 지금", "격자 128 · 도트 4", "격자 256 · 도트 2", "안 깎음 ← 피드 그대로"];
-const 조각: sharp.OverlayOptions[] = [];
+const 조각: OverlayOptions[] = [];
 for (let i = 0; i < 격자.length; i++) 조각.push({ input: await 깎기(원본, 격자[i]), left: i * 340, top: 36 });
 조각.push({ input: await sharp(원본).resize(340, 425, { kernel: "nearest" }).png().toBuffer(), left: 3 * 340, top: 36 });
 

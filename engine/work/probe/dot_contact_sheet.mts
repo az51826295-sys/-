@@ -1,3 +1,4 @@
+import type { OverlayOptions } from "sharp";
 /** 66칸을 이름 붙여 한 장에 — 사장님이 "이거" 하고 집을 수 있게. 11-08. */
 import { readFileSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
@@ -21,7 +22,7 @@ for (const c of 공개) {
   }
 }
 const 행 = Math.ceil(목록.length / 줄);
-const 조각: sharp.OverlayOptions[] = [];
+const 조각: OverlayOptions[] = [];
 for (const [i, x] of 목록.entries()) {
   조각.push({ input: await sharp(x.png).resize(칸, 칸).png().toBuffer(), left: (i % 줄) * 칸, top: Math.floor(i / 줄) * (칸 + 글높) + 글높 });
 }

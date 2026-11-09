@@ -1,3 +1,4 @@
+import type { OverlayOptions } from "sharp";
 /**
  * # 흰 테두리 두르기  (11-08 사장님: *"오케이 하자, 흰색으로 대비를 주든지 해"*)
  *
@@ -206,7 +207,7 @@ const 볼것 = ["rin", "yuna", "nabi"].flatMap((s) => 결과.filter((r) => r.x.s
 if (볼것.length) {
   const 크기 = 360, 머리 = 26;
   const 바탕들: [string, { r: number; g: number; b: number }][] = [["밝은 방", { r: 246, g: 237, b: 226 }], ["어두운 방", { r: 38, g: 34, b: 48 }]];
-  const 조각: sharp.OverlayOptions[] = [];
+  const 조각: OverlayOptions[] = [];
   let 글 = "";
   for (const [bi, [바탕이름, c]] of 바탕들.entries()) {
     const 바탕 = await sharp({ create: { width: 크기, height: 크기, channels: 4, background: { ...c, alpha: 1 } } }).png().toBuffer();

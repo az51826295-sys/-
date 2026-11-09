@@ -1,3 +1,4 @@
+import type { OverlayOptions } from "sharp";
 /**
  * # 일곱을 한 색표로 묶는다  (11-08 사장님: *"지금 다해"*)
  *
@@ -184,7 +185,7 @@ for (const x of 칸들) {
 }
 const 뽑을것 = 공개.map((c) => 칸들.find((x) => x.slug === c.slug && x.감정 === "neutral")).filter(Boolean) as 칸[];
 const 칸크기 = 220;
-const 조각: sharp.OverlayOptions[] = [];
+const 조각: OverlayOptions[] = [];
 for (const [i, x] of 뽑을것.entries()) {
   조각.push({ input: await sharp(x.전).resize(칸크기, 칸크기).png().toBuffer(), left: i * 칸크기, top: 34 });
   조각.push({ input: await sharp(x.후).resize(칸크기, 칸크기).png().toBuffer(), left: i * 칸크기, top: 34 + 칸크기 + 28 });

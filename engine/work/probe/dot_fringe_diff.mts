@@ -1,3 +1,4 @@
+import type { OverlayOptions } from "sharp";
 /** 어느 칸을 지웠는지 빨갛게 — 티끌인지 그림인지는 지운 자리를 봐야 안다. 11-08. */
 import { readFileSync } from "node:fs";
 for (const l of readFileSync(".env.local", "utf8").split(String.fromCharCode(10))) {
@@ -12,7 +13,7 @@ const { data } = await db.from("dot_characters").select("slug, sprites");
 const 밑 = "C:/Users/az518/Desktop/로키-도트/티끌-20261108";
 const 볼것: [string, string][] = [["doyun", "neutral"], ["rin", "neutral"], ["yuna", "neutral"], ["yeonu", "neutral"]];
 const 칸 = 420;
-const 조각: sharp.OverlayOptions[] = [];
+const 조각: OverlayOptions[] = [];
 for (const [n, [슬러그, 감정]] of 볼것.entries()) {
   const c = (data as any[]).find((x) => x.slug === 슬러그);
   const 전 = Buffer.from(await (await fetch(c.sprites[감정])).arrayBuffer());

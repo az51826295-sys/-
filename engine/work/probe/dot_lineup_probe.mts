@@ -1,3 +1,4 @@
+import type { OverlayOptions } from "sharp";
 /** 바닥선 맞추기 전/후를 한 장에 나란히 — 11-08. 눈으로 보는 용도. */
 import { readFileSync, writeFileSync } from "node:fs";
 for (const l of readFileSync(".env.local", "utf8").split(String.fromCharCode(10))) {
@@ -15,7 +16,7 @@ const 사람 = (data as any[]).filter((c) => c.is_public && c.sprites).sort((a, 
 
 const 칸 = 256; /* 512 의 정확히 절반 — 정수 축소라 도트가 안 뭉개진다 */
 const 폭 = 칸 * 사람.length, 높 = 칸 * 2 + 72;
-const 조각: sharp.OverlayOptions[] = [];
+const 조각: OverlayOptions[] = [];
 
 for (let i = 0; i < 사람.length; i++) {
   const c = 사람[i];

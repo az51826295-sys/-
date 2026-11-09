@@ -1,3 +1,4 @@
+import type { OverlayOptions } from "sharp";
 /**
  * **한 결로 전부 다시 그린다** — 11-08 사장님: *"하나 기준점을 정하고 해"*.
  *
@@ -67,7 +68,7 @@ if (!기준?.sprites) { console.error(`기준 ${기준slug} 의 그림이 없다
 
 /* ── 기준 시트 조립: 3×2 · 칸 512 · 마젠타 바닥 ── */
 const 칸 = 512;
-const 조각: sharp.OverlayOptions[] = [];
+const 조각: OverlayOptions[] = [];
 for (let i = 0; i < SHEET_ORDER.length; i++) {
   const url = 기준.sprites![SHEET_ORDER[i]];
   if (!url) { console.error(`기준에 ${SHEET_ORDER[i]} 칸이 없다`); process.exit(1); }

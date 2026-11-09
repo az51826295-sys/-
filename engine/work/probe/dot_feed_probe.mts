@@ -1,3 +1,4 @@
+import type { OverlayOptions } from "sharp";
 /** 피드 사진은 어떤 물건인가 — 크기·장수·결. 기준 한 장이 표정과 피드를 같이 덮을 수 있나. 11-08. */
 import { readFileSync, writeFileSync } from "node:fs";
 for (const l of readFileSync(".env.local", "utf8").split(String.fromCharCode(10))) {
@@ -12,7 +13,7 @@ const { data } = await db.from("dot_characters").select("slug, name, photos, is_
 const 사람 = (data as any[]).filter((c) => c.is_public).sort((a, b) => a.slug.localeCompare(b.slug));
 
 console.log("이름     피드 장수  크기들              도트인가(색 수)");
-const 조각: sharp.OverlayOptions[] = [];
+const 조각: OverlayOptions[] = [];
 const 칸 = 256;
 let i = 0;
 for (const c of 사람) {

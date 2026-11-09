@@ -1,3 +1,4 @@
+import type { OverlayOptions } from "sharp";
 /**
  * # 테두리 티끌 재고 지우기  (11-08 사장님: *"린 유나 잘 안잘림"*)
  *
@@ -147,7 +148,7 @@ console.log(밀림.length ? `\n틀림  격자가 밀린 칸:\n  ${밀림.join("\
 const 볼것 = ["rin", "yuna"].flatMap((s) => 고친것.filter((r) => r.x.slug === s && r.x.감정 === "neutral"));
 if (볼것.length) {
   const 칸크기 = 420;
-  const 조각: sharp.OverlayOptions[] = [];
+  const 조각: OverlayOptions[] = [];
   for (const [i, r] of 볼것.entries()) {
     조각.push({ input: await sharp(r.x.png).resize(칸크기, 칸크기, { kernel: "nearest" }).png().toBuffer(), left: i * 칸크기, top: 28 });
     조각.push({ input: await sharp(r.png).resize(칸크기, 칸크기, { kernel: "nearest" }).png().toBuffer(), left: i * 칸크기, top: 28 + 칸크기 + 26 });
