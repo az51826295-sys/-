@@ -41,7 +41,7 @@ const { data: c } = await db.from("dot_characters").select("id, name").eq("slug"
 async function 한판(넛지켜기: boolean) {
   const 메일 = `offtopic-${넛지켜기 ? "on" : "off"}-${Date.now()}@dugeun.local`;
   const { data: u } = await db.auth.admin.createUser({ email: 메일, password: `t-${Math.random().toString(36).slice(2)}!`, email_confirm: true });
-  const USER = u!.user.id;
+  const USER = u!.user!.id;
   await db.from("dot_usage").upsert({ user_id: USER, day: todayKST(), turns: 0, bonus_turns: CHECKIN_HEARTS, ad_refills: 0 }, { onConflict: "user_id,day" });
   await db.from("dot_wallet").upsert({ user_id: USER, credits: 60 }, { onConflict: "user_id" });
 
