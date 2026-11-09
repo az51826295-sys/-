@@ -124,3 +124,48 @@ export async function countHoles(png: Buffer, texel: number) {
   for (let i = 0; i < 가로 * 세로; i++) { if (!빈칸[i]) 잉크++; else if (!바깥[i]) 구멍++; }
   return { 구멍, 잉크 };
 }
+
+/**
+ * **테두리가 둘러져 있나** — 11-09 사장님: *"나중에 실수하면 안 돼."*
+ *
+ * 그날 오전에 일곱 명에게 흰 테두리를 둘렀는데, 오후에 **새로 만든 셋에는 안 둘렀다.**
+ * 사장님이 열 명 사진에서 바로 알아보셨다. 사람이 기억해야 하는 일은 언제든 또 빠진다 —
+ * 그래서 **자로 만들어 만드는 길과 켜는 문 양쪽에 건다.**
+ *
+ * 세는 법: 실루엣 **가장 바깥 잉크 칸**(배경에 닿은 칸) 중 **흰색에 가까운 칸의 비율**.
+ * 둘렀으면 거의 1, 안 둘렀으면 머리·옷 색이라 낮다. 흰옷을 입은 사람도 테두리가 없으면
+ * 머리 쪽 바깥 칸이 어두워서 1 이 안 나온다.
+ */
+export async function outlineShare(png: Buffer, texel: number): Promise<{ 바깥칸: number; 흰칸: number; 비율: number }> {
+  const { data, info } = await sharp(png).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+  const W = info.width, ch = info.channels;
+  const 가로 = Math.floor(W / texel), 세로 = Math.floor(info.height / texel);
+  const 칸 = (gx: number, gy: number) => {
+    const p = ((gy * texel + (texel >> 1)) * W + gx * texel + (texel >> 1)) * ch;
+    return [data[p], data[p + 1], data[p + 2], data[p + 3]] as const;
+  };
+  let 바깥칸 = 0, 흰칸 = 0;
+  for (let gy = 0; gy < 세로; gy++) for (let gx = 0; gx < 가로; gx++) {
+    const c = 칸(gx, gy);
+    if (c[3] < ALPHA_MIN) continue;
+    /**
+     * **캔버스 끝에 닿은 칸은 안 센다.** 거기는 바깥이 없어서 테두리를 칠할 자리가 없다 —
+     * 처음엔 끝에 닿은 것도 "바깥 칸" 으로 세어 린 85%·유나 80% 가 나왔고, 둘 다 **제대로
+     * 둘러진 그림**이었다(머리·어깨가 캔버스 아래에 닿는다). 못 재는 자리를 틀린 것으로
+     * 세면 자가 거짓말을 한다([[zero-can-mean-i-cannot-see]]).
+     */
+    let 바깥인가 = false;
+    for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]] as const) {
+      const nx = gx + dx, ny = gy + dy;
+      if (nx < 0 || ny < 0 || nx >= 가로 || ny >= 세로) continue;   // 캔버스 밖 — 셈에서 뺀다
+      if (칸(nx, ny)[3] < ALPHA_MIN) { 바깥인가 = true; break; }
+    }
+    if (!바깥인가) continue;
+    바깥칸++;
+    if (c[0] >= 235 && c[1] >= 235 && c[2] >= 235) 흰칸++;
+  }
+  return { 바깥칸, 흰칸, 비율: 바깥칸 ? 흰칸 / 바깥칸 : 0 };
+}
+
+/** 문턱 — 쓰고 있는 열 명을 재서 정한다. 둘렀으면 0.9 를 넘고, 안 둘렀으면 한참 아래다. */
+export const OUTLINE_MIN = 0.9;

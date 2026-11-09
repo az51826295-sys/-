@@ -41,7 +41,13 @@ const 두께 = Number(끌("--width") ?? 1);
 const 고칠까 = process.argv.includes("--fix");
 const 올릴까 = process.argv.includes("--up");
 
-const 재료우선 = ["C:/Users/az518/Desktop/로키-도트/티끌-20261108", "C:/Users/az518/Desktop/로키-도트/격자고침-20261108"];
+/**
+ * 재료를 찾는 차례. 마지막이 **앱이 지금 내보내는 그림**(public)이다 —
+ * 11-09 에 새로 만든 셋(태오·지우·소은)은 바탕화면 폴더에 없어서 0칸이 나왔다.
+ * 이미 테두리가 둘러진 그림에 또 두르면 두 겹이 되므로, public 에서 집는 것은
+ * **아직 안 두른 사람**일 때만이다(`--only` 로 집어서 돌린다).
+ */
+const 재료우선 = ["C:/Users/az518/Desktop/로키-도트/티끌-20261108", "C:/Users/az518/Desktop/로키-도트/격자고침-20261108", "public/dot-sprites"];
 const 나갈곳 = "C:/Users/az518/Desktop/로키-도트/테두리-20261108";
 mkdirSync(나갈곳, { recursive: true });
 
@@ -135,7 +141,7 @@ for (const c of 공개) {
     const png = readFileSync(찾음);
     const 길 = join(터, `${c.slug}__${파일}`).split("\\").join("/");
     writeFileSync(길, png);
-    칸들.push({ slug: c.slug, 이름: c.name, 감정, 파일, png, 길, texel: null, 어디: 찾음.includes("티끌") ? "티끌" : "격자" });
+    칸들.push({ slug: c.slug, 이름: c.name, 감정, 파일, png, 길, texel: null, 어디: 찾음.includes("티끌") ? "티끌" : 찾음.includes("격자") ? "격자" : "앱" });
   }
 }
 if (빠진것.length) console.log(`바탕화면에 없는 칸 ${빠진것.length}개 — 건너뜀: ${빠진것.join(", ")}\n`);

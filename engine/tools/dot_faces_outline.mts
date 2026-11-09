@@ -31,7 +31,8 @@ const { faceCrop, faceCropCheck } = await import("./dot_faces_lib");
 const 고칠까 = process.argv.includes("--fix");
 const EMO = ["neutral", "happy", "shy", "sad", "angry", "surprised"];
 const 밑 = "public/dot-sprites";
-const 이름들 = ["doyun", "haru", "nabi", "rin", "seoha", "yeonu", "yuna"];
+/* 11-09 오후에 셋이 늘었다. 여기 안 더하면 **새 사람 얼굴만 테두리가 없다.** */
+const 이름들 = ["doyun", "haru", "jiwoo", "nabi", "rin", "seoha", "soeun", "taeo", "yeonu", "yuna"];
 
 console.log(`얼굴 다시 자르기 — 재료는 테두리 두른 큰 그림\n이름    표정        전(가운데/살색)   후(가운데/살색)   판정`);
 let 좋음 = 0; const 나쁨: string[] = [];

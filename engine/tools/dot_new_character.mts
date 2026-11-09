@@ -28,6 +28,16 @@ const { createServiceClient } = await import("../../src/lib/supabase/service");
 const { createImageProvider } = await import("../../src/lib/providers/images");
 const { sheetPrompt, restylePrompt, cutSheet, measureCells, pixelize, SHEET_ORDER } = await import("../../src/lib/dot/sprites");
 const { faceCrop } = await import("./dot_faces_lib");
+const { outlineSprite, outlineShare, OUTLINE_MIN } = await import("../../src/lib/dot/outline");
+
+/** 도트 크기 — 뭉갠 직후라 `512 ÷ 격자` 로 정해진다. 자가 쓰는 값과 같아야 한다. */
+async function texelOf(png: Buffer): Promise<number | null> {
+  const m = await sharp(png).metadata();
+  const W = m.width ?? 512;
+  /* pixelize 는 격자 256 으로 줄였다가 512 로 되돌린다 → 1칸 = 2화소. 그림이 다른 크기로
+     오면 못 재는 것으로 두고 테두리를 건너뛴다(틀리게 칠하느니 안 칠한다). */
+  return W === 512 ? 2 : null;
+}
 
 const args = process.argv.slice(2);
 const specPath = args.find((a) => a.endsWith(".json"));
@@ -118,11 +128,34 @@ const 자른것 = await cutSheet(made.dataUrl);
  * 자가 **길에 없는 단계를 가정하고 재면**, 좋은 것이 떨어진다.
  * `pixelize` 안에 `cleanSprite`(떨어진 조각 지우기 + 알파 굳히기)가 들어 있어 그 자도 같이 잡힌다.
  */
-const cells = await Promise.all(자른것.map(async (c) => ({ ...c, png: await pixelize(c.png) })));
+/**
+ * **흰 테두리를 여기서 두른다** (11-09 사장님: *"나중에 실수하면 안 돼"*).
+ *
+ * 오전에 일곱 명에게 두르고, 오후에 새로 만든 셋에는 빠뜨렸다 — 사장님이 바로 알아보셨다.
+ * 사람이 기억해야 하는 일은 또 빠진다. 그래서 **만드는 길 안에** 넣는다.
+ * 자리는 뭉갠 **뒤**다: 도트 칸이 정해진 다음이라야 칸 단위로 칠할 수 있다.
+ */
+const 뭉갠것 = await Promise.all(자른것.map(async (c) => ({ ...c, png: await pixelize(c.png) })));
+const cells = await Promise.all(뭉갠것.map(async (c) => {
+  const t = await texelOf(c.png);
+  return { ...c, png: t ? (await outlineSprite(c.png, t, { 식: "한색", 색: [255, 255, 255] }, 1)).png : c.png };
+}));
 for (const c of cells) writeFileSync(`${SHEET}/${spec.slug}-${c.emotion}.png`, c.png);
 const { cases } = await measureCells(cells);
 let failed = 0;
 for (const c of cases) { console.log(`   ${c.result === "Passed" ? "✅" : c.result === "Failed" ? "❌" : "◻︎"} ${c.name} — ${c.message}`); if (c.result === "Failed") failed++; }
+
+/* 둘러졌는지 **자로 확인한다** — 길에 넣어도 조용히 안 될 수 있다(도트를 못 재면 건너뛴다). */
+{
+  let 낮은것 = 0;
+  for (const c of cells) {
+    const t = await texelOf(c.png);
+    const r = t ? await outlineShare(c.png, t) : { 비율: 0 };
+    if (r.비율 < OUTLINE_MIN) { console.log(`   ❌ 테두리 — ${c.emotion} 바깥 칸의 ${(r.비율 * 100).toFixed(0)}% 만 흰색 (≥${OUTLINE_MIN * 100}%)`); 낮은것++; }
+  }
+  console.log(낮은것 ? `   ❌ 테두리 ${낮은것}칸` : `   ✅ 테두리 — 여섯 칸 전부 둘러졌다`);
+  if (낮은것) failed++;
+}
 
 console.log("3) 얼굴 크롭 + 42px 구별");
 const faces: Buffer[] = [];
