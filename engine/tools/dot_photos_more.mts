@@ -35,8 +35,16 @@ const { defaultProviders } = await import("../../src/lib/execution/shared");
 const 끌 = (이름: string) => { const i = process.argv.indexOf(이름); return i > 0 ? process.argv[i + 1] : undefined; };
 const 누구만 = (끌("--only") ?? "").split(",").map((s) => s.trim()).filter(Boolean);
 const 목표 = Number(끌("--target") ?? 8);
+/** **다시 뽑기** — 이미 있는 사진도 1번부터 새로 뽑는다(기준이 바뀐 날 쓴다). */
+const 다시 = process.argv.includes("--redo");
 const 갈까 = process.argv.includes("--go");
-const W = 200, H = 250;
+/**
+ * **기준점** — `engine/docs/dot-character-standard.md`.
+ * 논리 도트 200×250 을 **2배(400×500)로 저장**한다. 피드 폭이 390 이라 그래야 1:1 에 가깝고,
+ * 200×250 로 두면 1.9배로 늘려 쓰느라 뭉개진다(11-09 실측).
+ */
+const 논리W = 200, 논리H = 250, 배 = 2;
+const W = 논리W * 배, H = 논리H * 배;
 const 터 = "C:/Users/az518/Desktop/로키-도트/사진-20261109"; mkdirSync(터, { recursive: true });
 const 앱밑 = "public/dot-sprites";
 const 주소 = (slug: string, n: number) => `https://dot-web-production-7e03.up.railway.app/dot-sprites/${slug}/photo/${n}.png`;
@@ -72,10 +80,10 @@ async function 장면뽑기(c: any, 있는것: string[], 몇개: number) {
 const 그릴것: { c: any; n: number; 이름: string; 영문: string }[] = [];
 for (const c of chars as any[]) {
   if (누구만.length && !누구만.includes(c.slug)) continue;
-  const 있는 = ((c.photos ?? []) as { url: string; caption: string }[]);
+  const 있는 = 다시 ? [] : ((c.photos ?? []) as { url: string; caption: string }[]);
   const 모자람 = Math.max(0, 목표 - 있는.length);
   if (!모자람) { console.log(`${c.name} 이미 ${있는.length}장`); continue; }
-  const 새장면 = await 장면뽑기(c, 있는.map((p) => p.caption), 모자람);
+  const 새장면 = await 장면뽑기(c, 다시 ? [] : 있는.map((p) => p.caption), 모자람);
   console.log(`${c.name} ${있는.length}장 → ${목표}장 · 새 장면: ${새장면.map((s) => s.이름).join(" · ")}`);
   새장면.forEach((s, i) => 그릴것.push({ c, n: 있는.length + i + 1, 이름: s.이름, 영문: s.영문 }));
 }
@@ -97,7 +105,9 @@ for (const [i, g] of 그릴것.entries()) {
   try {
     const made = await 그림.edit(ref, prompt, "1024x1536", "medium");
     const raw = Buffer.from(made.dataUrl.split(",")[1], "base64");
-    const small = await sharp(raw).resize(W, H, { kernel: "nearest", fit: "cover", position: "top" }).png({ palette: true, colors: 32, dither: 0 }).toBuffer();
+    /* 논리 도트로 먼저 줄인 뒤 정수배로 키운다 — 바로 400×500 으로 줄이면 도트가 1화소가 된다. */
+    const 작게 = await sharp(raw).resize(논리W, 논리H, { kernel: "nearest", fit: "cover", position: "top" }).png({ palette: true, colors: 32, dither: 0 }).toBuffer();
+    const small = await sharp(작게).resize(W, H, { kernel: "nearest" }).png({ palette: true, colors: 32, dither: 0 }).toBuffer();
     mkdirSync(join(앱밑, g.c.slug, "photo"), { recursive: true });
     writeFileSync(join(앱밑, g.c.slug, "photo", `${g.n}.png`), small);
     writeFileSync(join(터, `${g.c.slug}-${g.n}.png`), small);
@@ -111,7 +121,8 @@ for (const [i, g] of 그릴것.entries()) {
 /* 표에 적는다 — 있던 것 뒤에 붙인다(순서가 파일 번호와 같아야 한다) */
 for (const c of chars as any[]) {
   const 새것 = 만든것[c.slug]; if (!새것?.length) continue;
-  const photos = [...((c.photos ?? []) as any[]), ...새것];
+  /* 다시 뽑은 판에서는 옛 목록을 **버린다** — 안 버리면 8장 기준에 16장이 쌓인다. */
+  const photos = 다시 ? 새것 : [...((c.photos ?? []) as any[]), ...새것];
   const { error: e } = await db.from("dot_characters").update({ photos }).eq("id", c.id);
   console.log(e ? `  ✗ ${c.name} 표 적기 실패: ${e.message}` : `  ✓ ${c.name} 사진 ${photos.length}장`);
 }
