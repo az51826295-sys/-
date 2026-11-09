@@ -115,6 +115,14 @@ export type TurnOpts = {
    * 쓰는 앱이기 때문이고, 그래서 서버는 이걸 기억하지 않는다.
    */
   lang?: "ko" | "en";
+  /**
+   * **놀이 중** (11-09). 대화용 넛지를 끈다.
+   *
+   * 사장님: *"왜 근데 뜬금없는 소리 잡아야 해."* 끝말잇기를 하는데 "점심은 먹었어?",
+   * "이름 뭐야" 가 끼어들었다 — 둘 다 **대화를 이어 붙이려고 넣어 둔 규칙**이다(이름 묻기 ·
+   * 시간 힌트). 놀이 중에는 할 말이 이미 정해져 있으니 그 둘을 뺀다.
+   */
+  놀이중?: boolean;
 };
 
 export async function prepareTurn(db: SupabaseClient, userId: string, characterId: string, text: string, opts: TurnOpts = {}): Promise<Prepared | Exclude<TurnResult, { ok: true }>> {
@@ -227,6 +235,7 @@ export async function prepareTurn(db: SupabaseClient, userId: string, characterI
       // 96회차 사장님 "현실성 추가": 마침표 없이, 한 호흡씩, 줄바꿈 = 말풍선.
       shapeRule(),
       // 88회차: 카톡 친구처럼 이름을 묻고·기억하고·부른다. 기억에 이름이 있으면 가끔 부르고, 없으면 첫 한두 마디 안에 묻는다.
+      opts.놀이중 ? "" :
       memo.some((m) => /이름/.test(m))
         ? "- 이 사람 이름을 안다(위 '네가 아는 것'). **가끔** 이름을 부른다 — 매번은 아니고, 반가울 때나 챙길 때."
         : history.length < 4
@@ -261,7 +270,9 @@ export async function prepareTurn(db: SupabaseClient, userId: string, characterI
     const 너표 = 영어 ? "Person" : "사람";
     const input = [...history.map((h) => `${h.role === "user" ? 너표 : 나표}: ${h.content}`), `${quoted}${너표}: ${said}`,
       // 94회차: 시간 힌트는 방금 한 말을 보고 정한다 — 새벽 1시에 네 답 연속 새벽 타령 + "밥은 먹었어" 가 나왔다.
-      timeHint(new Date(), history.filter((h) => h.role !== "user").slice(-4).map((h) => h.content))].join("\n");
+      /* 놀이 중에는 시간 힌트를 안 붙인다 — "밥은 먹었어?" 가 거기서 나온다. */
+      opts.놀이중 ? "" : timeHint(new Date(), history.filter((h) => h.role !== "user").slice(-4).map((h) => h.content)),
+    ].filter(Boolean).join("\n");
     return { character, day, used, prev, memo, system, input, message, t0, giveBack, sinceSticker, userSticker: opts.userSticker && USER_STICKERS[opts.userSticker] ? opts.userSticker : null,
       gift: 선물 && 선물점 ? { key: 선물.key, name: 선물.name, points: 선물점.points, liked: 선물점.liked } : null };
   } catch (e) {
