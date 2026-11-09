@@ -12,7 +12,7 @@ for (const c of data as any[]) for (const [e, url] of Object.entries((c.faces ??
   const r = await fetch(url as string, { cache: "no-store" as any });
   if (!r.ok) { 다름.push(`${c.slug}/${e} ${r.status}`); continue; }
   const 온것 = Buffer.from(await r.arrayBuffer());
-  const 로컬 = readFileSync(`public/dot-sprites/${c.slug}/face/${e}.png`);
+  const 로컬 = readFileSync(e.startsWith("menhera:") ? `public/dot-sprites/${c.slug}/menhera/face/${e.slice(8)}.png` : `public/dot-sprites/${c.slug}/face/${e}.png`);
   if (h(온것) === h(로컬)) 같음++; else 다름.push(`${c.slug}/${e}`);
 }
 console.log(`말풍선 옆 얼굴 — 같음 ${같음} · 다름 ${다름.length} ${다름.join(", ")}`);
