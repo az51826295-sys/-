@@ -25,32 +25,9 @@ import { z } from "zod";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { defaultProviders } from "@/lib/execution/shared";
 import { stageFor, toVoiceLadder } from "./bond";
-
-/** 메이저 아르카나 22장. 이름은 한국에서 쓰는 말로. */
-export const DECK = [
-  "바보", "마법사", "여사제", "여황제", "황제", "교황", "연인", "전차", "힘", "은둔자", "운명의 수레바퀴",
-  "정의", "매달린 사람", "죽음", "절제", "악마", "탑", "별", "달", "태양", "심판", "세계",
-] as const;
-export type Card = (typeof DECK)[number];
-
-/** 세 자리 — 여기까지 온 길 · 지금 · 다음 한 걸음. */
-export const SPOTS = ["여기까지", "지금", "다음"] as const;
-export type Spot = (typeof SPOTS)[number];
-
-export type Draw = { 자리: Spot; 카드: Card; 역방향: boolean };
-
-/** 사람·캐릭터·단계로 정해지는 뽑기. 순수 함수 — 같은 자리에서 다시 열면 같은 패다. */
-export function drawCards(userId: string, characterId: string, stage: number): Draw[] {
-  let h = 2166136261;
-  for (const ch of `${userId}|${characterId}|${stage}`) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619) >>> 0; }
-  const 다음 = () => { h ^= h << 13; h >>>= 0; h ^= h >> 17; h ^= h << 5; h >>>= 0; return h; };
-  const 남은 = [...DECK];
-  return SPOTS.map((자리) => {
-    const i = 다음() % 남은.length;
-    const 카드 = 남은.splice(i, 1)[0];
-    return { 자리, 카드, 역방향: 다음() % 100 < 35 };   // 셋에 하나쯤 역방향
-  });
-}
+import { DECK, SPOTS, drawCards, 카드이름, type Card, type Draw, type Spot } from "./tarotCards";
+export { DECK, SPOTS, drawCards, 카드이름, CARD_PIXELS, CARD_EN, TAROT_MARK, tarotHead, formatReading, parseReading } from "./tarotCards";
+export type { Card, Draw, Spot } from "./tarotCards";
 
 export const readingShape = z.object({
   카드말: z.array(z.object({ 자리: z.string(), 한줄: z.string() })),
@@ -64,8 +41,6 @@ export type TarotChar = {
   formal_start: boolean; voice_ladder?: string | null;
 };
 
-/** 말풍선에 쓸 한 줄 — "별(역방향)" 처럼. */
-export const 카드이름 = (d: Draw) => `${d.카드}${d.역방향 ? "(역방향)" : ""}`;
 
 /**
  * 읽어 준다. 재료는 **그 방의 진짜 대화**와 친밀도.

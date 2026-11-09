@@ -1,0 +1,57 @@
+
+> rookery@0.1.0 dev
+> next dev
+
+▲ Next.js 16.2.12 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://172.30.1.54:3000
+- Environments: .env.development.local, .env.local
+✓ Ready in 1707ms
+⚠ Slow filesystem detected. The benchmark took 818ms. If C:\Users\az518\Desktop\ai-workforce\.next/dev is a network drive, consider moving it to a local folder.
+See more: https://nextjs.org/docs/app/guides/local-development
+
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+○ Compiling /dot/feed ...
+ GET /dot/feed 200 in 31.4s (next.js: 24.9s, proxy.ts: 3.5s, application-code: 3.1s)
+ GET /dot/tarot 200 in 1198ms (next.js: 860ms, proxy.ts: 36ms, application-code: 302ms)
+ GET /api/dot/tarot 401 in 1046ms (next.js: 956ms, proxy.ts: 36ms, application-code: 54ms)
+ GET /dot/rin 200 in 2.5s (next.js: 1938ms, proxy.ts: 11ms, application-code: 524ms)
+ GET /auth/confirm?token_hash=c215635341c8c683bba4285b5b3b925f886b85011ca334fb95b915b5&type=magiclink&next=/dot/tarot 307 in 1739ms (next.js: 1180ms, proxy.ts: 57ms, application-code: 502ms)
+ GET /ask 200 in 1675ms (next.js: 421ms, proxy.ts: 269ms, application-code: 985ms)
+ GET /manifest.webmanifest 200 in 613ms (next.js: 526ms, proxy.ts: 59ms, application-code: 27ms)
+ GET /manifest.webmanifest 200 in 131ms (next.js: 52ms, proxy.ts: 59ms, application-code: 20ms)
+ GET /dot/tarot 200 in 1994ms (next.js: 112ms, proxy.ts: 321ms, application-code: 1561ms)
+ GET /dot/tarot 200 in 1041ms (next.js: 46ms, proxy.ts: 397ms, application-code: 599ms)
+ GET /manifest.webmanifest 200 in 38ms (next.js: 11ms, proxy.ts: 10ms, application-code: 17ms)
+ GET /api/dot/tarot 200 in 663ms (next.js: 12ms, proxy.ts: 193ms, application-code: 458ms)
+ POST /api/dot/tarot 200 in 4.5s (next.js: 13ms, proxy.ts: 462ms, application-code: 4.0s)
+ GET /api/dot/tarot 200 in 602ms (next.js: 12ms, proxy.ts: 195ms, application-code: 395ms)
+ GET /manifest.webmanifest 200 in 129ms (next.js: 53ms, proxy.ts: 53ms, application-code: 23ms)
+ GET /dot/rin 200 in 2.4s (next.js: 108ms, proxy.ts: 257ms, application-code: 2.1s)
+ GET /auth/confirm?token_hash=613814d9c3b70230051dcd82e00644429f9a14f009de12b1e724d460&type=magiclink&next=/dot/tarot 307 in 749ms (next.js: 170ms, proxy.ts: 95ms, application-code: 484ms)
+ GET /ask 200 in 1056ms (next.js: 94ms, proxy.ts: 363ms, application-code: 600ms)
+ GET /manifest.webmanifest 200 in 86ms (next.js: 24ms, proxy.ts: 45ms, application-code: 17ms)
+ GET /api/hand/screen 200 in 604ms (next.js: 202ms, proxy.ts: 231ms, application-code: 171ms)
+ GET /manifest.webmanifest 200 in 175ms (next.js: 68ms, proxy.ts: 78ms, application-code: 29ms)
+ GET /dot/tarot 200 in 2.4s (next.js: 31ms, proxy.ts: 291ms, application-code: 2.1s)
+ GET /dot/tarot 200 in 1010ms (next.js: 12ms, proxy.ts: 186ms, application-code: 812ms)
+ GET /manifest.webmanifest 200 in 239ms (next.js: 52ms, proxy.ts: 45ms, application-code: 142ms)
+ GET /api/dot/tarot 200 in 899ms (next.js: 42ms, proxy.ts: 441ms, application-code: 416ms)
+ POST /api/dot/tarot 200 in 3.8s (next.js: 10ms, proxy.ts: 219ms, application-code: 3.6s)
+ GET /api/dot/tarot 200 in 567ms (next.js: 7ms, proxy.ts: 177ms, application-code: 384ms)
+ GET /manifest.webmanifest 200 in 67ms (next.js: 26ms, proxy.ts: 28ms, application-code: 13ms)
+ GET /dot/rin 200 in 1625ms (next.js: 59ms, proxy.ts: 195ms, application-code: 1371ms)
+ GET /auth/confirm?token_hash=42a7940f8adbd5e056dbb74cbdb5f8ca4d2023d83d121814797aacc5&type=magiclink&next=/dot/tarot 307 in 2.6s (next.js: 1335ms, proxy.ts: 533ms, application-code: 763ms)
+ GET /ask 200 in 2.1s (next.js: 436ms, proxy.ts: 215ms, application-code: 1481ms)
+ GET /manifest.webmanifest 200 in 328ms (next.js: 229ms, proxy.ts: 47ms, application-code: 51ms)
+ GET /api/hand/screen 200 in 1291ms (next.js: 83ms, proxy.ts: 287ms, application-code: 920ms)
+ GET /dot/tarot 200 in 3.6s (next.js: 713ms, proxy.ts: 289ms, application-code: 2.6s)
+ GET /manifest.webmanifest 200 in 301ms (next.js: 137ms, proxy.ts: 152ms, application-code: 12ms)
+ GET /dot/tarot 200 in 1967ms (next.js: 24ms, proxy.ts: 219ms, application-code: 1724ms)
+ GET /manifest.webmanifest 200 in 216ms (next.js: 71ms, proxy.ts: 94ms, application-code: 51ms)
+ GET /api/dot/tarot 200 in 3.5s (next.js: 1984ms, proxy.ts: 576ms, application-code: 891ms)
+ POST /api/dot/tarot 200 in 3.9s (next.js: 11ms, proxy.ts: 201ms, application-code: 3.6s)
+ GET /api/dot/tarot 200 in 833ms (next.js: 19ms, proxy.ts: 183ms, application-code: 631ms)
+ GET /manifest.webmanifest 200 in 238ms (next.js: 115ms, proxy.ts: 86ms, application-code: 37ms)
+ GET /dot/rin 200 in 5.8s (next.js: 1376ms, proxy.ts: 239ms, application-code: 4.2s)
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache

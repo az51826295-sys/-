@@ -88,6 +88,13 @@ export default async function DotMe() {
             </div>
           )}
 
+          {/* 11-09: **우리 사이 카드** — 사장님이 "둘 다" 를 고르셨다(방 안 + 따로 보는 화면).
+              아래 탭은 넷으로 둔다(11-06 에 다섯에서 줄였다) — 자리는 내 창 안이다. */}
+          <Link href="/dot/tarot" className="me-tarot">
+            <b>우리 사이 카드</b>
+            <small>나눈 말을 카드 세 장으로 읽어 줘요</small>
+          </Link>
+
           <Uploader />
 
           {v.posts.length === 0 ? (
@@ -148,6 +155,12 @@ const CSS = `
 .me-prog-n { flex:0 0 auto; font-size:12px; color:#8a919a; }
 .me-empty { padding:34px 24px; text-align:center; font-size:14px; color:#5c6570; }
 .me-empty-sub { margin-top:8px; font-size:13px; line-height:1.8; color:#a3aab3; }
+/* 우리 사이 카드 — 밤빛 한 칸. 이 줄만 색이 달라야 눈에 걸린다. */
+.me-tarot { display:flex; flex-direction:column; gap:3px; margin:14px 16px 0; padding:12px 14px;
+  background:#1b1630; color:#ffd369; text-decoration:none; box-shadow:inset 0 0 0 2px #1c1c1c; }
+.me-tarot b { font-size:14px; font-weight:400; }
+.me-tarot small { font-size:11px; color:#b9b0e0; }
+.me-tarot:active { transform:translate(2px,2px); }
 .me-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:2px; }
 .me-tile { position:relative; aspect-ratio:1; background:#eef1f5; }
 .me-tile img { width:100%; height:100%; object-fit:cover; display:block; }

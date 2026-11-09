@@ -12,6 +12,8 @@ import { showRewardedAd, AD_FAIL_COPY } from "@/lib/dot/adbreak";
 import { USER_STICKERS, USER_STICKER_KEYS } from "@/lib/dot/stickers";
 import { GIFTS, CHECKIN_HEARTS } from "@/lib/dot/bond";
 import { splitBubbles } from "@/lib/dot/bubbles";
+import { parseReading } from "@/lib/dot/tarotCards";
+import { TarotSpread } from "../TarotSpread";
 
 /**
  * 도트 채팅 — **카톡 모양, 폰 전용.**
@@ -111,6 +113,25 @@ export default function DotChat({
   const [adBusy, setAdBusy] = useState(false);
   /** 광고 자리를 그릴지 — 설정이 온 때만. 아래 세 군데가 이걸로 갈린다. */
   const adOpen = !!ad;
+  /**
+   * **단계가 오르면 카드 세 장** (11-09 사장님 기획).
+   *
+   * 서버가 그 자리에서 대화를 읽고 한 판을 써서 **대화 한 줄로 남긴다**(표가 없다 — DDL 열쇠가
+   * 없어 `dot_messages` 에 캐릭터 말로 적는다). 그래서 화면은 받은 글을 그대로 줄에 끼우면 된다.
+   * 못 받아도 **조용히 지나간다** — 축하 자리에서 빨간 글이 뜨면 그게 더 나쁘다.
+   */
+  async function 카드받기() {
+    try {
+      const r = await fetch("/api/dot/tarot", {
+        method: "POST", headers: { "content-type": "application/json" },
+        body: JSON.stringify({ characterId: who.id }),
+      });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok || !d?.적은것) return;
+      setLines((l) => [...l, { role: "character", content: d.적은것 as string, emotion: "shy", at: new Date().toISOString() }]);
+      SFX.recv(); buzz(BUZZ.heart);
+    } catch { /* 조용히 */ }
+  }
   /**
    * **출석체크** (11-06 사장님 "매일 5개 출석체크 하면 줘"). 자동 지급이 없어졌으니
    * 이 단추가 **말을 걸 수 있게 되는 문**이다. 몇 개 늘었는지는 **서버가 센 잔고**로 갈아 끼운다 —
@@ -356,6 +377,10 @@ export default function DotChat({
           if (ev.bond) setBond((b) => ({ ...b, ...ev.bond }));  // 턴 결과엔 mode 가 없다 — 덮어쓰지 말고 합친다
           if (typeof ev.remaining === "number") setRemaining(ev.remaining);
           if (ev.bond?.reasons?.length) setToast(ev.bond.reasons.join("  "));
+          /* **단계가 올랐으면 카드가 온다** (11-09 사장님 기획). 사람이 누르는 자리가 아니라
+             관계가 실제로 바뀐 그 턴에 저절로 온다 — 그게 "기념"이 되는 자리다.
+             서버가 같은 단계를 두 번 주지 않으므로(429) 여기서 또 세지 않는다. */
+          if (ev.bond && ev.bond.stage > bond.stage) void 카드받기();
           // 선물이 되면 낸 크레딧만큼 화면 잔고도 줄인다(선물 판의 "보유 N크레딧" 이 옛 숫자로 남지 않게).
           if (giftKey) { const g = GIFTS.find((x) => x.key === giftKey); if (g) setBalance((b) => ({ ...b, credits: Math.max(0, b.credits - g.price) })); }
         } else if (ev.type === "error") {
@@ -488,6 +513,15 @@ export default function DotChat({
                   <div className="kk-row me">
                     <span className="kk-meta">{unread && <b className="kk-unread">1</b>}{showTime && <span className="kk-time">{clock(l.at)}</span>}</span>
                     <div className="kk-bubble me">{l.content}</div>
+                  </div>
+                ) : parseReading(l.content) ? (
+                  /* 타로 — 말풍선이 아니라 **카드 세 장**으로 그린다. 글로만 두면 그냥 긴 말이 된다. */
+                  <div className="kk-row them kk-tarot">
+                    <div className="kk-face" style={{ visibility: "hidden" }} />
+                    <div className="kk-said">
+                      <div className="kk-name">{who.name}의 카드</div>
+                      <TarotSpread 카드들={parseReading(l.content)!.카드} 관계={parseReading(l.content)!.관계} />
+                    </div>
                   </div>
                 ) : (
                   <div className="kk-row them">
