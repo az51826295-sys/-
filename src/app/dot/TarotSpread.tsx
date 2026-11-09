@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { CARD_EN, CARD_PIXELS, type Card } from "@/lib/dot/tarotCards";
+import { CARD_EN, CARD_PIXELS, DECK, type Card } from "@/lib/dot/tarotCards";
 
 /**
  * # 카드 세 장 — 방 안에서도, 점집 화면에서도 같은 것
@@ -38,9 +38,7 @@ export function TarotSpread({ 카드들, 관계, 작게 }: { 카드들: SpreadCa
               <span className="tz-spot">{c.자리}</span>
               <span className="tz-face tz-back"><Pixels rows={BACK} /></span>
               <span className={`tz-face tz-front${c.역방향 ? " rev" : ""}`}>
-                <Pixels rows={CARD_PIXELS[c.카드] ?? BACK} />
-                <b className="tz-name">{c.카드}</b>
-                <i className="tz-en">{CARD_EN[c.카드] ?? ""}</i>
+                <Front 카드={c.카드} />
               </span>
               {c.역방향 && 열림 && <span className="tz-rev">역방향</span>}
             </button>
@@ -55,6 +53,27 @@ export function TarotSpread({ 카드들, 관계, 작게 }: { 카드들: SpreadCa
       {다열림 && 관계 ? <p className="tz-sum">{관계}</p> : null}
       {!다열림 && <p className="tz-tap">카드를 눌러 보세요</p>}
     </div>
+  );
+}
+
+/**
+ * 카드 앞면 — **그린 그림**(public/dot-tarot)이 먼저고, 없거나 못 받으면 **8×8 도트**로 물러난다.
+ *
+ * 11-09 에 22장을 그렸다. 그래도 도트 판을 안 지운 까닭: 한 장이 안 받아져도 그 자리가
+ * 비면 안 되고, 그림 파일은 배포에 묶여 있어 **지금 당장 틀릴 수 있는 것**이기 때문이다
+ * ([[art-urls-must-be-knocked]]).
+ */
+function Front({ 카드 }: { 카드: Card }) {
+  const [깨짐, set깨짐] = useState(false);
+  const i = DECK.indexOf(카드);
+  return (
+    <>
+      {깨짐 || i < 0
+        ? <Pixels rows={CARD_PIXELS[카드] ?? BACK} />
+        : <img className="tz-art" src={`/dot-tarot/${i}.png`} alt="" onError={() => set깨짐(true)} />}
+      <b className="tz-name">{카드}</b>
+      <i className="tz-en">{CARD_EN[카드] ?? ""}</i>
+    </>
   );
 }
 
@@ -92,8 +111,14 @@ const CSS = `
 .tz-front.rev .tz-px{transform:rotate(180deg)}
 .tz-card.on .tz-front{color:var(--glow)}
 .tz-card.on .tz-front.rev{color:var(--pink)}
-.tz-name{font-size:11px;line-height:1.1;color:#fff}
-.tz-en{font-size:9px;font-style:normal;color:#8a8aa0}
+/* 그린 카드는 면을 꽉 채우고, 이름은 그 위에 깔린다. 도트로 물러났을 때와 자리가 같아야
+   뒤집힐 때 안 튄다. image-rendering:pixelated — 100×140 짜리를 키워 쓰므로 안 흐려진다. */
+.tz-art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;image-rendering:pixelated}
+.tz-front.rev .tz-art{transform:rotate(180deg)}
+.tz-name{position:relative;font-size:11px;line-height:1.1;color:#fff;
+  background:rgba(27,22,48,.85);padding:1px 4px;box-shadow:0 0 0 1px rgba(255,211,105,.35)}
+.tz-en{position:relative}
+.tz-en{font-size:9px;font-style:normal;color:#cfc4ff;background:rgba(27,22,48,.8);padding:0 3px}
 .tz-rev{position:absolute;bottom:-15px;left:0;right:0;font-size:10px;color:var(--pink)}
 .tz-px{display:flex;flex-direction:column;gap:1px}
 .tz-px-row{display:flex;gap:1px}

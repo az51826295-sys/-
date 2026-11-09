@@ -148,9 +148,17 @@ const db = createServiceClient();
 const sprites: Record<string, string> = {}, faceUrls: Record<string, string> = {};
 for (const [i, c] of cells.entries()) {
   for (const [path, body, box] of [[`${spec.slug}/${c.emotion}.png`, c.png, sprites], [`${spec.slug}/face/${c.emotion}.png`, faces[i], faceUrls]] as [string, Buffer, Record<string, string>][]) {
+    /**
+     * **앱이 보는 자리는 통이 아니라 웹서버다** (11-09에 이걸로 하루를 썼다).
+     * `dot_characters.sprites` 의 주소는 전부 `dot-web…/dot-sprites/…` 즉 저장소의 `public/` 이다.
+     * 통에만 올리면 표에는 적히는데 **앱에는 안 보인다.** 그래서 파일은 public 에 쓰고,
+     * 통에는 **백업으로만** 같이 올린다(다른 도구가 아직 통을 읽는다).
+     */
+    mkdirSync(`public/dot-sprites/${path.split("/").slice(0, -1).join("/")}`, { recursive: true });
+    writeFileSync(`public/dot-sprites/${path}`, body);
+    box[c.emotion] = `https://dot-web-production-7e03.up.railway.app/dot-sprites/${path}`;
     const { error } = await db.storage.from("dot-sprites").upload(path, body, { contentType: "image/png", upsert: true });
-    if (error) throw new Error(`${path}: ${error.message}`);
-    box[c.emotion] = db.storage.from("dot-sprites").getPublicUrl(path).data.publicUrl;
+    if (error) console.warn(`   통 백업 실패(앱에는 영향 없음) ${path}: ${error.message}`);
   }
 }
 const row = { slug: spec.slug, name: spec.name, tagline: spec.tagline, look: spec.look, persona: spec.persona, speech: spec.speech, greeting: spec.greeting,

@@ -142,3 +142,8 @@ See more: https://nextjs.org/docs/app/guides/local-development
  POST /api/dot/game 200 in 6.3s (next.js: 1944ms, proxy.ts: 206ms, application-code: 4.2s)
 [dot] 린 · deepseek-v4-flash · in 1606 out 34 · 2/0턴 · 모델 1149ms 저장 626ms 합 2136ms
  POST /api/dot/game 200 in 3.8s (next.js: 17ms, proxy.ts: 213ms, application-code: 3.6s)
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
