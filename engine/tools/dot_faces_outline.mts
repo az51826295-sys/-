@@ -36,11 +36,18 @@ const 이름들 = ["doyun", "haru", "nabi", "rin", "seoha", "yeonu", "yuna"];
 console.log(`얼굴 다시 자르기 — 재료는 테두리 두른 큰 그림\n이름    표정        전(가운데/살색)   후(가운데/살색)   판정`);
 let 좋음 = 0; const 나쁨: string[] = [];
 const 새것: { 길: string; png: Buffer }[] = [];
-for (const slug of 이름들) {
-  for (const e of EMO) {
-    const 큰것 = join(밑, slug, `${e}.png`);
-    const 얼굴길 = join(밑, slug, "face", `${e}.png`);
-    if (!existsSync(큰것) || !existsSync(얼굴길)) { console.log(`${slug.padEnd(7)} ${e.padEnd(10)} 파일이 없다`); continue; }
+/**
+ * 멘헤라 얼굴도 따로 있다 — `<이름>/menhera/face/<표정>.png`. 처음엔 이걸 빼먹었다:
+ * `dot_characters.faces` 에 `menhera:sad` 같은 열쇠가 있는 걸 **주소를 두드려 보고서야** 알았다.
+ */
+const 칸들 = 이름들.flatMap((slug) => [
+  ...EMO.map((e) => ({ slug, e, 큰것: join(밑, slug, `${e}.png`), 얼굴길: join(밑, slug, "face", `${e}.png`), 결: "" })),
+  ...EMO.map((e) => ({ slug, e, 큰것: join(밑, slug, "menhera", `${e}.png`), 얼굴길: join(밑, slug, "menhera", "face", `${e}.png`), 결: "멘헤라 " })),
+]);
+{
+  for (const { slug: slug0, e: e0, 큰것, 얼굴길, 결 } of 칸들) {
+    const slug = `${결}${slug0}`, e = e0;
+    if (!existsSync(큰것) || !existsSync(얼굴길)) continue;   /* 멘헤라가 없는 사람은 그냥 넘어간다 */
     const 전 = await faceCropCheck(readFileSync(얼굴길));
     const 새 = await faceCrop(readFileSync(큰것));
     const 후 = await faceCropCheck(새);
