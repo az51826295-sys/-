@@ -75,5 +75,24 @@ for (const c of (chars ?? []) as any[]) {
     console.log(error ? `   ✗ ${error.message}` : `   ${켤까 ? "켰다" : "껐다"}`);
   }
 }
+/**
+ * **기준점 검사** — 11-09 사장님: *"기준점이 없어서 퀄리티가 다 달라. 이건 큰 문제야."*
+ *
+ * 한 사람만 보지 않고 **열 명을 같은 자로** 본다. 새 사람을 켜는 순간이 곧 줄 전체가
+ * 어긋나는 순간이기 때문이다. 기준은 `engine/docs/dot-character-standard.md`.
+ */
+if (켤까) {
+  try {
+    execFileSync("cmd", ["/c", "npx", "tsx", "engine/tools/dot_character_spec.mts", "--check"], { encoding: "utf8" });
+    console.log(`\n기준점 — 전부 기준 안`);
+  } catch (e) {
+    const 글 = String((e as { stdout?: string }).stdout ?? "");
+    console.log(`\n기준점을 벗어난 사람이 있다:`);
+    console.log(글.split(String.fromCharCode(10)).filter((l) => l.includes("❌")).join(String.fromCharCode(10)));
+    console.log(`  → dot_regrid(도트) · dot_standardize(발밑) 로 맞추고 다시.`);
+    process.exit(1);
+  }
+}
+
 if (!켤까 && !끌까) console.log(`\n보기만 했다. 켜려면 --on`);
 if (막힘) { console.log(`\n${막힘}명은 빠진 것이 있어 안 켰다.`); process.exit(1); }
