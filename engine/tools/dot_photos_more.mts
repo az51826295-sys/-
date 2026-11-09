@@ -42,7 +42,9 @@ const 앱밑 = "public/dot-sprites";
 const 주소 = (slug: string, n: number) => `https://dot-web-production-7e03.up.railway.app/dot-sprites/${slug}/photo/${n}.png`;
 
 const db = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SECRET_KEY!, { auth: { persistSession: false } });
-const { data: chars, error } = await db.from("dot_characters").select("id, slug, name, persona, look, photos").eq("is_public", true).order("slug");
+/* `--only` 로 이름을 집으면 **아직 안 켠 사람도** 집는다 — 새로 만든 캐릭터는 사진이 있어야 켤 수 있다. */
+const 질의 = db.from("dot_characters").select("id, slug, name, persona, look, photos").order("slug");
+const { data: chars, error } = 누구만.length ? await 질의.in("slug", 누구만) : await 질의.eq("is_public", true);
 if (error) { console.error(`표를 못 읽었다: ${error.message}`); process.exit(1); }
 
 const 장면꼴 = z.object({ 장면들: z.array(z.object({ 이름: z.string(), 영문: z.string() })) });

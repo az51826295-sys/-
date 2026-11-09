@@ -115,10 +115,11 @@ const CSS = `
    뒤집힐 때 안 튄다. image-rendering:pixelated — 100×140 짜리를 키워 쓰므로 안 흐려진다. */
 .tz-art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;image-rendering:pixelated}
 .tz-front.rev .tz-art{transform:rotate(180deg)}
-.tz-name{position:relative;font-size:11px;line-height:1.1;color:#fff;
-  background:rgba(27,22,48,.85);padding:1px 4px;box-shadow:0 0 0 1px rgba(255,211,105,.35)}
-.tz-en{position:relative}
-.tz-en{font-size:9px;font-style:normal;color:#cfc4ff;background:rgba(27,22,48,.8);padding:0 3px}
+/* 이름은 **그림 아래쪽**에 깔린다 — 가운데 두면 상징을 가린다(11-09 첫 판에서 사자 얼굴을 덮었다). */
+.tz-name{position:absolute;left:2px;right:2px;bottom:13px;font-size:11px;line-height:1.2;color:#fff;
+  background:rgba(27,22,48,.88);padding:1px 0}
+.tz-en{position:absolute;left:2px;right:2px;bottom:2px}
+.tz-en{font-size:9px;font-style:normal;color:#cfc4ff;background:rgba(27,22,48,.8)}
 .tz-rev{position:absolute;bottom:-15px;left:0;right:0;font-size:10px;color:var(--pink)}
 .tz-px{display:flex;flex-direction:column;gap:1px}
 .tz-px-row{display:flex;gap:1px}
