@@ -24,7 +24,7 @@ const 적을것: string[] = [];
 console.log(`이름  옛: 첫머리 소재겹침 사진반복 | 새: 첫머리 소재겹침 사진반복`);
 let 옛모두: string[] = [], 새모두: string[] = [];
 for (const c of (cs ?? []) as any[]) {
-  const photos = Array.isArray(c.photos) ? c.photos : [];
+  const photos: { url: string; caption: string }[] = Array.isArray(c.photos) ? c.photos : [];
   if (!photos.length) { console.log(`${c.name.padEnd(4)} 사진이 없다 — 못 잼`); continue; }
   const 옛글: string[] = [], 옛사진: string[] = [], 새글: string[] = [], 새사진: string[] = [];
   for (const day of 날들) {
