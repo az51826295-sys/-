@@ -696,3 +696,9 @@ See more: https://nextjs.org/docs/app/guides/local-development
  GET /dot/rin 200 in 2.9s (next.js: 194ms, proxy.ts: 184ms, application-code: 2.6s)
  GET /dot/rin 200 in 1184ms (next.js: 23ms, proxy.ts: 221ms, application-code: 940ms)
  GET /manifest.webmanifest 200 in 48ms (next.js: 14ms, proxy.ts: 15ms, application-code: 19ms)
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
