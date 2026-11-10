@@ -65,11 +65,18 @@ async function 한판(점수: number, 이름: string) {
     await new Promise((r) => setTimeout(r, 400));
     await page.screenshot({ path: `${OUT}/${이름}.png` });
 
+    /* 카톡처럼 **한 번에 한 묶음**만 보인다(6칸) — 탭을 눌러야 다음 묶음이 온다. */
     const 칸 = await page.$$eval(".kk-stk-grid button", (e) => e.length);
-    재기(칸 === 12, `${이름}: 칸 12개 (본 것 ${칸})`);
+    재기(칸 === 6, `${이름}: 기본 묶음 6칸 (본 것 ${칸})`);
+    const 탭 = await page.$$eval(".kk-stk-tabs button", (e) => e.length);
+    재기(탭 === 2, `${이름}: 아래 탭 2개 (본 것 ${탭})`);
+    /* 그 사람 묶음으로 넘어가 본다 */
+    await (await page.$$(".kk-stk-tabs button"))[1].click();
+    await new Promise((r) => setTimeout(r, 300));
+    const 얼굴칸 = await page.$$eval(".kk-stk-grid button img", (e) => e.length);
+    재기(얼굴칸 === 6, `${이름}: 그 사람 묶음 6칸 (본 것 ${얼굴칸})`);
+    await page.screenshot({ path: `${OUT}/${이름}-얼굴묶음.png` });
     const 자물쇠 = await page.$$eval(".kk-lock", (e) => e.length);
-    const 머리 = await page.$$eval(".kk-stk-head", (e) => e.map((x) => (x.textContent ?? "").trim()));
-    재기(머리.length === 2, `${이름}: 칸 머리 2줄 (${머리.join(" / ")})`);
     /* 가로 넘침 — 390 폭에서 서랍이 밖으로 나가면 안 된다. */
     const 넘침 = await page.$$eval(".kk-stk", (e) => e.map((x) => Math.round(x.scrollWidth - x.clientWidth)));
     재기(넘침.every((n) => n <= 1), `${이름}: 가로 넘침 ${넘침.join(",")}px`);
@@ -118,7 +125,7 @@ async function 한판(점수: number, 이름: string) {
 }
 
 const 잠김 = await 한판(100, "1-잠김(2단계)");
-재기(잠김.자물쇠 === 6, `잠겼을 때 자물쇠 6개 (본 것 ${잠김.자물쇠})`);
+재기(잠김.자물쇠 === 2, `잠겼을 때 자물쇠 2개 — 탭과 띠 (본 것 ${잠김.자물쇠})`);
 const 열림 = await 한판(1200, "2-열림(5단계)");
 재기(열림.자물쇠 === 0, `열렸을 때 자물쇠 0개 (본 것 ${열림.자물쇠})`);
 

@@ -303,6 +303,8 @@ export default function DotChat({
   const rootRef = useRef<HTMLDivElement>(null);
   const 마지막타자음 = useRef(0);
   const [stickerOpen, setStickerOpen] = useState(false);
+  /** 이모티콘 서랍에서 **지금 보고 있는 묶음** (카톡의 아래 탭). "basic" = 기본, "face" = 그 사람 얼굴. */
+  const [스티커탭, set스티커탭] = useState<"basic" | "face">("basic");
   /** 09-30 선물 판. 스티커 판과 동시에 안 열린다. */
   const [giftOpen, setGiftOpen] = useState(false);
   // 91회차 사장님 "채팅에서 뭔 기능인지 잘 모르겠다": 첫 방문에 한 번, 이 방의 단추가 뭔지 세 줄. 메뉴 "도움말" 로 다시 볼 수 있다.
@@ -713,49 +715,61 @@ export default function DotChat({
         {놀이 && <GameBand live={놀이} 막힘={busy || remaining <= 0} 보내기={(s) => 놀이보내기({ message: s })} />}
         {stickerOpen && (
           /*
-            **이모티콘 서랍** (11-10 사장님 "이모티콘 화면도 이쁘게 전체적으로 꾸며").
-            전에는 단추 여섯 개가 맨바닥에 떠 있었다. 놀이 서랍과 **같은 결**로 맞춘다 —
-            어두운 판 · 2px 속테두리 · 누르면 2px 내려가기. 서랍이 둘인데 생김새가 다르면
-            같은 앱으로 안 보인다([[kakao-placement-rule]]).
-
-            칸은 둘로 가른다: **기본**(늘 있는 것)과 **그 사람 이모티콘**(5단계). 잠긴 칸도
-            흐리게 보여 주고 자물쇠를 얹는다 — 안 보이면 받을 것이 있는 줄도 모른다.
+            **이모티콘 서랍 — 카톡 그대로** (11-10 사장님 "카톡 따라서 만들어줘").
+            카톡의 그 판이 어떻게 생겼나, 보고 베낀 것 넷:
+              ① 묶음을 **아래 탭 줄**로 고른다(위가 아니라 아래 — 엄지가 거기 있다)
+              ② 격자는 **글자 없이 그림만**, 한 줄에 네 칸
+              ③ 누르면 **바로 간다**(고르기→보내기 두 단계가 아니다)
+              ④ 판 높이는 키보드 자리(≈40%)에 맞춘다 — 대화가 위에 남아 있어야 한다
+            잠긴 묶음은 탭에 자물쇠, 판 위에 한 줄. 카톡이 안 산 이모티콘을 보여 주는 자리와 같다.
           */
           <div className="kk-stk">
-            <div className="kk-stk-head">
-              <b>{lang === "en" ? "Stickers" : "스티커"}</b>
-              <small>{lang === "en" ? "1 heart each" : "하나에 하트 1개"}</small>
+            <div className="kk-stk-page">
+              {스티커탭 === "basic" ? (
+                <div className="kk-stk-grid">
+                  {USER_STICKER_KEYS.map((k) => (
+                    <button key={k} onClick={() => send(`(${USER_STICKERS[k].ko} 스티커)`, k)} aria-label={USER_STICKERS[k].ko} disabled={busy || remaining <= 0}>
+                      <StickerSvg k={k} size={62} />
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <>
+                  {bond.stage < EMOTICON_STAGE && (
+                    <div className="kk-stk-bar">
+                      <Lock />
+                      <span>{lang === "en" ? `Opens at stage ${EMOTICON_STAGE}` : `${EMOTICON_STAGE}단계가 되면 쓸 수 있어요`}</span>
+                      <b>{"★".repeat(bond.stage)}{"☆".repeat(Math.max(0, EMOTICON_STAGE - bond.stage))}</b>
+                    </div>
+                  )}
+                  <div className={`kk-stk-grid${bond.stage < EMOTICON_STAGE ? " locked" : ""}`}>
+                    {FACE_KEYS.map((e) => {
+                      const 열림 = bond.stage >= EMOTICON_STAGE;
+                      return (
+                        <button key={e} onClick={() => 열림 ? send(`(${who.name}의 ${faceKo(e)} 이모티콘)`, `${FACE_PREFIX}${e}`) : setToast(lang === "en" ? `Opens at stage ${EMOTICON_STAGE}` : `${EMOTICON_STAGE}단계가 되면 열려요`)}
+                          aria-label={faceKo(e)} disabled={busy || (열림 && remaining <= 0)}>
+                          <img src={`/dot-sprites/${who.slug}/face/${e}.png`} alt="" width={62} height={62} />
+                        </button>
+                      );
+                    })}
+                  </div>
+                </>
+              )}
             </div>
-            <div className="kk-stk-grid">
-              {USER_STICKER_KEYS.map((k) => (
-                <button key={k} onClick={() => send(`(${USER_STICKERS[k].ko} 스티커)`, k)} aria-label={USER_STICKERS[k].ko} disabled={busy || remaining <= 0}>
-                  <span className="kk-stk-tile"><StickerSvg k={k} size={44} /></span>
-                  <span className="kk-stk-ko">{USER_STICKERS[k].ko}</span>
-                </button>
-              ))}
-            </div>
-
-            <div className={`kk-stk-head${bond.stage >= EMOTICON_STAGE ? "" : " locked"}`}>
-              <b>{lang === "en" ? `${who.name}'s emoticons` : `${who.name} 이모티콘`}</b>
-              {bond.stage >= EMOTICON_STAGE
-                ? <small className="kk-stk-got">{lang === "en" ? "unlocked" : "열렸어요"}</small>
-                : <small>{lang === "en" ? `opens at stage ${EMOTICON_STAGE}` : `${EMOTICON_STAGE}단계에 열려요`} · {"★".repeat(bond.stage)}{"☆".repeat(Math.max(0, EMOTICON_STAGE - bond.stage))}</small>}
-            </div>
-            <div className="kk-stk-grid">
-              {FACE_KEYS.map((e) => {
-                const 열림 = bond.stage >= EMOTICON_STAGE;
-                return (
-                  <button key={e} className={열림 ? "" : "locked"}
-                    onClick={() => 열림 ? send(`(${who.name}의 ${faceKo(e)} 이모티콘)`, `${FACE_PREFIX}${e}`) : setToast(lang === "en" ? `Opens at stage ${EMOTICON_STAGE}` : `${EMOTICON_STAGE}단계가 되면 열려요`)}
-                    aria-label={faceKo(e)} disabled={busy || (열림 && remaining <= 0)}>
-                    <span className="kk-stk-tile">
-                      <img src={`/dot-sprites/${who.slug}/face/${e}.png`} alt="" width={44} height={44} />
-                      {!열림 && <Lock />}
-                    </span>
-                    <span className="kk-stk-ko">{faceKo(e)}</span>
-                  </button>
-                );
-              })}
+            {/* 아래 탭 줄 — 묶음 두 개. 카톡처럼 **지금 묶음**만 밝다. */}
+            <div className="kk-stk-tabs">
+              <button className={스티커탭 === "basic" ? "on" : ""} onClick={() => set스티커탭("basic")} aria-label={lang === "en" ? "Basic" : "기본"}>
+                <StickerSvg k="smile" size={26} />
+              </button>
+              <button className={`${스티커탭 === "face" ? "on" : ""}${bond.stage < EMOTICON_STAGE ? " locked" : ""}`}
+                onClick={() => set스티커탭("face")} aria-label={`${who.name} 이모티콘`}>
+                <img src={`/dot-sprites/${who.slug}/face/happy.png`} alt="" width={26} height={26} />
+                {bond.stage < EMOTICON_STAGE && <Lock />}
+              </button>
+              <span className="kk-stk-tabname">
+                {스티커탭 === "basic" ? (lang === "en" ? "Basic" : "기본") : `${who.name}`}
+                <small>{lang === "en" ? "1 heart each" : "하나에 하트 1개"}</small>
+              </span>
             </div>
           </div>
         )}
@@ -1314,33 +1328,39 @@ const CSS = `
 .kk-warn { background:#fff8d6; color:#5a4a00; font-size:13px; padding:8px 14px; }
 .kk-emo { flex:0 0 auto; width:40px; height:40px; border:none; background:none; color:var(--ink, #5c6570); opacity:.8; cursor:pointer; display:flex; align-items:center; justify-content:center; }
 /* 09-13 사장님 "배경 화면 있으면 이모티콘 안 보임": 배경 그림이 position:absolute z-index:0 이라 자리 안 잡은 이 판을 덮었다. 판을 위로. */
-/* ── 이모티콘 서랍 (11-10 "이쁘게 전체적으로 꾸며") — 놀이 서랍과 같은 결 ── */
-.kk-stk { position:relative; z-index:2; padding:8px 8px 10px; background:var(--bar, #fff);
-  border-top:1px solid rgba(0,0,0,.06); max-height:44vh; overflow-y:auto; }
-.kk-stk-head { display:flex; align-items:baseline; gap:6px; padding:4px 2px 6px; }
-.kk-stk-head b { font-size:12px; font-weight:400; color:var(--ink, #3c434b); }
-.kk-stk-head small { font-size:11px; color:#8a919a; }
-.kk-stk-head.locked b { color:#8a919a; }
-.kk-stk-got { color:#6b5bd2; }
-.kk-stk-grid { display:grid; grid-template-columns:repeat(6, 1fr); gap:5px; }
-.kk-stk-grid button { display:flex; flex-direction:column; align-items:center; gap:3px;
-  background:none; border:0; padding:0; font:inherit; cursor:pointer; color:var(--ink, #5c6570); }
-.kk-stk-tile { position:relative; display:flex; align-items:center; justify-content:center; width:100%; aspect-ratio:1;
-  background:#1b1630; box-shadow:inset 0 0 0 2px #1c1c1c; color:#ffd369; }
-.kk-stk-tile img { image-rendering:pixelated; }
-.kk-stk-ko { font-size:10px; line-height:1.2; }
-.kk-stk-grid button:active .kk-stk-tile { transform:translate(2px,2px); }
+/* ── 이모티콘 서랍 — **카톡 그대로** (11-10) ──────────────────────────────
+   카톡의 그 판: 흰 바탕 · 글자 없는 격자 · 아래에 묶음 탭 줄 · 키보드만 한 높이. */
+.kk-stk { position:relative; z-index:2; display:flex; flex-direction:column; height:40vh; min-height:240px; max-height:340px;
+  background:var(--bar, #fff); border-top:1px solid rgba(0,0,0,.08); }
+.kk-stk-page { flex:1 1 auto; overflow-y:auto; padding:10px 8px 6px; }
+.kk-stk-grid { display:grid; grid-template-columns:repeat(4, 1fr); gap:4px; }
+.kk-stk-grid button { display:flex; align-items:center; justify-content:center; aspect-ratio:1;
+  background:none; border:0; padding:0; cursor:pointer; border-radius:10px; }
+.kk-stk-grid button img { image-rendering:pixelated; }
+.kk-stk-grid button:active { background:rgba(0,0,0,.06); }
 .kk-stk-grid button:disabled { opacity:.45; cursor:default; }
-.kk-stk-grid button:disabled:active .kk-stk-tile { transform:none; }
-.kk-stk-grid button.locked .kk-stk-tile img { filter:grayscale(1) brightness(.55); }
-.kk-stk-grid button.locked .kk-stk-ko { color:#9aa1aa; }
-/* 자물쇠 — 타일 오른아래 구석에 작게 */
-.kk-lock { position:absolute; right:3px; bottom:3px; display:flex; flex-direction:column; gap:1px; color:#ffd369; }
+.kk-stk-grid button:disabled:active { background:none; }
+.kk-stk-grid.locked button img { filter:grayscale(1) brightness(.75); }
+/* 잠긴 묶음 머리 — 카톡이 안 산 이모티콘 위에 띠를 두는 그 자리 */
+.kk-stk-bar { display:flex; align-items:center; gap:6px; margin:0 2px 8px; padding:7px 9px;
+  background:#f1effa; color:#5b4fa8; font-size:12px; }
+.kk-stk-bar b { margin-left:auto; font-weight:400; color:#8a7fd0; letter-spacing:1px; }
+.kk-stk-bar .kk-lock { position:static; color:#5b4fa8; }
+/* 아래 탭 줄 */
+.kk-stk-tabs { flex:0 0 auto; display:flex; align-items:center; gap:4px; padding:5px 8px;
+  border-top:1px solid rgba(0,0,0,.08); background:rgba(0,0,0,.03); }
+.kk-stk-tabs button { position:relative; width:38px; height:34px; display:flex; align-items:center; justify-content:center;
+  background:none; border:0; padding:0; cursor:pointer; border-radius:8px; opacity:.45; }
+.kk-stk-tabs button img { image-rendering:pixelated; }
+.kk-stk-tabs button.on { opacity:1; background:rgba(0,0,0,.08); }
+.kk-stk-tabs button.locked img { filter:grayscale(1); }
+.kk-stk-tabname { margin-left:auto; display:flex; align-items:baseline; gap:5px; font-size:12px; color:var(--ink, #5c6570); }
+.kk-stk-tabname small { font-size:11px; color:#8a919a; }
+.kk-lock { position:absolute; right:1px; bottom:1px; display:flex; flex-direction:column; gap:1px; color:#5b4fa8; }
 .kk-lock > span { display:flex; gap:1px; }
 .kk-lock i { width:2px; height:2px; background:transparent; }
 .kk-lock i.on { background:currentColor; }
 .kk-face-emo { image-rendering:pixelated; }
-@media (max-width: 360px) { .kk-stk-grid { grid-template-columns:repeat(5, 1fr); } }
 /* 선물 서랍 — 11-10 에 이모티콘·놀이 서랍과 **같은 결**로 맞췄다(둥근 흰 카드 → 도트 타일).
    서랍이 셋인데 생김새가 셋이면 같은 앱으로 안 보인다. */
 .kk-gifts { position:relative; z-index:2; padding:8px 8px 10px; background:var(--bar, #fff); border-top:1px solid rgba(0,0,0,.06); }
