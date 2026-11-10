@@ -32,7 +32,7 @@ export default function FollowButton({ characterId, following: f0, name, size = 
 }
 
 const CSS = `
-.fb { border:none; border-radius:999px; font:inherit; font-weight:600; cursor:pointer; background:#fee500; color:#1f1a00; }
+.fb { border:none; border-radius:999px; font:inherit; font-weight:600; cursor:pointer; background:#6b5bd2; color:#ffffff; }
 .fb.md { padding:9px 18px; font-size:14px; }
 .fb.sm { padding:6px 12px; font-size:12px; }
 .fb.on { background:#eef1f5; color:#5c6570; }

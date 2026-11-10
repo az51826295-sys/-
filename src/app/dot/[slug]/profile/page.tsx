@@ -132,6 +132,6 @@ const CSS = `
 .pf-face { display:flex; flex-direction:column; align-items:center; gap:4px; }
 .pf-face img { width:52px; height:52px; image-rendering:pixelated; object-fit:contain; background:#f1f3f6; border-radius:16px; }
 .pf-face span { font-size:11px; color:#8a8f98; }
-.pf-go { display:block; margin:24px auto 0; max-width:320px; background:#fee500; color:#1f1a00; text-decoration:none; font-weight:700; font-size:16px; padding:15px; border-radius:16px; }
+.pf-go { display:block; margin:24px auto 0; max-width:320px; background:#6b5bd2; color:#ffffff; text-decoration:none; font-weight:700; font-size:16px; padding:15px; border-radius:16px; }
 .pf-list { display:block; margin-top:12px; color:#8a8f98; text-decoration:none; font-size:14px; }
 `;

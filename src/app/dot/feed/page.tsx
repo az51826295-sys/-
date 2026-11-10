@@ -149,7 +149,7 @@ const CSS = `
 .fc-like .heart { font-size:20px; line-height:1; color:#c5cbd3; }
 .fc-like.on .heart { color:#ff5c7a; }
 .fc-chat { margin-left:auto; background:#fff; color:#1c1c1c; text-decoration:none; font-size:13px; font-weight:600; padding:8px 14px; border-radius:999px; box-shadow:inset 0 0 0 2px #1c1c1c; margin-right:6px; }
-.fc-reply { margin-left:0; background:#fee500; color:#1f1a00; text-decoration:none; font-size:13px; font-weight:600; padding:8px 14px; border-radius:999px; }
+.fc-reply { margin-left:0; background:#6b5bd2; color:#ffffff; text-decoration:none; font-size:13px; font-weight:600; padding:8px 14px; border-radius:999px; }
 .fc-cap { padding:6px 16px 0; font-size:14px; line-height:1.55; color:#141414; }
 .fc-cap b { margin-right:6px; }
 `;

@@ -605,3 +605,22 @@ See more: https://nextjs.org/docs/app/guides/local-development
  GET /dot/rin 200 in 2.4s (next.js: 74ms, proxy.ts: 184ms, application-code: 2.1s)
  GET /dot/rin 200 in 1468ms (next.js: 15ms, proxy.ts: 183ms, application-code: 1270ms)
  GET /manifest.webmanifest 200 in 34ms (next.js: 8ms, proxy.ts: 11ms, application-code: 16ms)
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+✓ Compiled in 4.5s
+ GET /auth/confirm?token_hash=3f3da1a43c466adeb4a86023377cff96246c8fc358b3be9e7eab2aab&type=magiclink&next=/dot/rin 307 in 1587ms (next.js: 441ms, proxy.ts: 477ms, application-code: 669ms)
+ GET /ask 200 in 4.1s (next.js: 2.2s, proxy.ts: 216ms, application-code: 1687ms)
+ GET /manifest.webmanifest 200 in 748ms (next.js: 662ms, proxy.ts: 43ms, application-code: 42ms)
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+ GET /manifest.webmanifest 200 in 300ms (next.js: 197ms, proxy.ts: 83ms, application-code: 20ms)
+ GET /dot/rin 200 in 9.5s (next.js: 1060ms, proxy.ts: 501ms, application-code: 8.0s)
+ GET /dot/rin 200 in 2.1s (next.js: 35ms, proxy.ts: 337ms, application-code: 1749ms)
+ GET /manifest.webmanifest 200 in 52ms (next.js: 17ms, proxy.ts: 15ms, application-code: 20ms)
+✓ Finished writing to filesystem cache in 17.5s
+ GET /auth/confirm?token_hash=1d85a4bbad65e1e969b5f86455adf500edf28f56d05a3c65ab904a55&type=magiclink&next=/dot/rin 307 in 449ms (next.js: 65ms, proxy.ts: 53ms, application-code: 330ms)
+ GET /ask 200 in 954ms (next.js: 38ms, proxy.ts: 460ms, application-code: 456ms)
+ GET /manifest.webmanifest 200 in 91ms (next.js: 41ms, proxy.ts: 23ms, application-code: 27ms)
+ GET /api/hand/screen 404 in 3.0s (next.js: 223ms, proxy.ts: 879ms, application-code: 1861ms)
+ GET /manifest.webmanifest 200 in 280ms (next.js: 96ms, proxy.ts: 18ms, application-code: 166ms)
+ GET /dot/rin 200 in 5.2s (next.js: 231ms, proxy.ts: 661ms, application-code: 4.3s)
+ GET /dot/rin 200 in 1740ms (next.js: 83ms, proxy.ts: 531ms, application-code: 1127ms)
+ GET /manifest.webmanifest 200 in 74ms (next.js: 36ms, proxy.ts: 12ms, application-code: 26ms)

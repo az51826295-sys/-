@@ -37,7 +37,7 @@ const CSS = `
 .st-one { flex:0 0 auto; display:flex; flex-direction:column; align-items:center; gap:5px; width:66px; text-decoration:none; }
 /* 인스타의 그 링: 안 본 게 있으면 색, 없으면 옅은 회색 테두리. */
 .st-ring { display:block; width:62px; height:62px; border-radius:50%; padding:2px; background:#e6eaef; }
-.st-ring.on { background:conic-gradient(from 210deg, #ff5c7a, #fee500, #ff9f43, #ff5c7a); }
+.st-ring.on { background:conic-gradient(from 210deg, #ff5c7a, #6b5bd2, #ff9f43, #ff5c7a); }
 .st-ring img, .st-none { display:block; width:100%; height:100%; border-radius:50%; object-fit:cover; object-position:center top;
   image-rendering:pixelated; background:#fff; box-shadow:0 0 0 2px #fff inset; }
 .st-none { background:#eef1f5; }

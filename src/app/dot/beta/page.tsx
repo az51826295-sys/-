@@ -117,7 +117,7 @@ const CSS = `
 .bt-body { flex:1; min-width:0; }
 .bt-title { font-size:16px; font-weight:700; letter-spacing:-.2px; }
 .bt-desc { font-size:13px; line-height:1.65; color:#6b747e; margin-top:4px; }
-.bt-go { display:block; margin-top:12px; text-align:center; padding:12px; background:#fee500; color:#1f1a00; text-decoration:none; border-radius:12px; font-size:14px; font-weight:600; }
+.bt-go { display:block; margin-top:12px; text-align:center; padding:12px; background:#6b5bd2; color:#ffffff; text-decoration:none; border-radius:12px; font-size:14px; font-weight:600; }
 .bt-note { margin-top:22px; font-size:13px; line-height:1.75; color:#5c6570; background:#fff6e5; border-radius:14px; padding:14px 16px; }
 .bt-note b { color:#141414; }
 .bt-foot { margin-top:26px; font-size:13px; line-height:1.9; color:#8a919a; text-align:center; }

@@ -101,7 +101,7 @@ const CSS = `
 .da-form label { display:flex; flex-direction:column; gap:6px; font-size:12px; color:#5c6570; font-weight:500; }
 .da-form input { padding:13px 14px; border:1px solid rgba(0,0,0,.12); border-radius:14px; background:#fafbfc; font:inherit; font-size:15px; color:#141414; outline:none; }
 .da-form input:focus { border-color:#ff5c7a; background:#fff; }
-.da-form button { margin-top:6px; padding:14px; background:#fee500; color:#1f1a00; border:none; border-radius:14px; font:inherit; font-size:15px; font-weight:600; cursor:pointer; }
+.da-form button { margin-top:6px; padding:14px; background:#6b5bd2; color:#ffffff; border:none; border-radius:14px; font:inherit; font-size:15px; font-weight:600; cursor:pointer; }
 .da-foot { margin-top:22px; font-size:13px; color:#7b8590; }
 .da-foot a { color:#111; font-weight:500; }
 .da-dot { margin:0 8px; }

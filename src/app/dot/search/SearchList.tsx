@@ -115,7 +115,7 @@ const CSS = `
 .sc-tile-none { display:block; width:100%; height:100%; background:#e6eaef; }
 .sc-tile-name { position:absolute; left:0; right:0; bottom:0; padding:14px 8px 6px; font-size:12px; font-weight:600; color:#fff;
   background:linear-gradient(to top, rgba(0,0,0,.55), rgba(0,0,0,0)); }
-.sc-tile-on { position:absolute; top:6px; right:6px; font-size:10px; font-weight:600; color:#1f1a00; background:#fee500; border-radius:999px; padding:2px 7px; }
+.sc-tile-on { position:absolute; top:6px; right:6px; font-size:10px; font-weight:600; color:#ffffff; background:#6b5bd2; border-radius:999px; padding:2px 7px; }
 .sc-list { list-style:none; margin:0; padding:0 16px; }
 .sc-list li { display:flex; align-items:center; gap:10px; padding:9px 0; }
 .sc-row { flex:1; min-width:0; display:flex; align-items:center; gap:11px; text-decoration:none; color:inherit; }

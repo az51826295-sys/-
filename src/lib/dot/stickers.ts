@@ -8,7 +8,7 @@ export type UserSticker = { ko: string; tell: string; path: string; color: strin
 export const USER_STICKERS: Record<string, UserSticker> = {
   heart: { ko: "하트", tell: "하트 스티커를 보냈다 — 좋아한다는 뜻", color: "#ff5c7a",
     path: "M2 3h2v1h1v1h2v-1h1v-1h2v2h1v2h-1v1h-1v1h-1v1h-1v1h-2v-1h-1v-1h-1v-1h-1v-1h-1v-2h1z" },
-  smile: { ko: "웃음", tell: "웃는 스티커를 보냈다 — 즐겁다는 뜻", color: "#fee500",
+  smile: { ko: "웃음", tell: "웃는 스티커를 보냈다 — 즐겁다는 뜻", color: "#ffd84d",
     path: "M3 1h6v1h1v1h1v6h-1v1h-1v1h-6v-1h-1v-1h-1v-6h1v-1h1zM4 4h1v2h-1zM7 4h1v2h-1zM3 7h1v1h4v-1h1v1h-1v1h-4v-1h-1z" },
   cry: { ko: "엉엉", tell: "우는 스티커를 보냈다 — 슬프거나 힘들다는 뜻", color: "#8ec5ff",
     path: "M3 1h6v1h1v1h1v6h-1v1h-1v1h-6v-1h-1v-1h-1v-6h1v-1h1zM4 4h1v2h-1zM7 4h1v2h-1zM4 7h4v1h-4zM3 6h1v3h-1zM8 6h1v3h-1z" },

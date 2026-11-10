@@ -4,7 +4,7 @@
  * 화면마다 따로 고치지 않고 **한 파일**에서 덮는다. 규칙(검색 + 내 생각):
  *   - 화소 단위 2px. 둥근 모서리 없음 — 계단 모서리(clip-path 4px 2단)와 2px 테두리, 2px 오프셋 그림자.
  *   - 글꼴은 비트맵(갈무리). 비트맵은 **정수 배**에서만 선명하다: 11px·14px·28px 만 쓴다. 안티에일리어싱 끔.
- *   - 색은 적게: 먹 #1c1c1c, 종이 #fff, 노랑 #fee500, 분홍 #ff5c7a, 회색 #eef1f5. 그림(배경·스프라이트)은 그대로.
+ *   - 색은 적게: 먹 #1c1c1c, 종이 #fff, 노랑 #6b5bd2, 분홍 #ff5c7a, 회색 #eef1f5. 그림(배경·스프라이트)은 그대로.
  *   - 누르면 2px 내려앉는다(그림자가 사라짐) — 도트 게임 단추의 그 느낌.
  * 화면 CSS 는 그대로 두고 이 겹이 **뒤에** 실려 이긴다(같은 선택자 + 나중 순서).
  */
@@ -62,7 +62,7 @@ body { background: #fff !important; }
 .kl-bar, .pk-head, .fd-bar, .kk-bar { border-bottom: 2px solid #1c1c1c !important; box-shadow: none !important; backdrop-filter: none !important; }
 .dt-tabs { border-top: 2px solid #1c1c1c !important; }
 .dt-tab.on { color: #1c1c1c !important; }
-.dt-tab.on span:last-child { box-shadow: 0 2px 0 #fee500; }
+.dt-tab.on span:last-child { box-shadow: 0 2px 0 #6b5bd2; }
 .dt-icon { filter: grayscale(1) contrast(1.4) !important; }
 .kk-input-row { border-top: 2px solid #1c1c1c !important; backdrop-filter: none !important; }
 .kk-chips, .kk-foot { border: none !important; }
@@ -72,7 +72,7 @@ body { background: #fff !important; }
 .fb.on { background: #eef1f5 !important; color: #1c1c1c !important; }
 .fd-tabs { background: #fff !important; padding: 0 !important; gap: 0 !important; }
 .fd-tabs a { clip-path: none; box-shadow: none !important; padding: 0 12px !important; min-height: 40px; display: inline-flex; align-items: center; }
-.fd-tabs a.on { background: #fee500 !important; color: #1c1c1c !important; box-shadow: none !important; }
+.fd-tabs a.on { background: #6b5bd2 !important; color: #1c1c1c !important; box-shadow: none !important; }
 .kk-mode, .kk-pay-badge { padding: 2px 6px !important; }
 .pk-fl { padding: 1px 6px !important; }
 .kk-day { background: #1c1c1c !important; color: #fff !important; }
@@ -100,7 +100,7 @@ img { image-rendering: pixelated; }
 .fb.md { padding: 0 18px !important; }
 .fc-chat, .fc-reply, .pk-go { padding: 0 14px !important; font-family: Galmuri14, sans-serif !important; font-size: 14px !important; text-decoration: none !important; }
 .fc-chat { background: #fff !important; color: #1c1c1c !important; }
-.fc-reply, .pk-go { background: #fee500 !important; color: #1c1c1c !important; }
+.fc-reply, .pk-go { background: #6b5bd2 !important; color: #1c1c1c !important; }
 .fc-chat, .fc-reply, .fc-like { border-radius: 0 !important; clip-path: ${STEP}; box-shadow: inset 0 0 0 2px #1c1c1c !important; }
 .fc-like { background: #fff !important; padding: 0 12px !important; gap: 6px !important; }
 .fc-like .heart { font-size: 14px !important; }

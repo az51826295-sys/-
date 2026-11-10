@@ -76,7 +76,7 @@ const CSS = `
 .up-cap:focus { border-color:#ff5c7a; background:#fff; }
 .up-go { display:flex; gap:8px; margin-top:10px; }
 .up-cancel { flex:0 0 auto; padding:11px 16px; border:none; background:#eef1f5; color:#5c6570; border-radius:12px; font:inherit; font-size:14px; font-weight:600; cursor:pointer; }
-.up-post { flex:1; padding:11px; border:none; background:#fee500; color:#1f1a00; border-radius:12px; font:inherit; font-size:14px; font-weight:700; cursor:pointer; }
+.up-post { flex:1; padding:11px; border:none; background:#6b5bd2; color:#ffffff; border-radius:12px; font:inherit; font-size:14px; font-weight:700; cursor:pointer; }
 .up-post:disabled, .up-cancel:disabled { opacity:.6; }
 .up-err { margin-top:10px; padding:10px 12px; background:#fff1f3; color:#b4233d; border-radius:12px; font-size:13px; }
 `;

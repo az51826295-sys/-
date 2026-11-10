@@ -164,7 +164,7 @@ const CSS = `
 .kl-when { font-size:11px; color:#a3aab3; white-space:nowrap; }
 .kl-badge { min-width:18px; height:18px; padding:0 5px; background:#ff4a3d; color:#fff; font-size:11px; font-weight:700; line-height:1; display:flex; align-items:center; justify-content:center; border-radius:9px; clip-path:polygon(2px 0, calc(100% - 2px) 0, 100% 2px, 100% calc(100% - 2px), calc(100% - 2px) 100%, 2px 100%, 0 calc(100% - 2px), 0 2px); }
 .kl-hearts { font-size:12px; color:#ff5c7a; letter-spacing:1px; white-space:nowrap; }
-.kl-empty-go { display:inline-block; margin-top:12px; padding:10px 18px; background:#fee500; color:#1f1a00; text-decoration:none; border-radius:999px; font-size:14px; font-weight:600; }
+.kl-empty-go { display:inline-block; margin-top:12px; padding:10px 18px; background:#6b5bd2; color:#ffffff; text-decoration:none; border-radius:999px; font-size:14px; font-weight:600; }
 .kl-empty { padding:44px 14px; font-size:14px; color:#8a8f98; text-align:center; line-height:1.7; }
 .kl-warn { background:#fff8d6; color:#5a4a00; font-size:13px; padding:10px 16px; }
 `;

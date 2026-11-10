@@ -63,7 +63,7 @@ export default function DotChat({
   const [live, setLive] = useState<string | null>(null);
   /** 프로필을 누르면 큰 얼굴. 512px 도트가 42px 칸에 갇혀 있을 이유가 없다 — 카톡도 누르면 크게 뜬다. */
   const [peek, setPeek] = useState<string | null>(null);
-  const [themeKey, setThemeKey] = useState<string>("kakao");
+  const [themeKey, setThemeKey] = useState<string>("dark");
   const [themeOpen, setThemeOpen] = useState(false);
   useEffect(() => { try { const k = localStorage.getItem(THEME_KEY); if (k && (THEMES[k] || k === CHAR_THEME_KEY)) setThemeKey(k); } catch { /* 저장소 없음 */ } }, []);
   const pickTheme = (k: string) => { setThemeKey(k); try { localStorage.setItem(THEME_KEY, k); } catch { /* 저장 못 해도 이번 방은 바뀐다 */ } };
@@ -74,7 +74,7 @@ export default function DotChat({
    * 말풍선 색은 **여섯 장과 같은 어두운 짝**을 쓴다(배경마다 색을 새로 고르면 열 벌이 또 갈린다).
    */
   const 캐릭터배경: Theme | null = who ? { ...CHAR_THEME, name: `${who.name}의 자리`, wall: `/wallpapers/char/${who.slug}.png` } : null;
-  const theme = (themeKey === CHAR_THEME_KEY ? 캐릭터배경 : THEMES[themeKey]) ?? THEMES.kakao;
+  const theme = (themeKey === CHAR_THEME_KEY ? 캐릭터배경 : THEMES[themeKey]) ?? THEMES.dark;
   const [bubbleKey, setBubbleKey] = useState<string>("pixel");
   useEffect(() => { try { const k = localStorage.getItem(BUBBLE_KEY); if (k && BUBBLES[k]) setBubbleKey(k); } catch { /* 저장소 없음 */ } }, []);
   const pickBubble = (k: string) => { setBubbleKey(k); try { localStorage.setItem(BUBBLE_KEY, k); } catch { /* 이번 방만 */ } };
@@ -1032,7 +1032,14 @@ type Theme = { bg: string; bar: string; line: string; them: string; me: string; 
  * 그림은 살짝 어둡게 뽑았고, 이름·시각 글자는 그림 위에서 흰색으로 바뀐다(`.has-wall`).
  */
 const THEMES: Record<string, Theme> = {
-  kakao:  { name: "기본",   bg: "#b2c7d9", bar: "rgba(178,199,217,.96)", line: "#9db4c9", them: "#ffffff", me: "#fee500", meText: "#141414", ink: "#1c1c1c" },
+  /**
+   * **기본은 검정** (11-10 사장님: *"기본배경을 검정으로 바꿔, 표절 시비 걸리겠다"*).
+   *
+   * 전에는 `#b2c7d9` 하늘색 바탕 + `#fee500` 노란 말풍선이었다 — 그 두 색이 **카톡 그 자체**다.
+   * 자리(아래 탭·격자)는 흔한 모양이라 따라도 되지만 **색은 상표에 가깝다.** 배치는 남기고 색을 뗀다.
+   * 내 말풍선은 이 앱 색(보라 `#6b5bd2`)으로 — 노랑을 옮겨 놓으면 뗀 게 아니다.
+   */
+  dark:   { name: "기본",   bg: "#101014", bar: "#17171f", line: "#2b2b36", them: "#23232e", themText: "#eceaf4", me: "#6b5bd2", meText: "#ffffff", ink: "#eceaf4" },
   night:  { name: "밤",     bg: "#1b2230", bar: "#232c3d", line: "#3a4660", them: "#2c3648", me: "#ffd479", meText: "#241b0a", ink: "#e9edf2" },
   peach:  { name: "복숭아", bg: "#f6d8cf", bar: "#efc4b7", line: "#d9a89a", them: "#fffaf7", me: "#ff9db0", meText: "#3a1520", ink: "#2b1a17" },
   mint:   { name: "민트",   bg: "#cfe9dd", bar: "#b9dccb", line: "#8fbfa6", them: "#ffffff", me: "#b7f0c4", meText: "#12331d", ink: "#12241a" },
@@ -1049,7 +1056,7 @@ const THEMES: Record<string, Theme> = {
 };
 /** 말풍선 모양. 전부 CSS 다 — 그림값이 안 든다. */
 const BUBBLES: Record<string, { name: string; cls: string }> = {
-  kakao: { name: "카톡",     cls: "bub-kakao" },
+  kakao: { name: "기본",     cls: "bub-kakao" },
   pixel: { name: "도트",     cls: "bub-pixel" },
   rpg:   { name: "대화창",   cls: "bub-rpg" },
   round: { name: "둥근",     cls: "bub-round" },
@@ -1215,7 +1222,7 @@ const CSS = `
 .kk-link input { padding:12px 14px; border:1px solid rgba(0,0,0,.12); border-radius:12px; background:#fafbfc; font:inherit; font-size:15px; color:#141414; outline:none; }
 .kk-link input:focus { border-color:#ff5c7a; background:#fff; }
 .kk-link-err { font-size:13px; color:#b4233d; }
-.kk-link-go { padding:13px; background:#fee500; color:#1f1a00; border:none; border-radius:12px; font:inherit; font-size:15px; font-weight:600; cursor:pointer; }
+.kk-link-go { padding:13px; background:#6b5bd2; color:#ffffff; border:none; border-radius:12px; font:inherit; font-size:15px; font-weight:600; cursor:pointer; }
 .kk-link-go:disabled { background:#eceff3; color:#a3aab3; }
 
 /* 대화 */
@@ -1256,10 +1263,10 @@ const CSS = `
 .kk-pair + .kk-pair { margin-top:4px; }
 .kk-bubble { padding:8px 12px; font-size:15px; line-height:1.45; white-space:pre-wrap; word-break:break-word; letter-spacing:-.1px; border-radius:12px; position:relative; }
 .kk-bubble.them { background:var(--them, #fff); color:var(--themText, #141414); }
-.kk-bubble.me { background:var(--me, #fee500); color:var(--meText, #141414); max-width:74%; }
+.kk-bubble.me { background:var(--me, #6b5bd2); color:var(--meText, #ffffff); max-width:74%; }
 /* 기본(카톡): 위쪽에 작은 꼬리. 상대는 얼굴 쪽, 나는 오른쪽. 연달아 말하면 첫 말에만. */
 .bub-kakao .kk-item:not(.run) .kk-bubble.them::before { content:""; position:absolute; left:-6px; top:8px; width:8px; height:8px; background:var(--them, #fff); clip-path:polygon(100% 0, 0 0, 100% 100%); }
-.bub-kakao .kk-item:not(.run) .kk-bubble.me::after { content:""; position:absolute; right:-6px; top:8px; width:8px; height:8px; background:var(--me, #fee500); clip-path:polygon(0 0, 100% 0, 0 100%); }
+.bub-kakao .kk-item:not(.run) .kk-bubble.me::after { content:""; position:absolute; right:-6px; top:8px; width:8px; height:8px; background:var(--me, #6b5bd2); clip-path:polygon(0 0, 100% 0, 0 100%); }
 .bub-round .kk-bubble { border-radius:18px; }
 .bub-round .kk-bubble.them { border-top-left-radius:6px; }
 .bub-round .kk-bubble.me { border-top-right-radius:6px; }
@@ -1277,7 +1284,7 @@ const CSS = `
   clip-path:polygon(4px 0, calc(100% - 4px) 0, calc(100% - 4px) 2px, calc(100% - 2px) 2px, calc(100% - 2px) 4px, 100% 4px, 100% calc(100% - 4px), calc(100% - 2px) calc(100% - 4px), calc(100% - 2px) calc(100% - 2px), calc(100% - 4px) calc(100% - 2px), calc(100% - 4px) 100%, 4px 100%, 4px calc(100% - 2px), 2px calc(100% - 2px), 2px calc(100% - 4px), 0 calc(100% - 4px), 0 4px, 2px 4px, 2px 2px, 4px 2px); padding:9px 13px; filter:drop-shadow(2px 2px 0 rgba(0,0,0,.22)); }
 .bub-pixel .kk-bubble::before { content:""; position:absolute; inset:2px; z-index:-1; background:var(--pxFill); clip-path:polygon(4px 0, calc(100% - 4px) 0, calc(100% - 4px) 2px, calc(100% - 2px) 2px, calc(100% - 2px) 4px, 100% 4px, 100% calc(100% - 4px), calc(100% - 2px) calc(100% - 4px), calc(100% - 2px) calc(100% - 2px), calc(100% - 4px) calc(100% - 2px), calc(100% - 4px) 100%, 4px 100%, 4px calc(100% - 2px), 2px calc(100% - 2px), 2px calc(100% - 4px), 0 calc(100% - 4px), 0 4px, 2px 4px, 2px 2px, 4px 2px); }
 .bub-pixel .kk-bubble.them { --pxFill:var(--them, #fff); }
-.bub-pixel .kk-bubble.me { --pxFill:var(--me, #fee500); }
+.bub-pixel .kk-bubble.me { --pxFill:var(--me, #6b5bd2); }
 .bub-pixel .kk-item:not(.run) .kk-bubble.them::after, .bub-pixel .kk-item:not(.run) .kk-bubble.me::after { content:""; position:absolute; top:10px; width:8px; height:8px; background:var(--pxFill); z-index:1; }
 .bub-pixel .kk-item:not(.run) .kk-bubble.them::after { left:-6px; clip-path:polygon(100% 0, 50% 0, 50% 25%, 25% 25%, 25% 50%, 0 50%, 0 75%, 25% 75%, 25% 100%, 100% 100%); }
 .bub-pixel .kk-item:not(.run) .kk-bubble.me::after { right:-6px; clip-path:polygon(0 0, 50% 0, 50% 25%, 75% 25%, 75% 50%, 100% 50%, 100% 75%, 75% 75%, 75% 100%, 0 100%); }
@@ -1295,7 +1302,7 @@ const CSS = `
 .kk-limit-body { font-size:14px; line-height:1.6; color:#3c434b; }
 /* 11-06: 40px 이었다 — 출석 단추가 되면서 **이 앱에서 제일 중요한 단추**가 됐는데 AAA(44px) 아래였다.
    방 사진 자(dot_room_shot)가 ❌ 로 잡았다. */
-.kk-limit-btn { margin-top:12px; min-height:44px; background:#fee500; color:#1f1a00; border:none; border-radius:12px; padding:10px 14px; font:inherit; font-size:14px; font-weight:600; cursor:pointer; }
+.kk-limit-btn { margin-top:12px; min-height:44px; background:#6b5bd2; color:#ffffff; border:none; border-radius:12px; padding:10px 14px; font:inherit; font-size:14px; font-weight:600; cursor:pointer; }
 .kk-limit-note { margin-top:8px; font-size:12px; color:#8a8f98; }
 .kk-limit-btn { display:block; width:100%; }
 .kk-limit-btn small { display:block; font-weight:400; font-size:11px; opacity:.7; margin-top:2px; }
@@ -1392,9 +1399,9 @@ const CSS = `
 .has-wall .kk-input-row { border-top-color:rgba(255,255,255,.08); }
 .has-wall .kk-chip { background:rgba(255,255,255,.14); color:var(--ink, #fff); border-color:rgba(255,255,255,.18); }
 .has-wall .kk-send { background:rgba(255,255,255,.14); color:rgba(255,255,255,.55); }
-.has-wall .kk-send.ready { background:var(--me, #fee500); color:var(--meText, #1f1a00); }
+.has-wall .kk-send.ready { background:var(--me, #6b5bd2); color:var(--meText, #ffffff); }
 .kk-send { flex:0 0 auto; width:40px; height:40px; display:flex; align-items:center; justify-content:center; border:none; border-radius:50%; background:#eceff3; color:#a3aab3; cursor:default; transition:background .15s, color .15s, transform .1s; }
-.kk-send.ready { background:#fee500; color:#1f1a00; cursor:pointer; }
+.kk-send.ready { background:#6b5bd2; color:#ffffff; cursor:pointer; }
 .kk-send.ready:active { transform:scale(.92); }
 .kk-input:disabled { opacity:.6; }
 .kk-foot { background:var(--bar, rgba(255,255,255,.92)); color:var(--ink, #8a8f98); opacity:.8; font-size:12px; padding:0 14px 8px; text-align:center; }
@@ -1418,7 +1425,7 @@ const CSS = `
 .kk-peek-photo { width:200px; height:250px; object-fit:cover; image-rendering:pixelated; border-radius:20px; }
 .kk-peek-photos { display:flex; gap:8px; justify-content:center; margin-top:14px; }
 .kk-peek-photos img { width:72px; height:90px; object-fit:cover; image-rendering:pixelated; border-radius:12px; }
-.kk-peek-go { display:block; margin:14px auto 0; max-width:320px; background:#fee500; color:#1f1a00; text-decoration:none; font-weight:600; font-size:15px; padding:12px; border-radius:12px; }
+.kk-peek-go { display:block; margin:14px auto 0; max-width:320px; background:#6b5bd2; color:#ffffff; text-decoration:none; font-weight:600; font-size:15px; padding:12px; border-radius:12px; }
 .kk-peek-stage { font-size:13px; color:#ff5c7a; margin-top:4px; }
 .kk-peek-faces { display:flex; gap:8px; justify-content:center; margin-top:14px; flex-wrap:wrap; }
 .kk-peek-faces button { width:44px; height:44px; padding:0; background:#f1f3f6; border:2px solid transparent; border-radius:12px; overflow:hidden; cursor:pointer; }
