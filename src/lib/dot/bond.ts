@@ -103,18 +103,24 @@ export function decayFor(lastTalkedOn: string | null, today: string): { lost: nu
 // 않고 글에서 찾으므로, 설문으로 새 캐릭터가 오면 그 사람이 좋아하는 게 저절로 맞는다.
 //
 // **횟수 제한 없음**(09-30 사장님 "3번 풀어"). 처음엔 캐릭터마다 하루 한 번이었다 — 연타하면 하루에 5단계가
-// 되고, 어린 사용자가 한자리에서 크레딧을 몰아 쓸 수 있어서. 유료라 크레딧이 곧 한도라는 사장님 판단으로 뗐다.
+// 되고, 어린 사용자가 한자리에서 크레딧을 몰아 쓸 수 있어서.
 //
-// **유료**(09-30 사장님 "선물은 돈내고 하는 거야") — 충전한 **크레딧**으로 산다(대화 50번 1,900원과 같은 지갑).
-// 대화 턴은 안 쓴다(두 번 받지 않는다). `price` 는 **자리표** — money.ts SKUS 처럼 값은 사장님이 정한다.
-// 크레딧 1개 ≈ 25~38원(대화 200번 4,900원 ~ 50번 1,900원)이라 10크레딧 ≈ 250~380원.
-export type Gift = { key: string; name: string; tell: string; points: number; price: number; 낱말: string[] };
+// ── 11-10 사장님 *"선물의 단위를 하트로 바꿔"* ───────────────────────────────────
+//
+// 값을 **하트**로 매긴다. 크레딧으로 사던 때는 하루 한도가 없어서 **좋아하는 선물 59번이면
+// 5단계**였다 — 돈으로 단계를 살 수 있었다(11-10 실측). 하트는 하루 최대 10개(출석 5 + 광고 5)라
+// 선물도 그 한도 안으로 들어온다. 하트가 떨어지면 `dot_take_turn` 이 충전 크레딧에서 하나 꺼내므로
+// 파는 쪽이 막히는 것도 아니다 — **대화와 같은 지갑, 같은 한도**가 된다.
+//
+// `하트` 는 **자리표**다. 값은 사장님이 정한다. 지금은 말 한 번이 1하트라는 것을 기준 삼아,
+// 평범한 선물 2하트(= 두 마디), 두쫀쿠 3하트로 뒀다.
+export type Gift = { key: string; name: string; tell: string; points: number; 하트: number; 낱말: string[] };
 export const GIFTS: Gift[] = [
-  { key: "dzk", name: "두쫀쿠", tell: "두바이 쫀득 쿠키(두쫀쿠)", points: 8, price: 15, 낱말: ["두쫀쿠", "쿠키"] },
-  { key: "saltbread", name: "소금빵", tell: "갓 구운 소금빵", points: 8, price: 10, 낱말: ["소금빵"] },
-  { key: "strawmilk", name: "딸기우유", tell: "딸기우유", points: 8, price: 10, 낱말: ["딸기우유"] },
-  { key: "cancoffee", name: "캔커피", tell: "캔커피", points: 8, price: 10, 낱말: ["캔커피"] },
-  { key: "ramen", name: "라면", tell: "편의점 라면", points: 8, price: 10, 낱말: ["라면"] },
+  { key: "dzk", name: "두쫀쿠", tell: "두바이 쫀득 쿠키(두쫀쿠)", points: 8, 하트: 3, 낱말: ["두쫀쿠", "쿠키"] },
+  { key: "saltbread", name: "소금빵", tell: "갓 구운 소금빵", points: 8, 하트: 2, 낱말: ["소금빵"] },
+  { key: "strawmilk", name: "딸기우유", tell: "딸기우유", points: 8, 하트: 2, 낱말: ["딸기우유"] },
+  { key: "cancoffee", name: "캔커피", tell: "캔커피", points: 8, 하트: 2, 낱말: ["캔커피"] },
+  { key: "ramen", name: "라면", tell: "편의점 라면", points: 8, 하트: 2, 낱말: ["라면"] },
 ];
 export function giftFor(key: unknown): Gift | null {
   return typeof key === "string" ? GIFTS.find((g) => g.key === key) ?? null : null;

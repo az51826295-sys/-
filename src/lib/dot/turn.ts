@@ -80,7 +80,7 @@ type Answer = z.infer<typeof answer>;
 export type TurnResult =
   | { ok: true; reply: string; emotion: Emotion; sticker: Emotion | null; bond: { points: number; stage: number; gained: number; reasons: string[]; toNext: ReturnType<typeof toNextStage> }; remaining: number }
   | { ok: false; reason: "limit"; remaining: 0; resetsAt: string }
-  | { ok: false; reason: "no_character" | "failed" | "gift_limit" | "no_credits"; message: string };
+  | { ok: false; reason: "no_character" | "failed" | "gift_limit" | "no_hearts"; message: string };
 
 type Character = { id: string; slug: string; name: string; persona: string; speech: string; sprites: Record<string, string>; formal_start?: boolean; default_emotion?: string; voice_ladder?: string | null };
 
@@ -138,7 +138,8 @@ export async function prepareTurn(db: SupabaseClient, userId: string, characterI
   // 필요는 없다 — 한도에 걸리면 읽은 것을 버리면 된다.
   const [chRes, takeRes, bondRes, recentRes, countRes, usageRes] = await Promise.all([
     db.from("dot_characters").select("id, slug, name, persona, speech, sprites, formal_start, default_emotion, voice_ladder").eq("id", characterId).maybeSingle(),
-    // 09-30 사장님 "선물은 돈내고 하는 거야" — 선물은 **크레딧**으로 산다. 대화 턴까지 가져가면 두 번 받는다.
+    // 11-10 사장님 "선물의 단위를 하트로 바꿔" — 선물은 **아래 선물 자리에서** 하트를 값만큼 가져간다.
+    // 여기서 한 개만 먼저 떼면 모자랄 때 되돌릴 것이 늘어난다. 대화만 여기서 한 개.
     opts.gift ? Promise.resolve({ data: 1, error: null }) : db.rpc("dot_take_turn", { p_user: userId, p_day: day, p_limit: AUTO_HEARTS_PER_DAY }),
     db.from("dot_bonds").select("points, stage, streak_days, last_talked_on, memo, mode, last_gift_on").eq("user_id", userId).eq("character_id", characterId).maybeSingle(),
     db.from("dot_messages").select("role, content, sticker").eq("user_id", userId).eq("character_id", characterId).order("id", { ascending: false }).limit(HISTORY_TURNS * 2 + HISTORY_BLOCK),
@@ -147,16 +148,19 @@ export async function prepareTurn(db: SupabaseClient, userId: string, characterI
        (첫 글자 속도가 이 앱의 전부다). 왜 필요한지는 아래 `새줄구멍` 주석에 적었다. */
     db.from("dot_usage").select("bonus_turns").eq("user_id", userId).eq("day", day).maybeSingle(),
   ]);
-  /** 실패하면 **받은 것을 돌려준다.** 대화면 턴 하나, 선물이면 낸 크레딧(아래서 값이 정해지면 바뀐다). */
-  let 돌려줄크레딧 = 0, 선물키 = "";
+  /**
+   * 실패하면 **받은 것을 돌려준다.** 대화면 하트 하나, 선물이면 선물 값만큼.
+   *
+   * 11-10: 선물도 하트라서 돌려주는 길이 하나가 됐다(전에는 크레딧이라 `dot_grant` 로 따로 돌려줬다).
+   * `돌려줄하트` 는 실제로 **가져간 개수**다 — 모자라서 중간에 멈췄으면 그만큼만 돌려준다.
+   */
+  let 돌려줄하트 = opts.gift ? 0 : 1;
   const giveBack = async (): Promise<void> => {
-    if (돌려줄크레딧 > 0) {
-      await db.rpc("dot_grant", { p_user: userId, p_sku: `gift_refund:${선물키}`, p_credits: 돌려줄크레딧, p_menhera_days: 0, p_source: "refund", p_ref: null }).then(() => {}, () => {});
-      돌려줄크레딧 = 0;
-      return;
+    const n = 돌려줄하트;
+    돌려줄하트 = 0;
+    for (let i = 0; i < n; i++) {
+      await db.rpc("dot_give_back_turn", { p_user: userId, p_day: day, p_limit: AUTO_HEARTS_PER_DAY }).then(() => {}, () => {});
     }
-    if (opts.gift) return;   // 선물은 턴을 안 가져갔다 — 돌려줄 턴도 없다
-    await db.rpc("dot_give_back_turn", { p_user: userId, p_day: day, p_limit: AUTO_HEARTS_PER_DAY }).then(() => {}, () => {});
   };
 
   const character = chRes.data ? (chRes.data as unknown as Character) : null;
@@ -176,7 +180,8 @@ export async function prepareTurn(db: SupabaseClient, userId: string, characterI
    */
   const 줄없었다 = !usageRes.data;   // 오늘 줄이 아예 없었다 = 출석도 광고도 없었다
   const 받은하트 = AUTO_HEARTS_PER_DAY + Number((usageRes.data as { bonus_turns?: number } | null)?.bonus_turns ?? 0);
-  if (!opts.gift && 줄없었다 && 받은하트 <= 0) {
+  /* 11-10: 선물도 하트로 사므로 이 구멍은 **선물에도 막아야 한다.** 전에는 선물이 크레딧이라 뺐었다. */
+  if (줄없었다 && 받은하트 <= 0) {
     await giveBack();
     return { ok: false, reason: "limit", remaining: 0, resetsAt: `${day} 자정(한국 시간)` };
   }
@@ -197,11 +202,22 @@ export async function prepareTurn(db: SupabaseClient, userId: string, characterI
     if (opts.gift && !선물) { await giveBack(); return { ok: false, reason: "failed", message: "그런 선물은 없어요." }; }
     const 선물점 = 선물 ? giftPoints(선물, character.persona ?? "") : null;
     if (선물) {
-      // **원자적으로** 뺀다(dot_spend_credits) — 두 번 눌러도 잔고가 모자라면 두 번째는 막힌다.
-      const { data: 남음, error: se } = await db.rpc("dot_spend_credits", { p_user: userId, p_amount: 선물.price, p_sku: `gift:${선물.key}` });
-      if (se) return { ok: false, reason: "failed", message: se.message };
-      if (Number(남음) < 0) return { ok: false, reason: "no_credits", message: `크레딧이 모자라요. ${선물.name}${eunNeun(선물.name)} ${선물.price}크레딧이에요.` };
-      돌려줄크레딧 = 선물.price; 선물키 = 선물.key;   // 이 뒤로 실패하면 돌려준다
+      /**
+       * **하트를 값만큼 가져간다** (11-10 사장님 "선물의 단위를 하트로 바꿔").
+       *
+       * `dot_take_turn` 한 번이 하트 하나다 — 이 기계에 DDL 열쇠가 없어 "N개를 한 번에" 하는
+       * 함수를 못 만든다. 그래서 하나씩 부르고, **중간에 모자라면 거기까지 가져간 것을 돌려준다.**
+       * 한 번 한 번은 원자적이라(그 안에서 한도를 보고 올린다) 두 번 눌러도 두 배로 새지 않는다.
+       */
+      for (let i = 0; i < 선물.하트; i++) {
+        const { data: 턴, error: te } = await db.rpc("dot_take_turn", { p_user: userId, p_day: day, p_limit: AUTO_HEARTS_PER_DAY });
+        if (te) { await giveBack(); return { ok: false, reason: "failed", message: te.message }; }
+        if (Number(턴 ?? 0) <= 0) {
+          await giveBack();
+          return { ok: false, reason: "no_hearts", message: `하트가 모자라요. ${선물.name}${eunNeun(선물.name)} ${선물.하트}하트예요.` };
+        }
+        돌려줄하트++;   // 이 뒤로 실패하면 여기까지 가져간 만큼 돌려준다
+      }
     }
     const mode = toMode(bondRow?.mode);
     const all = ((recent ?? []) as { role: string; content: string; sticker: string | null }[]).reverse();   // 오래된 것부터

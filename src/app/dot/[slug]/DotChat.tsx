@@ -425,8 +425,8 @@ export default function DotChat({
              관계가 실제로 바뀐 그 턴에 저절로 온다 — 그게 "기념"이 되는 자리다.
              서버가 같은 단계를 두 번 주지 않으므로(429) 여기서 또 세지 않는다. */
           if (ev.bond && ev.bond.stage > bond.stage) void 카드받기();
-          // 선물이 되면 낸 크레딧만큼 화면 잔고도 줄인다(선물 판의 "보유 N크레딧" 이 옛 숫자로 남지 않게).
-          if (giftKey) { const g = GIFTS.find((x) => x.key === giftKey); if (g) setBalance((b) => ({ ...b, credits: Math.max(0, b.credits - g.price) })); }
+          /* 선물로 쓴 하트는 **여기서 또 빼지 않는다.** 전에는 크레딧이라 서버 값이 안 와서 손으로 줄였는데,
+             하트는 서버가 `remaining` 을 DB 에서 다시 읽어 보내 준다(바로 위 줄) — 또 빼면 두 번 줄어든다. */
         } else if (ev.type === "error") {
           finished = true;
           setLive(null);
@@ -670,35 +670,37 @@ export default function DotChat({
           <div className="kk-gifts">
             {/*
               09-30 사장님 "두쫀쿠 사주기 같이 선물을 선물하면 올라가게 해".
-              횟수 제한 없음(09-30 "3번 풀어") — 크레딧이 한도. 좋아하는 걸 주면 두 배 — 어느 게 좋아하는 건지는 **안 알려 준다**.
+              횟수 제한 없음(09-30 "3번 풀어"). 좋아하는 걸 주면 두 배 — 어느 게 좋아하는 건지는 **안 알려 준다**.
               대화하다 알게 되는 것이 재미다(유나가 소금빵 얘기를 먼저 꺼낸다).
+              11-10 사장님 "선물의 단위를 하트로 바꿔" — 값도 한도도 **하트**다. 그래서 여기 보이는 잔고는
+              크레딧이 아니라 **오늘 남은 하트**(`remaining`)여야 한다. 크레딧을 보여 주면 눌리는데 서버가 막는다.
             */}
             <div className="kk-gifts-title">
               {lang === "en" ? `Give ${who.name} something` : `${who.name}에게 선물하기`}
-              <small>{lang === "en" ? `${balance.credits} credits` : `보유 ${balance.credits}크레딧`}</small>
+              <small>{lang === "en" ? `${remaining} hearts left` : `하트 ${remaining}개 남음`}</small>
             </div>
             <div className="kk-gifts-grid">
               {GIFTS.map((g) => {
                 /* 10-28 사장님 "크레딧없는데 선물줄 수 있는거 고쳐".
                    값은 보여 주면서 **못 사는 것을 누를 수 있게** 뒀었다. 서버가 막아 주긴 했지만
                    사람에게는 눌리는 단추였고, 눌러 봐야 오류가 떴다. 못 사면 안 내민다. */
-                const 못삼 = balance.credits < g.price;
+                const 못삼 = remaining < g.하트;
                 return (
                   <button key={g.key} onClick={() => send(`🎁 ${g.name}`, undefined, g.key)} disabled={busy || 못삼}
-                    title={못삼 ? (lang === "en" ? `You need ${g.price - balance.credits} more credits` : `${g.price - balance.credits}크레딧 더 필요해요`) : undefined}>
+                    title={못삼 ? (lang === "en" ? `You need ${g.하트 - remaining} more hearts` : `하트 ${g.하트 - remaining}개 더 필요해요`) : undefined}>
                     <span className="kk-gift-name">{g.name}</span>
                     {/* 값을 **누르기 전에** 보여 준다 — 누르고 나서 "모자라요" 는 속은 기분이 든다. */}
-                    <span className="kk-gift-price">{g.price}{lang === "en" ? "" : "크레딧"}</span>
+                    <span className="kk-gift-price">{lang === "en" ? `${g.하트}♥` : `하트 ${g.하트}`}</span>
                   </button>
                 );
               })}
             </div>
             {/* 전부 못 사면 **왜 다 꺼져 있는지** 적는다 — 꺼진 단추만 있으면 고장으로 보인다. */}
-            {GIFTS.every((g) => balance.credits < g.price) && (
+            {GIFTS.every((g) => remaining < g.하트) && (
               <div className="kk-gifts-none">
                 {lang === "en"
-                  ? `Not enough credits — the cheapest is ${Math.min(...GIFTS.map((g) => g.price))}.`
-                  : `크레딧이 모자라요 — 제일 싼 선물이 ${Math.min(...GIFTS.map((g) => g.price))}크레딧이에요.`}
+                  ? `Not enough hearts — the cheapest is ${Math.min(...GIFTS.map((g) => g.하트))}.`
+                  : `하트가 모자라요 — 제일 싼 선물이 하트 ${Math.min(...GIFTS.map((g) => g.하트))}개예요.`}
               </div>
             )}
           </div>
@@ -806,6 +808,8 @@ export default function DotChat({
                     글자를 "좋아요" 로 바꿨다(아이콘 ♡ 는 보편이라 그대로). */}
                 {/* 11-06: 전에 "하루 30번" 을 안 고쳐 석 달 거짓말을 했다. 숫자도 **길도** 상수에서 읽는다. */}
                 <li>한 번 말할 때 <b>하트 1개</b> — 출석하면 {CHECKIN_HEARTS}개, 광고 보면 1개씩 (하루 {limit}개까지)</li>
+                {/* 11-10 사장님 "선물의 단위를 하트로 바꿔" — 값이 같은 지갑에서 나가니 여기에도 적는다. */}
+                <li>선물은 <b>하트 {Math.min(...GIFTS.map((g) => g.하트))}~{Math.max(...GIFTS.map((g) => g.하트))}개</b> — 좋아하는 걸 주면 친밀도가 두 배로 올라요</li>
               </ul>
             )}
             <button className="kk-peek-close" onClick={closeGuide}>{lang === "en" ? "Got it" : "알겠어요"}</button>
