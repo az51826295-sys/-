@@ -712,26 +712,51 @@ export default function DotChat({
         )}
         {놀이 && <GameBand live={놀이} 막힘={busy || remaining <= 0} 보내기={(s) => 놀이보내기({ message: s })} />}
         {stickerOpen && (
-          <div className="kk-stickers">
-            {USER_STICKER_KEYS.map((k) => (
-              <button key={k} onClick={() => send(`(${USER_STICKERS[k].ko} 스티커)`, k)} aria-label={USER_STICKERS[k].ko} disabled={busy || remaining <= 0}>
-                <StickerSvg k={k} size={48} /><span>{USER_STICKERS[k].ko}</span>
-              </button>
-            ))}
-            {/*
-              **그 사람 이모티콘 — 5단계부터** (11-10 사장님 "5면 그에 맞는 이모티콘").
-              새로 그리지 않고 그 사람 얼굴 여섯 칸을 쓴다. 잠겼을 때도 보여 준다(흐리게) —
-              안 보이면 받을 것이 있는 줄도 모른다. 진짜 문은 서버에 있다(turn.ts).
-            */}
-            <div className="kk-emo-lock">{bond.stage >= EMOTICON_STAGE ? `${who.name} 이모티콘` : `${who.name} 이모티콘 — ${EMOTICON_STAGE}단계에 열려요`}</div>
-            {FACE_KEYS.map((e) => (
-              <button key={e} className={bond.stage >= EMOTICON_STAGE ? "" : "locked"}
-                onClick={() => bond.stage >= EMOTICON_STAGE ? send(`(${who.name}의 ${faceKo(e)} 이모티콘)`, `${FACE_PREFIX}${e}`) : setToast(`${EMOTICON_STAGE}단계가 되면 열려요`)}
-                aria-label={faceKo(e)} disabled={busy || (bond.stage >= EMOTICON_STAGE && remaining <= 0)}>
-                <img src={`/dot-sprites/${who.slug}/face/${e}.png`} alt="" width={48} height={48} style={{ imageRendering: "pixelated" }} />
-                <span>{faceKo(e)}</span>
-              </button>
-            ))}
+          /*
+            **이모티콘 서랍** (11-10 사장님 "이모티콘 화면도 이쁘게 전체적으로 꾸며").
+            전에는 단추 여섯 개가 맨바닥에 떠 있었다. 놀이 서랍과 **같은 결**로 맞춘다 —
+            어두운 판 · 2px 속테두리 · 누르면 2px 내려가기. 서랍이 둘인데 생김새가 다르면
+            같은 앱으로 안 보인다([[kakao-placement-rule]]).
+
+            칸은 둘로 가른다: **기본**(늘 있는 것)과 **그 사람 이모티콘**(5단계). 잠긴 칸도
+            흐리게 보여 주고 자물쇠를 얹는다 — 안 보이면 받을 것이 있는 줄도 모른다.
+          */
+          <div className="kk-stk">
+            <div className="kk-stk-head">
+              <b>{lang === "en" ? "Stickers" : "스티커"}</b>
+              <small>{lang === "en" ? "1 heart each" : "하나에 하트 1개"}</small>
+            </div>
+            <div className="kk-stk-grid">
+              {USER_STICKER_KEYS.map((k) => (
+                <button key={k} onClick={() => send(`(${USER_STICKERS[k].ko} 스티커)`, k)} aria-label={USER_STICKERS[k].ko} disabled={busy || remaining <= 0}>
+                  <span className="kk-stk-tile"><StickerSvg k={k} size={44} /></span>
+                  <span className="kk-stk-ko">{USER_STICKERS[k].ko}</span>
+                </button>
+              ))}
+            </div>
+
+            <div className={`kk-stk-head${bond.stage >= EMOTICON_STAGE ? "" : " locked"}`}>
+              <b>{lang === "en" ? `${who.name}'s emoticons` : `${who.name} 이모티콘`}</b>
+              {bond.stage >= EMOTICON_STAGE
+                ? <small className="kk-stk-got">{lang === "en" ? "unlocked" : "열렸어요"}</small>
+                : <small>{lang === "en" ? `opens at stage ${EMOTICON_STAGE}` : `${EMOTICON_STAGE}단계에 열려요`} · {"★".repeat(bond.stage)}{"☆".repeat(Math.max(0, EMOTICON_STAGE - bond.stage))}</small>}
+            </div>
+            <div className="kk-stk-grid">
+              {FACE_KEYS.map((e) => {
+                const 열림 = bond.stage >= EMOTICON_STAGE;
+                return (
+                  <button key={e} className={열림 ? "" : "locked"}
+                    onClick={() => 열림 ? send(`(${who.name}의 ${faceKo(e)} 이모티콘)`, `${FACE_PREFIX}${e}`) : setToast(lang === "en" ? `Opens at stage ${EMOTICON_STAGE}` : `${EMOTICON_STAGE}단계가 되면 열려요`)}
+                    aria-label={faceKo(e)} disabled={busy || (열림 && remaining <= 0)}>
+                    <span className="kk-stk-tile">
+                      <img src={`/dot-sprites/${who.slug}/face/${e}.png`} alt="" width={44} height={44} />
+                      {!열림 && <Lock />}
+                    </span>
+                    <span className="kk-stk-ko">{faceKo(e)}</span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
         )}
         {giftOpen && (
@@ -1287,23 +1312,46 @@ const CSS = `
 .kk-warn { background:#fff8d6; color:#5a4a00; font-size:13px; padding:8px 14px; }
 .kk-emo { flex:0 0 auto; width:40px; height:40px; border:none; background:none; color:var(--ink, #5c6570); opacity:.8; cursor:pointer; display:flex; align-items:center; justify-content:center; }
 /* 09-13 사장님 "배경 화면 있으면 이모티콘 안 보임": 배경 그림이 position:absolute z-index:0 이라 자리 안 잡은 이 판을 덮었다. 판을 위로. */
-/* 11-10 이모티콘 줄 — 잠긴 것은 흐리게 보여 준다(없는 것과 다르다). */
-.kk-emo-lock { grid-column:1 / -1; font-size:11px; color:#8a919a; padding:6px 2px 0; }
-.kk-stickers button.locked { opacity:.35; }
-.kk-stickers button.locked img { filter:grayscale(1); }
+/* ── 이모티콘 서랍 (11-10 "이쁘게 전체적으로 꾸며") — 놀이 서랍과 같은 결 ── */
+.kk-stk { position:relative; z-index:2; padding:8px 8px 10px; background:var(--bar, #fff);
+  border-top:1px solid rgba(0,0,0,.06); max-height:44vh; overflow-y:auto; }
+.kk-stk-head { display:flex; align-items:baseline; gap:6px; padding:4px 2px 6px; }
+.kk-stk-head b { font-size:12px; font-weight:400; color:var(--ink, #3c434b); }
+.kk-stk-head small { font-size:11px; color:#8a919a; }
+.kk-stk-head.locked b { color:#8a919a; }
+.kk-stk-got { color:#6b5bd2; }
+.kk-stk-grid { display:grid; grid-template-columns:repeat(6, 1fr); gap:5px; }
+.kk-stk-grid button { display:flex; flex-direction:column; align-items:center; gap:3px;
+  background:none; border:0; padding:0; font:inherit; cursor:pointer; color:var(--ink, #5c6570); }
+.kk-stk-tile { position:relative; display:flex; align-items:center; justify-content:center; width:100%; aspect-ratio:1;
+  background:#1b1630; box-shadow:inset 0 0 0 2px #1c1c1c; color:#ffd369; }
+.kk-stk-tile img { image-rendering:pixelated; }
+.kk-stk-ko { font-size:10px; line-height:1.2; }
+.kk-stk-grid button:active .kk-stk-tile { transform:translate(2px,2px); }
+.kk-stk-grid button:disabled { opacity:.45; cursor:default; }
+.kk-stk-grid button:disabled:active .kk-stk-tile { transform:none; }
+.kk-stk-grid button.locked .kk-stk-tile img { filter:grayscale(1) brightness(.55); }
+.kk-stk-grid button.locked .kk-stk-ko { color:#9aa1aa; }
+/* 자물쇠 — 타일 오른아래 구석에 작게 */
+.kk-lock { position:absolute; right:3px; bottom:3px; display:flex; flex-direction:column; gap:1px; color:#ffd369; }
+.kk-lock > span { display:flex; gap:1px; }
+.kk-lock i { width:2px; height:2px; background:transparent; }
+.kk-lock i.on { background:currentColor; }
 .kk-face-emo { image-rendering:pixelated; }
-.kk-stickers { position:relative; z-index:2; display:grid; grid-template-columns:repeat(6, 1fr); gap:4px; padding:8px; background:var(--bar, #fff); border-top:1px solid rgba(0,0,0,.06); }
-.kk-stickers button { background:none; border:none; display:flex; flex-direction:column; align-items:center; gap:2px; font:inherit; font-size:11px; color:var(--ink, #5c6570); cursor:pointer; padding:4px 0; }
-.kk-stickers button:disabled { opacity:.4; }
-.kk-gifts { position:relative; z-index:2; padding:10px 10px 12px; background:var(--bar, #fff); border-top:1px solid rgba(0,0,0,.06); }
-.kk-gifts-title { font-size:13px; font-weight:700; color:var(--ink, #3c434b); margin:0 2px 8px; }
-.kk-gifts-title small { font-weight:400; color:#8a919a; margin-left:6px; }
-.kk-gifts-none { margin:8px 2px 0; font-size:12px; color:#8a919a; }
-.kk-gifts-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:6px; }
-.kk-gifts-grid button { min-height:52px; border:1.5px solid rgba(0,0,0,.14); border-radius:12px; background:#fff; font:inherit; font-size:14px; color:#141414; cursor:pointer; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; }
-.kk-gift-price { font-size:11px; color:#ff5c7a; font-weight:600; }
-.kk-gifts-grid button:active { background:#fff1f3; border-color:#ff5c7a; }
-.kk-gifts-grid button:disabled { opacity:.4; }
+@media (max-width: 360px) { .kk-stk-grid { grid-template-columns:repeat(5, 1fr); } }
+/* 선물 서랍 — 11-10 에 이모티콘·놀이 서랍과 **같은 결**로 맞췄다(둥근 흰 카드 → 도트 타일).
+   서랍이 셋인데 생김새가 셋이면 같은 앱으로 안 보인다. */
+.kk-gifts { position:relative; z-index:2; padding:8px 8px 10px; background:var(--bar, #fff); border-top:1px solid rgba(0,0,0,.06); }
+.kk-gifts-title { display:flex; align-items:baseline; gap:6px; font-size:12px; font-weight:400; color:var(--ink, #3c434b); padding:4px 2px 6px; }
+.kk-gifts-title small { font-weight:400; color:#8a919a; }
+.kk-gifts-none { margin:8px 2px 0; font-size:11px; color:#8a919a; }
+.kk-gifts-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:5px; }
+.kk-gifts-grid button { min-height:56px; border:0; background:#1b1630; box-shadow:inset 0 0 0 2px #1c1c1c; color:#fff;
+  font:inherit; font-size:13px; cursor:pointer; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; padding:8px 4px; }
+.kk-gift-price { font-size:11px; color:#ffd369; }
+.kk-gifts-grid button:active { transform:translate(2px,2px); }
+.kk-gifts-grid button:disabled { opacity:.45; cursor:default; }
+.kk-gifts-grid button:disabled:active { transform:none; }
 .kk-input-row { position:relative; z-index:2; display:flex; gap:6px; align-items:flex-end; padding:8px 8px calc(8px + env(safe-area-inset-bottom)); background:var(--bar, rgba(255,255,255,.92)); backdrop-filter:blur(8px); border-top:1px solid rgba(0,0,0,.06); }
 .kk-quote { display:flex; align-items:center; gap:10px; padding:8px 12px; background:var(--bar, #fff); border-top:1px solid rgba(0,0,0,.06); }
 .kk-quote img { width:36px; height:45px; object-fit:cover; image-rendering:pixelated; border-radius:6px; }
@@ -1397,6 +1445,19 @@ const CSS = `
 `;
 
 /** 사람 스티커 그림 — 12×12 격자, 그림값 0. */
+/**
+ * **자물쇠 한 칸** — 그림 파일이 아니라 7×7 도트다(용량 0, 어떤 크기로 키워도 안 흐려진다).
+ * 흐리게만 해 두면 "고장" 으로 읽힌다 — 잠긴 것과 꺼진 것은 다르게 보여야 한다.
+ */
+function Lock() {
+  const rows = ["..###..", ".#...#.", ".#...#.", "#######", "#..#..#", "#..#..#", "#######"];
+  return (
+    <span className="kk-lock" aria-hidden>
+      {rows.map((r, y) => <span key={y}>{[...r].map((c, x) => <i key={x} className={c === "#" ? "on" : ""} />)}</span>)}
+    </span>
+  );
+}
+
 function StickerSvg({ k, size }: { k: string; size: number }) {
   const st = USER_STICKERS[k]; if (!st) return null;
   return <svg className="kk-usticker" width={size} height={size} viewBox="0 0 12 12" shapeRendering="crispEdges" aria-label={st.ko}><path d={st.path} fill={st.color} fillRule="evenodd" /></svg>;
