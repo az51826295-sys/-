@@ -781,6 +781,8 @@ export default function DotChat({
                 return (
                   <button key={g.key} onClick={() => send(`🎁 ${g.name}`, undefined, g.key)} disabled={busy || 못삼}
                     title={못삼 ? (lang === "en" ? `You need ${g.하트 - remaining} more hearts` : `하트 ${g.하트 - remaining}개 더 필요해요`) : undefined}>
+                    {/* 11-10 사장님 "두쫀쿠 사진도 뽑아서 넣어 다" — 그림은 키 이름으로 붙는다(표에 안 적는다). */}
+                    <img className="kk-gift-img" src={`/dot-sprites/gift/${g.key}.png`} alt="" width={40} height={40} />
                     <span className="kk-gift-name">{g.name}</span>
                     {/* 값을 **누르기 전에** 보여 준다 — 누르고 나서 "모자라요" 는 속은 기분이 든다. */}
                     <span className="kk-gift-price">{lang === "en" ? `${g.하트}♥` : `하트 ${g.하트}`}</span>
@@ -1348,6 +1350,7 @@ const CSS = `
 .kk-gifts-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:5px; }
 .kk-gifts-grid button { min-height:56px; border:0; background:#1b1630; box-shadow:inset 0 0 0 2px #1c1c1c; color:#fff;
   font:inherit; font-size:13px; cursor:pointer; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; padding:8px 4px; }
+.kk-gift-img { image-rendering:pixelated; display:block; }
 .kk-gift-price { font-size:11px; color:#ffd369; }
 .kk-gifts-grid button:active { transform:translate(2px,2px); }
 .kk-gifts-grid button:disabled { opacity:.45; cursor:default; }

@@ -549,3 +549,12 @@ See more: https://nextjs.org/docs/app/guides/local-development
  GET /dot/rin 200 in 3.1s (next.js: 114ms, proxy.ts: 467ms, application-code: 2.5s)
  GET /manifest.webmanifest 200 in 32ms (next.js: 9ms, proxy.ts: 9ms, application-code: 14ms)
 [heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+ GET /auth/confirm?token_hash=312a805f1772b6781f55a8533f15a89bce6ce56a294a747d2d7ba175&type=magiclink&next=/dot/rin 307 in 18.4s (next.js: 968ms, proxy.ts: 16.7s, application-code: 757ms)
+ GET /ask 200 in 3.3s (next.js: 774ms, proxy.ts: 479ms, application-code: 2.0s)
+ GET /manifest.webmanifest 200 in 1024ms (next.js: 803ms, proxy.ts: 140ms, application-code: 81ms)
+ GET /api/hand/screen 404 in 5.8s (next.js: 237ms, proxy.ts: 4.0s, application-code: 1624ms)
+ GET /manifest.webmanifest 200 in 151ms (next.js: 45ms, proxy.ts: 93ms, application-code: 13ms)
+ GET /dot/rin 200 in 7.7s (next.js: 1916ms, proxy.ts: 660ms, application-code: 5.2s)
+ GET /dot/rin 200 in 2.6s (next.js: 115ms, proxy.ts: 469ms, application-code: 2.1s)
+ GET /manifest.webmanifest 200 in 37ms (next.js: 9ms, proxy.ts: 12ms, application-code: 15ms)

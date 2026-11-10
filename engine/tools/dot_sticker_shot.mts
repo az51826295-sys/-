@@ -108,6 +108,10 @@ async function 한판(점수: number, 이름: string) {
       재기(선물넘침 <= 1, `${이름}: 선물 서랍 가로 넘침 ${선물넘침}px`);
       const 값 = await page.$$eval(".kk-gift-price", (e) => e.map((x) => (x.textContent ?? "").trim()));
       재기(값.length === 5 && 값.every((v) => v.includes("하트")), `${이름}: 선물 값이 하트로 보인다 (${값.join(",")})`);
+      /* 11-10: 선물 그림이 **실제로 그려졌나**. src 가 있어도 404 면 naturalWidth 가 0 이다 —
+         "넣었다" 와 "보인다" 는 다르다([[art-urls-must-be-knocked]]). */
+      const 그림 = await page.$$eval(".kk-gift-img", (e) => e.map((x) => (x as HTMLImageElement).naturalWidth));
+      재기(그림.length === 5 && 그림.every((w) => w > 0), `${이름}: 선물 그림 5개가 그려진다 (${그림.join(",")})`);
     }
     return { 자물쇠, 높이 };
   } finally { await browser.close(); }
