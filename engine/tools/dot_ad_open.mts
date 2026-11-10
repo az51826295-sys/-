@@ -45,6 +45,18 @@ const r = await fetch(`${집}/ads.txt`, { redirect: "manual", cache: "no-store" 
 const 글 = r.status === 200 ? (await r.text()).trim() : "";
 console.log(`  /ads.txt        ${r.status === 200 ? `✅ ${글}` : `🔴 ${r.status} (번호가 들어가면 200 이 된다)`}`);
 
+/* 상태를 말하는 자는 **문을 직접 불러야 한다** — 안 부르고 적으면 거짓 보고가 된다
+   ([[reporting-tool-must-call-the-gate]]). 심사가 보는 쪽은 `dot_ad_ready` 가 센다. */
+console.log("\n# 심사가 와서 볼 것 (dot_ad_ready)\n");
+try {
+  const 말 = execFileSync("cmd", ["/c", "npx", "tsx", "engine/tools/dot_ad_ready.mts", 집], { encoding: "utf8", maxBuffer: 1 << 24 });
+  console.log(`  ${말.trim().split("\n").filter((l) => /맞음$|틀림/.test(l)).slice(-3).join("\n  ")}`);
+} catch (e) {
+  const 말 = (e as { stdout?: string }).stdout ?? "";
+  const 요약 = 말.split("\n").filter((l) => /\d+\/\d+ 맞음|^  · /.test(l));
+  console.log(요약.length ? `  ${요약.join("\n  ")}` : "  (자를 못 돌렸다)");
+}
+
 console.log("\n# 번호가 오면 이 순서로\n");
 const 줄 = [
   ["1", "Railway 콘솔 → dot-web → Variables 에 두 줄", `ADSENSE_CLIENT=${번호 ?? "ca-pub-…"}\n     AD_REWARD_OPEN=1`],
