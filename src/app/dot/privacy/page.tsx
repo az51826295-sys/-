@@ -4,6 +4,8 @@
  * 문구는 초안이다. 이 앱이 실제로 하는 것만 적었다(모아 두는 것·쓰는 곳·지우는 법). 사장님이 읽고 고친다.
  * 법률 자문이 아니다 — 등록 전에 한 번은 사람이 봐야 한다.
  */
+import { realAdsenseClient } from "@/lib/dot/money";
+
 export const metadata = { title: "두근도트 — 개인정보 처리방침" };
 
 /**
@@ -14,7 +16,7 @@ export const metadata = { title: "두근도트 — 개인정보 처리방침" };
  * 그래서 `ADSENSE_CLIENT` 가 들어오는 순간 **같이 켜지게** 묶어 둔다 — 사람이 기억해서 고칠
  * 일을 안 남긴다([[feature-removal-leaves-dead-ends]]).
  */
-const 광고켜짐 = /^ca-pub-\d{10,22}$/.test((process.env.ADSENSE_CLIENT ?? "").trim());
+const 광고켜짐 = !!realAdsenseClient();
 
 export default function DotPrivacy() {
   return (

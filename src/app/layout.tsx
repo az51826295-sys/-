@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { realAdsenseClient } from "@/lib/dot/money";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -21,11 +22,8 @@ const geistMono = Geist_Mono({
  */
 const 두근도트 = process.env.PRODUCT === "dot";
 
-/** 광고주 번호 — 모양이 맞을 때만 쓴다(`money.ts`의 `adConfFromEnv` 와 같은 자). */
-const ADSENSE_CLIENT = (() => {
-  const v = (process.env.ADSENSE_CLIENT ?? "").trim();
-  return /^ca-pub-\d{10,22}$/.test(v) ? v : "";
-})();
+/** 소유 확인 태그에 적을 번호 — **진짜 번호만**(시험용 자리맡이는 빈 값, `money.ts`). */
+const ADSENSE_CLIENT = realAdsenseClient();
 
 /**
  * **아이폰에서 앱처럼 열리게** (228회차 10-03, 사장님 "애플에서 쓰는 거에도 올리자").

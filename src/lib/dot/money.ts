@@ -54,6 +54,24 @@ export type AdConf = { client: string; test: boolean };
  * `NEXT_PUBLIC_` 를 **안 쓴다**: 그 이름은 빌드할 때 코드에 박혀서, 번호를 바꾸려면 다시 빌드해야 한다.
  * 서버가 읽어 화면으로 넘기면 Railway 변수만 고치고 다시 띄우면 된다.
  */
+/**
+ * **자리맡이 번호는 바깥에 내보이지 않는다** (11-10, 사장님 "켜줘").
+ *
+ * 시험 모드(`ADSENSE_TEST=1`)는 **계정 없이도** 광고 자리를 돌려 볼 수 있다 — 구글 스크립트에
+ * 번호 모양만 맞으면 되기 때문에 `ca-pub-0000000000000000` 을 쓴다. 그런데 그 가짜 번호가
+ * `ads.txt` 와 소유 확인 메타 태그에까지 나가면 **바깥에 거짓을 적는 것**이 된다:
+ * `ads.txt` 한 줄은 "이 번호가 우리 광고를 팔 권한이 있다" 는 **공개 선언**이다.
+ *
+ * 그래서 가른다 — 광고를 **띄우는 쪽**은 자리맡이도 받고, 바깥에 **적는 쪽**은 진짜만 받는다.
+ */
+export const isPlaceholderClient = (c: string): boolean => /^ca-pub-0+$/.test(c);
+
+/** 바깥에 적어도 되는 번호(ads.txt·메타 태그). 자리맡이·빈 값이면 빈 문자열. */
+export function realAdsenseClient(): string {
+  const v = (process.env.ADSENSE_CLIENT ?? "").trim();
+  return /^ca-pub-\d{10,22}$/.test(v) && !isPlaceholderClient(v) ? v : "";
+}
+
 export function adConfFromEnv(): AdConf | null {
   if (process.env.AD_REWARD_OPEN !== "1") return null;
   const client = (process.env.ADSENSE_CLIENT ?? "").trim();

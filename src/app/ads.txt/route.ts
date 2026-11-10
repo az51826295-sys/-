@@ -11,13 +11,16 @@
  * 번호가 없으면 **빈 파일 대신 404** 다: 빈 ads.txt 는 "아무도 권한이 없다"는 뜻이라
  * 있는 것보다 나쁘다.
  */
+import { realAdsenseClient } from "@/lib/dot/money";
+
 export const dynamic = "force-dynamic";
 
 /** 구글 광고 거래소의 고정 인증자 id — 모든 AdSense ads.txt 가 같은 값을 쓴다. */
 const GOOGLE_TAG = "f08c47fec0942fa0";
 
 export function GET(): Response {
-  const client = (process.env.ADSENSE_CLIENT ?? "").trim();
+  /* 시험 모드의 자리맡이 번호(`ca-pub-000…`)는 **여기 적지 않는다** — ads.txt 는 공개 선언이다. */
+  const client = realAdsenseClient();
   if (!/^ca-pub-\d{10,22}$/.test(client)) {
     return new Response("ads.txt not configured", { status: 404 });
   }
