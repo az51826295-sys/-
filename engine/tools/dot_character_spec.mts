@@ -107,6 +107,28 @@ for (const s of 사람) {
   for (const p of 길) if (existsSync(p)) { 사진길.push(p); 사진주인.push(s); }
 }
 const 사진도트 = 사진길.length ? 도트재기(사진길) : [];
+
+/**
+ * **얼굴 격자도 잰다** (11-10).
+ *
+ * `truedot` 을 만들어 제품에 대 보니 얼굴이 **도트 1.6** 이었다 — 몸은 4 인데.
+ * 이 자는 스프라이트와 사진만 보고 얼굴은 "있나/가운데 있나" 만 봤다. **안 재는 칸은
+ * 조용히 썩는다**([[zero-can-mean-i-cannot-see]]). 얼굴은 이제 이모티콘으로도 쓰인다.
+ */
+/*
+ * **여섯 칸을 다 잰다.** 처음엔 `neutral` 한 장만 쟀는데, 심은 고장(`happy` 를 190×190 으로)을
+ * 못 잡았다 — 자가 안 보는 칸에 심은 셈이다. 재는 **범위가 제품과 달랐다**
+ * ([[ruler-scope-must-match-product]]). 이모티콘은 여섯 칸을 다 쓴다.
+ */
+const 감정칸 = ["neutral", "happy", "shy", "sad", "angry", "surprised"];
+const 얼굴길 = 사람.flatMap((s) => 감정칸.map((e) => `public/dot-sprites/${s}/face/${e}.png`)).filter((p) => existsSync(p));
+const 얼굴도트 = 얼굴길.length ? 도트재기(얼굴길) : [];
+/** 사람마다 **어긋난 칸 목록**. 한 칸만 깨져도 그 사람이 걸린다. */
+const 얼굴격자 = new Map<string, string[]>(사람.map((s) => [s, []]));
+얼굴길.forEach((p, i) => {
+  const who = p.split("/")[2], e = p.split("/").pop()!.replace(".png", "");
+  if (얼굴도트[i] !== 4) 얼굴격자.get(who)!.push(`${e}:${얼굴도트[i] ?? "못 잼"}`);
+});
 type 사진잼 = { 장수: number; 없는것: number; 크기틀림: string[]; 도트틀림: string[]; 색틀림: string[] };
 const 사진표 = new Map<string, 사진잼>(사람.map((s) => [s, { 장수: (사진목록.get(s) ?? []).length, 없는것: (사진목록.get(s) ?? []).filter((p) => !existsSync(p)).length, 크기틀림: [], 도트틀림: [], 색틀림: [] }]));
 const 사진기준 = { 가로: 400, 세로: 500, 도트: 2, 색수: [8, 32] as const, 장수: 8 };
@@ -145,6 +167,8 @@ if (process.argv.includes("--check")) {
     if (r.테두리 < 기준.테두리) 말.push(`테두리 ${(r.테두리 * 100).toFixed(0)}%`);
     if (r.얼굴 < 기준.얼굴[0] || r.얼굴 > 기준.얼굴[1]) 말.push(`얼굴 ${(r.얼굴 * 100).toFixed(0)}%`);
     if (r.아래여백 !== 기준.아래여백) 말.push(`아래여백 ${r.아래여백}`);
+    const 얼굴깨짐 = 얼굴격자.get(r.s) ?? [];
+    if (얼굴깨짐.length) 말.push(`얼굴 도트 ${얼굴깨짐.join(",")}`);
     const 사 = 사진표.get(r.s)!;
     if (사.장수 !== 사진기준.장수) 말.push(`사진 ${사.장수}장`);
     if (사.없는것) 말.push(`사진 파일 없음 ${사.없는것}`);

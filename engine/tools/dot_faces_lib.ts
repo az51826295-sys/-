@@ -1,6 +1,25 @@
 /** 얼굴 크롭 — dot_faces.mts · dot_new_character.mts · dot_recut.mts 가 같이 쓴다(39회차에 떼어냄). */
 import sharp from "sharp";
-export const FACE_PX = 96;
+/**
+ * **얼굴도 진짜 도트여야 한다** (11-10).
+ *
+ * `truedot` 을 만들고 제일 먼저 제품에 대 봤더니 얼굴 스프라이트의 격자가 **1.6화소**였다 —
+ * 도트가 아니었다. 범인은 아래 크롭의 마지막 한 줄이다: 아무 자리에서 아무 크기로 잘라
+ * **96 으로 줄였다**(512 스프라이트에서 보통 296px → 96px, 비율 0.32). 비정수로 줄이면
+ * 칸이 깨진다. 몸은 도트 4 인데 얼굴만 도트 1.6 이면 같은 사람으로 안 보인다
+ * ([[dot-character-standard]] 가 스프라이트에만 걸려 있었다).
+ *
+ * 고친 규칙 셋:
+ *  1. **칸 수로 자른다** — 72칸. 전에 쓰던 틀(실루엣 높이의 0.62배 ≈ 74칸)과 거의 같다.
+ *     32칸으로 좁혀 봤더니 눈·입이 잘렸다 — **틀은 여러 판 돌려 맞춘 것이라 건드리지 않는다.**
+ *  2. **자리를 칸에 맞춘다** — 왼쪽·위를 도트 크기의 배수로 내린다.
+ *  3. **줄이지 않는다** — 자른 그대로 내보낸다(512 스프라이트면 128×128, 도트 4).
+ *
+ * 그래서 얼굴은 **논리 32칸**이다. 화면에서 64·96px 로 쓰면 한 칸이 2·3화소라 딱 떨어진다.
+ */
+export const FACE_CELLS = 72;
+/** 512 스프라이트(도트 4) 기준 얼굴 그림 크기 = 72칸 × 4. 자른 그대로라 격자가 안 깨진다. */
+export const FACE_PX = 288;
 
 /**
  * 얼굴 크롭 — 실루엣으로 자리를 잡고, **살색으로 눈높이를 맞춘다.**
@@ -44,9 +63,39 @@ export async function faceCrop(png: Buffer): Promise<Buffer> {
   } else {
     cy = y0 + H * 0.43; side = Math.round(Math.min(S, H * 0.62));
   }
-  const l = Math.round(Math.max(0, Math.min(S - side, cx - side / 2)));
-  const t = Math.round(Math.max(0, Math.min(S - side, cy - side / 2)));
-  return await sharp(png).extract({ left: l, top: t, width: side, height: side }).resize(FACE_PX, FACE_PX, { kernel: "nearest" }).png().toBuffer();
+  /**
+   * **칸에 맞춰 자른다** (11-10). 자리를 아무 데나 잡으면 칸이 반씩 걸려 들어오고,
+   * 줄이면 칸이 깨진다. 둘 다 안 한다 — 도트 크기의 배수 자리에서 **칸 수만큼** 잘라 그대로 낸다.
+   *
+   * 도트 크기는 스프라이트 규격에서 온다: 논리 128칸짜리 그림이므로 `S/128`.
+   * (512 → 4). 규격이 바뀌면 이 한 줄이 따라간다.
+   */
+  const texel = Math.max(1, Math.round(S / 128));
+  const 자를크기 = Math.min(S, FACE_CELLS * texel);
+  const 맞춤 = (v: number) => Math.max(0, Math.min(S - 자를크기, Math.floor(v / texel) * texel));
+  const l = 맞춤(cx - 자를크기 / 2);
+  void side;
+  const 자르기 = (t: number) => sharp(png).extract({ left: l, top: t, width: 자를크기, height: 자를크기 }).png().toBuffer();
+
+  /**
+   * **칸 단위로 스스로 내려 맞춘다** (11-10).
+   *
+   * 틀을 한 크기(72칸)로 고정했더니 도윤처럼 머리가 긴 사람은 얼굴이 81% 자리에 앉았다
+   * (기준은 55~80%). 사람마다 손으로 숫자를 적는 대신 **재서 한 칸씩 옮긴다** —
+   * 옮기는 단위가 도트 크기라 격자는 그대로다. 못 맞추면 맞춘 척하지 않고 그대로 낸다
+   * (부르는 쪽이 재서 거른다).
+   */
+  let t = 맞춤(cy - 자를크기 / 2);
+  let face = await 자르기(t);
+  for (let i = 0; i < 10; i++) {
+    const c = await faceCropCheck(face);
+    if (c.centerY >= 0.6 && c.centerY <= 0.75) break;
+    const 다음 = 맞춤(t + (c.centerY > 0.75 ? texel : -texel));
+    if (다음 === t) break;                       // 그림 끝에 닿았다
+    t = 다음;
+    face = await 자르기(t);
+  }
+  return face;
 }
 
 /** 자: 크롭 안에서 살색(얼굴)의 세로 가운데가 35~65% 에 있나, 살색이 크롭의 12% 이상 차지하나. */
