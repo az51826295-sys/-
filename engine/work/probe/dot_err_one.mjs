@@ -1,0 +1,10 @@
+import puppeteer from "puppeteer-core";
+const 집 = process.argv[2], 길 = process.argv[3] ?? "/";
+const b = await puppeteer.launch({ executablePath: "C:/Program Files/Google/Chrome/Application/chrome.exe", headless: true, userDataDir: `${process.env.TEMP}/rk-one-${process.pid}`, args: ["--no-first-run", "--lang=ko-KR"] });
+const p = await b.newPage(); let 수 = 0;
+p.on("pageerror", (e) => { 수++; console.log("[터짐]", String(e).slice(0, 120)); });
+await p.setViewport({ width: 390, height: 844 });
+await p.goto(집 + 길, { waitUntil: "networkidle2", timeout: 120000 });
+await new Promise((r) => setTimeout(r, 4000));
+console.log(집 + 길, "글자", await p.evaluate(() => document.body.innerText.trim().length), "· 터짐", 수);
+await b.close();
