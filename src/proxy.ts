@@ -19,7 +19,10 @@ import { updateSession } from "@/lib/supabase/middleware";
 
 /** 도트 도메인에서 열어 두는 곳. 나머지는 전부 `/dot` 으로 돌려보낸다. */
 // 97회차 09-13 검수: "/auth" 가 빠져 있어 구글 로그인 돌아오는 자리(/auth/callback)와 이메일 링크(/auth/confirm)가 /dot 으로 튕겼다.
-const DOT_OPEN = ["/dot", "/api/dot", "/login", "/signup", "/api/auth", "/auth", "/manifest.webmanifest", "/.well-known"];
+// 11-10: `/ads.txt` 가 빠져 있어 **구글이 광고주 번호를 못 읽는다.** 사람이 아니라 기계가
+// 읽는 파일이라 "앱 첫 화면으로 보내기" 가 곧 "없는 파일" 이다 — 307 로 /dot 을 받으면
+// AdSense 는 ads.txt 가 없다고 본다(그 상태로 승인을 기다릴 뻔했다).
+const DOT_OPEN = ["/dot", "/api/dot", "/login", "/signup", "/api/auth", "/auth", "/manifest.webmanifest", "/.well-known", "/ads.txt", "/robots.txt"];
 
 /**
  * 09-11: 한 저장소, **두 서비스, 두 DB.** 로키 게임 실험이 쌓은 3D 파일 1.9GB 가 두근도트를 같이 죽여서
