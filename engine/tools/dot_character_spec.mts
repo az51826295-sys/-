@@ -84,6 +84,49 @@ for (const [i, s] of 사람.entries()) {
   );
 }
 
+/* ──────────────────────────────────────────────────────────────────────────
+ * **게시물 사진도 같은 판에서 잰다** (11-10)
+ *
+ * 사장님: *"다음에 헷갈리지 않게 기준점 설정했어? 사진."* 문서에는 적어 뒀는데
+ * **재는 문이 사진은 "4장 이상 · 주소가 열리나" 만 보고 있었다** — 크기가 400×500 에서
+ * 200×250 으로 되돌아가도 아무도 안 잡는다. 11-09 에 실제로 그 상태였고, 피드에서 1.9배로
+ * 늘어나 뭉개져 보였다. 글로만 있는 기준은 기준이 아니다([[ruler-measured-but-never-counted]]).
+ *
+ * 재는 대상은 **앱이 내보내는 목록**(DB 의 photos) → 그 주소의 `public/` 파일이다.
+ * (배포된 것과 `public/` 이 같다는 것은 `dot_served_match.mts` 가 따로 재고 있다.)
+ * ────────────────────────────────────────────────────────────────────────── */
+const { createClient } = await import("@supabase/supabase-js");
+const db = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SECRET_KEY!, { auth: { persistSession: false } });
+const { data: chars } = await db.from("dot_characters").select("slug, photos").in("slug", 사람);
+const 사진길: string[] = [], 사진주인: string[] = [];
+const 사진목록 = new Map<string, string[]>();
+for (const s of 사람) {
+  const c = (chars ?? []).find((x: any) => x.slug === s) as any;
+  const 길 = ((c?.photos ?? []) as { url: string }[]).map((p) => `public/${p.url.replace(/^https?:\/\/[^/]+\//, "")}`);
+  사진목록.set(s, 길);
+  for (const p of 길) if (existsSync(p)) { 사진길.push(p); 사진주인.push(s); }
+}
+const 사진도트 = 사진길.length ? 도트재기(사진길) : [];
+type 사진잼 = { 장수: number; 없는것: number; 크기틀림: string[]; 도트틀림: string[]; 색틀림: string[] };
+const 사진표 = new Map<string, 사진잼>(사람.map((s) => [s, { 장수: (사진목록.get(s) ?? []).length, 없는것: (사진목록.get(s) ?? []).filter((p) => !existsSync(p)).length, 크기틀림: [], 도트틀림: [], 색틀림: [] }]));
+const 사진기준 = { 가로: 400, 세로: 500, 도트: 2, 색수: [8, 32] as const, 장수: 8 };
+for (const [i, p] of 사진길.entries()) {
+  const 주인 = 사진표.get(사진주인[i])!;
+  const m = await sharp(p).metadata();
+  if (m.width !== 사진기준.가로 || m.height !== 사진기준.세로) 주인.크기틀림.push(`${m.width}x${m.height}`);
+  if (사진도트[i] !== 사진기준.도트) 주인.도트틀림.push(String(사진도트[i] ?? "못 잼"));
+  const { data, info } = await sharp(p).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+  const 색 = new Set<string>();
+  for (let q = 0; q < data.length; q += info.channels) 색.add(`${data[q]},${data[q + 1]},${data[q + 2]}`);
+  if (색.size < 사진기준.색수[0] || 색.size > 사진기준.색수[1]) 주인.색틀림.push(String(색.size));
+}
+console.log(`\n게시물 사진 — 기준 ${사진기준.가로}x${사진기준.세로} · 도트 ${사진기준.도트} · 색 ${사진기준.색수[0]}~${사진기준.색수[1]} · ${사진기준.장수}장`);
+for (const s of 사람) {
+  const r = 사진표.get(s)!;
+  const 말 = [r.장수 !== 사진기준.장수 ? `장수 ${r.장수}` : "", r.없는것 ? `파일 없음 ${r.없는것}` : "", r.크기틀림.length ? `크기 ${[...new Set(r.크기틀림)].join(",")}×${r.크기틀림.length}장` : "", r.도트틀림.length ? `도트 ${[...new Set(r.도트틀림)].join(",")}×${r.도트틀림.length}장` : "", r.색틀림.length ? `색 ${[...new Set(r.색틀림)].join(",")}×${r.색틀림.length}장` : ""].filter(Boolean);
+  console.log(`  ${s.padEnd(8)} ${r.장수}장${말.length ? `  ❌ ${말.join(" · ")}` : "  맞음"}`);
+}
+
 /**
  * **기준** — `engine/docs/dot-character-standard.md`. 숫자는 일곱 명을 재서 뽑았고,
  * 바꾸려면 문서부터 고친다(여기만 고치면 글과 코드가 갈린다).
@@ -102,6 +145,12 @@ if (process.argv.includes("--check")) {
     if (r.테두리 < 기준.테두리) 말.push(`테두리 ${(r.테두리 * 100).toFixed(0)}%`);
     if (r.얼굴 < 기준.얼굴[0] || r.얼굴 > 기준.얼굴[1]) 말.push(`얼굴 ${(r.얼굴 * 100).toFixed(0)}%`);
     if (r.아래여백 !== 기준.아래여백) 말.push(`아래여백 ${r.아래여백}`);
+    const 사 = 사진표.get(r.s)!;
+    if (사.장수 !== 사진기준.장수) 말.push(`사진 ${사.장수}장`);
+    if (사.없는것) 말.push(`사진 파일 없음 ${사.없는것}`);
+    if (사.크기틀림.length) 말.push(`사진 크기 ${[...new Set(사.크기틀림)].join(",")}(${사.크기틀림.length}장)`);
+    if (사.도트틀림.length) 말.push(`사진 도트 ${[...new Set(사.도트틀림)].join(",")}(${사.도트틀림.length}장)`);
+    if (사.색틀림.length) 말.push(`사진 색 ${[...new Set(사.색틀림)].join(",")}(${사.색틀림.length}장)`);
     if (말.length) 틀린것.push(`${r.s}: ${말.join(" · ")}`);
   }
   console.log(`

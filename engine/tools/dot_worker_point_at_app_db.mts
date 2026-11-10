@@ -22,9 +22,22 @@
  * 값은 **찍지 않는다** — dot-web 에서 읽어 dot-worker 에 그대로 넣기만 한다.
  */
 import { execFileSync } from "node:child_process";
+import { existsSync } from "node:fs";
+
+/**
+ * railway 를 **어디서 불려도** 찾는다.
+ *
+ * 11-09: 사장님 터미널에서 세 번 `'railway' 는 ... 명령이 아닙니다` 로 죽었다. 제 쪽 PATH 에는
+ * 있어서 저는 멀쩡했다 — **내 환경에서 되는 것은 사장님 환경에서 된 것이 아니다.**
+ * npm 전역 폴더(`%APPDATA%\npm`)를 먼저 보고, 없으면 PATH 에 맡긴다.
+ */
+const 레일 = (() => {
+  const 후보 = [`${process.env.APPDATA ?? ""}\\npm\\railway.cmd`, `${process.env.ProgramFiles ?? ""}\\Railway\\railway.exe`];
+  return 후보.find((p) => p && existsSync(p)) ?? "railway";
+})();
 
 const 변수 = (서비스: string): Record<string, string> =>
-  JSON.parse(execFileSync("cmd", ["/c", "railway", "variables", "--service", 서비스, "--json"], { encoding: "utf8", maxBuffer: 1 << 24 }));
+  JSON.parse(execFileSync("cmd", ["/c", 레일, "variables", "--service", 서비스, "--json"], { encoding: "utf8", maxBuffer: 1 << 24 }));
 
 const 옮길칸 = ["NEXT_PUBLIC_SUPABASE_URL", "NEXT_PUBLIC_SUPABASE_ANON_KEY", "SUPABASE_SECRET_KEY"];
 const web = 변수("dot-web"), worker = 변수("dot-worker");
@@ -37,7 +50,7 @@ console.log(`\n바꿀 칸 ${바꿀것.length}개: ${바꿀것.join(", ")}`);
 if (!process.argv.includes("--set")) { console.log("보기만 했다. 바꾸려면 --set"); process.exit(0); }
 
 /* 한 번에 넣는다 — 칸마다 따로 넣으면 그때마다 일꾼이 다시 뜬다. */
-const 인자 = ["/c", "railway", "variables", "--service", "dot-worker"];
+const 인자 = ["/c", 레일, "variables", "--service", "dot-worker"];
 for (const k of 바꿀것) { 인자.push("--set", `${k}=${web[k]}`); }
 execFileSync("cmd", 인자, { stdio: "inherit" });
 
