@@ -1,7 +1,7 @@
 import { userIdFrom } from "@/lib/dot/auth";
 import { createServiceClient } from "@/lib/supabase/service";
 import { stageFor } from "@/lib/dot/bond";
-import { drawCards, formatReading, parseReading, pullTarot, tarotHead, TAROT_MARK, type TarotChar } from "@/lib/dot/tarot";
+import { drawCards, formatReading, MIN_LINES, parseReading, pullTarot, tarotHead, TAROT_MARK, type TarotChar } from "@/lib/dot/tarot";
 
 /**
  * # 타로 — 관계를 카드 세 장으로  (11-09 사장님 기획)
@@ -47,6 +47,18 @@ export async function GET(request: Request) {
     적힌것.set(m.character_id, 모음);
   }
 
+  /**
+   * **줄 수도 센다** (11-10). 전에는 점수만 봤는데, 뽑기는 대화가 `MIN_LINES` 줄은 돼야 한다 —
+   * 그래서 목록은 "뽑을 수 있다" 인데 POST 가 503 이었다. 같은 문턱을 여기서도 본다.
+   * 캐릭터마다 머리만 세는 질의라 가볍고, 열 개를 나란히 묻는다.
+   */
+  const 줄수 = new Map<string, number>();
+  await Promise.all(((chars ?? []) as any[]).map(async (c) => {
+    const { count } = await db.from("dot_messages").select("id", { count: "exact", head: true })
+      .eq("user_id", userId).eq("character_id", c.id);
+    줄수.set(c.id as string, count ?? 0);
+  }));
+
   const 줄 = ((chars ?? []) as any[]).map((c) => {
     const p = 점수.get(c.id) ?? 0, 단계 = stageFor(p);
     const 내것 = 적힌것.get(c.id) ?? [];
@@ -56,7 +68,11 @@ export async function GET(request: Request) {
       characterId: c.id, slug: c.slug, name: c.name,
       점수: p, 단계,
       /** 말을 한 번도 안 섞었으면 카드가 없다 — 읽을 대화가 없으니 지어낼 수밖에 없다. */
-      뽑을수있나: p > 0 && !뽑은단계들.includes(단계),
+      뽑을수있나: p > 0 && (줄수.get(c.id as string) ?? 0) >= MIN_LINES && !뽑은단계들.includes(단계),
+      /** 못 뽑으면 **왜**. 꺼진 단추만 있으면 고장으로 보인다 — 화면은 이 줄을 그대로 쓴다. */
+      까닭: p <= 0 ? "먼저 이야기를 나눠야 카드가 와요"
+        : (줄수.get(c.id as string) ?? 0) < MIN_LINES ? "조금 더 이야기한 뒤에 카드가 와요"
+        : 뽑은단계들.includes(단계) ? "이번 단계 카드는 봤어요 — 더 친해지면 다음 장" : "",
       지난것: 읽은것.sort((a, b) => b.단계 - a.단계),
       패: p > 0 ? drawCards(userId, c.id, 단계) : null,
     };

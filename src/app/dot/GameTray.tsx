@@ -31,7 +31,23 @@ function Px({ rows }: { rows: string[] }) {
   );
 }
 
-export function GamePicker({ 이름, 고르기, 막힘 }: { 이름: string; 고르기: (g: GameKey) => void; 막힘: boolean }) {
+/** 타로 한 장 — 놀이와 **아이콘 결이 같아야** 한 판으로 보인다(8×8 카드 + 별). */
+const 타로아이콘 = ["..####..", "..#..#..", "..#..#..", "..#.##..", "..####..", "..#..#..", "..####..", "........"];
+
+/**
+ * 놀이 고르는 판.
+ *
+ * 11-10 사장님 *"그 게임에 타로도 올려"* — 타로는 끝말잇기 같은 **주고받는 판이 아니라
+ * 한 번에 끝나는 한 장**이라 `GAMES` 에 넣지 않고 아래에 따로 둔다(서버의 놀이 머리·회차
+ * 규칙에 섞이면 "판 끝"을 못 찾는다). 자리만 같이 둔다 — 사람에게는 같은 서랍이다.
+ *
+ * 타로는 **하트를 안 쓴다.** 단계가 오를 때 한 번뿐이라 한도가 이미 걸려 있다.
+ */
+export function GamePicker({ 이름, 고르기, 막힘, 타로 }: {
+  이름: string; 고르기: (g: GameKey) => void; 막힘: boolean;
+  /** `막힘` 은 **하트가 없을 때도** 켜진다. 타로는 하트를 안 쓰므로 제 조건(`바쁨`)만 본다. */
+  타로?: { 쓸수있나: boolean; 안내: string; 바쁨: boolean; 뽑기: () => void } | null;
+}) {
   return (
     <div className="gt-pick">
       <style>{CSS}</style>
@@ -42,6 +58,12 @@ export function GamePicker({ 이름, 고르기, 막힘 }: { 이름: string; 고�
           <span><b>{GAME_LABEL[g]}</b><small>{GAME_HOW[g]}</small></span>
         </button>
       ))}
+      {타로 && (
+        <button className="gt-tarot" onClick={타로.뽑기} disabled={타로.바쁨 || !타로.쓸수있나} title={타로.안내}>
+          <Px rows={타로아이콘} />
+          <span><b>타로 보기</b><small>{타로.안내}</small></span>
+        </button>
+      )}
     </div>
   );
 }
@@ -98,6 +120,8 @@ const CSS = `
 .gt-pick button small { font-size:11px; color:#b9b0e0; line-height:1.4; }
 .gt-pick button:active { transform:translate(2px,2px); }
 .gt-pick button:disabled { opacity:.5; cursor:default; }
+/* 타로는 **한 장짜리**라 줄 전체를 쓴다 — 네 놀이 밑에 깔리면 "다른 것" 이라는 게 자리로 읽힌다. */
+.gt-pick button.gt-tarot { grid-column:1 / -1; color:#c9a7ff; background:#241c3d; }
 
 .gt-band { position:relative; z-index:2; display:flex; align-items:center; gap:8px; padding:8px 12px;
   background:#1b1630; color:#ffd369; }

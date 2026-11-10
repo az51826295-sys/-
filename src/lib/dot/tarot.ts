@@ -127,6 +127,14 @@ export function checkReading(r: Reading, 대화: { role: string; content: string
  *
  * 다시 부를 때 카드는 그대로다(뽑기는 정해져 있다) — 바뀌는 것은 읽는 말뿐이다.
  */
+/**
+ * **카드를 읽으려면 적어도 이만큼의 줄**이 있어야 한다 (말·답 두 번씩).
+ *
+ * 11-10: 이 숫자가 여기에만 있어서 **목록은 "뽑을 수 있다" 고 하고 뽑기는 503** 이었다 —
+ * 놀이 서랍의 타로 단추가 켜져 있다가 눌러야 오류가 났다. 문턱은 **한 곳에 두고 둘 다 본다**.
+ */
+export const MIN_LINES = 4;
+
 export async function pullTarot(
   db: SupabaseClient, userId: string, c: TarotChar, 대화수 = 40,
 ): Promise<{ ok: true; reading: Reading; 검사: ReadingCheck; 판: number } | { ok: false; why: string; 검사?: ReadingCheck }> {
@@ -136,7 +144,7 @@ export async function pullTarot(
     .select("role, content").eq("user_id", userId).eq("character_id", c.id)
     .order("id", { ascending: false }).limit(대화수);
   const 대화 = ((msgs ?? []) as { role: string; content: string }[]).reverse();
-  if (대화.length < 4) return { ok: false, why: "읽을 대화가 너무 적다" };
+  if (대화.length < MIN_LINES) return { ok: false, why: "읽을 대화가 너무 적다" };
 
   const 뽑기 = drawCards(userId, c.id, 단계);
   for (let 판 = 1; 판 <= 2; 판++) {

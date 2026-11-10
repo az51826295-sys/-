@@ -333,6 +333,47 @@ export default function DotChat({
   const 놀이 = findLive(lines.map((l) => ({ role: l.role, content: l.content })));
   const [놀이판열림, set놀이판열림] = useState(false);
 
+  /**
+   * **타로도 같은 서랍에** (11-10 사장님 "그 게임에 타로도 올려").
+   *
+   * 뽑을 수 있는지는 서버가 안다(말을 섞었나 · 이번 단계를 이미 봤나) — 여기서 다시 세지 않고
+   * 판을 열 때 한 번 물어본다. 꺼진 단추만 있으면 고장으로 보이므로 **왜 꺼졌는지**를 같이 받는다.
+   */
+  const [타로, set타로] = useState<{ 쓸수있나: boolean; 안내: string } | null>(null);
+  useEffect(() => {
+    if (!놀이판열림 || !signedIn || !who) return;
+    let 살았나 = true;
+    void (async () => {
+      try {
+        const r = await fetch("/api/dot/tarot", { cache: "no-store" });
+        const d = await r.json();
+        const 내것 = (d?.사람들 ?? []).find((x: any) => x.characterId === who.id);
+        if (!살았나) return;
+        /* 왜 못 뽑는지는 **서버가 말한다**(까닭) — 여기서 다시 따지면 문턱이 둘이 된다. */
+        set타로(내것?.뽑을수있나
+          ? { 쓸수있나: true, 안내: `${내것.단계}단계 카드 세 장 · 하트 안 써요` }
+          : { 쓸수있나: false, 안내: 내것?.까닭 || "먼저 이야기를 나눠야 카드가 와요" });
+      } catch { /* 못 물어보면 단추를 안 내민다 */ }
+    })();
+    return () => { 살았나 = false; };
+  }, [놀이판열림, signedIn, who]);
+
+  /** 타로 한 판 — 서버가 대화에 한 줄로 남기므로 화면엔 그 줄을 그대로 붙인다(카드로 그려진다). */
+  async function 타로뽑기() {
+    if (busy || !who) return;
+    set놀이판열림(false);
+    setBusy(true);
+    try {
+      const r = await fetch("/api/dot/tarot", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ characterId: who.id }) });
+      const d = await r.json();
+      if (!r.ok || !d?.ok) { setToast(d?.error ?? "지금은 카드가 잘 안 읽혀요"); return; }
+      setLines((l) => [...l, { role: "character", content: d.적은것, emotion: "shy", at: new Date().toISOString() }]);
+      set타로({ 쓸수있나: false, 안내: "이번 단계 카드는 봤어요 — 더 친해지면 다음 장" });
+      SFX.recv(); buzz(BUZZ.heart);
+    } catch { setToast("지금은 카드가 잘 안 읽혀요"); }
+    finally { setBusy(false); }
+  }
+
   /** 놀이 한 수 — 규칙에 걸리면 서버가 409 로 막고 **하트는 안 쓴다.** */
   async function 놀이보내기(opts: { game?: GameKey; message?: string }) {
     if (busy || !who) return;
@@ -654,7 +695,9 @@ export default function DotChat({
           </div>
         )}
         {놀이판열림 && !놀이 && (
-          <GamePicker 이름={who.name} 막힘={busy || remaining <= 0} 고르기={(g) => 놀이보내기({ game: g })} />
+          <GamePicker 이름={who.name} 막힘={busy || remaining <= 0} 고르기={(g) => 놀이보내기({ game: g })}
+            /* 타로는 하트를 안 쓰므로 하트 0 이어도 막지 않는다 — 막힘 조건을 따로 준다. */
+            타로={타로 ? { ...타로, 바쁨: busy, 뽑기: () => void 타로뽑기() } : null} />
         )}
         {놀이 && <GameBand live={놀이} 막힘={busy || remaining <= 0} 보내기={(s) => 놀이보내기({ message: s })} />}
         {stickerOpen && (

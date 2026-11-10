@@ -425,3 +425,14 @@ See more: https://nextjs.org/docs/app/guides/local-development
 [heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
 ✓ Compiled in 22.8s
 [heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+ GET /dot 200 in 2.6s (next.js: 1511ms, proxy.ts: 480ms, application-code: 593ms)
+ GET /api/dot/tarot 200 in 3.4s (next.js: 2.1s, proxy.ts: 38ms, application-code: 1239ms)
+ POST /api/dot/tarot 503 in 1100ms (next.js: 17ms, proxy.ts: 11ms, application-code: 1072ms)
+ GET /api/dot/tarot 200 in 675ms (next.js: 15ms, proxy.ts: 15ms, application-code: 645ms)
+[deepseek] 모양 고장을 한 번 고쳐 받았다 (dot_tarot): MODEL_OUTPUT_UNPARSEABLE
+ POST /api/dot/tarot 200 in 6.6s (next.js: 8ms, proxy.ts: 13ms, application-code: 6.6s)
+ POST /api/dot/tarot 429 in 1063ms (next.js: 28ms, proxy.ts: 18ms, application-code: 1017ms)
+ GET /api/dot/tarot 200 in 879ms (next.js: 8ms, proxy.ts: 13ms, application-code: 858ms)
