@@ -21,6 +21,12 @@ const geistMono = Geist_Mono({
  */
 const 두근도트 = process.env.PRODUCT === "dot";
 
+/** 광고주 번호 — 모양이 맞을 때만 쓴다(`money.ts`의 `adConfFromEnv` 와 같은 자). */
+const ADSENSE_CLIENT = (() => {
+  const v = (process.env.ADSENSE_CLIENT ?? "").trim();
+  return /^ca-pub-\d{10,22}$/.test(v) ? v : "";
+})();
+
 /**
  * **아이폰에서 앱처럼 열리게** (228회차 10-03, 사장님 "애플에서 쓰는 거에도 올리자").
  *
@@ -55,6 +61,15 @@ export const metadata: Metadata = 두근도트
         statusBarStyle: "default",
       },
       icons: { apple: [{ url: "/dot-apple-touch-icon.png", sizes: "180x180" }] },
+      /**
+       * **AdSense 가 "이 사이트가 당신 것인가" 를 확인하는 자리** (11-10).
+       *
+       * 심사는 세 길 중 하나로 소유를 확인한다 — 광고 코드 조각 · `ads.txt` · **이 메타 태그**.
+       * 우리 광고 스크립트는 **사람이 하트 판을 열 때** 붙으므로(`adbreak.ts`), 첫 화면만 긁는
+       * 심사 크롤러는 그것을 못 본다. `ads.txt` 는 준비해 뒀지만 길이 하나뿐이면 막혔을 때
+       * 왜 막혔는지 모른다. 태그는 한 줄이고 **번호가 없으면 안 그려진다.**
+       */
+      ...(ADSENSE_CLIENT ? { other: { "google-adsense-account": ADSENSE_CLIENT } } : {}),
     }
   : {
       title: "Rookery",

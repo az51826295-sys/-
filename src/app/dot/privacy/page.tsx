@@ -6,6 +6,16 @@
  */
 export const metadata = { title: "두근도트 — 개인정보 처리방침" };
 
+/**
+ * **광고 문단은 광고가 있을 때만 적는다** (11-10).
+ *
+ * AdSense 정책은 "제3자가 쿠키를 쓴다" 를 처리방침에 적을 것을 요구한다 — 안 적으면 심사에서
+ * 걸린다. 그런데 **광고가 없는 지금** 적으면 그건 거짓이다(안 뜨는 광고를 뜬다고 적는 꼴).
+ * 그래서 `ADSENSE_CLIENT` 가 들어오는 순간 **같이 켜지게** 묶어 둔다 — 사람이 기억해서 고칠
+ * 일을 안 남긴다([[feature-removal-leaves-dead-ends]]).
+ */
+const 광고켜짐 = /^ca-pub-\d{10,22}$/.test((process.env.ADSENSE_CLIENT ?? "").trim());
+
 export default function DotPrivacy() {
   return (
     <div className="pv-root">
@@ -28,7 +38,7 @@ export default function DotPrivacy() {
         <h2>2. 어디에 쓰나</h2>
         <ul>
           <li>캐릭터가 대화를 이어 가고 당신을 기억하는 데 씁니다.</li>
-          <li>대화 내용은 AI 언어 모델 제공사(DeepSeek)에 <b>답을 만들기 위해</b> 전송됩니다. 광고·판매 목적으로 제3자에게 넘기지 않습니다.</li>
+          <li>대화 내용은 AI 언어 모델 제공사(DeepSeek)에 <b>답을 만들기 위해</b> 전송됩니다. 판매하지 않으며, <b>광고를 고르는 데 쓰지 않습니다</b>.</li>
           <li>데이터는 Supabase(싱가포르 리전)에 저장됩니다.</li>
         </ul>
 
@@ -41,7 +51,19 @@ export default function DotPrivacy() {
         <h2>4. 연령</h2>
         <p>만 14세 미만은 이용할 수 없습니다.</p>
 
-        <h2>5. 문의</h2>
+        {광고켜짐 ? (
+          <>
+            <h2>5. 광고</h2>
+            <ul>
+              <li>하트를 채우려고 <b>광고 보기</b>를 누르면 Google(AdSense)이 광고를 보여 줍니다. 누르지 않으면 광고는 뜨지 않습니다.</li>
+              <li>Google과 그 협력사는 광고를 고르고 중복을 줄이기 위해 <b>쿠키</b>를 쓸 수 있습니다. 여기에는 기기·브라우저 정보와 대략적인 위치(국가 수준)가 포함될 수 있습니다.</li>
+              <li>맞춤 광고는 <a href="https://adssettings.google.com" target="_blank" rel="noreferrer noopener">Google 광고 설정</a>에서 끌 수 있습니다. 끄면 광고는 계속 뜨지만 맞춤이 아닙니다.</li>
+              <li><b>대화 내용·친밀도·기억은 광고사에 전달되지 않습니다.</b></li>
+            </ul>
+          </>
+        ) : null}
+
+        <h2>{광고켜짐 ? 6 : 5}. 문의</h2>
         <p>az51826295@gmail.com</p>
       </div>
     </div>
