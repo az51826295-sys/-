@@ -9,7 +9,7 @@ import { 물어볼까 } from "@/lib/dot/pushAsk";
 import { iGa } from "@/lib/dot/josa";
 import { LIMIT_COPY, AD_REFILL_TURNS, AD_NUDGE_AT, type Balance, type AdConf } from "@/lib/dot/money";
 import { showRewardedAd, AD_FAIL_COPY } from "@/lib/dot/adbreak";
-import { EMOTICON_STAGE, FACE_KEYS, FACE_PREFIX, faceEmotion, faceKo, isFaceSticker, USER_STICKERS, USER_STICKER_KEYS } from "@/lib/dot/stickers";
+import { FACE_KEYS, FACE_PREFIX, faceEmotion, faceKo, facesOpen, faceStage, isFaceSticker, USER_STICKERS } from "@/lib/dot/stickers";
 import { GIFTS, CHECKIN_HEARTS } from "@/lib/dot/bond";
 import { splitBubbles } from "@/lib/dot/bubbles";
 import { parseReading } from "@/lib/dot/tarotCards";
@@ -715,60 +715,39 @@ export default function DotChat({
         {놀이 && <GameBand live={놀이} 막힘={busy || remaining <= 0} 보내기={(s) => 놀이보내기({ message: s })} />}
         {stickerOpen && (
           /*
-            **이모티콘 서랍 — 카톡 그대로** (11-10 사장님 "카톡 따라서 만들어줘").
-            카톡의 그 판이 어떻게 생겼나, 보고 베낀 것 넷:
-              ① 묶음을 **아래 탭 줄**로 고른다(위가 아니라 아래 — 엄지가 거기 있다)
-              ② 격자는 **글자 없이 그림만**, 한 줄에 네 칸
-              ③ 누르면 **바로 간다**(고르기→보내기 두 단계가 아니다)
-              ④ 판 높이는 키보드 자리(≈40%)에 맞춘다 — 대화가 위에 남아 있어야 한다
-            잠긴 묶음은 탭에 자물쇠, 판 위에 한 줄. 카톡이 안 산 이모티콘을 보여 주는 자리와 같다.
+            **이모티콘 서랍 — 해금 판** (11-10 사장님 "이모티콘을 해금 방식으로 바꾸라니까" · "기본은 별로다").
+            기본 여섯 개(12×12 SVG)는 뺐다. 조잡했고, 아무나 쓰는 것이라 **가까워질 이유**가 되지 못했다.
+            남은 것은 그 사람 표정 여섯 칸이고 **한 칸씩 열린다**(단계표는 stickers.ts 한 곳).
+
+            카톡에서 가져온 자리는 그대로다: 글자 없는 격자 · 아래 띠 · 키보드만 한 높이.
+            잠긴 칸은 흑백 + 자물쇠 + **몇 단계에 열리는지**를 칸 위에 적는다 — 흐리기만 하면 고장으로 읽힌다.
           */
           <div className="kk-stk">
             <div className="kk-stk-page">
-              {스티커탭 === "basic" ? (
-                <div className="kk-stk-grid">
-                  {USER_STICKER_KEYS.map((k) => (
-                    <button key={k} onClick={() => send(`(${USER_STICKERS[k].ko} 스티커)`, k)} aria-label={USER_STICKERS[k].ko} disabled={busy || remaining <= 0}>
-                      <StickerSvg k={k} size={62} />
+              <div className="kk-stk-grid">
+                {FACE_KEYS.map((e) => {
+                  const 필요 = faceStage(e), 열림 = bond.stage >= 필요;
+                  return (
+                    <button key={e} className={열림 ? "" : "locked"}
+                      onClick={() => 열림 ? send(`(${who.name}의 ${faceKo(e)} 이모티콘)`, `${FACE_PREFIX}${e}`) : setToast(lang === "en" ? `Opens at stage ${필요}` : `${필요}단계가 되면 열려요`)}
+                      aria-label={faceKo(e)} disabled={busy || (열림 && remaining <= 0)}>
+                      <img src={`/dot-sprites/${who.slug}/face/${e}.png`} alt="" width={62} height={62} />
+                      {!열림 && <span className="kk-stk-need"><Lock />{lang === "en" ? `Stage ${필요}` : `${필요}단계`}</span>}
                     </button>
-                  ))}
-                </div>
-              ) : (
-                <>
-                  {bond.stage < EMOTICON_STAGE && (
-                    <div className="kk-stk-bar">
-                      <Lock />
-                      <span>{lang === "en" ? `Opens at stage ${EMOTICON_STAGE}` : `${EMOTICON_STAGE}단계가 되면 쓸 수 있어요`}</span>
-                      <b>{"★".repeat(bond.stage)}{"☆".repeat(Math.max(0, EMOTICON_STAGE - bond.stage))}</b>
-                    </div>
-                  )}
-                  <div className={`kk-stk-grid${bond.stage < EMOTICON_STAGE ? " locked" : ""}`}>
-                    {FACE_KEYS.map((e) => {
-                      const 열림 = bond.stage >= EMOTICON_STAGE;
-                      return (
-                        <button key={e} onClick={() => 열림 ? send(`(${who.name}의 ${faceKo(e)} 이모티콘)`, `${FACE_PREFIX}${e}`) : setToast(lang === "en" ? `Opens at stage ${EMOTICON_STAGE}` : `${EMOTICON_STAGE}단계가 되면 열려요`)}
-                          aria-label={faceKo(e)} disabled={busy || (열림 && remaining <= 0)}>
-                          <img src={`/dot-sprites/${who.slug}/face/${e}.png`} alt="" width={62} height={62} />
-                        </button>
-                      );
-                    })}
-                  </div>
-                </>
-              )}
+                  );
+                })}
+              </div>
             </div>
-            {/* 아래 탭 줄 — 묶음 두 개. 카톡처럼 **지금 묶음**만 밝다. */}
+            {/* 아래 띠 — 누구 것인지와 **얼마나 열렸는지**. 카톡의 묶음 탭 자리다. */}
             <div className="kk-stk-tabs">
-              <button className={스티커탭 === "basic" ? "on" : ""} onClick={() => set스티커탭("basic")} aria-label={lang === "en" ? "Basic" : "기본"}>
-                <StickerSvg k="smile" size={26} />
-              </button>
-              <button className={`${스티커탭 === "face" ? "on" : ""}${bond.stage < EMOTICON_STAGE ? " locked" : ""}`}
-                onClick={() => set스티커탭("face")} aria-label={`${who.name} 이모티콘`}>
+              <button className="on" aria-label={`${who.name} 이모티콘`}>
                 <img src={`/dot-sprites/${who.slug}/face/happy.png`} alt="" width={26} height={26} />
-                {bond.stage < EMOTICON_STAGE && <Lock />}
               </button>
               <span className="kk-stk-tabname">
-                {스티커탭 === "basic" ? (lang === "en" ? "Basic" : "기본") : `${who.name}`}
-                <small>{lang === "en" ? "1 heart each" : "하나에 하트 1개"}</small>
+                {who.name}
+                <small>{lang === "en"
+                  ? `${facesOpen(bond.stage)}/${FACE_KEYS.length} unlocked · 1 heart each`
+                  : `${facesOpen(bond.stage)}/${FACE_KEYS.length} 열림 · 하나에 하트 1개`}</small>
               </span>
             </div>
           </div>
@@ -1347,7 +1326,13 @@ const CSS = `
 .kk-stk-grid button:active { background:rgba(0,0,0,.06); }
 .kk-stk-grid button:disabled { opacity:.45; cursor:default; }
 .kk-stk-grid button:disabled:active { background:none; }
-.kk-stk-grid.locked button img { filter:grayscale(1) brightness(.75); }
+.kk-stk-grid button.locked { position:relative; }
+.kk-stk-grid button.locked img { filter:grayscale(1) brightness(.5); }
+/* 잠긴 칸 — 흐리게만 두면 "고장" 으로 읽힌다. **몇 단계에 열리는지**를 칸 한가운데 적는다. */
+.kk-stk-need { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+  display:flex; align-items:center; gap:4px; padding:3px 8px; border-radius:999px;
+  background:rgba(10,10,16,.78); color:#e7e2f6; font-size:11px; white-space:nowrap; }
+.kk-stk-need .kk-lock { position:static; color:#c9a7ff; }
 /* 잠긴 묶음 머리 — 카톡이 안 산 이모티콘 위에 띠를 두는 그 자리 */
 .kk-stk-bar { display:flex; align-items:center; gap:6px; margin:0 2px 8px; padding:7px 9px;
   background:#f1effa; color:#5b4fa8; font-size:12px; }

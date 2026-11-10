@@ -31,14 +31,39 @@ export const isUserSticker = (k: unknown): k is keyof typeof USER_STICKERS => ty
  * ([[dot-character-standard]] 의 얼굴 칸을 그대로 쓴다).
  *
  * 키는 `face:<감정>` 이고 표에는 사람 스티커와 같은 모양(`user:face:<감정>`)으로 남는다.
- * **5단계부터** 쓸 수 있고, 그 문은 서버가 지킨다(화면만 막으면 호출로 넘어온다).
+ * 문은 서버가 지킨다 — 화면만 막으면 호출로 넘어온다.
+ *
+ * ## 11-10 사장님 *"이모티콘을 해금 방식으로 바꾸라니까"* · *"기본은 별로다"*
+ *
+ * 전에는 ① 아무나 쓰는 **기본 여섯 개**(12×12 SVG)와 ② 5단계에 한꺼번에 열리는 얼굴 여섯 개였다.
+ * 둘 다 틀렸다 — 기본은 조잡했고(자는 칸 수만 셌지 **생김새는 안 봤다**), 5단계는
+ * 네 단계 내내 서랍이 비어 있다는 뜻이다.
+ *
+ * 이제 **표정마다 제 단계가 있다.** 가까워질수록 한 칸씩 열린다:
+ *
+ * | 단계 | 열리는 표정 |
+ * |---|---|
+ * | 1 | 무표정 · 웃음 |
+ * | 2 | 부끄 |
+ * | 3 | 시무룩 |
+ * | 4 | 삐짐 |
+ * | 5 | 놀람 |
+ *
+ * 순서는 **사이가 깊어지는 순서**다: 처음엔 웃는 낯만 보이고, 토라지거나 놀란 얼굴은
+ * 친한 사이에서만 나온다. 1단계에 둘을 여는 것은 빈 서랍으로 시작하지 않기 위해서다.
  */
-export const EMOTICON_STAGE = 5;
 export const FACE_PREFIX = "face:";
 const FACE_KO: Record<string, string> = {
   neutral: "무표정", happy: "웃음", shy: "부끄", sad: "시무룩", angry: "삐짐", surprised: "놀람",
 };
+/** 표정마다 열리는 단계. 바꾸면 **서버 문과 화면이 같이** 바뀐다(한 곳에만 적는다). */
+const FACE_STAGE: Record<string, number> = {
+  neutral: 1, happy: 1, shy: 2, sad: 3, angry: 4, surprised: 5,
+};
+export const faceStage = (e: string): number => FACE_STAGE[e] ?? 99;
 export const FACE_KEYS = Object.keys(FACE_KO);
+/** 그 단계에서 쓸 수 있는 표정 수 — 서랍 머리의 "n/6 열림". */
+export const facesOpen = (stage: number): number => FACE_KEYS.filter((e) => faceStage(e) <= stage).length;
 export const isFaceSticker = (k: unknown): k is string =>
   typeof k === "string" && k.startsWith(FACE_PREFIX) && k.slice(FACE_PREFIX.length) in FACE_KO;
 export const faceEmotion = (k: string): string => k.slice(FACE_PREFIX.length);

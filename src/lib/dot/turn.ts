@@ -5,7 +5,7 @@ import { createDeepSeekProvider } from "@/lib/providers/deepseek";
 import { mergeMemo } from "./memo";
 import { eunNeun } from "./josa";
 import { balanceFor } from "./money";
-import { EMOTICON_STAGE, faceEmotion, faceTell, isFaceSticker, USER_STICKERS } from "./stickers";
+import { faceEmotion, faceStage, faceTell, isFaceSticker, USER_STICKERS } from "./stickers";
 import {
   EMOTIONS,
   AUTO_HEARTS_PER_DAY,
@@ -196,14 +196,17 @@ export async function prepareTurn(db: SupabaseClient, userId: string, characterI
     };
     const memo: string[] = Array.isArray(bondRow?.memo) ? (bondRow!.memo as string[]) : [];
     /**
-     * **캐릭터 이모티콘은 5단계부터** (11-10 사장님 "5면 그에 맞는 이모티콘").
+     * **이모티콘은 표정마다 제 단계가 있다** (11-10 사장님 "이모티콘을 해금 방식으로 바꾸라니까").
      *
      * 문은 여기다 — 화면에서만 숨기면 `fetch` 한 줄로 넘어온다. 막을 때는 **하트를 돌려준다**
-     * (이미 한 개를 가져온 뒤다).
+     * (이미 한 개를 가져온 뒤다). 단계표는 `stickers.ts` 한 곳에만 있다.
      */
-    if (opts.userSticker && isFaceSticker(opts.userSticker) && prev.stage < EMOTICON_STAGE) {
-      await giveBack();
-      return { ok: false, reason: "failed", message: `${EMOTICON_STAGE}단계가 되면 ${character.name} 이모티콘을 쓸 수 있어요.` };
+    if (opts.userSticker && isFaceSticker(opts.userSticker)) {
+      const 필요 = faceStage(faceEmotion(opts.userSticker));
+      if (prev.stage < 필요) {
+        await giveBack();
+        return { ok: false, reason: "failed", message: `${필요}단계가 되면 쓸 수 있는 이모티콘이에요.` };
+      }
     }
     // ── 선물: 횟수 제한 없음 ─────────────────────────────────
     // 09-30 사장님 "3번 풀어" — 하루 한 번 제한을 뗐다. 돈을 내고 사는 것이라 크레딧이 곧 한도다.

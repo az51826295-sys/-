@@ -17,6 +17,7 @@ for (const l of readFileSync(".env.local", "utf8").split(String.fromCharCode(10)
 import puppeteer from "puppeteer-core";
 const { createServiceClient } = await import("../../src/lib/supabase/service");
 const { todayKST, stageFor } = await import("../../src/lib/dot/bond");
+const { FACE_KEYS, faceStage } = await import("../../src/lib/dot/stickers");
 
 const BASE = process.env.DOT_BASE ?? "http://localhost:3000";
 const OUT = "C:/Users/az518/Desktop/로키-도트/이모티콘-20261110";
@@ -65,17 +66,11 @@ async function 한판(점수: number, 이름: string) {
     await new Promise((r) => setTimeout(r, 400));
     await page.screenshot({ path: `${OUT}/${이름}.png` });
 
-    /* 카톡처럼 **한 번에 한 묶음**만 보인다(6칸) — 탭을 눌러야 다음 묶음이 온다. */
+    /* 11-10 해금 판: 칸은 늘 여섯이고 **잠긴 수**가 단계에 따라 달라진다. */
     const 칸 = await page.$$eval(".kk-stk-grid button", (e) => e.length);
-    재기(칸 === 6, `${이름}: 기본 묶음 6칸 (본 것 ${칸})`);
-    const 탭 = await page.$$eval(".kk-stk-tabs button", (e) => e.length);
-    재기(탭 === 2, `${이름}: 아래 탭 2개 (본 것 ${탭})`);
-    /* 그 사람 묶음으로 넘어가 본다 */
-    await (await page.$$(".kk-stk-tabs button"))[1].click();
-    await new Promise((r) => setTimeout(r, 300));
-    const 얼굴칸 = await page.$$eval(".kk-stk-grid button img", (e) => e.length);
-    재기(얼굴칸 === 6, `${이름}: 그 사람 묶음 6칸 (본 것 ${얼굴칸})`);
-    await page.screenshot({ path: `${OUT}/${이름}-얼굴묶음.png` });
+    재기(칸 === 6, `${이름}: 표정 6칸 (본 것 ${칸})`);
+    const 머리 = await page.$eval(".kk-stk-tabname", (e) => (e.textContent ?? "").trim());
+    재기(/[0-9]\/6 열림/.test(머리), `${이름}: 아래 띠에 n/6 열림 (${머리})`);
     const 자물쇠 = await page.$$eval(".kk-lock", (e) => e.length);
     /* 가로 넘침 — 390 폭에서 서랍이 밖으로 나가면 안 된다. */
     const 넘침 = await page.$$eval(".kk-stk", (e) => e.map((x) => Math.round(x.scrollWidth - x.clientWidth)));
@@ -125,7 +120,10 @@ async function 한판(점수: number, 이름: string) {
 }
 
 const 잠김 = await 한판(100, "1-잠김(2단계)");
-재기(잠김.자물쇠 === 2, `잠겼을 때 자물쇠 2개 — 탭과 띠 (본 것 ${잠김.자물쇠})`);
+/* 2단계 = 무표정·웃음·부끄가 열리고 시무룩·삐짐·놀람이 잠긴다. 기대값은 **손으로 세지 않고**
+   단계표에서 뽑는다 — 11-10 에 손으로 세다 두 번 틀렸다([[constant-failure-means-a-rule-bug]]). */
+const 잠겨야 = FACE_KEYS.filter((e) => faceStage(e) > 2).length;
+재기(잠김.자물쇠 === 잠겨야, `2단계면 자물쇠 ${잠겨야}개 (본 것 ${잠김.자물쇠})`);
 const 열림 = await 한판(1200, "2-열림(5단계)");
 재기(열림.자물쇠 === 0, `열렸을 때 자물쇠 0개 (본 것 ${열림.자물쇠})`);
 

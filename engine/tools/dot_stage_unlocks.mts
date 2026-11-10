@@ -18,12 +18,19 @@ const sharp = (await import("sharp")).default;
 const { createServiceClient } = await import("../../src/lib/supabase/service");
 const { runDotTurn } = await import("../../src/lib/dot/turn");
 const { todayKST, stageFor } = await import("../../src/lib/dot/bond");
-const { EMOTICON_STAGE, FACE_KEYS, FACE_PREFIX } = await import("../../src/lib/dot/stickers");
+const { FACE_KEYS, FACE_PREFIX, faceStage, facesOpen } = await import("../../src/lib/dot/stickers");
 
 const WALLPAPER_STAGE = 3;   // DotChat 의 값과 같아야 한다(화면에서 가져오면 서버 코드가 화면을 import 한다)
 const db = createServiceClient();
 const 결과: boolean[] = [];
-const 재기 = (무엇: string, 맞음: boolean, 본것: string) => { 결과.push(맞음); console.log(`${맞음 ? "맞음" : "틀림"}  ${무엇} — ${본것}`); };
+/** `재기(무엇, 맞음, 본것)` 과 `재기(맞음, 말)` 둘 다 받는다 — 윗부분은 앞 모양으로 적혀 있다. */
+function 재기(a: string | boolean, b: boolean | string, c = "") {
+  const 맞음 = typeof a === "boolean" ? a : (b as boolean);
+  const 말 = typeof a === "boolean" ? (b as string) : a;
+  const 본것 = typeof a === "boolean" ? "" : c;
+  결과.push(맞음);
+  console.log(`${맞음 ? "맞음" : "틀림"}  ${말}${본것 ? ` — ${본것}` : ""}`);
+}
 
 /* ── 배경: 열 장이 다 있고 규격이 같은가 ───────────────────────── */
 const { data: chars } = await db.from("dot_characters").select("id, slug, name").eq("is_public", true).order("slug");
@@ -59,22 +66,48 @@ const 지우기 = async (uid: string) => {
   await db.auth.admin.deleteUser(uid);
 };
 
-const 낮은이 = await 사람만들기(100);          // 2단계
-const r낮음: any = await runDotTurn(db, 낮은이, 그사람.id, `(${그사람.name}의 웃음 이모티콘)`, { userSticker: `${FACE_PREFIX}happy` });
-const { data: 낮은쓴것 } = await db.from("dot_usage").select("turns").eq("user_id", 낮은이).eq("day", todayKST()).maybeSingle();
-재기(`${EMOTICON_STAGE}단계 전에는 이모티콘이 막힌다`, r낮음.ok === false, r낮음.ok ? "통과해 버렸다" : `${r낮음.reason} — ${r낮음.message ?? ""}`);
-재기("막혔으면 하트도 안 쓴다", Number((낮은쓴것 as any)?.turns ?? 0) === 0, `쓴 하트 ${Number((낮은쓴것 as any)?.turns ?? 0)}개`);
-await 지우기(낮은이);
+/**
+ * **표정마다 제 단계** (11-10 "이모티콘을 해금 방식으로 바꾸라니까").
+ *
+ * 둘 다 봐야 한다 — 막혀야 할 것이 막히는지, **열려야 할 것이 열리는지.** 하나만 보면
+ * "전부 막기" 나 "전부 열기" 가 통과한다([[measure-the-thing-not-a-proxy]]).
+ */
+/*
+ * 점수를 손으로 적었다가 **2단계라고 둔 계정이 실은 3단계**였다(150점은 3단계다). 그 바람에
+ * "sad 가 막힌다" 가 거짓 실패로 떴다 — 코드가 아니라 **심은 조건이 틀린 것**이었다
+ * ([[planted-fault-must-be-well-formed]]). 이제 단계에서 점수를 거꾸로 뽑고, 심은 뒤 **진짜 그
+ * 단계인지 확인**한다.
+ */
+const 단계별 = [1, 2, 3, 5].map((단계) => {
+  let 점수 = 0;
+  while (stageFor(점수) < 단계) 점수 += 1;
+  return { 점수, 단계 };
+});
+for (const 칸 of 단계별) {
+  재기(stageFor(칸.점수) === 칸.단계, `${칸.단계}단계로 심을 점수 ${칸.점수} 이 정말 ${칸.단계}단계다`, `stageFor=${stageFor(칸.점수)}`);
+  const uid = await 사람만들기(칸.점수);
+  const 열려야 = FACE_KEYS.filter((e) => faceStage(e) <= 칸.단계);
+  const 막혀야 = FACE_KEYS.filter((e) => faceStage(e) > 칸.단계);
+  재기(facesOpen(칸.단계) === 열려야.length, `${칸.단계}단계: ${열려야.length}칸 열림 — ${열려야.join(",")}`);
 
-const 높은이 = await 사람만들기(1200);         // 5단계
-const r높음: any = await runDotTurn(db, 높은이, 그사람.id, `(${그사람.name}의 웃음 이모티콘)`, { userSticker: `${FACE_PREFIX}happy` });
-재기(`${EMOTICON_STAGE}단계면 이모티콘이 된다`, r높음.ok === true, r높음.ok ? `답 "${String(r높음.reply).slice(0, 24)}…"` : `${r높음.reason} ${r높음.message ?? ""}`);
-const { data: 남은줄 } = await db.from("dot_messages").select("sticker").eq("user_id", 높은이).eq("role", "user").limit(2);
-재기("표에 user:face:<감정> 으로 남는다", ((남은줄 ?? []) as any[]).some((m) => m.sticker === `user:${FACE_PREFIX}happy`),
-  ((남은줄 ?? []) as any[]).map((m) => m.sticker).join(",") || "없다");
-await 지우기(높은이);
+  const 마지막 = 열려야[열려야.length - 1];
+  const r열림: any = await runDotTurn(db, uid, 그사람.id, "(이모티콘)", { userSticker: `${FACE_PREFIX}${마지막}` });
+  재기(r열림.ok === true, `${칸.단계}단계: ${마지막} 는 보내진다 ${r열림.ok ? "" : `(${r열림.reason} ${r열림.message ?? ""})`}`);
 
-console.log(`\n배경은 ${WALLPAPER_STAGE}단계 · 이모티콘은 ${EMOTICON_STAGE}단계`);
+  if (막혀야.length) {
+    const 전: any = (await db.from("dot_usage").select("turns").eq("user_id", uid).eq("day", todayKST()).maybeSingle()).data;
+    const r막힘: any = await runDotTurn(db, uid, 그사람.id, "(이모티콘)", { userSticker: `${FACE_PREFIX}${막혀야[0]}` });
+    const 후: any = (await db.from("dot_usage").select("turns").eq("user_id", uid).eq("day", todayKST()).maybeSingle()).data;
+    재기(r막힘.ok === false, `${칸.단계}단계: ${막혀야[0]} 는 막힌다 — ${r막힘.ok ? "통과해 버렸다" : (r막힘.message ?? r막힘.reason)}`);
+    재기(Number(후?.turns ?? 0) === Number(전?.turns ?? 0), `${칸.단계}단계: 막혔으면 하트를 안 쓴다 (${Number(전?.turns ?? 0)}→${Number(후?.turns ?? 0)})`);
+  }
+  const { data: 남은줄 } = await db.from("dot_messages").select("sticker").eq("user_id", uid).eq("role", "user").limit(3);
+  재기(((남은줄 ?? []) as any[]).some((m) => String(m.sticker ?? "").startsWith(`user:${FACE_PREFIX}`)),
+    `${칸.단계}단계: 표에 user:face:<감정> 으로 남는다 (${((남은줄 ?? []) as any[]).map((m) => m.sticker).join(",") || "없다"})`);
+  await 지우기(uid);
+}
+
+console.log(`\n배경 ${WALLPAPER_STAGE}단계 · 이모티콘 ${FACE_KEYS.map((e) => `${e}:${faceStage(e)}`).join(" ")}`);
 const 틀린 = 결과.filter((x) => !x).length;
 console.log(`${결과.length - 틀린}/${결과.length} 맞음`);
 process.exit(틀린 ? 1 : 0);
