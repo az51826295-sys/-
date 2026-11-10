@@ -5,7 +5,7 @@ import { createDeepSeekProvider } from "@/lib/providers/deepseek";
 import { mergeMemo } from "./memo";
 import { eunNeun } from "./josa";
 import { balanceFor } from "./money";
-import { USER_STICKERS } from "./stickers";
+import { EMOTICON_STAGE, faceEmotion, faceTell, isFaceSticker, USER_STICKERS } from "./stickers";
 import {
   EMOTIONS,
   AUTO_HEARTS_PER_DAY,
@@ -195,6 +195,16 @@ export async function prepareTurn(db: SupabaseClient, userId: string, characterI
       lastTalkedOn: (bondRow?.last_talked_on as string) ?? null,
     };
     const memo: string[] = Array.isArray(bondRow?.memo) ? (bondRow!.memo as string[]) : [];
+    /**
+     * **캐릭터 이모티콘은 5단계부터** (11-10 사장님 "5면 그에 맞는 이모티콘").
+     *
+     * 문은 여기다 — 화면에서만 숨기면 `fetch` 한 줄로 넘어온다. 막을 때는 **하트를 돌려준다**
+     * (이미 한 개를 가져온 뒤다).
+     */
+    if (opts.userSticker && isFaceSticker(opts.userSticker) && prev.stage < EMOTICON_STAGE) {
+      await giveBack();
+      return { ok: false, reason: "failed", message: `${EMOTICON_STAGE}단계가 되면 ${character.name} 이모티콘을 쓸 수 있어요.` };
+    }
     // ── 선물: 횟수 제한 없음 ─────────────────────────────────
     // 09-30 사장님 "3번 풀어" — 하루 한 번 제한을 뗐다. 돈을 내고 사는 것이라 크레딧이 곧 한도다.
     // last_gift_on 은 계속 적는다(누가 언제 선물했는지 볼 수 있게) — 막는 데는 안 쓴다.
@@ -279,6 +289,7 @@ export async function prepareTurn(db: SupabaseClient, userId: string, characterI
     const said = 선물
       // 선물은 **네가 좋아하는 것인지**까지 모델에게 알린다 — 좋아하는 걸 받았을 때와 아닐 때 반응이 달라야 산다.
       ? `(사람이 너에게 ${선물.tell}을(를) 선물했다.${선물점!.liked ? " 네가 정말 좋아하는 거다." : ""} 네 말투 그대로, 받은 기분을 짧게 말한다. 고맙다는 말만 하지 말고 네 성격대로.)`
+      : opts.userSticker && isFaceSticker(opts.userSticker) ? `(${faceTell(character.name, faceEmotion(opts.userSticker))}. 말 없이 이모티콘만 보냈다 — 짧게 받아 준다)`
       : opts.userSticker && USER_STICKERS[opts.userSticker] ? `(${USER_STICKERS[opts.userSticker].tell}. 말 없이 스티커만 보냈다 — 그 기분에 맞춰 짧게 받아 준다)` : message;
     /* 지난 대화의 이름표. 영어 판에서 한국어 이름표를 그대로 두면 모델이 한국어로 되돌아간다 —
        바로 앞에 놓인 글이 제일 세게 끈다. */
@@ -289,7 +300,7 @@ export async function prepareTurn(db: SupabaseClient, userId: string, characterI
       /* 놀이 중에는 시간 힌트를 안 붙인다 — "밥은 먹었어?" 가 거기서 나온다. */
       opts.놀이중 ? "" : timeHint(new Date(), history.filter((h) => h.role !== "user").slice(-4).map((h) => h.content)),
     ].filter(Boolean).join("\n");
-    return { character, day, used, prev, memo, system, input, message, t0, giveBack, sinceSticker, userSticker: opts.userSticker && USER_STICKERS[opts.userSticker] ? opts.userSticker : null,
+    return { character, day, used, prev, memo, system, input, message, t0, giveBack, sinceSticker, userSticker: opts.userSticker && (USER_STICKERS[opts.userSticker] || isFaceSticker(opts.userSticker)) ? opts.userSticker : null,
       gift: 선물 && 선물점 ? { key: 선물.key, name: 선물.name, points: 선물점.points, liked: 선물점.liked } : null };
   } catch (e) {
     await giveBack();

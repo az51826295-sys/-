@@ -1,7 +1,7 @@
 import { userIdFrom } from "@/lib/dot/auth";
 import { createServiceClient } from "@/lib/supabase/service";
 import { streamDotTurn } from "@/lib/dot/turn";
-import { isUserSticker } from "@/lib/dot/stickers";
+import { isFaceSticker, isUserSticker } from "@/lib/dot/stickers";
 
 /**
  * 도트 채팅 한 턴 — **글자를 흘려보내는 판.**
@@ -33,7 +33,8 @@ export async function POST(request: Request) {
     postCaption = (p?.caption as string) ?? null;
   }
 
-  const userSticker = isUserSticker(body.sticker) ? body.sticker : null;
+  /* 11-10: 캐릭터 이모티콘(`face:<감정>`)도 같은 칸으로 온다. 쓸 수 있는지(5단계)는 turn.ts 가 본다. */
+  const userSticker = isUserSticker(body.sticker) || isFaceSticker(body.sticker) ? (body.sticker as string) : null;
   // 09-30 선물. 키 확인은 turn 이 한다(없는 선물이면 턴을 돌려주고 거절).
   const gift = typeof body.gift === "string" ? body.gift : null;
   /* 10-28: 이 기기가 고른 언어. **매 턴 같이 온다** — 로그인 없이 쓰는 앱이라 계정에 못 묶는다.

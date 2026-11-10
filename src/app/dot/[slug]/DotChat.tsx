@@ -9,7 +9,7 @@ import { 물어볼까 } from "@/lib/dot/pushAsk";
 import { iGa } from "@/lib/dot/josa";
 import { LIMIT_COPY, AD_REFILL_TURNS, AD_NUDGE_AT, type Balance, type AdConf } from "@/lib/dot/money";
 import { showRewardedAd, AD_FAIL_COPY } from "@/lib/dot/adbreak";
-import { USER_STICKERS, USER_STICKER_KEYS } from "@/lib/dot/stickers";
+import { EMOTICON_STAGE, FACE_KEYS, FACE_PREFIX, faceEmotion, faceKo, isFaceSticker, USER_STICKERS, USER_STICKER_KEYS } from "@/lib/dot/stickers";
 import { GIFTS, CHECKIN_HEARTS } from "@/lib/dot/bond";
 import { splitBubbles } from "@/lib/dot/bubbles";
 import { parseReading } from "@/lib/dot/tarotCards";
@@ -65,9 +65,16 @@ export default function DotChat({
   const [peek, setPeek] = useState<string | null>(null);
   const [themeKey, setThemeKey] = useState<string>("kakao");
   const [themeOpen, setThemeOpen] = useState(false);
-  useEffect(() => { try { const k = localStorage.getItem(THEME_KEY); if (k && THEMES[k]) setThemeKey(k); } catch { /* 저장소 없음 */ } }, []);
+  useEffect(() => { try { const k = localStorage.getItem(THEME_KEY); if (k && (THEMES[k] || k === CHAR_THEME_KEY)) setThemeKey(k); } catch { /* 저장소 없음 */ } }, []);
   const pickTheme = (k: string) => { setThemeKey(k); try { localStorage.setItem(THEME_KEY, k); } catch { /* 저장 못 해도 이번 방은 바뀐다 */ } };
-  const theme = THEMES[themeKey] ?? THEMES.kakao;
+  /**
+   * **그 사람의 배경** — 3단계에 열린다 (11-10 사장님 "호감도 3에는 그 호감도 친구에 맞는 배경화면").
+   *
+   * 표에 못 박지 않고 slug 로 만든다: 그림은 `/wallpapers/char/<slug>.png` 한 자리에 있고,
+   * 말풍선 색은 **여섯 장과 같은 어두운 짝**을 쓴다(배경마다 색을 새로 고르면 열 벌이 또 갈린다).
+   */
+  const 캐릭터배경: Theme | null = who ? { ...CHAR_THEME, name: `${who.name}의 자리`, wall: `/wallpapers/char/${who.slug}.png` } : null;
+  const theme = (themeKey === CHAR_THEME_KEY ? 캐릭터배경 : THEMES[themeKey]) ?? THEMES.kakao;
   const [bubbleKey, setBubbleKey] = useState<string>("pixel");
   useEffect(() => { try { const k = localStorage.getItem(BUBBLE_KEY); if (k && BUBBLES[k]) setBubbleKey(k); } catch { /* 저장소 없음 */ } }, []);
   const pickBubble = (k: string) => { setBubbleKey(k); try { localStorage.setItem(BUBBLE_KEY, k); } catch { /* 이번 방만 */ } };
@@ -347,7 +354,8 @@ export default function DotChat({
       try {
         const r = await fetch("/api/dot/tarot", { cache: "no-store" });
         const d = await r.json();
-        const 내것 = (d?.사람들 ?? []).find((x: any) => x.characterId === who.id);
+        type 타로줄 = { characterId: string; 단계: number; 점수: number; 뽑을수있나: boolean; 까닭?: string };
+        const 내것 = ((d?.사람들 ?? []) as 타로줄[]).find((x) => x.characterId === who.id);
         if (!살았나) return;
         /* 왜 못 뽑는지는 **서버가 말한다**(까닭) — 여기서 다시 따지면 문턱이 둘이 된다. */
         set타로(내것?.뽑을수있나
@@ -586,7 +594,10 @@ export default function DotChat({
                 {l.sticker && l.sticker.startsWith("user:") ? (
                   <div className="kk-row me">
                     <span className="kk-meta">{unread && <b className="kk-unread">1</b>}{showTime && <span className="kk-time">{clock(l.at)}</span>}</span>
-                    <StickerSvg k={l.sticker.slice(5)} size={96} />
+                    {/* 11-10: 내가 보낸 것이 **그 사람 얼굴 이모티콘**이면 SVG 가 아니라 얼굴 그림이다. */}
+                    {isFaceSticker(l.sticker.slice(5))
+                      ? <img className="kk-face-emo" src={`/dot-sprites/${who.slug}/face/${faceEmotion(l.sticker.slice(5))}.png`} alt="" width={96} height={96} />
+                      : <StickerSvg k={l.sticker.slice(5)} size={96} />}
                   </div>
                 ) : l.sticker ? (
                   /* 스티커: 말풍선 없이 표정 그림만 크게 — 카톡 이모티콘 자리(89회차) */
@@ -705,6 +716,20 @@ export default function DotChat({
             {USER_STICKER_KEYS.map((k) => (
               <button key={k} onClick={() => send(`(${USER_STICKERS[k].ko} 스티커)`, k)} aria-label={USER_STICKERS[k].ko} disabled={busy || remaining <= 0}>
                 <StickerSvg k={k} size={48} /><span>{USER_STICKERS[k].ko}</span>
+              </button>
+            ))}
+            {/*
+              **그 사람 이모티콘 — 5단계부터** (11-10 사장님 "5면 그에 맞는 이모티콘").
+              새로 그리지 않고 그 사람 얼굴 여섯 칸을 쓴다. 잠겼을 때도 보여 준다(흐리게) —
+              안 보이면 받을 것이 있는 줄도 모른다. 진짜 문은 서버에 있다(turn.ts).
+            */}
+            <div className="kk-emo-lock">{bond.stage >= EMOTICON_STAGE ? `${who.name} 이모티콘` : `${who.name} 이모티콘 — ${EMOTICON_STAGE}단계에 열려요`}</div>
+            {FACE_KEYS.map((e) => (
+              <button key={e} className={bond.stage >= EMOTICON_STAGE ? "" : "locked"}
+                onClick={() => bond.stage >= EMOTICON_STAGE ? send(`(${who.name}의 ${faceKo(e)} 이모티콘)`, `${FACE_PREFIX}${e}`) : setToast(`${EMOTICON_STAGE}단계가 되면 열려요`)}
+                aria-label={faceKo(e)} disabled={busy || (bond.stage >= EMOTICON_STAGE && remaining <= 0)}>
+                <img src={`/dot-sprites/${who.slug}/face/${e}.png`} alt="" width={48} height={48} style={{ imageRendering: "pixelated" }} />
+                <span>{faceKo(e)}</span>
               </button>
             ))}
           </div>
@@ -900,6 +925,17 @@ export default function DotChat({
                   <span className="kk-theme-name" style={{ color: t.ink, textShadow: t.wall ? "0 1px 0 #000" : "none" }}>{t.name}</span>
                 </button>
               ))}
+              {/* 11-10: 그 사람 배경은 **3단계부터**. 잠겼을 때도 보여 준다 — 안 보이면 받을 것이 있는 줄도 모른다. */}
+              {캐릭터배경 && (
+                <button className={`kk-theme${themeKey === CHAR_THEME_KEY ? " on" : ""}${bond.stage < WALLPAPER_STAGE ? " locked" : ""}`}
+                  onClick={() => bond.stage >= WALLPAPER_STAGE ? pickTheme(CHAR_THEME_KEY) : setToast(`${WALLPAPER_STAGE}단계가 되면 열려요`)}
+                  style={{ background: `url(${캐릭터배경.wall}) center/cover`, borderColor: 캐릭터배경.line, imageRendering: "pixelated" }}
+                  aria-label={캐릭터배경.name}>
+                  <span className="kk-theme-name" style={{ color: 캐릭터배경.ink, textShadow: "0 1px 0 #000" }}>
+                    {bond.stage < WALLPAPER_STAGE ? `${WALLPAPER_STAGE}단계에 열려요` : 캐릭터배경.name}
+                  </span>
+                </button>
+              )}
             </div>
             <div className="kk-peek-name" style={{ marginTop: 14 }}>말풍선</div>
             <div className="kk-bubbles">
@@ -977,6 +1013,14 @@ const BUBBLES: Record<string, { name: string; cls: string }> = {
   rpg:   { name: "대화창",   cls: "bub-rpg" },
   round: { name: "둥근",     cls: "bub-round" },
 };
+/**
+ * **3단계에 열리는 그 사람의 배경** (11-10 사장님 기획). 키는 하나(`char`)고, 그림만 방마다 다르다 —
+ * 열 벌을 THEMES 에 박으면 사람이 늘 때마다 여기도 늘어난다.
+ */
+export const WALLPAPER_STAGE = 3;
+const CHAR_THEME_KEY = "char";
+const CHAR_THEME: Theme = { name: "", bg: "#241c30", bar: "rgba(36,28,48,.9)", line: "#5a4a68", them: "#3a3048",
+  themText: "#f4ecdf", me: "#ffcf7a", meText: "#241b0a", ink: "#f4ecdf" };
 const BUBBLE_KEY = "dot-bubble";
 const THEME_KEY = "dot-theme";
 
@@ -1243,6 +1287,11 @@ const CSS = `
 .kk-warn { background:#fff8d6; color:#5a4a00; font-size:13px; padding:8px 14px; }
 .kk-emo { flex:0 0 auto; width:40px; height:40px; border:none; background:none; color:var(--ink, #5c6570); opacity:.8; cursor:pointer; display:flex; align-items:center; justify-content:center; }
 /* 09-13 사장님 "배경 화면 있으면 이모티콘 안 보임": 배경 그림이 position:absolute z-index:0 이라 자리 안 잡은 이 판을 덮었다. 판을 위로. */
+/* 11-10 이모티콘 줄 — 잠긴 것은 흐리게 보여 준다(없는 것과 다르다). */
+.kk-emo-lock { grid-column:1 / -1; font-size:11px; color:#8a919a; padding:6px 2px 0; }
+.kk-stickers button.locked { opacity:.35; }
+.kk-stickers button.locked img { filter:grayscale(1); }
+.kk-face-emo { image-rendering:pixelated; }
 .kk-stickers { position:relative; z-index:2; display:grid; grid-template-columns:repeat(6, 1fr); gap:4px; padding:8px; background:var(--bar, #fff); border-top:1px solid rgba(0,0,0,.06); }
 .kk-stickers button { background:none; border:none; display:flex; flex-direction:column; align-items:center; gap:2px; font:inherit; font-size:11px; color:var(--ink, #5c6570); cursor:pointer; padding:4px 0; }
 .kk-stickers button:disabled { opacity:.4; }

@@ -22,3 +22,27 @@ export const USER_STICKERS: Record<string, UserSticker> = {
 
 export const USER_STICKER_KEYS = Object.keys(USER_STICKERS);
 export const isUserSticker = (k: unknown): k is keyof typeof USER_STICKERS => typeof k === "string" && k in USER_STICKERS;
+
+/**
+ * ── 캐릭터 이모티콘 (11-10 사장님: *"호감도 … 5면 그 에 맞는 이모티콘"*) ─────────────
+ *
+ * **새로 그리지 않는다.** 그 사람의 얼굴 스프라이트 여섯 칸이 이미 있고, 그것이 곧
+ * "그에 맞는 이모티콘" 이다 — 돈이 0 이고, 기준을 이미 통과한 그림이라 결이 갈릴 자리가 없다
+ * ([[dot-character-standard]] 의 얼굴 칸을 그대로 쓴다).
+ *
+ * 키는 `face:<감정>` 이고 표에는 사람 스티커와 같은 모양(`user:face:<감정>`)으로 남는다.
+ * **5단계부터** 쓸 수 있고, 그 문은 서버가 지킨다(화면만 막으면 호출로 넘어온다).
+ */
+export const EMOTICON_STAGE = 5;
+export const FACE_PREFIX = "face:";
+const FACE_KO: Record<string, string> = {
+  neutral: "무표정", happy: "웃음", shy: "부끄", sad: "시무룩", angry: "삐짐", surprised: "놀람",
+};
+export const FACE_KEYS = Object.keys(FACE_KO);
+export const isFaceSticker = (k: unknown): k is string =>
+  typeof k === "string" && k.startsWith(FACE_PREFIX) && k.slice(FACE_PREFIX.length) in FACE_KO;
+export const faceEmotion = (k: string): string => k.slice(FACE_PREFIX.length);
+export const faceKo = (e: string): string => FACE_KO[e] ?? e;
+/** 모델에게 건네는 말 — 사람 스티커와 같은 자리를 쓴다. */
+export const faceTell = (이름: string, e: string): string =>
+  `${이름}의 ${FACE_KO[e] ?? e} 이모티콘을 보냈다 — 그 표정으로 답하는 기분`;
