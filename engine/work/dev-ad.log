@@ -1,0 +1,78 @@
+▲ Next.js 16.2.12 (Turbopack)
+- Local:         http://localhost:3010
+- Network:       http://172.30.1.54:3010
+- Environments: .env.development.local, .env.local
+✓ Ready in 2.5s
+⚠ Slow filesystem detected. The benchmark took 214ms. If C:\Users\az518\Desktop\ai-workforce\.next/dev is a network drive, consider moving it to a local folder.
+See more: https://nextjs.org/docs/app/guides/local-development
+
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+ GET /dot 200 in 5.7s (next.js: 1885ms, proxy.ts: 1635ms, application-code: 2.2s)
+ GET /auth/confirm?token_hash=d55621b9d2e71353243e1ee450a62c5152851e82c21bd75bd44f39f3&type=signup 307 in 1773ms (next.js: 960ms, proxy.ts: 57ms, application-code: 757ms)
+ GET /ask 200 in 1277ms (next.js: 344ms, proxy.ts: 212ms, application-code: 721ms)
+ GET /manifest.webmanifest 200 in 285ms (next.js: 220ms, proxy.ts: 24ms, application-code: 41ms)
+⚠ Blocked cross-origin request to Next.js dev resource /_next/webpack-hmr from "127.0.0.1".
+Cross-origin access to Next.js dev resources is blocked by default for safety.
+
+To allow this host in development, add it to "allowedDevOrigins" in next.config.js and restart the dev server:
+
+// next.config.js
+module.exports = {
+  allowedDevOrigins: ['127.0.0.1'],
+}
+
+Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins
+ GET /manifest.webmanifest 200 in 87ms (next.js: 31ms, proxy.ts: 46ms, application-code: 10ms)
+ GET /dot/chats 200 in 2.2s (next.js: 199ms, proxy.ts: 472ms, application-code: 1563ms)
+ GET /dot/chats 200 in 1602ms (next.js: 38ms, proxy.ts: 262ms, application-code: 1302ms)
+ GET /manifest.webmanifest 200 in 56ms (next.js: 25ms, proxy.ts: 17ms, application-code: 14ms)
+ GET /dot/chats 200 in 1928ms (next.js: 16ms, proxy.ts: 455ms, application-code: 1458ms)
+ GET /manifest.webmanifest 200 in 250ms (next.js: 137ms, proxy.ts: 83ms, application-code: 31ms)
+ GET /dot/chats 200 in 630ms (next.js: 77ms, proxy.ts: 88ms, application-code: 465ms)
+ GET /auth/confirm?token_hash=cf2c27c2f57a8e0be4a63b0871ac248dab1dd5417d0afd837ec9e983&type=signup 307 in 791ms (next.js: 63ms, proxy.ts: 78ms, application-code: 649ms)
+ GET /ask 200 in 905ms (next.js: 35ms, proxy.ts: 489ms, application-code: 381ms)
+ GET /manifest.webmanifest 200 in 134ms (next.js: 68ms, proxy.ts: 42ms, application-code: 25ms)
+ GET /manifest.webmanifest 200 in 177ms (next.js: 141ms, proxy.ts: 25ms, application-code: 11ms)
+ GET /dot/chats 200 in 1752ms (next.js: 24ms, proxy.ts: 339ms, application-code: 1389ms)
+ GET /auth/confirm?token_hash=284e6e3da4f8c75b2de059ea9585b67565d6fd795024dfc161dfe51a&type=signup 307 in 673ms (next.js: 48ms, proxy.ts: 50ms, application-code: 575ms)
+ GET /ask 200 in 628ms (next.js: 18ms, proxy.ts: 179ms, application-code: 431ms)
+ GET /manifest.webmanifest 200 in 635ms (next.js: 179ms, proxy.ts: 439ms, application-code: 17ms)
+ GET /manifest.webmanifest 200 in 101ms (next.js: 39ms, proxy.ts: 47ms, application-code: 15ms)
+ GET /dot/chats 200 in 1867ms (next.js: 42ms, proxy.ts: 215ms, application-code: 1609ms)
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+ GET /auth/confirm?token_hash=0b7ff067dcab33dd7b9b6a08047307c1f2feb34901f38d3fb6b6e035&type=signup 307 in 471ms (next.js: 69ms, proxy.ts: 38ms, application-code: 364ms)
+ GET /ask 200 in 561ms (next.js: 13ms, proxy.ts: 202ms, application-code: 345ms)
+ GET /manifest.webmanifest 200 in 83ms (next.js: 39ms, proxy.ts: 29ms, application-code: 15ms)
+ GET /manifest.webmanifest 200 in 117ms (next.js: 34ms, proxy.ts: 72ms, application-code: 12ms)
+ GET /dot/chats 200 in 1950ms (next.js: 36ms, proxy.ts: 254ms, application-code: 1659ms)
+ GET /auth/confirm?token_hash=4f6a5de8a87883cbdd5ea03753fe7b57beb2992d1e0755b90c0ba59b&type=signup 307 in 513ms (next.js: 102ms, proxy.ts: 69ms, application-code: 342ms)
+ GET /ask 200 in 591ms (next.js: 20ms, proxy.ts: 199ms, application-code: 372ms)
+ GET /manifest.webmanifest 200 in 112ms (next.js: 77ms, proxy.ts: 15ms, application-code: 19ms)
+ GET /dot/chats 200 in 1484ms (next.js: -6208µs, proxy.ts: 417ms, application-code: 1073ms)
+ GET /manifest.webmanifest 200 in 241ms (next.js: 71ms, proxy.ts: 142ms, application-code: 27ms)
+ GET /auth/confirm?token_hash=1580644fe29e7f43227ed007253e789cf315dcc796560265593b47be&type=signup 307 in 571ms (next.js: 88ms, proxy.ts: 67ms, application-code: 416ms)
+ GET /ask 200 in 613ms (next.js: 19ms, proxy.ts: 192ms, application-code: 402ms)
+ GET /manifest.webmanifest 200 in 255ms (next.js: 54ms, proxy.ts: 156ms, application-code: 45ms)
+ GET /dot/chats 200 in 2.3s (next.js: 14ms, proxy.ts: 495ms, application-code: 1779ms)
+ GET /manifest.webmanifest 200 in 139ms (next.js: 58ms, proxy.ts: 64ms, application-code: 17ms)
+ GET /auth/confirm?token_hash=8e2900b9f11627b2d3cd9f58f75da0041f351fd09e558919a6f77294&type=signup 307 in 440ms (next.js: 42ms, proxy.ts: 60ms, application-code: 337ms)
+ GET /ask 200 in 591ms (next.js: 15ms, proxy.ts: 198ms, application-code: 378ms)
+ GET /manifest.webmanifest 200 in 91ms (next.js: 46ms, proxy.ts: 14ms, application-code: 31ms)
+ GET /dot/chats 200 in 1431ms (next.js: 62ms, proxy.ts: 333ms, application-code: 1037ms)
+ GET /manifest.webmanifest 200 in 175ms (next.js: 101ms, proxy.ts: 46ms, application-code: 29ms)
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache
+ GET /auth/confirm?token_hash=f3215882f358bfc71c101443880baef7d198a9e819de1e783c9fc55c&type=signup 307 in 765ms (next.js: 67ms, proxy.ts: 126ms, application-code: 572ms)
+ GET /ask 200 in 879ms (next.js: 25ms, proxy.ts: 479ms, application-code: 375ms)
+ GET /manifest.webmanifest 200 in 93ms (next.js: 43ms, proxy.ts: 12ms, application-code: 38ms)
+ GET /manifest.webmanifest 200 in 72ms (next.js: 30ms, proxy.ts: 31ms, application-code: 11ms)
+ GET /dot/chats 200 in 1981ms (next.js: 18ms, proxy.ts: 262ms, application-code: 1701ms)
+ GET /auth/confirm?token_hash=f4230be9d2e2342d996b6a0b4afe673b6c883ca925d0b5ae74b568ec&type=signup 307 in 763ms (next.js: 53ms, proxy.ts: 66ms, application-code: 644ms)
+ GET /ask 200 in 1059ms (next.js: 25ms, proxy.ts: 194ms, application-code: 840ms)
+ GET /manifest.webmanifest 200 in 109ms (next.js: 74ms, proxy.ts: 16ms, application-code: 18ms)
+ GET /dot/chats 200 in 1812ms (next.js: 18ms, proxy.ts: 458ms, application-code: 1336ms)
+ GET /manifest.webmanifest 200 in 60ms (next.js: 36ms, proxy.ts: 12ms, application-code: 12ms)
+ GET /dot/chats 200 in 1518ms (next.js: 38ms, proxy.ts: 684ms, application-code: 796ms)
+ GET /manifest.webmanifest 200 in 134ms (next.js: 87ms, proxy.ts: 18ms, application-code: 29ms)
+ GET /dot/chats 200 in 1664ms (next.js: 17ms, proxy.ts: 447ms, application-code: 1199ms)
+ GET /manifest.webmanifest 200 in 169ms (next.js: 75ms, proxy.ts: 40ms, application-code: 55ms)
+[heartbeat] 웹 커밋을 못 적었다: Could not find the table 'public.service_heartbeat' in the schema cache

@@ -152,7 +152,38 @@ try {
     await p.evaluateOnNewDocument(가짜);
     await p.goto(`${BASE}/dot/chats`, { waitUntil: "networkidle2", timeout: 60_000 });
     await sleep(1500);
-    await p.click(".hb"); await sleep(600);
+    /**
+     * **덮개를 먼저 치운다** (11-10).
+     *
+     * 이 자는 11-07 에 6/6 이었는데 오늘 돌리니 "하트 판이 안 열린다" 로 죽었다. 제품이 아니라
+     * **그 뒤에 들어온 출석 팝업**(하루 첫 입장에 저절로 뜬다)이 화면을 덮은 것이다. 화면을
+     * 재는 자는 덮개가 생길 때마다 같이 죽는다 — 글자로 찾아 치우고, 그래도 안 열리면 사진을 남긴다.
+     */
+    const 덮개치우기 = async () => {
+      for (let i = 0; i < 3; i++) {
+        const 쳤나 = await p.evaluate(() => {
+          for (const b of Array.from(document.querySelectorAll("button"))) {
+            const t = (b.textContent ?? "").trim();
+            if (t === "나중에" || t.includes("알겠어요")) { (b as HTMLButtonElement).click(); return true; }
+          }
+          return false;
+        });
+        if (!쳤나) break;
+        await sleep(400);
+      }
+    };
+    await 덮개치우기();
+    await p.evaluate(() => (document.querySelector(".hb") as HTMLButtonElement | null)?.click());
+    await sleep(800);
+    if (!(await p.$(".hb-sheet"))) {
+      await 덮개치우기();
+      await p.evaluate(() => (document.querySelector(".hb") as HTMLButtonElement | null)?.click());
+      await sleep(800);
+    }
+    if (!(await p.$(".hb-sheet"))) {
+      await p.screenshot({ path: "engine/work/광고-판이안열림.png" });
+      throw new Error("하트 판이 안 열린다 — engine/work/광고-판이안열림.png 을 볼 것");
+    }
 
     const 누르기 = async (경우: string) => {
       await p.evaluate(`window.__dotAdCase = '${경우}'`);
