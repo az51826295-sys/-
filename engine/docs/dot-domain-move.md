@@ -51,3 +51,51 @@
 **숫자는 정직하게**: 지금 사람 수(30일 49명)면 광고를 진짜로 켜도 **월 270~630원**이다
 (상한선, `dot_ad_peek`). 도메인 값이 한 해 수입과 비슷하다. 그래도 **먼저 광고**는
 사장님이 정한 순서다 — 적어 두고 간다.
+
+---
+
+## 11-11 확정 — 이름 `dugeundot.com`, **사는 자리는 Cloudflare**
+
+사장님: *"이제 광고 넣자"* → 이름은 **`dugeundot.com`** (23:41 RDAP 재확인, 비었음).
+
+### 왜 등록처를 고르는 것이 기술 문제인가
+
+뿌리 주소(`dugeundot.com`, `www` 없이)에는 **CNAME 을 그냥 걸 수 없다** — DNS 표준에
+어긋난다. Railway 문서는 그래서 이렇게 적는다: *"Railway supports CNAME Flattening and
+dynamic ALIAS records"*, 그리고 평탄화를 못 하는 곳(**GoDaddy · Route 53 · Azure DNS ·
+Hostinger**, 같은 부류로 **가비아**)은 *"change your domain's nameservers to point to
+Cloudflare's nameservers"* 하라고 한다
+([문서](https://docs.railway.com/networking/domains/working-with-domains)).
+
+즉 **어디서 사든 DNS 는 Cloudflare 로 간다.** 그러면 Cloudflare 에서 사는 것이 단계가
+가장 적다(산 순간 DNS 가 이미 Cloudflare다). 원화·간편결제가 편해 가비아에서 산다면
+**네임서버를 Cloudflare 로 옮기는 한 단계가 더 붙는다** — 그것도 내가 할 수 있다.
+
+값: .com 원가 기준 한 해 **$10.46 → $11.17**(Verisign 도매가 인상분 반영, 약 16,000원).
+Cloudflare 는 원가로만 팔고 **갱신값이 같다** — 첫 해 싸고 다음 해 두 배 받는 곳과 다르다
+([CostGoat](https://costgoat.com/compare/domains/com) · 라이브 값은 결제 화면에서 확인).
+
+### 사장님 손 (셋뿐)
+
+| | 무엇 | 왜 내가 못 하나 |
+|---|---|---|
+| 1 | Cloudflare 계정 만들기 (메일+비번) — <https://dash.cloudflare.com/sign-up> | 계정 생성·비번 입력은 내 금지 사항 |
+| 2 | Domain Registration → Register Domain → `dugeundot.com` | 카드 번호 입력은 내 금지 사항 |
+| 3 | 결제 (해외결제 되는 카드여야 한다 — 체크카드는 앱에서 해외결제 켜야 할 수 있다) | 같음 |
+
+**그 뒤 전부 내 몫이다.** 2~8 단계(위 표)에 더해 Cloudflare DNS 에 Railway 가 주는
+CNAME+TXT 두 줄을 넣는다. `railway domain dugeundot.com --service dot-web` 이 그 두 줄을
+그대로 뱉는다(23:42 `railway domain --help` 로 확인 — 만드는 것도 CLI 로 된다).
+
+### 그다음이 번호다
+
+주소가 서면 AdSense 에 `dugeundot.com` 을 등록한다. 계정은 **형 것**이다(한국 AdSense 만
+19세, 사장님은 2027-03-31). 번호 `ca-pub-…` 가 오면 Railway 환경변수 **두 줄**이 끝이다:
+`ADSENSE_CLIENT=ca-pub-진짜번호` · `ADSENSE_TEST` **삭제**. 그 순간 `/ads.txt`·메타 태그·
+처리방침 광고 문단이 **같이** 켜진다(`realAdsenseClient()` 가 셋을 한 번에 쥐고 있다).
+
+### 지금 운영 상태 (23:39 실측)
+
+`AD_REWARD_OPEN=1` · `ADSENSE_TEST=1` · `ADSENSE_CLIENT=ca-pub-0000000000000000` →
+**가짜 광고**다. 구글에 요청이 안 가고 수입은 0원이다. 보상 흐름만 진짜로 돈다(11-10 운영 6/6).
+`dot_ad_ready` **9/10**, 빨간 줄은 주소 하나.
