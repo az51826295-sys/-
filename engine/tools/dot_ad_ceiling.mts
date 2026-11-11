@@ -80,3 +80,26 @@ for (const 목표 of [10_000, 100_000]) {
   console.log(`  → 월 ${목표.toLocaleString()}원 벌려면 **${Math.round(목표 / Math.max(0.01, 사람당월 * 5)).toLocaleString()}명**`);
 }
 console.log(`\n  이 수는 **상한선**이다: 광고를 100% 다 본다고 쳤다(차단기·안 누름 0명).`);
+
+/**
+ * ## 무엇을 바꾸면 광고가 **보이기나 하나**
+ *
+ * 11-11 사장님: *"갯수 제한 없지 않아?"* — 지금 코드에는 **하루 ${AD_REFILLS_PER_DAY}번** 제한이 있다.
+ * 그런데 제한을 없애도 돈이 거의 안 바뀐다. 진짜로 막고 있는 것은 **공짜 하트**다:
+ * 출석 한 번에 ${CHECKIN_HEARTS}개를 주는데 한 사람이 하루 평균 3번 쓴다 → **광고를 볼 일이 없다.**
+ * 실제로 30일간 광고를 본 횟수는 1회였다.
+ *
+ * 아래 표는 그 둘을 돌려 본 것이다. 사람×날 칸마다 `max(0, 쓴말 - 공짜) ` 를 광고로 세고,
+ * 상한이 있으면 거기서 자른다. **사람이 지금처럼 쓴다고 가정**한다 — 공짜를 줄이면 덜 쓸
+ * 수도 있는데(그건 수입이 아니라 사람이 줄어드는 것이다) 그건 이 자가 못 잰다.
+ */
+const { CHECKIN_HEARTS } = await import("../../src/lib/dot/bond");
+console.log(`\n=== 무엇을 바꾸면 광고가 보이나 (지금: 공짜 ${CHECKIN_HEARTS}개 · 하루 ${AD_REFILLS_PER_DAY}번) ===\n`);
+console.log(`  공짜하트 | 하루상한 없음 | 하루 ${AD_REFILLS_PER_DAY}번`);
+for (const 공짜 of [5, 4, 3, 2, 1, 0]) {
+  const 셈 = (상한: number) => [...칸.values()].reduce((a, n) => a + Math.min(Math.max(0, n - 공짜), 상한), 0);
+  const 무제한 = 셈(Infinity), 제한 = 셈(AD_REFILLS_PER_DAY);
+  const 원 = (x: number) => `${Math.round((x / 날수) * 30 * 5).toLocaleString()}원`;
+  console.log(`  ${String(공짜).padStart(6)}개 | ${String(무제한).padStart(4)}번 ${원(무제한).padStart(8)} | ${String(제한).padStart(4)}번 ${원(제한).padStart(8)}${공짜 === CHECKIN_HEARTS ? "   ← 지금" : ""}`);
+}
+console.log(`\n  (노출당 5원 가정, 월 환산. **사람이 지금처럼 쓴다고 쳤다** — 공짜를 줄이면 사람이 줄 수 있다.)`);
