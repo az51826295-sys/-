@@ -138,6 +138,12 @@ const 말 = {
   room_yesterday: { ko: "어제", en: "Yesterday" },
   time_now: { ko: "방금", en: "just now" },
   last_stage: { ko: "마지막 단계", en: "Final stage" },
+
+  /* 없는 주소 (11-12) — 여기까지 영어 기본 화면이 뜨고 있었다. 문구는 사장님이 고친다. */
+  nf_title: { ko: "없는 사람이에요", en: "No one here" },
+  nf_body: { ko: "주소가 바뀌었거나 없어진 캐릭터예요.", en: "This link moved, or the character is gone." },
+  nf_go_pick: { ko: "사람 고르기", en: "Pick someone" },
+  nf_go_feed: { ko: "피드 보기", en: "Open the feed" },
 } as const;
 
 export type Key = keyof typeof 말;

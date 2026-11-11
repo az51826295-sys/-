@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { t } from "@/lib/dot/lang";
 import { langFromCookie } from "@/lib/dot/langServer";
+import { DOT_APP_VERSION } from "@/lib/dot/version";
 import { createClient } from "@/lib/supabase/server";
 import SettingsActions from "./SettingsActions";
 import Preferences from "./Preferences";
@@ -42,7 +43,8 @@ export default async function DotSettings() {
           <Link className="st-row" href="/dot/privacy">{t("st_privacy", lang)}</Link>
           <Link className="st-row" href="/dot/child-safety">{t("st_child", lang)}</Link>
           <a className="st-row" href={`mailto:az51826295@gmail.com?subject=${encodeURIComponent("두근도트 문의")}`}>{t("st_contact", lang)}<small>az51826295@gmail.com{lang === "en" ? " · child-safety reports answered within 24 hours" : " · 아동 안전 관련은 24시간 안에 확인해요"}</small></a>
-          <div className="st-row st-dim"><span>{t("app_name", lang)} 1.0.7</span><small>{t("st_menu_note", lang)}</small></div>
+          {/* 11-12: 숫자를 손으로 적어 1.0.7 로 늙어 있었다(앱은 1.0.10). 한 자리에서만 온다. */}
+          <div className="st-row st-dim"><span>{t("app_name", lang)} {DOT_APP_VERSION}</span><small>{t("st_menu_note", lang)}</small></div>
         </div>
       </div>
     </div>
