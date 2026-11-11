@@ -41,19 +41,74 @@ const 긁 = async (길: string) => {
 };
 
 /* ── 1. 없는 주소 ───────────────────────────────────────────── */
+/**
+ * **HTML 글자를 세면 안 된다** (11-12 01:33 에 걸렸다).
+ *
+ * 첫 판에서 이 칸을 `fetch` 한 HTML 로 쟀다. 그랬더니 고친 뒤에도 빨갰다 —
+ * 이유는 둘 다 **자 쪽**이었다: ① 루트의 **기본** 404 가 RSC 전송 데이터에 슬롯으로
+ * 같이 실려서 `This page could not be found` 가 문자열로는 늘 있다(사람은 안 본다),
+ * ② 링크가 `\"href\":\"/dot/pick\"` 로 escape 돼 있어 `href="/dot/pick"` 로는 안 걸린다.
+ * 둘 다 **대상이 어긋난 것**이다 — 물음은 "사람이 무엇을 보나" 이므로 **렌더된 화면**을 센다
+ * ([[measure-the-thing-not-a-proxy]]).
+ */
+/** Next 기본 404 화면인가 — 검사식을 한 자리에 두고 **아래서 심은 글귀로 시험한다**. */
+const 영어기본 = (글: string, 제목: string) =>
+  /This page could not be found/.test(글) || /^404/.test(제목);
+
 console.log(`\n# ${집}\n`);
-console.log(`## 없는 캐릭터를 열면`);
+console.log(`## 없는 캐릭터를 열면 (렌더된 화면)`);
+const pup = await import("puppeteer-core");
+const 브 = await pup.default.launch({
+  executablePath: "C:/Program Files/Google/Chrome/Application/chrome.exe",
+  headless: true, userDataDir: `${process.env.TEMP}/rk-tr-${process.pid}`,
+  args: ["--no-first-run", "--lang=ko-KR"],
+});
+const 쪽 = await 브.newPage();
+await 쪽.setViewport({ width: 390, height: 844, deviceScaleFactor: 2 });
 for (const 길 of ["/dot/no-such-character-zzz", "/dot/no-such-character-zzz/profile"]) {
-  const { status, html } = await 긁(길);
-  const 기본문 = html.includes("This page could not be found");
-  const 우리글 = /돌아가|찾아보|없어진|없는 사람/.test(html);
-  const 돌아갈길 = /href="\/dot(\/(pick|search|feed))?"/.test(html);
+  const r = await 쪽.goto(집 + 길, { waitUntil: "networkidle2", timeout: 120_000 });
+  await new Promise((x) => setTimeout(x, 2500));
+  const 본 = await 쪽.evaluate(() => ({
+    글: document.body.innerText.trim(),
+    제목: document.title,
+    /* 눈에 보이는 링크만 센다 — 화면 밖에 숨은 것은 돌아갈 길이 아니다. */
+    길들: [...document.querySelectorAll("a[href]")]
+      .filter((a) => (a as HTMLElement).offsetParent !== null)
+      .map((a) => a.getAttribute("href") ?? ""),
+  }));
+  const 기본문 = 영어기본(본.글, 본.제목);
+  const 우리글 = /없는 사람|No one here/.test(본.글);
+  const 돌아갈길 = 본.길들.some((h) => /^\/dot(\/(pick|search|feed))?$/.test(h));
   맞(!기본문, `${길} → 영어 기본 화면이 아니다${기본문 ? " (지금 그것이다)" : ""}`);
   맞(우리글, `${길} → 우리 글귀가 있다`);
-  맞(돌아갈길, `${길} → 돌아갈 링크가 있다`);
-  /* 상태 코드는 Next 가 스트리밍이면 200 을 준다고 **문서에 적혀 있다** — 실패로 세지 않고 적기만 한다. */
-  console.log(`         (HTTP ${status} — 스트리밍이면 200 이 정상이다, 문서 기준)`);
+  맞(돌아갈길, `${길} → 눌러서 돌아갈 링크가 있다 (${본.길들.filter((h) => h.startsWith("/dot")).join(", ") || "없음"})`);
+  console.log(`         (HTTP ${r?.status()} · 글자 ${본.글.length} · 제목 "${본.제목}")`);
 }
+/**
+ * **이 자에 이빨이 있나** — 대조군 한 자리.
+ *
+ * "영어 기본 화면이 아니다" 가 맞음으로 나와도, 그 검사가 **무엇이든 통과시키는 것**이면
+ * 아무 뜻이 없다([[ruler-audit]]). 처음에는 운영에서 영어 화면이 뜨는 자리를 대조군으로
+ * 쓰려 했는데 **그런 자리가 없었다** — 두근도트 프록시가 안 잡힌 주소를 전부 `/dot` 으로
+ * 307 보낸다(11-12 01:35 확인: `/zzz-nope-…` → 제목 "두근도트 — 피드"). 영어 기본 화면은
+ * `notFound()` 길로만 올 수 있다는 뜻이다.
+ *
+ * 대조군이 없는데 대조군 자리를 억지로 세우면 **빈 범위로 헛 실패**가 난다
+ * ([[unmeasurable-test-is-not-a-failure]]). 그래서 화면 대신 **검사식에 고장을 심는다**:
+ * Next 가 실제로 내보내는 두 글귀를 넣어 보고 빨개지는지, 그리고 **우리 화면을 오해하지는
+ * 않는지** 양쪽을 센다(이빨만 세면 가짜 경보가 된다).
+ */
+console.log(`\n## 자에 이빨이 있나 (검사식에 심은 글귀를 넣어 본다)`);
+{
+  const 심은것: [string, string, string][] = [
+    ["404\nThis page could not be found.", "두근도트", "본문에 영어 기본 문구"],
+    ["", "404: This page could not be found.", "제목만 영어 기본 404"],
+  ];
+  for (const [글, 제목, 뭐] of 심은것) 맞(영어기본(글, 제목), `심은 고장을 잡는다 — ${뭐}`);
+  맞(!영어기본("···\n없는 사람이에요\n\n주소가 바뀌었거나 없어진 캐릭터예요.\n\n사람 고르기\n피드 보기", "두근도트"),
+    `우리 화면을 영어 기본으로 오해하지 않는다`);
+}
+await 브.close();
 
 /* ── 2. 버전이 참인가 ───────────────────────────────────────── */
 console.log(`\n## 설정 화면의 버전이 앱과 같나`);
