@@ -5,7 +5,7 @@ import { characterBySlug, spriteDataUrls, inLang } from "@/lib/dot/load";
 import { langFromCookie } from "@/lib/dot/langServer";
 import GuestSession from "../GuestSession";
 import DotChat from "./DotChat";
-import { AUTO_HEARTS_PER_DAY, CHECKIN_HEARTS, todayKST, toMode, toNextStage } from "@/lib/dot/bond";
+import { AUTO_HEARTS_PER_DAY, CHECKIN_HEARTS, todayKST, toNextStage } from "@/lib/dot/bond";
 import { balanceFor, AD_REFILLS_PER_DAY, AD_REFILL_TURNS, adConfFromEnv, type Balance } from "@/lib/dot/money";
 
 /**
@@ -50,9 +50,9 @@ export default async function DotRoom({ params, searchParams }: { params: Promis
   const who = { ...캐릭, sprites: Object.keys(bust).length ? bust : 캐릭.sprites, faces };
   const db = createServiceClient();
 
-  let bond = { points: 0, stage: 1, streakDays: 0, toNext: toNextStage(0), mode: "normal" as "normal" | "menhera" };
+  let bond = { points: 0, stage: 1, streakDays: 0, toNext: toNextStage(0) };
   let remaining = AUTO_HEARTS_PER_DAY;
-  let balance: Balance = { remaining, freeLeft: remaining, credits: 0, adLeft: 0, menheraUntil: null, 출석함: false };
+  let balance: Balance = { remaining, freeLeft: remaining, credits: 0, adLeft: 0, 출석함: false };
   let history: { role: string; content: string; emotion: string | null; sticker?: string | null; at?: string }[] = [];
 
   if (user) {
@@ -65,7 +65,7 @@ export default async function DotRoom({ params, searchParams }: { params: Promis
       db.from("dot_bonds").upsert({ user_id: user.id, character_id: who.id, last_seen_at: new Date().toISOString() }, { onConflict: "user_id,character_id" }).then(() => {}, () => {}),
     ]);
     const points = (b?.points as number) ?? 0;
-    bond = { points, stage: (b?.stage as number) ?? 1, streakDays: (b?.streak_days as number) ?? 0, toNext: toNextStage(points), mode: toMode(b?.mode) };
+    bond = { points, stage: (b?.stage as number) ?? 1, streakDays: (b?.streak_days as number) ?? 0, toNext: toNextStage(points) };
     balance = bal; remaining = bal.remaining;
     // 시각은 **ISO 문자열 그대로** 넘긴다. 서버에서 "오후 9:17" 로 만들어 보내면
     // 서버 시간대로 찍히고, 브라우저가 다시 그릴 때 어긋나 화면이 죽는다(React #418).

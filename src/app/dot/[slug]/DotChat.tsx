@@ -35,7 +35,7 @@ import { GameBand, GamePicker } from "../GameTray";
  */
 
 type Character = { id: string; slug: string; name: string; tagline: string; greeting: string; sprites: Record<string, string>; chips?: string[]; faces?: Record<string, string>; photos?: { url: string; caption: string }[] };
-type Bond = { points: number; stage: number; streakDays: number; toNext: { need: number; total: number } | null; mode?: "normal" | "menhera" };
+type Bond = { points: number; stage: number; streakDays: number; toNext: { need: number; total: number } | null };
 type Line = { role: string; content: string; emotion: string | null; sticker?: string | null; at?: string };
 
 export default function DotChat({
@@ -185,7 +185,8 @@ export default function DotChat({
    * 11-06 **파는 것이 없어졌다** (사장님 "멘헤라 구독 없애고 하트로 가자").
    * 여기 있던 구독 시트·상점 시트·`buy()` 를 지웠다. 수입은 광고 하나다 — 그 단추는
    * `AdNudge`(하트가 적을 때)와 `LimitCard`(하트 0) 두 자리에 있다.
-   * 되살리려면 이 커밋을 되돌린다. 자격(멘헤라)은 `engine/tools/dot_grant.mts` 로만 준다.
+   * 11-11: **멘헤라 모드도 뺐다**(사장님 "멘헤라 모드 빼고 넣자") — 살 길이 없던 유료 모드라
+   * 단추만 남아 있었다. 되살리려면 그 커밋을 되돌린다.
    */
   const [linkOpen, setLinkOpen] = useState(false);
   const [linkEmail, setLinkEmail] = useState("");
@@ -241,21 +242,6 @@ export default function DotChat({
   }
 
   // 계정 삭제는 95회차에 설정(/dot/settings)으로 옮겼다 — 방 메뉴는 이 방 것만.
-
-  /**
-   * 멘헤라 모드 — 매달리고, 먼저 말 걸기가 잦아진다.
-   *
-   * 11-06: **구독을 없앴다**(사장님 "멘헤라 구독 없애고 하트로 가자"). 그래서 이 단추는
-   * 자격이 있는 사람에게만 보인다 — 파는 길이 없는데 잠긴 단추를 두면 막다른 길이다
-   * ([[feature-removal-leaves-dead-ends]]). 자격은 지금 `dot_grant.mts`(손)로만 준다.
-   */
-  async function toggleMode() {
-    setMenu(false);
-    const mode = bond.mode === "menhera" ? "normal" : "menhera";
-    const res = await fetch("/api/dot/mode", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ characterId: who.id, mode }) });
-    if (res.ok) { setBond((b) => ({ ...b, mode })); setToast(mode === "menhera" ? `${who.name}${iGa(who.name)} 이제 당신한테 매달려요` : "다시 담백해졌어요"); return; }
-    setToast("바꾸지 못했어요");
-  }
 
   /** 대화방 나가기 — 말만 지운다. 사이(하트·기억)는 남는다. */
   async function leave() {
@@ -465,7 +451,7 @@ export default function DotChat({
           setLive(null);
           setLines((l) => [...l, { role: "character", content: ev.reply ?? acc, emotion: ev.emotion ?? null, at: new Date().toISOString() },
             ...(ev.sticker ? [{ role: "character", content: "", emotion: ev.emotion ?? null, sticker: ev.sticker, at: new Date().toISOString() }] : [])]);
-          /* 10-28 손맛: 받을 때. 집착·멘헤라 감정이면 소리도 진동도 화면도 한 칸 더 간다. */
+          /* 10-28 손맛: 받을 때. 센 감정(집착·질투)이면 소리도 진동도 화면도 한 칸 더 간다. */
           const 센감정 = ["집착", "불안", "질투", "분노", "obsession", "jealous", "angry"].includes(String(ev.emotion ?? ""));
           if (센감정) { SFX.menhera(); buzz(BUZZ.menhera); shake(rootRef.current, 7); }
           else { SFX.recv(); buzz(BUZZ.heart); }
@@ -505,10 +491,8 @@ export default function DotChat({
   }
 
   // 68회차: 프로필은 **얼굴 크롭**을 쓴다(있으면). 흉상을 확대해 자르면 린은 머리카락만 보였다.
-  // 멘헤라 모드면 그 표정의 멘헤라 판(`menhera:<e>`)이 먼저 — 사장님 "멘헤라 모드는 얼굴도 바뀜". 없으면 보통 얼굴.
   const face = (e: string | null) => {
     const k = e ?? "neutral", f = who.faces ?? {};
-    if (bond.mode === "menhera") { const m = f[`menhera:${k}`] ?? who.sprites[`menhera:${k}`]; if (m) return m; }
     return f[k] ?? f.neutral ?? who.sprites[k] ?? who.sprites.neutral ?? "";
   };
   const hasFaces = !!who.faces && Object.keys(who.faces).length > 0;
@@ -530,7 +514,7 @@ export default function DotChat({
   const clock = (iso?: string) => (mounted && iso ? hhmm(iso, lang) : "");
 
   return (
-    <div className="kk-root" ref={rootRef} data-menhera={bond.mode === "menhera" ? "1" : undefined}>
+    <div className="kk-root" ref={rootRef}>
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
       <style>{CSS}</style>
 
@@ -544,7 +528,6 @@ export default function DotChat({
           <Link className="kk-back" href="/dot/chats" aria-label="채팅 목록으로">‹</Link>
           <a className="kk-title" href={`/dot/${who.slug}/profile`} style={{ textDecoration: "none", color: "inherit" }}>{who.name}</a>
           <a className="kk-hearts" href={`/dot/${who.slug}/profile`} aria-label={`친밀도 ${bond.stage}단계 · 프로필 보기`} title="친밀도 — 이야기할수록 차요">{"★".repeat(bond.stage)}{"☆".repeat(Math.max(0, 5 - bond.stage))}</a>
-          {bond.mode === "menhera" && <span className="kk-mode">멘헤라</span>}
           {signedIn && <button className="kk-more" aria-label="메뉴" onClick={() => setMenu((m) => !m)}>≡</button>}
         </header>
         {menu && (
@@ -554,10 +537,6 @@ export default function DotChat({
                 {push === "on" ? "알림 끄기" : "알림 켜기"}
                 <small>{push === "on" ? "먼저 말 걸지 않아요" : "하루 한 번, 먼저 말을 걸어요"}</small>
               </button>
-            )}
-            {/* 11-06: 파는 길이 없어져서 **자격이 있는 사람에게만** 보인다(없으면 잠긴 단추 = 막다른 길). */}
-            {(bond.mode === "menhera" || !!balance.menheraUntil) && (
-              <button onClick={toggleMode}>{bond.mode === "menhera" ? "멘헤라 모드 끄기" : "멘헤라 모드 켜기"}<small>{bond.mode === "menhera" ? "다시 담백하게" : "집착하고, 문자가 막 와요"}</small></button>
             )}
             <button onClick={() => { setMenu(false); setThemeOpen(true); }}>배경·말풍선 바꾸기<small>이 폰에만 저장돼요</small></button>
             <button onClick={leave}>대화 내용 지우기<small>친밀도는 남아요</small></button>
@@ -605,7 +584,7 @@ export default function DotChat({
                   /* 스티커: 말풍선 없이 표정 그림만 크게 — 카톡 이모티콘 자리(89회차) */
                   <div className="kk-row them">
                     <div className="kk-face" style={{ visibility: "hidden" }} />
-                    <img className="kk-sticker" src={who.sprites[`${bond.mode === "menhera" ? "menhera:" : ""}${l.sticker}`] ?? who.sprites[l.sticker] ?? ""} alt={l.sticker} />
+                    <img className="kk-sticker" src={who.sprites[l.sticker] ?? ""} alt={l.sticker} />
                   </div>
                 ) : l.role === "user" ? (
                   <div className="kk-row me">
@@ -1179,7 +1158,6 @@ const CSS = `
   display:flex; align-items:center; min-height:40px; }
 .kk-more { width:40px; height:40px; border-radius:50%; background:none; border:none; font-size:24px; line-height:1; color:var(--ink, #222); cursor:pointer; }
 .kk-more:active { background:rgba(0,0,0,.06); }
-.kk-mode { font-size:11px; font-weight:600; color:#fff; background:#ff5c7a; border-radius:999px; padding:2px 8px; margin-left:6px; }
 .kk-menu { position:absolute; right:10px; top:60px; z-index:5; background:#fff; border-radius:14px; min-width:210px;
   box-shadow:0 10px 30px rgba(0,0,0,.18), 0 1px 0 rgba(0,0,0,.04); overflow:hidden; display:flex; flex-direction:column; padding:6px; }
 .kk-menu button, .kk-menu a { text-align:left; background:none; border:none; padding:11px 12px; border-radius:10px;
@@ -1300,7 +1278,6 @@ const CSS = `
 .kk-shop-bal { font-size:13px; color:#5c6570; margin-bottom:4px; }
 .kk-sku { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:12px 14px; background:#f5f7fa; border:none; border-radius:14px; font:inherit; color:#141414; cursor:pointer; text-align:left; }
 .kk-sku:active { background:#eaeef3; }
-.kk-sku.menhera { background:#fff0f3; }
 .kk-sku-name { display:flex; flex-direction:column; gap:2px; font-size:15px; font-weight:600; }
 .kk-sku-name small { font-size:12px; font-weight:400; color:#8a8f98; }
 .kk-sku-price { font-size:15px; font-weight:700; color:#111; white-space:nowrap; }
@@ -1429,32 +1406,6 @@ const CSS = `
 .kk-bubble-pick .kk-bubble.me { align-self:flex-end; }
 .kk-bubble-pick small { font-size:12px; color:#5c6570; align-self:center; }
 
-/* ── 멘헤라 모드 테마 반전 (10-28 사장님 기획 5번) ──
-   테마가 이미 CSS 변수로 돈다(--bg·--them·--me…). 그래서 **변수만 덮는다** —
-   말풍선·띠·글자 규칙을 새로 쓰면 다음에 테마를 바꿀 때 두 군데를 고쳐야 한다. */
-.kk-root[data-menhera] .kk-phone {
-  --bg:#1a0d14; --ink:#f3d9e4; --bar:rgba(36,14,24,.92);
-  --them:#2b1020; --themText:#f6dde8; --me:#7a1636; --meText:#ffe9f0;
-}
-.kk-root[data-menhera] .kk-bar { border-bottom:1px solid rgba(224,69,123,.25); }
-.kk-root[data-menhera] .kk-hearts { color:#e0457b; }
-.kk-root[data-menhera] .kk-bubble.them {
-  border:1px solid rgba(224,69,123,.3);
-  box-shadow:0 0 14px rgba(224,69,123,.12);
-}
-.kk-root[data-menhera] .kk-bubble.me { box-shadow:0 0 10px rgba(122,22,54,.4); }
-.kk-root[data-menhera] .kk-day,
-.kk-root[data-menhera] .kk-guide { color:#b98aa0; }
-.kk-root[data-menhera] .kk-mode { background:#e0457b; color:#fff; }
-/* 가장자리를 어둡게 — 화면을 점거한 느낌은 색보다 **가장자리**가 만든다 */
-.kk-root[data-menhera] .kk-phone::after {
-  content:""; position:absolute; inset:0; pointer-events:none; z-index:1;
-  background:radial-gradient(ellipse at 50% 40%, transparent 55%, rgba(0,0,0,.45) 100%);
-}
-/* 바꾸는 순간 한 번 스며든다. 켠 걸 몸으로 알게 한다. */
-@keyframes kk-menhera-in { from { filter:saturate(.3) brightness(1.3) } to { filter:none } }
-.kk-root[data-menhera] .kk-phone { animation:kk-menhera-in .45s ease-out }
-@media (prefers-reduced-motion: reduce) { .kk-root[data-menhera] .kk-phone { animation:none } }
 
 .kk-peek-close { margin-top:14px; background:#f1f3f6; border:none; border-radius:12px; padding:10px 18px; font:inherit; font-size:14px; font-weight:500; cursor:pointer; }
 `;

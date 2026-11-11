@@ -14,9 +14,7 @@ import {
   toVoiceLadder,
   giftFor,
   giftPoints,
-  toMode,
   lengthRule,
-  modeVoice,
   timeHint,
   toEmotion,
   todayKST,
@@ -141,7 +139,7 @@ export async function prepareTurn(db: SupabaseClient, userId: string, characterI
     // 11-10 사장님 "선물의 단위를 하트로 바꿔" — 선물은 **아래 선물 자리에서** 하트를 값만큼 가져간다.
     // 여기서 한 개만 먼저 떼면 모자랄 때 되돌릴 것이 늘어난다. 대화만 여기서 한 개.
     opts.gift ? Promise.resolve({ data: 1, error: null }) : db.rpc("dot_take_turn", { p_user: userId, p_day: day, p_limit: AUTO_HEARTS_PER_DAY }),
-    db.from("dot_bonds").select("points, stage, streak_days, last_talked_on, memo, mode, last_gift_on").eq("user_id", userId).eq("character_id", characterId).maybeSingle(),
+    db.from("dot_bonds").select("points, stage, streak_days, last_talked_on, memo, last_gift_on").eq("user_id", userId).eq("character_id", characterId).maybeSingle(),
     db.from("dot_messages").select("role, content, sticker").eq("user_id", userId).eq("character_id", characterId).order("id", { ascending: false }).limit(HISTORY_TURNS * 2 + HISTORY_BLOCK),
     db.from("dot_messages").select("id", { count: "exact", head: true }).eq("user_id", userId).eq("character_id", characterId),
     /* 11-06: 오늘 받은 하트(출석·광고)를 **같은 묶음에서** 읽는다 — 왕복을 안 늘린다
@@ -232,7 +230,6 @@ export async function prepareTurn(db: SupabaseClient, userId: string, characterI
         돌려줄하트++;   // 이 뒤로 실패하면 여기까지 가져간 만큼 돌려준다
       }
     }
-    const mode = toMode(bondRow?.mode);
     const all = ((recent ?? []) as { role: string; content: string; sticker: string | null }[]).reverse();   // 오래된 것부터
     // 스티커 줄(빈 글)은 프롬프트에 안 넣는다. 마지막 스티커 뒤로 몇 줄 지났는지는 스티커 규칙이 쓴다(89회차).
     const lastSticker = all.map((m) => !!m.sticker).lastIndexOf(true);
@@ -256,11 +253,10 @@ export async function prepareTurn(db: SupabaseClient, userId: string, characterI
       // 같은 말투였다. 캐릭터마다 자기 사다리를 탄다(bond.ts stageVoiceFor).
       "", "## 지금 이 사람과의 사이", `${prev.stage}단계. ${영어 ? enStageVoice(사다리, prev.stage) : stageVoiceFor(사다리, prev.stage)}`,
       memo.length ? `\n이 사람에 대해 네가 아는 것:\n${memo.map((m) => `- ${m}`).join("\n")}` : "",
-      "", modeVoice(mode),
       // "지금 몇 시" 는 여기 두지 않는다 — 시간대가 바뀔 때마다 앞부분 캐시가 깨진다(79회차 캐시 45%). 입력 맨 끝에 붙인다.
       "", "## 어떻게 답하나",
-      // 09-11 사장님 "말 너무 많이 하진 마 — 집착 버프도 팔 거니까": 기본은 짧다. 멘헤라 모드가 길이를 연다(bond.ts lengthRule).
-      lengthRule(mode),
+      // 09-11 사장님 "말 너무 많이 하진 마": 카톡은 짧게 자주다(bond.ts lengthRule).
+      lengthRule(),
       // 96회차 사장님 "현실성 추가": 마침표 없이, 한 호흡씩, 줄바꿈 = 말풍선.
       shapeRule(),
       // 88회차: 카톡 친구처럼 이름을 묻고·기억하고·부른다. 기억에 이름이 있으면 가끔 부르고, 없으면 첫 한두 마디 안에 묻는다.

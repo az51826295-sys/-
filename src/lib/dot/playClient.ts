@@ -69,7 +69,7 @@ export async function 앱에서사기(
   if (!svc) return { ok: false, 까닭: "앱아님" };
 
   let 값 = { currency: "KRW", value: "0" };
-  let 이름 = "멘헤라 모드";
+  let 이름 = "하트 충전";
   try {
     const [d] = await svc.getDetails([itemId]);
     if (!d) return { ok: false, 까닭: "상품없음", 글: `Play Console 에 ${itemId} 가 없다` };

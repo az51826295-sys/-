@@ -2,7 +2,7 @@ import webpush from "web-push";
 import { z } from "zod";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { defaultProviders } from "@/lib/execution/shared";
-import { MENHERA_MAX_PINGS, MENHERA_REPING_MIN, stageVoiceFor, toVoiceLadder, timeOfDayKST, toEmotion, toMode, todayKST, type Mode } from "./bond";
+import { stageVoiceFor, toVoiceLadder, timeOfDayKST, toEmotion, todayKST } from "./bond";
 
 /**
  * 먼저 말 걸기 — **캐릭터가 하루 한 번, 사람마다 다른 시각에, 짧게.**
@@ -59,39 +59,24 @@ export function drawPingMinute(): number {
 const opener = z.object({ text: z.string(), emotion: z.string() });
 
 export type PingRow = {
-  mode: Mode; last_pinged_on: string | null; last_talked_on: string | null; ping_minute: number | null;
+  last_pinged_on: string | null; last_talked_on: string | null; ping_minute: number | null;
   pings_today: number; last_pinged_at: string | null;
-  /** 이 사람이 이 캐릭터에게 마지막으로 말한 시각(멘헤라만 읽는다). */
-  lastUserAt: string | null;
 };
 
 /**
  * 지금 걸 것인가 — **순수 함수**(시험이 잰다, 75회차).
- * 일반: 하루 1번, 오늘 말한 사람에겐 안 걺, 뽑은 시각 이후, 창 안.
- * 멘헤라: 하루 3번까지. 첫 번은 일반과 같은 시각. 그 다음은 **답이 없을 때만** 90분 뒤 또 —
- *   "답이 없어서 또 보낸다" 가 멘헤라다. 오늘 말했어도 그 뒤 90분 조용하면 건다. 창 밖은 안 건다.
+ * 하루 1번, 오늘 말한 사람에겐 안 걺, 뽑은 시각 이후, 창 안.
+ *
+ * 11-11: 멘헤라 모드를 빼면서 **하루 여러 번 거는 갈래도 같이 뺐다**(bond.ts 참고).
  */
 export function pingDecision(b: PingRow, day: string, nowMin: number, now: Date): { go: boolean; why: string } {
   if (b.ping_minute === null) return { go: false, why: "시각 없음" };
   if (nowMin > WINDOW_END || nowMin < WINDOW_START) return { go: false, why: "창 밖" };
   const pingsToday = b.last_pinged_on === day ? b.pings_today : 0;
-  if (b.mode !== "menhera") {
-    if (pingsToday >= 1) return { go: false, why: "오늘 걸었다" };
-    if (b.last_talked_on === day) return { go: false, why: "오늘 말했다" };
-    if (nowMin < b.ping_minute) return { go: false, why: "시각 전" };
-    return { go: true, why: "첫 번" };
-  }
-  if (pingsToday >= MENHERA_MAX_PINGS) return { go: false, why: `오늘 ${MENHERA_MAX_PINGS}번 다 걸었다` };
-  if (pingsToday === 0) {
-    if (b.last_talked_on === day) return { go: false, why: "오늘 말했다(첫 번은 일반과 같다)" };
-    if (nowMin < b.ping_minute) return { go: false, why: "시각 전" };
-    return { go: true, why: "첫 번" };
-  }
-  const lastPing = b.last_pinged_at ? Date.parse(b.last_pinged_at) : 0;
-  if (now.getTime() - lastPing < MENHERA_REPING_MIN * 60_000) return { go: false, why: "아직 90분 안 됐다" };
-  const lastUser = b.lastUserAt ? Date.parse(b.lastUserAt) : 0;
-  if (lastUser > lastPing) return { go: false, why: "답이 왔다" };
-  return { go: true, why: `답 없음 → ${pingsToday + 1}번째` };
+  if (pingsToday >= 1) return { go: false, why: "오늘 걸었다" };
+  if (b.last_talked_on === day) return { go: false, why: "오늘 말했다" };
+  if (nowMin < b.ping_minute) return { go: false, why: "시각 전" };
+  return { go: true, why: "첫 번" };
 }
 
 /**
@@ -115,17 +100,16 @@ export async function pingTick(db: SupabaseClient, log: (s: string) => void = co
 
   const { data: bonds } = await db
     .from("dot_bonds")
-    .select("user_id, character_id, points, stage, memo, last_talked_on, last_pinged_on, ping_day, ping_minute, mode, pings_today, last_pinged_at")
+    .select("user_id, character_id, points, stage, memo, last_talked_on, last_pinged_on, ping_day, ping_minute, pings_today, last_pinged_at")
     .in("user_id", users);
-  type B = { user_id: string; character_id: string; points: number; stage: number; memo: string[]; last_talked_on: string | null; last_pinged_on: string | null; ping_day: string | null; ping_minute: number | null; mode: string | null; pings_today: number; last_pinged_at: string | null };
+  type B = { user_id: string; character_id: string; points: number; stage: number; memo: string[]; last_talked_on: string | null; last_pinged_on: string | null; ping_day: string | null; ping_minute: number | null; pings_today: number; last_pinged_at: string | null };
   const rows = (bonds ?? []) as B[];
 
-  // 사람마다 **가장 친한 캐릭터 하나**만 말을 건다. 셋이 동시에 울리면 스팸이다. 멘헤라를 켠 사이가 있으면 그쪽이 먼저다 — 켠 사람이 원한 것이니.
+  // 사람마다 **가장 친한 캐릭터 하나**만 말을 건다. 셋이 동시에 울리면 스팸이다.
   const best = new Map<string, B>();
   for (const b of rows) {
     const cur = best.get(b.user_id);
-    const m = toMode(b.mode) === "menhera", cm = cur ? toMode(cur.mode) === "menhera" : false;
-    if (!cur || (m && !cm) || (m === cm && b.points > cur.points)) best.set(b.user_id, b);
+    if (!cur || b.points > cur.points) best.set(b.user_id, b);
   }
 
   let drawn = 0, sent = 0, dead = 0;
@@ -136,30 +120,20 @@ export async function pingTick(db: SupabaseClient, log: (s: string) => void = co
       b.ping_day = day; b.ping_minute = m; b.pings_today = 0;
       drawn++;
     }
-    const mode = toMode(b.mode);
     const pingsToday = b.last_pinged_on === day ? b.pings_today : 0;
     if (!force) {
-      let lastUserAt: string | null = null;
-      if (mode === "menhera" && pingsToday > 0) {
-        const { data: lu } = await db.from("dot_messages").select("created_at").eq("user_id", b.user_id).eq("character_id", b.character_id).eq("role", "user").order("id", { ascending: false }).limit(1).maybeSingle();
-        lastUserAt = (lu?.created_at as string) ?? null;
-      }
-      const d = pingDecision({ mode, last_pinged_on: b.last_pinged_on, last_talked_on: b.last_talked_on, ping_minute: b.ping_minute, pings_today: b.pings_today, last_pinged_at: b.last_pinged_at, lastUserAt }, day, nowMin, new Date());
+      const d = pingDecision({ last_pinged_on: b.last_pinged_on, last_talked_on: b.last_talked_on, ping_minute: b.ping_minute, pings_today: b.pings_today, last_pinged_at: b.last_pinged_at }, day, nowMin, new Date());
       if (!d.go) continue;
     }
 
     // 2) 먼저 표에 "걸었다" 를 적는다 — 보내는 중에 다른 워커가 또 보내지 않게.
     //    `neq` 가 그 경계다: 두 워커가 같은 줄을 동시에 집어도 한쪽만 갱신에 성공한다.
     //    force(시험) 일 때만 이 경계를 푼다.
-    //    멘헤라는 하루 여러 번이라 날짜로는 못 막는다 — `pings_today` 가 내가 읽은 값 그대로일 때만 +1 (낙관적 잠금).
     let claim = db
       .from("dot_bonds")
       .update({ last_pinged_on: day, last_pinged_at: new Date().toISOString(), pings_today: pingsToday + 1 })
       .eq("user_id", b.user_id).eq("character_id", b.character_id);
-    if (!force) {
-      if (mode === "menhera") claim = pingsToday === 0 ? claim.or(`last_pinged_on.is.null,last_pinged_on.neq.${day}`) : claim.eq("last_pinged_on", day).eq("pings_today", pingsToday);
-      else claim = claim.or(`last_pinged_on.is.null,last_pinged_on.neq.${day}`);
-    }
+    if (!force) claim = claim.or(`last_pinged_on.is.null,last_pinged_on.neq.${day}`);
     const { data: claimed } = await claim.select("user_id").maybeSingle();
     if (!claimed) continue;
 
@@ -177,7 +151,6 @@ export async function pingTick(db: SupabaseClient, log: (s: string) => void = co
           "", "## 지금 이 사람과의 사이", `${b.stage}단계. ${stageVoiceFor(toVoiceLadder(ch.voice_ladder, ch.formal_start as boolean | undefined), b.stage)}`,
           memoForToday(b.memo) ? `\n오늘은 이 기억 하나를 **꼭** 살짝 건드린다(그 낱말을 써서): ${memoForToday(b.memo)}` : "",
           "", "## 지금", `한국 시간 ${timeOfDayKST()}. 이 시간에 어울리는 한마디여야 한다.`,
-          mode === "menhera" ? `\n## 멘헤라 모드\n${pingsToday === 0 ? "너는 매달리는 쪽이다 — 보고 싶다·뭐 해·나 생각했어 같은 말." : `아까 말을 걸었는데 **답이 없다**(${pingsToday}번째 다시 거는 것). 서운하고 불안하다 — 왜 답 없냐·어디냐·나 잊었냐. 무섭지 않게, 귀엽게 서운해한다. 자해·죽음·협박은 절대 안 한다.`}` : "",
           "", "## 어떻게 말하나",
           "- **딱 한 문장**, 40자 이내. 알림 한 줄로 뜬다.",
           "- 안부·궁금함·오늘 있었던 소소한 일 중 하나. 질문으로 끝내면 답하기 쉽다.",

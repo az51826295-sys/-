@@ -1,6 +1,6 @@
 import { userIdFrom } from "@/lib/dot/auth";
 import { createServiceClient } from "@/lib/supabase/service";
-import { todayKST, toMode, toNextStage } from "@/lib/dot/bond";
+import { todayKST, toNextStage } from "@/lib/dot/bond";
 import { balanceFor } from "@/lib/dot/money";
 
 /** 앱을 열었을 때 한 번. 지난 대화 + 지금 사이 + 오늘 남은 횟수. */
@@ -17,7 +17,7 @@ export async function GET(request: Request) {
     db.from("dot_messages").select("role, content, emotion, sticker, created_at")
       .eq("user_id", userId).eq("character_id", characterId)
       .order("id", { ascending: false }).limit(60),
-    db.from("dot_bonds").select("points, stage, streak_days, mode")
+    db.from("dot_bonds").select("points, stage, streak_days")
       .eq("user_id", userId).eq("character_id", characterId).maybeSingle(),
     balanceFor(db, userId, day),
   ]);
@@ -25,7 +25,7 @@ export async function GET(request: Request) {
   const points = (bond?.points as number) ?? 0;
   return Response.json({
     messages: ((msgs ?? []) as unknown[]).reverse(),
-    bond: { points, stage: (bond?.stage as number) ?? 1, streakDays: (bond?.streak_days as number) ?? 0, toNext: toNextStage(points), mode: toMode(bond?.mode) },
+    bond: { points, stage: (bond?.stage as number) ?? 1, streakDays: (bond?.streak_days as number) ?? 0, toNext: toNextStage(points) },
     remaining: balance.remaining,
     balance,
   });

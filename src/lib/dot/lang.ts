@@ -126,7 +126,7 @@ const 말 = {
   st_privacy: { ko: "개인정보 처리방침", en: "Privacy policy" },
   st_child: { ko: "아동 안전 기준", en: "Child safety standards" },
   st_contact: { ko: "문의·신고", en: "Contact & report" },
-  st_menu_note: { ko: "알림·배경·멘헤라 모드는 각 대화방의 ≡ 메뉴에 있어요", en: "Notifications, background and Menhera Mode live in each room's ≡ menu" },
+  st_menu_note: { ko: "알림·배경은 각 대화방의 ≡ 메뉴에 있어요", en: "Notifications and background live in each room's ≡ menu" },
   st_signout: { ko: "로그아웃", en: "Sign out" },
   st_delete: { ko: "계정 삭제", en: "Delete account" },
   st_delete_sub: { ko: "되돌릴 수 없어요", en: "This cannot be undone" },

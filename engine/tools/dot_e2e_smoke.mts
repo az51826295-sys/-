@@ -2,7 +2,7 @@
  * 출시 전 통째 연기 — **새 사람 하나가 겪는 길을 실제 서버에 대고** 끝까지 간다 (82회차 09-12).
  *
  * 계정 만들기 → 로그인 없이 /dot 은 /login 으로 → 캐릭터 목록 → 첫 말(흘려보내기) → 지난 대화·잔고 →
- * 멘헤라(402 유료) → 광고·충전(503 곧 열려요) → 게시물 좋아요(+1) → 계정 연결(이미 연결됨 400) → 계정 삭제 → 삭제 뒤 401.
+ * 멘헤라 길 없음(404) → 광고·충전(503 곧 열려요) → 게시물 좋아요(+1) → 계정 연결(이미 연결됨 400) → 계정 삭제 → 삭제 뒤 401.
  * 줄마다 상태 코드·한국어 문구·걸린 ms 를 적는다. 모델 호출 1턴. 계정은 끝에 지운다(실패해도 admin 으로 지운다).
  *
  *   npx tsx engine/tools/dot_e2e_smoke.mts [https://…]
@@ -51,11 +51,11 @@ try {
   // 4) 지난 대화·잔고
   { const t0 = t(); const r = await fetch(`${BASE}/api/dot/history?characterId=${yuna.id}`, { headers: H }); const j = (await r.json()) as { messages: unknown[]; bond: { stage: number; mode: string }; remaining: number; balance: { adLeft: number; credits: number } };
     // 말 2줄(사람·답) + 스티커 한 장이면 3줄 — 96회차부터 답이 짧아져 첫 턴에 스티커(89회차 규칙)가 자주 붙는다.
-    lines.push([r.status === 200 && (j.messages.length === 2 || j.messages.length === 3) && j.remaining === 29 && j.balance.adLeft === 2 && j.bond.mode === "normal", `지난 대화 ${r.status} · 말 ${j.messages.length}줄(2~3) · 남은 ${j.remaining}(29) · 광고 ${j.balance.adLeft}(2) · 모드 ${j.bond.mode} (${t() - t0}ms)`]); }
+    lines.push([r.status === 200 && (j.messages.length === 2 || j.messages.length === 3) && j.remaining === 29 && j.balance.adLeft === 2, `지난 대화 ${r.status} · 말 ${j.messages.length}줄(2~3) · 남은 ${j.remaining}(29) · 광고 ${j.balance.adLeft}(2) (${t() - t0}ms)`]); }
 
-  // 5) 멘헤라 → 402
-  { const r = await fetch(`${BASE}/api/dot/mode`, { method: "POST", headers: H, body: JSON.stringify({ characterId: yuna.id, mode: "menhera" }) }); const j = (await r.json()) as { paywall?: boolean; price?: string; error?: string };
-    lines.push([r.status === 402 && j.paywall === true && !!j.price, `멘헤라 ${r.status} · ${j.error} ${j.price ?? ""}`]); }
+  // 5) 11-11: 멘헤라 모드를 뺐다 → 그 길 자체가 **없어야** 한다(404). 402 가 돌아오면 되살아난 것이다.
+  { const r = await fetch(`${BASE}/api/dot/mode`, { method: "POST", headers: H, body: JSON.stringify({ characterId: yuna.id, mode: "menhera" }) });
+    lines.push([r.status === 404, `멘헤라 길이 없다 ${r.status} (404 여야 한다)`]); }
 
   // 6) 광고·충전 → 503 곧 열려요
   { const a = await fetch(`${BASE}/api/dot/ad`, { method: "POST", headers: H }); const ja = (await a.json()) as { error?: string };

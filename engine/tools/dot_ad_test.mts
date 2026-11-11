@@ -94,12 +94,15 @@ try {
   재다(b2.remaining === b2.freeLeft + b2.credits,
     `남은 ${b2.remaining} = 공짜 ${b2.freeLeft} + 충전 ${b2.credits} (광고분 중복 없음)`);
 
-  /* (6) 11-06: 구독이 없어졌다. 자격(멘헤라)을 가진 사람도 **하트를 똑같이 쓰고 광고를 본다** —
-     무제한이 사라졌으니 여기서 볼 것은 "자격이 한도를 뚫지 않는다" 이다. */
+  /* (6) 11-11: **멘헤라를 뺐다.** 그러니 여기서 볼 것은 "자격을 줘도 잔고가 안 움직인다" 이다 —
+     옛 길(`dot_entitlements` 를 읽어 한도를 뚫던 자리)이 **정말 끊겼는지**를 잰다.
+     되돌아오면(누가 그 읽기를 되살리면) 이 줄이 빨개진다. */
+  const 전 = await bal();
   await db.rpc("dot_grant", { p_user: uid, p_sku: "menhera", p_credits: 0, p_menhera_days: 30, p_source: "manual", p_ref: null });
   const b3 = await bal();
-  재다(Number.isFinite(b3.remaining) && !!b3.menheraUntil,
-    `멘헤라 자격자도 한도 안: 남은 ${b3.remaining}(유한해야) · 자격 ${b3.menheraUntil ? "있음" : "없음"}`);
+  재다(b3.remaining === 전.remaining && b3.adLeft === 전.adLeft && !("menheraUntil" in b3),
+    `자격을 줘도 잔고가 그대로: 남은 ${전.remaining}→${b3.remaining} · 광고 ${전.adLeft}→${b3.adLeft} · menheraUntil 칸 ${"menheraUntil" in b3 ? "아직 있다" : "없다"}`);
+
 } finally {
   await db.auth.admin.deleteUser(uid).catch(() => {});
   await db.from("dot_usage").delete().eq("user_id", uid);

@@ -140,22 +140,20 @@ export type Balance = {
   credits: number;
   /** 오늘 더 볼 수 있는 광고 수. 화면은 이게 0 보다 클 때만 광고 단추를 그린다. */
   adLeft: number;
-  menheraUntil: string | null;
   /** 오늘 출석체크를 했나 — 안 했으면 하트가 0 이고, 카드가 받는 문이 된다(11-06). */
   출석함: boolean;
 };
 
-/** 오늘 이 사람의 잔고 — 화면·API 가 다 이걸로 센다. 세 표를 나란히 읽는다(왕복 1). */
+/** 오늘 이 사람의 잔고 — 화면·API 가 다 이걸로 센다. 두 표를 나란히 읽는다(왕복 1).
+ *  11-11: 멘헤라를 빼면서 `dot_entitlements` 를 안 읽는다 — 읽을 까닭이 사라졌다(왕복도 하나 준다). */
 export async function balanceFor(db: SupabaseClient, userId: string, day: string): Promise<Balance> {
-  const [{ data: u }, { data: w }, { data: e }] = await Promise.all([
+  const [{ data: u }, { data: w }] = await Promise.all([
     db.from("dot_usage").select("turns, bonus_turns, ad_refills").eq("user_id", userId).eq("day", day).maybeSingle(),
     db.from("dot_wallet").select("credits").eq("user_id", userId).maybeSingle(),
-    db.from("dot_entitlements").select("menhera_until").eq("user_id", userId).maybeSingle(),
   ]);
   const turns = Number(u?.turns ?? 0), bonus = Number(u?.bonus_turns ?? 0);
   const adsSeen = Number(u?.ad_refills ?? 0);
   const credits = Number(w?.credits ?? 0);
-  const menheraUntil = (e?.menhera_until as string) ?? null;
 
   /**
    * **오늘 출석했나** — 따로 적는 칸이 없어서 **덜어서** 센다(11-06).
@@ -180,7 +178,6 @@ export async function balanceFor(db: SupabaseClient, userId: string, day: string
     freeLeft,
     credits,
     adLeft,
-    menheraUntil,
     출석함,
   };
 }

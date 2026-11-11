@@ -55,7 +55,7 @@ const 방 = (하트: number) => renderToStaticMarkup(React.createElement(DotChat
   signedIn: true, who, bond: { points: 140, stage: 3, streakDays: 4, toNext: { need: 260, total: 280 } },
   remaining: 하트, history, limit: AUTO_HEARTS_PER_DAY,
   account: { linked: true, email: "me@example.com" },
-  balance: { remaining: 하트, freeLeft: 하트, credits: 0, adLeft: AD_REFILLS_PER_DAY, menheraUntil: null, 출석함: 하트 > 0 },
+  balance: { remaining: 하트, freeLeft: 하트, credits: 0, adLeft: AD_REFILLS_PER_DAY, 출석함: 하트 > 0 },
   adOpen: true,
 } as never));
 
