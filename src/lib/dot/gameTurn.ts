@@ -129,7 +129,7 @@ function 판설명(game: GameKey, seed: number, live: Live | null, 사람말: st
  */
 export async function playGameTurn(
   db: SupabaseClient, userId: string, characterId: string,
-  opts: { game?: GameKey; message?: string; lang?: "ko" | "en"; 넛지켜기?: boolean },
+  opts: { game?: GameKey; message?: string; lang?: "ko" | "en"; 넛지켜기?: boolean; 무제한?: boolean },
 ): Promise<TurnResult | { ok: false; reason: "규칙"; message: string }> {
   const day = todayKST();
   const { data: msgs } = await db.from("dot_messages")
@@ -171,7 +171,7 @@ export async function playGameTurn(
   /* 하트·친밀도·저장은 대화와 같은 길. 사람 말이 없으면(새 판) 시작 신호를 보낸다. */
   /* `놀이중` 이 대화용 넛지(이름 묻기·시간 힌트)를 끈다. `넛지켜기` 는 **대조군 전용** —
      끄는 것이 정말 공이 있는지 재려면 켠 판도 돌려 봐야 한다. 제품 길에서는 안 쓴다. */
-  const p = await prepareTurn(db, userId, characterId, 사람말 || `(${GAME_LABEL[game]} 시작)`, { lang: opts.lang, 놀이중: !opts.넛지켜기 });
+  const p = await prepareTurn(db, userId, characterId, 사람말 || `(${GAME_LABEL[game]} 시작)`, { lang: opts.lang, 놀이중: !opts.넛지켜기, 무제한: opts.무제한 });
   if ("ok" in p) return p;
   try {
     const t = Date.now();

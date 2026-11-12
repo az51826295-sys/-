@@ -1,6 +1,7 @@
 import { userIdFrom } from "@/lib/dot/auth";
 import { createServiceClient } from "@/lib/supabase/service";
 import { runDotTurn } from "@/lib/dot/turn";
+import { devFromRequest } from "@/lib/dot/dev";
 
 /**
  * 도트 채팅 한 턴. 웹과 안드로이드 앱이 같이 쓴다.
@@ -34,7 +35,9 @@ export async function POST(request: Request) {
   const gift = typeof body.gift === "string" ? body.gift : null;
   /* 10-28: 흘려보내는 길과 **같은 읽기**를 쓴다. 한쪽만 영어를 알면 어느 길로 갔느냐에 따라 언어가 바뀐다. */
   const lang = body.lang === "en" ? "en" as const : "ko" as const;
-  const result = await runDotTurn(createServiceClient(), userId, characterId, message, { gift, lang });
+  /* 11-13 개발자 링크 — 하트를 안 센다. 판단은 **여기서만** 한다(몸통이 아니라 쿠키·헤더). */
+  const 무제한 = devFromRequest(request);
+  const result = await runDotTurn(createServiceClient(), userId, characterId, message, { gift, lang, 무제한 });
   if (result.ok) return Response.json(result);
   if (result.reason === "limit") return Response.json(result, { status: 429 });
   if (result.reason === "no_character") return Response.json(result, { status: 404 });

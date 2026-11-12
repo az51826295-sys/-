@@ -1,4 +1,5 @@
 import { userIdFrom } from "@/lib/dot/auth";
+import { devFromRequest } from "@/lib/dot/dev";
 import { createServiceClient } from "@/lib/supabase/service";
 import { todayKST, toNextStage } from "@/lib/dot/bond";
 import { balanceFor } from "@/lib/dot/money";
@@ -19,7 +20,7 @@ export async function GET(request: Request) {
       .order("id", { ascending: false }).limit(60),
     db.from("dot_bonds").select("points, stage, streak_days")
       .eq("user_id", userId).eq("character_id", characterId).maybeSingle(),
-    balanceFor(db, userId, day),
+    balanceFor(db, userId, day, devFromRequest(request)),
   ]);
 
   const points = (bond?.points as number) ?? 0;

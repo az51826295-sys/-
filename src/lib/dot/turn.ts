@@ -94,6 +94,8 @@ export type Prepared = {
   message: string;
   t0: number;
   giveBack: () => Promise<unknown>;
+  /** 개발자 링크로 온 턴인가(11-13) — 끝낼 때 잔고를 그렇게 세라는 표시다. */
+  무제한: boolean;
   /** 마지막 스티커 뒤로 지난 줄 수(없으면 999). */
   sinceSticker: number;
   /** 사람이 보낸 스티커 키(없으면 null). */
@@ -121,6 +123,14 @@ export type TurnOpts = {
    * 시간 힌트). 놀이 중에는 할 말이 이미 정해져 있으니 그 둘을 뺀다.
    */
   놀이중?: boolean;
+  /**
+   * **개발자 링크** (11-13 사장님 "개발자 링크 따로 만들어 하트 제한 없는 거").
+   *
+   * 참이면 하트를 **가져가지도, 보지도** 않는다 — 선물도 마찬가지다(선물도 하트로 산다).
+   * 이 값을 정하는 곳은 길 손잡이 하나뿐이다(`devFromRequest`): 화면이 보낸 몸통에서
+   * 읽으면 아무나 `{무제한:true}` 를 붙여 보낼 수 있다.
+   */
+  무제한?: boolean;
 };
 
 export async function prepareTurn(db: SupabaseClient, userId: string, characterId: string, text: string, opts: TurnOpts = {}): Promise<Prepared | Exclude<TurnResult, { ok: true }>> {
@@ -138,7 +148,8 @@ export async function prepareTurn(db: SupabaseClient, userId: string, characterI
     db.from("dot_characters").select("id, slug, name, persona, speech, sprites, formal_start, default_emotion, voice_ladder").eq("id", characterId).maybeSingle(),
     // 11-10 사장님 "선물의 단위를 하트로 바꿔" — 선물은 **아래 선물 자리에서** 하트를 값만큼 가져간다.
     // 여기서 한 개만 먼저 떼면 모자랄 때 되돌릴 것이 늘어난다. 대화만 여기서 한 개.
-    opts.gift ? Promise.resolve({ data: 1, error: null }) : db.rpc("dot_take_turn", { p_user: userId, p_day: day, p_limit: AUTO_HEARTS_PER_DAY }),
+    /* 11-13 개발자 링크: 가져가지 않는다. `data: 1` 은 "한 턴 썼다" 는 뜻이라 아래가 그대로 흐른다. */
+    opts.gift || opts.무제한 ? Promise.resolve({ data: 1, error: null }) : db.rpc("dot_take_turn", { p_user: userId, p_day: day, p_limit: AUTO_HEARTS_PER_DAY }),
     db.from("dot_bonds").select("points, stage, streak_days, last_talked_on, memo, last_gift_on").eq("user_id", userId).eq("character_id", characterId).maybeSingle(),
     db.from("dot_messages").select("role, content, sticker").eq("user_id", userId).eq("character_id", characterId).order("id", { ascending: false }).limit(HISTORY_TURNS * 2 + HISTORY_BLOCK),
     db.from("dot_messages").select("id", { count: "exact", head: true }).eq("user_id", userId).eq("character_id", characterId),
@@ -152,7 +163,7 @@ export async function prepareTurn(db: SupabaseClient, userId: string, characterI
    * 11-10: 선물도 하트라서 돌려주는 길이 하나가 됐다(전에는 크레딧이라 `dot_grant` 로 따로 돌려줬다).
    * `돌려줄하트` 는 실제로 **가져간 개수**다 — 모자라서 중간에 멈췄으면 그만큼만 돌려준다.
    */
-  let 돌려줄하트 = opts.gift ? 0 : 1;
+  let 돌려줄하트 = opts.gift || opts.무제한 ? 0 : 1;
   const giveBack = async (): Promise<void> => {
     const n = 돌려줄하트;
     돌려줄하트 = 0;
@@ -179,7 +190,7 @@ export async function prepareTurn(db: SupabaseClient, userId: string, characterI
   const 줄없었다 = !usageRes.data;   // 오늘 줄이 아예 없었다 = 출석도 광고도 없었다
   const 받은하트 = AUTO_HEARTS_PER_DAY + Number((usageRes.data as { bonus_turns?: number } | null)?.bonus_turns ?? 0);
   /* 11-10: 선물도 하트로 사므로 이 구멍은 **선물에도 막아야 한다.** 전에는 선물이 크레딧이라 뺐었다. */
-  if (줄없었다 && 받은하트 <= 0) {
+  if (줄없었다 && 받은하트 <= 0 && !opts.무제한) {
     await giveBack();
     return { ok: false, reason: "limit", remaining: 0, resetsAt: `${day} 자정(한국 시간)` };
   }
@@ -220,7 +231,9 @@ export async function prepareTurn(db: SupabaseClient, userId: string, characterI
        * 함수를 못 만든다. 그래서 하나씩 부르고, **중간에 모자라면 거기까지 가져간 것을 돌려준다.**
        * 한 번 한 번은 원자적이라(그 안에서 한도를 보고 올린다) 두 번 눌러도 두 배로 새지 않는다.
        */
-      for (let i = 0; i < 선물.하트; i++) {
+      /* 11-13 개발자 링크면 선물도 공짜다 — 선물 값이 하트라서, 여기만 안 막으면
+         "말은 무제한인데 선물은 하트 모자람" 이라는 반쪽이 된다. */
+      for (let i = 0; !opts.무제한 && i < 선물.하트; i++) {
         const { data: 턴, error: te } = await db.rpc("dot_take_turn", { p_user: userId, p_day: day, p_limit: AUTO_HEARTS_PER_DAY });
         if (te) { await giveBack(); return { ok: false, reason: "failed", message: te.message }; }
         if (Number(턴 ?? 0) <= 0) {
@@ -299,7 +312,7 @@ export async function prepareTurn(db: SupabaseClient, userId: string, characterI
       /* 놀이 중에는 시간 힌트를 안 붙인다 — "밥은 먹었어?" 가 거기서 나온다. */
       opts.놀이중 ? "" : timeHint(new Date(), history.filter((h) => h.role !== "user").slice(-4).map((h) => h.content)),
     ].filter(Boolean).join("\n");
-    return { character, day, used, prev, memo, system, input, message, t0, giveBack, sinceSticker, userSticker: opts.userSticker && (USER_STICKERS[opts.userSticker] || isFaceSticker(opts.userSticker)) ? opts.userSticker : null,
+    return { character, day, used, prev, memo, system, input, message, t0, giveBack, 무제한: !!opts.무제한, sinceSticker, userSticker: opts.userSticker && (USER_STICKERS[opts.userSticker] || isFaceSticker(opts.userSticker)) ? opts.userSticker : null,
       gift: 선물 && 선물점 ? { key: 선물.key, name: 선물.name, points: 선물점.points, liked: 선물점.liked } : null };
   } catch (e) {
     await giveBack();
@@ -365,7 +378,7 @@ export async function finishTurn(
     ok: true, reply: said.reply, emotion, sticker,
     bond: { points: gain.next.points, stage: gain.next.stage, gained: gain.gained, reasons: gain.reasons, toNext: toNextStage(gain.next.points) },
     // 공짜 + 광고 + 충전 — 한 곳(money.ts)에서 센다. used 만으로는 광고·충전 턴을 모른다.
-    remaining: (await balanceFor(db, userId, p.day)).remaining,
+    remaining: (await balanceFor(db, userId, p.day, p.무제한)).remaining,
   };
 }
 

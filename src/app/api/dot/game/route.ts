@@ -2,6 +2,7 @@ import { userIdFrom } from "@/lib/dot/auth";
 import { createServiceClient } from "@/lib/supabase/service";
 import { GAMES, GAME_MARK, type GameKey } from "@/lib/dot/games";
 import { playGameTurn } from "@/lib/dot/gameTurn";
+import { devFromRequest } from "@/lib/dot/dev";
 
 /**
  * 놀이 한 수 — `{ characterId, game? , message? }`
@@ -24,6 +25,7 @@ export async function POST(request: Request) {
   const db = createServiceClient();
   const r = await playGameTurn(db, userId, body.characterId, {
     game: body.game as GameKey | undefined, message: body.message, lang: body.lang,
+    무제한: devFromRequest(request),   // 11-13 개발자 링크 — 놀이도 하트를 먹으므로 같이 넘긴다
   });
 
   if (!r.ok && r.reason === "규칙") return Response.json({ error: r.message, 규칙: true }, { status: 409 });

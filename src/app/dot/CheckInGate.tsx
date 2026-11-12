@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import { todayKST } from "@/lib/dot/bond";
 import { balanceFor } from "@/lib/dot/money";
+import { devFromCookies } from "@/lib/dot/dev";
 import CheckInPopup from "./CheckInPopup";
 
 /**
@@ -20,7 +21,8 @@ export default async function CheckInGate() {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return null;
-    const b = await balanceFor(createServiceClient(), user.id, todayKST());
+    /* 11-13 개발자 링크면 `출석함` 이 참이라 이 판은 안 뜬다 — 받을 까닭이 없다. */
+    const b = await balanceFor(createServiceClient(), user.id, todayKST(), await devFromCookies());
     if (b.출석함) return null;
     return <CheckInPopup name={null} />;
   } catch {

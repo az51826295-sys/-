@@ -18,8 +18,9 @@ import { showRewardedAd, AD_FAIL_COPY } from "@/lib/dot/adbreak";
  * 광고 창구가 안 열려 있으면 광고 줄을 **안 그린다** — 누르면 503 이 오는 단추는 두지 않는다.
  * 결제는 아직 받을 길이 없어 `/dot/pay` 가 "준비 중" 으로 답한다(사장님이 그렇게 정하셨다).
  */
-export default function HeartBadge({ hearts: hearts0, ad, adLeft: adLeft0 }: {
-  hearts: number; ad: AdConf | null; adLeft: number;
+export default function HeartBadge({ hearts: hearts0, ad, adLeft: adLeft0, 무제한 = false }: {
+  /* 11-13: 개발자 링크면 숫자(9999)가 아니라 `∞` 로 적는다 — 세어서 나온 수가 아니기 때문이다. */
+  hearts: number; ad: AdConf | null; adLeft: number; 무제한?: boolean;
 }) {
   const router = useRouter();
   const [열림, set열림] = useState(false);
@@ -54,14 +55,14 @@ export default function HeartBadge({ hearts: hearts0, ad, adLeft: adLeft0 }: {
   return (
     <>
       <style>{CSS}</style>
-      <button className="hb" onClick={() => set열림(true)} aria-label={`남은 하트 ${hearts}개 · 하트 늘리기`}>
-        <b>♥</b>{hearts}
+      <button className="hb" onClick={() => set열림(true)} aria-label={무제한 ? "개발자 모드 · 하트 무제한" : `남은 하트 ${hearts}개 · 하트 늘리기`}>
+        <b>♥</b>{무제한 ? "∞" : hearts}
       </button>
 
       {열림 && (
         <div className="hb-back" onClick={() => set열림(false)} role="dialog" aria-label="하트">
           <div className="hb-sheet" onClick={(e) => e.stopPropagation()}>
-            <div className="hb-now"><b>♥</b> 지금 하트 {hearts}개</div>
+            <div className="hb-now"><b>♥</b> {무제한 ? "개발자 모드 — 하트 무제한" : `지금 하트 ${hearts}개`}</div>
 
             {ad && adLeft > 0 && (
               <button className="hb-row" onClick={광고보기} disabled={busy}>

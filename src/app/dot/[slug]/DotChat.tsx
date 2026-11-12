@@ -742,7 +742,9 @@ export default function DotChat({
             */}
             <div className="kk-gifts-title">
               {lang === "en" ? `Give ${who.name} something` : `${who.name}에게 선물하기`}
-              <small>{lang === "en" ? `${remaining} hearts left` : `하트 ${remaining}개 남음`}</small>
+              {/* 11-13 개발자 링크: 숫자는 9999 지만 센 값이 아니라 `∞` 로 적는다. */}
+              <small>{balance.무제한 ? (lang === "en" ? "hearts ∞" : "하트 ∞")
+                : lang === "en" ? `${remaining} hearts left` : `하트 ${remaining}개 남음`}</small>
             </div>
             <div className="kk-gifts-grid">
               {GIFTS.map((g) => {
@@ -823,7 +825,8 @@ export default function DotChat({
           * 줄어드는 것이 보여야 광고를 볼 이유가 생긴다.
           */}
         {mounted && signedIn && remaining > 0 && (
-          <div className="kk-foot">{lang === "en"
+          <div className="kk-foot">{balance.무제한 ? (lang === "en" ? "Dev link · hearts ∞" : "개발자 링크 · 하트 ∞")
+            : lang === "en"
             ? `${remaining} ${remaining === 1 ? "heart" : "hearts"} left today${bond.streakDays >= 2 ? ` · ${bond.streakDays}-day streak` : ""}`
             : `하트 ${remaining}개 남았어요${bond.streakDays >= 2 ? ` · ${bond.streakDays}일 연속` : ""}`}</div>
         )}

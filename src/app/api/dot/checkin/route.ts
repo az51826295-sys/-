@@ -1,4 +1,5 @@
 import { userIdFrom } from "@/lib/dot/auth";
+import { devFromRequest } from "@/lib/dot/dev";
 import { createServiceClient } from "@/lib/supabase/service";
 import { todayKST, CHECKIN_HEARTS } from "@/lib/dot/bond";
 import { AD_REFILL_TURNS, balanceFor } from "@/lib/dot/money";
@@ -52,5 +53,5 @@ export async function POST(request: Request) {
     return Response.json({ error: "오늘은 이미 받았어요. 내일 또 와요." }, { status: 429 });
   }
 
-  return Response.json({ ok: true, hearts: CHECKIN_HEARTS, balance: await balanceFor(db, userId, day) });
+  return Response.json({ ok: true, hearts: CHECKIN_HEARTS, balance: await balanceFor(db, userId, day, devFromRequest(request)) });
 }

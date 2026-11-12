@@ -142,11 +142,20 @@ export type Balance = {
   adLeft: number;
   /** 오늘 출석체크를 했나 — 안 했으면 하트가 0 이고, 카드가 받는 문이 된다(11-06). */
   출석함: boolean;
+  /** 개발자 링크로 들어왔나(11-13). 참이면 `remaining` 은 **세어서 나온 수가 아니다**. */
+  무제한?: boolean;
 };
+
+/**
+ * 개발자 모드일 때 `remaining` 에 넣는 수 — 화면 전체가 이 **숫자 하나**로 문을 여닫기 때문에
+ * (`remaining <= 0` 이면 입력줄·선물·놀이가 전부 잠긴다) 큰 수를 한 번 넣는 쪽이 곧다.
+ * 다만 **숫자를 그대로 보여 주면 거짓말**이 되므로, 보이는 자리는 `무제한` 을 보고 `∞` 로 적는다.
+ */
+export const DEV_HEARTS = 9999;
 
 /** 오늘 이 사람의 잔고 — 화면·API 가 다 이걸로 센다. 두 표를 나란히 읽는다(왕복 1).
  *  11-11: 멘헤라를 빼면서 `dot_entitlements` 를 안 읽는다 — 읽을 까닭이 사라졌다(왕복도 하나 준다). */
-export async function balanceFor(db: SupabaseClient, userId: string, day: string): Promise<Balance> {
+export async function balanceFor(db: SupabaseClient, userId: string, day: string, 무제한 = false): Promise<Balance> {
   const [{ data: u }, { data: w }] = await Promise.all([
     db.from("dot_usage").select("turns, bonus_turns, ad_refills").eq("user_id", userId).eq("day", day).maybeSingle(),
     db.from("dot_wallet").select("credits").eq("user_id", userId).maybeSingle(),
@@ -174,11 +183,15 @@ export async function balanceFor(db: SupabaseClient, userId: string, day: string
   const freeLeft = Math.max(0, AUTO_HEARTS_PER_DAY + bonus - turns);
   const adLeft = Math.max(0, AD_REFILLS_PER_DAY - adsSeen);
   return {
-    remaining: freeLeft + credits,
+    /* 11-13 개발자 링크: 센 값은 그대로 두고 **쓸 수 있는 수**만 올린다 —
+       `freeLeft`·`credits` 를 건드리면 장부를 못 읽게 된다. */
+    remaining: 무제한 ? DEV_HEARTS : freeLeft + credits,
     freeLeft,
     credits,
     adLeft,
-    출석함,
+    /* 개발자 모드면 출석 판을 안 띄운다 — 받을 까닭이 없는 자리다. */
+    출석함: 무제한 ? true : 출석함,
+    ...(무제한 ? { 무제한: true } : {}),
   };
 }
 

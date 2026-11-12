@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import { todayKST } from "@/lib/dot/bond";
 import { balanceFor, adConfFromEnv } from "@/lib/dot/money";
+import { devFromCookies } from "@/lib/dot/dev";
 import HeartBadge from "./HeartBadge";
 
 /**
@@ -16,13 +17,14 @@ export default async function HeartBadgeServer() {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return null;
-    const b = await balanceFor(createServiceClient(), user.id, todayKST());
+    const b = await balanceFor(createServiceClient(), user.id, todayKST(), await devFromCookies());
     /* 광고 설정은 **서버만 안다**(스위치 + 광고주 번호). 둘 중 하나라도 없으면 null 이 가고
        시트에 광고 줄을 안 그린다 — 켜졌다고 넘겨짚지 않는다. 번호를 화면으로 넘기는 까닭은
        `adConfFromEnv()` 주석에 적어 뒀다(빌드에 박히지 않게). */
     return (
       <HeartBadge
         hearts={Number.isFinite(b.remaining) ? b.remaining : 0}
+        무제한={!!b.무제한}
         ad={adConfFromEnv()}
         adLeft={b.adLeft}
       />

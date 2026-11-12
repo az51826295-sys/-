@@ -7,6 +7,7 @@ import GuestSession from "../GuestSession";
 import DotChat from "./DotChat";
 import { AUTO_HEARTS_PER_DAY, CHECKIN_HEARTS, todayKST, toNextStage } from "@/lib/dot/bond";
 import { balanceFor, AD_REFILLS_PER_DAY, AD_REFILL_TURNS, adConfFromEnv, type Balance } from "@/lib/dot/money";
+import { devFromCookies } from "@/lib/dot/dev";
 
 /**
  * 한 사람과의 대화방. 카톡처럼 목록(`/dot`)에서 눌러 들어온다.
@@ -59,7 +60,7 @@ export default async function DotRoom({ params, searchParams }: { params: Promis
     const day = todayKST();
     const [{ data: b }, bal, { data: m }] = await Promise.all([
       db.from("dot_bonds").select("points, stage, streak_days, mode").eq("user_id", user.id).eq("character_id", who.id).maybeSingle(),
-      balanceFor(db, user.id, day),
+      balanceFor(db, user.id, day, await devFromCookies()),
       db.from("dot_messages").select("role, content, emotion, sticker, created_at").eq("user_id", user.id).eq("character_id", who.id).order("id", { ascending: false }).limit(60),
       // 방을 열었다 = 읽었다(86회차 안 읽은 수). 09-13: 기다리지 않고 던지니 바로 뒤로 나가면 아직 안 찍혀 배지가 남았다(자 2/4 떨어짐) — 다른 조회와 나란히 기다린다.
       db.from("dot_bonds").upsert({ user_id: user.id, character_id: who.id, last_seen_at: new Date().toISOString() }, { onConflict: "user_id,character_id" }).then(() => {}, () => {}),

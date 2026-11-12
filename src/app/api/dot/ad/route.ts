@@ -1,4 +1,5 @@
 import { userIdFrom } from "@/lib/dot/auth";
+import { devFromRequest } from "@/lib/dot/dev";
 import { createServiceClient } from "@/lib/supabase/service";
 import { todayKST } from "@/lib/dot/bond";
 import { AD_REFILLS_PER_DAY, AD_REFILL_TURNS, balanceFor } from "@/lib/dot/money";
@@ -30,5 +31,5 @@ export async function POST(request: Request) {
   const { data, error } = await db.rpc("dot_ad_refill", { p_user: userId, p_day: day, p_max: AD_REFILLS_PER_DAY, p_turns: AD_REFILL_TURNS });
   if (error) return Response.json({ error: error.message }, { status: 500 });
   if (Number(data) < 0) return Response.json({ error: "오늘 광고는 다 봤어요. 내일 또 볼 수 있어요." }, { status: 429 });
-  return Response.json({ ok: true, balance: await balanceFor(db, userId, day) });
+  return Response.json({ ok: true, balance: await balanceFor(db, userId, day, devFromRequest(request)) });
 }
