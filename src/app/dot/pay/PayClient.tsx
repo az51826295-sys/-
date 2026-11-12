@@ -13,15 +13,54 @@ import type { HeartPack } from "@/lib/dot/money";
 export default function PayClient({ packs, open }: { packs: HeartPack[]; open: boolean }) {
   const [말, set말] = useState<string | null>(null);
 
-  function 사기(p: HeartPack) {
+  const [사는중, set사는중] = useState<string | null>(null);
+
+  /**
+   * 11-12: 여기는 `window.location.href = "/api/dot/buy?pack=…"` 이었다 — **GET 으로
+   * 길에 보내는** 코드였는데 그 길은 아예 없었다(404). 이제 앱 결제로 토큰을 받아
+   * **POST** 로 내민다. 하트를 더하는 것은 끝까지 서버다.
+   */
+  async function 사기(p: HeartPack) {
     if (!open) {
-      set말("결제는 곧 열려요. 지금은 출석과 광고로 받아 주세요.");
-      setTimeout(() => set말(null), 2600);
+      알림("결제는 곧 열려요. 지금은 출석과 광고로 받아 주세요.");
       return;
     }
-    /* 파는 길이 열리는 날 여기에 Play Billing / 웹 결제 호출이 들어온다.
-       충전은 끝까지 **서버가** 한다 — 화면이 하트를 더하면 안 된다. */
-    window.location.href = `/api/dot/buy?pack=${encodeURIComponent(p.key)}`;
+    if (사는중) return;
+    set사는중(p.key);
+    try {
+      const { 앱에서사기 } = await import("@/lib/dot/playClient");
+      let 받은 = 0;
+      const r = await 앱에서사기(p.key, async (purchaseToken) => {
+        const res = await fetch("/api/dot/buy", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ pack: p.key, token: purchaseToken }),
+        });
+        const j = (await res.json().catch(() => ({}))) as { ok?: boolean; hearts?: number; error?: string };
+        if (!res.ok || !j.ok) { 알림(j.error ?? "충전을 못 했어요."); return false; }
+        받은 = j.hearts ?? p.hearts;
+        return true;
+      });
+      if (r.ok) {
+        알림(`하트 ${받은}개 들어왔어요.`);
+        /* 잔고는 서버가 그린다 — 화면이 세지 않고 다시 받아 온다. */
+        setTimeout(() => window.location.reload(), 1200);
+      } else if (r.까닭 === "앱아님") {
+        알림("지금은 앱에서만 살 수 있어요.");
+      } else if (r.까닭 === "상품없음") {
+        알림("묶음이 아직 준비 중이에요.");
+      } else if (r.까닭 === "실패") {
+        알림("결제가 안 됐어요. 돈은 빠지지 않아요.");
+      }
+      /* "취소" 는 사람이 닫은 것이다 — 아무 말도 하지 않는다. */
+    } finally {
+      set사는중(null);
+    }
+  }
+
+  function 알림(s: string) {
+    set말(s);
+    setTimeout(() => set말(null), 2600);
   }
 
   return (
@@ -29,7 +68,7 @@ export default function PayClient({ packs, open }: { packs: HeartPack[]; open: b
       <style>{CSS}</style>
       {!open && <div className="py-soon">결제 준비 중이에요</div>}
       {packs.map((p) => (
-        <button key={p.key} className="py-pack" onClick={() => 사기(p)}>
+        <button key={p.key} className="py-pack" onClick={() => 사기(p)} disabled={사는중 !== null} aria-busy={사는중 === p.key}>
           <span className="py-pack-l">
             <span className="py-pack-n"><b>♥</b> 하트 {p.hearts}개</span>
             {p.note && <small>{p.note}</small>}
