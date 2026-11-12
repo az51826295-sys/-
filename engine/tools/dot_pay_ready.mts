@@ -109,8 +109,81 @@ console.log(`\n## 옛 코드가 되살아나지 않았나`);
   맞(existsSync("src/lib/dot/playVerify.ts"), `구글에 묻는 쪽 파일이 있다`);
 }
 
+/* ── 5. 상품이 진짜 Play 에 있나 (열쇠가 있을 때만) ────────── */
+/**
+ * 11-12 에 상품 셋을 콘솔에서 만들었다. "만들었다" 는 **내 기억**이고, 이 칸은 **구글의 답**이다.
+ * 열쇠(`PLAY_VERIFY_KEY`)가 있는 데서 돌리면 실제로 물어본다:
+ *
+ *   railway run --service dot-web -- npx tsx engine/tools/dot_pay_ready.mts
+ *
+ * 열쇠가 없으면 **못 잼**으로 남긴다 — 0 을 "없다" 로 읽지 않는다([[zero-can-mean-i-cannot-see]]).
+ */
+console.log(`\n## Play 에 상품이 있나 (구글에 직접 묻는다)`);
+{
+  const pkg = (process.env.DOT_PACKAGE ?? "").trim();
+  const { accessTokenFromEnv } = await import("../../src/lib/dot/playVerify");
+  const at = process.env.PLAY_VERIFY_KEY ? await accessTokenFromEnv() : null;
+  if (!pkg || !at) {
+    못잼(`Play 에 hearts_10/30/60 이 있나 — ${!pkg ? "DOT_PACKAGE" : "PLAY_VERIFY_KEY"} 가 이 셸에 없다 (railway run 으로 돌려야 보인다)`);
+  } else {
+    /* 새 길(onetimeproducts)이 먼저, 안 되면 옛 길(inappproducts). 둘 다 안 되면 못 잼이다. */
+    /* 옛 `inappproducts` 는 **403 "Please migrate to the new publishing API."** 로 닫혔다(11-12 실측).
+       지금 길은 **`oneTimeProducts`** 다 — 대소문자까지 그대로여야 한다. 소문자로 쓰면 구글이
+       HTML 404 를 준다. 길 이름을 추측하지 않고 **discovery 문서에서 베꼈다**
+       (`$discovery/rest?version=v3`). 둘 다 남겨 두는 까닭은, 막힌 길의 **거절 글**이
+       "권한이 없다" 와 "길이 옮겨졌다" 를 갈라 주기 때문이다. */
+    const 길들 = [
+      `https://androidpublisher.googleapis.com/androidpublisher/v3/applications/${encodeURIComponent(pkg)}/oneTimeProducts`,
+      `https://androidpublisher.googleapis.com/androidpublisher/v3/applications/${encodeURIComponent(pkg)}/inappproducts`,
+    ];
+    let 글: string | null = null;
+    let 쓴길 = "";
+    const 거절: string[] = [];
+    for (const u of 길들) {
+      const r = await fetch(u, { headers: { authorization: `Bearer ${at}` } });
+      if (r.ok) { 글 = await r.text(); 쓴길 = u.split("/").pop() ?? ""; break; }
+      /* **거절 글을 읽는다** — 401(권한 없음)과 404(길이 없음)는 다른 이야기다
+         ([[db-constraint-errors-must-be-read]]). 안 읽으면 "없다" 로 잘못 적게 된다. */
+      거절.push(`${u.split("/").pop()} → HTTP ${r.status} ${(await r.text().catch(() => "")).replace(/\s+/g, " ").slice(0, 120)}`);
+    }
+    if (글 === null) 못잼(`Play 목록을 못 받았다 — ${거절.join(" · ")}`);
+    else {
+      console.log(`         ${쓴길} 로 받았다 (${글.length}자)`);
+      /**
+       * **글자로 세지 않는다.** 한 상품에 174개 지역 값이 붙어 응답이 12만 자다 — 앞에서 몇 천 자만
+       * 잘라 `includes` 로 보면 이웃 상품의 값을 보거나 아무것도 못 본다(처음에 그렇게 써서 3줄이
+       * 헛되이 빨갰다). JSON 으로 풀어 **그 상품의 한국 칸**을 집는다([[measure-the-thing-not-a-proxy]]).
+       *
+       * 값의 모양도 추측하지 않고 실물을 봤다: 마이크로가 아니라 `{currencyCode:"KRW", units:"1200"}` 이다.
+       */
+      const 받은 = JSON.parse(글) as {
+        oneTimeProducts?: {
+          productId?: string;
+          purchaseOptions?: {
+            purchaseOptionId?: string; state?: string;
+            regionalPricingAndAvailabilityConfigs?: { regionCode?: string; price?: { currencyCode?: string; units?: string }; availability?: string }[];
+          }[];
+        }[];
+      };
+      const 목록 = 받은.oneTimeProducts ?? [];
+      for (const [sku, 원] of [["hearts_10", "1200"], ["hearts_30", "2900"], ["hearts_60", "3900"]] as const) {
+        const p = 목록.find((x) => x.productId === sku);
+        맞(!!p, `${sku} 가 Play 에 있다`);
+        if (!p) continue;
+        const 옵 = (p.purchaseOptions ?? [])[0];
+        const kr = (옵?.regionalPricingAndAvailabilityConfigs ?? []).find((c) => c.regionCode === "KR");
+        /* **있다 ≠ 팔린다.** 활성이 아니거나 한국이 "사용 불가" 면 단추를 눌러도 상품이 안 뜬다. */
+        맞(옵?.state === "ACTIVE", `${sku} 의 구매 옵션이 활성 (${옵?.purchaseOptionId ?? "없음"} · ${옵?.state ?? "없음"})`);
+        맞(kr?.price?.currencyCode === "KRW" && kr?.price?.units === 원 && kr?.availability === "AVAILABLE",
+          `${sku} 가 한국에서 ${Number(원).toLocaleString()}원에 팔린다 (${kr?.price?.units ?? "없음"} ${kr?.availability ?? ""})`);
+      }
+      /* 이빨 — 없는 묶음을 "있다" 고 하면 위 세 줄은 아무것도 못 지킨다. */
+      맞(!목록.some((x) => x.productId === "hearts_99_없는것"), `없는 묶음은 없다고 한다`);
+    }
+  }
+}
+
 /* ── 못 잼 ─────────────────────────────────────────────────── */
-못잼(`Play Console 에 소모품 hearts_10/30/60 이 있나 — 바깥에서 못 본다 (콘솔을 열어야 한다)`);
 못잼(`진짜 구매 한 건 + 승인 — **사장님 손가락**(라이선스 테스터 결제)`);
 못잼(`HEART_BILLING_OPEN·PLAY_VERIFY_KEY·DOT_PACKAGE 의 값 — 서버 안에서만 보인다`);
 

@@ -42,6 +42,20 @@ function readKey(): Key | null {
 
 /** 서비스 계정으로 구글 토큰을 받는다 — 서명은 Node 기본 crypto 로 한다(라이브러리 안 쓴다). */
 async function googleToken(k: Key): Promise<string | null> {
+  return googleTokenInner(k);
+}
+
+/**
+ * 자(`dot_pay_ready.mts`)가 **상품이 실제로 있는지** 직접 물어볼 수 있게 열어 둔다.
+ * 열쇠가 없으면 `null` — 자는 그 칸을 "못 잼" 으로 적는다.
+ * 이름을 ASCII 로 두는 까닭은 위와 같다(tsx 가 한글 export 를 흘린다).
+ */
+export async function accessTokenFromEnv(): Promise<string | null> {
+  const k = readKey();
+  return k ? googleTokenInner(k) : null;
+}
+
+async function googleTokenInner(k: Key): Promise<string | null> {
   const { createSign } = await import("node:crypto");
   const now = Math.floor(Date.now() / 1000);
   const b64 = (o: unknown) => Buffer.from(JSON.stringify(o)).toString("base64url");
