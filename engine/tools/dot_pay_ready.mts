@@ -173,7 +173,22 @@ console.log(`\n## Play 에 상품이 있나 (구글에 직접 묻는다)`);
         const 옵 = (p.purchaseOptions ?? [])[0];
         const kr = (옵?.regionalPricingAndAvailabilityConfigs ?? []).find((c) => c.regionCode === "KR");
         /* **있다 ≠ 팔린다.** 활성이 아니거나 한국이 "사용 불가" 면 단추를 눌러도 상품이 안 뜬다. */
-        맞(옵?.state === "ACTIVE", `${sku} 의 구매 옵션이 활성 (${옵?.purchaseOptionId ?? "없음"} · ${옵?.state ?? "없음"})`);
+        /**
+         * **끈 것과 못 만든 것을 가른다** (11-13).
+         *
+         * 사장님이 결제를 접기로 하셔서 세 묶음을 **일부러 비활성화**했다. 그런데 자가 그걸
+         * 그대로 "틀림" 으로 외치면, 다음에 이 자를 보는 사람은 고장인 줄 알고 되살린다
+         * ([[recovered-failures-hide-in-the-ledger]] 의 반대 결 — 멀쩡한 상태가 빨갛게 남는다).
+         *
+         * 그래서 **파는 스위치를 기준으로 본다**: 열려 있으면 활성이어야 하고(이빨 유지 —
+         * 스위치만 켜고 상품이 꺼져 있으면 단추를 눌러도 아무것도 안 뜬다), 닫혀 있으면
+         * 상태만 적는다.
+         */
+        if (process.env.HEART_BILLING_OPEN === "1") {
+          맞(옵?.state === "ACTIVE", `${sku} 의 구매 옵션이 활성 (${옵?.purchaseOptionId ?? "없음"} · ${옵?.state ?? "없음"})`);
+        } else {
+          console.log(`         ${sku} 구매 옵션 ${옵?.state ?? "없음"} — 파는 스위치가 닫혀 있어 세지 않는다(11-13 에 일부러 껐다)`);
+        }
         맞(kr?.price?.currencyCode === "KRW" && kr?.price?.units === 원 && kr?.availability === "AVAILABLE",
           `${sku} 가 한국에서 ${Number(원).toLocaleString()}원에 팔린다 (${kr?.price?.units ?? "없음"} ${kr?.availability ?? ""})`);
       }
