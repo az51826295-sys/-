@@ -26,7 +26,7 @@ for (const l of readFileSync(".env.local", "utf8").split(String.fromCharCode(10)
 import sharp from "sharp";
 const { createServiceClient } = await import("../../src/lib/supabase/service");
 const { createImageProvider } = await import("../../src/lib/providers/images");
-const { sheetPrompt, restylePrompt, cutSheet, measureCells, pixelize, SHEET_ORDER } = await import("../../src/lib/dot/sprites");
+const { sheetPrompt, restylePrompt, cutSheet, measureCells, pixelize, dropToBaseline, SHEET_ORDER } = await import("../../src/lib/dot/sprites");
 const { faceCrop } = await import("./dot_faces_lib");
 const { outlineSprite, outlineShare, OUTLINE_MIN } = await import("../../src/lib/dot/outline");
 
@@ -150,6 +150,8 @@ const cells = await Promise.all(뭉갠것.map(async (c) => {
   const t = await texelOf(c.png);
   return { ...c, png: t ? (await outlineSprite(c.png, t, { 식: "한색", 색: [255, 255, 255] }, 1)).png : c.png };
 }));
+/* **발밑을 바닥에 붙인다** (11-13) — 길 안에서 한다. 손으로 내리면 다음 사람에서 또 빠진다. */
+for (const c of cells) c.png = await dropToBaseline(c.png);
 for (const c of cells) writeFileSync(`${SHEET}/${spec.slug}-${c.emotion}.png`, c.png);
 const { cases } = await measureCells(cells);
 let failed = 0;

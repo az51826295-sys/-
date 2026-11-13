@@ -605,3 +605,36 @@ async function cornersTransparent(png: Buffer): Promise<boolean> {
   const a = (x: number, y: number) => data[(y * W + x) * ch + 3];
   return a(0, 0) < 128 && a(W - 1, 0) < 128 && a(0, H - 1) < 128 && a(W - 1, H - 1) < 128;
 }
+
+/**
+ * **발밑을 바닥에 붙인다** (11-13).
+ *
+ * 열 명 전부 아래 여백이 0 이다(`charStandard`). 새로 뽑은 그림은 캔버스 안에서 떠 있을 때가
+ * 있는데(11-13 나비 20px), 한 줄에 세우면 그 사람만 **키가 떠 보인다.** 11-13 에는 손으로
+ * 내렸다 — 손으로 하는 일은 다음 사람에서 또 빠지므로 길 안에 넣는다.
+ *
+ * 자리만 옮기고 **그림은 한 점도 안 바꾼다**: 옮긴 뒤 잉크 화소 수가 다르면 뭔가 잘려 나간
+ * 것이므로 **원본을 그대로 돌려준다**(틀리게 옮기느니 안 옮긴다).
+ *
+ * 이름이 ASCII 인 까닭은 `.mts` 자들이 이 모듈을 불러 쓰기 때문이다(tsx 가 한글 export 를 흘린다).
+ */
+export async function dropToBaseline(png: Buffer): Promise<Buffer> {
+  const sharp = (await import("sharp")).default;
+  const 재기 = async (buf: Buffer) => {
+    const { data, info } = await sharp(buf).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+    let bottom = -1, top = info.height, 잉크 = 0;
+    for (let y = 0; y < info.height; y++) {
+      for (let x = 0; x < info.width; x++) if (data[(y * info.width + x) * 4 + 3] > 10) { 잉크++; if (y > bottom) bottom = y; if (y < top) top = y; }
+    }
+    return { top, bottom, 잉크, W: info.width, H: info.height };
+  };
+  const b = await 재기(png);
+  const dy = b.H - 1 - b.bottom;
+  if (dy <= 0 || dy > b.top) return png;
+  /* 위에 dy 줄을 **붙이고** 아래 dy 줄을 **잘라 낸다** = 내용이 dy 만큼 내려간다.
+     순서를 뒤집으면(자르고 붙이기) 제자리에 돌아온다 — 11-13 에 그렇게 써서 한 판 헛돌았다. */
+  const 후 = await sharp(await sharp(png).extend({ top: dy, background: { r: 0, g: 0, b: 0, alpha: 0 } }).png().toBuffer())
+    .extract({ left: 0, top: 0, width: b.W, height: b.H }).png().toBuffer();
+  const a = await 재기(후);
+  return a.잉크 === b.잉크 && a.bottom === a.H - 1 ? 후 : png;
+}
