@@ -106,7 +106,15 @@ export async function executeEmployeeAssignment(
     const order = `${(asg?.title as string | null) ?? ""}\n${(asg?.description as string | null) ?? ""}`.trim();
     // 목(mock)으로 도는 판에는 손대지 않는다. 자리를 갈아 끼우면 **목 파일럿이 진짜 모델을 부르게 된다** —
     // 목 먼저라는 계약이 바로 그 자리에서 깨진다.
-    if (order && providers.ai.name !== "mock") {
+    /**
+     * `HEAD_OFF=1` — **머리를 건너뛰고 기본 자리로 간다** (11-13, `engine/docs/head-ab-design.md`).
+     * 머리가 주문마다 다른 답을 낸다는 건 쟀지만 **그 답이 더 나았는지는 대조군 없이 못 잰다.**
+     * 끈 팔은 이 블록만 빠지고 나머지 길은 같아야 한다 — 다른 것을 같이 끄면 무엇이 차이를 냈는지 모른다.
+     * 운영에는 이 변수를 두지 않는다.
+     */
+    const headOff = process.env.HEAD_OFF === "1";
+    if (headOff) console.log("[머리] 꺼짐 — HEAD_OFF=1, 기본 자리로 간다");
+    if (order && providers.ai.name !== "mock" && !headOff) {
       const facts = await headFacts(supabase, execution.company_id);
       decision = await decide(providers.ai, { order, kind: String(execution.current_step ?? "work"), facts });
       placement = decision.placement;
