@@ -30,19 +30,23 @@ const { sheetPrompt, restylePrompt, cutSheet, measureCells, pixelize, SHEET_ORDE
 const { faceCrop } = await import("./dot_faces_lib");
 const { outlineSprite, outlineShare, OUTLINE_MIN } = await import("../../src/lib/dot/outline");
 
+/* 기준 숫자는 **한 곳**에서 온다 — 격자·본·범위 전부(`src/lib/dot/charStandard.ts`). */
+const { 격자: 기준격자, 본: 기준본 } = await import("../../src/lib/dot/charStandard");
+
 /** 도트 크기 — 뭉갠 직후라 `512 ÷ 격자` 로 정해진다. 자가 쓰는 값과 같아야 한다. */
 async function texelOf(png: Buffer): Promise<number | null> {
   const m = await sharp(png).metadata();
   const W = m.width ?? 512;
-  /* pixelize 는 격자 256 으로 줄였다가 512 로 되돌린다 → 1칸 = 2화소. 그림이 다른 크기로
-     오면 못 재는 것으로 두고 테두리를 건너뛴다(틀리게 칠하느니 안 칠한다). */
-  return W === 512 ? 2 : null;
+  /* pixelize 가 `기준격자` 로 줄였다가 512 로 되돌린다 → 1칸 = 512/격자 화소. 그림이 다른 크기로
+     오면 못 재는 것으로 두고 테두리를 건너뛴다(틀리게 칠하느니 안 칠한다).
+     11-13: 여기 `2` 가 박혀 있었다 — 격자만 올리고 이 줄을 안 고치면 **테두리를 2화소로 두른다**. */
+  return W === 512 ? 512 / 기준격자 : null;
 }
 
 const args = process.argv.slice(2);
 const specPath = args.find((a) => a.endsWith(".json"));
 if (!specPath) { console.error("설정 JSON 파일이 필요하다"); process.exit(1); }
-const refAt = args.indexOf("--ref"); const ref = refAt > 0 ? args[refAt + 1] : "seoha";
+const refAt = args.indexOf("--ref"); const ref = refAt > 0 ? args[refAt + 1] : 기준본;   // 11-13: "seoha" 가 박혀 있었다 — 본은 기준이 정한다
 const qAt = args.indexOf("--quality"); const quality = (qAt > 0 ? args[qAt + 1] : "medium") as "low" | "medium" | "high";
 const makePublic = args.includes("--public");
 const spec = JSON.parse(readFileSync(specPath, "utf8")) as {
@@ -135,7 +139,13 @@ const 자른것 = await cutSheet(made.dataUrl);
  * 사람이 기억해야 하는 일은 또 빠진다. 그래서 **만드는 길 안에** 넣는다.
  * 자리는 뭉갠 **뒤**다: 도트 칸이 정해진 다음이라야 칸 단위로 칠할 수 있다.
  */
-const 뭉갠것 = await Promise.all(자른것.map(async (c) => ({ ...c, png: await pixelize(c.png) })));
+/**
+ * **격자는 기준에서 온다** (11-13). `pixelize` 의 기본값은 256(도트 2)인데, 11-09 에 기준이
+ * **도트 4(격자 128)** 로 바뀌었다 — 열 명을 그 격자로 다시 뽑아 올렸다. 그런데 **만드는 이 길만
+ * 옛 기본값으로 남아** 있어서, 11-13 에 나비를 다시 뽑으니 혼자 도트 2 로 나왔다. 기준 검사는
+ * `--on` 때만 돌아서 **만들 때는 아무도 안 막았다.** 그래서 숫자를 여기 박아 둔다.
+ */
+const 뭉갠것 = await Promise.all(자른것.map(async (c) => ({ ...c, png: await pixelize(c.png, 기준격자) })));
 const cells = await Promise.all(뭉갠것.map(async (c) => {
   const t = await texelOf(c.png);
   return { ...c, png: t ? (await outlineSprite(c.png, t, { 식: "한색", 색: [255, 255, 255] }, 1)).png : c.png };
@@ -204,3 +214,26 @@ console.log(`   순서: ${SHEET_ORDER.join(" · ")}`);
 /* 영어 칸(`en`)은 여기서 안 채운다 — 번역은 모델을 부르는 딴 길이고, 안 채우면 영어판에
    한국어가 나간다. 잊지 않도록 **다음 명령을 적어 둔다**(10-29). */
 console.log(`   영어 칸: AI_PROVIDER=openai npx tsx engine/tools/dot_translate_content.mts --진짜`);
+
+/**
+ * **만든 자리에서 바로 기준을 잰다** (11-13 사장님 "그림체 일관성 제대로").
+ *
+ * 이 도구의 자 11개는 **그 한 사람 안에서만** 본다(여섯 칸이 같은 사람인가, 테두리가 둘러졌나…).
+ * 줄 전체와 맞는지는 `dot_character_spec --check` 가 보는데, 그건 **켤 때만**(`dot_character_open --on`)
+ * 돌았다. 그래서 11-13 에 나비가 혼자 도트 2 로 나오고도 끝까지 통과했다.
+ * 출구에만 문이 있으면 **틀린 그림을 만들고 나서야** 안다. 여기서 한 번 더 센다.
+ */
+{
+  const { execFileSync } = await import("node:child_process");
+  try {
+    execFileSync("cmd", ["/c", "npx", "tsx", "engine/tools/dot_character_spec.mts", "--check"], { encoding: "utf8" });
+    console.log(`   기준 검사 — 줄 전체가 기준 안`);
+  } catch (e) {
+    const 글 = String((e as { stdout?: string }).stdout ?? "");
+    console.error(`
+기준을 벗어났다 — **켜면 안 된다**(지금 is_public=false 다):`);
+    console.error(글.split(String.fromCharCode(10)).filter((l) => l.includes("벗어난") || l.includes("·")).slice(-12).join(String.fromCharCode(10)));
+    console.error(`  고치는 길: npx tsx engine/tools/dot_regrid.mts ${spec.slug} --fix  (시트에서 다시 자른다 · 그림값 0)`);
+    process.exit(1);
+  }
+}

@@ -17,7 +17,7 @@
  *
  * `--check` 를 주면 **기준을 벗어난 사람이 있으면 1 로 끝난다** — 켜는 문과 만드는 길이 이걸 부른다.
  */
-import { readFileSync, existsSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 for (const l of readFileSync(".env.local", "utf8").split(String.fromCharCode(10))) {
   const i = l.indexOf("="); if (i > 0 && !l.startsWith("#")) process.env[l.slice(0, i).trim()] ||= l.slice(i + 1).trim();
@@ -27,8 +27,13 @@ const { outlineShare } = await import("../../src/lib/dot/outline");
 const { faceCropCheck } = await import("./dot_faces_lib");
 const { ALPHA_MIN } = await import("../../src/lib/dot/fringe");
 
-const 사람 = ["doyun", "haru", "jiwoo", "nabi", "rin", "seoha", "soeun", "taeo", "yeonu", "yuna"];
-const 새것 = ["jiwoo", "soeun", "taeo"];
+const { 있는사람, 기준, 사진기준, 감정 } = await import("../../src/lib/dot/charStandard");
+/**
+ * **이름을 여기 적지 않는다** (11-13). 11-13 까지 열 명이 박혀 있었다 — 열한 번째를 만들면
+ * 그 사람은 이 검사에 **나타나지도 않는다**. 폴더에 그림이 있으면 재는 대상이다.
+ */
+const 사람 = 있는사람();
+const 새것 = (process.argv.find((a) => a.startsWith("--new="))?.split("=")[1] ?? "").split(",").filter(Boolean);
 
 function 도트재기(paths: string[]): (number | null)[] {
   const py = [
@@ -120,7 +125,7 @@ const 사진도트 = 사진길.length ? 도트재기(사진길) : [];
  * 못 잡았다 — 자가 안 보는 칸에 심은 셈이다. 재는 **범위가 제품과 달랐다**
  * ([[ruler-scope-must-match-product]]). 이모티콘은 여섯 칸을 다 쓴다.
  */
-const 감정칸 = ["neutral", "happy", "shy", "sad", "angry", "surprised"];
+const 감정칸 = [...감정];
 const 얼굴길 = 사람.flatMap((s) => 감정칸.map((e) => `public/dot-sprites/${s}/face/${e}.png`)).filter((p) => existsSync(p));
 const 얼굴도트 = 얼굴길.length ? 도트재기(얼굴길) : [];
 /** 사람마다 **어긋난 칸 목록**. 한 칸만 깨져도 그 사람이 걸린다. */
@@ -131,7 +136,7 @@ const 얼굴격자 = new Map<string, string[]>(사람.map((s) => [s, []]));
 });
 type 사진잼 = { 장수: number; 없는것: number; 크기틀림: string[]; 도트틀림: string[]; 색틀림: string[] };
 const 사진표 = new Map<string, 사진잼>(사람.map((s) => [s, { 장수: (사진목록.get(s) ?? []).length, 없는것: (사진목록.get(s) ?? []).filter((p) => !existsSync(p)).length, 크기틀림: [], 도트틀림: [], 색틀림: [] }]));
-const 사진기준 = { 가로: 400, 세로: 500, 도트: 2, 색수: [8, 32] as const, 장수: 8 };
+/* 기준 숫자는 `src/lib/dot/charStandard.ts` 한 곳에서 온다(위에서 불러왔다). */
 for (const [i, p] of 사진길.entries()) {
   const 주인 = 사진표.get(사진주인[i])!;
   const m = await sharp(p).metadata();
@@ -155,7 +160,7 @@ for (const s of 사람) {
  */
 /* 11-09 사장님 *"화질도 잘 나오게 하자"* → 격자 128(도트 4). 열 명을 **같은 판에** 다시 뽑아
    올렸다 — 한 명씩 올리면 또 갈린다. 칸 수 기준은 격자가 두 배라 그만큼 커진다. */
-const 기준 = { 도트: 4, 높이칸: [110, 128] as const, 폭칸: [85, 128] as const, 색수: [12, 24] as const, 테두리: 0.9, 얼굴: [0.55, 0.8] as const, 아래여백: 0 };
+/* 기준은 charStandard.ts — 도구마다 베껴 두면 한 곳만 고치게 된다(11-13 에 그랬다). */
 if (process.argv.includes("--check")) {
   const 틀린것: string[] = [];
   for (const r of 표) {
@@ -192,4 +197,36 @@ console.log(`  폭 범위 ${Math.min(...옛것.map((r) => r.폭화소))}~${Math.
 console.log(`\n새로 만든 셋`);
 for (const r of 표.filter((x) => 새것.includes(x.s))) {
   console.log(`  ${r.s.padEnd(7)} 도트 ${r.t} · 폭 ${r.폭화소} · 높이 ${r.높이화소} · 머리 ${(r.머리비율 * 100).toFixed(0)}% · 색 ${r.색수}`);
+}
+
+/**
+ * **자에 눈이 있나** — `--sabotage` (11-13).
+ *
+ * 한 사람의 그림을 **옛 격자(256 = 도트 2)로 갈아 끼우고** 이 검사를 다시 돌린다.
+ * 11-13 에 실제로 난 고장 그대로다(새 캐릭터가 혼자 도트 2 로 나왔다). 막으면 눈이 있는 것이고,
+ * 통과하면 이 자는 **기준을 지키는 척만** 하는 것이다. 끝나면 원래 그림으로 되돌린다.
+ *
+ * 처음엔 "2화소 밀기" 로 심었는데 **그건 안 걸린다**(가운데값이 그대로 4 다). 심은 것이
+ * 제대로 안 심기면 자가 조용한 것을 눈이 없는 것으로 잘못 읽는다 — 그래서 실제 고장으로 심는다.
+ */
+if (process.argv.includes("--sabotage")) {
+  const { cutSheet, pixelize } = await import("../../src/lib/dot/sprites");
+  /* 시트가 남아 있는 사람으로 심는다 — 옛 일곱은 시트를 안 들고 있다(되돌릴 재료가 시트다). */
+  const 심을사람 = 사람.find((s) => existsSync(`C:/Users/az518/Desktop/두근도트-시트/${s}-sheet.png`)) ?? 사람[0];
+  const 시트길 = `C:/Users/az518/Desktop/두근도트-시트/${심을사람}-sheet.png`;
+  if (!existsSync(시트길)) {
+    console.log(`\n[사보타주] ◻︎ 못 잼 — 시트를 들고 있는 사람이 없다(심을 재료가 없다).`);
+  } else {
+    const 길 = `public/dot-sprites/${심을사람}/neutral.png`;
+    const 원본 = readFileSync(길);
+    const 돈다 = () => { try { execFileSync("cmd", ["/c", "npx", "tsx", "engine/tools/dot_character_spec.mts", "--check"], { encoding: "utf8" }); return 0; } catch (e) { return (e as { status?: number }).status ?? 1; } };
+    const 칸들 = await cutSheet("data:image/png;base64," + readFileSync(시트길).toString("base64"));
+    writeFileSync(길, await pixelize(칸들[0].png, 256));
+    const 심음 = 돈다();
+    writeFileSync(길, 원본);
+    const 되돌림 = 돈다();
+    console.log(`\n[사보타주] 심은 고장(${심을사람} 격자 256) → ${심음 !== 0 ? "막았다 ✅" : "통과했다 ❌ — 자에 눈이 없다"}`);
+    console.log(`[사보타주] 되돌린 뒤 → ${되돌림 === 0 ? "통과 ✅ (거짓 경보 아님)" : "여전히 떨어진다 ❌"}`);
+    if (심음 === 0 || 되돌림 !== 0) process.exit(1);
+  }
 }

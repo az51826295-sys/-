@@ -25,8 +25,15 @@ const 이름들 = (process.argv[2] ?? "").split(",").map((s) => s.trim()).filter
 if (!이름들.length) { console.error("누구를 맞출지 적어 주세요: taeo,jiwoo,soeun"); process.exit(1); }
 const 고칠까 = process.argv.includes("--fix");
 const 시트 = "C:/Users/az518/Desktop/두근도트-시트";
-/** 기준 — 도트 8 = 격자 64. 바꾸려면 기준 문서부터. */
-const 격자 = 64, 도트 = 512 / 격자;
+/**
+ * 기준 — **도트 4 = 격자 128**(`engine/docs/dot-character-standard.md`).
+ *
+ * 11-13: 여기 `64`(도트 8)가 박혀 있었다. 11-09 에 열 명을 `dot_restyle_all --grid 128` 로
+ * 다시 뽑아 **기준이 4로 바뀌었는데 이 도구만 옛 숫자로 남아 있었다** — 이걸로 고치면
+ * 고친 사람만 또 혼자 결이 달라진다. 문서가 기준이고 도구는 따라간다.
+ */
+const { 격자: 기준격자, 캔버스 } = await import("../../src/lib/dot/charStandard");
+const 격자 = Number((process.argv.find((a) => a.startsWith("--grid=")) ?? `--grid=${기준격자}`).split("=")[1]), 도트 = 캔버스 / 격자;
 
 function 도트재기(paths: string[]): (number | null)[] {
   const py = [
