@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { AD_REFILL_TURNS, type AdConf } from "@/lib/dot/money";
+import { CHECKIN_HEARTS } from "@/lib/dot/bond";
 import { showRewardedAd, AD_FAIL_COPY } from "@/lib/dot/adbreak";
 
 /**
@@ -18,9 +19,9 @@ import { showRewardedAd, AD_FAIL_COPY } from "@/lib/dot/adbreak";
  * 광고 창구가 안 열려 있으면 광고 줄을 **안 그린다** — 누르면 503 이 오는 단추는 두지 않는다.
  * 결제는 아직 받을 길이 없어 `/dot/pay` 가 "준비 중" 으로 답한다(사장님이 그렇게 정하셨다).
  */
-export default function HeartBadge({ hearts: hearts0, ad, adLeft: adLeft0, 무제한 = false }: {
+export default function HeartBadge({ hearts: hearts0, ad, adLeft: adLeft0, 무제한 = false, 파는중 = false }: {
   /* 11-13: 개발자 링크면 숫자(9999)가 아니라 `∞` 로 적는다 — 세어서 나온 수가 아니기 때문이다. */
-  hearts: number; ad: AdConf | null; adLeft: number; 무제한?: boolean;
+  hearts: number; ad: AdConf | null; adLeft: number; 무제한?: boolean; 파는중?: boolean;
 }) {
   const router = useRouter();
   const [열림, set열림] = useState(false);
@@ -71,10 +72,26 @@ export default function HeartBadge({ hearts: hearts0, ad, adLeft: adLeft0, 무�
               </button>
             )}
 
-            <a className="hb-row" href="/dot/pay">
-              <span className="hb-row-t">하트 사기</span>
-              <span className="hb-row-s">묶음으로 사면 기다리지 않아요</span>
-            </a>
+            {/**
+              * **파는 길이 닫혀 있으면 입구를 안 그린다** (11-13 사장님 "결제 그만 하고 없애고 광고로").
+              *
+              * 전에는 늘 그려 놓고 누르면 "곧 열려요" 로 답했다. 그건 **열릴 날이 정해져
+              * 있을 때** 말이 되는 자리다 — 지금은 사업자등록·통신판매업이 있어야 열리는
+              * 자리라 기약이 없다. 못 하는 일을 시키는 자리를 안 남긴다
+              * ([[feature-removal-leaves-dead-ends]]). `HEART_BILLING_OPEN=1` 을 켜면 **그대로 돌아온다.**
+              */}
+            {파는중 && (
+              <a className="hb-row" href="/dot/pay">
+                <span className="hb-row-t">하트 사기</span>
+                <span className="hb-row-s">묶음으로 사면 기다리지 않아요</span>
+              </a>
+            )}
+
+            {/* 광고도 결제도 닫혀 있으면 시트에 **누를 게 하나도 없다** — 그러면 "숫자만 뜨는 창"
+                이 된다. 하트가 어디서 오는지 한 줄로 적어 둔다(글은 내 초안이다). */}
+            {!ad && !파는중 && !무제한 && (
+              <div className="hb-note">하트는 매일 출석하면 {CHECKIN_HEARTS}개 받아요</div>
+            )}
 
             <button className="hb-close" onClick={() => set열림(false)}>닫기</button>
           </div>
@@ -104,6 +121,7 @@ const CSS = `
 .hb-row:disabled { opacity:.6; cursor:default; }
 .hb-row-t { font-size:15px; font-weight:700; }
 .hb-row-s { font-size:12px; color:#8a8f98; }
+.hb-note { margin:2px 0 6px; padding:10px 12px; font-size:13px; color:#5c6570; background:#f6f7f9; border-radius:12px; text-align:center; }
 .hb-close { display:block; width:100%; min-height:44px; background:none; border:none; font:inherit; font-size:13px; color:#8a8f98; cursor:pointer; }
 .hb-toast { position:fixed; left:50%; bottom:84px; transform:translateX(-50%); background:rgba(20,24,30,.92); color:#fff;
   padding:10px 16px; font-size:13px; border-radius:999px; box-shadow:0 6px 20px rgba(0,0,0,.25); z-index:50; }

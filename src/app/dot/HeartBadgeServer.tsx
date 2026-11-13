@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import { todayKST } from "@/lib/dot/bond";
-import { balanceFor, adConfFromEnv } from "@/lib/dot/money";
+import { balanceFor, adConfFromEnv, heartBillingOpen } from "@/lib/dot/money";
 import { devFromCookies } from "@/lib/dot/dev";
 import HeartBadge from "./HeartBadge";
 
@@ -25,6 +25,7 @@ export default async function HeartBadgeServer() {
       <HeartBadge
         hearts={Number.isFinite(b.remaining) ? b.remaining : 0}
         무제한={!!b.무제한}
+        파는중={heartBillingOpen()}
         ad={adConfFromEnv()}
         adLeft={b.adLeft}
       />
