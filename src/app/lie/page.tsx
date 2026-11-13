@@ -20,7 +20,8 @@ const 사건 = 기본사건();
 export default function Page() {
   // **플레이어가 알아도 되는 것만** 내려보낸다. 진실·약점·무너지면 은 뺀다.
   // 얼굴은 `public/lie/` 에 있다(규격: 448×448 · 가슴 위 · 취조실 조명 — `engine/work/lie/얼굴.mts`).
-  const 얼굴 = { A: "/lie/han.jpg", B: "/lie/yun.jpg", C: "/lie/park.jpg" } as Record<string, string>;
+  /* 11-13: 사진 한 장(`han.jpg`)에서 **사람 폴더**로 바꿨다 — 그 안에 몰리는 여섯 단계가 있다(`face.ts`). */
+  const 얼굴 = { A: "/lie/han", B: "/lie/yun", C: "/lie/park" } as Record<string, string>;
   const 용의자들 = 사건.용의자.map((s) => ({ id: s.id, 이름: s.이름, 관계: s.관계, 겉모습: s.겉모습, 얼굴: 얼굴[s.id] ?? "" }));
   const 증거들 = 사건.증거.map((e) => ({ id: e.id, 이름: e.이름, 설명: e.설명 }));
   // **확인할 것** — 용의자가 한 주장 중 다른 사람에게 물어봐야 하는 것들.

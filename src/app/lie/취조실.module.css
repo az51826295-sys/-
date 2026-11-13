@@ -63,7 +63,7 @@
 }
 .사람:hover { border-color: #35496a; }
 .사람.고름 { border-color: var(--강조); background: #16263c; color: var(--글); }
-.사람 img { width: 38px; height: 38px; border-radius: 9px; object-fit: cover; filter: grayscale(.35); }
+.사람 img { width: 38px; height: 38px; border-radius: 9px; object-fit: contain; object-position: 50% 100%; background: #171b25; image-rendering: pixelated; filter: grayscale(.35); }
 .사람.고름 img { filter: none; }
 .사람 b { font-weight: 700; }
 .사람 span { font-size: 12px; color: var(--더흐린글); margin-left: 4px; }
@@ -86,9 +86,20 @@
   overflow: hidden; display: flex; flex-direction: column;
 }
 .판 > .얼굴칸 { overflow: hidden; }
+/* 11-13 도트: 사진(cover 로 잘라 채우기)에서 **도트 그림**(통째로, 점이 살게)으로.
+   취조실 조명 — 위에서 떨어지는 빛 하나, 뒤는 어둡다. 그림은 발이 바닥에 붙어 있어
+   (dropToBaseline) 틀 아래에 딱 앉는다. */
+.얼굴틀 {
+  flex: 1 1 auto; min-height: 120px; display: flex; align-items: flex-end; justify-content: center;
+  background:
+    radial-gradient(ellipse 70% 55% at 50% 0%, rgba(255, 244, 214, .16), transparent 70%),
+    linear-gradient(180deg, #171b25 0%, #0d1017 100%);
+  border-bottom: 1px solid var(--선);
+}
 .얼굴 {
-  width: 100%; display: block; object-fit: cover; object-position: 50% 28%;
-  flex: 1 1 auto; min-height: 96px; transition: filter 700ms ease;
+  display: block; height: 100%; max-height: 300px; width: auto; max-width: 100%;
+  object-fit: contain; object-position: 50% 100%;
+  image-rendering: pixelated;
 }
 .얼굴글 { padding: 12px 14px 12px; flex: none; }
 .얼굴이름 { font-size: 17px; font-weight: 800; margin: 0; }

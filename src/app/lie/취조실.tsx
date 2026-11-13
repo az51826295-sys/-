@@ -15,6 +15,7 @@
  */
 import { useCallback, useEffect, useRef, useState } from "react";
 import css from "./취조실.module.css";
+import { faceStage, faceUrl } from "@/lib/lie/face";
 
 type 수치 = { 압박: number; 당황: number; 분노: number; 경계: number };
 type 상태 = { 수치: 수치; 깨진약점: string[]; 내민증거: string[]; 턴: number; 최근질문: string[]; 무너짐: boolean; 얻은증언?: string[]; 계기?: number };
@@ -191,7 +192,8 @@ export default function 취조실({ 사건, 용의자들, 증거들, 확인할�
           {용의자들.map((s) => (
             <button key={s.id} onClick={() => set누구(s.id)} className={`${css.사람} ${누구 === s.id ? css.고름 : ""}`}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={s.얼굴} alt="" />
+              {/* 방마다 **그 사람의 지금 얼굴**을 단다 — 다른 방에 가 있어도 누가 몰려 있는지 보인다. */}
+              <img src={faceUrl(s.얼굴, faceStage(방[s.id]?.상태.수치 ?? { 압박: 0, 당황: 0, 분노: 0 }, !!방[s.id]?.상태.무너짐))} alt="" />
               <span><b>{s.이름}</b><span>{s.관계}</span></span>
               {방[s.id]?.상태.무너짐 ? <span className={css.깨진표}>●</span> : null}
             </button>
@@ -202,11 +204,11 @@ export default function 취조실({ 사건, 용의자들, 증거들, 확인할�
           {/* ── 왼쪽: 얼굴 + 온도계 ── */}
           <aside className={css.얼굴칸}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img className={css.얼굴} src={지금.얼굴} alt={지금.이름}
-              style={{
-                // 몰릴수록 얼굴이 붉고 거칠어진다
-                filter: `saturate(${1 + 수치.압박 / 160}) contrast(${1 + 수치.압박 / 300}) brightness(${1 - 수치.압박 / 700}) sepia(${수치.압박 / 420})`,
-              }} />
+            {/* 11-13: 색을 바꾸던 CSS 필터를 뺐다 — 이제 **얼굴이 바뀐다**(여섯 단계).
+                얼굴은 진짜 수치를 따른다. 눈금(`보임`)과 어긋나는 순간이 이 게임의 한가운데다. */}
+            <div className={css.얼굴틀}>
+              <img className={css.얼굴} src={faceUrl(지금.얼굴, faceStage(수치, 이방.상태.무너짐))} alt={지금.이름} />
+            </div>
             <div className={css.얼굴글}>
               <p className={css.얼굴이름}>{지금.이름}</p>
               <p className={css.얼굴관계}>{지금.관계}</p>
