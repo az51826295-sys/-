@@ -50,7 +50,13 @@ export type LedgerEntry = {
   score?: { met: number; total: number };
   usd?: number;
   sec?: number;
+  /** 누가 정했나 — 장부가 답했나(값 0), 판단자를 불렀나. */
+  via?: Via;
+  /** 그 판단 한 번에 든 값. 일 값(`usd`)과 따로 센다 — 판단이 일보다 비싸면 판 물건이 아니다. */
+  judgeUsd?: number;
 };
+
+export type Via = "장부" | "판단자" | "난간";
 
 export const EFFORTS = ["가볍게", "보통", "꼼꼼히"] as const;
 export type Effort = (typeof EFFORTS)[number];
@@ -67,6 +73,7 @@ export type Decision = {
   usd: number;
   /** 난간이 손댔으면 무엇을. */
   guard?: string;
+  via: Via;
 };
 
 /* ────────────────────────────── 세기 (모델 0) ────────────────────────────── */
@@ -116,9 +123,27 @@ export function ledgerFacts(seats: Seat[], ledger: LedgerEntry[], kind: string):
   return rows.join("\n");
 }
 
-/** 성적표 — 손님에게 보여 주는 것. 판단이 나아지고 있나. */
-export function scorecard(ledger: LedgerEntry[]) {
+/**
+ * 성적표 — 손님에게 보여 주는 것. 판단이 나아지고 있나 · 판단에 얼마 들었나 · 얼마 아꼈나.
+ *
+ * `baseline` = 엔진이 없을 때 손님이 늘 쓰던 AI. 아낀 돈은 **어림**이다 — 같은 일을 그 AI 로 돌렸다면
+ * 출력 단가 비율만큼 들었으리라고 본다(토큰 수가 같다는 가정). 실제로 돌려 본 값이 아니므로 이름에 "어림" 을 단다.
+ */
+export function scorecard(ledger: LedgerEntry[], opts: { seats?: Seat[]; baseline?: string } = {}) {
   const 끝난 = ledger.filter((e) => e.passed !== undefined);
+  const 단가 = new Map((opts.seats ?? []).map((s) => [s.id, s.outPerMTok]));
+  const 기준단가 = opts.baseline ? 단가.get(opts.baseline) : undefined;
+  let 아낀어림: number | null = null;
+  if (기준단가 != null) {
+    아낀어림 = 0;
+    for (const e of 끝난) {
+      const 내단가 = 단가.get(e.seat);
+      if (내단가 == null || !내단가 || e.usd == null) continue;
+      아낀어림 += e.usd * (기준단가 / 내단가) - e.usd;
+    }
+  }
+  const 판단값 = 끝난.reduce((a, e) => a + (e.judgeUsd ?? 0), 0);
+  const 일값 = 끝난.reduce((a, e) => a + (e.usd ?? 0), 0);
   const brier = 끝난.length ? 끝난.reduce((a, e) => a + (e.predictedPass - (e.passed ? 1 : 0)) ** 2, 0) / 끝난.length : null;
   const 반 = Math.floor(끝난.length / 2);
   const 앞 = 끝난.slice(0, 반), 뒤 = 끝난.slice(반);
@@ -126,7 +151,13 @@ export function scorecard(ledger: LedgerEntry[]) {
   return {
     판: 끝난.length,
     통과: 끝난.filter((e) => e.passed).length,
-    달러: 끝난.reduce((a, e) => a + (e.usd ?? 0), 0),
+    달러: 일값,
+    /** 판단에 든 값 / 그 몫. 몫이 크면 판단이 세금이다(11-20 첫 판: 판단이 일의 4배). */
+    판단값,
+    판단몫: 일값 + 판단값 > 0 ? 판단값 / (일값 + 판단값) : null,
+    /** 장부가 답해서 판단자를 안 부른 판. */
+    장부로: 끝난.filter((e) => e.via === "장부").length,
+    아낀어림,
     brier,
     /** 앞 절반 대 뒤 절반 — 쌓일수록 예측이 맞아 가나. 판이 적으면 null. */
     나아지나: 끝난.length >= 6 ? { 앞: b(앞), 뒤: b(뒤) } : null,
@@ -177,13 +208,67 @@ export async function decideFor(
       seat: 맞는자리 ? o.seat : ids[0],
       effort: o.effort,
       predictedPass: Math.min(1, Math.max(0, Number(o.predictedPass) || 0)),
-      estimate: o.estimate, why: o.why, risk: o.risk, usd,
+      estimate: o.estimate, why: o.why, risk: o.risk, usd, via: "판단자",
       ...(맞는자리 ? {} : { guard: `없는 자리 "${o.seat}" 를 골라 ${ids[0]} 로 돌렸다` }),
     };
   } catch (e) {
-    return { seat: ids[0], effort: "보통", predictedPass: 0.5, estimate: "모르겠다", why: "", risk: "", usd: 0,
+    return { seat: ids[0], effort: "보통", predictedPass: 0.5, estimate: "모르겠다", why: "", risk: "", usd: 0, via: "난간",
       guard: `판단자가 정하지 못했다(${e instanceof Error ? e.message.slice(0, 80) : e}) — 첫 자리로 간다` };
   }
+}
+
+/* ────────────────────────────── 빠른 길 (모델 0) ────────────────────────────── */
+
+/**
+ * 장부가 이미 답하는 판단에는 판단자를 부르지 않는다.
+ *
+ * 11-20 첫 판: 판단자 한 번($0.024)이 일 한 판($0.006)의 네 배였다 — 같은 종류의 일을 같은 싼 AI 가
+ * 계속 넘는데 매번 비싼 머리에게 물었다. 장부에 "이 종류는 이 AI 가 넘는다" 가 충분히 쌓였으면 그걸 쓴다.
+ *
+ * 문턱(숫자는 여기 한 곳):
+ * - 그 (AI × 종류) 에 끝난 판이 `minRuns` 이상
+ * - 통과 어림 (통과+1)/(판+2) 이 `minPass` 이상 — 5/5 는 0.86 이라 넘고, 4/5 는 0.71 이라 못 넘는다
+ * - 최근 `recent` 판에 실패가 없다 — 모델이 바뀌거나 일이 어려워지면 바로 판단자에게 돌아간다
+ * 넘는 자리가 여럿이면 **장부상 판당 값이 제일 싼 것**. 목록 단가가 아니라 실제로 나간 돈이다.
+ */
+export const FAST = { minRuns: 5, minPass: 0.8, recent: 2 } as const;
+
+export function fastPath(seats: Seat[], ledger: LedgerEntry[], kind: string): Decision | null {
+  const 끝난 = ledger.filter((e) => e.passed !== undefined && e.kind === kind);
+  const 후보: { id: string; n: number; pass: number; p: number; usd: number; effort: Effort }[] = [];
+  for (const s of seats) {
+    const xs = 끝난.filter((e) => e.seat === s.id);
+    if (xs.length < FAST.minRuns) continue;
+    if (xs.slice(-FAST.recent).some((e) => !e.passed)) continue;
+    const pass = xs.filter((e) => e.passed).length;
+    const p = (pass + 1) / (xs.length + 2);
+    if (p < FAST.minPass) continue;
+    // 노력: 통과한 판에서 제일 많이 쓴 것, 같으면 가벼운 쪽.
+    const 셈 = new Map<Effort, number>();
+    for (const e of xs) if (e.passed) 셈.set(e.effort, (셈.get(e.effort) ?? 0) + 1);
+    const effort = [...EFFORTS].sort((a, b) => (셈.get(b) ?? 0) - (셈.get(a) ?? 0) || EFFORTS.indexOf(a) - EFFORTS.indexOf(b))[0];
+    후보.push({ id: s.id, n: xs.length, pass, p, usd: xs.reduce((a, e) => a + (e.usd ?? 0), 0) / xs.length, effort });
+  }
+  if (!후보.length) return null;
+  후보.sort((a, b) => a.usd - b.usd);
+  const c = 후보[0];
+  return {
+    seat: c.id, effort: c.effort, predictedPass: Math.round(c.p * 100) / 100,
+    estimate: `판당 약 $${c.usd.toFixed(3)} (장부 ${c.n}판 평균)`,
+    why: `장부가 답했다: "${kind}" 을 ${c.id} 가 ${c.pass}/${c.n} 넘었고 최근 실패가 없다. 판단자를 부르지 않았다.` +
+      (후보.length > 1 ? ` 같은 문턱을 넘은 ${후보.length - 1}곳보다 판당 값이 싸다.` : ""),
+    risk: "장부가 쌓인 뒤 일이 어려워졌다면 한 판은 떨어질 수 있다 — 떨어지면 다음 판부터 판단자에게 돌아간다.",
+    usd: 0, via: "장부",
+  };
+}
+
+/** 판단의 문 — 장부가 답하면 값 0, 아니면 판단자 한 번. 손님 쪽에서 부르는 것은 이것 하나다. */
+export async function decide(
+  brain: AIProvider,
+  input: { task: string; kind: string; seats: Seat[]; ledger: LedgerEntry[] },
+  meter?: (usage: { model: string; inputTokens: number; outputTokens: number }) => number,
+): Promise<Decision> {
+  return fastPath(input.seats, input.ledger, input.kind) ?? decideFor(brain, input, meter);
 }
 
 /** effort → 고치기 바퀴 수. 로키의 `roundsFor` 와 같은 숫자(가볍게 1 · 보통 3 · 꼼꼼히 8). */
