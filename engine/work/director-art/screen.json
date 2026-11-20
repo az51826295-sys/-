@@ -1,0 +1,34 @@
+[
+ {
+  "seat": "flare-low",
+  "slug": "yuna",
+  "pass": true,
+  "fails": [],
+  "usd": 0.01386,
+  "sec": 14.798
+ },
+ {
+  "seat": "flare-medium",
+  "slug": "yuna",
+  "pass": true,
+  "fails": [],
+  "usd": 0.01941,
+  "sec": 15.405
+ },
+ {
+  "seat": "sunburst-medium",
+  "slug": "yuna",
+  "pass": true,
+  "fails": [],
+  "usd": 0.01941,
+  "sec": 19.66
+ },
+ {
+  "seat": "img2-medium",
+  "slug": "yuna",
+  "pass": true,
+  "fails": [],
+  "usd": 0.06395,
+  "sec": 24.685
+ }
+]
