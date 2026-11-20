@@ -6,6 +6,11 @@
       "headers": {
         "Authorization": "Bearer ${ROOKERY_MCP_TOKEN}"
       }
+    },
+    "rookery-director": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["--import", "tsx", "engine/tools/director_mcp.mts"]
     }
   }
 }
