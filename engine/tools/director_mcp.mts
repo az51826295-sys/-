@@ -13,7 +13,7 @@
  *
  * 환경:
  *   DIRECTOR_HOME   장부·자리 파일 폴더
- *   DIRECTOR_BRAIN  판단자 모델(기본 gpt-5). `mock` 이면 모델을 안 부르고 첫 자리 · 0.5 (시험용)
+ *   DIRECTOR_BRAIN  판단자 모델(기본 gpt-5.6-luna — 11-20 실험). `mock` 이면 모델을 안 부르고 첫 자리 · 0.5 (시험용)
  *   DIRECTOR_PRESET 자리 파일이 없을 때 처음 깔 목록: claude-code(기본) | openai
  *
  * 규약: 표준출력은 JSON-RPC 만. 로그는 전부 표준오류로 보낸다(섞이면 손님 도구가 끊는다).
@@ -78,7 +78,7 @@ const 장부 = (): Row[] => 읽기<Row[]>(장부파일, []);
 
 /* ─────────────── 판단자 ─────────────── */
 
-const BRAIN = process.env.DIRECTOR_BRAIN || "gpt-5";
+const BRAIN = process.env.DIRECTOR_BRAIN || "gpt-5.6-luna"; // 11-20 싼 판단자 실험: luna 가 잠근 넷 다 섬(director-cheap-brain-design.md)
 async function 판단자(): Promise<{ ai: Parameters<D["decide"]>[0]; meter: (u: { model: string; inputTokens: number; outputTokens: number }) => number }> {
   if (BRAIN === "mock") {
     return {

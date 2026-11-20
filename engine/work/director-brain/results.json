@@ -1,0 +1,389 @@
+{
+ "gpt-5.6-luna": [
+  {
+   "part": "A",
+   "name": "오늘1",
+   "seat": "haiku",
+   "pred": 0.98,
+   "usd": 0.0004838,
+   "ranSeat": "haiku",
+   "passed": true,
+   "gpt5Pred": 0.78
+  },
+  {
+   "part": "A",
+   "name": "오늘2",
+   "seat": "haiku",
+   "pred": 0.84,
+   "usd": 0.0005317999999999999,
+   "ranSeat": "haiku",
+   "passed": true,
+   "gpt5Pred": 0.78
+  },
+  {
+   "part": "A",
+   "name": "오늘3",
+   "seat": "haiku",
+   "pred": 0.84,
+   "usd": 0.0005844000000000001,
+   "ranSeat": "haiku",
+   "passed": true,
+   "gpt5Pred": 0.8
+  },
+  {
+   "part": "A",
+   "name": "오늘4",
+   "seat": "haiku",
+   "pred": 0.86,
+   "usd": 0.0006292,
+   "ranSeat": "haiku",
+   "passed": true,
+   "gpt5Pred": 0.82
+  },
+  {
+   "part": "A",
+   "name": "오늘5",
+   "seat": "haiku",
+   "pred": 0.82,
+   "usd": 0.0007352000000000001,
+   "ranSeat": "haiku",
+   "passed": true,
+   "gpt5Pred": 0.8
+  },
+  {
+   "part": "A",
+   "name": "첫판1",
+   "seat": "gpt-5.6-luna",
+   "pred": 0.63,
+   "usd": 0.0009185999999999999,
+   "ranSeat": "gpt-5.6-luna",
+   "passed": true,
+   "gpt5Pred": 0.68
+  },
+  {
+   "part": "A",
+   "name": "첫판2",
+   "seat": "gpt-5.6-luna",
+   "pred": 0.72,
+   "usd": 0.0007622000000000001,
+   "ranSeat": "gpt-5.6-luna",
+   "passed": true,
+   "gpt5Pred": 0.66
+  },
+  {
+   "part": "A",
+   "name": "첫판3",
+   "seat": "gpt-5.6-luna",
+   "pred": 0.72,
+   "usd": 0.0006068,
+   "ranSeat": "gpt-5.6-luna",
+   "passed": true,
+   "gpt5Pred": 0.64
+  },
+  {
+   "part": "A",
+   "name": "첫판4",
+   "seat": "gpt-5.6-luna",
+   "pred": 0.72,
+   "usd": 0.0006924,
+   "ranSeat": "gpt-5.6-luna",
+   "passed": true,
+   "gpt5Pred": 0.7
+  },
+  {
+   "part": "A",
+   "name": "첫판5",
+   "seat": "gpt-5.6-luna",
+   "pred": 0.74,
+   "usd": 0.0007524,
+   "ranSeat": "gpt-5.6-luna",
+   "passed": true,
+   "gpt5Pred": 0.69
+  },
+  {
+   "part": "A",
+   "name": "첫판6",
+   "seat": "gpt-5.6-luna",
+   "pred": 0.74,
+   "usd": 0.0006675999999999999,
+   "ranSeat": "gpt-5.6-luna",
+   "passed": true,
+   "gpt5Pred": 0.64
+  },
+  {
+   "part": "A",
+   "name": "첫판7",
+   "seat": "gpt-5.6-luna",
+   "pred": 0.72,
+   "usd": 0.0007566,
+   "ranSeat": "gpt-5.6-luna",
+   "passed": true,
+   "gpt5Pred": 0.68
+  },
+  {
+   "part": "A",
+   "name": "첫판8",
+   "seat": "gpt-5.6-luna",
+   "pred": 0.74,
+   "usd": 0.0006477999999999999,
+   "ranSeat": "gpt-5.6-luna",
+   "passed": true,
+   "gpt5Pred": 0.68
+  },
+  {
+   "part": "A",
+   "name": "첫판9",
+   "seat": "gpt-5.6-luna",
+   "pred": 0.82,
+   "usd": 0.000702,
+   "ranSeat": "gpt-5.6-luna",
+   "passed": true,
+   "gpt5Pred": 0.76
+  },
+  {
+   "part": "A",
+   "name": "첫판10",
+   "seat": "gpt-5.6-luna",
+   "pred": 0.78,
+   "usd": 0.0007052,
+   "ranSeat": "gpt-5.6-luna",
+   "passed": true,
+   "gpt5Pred": 0.76
+  },
+  {
+   "part": "B",
+   "name": "B1 haiku 게임 0/5",
+   "seat": "sonnet",
+   "pred": 0.45,
+   "usd": 0.0009022,
+   "ok": true,
+   "why": "터치 입력, 리듬 판정, 점수·콤보 표시가 함께 필요한 보통 수준의 코딩이라 sonnet이 haiku보다 적합하다. haiku는 게임에서 0/5 통과했고 최근 5번 모두 실패했으며, 전체 예측 Brier도 0.490으로 확신을 낮췄다. sonnet은 기록이 없으므로 opus나 fable까지 올릴 근거는 부족하다."
+  },
+  {
+   "part": "B",
+   "name": "B2 luna 고침 1/6",
+   "seat": "gpt-5",
+   "pred": 0.78,
+   "usd": 0.0008682,
+   "ok": true,
+   "why": "고침 작업에서 5/5 통과 기록이 있어 현재 가장 근거 있는 선택이다. 다만 판이 5판뿐이고 전체 예측 Brier가 0.272라 확신은 낮췄다. gpt-5.6-luna는 고침 1/6이며 최근 5번 연속 실패해 피한다. 코드 전용 gpt-5.3-codex는 기록이 없어, 그림은 필요 없지만 검증된 gpt-5를 택했다."
+  },
+  {
+   "part": "B",
+   "name": "B3 그림을 봐야 함",
+   "seat": "mid",
+   "pred": 0.78,
+   "usd": 0.000631,
+   "ok": true,
+   "why": "장부가 비어 있어 자리 설명만으로 판단한다. 이 작업은 스크린샷을 직접 보고 세 단추의 시각적 줄맞춤을 비교해야 하므로 그림을 볼 수 있는 mid가 필요하다. 단추가 세 개뿐인 국소적인 CSS 수정이라 보통 수준의 확인이면 충분하다."
+  }
+ ],
+ "gpt-5-mini": [
+  {
+   "part": "A",
+   "name": "오늘1",
+   "seat": "haiku",
+   "pred": 0.95,
+   "usd": 0.00293025,
+   "ranSeat": "haiku",
+   "passed": true,
+   "gpt5Pred": 0.78
+  },
+  {
+   "part": "A",
+   "name": "오늘2",
+   "seat": "haiku",
+   "pred": 0.75,
+   "usd": 0.00389275,
+   "ranSeat": "haiku",
+   "passed": true,
+   "gpt5Pred": 0.78
+  },
+  {
+   "part": "A",
+   "name": "오늘3",
+   "seat": "haiku",
+   "pred": 0.72,
+   "usd": 0.003257,
+   "ranSeat": "haiku",
+   "passed": true,
+   "gpt5Pred": 0.8
+  },
+  {
+   "part": "A",
+   "name": "오늘4",
+   "seat": "haiku",
+   "pred": 0.8,
+   "usd": 0.0037425,
+   "ranSeat": "haiku",
+   "passed": true,
+   "gpt5Pred": 0.82
+  },
+  {
+   "part": "A",
+   "name": "오늘5",
+   "seat": "haiku",
+   "pred": 0.82,
+   "usd": 0.004312,
+   "ranSeat": "haiku",
+   "passed": true,
+   "gpt5Pred": 0.8
+  },
+  {
+   "part": "A",
+   "name": "첫판1",
+   "seat": "gpt-5.3-codex",
+   "pred": 0.88,
+   "usd": 0.00388975,
+   "ranSeat": "gpt-5.6-luna",
+   "passed": true,
+   "gpt5Pred": 0.68
+  },
+  {
+   "part": "A",
+   "name": "첫판2",
+   "seat": "gpt-5.6-luna",
+   "pred": 0.62,
+   "usd": 0.00398725,
+   "ranSeat": "gpt-5.6-luna",
+   "passed": true,
+   "gpt5Pred": 0.66
+  },
+  {
+   "part": "A",
+   "name": "첫판3",
+   "seat": "gpt-5.6-luna",
+   "pred": 0.65,
+   "usd": 0.0032235,
+   "ranSeat": "gpt-5.6-luna",
+   "passed": true,
+   "gpt5Pred": 0.64
+  },
+  {
+   "part": "A",
+   "name": "첫판4",
+   "seat": "gpt-5.6-luna",
+   "pred": 0.66,
+   "usd": 0.003445,
+   "ranSeat": "gpt-5.6-luna",
+   "passed": true,
+   "gpt5Pred": 0.7
+  },
+  {
+   "part": "A",
+   "name": "첫판5",
+   "seat": "gpt-5.6-luna",
+   "pred": 0.66,
+   "usd": 0.0042145,
+   "ranSeat": "gpt-5.6-luna",
+   "passed": true,
+   "gpt5Pred": 0.69
+  },
+  {
+   "part": "A",
+   "name": "첫판6",
+   "seat": "gpt-5.6-luna",
+   "pred": 0.7,
+   "usd": 0.0047835,
+   "ranSeat": "gpt-5.6-luna",
+   "passed": true,
+   "gpt5Pred": 0.64
+  },
+  {
+   "part": "A",
+   "name": "첫판7",
+   "seat": "gpt-5.6-luna",
+   "pred": 0.68,
+   "usd": 0.00279425,
+   "ranSeat": "gpt-5.6-luna",
+   "passed": true,
+   "gpt5Pred": 0.68
+  },
+  {
+   "part": "A",
+   "name": "첫판8",
+   "seat": "gpt-5.6-luna",
+   "pred": 0.88,
+   "usd": 0.00362225,
+   "ranSeat": "gpt-5.6-luna",
+   "passed": true,
+   "gpt5Pred": 0.68
+  },
+  {
+   "part": "A",
+   "name": "첫판9",
+   "seat": "gpt-5.6-luna",
+   "pred": 0.88,
+   "usd": 0.0038165,
+   "ranSeat": "gpt-5.6-luna",
+   "passed": true,
+   "gpt5Pred": 0.76
+  },
+  {
+   "part": "A",
+   "name": "첫판10",
+   "seat": "gpt-5.6-luna",
+   "pred": 0.85,
+   "usd": 0.0035175,
+   "ranSeat": "gpt-5.6-luna",
+   "passed": true,
+   "gpt5Pred": 0.76
+  },
+  {
+   "part": "B",
+   "name": "B1 haiku 게임 0/5",
+   "seat": "sonnet",
+   "pred": 0.55,
+   "usd": 0.00449125,
+   "ok": true,
+   "why": "haiku는 가장 싸지만 ‘게임’ 카테고리에서 최근 5판 모두 실패했고(예측 70% → 실패 반복), 전체 Brier 0.490으로 과신을 줄여야 합니다. 반면 sonnet은 게임·도구용으로 적절한 역량(중간 난이도의 코딩/화면 처리)에 맞춰져 있고 가격도 과하지 않아, 낮은 비용으로 충분히 통과 가능할 것으로 판단했습니다. opus/fable는 더 어려운 추론이 필요할 때만 쓰는 것이 비용 측면에서 합리적입니다."
+  },
+  {
+   "part": "B",
+   "name": "B2 luna 고침 1/6",
+   "seat": "gpt-5",
+   "pred": 0.85,
+   "usd": 0.00414975,
+   "ok": true,
+   "why": "장부 근거: '고침' 작업에서 gpt-5는 5/5 통과 기록이 있어 가장 신뢰할 만하다. gpt-5는 판당 $0.01로 비용 효율도 괜찮다. 반면 gpt-5.6-luna는 '고침' 1/6(최근 여러 차례 실패)으로 신뢰도가 낮고, gpt-6-astra는 불필요하게 비싸다. 다만 전체 채점(Brier 0.272)과 샘플 크기(판 수가 작음)를 고려해 과신을 줄여 보통 노력 수준을 배정했다."
+  },
+  {
+   "part": "B",
+   "name": "B3 그림을 봐야 함",
+   "seat": "mid",
+   "pred": 0.9,
+   "usd": 0.00283725,
+   "ok": true,
+   "why": "장부가 비어 있어 과거 성적이 없어 자리 설명만으로 결정했습니다. 이 작업은 스크린샷을 보고 어느 버튼이 어긋났는지 확인한 뒤 CSS를 고치는 것이므로 이미지를 볼 수 있는 'mid'가 필요합니다. cheap-blind는 그림을 볼 수 없어 적합하지 않습니다. 중간 수준(보통) 공들임이면 충분할 것으로 판단했습니다."
+  }
+ ],
+ "gpt-5": [
+  {
+   "part": "B",
+   "name": "B1 haiku 게임 0/5",
+   "seat": "sonnet",
+   "pred": 0.58,
+   "usd": 0.02502625,
+   "ok": true,
+   "why": "게임 작업에서 haiku가 0/5로 전패라 재시도 가치가 낮음. 이번 일은 간단한 리듬 게임 UI/로직(터치 입력, 점수·콤보)로 ‘보통의 코딩’ 범주라 sonnet이 적합. sonnet은 장부 기록이 없어서 자리 설명과 단가만으로 선택했고, 과거 예측이 과신(70%)으로 모두 빗나가 Brier가 높아 확신을 낮춰 0.58로 설정. opus/fable은 난이도·분량 대비 과소비 위험."
+  },
+  {
+   "part": "B",
+   "name": "B2 luna 고침 1/6",
+   "seat": "gpt-5",
+   "pred": 0.63,
+   "usd": 0.02370875,
+   "ok": true,
+   "why": "고침 작업이며 gpt-5는 전체/고침 모두 5/5 통과로 검증됨이고 형식 준수 강점이 있음. gpt-5.6-luna는 1/6로 신뢰 낮고, gpt-5.3-codex·기타 새 판들은 기록이 없어 위험. 장부상 유사 작업의 실제 청구가 gpt-5도 $0.01 수준이라 비용 차익도 작음. 최근 Brier가 높아 확신을 낮춰 보수적으로 예측함."
+  },
+  {
+   "part": "B",
+   "name": "B3 그림을 봐야 함",
+   "seat": "mid",
+   "pred": 0.76,
+   "usd": 0.02014625,
+   "ok": true,
+   "why": "장부가 비어 있어 자리 설명만으로 고른다. 이 일은 스크린샷 판독이 필수라 그림을 못 보는 cheap-blind로는 수행 자체가 불가. mid는 비전을 지원하므로 어떤 버튼이 어긋났는지 짚고, 정렬 기준에 맞춘 CSS(정렬/간격/특이성 조정)까지 제안 가능하다. 난이도는 중간 정도로 보여 보통 노력으로 확인 통과 확률이 높다고 판단."
+  }
+ ]
+}
