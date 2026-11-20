@@ -35,7 +35,7 @@ if (existsSync(envFile)) for (const l of readFileSync(envFile, "utf8").split(Str
   const i = l.indexOf("="); if (i > 0 && !l.startsWith("#")) process.env[l.slice(0, i).trim()] ||= l.slice(i + 1).trim().replace(/\r$/, "");
 }
 
-const { decide, scorecard, tally, roundsOf, EFFORTS } = await import("../../src/lib/director/index.ts");
+const { decide, scorecard, tally, roundsOf, EFFORTS, escalate } = await import("../../src/lib/director/index.ts");
 type D = typeof import("../../src/lib/director/index.ts");
 type Seat = import("../../src/lib/director/index.ts").Seat;
 type LedgerEntry = import("../../src/lib/director/index.ts").LedgerEntry;
@@ -132,6 +132,17 @@ const TOOLS = [
 
 const 글 = (t: string) => ({ content: [{ type: "text", text: t }] });
 
+/**
+ * 종류 낱말이 갈리면 장부가 영영 못 답한다(11-20 첫 판: 10판이 종류 넷으로 갈려 빠른 길 0번).
+ * 처음 보는 낱말이면 장부에 있는 낱말을 보여 준다 — 같은 일이면 그걸 쓰라고.
+ */
+function 종류알림(rows: Row[], kind: string): string {
+  const 셈 = new Map<string, number>();
+  for (const r of rows) if (r.kind !== kind) 셈.set(r.kind, (셈.get(r.kind) ?? 0) + 1);
+  if (!셈.size || rows.some((r) => r.kind === kind && r.passed !== undefined)) return "";
+  return `새 종류 "${kind}". 장부에 있는 종류: ${[...셈].map(([k, n]) => `${k}(${n})`).join(" · ")} — 같은 종류의 일이면 그 낱말을 써야 장부가 답한다.`;
+}
+
 async function 부르기(name: string, a: Record<string, unknown>) {
   if (name === "director_decide") {
     const task = String(a.task ?? "").trim(), kind = String(a.kind ?? "").trim();
@@ -151,6 +162,7 @@ async function 부르기(name: string, a: Record<string, unknown>) {
       `왜: ${d.why}`,
       d.risk ? `틀린다면: ${d.risk}` : "",
       d.guard ? `난간: ${d.guard}` : "",
+      종류알림(rows, kind),
       "", `끝나면 director_record 로 id ${id} 의 결과를 적어 주세요.`,
     ].filter(Boolean).join("\n"));
   }
@@ -168,9 +180,17 @@ async function 부르기(name: string, a: Record<string, unknown>) {
       if (p != null) r.usd = (a.outTokens / 1e6) * p;
     }
     if (typeof a.sec === "number") r.sec = a.sec;
-    쓰기(장부파일, rows);
     const 오차 = (r.predictedPass - (r.passed ? 1 : 0)) ** 2;
-    return 글(`적었다: ${r.kind} → ${r.seat} ${r.passed ? "통과" : "실패"} · 예측 ${Math.round(r.predictedPass * 100)}% 의 오차 ${오차.toFixed(3)}${r.usd != null ? ` · $${r.usd.toFixed(4)}` : ""}`);
+    const 적음 = `적었다: ${r.kind} → ${r.seat} ${r.passed ? "통과" : "실패"} · 예측 ${Math.round(r.predictedPass * 100)}% 의 오차 ${오차.toFixed(3)}${r.usd != null ? ` · $${r.usd.toFixed(4)}` : ""}`;
+    if (r.passed) { 쓰기(장부파일, rows); return 글(적음); }
+    // 떨어졌다 → 한 칸 위를 정해 **새 판으로** 장부에 연다(판단자 안 부름). 더 갈 데가 없으면 사람에게.
+    const up = escalate(seats, rows, r);
+    if (!up) { 쓰기(장부파일, rows); return 글(`${적음}\n더 올릴 자리가 없다 — 사람이 볼 때다(주문이 모호하거나, 확인이 틀렸을 수 있다).`); }
+    const nid = randomBytes(4).toString("hex");
+    rows.push({ id: nid, at: new Date().toISOString(), task: r.task, kind: r.kind, seat: up.seat, effort: up.effort, predictedPass: up.predictedPass, via: up.via, judgeUsd: 0 });
+    쓰기(장부파일, rows);
+    return 글([적음, "", `다시 시킬 판 id ${nid}`, `맡길 AI: ${up.seat} · 공들이기 ${up.effort}(고치기 ${roundsOf(up.effort)}바퀴) · 통과 예측 ${Math.round(up.predictedPass * 100)}% (잠금)`,
+      `왜: ${up.why}`, `틀린다면: ${up.risk}`, "", `끝나면 director_record 로 id ${nid} 의 결과를 적어 주세요.`].join("\n"));
   }
   if (name === "director_scorecard") {
     const seats = 자리(), rows = 장부();
@@ -184,7 +204,10 @@ async function 부르기(name: string, a: Record<string, unknown>) {
       `끝난 판 ${s.판} · 통과 ${s.통과}${열린 ? ` · 결과 안 적힌 판 ${열린}` : ""}`,
       `판단 맞힘(Brier, 0 이 완벽 · 0.25 가 동전): ${s.brier == null ? "아직 없음" : s.brier.toFixed(3)}` +
         (s.나아지나 ? ` · 앞 절반 ${s.나아지나.앞?.toFixed(3)} → 뒤 절반 ${s.나아지나.뒤?.toFixed(3)}` : ""),
-      `일 값 $${s.달러.toFixed(4)} · 판단 값 $${s.판단값.toFixed(4)}${s.판단몫 != null ? ` (몫 ${Math.round(s.판단몫 * 100)}%)` : ""} · 장부로 바로 정한 판 ${s.장부로}`,
+      s.실력 == null
+        ? `실력(늘 같은 확률을 찍는 판단자보다 나은가): 못 잼 — ${s.판 ? "아직 실패가 없어 \"늘 통과\" 라고 찍는 쪽이 완벽하다" : "끝난 판이 없다"}`
+        : `실력(늘 ${Math.round((s.통과 / s.판) * 100)}% 를 찍는 판단자 대비): ${s.실력 >= 0 ? "+" : ""}${Math.round(s.실력 * 100)}% — ${s.실력 > 0 ? "낫다" : "못하다"} (바보 Brier ${s.바보brier?.toFixed(3)})`,
+      `일 값 $${s.달러.toFixed(4)} · 판단 값 $${s.판단값.toFixed(4)}${s.판단몫 != null ? ` (몫 ${Math.round(s.판단몫 * 100)}%)` : ""} · 장부로 바로 정한 판 ${s.장부로} · 떠본 판 ${s.떠본판} · 올린 판 ${s.올린판}`,
       s.아낀어림 != null ? `${baseline} 로 다 돌렸다면 대비 아낀 돈(어림 — 토큰 수가 같다고 본 것): $${s.아낀어림.toFixed(4)}` : "",
       줄.length ? "AI × 종류:\n" + 줄.join("\n") : "",
       `장부: ${장부파일}`, `AI 목록(손으로 고쳐도 된다): ${자리파일}`,

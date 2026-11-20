@@ -56,7 +56,7 @@ export type LedgerEntry = {
   judgeUsd?: number;
 };
 
-export type Via = "장부" | "판단자" | "난간";
+export type Via = "장부" | "판단자" | "난간" | "탐색" | "올림";
 
 export const EFFORTS = ["가볍게", "보통", "꼼꼼히"] as const;
 export type Effort = (typeof EFFORTS)[number];
@@ -142,6 +142,14 @@ export function scorecard(ledger: LedgerEntry[], opts: { seats?: Seat[]; baselin
       아낀어림 += e.usd * (기준단가 / 내단가) - e.usd;
     }
   }
+  /*
+   * **늘 같은 확률을 찍는 판단자보다 나은가** (11-21). Brier 만 보면 다 통과하는 장부에서 "늘 통과" 라고
+   * 찍는 바보가 제일 잘한다 — 11-20 성적표 0.041 이 실력처럼 보였던 까닭. 장부의 통과율 하나를 늘 찍는
+   * 판단자의 Brier 와 견줘 **실력 = 1 − 내 Brier ÷ 바보 Brier** 를 낸다. 실패가 없으면 바보가 완벽해서
+   * 견줄 수 없다 — 그때는 null(못 잼)이지 0 이 아니다([[zero-can-mean-i-cannot-see]]).
+   */
+  const 통과율 = 끝난.length ? 끝난.filter((e) => e.passed).length / 끝난.length : null;
+  const 바보brier = 통과율 == null ? null : 끝난.reduce((a, e) => a + (통과율 - (e.passed ? 1 : 0)) ** 2, 0) / 끝난.length;
   const 판단값 = 끝난.reduce((a, e) => a + (e.judgeUsd ?? 0), 0);
   const 일값 = 끝난.reduce((a, e) => a + (e.usd ?? 0), 0);
   const brier = 끝난.length ? 끝난.reduce((a, e) => a + (e.predictedPass - (e.passed ? 1 : 0)) ** 2, 0) / 끝난.length : null;
@@ -159,6 +167,12 @@ export function scorecard(ledger: LedgerEntry[], opts: { seats?: Seat[]; baselin
     장부로: 끝난.filter((e) => e.via === "장부").length,
     아낀어림,
     brier,
+    /** 늘 장부 통과율을 찍는 판단자의 Brier. */
+    바보brier,
+    /** 1 − brier/바보brier. 양수면 바보보다 낫다. 실패가 없으면 null(못 잼). */
+    실력: brier != null && 바보brier ? 1 - brier / 바보brier : null,
+    떠본판: 끝난.filter((e) => e.via === "탐색").length,
+    올린판: 끝난.filter((e) => e.via === "올림").length,
     /** 앞 절반 대 뒤 절반 — 쌓일수록 예측이 맞아 가나. 판이 적으면 null. */
     나아지나: 끝난.length >= 6 ? { 앞: b(앞), 뒤: b(뒤) } : null,
   };
@@ -232,6 +246,8 @@ export async function decideFor(
  * 넘는 자리가 여럿이면 **장부상 판당 값이 제일 싼 것**. 목록 단가가 아니라 실제로 나간 돈이다.
  */
 export const FAST = { minRuns: 5, minPass: 0.8, recent: 2 } as const;
+/** 장부가 답하는 종류에서 몇 판마다 한 번 더 싼 자리를 떠보나. */
+export const EXPLORE = { every: 5 } as const;
 
 export function fastPath(seats: Seat[], ledger: LedgerEntry[], kind: string): Decision | null {
   const 끝난 = ledger.filter((e) => e.passed !== undefined && e.kind === kind);
@@ -252,6 +268,30 @@ export function fastPath(seats: Seat[], ledger: LedgerEntry[], kind: string): De
   if (!후보.length) return null;
   후보.sort((a, b) => a.usd - b.usd);
   const c = 후보[0];
+  /*
+   * **싼 쪽 떠보기** (11-21 사장님 "판단 엔진을 강화"). 장부가 답하기 시작하면 그 자리에 굳는다 —
+   * 더 싼 AI 가 같은 일을 해낼 수 있어도 영영 모른다(11-20 그림 시험: 운영 기본보다 25% 싼 flare-low 가
+   * 같은 결을 냈는데, 엔진이었다면 못 찾았다). 그래서 이 종류의 판이 `EXPLORE.every` 번째가 될 때마다
+   * **아직 덜 써 본 더 싼 자리** 하나를 시킨다. 최근에 떨어진 자리는 안 떠본다. 판단자는 여전히 안 부른다.
+   */
+  const 이종류판 = ledger.filter((e) => e.kind === kind).length;
+  const 굳은단가 = seats.find((s) => s.id === c.id)?.outPerMTok;
+  if (굳은단가 != null && (이종류판 + 1) % EXPLORE.every === 0) {
+    const 더싼 = seats
+      .filter((s) => s.outPerMTok != null && s.outPerMTok < 굳은단가)
+      .filter((s) => { const xs = 끝난.filter((e) => e.seat === s.id); return xs.length < FAST.minRuns && !xs.slice(-FAST.recent).some((e) => !e.passed); })
+      .sort((a, b) => (a.outPerMTok ?? 0) - (b.outPerMTok ?? 0)).reverse()[0]; // 바로 아래 칸부터(한 번에 너무 내려가지 않게)
+    if (더싼) {
+      const xs = 끝난.filter((e) => e.seat === 더싼.id), pass = xs.filter((e) => e.passed).length;
+      return {
+        seat: 더싼.id, effort: c.effort, predictedPass: Math.round(((pass + 1) / (xs.length + 2)) * 100) / 100,
+        estimate: `${c.id} 보다 출력 단가가 ${Math.round((1 - (더싼.outPerMTok ?? 0) / 굳은단가) * 100)}% 싸다`,
+        why: `떠보기: "${kind}" 은 ${c.id} 가 ${c.pass}/${c.n} 로 굳었다. ${이종류판 + 1}번째 판이라 더 싼 ${더싼.id}(이 종류 ${pass}/${xs.length})를 한 번 시켜 본다.`,
+        risk: "떨어질 수 있다 — 떨어지면 기록하고 다음 판은 굳은 자리로 돌아간다(director_record 가 올릴 자리를 알려 준다).",
+        usd: 0, via: "탐색",
+      };
+    }
+  }
   return {
     seat: c.id, effort: c.effort, predictedPass: Math.round(c.p * 100) / 100,
     estimate: `판당 약 $${c.usd.toFixed(3)} (장부 ${c.n}판 평균)`,
@@ -269,6 +309,46 @@ export async function decide(
   meter?: (usage: { model: string; inputTokens: number; outputTokens: number }) => number,
 ): Promise<Decision> {
   return fastPath(input.seats, input.ledger, input.kind) ?? decideFor(brain, input, meter);
+}
+
+/* ────────────────────────────── 떨어지면 올리기 (모델 0) ────────────────────────────── */
+
+/**
+ * **틀리면 다시 시킨다** — 팔 물건의 한 줄에 적어 놓고 11-20 까지 없던 것(11-21 "판단 엔진을 강화").
+ *
+ * 떨어진 판 하나를 받아 **한 칸 위**를 정한다. 판단자를 부르지 않는다 — 규칙이 뻔하고, 떨어진 직후에
+ * 또 돈을 쓰게 하지 않는다.
+ * - 같은 종류에서 이미 나빴던 자리(통과 어림 < 0.5, 2판 이상)는 건너뛴다
+ * - 떨어진 자리보다 출력 단가가 높은 자리 중 **제일 싼 것** (한 번에 맨 위로 뛰지 않는다)
+ * - 더 위가 없으면 같은 자리로 **공들이기를 한 칸 올린다**(가볍게→보통→꼼꼼히)
+ * - 그것도 끝이면 null — **사람에게 넘길 때다.** 기계가 끝없이 다시 돌리지 않는다.
+ */
+export function escalate(seats: Seat[], ledger: LedgerEntry[], failed: LedgerEntry): Decision | null {
+  const 단가 = seats.find((s) => s.id === failed.seat)?.outPerMTok;
+  const 나쁨 = (id: string) => {
+    const xs = ledger.filter((e) => e.passed !== undefined && e.kind === failed.kind && e.seat === id);
+    return xs.length >= 2 && (xs.filter((e) => e.passed).length + 1) / (xs.length + 2) < 0.5;
+  };
+  const 위 = 단가 == null ? undefined : seats
+    .filter((s) => s.outPerMTok != null && s.outPerMTok > 단가 && !나쁨(s.id))
+    .sort((a, b) => (a.outPerMTok ?? 0) - (b.outPerMTok ?? 0))[0];
+  const 판 = (seat: string) => {
+    const xs = ledger.filter((e) => e.passed !== undefined && e.kind === failed.kind && e.seat === seat);
+    return Math.round(((xs.filter((e) => e.passed).length + 1) / (xs.length + 2)) * 100) / 100;
+  };
+  if (위) return {
+    seat: 위.id, effort: failed.effort, predictedPass: 판(위.id), estimate: `출력 단가 ${단가} → ${위.outPerMTok}`,
+    why: `${failed.seat} 가 "${failed.kind}" 에서 떨어졌다. 한 칸 위 ${위.id} 로 다시 시킨다(판단자 안 부름).`,
+    risk: "같은 이유(주문이 모호함·확인이 틀림)로 떨어진 거라면 위로 가도 안 된다 — 두 번 떨어지면 주문과 확인을 의심할 것.",
+    usd: 0, via: "올림",
+  };
+  const i = EFFORTS.indexOf(failed.effort);
+  if (i < EFFORTS.length - 1) return {
+    seat: failed.seat, effort: EFFORTS[i + 1], predictedPass: 판(failed.seat), estimate: `고치기 ${roundsOf(failed.effort)} → ${roundsOf(EFFORTS[i + 1])}바퀴`,
+    why: `${failed.seat} 위로 갈 자리가 없다. 같은 자리로 공들이기를 ${failed.effort} → ${EFFORTS[i + 1]} 로 올린다.`,
+    risk: "바퀴를 늘려도 안 되는 일일 수 있다.", usd: 0, via: "올림",
+  };
+  return null;
 }
 
 /** effort → 고치기 바퀴 수. 로키의 `roundsFor` 와 같은 숫자(가볍게 1 · 보통 3 · 꼼꼼히 8). */

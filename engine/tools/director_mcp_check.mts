@@ -76,6 +76,17 @@ try {
 
   const 장부 = JSON.parse(readFileSync(join(home, "ledger.json"), "utf8"));
   봄("장부 파일이 손님 폴더에", 장부.length === 7 && 장부.filter((r: any) => r.passed === true).length === 5);
+  // 11-21 강화: 떨어지면 한 칸 위로 새 판이 열린다(판단자 안 부름)
+  const d7id = idOf(d7.text), 첫게임 = /맡길 AI: (\S+)/.exec(d7.text)?.[1];
+  const 떨 = await call("director_record", { id: d7id, passed: false });
+  const 새id = /다시 시킬 판 id (\w+)/.exec(떨.text)?.[1];
+  봄("떨어지면 한 칸 위로 새 판", !!새id && !/맡길 AI: haiku/.test(떨.text.split("다시 시킬")[1] ?? ""), 떨.text.split("\n").slice(0, 4).join(" | "));
+  const 올린 = await call("director_record", { id: 새id, passed: true });
+  봄("올린 판도 적힌다", !올린.err && /통과/.test(올린.text), `${첫게임} → ${올린.text}`);
+  const sc2 = await call("director_scorecard", {});
+  봄("실력 줄 · 올린 판 셈", /실력/.test(sc2.text) && /올린 판 1/.test(sc2.text), sc2.text.split("\n").slice(2, 4).join(" | "));
+  const d8 = await call("director_decide", { task: "다른 오타", kind: "검색" });
+  봄("처음 보는 종류면 장부의 낱말을 알려 줌", /새 종류 "검색"/.test(d8.text) && /찾기\(/.test(d8.text));
   봄("표준출력이 JSON 줄뿐", 더러운줄 === 0);
 } catch (e) {
   틀림++; console.log("❌", (e as Error).message);

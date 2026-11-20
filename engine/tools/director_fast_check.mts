@@ -71,6 +71,39 @@ await 칸("결과 안 온 줄은 안 셈", 반복(6, () => ({ ...줄("gpt-5.6-lu
   console.log(`${ok ? "✅" : "❌"} 성적표: 장부로 ${s.장부로} · 판단값 $${s.판단값.toFixed(3)} · 판단몫 ${Math.round((s.판단몫 ?? 0) * 100)}% · 아낀 어림 $${s.아낀어림?.toFixed(3)}`);
 }
 
+// ── 11-21 강화: 떠보기 · 올리기 · 실력 ──
+const 봄 = (이름: string, ok: boolean, 보임: string) => { ok ? 맞음++ : 틀림++; console.log(`${ok ? "✅" : "❌"} ${이름} → ${보임}`); };
+{
+  const d = fastPath(seats, 반복(9, () => 줄("gpt-5", "게임", true)), "게임");
+  봄("10번째 판은 바로 아래 싼 자리를 떠봄", d?.via === "탐색" && d.seat === "gpt-5-mini", `${d?.via}/${d?.seat} 예측 ${d?.predictedPass}`);
+  const d2 = fastPath(seats, 반복(5, () => 줄("gpt-5", "게임", true)), "게임");
+  봄("떠볼 차례가 아니면 굳은 자리(대조)", d2?.via === "장부" && d2.seat === "gpt-5", `${d2?.via}/${d2?.seat}`);
+  const d3 = fastPath(seats, [...반복(7, () => 줄("gpt-5", "게임", true)), ...반복(2, () => 줄("gpt-5-mini", "게임", false))], "게임");
+  봄("최근 떨어진 자리는 안 떠봄", d3?.via === "탐색" && d3.seat === "gpt-5.6-luna", `${d3?.via}/${d3?.seat}`);
+  const d4 = fastPath(seats, 반복(9, () => 줄("gpt-5.6-luna", "게임", true)), "게임");
+  봄("제일 싼 자리에 굳었으면 떠볼 데가 없다(대조)", d4?.via === "장부" && d4.seat === "gpt-5.6-luna", `${d4?.via}/${d4?.seat}`);
+}
+{
+  const { escalate } = await import("../../src/lib/director/index.ts");
+  const f = (seat: string, effort: Effort = "보통") => ({ ...줄(seat, "고침", false), effort });
+  const e1 = escalate(seats, [], f("gpt-5.6-luna"));
+  봄("luna 가 떨어지면 한 칸 위(mini)", e1?.via === "올림" && e1.seat === "gpt-5-mini", `${e1?.seat}/${e1?.effort}`);
+  const e2 = escalate(seats, 반복(2, () => 줄("gpt-5-mini", "고침", false)), f("gpt-5.6-luna"));
+  봄("위 칸이 이 종류에서 나쁘면 건너뜀(gpt-5)", e2?.seat === "gpt-5", `${e2?.seat}`);
+  const e3 = escalate(seats, [], f("gpt-5"));
+  봄("맨 위가 떨어지면 공들이기를 올림", e3?.seat === "gpt-5" && e3.effort === "꼼꼼히", `${e3?.seat}/${e3?.effort}`);
+  const e4 = escalate(seats, [], f("gpt-5", "꼼꼼히"));
+  봄("더 갈 데가 없으면 사람에게(null)", e4 === null, String(e4));
+}
+{
+  const 다통과 = scorecard(반복(6, () => 줄("gpt-5.6-luna", "게임", true)));
+  봄("실패가 없으면 실력은 못 잼(null), 0 이 아니다", 다통과.실력 === null, String(다통과.실력));
+  const 잘맞힘 = scorecard([...반복(4, () => ({ ...줄("a", "k", true), predictedPass: 0.9 })), ...반복(4, () => ({ ...줄("a", "k", false), predictedPass: 0.1 }))]);
+  봄("갈리는 판을 맞히면 실력 양수", (잘맞힘.실력 ?? 0) > 0.5, `${잘맞힘.실력?.toFixed(2)}`);
+  const 거꾸로 = scorecard([...반복(4, () => ({ ...줄("a", "k", true), predictedPass: 0.2 })), ...반복(4, () => ({ ...줄("a", "k", false), predictedPass: 0.8 }))]);
+  봄("거꾸로 맞히면 실력 음수(대조)", (거꾸로.실력 ?? 0) < 0, `${거꾸로.실력?.toFixed(2)}`);
+}
+
 // 11-20 첫 판의 실제 장부를 순서대로 다시 흘린다 — 빠른 길이 몇 번 탔을까
 {
   const r = JSON.parse(readFileSync("engine/work/head-ab/results.json", "utf8")) as { 장부: LedgerEntry[] };
