@@ -46,29 +46,8 @@ function 도트재기(paths: string[]): (number | null)[] {
   return JSON.parse(execFileSync("python", ["-c", py], { encoding: "utf8", cwd: process.cwd() }).trim().split(String.fromCharCode(10)).pop()!);
 }
 
-/** 잉크 상자와 **머리 높이** — 머리는 위에서부터 살색이 처음 나오는 줄까지로 본다(머리카락). */
-async function 몸재기(png: Buffer, texel: number) {
-  const { data, info } = await sharp(png).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
-  const W = info.width, H = info.height, ch = info.channels;
-  let x0 = W, x1 = -1, y0 = H, y1 = -1, 살첫줄 = -1;
-  const 색 = new Set<string>();
-  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
-    const p = (y * W + x) * ch;
-    if (data[p + 3] < ALPHA_MIN) continue;
-    if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y;
-    색.add(`${data[p]},${data[p + 1]},${data[p + 2]}`);
-    const r = data[p], g = data[p + 1], b = data[p + 2];
-    if (살첫줄 < 0 && r > 185 && g > 135 && b > 100 && r >= g && g >= b && r - b >= 12 && r - b <= 110) 살첫줄 = y;
-  }
-  const 폭 = x1 - x0 + 1, 높이 = y1 - y0 + 1;
-  return {
-    폭칸: Math.round(폭 / texel), 높이칸: Math.round(높이 / texel),
-    폭화소: 폭, 높이화소: 높이,
-    머리비율: 살첫줄 > 0 ? (살첫줄 - y0) / 높이 : NaN,
-    색수: 색.size,
-    아래여백: H - 1 - y1,
-  };
-}
+/** 잉크 상자와 **머리 높이** — 11-20 에 `src/lib/dot/charMeasure.ts` 로 옮겼다(판단 엔진 그림 시험과 같은 자). */
+const { measureBody: 몸재기 } = await import("../../src/lib/dot/charMeasure");
 
 const 길들 = 사람.map((s) => `public/dot-sprites/${s}/neutral.png`);
 const 도트 = 도트재기(길들);

@@ -35,37 +35,38 @@ export type MadeImage = {
   outputTokens: number;
 };
 
-export function createImageProvider() {
+/** `model` 은 판단 엔진이 그림 자리를 고를 때 쓴다(11-20). 안 주면 지금처럼 IMAGE_MODEL. */
+export function createImageProvider(model: string = MODEL) {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) throw new Error("OPENAI_API_KEY is not set.");
   const client = new OpenAI({ apiKey, maxRetries: 3 });
 
   return {
     name: "openai-images",
-    model: MODEL,
+    model: model,
 
     /**
      * 있는 그림을 참조로 새 그림. 같은 사람의 얼굴 클로즈업·뒷모습을 만들 때 쓴다
      * (09-06 18회차). 생성기가 참조를 보고 그리니 얼굴이 유지된다.
      */
     async edit(imageDataUrl: string, prompt: string, size: ImageSize = "1024x1024", quality: "low" | "medium" | "high" = "high"): Promise<MadeImage> {
-      if (!isPriced(MODEL)) throw new UnpricedBackendError(MODEL);
+      if (!isPriced(model)) throw new UnpricedBackendError(model);
       const { toFile } = await import("openai");
       const b64 = imageDataUrl.split(",")[1] ?? imageDataUrl;
       const file = await toFile(Buffer.from(b64, "base64"), "reference.png", { type: "image/png" });
-      const res = await client.images.edit({ model: MODEL, image: file, prompt, n: 1, size, quality, output_format: "png" });
+      const res = await client.images.edit({ model: model, image: file, prompt, n: 1, size, quality, output_format: "png" });
       const out = res.data?.[0]?.b64_json;
       if (!out) throw new Error("IMAGE_EMPTY");
-      return { dataUrl: `data:image/png;base64,${out}`, model: MODEL, inputTokens: res.usage?.input_tokens ?? 0, outputTokens: res.usage?.output_tokens ?? 0 };
+      return { dataUrl: `data:image/png;base64,${out}`, model: model, inputTokens: res.usage?.input_tokens ?? 0, outputTokens: res.usage?.output_tokens ?? 0 };
     },
 
     async draw(prompt: string, quality: "low" | "medium" | "high" = "low", size: ImageSize = SIZE): Promise<MadeImage> {
       // 값이 안 매겨진 백엔드는 요청 전에 막는다. 회사 한도가 볼 수 없는 돈을
       // 쓰는 것이 이 규칙이 막는 유일한 실패다.
-      if (!isPriced(MODEL)) throw new UnpricedBackendError(MODEL);
+      if (!isPriced(model)) throw new UnpricedBackendError(model);
 
       const res = await client.images.generate({
-        model: MODEL,
+        model: model,
         prompt,
         n: 1,
         size,
@@ -79,7 +80,7 @@ export function createImageProvider() {
 
       return {
         dataUrl: `data:image/png;base64,${b64}`,
-        model: MODEL,
+        model: model,
         inputTokens: res.usage?.input_tokens ?? 0,
         outputTokens: res.usage?.output_tokens ?? 0,
       };
