@@ -14,7 +14,8 @@ import { join } from "node:path";
 
 const live = process.argv.includes("--live");
 const home = mkdtempSync(join(tmpdir(), "director-"));
-const p = spawn(process.execPath, ["--import", "tsx", "engine/tools/director_mcp.mts"], {
+// DIRECTOR_SERVER=<cli.mjs 경로> 면 설치된 꾸러미를 잰다(11-21) — 저장소 손잡이와 같은 자로.
+const p = spawn(process.execPath, process.env.DIRECTOR_SERVER ? [process.env.DIRECTOR_SERVER] : ["--import", "tsx", "engine/tools/director_mcp.mts"], {
   env: { ...process.env, DIRECTOR_HOME: home, DIRECTOR_BRAIN: live ? "gpt-5" : "mock" }, stdio: ["pipe", "pipe", "pipe"],
 });
 let 버퍼 = "", 더러운줄 = 0;

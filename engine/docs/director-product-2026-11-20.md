@@ -88,3 +88,12 @@ AI 를 여러 개 쓰면서 **매번 감으로 고르거나, 다 제일 비싼 �
 | **종류 낱말 알림** — 처음 보는 낱말이면 장부의 낱말을 보여 준다 | 종류가 갈리면 장부가 영영 못 답한다 | MCP 1 |
 
 자: `director_fast_check` 24/24 · `director_mcp_check` 15/15.
+
+## C 바로 — 남이 설치할 수 있게 (11-21 08:1x, 사장님 "C 바로")
+
+- 서버 본체를 `src/lib/director/server.ts` 하나로 옮겼다. 저장소 손잡이(`director_mcp.mts`)와 설치용 꾸러미(`packages/director`)가 **같은 코드**를 부른다.
+- `packages/director` — 이름 `rookery-director`(자리표), `npx rookery-director` 로 도는 MCP 서버. 판단자는 **손님 OpenAI 열쇠**(BYOK), 장부는 손님 파일.
+  esbuild 로 한 파일(41KB)로 묶음, 저장소 경로 0. **`private: true` — npm 에 올리는 건 공개 행동이라 사장님 허락 뒤.**
+- 자: `npm pack` → **저장소 밖 빈 폴더에 설치** → 같은 자(`DIRECTOR_SERVER=<설치된 cli.mjs>`)로 15/15(모의) · 15/15(진짜 판단자, $0.017).
+
+남은 C 의 순서: ① 이름·가격(사장님) ② npm 공개(사장님 허락) ③ 소개 페이지 한 장 ④ 무료 손님 다섯 ⑤ 결제 길(Dodo 본인 확인 다시 보기 또는 다른 MoR).
