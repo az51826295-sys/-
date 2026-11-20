@@ -92,8 +92,10 @@ const H2: Task = { id: "h2", kind: "게임", order: "테트리스. 일곱 조각
     const c0 = Math.min(...(칸(await st(p)) ?? [[0, 0]]).map((x) => x[1])); await p.keyboard.press("ArrowLeft"); await sleep(120);
     c.ok(Math.min(...(칸(await st(p)) ?? [[0, 0]]).map((x) => x[1])) === c0 - 1, "← 한 칸");
     let 돌았다 = false;
-    for (let k = 0; k < 3 && !돌았다; k++) { const a = JSON.stringify(칸(await st(p))?.map((x) => x[1] - Math.min(...칸(await st(p))!.map((y) => y[1])))); await p.keyboard.press("ArrowUp"); await sleep(120);
-      const 지금 = 칸(await st(p)); if (지금) { const m = Math.min(...지금.map((y) => y[1])); if (JSON.stringify(지금.map((x) => x[1] - m)) !== a) 돌았다 = true; }
+    /* 모양 = 칸들을 왼쪽·위로 붙인 상대 좌표. 회전하면 모양이 바뀐다(O 조각만 안 바뀐다). */
+    const 모양 = (cs: number[][] | null) => { if (!cs) return ""; const r = Math.min(...cs.map((x) => x[0])), k = Math.min(...cs.map((x) => x[1])); return JSON.stringify(cs.map((x) => [x[0] - r, x[1] - k]).sort((a, b) => a[0] - b[0] || a[1] - b[1])); };
+    for (let k = 0; k < 3 && !돌았다; k++) { const a = 모양(칸(await st(p))); await p.keyboard.press("ArrowUp"); await sleep(120);
+      if (모양(칸(await st(p))) !== a) 돌았다 = true;
       if (!돌았다) { await p.keyboard.press("Space"); await sleep(250); } }
     c.ok(돌았다, "↑ 로 돈다(O 조각이면 다음 것으로)");
     const 쌓인 = (s: any) => (s?.board as number[][] | undefined)?.flat().filter((v) => v).length ?? -1;
@@ -216,6 +218,9 @@ async function 시험(task: Task, files: SourceFile[]) {
     const page = await browser.newPage();
     if (task.mobile) await page.setViewport({ width: 375, height: 760, isMobile: true, hasTouch: true }); else await page.setViewport({ width: 1000, height: 760 });
     const 오류: string[] = []; page.on("pageerror", (e) => 오류.push(String(e).slice(0, 80)));
+    /* tsx(esbuild)가 함수 이름을 지키려고 `__name(...)` 을 끼워 넣는다 — 브라우저엔 그게 없어 시험 쪽 함수가 넘어진다(11-20 h5).
+       시험이 넘어지면 앱 탓이 아닌데 "실패" 로 세진다. 빈 껍데기를 먼저 둔다. */
+    await page.evaluateOnNewDocument("globalThis.__name = (f) => f;");
     await page.goto("file:///" + join(곳, 입구.path).split("\\").join("/"), { waitUntil: "load", timeout: 20000 });
     await sleep(800);
     const r = await Promise.race([task.check(page).catch((e) => ({ met: 0, total: 1, notes: [`시험이 넘어짐: ${String(e).slice(0, 80)}`] })), sleep(90000).then(() => ({ met: 0, total: 1, notes: ["시험 시간 초과"] }))]);
@@ -253,7 +258,8 @@ const 줄 = (r: Awaited<ReturnType<typeof 한판>>) => `${r.task} ${r.팔} · ${
 const 거른파일 = `${OUT}/screen.json`;
 if (args.includes("--screen")) {
   const 거른: { id: string; 통과: boolean; 점수: string; usd: number; 못한것: string[] }[] = [];
-  for (const t of 후보) { const r = await 한판(t, "끔", []); 거른.push({ id: t.id, 통과: r.통과, 점수: r.점수, usd: r.usd, 못한것: r.못한것 }); console.log("거르기 " + 줄(r)); writeFileSync(거른파일, JSON.stringify(거른, null, 1)); }
+  const 이전 = existsSync(거른파일) ? (JSON.parse(readFileSync(거른파일, "utf8")) as typeof 거른) : [];
+  for (const t of 후보) { if (only && t.id !== only) { const x = 이전.find((y) => y.id === t.id); if (x) 거른.push(x); continue; } const r = await 한판(t, "끔", []); 거른.push({ id: t.id, 통과: r.통과, 점수: r.점수, usd: r.usd, 못한것: r.못한것 }); console.log("거르기 " + 줄(r)); writeFileSync(거른파일, JSON.stringify(거른, null, 1)); }
   const 떨어진 = 거른.filter((x) => !x.통과).map((x) => x.id);
   console.log(`\n떨어진 것 ${떨어진.length}개: ${떨어진.join(", ") || "없음"} · 거르기 값 $${거른.reduce((a, x) => a + x.usd, 0).toFixed(3)}`);
   console.log(떨어진.length < 4 ? "**넷보다 적다 — 잠근 규칙대로 본판을 안 돌린다**" : "본판 과제가 정해졌다");
