@@ -147,3 +147,17 @@ if (process.argv.includes("--main")) {
     : 차 >= 2 ? "일을 한다(통과)" : 차 <= -2 ? "해를 끼친다" : 차 >= -1 && 켬.usd <= 끔.usd * 0.85 ? "일을 한다(값)" : "구분 안 됨";
   console.log(`\n끔 ${끔.pass}/${끔.n} · 판당 $${끔.usd.toFixed(3)}  |  켬 ${켬.pass}/${켬.n} · 판당 $${켬.usd.toFixed(3)} · 기본 자리 ${기본고름}/8 → ${판정}`);
 }
+
+/* `--one=자리:사람,자리:사람` — 정한 판만 그린다(결 자 검증용, 11-21). 무표정 칸도 따로 남긴다. */
+const one = process.argv.find((a) => a.startsWith("--one="));
+if (one) {
+  for (const pair of one.slice(6).split(",")) {
+    const [seat, slug] = pair.split(":");
+    const t = await 한판(seat, slug, "verify");
+    console.log(줄(t));
+    const b64 = readFileSync(`${OUT}/verify/${seat}-${slug}-sheet.png`).toString("base64");
+    const n = (await cutSheet("data:image/png;base64," + b64)).find((c) => c.emotion === "neutral")!;
+    const o = (await outlineSprite(await pixelize(n.png, 격자), texel, { 식: "한색", 색: [255, 255, 255] }, 1)).png;
+    writeFileSync(`${OUT}/verify/${seat}-${slug}-neutral.png`, await dropToBaseline(o));
+  }
+}
