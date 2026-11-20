@@ -1,0 +1,258 @@
+{
+ "gpt-5.6-luna": [
+  {
+   "path": "engine/work/style-bench/same-doyun-neutral.png",
+   "정답": true,
+   "이름": "same-doyun",
+   "p": 0.18,
+   "why": "도트 기반의 큰 머리 비율은 비슷하지만, 후보는 선이 더 가늘고 차가운 보라색 계열이며 눈·머리카락의 세부 묘사와 명암이 훨씬 날카롭고 복잡해 기준 그림체와 다릅니다."
+  },
+  {
+   "path": "engine/work/style-bench/diff-doyun-A-neutral.png",
+   "정답": false,
+   "이름": "diff-doyun-A",
+   "p": 0.02,
+   "why": "기준은 머리가 매우 크고 눈·얼굴이 단순하며 굵은 갈색 외곽선과 평면적인 따뜻한 명암을 쓰지만, 후보는 인체 비율이 현실적이고 눈이 작으며 얇은 어두운 선과 세밀한 음영을 사용해 그림체가 크게 다릅니다."
+  },
+  {
+   "path": "engine/work/style-bench/same-nabi-neutral.png",
+   "정답": true,
+   "이름": "same-nabi",
+   "p": 0.9,
+   "why": "머리·몸 비율, 단순화된 얼굴과 큰 눈·작은 입의 표현, 픽셀 단위의 선 처리와 부드러운 셀 명암 방식이 기준 그림체와 매우 유사하다."
+  },
+  {
+   "path": "engine/work/style-bench/diff-nabi-A-neutral.png",
+   "정답": false,
+   "이름": "diff-nabi-A",
+   "p": 0.18,
+   "why": "셋 다 픽셀이지만 후보는 머리·몸 비율이 더 길고 가늘며, 눈·입의 섬세한 표현과 얇고 다색인 선, 부드러운 질감·명암을 사용합니다. 기준은 더 둥글고 단순한 얼굴과 굵은 갈색 외곽선, 제한적인 색면 명암이 중심이라 전체 그림체가明显히 다릅니다."
+  },
+  {
+   "path": "engine/work/style-bench/same-rin-neutral.png",
+   "정답": true,
+   "이름": "same-rin",
+   "p": 0.43,
+   "why": "큰 머리와 단순한 픽셀풍 비율은 비슷하지만, 후보는 외곽선이 더 얇고 밝으며 색감·명암이 어둡고 눈과 얼굴을 처리하는 방식도 기준 그림체와 꽤 다르다."
+  },
+  {
+   "path": "engine/work/style-bench/diff-rin-A-neutral.png",
+   "정답": false,
+   "이름": "diff-rin-A",
+   "p": 0.08,
+   "why": "후보도 픽셀 그림이지만 기준의 큰 머리·단순한 얼굴 표현·굵고 따뜻한 외곽선·평면적인 명암과 달리, 더 사실적인 비율과 가는 어두운 선, 세밀한 음영을 사용해 그림체가 다릅니다."
+  },
+  {
+   "path": "engine/work/style-bench/same-jiwoo-neutral.png",
+   "정답": true,
+   "이름": "same-jiwoo",
+   "p": 0.28,
+   "why": "도트 기반과 큰 머리 비율, 단순한 얼굴 구성은 비슷하지만 후보는 검은색에 가까운 외곽선·짙고 세분화된 명암·뾰족한 헤어와 의상 디테일을 사용해 기준의 둥글고 따뜻한 선화 및 부드러운 명암 방식과는 차이가 큽니다."
+  },
+  {
+   "path": "engine/work/style-bench/diff-jiwoo-B-neutral.png",
+   "정답": false,
+   "이름": "diff-jiwoo-B",
+   "p": 0.08,
+   "why": "셋 다 도트 형식이지만, 후보는 눈이 크고 흰자·검은 외곽선이 강조된 서양식 카툰에 가깝습니다. 기준 그림체의 둥근 머리 대비 작은 몸, 짙은 갈색 선, 단순한 눈과 따뜻하고 부드러운 명암 처리와는 비율·얼굴 표현·선 색감이 뚜렷하게 다릅니다."
+  },
+  {
+   "path": "engine/work/style-bench/same-seoha-neutral.png",
+   "정답": true,
+   "이름": "same-seoha",
+   "p": 0.78,
+   "why": "머리·몸 비율, 단순화된 얼굴 배치, 픽셀 단위 선 처리와 셀 명암 방식이 기준과 상당히 유사하다. 다만 후보는 외곽선이 더 가늘고 어두우며 눈의 하이라이트와 색상 명암이 조금 더 복잡하다."
+  },
+  {
+   "path": "engine/work/style-bench/diff-seoha-B-neutral.png",
+   "정답": false,
+   "이름": "diff-seoha-B",
+   "p": 0.18,
+   "why": "도트 형식과 큰 머리 비율은 비슷하지만, 후보는 검은색의 얇고 선명한 외곽선·큰 홍채와 하이라이트가 있는 눈·날카로운 머리카락 표현을 사용해 기준의 굵은 갈색 선, 단순한 타원형 눈, 부드러운 명암 중심 그림체와 크게 다르다."
+  },
+  {
+   "path": "engine/work/style-bench/same-yeonu-neutral.png",
+   "정답": true,
+   "이름": "same-yeonu",
+   "p": 0.9,
+   "why": "머리·몸 비율과 둥근 치비 실루엣, 눈·입의 단순한 표현, 짙은 갈색 픽셀 외곽선과 제한된 색상 명암 처리 방식이 기준 그림체와 매우 유사하다."
+  },
+  {
+   "path": "engine/work/style-bench/diff-yeonu-B-neutral.png",
+   "정답": false,
+   "이름": "diff-yeonu-B",
+   "p": 0.16,
+   "why": "도트 기반이라는 점과 큰 머리 비율은 비슷하지만, 기준은 부드러운 파스텔 색감·갈색의 두꺼운 외곽선·단순한 어두운 눈을 쓰는 반면 후보는 검은 얇은 선과 흰자 큰 눈, 더 선명하고 평평한 명암을 사용해 전체 그림체가 다릅니다."
+  },
+  {
+   "path": "engine/work/style-bench/same-soeun-neutral.png",
+   "정답": true,
+   "이름": "same-soeun",
+   "p": 0.28,
+   "why": "도트 기반의 큰 머리·작은 몸 비율은 비슷하지만, 후보는 눈을 크게 테두리로 강조하고 선이 더 가늘고 어두우며 명암과 색감도 차가워 기준 그림체와는 꽤 다릅니다."
+  },
+  {
+   "path": "engine/work/style-bench/diff-soeun-C-neutral.png",
+   "정답": false,
+   "이름": "diff-soeun-C",
+   "p": 0.08,
+   "why": "도트 형식과 큰 머리 비율은 비슷하지만, 후보는 선이 더 얇고 밝으며 눈·얼굴 표현이 훨씬 사실적이고 명암도 세밀해 기준 그림체와는 뚜렷하게 다릅니다."
+  },
+  {
+   "path": "engine/work/style-bench/same-taeo-neutral.png",
+   "정답": true,
+   "이름": "same-taeo",
+   "p": 0.82,
+   "why": "큰 머리와 작은 몸의 비율, 따뜻한 색감, 짙은 갈색 픽셀 외곽선, 단순한 얼굴 형태와 덩어리식 명암 표현이 기준 그림체와 전반적으로 일치한다."
+  },
+  {
+   "path": "engine/work/style-bench/diff-taeo-C-neutral.png",
+   "정답": false,
+   "이름": "diff-taeo-C",
+   "p": 0.28,
+   "why": "모두 픽셀 기반의 큰 머리 캐릭터지만, 후보는 머리카락과 얼굴의 명암·질감이 더 세밀하고 입체적이며 선과 눈 표현도 기준 그림체보다 다릅니다."
+  },
+  {
+   "path": "engine/work/style-bench/same-yuna-neutral.png",
+   "정답": true,
+   "이름": "same-yuna",
+   "p": 0.9,
+   "why": "머리·몸 비율, 둥근 얼굴과 눈·입의 단순한 표현, 픽셀 선 처리와 갈색 계열의 부드러운 명암 방식이 기준 그림체와 매우 유사하다."
+  },
+  {
+   "path": "engine/work/style-bench/diff-yuna-C-neutral.png",
+   "정답": false,
+   "이름": "diff-yuna-C",
+   "p": 0.68,
+   "why": "머리와 몸의 큰 비율, 둥근 얼굴·눈 표현, 갈색 계열의 픽셀 외곽선과 부드러운 명암 방식은 유사하지만, 후보는 하이라이트와 머리카락 음영이 더 복잡하고 눈·선 처리가 조금 더 사실적이다."
+  }
+ ],
+ "gpt-5": [
+  {
+   "path": "engine/work/style-bench/same-doyun-neutral.png",
+   "정답": true,
+   "이름": "same-doyun",
+   "p": 0.88,
+   "why": "머리-몸 비율, 흰 외곽선과 굵은 색선, 점 입과 단순화된 큰 눈, 디더링 하이라이트 등 명암·채색 방식이 기준과 거의 같고 눈매가 조금 더 가늘다는 점만 차이."
+  },
+  {
+   "path": "engine/work/style-bench/diff-doyun-A-neutral.png",
+   "정답": false,
+   "이름": "diff-doyun-A",
+   "p": 0.08,
+   "why": "후보는 현실적인 비율과 세밀한 눈·코·입, 얇은 선(외곽 흰 테두리 없음)과 부드러운 디더링 명암을 써서, 기준의 치비 비율·큰 눈과 단순 입·두꺼운 라인·간단한 음영과 인상이 다르다."
+  },
+  {
+   "path": "engine/work/style-bench/same-nabi-neutral.png",
+   "정답": true,
+   "이름": "same-nabi",
+   "p": 0.93,
+   "why": "머리-몸 비율과 둥근 큰 눈·점 같은 입, 갈색 톤의 선과 흰 외곽선, 머리/의복의 톤 분할·픽셀 하이라이트 방식이 기준과 거의 동일하다."
+  },
+  {
+   "path": "engine/work/style-bench/diff-nabi-A-neutral.png",
+   "정답": false,
+   "이름": "diff-nabi-A",
+   "p": 0.16,
+   "why": "기준은 굵은 갈색 외곽선과 단순한 큰 동그란 눈·점입, 제한된 톤의 셀셰이딩인데 후보는 회색 계열의 가느다란 선과 다계조 눈/머리의 부드러운 그라데이션, 더 길어진 목·어깨 비율로 전반 인상이 달라서다."
+  },
+  {
+   "path": "engine/work/style-bench/same-rin-neutral.png",
+   "정답": true,
+   "이름": "same-rin",
+   "p": 0.4,
+   "why": "비율과 흰 외곽선·갈색 라인톤은 유사하지만, 기준은 큰 동그란 눈과 하이라이트·점/삼각형 입·부드러운 음영인데 후보는 가로로 가는 눈(하이라이트 없음)·직선 입·더 뚜렷한 머리카락 선과 다른 명암이라 핵심 얼굴 표현 방식이 다르다."
+  },
+  {
+   "path": "engine/work/style-bench/diff-rin-A-neutral.png",
+   "정답": false,
+   "이름": "diff-rin-A",
+   "p": 0.07,
+   "why": "기준은 큰 머리·둥근 왕눈·점 같은 입, 갈색 두꺼운 외곽선과 흰 테두리, 단순 톤 셰이딩인데 후보는 정상 비율 얼굴에 가는 눈·선형 입, 외곽선 거의 없음과 픽셀 페인팅형 명암으로 전혀 다른 그림체다."
+  },
+  {
+   "path": "engine/work/style-bench/same-jiwoo-neutral.png",
+   "정답": true,
+   "이름": "same-jiwoo",
+   "p": 0.38,
+   "why": "머리-몸 비율은 비슷하지만 기준은 큰 원형 눈·따뜻한 갈색 굵은 윤선·점묘 하이라이트, 후보는 타원형 눈·검은 균일선·가닥 중심 머리카락과 선 얇음으로 인상이 달라서."
+  },
+  {
+   "path": "engine/work/style-bench/diff-jiwoo-B-neutral.png",
+   "정답": false,
+   "이름": "diff-jiwoo-B",
+   "p": 0.17,
+   "why": "머리-몸 비율은 비슷하지만 기준은 갈색 라인과 점묘식 음영, 둥근 갈색눈·점같은 입이고 후보는 검정 굵은 선, 평면적 셀셰이딩, 타원 큰 흰자 눈·곡선입으로 눈·선·명암 방식이 달라 전반 인상이 다릅니다."
+  },
+  {
+   "path": "engine/work/style-bench/same-seoha-neutral.png",
+   "정답": true,
+   "이름": "same-seoha",
+   "p": 0.84,
+   "why": "머리-몸 비율, 둥근 큰 눈의 이중 하이라이트와 점같은 입, 갈색계 선색과 굵기, 머리 하이라이트의 픽셀 배치가 기준과 매우 유사하나 외곽 흰 테두리가 없고 선색이 약간 더 어둡고 명암 대비가 조금 높은 점이 다르다."
+  },
+  {
+   "path": "engine/work/style-bench/diff-seoha-B-neutral.png",
+   "정답": false,
+   "이름": "diff-seoha-B",
+   "p": 0.17,
+   "why": "기준은 갈색 라인+두툼한 흰 외곽선, 다계조 텍스처 명암과 동그란 갈색 눈(흰자 거의 없음)인데 후보는 검은 1px 라인·외곽선 없음, 평면 명암과 흰자 있는 눈으로 선·채색·인상이 전반적으로 다르다."
+  },
+  {
+   "path": "engine/work/style-bench/same-yeonu-neutral.png",
+   "정답": true,
+   "이름": "same-yeonu",
+   "p": 0.94,
+   "why": "머리-몸 비율이 큰 SD형, 둥근 큰 눈과 작은 점입, 진한 갈색 내선과 두꺼운 흰 외곽선, 머리카락의 점조 명암·하이라이트, 파스텔 톤 팔레트가 동일해 거의 같은 도트 그림체다."
+  },
+  {
+   "path": "engine/work/style-bench/diff-yeonu-B-neutral.png",
+   "정답": false,
+   "이름": "diff-yeonu-B",
+   "p": 0.32,
+   "why": "머리·몸 비율과 흰 테두리는 비슷하지만, 눈이 단색의 큰 타원으로 처리되고 선색이 더 검고 균일하며 머리·피부의 도트 질감과 내부 명암 라인이 거의 없어 기준의 질감 있는 픽셀링과 다릅니다."
+  },
+  {
+   "path": "engine/work/style-bench/same-soeun-neutral.png",
+   "정답": true,
+   "이름": "same-soeun",
+   "p": 0.9,
+   "why": "머리-몸 비율이 큰 SD 비율, 둥근 큰 눈(단색에 큰 하이라이트), 점 같은 입, 갈색톤 라인과 부드러운 디더링 음영, 흰색 외곽선 등 핵심 요소가 동일하며 선 굵기와 채색 톤도 거의 같다."
+  },
+  {
+   "path": "engine/work/style-bench/diff-soeun-C-neutral.png",
+   "정답": false,
+   "이름": "diff-soeun-C",
+   "p": 0.12,
+   "why": "후보는 다단계 그라디언트로 입체적으로 묘사되고 라인이 얇거나 거의 없으며 눈도 홍채·광택이 분리된 사실적 표현인데, 기준은 굵은 갈색 윤선과 2~3톤의 단순 셀셰이딩·큰 단색 눈·점에 가까운 입으로 간결해 전반 인상이 다르다."
+  },
+  {
+   "path": "engine/work/style-bench/same-taeo-neutral.png",
+   "정답": true,
+   "이름": "same-taeo",
+   "p": 0.93,
+   "why": "큰 머리 비율의 SD체, 암갈색 굵은 내외곽선과 흰 외곽선, 동그란 큰 눈(상단 하이라이트)·점 같은 입 표현, 머리카락과 옷의 밝은 픽셀 하이라이트/음영 단계가 동일해 거의 같은 그림체다."
+  },
+  {
+   "path": "engine/work/style-bench/diff-taeo-C-neutral.png",
+   "정답": false,
+   "이름": "diff-taeo-C",
+   "p": 0.22,
+   "why": "둘 다 픽셀화지만 후보는 흰 외곽선과 진한 갈색 윤곽선이 없고 눈·머리결이 더 세밀하며 그라데이션 위주의 부드러운 명암이라, 기준의 단순한 라인·큰 동그란 눈·평면적 셀셰이딩과 거리가 있다."
+  },
+  {
+   "path": "engine/work/style-bench/same-yuna-neutral.png",
+   "정답": true,
+   "이름": "same-yuna",
+   "p": 0.96,
+   "why": "동그란 큰 눈과 점 하이라이트, 중앙의 점 입, 1~2px 갈색 라인과 흰 외곽선, 파스텔 톤과 도트 기반 명암·하이라이트, 머리-몸 비율 및 니트 텍스처 표현이 모두 일치해 동일한 그림체로 보입니다."
+  },
+  {
+   "path": "engine/work/style-bench/diff-yuna-C-neutral.png",
+   "정답": false,
+   "이름": "diff-yuna-C",
+   "p": 0.35,
+   "why": "비율과 귀여운 큰 눈·작은 입은 비슷하지만 기준은 두꺼운 짙은 선과 흰 외곽선, 단순한 셀셰이드·점 하이라이트가 특징인 반면 후보는 외곽선이 거의 없고 선이 얇고 부드러우며 머리·얼굴을 다계조로 입체적으로 그려 눈의 그라데이션·반짝임도 달라 전체 인상이 다르다."
+  }
+ ]
+}
