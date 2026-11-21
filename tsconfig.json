@@ -33,5 +33,7 @@
   // genesis/ 는 Next 앱이 아니라 node 가 직접 실행하는 독립 시뮬레이터다.
   // 상대 임포트에 .ts 확장자를 쓰는 것이 그쪽의 요구사항이라 앱 설정과
   // 맞지 않는다. 검사는 `node --experimental-strip-types` 실행이 대신한다.
-  "exclude": ["node_modules", "genesis"]
+  // 11-22: engine/ 도 뺀다 — CLI 배포는 .railwayignore 로 engine 을 안 올려서 검사된 적이 없었고,
+  // GitHub 배포(전체 체크아웃)에서 도구들의 .ts 확장자 임포트가 빌드를 깼다. 도구는 tsx 로 돈다.
+  "exclude": ["node_modules", "genesis", "engine"]
 }

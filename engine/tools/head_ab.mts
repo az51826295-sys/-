@@ -298,7 +298,7 @@ async function 만들기(ai: AIProvider, task: Task): Promise<SourceFile[]> {
 }
 async function 한판(task: Task, 팔: "켬" | "끔", 장부: LedgerEntry[], 원본?: SourceFile[]) {
   판돈 = 0; const t0 = Date.now();
-  let seat = 끔자리, effort: "가볍게" | "보통" | "꼼꼼히" = "보통", predictedPass: number | null = null, why = "", guard: string | undefined;
+  let seat = 끔자리, effort: "light" | "normal" | "thorough" = "normal", predictedPass: number | null = null, why = "", guard: string | undefined;
   if (팔 === "켬") {
     const d = await decideFor(await 자리(판단자), { task: task.order + (task.bug ? `\n고칠 것: ${task.bug}` : ""), kind: task.kind, seats: 살아있는자리, ledger: 장부 });
     seat = d.seat; effort = d.effort; predictedPass = d.predictedPass; why = d.why; guard = d.guard;
