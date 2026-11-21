@@ -3,13 +3,19 @@
   "version": "0.1.0",
   "description": "A judgment engine for people who use several AIs: decides which AI gets each task, locks a pass prediction first, scores itself, escalates on failure. Runs locally as an MCP server; your keys, your ledger.",
   "type": "module",
-  "bin": { "rookery-director": "dist/cli.mjs" },
-  "files": ["dist", "README.md"],
-  "engines": { "node": ">=20" },
+  "bin": {
+    "rookery-director": "dist/cli.mjs"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
   "dependencies": {
     "openai": "^7.7.0",
     "zod": "^4.4.3"
   },
-  "license": "UNLICENSED",
-  "private": true
+  "license": "UNLICENSED"
 }
