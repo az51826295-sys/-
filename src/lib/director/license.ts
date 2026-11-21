@@ -22,14 +22,25 @@ export const PLAN = {
 };
 
 export type LicenseConfig = {
+  /** 결제사 — 확인 요청·답 모양이 다르다. 기본 dodo. */
+  provider?: "dodo" | "polar";
   /** 결제사의 공개 확인 주소. 예: https://live.dodopayments.com/licenses/validate */
   validateUrl?: string;
+  /** polar 만: 조직 id(키 확인에 같이 보낸다). */
+  organizationId?: string;
   /** 키를 사는 주소. 없으면 문을 안 닫는다(얼리 액세스). */
   buyUrl?: string;
 };
 
 /** 판매 주소 — 결제사가 정해지면 여기 한 곳에 채운다(11-21: 아직 없음 → 얼리 액세스, 판 수 제한 없음). */
-export const SALE: LicenseConfig = {};
+// 11-21: Dodo 는 본인 확인(Persona 가 한국을 막음)이 안 풀려 Polar 로 연다. 조직 Rookery, 상품 Rookery Director Pro $9/월(키 접두 RD).
+// buyUrl 이 비어 있는 동안은 문을 안 닫는다 — Polar 심사가 끝나 실결제가 열리면 결제 링크를 넣는다:
+//   https://buy.polar.sh/polar_cl_cuSeGkTUEXDjdTS7a6wtjl6vndt1wWB0spc771qTnXV  (director-pro)
+export const SALE: LicenseConfig = {
+  provider: "polar",
+  validateUrl: "https://api.polar.sh/v1/customer-portal/license-keys/validate",
+  organizationId: "c3433fa6-84b3-4c47-9855-1af1e7bbd51b",
+};
 
 type Cache = { keyHash: string; valid: boolean; checkedAt: string; lastValidAt?: string };
 
@@ -47,7 +58,8 @@ export async function gate(
   home: string, used: number, key: string | undefined, cfg: LicenseConfig,
   opts: { fetch?: typeof fetch; now?: Date } = {},
 ): Promise<GateResult> {
-  cfg = { validateUrl: cfg.validateUrl || SALE.validateUrl, buyUrl: cfg.buyUrl || SALE.buyUrl };
+  // 시험용 덮어쓰기(validateUrl)를 주면 그 결제사 설정을 통째로 쓴다 — SALE 과 섞지 않는다.
+  cfg = cfg.validateUrl ? cfg : { ...SALE, buyUrl: cfg.buyUrl || SALE.buyUrl };
   if (!cfg.buyUrl || !cfg.validateUrl) return { ok: true, why: "얼리 액세스 — 판 수 제한 없음" };
   if (used < PLAN.freePerMonth) return { ok: true, why: `무료 ${used}/${PLAN.freePerMonth}` };
   const 막음 = (왜: string): GateResult => ({ ok: false, message:
@@ -65,10 +77,13 @@ export async function gate(
 
   let valid: boolean;
   try {
-    const r = await f(cfg.validateUrl, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ license_key: key }) });
-    if (r.status >= 500) throw new Error(`결제사 ${r.status}`);
-    const j = (await r.json().catch(() => ({}))) as { valid?: unknown };
-    valid = r.ok && j.valid === true;
+    const polar = cfg.provider === "polar";
+    const body = polar ? { key, organization_id: cfg.organizationId } : { license_key: key };
+    const r = await f(cfg.validateUrl!, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
+    if (r.status >= 500 || r.status === 429) throw new Error(`결제사 ${r.status}`);
+    const j = (await r.json().catch(() => ({}))) as { valid?: unknown; status?: unknown };
+    // dodo: { valid: true } · polar: 200 + status "granted"(해지되면 revoked, 없는 키는 404)
+    valid = r.ok && (polar ? j.status === "granted" : j.valid === true);
   } catch {
     // 결제사가 안 닿는다 — 마지막 유효 확인에서 며칠 안이면 봐준다. 처음부터 확인 못 한 키는 못 연다.
     const 마지막 = c?.lastValidAt ? Date.parse(c.lastValidAt) : NaN;

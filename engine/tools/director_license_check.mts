@@ -68,6 +68,27 @@ function 가짜(답: Record<string, boolean | "down">) {
   봄("이번 달만 세고 엔진이 연 올림 판은 안 센다", usedThisMonth(rows, now) === 2);
 }
 
+{
+  // Polar 모양: { key, organization_id } → 200 + status. 없는 키는 404.
+  const P = { provider: "polar" as const, validateUrl: "https://polar.example/validate", organizationId: "org-1", buyUrl: "https://polar.example/buy" };
+  const 폴라 = (답: Record<string, number | string>) => (async (_u: string, init: { body: string }) => {
+    const b = JSON.parse(init.body) as { key: string; organization_id: string };
+    if (b.organization_id !== "org-1") return new Response("{}", { status: 422 });
+    const a = 답[b.key]; return typeof a === "number" ? new Response('{"error":"ResourceNotFound"}', { status: a }) : new Response(JSON.stringify({ status: a }), { status: 200 });
+  }) as never;
+  const f = 폴라({ G: "granted", R: "revoked", X: 404 });
+  const 판 = async (k: string) => { const h = 새집(); const r = await gate(h, N, k, P, { fetch: f }); rmSync(h, { recursive: true, force: true }); return r.ok; };
+  봄("Polar: granted 키는 연다", await 판("G"));
+  봄("Polar: 해지(revoked) 키는 막는다", !(await 판("R")));
+  봄("Polar: 없는 키(404)는 막는다", !(await 판("X")));
+}
+if (process.argv.includes("--polar")) {
+  // 진짜 Polar 공개 확인 주소 + 우리 조직 id(SALE). 없는 키가 막히는지만 잰다 — 진짜 키는 첫 구매 뒤에.
+  const h = 새집();
+  const r = await gate(h, N, `RD-NOT-REAL-${randomBytes(4).toString("hex")}`, { buyUrl: "https://polar.example/buy" });
+  봄("Polar 실서버: 없는 키는 막는다(SALE 설정 그대로)", !r.ok && /유효하지 않습니다/.test(r.message), r.ok ? r.why : r.message.slice(0, 30));
+  rmSync(h, { recursive: true, force: true });
+}
 if (process.argv.includes("--dodo")) {
   // 시험 모드 열쇠 파일(dodo.json). 열쇠 값은 찍지 않는다.
   const cfgFile = join(process.env.LOCALAPPDATA ?? "", "rookery-dot", "dodo.json");

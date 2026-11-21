@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rookery Director</title>
+<meta name="description" content="A judgment engine for people who use several AIs — picks the AI per task, locks a pass prediction first, scores itself. Local MCP server, your own keys.">
+<style>
+:root{--bg:#fbfaf7;--fg:#1c1b19;--mute:#6b675f;--line:#e4e0d6;--card:#ffffff;--accent:#2f5d50;--code:#f2efe8;--ok:#2f7a46}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#151513;--fg:#ecebe6;--mute:#a19d94;--line:#2d2c28;--card:#1d1c1a;--accent:#8cc5b2;--code:#22211e;--ok:#7fcf98}}
+:root[data-theme="dark"]{--bg:#151513;--fg:#ecebe6;--mute:#a19d94;--line:#2d2c28;--card:#1d1c1a;--accent:#8cc5b2;--code:#22211e;--ok:#7fcf98}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.65 system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif}
+main{max-width:760px;margin:0 auto;padding:56px 16px 80px}
+h1{font-size:2rem;line-height:1.25;margin:0 0 12px;letter-spacing:-.01em}
+h2{font-size:1.15rem;margin:48px 0 12px}
+p{margin:0 0 12px}
+.en{color:var(--mute);font-size:.95rem}
+.tag{display:inline-block;font-size:.8rem;color:var(--accent);border:1px solid var(--line);border-radius:999px;padding:2px 10px;margin-bottom:16px}
+pre,code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.88rem}
+pre{background:var(--code);border:1px solid var(--line);border-radius:8px;padding:14px 16px;overflow-x:auto;margin:0 0 12px;white-space:pre}
+ol{padding-left:1.3em;margin:0}
+ol li{margin-bottom:8px}
+table{width:100%;border-collapse:collapse;font-size:.93rem}
+td,th{border-bottom:1px solid var(--line);padding:9px 6px;text-align:left;vertical-align:top}
+th{color:var(--mute);font-weight:500;white-space:nowrap}
+td.n{white-space:nowrap;font-variant-numeric:tabular-nums}
+.note{color:var(--mute);font-size:.88rem}
+ul.plain{padding-left:1.1em;margin:0}
+ul.plain li{margin-bottom:6px}
+footer{margin-top:56px;border-top:1px solid var(--line);padding-top:16px;color:var(--mute);font-size:.85rem}
+</style>
+</head>
+<body>
+<main>
+<span class="tag">얼리 액세스 · 무료로 써 볼 분을 찾습니다</span>
+<h1>AI 여러 개, 매번 감으로 고르시나요?</h1>
+<p>Rookery Director 는 <b>일마다 어느 AI 에 얼마나 공들여 맡길지</b> 정하는 판단 엔진입니다.
+맡기기 전에 <b>통과할 확률을 먼저 적어 잠그고</b>, 결과가 나오면 스스로 채점합니다.
+떨어지면 한 칸 위 AI 로 다시 시키고, 같은 종류의 일이 장부로 증명되면 판단 값 없이 바로 답합니다.</p>
+<p class="en">A judgment engine for people who use several AIs: it picks the AI and effort per task, locks a pass prediction before the work runs, scores itself, and escalates on failure. Runs locally as an MCP server with your own API key.</p>
+
+<h2>설치 한 줄</h2>
+<pre>claude mcp add rookery-director -- npx rookery-director</pre>
+<p class="note">판단자는 손님의 OpenAI 열쇠(<code>OPENAI_API_KEY</code>)로 돕니다. 장부는 손님 컴퓨터(<code>~/.rookery/director</code>)에만 남고, 저희 서버로는 아무것도 보내지 않습니다.</p>
+
+<h2>어떻게 도나</h2>
+<ol>
+<li><b>정하기</b> — <code>director_decide</code> 에 일과 종류를 주면, AI·공들임·통과 확률을 정해 잠급니다.</li>
+<li><b>일하기</b> — 일은 손님이 쓰던 AI 가 그대로 합니다. 엔진은 일을 대신하지 않습니다.</li>
+<li><b>적기</b> — <code>director_record</code> 에 통과/실패를 적습니다. 실패면 한 칸 위 AI 로 새 판을 엽니다.</li>
+<li><b>성적표</b> — <code>director_scorecard</code> 가 판단이 맞았는지, 얼마 아꼈는지 보여 줍니다.</li>
+</ol>
+
+<h2>실제 성적표 (만든 사람의 장부, 2026-11-21)</h2>
+<pre>끝난 판 7 · 통과 7
+판단 맞힘(Brier, 0 이 완벽 · 0.25 가 동전): 0.041
+일 값 $0.1421 · 판단 값 $0.1179 · 장부로 바로 정한 판 1
+fable 로 다 돌렸다면 대비 아낀 돈(어림): $1.8019
+AI × 종류:
+  haiku·찾기: 6/6 · 판당 $0.0030
+  sonnet·도구: 1/1 · 판당 $0.1240</pre>
+<p class="note">아직 실패가 없어 "실력" 줄은 못 잽니다 — 엔진이 그렇게 스스로 적습니다. 아낀 돈은 토큰 수가 같다고 본 어림입니다.</p>
+
+<h2>잰 것</h2>
+<table>
+<tr><th>질문</th><th>결과</th></tr>
+<tr><td>코드 일에 비싼 AI 가 필요했나</td><td>숨긴 시험이 있는 29판을 <b>제일 싼 AI 가 다 통과</b>. 다 비싼 AI 로 돌렸다면 출력 단가 8배.</td></tr>
+<tr><td>그림체 심사에도 싼 AI 로 되나</td><td><b>아니요.</b> 정답이 정해진 18장에서 싼 AI 13/18, 비싼 AI 16/18(다른 그림을 같다고 한 것 0). 일마다 맞는 자리가 다릅니다.</td></tr>
+<tr><td>판단 자체는 얼마나 드나</td><td>싼 판단자 한 번 <span class="n">$0.0007</span>. 장부가 증명한 종류는 <b>$0</b>.</td></tr>
+<tr><td>싼 판단자가 비싼 판단자와 같게 고르나</td><td>지난 판 15개 중 15개 같은 자리.</td></tr>
+</table>
+
+<h2>값</h2>
+<table>
+<tr><th>무료</th><td>한 달에 <b>100판</b>까지. 결과 적기·성적표는 늘 무료.</td></tr>
+<tr><th>Pro</th><td><b>월 $9</b> — 판 수 제한 없음. 결제하면 라이선스 키가 메일로 오고, <code>ROOKERY_LICENSE</code> 에 넣으면 끝.</td></tr>
+</table>
+<p class="note">지금은 얼리 액세스라 판 수 제한 없이 무료입니다. 판단 AI 값은 손님 열쇠로 결제사에 바로 나가고, 저희는 그 위에 아무것도 붙이지 않습니다.</p>
+
+<h2>아직 아닌 것</h2>
+<ul class="plain">
+<li>판단자는 지금 OpenAI 열쇠만 받습니다.</li>
+<li>엔진의 말은 지금 한국어입니다.</li>
+<li>성적표는 터미널 글자입니다. 화면 대시보드는 없습니다.</li>
+<li>손님 장부로 잰 숫자는 아직 없습니다 — 그걸 같이 쌓을 분을 찾습니다.</li>
+</ul>
+
+<footer>Rookery Director · 소프트웨어만 팝니다 — 사람 용역·실물 없음</footer>
+</main>
+</body>
+</html>
