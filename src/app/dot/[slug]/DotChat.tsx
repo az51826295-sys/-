@@ -295,7 +295,13 @@ export default function DotChat({
   const [giftOpen, setGiftOpen] = useState(false);
   // 91회차 사장님 "채팅에서 뭔 기능인지 잘 모르겠다": 첫 방문에 한 번, 이 방의 단추가 뭔지 세 줄. 메뉴 "도움말" 로 다시 볼 수 있다.
   const [guide, setGuide] = useState(false);
-  useEffect(() => { try { if (signedIn && !localStorage.getItem("dot-guide-v1")) setGuide(true); } catch { /* 저장소 없음 */ } }, [signedIn]);
+  /* 11-22: 처음 들어온 사람에게 창이 세 겹(출석 판·하트 카드·도움말)이었다 — 말 한 마디 전에 닫을 것만 셋.
+   * 도움말은 **첫 답장을 받은 뒤**로 미룬다. 단추를 써 볼 까닭이 생긴 다음에 보여야 읽힌다. */
+  const 말했다 = lines.some((l) => l.role === "user");
+  useEffect(() => {
+    if (!signedIn || !말했다 || busy) return;
+    try { if (!localStorage.getItem("dot-guide-v1")) setGuide(true); } catch { /* 저장소 없음 */ }
+  }, [signedIn, 말했다, busy]);
   function closeGuide() { setGuide(false); try { localStorage.setItem("dot-guide-v1", "1"); } catch { /* 이번만 */ } }
   /**
    * **알림을 켜 달라고 한 번만 물어본다** (10-12).

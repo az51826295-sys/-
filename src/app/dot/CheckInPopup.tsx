@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { CHECKIN_HEARTS } from "@/lib/dot/bond";
 
 /**
@@ -47,7 +47,10 @@ export default function CheckInPopup({ name }: { name: string | null }) {
     }
   }
 
-  if (!열림) return null;
+  /* 11-22: 대화방 안에서는 안 띄운다. 방에는 하트 0 카드가 같은 단추(출석하고 하트 받기)를
+   * 캐릭터 말투로 이미 내민다 — 처음 온 사람이 창 세 겹을 닫아야 말을 걸 수 있었다. */
+  const 방 = 대화방인가(usePathname());
+  if (!열림 || 방) return null;
   return (
     <>
       <style>{CSS}</style>
@@ -68,6 +71,13 @@ export default function CheckInPopup({ name }: { name: string | null }) {
       </div>
     </>
   );
+}
+
+/** `/dot/<slug>` 하나짜리 주소가 대화방이다. 나머지 화면 이름은 폴더 그대로. */
+const 방아님 = new Set(["feed", "chats", "search", "me", "pay", "pick", "install", "settings", "tarot", "beta", "privacy", "child-safety", "delete-account"]);
+function 대화방인가(path: string | null) {
+  const m = /^\/dot\/([^/]+)\/?$/.exec(path ?? "");
+  return !!m && !방아님.has(m[1]);
 }
 
 /* 누르는 자리는 44px(WCAG 2.5.5) — 화면 점검이 재는 자리다. */
