@@ -34,12 +34,12 @@ export type LicenseConfig = {
 
 /** 판매 주소 — 결제사가 정해지면 여기 한 곳에 채운다(11-21: 아직 없음 → 얼리 액세스, 판 수 제한 없음). */
 // 11-21: Dodo 는 본인 확인(Persona 가 한국을 막음)이 안 풀려 Polar 로 연다. 조직 Rookery, 상품 Rookery Director Pro $9/월(키 접두 RD).
-// buyUrl 이 비어 있는 동안은 문을 안 닫는다 — Polar 심사가 끝나 실결제가 열리면 결제 링크를 넣는다:
-//   https://buy.polar.sh/polar_cl_cuSeGkTUEXDjdTS7a6wtjl6vndt1wWB0spc771qTnXV  (director-pro)
+// 11-21 Polar 심사 승인(본인 확인·지급 계좌 연결됨) → 결제 링크를 넣어 문을 켰다(무료 월 100판 뒤 키).
 export const SALE: LicenseConfig = {
   provider: "polar",
   validateUrl: "https://api.polar.sh/v1/customer-portal/license-keys/validate",
   organizationId: "c3433fa6-84b3-4c47-9855-1af1e7bbd51b",
+  buyUrl: "https://buy.polar.sh/polar_cl_cuSeGkTUEXDjdTS7a6wtjl6vndt1wWB0spc771qTnXV",
 };
 
 type Cache = { keyHash: string; valid: boolean; checkedAt: string; lastValidAt?: string };

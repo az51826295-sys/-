@@ -18,4 +18,4 @@ Env: `OPENAI_API_KEY` (the judge), `DIRECTOR_BRAIN` (default `gpt-5.6-luna`), `D
 
 Free: 100 decisions per month (recording results and the scorecard are always free).
 Pro: $9/month, unlimited — put the license key you receive in `ROOKERY_LICENSE`.
-During early access there is no limit.
+Buy Pro: https://buy.polar.sh/polar_cl_cuSeGkTUEXDjdTS7a6wtjl6vndt1wWB0spc771qTnXV

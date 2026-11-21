@@ -31,7 +31,10 @@ function 가짜(답: Record<string, boolean | "down">) {
 
 {
   const h = 새집();
-  봄("파는 주소가 없으면 판 수 상관없이 연다", (await gate(h, 10 * N, undefined, {})).ok);
+  봄("파는 주소가 없으면 판 수 상관없이 연다", (await gate(h, 10 * N, undefined, { validateUrl: "https://pay.example/validate" })).ok);
+  const 실 = await gate(h, N, undefined, {});
+  봄("판매 설정(SALE) 그대로면 무료 뒤 막고 Polar 결제 링크를 준다", !실.ok && 실.message.includes("buy.polar.sh"));
+  봄("판매 설정 그대로도 무료 안에선 연다", (await gate(h, N - 1, undefined, {})).ok);
   봄(`무료 ${N - 1}판째는 키 없이 연다`, (await gate(h, N - 1, undefined, CFG)).ok);
   const r = await gate(h, N, undefined, CFG);
   봄(`${N}판째 키 없으면 막고 살 곳을 알려 준다`, !r.ok && r.message.includes(CFG.buyUrl) && r.message.includes("ROOKERY_LICENSE"), !r.ok ? r.message.slice(0, 60) : "");
