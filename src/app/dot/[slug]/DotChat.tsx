@@ -806,6 +806,8 @@ export default function DotChat({
             onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) { e.preventDefault(); send(); } }}
             placeholder={!mounted ? (lang === "en" ? "One moment…" : "잠시만요…")
               : remaining > 0 ? t("room_input", lang)
+              /* 11-22: 출석 전엔 "다 썼어요" 가 거짓말이다 — 처음 온 사람은 하나도 안 썼다. */
+              : !balance.출석함 ? (lang === "en" ? "Get today's hearts above to start" : "위에서 하트를 받으면 말할 수 있어요")
               : (lang === "en" ? "You are out of hearts for today" : "오늘 하트를 다 썼어요")}
             disabled={!mounted || remaining <= 0 || !signedIn}
             className="kk-input"
