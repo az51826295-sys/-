@@ -2,6 +2,7 @@ import { PIXEL_CSS } from "./pixel-skin";
 import LangSync from "./LangSync";
 import CheckInGate from "./CheckInGate";
 import FromTag from "./FromTag";
+import { DESKTOP_CSS } from "./desktop-skin";
 
 /** /dot 아래 모든 화면에 도트 껍데기 한 겹(84회차). 화면 CSS 뒤에 실려 이긴다. */
 export default function DotLayout({ children }: { children: React.ReactNode }) {
@@ -14,6 +15,8 @@ export default function DotLayout({ children }: { children: React.ReactNode }) {
       {/* 11-06: 하루 첫 입장이면 출석 판. **레이아웃에 둔다** — 어느 화면으로 들어와도 떠야 한다. */}
       <CheckInGate />
       <style>{PIXEL_CSS}</style>
+      {/* 11-22: PC 화면(1000px 이상)만 — 폰은 그대로. 도트 껍데기 뒤에 실려 이긴다. */}
+      <style>{DESKTOP_CSS}</style>
     </>
   );
 }

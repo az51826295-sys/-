@@ -37,6 +37,8 @@ export default async function DotTabs({ on }: { on: "search" | "chats" | "feed" 
   return (
     <nav className="dt-tabs" aria-label={t("tabs_aria", lang)}>
       <style>{CSS}</style>
+      {/* 11-22: PC 에선 이 줄이 왼쪽 세로 메뉴가 되고 맨 위에 이름이 선다(desktop-skin). 폰에선 숨는다. */}
+      <Link href="/dot/feed" className="dt-logo">{t("app_name", lang)}</Link>
       {tabs.map((t) => (
         <Link key={t.key} href={t.href} className={`dt-tab${on === t.key ? " on" : ""}`} aria-current={on === t.key ? "page" : undefined}>
           <svg className="dt-icon" width="24" height="24" viewBox="0 0 8 8" shapeRendering="crispEdges" aria-hidden><path d={ICON[t.key]} fill="currentColor" fillRule="evenodd" /></svg>

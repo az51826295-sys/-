@@ -32,7 +32,7 @@ export default async function DotFeed({ searchParams }: { searchParams: Promise<
     supabase.auth.getUser(),
     db.from("dot_posts").select("id, image_url, caption, caption_en, likes, created_at, character_id, dot_characters(slug, name, photos, is_public)").order("id", { ascending: false }).limit(60),
     // 11-22: 처음 온 사람에게 "누구랑 얘기할지" 고를 줄 — 공개 캐릭터 전부(고르지 않는다).
-    db.from("dot_characters").select("slug, name, photos").eq("is_public", true).order("created_at", { ascending: true }),
+    db.from("dot_characters").select("slug, name, photos, tagline").eq("is_public", true).order("created_at", { ascending: true }),
   ]);
 
   /* 10-19: DB 가 한도로 막히자 이 화면이 **맨 500** 이었다(구글 공개 심사 중이었다).
@@ -132,6 +132,27 @@ export default async function DotFeed({ searchParams }: { searchParams: Promise<
           {posts.length === 0 && <div className="fd-empty">{t("feed_empty", lang)}</div>}
           {posts.map((p) => <FeedCard key={p.id} post={p} liked={liked.has(p.id)} signedIn={!!user} lang={lang} />)}
         </div>
+        {/* 11-22 PC 오른쪽 줄(인스타 웹의 "추천" 자리) — 폰에선 숨는다(desktop-skin). 처음 온 사람이면 소개가 여기로 온다. */}
+        <aside className="fd-side">
+          {!user && (
+            <section className="fd-intro">
+              <h2 className="fd-intro-title">{t("feed_intro_title", lang)}</h2>
+              <p className="fd-intro-body">{t("feed_intro_body", lang)}</p>
+            </section>
+          )}
+          <p className="fd-side-title">{t("feed_intro_pick", lang)}</p>
+          {((인물들 ?? []) as { slug: string; name: string; photos: { url: string }[] | null; tagline: string | null }[]).map((c) => (
+            <Link key={c.slug} href={`/dot/${c.slug}`} className="fd-side-one">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              {c.photos?.[0]?.url ? <img src={c.photos[0].url} alt="" /> : <span className="fd-side-none" />}
+              <span>
+                <span className="fd-side-name">{보일이름(c.slug, c.name, lang)}</span>
+                {lang === "ko" && c.tagline && <span className="fd-side-tag">{c.tagline}</span>}
+              </span>
+              <span className="fd-side-go">{t("feed_chat", lang)}</span>
+            </Link>
+          ))}
+        </aside>
         <DotTabs on="feed" />
       </div>
     </div>
