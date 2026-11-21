@@ -42,5 +42,8 @@ startDirectorServer({
   preset: process.env.DIRECTOR_PRESET,
   makeBrain,
   meter: (u) => costOf({ backend: u.model, inputTokens: u.inputTokens, outputTokens: u.outputTokens }),
+  // 판매 주소는 license.ts 의 SALE 한 곳. 환경변수는 시험용 덮어쓰기.
+  license: { validateUrl: process.env.DIRECTOR_LICENSE_VALIDATE_URL, buyUrl: process.env.DIRECTOR_BUY_URL },
+  licenseKey: process.env.ROOKERY_LICENSE,
   version: "0.1.0",
 });

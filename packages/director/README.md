@@ -13,3 +13,9 @@ claude mcp add rookery-director -- npx rookery-director
 
 Tools: `director_decide` · `director_record` · `director_scorecard`.
 Env: `OPENAI_API_KEY` (the judge), `DIRECTOR_BRAIN` (default `gpt-5.6-luna`), `DIRECTOR_HOME`, `DIRECTOR_PRESET` (`claude-code` | `openai`).
+
+## Pricing
+
+Free: 100 decisions per month (recording results and the scorecard are always free).
+Pro: $9/month, unlimited — put the license key you receive in `ROOKERY_LICENSE`.
+During early access there is no limit.

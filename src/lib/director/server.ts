@@ -10,6 +10,7 @@ import { join } from "node:path";
 import { randomBytes } from "node:crypto";
 import { createInterface } from "node:readline";
 import type { AIProvider } from "../providers/types";
+import { gate, usedThisMonth, type LicenseConfig } from "./license";
 import { decide, scorecard, tally, roundsOf, EFFORTS, escalate, type Seat, type LedgerEntry } from "./index";
 
 type Row = LedgerEntry & { id: string };
@@ -25,6 +26,10 @@ export type DirectorServerOptions = {
   makeBrain: (model: string) => Promise<AIProvider | null>;
   meter: Meter;
   version?: string;
+  /** 값 받는 문(license.ts). 없거나 buyUrl 이 없으면 판 수 제한 없음. */
+  license?: LicenseConfig;
+  /** 손님 키(보통 ROOKERY_LICENSE). */
+  licenseKey?: string;
 };
 
 export function startDirectorServer(opts: DirectorServerOptions) {
@@ -132,6 +137,8 @@ async function 부르기(name: string, a: Record<string, unknown>) {
     const task = String(a.task ?? "").trim(), kind = String(a.kind ?? "").trim();
     if (!task || !kind) throw new Error("task 와 kind 가 다 있어야 한다");
     const seats = 자리(), rows = 장부();
+    const 문 = await gate(HOME, usedThisMonth(rows), opts.licenseKey, opts.license ?? {});
+    if (!문.ok) return { ...글(문.message), isError: true };
     const { ai, meter } = await 판단자();
     const d = await decide(ai, { task, kind, seats, ledger: rows }, meter);
     const id = randomBytes(4).toString("hex");
@@ -204,7 +211,7 @@ async function 부르기(name: string, a: Record<string, unknown>) {
 
 const 보내기 = (m: unknown) => process.stdout.write(JSON.stringify(m) + "\n");
 const rl = createInterface({ input: process.stdin });
-rl.on("line", async (line) => {
+const 처리 = async (line: string) => {
   if (!line.trim()) return;
   let m: { id?: number | string; method?: string; params?: Record<string, unknown> };
   try { m = JSON.parse(line); } catch { return 보내기({ jsonrpc: "2.0", id: null, error: { code: -32700, message: "parse error" } }); }
@@ -227,7 +234,12 @@ rl.on("line", async (line) => {
         return 틀림(-32601, `모르는 메서드 ${m.method}`);
     }
   } catch (e) { 틀림(-32603, (e as Error).message); }
-});
+};
+// 부른 쪽이 입력을 닫으면 하던 답을 다 보낸 뒤 끝난다 — 안 그러면 손님 컴퓨터에 고아 프로세스가 남는다(11-21).
+let 도는중 = 0, 닫힘 = false;
+const 끝나면 = () => { if (닫힘 && 도는중 === 0) process.stdout.write("", () => process.exit(0)); };
+rl.on("line", (line) => { 도는중++; void 처리(line).finally(() => { 도는중--; 끝나면(); }); });
+rl.on("close", () => { 닫힘 = true; 끝나면(); });
 console.error(`[rookery-director] 장부 ${HOME} · 판단자 ${BRAIN} · 노력 ${EFFORTS.join("/")}`);
 
 }
