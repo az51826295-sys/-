@@ -1,6 +1,6 @@
 {
   "name": "rookery-director",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A judgment engine for people who use several AIs: decides which AI gets each task, locks a pass prediction first, scores itself, escalates on failure. Runs locally as an MCP server; your keys, your ledger.",
   "type": "module",
   "bin": {

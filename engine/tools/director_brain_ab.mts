@@ -27,14 +27,14 @@ const A: Case[] = [];
 {
   const 오늘 = JSON.parse(readFileSync(join(homedir(), ".rookery/director/ledger.json"), "utf8")) as (LedgerEntry & { id: string })[];
   const 자리 = JSON.parse(readFileSync(join(homedir(), ".rookery/director/seats.json"), "utf8")) as Seat[];
-  오늘.forEach((e, i) => { if (e.via === "판단자") A.push({ name: `오늘${i + 1}`, task: e.task, kind: e.kind, seats: 자리, ledger: 오늘.slice(0, i), ranSeat: e.seat, passed: !!e.passed, gpt5Pred: e.predictedPass }); });
+  오늘.forEach((e, i) => { if (e.via === "judge" || (e.via as string) === "판단자") A.push({ name: `오늘${i + 1}`, task: e.task, kind: e.kind, seats: 자리, ledger: 오늘.slice(0, i), ranSeat: e.seat, passed: !!e.passed, gpt5Pred: e.predictedPass }); });
   const r = JSON.parse(readFileSync("engine/work/head-ab/results.json", "utf8")) as { 장부: LedgerEntry[] };
   const 자리2 = JSON.parse(readFileSync("engine/work/head-ab/seats.json", "utf8")) as Seat[];
   r.장부.forEach((e, i) => A.push({ name: `첫판${i + 1}`, task: e.task, kind: e.kind, seats: 자리2, ledger: r.장부.slice(0, i), ranSeat: e.seat, passed: !!e.passed, gpt5Pred: e.predictedPass }));
 }
 
 /* B — 올려야 하는 판 */
-const 줄 = (seat: string, kind: string, passed: boolean): LedgerEntry => ({ at: "", task: "지난 일", kind, seat, effort: "보통", predictedPass: 0.7, passed, usd: 0.01 });
+const 줄 = (seat: string, kind: string, passed: boolean): LedgerEntry => ({ at: "", task: "지난 일", kind, seat, effort: "normal", predictedPass: 0.7, passed, usd: 0.01 });
 const 클로드 = JSON.parse(readFileSync(join(homedir(), ".rookery/director/seats.json"), "utf8")) as Seat[];
 const 오픈 = JSON.parse(readFileSync("engine/work/head-ab/seats.json", "utf8")) as Seat[];
 const B: { name: string; task: string; kind: string; seats: Seat[]; ledger: LedgerEntry[]; ok: (seat: string) => boolean }[] = [

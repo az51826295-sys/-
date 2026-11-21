@@ -12,11 +12,11 @@ import { zodTextFormat } from "openai/helpers/zod";
 import { startDirectorServer } from "../../../src/lib/director/server";
 import { costOf, isPriced } from "../../../src/lib/costs/pricing";
 
-if (process.argv.includes("--version")) { console.error("rookery-director 0.1.0"); process.exit(0); }
+if (process.argv.includes("--version")) { console.error("rookery-director 0.2.0"); process.exit(0); }
 
 async function makeBrain(model: string) {
   if (!process.env.OPENAI_API_KEY) return null;
-  if (!isPriced(model)) throw new Error(`판단자 ${model} 의 값표가 없다 — DIRECTOR_BRAIN 을 확인`);
+  if (!isPriced(model)) throw new Error(`no price table for judge ${model} — check DIRECTOR_BRAIN`);
   const client = new OpenAI({ maxRetries: 2 });
   return {
     name: "openai", model,
@@ -29,8 +29,8 @@ async function makeBrain(model: string) {
         max_output_tokens: p.maxTokens ?? 16000,
         text: { format: zodTextFormat(p.schema, p.schemaName) },
       });
-      if (r.status === "incomplete") throw new Error("판단자 출력이 잘렸다(MODEL_OUTPUT_TRUNCATED)");
-      if (!r.output_parsed) throw new Error("판단자 출력을 못 읽었다");
+      if (r.status === "incomplete") throw new Error("judge output was truncated (MODEL_OUTPUT_TRUNCATED)");
+      if (!r.output_parsed) throw new Error("could not parse judge output");
       return { output: r.output_parsed, model, inputTokens: r.usage?.input_tokens ?? 0, outputTokens: r.usage?.output_tokens ?? 0 };
     },
   } as never;
@@ -45,5 +45,5 @@ startDirectorServer({
   // 판매 주소는 license.ts 의 SALE 한 곳. 환경변수는 시험용 덮어쓰기.
   license: { validateUrl: process.env.DIRECTOR_LICENSE_VALIDATE_URL, buyUrl: process.env.DIRECTOR_BUY_URL },
   licenseKey: process.env.ROOKERY_LICENSE,
-  version: "0.1.0",
+  version: "0.2.0",
 });

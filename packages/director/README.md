@@ -5,7 +5,9 @@ A judgment engine for people who use several AIs. For each task it decides **whi
 If the work fails, it escalates one step up; once a kind of task is proven, it answers from your ledger for $0
 and occasionally tries a cheaper AI.
 
-Runs locally as an MCP server. Your API key, your ledger file (`~/.rookery/director`). Nothing goes to our servers.
+Runs locally as an MCP server. Your API key, your ledger file (`~/.rookery/director`). We run no server: the only calls out are the judge (your key) and, past the free tier, one license check a day with Polar.
+
+Site: https://az51826295-sys.github.io/rookery-director/
 
 ```
 claude mcp add rookery-director -- npx rookery-director

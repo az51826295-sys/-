@@ -115,7 +115,7 @@ if (process.argv.includes("--screen")) {
 
 if (process.argv.includes("--main")) {
   const 거르기 = JSON.parse(readFileSync(`${OUT}/screen.json`, "utf8")) as Trial[];
-  const 장부: LedgerEntry[] = 거르기.filter((t) => t.pass !== null).map((t) => ({ at: "", task: "yuna 다시 그리기", kind: "캐릭터그림", seat: t.seat, effort: "보통", predictedPass: 0.5, passed: !!t.pass, usd: t.usd, sec: t.sec }));
+  const 장부: LedgerEntry[] = 거르기.filter((t) => t.pass !== null).map((t) => ({ at: "", task: "yuna 다시 그리기", kind: "캐릭터그림", seat: t.seat, effort: "normal", predictedPass: 0.5, passed: !!t.pass, usd: t.usd, sec: t.sec }));
   const seats: Seat[] = 자리들.map((s) => ({ id: s.id, outPerMTok: s.outPerMTok, sees: true, note: s.note }));
   const brain = await seatProvider("gpt-5.6-luna"); if (!brain) throw new Error("판단자 못 앉힘");
   const 대상 = 사람표.map((r) => r.slug).filter((s) => s !== 본 && s !== "yuna");
@@ -133,7 +133,7 @@ if (process.argv.includes("--main")) {
       if (팔 === "켬") {
         const d = 판단 as { predictedPass: number; usd: number; via: LedgerEntry["via"] };
         t.usd += d.usd;
-        if (t.pass !== null) 장부.push({ at: new Date().toISOString(), task: slug, kind: "캐릭터그림", seat, effort: "보통", predictedPass: d.predictedPass, passed: t.pass, usd: t.usd - d.usd, sec: t.sec, via: d.via, judgeUsd: d.usd });
+        if (t.pass !== null) 장부.push({ at: new Date().toISOString(), task: slug, kind: "캐릭터그림", seat, effort: "normal", predictedPass: d.predictedPass, passed: t.pass, usd: t.usd - d.usd, sec: t.sec, via: d.via, judgeUsd: d.usd });
       }
       결과.push(t); console.log(줄(t));
       writeFileSync(`${OUT}/main.json`, JSON.stringify(결과, null, 1));

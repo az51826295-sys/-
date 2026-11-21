@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ko">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,12 +10,11 @@
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#151513;--fg:#ecebe6;--mute:#a19d94;--line:#2d2c28;--card:#1d1c1a;--accent:#8cc5b2;--code:#22211e;--ok:#7fcf98}}
 :root[data-theme="dark"]{--bg:#151513;--fg:#ecebe6;--mute:#a19d94;--line:#2d2c28;--card:#1d1c1a;--accent:#8cc5b2;--code:#22211e;--ok:#7fcf98}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.65 system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.65 system-ui,-apple-system,"Segoe UI",sans-serif}
 main{max-width:760px;margin:0 auto;padding:56px 16px 80px}
 h1{font-size:2rem;line-height:1.25;margin:0 0 12px;letter-spacing:-.01em}
 h2{font-size:1.15rem;margin:48px 0 12px}
 p{margin:0 0 12px}
-.en{color:var(--mute);font-size:.95rem}
 .tag{display:inline-block;font-size:.8rem;color:var(--accent);border:1px solid var(--line);border-radius:999px;padding:2px 10px;margin-bottom:16px}
 pre,code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.88rem}
 pre{background:var(--code);border:1px solid var(--line);border-radius:8px;padding:14px 16px;overflow-x:auto;margin:0 0 12px;white-space:pre}
@@ -24,70 +23,69 @@ ol li{margin-bottom:8px}
 table{width:100%;border-collapse:collapse;font-size:.93rem}
 td,th{border-bottom:1px solid var(--line);padding:9px 6px;text-align:left;vertical-align:top}
 th{color:var(--mute);font-weight:500;white-space:nowrap}
-td.n{white-space:nowrap;font-variant-numeric:tabular-nums}
+.n{white-space:nowrap;font-variant-numeric:tabular-nums}
 .note{color:var(--mute);font-size:.88rem}
 ul.plain{padding-left:1.1em;margin:0}
 ul.plain li{margin-bottom:6px}
+a{color:var(--accent)}
 footer{margin-top:56px;border-top:1px solid var(--line);padding-top:16px;color:var(--mute);font-size:.85rem}
 </style>
 </head>
 <body>
 <main>
-<span class="tag">무료 월 100판 · Pro 월 $9</span>
-<h1>AI 여러 개, 매번 감으로 고르시나요?</h1>
-<p>Rookery Director 는 <b>일마다 어느 AI 에 얼마나 공들여 맡길지</b> 정하는 판단 엔진입니다.
-맡기기 전에 <b>통과할 확률을 먼저 적어 잠그고</b>, 결과가 나오면 스스로 채점합니다.
-떨어지면 한 칸 위 AI 로 다시 시키고, 같은 종류의 일이 장부로 증명되면 판단 값 없이 바로 답합니다.</p>
-<p class="en">A judgment engine for people who use several AIs: it picks the AI and effort per task, locks a pass prediction before the work runs, scores itself, and escalates on failure. Runs locally as an MCP server with your own API key.</p>
+<span class="tag">Free 100 decisions/month · Pro $9/month</span>
+<h1>Using several AIs and picking one by gut feeling every time?</h1>
+<p>Rookery Director is a judgment engine that decides <b>which AI gets each task, and how much effort</b>.
+Before the work runs it <b>writes down and locks the probability of passing</b>; when the result comes in, it scores itself.
+If the work fails it retries one tier up, and once your ledger proves a kind of task, it answers without paying for judgment at all.</p>
 
-<h2>설치 한 줄</h2>
+<h2>Install</h2>
 <pre>claude mcp add rookery-director -- npx rookery-director</pre>
-<p class="note">판단자는 손님의 OpenAI 열쇠(<code>OPENAI_API_KEY</code>)로 돕니다. 장부는 손님 컴퓨터(<code>~/.rookery/director</code>)에만 남습니다. 밖으로 나가는 건 판단 AI 호출(손님 열쇠)과, 무료를 넘긴 뒤 하루 한 번 결제사(Polar)에 키가 유효한지 묻는 것뿐입니다. 저희 서버는 없습니다.</p>
+<p class="note">The judge runs on your own OpenAI key (<code>OPENAI_API_KEY</code>). The ledger stays on your computer (<code>~/.rookery/director</code>). The only things that leave it are the judge's AI calls (your key) and, after the free tier, one license check a day with the payment provider (Polar). We run no server.</p>
 
-<h2>어떻게 도나</h2>
+<h2>How it works</h2>
 <ol>
-<li><b>정하기</b> — <code>director_decide</code> 에 일과 종류를 주면, AI·공들임·통과 확률을 정해 잠급니다.</li>
-<li><b>일하기</b> — 일은 손님이 쓰던 AI 가 그대로 합니다. 엔진은 일을 대신하지 않습니다.</li>
-<li><b>적기</b> — <code>director_record</code> 에 통과/실패를 적습니다. 실패면 한 칸 위 AI 로 새 판을 엽니다.</li>
-<li><b>성적표</b> — <code>director_scorecard</code> 가 판단이 맞았는지, 얼마 아꼈는지 보여 줍니다.</li>
+<li><b>Decide</b> — give <code>director_decide</code> a task and a kind; it picks the AI, the effort and a pass probability, and locks them.</li>
+<li><b>Work</b> — the work is done by the AI you already use. The engine never does the work itself.</li>
+<li><b>Record</b> — report pass/fail with <code>director_record</code>. On a failure it opens a new run one tier up.</li>
+<li><b>Scorecard</b> — <code>director_scorecard</code> shows whether the judgments were right and how much was saved.</li>
 </ol>
 
-<h2>실제 성적표 (만든 사람의 장부, 2026-11-21)</h2>
-<pre>끝난 판 7 · 통과 7
-판단 맞힘(Brier, 0 이 완벽 · 0.25 가 동전): 0.041
-일 값 $0.1421 · 판단 값 $0.1179 · 장부로 바로 정한 판 1
-fable 로 다 돌렸다면 대비 아낀 돈(어림): $1.8019
-AI × 종류:
-  haiku·찾기: 6/6 · 판당 $0.0030
-  sonnet·도구: 1/1 · 판당 $0.1240</pre>
-<p class="note">아직 실패가 없어 "실력" 줄은 못 잽니다 — 엔진이 그렇게 스스로 적습니다. 아낀 돈은 토큰 수가 같다고 본 어림입니다.</p>
+<h2>A real scorecard (the maker's ledger, 2026-11-22)</h2>
+<pre>Finished 7 · passed 7
+Prediction accuracy (Brier; 0 = perfect, 0.25 = coin flip): 0.041
+Work cost $0.1421 · judging cost $0.1179 · decided from ledger 1
+Saved vs. running everything on fable (estimate): $1.8019
+AI × kind:
+  haiku·search: 6/6 · $0.0030 per run
+  sonnet·tools: 1/1 (few runs) · $0.1240 per run</pre>
+<p class="note">There are no failures yet, so the "skill" line can't be measured — the engine says so itself. Savings are an estimate that assumes the same token count. Kind names are the maker's own words, translated here.</p>
 
-<h2>잰 것</h2>
+<h2>What we measured</h2>
 <table>
-<tr><th>질문</th><th>결과</th></tr>
-<tr><td>코드 일에 비싼 AI 가 필요했나</td><td>숨긴 시험이 있는 29판을 <b>제일 싼 AI 가 다 통과</b>. 다 비싼 AI 로 돌렸다면 출력 단가 8배.</td></tr>
-<tr><td>그림체 심사에도 싼 AI 로 되나</td><td><b>아니요.</b> 정답이 정해진 18장에서 싼 AI 13/18, 비싼 AI 16/18(다른 그림을 같다고 한 것 0). 일마다 맞는 자리가 다릅니다.</td></tr>
-<tr><td>판단 자체는 얼마나 드나</td><td>싼 판단자 한 번 <span class="n">$0.0007</span>. 장부가 증명한 종류는 <b>$0</b>.</td></tr>
-<tr><td>싼 판단자가 비싼 판단자와 같게 고르나</td><td>지난 판 15개 중 15개 같은 자리.</td></tr>
+<tr><th>Question</th><th>Result</th></tr>
+<tr><td>Did coding tasks need an expensive AI?</td><td>On 29 tasks with hidden tests, <b>the cheapest AI passed all of them</b>. Running them all on the expensive AI would have cost 8× per output token.</td></tr>
+<tr><td>Does a cheap AI work for judging art style too?</td><td><b>No.</b> On 18 images with known answers: cheap AI 13/18, expensive AI 16/18 (0 cases of calling different art the same). The right seat depends on the task.</td></tr>
+<tr><td>How much does judging itself cost?</td><td>One call to the cheap judge: <span class="n">$0.0007</span>. Kinds the ledger has proven: <b>$0</b>.</td></tr>
+<tr><td>Does the cheap judge pick like the expensive one?</td><td>Same seat on 15 of 15 past runs.</td></tr>
 </table>
 
-<h2>값</h2>
+<h2>Pricing</h2>
 <table>
-<tr><th>무료</th><td>한 달에 <b>100판</b>까지. 결과 적기·성적표는 늘 무료.</td></tr>
-<tr><th>Pro</th><td><b>월 $9</b> — 판 수 제한 없음. 결제하면 라이선스 키가 메일로 오고, <code>ROOKERY_LICENSE</code> 에 넣으면 끝.</td></tr>
+<tr><th>Free</th><td>Up to <b>100 decisions</b> a month. Recording results and the scorecard are always free.</td></tr>
+<tr><th>Pro</th><td><b>$9/month</b> — no limit. After checkout a license key is emailed to you; put it in <code>ROOKERY_LICENSE</code> and you're done.</td></tr>
 </table>
-<p><a href="https://buy.polar.sh/polar_cl_cuSeGkTUEXDjdTS7a6wtjl6vndt1wWB0spc771qTnXV"><b>Pro 사기 (월 $9) →</b></a></p>
-<p class="note">판단 AI 값은 손님 열쇠로 결제사에 바로 나가고, 저희는 그 위에 아무것도 붙이지 않습니다.</p>
+<p><a href="https://buy.polar.sh/polar_cl_cuSeGkTUEXDjdTS7a6wtjl6vndt1wWB0spc771qTnXV"><b>Buy Pro ($9/month) →</b></a></p>
+<p class="note">The judge's AI usage is billed by your provider on your key; we add nothing on top.</p>
 
-<h2>아직 아닌 것</h2>
+<h2>Not yet</h2>
 <ul class="plain">
-<li>판단자는 지금 OpenAI 열쇠만 받습니다.</li>
-<li>엔진의 말은 지금 한국어입니다.</li>
-<li>성적표는 터미널 글자입니다. 화면 대시보드는 없습니다.</li>
-<li>손님 장부로 잰 숫자는 아직 없습니다 — 그걸 같이 쌓을 분을 찾습니다.</li>
+<li>The judge only takes an OpenAI key for now.</li>
+<li>The scorecard is terminal text. No web dashboard.</li>
+<li>No numbers from other people's ledgers yet — we're looking for people to build them with.</li>
 </ul>
 
-<footer>Rookery Director · 소프트웨어만 팝니다 — 사람 용역·실물 없음</footer>
+<footer>Rookery Director · software only — no services, no physical goods</footer>
 </main>
 </body>
 </html>

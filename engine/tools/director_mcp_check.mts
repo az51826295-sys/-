@@ -50,9 +50,9 @@ try {
 
   // 첫 판 — 빈 장부라 판단자에게 간다(mock 이면 난간으로 첫 자리)
   const d1 = await call("director_decide", { task: "README 오타 찾아 고치기", kind: "찾기" });
-  봄("빈 장부 첫 판은 판단자", live ? /정한 길: 판단자/.test(d1.text) : /정한 길: 난간/.test(d1.text), d1.text.split("\n")[1]);
+  봄("빈 장부 첫 판은 판단자", live ? /Decided by: judge/.test(d1.text) : /Decided by: guard/.test(d1.text), d1.text.split("\n")[1]);
   if (live) console.log(d1.text);
-  const 첫자리 = /맡길 AI: (\S+)/.exec(d1.text)?.[1] ?? "";
+  const 첫자리 = /Assign to: (\S+)/.exec(d1.text)?.[1] ?? "";
   let id = idOf(d1.text);
   const r1 = await call("director_record", { id, passed: true, outTokens: 2000, sec: 30 });
   봄("적기 + 토큰으로 값 어림", !r1.err && /\$0\.\d+/.test(r1.text), r1.text);
@@ -68,26 +68,26 @@ try {
     await call("director_record", { id, passed: true, usd: 0.001, seat: 첫자리 });
   }
   const d6 = await call("director_decide", { task: "오타 또", kind: "찾기" });
-  봄("다섯 판 통과 뒤엔 장부가 답함(판단 값 0)", /정한 길: 장부/.test(d6.text) && /판단 값 0/.test(d6.text), d6.text.split("\n")[1]);
+  봄("다섯 판 통과 뒤엔 장부가 답함(판단 값 0)", /Decided by: ledger/.test(d6.text) && /judge cost \$0/.test(d6.text), d6.text.split("\n")[1]);
   const d7 = await call("director_decide", { task: "새 게임", kind: "게임" });
-  봄("다른 종류는 다시 판단자", !/정한 길: 장부/.test(d7.text));
+  봄("다른 종류는 다시 판단자", !/Decided by: ledger/.test(d7.text));
 
   const sc = await call("director_scorecard", {});
-  봄("성적표", /끝난 판 5/.test(sc.text) && /결과 안 적힌 판 2/.test(sc.text) && /장부로 바로 정한 판 0/.test(sc.text) && /아낀 돈/.test(sc.text), sc.text.split("\n").slice(0, 4).join(" | "));
+  봄("성적표", /Finished 5/.test(sc.text) && /not yet recorded 2/.test(sc.text) && /decided from ledger 0/.test(sc.text) && /Saved vs\./.test(sc.text), sc.text.split("\n").slice(0, 4).join(" | "));
 
   const 장부 = JSON.parse(readFileSync(join(home, "ledger.json"), "utf8"));
   봄("장부 파일이 손님 폴더에", 장부.length === 7 && 장부.filter((r: any) => r.passed === true).length === 5);
   // 11-21 강화: 떨어지면 한 칸 위로 새 판이 열린다(판단자 안 부름)
-  const d7id = idOf(d7.text), 첫게임 = /맡길 AI: (\S+)/.exec(d7.text)?.[1];
+  const d7id = idOf(d7.text), 첫게임 = /Assign to: (\S+)/.exec(d7.text)?.[1];
   const 떨 = await call("director_record", { id: d7id, passed: false });
-  const 새id = /다시 시킬 판 id (\w+)/.exec(떨.text)?.[1];
-  봄("떨어지면 한 칸 위로 새 판", !!새id && !/맡길 AI: haiku/.test(떨.text.split("다시 시킬")[1] ?? ""), 떨.text.split("\n").slice(0, 4).join(" | "));
+  const 새id = /Retry as id (\w+)/.exec(떨.text)?.[1];
+  봄("떨어지면 한 칸 위로 새 판", !!새id && !/Assign to: haiku/.test(떨.text.split("Retry as")[1] ?? ""), 떨.text.split("\n").slice(0, 4).join(" | "));
   const 올린 = await call("director_record", { id: 새id, passed: true });
-  봄("올린 판도 적힌다", !올린.err && /통과/.test(올린.text), `${첫게임} → ${올린.text}`);
+  봄("올린 판도 적힌다", !올린.err && /passed/.test(올린.text), `${첫게임} → ${올린.text}`);
   const sc2 = await call("director_scorecard", {});
-  봄("실력 줄 · 올린 판 셈", /실력/.test(sc2.text) && /올린 판 1/.test(sc2.text), sc2.text.split("\n").slice(2, 4).join(" | "));
+  봄("실력 줄 · 올린 판 셈", /Skill/.test(sc2.text) && /escalated 1/.test(sc2.text), sc2.text.split("\n").slice(2, 4).join(" | "));
   const d8 = await call("director_decide", { task: "다른 오타", kind: "검색" });
-  봄("처음 보는 종류면 장부의 낱말을 알려 줌", /새 종류 "검색"/.test(d8.text) && /찾기\(/.test(d8.text));
+  봄("처음 보는 종류면 장부의 낱말을 알려 줌", /New kind "검색"/.test(d8.text) && /찾기\(/.test(d8.text));
   봄("표준출력이 JSON 줄뿐", 더러운줄 === 0);
 } catch (e) {
   틀림++; console.log("❌", (e as Error).message);

@@ -66,7 +66,7 @@ function 가짜(답: Record<string, boolean | "down">) {
   const now = new Date("2026-11-21T00:00:00Z");
   const rows = [
     { at: "2026-11-02T00:00:00Z", via: "판단자" }, { at: "2026-11-03T00:00:00Z", via: "장부" },
-    { at: "2026-11-04T00:00:00Z", via: "올림" }, { at: "2026-10-30T00:00:00Z", via: "판단자" },
+    { at: "2026-11-04T00:00:00Z", via: "escalate" }, { at: "2026-11-05T00:00:00Z", via: "올림" }, { at: "2026-10-30T00:00:00Z", via: "판단자" },
   ];
   봄("이번 달만 세고 엔진이 연 올림 판은 안 센다", usedThisMonth(rows, now) === 2);
 }
@@ -89,7 +89,7 @@ if (process.argv.includes("--polar")) {
   // 진짜 Polar 공개 확인 주소 + 우리 조직 id(SALE). 없는 키가 막히는지만 잰다 — 진짜 키는 첫 구매 뒤에.
   const h = 새집();
   const r = await gate(h, N, `RD-NOT-REAL-${randomBytes(4).toString("hex")}`, { buyUrl: "https://polar.example/buy" });
-  봄("Polar 실서버: 없는 키는 막는다(SALE 설정 그대로)", !r.ok && /유효하지 않습니다/.test(r.message), r.ok ? r.why : r.message.slice(0, 30));
+  봄("Polar 실서버: 없는 키는 막는다(SALE 설정 그대로)", !r.ok && /not valid/.test(r.message), r.ok ? r.why : r.message.slice(0, 30));
   rmSync(h, { recursive: true, force: true });
 }
 if (process.argv.includes("--dodo")) {
@@ -119,7 +119,7 @@ if (process.argv.includes("--dodo")) {
   const 서버 = process.env.DIRECTOR_SERVER ?? "packages/director/dist/cli.mjs";
   const 한바퀴 = (key?: string) => {
     const h = 새집(), at = new Date().toISOString();
-    writeFileSync(join(h, "ledger.json"), JSON.stringify(Array.from({ length: N }, (_, i) => ({ id: "r" + i, at, task: "t", kind: "찾기", seat: "haiku", effort: "가볍게", predictedPass: 0.8, via: "판단자", judgeUsd: 0 }))));
+    writeFileSync(join(h, "ledger.json"), JSON.stringify(Array.from({ length: N }, (_, i) => ({ id: "r" + i, at, task: "t", kind: "찾기", seat: "haiku", effort: "light", predictedPass: 0.8, via: "judge", judgeUsd: 0 }))));
     const 줄 = [{ jsonrpc: "2.0", id: 1, method: "initialize", params: {} }, { jsonrpc: "2.0", id: 2, method: "tools/call", params: { name: "director_decide", arguments: { task: "오타", kind: "찾기" } } }].map((m) => JSON.stringify(m)).join("\n") + "\n";
     const env = { ...process.env, DIRECTOR_HOME: h, DIRECTOR_BRAIN: "mock", DIRECTOR_LICENSE_VALIDATE_URL: real.validateUrl, DIRECTOR_BUY_URL: real.buyUrl, ROOKERY_LICENSE: key ?? "" };
     const t = Date.now();
@@ -132,7 +132,7 @@ if (process.argv.includes("--dodo")) {
   봄("서버: 무료 다 쓰고 키 없으면 decide 가 막힌다", !!막힘.res?.isError && 막힘.res.content[0].text.includes("ROOKERY_LICENSE"));
   봄("서버: 입력이 닫히면 스스로 끝난다", 막힘.끝남);
   const 열림 = 한바퀴(좋은키);
-  봄("서버: 좋은 키면 decide 가 열린다", !!열림.res && !열림.res.isError && /맡길 AI/.test(열림.res.content[0].text));
+  봄("서버: 좋은 키면 decide 가 열린다", !!열림.res && !열림.res.isError && /Assign to/.test(열림.res.content[0].text));
 }
 
 console.log(`\n${맞음}/${맞음 + 틀림}`);

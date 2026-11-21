@@ -56,10 +56,19 @@ export type LedgerEntry = {
   judgeUsd?: number;
 };
 
-export type Via = "장부" | "판단자" | "난간" | "탐색" | "올림";
+/** 누가 정했나. 11-22 영어로 바꿨다(손님에게 보이는 값) — 옛 장부의 한국어 값은 `normalizeEntry` 가 옮긴다. */
+export type Via = "ledger" | "judge" | "guard" | "explore" | "escalate";
 
-export const EFFORTS = ["가볍게", "보통", "꼼꼼히"] as const;
+export const EFFORTS = ["light", "normal", "thorough"] as const;
 export type Effort = (typeof EFFORTS)[number];
+
+const OLD_VIA: Record<string, Via> = { 장부: "ledger", 판단자: "judge", 난간: "guard", 탐색: "explore", 올림: "escalate" };
+const OLD_EFFORT: Record<string, Effort> = { 가볍게: "light", 보통: "normal", 꼼꼼히: "thorough" };
+/** 옛(한국어) 값 → 지금 값. 장부를 읽을 때마다 거친다 — 11-21 이전 장부가 그대로 이어지게. */
+export const normEffort = (e: string): Effort => OLD_EFFORT[e] ?? ((EFFORTS as readonly string[]).includes(e) ? (e as Effort) : "normal");
+export function normalizeEntry<T extends { via?: string; effort: string }>(e: T): T {
+  return { ...e, effort: normEffort(e.effort), ...(e.via ? { via: OLD_VIA[e.via] ?? e.via } : {}) };
+}
 
 export type Decision = {
   seat: string;
@@ -104,21 +113,21 @@ export function tally(ledger: LedgerEntry[]) {
  */
 export function ledgerFacts(seats: Seat[], ledger: LedgerEntry[], kind: string): string {
   const { bySeat, bySeatKind } = tally(ledger);
-  const rows: string[] = ["### 쓸 수 있는 AI"];
+  const rows: string[] = ["### Available AIs"];
   for (const s of seats) {
     const t = bySeat.get(s.id), tk = bySeatKind.get(`${s.id}·${kind}`);
-    const 값 = s.outPerMTok != null ? `출력 $${s.outPerMTok}/백만토큰` : "값 모름";
+    const 값 = s.outPerMTok != null ? `output $${s.outPerMTok}/M tokens` : "price unknown";
     const 성적 = (x: Tally | undefined, 이름: string) =>
-      !x ? `${이름} 기록 없음` : `${이름} ${x.pass}/${x.n} 통과 · 판당 $${(x.usd / x.n).toFixed(3)} · ${Math.round(x.sec / x.n)}초${x.n < 5 ? " (판이 적다 — 믿을 게 못 된다)" : ""}`;
-    rows.push(`- ${s.id}: ${값}${s.sees ? " · 그림을 본다" : ""}${s.note ? ` · ${s.note}` : ""}\n  ${성적(t, "전체")} / ${성적(tk, `"${kind}"`)}`);
+      !x ? `${이름}: no record` : `${이름}: ${x.pass}/${x.n} passed · $${(x.usd / x.n).toFixed(3)} per run · ${Math.round(x.sec / x.n)}s${x.n < 5 ? " (few runs — not reliable)" : ""}`;
+    rows.push(`- ${s.id}: ${값}${s.sees ? " · sees images" : ""}${s.note ? ` · ${s.note}` : ""}\n  ${성적(t, "all")} / ${성적(tk, `"${kind}"`)}`);
   }
   const 끝난 = ledger.filter((e) => e.passed !== undefined);
-  if (!끝난.length) rows.push("\n### 장부\n- **비어 있다.** 이 손님의 판단 기록이 아직 없다 — 자리 설명만으로 고른다.");
+  if (!끝난.length) rows.push("\n### Ledger\n- **Empty.** This user has no decision history yet — choose from the AI descriptions alone.");
   else {
     const b = 끝난.reduce((a, e) => a + (e.predictedPass - (e.passed ? 1 : 0)) ** 2, 0) / 끝난.length;
-    rows.push(`\n### 지난 판단의 채점\n- 끝난 판 ${끝난.length} · 예측 오차(Brier) ${b.toFixed(3)} — 0 이 완벽, 0.25 가 동전 던지기`);
-    const 최근 = 끝난.slice(-5).map((e) => `  · ${e.kind} → ${e.seat}/${e.effort}: 예측 ${Math.round(e.predictedPass * 100)}% · 결과 ${e.passed ? "통과" : "실패"}${e.score ? ` (${e.score.met}/${e.score.total})` : ""}`);
-    rows.push("- 최근:\n" + 최근.join("\n"));
+    rows.push(`\n### Scoring of past decisions\n- finished ${끝난.length} · prediction error (Brier) ${b.toFixed(3)} — 0 is perfect, 0.25 is a coin flip`);
+    const 최근 = 끝난.slice(-5).map((e) => `  · ${e.kind} → ${e.seat}/${e.effort}: predicted ${Math.round(e.predictedPass * 100)}% · result ${e.passed ? "pass" : "fail"}${e.score ? ` (${e.score.met}/${e.score.total})` : ""}`);
+    rows.push("- recent:\n" + 최근.join("\n"));
   }
   return rows.join("\n");
 }
@@ -164,15 +173,15 @@ export function scorecard(ledger: LedgerEntry[], opts: { seats?: Seat[]; baselin
     판단값,
     판단몫: 일값 + 판단값 > 0 ? 판단값 / (일값 + 판단값) : null,
     /** 장부가 답해서 판단자를 안 부른 판. */
-    장부로: 끝난.filter((e) => e.via === "장부").length,
+    장부로: 끝난.filter((e) => e.via === "ledger").length,
     아낀어림,
     brier,
     /** 늘 장부 통과율을 찍는 판단자의 Brier. */
     바보brier,
     /** 1 − brier/바보brier. 양수면 바보보다 낫다. 실패가 없으면 null(못 잼). */
     실력: brier != null && 바보brier ? 1 - brier / 바보brier : null,
-    떠본판: 끝난.filter((e) => e.via === "탐색").length,
-    올린판: 끝난.filter((e) => e.via === "올림").length,
+    떠본판: 끝난.filter((e) => e.via === "explore").length,
+    올린판: 끝난.filter((e) => e.via === "escalate").length,
     /** 앞 절반 대 뒤 절반 — 쌓일수록 예측이 맞아 가나. 판이 적으면 null. */
     나아지나: 끝난.length >= 6 ? { 앞: b(앞), 뒤: b(뒤) } : null,
   };
@@ -181,22 +190,23 @@ export function scorecard(ledger: LedgerEntry[], opts: { seats?: Seat[]; baselin
 /* ────────────────────────────── 판단 (모델 1회) ────────────────────────────── */
 
 const schema = z.object({
-  seat: z.string().describe("맡길 AI 의 id. 목록에 있는 것 그대로."),
-  effort: z.enum(EFFORTS).describe("만든 뒤 돌려 보고 고치기를 몇 바퀴: 가볍게=1 · 보통=3 · 꼼꼼히=8. 바퀴마다 값과 시간이 든다."),
-  predictedPass: z.number().describe("이 선택으로 **모든 확인을 통과할** 확률 0~1. 결과를 보기 전에 잠근다 — 나중에 채점된다. 겸손하게, 그러나 0.5 로 도망가지 마라."),
-  estimate: z.string().describe("값과 시간의 감. 예: '약 $0.04 · 2분'. 장부 판당 값을 근거로. 기록이 없으면 그렇다고."),
-  why: z.string().describe("근거 두어 줄. 장부 숫자를 댄다. 판이 적은 숫자를 믿지 마라."),
-  risk: z.string().describe("틀린다면 어디서."),
+  seat: z.string().describe("id of the AI to assign, exactly as in the list."),
+  effort: z.enum(EFFORTS).describe("How many build-run-fix rounds: light=1 · normal=3 · thorough=8. Every round costs money and time."),
+  predictedPass: z.number().describe("Probability 0-1 that this choice **passes every check**. Locked before the result is seen and scored later. Be humble, but don't hide at 0.5."),
+  estimate: z.string().describe("Rough cost and time, e.g. '~$0.04 · 2 min'. Based on per-run cost in the ledger; say so if there is no record."),
+  why: z.string().describe("Two or so lines of reasons, citing ledger numbers. Don't trust numbers from few runs."),
+  risk: z.string().describe("Where this goes wrong, if it does."),
 });
 
 const SYS = [
-  "너는 **AI 여러 개를 쓰는 사람의 판단자**다. 일 하나가 들어오면 어느 AI 에, 얼마나 공들여 맡길지 정한다.",
-  "아래 사실은 전부 기계가 이 사람의 장부에서 센 것이다. 지어내지 마라.",
+  "You are the **judge for someone who uses several AIs**. For each task, decide which AI gets it and how much effort.",
+  "Every fact below was counted by a machine from this person's ledger. Do not invent any.",
   "",
-  "- 목표는 **확인을 통과하는 결과를, 덜 쓰고** 얻는 것이다. 비싼 AI 는 그만한 이유가 있을 때만.",
-  "- 판이 적은 성적(5판 미만)은 믿을 게 못 된다. 쉬운 일만 맡은 자리의 높은 통과율은 착시일 수 있다.",
-  "- `predictedPass` 는 채점된다. 지난 채점(Brier)이 나쁘면 네 확신을 줄여라.",
-  "- 장부가 비었으면 자리 설명과 값만으로 고르고, 그 사실을 why 에 적어라.",
+  "- The goal is a result that **passes the checks, for less**. Use an expensive AI only when there is a reason.",
+  "- Records with few runs (under 5) are not reliable. A high pass rate on a seat that only got easy tasks can be an illusion.",
+  "- `predictedPass` is scored. If past scoring (Brier) is bad, lower your confidence.",
+  "- If the ledger is empty, choose from the AI descriptions and prices alone, and say so in `why`.",
+  "- Write `estimate`, `why` and `risk` in English.",
 ].join("\n");
 
 /**
@@ -212,7 +222,7 @@ export async function decideFor(
   try {
     const r = await brain.generateStructuredOutput({
       systemInstructions: SYS,
-      input: ["## 사실", ledgerFacts(input.seats, input.ledger, input.kind), "", "## 이 일", `종류: ${input.kind}`, `주문: ${input.task.slice(0, 2000)}`].join("\n"),
+      input: ["## Facts", ledgerFacts(input.seats, input.ledger, input.kind), "", "## This task", `kind: ${input.kind}`, `request: ${input.task.slice(0, 2000)}`].join("\n"),
       schema, schemaName: "director_decision", maxTokens: 16000, tier: "judgment",
     });
     const usd = meter({ model: r.model, inputTokens: r.inputTokens ?? 0, outputTokens: r.outputTokens ?? 0 });
@@ -222,12 +232,12 @@ export async function decideFor(
       seat: 맞는자리 ? o.seat : ids[0],
       effort: o.effort,
       predictedPass: Math.min(1, Math.max(0, Number(o.predictedPass) || 0)),
-      estimate: o.estimate, why: o.why, risk: o.risk, usd, via: "판단자",
-      ...(맞는자리 ? {} : { guard: `없는 자리 "${o.seat}" 를 골라 ${ids[0]} 로 돌렸다` }),
+      estimate: o.estimate, why: o.why, risk: o.risk, usd, via: "judge",
+      ...(맞는자리 ? {} : { guard: `the judge picked "${o.seat}", which is not in the list — used ${ids[0]} instead` }),
     };
   } catch (e) {
-    return { seat: ids[0], effort: "보통", predictedPass: 0.5, estimate: "모르겠다", why: "", risk: "", usd: 0, via: "난간",
-      guard: `판단자가 정하지 못했다(${e instanceof Error ? e.message.slice(0, 80) : e}) — 첫 자리로 간다` };
+    return { seat: ids[0], effort: "normal", predictedPass: 0.5, estimate: "unknown", why: "", risk: "", usd: 0, via: "guard",
+      guard: `the judge could not decide (${e instanceof Error ? e.message.slice(0, 80) : e}) — falling back to the first AI` };
   }
 }
 
@@ -285,20 +295,20 @@ export function fastPath(seats: Seat[], ledger: LedgerEntry[], kind: string): De
       const xs = 끝난.filter((e) => e.seat === 더싼.id), pass = xs.filter((e) => e.passed).length;
       return {
         seat: 더싼.id, effort: c.effort, predictedPass: Math.round(((pass + 1) / (xs.length + 2)) * 100) / 100,
-        estimate: `${c.id} 보다 출력 단가가 ${Math.round((1 - (더싼.outPerMTok ?? 0) / 굳은단가) * 100)}% 싸다`,
-        why: `떠보기: "${kind}" 은 ${c.id} 가 ${c.pass}/${c.n} 로 굳었다. ${이종류판 + 1}번째 판이라 더 싼 ${더싼.id}(이 종류 ${pass}/${xs.length})를 한 번 시켜 본다.`,
-        risk: "떨어질 수 있다 — 떨어지면 기록하고 다음 판은 굳은 자리로 돌아간다(director_record 가 올릴 자리를 알려 준다).",
-        usd: 0, via: "탐색",
+        estimate: `output price ${Math.round((1 - (더싼.outPerMTok ?? 0) / 굳은단가) * 100)}% lower than ${c.id}`,
+        why: `Exploring: "${kind}" has settled on ${c.id} (${c.pass}/${c.n}). This is run #${이종류판 + 1}, so try the cheaper ${더싼.id} once (this kind: ${pass}/${xs.length}).`,
+        risk: "It may fail — if so, record it and the next run goes back to the settled AI (director_record tells you where to escalate).",
+        usd: 0, via: "explore",
       };
     }
   }
   return {
     seat: c.id, effort: c.effort, predictedPass: Math.round(c.p * 100) / 100,
-    estimate: `판당 약 $${c.usd.toFixed(3)} (장부 ${c.n}판 평균)`,
-    why: `장부가 답했다: "${kind}" 을 ${c.id} 가 ${c.pass}/${c.n} 넘었고 최근 실패가 없다. 판단자를 부르지 않았다.` +
-      (후보.length > 1 ? ` 같은 문턱을 넘은 ${후보.length - 1}곳보다 판당 값이 싸다.` : ""),
-    risk: "장부가 쌓인 뒤 일이 어려워졌다면 한 판은 떨어질 수 있다 — 떨어지면 다음 판부터 판단자에게 돌아간다.",
-    usd: 0, via: "장부",
+    estimate: `~$${c.usd.toFixed(3)} per run (ledger average of ${c.n})`,
+    why: `The ledger answered: ${c.id} passed "${kind}" ${c.pass}/${c.n} with no recent failure. The judge was not called.` +
+      (후보.length > 1 ? ` Cheaper per run than the ${후보.length - 1} other AI(s) that also cleared the bar.` : ""),
+    risk: "If the tasks got harder since the ledger filled up, one run may fail — after a failure the judge is called again.",
+    usd: 0, via: "ledger",
   };
 }
 
@@ -337,19 +347,19 @@ export function escalate(seats: Seat[], ledger: LedgerEntry[], failed: LedgerEnt
     return Math.round(((xs.filter((e) => e.passed).length + 1) / (xs.length + 2)) * 100) / 100;
   };
   if (위) return {
-    seat: 위.id, effort: failed.effort, predictedPass: 판(위.id), estimate: `출력 단가 ${단가} → ${위.outPerMTok}`,
-    why: `${failed.seat} 가 "${failed.kind}" 에서 떨어졌다. 한 칸 위 ${위.id} 로 다시 시킨다(판단자 안 부름).`,
-    risk: "같은 이유(주문이 모호함·확인이 틀림)로 떨어진 거라면 위로 가도 안 된다 — 두 번 떨어지면 주문과 확인을 의심할 것.",
-    usd: 0, via: "올림",
+    seat: 위.id, effort: normEffort(failed.effort), predictedPass: 판(위.id), estimate: `output price ${단가} → ${위.outPerMTok} per M tokens`,
+    why: `${failed.seat} failed "${failed.kind}". Retry one tier up on ${위.id} (judge not called).`,
+    risk: "If it failed for a reason a bigger AI won't fix (vague request, wrong check), going up won't help — after two failures, suspect the request and the check.",
+    usd: 0, via: "escalate",
   };
-  const i = EFFORTS.indexOf(failed.effort);
+  const i = EFFORTS.indexOf(normEffort(failed.effort));
   if (i < EFFORTS.length - 1) return {
-    seat: failed.seat, effort: EFFORTS[i + 1], predictedPass: 판(failed.seat), estimate: `고치기 ${roundsOf(failed.effort)} → ${roundsOf(EFFORTS[i + 1])}바퀴`,
-    why: `${failed.seat} 위로 갈 자리가 없다. 같은 자리로 공들이기를 ${failed.effort} → ${EFFORTS[i + 1]} 로 올린다.`,
-    risk: "바퀴를 늘려도 안 되는 일일 수 있다.", usd: 0, via: "올림",
+    seat: failed.seat, effort: EFFORTS[i + 1], predictedPass: 판(failed.seat), estimate: `fix rounds ${roundsOf(failed.effort)} → ${roundsOf(EFFORTS[i + 1])}`,
+    why: `No higher AI than ${failed.seat}. Same AI, effort raised ${EFFORTS[i]} → ${EFFORTS[i + 1]}.`,
+    risk: "More rounds may not fix this task.", usd: 0, via: "escalate",
   };
   return null;
 }
 
-/** effort → 고치기 바퀴 수. 로키의 `roundsFor` 와 같은 숫자(가볍게 1 · 보통 3 · 꼼꼼히 8). */
-export const roundsOf = (e: Effort): number => (e === "가볍게" ? 1 : e === "꼼꼼히" ? 8 : 3);
+/** effort → 고치기 바퀴 수. 로키의 `roundsFor` 와 같은 숫자(light 1 · normal 3 · thorough 8). 옛 한국어 값도 받는다(head_ab 재현). */
+export const roundsOf = (e: Effort | string): number => { const n = normEffort(e); return n === "light" ? 1 : n === "thorough" ? 8 : 3; };

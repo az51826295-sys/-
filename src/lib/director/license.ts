@@ -51,7 +51,7 @@ const 해시 = (k: string) => createHash("sha256").update(k).digest("hex").slice
 /** 이번 UTC 달에 손님이 연 판 수(엔진이 스스로 연 올림 판 제외). */
 export function usedThisMonth(rows: { at: string; via?: string }[], now = new Date()): number {
   const 달 = now.toISOString().slice(0, 7);
-  return rows.filter((r) => r.via !== "올림" && String(r.at).slice(0, 7) === 달).length;
+  return rows.filter((r) => r.via !== "escalate" && r.via !== "올림" && String(r.at).slice(0, 7) === 달).length;
 }
 
 export async function gate(
@@ -60,12 +60,12 @@ export async function gate(
 ): Promise<GateResult> {
   // 시험용 덮어쓰기(validateUrl)를 주면 그 결제사 설정을 통째로 쓴다 — SALE 과 섞지 않는다.
   cfg = cfg.validateUrl ? cfg : { ...SALE, buyUrl: cfg.buyUrl || SALE.buyUrl };
-  if (!cfg.buyUrl || !cfg.validateUrl) return { ok: true, why: "얼리 액세스 — 판 수 제한 없음" };
-  if (used < PLAN.freePerMonth) return { ok: true, why: `무료 ${used}/${PLAN.freePerMonth}` };
+  if (!cfg.buyUrl || !cfg.validateUrl) return { ok: true, why: "early access — no run limit" };
+  if (used < PLAN.freePerMonth) return { ok: true, why: `free ${used}/${PLAN.freePerMonth}` };
   const 막음 = (왜: string): GateResult => ({ ok: false, message:
-    `${왜} 이번 달 무료 ${PLAN.freePerMonth}판을 다 썼습니다. Pro(월 $${PLAN.proUsdPerMonth}): ${cfg.buyUrl} — ` +
-    `받은 키를 환경변수 ROOKERY_LICENSE 에 넣으면 바로 이어집니다. 적기(record)·성적표는 키 없이도 됩니다.` });
-  if (!key) return 막음("라이선스 키가 없습니다.");
+    `${왜} You've used this month's ${PLAN.freePerMonth} free decisions. Pro ($${PLAN.proUsdPerMonth}/month): ${cfg.buyUrl} — ` +
+    `put the key you receive in the ROOKERY_LICENSE environment variable and it continues right away. Recording results and the scorecard work without a key.` });
+  if (!key) return 막음("No license key.");
 
   const now = opts.now ?? new Date(), f = opts.fetch ?? fetch;
   const 파일 = join(home, "license.json");
@@ -73,7 +73,7 @@ export async function gate(
   try { c = existsSync(파일) ? (JSON.parse(readFileSync(파일, "utf8")) as Cache) : undefined; } catch { c = undefined; }
   if (c && c.keyHash !== 해시(key)) c = undefined;
   if (c && now.getTime() - Date.parse(c.checkedAt) < PLAN.cacheHours * 3600_000)
-    return c.valid ? { ok: true, why: "Pro(확인해 둔 키)" } : 막음("이 키는 유효하지 않습니다(해지·만료·오타).");
+    return c.valid ? { ok: true, why: "Pro (cached key check)" } : 막음("This key is not valid (cancelled, expired, or mistyped).");
 
   let valid: boolean;
   try {
@@ -87,10 +87,10 @@ export async function gate(
   } catch {
     // 결제사가 안 닿는다 — 마지막 유효 확인에서 며칠 안이면 봐준다. 처음부터 확인 못 한 키는 못 연다.
     const 마지막 = c?.lastValidAt ? Date.parse(c.lastValidAt) : NaN;
-    if (now.getTime() - 마지막 < PLAN.offlineGraceDays * 86400_000) return { ok: true, why: "Pro(결제사 안 닿음 — 유예 중)" };
-    return 막음("키를 확인할 결제사에 닿지 않습니다.");
+    if (now.getTime() - 마지막 < PLAN.offlineGraceDays * 86400_000) return { ok: true, why: "Pro (payment provider unreachable — grace period)" };
+    return 막음("Could not reach the payment provider to check the key.");
   }
   const 새: Cache = { keyHash: 해시(key), valid, checkedAt: now.toISOString(), lastValidAt: valid ? now.toISOString() : c?.lastValidAt };
   const t = `${파일}.tmp`; writeFileSync(t, JSON.stringify(새)); renameSync(t, 파일);
-  return valid ? { ok: true, why: "Pro" } : 막음("이 키는 유효하지 않습니다(해지·만료·오타).");
+  return valid ? { ok: true, why: "Pro" } : 막음("This key is not valid (cancelled, expired, or mistyped).");
 }
