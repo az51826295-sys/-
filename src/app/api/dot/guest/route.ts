@@ -1,4 +1,6 @@
+import { cookies } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
+import { FROM_COOKIE, cleanFrom } from "@/lib/dot/from";
 
 /**
  * **로그인 없이 쓰는 사람에게 자리를 하나 준다** (10-28 사장님 "버튼이 안 눌려").
@@ -26,7 +28,9 @@ export async function POST() {
   const { data: { user } } = await supabase.auth.getUser();
   if (user) return Response.json({ ok: true, 새로만듦: false });
 
-  const { data, error } = await supabase.auth.signInAnonymously();
+  // 11-22: 홍보 꼬리표(FromTag 가 남긴 쿠키)를 계정 정보에 같이 적는다 — 어디서 온 사람이 대화까지 갔나를 센다.
+  const cameFrom = cleanFrom((await cookies()).get(FROM_COOKIE)?.value);
+  const { data, error } = await supabase.auth.signInAnonymously(cameFrom ? { options: { data: { came_from: cameFrom } } } : undefined);
   if (error || !data.user) {
     /* **오류를 그대로 전한다.** 10-28 에 이 설정이 꺼져 있어서(`anonymous_provider_disabled`)
        앱 전체가 말없이 죽어 있었다 — 삼키면 다음에도 못 찾는다. */

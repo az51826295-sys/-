@@ -28,9 +28,11 @@ export default async function DotFeed({ searchParams }: { searchParams: Promise<
   const showAll = all === "1";
   const supabase = await createClient();
   const db = createServiceClient();
-  const [{ data: { user } }, { data: rows, error: 피드오류 }] = await Promise.all([
+  const [{ data: { user } }, { data: rows, error: 피드오류 }, { data: 인물들 }] = await Promise.all([
     supabase.auth.getUser(),
     db.from("dot_posts").select("id, image_url, caption, caption_en, likes, created_at, character_id, dot_characters(slug, name, photos, is_public)").order("id", { ascending: false }).limit(60),
+    // 11-22: 처음 온 사람에게 "누구랑 얘기할지" 고를 줄 — 공개 캐릭터 전부(고르지 않는다).
+    db.from("dot_characters").select("slug, name, photos").eq("is_public", true).order("created_at", { ascending: true }),
   ]);
 
   /* 10-19: DB 가 한도로 막히자 이 화면이 **맨 500** 이었다(구글 공개 심사 중이었다).
@@ -106,8 +108,26 @@ export default async function DotFeed({ searchParams }: { searchParams: Promise<
           </nav>
           <HeartBadgeServer />
         </header>
-        {!showAll && follows.size === 0 && <div className="fd-hint">{t("feed_no_follow", lang)}</div>}
+        {/* 11-22: 처음 온 사람(아직 자리가 없는 사람)에게는 빈 "팔로우 없음" 대신 **무엇을 하는 곳인지 + 바로 들어갈 문**.
+            홍보를 보고 온 사람이 첫 화면에서 갈 곳을 몰라 나가던 자리다. 계정이 생기면(방에 한 번 들어가면) 사라진다. */}
+        {!user ? null : !showAll && follows.size === 0 && <div className="fd-hint">{t("feed_no_follow", lang)}</div>}
         <div className="fd-list">
+          {!user && (인물들?.length ?? 0) > 0 && (
+            <section className="fd-intro">
+              <h1 className="fd-intro-title">{t("feed_intro_title", lang)}</h1>
+              <p className="fd-intro-body">{t("feed_intro_body", lang)}</p>
+              <p className="fd-intro-pick">{t("feed_intro_pick", lang)}</p>
+              <div className="fd-intro-row">
+                {((인물들 ?? []) as { slug: string; name: string; photos: { url: string }[] | null }[]).map((c) => (
+                  <Link key={c.slug} href={`/dot/${c.slug}`} className="fd-intro-one">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    {c.photos?.[0]?.url ? <img src={c.photos[0].url} alt="" /> : <span className="fd-intro-none" />}
+                    <span>{보일이름(c.slug, c.name, lang)}</span>
+                  </Link>
+                ))}
+              </div>
+            </section>
+          )}
           <StoryRow items={stories} />
           {posts.length === 0 && <div className="fd-empty">{t("feed_empty", lang)}</div>}
           {posts.map((p) => <FeedCard key={p.id} post={p} liked={liked.has(p.id)} signedIn={!!user} lang={lang} />)}
@@ -132,6 +152,14 @@ const CSS = `
 .fd-tabs { flex:0 0 auto; }
 .fd-list { flex:1; min-height:0; overflow-y:auto; }
 .fd-empty { padding:24px 20px; font-size:14px; color:#8a8f98; }
+.fd-intro { margin:0 12px 12px; padding:16px 14px 12px; background:#f4f1ff; border-radius:16px; }
+.fd-intro-title { font-size:18px; font-weight:800; color:#1c1640; margin:0 0 6px; letter-spacing:-.3px; line-height:1.35; }
+.fd-intro-body { font-size:14px; color:#3d3566; margin:0 0 12px; line-height:1.5; }
+.fd-intro-pick { font-size:13px; font-weight:700; color:#6b5bd2; margin:0 0 8px; }
+.fd-intro-row { display:flex; gap:10px; overflow-x:auto; padding-bottom:4px; scrollbar-width:none; }
+.fd-intro-row::-webkit-scrollbar { display:none; }
+.fd-intro-one { flex:0 0 auto; width:68px; display:flex; flex-direction:column; align-items:center; gap:6px; text-decoration:none; color:#1c1640; font-size:12px; font-weight:600; }
+.fd-intro-one img, .fd-intro-none { width:64px; height:64px; border-radius:50%; object-fit:cover; object-position:center top; image-rendering:pixelated; background:#fff; box-shadow:0 0 0 3px #6b5bd2; }
 .fc { border-bottom:1px solid #f1f3f6; padding-bottom:12px; margin-bottom:6px; }
 .fc-head { display:flex; align-items:center; gap:10px; padding:10px 16px; }
 .fc-avatar { width:34px; height:34px; border-radius:50%; object-fit:cover; object-position:center top; image-rendering:pixelated; background:#f1f3f6; }

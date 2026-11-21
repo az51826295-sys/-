@@ -81,6 +81,10 @@ const 말 = {
   feed_all: { ko: "전체", en: "All" },
   feed_no_follow: { ko: "아직 팔로우한 캐릭터가 없어요. 팔로우하면 여기에 모여요.", en: "You are not following anyone yet. Whoever you follow shows up here." },
   feed_empty: { ko: "아직 올라온 게시물이 없어요. 캐릭터들이 곧 올릴 거예요.", en: "Nothing posted yet. They will put something up soon." },
+  /* 11-22 처음 온 사람용 안내 — 두근도트를 한 줄로(09-09 확정한 상품 그대로: 카톡처럼 대화 · 말할 때마다 표정이 바뀐다). */
+  feed_intro_title: { ko: "도트 캐릭터랑 카톡하듯 대화해요", en: "Chat with pixel characters, like texting a friend" },
+  feed_intro_body: { ko: "말할 때마다 표정이 바뀌어요. 가입 없이 바로 시작.", en: "Their face changes every time they talk. No sign-up." },
+  feed_intro_pick: { ko: "누구랑 얘기해 볼까요? 눌러서 바로 대화", en: "Who do you want to talk to? Tap to start" },
   feed_like: { ko: "좋아요", en: "Like" },
   feed_chat: { ko: "채팅", en: "Chat" },
 
