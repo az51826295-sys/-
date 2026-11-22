@@ -128,7 +128,7 @@ export default async function DotMe() {
 }
 
 const CSS = `
-.me-login { display:flex; align-items:center; min-height:44px; margin:10px 0; padding:8px 12px; background:#f0edff; color:#3f3597; border-radius:10px; font-size:13px; text-decoration:none; }
+.me-login { display:flex; align-items:center; min-height:44px; margin:10px 16px; padding:8px 12px; background:#f0edff; color:#3f3597; border-radius:10px; font-size:13px; text-decoration:none; }
 .me-empty { margin:28px 4px; display:flex; flex-direction:column; gap:12px; }
 .me-empty > b { font-size:17px; color:#111; }
 .me-empty ul { margin:0; padding-left:18px; display:flex; flex-direction:column; gap:6px; font-size:14px; color:#5c6570; }
