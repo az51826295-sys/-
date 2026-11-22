@@ -39,8 +39,10 @@ type Bond = { points: number; stage: number; streakDays: number; toNext: { need:
 type Line = { role: string; content: string; emotion: string | null; sticker?: string | null; at?: string };
 
 export default function DotChat({
-  signedIn, who, bond: bond0, remaining: remaining0, history, limit, account: account0, balance: balance0, replyTo: replyTo0 = null, ad = null,
+  signedIn, who, bond: bond0, remaining: remaining0, history, limit, account: account0, balance: balance0, replyTo: replyTo0 = null, ad = null, shop = false,
 }: {
+  /** 11-22: 하트를 살 길(Play 또는 웹 Polar)이 열렸나 — 열렸으면 한도 카드에 "하트 사기" 를 그린다. */
+  shop?: boolean;
   signedIn: boolean; who: Character; bond: Bond; remaining: number; history: Line[]; limit: number;
   /**
    * 광고 설정(`adConfFromEnv()`) — 스위치와 광고주 번호가 **둘 다** 있을 때만 온다.
@@ -655,7 +657,7 @@ export default function DotChat({
           {signedIn && mounted && remaining <= 0 && !busy && (
             <LimitCard
               name={who.name} checkedIn={balance.출석함} checkinHearts={CHECKIN_HEARTS} checkinBusy={checkinBusy}
-              adOpen={adOpen} adLeft={balance.adLeft} adBusy={adBusy}
+              adOpen={adOpen} adLeft={balance.adLeft} adBusy={adBusy} shop={shop}
               push={push} onCheckIn={checkIn} onAd={watchAd} onPush={togglePush} lang={lang}
             />
           )}
@@ -1078,8 +1080,9 @@ export function AdNudge({ adLeft, adBusy, onAd, lang = "ko" }: { adLeft: number;
  * 구독 단추는 11-06 에 뺐다 — 파는 것이 없다.
  */
 export function LimitCard({
-  name, checkedIn, checkinHearts, checkinBusy, adOpen, adLeft, adBusy, push, onCheckIn, onAd, onPush, lang = "ko",
+  name, checkedIn, checkinHearts, checkinBusy, adOpen, adLeft, adBusy, push, onCheckIn, onAd, onPush, lang = "ko", shop = false,
 }: {
+  shop?: boolean;
   /** 11-22 "다 영어로" — 영어 화면에서는 카드 글도 영어. 자(dot_room_shot)는 안 넘기니 한국어 그대로. */
   lang?: Lang;
   name: string; checkedIn: boolean; checkinHearts: number; checkinBusy: boolean;
@@ -1115,6 +1118,10 @@ export function LimitCard({
         <button className="kk-limit-ad" onClick={onAd} disabled={adBusy}>
           {adBusy ? (en ? "Loading ad…" : "광고를 불러오는 중…") : en ? LIMIT_COPY_EN.광고단추(adLeft) : LIMIT_COPY.광고단추(adLeft)}
         </button>
+      )}
+      {/* 11-22: 출석한 뒤 다 쓴 사람에게만 — 출석 전에는 공짜가 먼저다. */}
+      {shop && checkedIn && (
+        <a className="kk-limit-ad kk-limit-buy" href="/dot/pay">{en ? "Get more hearts" : "하트 사기"}</a>
       )}
       {push !== "unsupported" && push !== "on" && (
         <button className="kk-limit-link" onClick={onPush}>{en ? `Let ${name} text you first tomorrow` : <>내일 {name}{iGa(name)} 먼저 말 걸게 하기</>}</button>
@@ -1297,6 +1304,7 @@ const CSS = `
 /* 광고 단추(11-04) — 구독 단추와 **다른 무게**로 둔다. 노란 단추가 둘이면 어느 쪽이 공짜인지 안 보인다. */
 /* 높이 44px 이상 — 회사가 늘 재는 줄이다(dot_ui_audit ⑤ "너무 작은 누를 자리").
    처음 padding:9px 로 두니 37px 이었고 자에 걸렸다. */
+.kk-limit-buy { text-align:center; text-decoration:none; color:#ff5c7a; font-weight:700; border-color:#ffc2cf; }
 .kk-limit-ad { display:block; width:100%; margin-top:8px; background:#fff; color:#3c434b; border:1px solid #d8dde3; border-radius:12px; padding:13px 14px; font:inherit; font-size:13px; line-height:1.3; cursor:pointer; }
 .kk-limit-ad:disabled { opacity:.6; cursor:default; }
 .kk-shop { display:flex; flex-direction:column; gap:8px; }

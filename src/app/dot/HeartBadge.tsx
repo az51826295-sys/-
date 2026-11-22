@@ -19,9 +19,11 @@ import { showRewardedAd, AD_FAIL_COPY } from "@/lib/dot/adbreak";
  * 광고 창구가 안 열려 있으면 광고 줄을 **안 그린다** — 누르면 503 이 오는 단추는 두지 않는다.
  * 결제는 아직 받을 길이 없어 `/dot/pay` 가 "준비 중" 으로 답한다(사장님이 그렇게 정하셨다).
  */
-export default function HeartBadge({ hearts: hearts0, ad, adLeft: adLeft0, 무제한 = false, 파는중 = false }: {
+export default function HeartBadge({ hearts: hearts0, ad, adLeft: adLeft0, 무제한 = false, 파는중 = false, en = false }: {
   /* 11-13: 개발자 링크면 숫자(9999)가 아니라 `∞` 로 적는다 — 세어서 나온 수가 아니기 때문이다. */
   hearts: number; ad: AdConf | null; adLeft: number; 무제한?: boolean; 파는중?: boolean;
+  /** 11-22 영어 기본 — 시트 글도 영어로. */
+  en?: boolean;
 }) {
   const router = useRouter();
   const [열림, set열림] = useState(false);
@@ -40,13 +42,13 @@ export default function HeartBadge({ hearts: hearts0, ad, adLeft: adLeft0, 무�
       if (결과 !== "viewed") { set말(AD_FAIL_COPY[결과]); return; }
       const res = await fetch("/api/dot/ad", { method: "POST" });
       const data = await res.json().catch(() => ({})) as { balance?: { remaining: number; adLeft: number }; error?: string };
-      if (!res.ok) { set말(data.error ?? "광고를 불러오지 못했어요"); return; }
+      if (!res.ok) { set말(data.error ?? (en ? "Couldn't load an ad" : "광고를 불러오지 못했어요")); return; }
       /* 서버가 센 잔고로 갈아 끼운다 — 화면에서 더하면 두 번 눌렀을 때 어긋난다. */
       if (data.balance) { setHearts(data.balance.remaining); setAdLeft(data.balance.adLeft); }
-      set말(`하트 ${AD_REFILL_TURNS}개가 찼어요`);
+      set말(en ? `+${AD_REFILL_TURNS} heart` : `하트 ${AD_REFILL_TURNS}개가 찼어요`);
       router.refresh();
     } catch {
-      set말("광고를 불러오지 못했어요");
+      set말(en ? "Couldn't load an ad" : "광고를 불러오지 못했어요");
     } finally {
       setBusy(false);
       setTimeout(() => set말(null), 2200);
@@ -56,19 +58,19 @@ export default function HeartBadge({ hearts: hearts0, ad, adLeft: adLeft0, 무�
   return (
     <>
       <style>{CSS}</style>
-      <button className="hb" onClick={() => set열림(true)} aria-label={무제한 ? "개발자 모드 · 하트 무제한" : `남은 하트 ${hearts}개 · 하트 늘리기`}>
+      <button className="hb" onClick={() => set열림(true)} aria-label={무제한 ? "개발자 모드 · 하트 무제한" : en ? `${hearts} hearts left · get more` : `남은 하트 ${hearts}개 · 하트 늘리기`}>
         <b>♥</b>{무제한 ? "∞" : hearts}
       </button>
 
       {열림 && (
         <div className="hb-back" onClick={() => set열림(false)} role="dialog" aria-label="하트">
           <div className="hb-sheet" onClick={(e) => e.stopPropagation()}>
-            <div className="hb-now"><b>♥</b> {무제한 ? "개발자 모드 — 하트 무제한" : `지금 하트 ${hearts}개`}</div>
+            <div className="hb-now"><b>♥</b> {무제한 ? "개발자 모드 — 하트 무제한" : en ? `You have ${hearts} hearts` : `지금 하트 ${hearts}개`}</div>
 
             {ad && adLeft > 0 && (
               <button className="hb-row" onClick={광고보기} disabled={busy}>
-                <span className="hb-row-t">{busy ? "광고를 불러오는 중…" : `광고 보고 하트 +${AD_REFILL_TURNS}`}</span>
-                <span className="hb-row-s">오늘 {adLeft}번 남음</span>
+                <span className="hb-row-t">{busy ? (en ? "Loading ad…" : "광고를 불러오는 중…") : en ? `Watch an ad for +${AD_REFILL_TURNS} heart` : `광고 보고 하트 +${AD_REFILL_TURNS}`}</span>
+                <span className="hb-row-s">{en ? `${adLeft} left today` : `오늘 ${adLeft}번 남음`}</span>
               </button>
             )}
 
@@ -82,18 +84,18 @@ export default function HeartBadge({ hearts: hearts0, ad, adLeft: adLeft0, 무�
               */}
             {파는중 && (
               <a className="hb-row" href="/dot/pay">
-                <span className="hb-row-t">하트 사기</span>
-                <span className="hb-row-s">묶음으로 사면 기다리지 않아요</span>
+                <span className="hb-row-t">{en ? "Get hearts" : "하트 사기"}</span>
+                <span className="hb-row-s">{en ? "From $0.99 — no waiting" : "묶음으로 사면 기다리지 않아요"}</span>
               </a>
             )}
 
             {/* 광고도 결제도 닫혀 있으면 시트에 **누를 게 하나도 없다** — 그러면 "숫자만 뜨는 창"
                 이 된다. 하트가 어디서 오는지 한 줄로 적어 둔다(글은 내 초안이다). */}
             {!ad && !파는중 && !무제한 && (
-              <div className="hb-note">하트는 매일 출석하면 {CHECKIN_HEARTS}개 받아요</div>
+              <div className="hb-note">{en ? `Check in daily for ${CHECKIN_HEARTS} hearts` : `하트는 매일 출석하면 ${CHECKIN_HEARTS}개 받아요`}</div>
             )}
 
-            <button className="hb-close" onClick={() => set열림(false)}>닫기</button>
+            <button className="hb-close" onClick={() => set열림(false)}>{en ? "Close" : "닫기"}</button>
           </div>
         </div>
       )}

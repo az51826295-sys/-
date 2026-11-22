@@ -6,7 +6,8 @@ import { langFromCookie } from "@/lib/dot/langServer";
 import GuestSession from "../GuestSession";
 import DotChat from "./DotChat";
 import { AUTO_HEARTS_PER_DAY, CHECKIN_HEARTS, todayKST, toNextStage } from "@/lib/dot/bond";
-import { balanceFor, AD_REFILLS_PER_DAY, AD_REFILL_TURNS, adConfFromEnv, type Balance } from "@/lib/dot/money";
+import { balanceFor, AD_REFILLS_PER_DAY, AD_REFILL_TURNS, adConfFromEnv, heartBillingOpen, type Balance } from "@/lib/dot/money";
+import { polarOpen } from "@/lib/dot/polar";
 import { devFromCookies } from "@/lib/dot/dev";
 
 /**
@@ -101,6 +102,7 @@ export default async function DotRoom({ params, searchParams }: { params: Promis
          둘 중 하나라도 없으면 null 이 가고 단추를 아예 안 그린다 — 켜졌다고 넘겨짚지 않는다
          (10-28 화면 점검: 못 하는 일을 시키는 자리를 남기지 않는다). */
       ad={adConfFromEnv()}
+      shop={heartBillingOpen() || polarOpen()}
     />
     </>
   );

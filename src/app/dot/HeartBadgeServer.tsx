@@ -4,6 +4,8 @@ import { todayKST } from "@/lib/dot/bond";
 import { balanceFor, adConfFromEnv, heartBillingOpen } from "@/lib/dot/money";
 import { devFromCookies } from "@/lib/dot/dev";
 import HeartBadge from "./HeartBadge";
+import { polarOpen } from "@/lib/dot/polar";
+import { langFromCookie } from "@/lib/dot/langServer";
 
 /**
  * 하트 수를 **머리에 붙이는 조각** — 화면마다 잔고를 다시 세는 코드를 쓰지 않으려고 하나로 꺼냈다.
@@ -25,7 +27,9 @@ export default async function HeartBadgeServer() {
       <HeartBadge
         hearts={Number.isFinite(b.remaining) ? b.remaining : 0}
         무제한={!!b.무제한}
-        파는중={heartBillingOpen()}
+        /* 11-22: 웹(Polar)이 열려도 입구를 그린다 — 전에는 Play 스위치만 봐서 웹 사람에겐 "하트 사기" 가 안 보였다. */
+        파는중={heartBillingOpen() || polarOpen()}
+        en={(await langFromCookie()) === "en"}
         ad={adConfFromEnv()}
         adLeft={b.adLeft}
       />
