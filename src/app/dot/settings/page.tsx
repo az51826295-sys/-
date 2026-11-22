@@ -32,7 +32,10 @@ export default async function DotSettings() {
           <div className="st-group">{t("st_account", lang)}</div>
           {/* 10-28: 로그인 화면을 없앴으니 "로그인 안 됨" 은 **고칠 수 없는 상태**다.
               고칠 수 없는 것을 문제처럼 적지 않는다 — 지금 참인 것만 적는다. */}
-          <div className="st-row"><span>{email ?? t("st_device", lang)}</span><small>{email ? t("st_account_sub", lang) : t("st_device_sub", lang)}</small></div>
+          {/* 11-22: 로그인 화면이 다시 생겼다(/dot/login) — 계정이 없으면 이 줄이 그리로 가는 문이다. */}
+          {email
+            ? <div className="st-row"><span>{email}</span><small>{t("st_account_sub", lang)}</small></div>
+            : <Link className="st-row" href="/dot/login"><span>{lang === "en" ? "Sign in" : "로그인"}</span><small>{t("st_device_sub", lang)}</small></Link>}
           <SettingsActions signedIn={Boolean(email)} lang={lang} />
 
           {/* 10-28: 언어·손맛. 로그인 없이 쓰는 앱이라 이 기기에 남는다. */}

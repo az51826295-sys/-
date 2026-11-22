@@ -13,6 +13,8 @@
  */
 import { createClient } from "@/lib/supabase/server";
 import { 구글켜졌나 } from "@/lib/auth/googleEnabled";
+import { publicOrigin } from "@/lib/http/origin";
+import { AUTH_NEXT_COOKIE } from "@/lib/dot/authNext";
 
 /**
  * 구글이 켜져 있나. 화면이 이걸 보고 무엇을 내밀지 정한다.
@@ -32,14 +34,17 @@ export async function POST(request: Request) {
   const already = (user.identities ?? []).some((i) => i.provider === "google");
   if (already) return Response.json({ error: "이미 구글에 연결돼 있어요." }, { status: 400 });
 
-  const origin = new URL(request.url).origin;
+  /* 11-22: request.url 은 Railway 안에서 localhost 라 돌아올 곳이 틀렸다 → publicOrigin.
+   * 돌아오는 자리는 로그인과 같은 /auth/callback 하나(구글 허용 목록에 있는 주소). 어디로 갈지는 쿠키로. */
   const { data, error } = await supabase.auth.linkIdentity({
     provider: "google",
-    options: { redirectTo: `${origin}/dot/settings` },
+    options: { redirectTo: `${publicOrigin(request)}/auth/callback` },
   });
   // **오류를 그대로 전한다.** 구글이 꺼져 있으면 여기서 그 말이 나온다 — 삼키면 화면이 말없이 아무 일도 안 한다.
   if (error || !data?.url) {
     return Response.json({ error: error?.message ?? "구글 연결 주소를 못 받았어요." }, { status: 400 });
   }
-  return Response.json({ url: data.url });
+  const res = Response.json({ url: data.url });
+  res.headers.append("set-cookie", `${AUTH_NEXT_COOKIE}=${encodeURIComponent("/dot/login?linked=1")}; Path=/; Max-Age=900; SameSite=Lax; Secure`);
+  return res;
 }

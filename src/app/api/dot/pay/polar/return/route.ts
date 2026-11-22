@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { userIdFrom } from "@/lib/dot/auth";
+import { publicOrigin } from "@/lib/http/origin";
 import { createServiceClient } from "@/lib/supabase/service";
 import { claimCheckout, POLAR_COOKIE } from "@/lib/dot/polar";
 
@@ -7,7 +8,7 @@ import { claimCheckout, POLAR_COOKIE } from "@/lib/dot/polar";
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const go = (q: string) => {
-    const res = NextResponse.redirect(new URL(`/dot/pay?${q}`, url.origin), 303);
+    const res = NextResponse.redirect(new URL(`/dot/pay?${q}`, publicOrigin(request)), 303);
     return res;
   };
   const userId = await userIdFrom(request);

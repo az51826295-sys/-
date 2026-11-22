@@ -96,8 +96,11 @@ export async function proxy(request: NextRequest) {
   const 로그인화면 = path === "/login" || path === "/signup";
   if (PRODUCT === "dot" && 로그인화면 && request.nextUrl.searchParams.get("force") !== "1") {
     const url = request.nextUrl.clone();
-    url.pathname = "/dot";
-    url.search = "";
+    /* 11-22: 두근도트 로그인 화면이 다시 생겼다(/dot/login). 옛 링크·오류 돌려보내기도 거기로 —
+     * 오류 문구(error)는 들고 간다. 안 들고 가면 "왜 안 됐는지" 가 사라진다. */
+    const err = request.nextUrl.searchParams.get("error");
+    url.pathname = "/dot/login";
+    url.search = err ? `?error=${encodeURIComponent(err)}` : "";
     return NextResponse.redirect(url);
   }
 

@@ -53,6 +53,8 @@ export default async function DotMe() {
         </header>
 
         <div className="me-body">
+          {/* 11-22: 손님으로 쓰는 사람에게 로그인 문 — 대화·하트가 이 기기에만 있다. */}
+          {user.is_anonymous && <Link href="/dot/login" className="me-login">{lang === "en" ? "Sign in to keep your chats on any device ›" : "로그인하면 대화와 하트가 어느 기기에서든 이어져요 ›"}</Link>}
           <div className="me-nums">
             <div><b>{v.posts.length}</b><span>{t("me_posts", lang)}</span></div>
             <div><b>{v.followers.length}</b><span>{t("me_followers", lang)}</span></div>
@@ -126,6 +128,7 @@ export default async function DotMe() {
 }
 
 const CSS = `
+.me-login { display:flex; align-items:center; min-height:44px; margin:10px 0; padding:8px 12px; background:#f0edff; color:#3f3597; border-radius:10px; font-size:13px; text-decoration:none; }
 .me-empty { margin:28px 4px; display:flex; flex-direction:column; gap:12px; }
 .me-empty > b { font-size:17px; color:#111; }
 .me-empty ul { margin:0; padding-left:18px; display:flex; flex-direction:column; gap:6px; font-size:14px; color:#5c6570; }
@@ -194,6 +197,7 @@ function MeEmpty({ lang }: { lang: Lang }) {
             </ul>
             <small>{t("st_device_sub", lang)}</small>
             <MeSignIn lang={lang} />
+            <Link href="/dot/login" className="me-login">{lang === "en" ? "I already have an account ›" : "이미 계정이 있어요 · 로그인 ›"}</Link>
           </div>
         </div>
         <DotTabs on="me" />

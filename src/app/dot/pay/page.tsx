@@ -20,9 +20,11 @@ import PayClient from "./PayClient";
 export default async function HeartStore({ searchParams }: { searchParams: Promise<{ paid?: string }> }) {
   const { paid } = await searchParams;
   let hearts = 0;
+  let 손님 = true;
   try {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
+    손님 = !user || !!user.is_anonymous;
     if (user) {
       /* 11-22 웹 결제: 결제창을 열어 두고 안 돌아온 사람 — 여기서 한 번 더 Polar 에 묻는다(몇 번 물어도 한 번만 준다). */
       const 열어둔 = (await cookies()).get(POLAR_COOKIE)?.value;
@@ -43,6 +45,13 @@ export default async function HeartStore({ searchParams }: { searchParams: Promi
         </header>
 
         <div className="py-now"><b>♥</b> 지금 하트 {hearts}개</div>
+
+        {/* 11-22: 손님 계정에 산 하트는 브라우저를 지우면 같이 사라진다 — 사기 전에 말해 준다. */}
+        {손님 && (
+          <Link href="/dot/login" className="py-login">
+            산 하트를 잃어버리지 않으려면 <b>로그인</b>하고 사세요 ›
+          </Link>
+        )}
 
         {paid && <div className={/^\d+$/.test(paid) ? "py-ok" : "py-wait"}>{결과글(paid)}</div>}
 
@@ -73,6 +82,7 @@ const CSS = `
 .py-title { font-size:20px; font-weight:700; letter-spacing:-.3px; }
 .py-now { margin:6px 0 16px; font-size:15px; font-weight:700; }
 .py-now b { color:#ff5c7a; }
+.py-login { display:flex; align-items:center; min-height:44px; margin:0 0 12px; padding:8px 12px; background:#f0edff; color:#3f3597; border-radius:10px; font-size:13px; text-decoration:none; }
 .py-ok { margin:0 0 12px; padding:10px 12px; background:#e9f8ef; color:#17663a; border-radius:10px; font-size:13px; text-align:center; }
 .py-wait { margin:0 0 12px; padding:10px 12px; background:#fff4e5; color:#8a5a00; border-radius:10px; font-size:13px; text-align:center; }
 .py-free { margin-top:16px; font-size:12px; color:#8a8f98; line-height:1.6; text-align:center; }
