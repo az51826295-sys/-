@@ -3,6 +3,8 @@ import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import { todayKST, CHECKIN_HEARTS } from "@/lib/dot/bond";
 import { balanceFor, HEART_PACKS, heartBillingOpen, AD_REFILLS_PER_DAY, AD_REFILL_TURNS } from "@/lib/dot/money";
+import { cookies } from "next/headers";
+import { claimCheckout, polarOpen, POLAR_COOKIE } from "@/lib/dot/polar";
 import PayClient from "./PayClient";
 
 /**
@@ -15,12 +17,16 @@ import PayClient from "./PayClient";
  * *"결제창까지 보이고 준비 중"* 으로 정하셔서 묶음은 내밀되 누르면 "곧 열려요" 로 답한다.
  * 파는 길이 열리면 `HEART_BILLING_OPEN=1` 만 켜면 된다.
  */
-export default async function HeartStore() {
+export default async function HeartStore({ searchParams }: { searchParams: Promise<{ paid?: string }> }) {
+  const { paid } = await searchParams;
   let hearts = 0;
   try {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
+      /* 11-22 웹 결제: 결제창을 열어 두고 안 돌아온 사람 — 여기서 한 번 더 Polar 에 묻는다(몇 번 물어도 한 번만 준다). */
+      const 열어둔 = (await cookies()).get(POLAR_COOKIE)?.value;
+      if (열어둔 && polarOpen()) await claimCheckout(createServiceClient(), user.id, 열어둔).catch(() => null);
       const b = await balanceFor(createServiceClient(), user.id, todayKST());
       hearts = Number.isFinite(b.remaining) ? b.remaining : 0;
     }
@@ -38,7 +44,9 @@ export default async function HeartStore() {
 
         <div className="py-now"><b>♥</b> 지금 하트 {hearts}개</div>
 
-        <PayClient packs={HEART_PACKS} open={heartBillingOpen()} />
+        {paid && <div className={/^\d+$/.test(paid) ? "py-ok" : "py-wait"}>{결과글(paid)}</div>}
+
+        <PayClient packs={HEART_PACKS} open={{ play: heartBillingOpen(), web: polarOpen() }} />
 
         {/* 공짜 길을 숨기지 않는다 — 숨기면 "돈을 내야만 되는 앱" 으로 읽힌다. */}
         <div className="py-free">
@@ -47,6 +55,13 @@ export default async function HeartStore() {
       </div>
     </div>
   );
+}
+
+function 결과글(p: string) {
+  if (/^\d+$/.test(p)) return `하트 ${p}개가 들어왔어요. 고마워요!`;
+  if (p === "wait") return "결제가 아직 끝나지 않았어요. 끝나면 이 화면에 다시 오면 들어와요.";
+  if (p === "login") return "대화방에 한 번 들어갔다 오면 하트가 들어와요.";
+  return "확인이 안 됐어요. 돈이 빠졌는데 하트가 없으면 설정 > 문의로 알려 주세요.";
 }
 
 const CSS = `
@@ -58,5 +73,7 @@ const CSS = `
 .py-title { font-size:20px; font-weight:700; letter-spacing:-.3px; }
 .py-now { margin:6px 0 16px; font-size:15px; font-weight:700; }
 .py-now b { color:#ff5c7a; }
+.py-ok { margin:0 0 12px; padding:10px 12px; background:#e9f8ef; color:#17663a; border-radius:10px; font-size:13px; text-align:center; }
+.py-wait { margin:0 0 12px; padding:10px 12px; background:#fff4e5; color:#8a5a00; border-radius:10px; font-size:13px; text-align:center; }
 .py-free { margin-top:16px; font-size:12px; color:#8a8f98; line-height:1.6; text-align:center; }
 `;

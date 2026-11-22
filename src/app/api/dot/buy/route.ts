@@ -3,6 +3,7 @@ import { createServiceClient } from "@/lib/supabase/service";
 import { todayKST } from "@/lib/dot/bond";
 import { HEART_PACKS, balanceFor, heartBillingOpen } from "@/lib/dot/money";
 import { verifyProduct, acknowledgeProduct } from "@/lib/dot/playVerify";
+import { grantHearts } from "@/lib/dot/grant-hearts";
 
 /**
  * **하트 묶음을 산다 — 받는 쪽** (11-12).
@@ -67,37 +68,10 @@ export async function POST(request: Request) {
   const db = createServiceClient();
   const day = todayKST();
 
-  /* 2) 번호표. 이미 **다 끝난** 줄이면 그대로 돌려준다(두 번 누른 사람에게 오류를 주지 않는다). */
-  const { data: 있던 } = await db
-    .from("dot_purchases").select("id, credits").eq("ref", token).eq("source", "play").maybeSingle();
-  if (있던 && Number(있던.credits) > 0) {
-    return Response.json({ ok: true, 이미: true, balance: await balanceFor(db, userId, day) });
-  }
-  let 줄id = 있던?.id as number | undefined;
-  if (!줄id) {
-    const { data: 새줄, error: 적기 } = await db
-      .from("dot_purchases")
-      .insert({ user_id: userId, sku: pack.key, credits: 0, menhera_days: 0, source: "play", ref: token })
-      .select("id").single();
-    if (적기) return Response.json({ error: 적기.message }, { status: 500 });
-    줄id = 새줄.id as number;
-  }
-
-  /* 3) 지갑을 올린다 — **읽은 값 그대로일 때만**(CAS). 같은 순간에 두 번 와도 하나만 이긴다. */
-  let 올림 = false;
-  for (let 판 = 0; 판 < 3 && !올림; 판++) {
-    await db.from("dot_wallet").upsert({ user_id: userId, credits: 0 }, { onConflict: "user_id", ignoreDuplicates: true });
-    const { data: 지금 } = await db.from("dot_wallet").select("credits").eq("user_id", userId).maybeSingle();
-    const 전 = Number(지금?.credits ?? 0);
-    const { data: 뒤 } = await db
-      .from("dot_wallet").update({ credits: 전 + pack.hearts, updated_at: new Date().toISOString() })
-      .eq("user_id", userId).eq("credits", 전).select("credits");
-    올림 = (뒤?.length ?? 0) > 0;
-  }
-  if (!올림) return Response.json({ error: "충전이 밀렸어요. 다시 눌러 주세요." }, { status: 503 });
-
-  /* 4) 번호표를 진짜 수로 고친다 — 여기까지 와야 "줬다" 가 된다. */
-  await db.from("dot_purchases").update({ credits: pack.hearts }).eq("id", 줄id);
+  /* 2~4) 번호표 → 지갑 → 번호표 고침. 웹 결제와 같은 자리를 쓴다(grant-hearts.ts). */
+  const 줌 = await grantHearts(db, { userId, hearts: pack.hearts, sku: pack.key, source: "play", ref: token });
+  if (!줌.ok) return Response.json({ error: 줌.error }, { status: 줌.status });
+  if (줌.already) return Response.json({ ok: true, 이미: true, balance: await balanceFor(db, userId, day) });
 
   /* 5) 승인. 실패해도 사람을 막지 않지만 **반드시 적는다** — 안 하면 사흘 뒤 조용히 돌아간다. */
   const 승인 = 확인.acknowledged ? { ok: true, note: "이미 승인돼 있었다" } : await acknowledgeProduct(pkg, pack.key, token);

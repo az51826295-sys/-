@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { HeartPack } from "@/lib/dot/money";
 
 /**
@@ -10,8 +10,12 @@ import type { HeartPack } from "@/lib/dot/money";
  * 왜 단추를 꺼 두지 않고 눌리게 두나: 꺼진 단추만 셋이면 **고장으로 보인다.** 눌리되
  * 왜 안 되는지 말해 주는 쪽이 낫다. 다만 **값은 진짜 값**이라 열리는 날 그대로 팔린다.
  */
-export default function PayClient({ packs, open }: { packs: HeartPack[]; open: boolean }) {
+export default function PayClient({ packs, open: 길 }: { packs: HeartPack[]; open: { play: boolean; web: boolean } }) {
   const [말, set말] = useState<string | null>(null);
+  /* 11-22: 앱 안이면 Play, 밖(웹)이면 Polar. 앱 안에서 웹 결제를 띄우면 구글 정책 위반이라 갈래는 여기 하나다. */
+  const [앱안, set앱안] = useState(false);
+  useEffect(() => { set앱안(typeof window !== "undefined" && "getDigitalGoodsService" in window); }, []);
+  const open = 앱안 ? 길.play : 길.web;
 
   const [사는중, set사는중] = useState<string | null>(null);
 
@@ -27,6 +31,16 @@ export default function PayClient({ packs, open }: { packs: HeartPack[]; open: b
     }
     if (사는중) return;
     set사는중(p.key);
+    if (!앱안) {
+      try {
+        const res = await fetch("/api/dot/pay/polar", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ pack: p.key }) });
+        const j = (await res.json().catch(() => ({}))) as { url?: string; error?: string };
+        if (res.ok && j.url) { window.location.href = j.url; return; }
+        알림(j.error ?? "결제창을 못 열었어요.");
+      } catch { 알림("결제창을 못 열었어요."); }
+      set사는중(null);
+      return;
+    }
     try {
       const { 앱에서사기 } = await import("@/lib/dot/playClient");
       let 받은 = 0;
