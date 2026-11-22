@@ -15,3 +15,10 @@ export async function POST(request: Request) {
   (await cookies()).set(POLAR_COOKIE, r.id, { httpOnly: true, sameSite: "lax", secure: true, path: "/", maxAge: 60 * 60 * 24 * 3 });
   return Response.json({ ok: true, url: r.url });
 }
+
+/** 설정이 들어왔는지만 말한다(값은 절대 안 내보낸다) — 11-22 "넣었는데 꺼져 있다" 를 가리는 자. */
+export async function GET() {
+  const t = (process.env.POLAR_DOT_TOKEN ?? "").trim();
+  const keys = (process.env.POLAR_DOT_PRODUCTS ?? "").split(",").map((kv) => kv.split("=")[0]?.trim()).filter(Boolean);
+  return Response.json({ open: polarOpen(), token: t.length > 0, tokenLooksRight: t.startsWith("polar_oat_"), products: keys });
+}
