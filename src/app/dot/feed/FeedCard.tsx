@@ -37,7 +37,7 @@ export default function FeedCard({ post, liked: liked0, signedIn, lang = "ko" }:
         <Link className="fc-name" href={`/dot/${post.slug}/profile`}>{post.name}</Link>
         {when && <span className="fc-dot">·</span>}
         <span className="fc-when">{when}</span>
-        {signedIn && <span className="fc-fb"><FollowButton characterId={post.characterId} following={post.following} name={post.name} size="sm" /></span>}
+        {signedIn && <span className="fc-fb"><FollowButton characterId={post.characterId} following={post.following} name={post.name} size="sm" words={lang === "en" ? ["Follow", "Following"] : undefined} /></span>}
       </div>
       {/**
         * 10-24: 이사 뒤 사진 111장이 **죽은 주소**를 가리킨다(옛 스토리지, 10-27 에 가져온다).
