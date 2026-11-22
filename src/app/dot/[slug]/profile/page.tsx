@@ -2,7 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
-import { characterBySlug, spriteDataUrls } from "@/lib/dot/load";
+import { characterBySlug, spriteDataUrls, inLang } from "@/lib/dot/load";
+import { langFromCookie } from "@/lib/dot/langServer";
 import { toNextStage } from "@/lib/dot/bond";
 import FollowButton from "../../FollowButton";
 
@@ -14,6 +15,8 @@ import FollowButton from "../../FollowButton";
  */
 const PROFILE_WALL: Record<string, string> = { yuna: "/wallpapers/sakura.png", seoha: "/wallpapers/store.png", rin: "/wallpapers/room.png", doyun: "/wallpapers/rain.png" };
 const STAGE_WORD = ["", "처음 보는 사이", "아는 사이", "친한 사이", "가까운 사이", "아주 가까운 사이"];
+const STAGE_WORD_EN = ["", "Just met", "Acquaintances", "Friends", "Close", "Very close"];
+const EMO_EN: Record<string, string> = { neutral: "Calm", happy: "Happy", shy: "Shy", sad: "Sad", angry: "Grumpy", surprised: "Surprised" };
 const EMO_KO: Record<string, string> = { neutral: "평소", happy: "기쁨", shy: "부끄", sad: "시무룩", angry: "툴툴", surprised: "깜짝" };
 
 export const viewport = { width: "device-width", viewportFit: "cover" as const, initialScale: 1, maximumScale: 1, userScalable: false, themeColor: "#0b0f14" };
@@ -26,8 +29,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function DotProfile({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const supabase = await createClient();
-  const [{ data: { user } }, found, inline] = await Promise.all([supabase.auth.getUser(), characterBySlug(slug), spriteDataUrls(slug)]);
-  if (!found) notFound();
+  const [{ data: { user } }, raw, inline, lang] = await Promise.all([supabase.auth.getUser(), characterBySlug(slug), spriteDataUrls(slug), langFromCookie()]);
+  if (!raw) notFound();
+  /* 11-22 "다 영어로": 이름·한 줄 소개는 영어판으로(inLang — 대화방과 같은 규칙). */
+  const found = inLang(raw, lang);
+  const en = lang === "en";
   const sprites: Record<string, string> = { ...found.sprites };
   for (const [k, v] of Object.entries(inline)) if (!k.startsWith("face:")) sprites[k] = v;
 
@@ -54,7 +60,7 @@ export default async function DotProfile({ params }: { params: Promise<{ slug: s
         <div className="pf-hero">
           <img className="pf-wall" src={wall} alt="" aria-hidden />
           <div className="pf-shade" />
-          <Link href={`/dot/${slug}`} className="pf-back" aria-label="뒤로">‹</Link>
+          <Link href={`/dot/${slug}`} className="pf-back" aria-label={en ? "Back" : "뒤로"}>‹</Link>
           {/* 사진이 있으면 첫 장이 프로필 사진(전체), 없으면 흉상. 감정은 여기 없다(09-11 사장님). */}
           {photos.length ? <img className="pf-photo" src={photos[0].url} alt={found.name} /> : <div className="pf-portrait"><img src={sprites.happy ?? sprites.neutral} alt={found.name} /></div>}
         </div>
@@ -62,19 +68,21 @@ export default async function DotProfile({ params }: { params: Promise<{ slug: s
         <div className="pf-body">
           <div className="pf-name">{found.name}</div>
           <div className="pf-tag">“{found.tagline}”</div>
-          {user && <div className="pf-follow"><FollowButton characterId={found.id} following={following} name={found.name} /></div>}
+          {user && <div className="pf-follow"><FollowButton characterId={found.id} following={following} name={found.name} words={en ? ["Follow", "Following"] : undefined} /></div>}
 
           {stage > 0 ? (
             <div className="pf-bond">
               <div className="pf-hearts">{"★".repeat(stage)}{"☆".repeat(Math.max(0, 5 - stage))}</div>
-              <div className="pf-stage">{STAGE_WORD[stage]}</div>
+              <div className="pf-stage">{(en ? STAGE_WORD_EN : STAGE_WORD)[stage]}</div>
               <div className="pf-bar"><div style={{ width: next ? `${Math.round((1 - next.need / next.total) * 100)}%` : "100%" }} /></div>
               <div className="pf-meta">
-                {next ? `다음 단계까지 ${next.need}` : "마지막 단계"} · 나눈 말 {talks}{streak >= 2 ? ` · ${streak}일 연속` : ""}
+                {en
+                  ? <>{next ? `${next.need} to next level` : "Max level"} · {talks} messages{streak >= 2 ? ` · ${streak}-day streak` : ""}</>
+                  : <>{next ? `다음 단계까지 ${next.need}` : "마지막 단계"} · 나눈 말 {talks}{streak >= 2 ? ` · ${streak}일 연속` : ""}</>}
               </div>
             </div>
           ) : (
-            <div className="pf-bond muted">아직 이야기한 적이 없어요</div>
+            <div className="pf-bond muted">{en ? "You haven't talked yet" : "아직 이야기한 적이 없어요"}</div>
           )}
 
           {photos.length > 0 ? (
@@ -86,13 +94,13 @@ export default async function DotProfile({ params }: { params: Promise<{ slug: s
           ) : (
             <div className="pf-faces">
               {Object.entries(sprites).map(([e, url]) => (
-                <div key={e} className="pf-face"><img src={url} alt={e} /><span>{EMO_KO[e] ?? e}</span></div>
+                <div key={e} className="pf-face"><img src={url} alt={e} /><span>{(en ? EMO_EN : EMO_KO)[e] ?? e}</span></div>
               ))}
             </div>
           )}
 
-          <Link href={`/dot/${slug}`} className="pf-go">채팅하기</Link>
-          <Link href="/dot/feed" className="pf-list">피드로</Link>
+          <Link href={`/dot/${slug}`} className="pf-go">{en ? "Chat" : "채팅하기"}</Link>
+          <Link href="/dot/feed" className="pf-list">{en ? "Back to feed" : "피드로"}</Link>
         </div>
       </div>
     </div>

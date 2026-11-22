@@ -8,7 +8,8 @@ import { useRef, useState } from "react";
  * 고른 것이 맞는지 먼저 확인하고 글을 쓴다. 그래서 여기도 고르는 즉시 그려 준다
  * (`URL.createObjectURL` — 서버에 올리기 전이라 왕복이 0 이다).
  */
-export default function Uploader() {
+export default function Uploader({ lang = "ko" }: { lang?: "ko" | "en" }) {
+  const en = lang === "en";
   const 파일칸 = useRef<HTMLInputElement>(null);
   const [미리, set미리] = useState<string | null>(null);
   const [caption, setCaption] = useState("");
@@ -23,7 +24,7 @@ export default function Uploader() {
 
   async function 올리기() {
     const f = 파일칸.current?.files?.[0];
-    if (!f) { set말("사진을 골라 주세요."); return; }
+    if (!f) { set말(en ? "Pick a photo first." : "사진을 골라 주세요."); return; }
     set올리는중(true); set말(null);
     try {
       const fd = new FormData();
@@ -32,10 +33,10 @@ export default function Uploader() {
       const res = await fetch("/api/dot/my-posts", { method: "POST", body: fd });
       const j = (await res.json().catch(() => ({}))) as { error?: string };
       // 오류 글을 그대로 보여 준다 — "실패했어요" 하나로 뭉치면 무엇이 문제인지 아무도 모른다.
-      if (!res.ok) { set말(j.error ?? "못 올렸어요."); set올리는중(false); return; }
+      if (!res.ok) { set말(j.error ?? (en ? "Couldn't post it." : "못 올렸어요.")); set올리는중(false); return; }
       window.location.reload();
     } catch {
-      set말("못 올렸어요. 잠시 뒤에 다시 해 주세요.");
+      set말(en ? "Couldn't post it. Try again in a moment." : "못 올렸어요. 잠시 뒤에 다시 해 주세요.");
       set올리는중(false);
     }
   }
@@ -44,21 +45,21 @@ export default function Uploader() {
     <div className="up">
       <style>{CSS}</style>
       <input ref={파일칸} type="file" accept="image/png,image/jpeg,image/webp" className="up-file"
-        onChange={(e) => 골랐다(e.target.files?.[0] ?? null)} aria-label="사진 고르기" />
+        onChange={(e) => 골랐다(e.target.files?.[0] ?? null)} aria-label={en ? "Choose a photo" : "사진 고르기"} />
       {미리 ? (
         <>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={미리} alt="고른 사진" className="up-prev" />
+          <img src={미리} alt={en ? "Chosen photo" : "고른 사진"} className="up-prev" />
           <textarea className="up-cap" value={caption} onChange={(e) => setCaption(e.target.value)}
-            placeholder="무슨 사진인가요?" rows={2} maxLength={600} />
+            placeholder={en ? "What's this photo about?" : "무슨 사진인가요?"} rows={2} maxLength={600} />
           <div className="up-go">
-            <button onClick={() => { 골랐다(null); if (파일칸.current) 파일칸.current.value = ""; }} className="up-cancel" disabled={올리는중}>취소</button>
-            <button onClick={올리기} className="up-post" disabled={올리는중}>{올리는중 ? "올리는 중…" : "올리기"}</button>
+            <button onClick={() => { 골랐다(null); if (파일칸.current) 파일칸.current.value = ""; }} className="up-cancel" disabled={올리는중}>{en ? "Cancel" : "취소"}</button>
+            <button onClick={올리기} className="up-post" disabled={올리는중}>{올리는중 ? (en ? "Posting…" : "올리는 중…") : (en ? "Post" : "올리기")}</button>
           </div>
         </>
       ) : (
         <button className="up-pick" onClick={() => 파일칸.current?.click()}>
-          <span className="up-plus">+</span> 사진 올리기
+          <span className="up-plus">+</span> {en ? "Post a photo" : "사진 올리기"}
         </button>
       )}
       {말 && <div className="up-err">{말}</div>}

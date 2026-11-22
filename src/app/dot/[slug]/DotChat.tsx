@@ -656,7 +656,7 @@ export default function DotChat({
             <LimitCard
               name={who.name} checkedIn={balance.출석함} checkinHearts={CHECKIN_HEARTS} checkinBusy={checkinBusy}
               adOpen={adOpen} adLeft={balance.adLeft} adBusy={adBusy}
-              push={push} onCheckIn={checkIn} onAd={watchAd} onPush={togglePush}
+              push={push} onCheckIn={checkIn} onAd={watchAd} onPush={togglePush} lang={lang}
             />
           )}
           {busy && (
@@ -851,7 +851,7 @@ export default function DotChat({
           * 구독이 팔리기 시작하면 이 자리를 **다시 재야 한다.**
           */}
         {mounted && signedIn && adOpen && balance.adLeft > 0 && remaining > 0 && remaining <= AD_NUDGE_AT && (
-          <AdNudge adLeft={balance.adLeft} adBusy={adBusy} onAd={watchAd} />
+          <AdNudge adLeft={balance.adLeft} adBusy={adBusy} onAd={watchAd} lang={lang} />
         )}
       </div>
 
@@ -1060,10 +1060,11 @@ const THEME_KEY = "dot-theme";
  * 자(`dot_room_shot`)가 못 보는 칸이 되고, 안 본 화면은 0 으로 세진다([[zero-can-mean-i-cannot-see]]).
  * `LimitCard` 를 꺼낸 것과 같은 까닭이다. 자는 이걸 그려서 크기를 재고, 제품은 같은 조각을 쓴다.
  */
-export function AdNudge({ adLeft, adBusy, onAd }: { adLeft: number; adBusy: boolean; onAd: () => void }) {
+export function AdNudge({ adLeft, adBusy, onAd, lang = "ko" }: { adLeft: number; adBusy: boolean; onAd: () => void; lang?: Lang }) {
+  const en = lang === "en";
   return (
     <button className="kk-foot-ad" onClick={onAd} disabled={adBusy}>
-      {adBusy ? "광고를 불러오는 중…" : `광고 보고 하트 +${AD_REFILL_TURNS} (오늘 ${adLeft}번 더)`}
+      {adBusy ? (en ? "Loading ad…" : "광고를 불러오는 중…") : en ? `Watch an ad for +${AD_REFILL_TURNS} heart (${adLeft} left today)` : `광고 보고 하트 +${AD_REFILL_TURNS} (오늘 ${adLeft}번 더)`}
     </button>
   );
 }
@@ -1077,27 +1078,32 @@ export function AdNudge({ adLeft, adBusy, onAd }: { adLeft: number; adBusy: bool
  * 구독 단추는 11-06 에 뺐다 — 파는 것이 없다.
  */
 export function LimitCard({
-  name, checkedIn, checkinHearts, checkinBusy, adOpen, adLeft, adBusy, push, onCheckIn, onAd, onPush,
+  name, checkedIn, checkinHearts, checkinBusy, adOpen, adLeft, adBusy, push, onCheckIn, onAd, onPush, lang = "ko",
 }: {
+  /** 11-22 "다 영어로" — 영어 화면에서는 카드 글도 영어. 자(dot_room_shot)는 안 넘기니 한국어 그대로. */
+  lang?: Lang;
   name: string; checkedIn: boolean; checkinHearts: number; checkinBusy: boolean;
   adOpen: boolean; adLeft: number; adBusy: boolean;
   /** 알림 상태(`on`·`denied`·`unsupported`·아직 모름 `null`). 꺼낼 때 그대로 옮긴 조건이다. */
   push: string | null; onCheckIn: () => void; onAd: () => void; onPush: () => void;
 }) {
+  const en = lang === "en";
   return (
     <div className="kk-limit">
-      <div className="kk-limit-title">{checkedIn ? "오늘 이야기는 여기까지" : "오늘 하트를 받아 가세요"}</div>
+      <div className="kk-limit-title">{checkedIn ? (en ? "That's it for today" : "오늘 이야기는 여기까지") : (en ? "Grab today's hearts" : "오늘 하트를 받아 가세요")}</div>
       <div className="kk-limit-body">
-        {checkedIn ? LIMIT_COPY.본문.replace(/\{name\}/g, name) : LIMIT_COPY.출석본문.replace(/\{name\}/g, name)}
+        {en
+          ? (checkedIn ? LIMIT_COPY_EN.본문 : LIMIT_COPY_EN.출석본문)
+          : (checkedIn ? LIMIT_COPY.본문.replace(/\{name\}/g, name) : LIMIT_COPY.출석본문.replace(/\{name\}/g, name))}
       </div>
       {!checkedIn && (
         <button className="kk-limit-btn" onClick={onCheckIn} disabled={checkinBusy}>
-          {checkinBusy ? "받는 중…" : `출석하고 하트 ${checkinHearts}개 받기`}
+          {checkinBusy ? (en ? "Getting hearts…" : "받는 중…") : en ? `Check in for ${checkinHearts} hearts` : `출석하고 하트 ${checkinHearts}개 받기`}
         </button>
       )}
       {checkedIn && (
         <div className="kk-limit-note alt">
-          그냥 기다려도 돼요 — <b>{untilReset()}</b> 뒤에 또 출석할 수 있어요.
+          {en ? <>Or just wait — you can check in again in <b>{untilReset(lang)}</b>.</> : <>그냥 기다려도 돼요 — <b>{untilReset()}</b> 뒤에 또 출석할 수 있어요.</>}
         </div>
       )}
       {/**
@@ -1107,22 +1113,30 @@ export function LimitCard({
         */}
       {adOpen && adLeft > 0 && (
         <button className="kk-limit-ad" onClick={onAd} disabled={adBusy}>
-          {adBusy ? "광고를 불러오는 중…" : LIMIT_COPY.광고단추(adLeft)}
+          {adBusy ? (en ? "Loading ad…" : "광고를 불러오는 중…") : en ? LIMIT_COPY_EN.광고단추(adLeft) : LIMIT_COPY.광고단추(adLeft)}
         </button>
       )}
       {push !== "unsupported" && push !== "on" && (
-        <button className="kk-limit-link" onClick={onPush}>내일 {name}{iGa(name)} 먼저 말 걸게 하기</button>
+        <button className="kk-limit-link" onClick={onPush}>{en ? `Let ${name} text you first tomorrow` : <>내일 {name}{iGa(name)} 먼저 말 걸게 하기</>}</button>
       )}
-      {push === "on" && <div className="kk-limit-note">내일 {name}{iGa(name)} 먼저 말을 걸어요</div>}
+      {push === "on" && <div className="kk-limit-note">{en ? `${name} will text you first tomorrow` : <>내일 {name}{iGa(name)} 먼저 말을 걸어요</>}</div>}
     </div>
   );
 }
 
-function untilReset(): string {
+/** LIMIT_COPY 의 영어판(11-22) — 같은 말투(캐릭터가 하는 말)로. */
+const LIMIT_COPY_EN = {
+  본문: "That's all for today… I wish I could hear more. Could you watch one ad for me?",
+  출석본문: "You're here. I was waiting — grab your hearts first, then we can talk.",
+  광고단추: (남음: number) => `Watch an ad for ${AD_REFILL_TURNS} heart (${남음} left today)`,
+};
+
+function untilReset(lang: Lang = "ko"): string {
   const now = Date.now();
   const kst = new Date(now + 9 * 3_600_000);
   const nextMidnightKst = Date.UTC(kst.getUTCFullYear(), kst.getUTCMonth(), kst.getUTCDate() + 1) - 9 * 3_600_000;
   const min = Math.max(1, Math.round((nextMidnightKst - now) / 60_000));
+  if (lang === "en") return min >= 60 ? `${Math.floor(min / 60)}h ${min % 60}m` : `${min}m`;
   return min >= 60 ? `${Math.floor(min / 60)}시간 ${min % 60}분` : `${min}분`;
 }
 

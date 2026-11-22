@@ -14,9 +14,9 @@ import type { Lang } from "./lang";
 export async function langFromCookie(): Promise<Lang> {
   try {
     const v = (await cookies()).get("dot_lang")?.value;
-    return v === "en" ? "en" : "ko";
+    /* 11-22 사장님 "다 영어로 시작하자": 모르면 **영어**다. 한국어를 고른 사람(쿠키 ko)만 한국어. */
+    return v === "ko" ? "ko" : "en";
   } catch {
-    /* 쿠키를 못 읽는 자리(정적으로 그릴 때)도 한국어다. */
-    return "ko";
+    return "en";
   }
 }

@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { fillCaptionEn } from "@/lib/dot/translate";
 import { createServiceClient } from "@/lib/supabase/service";
 import Link from "next/link";
 import DotTabs from "../DotTabs";
@@ -32,7 +33,7 @@ export default async function DotFeed({ searchParams }: { searchParams: Promise<
     supabase.auth.getUser(),
     db.from("dot_posts").select("id, image_url, caption, caption_en, likes, created_at, character_id, dot_characters(slug, name, photos, is_public)").order("id", { ascending: false }).limit(60),
     // 11-22: 처음 온 사람에게 "누구랑 얘기할지" 고를 줄 — 공개 캐릭터 전부(고르지 않는다).
-    db.from("dot_characters").select("slug, name, photos, tagline").eq("is_public", true).order("created_at", { ascending: true }),
+    db.from("dot_characters").select("slug, name, photos, tagline, en").eq("is_public", true).order("created_at", { ascending: true }),
   ]);
 
   /* 10-19: DB 가 한도로 막히자 이 화면이 **맨 500** 이었다(구글 공개 심사 중이었다).
@@ -64,8 +65,11 @@ export default async function DotFeed({ searchParams }: { searchParams: Promise<
     follows = new Set(((f ?? []) as { character_id: string }[]).map((x) => x.character_id));
   }
   const filterFollowing = !showAll && follows.size > 0;
-  const posts: FeedPost[] = ((rows ?? []) as unknown as Row[])
-    .filter((r) => r.dot_characters?.is_public && (!filterFollowing || follows.has(r.character_id)))
+  const 보일글 = ((rows ?? []) as unknown as Row[])
+    .filter((r) => r.dot_characters?.is_public && (!filterFollowing || follows.has(r.character_id)));
+  /* 11-22: 영어 화면인데 영어 줄이 없는 글은 여기서 옮겨 적는다(워커가 영어를 안 적는다). 한 번 적으면 다음부턴 바로 나온다. */
+  if (lang === "en") await fillCaptionEn(db, 보일글.map((r) => Object.assign(r, { who: r.dot_characters?.slug })));
+  const posts: FeedPost[] = 보일글
     /* 10-28: 영어 칸이 비면 한국어 그대로 — 빈 글보다 낫다. 이름은 slug 에서 만든다(표에 또 적지 않는다). */
     .map((r) => ({ id: r.id, image: r.image_url, caption: (lang === "en" ? r.caption_en : null) ?? r.caption, likes: r.likes, at: r.created_at, slug: r.dot_characters!.slug, name: 보일이름(r.dot_characters!.slug, r.dot_characters!.name, lang), avatar: r.dot_characters!.photos?.[0]?.url ?? "", characterId: r.character_id, following: follows.has(r.character_id) }));
   // ── 스토리 줄: 추가한 캐릭터 + 안 읽은 말 수 (227회차 09-29) ──
@@ -141,13 +145,13 @@ export default async function DotFeed({ searchParams }: { searchParams: Promise<
             </section>
           )}
           <p className="fd-side-title">{t("feed_intro_pick", lang)}</p>
-          {((인물들 ?? []) as { slug: string; name: string; photos: { url: string }[] | null; tagline: string | null }[]).map((c) => (
+          {((인물들 ?? []) as { slug: string; name: string; photos: { url: string }[] | null; tagline: string | null; en: { tagline?: string } | null }[]).map((c) => (
             <Link key={c.slug} href={`/dot/${c.slug}`} className="fd-side-one">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               {c.photos?.[0]?.url ? <img src={c.photos[0].url} alt="" /> : <span className="fd-side-none" />}
               <span>
                 <span className="fd-side-name">{보일이름(c.slug, c.name, lang)}</span>
-                {lang === "ko" && c.tagline && <span className="fd-side-tag">{c.tagline}</span>}
+                {(lang === "ko" ? c.tagline : c.en?.tagline) && <span className="fd-side-tag">{lang === "ko" ? c.tagline : c.en?.tagline}</span>}
               </span>
               <span className="fd-side-go">{t("feed_chat", lang)}</span>
             </Link>

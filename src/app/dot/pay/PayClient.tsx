@@ -10,7 +10,8 @@ import type { HeartPack } from "@/lib/dot/money";
  * 왜 단추를 꺼 두지 않고 눌리게 두나: 꺼진 단추만 셋이면 **고장으로 보인다.** 눌리되
  * 왜 안 되는지 말해 주는 쪽이 낫다. 다만 **값은 진짜 값**이라 열리는 날 그대로 팔린다.
  */
-export default function PayClient({ packs, open: 길 }: { packs: HeartPack[]; open: { play: boolean; web: boolean } }) {
+export default function PayClient({ packs, open: 길, lang = "ko" }: { packs: HeartPack[]; open: { play: boolean; web: boolean }; lang?: "ko" | "en" }) {
+  const en = lang === "en";
   const [말, set말] = useState<string | null>(null);
   /* 11-22: 앱 안이면 Play, 밖(웹)이면 Polar. 앱 안에서 웹 결제를 띄우면 구글 정책 위반이라 갈래는 여기 하나다. */
   const [앱안, set앱안] = useState(false);
@@ -26,7 +27,7 @@ export default function PayClient({ packs, open: 길 }: { packs: HeartPack[]; op
    */
   async function 사기(p: HeartPack) {
     if (!open) {
-      알림("결제는 곧 열려요. 지금은 출석과 광고로 받아 주세요.");
+      알림(en ? "Purchases open soon. For now, get hearts from check-ins and ads." : "결제는 곧 열려요. 지금은 출석과 광고로 받아 주세요.");
       return;
     }
     if (사는중) return;
@@ -36,8 +37,8 @@ export default function PayClient({ packs, open: 길 }: { packs: HeartPack[]; op
         const res = await fetch("/api/dot/pay/polar", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ pack: p.key }) });
         const j = (await res.json().catch(() => ({}))) as { url?: string; error?: string };
         if (res.ok && j.url) { window.location.href = j.url; return; }
-        알림(j.error ?? "결제창을 못 열었어요.");
-      } catch { 알림("결제창을 못 열었어요."); }
+        알림(j.error ?? (en ? "Couldn't open checkout." : "결제창을 못 열었어요."));
+      } catch { 알림(en ? "Couldn't open checkout." : "결제창을 못 열었어요."); }
       set사는중(null);
       return;
     }
@@ -80,14 +81,14 @@ export default function PayClient({ packs, open: 길 }: { packs: HeartPack[]; op
   return (
     <>
       <style>{CSS}</style>
-      {!open && <div className="py-soon">결제 준비 중이에요</div>}
+      {!open && <div className="py-soon">{en ? "Purchases are coming soon" : "결제 준비 중이에요"}</div>}
       {packs.map((p) => (
         <button key={p.key} className="py-pack" onClick={() => 사기(p)} disabled={사는중 !== null} aria-busy={사는중 === p.key}>
           <span className="py-pack-l">
-            <span className="py-pack-n"><b>♥</b> 하트 {p.hearts}개</span>
-            {p.note && <small>{p.note}</small>}
+            <span className="py-pack-n"><b>♥</b> {en ? `${p.hearts} hearts` : `하트 ${p.hearts}개`}</span>
+            {(en ? p.noteEn : p.note) && <small>{en ? p.noteEn : p.note}</small>}
           </span>
-          <span className="py-pack-p">{p.price}</span>
+          <span className="py-pack-p">{en ? p.usd : p.price}</span>
         </button>
       ))}
       {말 && <div className="py-toast">{말}</div>}

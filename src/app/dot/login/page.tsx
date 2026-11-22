@@ -36,7 +36,7 @@ export default async function DotLogin({ searchParams }: { searchParams: Promise
           <Link href="/dot/feed" className="lg-back" aria-label={en ? "Back" : "뒤로"}>‹</Link>
         </header>
 
-        <div className="lg-logo">두근도트</div>
+        <div className="lg-logo">{en ? "Dot" : "두근도트"}</div>
 
         {계정 ? (
           <div className="lg-card">

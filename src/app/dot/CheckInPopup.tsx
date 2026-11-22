@@ -17,7 +17,8 @@ import { CHECKIN_HEARTS } from "@/lib/dot/bond";
  * 저장은 서버가 하고(`/api/dot/checkin`), 화면은 `router.refresh()` 로 **서버가 센 값**을 다시 받는다 —
  * 머리의 숫자는 서버 조각이라 그래야 같이 바뀐다.
  */
-export default function CheckInPopup({ name }: { name: string | null }) {
+export default function CheckInPopup({ name, lang = "ko" }: { name: string | null; lang?: "ko" | "en" }) {
+  const en = lang === "en";
   const router = useRouter();
   const 키 = "dot-checkin-skip";
   const [열림, set열림] = useState(() => {
@@ -37,11 +38,11 @@ export default function CheckInPopup({ name }: { name: string | null }) {
     try {
       const res = await fetch("/api/dot/checkin", { method: "POST" });
       const data = await res.json().catch(() => ({})) as { error?: string };
-      if (!res.ok) { set틀림(data.error ?? "출석을 못 했어요"); return; }
+      if (!res.ok) { set틀림(data.error ?? (en ? "Couldn't check in" : "출석을 못 했어요")); return; }
       닫기();
       router.refresh();
     } catch {
-      set틀림("출석을 못 했어요");
+      set틀림(en ? "Couldn't check in" : "출석을 못 했어요");
     } finally {
       setBusy(false);
     }
@@ -54,19 +55,19 @@ export default function CheckInPopup({ name }: { name: string | null }) {
   return (
     <>
       <style>{CSS}</style>
-      <div className="ci-back" onClick={닫기} role="dialog" aria-label="출석체크">
+      <div className="ci-back" onClick={닫기} role="dialog" aria-label={en ? "Daily check-in" : "출석체크"}>
         <div className="ci-card" onClick={(e) => e.stopPropagation()}>
           <div className="ci-heart">♥</div>
-          <div className="ci-title">오늘의 하트</div>
+          <div className="ci-title">{en ? "Today's hearts" : "오늘의 하트"}</div>
           <div className="ci-body">
-            {name ? `${name}가 기다렸어요.` : "오늘도 왔네요."}<br />
-            출석하면 하트 {CHECKIN_HEARTS}개를 받아요.
+            {en ? (name ? `${name} was waiting for you.` : "Welcome back.") : (name ? `${name}가 기다렸어요.` : "오늘도 왔네요.")}<br />
+            {en ? `Check in to get ${CHECKIN_HEARTS} hearts.` : `출석하면 하트 ${CHECKIN_HEARTS}개를 받아요.`}
           </div>
           <button className="ci-go" onClick={받기} disabled={busy}>
-            {busy ? "받는 중…" : `하트 ${CHECKIN_HEARTS}개 받기`}
+            {busy ? (en ? "Getting hearts…" : "받는 중…") : en ? `Get ${CHECKIN_HEARTS} hearts` : `하트 ${CHECKIN_HEARTS}개 받기`}
           </button>
           {틀림 && <div className="ci-err">{틀림}</div>}
-          <button className="ci-later" onClick={닫기}>나중에</button>
+          <button className="ci-later" onClick={닫기}>{en ? "Later" : "나중에"}</button>
         </div>
       </div>
     </>

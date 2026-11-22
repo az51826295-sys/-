@@ -93,11 +93,11 @@ export default async function DotMe() {
           {/* 11-09: **우리 사이 카드** — 사장님이 "둘 다" 를 고르셨다(방 안 + 따로 보는 화면).
               아래 탭은 넷으로 둔다(11-06 에 다섯에서 줄였다) — 자리는 내 창 안이다. */}
           <Link href="/dot/tarot" className="me-tarot">
-            <b>우리 사이 카드</b>
-            <small>나눈 말을 카드 세 장으로 읽어 줘요</small>
+            <b>{lang === "en" ? "Our bond cards" : "우리 사이 카드"}</b>
+            <small>{lang === "en" ? "Your chats, read as three cards" : "나눈 말을 카드 세 장으로 읽어 줘요"}</small>
           </Link>
 
-          <Uploader />
+          <Uploader lang={lang} />
 
           {v.posts.length === 0 ? (
             <div className="me-empty">

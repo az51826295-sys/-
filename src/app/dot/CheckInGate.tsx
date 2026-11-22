@@ -4,6 +4,7 @@ import { todayKST } from "@/lib/dot/bond";
 import { balanceFor } from "@/lib/dot/money";
 import { devFromCookies } from "@/lib/dot/dev";
 import CheckInPopup from "./CheckInPopup";
+import { langFromCookie } from "@/lib/dot/langServer";
 
 /**
  * 하루 첫 입장이면 출석 판을 띄우는 **문지기** (11-06). `/dot` 레이아웃에 있어서
@@ -24,7 +25,7 @@ export default async function CheckInGate() {
     /* 11-13 개발자 링크면 `출석함` 이 참이라 이 판은 안 뜬다 — 받을 까닭이 없다. */
     const b = await balanceFor(createServiceClient(), user.id, todayKST(), await devFromCookies());
     if (b.출석함) return null;
-    return <CheckInPopup name={null} />;
+    return <CheckInPopup name={null} lang={await langFromCookie()} />;
   } catch {
     return null;
   }

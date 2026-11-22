@@ -6,6 +6,7 @@ import { balanceFor, HEART_PACKS, heartBillingOpen, AD_REFILLS_PER_DAY, AD_REFIL
 import { cookies } from "next/headers";
 import { claimCheckout, polarOpen, POLAR_COOKIE } from "@/lib/dot/polar";
 import PayClient from "./PayClient";
+import { langFromCookie } from "@/lib/dot/langServer";
 
 /**
  * **하트 결제창** (11-06 사장님 "하트 결제창으로 넘어가자").
@@ -19,6 +20,7 @@ import PayClient from "./PayClient";
  */
 export default async function HeartStore({ searchParams }: { searchParams: Promise<{ paid?: string }> }) {
   const { paid } = await searchParams;
+  const en = (await langFromCookie()) === "en";
   let hearts = 0;
   let 손님 = true;
   try {
@@ -40,37 +42,39 @@ export default async function HeartStore({ searchParams }: { searchParams: Promi
       <style>{CSS}</style>
       <div className="py-phone">
         <header className="py-head">
-          <Link href="/dot/chats" className="py-back" aria-label="뒤로">‹</Link>
-          <div className="py-title">하트 사기</div>
+          <Link href="/dot/chats" className="py-back" aria-label={en ? "Back" : "뒤로"}>‹</Link>
+          <div className="py-title">{en ? "Get hearts" : "하트 사기"}</div>
         </header>
 
-        <div className="py-now"><b>♥</b> 지금 하트 {hearts}개</div>
+        <div className="py-now"><b>♥</b> {en ? `You have ${hearts} hearts` : `지금 하트 ${hearts}개`}</div>
 
         {/* 11-22: 손님 계정에 산 하트는 브라우저를 지우면 같이 사라진다 — 사기 전에 말해 준다. */}
         {손님 && (
           <Link href="/dot/login" className="py-login">
-            산 하트를 잃어버리지 않으려면 <b>로그인</b>하고 사세요 ›
+            {en ? <><b>Sign in</b> first so you never lose hearts you buy ›</> : <>산 하트를 잃어버리지 않으려면 <b>로그인</b>하고 사세요 ›</>}
           </Link>
         )}
 
-        {paid && <div className={/^\d+$/.test(paid) ? "py-ok" : "py-wait"}>{결과글(paid)}</div>}
+        {paid && <div className={/^\d+$/.test(paid) ? "py-ok" : "py-wait"}>{결과글(paid, en)}</div>}
 
-        <PayClient packs={HEART_PACKS} open={{ play: heartBillingOpen(), web: polarOpen() }} />
+        <PayClient packs={HEART_PACKS} open={{ play: heartBillingOpen(), web: polarOpen() }} lang={en ? "en" : "ko"} />
 
         {/* 공짜 길을 숨기지 않는다 — 숨기면 "돈을 내야만 되는 앱" 으로 읽힌다. */}
         <div className="py-free">
-          출석하면 하루 하트 {CHECKIN_HEARTS}개, 광고를 보면 {AD_REFILLS_PER_DAY}번까지 하트 {AD_REFILL_TURNS}개씩 더 받아요.
+          {en
+            ? `Check in daily for ${CHECKIN_HEARTS} free hearts, and watch up to ${AD_REFILLS_PER_DAY} ads for ${AD_REFILL_TURNS} more each.`
+            : `출석하면 하루 하트 ${CHECKIN_HEARTS}개, 광고를 보면 ${AD_REFILLS_PER_DAY}번까지 하트 ${AD_REFILL_TURNS}개씩 더 받아요.`}
         </div>
       </div>
     </div>
   );
 }
 
-function 결과글(p: string) {
-  if (/^\d+$/.test(p)) return `하트 ${p}개가 들어왔어요. 고마워요!`;
-  if (p === "wait") return "결제가 아직 끝나지 않았어요. 끝나면 이 화면에 다시 오면 들어와요.";
-  if (p === "login") return "대화방에 한 번 들어갔다 오면 하트가 들어와요.";
-  return "확인이 안 됐어요. 돈이 빠졌는데 하트가 없으면 설정 > 문의로 알려 주세요.";
+function 결과글(p: string, en = false) {
+  if (/^\d+$/.test(p)) return en ? `${p} hearts added. Thank you!` : `하트 ${p}개가 들어왔어요. 고마워요!`;
+  if (p === "wait") return en ? "Your payment isn't finished yet. Come back to this page once it is." : "결제가 아직 끝나지 않았어요. 끝나면 이 화면에 다시 오면 들어와요.";
+  if (p === "login") return en ? "Open any chat once, then come back — your hearts will be added." : "대화방에 한 번 들어갔다 오면 하트가 들어와요.";
+  return en ? "We couldn't confirm it. If you were charged but got no hearts, contact us from Settings." : "확인이 안 됐어요. 돈이 빠졌는데 하트가 없으면 설정 > 문의로 알려 주세요.";
 }
 
 const CSS = `

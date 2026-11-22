@@ -123,11 +123,12 @@ export const AD_NUDGE_AT = 3;
  *     나중에 구독이 돌아와도 값이 안 꼬이게 한다.
  *   · 묶음이 셋인 까닭: 하나면 비싸 보이고, 넷이면 고르다 지친다.
  */
-export type HeartPack = { key: string; hearts: number; price: string; won: number; note?: string };
+/** 11-22: 영어 화면은 달러로 보인다(Polar 상품의 USD 값과 같다). 실제 청구 통화는 Polar 가 사는 곳으로 고른다. */
+export type HeartPack = { key: string; hearts: number; price: string; won: number; note?: string; usd: string; noteEn?: string };
 export const HEART_PACKS: HeartPack[] = [
-  { key: "hearts_10", hearts: 10, price: "1,200원", won: 1200 },
-  { key: "hearts_30", hearts: 30, price: "2,900원", won: 2900, note: "제일 많이 고르는 값" },
-  { key: "hearts_60", hearts: 60, price: "3,900원", won: 3900, note: "하트당 제일 쌈" },
+  { key: "hearts_10", hearts: 10, price: "1,200원", won: 1200, usd: "$0.99" },
+  { key: "hearts_30", hearts: 30, price: "2,900원", won: 2900, note: "제일 많이 고르는 값", usd: "$1.99", noteEn: "Most popular" },
+  { key: "hearts_60", hearts: 60, price: "3,900원", won: 3900, note: "하트당 제일 쌈", usd: "$2.99", noteEn: "Best value" },
 ];
 
 /** 파는 길이 열렸나 — 꺼져 있으면 화면은 "준비 중" 으로 답한다(틀은 그대로 둔다). */
