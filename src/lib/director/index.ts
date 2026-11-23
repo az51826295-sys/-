@@ -54,6 +54,10 @@ export type LedgerEntry = {
   via?: Via;
   /** 그 판단 한 번에 든 값. 일 값(`usd`)과 따로 센다 — 판단이 일보다 비싸면 판 물건이 아니다. */
   judgeUsd?: number;
+  /** 일한 AI 가 스스로 말한 자신감(0~1). `director_check` 가 적는다 — 결과와 짝지어 문턱을 다시 맞춘다. */
+  confidence?: number;
+  /** 부른 쪽이 돌린 기계 확인(테스트·기계 눈)의 결과. AI 판정 앞에 선다. */
+  machine?: "pass" | "fail" | "unsure";
 };
 
 /** 누가 정했나. 11-22 영어로 바꿨다(손님에게 보이는 값) — 옛 장부의 한국어 값은 `normalizeEntry` 가 옮긴다. */
@@ -359,6 +363,36 @@ export function escalate(seats: Seat[], ledger: LedgerEntry[], failed: LedgerEnt
     risk: "More rounds may not fix this task.", usd: 0, via: "escalate",
   };
   return null;
+}
+
+/**
+ * **받을까, 올릴까** (11-23 실험에서 섬: engine/docs/image-judge-cascade-design.md 2b·3판).
+ * 순서: ① 기계 확인이 있으면 그게 먼저(값 0) ② 없거나 애매하면 일한 AI 의 자신감을 문턱 τ 에 댄다.
+ * τ 는 **이 손님 장부에서 다시 맞춘다** — AI 가 말하는 자신감은 부풀어 있다(같은 화가 판정에서 싼 AI 가
+ * 틀린 답에 0.8 이상을 말했다). 장부가 모자라면 실측 기본값 0.93.
+ */
+export const CHECK = { defaultTau: 0.93, target: 0.9, minRows: 8, minAbove: 4 } as const;
+export function calibrateTau(ledger: LedgerEntry[], kind: string, seat: string): { tau: number; from: "ledger" | "default"; n: number } {
+  const xs = ledger.filter((e) => e.kind === kind && e.seat === seat && e.confidence != null && e.passed !== undefined && e.machine !== "pass" && e.machine !== "fail");
+  if (xs.length < CHECK.minRows) return { tau: CHECK.defaultTau, from: "default", n: xs.length };
+  const grid = [0.5, 0.6, 0.7, 0.75, 0.8, 0.85, 0.9, 0.93, 0.95, 0.97, 0.99];
+  for (const t of grid) {
+    const above = xs.filter((e) => (e.confidence ?? 0) >= t);
+    if (above.length >= CHECK.minAbove && above.filter((e) => e.passed).length / above.length >= CHECK.target) return { tau: t, from: "ledger", n: xs.length };
+  }
+  return { tau: 1.01, from: "ledger", n: xs.length }; // 어느 자신감에서도 90% 를 못 넘었다 → 늘 올린다
+}
+export function checkGate(ledger: LedgerEntry[], e: { kind: string; seat: string }, confidence: number | undefined, machine?: "pass" | "fail" | "unsure"):
+  { action: "accept" | "escalate"; tau?: number; why: string } {
+  if (machine === "pass") return { action: "accept", why: "Machine check passed — accepted without asking an AI (cost $0)." };
+  if (machine === "fail") return { action: "escalate", why: "Machine check failed — escalate." };
+  if (confidence == null || !Number.isFinite(confidence)) return { action: "escalate", why: "No machine verdict and no confidence given — escalate to be safe." };
+  const c = confidence > 1 ? confidence / 100 : confidence;
+  const { tau, from, n } = calibrateTau(ledger, e.kind, e.seat);
+  const src = from === "ledger" ? `calibrated on your ledger (${n} runs of ${e.seat} on "${e.kind}")` : `default from measurement — calibrates after ${CHECK.minRows} recorded runs with confidence (have ${n})`;
+  return c >= tau
+    ? { action: "accept", tau, why: `Confidence ${c.toFixed(2)} ≥ threshold ${tau} (${src}).` }
+    : { action: "escalate", tau, why: `Confidence ${c.toFixed(2)} < threshold ${tau} (${src}). Self-reported confidence runs high, so the bar is set by results, not by the AI.` };
 }
 
 /** effort → 고치기 바퀴 수. 로키의 `roundsFor` 와 같은 숫자(light 1 · normal 3 · thorough 8). 옛 한국어 값도 받는다(head_ab 재현). */

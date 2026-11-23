@@ -2,7 +2,7 @@
  * **판단 엔진 MCP 서버 본체** — 저장소 도구(`engine/tools/director_mcp.mts`)와 설치용 꾸러미(`packages/director`)가
  * **같은 이 코드**를 부른다(11-21, 사장님 "C 바로" — 엔진을 바로 상품으로). 두 벌로 베끼면 한쪽만 고치게 된다.
  *
- * 도구 셋: director_decide · director_record · director_scorecard. 일은 부른 쪽이 하고 엔진은 정하고 채점한다.
+ * 도구 넷: director_decide · director_record · director_check · director_scorecard. 일은 부른 쪽이 하고 엔진은 정하고 채점한다.
  * 장부는 손님 컴퓨터의 파일(`home`). 규약: 표준출력은 JSON-RPC 만, 로그는 표준오류.
  *
  * 11-22 사장님 "앞으론 영어로" — 손님에게 보이는 글은 전부 영어. 옛 장부의 한국어 값은 normalizeEntry 가 옮긴다.
@@ -13,7 +13,7 @@ import { randomBytes } from "node:crypto";
 import { createInterface } from "node:readline";
 import type { AIProvider } from "../providers/types";
 import { gate, usedThisMonth, type LicenseConfig } from "./license";
-import { decide, scorecard, tally, roundsOf, EFFORTS, escalate, normalizeEntry, type Seat, type LedgerEntry } from "./index";
+import { decide, scorecard, tally, roundsOf, EFFORTS, escalate, checkGate, normalizeEntry, type Seat, type LedgerEntry } from "./index";
 
 type Row = LedgerEntry & { id: string };
 type Meter = (u: { model: string; inputTokens: number; outputTokens: number }) => number;
@@ -113,6 +113,18 @@ const TOOLS = [
     }, required: ["id", "passed"] },
   },
   {
+    name: "director_check",
+    description: "Before trusting a result: accept it, or escalate to a stronger AI? Give the decision id, the working AI's own confidence (0-1), " +
+      "and — if you ran one — a machine check (tests, a linter, an image-similarity gate). A machine verdict wins (cost $0). Otherwise the confidence " +
+      "is compared to a threshold calibrated on your own ledger, because AIs report confidence higher than their real hit rate. " +
+      "Still call director_record with the real result afterwards — that is what calibrates the threshold.",
+    inputSchema: { type: "object", properties: {
+      id: { type: "string" },
+      confidence: { type: "number", description: "The working AI's own confidence that its result is right, 0 to 1 (optional if machine is given)" },
+      machine: { type: "string", enum: ["pass", "fail", "unsure"], description: "Result of a machine check you ran (optional)" },
+    }, required: ["id"] },
+  },
+  {
     name: "director_scorecard",
     description: "Scorecard: how accurate the decisions were (Brier), what judging cost and its share, runs decided straight from the ledger, money saved vs. your usual AI (estimate), and results per AI × kind.",
     inputSchema: { type: "object", properties: {
@@ -186,6 +198,24 @@ async function 부르기(name: string, a: Record<string, unknown>) {
     쓰기(장부파일, rows);
     return 글([적음, "", `Retry as id ${nid}`, 줄AI(up),
       `Why: ${up.why}`, `If wrong: ${up.risk}`, "", `When done, record the result with director_record (id ${nid}).`].join("\n"));
+  }
+  if (name === "director_check") {
+    const rows = 장부(), r = rows.find((x) => x.id === String(a.id));
+    if (!r) throw new Error(`id ${a.id} is not in the ledger`);
+    const machine = a.machine === "pass" || a.machine === "fail" || a.machine === "unsure" ? a.machine : undefined;
+    const conf = typeof a.confidence === "number" ? (a.confidence > 1 ? a.confidence / 100 : a.confidence) : undefined;
+    if (conf != null) r.confidence = conf;
+    if (machine) r.machine = machine;
+    const g = checkGate(rows.filter((x) => x.id !== r.id), r, conf, machine);
+    if (g.action === "accept") { 쓰기(장부파일, rows); return 글([`Accept (id ${r.id}).`, g.why, "", `Record the real result with director_record (id ${r.id}).`].join("\n")); }
+    const up = escalate(자리(), rows, r);
+    쓰기(장부파일, rows);
+    if (!up) return 글([`Escalate (id ${r.id}) — but no higher AI or effort is left: have a person look.`, g.why].join("\n"));
+    const nid = randomBytes(4).toString("hex");
+    rows.push({ id: nid, at: new Date().toISOString(), task: r.task, kind: r.kind, seat: up.seat, effort: up.effort, predictedPass: up.predictedPass, via: "escalate", judgeUsd: 0 });
+    쓰기(장부파일, rows);
+    return 글([`Escalate (id ${r.id}).`, g.why, "", `Redo as id ${nid}`, 줄AI(up), "",
+      `Record both: id ${r.id} with what the first result turned out to be (if you check it), and id ${nid} with director_record.`].join("\n"));
   }
   if (name === "director_scorecard") {
     const seats = 자리(), rows = 장부();

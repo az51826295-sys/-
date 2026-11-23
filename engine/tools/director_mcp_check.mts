@@ -46,7 +46,7 @@ try {
   봄("initialize", init.result?.serverInfo?.name === "rookery-director" && init.result.protocolVersion === "2025-06-18");
   p.stdin.write(JSON.stringify({ jsonrpc: "2.0", method: "notifications/initialized" }) + "\n");
   const list = await rpc("tools/list");
-  봄("도구 셋", JSON.stringify(list.result.tools.map((t: any) => t.name)) === JSON.stringify(["director_decide", "director_record", "director_scorecard"]));
+  봄("도구 넷", JSON.stringify(list.result.tools.map((t: any) => t.name)) === JSON.stringify(["director_decide", "director_record", "director_check", "director_scorecard"]));
 
   // 첫 판 — 빈 장부라 판단자에게 간다(mock 이면 난간으로 첫 자리)
   const d1 = await call("director_decide", { task: "README 오타 찾아 고치기", kind: "찾기" });
