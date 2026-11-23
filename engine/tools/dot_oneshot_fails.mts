@@ -1,6 +1,6 @@
 /**
  * **싼 AI 가 한 번에 얼마나 자주 떨어지나 — 두근도트 실제 답으로** (11-23). 읽기만 · 모델 0 · 값 0.
- *   npx tsx engine/tools/dot_oneshot_fails.mts
+ *   npx tsx engine/tools/dot_oneshot_fails.mts [--since=2026-11-22]   (--since: 그날 이후 답만 — 영어가 기본이 된 뒤만 보려고)
  *
  * 고르는 자 첫 판(비서 말투)은 천장(22/24)이라 고를 게 없었다(select-by-ruler-design.md).
  * 그래서 다음 대상을 고르기 전에 **한 번 답이 기계 자에 얼마나 떨어지는지** 실제 운영 답으로 먼저 센다.
@@ -15,6 +15,7 @@ const env = Object.fromEntries(readFileSync(".env.local", "utf8").split(/\r?\n/)
 const db = createClient(env.NEXT_PUBLIC_SUPABASE_URL, env.SUPABASE_SECRET_KEY, { auth: { persistSession: false } });
 
 type M = { user_id: string; character_id: string; role: string; content: string; created_at: string };
+const since = process.argv.find((x) => x.startsWith("--since="))?.slice(8) ?? "";
 const all: M[] = [];
 for (let from = 0; ; from += 1000) {
   const { data, error } = await db.from("dot_messages").select("user_id,character_id,role,content,created_at").order("created_at").range(from, from + 999);
@@ -32,6 +33,7 @@ for (const m of all) {
   if (m.role !== "character" || !m.content) continue;
   const u = lastUser.get(k);
   if (u === undefined) continue;                       // 먼저 말 걸기는 언어를 모른다 → 안 셈
+  if (since && m.created_at < since) continue;
   rows.push({ lang: hangulShare(u) < 0.1 ? "en" : "ko", text: m.content });
 }
 
@@ -46,7 +48,7 @@ const rules: { id: string; on: "en" | "ko" | "all"; fail: (t: string) => boolean
 ];
 
 const en = rows.filter((r) => r.lang === "en").length, ko = rows.length - en;
-console.log(`답 ${rows.length}개 (영어 ${en} · 한국어 ${ko}) · 메시지 전체 ${all.length}\n`);
+console.log(`${since ? `${since} 이후 · ` : ""}답 ${rows.length}개 (영어 ${en} · 한국어 ${ko}) · 메시지 전체 ${all.length}\n`);
 let anyFail = 0;
 const failedAny = new Set<number>();
 for (const r of rules) {
