@@ -22,7 +22,7 @@ import { updateSession } from "@/lib/supabase/middleware";
 // 11-10: `/ads.txt` 가 빠져 있어 **구글이 광고주 번호를 못 읽는다.** 사람이 아니라 기계가
 // 읽는 파일이라 "앱 첫 화면으로 보내기" 가 곧 "없는 파일" 이다 — 307 로 /dot 을 받으면
 // AdSense 는 ads.txt 가 없다고 본다(그 상태로 승인을 기다릴 뻔했다).
-const DOT_OPEN = ["/dot", "/api/dot", "/login", "/signup", "/api/auth", "/auth", "/manifest.webmanifest", "/.well-known", "/ads.txt", "/robots.txt"];
+const DOT_OPEN = ["/dot", "/api/dot", "/pixel", "/api/pixel", "/login", "/signup", "/api/auth", "/auth", "/manifest.webmanifest", "/.well-known", "/ads.txt", "/robots.txt"];
 
 /**
  * 09-11: 한 저장소, **두 서비스, 두 DB.** 로키 게임 실험이 쌓은 3D 파일 1.9GB 가 두근도트를 같이 죽여서
