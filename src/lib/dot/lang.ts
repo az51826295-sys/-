@@ -21,9 +21,13 @@ export function getLang(): Lang {
     const v = localStorage.getItem(KEY);
     if (v === "ko" || v === "en") return v;
   } catch { /* 못 읽어도 된다 */ }
-  /* 11-22 사장님 "다 영어로 시작하자": 안 고른 사람은 **영어**다(브라우저가 한국어여도).
-   * 이미 쓰던 사람은 10-28 부터 이 기기에 고른 값이 적혀 있어서(syncLangCookie) 그대로 한국어다.
-   * 한국어는 설정에서 고른다. */
+  /* 11-22 사장님 "다 영어로 시작하자" → 11-24 스레드(한국) 공략: 안 고른 사람은 **폰 언어**를 따른다.
+   * 한국어 폰이면 한국어, 그 밖은 영어. 스레드에서 누른 한국 사람이 영어 화면에 떨어지던 것을 막는다.
+   * 서버 쪽(langServer.ts)도 같은 규칙(Accept-Language) — 둘이 다르면 화면이 한 번 깜빡인다. */
+  try {
+    const 폰 = (navigator.languages?.[0] ?? navigator.language ?? "").toLowerCase();
+    if (폰.startsWith("ko")) return "ko";
+  } catch { /* 못 읽으면 영어 */ }
   return "en";
 }
 

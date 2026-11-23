@@ -14,8 +14,12 @@ import type { Lang } from "./lang";
 export async function langFromCookie(): Promise<Lang> {
   try {
     const v = (await cookies()).get("dot_lang")?.value;
-    /* 11-22 사장님 "다 영어로 시작하자": 모르면 **영어**다. 한국어를 고른 사람(쿠키 ko)만 한국어. */
-    return v === "ko" ? "ko" : "en";
+    if (v === "ko" || v === "en") return v;
+    /* 11-22 "다 영어로 시작하자" → 11-24 스레드(한국) 공략: 안 고른 사람은 **폰 언어**(Accept-Language 첫 언어).
+     * 한국어면 한국어, 그 밖은 영어. 클라이언트 getLang 과 같은 규칙이어야 깜빡이지 않는다. */
+    const { headers } = await import("next/headers");
+    const 첫 = ((await headers()).get("accept-language") ?? "").split(",")[0].trim().toLowerCase();
+    return 첫.startsWith("ko") ? "ko" : "en";
   } catch {
     return "en";
   }
