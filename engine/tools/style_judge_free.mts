@@ -9,15 +9,22 @@ import { resolve } from "node:path";
 
 const T = await import(pathToFileURL(resolve("engine/work/clip-env/node_modules/@huggingface/transformers/dist/transformers.node.mjs")).href);
 T.env.cacheDir = resolve("engine/work/clip-env/models");
-const MODEL = "Xenova/clip-vit-base-patch32";
+const EYE = process.argv.includes("--eye") ? process.argv[process.argv.indexOf("--eye") + 1] : "clip";
+const MODEL = EYE === "dino" ? "Xenova/dinov2-small" : "Xenova/clip-vit-base-patch32";
 const processor = await T.AutoProcessor.from_pretrained(MODEL);
-const vision = await T.CLIPVisionModelWithProjection.from_pretrained(MODEL, { dtype: "q8" });
+const vision = EYE === "dino"
+  ? await T.AutoModel.from_pretrained(MODEL, { dtype: "fp32" })
+  : await T.CLIPVisionModelWithProjection.from_pretrained(MODEL, { dtype: "q8" });
+console.log("기계 눈", MODEL);
 
 async function embed(p: string) {
   const png = await sharp(p).flatten({ background: "#ffffff" }).png().toBuffer();
   const img = await T.RawImage.fromBlob(new Blob([png]));
-  const { image_embeds } = await vision(await processor(img));
-  const v = Float32Array.from(image_embeds.data as Float32Array);
+  const out = await vision(await processor(img));
+  // CLIP: image_embeds. DINOv2: pooler_output(CLS) — 없으면 last_hidden_state 의 첫 토큰.
+  const t = out.image_embeds ?? out.pooler_output ?? out.last_hidden_state;
+  const dim = t.dims[t.dims.length - 1];
+  const v = Float32Array.from((t.data as Float32Array).slice(0, dim));
   const n = Math.hypot(...v); for (let i = 0; i < v.length; i++) v[i] /= n;
   return v;
 }
