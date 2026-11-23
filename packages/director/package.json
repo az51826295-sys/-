@@ -1,7 +1,7 @@
 {
   "name": "rookery-director",
   "version": "0.3.0",
-  "description": "A judgment engine for people who use several AIs: decides which AI gets each task, locks a pass prediction first, scores itself, escalates on failure. Runs locally as an MCP server; your keys, your ledger.",
+  "description": "AI makes. Machines check. Director decides. A judgment engine for AI agents: picks the AI per task, runs machine checks first, locks a pass prediction, scores itself, escalates on failure. Local MCP server; your keys, your ledger.",
   "type": "module",
   "bin": {
     "rookery-director": "dist/cli.mjs"

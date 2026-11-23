@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Rookery Director</title>
-<meta name="description" content="A judgment engine for people who use several AIs — picks the AI per task, locks a pass prediction first, scores itself. Local MCP server, your own keys.">
+<meta name="description" content="AI makes. Machines check. Director decides. A judgment engine for AI agents — picks the AI per task, machine checks first, locks a pass prediction, scores itself. Local MCP server, your own keys.">
 <style>
 :root{--bg:#fbfaf7;--fg:#1c1b19;--mute:#6b675f;--line:#e4e0d6;--card:#ffffff;--accent:#2f5d50;--code:#f2efe8;--ok:#2f7a46}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#151513;--fg:#ecebe6;--mute:#a19d94;--line:#2d2c28;--card:#1d1c1a;--accent:#8cc5b2;--code:#22211e;--ok:#7fcf98}}
@@ -34,7 +34,13 @@ footer{margin-top:56px;border-top:1px solid var(--line);padding-top:16px;color:v
 <body>
 <main>
 <span class="tag">Free 100 decisions/month · Pro $9/month</span>
-<h1>Using several AIs and picking one by gut feeling every time?</h1>
+<h1>AI makes. Machines check. Director decides.</h1>
+<p><b>Agents will do the work. Someone has to judge the agents.</b></p>
+<ul>
+<li><b>Agents are becoming the default.</b> Each one picks an AI, hands off work, and takes back a result — and nobody checks whether that result is right. Director is that check.</li>
+<li><b>Algorithms and AI complete each other.</b> A machine check (tests, a linter, an image gate) goes first, costs $0, and wins when it speaks. AI judgment is used only where no machine can measure. In our test (45 held-out public painting pairs, one run): machine gate first + calibrated confidence + escalation scored <b>93.3%</b> vs. <b>91.1%</b> for the expensive AI alone, at <b>31%</b> of its cost.</li>
+<li><b>Your ledger compounds.</b> Once a kind of task is proven, the ledger answers for $0.</li>
+</ul>
 <p>Rookery Director is a judgment engine that decides <b>which AI gets each task, and how much effort</b>.
 Before the work runs it <b>writes down and locks the probability of passing</b>; when the result comes in, it scores itself.
 If the work fails it retries one tier up, and once your ledger proves a kind of task, it answers without paying for judgment at all.</p>

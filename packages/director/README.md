@@ -1,6 +1,14 @@
 # rookery-director
 
-A judgment engine for people who use several AIs. For each task it decides **which AI** and **how much effort**,
+**AI makes. Machines check. Director decides.**
+
+Agents will do the work. Someone has to judge the agents.
+
+- **Agents are becoming the default.** Each one picks an AI, hands off work, and takes back a result — and nobody checks whether that result is right. Director is that check.
+- **Algorithms and AI complete each other.** A machine check (tests, a linter, an image gate) goes first, costs $0, and wins when it speaks. AI judgment is used only where no machine can measure.
+- **Your ledger compounds.** Once a kind of task is proven, the ledger answers for $0.
+
+A judgment engine for AI agents and the people who run several AIs. For each task it decides **which AI** and **how much effort**,
 **locks a pass prediction before the work runs**, then scores itself when you report the result.
 If the work fails, it escalates one step up; once a kind of task is proven, it answers from your ledger for $0
 and occasionally tries a cheaper AI.
