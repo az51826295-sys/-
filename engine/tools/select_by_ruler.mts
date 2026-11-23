@@ -41,6 +41,11 @@ const 일감 = [
   "- 지출: 이번 달 $0.19. 한도 $14.",
 ].join("\n");
 const SYS = selfNote() + "\n" + 일감 + "\n" + secretaryNote() + "\n\n답은 `답` 칸에 사람에게 보낼 그대로 적는다.";
+const SYS_DS = selfNote() + "\n" + 일감 + "\n" + secretaryNote();
+// --deepseek: 싼 AI 만(11-23 14:1x 다시 잠금). B1 은 안 부른다.
+const DS = process.argv.includes("--deepseek");
+const DSKEY = DS ? ((await import("node:fs")).readFileSync(".env.local", "utf8").match(/^DEEPSEEK_API_KEY=(.*)$/m) ?? [])[1]?.trim() : "";
+if (DS && !DSKEY) { console.error("DEEPSEEK_API_KEY 가 없다."); process.exit(1); }
 
 // ---- 부르기 ----
 let spent = 0;
@@ -56,6 +61,17 @@ async function call(model: string, q: Q, k: number): Promise<A> {
     spent += usd; return { text: t, usd };
   }
   if (spent >= CAP) return { text: null, usd: 0 };   // 상한: 안 부른다(끄는 게 아니다)
+  if (DS) {
+    const r = await fetch("https://api.deepseek.com/chat/completions", {
+      method: "POST", headers: { "content-type": "application/json", authorization: "Bearer " + DSKEY },
+      body: JSON.stringify({ model: "deepseek-chat", messages: [{ role: "system", content: SYS_DS }, { role: "user", content: q.물음 }], max_tokens: 700, temperature: 0.7 }),
+      signal: AbortSignal.timeout(120_000),
+    }).catch((e) => { console.log(`   못 닿음: ${String(e).slice(0, 60)}`); return null; });
+    if (!r || !r.ok) { if (r) console.log(`   못 닿음 HTTP ${r.status}: ${(await r.text()).slice(0, 80)}`); return { text: null, usd: 0 }; }
+    const j = await r.json() as { choices?: { message?: { content?: string } }[]; usage?: { prompt_tokens?: number; completion_tokens?: number } };
+    const usd = ((j.usage?.prompt_tokens ?? 0) * 0.28 + (j.usage?.completion_tokens ?? 0) * 0.42) / 1e6;
+    spent += usd; return { text: j.choices?.[0]?.message?.content ?? null, usd };
+  }
   const { createOpenAIProvider } = await import("../../src/lib/providers/openai");
   const { costOf } = await import("../../src/lib/costs/pricing");
   const ai = createOpenAIProvider({ judgmentModel: model });
@@ -85,7 +101,7 @@ const t0 = Date.now();
 for (const q of 판) {
   for (let r = 0; r < REP; r++) {
     const cs = await Promise.all(Array.from({ length: N }, (_, k) => call(CHEAP, q, r * N + k)));
-    const b = await call(BIG, q, r);
+    const b = DS ? { text: null, usd: 0 } : await call(BIG, q, r);
     const cheapUsd = cs.reduce((s, c) => s + c.usd, 0);
     // S1 = 첫 답 그대로(같은 분포, 따로 안 부름)
     R.S1.usd += cs[0].usd; tally(R.S1, q, cs[0].text);
@@ -102,6 +118,18 @@ for (const q of 판) {
 console.log(`\n${MOCK ? "[가짜 판 — 숫자는 의미 없음] " : ""}${SAB ? "[고장 심음] " : ""}`);
 for (const [k, a] of Object.entries(R)) console.log(`  ${k}  말투 ${a.pass}/${a.n} · 사실 ${a.fact}/${a.factN} · 못 잼 ${a.miss} · $${a.usd.toFixed(4)}`);
 const S5 = R.S5, B1 = R.B1;
+if (DS) {
+  const S1 = R.S1;
+  const void2 = S1.miss > 4 || S5.miss > 4 || S1.n === 0;
+  const up = S5.pass - S1.pass;
+  const v = void2 ? (S1.n === 0 ? "못 잼(DeepSeek 이 안 닿음)" : "무효(못 잼이 1/6 넘음)")
+    : up >= 6 && S5.fact >= S1.fact - 2 ? "고르기가 이김" : up >= 6 ? "말투만 이김" : "못 이김";
+  console.log(`\n판정(다시 잠근 식): ${v} · 말투 +${up} · 사실 ${S5.fact - S1.fact >= 0 ? "+" : ""}${S5.fact - S1.fact} · S5 값 = S1 의 ${S1.usd ? (S5.usd / S1.usd).toFixed(1) : "-"}배 · 총 $${spent.toFixed(4)} · ${((Date.now() - t0) / 1000).toFixed(0)}초`);
+  mkdirSync("engine/work/select-by-ruler", { recursive: true });
+  writeFileSync("engine/work/select-by-ruler/deepseek.json", JSON.stringify({ at: new Date().toISOString(), R, spent }, null, 1));
+  console.log("고른 답: engine/work/select-by-ruler/deepseek.json");
+  process.exit(0);
+}
 const void_ = Object.values(R).some((a) => a.miss > 4);
 const win = S5.pass >= B1.pass && S5.usd <= B1.usd * 0.5;
 const voiceOnly = win && S5.fact < B1.fact - 2;
