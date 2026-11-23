@@ -2,6 +2,17 @@
 
 import { useEffect, useRef, useState } from "react";
 
+/* 11-24 "로그인 안됨.. 폰이야": 스레드·인스타·카톡 링크는 그 앱 **안 브라우저**로 열린다. 구글은 거기서 로그인을
+ * 막는다(403 disallowed_useragent). 그래서 그 자리에선 구글로 보내지 않고 **진짜 브라우저로 이 화면을 다시 연다.** */
+function 앱안브라우저(): "android" | "kakao" | "ios" | null {
+  if (typeof navigator === "undefined") return null;
+  const ua = navigator.userAgent;
+  if (/KAKAOTALK/i.test(ua)) return "kakao";
+  const 앱안 = /Barcelona|Instagram|FBAN|FBAV|FB_IAB|Line\/|NAVER\(inapp|DaumApps|everytimeApp|; wv\)/i.test(ua);
+  if (!앱안) return null;
+  return /iPhone|iPad|iPod/i.test(ua) ? "ios" : "android";
+}
+
 /**
  * 구글 단추. 이 구글 계정이 이미 다른 두근도트 계정에 붙어 있어서 돌아온 경우(`already`)에는
  * **누르지 않아도 그 계정으로 로그인을 이어 간다** — 같은 단추를 두 번 누르게 하지 않는다.
@@ -13,6 +24,13 @@ export default function GoogleGo({ already, en }: { already: boolean; en: boolea
   const 한번 = useRef(false);
 
   async function go(mode?: "signin") {
+    const 앱안 = 앱안브라우저();
+    if (앱안 === "kakao") { location.href = "kakaotalk://web/openExternal?url=" + encodeURIComponent(location.href); return; }
+    if (앱안 === "android") {
+      location.href = `intent://${location.host}${location.pathname}${location.search}#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=${encodeURIComponent(location.href)};end`;
+      return;
+    }
+    if (앱안 === "ios") { setErr(en ? "Google sign-in doesn't work inside this app. Tap ··· and choose \"Open in browser\"." : "이 앱 안에선 구글이 로그인을 막아요. 오른쪽 위 ··· → \"브라우저로 열기\" 후 다시 눌러 주세요."); return; }
     setBusy(true); setErr(null);
     try {
       const r = await fetch("/api/dot/login", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ mode }) });
