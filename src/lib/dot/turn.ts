@@ -61,7 +61,8 @@ const HISTORY_TURNS = 12;
 // 8줄 쌓일 때마다 한 번만 밀면 그 사이 7턴은 앞부분이 그대로라 지난 대화까지 캐시에 맞는다.
 const HISTORY_BLOCK = 16;   // 8이면 4턴에 한 번 전부 놓쳤다(실측 90·0·84%) — 16이면 8턴에 한 번
 
-const answer = z.object({
+/** 11-23: 정찰 자(engine/tools/dot_scout_en.mts)가 같은 모양으로 부르려고 내보낸다 — 복사본을 만들지 않는다. */
+export const answer = z.object({
   /** 캐릭터가 하는 말. 1~2문장(집착 버프 전 기본). */
   reply: z.string(),
   /**

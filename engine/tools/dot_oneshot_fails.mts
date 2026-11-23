@@ -8,8 +8,8 @@
  */
 import { readFileSync } from "node:fs";
 import { createClient } from "@supabase/supabase-js";
-import { splitBubbles } from "../../src/lib/dot/bubbles";
 import { hangulShare } from "../../src/lib/dot/enRegister";
+import { RULES } from "./dot_reply_rules.mts";
 
 const env = Object.fromEntries(readFileSync(".env.local", "utf8").split(/\r?\n/).filter((l) => /^[A-Z_]+=/.test(l)).map((l) => [l.slice(0, l.indexOf("=")), l.slice(l.indexOf("=") + 1).replace(/^"|"$/g, "")]));
 const db = createClient(env.NEXT_PUBLIC_SUPABASE_URL, env.SUPABASE_SECRET_KEY, { auth: { persistSession: false } });
@@ -37,15 +37,7 @@ for (const m of all) {
   rows.push({ lang: hangulShare(u) < 0.1 ? "en" : "ko", text: m.content });
 }
 
-const AI_SELF = ["as an ai", "language model", "i'm an ai", "i am an ai", "인공지능", "ai 라서", "ai라서", "챗봇"];
-const rules: { id: string; on: "en" | "ko" | "all"; fail: (t: string) => boolean }[] = [
-  { id: "영어로 물었는데 한글이 섞임(>5%)", on: "en", fail: (t) => hangulShare(t) > 0.05 },
-  { id: "한국어로 물었는데 영어로 답(한글<30%)", on: "ko", fail: (t) => hangulShare(t) < 0.3 },
-  { id: "말풍선 3개 초과(줄 기준)", on: "all", fail: (t) => t.split("\n").filter((l) => l.trim()).length > 3 },
-  { id: "말풍선 평균 30자 초과(한국어)", on: "ko", fail: (t) => { const b = splitBubbles(t); return b.reduce((s, x) => s + x.length, 0) / b.length > 30; } },
-  { id: "말풍선 평균 12단어 초과(영어)", on: "en", fail: (t) => { const b = splitBubbles(t); return b.reduce((s, x) => s + x.split(/\s+/).filter(Boolean).length, 0) / b.length > 12; } },
-  { id: "AI 자칭", on: "all", fail: (t) => AI_SELF.some((w) => t.toLowerCase().includes(w)) },
-];
+const rules = RULES;
 
 const en = rows.filter((r) => r.lang === "en").length, ko = rows.length - en;
 console.log(`${since ? `${since} 이후 · ` : ""}답 ${rows.length}개 (영어 ${en} · 한국어 ${ko}) · 메시지 전체 ${all.length}\n`);
