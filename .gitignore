@@ -77,3 +77,4 @@ engine/work/dot-이사/복원.sql
 # `git add -A` 한 번이면 커밋된다. 이름이 비밀이라 내용이 비어도 위험하다.
 GOCSPX-*
 /engine/work/dot-이사/복원-나머지.sql
+engine/work/datasets/
