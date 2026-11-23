@@ -157,6 +157,11 @@ export function t(key: Key, lang: Lang): string {
   return 말[key][lang];
 }
 
+/** 영어판 캐릭터 이름은 slug 에서 만든다 — 나비 → Nabi. 표에 또 적어 두면 한쪽만 고쳐진다(피드에서 옮겨 옴, 11-23 내 창도 같이 쓴다). */
+export function shownName(slug: string, name: string, lang: Lang): string {
+  return lang === "en" && slug ? slug.charAt(0).toUpperCase() + slug.slice(1) : name;
+}
+
 /** 몇 장 모았는지 같은 문장. 언어마다 어순이 달라 따로 만든다. */
 export function collectedLine(n: number, total: number, lang: Lang): string {
   return lang === "en" ? `${n} of ${total} collected` : `${total}장 중 ${n}장`;

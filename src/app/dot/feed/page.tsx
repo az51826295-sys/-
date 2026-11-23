@@ -3,12 +3,7 @@ import { fillCaptionEn } from "@/lib/dot/translate";
 import { createServiceClient } from "@/lib/supabase/service";
 import Link from "next/link";
 import DotTabs from "../DotTabs";
-import { t, type Lang } from "@/lib/dot/lang";
-
-/** 영어판 이름은 slug 에서 만든다 — 나비 → Nabi. 표에 또 적어 두면 한쪽만 고쳐진다. */
-function 보일이름(slug: string, name: string, lang: Lang): string {
-  return lang === "en" && slug ? slug.charAt(0).toUpperCase() + slug.slice(1) : name;
-}
+import { t, shownName as 보일이름 } from "@/lib/dot/lang";
 import { langFromCookie } from "@/lib/dot/langServer";
 import FeedCard, { type FeedPost } from "./FeedCard";
 import StoryRow, { type StoryItem } from "./StoryRow";

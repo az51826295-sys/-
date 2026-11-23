@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import DotTabs from "../DotTabs";
-import { t, type Lang } from "@/lib/dot/lang";
+import { t, shownName, type Lang } from "@/lib/dot/lang";
+import { createServiceClient } from "@/lib/supabase/service";
 import { langFromCookie } from "@/lib/dot/langServer";
 import Uploader from "./Uploader";
 import { mineView, 맞팔_하트 } from "@/lib/dot/mine";
@@ -36,8 +37,10 @@ export default async function DotMe() {
    */
   const lang = await langFromCookie();
   if (!user) return <MeEmpty lang={lang} />;
-  const v = await mineView(user.id);
-  const 이름 = (user.email ?? "나").split("@")[0];
+  const [v, 사람들] = await Promise.all([mineView(user.id), castFaces(lang)]);
+  /* 11-23: 손님(익명)은 이메일이 없어 영어 화면에도 "나" 가 떴다 → 탭 이름으로. */
+  const 이름 = user.email ? user.email.split("@")[0] : t("tab_me", lang);
+  const 맞팔 = v.followers.map((c) => ({ ...c, name: shownName(c.slug, c.name, lang) }));
 
   return (
     <div className="me-root">
@@ -53,6 +56,12 @@ export default async function DotMe() {
         </header>
 
         <div className="me-body">
+          <ProfileCard
+            name={이름}
+            sub={user.is_anonymous ? (lang === "en" ? "Guest · this device only" : "손님 · 이 기기에만") : (lang === "en" ? "Signed in" : "로그인됨")}
+            faces={맞팔}
+          />
+          {맞팔.length === 0 && <CastRow people={사람들} lang={lang} />}
           {/* 11-22: 손님으로 쓰는 사람에게 로그인 문 — 대화·하트가 이 기기에만 있다. */}
           {user.is_anonymous && <Link href="/dot/login" className="me-login">{lang === "en" ? "Sign in to keep your chats on any device ›" : "로그인하면 대화와 하트가 어느 기기에서든 이어져요 ›"}</Link>}
           <div className="me-nums">
@@ -66,7 +75,7 @@ export default async function DotMe() {
             <div className="me-back">
               <div className="me-sub">{t("me_mutual", lang)}</div>
               <div className="me-chips">
-                {v.followers.map((c) => (
+                {맞팔.map((c) => (
                   <Link key={c.slug} href={`/dot/${c.slug}`} className="me-chip">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     {c.avatar && <img src={c.avatar} alt="" />}
@@ -82,7 +91,7 @@ export default async function DotMe() {
               <div className="me-sub">{t("me_until_mutual", lang)}</div>
               {v.progress.map((c) => (
                 <div key={c.slug} className="me-prog">
-                  <span className="me-prog-name">{c.name}</span>
+                  <span className="me-prog-name">{shownName(c.slug, c.name, lang)}</span>
                   <span className="me-bar"><i style={{ width: `${Math.min(100, (c.hearts / 맞팔_하트) * 100)}%` }} /></span>
                   <span className="me-prog-n">{c.hearts}/{맞팔_하트}</span>
                 </div>
@@ -164,6 +173,22 @@ const CSS = `
 .me-tarot b { font-size:14px; font-weight:400; }
 .me-tarot small { font-size:11px; color:#b9b0e0; }
 .me-tarot:active { transform:translate(2px,2px); }
+/* 11-23 사장님 "꾸며" — 위에 프로필 카드 한 장(피드 첫 안내와 같은 보라 칸), 맞팔이 없으면 대화 상대 줄. 새 그림은 없다. */
+.me-card { display:flex; gap:14px; align-items:center; margin:4px 16px 12px; padding:16px; background:#f4f1ff; border-radius:16px; }
+.me-ava { flex:0 0 64px; width:64px; height:64px; background:#ff5c7a; color:#fff; display:flex; align-items:center; justify-content:center; border-radius:16px; box-shadow:0 0 0 3px #6b5bd2; }
+.me-ava svg { width:40px; height:40px; }
+.me-who { min-width:0; display:flex; flex-direction:column; gap:4px; }
+.me-who b { font-size:18px; color:#1c1640; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.me-who small { font-size:12px; color:#6b5bd2; }
+.me-faces { display:flex; margin-top:4px; }
+.me-faces img { width:28px; height:28px; border-radius:50%; object-fit:cover; object-position:center top; image-rendering:pixelated; background:#fff; box-shadow:0 0 0 2px #f4f1ff; margin-left:-6px; }
+.me-faces img:first-child { margin-left:0; }
+.me-cast { margin:0 16px 12px; }
+.me-cast-pick { font-size:13px; color:#6b5bd2; margin:0 0 8px; }
+.me-cast-row { display:flex; gap:10px; overflow-x:auto; padding:3px 3px 4px; scrollbar-width:none; }
+.me-cast-row::-webkit-scrollbar { display:none; }
+.me-cast-one { flex:0 0 auto; width:64px; display:flex; flex-direction:column; align-items:center; gap:6px; text-decoration:none; color:#1c1640; font-size:12px; }
+.me-cast-one img, .me-cast-none { width:56px; height:56px; border-radius:50%; object-fit:cover; object-position:center top; image-rendering:pixelated; background:#fff; box-shadow:0 0 0 3px #6b5bd2; }
 .me-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:2px; }
 .me-tile { position:relative; aspect-ratio:1; background:#eef1f5; }
 .me-tile img { width:100%; height:100%; object-fit:cover; display:block; }
@@ -174,7 +199,8 @@ const CSS = `
  * 계정이 없을 때의 내 창. **숫자를 0 으로 보여 주지 않는다** — 0 은 "없다" 로 읽히는데
  * 사실은 "아직 안 모은다" 다. 무엇이 여기 모이는지 적고, 만들 길을 하나 준다.
  */
-function MeEmpty({ lang }: { lang: Lang }) {
+async function MeEmpty({ lang }: { lang: Lang }) {
+  const 사람들 = await castFaces(lang);
   return (
     <div className="me-root">
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
@@ -188,6 +214,8 @@ function MeEmpty({ lang }: { lang: Lang }) {
           </Link>
         </header>
         <div className="me-body">
+          <ProfileCard name={t("tab_me", lang)} sub={lang === "en" ? "Guest" : "손님"} faces={[]} />
+          <CastRow people={사람들} lang={lang} />
           <div className="me-empty">
             <b>{t("me_signup_title", lang)}</b>
             <ul>
@@ -203,5 +231,53 @@ function MeEmpty({ lang }: { lang: Lang }) {
         <DotTabs on="me" />
       </div>
     </div>
+  );
+}
+
+/** 내 창 탭의 그 사람 모양(DotTabs 와 같은 8×8 도트). */
+const ME_ICON = "M3 0h2v1h1v2h-1v1h-2v-1h-1v-2h1zM1 5h6v1h1v2h-8v-2h1z";
+
+function ProfileCard({ name, sub, faces }: { name: string; sub: string; faces: { slug: string; name: string; avatar: string }[] }) {
+  return (
+    <section className="me-card">
+      <div className="me-ava" aria-hidden>
+        <svg viewBox="0 0 8 8" shapeRendering="crispEdges"><path d={ME_ICON} fill="currentColor" fillRule="evenodd" /></svg>
+      </div>
+      <div className="me-who">
+        <b>{name}</b>
+        <small>{sub}</small>
+        {faces.length > 0 && (
+          <div className="me-faces">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            {faces.slice(0, 8).map((c) => c.avatar && <img key={c.slug} src={c.avatar} alt={c.name} title={c.name} />)}
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+/** 공개 캐릭터 전부 — 피드 첫 안내와 같은 줄(고르지 않는다). */
+async function castFaces(lang: Lang): Promise<{ slug: string; name: string; avatar: string }[]> {
+  const { data } = await createServiceClient().from("dot_characters").select("slug, name, photos").eq("is_public", true).order("created_at", { ascending: true });
+  return ((data ?? []) as { slug: string; name: string; photos: { url: string }[] | null }[])
+    .map((c) => ({ slug: c.slug, name: shownName(c.slug, c.name, lang), avatar: c.photos?.[0]?.url ?? "" }));
+}
+
+function CastRow({ people, lang }: { people: { slug: string; name: string; avatar: string }[]; lang: Lang }) {
+  if (people.length === 0) return null;
+  return (
+    <section className="me-cast">
+      <p className="me-cast-pick">{t("feed_intro_pick", lang)}</p>
+      <div className="me-cast-row">
+        {people.map((c) => (
+          <Link key={c.slug} href={`/dot/${c.slug}`} className="me-cast-one">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            {c.avatar ? <img src={c.avatar} alt="" /> : <span className="me-cast-none" />}
+            <span>{c.name}</span>
+          </Link>
+        ))}
+      </div>
+    </section>
   );
 }

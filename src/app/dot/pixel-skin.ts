@@ -15,12 +15,13 @@ export const PIXEL_FONT_LINK = `<link rel="stylesheet" href="/fonts/galmuri.css"
 export const PIXEL_CSS = `
 /* ── 바탕: 검정 틈 대신 흰색(화면 사이) ── */
 body { background: #fff !important; }
-.kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root { background: #fff !important; }
+.kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root, .me-root, .sc-root { background: #fff !important; }
 
 /* ── 글꼴: 비트맵, 정수 배만 ── */
-.kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root, .dt-tabs, .fb {
+/* 11-23: 내 창(me)·검색(sc)이 이 목록에서 빠져 있어서 두 화면만 일반 글꼴이었다. */
+.kl-root, .pk-root, .fd-root, .pf-root, .kk-root, .da-root, .pv-root, .me-root, .sc-root, .dt-tabs, .fb {
   font-family: Galmuri14, Galmuri11, "Apple SD Gothic Neo", sans-serif !important; -webkit-font-smoothing: none !important; font-smooth: never; letter-spacing: 0 !important; }
-.kl-root *, .pk-root *, .fd-root *, .pf-root *, .kk-root *, .da-root *, .pv-root * { letter-spacing: 0 !important; }
+.kl-root *, .pk-root *, .fd-root *, .pf-root *, .kk-root *, .da-root *, .pv-root *, .me-root *, .sc-root * { letter-spacing: 0 !important; }
 
 /* ── 줄바꿈: 낱말째 내려간다 ──
    기본값이면 한국어만 **글자 단위로** 잘린다 — 11-06 화면 점검에서 *"오늘 5번 남／음"*,
