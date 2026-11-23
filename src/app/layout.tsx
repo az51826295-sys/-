@@ -58,7 +58,15 @@ export const metadata: Metadata = 두근도트
         // 흰 바탕 앱이라 글자가 검게 나오는 쪽.
         statusBarStyle: "default",
       },
-      icons: { apple: [{ url: "/dot-apple-touch-icon.png", sizes: "180x180" }] },
+      /* 11-23: 탭 아이콘. 전에는 Next 기본 favicon.ico(검은 세모)가 떴다 — 사장님 탭 사진. 도트 아이콘을 가장 가까이로 줄여(nearest) 쓴다. */
+      icons: {
+        icon: [
+          { url: "/dot-favicon-32.png", sizes: "32x32", type: "image/png" },
+          { url: "/dot-favicon-48.png", sizes: "48x48", type: "image/png" },
+          { url: "/dot-icon-192.png", sizes: "192x192", type: "image/png" },
+        ],
+        apple: [{ url: "/dot-apple-touch-icon.png", sizes: "180x180" }],
+      },
       /**
        * **링크 미리보기 카드** (11-23, dugeundot.com 산 날). 카톡·X·인스타에 주소를 붙이면 뜨는 그림·제목.
        * 그림은 `engine/tools/dot_og_card.mts` 가 지금 사이트의 영어 화면으로 굽는다. 영어가 기본(11-22)이라 카드도 영어.
@@ -99,7 +107,7 @@ export const metadata: Metadata = 두근도트
         // 까만 바탕이라 상태줄도 까맣게 이어 붙인다.
         statusBarStyle: "black-translucent",
       },
-      icons: { apple: [{ url: "/rookery-apple-touch-icon.png", sizes: "180x180" }] },
+      icons: { icon: [{ url: "/rookery-favicon.svg", type: "image/svg+xml" }], apple: [{ url: "/rookery-apple-touch-icon.png", sizes: "180x180" }] },
     };
 
 export default function RootLayout({
