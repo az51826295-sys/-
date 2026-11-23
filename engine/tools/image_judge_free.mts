@@ -125,3 +125,20 @@ const d2b = report("D2b 중심점+C", machineB);
 for (const [n, d] of [["D2a", d2a], ["D2b", d2b]] as const)
   console.log(`  ${n} 판정(잠근 식): C 대비 ${((d.acc - accC) * 100).toFixed(1)}%p · 값 ${(d.usd / uCv * 100).toFixed(0)}% → ${d.acc >= accC - 0.02 && d.usd <= uCv * 0.7 ? "선다" : "안 선다"} · B 대비 ${((d.acc - accB) * 100).toFixed(1)}%p 값 ${(d.usd / uBv * 100).toFixed(0)}%`);
 writeFileSync("engine/work/image-judge/t1-free.json", JSON.stringify({ best, hiSame, loDiff, one, mLock, d2a, d2b, accB, accC }, null, 1));
+
+// ---- 3판: 묶음, 뒤 45쌍만 (τ·중심점 문턱 어느 쪽도 안 본 쌍) ----
+{
+  const E = evalSet;
+  const arm = (name: string, f: (p: Pair) => { 답: string; usd: number }) => {
+    const rs = E.map((p) => ({ ...f(p), p }));
+    const acc = rs.filter((r) => r.답 === r.p.truth).length / E.length, usd = rs.reduce((s, r) => s + r.usd, 0);
+    console.log(`  ${name.padEnd(18)} ${pct(acc)} · $${usd.toFixed(3)}`); return { acc, usd };
+  };
+  const cOf = (tau: number) => (p: Pair) => ({ 답: cAns(p, tau), usd: cUsd([p], tau) });
+  const dOf = (tau: number) => (p: Pair) => { const m = machineB(p); return m ? { 답: m, usd: 0 } : cOf(tau)(p); };
+  console.log(`\n3판 — 뒤 ${E.length}쌍:`);
+  const b = arm("B 비싼 혼자", (p) => ({ 답: B(p), usd: rowById.get(p.id)!.B.usd }));
+  arm("C τ0.8", cOf(0.8)); arm("C τ0.93", cOf(0.93)); arm("D2b+C τ0.8", dOf(0.8));
+  const d = arm("D2b+C τ0.93 (묶음)", dOf(0.93));
+  console.log(`  판정(잠근 식): B 대비 ${((d.acc - b.acc) * 100).toFixed(1)}%p · 값 ${((d.usd / b.usd) * 100).toFixed(0)}% → ${d.acc >= b.acc - 0.03 && d.usd <= b.usd * 0.5 ? "선다" : "안 선다"}`);
+}
