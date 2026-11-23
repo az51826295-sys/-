@@ -60,6 +60,26 @@ export const metadata: Metadata = 두근도트
       },
       icons: { apple: [{ url: "/dot-apple-touch-icon.png", sizes: "180x180" }] },
       /**
+       * **링크 미리보기 카드** (11-23, dugeundot.com 산 날). 카톡·X·인스타에 주소를 붙이면 뜨는 그림·제목.
+       * 그림은 `engine/tools/dot_og_card.mts` 가 지금 사이트의 영어 화면으로 굽는다. 영어가 기본(11-22)이라 카드도 영어.
+       * metadataBase 가 없으면 og:image 가 Railway 안 localhost 주소로 나간다.
+       */
+      metadataBase: new URL(process.env.DOT_PUBLIC_URL ?? "https://dugeundot.com"),
+      openGraph: {
+        type: "website",
+        siteName: "Dot",
+        title: "Dot — Chat with pixel characters",
+        description: "Chat with pixel characters, like texting a friend. Their face changes every time they talk. No sign-up.",
+        url: "/",
+        images: [{ url: "/dot-og.png", width: 1200, height: 630, alt: "Dot — pixel character chat" }],
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: "Dot — Chat with pixel characters",
+        description: "Chat with pixel characters, like texting a friend. No sign-up.",
+        images: ["/dot-og.png"],
+      },
+      /**
        * **AdSense 가 "이 사이트가 당신 것인가" 를 확인하는 자리** (11-10).
        *
        * 심사는 세 길 중 하나로 소유를 확인한다 — 광고 코드 조각 · `ads.txt` · **이 메타 태그**.
