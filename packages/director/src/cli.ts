@@ -12,7 +12,7 @@ import { zodTextFormat } from "openai/helpers/zod";
 import { startDirectorServer } from "../../../src/lib/director/server";
 import { costOf, isPriced } from "../../../src/lib/costs/pricing";
 
-if (process.argv.includes("--version")) { console.error("rookery-director 0.2.0"); process.exit(0); }
+if (process.argv.includes("--version")) { console.error("rookery-director 0.3.0"); process.exit(0); }
 
 async function makeBrain(model: string) {
   if (!process.env.OPENAI_API_KEY) return null;
@@ -45,5 +45,5 @@ startDirectorServer({
   // 판매 주소는 license.ts 의 SALE 한 곳. 환경변수는 시험용 덮어쓰기.
   license: { validateUrl: process.env.DIRECTOR_LICENSE_VALIDATE_URL, buyUrl: process.env.DIRECTOR_BUY_URL },
   licenseKey: process.env.ROOKERY_LICENSE,
-  version: "0.2.0",
+  version: "0.3.0",
 });
