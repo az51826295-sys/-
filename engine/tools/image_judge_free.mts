@@ -40,6 +40,8 @@ const make = (lo: number, hi: number, n: number, tag: string) => {
   return out;
 };
 const dev = make(0, 15, 40, "d"), test = make(15, 50, 120, "t");
+// 2판 고침: 중심점은 앞 10장, "확실" 문턱은 11~15번째 그림으로 만든 쌍에서 잡는다(같은 그림을 두 번 쓰지 않게).
+const cal = make(10, 15, 40, "c");
 const run1 = JSON.parse(readFileSync("engine/work/image-judge/t1.json", "utf-8")) as { rows: { id: string; truth: string; A: { 답: string; conf: number; usd: number; err?: string }; B: { 답: string; conf: number; usd: number; err?: string } }[] };
 const rowById = new Map(run1.rows.map((r) => [r.id, r]));
 for (const p of test) if (rowById.get(p.id)?.truth !== p.truth) throw new Error(`쌍이 1판과 다름: ${p.id}`);
@@ -74,7 +76,7 @@ async function embed(p: string) {
 }
 const cos = (a: Float32Array, b: Float32Array) => a.reduce((s, x, i) => s + x * b[i], 0);
 const t0 = Date.now();
-for (const p of [...dev, ...test]) { await embed(p.a); await embed(p.b); }
+for (const p of [...dev, ...test, ...cal]) { await embed(p.a); await embed(p.b); }
 for (const a of artists) for (const f of by.get(a)!.slice(0, 15)) await embed(f);
 console.log(`CLIP: 그림 ${emb.size}장 숫자로 바꿈 · ${((Date.now() - t0) / 1000).toFixed(0)}초 · 유료 호출 0`);
 
@@ -92,7 +94,7 @@ for (const t of ss) { const a = dd.filter((x) => (x.s >= t) === x.same).length /
 // b. 화가 중심점 (개발 그림 15장/화가)
 const cent = new Map<string, Float32Array>();
 for (const a of artists) {
-  const vs = by.get(a)!.slice(0, 15).map((f) => emb.get(f)!);
+  const vs = by.get(a)!.slice(0, 10).map((f) => emb.get(f)!);
   const c = new Float32Array(vs[0].length); for (const v of vs) for (let i = 0; i < c.length; i++) c[i] += v[i];
   const n = Math.hypot(...c); for (let i = 0; i < c.length; i++) c[i] /= n; cent.set(a, c);
 }
@@ -100,9 +102,9 @@ const nearest = (v: Float32Array) => { const s = artists.map((a) => ({ a, s: cos
 const centAns = (p: Pair) => (nearest(emb.get(p.a)!).a === nearest(emb.get(p.b)!).a ? "same" : "different");
 // 중심점이 "확실" = 두 그림 다 1등·2등 차이가 개발에서 정한 값 이상. 개발 쌍에서 90% 이상 맞는 가장 작은 차이를 잠근다.
 const mOf = (p: Pair) => Math.min(nearest(emb.get(p.a)!).margin, nearest(emb.get(p.b)!).margin);
-const ms = [...new Set(dev.map(mOf))].sort((x, y) => x - y);
+const ms = [...new Set(cal.map(mOf))].sort((x, y) => x - y);
 let mLock = Infinity;
-for (const m of [...ms].reverse()) { const sel = dev.filter((p) => mOf(p) >= m); if (sel.length >= 3 && sel.filter((p) => centAns(p) === p.truth).length / sel.length >= 0.9) mLock = m; }
+for (const m of [...ms].reverse()) { const sel = cal.filter((p) => mOf(p) >= m); if (sel.length >= 3 && sel.filter((p) => centAns(p) === p.truth).length / sel.length >= 0.9) mLock = m; }
 console.log(`잠금(개발 40쌍): 거리 같음 ≥ ${hiSame.toFixed(3)} · 다름 ≤ ${loDiff.toFixed(3)} · 중심점 확실 margin ≥ ${mLock === Infinity ? "없음" : mLock.toFixed(4)}`);
 
 // 재기: 유효 90쌍 전체(기계 문턱은 개발에서만 정했으니 시험 쌍 전부를 써도 된다)
