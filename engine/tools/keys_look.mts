@@ -49,8 +49,10 @@ async function 재기(자리: string, 쓰임: string, 변수: string, 부르기:
   }
 }
 
-await 재기("OpenAI", "그림(캐릭터 시트)·번역", "OPENAI_API_KEY", (k) =>
-  fetch("https://api.openai.com/v1/models", { headers: { authorization: `Bearer ${k}` } }));
+// 11-24: 목록(/v1/models)은 잔액이 0 이어도 200 을 준다 — 그래서 "열림"이라 했는데 실제 부르기는 429 insufficient_quota 였다.
+// 진짜로 한 번 부른다(1토큰, 값 $0.000002 안팎). 돈이 없으면 여기서 429 가 난다.
+await 재기("OpenAI", "그림(캐릭터 시트)·번역·로키 판단자", "OPENAI_API_KEY", (k) =>
+  fetch("https://api.openai.com/v1/chat/completions", { method: "POST", headers: { authorization: `Bearer ${k}`, "content-type": "application/json" }, body: JSON.stringify({ model: "gpt-4o-mini", max_tokens: 1, messages: [{ role: "user", content: "1" }] }) }));
 await 재기("Anthropic", "내 자리", "ANTHROPIC_API_KEY", (k) =>
   fetch("https://api.anthropic.com/v1/models", { headers: { "x-api-key": k, "anthropic-version": "2023-06-01" } }));
 await 재기("fal", "3D 넷(Tripo·Rodin·Hunyuan·Trellis)", "FAL_KEY", (k) =>

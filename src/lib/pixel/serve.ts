@@ -4,7 +4,8 @@ import { realDot, type RealDotResult } from "./realdot";
 /** 올린 그림을 받아 변환한다 — 미리보기와 받기가 **같은 함수**를 부른다(둘이 다르면 산 것과 본 것이 다르다). */
 export const MAX_BYTES = 10 * 1024 * 1024;
 
-export async function readUpload(request: Request): Promise<{ buf: Buffer; period?: number; colors: number } | { error: string; status: number }> {
+export type Upload = { buf: Buffer; period?: number; colors: number; cols?: number; rows?: number; ms: number; lock: number };
+export async function readUpload(request: Request): Promise<Upload | { error: string; status: number }> {
   const form = await request.formData().catch(() => null);
   const file = form?.get("image");
   if (!(file instanceof Blob)) return { error: "그림을 올려 주세요.", status: 400 };
@@ -15,10 +16,16 @@ export async function readUpload(request: Request): Promise<{ buf: Buffer; perio
   if (meta.width * meta.height > 4096 * 4096) return { error: "너무 커요 — 4096×4096 아래로.", status: 413 };
   const p = Number(form?.get("period"));
   const c = Number(form?.get("colors"));
+  const int = (k: string, lo: number, hi: number) => { const v = Number(form?.get(k)); return Number.isInteger(v) && v >= lo && v <= hi ? v : undefined; };
+  const cols = int("cols", 1, 16), rows = int("rows", 1, 16);
   return {
     buf,
     period: Number.isFinite(p) && p >= 2 && p <= 64 ? p : undefined,
     colors: Number.isFinite(c) && c >= 2 && c <= 64 ? Math.round(c) : 32,
+    // 움직임 만들기: 둘 다 있어야 고르게 나눈다(하나만 오면 자동)
+    ...(cols && rows ? { cols, rows } : {}),
+    ms: int("ms", 40, 2000) ?? 200,
+    lock: form?.get("lock") === "1" ? 0.25 : 0, // 몸통 고정(아래 1/4)
   };
 }
 

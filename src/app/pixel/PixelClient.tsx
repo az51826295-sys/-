@@ -60,7 +60,7 @@ export default function PixelClient({ en, paid }: { en: boolean; paid: string | 
   const pick = (f: File | undefined | null) => {
     if (!f) return;
     if (f.size > 10 * 1024 * 1024) { setErr(t("10MB 아래 그림만 받아요.", "Max 10MB.")); return; }
-    setFile(f); setSrc(URL.createObjectURL(f)); setPeriod(null); setPv(null);
+    setFile(f); setSrc(URL.createObjectURL(f)); setPeriod(null); setPv(null); setMv(null); setMvGot(null);
     void run(f, null, colors);
   };
 
@@ -94,6 +94,47 @@ export default function PixelClient({ en, paid }: { en: boolean; paid: string | 
       const j = await r.json();
       if (j.url) { window.location.href = j.url; return; }
       setErr(j.error ?? t("결제창을 못 열었어요.", "Couldn't open checkout."));
+    } catch { setErr(t("인터넷을 확인해 주세요.", "Check your connection.")); }
+    setBusy(false);
+  };
+
+  // ── 움직임 만들기(11-24): 시트를 프레임으로 잘라 움직이는 GIF + 게임용 시트
+  const [mvAuto, setMvAuto] = useState(true);
+  const [mvCols, setMvCols] = useState(3);
+  const [mvRows, setMvRows] = useState(2);
+  const [mvLock, setMvLock] = useState(true);
+  const [mvMs, setMvMs] = useState(250);
+  const [mv, setMv] = useState<{ count: number; cell: [number, number]; gif: string } | null>(null);
+  const [mvGot, setMvGot] = useState<{ sheet: string; gif: string; count: number; cell: [number, number] } | null>(null);
+  const mvForm = () => {
+    const fd = new FormData();
+    fd.append("image", file!);
+    fd.append("period", String(period ?? pv?.period ?? ""));
+    fd.append("colors", String(colors));
+    if (!mvAuto) { fd.append("cols", String(mvCols)); fd.append("rows", String(mvRows)); }
+    fd.append("ms", String(mvMs));
+    if (mvLock) fd.append("lock", "1");
+    return fd;
+  };
+  const movePreview = async () => {
+    if (!file) return;
+    setBusy(true); setErr(null); setMvGot(null);
+    try {
+      const r = await fetch("/api/pixel/frames", { method: "POST", body: mvForm() });
+      const j = await r.json();
+      if (!r.ok) { setErr(j.error ?? t("프레임을 못 나눴어요.", "Couldn't split frames.")); setMv(null); }
+      else setMv({ count: j.count, cell: j.cell, gif: j.gif });
+    } catch { setErr(t("인터넷을 확인해 주세요.", "Check your connection.")); }
+    setBusy(false);
+  };
+  const moveDownload = async () => {
+    if (!file) return;
+    setBusy(true); setErr(null);
+    try {
+      const r = await fetch("/api/pixel/frames/download", { method: "POST", body: mvForm() });
+      const j = await r.json();
+      if (!r.ok) setErr(j.error ?? t("받기에 실패했어요.", "Download failed."));
+      else { setMvGot({ sheet: j.sheet, gif: j.gif, count: j.count, cell: j.cell }); setShots(j.left); }
     } catch { setErr(t("인터넷을 확인해 주세요.", "Check your connection.")); }
     setBusy(false);
   };
@@ -179,6 +220,53 @@ export default function PixelClient({ en, paid }: { en: boolean; paid: string | 
           </section>
         )}
 
+        {pv && (
+          <section className="rp-move">
+            <h2>{t("움직임 만들기", "Make it move")}</h2>
+            <p className="hint">
+              {t("표정·동작이 여러 개 든 시트라면, 진짜 도트로 바뀐 칸 격자 덕분에 프레임을 1px도 안 어긋나게 잘라 움직일 수 있어요. AI 원본은 칸 간격이 7.3px 같은 애매한 값이라 이렇게 안 잘려요.",
+                 "If your sheet has several poses or faces, the true pixel grid lets us cut frames with zero drift and animate them. The raw AI image can't be cut this cleanly.")}
+            </p>
+            <ol className="how">
+              <li>{t("나누기: 배경이 한 색이면 ‘자동’, 아니면 가로·세로 개수를 정해요.", "Split: ‘auto’ if the background is one color, otherwise set columns × rows.")}</li>
+              <li>{t("몸통 고정: AI는 표정마다 몸을 조금씩 다르게 그려서 그대로 움직이면 몸이 떨려요. 켜면 표정만 바뀌어요(표정 시트 추천, 걷기 같은 동작은 끄기).", "Lock body: AI redraws the body slightly in every frame, so it jitters. Turn on to change only the face (great for expression sheets; off for walk cycles).")}</li>
+              <li>{t("미리보기로 확인하고 받아요 — 게임엔 1배 프레임 시트 PNG, SNS엔 GIF.", "Preview, then download — a 1× frame sheet PNG for games and a GIF for posts.")}</li>
+            </ol>
+            <div className="row">
+              <label><input type="radio" checked={mvAuto} onChange={() => setMvAuto(true)} /> {t("자동", "Auto")}</label>
+              <label><input type="radio" checked={!mvAuto} onChange={() => setMvAuto(false)} /> {t("가로", "Cols")}</label>
+              <input type="number" min={1} max={16} value={mvCols} disabled={mvAuto} onChange={(e) => setMvCols(Number(e.target.value))} />
+              <span>×</span>
+              <input type="number" min={1} max={16} value={mvRows} disabled={mvAuto} onChange={(e) => setMvRows(Number(e.target.value))} />
+              <span>{t("세로", "rows")}</span>
+            </div>
+            <label className="row"><input type="checkbox" checked={mvLock} onChange={(e) => setMvLock(e.target.checked)} /> {t("몸통 고정 (표정만 바뀌게)", "Lock body (face only changes)")}</label>
+            <div className="row"><span>{t("속도", "Speed")} <b>{mvMs}ms</b></span></div>
+            <input type="range" min={80} max={800} step={10} value={mvMs} onChange={(e) => setMvMs(Number(e.target.value))} />
+            <div className="row">
+              <button type="button" disabled={busy} onClick={movePreview}>{t("움직임 미리보기 (무료)", "Preview motion (free)")}</button>
+            </div>
+            {mv && (
+              <figure className="mv">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img className="px" src={mv.gif} alt="" />
+                <figcaption>{t(`${mv.count}프레임 · 한 프레임 ${mv.cell[0]}×${mv.cell[1]}칸 · 미리보기라 줄무늬`, `${mv.count} frames · ${mv.cell[0]}×${mv.cell[1]} each · preview has stripes`)}</figcaption>
+                {shots !== null && shots > 0 ? (
+                  <button type="button" className="go" disabled={busy} onClick={moveDownload}>{t("움직임 받기 (1장 사용)", "Download motion (uses 1)")}</button>
+                ) : (
+                  <button type="button" className="go" disabled={busy || !payOpen} onClick={buy}>{payOpen ? t("10장 4,900원", "10 for ₩4,900") : t("결제 준비 중", "Payments opening soon")}</button>
+                )}
+              </figure>
+            )}
+            {mvGot && (
+              <div className="rp-got">
+                <a href={mvGot.gif} download="real-pixel-move.gif">{t("움직이는 GIF", "Animated GIF")}</a>
+                <a href={mvGot.sheet} download="real-pixel-frames-1x.png">{t(`게임용 프레임 시트 PNG (${mvGot.count}프레임 · ${mvGot.cell[0]}×${mvGot.cell[1]} · 배경 투명)`, `Game frame sheet PNG (${mvGot.count} × ${mvGot.cell[0]}×${mvGot.cell[1]}, transparent)`)}</a>
+              </div>
+            )}
+          </section>
+        )}
+
         {err && <p className="rp-err" role="alert">{err}</p>}
 
         <footer className="rp-foot">
@@ -221,6 +309,19 @@ const CSS = `
 .rp-got{display:flex;flex-direction:column;gap:8px;margin-top:12px}
 .rp-got a{background:#24324a;color:#cfe0ff;padding:10px 12px;border-radius:10px;text-decoration:none}
 .rp-err{color:#ff8fa8;margin-top:12px}
+.rp-move{margin-top:18px;background:#1d1d25;border-radius:12px;padding:12px 14px}
+.rp-move h2{font-size:18px;margin:0 0 6px}
+.rp-move .hint{margin:0 0 8px;color:#b9b9c6;font-size:13px;line-height:1.5}
+.rp-move .how{margin:0 0 10px;padding-left:18px;color:#b9b9c6;font-size:13px;line-height:1.6}
+.rp-move .row{display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap}
+.rp-move input[type=number]{width:56px;background:#2c2c38;color:#eee;border:1px solid #444;border-radius:6px;padding:4px}
+.rp-move input[type=range]{width:100%;accent-color:#ff7aa2}
+.rp-move button{background:#2c2c38;color:#eee;border:1px solid #444;border-radius:8px;padding:8px 12px}
+.rp-move .go{background:#ff5d8f;border:0;font-weight:700;margin-top:10px}
+.rp-move .mv{margin:12px 0 0}
+.rp-move .mv img{max-width:100%;image-rendering:pixelated;border-radius:6px;display:block}
+.rp-move .mv figcaption{color:#8d8ea0;font-size:12px;margin-top:6px}
+.rp-move button:disabled{opacity:.5}
 .rp-foot{margin-top:28px;color:#7d7e90;font-size:12px;line-height:1.6}
 .rp-foot a{color:#9fa0b6}
 `;

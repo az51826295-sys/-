@@ -14,10 +14,21 @@ import sharp from "sharp";
  *  5. 색을 줄이고 알파를 0/255 로 굳힌다 → 한 칸 = 한 색, 경계는 칼같이.
  */
 
+/**
+ * 가까운 색 묶음 합치기 기본값(11-24 일관성 시험으로 정함). 끄면(0) 큰 시트에서 같게 그린 몸통 칸이 프레임마다 다른 색이 됐다 —
+ * 변환기 일관성 51% → 12 로 99.1%(sheet 35/35) · strip 97.8% → 100%, 심은 고장 11/11 잡힘. 그림은 32색 → 11~14색, 디테일 유지(눈으로 4장 확인).
+ * 자: engine/tools/realdot_consistency2.mts (CONS_MERGE=… 로 바꿔 잰다).
+ */
+export const MERGE_DEFAULT = 12;
+
 export type RealDotOptions = {
   colors?: number;        // 최종 색 수 (2~64)
   period?: number;        // 사람이 도트 크기를 알면 준다 (px). 없으면 찾는다.
   scale?: number;         // 내보낼 때 한 칸을 몇 px 로 (보기용)
+  /** 칸 색 뽑기 — 시험용(11-24 일관성 2판). 기본 "mode"(5비트 최빈 묶음의 평균). "median" = 채널별 중앙값. */
+  cell?: "mode" | "median";
+  /** 색 묶음끼리 이 거리(가중 RGB, 대략 밝기 단위)보다 가까우면 합친다. 0 = 끔. 기본은 MERGE_DEFAULT. */
+  merge?: number;
 };
 
 export type RealDotResult = {
@@ -142,6 +153,21 @@ function snapCuts(prof: Float64Array, p: number, o: number): number[] {
 }
 
 /** 칸 안쪽(가장자리 25% 뺀) 화소의 최빈색. 중간색은 가장자리에 몰려 있다. */
+/** 칸 안쪽 50% 의 채널별 중앙값(투명이 반 넘으면 투명) */
+function cellMedian(r: Raw, x0: number, x1: number, y0: number, y1: number): [number, number, number, number] {
+  const ix = Math.floor((x1 - x0) * 0.25), iy = Math.floor((y1 - y0) * 0.25);
+  const ax = x0 + ix, bx = Math.max(ax + 1, x1 - ix), ay = y0 + iy, by = Math.max(ay + 1, y1 - iy);
+  const R: number[] = [], G: number[] = [], B: number[] = []; let clear = 0;
+  for (let y = ay; y < by; y++) for (let x = ax; x < bx; x++) {
+    const i = (y * r.w + x) * 4;
+    if (r.data[i + 3] < 128) { clear++; continue; }
+    R.push(r.data[i]); G.push(r.data[i + 1]); B.push(r.data[i + 2]);
+  }
+  if (clear > R.length) return [0, 0, 0, 0];
+  const md = (a: number[]) => { a.sort((p, q) => p - q); return a[a.length >> 1]; };
+  return [md(R), md(G), md(B), 255];
+}
+
 function cellColor(r: Raw, x0: number, x1: number, y0: number, y1: number): [number, number, number, number] {
   const ix = Math.floor((x1 - x0) * 0.25), iy = Math.floor((y1 - y0) * 0.25);
   const ax = x0 + ix, bx = Math.max(ax + 1, x1 - ix), ay = y0 + iy, by = Math.max(ay + 1, y1 - iy);
@@ -169,7 +195,7 @@ function cellColor(r: Raw, x0: number, x1: number, y0: number, y1: number): [num
 }
 
 /** k-means 로 색 줄이기(불투명 칸만). 결정적: 시작점은 밝기 순 균등 뽑기. */
-function quantize(cells: Uint8ClampedArray, k: number): number {
+function quantize(cells: Uint8ClampedArray, k: number, merge = 0): number {
   const idx: number[] = [];
   for (let i = 0; i < cells.length; i += 4) if (cells[i + 3]) idx.push(i);
   if (!idx.length) return 0;
@@ -193,6 +219,20 @@ function quantize(cells: Uint8ClampedArray, k: number): number {
     for (let n = 0; n < pts.length; n++) { const s = sum[lab[n]]; s[0] += pts[n][0]; s[1] += pts[n][1]; s[2] += pts[n][2]; s[3]++; }
     cent = cent.map((c, j) => (sum[j][3] ? [sum[j][0] / sum[j][3], sum[j][1] / sum[j][3], sum[j][2] / sum[j][3]] : c));
   }
+  if (merge > 0) {
+    // 11-24 일관성: 너무 가까운 색 묶음은 경계에서 칸이 뒤집힌다(같게 그린 칸이 프레임마다 다른 색) → 가까운 짝을 무게대로 합친다
+    const cnt = Array.from({ length: k }, () => 0); for (let n = 0; n < pts.length; n++) cnt[lab[n]]++;
+    const alive = cent.map((_, j) => cnt[j] > 0);
+    const dd = (a: number[], b: number[]) => (a[0] - b[0]) ** 2 * 0.3 + (a[1] - b[1]) ** 2 * 0.59 + (a[2] - b[2]) ** 2 * 0.11;
+    for (;;) {
+      let bi = -1, bj = -1, bd = merge * merge;
+      for (let i = 0; i < k; i++) if (alive[i]) for (let j = i + 1; j < k; j++) if (alive[j]) { const d = dd(cent[i], cent[j]); if (d < bd) { bd = d; bi = i; bj = j; } }
+      if (bi < 0) break;
+      const w = cnt[bi] + cnt[bj];
+      cent[bi] = cent[bi].map((v, c) => (v * cnt[bi] + cent[bj][c] * cnt[bj]) / w); cnt[bi] = w; alive[bj] = false; cnt[bj] = 0;
+    }
+    for (let n = 0; n < pts.length; n++) { let b = Infinity, bj = 0; for (let j = 0; j < k; j++) if (alive[j]) { const d = dd(pts[n], cent[j]); if (d < b) { b = d; bj = j; } } lab[n] = bj; }
+  }
   idx.forEach((i, n) => { const c = cent[lab[n]]; cells[i] = Math.round(c[0]); cells[i + 1] = Math.round(c[1]); cells[i + 2] = Math.round(c[2]); });
   return new Set(Array.from(lab)).size;
 }
@@ -212,10 +252,10 @@ export async function realDot(input: Buffer, opt: RealDotOptions = {}): Promise<
   const W = cx.length - 1, H = cy.length - 1;
   const cells = new Uint8ClampedArray(W * H * 4);
   for (let j = 0; j < H; j++) for (let i = 0; i < W; i++) {
-    const c = cellColor(r, cx[i], cx[i + 1], cy[j], cy[j + 1]);
+    const c = opt.cell === "median" ? cellMedian(r, cx[i], cx[i + 1], cy[j], cy[j + 1]) : cellColor(r, cx[i], cx[i + 1], cy[j], cy[j + 1]);
     cells.set(c, (j * W + i) * 4);
   }
-  const used = quantize(cells, Math.min(64, Math.max(2, opt.colors ?? 32)));
+  const used = quantize(cells, Math.min(64, Math.max(2, opt.colors ?? 32)), opt.merge ?? MERGE_DEFAULT);
 
   const small = await sharp(Buffer.from(cells.buffer), { raw: { width: W, height: H, channels: 4 } }).png().toBuffer();
   const scale = opt.scale ?? Math.max(1, Math.floor(1024 / Math.max(W, H)));
