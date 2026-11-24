@@ -17,8 +17,8 @@ export async function pixelBalance(db: SupabaseClient, userId: string): Promise<
   return (data ?? []).reduce((s, r) => s + Number(r.credits ?? 0), 0);
 }
 
-/** 한 장 쓴다. 남은 게 없으면 false. 동시에 두 번 눌러 음수가 되면 내 줄을 지우고 false. */
-export async function spendPixelShot(db: SupabaseClient, userId: string, note: string): Promise<boolean> {
+/** 한 장 쓴다. 쓴 줄의 id(참)를 돌려준다 — 남은 게 없으면 false. 동시에 두 번 눌러 음수가 되면 내 줄을 지우고 false. */
+export async function spendPixelShot(db: SupabaseClient, userId: string, note: string): Promise<number | false> {
   if ((await pixelBalance(db, userId)) < 1) return false;
   const { data, error } = await db
     .from("dot_purchases")
@@ -29,7 +29,12 @@ export async function spendPixelShot(db: SupabaseClient, userId: string, note: s
     await db.from("dot_purchases").delete().eq("id", data.id);
     return false;
   }
-  return true;
+  return data.id as number;
+}
+
+/** 쓴 장을 돌려준다(AI 동작 생성이 끝내 실패했을 때) — 쓴 줄을 지운다. 그 사람의 pixel_use 줄만. */
+export async function refundPixelShot(db: SupabaseClient, userId: string, spentId: number): Promise<void> {
+  await db.from("dot_purchases").delete().eq("id", spentId).eq("user_id", userId).eq("sku", "pixel_use");
 }
 
 /** 산 10장을 넣는다. 번호표(ref=checkout id)가 이미 있으면 아무것도 안 한다. */

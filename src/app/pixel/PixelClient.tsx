@@ -60,7 +60,7 @@ export default function PixelClient({ en, paid }: { en: boolean; paid: string | 
   const pick = (f: File | undefined | null) => {
     if (!f) return;
     if (f.size > 10 * 1024 * 1024) { setErr(t("10MB 아래 그림만 받아요.", "Max 10MB.")); return; }
-    setFile(f); setSrc(URL.createObjectURL(f)); setPeriod(null); setPv(null); setMv(null); setMvGot(null);
+    setFile(f); setSrc(URL.createObjectURL(f)); setPeriod(null); setPv(null); setMv(null); setMvGot(null); setAiGot(null);
     void run(f, null, colors);
   };
 
@@ -135,6 +135,23 @@ export default function PixelClient({ en, paid }: { en: boolean; paid: string | 
       const j = await r.json();
       if (!r.ok) setErr(j.error ?? t("받기에 실패했어요.", "Download failed."));
       else { setMvGot({ sheet: j.sheet, gif: j.gif, count: j.count, cell: j.cell }); setShots(j.left); }
+    } catch { setErr(t("인터넷을 확인해 주세요.", "Check your connection.")); }
+    setBusy(false);
+  };
+
+  // ── AI 로 동작 만들기(11-24 "생성자"): 그림 AI 값이 들어 미리보기 없이 장을 쓰고, 실패하면 서버가 돌려준다
+  const [aiMotion, setAiMotion] = useState<"idle" | "walk" | "wave">("idle");
+  const [aiGot, setAiGot] = useState<{ gif: string; sheet: string; count: number; cell: [number, number] } | null>(null);
+  const aiMake = async () => {
+    if (!file) return;
+    setBusy(true); setErr(null); setAiGot(null);
+    const fd = new FormData();
+    fd.append("image", file); fd.append("motion", aiMotion); fd.append("colors", String(colors)); fd.append("ms", String(mvMs));
+    try {
+      const r = await fetch("/api/pixel/motion", { method: "POST", body: fd });
+      const j = await r.json();
+      if (!r.ok) setErr(j.error ?? t("그리기에 실패했어요.", "Generation failed."));
+      else { setAiGot({ gif: j.gif, sheet: j.sheet, count: j.count, cell: j.cell }); setShots(j.left); }
     } catch { setErr(t("인터넷을 확인해 주세요.", "Check your connection.")); }
     setBusy(false);
   };
@@ -263,6 +280,39 @@ export default function PixelClient({ en, paid }: { en: boolean; paid: string | 
                 <a href={mvGot.gif} download="real-pixel-move.gif">{t("움직이는 GIF", "Animated GIF")}</a>
                 <a href={mvGot.sheet} download="real-pixel-frames-1x.png">{t(`게임용 프레임 시트 PNG (${mvGot.count}프레임 · ${mvGot.cell[0]}×${mvGot.cell[1]} · 배경 투명)`, `Game frame sheet PNG (${mvGot.count} × ${mvGot.cell[0]}×${mvGot.cell[1]}, transparent)`)}</a>
               </div>
+            )}
+          </section>
+        )}
+
+        {src && (
+          <section className="rp-move">
+            <h2>{t("AI로 동작 만들기", "Generate a motion with AI")}</h2>
+            <p className="hint">
+              {t("캐릭터 그림 한 장이면 돼요. AI가 같은 캐릭터로 4프레임을 그리면, 진짜 도트로 바꿔 잘라서 움직이게 해 줘요. 같은 캐릭터가 아니게 나오면 한 번 더 그리고, 그래도 안 되면 장수를 돌려드려요.",
+                 "One character image is enough. AI draws 4 frames of the same character, we convert them to true pixels, cut and animate. If it doesn't look like the same character we retry once, then refund.")}
+            </p>
+            <div className="row">
+              {(["idle", "walk", "wave"] as const).map((m) => (
+                <label key={m}><input type="radio" checked={aiMotion === m} onChange={() => setAiMotion(m)} /> {m === "idle" ? t("숨쉬기·깜빡임", "Idle") : m === "walk" ? t("걷기", "Walk") : t("손 흔들기", "Wave")}</label>
+              ))}
+            </div>
+            <div className="row">
+              {shots !== null && shots > 0 ? (
+                <button type="button" className="go" disabled={busy} onClick={aiMake}>{busy ? t("그리는 중… (30초쯤)", "Drawing… (~30s)") : t("AI로 그리기 (1장 사용)", "Generate (uses 1)")}</button>
+              ) : (
+                <button type="button" className="go" disabled={busy || !payOpen} onClick={buy}>{payOpen ? t("10장 4,900원", "10 for ₩4,900") : t("결제 준비 중", "Payments opening soon")}</button>
+              )}
+            </div>
+            {aiGot && (
+              <figure className="mv">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img className="px" src={aiGot.gif} alt="" />
+                <figcaption>{t(`${aiGot.count}프레임 · 한 프레임 ${aiGot.cell[0]}×${aiGot.cell[1]}칸`, `${aiGot.count} frames · ${aiGot.cell[0]}×${aiGot.cell[1]} each`)}</figcaption>
+                <div className="rp-got">
+                  <a href={aiGot.gif} download="real-pixel-ai-move.gif">{t("움직이는 GIF", "Animated GIF")}</a>
+                  <a href={aiGot.sheet} download="real-pixel-ai-frames-1x.png">{t("게임용 프레임 시트 PNG (배경 투명)", "Game frame sheet PNG (transparent)")}</a>
+                </div>
+              </figure>
             )}
           </section>
         )}

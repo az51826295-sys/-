@@ -2,7 +2,7 @@
 import { readFileSync } from "node:fs";
 for (const l of readFileSync(".env.local", "utf8").split(/\r?\n/)) { const i = l.indexOf("="); if (i > 0 && /^[A-Z_]+$/.test(l.slice(0, i))) process.env[l.slice(0, i)] ??= l.slice(i + 1).replace(/^"|"$/g, ""); }
 const { createClient } = await import("@supabase/supabase-js");
-const { grantPixelPack, pixelBalance, spendPixelShot } = await import("../../src/lib/pixel/credits");
+const { grantPixelPack, pixelBalance, spendPixelShot, refundPixelShot } = await import("../../src/lib/pixel/credits");
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const db = createClient(url, process.env.SUPABASE_SECRET_KEY!, { auth: { persistSession: false } });
 const anon = createClient(url, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, { auth: { persistSession: false } });
@@ -27,6 +27,12 @@ try {
   const 잔 = await pixelBalance(db, uid);
   check("동시 14번: 음수 안 됨", 잔 >= 0, { 성공: 동시.filter(Boolean).length, 잔 });
   check("동시 14번: 성공 ≤ 10", 동시.filter(Boolean).length <= 10, 동시.filter(Boolean).length);
+  // 11-24 AI 동작 생성: 실패하면 쓴 장을 돌려준다 — 쓰고 돌려주면 잔액이 그대로여야 한다
+  await grantPixelPack(db, uid, crypto.randomUUID());
+  const 전 = await pixelBalance(db, uid);
+  const id = await spendPixelShot(db, uid, "motion test");
+  if (id && !sabotage) await refundPixelShot(db, uid, id);
+  check("쓰고 돌려주면 잔액 그대로", (await pixelBalance(db, uid)) === 전 && !!id, { 전, 후: await pixelBalance(db, uid), id });
 } finally {
   await db.from("dot_purchases").delete().eq("user_id", uid);
   await db.auth.admin.deleteUser(uid);

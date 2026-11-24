@@ -1,0 +1,145 @@
+import { readFileSync } from "node:fs";
+import sharp from "sharp";
+import { z } from "zod";
+import { realDot, type RealDotResult } from "./realdot";
+import { cutFrames, findFrames, gifOf, sheetOf, type FrameSet } from "./frames";
+import { checkGate } from "@/lib/director/index";
+
+/**
+ * **AI 동작 생성** (11-24 사장님: "그거 만들어야 돼 · 생성자").
+ *
+ * 캐릭터 그림 한 장 → 그림 AI 가 **같은 캐릭터**로 동작 프레임 한 줄을 그린다 → 진짜 도트 → 프레임 나누기 → 움직임.
+ * AI 는 만들고, 기계가 맞추고 잰다(사장님 11-23 "AI 와 기계식 융합"). 판단은 로키 엔진 방식:
+ *   기계 검사가 통과/실패를 말하면 그게 이긴다($0). 애매할 때만 판단자(luna)에게 "같은 캐릭터인가"를 묻고 `checkGate` 로 받는다.
+ *   실패면 **한 번만** 다시 그린다(돈을 아낀다 — 사장님 11-24 "제발 아껴서"). 그래도 실패면 쓴 장을 돌려준다(라우트에서).
+ *
+ * 모델: gpt-image-2.5-flare 참조 그리기(edit). 품질 "low" — 어차피 진짜 도트로 다시 찍으니 고품질 값이 필요 없다.
+ * 시험용 목: PIXEL_MOTION_MOCK=<png 경로> 면 AI 를 안 부르고 그 그림을 "그려 온 것"으로 쓴다(돈 0).
+ */
+export const MOTIONS = {
+  idle: { ko: "숨쉬기·깜빡임", en: "Idle (breathing, blink)", frames: 4, lock: false,
+    prompt: "idle animation: frame 1 neutral, frame 2 slight breath in (body 1 pixel lower), frame 3 eyes closed (blink), frame 4 neutral again" },
+  walk: { ko: "걷기", en: "Walk", frames: 4, lock: false,
+    prompt: "walk cycle seen from the front: frame 1 left foot forward, frame 2 feet together passing, frame 3 right foot forward, frame 4 feet together passing; arms swing opposite to legs" },
+  wave: { ko: "손 흔들기", en: "Wave", frames: 4, lock: false,
+    prompt: "waving hello with the right hand: frame 1 hand down, frame 2 hand raised beside the face, frame 3 hand tilted left, frame 4 hand tilted right" },
+} as const;
+export type MotionKey = keyof typeof MOTIONS;
+export const MOTION_COST = 1; // 장 — 값은 사장님이 정한다(11-24 기본값 1장, 바꾸려면 여기 한 곳)
+
+const BG = "#B0C4DE"; // 배경 한 색(자동 나누기가 배경으로 갈라 찾는다)
+
+export type MotionCheck = { machine: "pass" | "fail" | "unsure"; facts: string[]; judge?: { same: boolean; confidence: number; why: string }; action: "accept" | "escalate" };
+export type MotionResult = { ok: true; set: FrameSet; cuts: Buffer[]; rd: RealDotResult; raw: Buffer; tries: number; usd: number; check: MotionCheck }
+  | { ok: false; reason: string; tries: number; usd: number; check?: MotionCheck };
+
+/** 색 분포(채널당 5단계 → 125칸, 비율). */
+const L = 5;
+function histOf(px: number[][]): Float64Array {
+  const h = new Float64Array(L ** 3);
+  for (const p of px) h[Math.min(L - 1, (p[0] * L) >> 8) * L * L + Math.min(L - 1, (p[1] * L) >> 8) * L + Math.min(L - 1, (p[2] * L) >> 8)]++;
+  const n = px.length || 1; return h.map((v) => v / n);
+}
+const overlap = (a: Float64Array, b: Float64Array) => a.reduce((s, v, i) => s + Math.min(v, b[i]), 0);
+
+/** 참조 그림의 색 분포(진짜 도트로 바꾼 뒤, 그림의 40% 넘는 한 색은 배경으로 보고 뺀다) */
+async function refHistOf(img: Buffer): Promise<Float64Array> {
+  let small: Buffer;
+  try { small = (await realDot(img)).small; } catch { small = await sharp(img).resize(64, 64, { fit: "inside", kernel: "nearest" }).png().toBuffer(); }
+  const { data } = await sharp(small).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+  const px: number[][] = [], cnt = new Map<number, number>();
+  for (let i = 0; i < data.length; i += 4) if (data[i + 3] >= 128) { px.push([data[i], data[i + 1], data[i + 2]]); const k = (data[i] << 16) | (data[i + 1] << 8) | data[i + 2]; cnt.set(k, (cnt.get(k) ?? 0) + 1); }
+  const top = [...cnt.entries()].sort((a, b) => b[1] - a[1])[0];
+  if (top && top[1] > px.length * 0.4) { const bg = [(top[0] >> 16) & 255, (top[0] >> 8) & 255, top[0] & 255]; return histOf(px.filter((p) => Math.abs(p[0] - bg[0]) + Math.abs(p[1] - bg[1]) + Math.abs(p[2] - bg[2]) >= 30)); }
+  return histOf(px);
+}
+
+/**
+ * 기계 검사(잠금 — 11-24): 프레임 수 = 기대 · 프레임 높이 차 ≤ 15% · **색 분포 겹침**(참조 vs 각 프레임, 최솟값) ≥ 0.70 통과, < 0.50 실패, 사이 애매.
+ * 문턱은 6명×6명 표에서 잡았다(engine/work/realdot/motion/hist_matrix.mts): 같은 캐릭터 0.85~0.91(soeun 만 0.35), 다른 캐릭터 최대 0.45.
+ * 처음 쓴 "참조 색에 가까운 칸 비율"은 haru 를 taeo 로 통과시켰다(피부·외곽선이 겹쳐 90%) — 버렸다.
+ */
+export async function machineCheck(set: FrameSet, cuts: Buffer[], want: number, ref: Float64Array): Promise<{ machine: MotionCheck["machine"]; facts: string[]; score: number }> {
+  const facts: string[] = [];
+  if (set.frames.length !== want) return { machine: "fail", facts: [`프레임 ${set.frames.length}개(기대 ${want})`], score: 0 };
+  const hs = cuts.map((c) => { let top = -1, bot = -1; for (let y = 0; y < set.cellH; y++) for (let x = 0; x < set.cellW; x++) if (c[(y * set.cellW + x) * 4 + 3]) { if (top < 0) top = y; bot = y; } return bot - top + 1; });
+  const spread = (Math.max(...hs) - Math.min(...hs)) / Math.max(...hs);
+  facts.push(`프레임 높이 ${hs.join("/")} (차 ${(spread * 100).toFixed(0)}%)`);
+  if (spread > 0.15) return { machine: "fail", facts, score: 0 };
+  const ov = cuts.map((c) => { const px: number[][] = []; for (let i = 0; i < c.length; i += 4) if (c[i + 3]) px.push([c[i], c[i + 1], c[i + 2]]); return overlap(ref, histOf(px)); });
+  const score = Math.min(...ov);
+  facts.push(`참조와 색 분포 겹침 ${ov.map((v) => v.toFixed(2)).join("/")}`);
+  return { machine: score >= 0.7 ? "pass" : score < 0.5 ? "fail" : "unsure", facts, score };
+}
+
+type Drawer = (refDataUrl: string, prompt: string) => Promise<{ png: Buffer; usd: number }>;
+
+async function openaiDrawer(): Promise<Drawer> {
+  const { createImageProvider } = await import("@/lib/providers/images");
+  const { costOf } = await import("@/lib/costs/pricing");
+  const p = createImageProvider("gpt-image-2.5-flare");
+  return async (ref, prompt) => {
+    const r = await p.edit(ref, prompt, "1536x1024", "low");
+    return { png: Buffer.from(r.dataUrl.split(",")[1], "base64"), usd: costOf({ backend: r.model, inputTokens: r.inputTokens, outputTokens: r.outputTokens }) };
+  };
+}
+const mockDrawer = (path: string): Drawer => async () => ({ png: readFileSync(path), usd: 0 });
+
+async function judgeSame(ref: Buffer, sheet: Buffer): Promise<{ same: boolean; confidence: number; why: string; usd: number } | null> {
+  if (process.env.PIXEL_MOTION_MOCK) return null; // 목에서는 판단자도 안 부른다(돈 0)
+  try {
+    const { createOpenAIProvider } = await import("@/lib/providers/openai");
+    const { costOf } = await import("@/lib/costs/pricing");
+    const ai = createOpenAIProvider({ judgmentModel: "gpt-5.6-luna" });
+    const b64 = async (b: Buffer) => (await sharp(b).resize(512, 512, { fit: "inside", kernel: "nearest" }).png().toBuffer()).toString("base64");
+    const r = await ai.generateStructuredOutput({
+      systemInstructions: "Image 1 is a reference character. Image 2 is a pixel-art animation sheet. Is every frame in image 2 clearly the SAME character (same hair, face, outfit, colors)? Pose differences are expected. Give confidence 0-1.",
+      input: "Answer for the whole sheet.",
+      images: [await b64(ref), await b64(sheet)],
+      schema: z.object({ same: z.boolean(), confidence: z.number(), why: z.string() }), schemaName: "same_character", maxTokens: 16000, tier: "judgment",
+    });
+    return { ...r.output, usd: costOf({ backend: r.model, inputTokens: r.inputTokens ?? 0, outputTokens: r.outputTokens ?? 0 }) };
+  } catch { return null; }
+}
+
+export async function makeMotion(ref: Buffer, motion: MotionKey, o: { colors?: number; maxTries?: number } = {}): Promise<MotionResult> {
+  const M = MOTIONS[motion];
+  const draw = process.env.PIXEL_MOTION_MOCK ? mockDrawer(process.env.PIXEL_MOTION_MOCK) : await openaiDrawer();
+  const refPng = await sharp(ref).png().toBuffer();
+  const refUrl = "data:image/png;base64," + refPng.toString("base64");
+  const refH = await refHistOf(refPng);
+  const prompt = [
+    "Use the reference image as the character. Keep EXACTLY the same character: same face, hair, outfit, colors and proportions.",
+    `Draw a pixel-art sprite sheet: ONE horizontal row of ${M.frames} frames, ${M.prompt}.`,
+    "All frames the same scale, same baseline, evenly spaced with a clear empty gap between frames, full body inside each frame.",
+    `Flat solid background color ${BG} everywhere — no gradient, no shadow, no ground, no text, no numbers, no borders or boxes.`,
+    "Chunky crisp pixel art with a limited palette.",
+  ].join(" ");
+  let usd = 0, last: MotionCheck | undefined, reason = "";
+  const tries = Math.max(1, Math.min(2, o.maxTries ?? 2));
+  for (let t = 1; t <= tries; t++) {
+    let raw: Buffer;
+    try { const d = await draw(refUrl, prompt); raw = d.png; usd += d.usd; }
+    catch (e) { reason = `그림 AI 가 거절했어요 (${(e as Error).message.slice(0, 80)})`; break; } // 돈·열쇠 문제는 다시 해도 같다
+    let rd: RealDotResult, set: FrameSet, cuts: Buffer[];
+    try {
+      rd = await realDot(raw, { colors: o.colors ?? 32 });
+      set = await findFrames(rd.small);
+      cuts = await cutFrames(rd.small, set, { lockBottom: M.lock ? 0.25 : 0 });
+    } catch (e) { reason = (e as Error).message; last = { machine: "fail", facts: [reason], action: "escalate" }; continue; }
+    const mc = await machineCheck(set, cuts, M.frames, refH);
+    let judge: MotionCheck["judge"];
+    if (mc.machine === "unsure") {
+      const j = await judgeSame(refPng, await sheetOf(cuts, set));
+      if (j) { usd += j.usd; judge = { same: j.same, confidence: j.confidence, why: j.why }; }
+    }
+    const conf = judge ? (judge.same ? judge.confidence : 0) : undefined;
+    const g = checkGate([], { kind: "pixel-motion", seat: "gpt-5.6-luna" }, conf, mc.machine === "unsure" ? undefined : mc.machine);
+    last = { machine: mc.machine, facts: mc.facts, judge, action: g.action };
+    if (g.action === "accept") return { ok: true, set, cuts, rd, raw, tries: t, usd, check: last };
+    reason = mc.facts.join(" · ");
+  }
+  return { ok: false, reason: reason || "같은 캐릭터로 못 그렸어요.", tries, usd, check: last };
+}
+
+export { gifOf, sheetOf, histOf };

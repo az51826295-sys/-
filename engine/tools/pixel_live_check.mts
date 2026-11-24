@@ -30,6 +30,19 @@ const me = await (await go("/api/pixel/me")).json();
 check("장수 0 · 결제 열림", me.shots === 0 && me.payOpen === true && me.signedIn === true, me);
 const dl = await go("/api/pixel/download", { method: "POST", body: form() });
 check("장수 없으면 받기 402", dl.status === 402, dl.status);
+// 11-24 움직임 만들기: 가로 시트를 자동으로 나눠 줄무늬 GIF · 장수 없으면 받기 402
+const mvForm = () => { const f = new FormData(); f.append("image", new Blob([readFileSync("C:/Users/az518/Desktop/두근도트-시트/taeo-strip.png")], { type: "image/png" }), "s.png"); f.append("lock", "1"); f.append("ms", "250"); return f; };
+const t1 = Date.now();
+const mv = await go("/api/pixel/frames", { method: "POST", body: mvForm() });
+const mj = await mv.json();
+check("움직임 미리보기(taeo 자동 6프레임)", mv.ok && mj.count === 6 && String(mj.gif ?? "").startsWith("data:image/gif"), { status: mv.status, count: mj.count, cell: mj.cell, how: mj.how, ms: Date.now() - t1, error: mj.error });
+if (mj.gif) writeFileSync("engine/work/realdot/live-move.gif", Buffer.from(mj.gif.split(",")[1], "base64"));
+const mvd = await go("/api/pixel/frames/download", { method: "POST", body: mvForm() });
+check("장수 없으면 움직임 받기 402", mvd.status === 402, mvd.status);
+// 11-24 AI 동작 생성: 장수 없으면 그리기 전에 402(그림 AI 를 안 부른다 = 돈 0)
+const mf = new FormData(); mf.append("image", new Blob([readFileSync("C:/Users/az518/Desktop/두근도트-시트/taeo-neutral.png")], { type: "image/png" }), "c.png"); mf.append("motion", "idle");
+const ai = await go("/api/pixel/motion", { method: "POST", body: mf });
+check("장수 없으면 AI 동작 402", ai.status === 402, ai.status);
 const pay = await go("/api/pixel/pay", { method: "POST" });
 const pyj = await pay.json();
 check("결제창 주소", pay.ok && /polar\.sh/.test(pyj.url ?? ""), pay.ok ? String(pyj.url).replace(/[?#].*/, "").slice(0, 60) + "…" : pyj);

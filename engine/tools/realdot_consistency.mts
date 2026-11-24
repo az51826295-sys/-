@@ -153,7 +153,7 @@ for (const inp of inputs) {
           images: [(await crop(a)).toString("base64"), (await crop(b)).toString("base64")],
           schema, schemaName: "same_body", maxTokens: 16000, tier: "judgment",
         });
-        usd += costOf(res.model, res.inputTokens ?? 0, res.outputTokens ?? 0) ?? 0;
+        usd += costOf({ backend: res.model, inputTokens: res.inputTokens ?? 0, outputTokens: res.outputTokens ?? 0 });
         aiv = res.output;
       } catch (e) { aiv = { same: false, confidence: 0, why: `판단자 실패: ${(e as Error).message.slice(0, 80)}` }; }
     }
