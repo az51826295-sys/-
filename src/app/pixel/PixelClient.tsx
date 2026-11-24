@@ -11,7 +11,8 @@ import { FROM_COOKIE, cleanFrom } from "@/lib/dot/from";
  *
  * "참조 캐릭터" 한 칸을 모든 도구가 같이 쓴다: 글로 만들거나 그림을 올리면 그게 참조가 되고, 4방향·동작·시트 자르기가 그걸 쓴다.
  */
-type Tool = "create" | "rotate" | "animate" | "convert" | "split";
+type Tool = "game" | "create" | "rotate" | "animate" | "convert" | "split";
+type Game = { name: string; imgs: string[]; palette: string[]; height: number };
 type Item = { id: number; kind: Tool; title: string; view: string; info: string; downloads: { href: string; name: string; label: string }[]; refable?: string };
 type Preview = { period: number; logical: [number, number]; colors: number; preview: string };
 
@@ -26,6 +27,7 @@ export default function PixelClient({ en, paid }: { en: boolean; paid: string | 
   const [cur, setCur] = useState<number | null>(null);
   const [ref, setRef] = useState<{ file: File; url: string } | null>(null);
   const nextId = useRef(1);
+  const [games, setGames] = useState<Game[]>([]); // 내 게임(아래 "게임 추가" 참고) — 처음 불러오기 때문에 위에 둔다
 
   useEffect(() => {
     let alive = true;
@@ -41,6 +43,8 @@ export default function PixelClient({ en, paid }: { en: boolean; paid: string | 
         await fetch("/api/dot/guest", { method: "POST" });
         const j = await (await fetch("/api/pixel/me", { cache: "no-store" })).json();
         if (alive) { setShots(Number(j.shots ?? 0)); setPayOpen(!!j.payOpen); }
+        // 저장해 둔 내 게임(브라우저에만)
+        try { const xs = JSON.parse(localStorage.getItem("px-games") ?? "[]"); if (alive && Array.isArray(xs) && xs.length) setGames(xs); } catch { /* 없음 */ }
       } catch { if (alive) setShots(0); }
     })();
     return () => { alive = false; };
@@ -87,8 +91,35 @@ export default function PixelClient({ en, paid }: { en: boolean; paid: string | 
   // ── 만들기
   const [cDesc, setCDesc] = useState("");
   const [cSize, setCSize] = useState<32 | 48 | 64 | 96>(48);
+  // ── 내 게임(11-25 "게임 추가"): 게임 그림을 올려 두면 만들기가 그 그림체·키·팔레트로 맞춘다. 브라우저에만 저장(서버 저장 없음)
+  const [gPick, setGPick] = useState<number>(-1); // 만들기에서 고른 게임(-1 = 기본)
+  const [snap, setSnap] = useState(true);
+  const [gName, setGName] = useState("");
+  const [gImgs, setGImgs] = useState<string[]>([]);
+  const [gProf, setGProf] = useState<{ palette: string[]; height: number; figures: number } | null>(null);
+  const saveGames = (xs: Game[]) => { setGames(xs); try { localStorage.setItem("px-games", JSON.stringify(xs)); } catch { /* 너무 크면 이 창에서만 */ } };
+  const toUrl = (f: File) => new Promise<string>((ok) => { const r = new FileReader(); r.onload = () => ok(String(r.result)); r.readAsDataURL(f); });
+  const blobOf = async (u: string) => (await fetch(u)).blob();
+  const gAdd = async (fs: FileList | null) => {
+    if (!fs) return;
+    const more = await Promise.all([...fs].filter((f) => f.size <= 10 * 1024 * 1024).slice(0, 4).map(toUrl));
+    setGImgs((xs) => [...xs, ...more].slice(0, 4)); setGProf(null);
+  };
+  const gAnalyze = async () => {
+    const fd = new FormData(); for (const u of gImgs) fd.append("game", await blobOf(u), "game.png");
+    const j = await post("/api/pixel/style", fd, "game");
+    if (j) setGProf({ palette: j.palette, height: j.height, figures: j.figures });
+  };
+  const gSave = () => {
+    if (!gProf || !gImgs.length) return;
+    const xs = [...games, { name: gName.trim() || t(`게임 ${games.length + 1}`, `Game ${games.length + 1}`), imgs: gImgs, palette: gProf.palette, height: gProf.height }];
+    saveGames(xs); setGPick(xs.length - 1); setGName(""); setGImgs([]); setGProf(null); setTool("create");
+  };
+
   const create = async () => {
     const fd = new FormData(); fd.append("desc", cDesc); fd.append("size", String(cSize));
+    const g = games[gPick];
+    if (g) { for (const u of g.imgs) fd.append("game", await blobOf(u), "game.png"); if (snap) fd.append("snap", "1"); }
     const j = await post("/api/pixel/create", fd, "create");
     if (!j) return;
     add({ kind: "create", title: cDesc.slice(0, 40), view: j.big, info: (j.facts as string[]).join(" · "), refable: j.big,
@@ -157,13 +188,14 @@ export default function PixelClient({ en, paid }: { en: boolean; paid: string | 
   };
 
   const TOOLS: { k: Tool; ko: string; en: string; sub: string; subEn: string; ai: boolean }[] = [
+    { k: "game", ko: "내 게임", en: "My game", sub: "그림체 등록", subEn: "register a style", ai: false },
     { k: "create", ko: "만들기", en: "Create", sub: "글 → 캐릭터", subEn: "text → character", ai: true },
     { k: "rotate", ko: "4방향", en: "Rotate", sub: "앞·옆·뒤", subEn: "front · side · back", ai: true },
     { k: "animate", ko: "동작", en: "Animate", sub: "숨쉬기·걷기·글로", subEn: "idle · walk · text", ai: true },
     { k: "convert", ko: "도트 변환", en: "Pixelate", sub: "그림 → 진짜 도트", subEn: "image → true pixels", ai: false },
     { k: "split", ko: "시트 자르기", en: "Split sheet", sub: "시트 → 움직임", subEn: "sheet → animation", ai: false },
   ];
-  const needRef = tool !== "create";
+  const needRef = tool !== "create" && tool !== "game";
   const has = shots !== null && shots > 0;
   const buyBtn = <button type="button" className="go" disabled={!!busy || !payOpen} onClick={buy}>{payOpen ? t("10장 4,900원", "10 for ₩4,900") : t("결제 준비 중", "Payments opening soon")}</button>;
   const paidMsg = paid === "10" ? t("10장이 들어왔어요. 고마워요!", "10 credits added. Thank you!")
@@ -229,11 +261,52 @@ export default function PixelClient({ en, paid }: { en: boolean; paid: string | 
             </div>
           )}
 
+          {tool === "game" && (<>
+            <h2>{t("내 게임 추가", "Add my game")}</h2>
+            <p className="hint">{t("내 게임 캐릭터 그림(스프라이트·시트)을 1~4장 올려요. 새 캐릭터를 이 게임 그림체로, 같은 키(칸 수)로, 원하면 이 게임 색만 써서 만들어요. 분석은 무료고, 그림은 이 브라우저에만 저장돼요.",
+              "Upload 1-4 sprites or sheets from your game. New characters will match its style, height in pixels and (optionally) its palette. Analysis is free; images stay in this browser.")}</p>
+            <input className="txt" type="text" maxLength={30} value={gName} onChange={(e) => setGName(e.target.value)} placeholder={t("게임 이름", "Game name")} />
+            <label className="gslot">
+              <input type="file" accept="image/png,image/jpeg,image/webp" multiple hidden onChange={(e) => void gAdd(e.target.files)} />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              {gImgs.length ? <span className="thumbs">{gImgs.map((u, i) => <img key={i} src={u} alt="" />)}</span> : <span>{t("게임 그림 올리기 (최대 4장)", "Upload game art (up to 4)")}</span>}
+            </label>
+            {gImgs.length > 0 && <button type="button" onClick={() => { setGImgs([]); setGProf(null); }}>{t("다시 고르기", "Clear")}</button>}
+            <button type="button" disabled={!!busy || !gImgs.length} onClick={gAnalyze}>{busy === "game" ? t("분석 중…", "Analyzing…") : t("그림체 분석 (무료)", "Analyze (free)")}</button>
+            {gProf && (<>
+              <div className="lab">{t(`캐릭터 ${gProf.figures}명 찾음 · 키 ${gProf.height}칸 · ${gProf.palette.length}색`, `${gProf.figures} figures · ${gProf.height}px tall · ${gProf.palette.length} colors`)}</div>
+              <div className="pal">{gProf.palette.map((c) => <i key={c} style={{ background: c }} title={c} />)}</div>
+              <button type="button" className="go" onClick={gSave}>{t("이 게임 저장하고 만들기로", "Save & go to Create")}</button>
+            </>)}
+            {games.length > 0 && (<>
+              <div className="lab">{t("저장한 게임", "Saved games")}</div>
+              {games.map((g, i) => (
+                <div key={i} className="grow">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <span className="thumbs">{g.imgs.slice(0, 2).map((u, j) => <img key={j} src={u} alt="" />)}</span>
+                  <b>{g.name}</b><small>{g.height}{t("칸", "px")}</small>
+                  <button type="button" className="mini" onClick={() => { setGPick(i); setTool("create"); }}>{t("쓰기", "Use")}</button>
+                  <button type="button" className="mini" onClick={() => { saveGames(games.filter((_, k) => k !== i)); setGPick(-1); }}>{t("지우기", "Delete")}</button>
+                </div>
+              ))}
+            </>)}
+          </>)}
+
           {tool === "create" && (<>
             <h2>{t("글로 캐릭터 만들기", "Create from text")}</h2>
+            <div className="lab">{t("그림체", "Style")}</div>
+            <div className="seg wrap">
+              <button type="button" className={gPick < 0 ? "on" : ""} onClick={() => setGPick(-1)}>{t("기본", "Default")}</button>
+              {games.map((g, i) => <button key={i} type="button" className={gPick === i ? "on" : ""} onClick={() => setGPick(i)}>{g.name}</button>)}
+              <button type="button" onClick={() => setTool("game")}>{t("+ 내 게임", "+ My game")}</button>
+            </div>
             <textarea value={cDesc} maxLength={200} rows={3} onChange={(e) => setCDesc(e.target.value)} placeholder={t("예: 빨간 망토를 두른 꼬마 기사, 은색 투구", "e.g. a small knight in a red cape, silver helmet")} />
-            <div className="lab">{t("캔버스 (px)", "Canvas (px)")}</div>
-            <div className="seg">{([32, 48, 64, 96] as const).map((z) => <button key={z} type="button" className={cSize === z ? "on" : ""} onClick={() => setCSize(z)}>{z}</button>)}</div>
+            {games[gPick] ? (
+              <label className="row"><input type="checkbox" checked={snap} onChange={(e) => setSnap(e.target.checked)} /> {t(`게임 색만 쓰기 (${games[gPick].palette.length}색) · 키 ${games[gPick].height}칸으로 맞춤`, `Only the game's ${games[gPick].palette.length} colors · ${games[gPick].height}px tall`)}</label>
+            ) : (<>
+              <div className="lab">{t("캔버스 (px)", "Canvas (px)")}</div>
+              <div className="seg">{([32, 48, 64, 96] as const).map((z) => <button key={z} type="button" className={cSize === z ? "on" : ""} onClick={() => setCSize(z)}>{z}</button>)}</div>
+            </>)}
             <p className="hint">{t("배경 투명 PNG로 받아요. 만든 캐릭터는 바로 참조가 돼서 4방향·동작으로 이어져요. 실패하면 장수를 돌려드려요.", "Transparent PNG. The result becomes your reference for Rotate and Animate. Refunded if it fails.")}</p>
             {has ? <button type="button" className="go" disabled={!!busy || cDesc.trim().length < 2} onClick={create}>{busy === "create" ? t("그리는 중… (20초쯤)", "Drawing… (~20s)") : t("만들기 · 1장", "Create · 1 credit")}</button> : buyBtn}
           </>)}
@@ -353,6 +426,13 @@ const CSS = `
 .px-opts .ref .slot.has{border-style:solid;border-color:#3a3a48}
 .px-opts .ref .slot img{max-height:110px;max-width:100%;image-rendering:pixelated}
 .px-opts .ref .slot:hover{border-color:#ff6f9c}
+.px-opts .gslot{display:flex;align-items:center;justify-content:center;min-height:90px;border:2px dashed #45465a;border-radius:10px;cursor:pointer;color:#b9b9c6;font-size:14px;padding:6px}
+.px-opts .gslot:hover{border-color:#ff6f9c}
+.px-opts .thumbs{display:flex;gap:4px;flex-wrap:wrap;justify-content:center}
+.px-opts .thumbs img{height:64px;max-width:120px;object-fit:contain;image-rendering:pixelated;background:#22222c;border-radius:4px}
+.px-opts .grow .thumbs img{height:32px;max-width:48px}
+.px-opts .pal{display:flex;flex-wrap:wrap;gap:3px}.px-opts .pal i{width:18px;height:18px;border-radius:3px;border:1px solid #0006}
+.px-opts .grow{display:flex;align-items:center;gap:6px;font-size:14px}.px-opts .grow b{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.px-opts .grow small{color:#7f8094}
 .px-opts .err{color:#ff8fa8;font-size:14px;margin:0}
 .px-hist{border-top:1px solid #26262f;background:#15151b;padding:8px 16px}
 .px-hist .lab{font-size:12px;color:#7f8094;margin-bottom:6px}

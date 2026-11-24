@@ -54,3 +54,17 @@ export async function previewOf(r: RealDotResult): Promise<Buffer> {
 }
 
 export const dataUrl = (b: Buffer) => "data:image/png;base64," + b.toString("base64");
+
+/** "게임 추가"(11-25): 폼의 "game" 칸들 — 최대 4장, 장마다 10MB·4096², 그림이어야 한다. */
+export async function gameImages(form: FormData | null): Promise<{ bufs: Buffer[] } | { error: string }> {
+  const files = (form?.getAll("game") ?? []).filter((f): f is File => f instanceof Blob).slice(0, 4);
+  const bufs: Buffer[] = [];
+  for (const f of files) {
+    if (f.size > MAX_BYTES) return { error: "게임 그림은 한 장에 10MB 아래로 올려 주세요." };
+    const b = Buffer.from(await f.arrayBuffer());
+    const m = await sharp(b).metadata().catch(() => null);
+    if (!m?.width || !m.height || m.width * m.height > 4096 * 4096) return { error: "게임 그림을 읽지 못했어요(PNG·JPG·WEBP, 4096×4096 아래)." };
+    bufs.push(b);
+  }
+  return { bufs };
+}

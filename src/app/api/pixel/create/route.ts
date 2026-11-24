@@ -3,6 +3,7 @@ import { createServiceClient } from "@/lib/supabase/service";
 import { pixelBalance, refundPixelShot, spendPixelShot } from "@/lib/pixel/credits";
 import { dataUrl } from "@/lib/pixel/serve";
 import { SIZES, cleanDesc, makeCharacter, type CanvasSize } from "@/lib/pixel/create";
+import { gameImages } from "@/lib/pixel/serve";
 
 /**
  * 글로 캐릭터 만들기(11-25). 그림 AI 값이 드니 미리보기가 없다 — 장을 먼저 쓰고 그린다.
@@ -20,13 +21,17 @@ export async function POST(request: Request) {
   if (!SIZES.includes(size)) return Response.json({ error: "크기를 골라 주세요." }, { status: 400 });
   const c = Number(form?.get("colors"));
   const colors = Number.isFinite(c) && c >= 2 && c <= 64 ? Math.round(c) : 32;
+  // 게임 그림체(11-25): "game" 칸에 그 게임 그림 최대 4장. 장을 쓰기 전에 받아 본다(못 읽으면 돈 안 쓰고 400)
+  const game = await gameImages(form);
+  if ("error" in game) return Response.json({ error: game.error }, { status: 400 });
+  const snap = form?.get("snap") === "1";
 
   const db = createServiceClient();
   if ((await pixelBalance(db, userId)) < 1) return Response.json({ error: "남은 장수가 없어요.", need: true }, { status: 402 });
-  const spent = await spendPixelShot(db, userId, `create ${size} (그리는 중) ${new Date().toISOString()}`);
+  const spent = await spendPixelShot(db, userId, `create ${size}${game.bufs.length ? " game" + game.bufs.length : ""} (그리는 중) ${new Date().toISOString()}`);
   if (!spent) return Response.json({ error: "남은 장수가 없어요.", need: true }, { status: 402 });
 
-  const r = await makeCharacter(desc, size, { colors });
+  const r = await makeCharacter(desc, size, { colors, game: game.bufs, snap });
   console.log(`[pixel/create] ${userId.slice(0, 8)} ${size} ok=${r.ok} usd=${r.usd.toFixed(4)} ${r.facts.join(" · ")}${r.ok ? "" : " · " + r.reason}`);
   if (!r.ok) {
     await refundPixelShot(db, userId, spent);

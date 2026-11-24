@@ -1,0 +1,10 @@
+import { readFileSync, writeFileSync } from "node:fs";
+import sharp from "sharp";
+process.env.PIXEL_CREATE_MOCK = "engine/work/realdot/motion/mock-one.png";
+const { makeCharacter } = await import("../../../../src/lib/pixel/create");
+const D = "C:/Users/az518/Desktop/두근도트-시트";
+const game = [readFileSync(`${D}/taeo-strip.png`), readFileSync(`${D}/haru-strip.png`)];
+const plain = await makeCharacter("x", 64); const g = await makeCharacter("x", 48, { game, snap: true });
+if (!plain.ok || !g.ok) throw new Error("fail");
+const up = (b: Buffer) => sharp(b).flatten({ background: "#B0C4DE" }).resize(384, 384, { kernel: "nearest" }).png().toBuffer();
+writeFileSync("engine/work/realdot/style/look.png", await sharp({ create: { width: 784, height: 384, channels: 3, background: "#222" } }).composite([{ input: await up(plain.png), left: 0, top: 0 }, { input: await up(g.png), left: 400, top: 0 }]).png().toBuffer());
