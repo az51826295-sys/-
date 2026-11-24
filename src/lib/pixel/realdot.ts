@@ -26,6 +26,7 @@ export type RealDotResult = {
   period: [number, number];
   logical: [number, number];
   colors: number;
+  cuts: [number[], number[]]; // 원본(긴 변 2048 이하로 줄인 뒤) 좌표에서 칸 경계 — 나란히 비교할 때 자리를 맞추는 데 쓴다
 };
 
 type Raw = { data: Buffer; w: number; h: number };
@@ -219,5 +220,5 @@ export async function realDot(input: Buffer, opt: RealDotOptions = {}): Promise<
   const small = await sharp(Buffer.from(cells.buffer), { raw: { width: W, height: H, channels: 4 } }).png().toBuffer();
   const scale = opt.scale ?? Math.max(1, Math.floor(1024 / Math.max(W, H)));
   const big = await sharp(small).resize(W * scale, H * scale, { kernel: "nearest" }).png().toBuffer();
-  return { small, big, period: [+fx.p.toFixed(2), +fy.p.toFixed(2)], logical: [W, H], colors: used };
+  return { small, big, period: [+fx.p.toFixed(2), +fy.p.toFixed(2)], logical: [W, H], colors: used, cuts: [cx, cy] };
 }

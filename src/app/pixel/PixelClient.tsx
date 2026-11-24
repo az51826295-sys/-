@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { FROM_COOKIE, cleanFrom } from "@/lib/dot/from";
 
 type Preview = { period: number; logical: [number, number]; colors: number; preview: string };
 type Got = { small: string; x8: string; logical: [number, number] };
@@ -24,6 +25,14 @@ export default function PixelClient({ en, paid }: { en: boolean; paid: string | 
     let alive = true;
     (async () => {
       try {
+        // 어디서 왔나(11-24): /dot 의 FromTag 와 같은 쿠키를 쓰되 앞에 "px" 를 붙여 두근도트 손님과 가른다.
+        // 꼬리표 없이 온 사람도 "px" 로 남긴다 — 이 페이지에 몇 명이 왔는지부터 센다. 이미 꼬리표가 있으면 덮지 않는다.
+        try {
+          if (!document.cookie.split("; ").some((c) => c.startsWith(`${FROM_COOKIE}=`))) {
+            const v = cleanFrom(new URLSearchParams(window.location.search).get("from"));
+            document.cookie = `${FROM_COOKIE}=${cleanFrom(v ? `px-${v}` : "px")}; max-age=${60 * 60 * 24 * 30}; path=/; samesite=lax`;
+          }
+        } catch { /* 쿠키를 막은 브라우저 — 세지 못할 뿐 변환은 그대로 */ }
         await fetch("/api/dot/guest", { method: "POST" });   // 손님 자리(이미 있으면 그대로)
         const j = await (await fetch("/api/pixel/me", { cache: "no-store" })).json();
         if (alive) { setShots(Number(j.shots ?? 0)); setPayOpen(!!j.payOpen); }

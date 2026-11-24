@@ -10,6 +10,21 @@ import PixelClient from "./PixelClient";
 export const metadata: Metadata = {
   title: "진짜 도트 변환 · Real Pixel",
   description: "AI가 뽑은 '도트 같은 그림'을 한 칸 = 한 색인 진짜 도트로. 미리보기 무료.",
+  // 11-24: 링크 카드가 사이트 기본("Dot — Chat with pixel characters")으로 떠서 스레드 글에 엉뚱한 카드가 붙었다 → 이 페이지 것으로 덮는다.
+  openGraph: {
+    type: "website",
+    siteName: "두근도트",
+    title: "진짜 도트 변환",
+    description: "AI가 뽑은 도트 그림을 한 칸 = 한 색인 진짜 도트로. 미리보기 무료.",
+    url: "/pixel",
+    images: [{ url: "/pixel-og.png", width: 1200, height: 630, alt: "AI 원본과 진짜 도트를 확대해 나란히 비교" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "진짜 도트 변환",
+    description: "AI가 뽑은 도트 그림을 한 칸 = 한 색인 진짜 도트로. 미리보기 무료.",
+    images: ["/pixel-og.png"],
+  },
 };
 
 export default async function PixelPage({ searchParams }: { searchParams: Promise<{ paid?: string }> }) {
