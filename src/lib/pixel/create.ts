@@ -76,7 +76,7 @@ async function openaiDrawer(): Promise<Drawer> {
 export type FitOpts = { colors?: number; height?: number; profile?: StyleProfile; snap?: boolean };
 
 /** 이미 그려 온 그림(raw)을 캔버스에 앉힌다 — AI 를 안 부르는 순수 기계 부분(시험이 이것을 직접 잰다). */
-export async function fitToCanvas(raw: Buffer, size: number, o: FitOpts = {}): Promise<{ ok: true; png: Buffer; drawn: [number, number]; facts: string[] } | { ok: false; reason: string; facts: string[] }> {
+export async function fitToCanvas(raw: Buffer, size: number, o: FitOpts = {}): Promise<{ ok: true; png: Buffer; drawn: [number, number]; facts: string[]; size: number } | { ok: false; reason: string; facts: string[] }> {
   const facts: string[] = [];
   let small: Buffer, period: number;
   try { const rd = await realDot(raw, { colors: o.colors ?? 32 }); small = rd.small; period = rd.period[0]; } catch (e) { return { ok: false, reason: (e as Error).message, facts: ["① 격자 못 찾음"] }; }
@@ -87,7 +87,11 @@ export async function fitToCanvas(raw: Buffer, size: number, o: FitOpts = {}): P
   let { cellW: w, cellH: h } = set;
   facts.push(`AI 도트 ${w}×${h}칸`);
   // 게임 키가 정해져 있으면: 칸을 늘려 맞추지 않고(정수배가 아니면 칸 크기가 들쭉날쭉) **원본을 게임 키에 맞는 격자로 다시 찍는다**(11-25)
-  if (o.height && Math.abs(h - o.height) > 1) {
+  // 11-25 사장님 "오른쪽 도트 이상한데": 36칸 그림을 58칸 격자로 다시 찍으면 없던 칸을 지어내 선 굵기가 들쭉날쭉해진다.
+  // → **차이가 15% 안일 때만** 맞춘다. 크면 AI 가 그린 격자 그대로 두고 숫자로 알린다(지어내지 않는다 — texel-ruler 원칙).
+  const close = o.height ? Math.abs(h - o.height) / o.height <= 0.15 : false;
+  if (o.height && !close) facts.push(`게임 키 ${o.height}칸 · 이번 그림 ${h}칸 — 차이가 커서 그대로 둠`);
+  if (o.height && close && Math.abs(h - o.height) > 1) {
     try {
       const rd2 = await realDot(raw, { colors: o.colors ?? 32, period: (period * h) / o.height });
       const set2 = await findFrames(rd2.small, { clearBg: true });
@@ -100,12 +104,13 @@ export async function fitToCanvas(raw: Buffer, size: number, o: FitOpts = {}): P
   }
   let img = sharp(cut, { raw: { width: w, height: h, channels: 4 } }).png();
   let fw = w, fh = h;
-  const want = o.height ? Math.min(o.height, size) : Math.max(w, h) > size ? Math.floor((size * h) / Math.max(w, h)) : h;
+  if (o.height) size = canvasFor(Math.max(close ? o.height : h, w)); // 게임 그림체: 캔버스는 실제 키에 맞춘다
+  const want = o.height && close ? o.height : Math.max(w, h) > size ? Math.floor((size * h) / Math.max(w, h)) : h;
   if (want !== h) {
     const k = want / h; fw = Math.max(1, Math.round(w * k)); fh = want;
     if (fw > size) { const k2 = size / fw; fw = size; fh = Math.max(1, Math.round(fh * k2)); }
     img = sharp(await img.toBuffer()).resize(fw, fh, { kernel: "nearest" }).png();
-    facts.push(o.height ? `게임 키 ${o.height}칸에 맞춤(${(k * 100).toFixed(0)}%)` : `캔버스보다 커서 ${(k * 100).toFixed(0)}%로 줄임`);
+    facts.push(o.height && close ? `게임 키 ${o.height}칸에 맞춤(${(k * 100).toFixed(0)}%)` : `캔버스보다 커서 ${(k * 100).toFixed(0)}%로 줄임`);
   }
   if (fh < size * 0.35 && !o.height) return { ok: false, reason: `캐릭터가 너무 작게 그려졌어요(${fh}px)`, facts: [...facts, `③ 키 ${fh}px < ${Math.ceil(size * 0.35)}px`] };
   let piece = await img.toBuffer();
@@ -114,7 +119,7 @@ export async function fitToCanvas(raw: Buffer, size: number, o: FitOpts = {}): P
   const png = await sharp({ create: { width: size, height: size, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })
     .composite([{ input: piece, left, top }]).png().toBuffer();
   facts.push(`캔버스 ${size}×${size} · 키 ${fh}px`);
-  return { ok: true, png, drawn: [w, h], facts };
+  return { ok: true, png, drawn: [w, h], facts, size };
 }
 
 /** 게임 키에 맞는 캔버스: 키 + 4 이상인 가장 작은 기본 크기, 없으면 키 + 4 */
@@ -133,8 +138,8 @@ export async function makeCharacter(desc: string, size: CanvasSize, o: { colors?
   catch (e) { return { ok: false, reason: `그림 AI 가 거절했어요 (${(e as Error).message.slice(0, 80)})`, usd: 0, facts: [] }; }
   const f = await fitToCanvas(d.png, canvas, { colors: o.colors ?? 32, height: profile?.height, profile, snap: o.snap });
   if (!f.ok) return { ok: false, reason: f.reason, usd: d.usd, facts: f.facts };
-  const scale = Math.max(2, Math.floor(768 / canvas));
-  const big = await sharp(f.png).resize(canvas * scale, canvas * scale, { kernel: "nearest" }).png().toBuffer();
-  return { ok: true, png: f.png, big, raw: d.png, drawn: f.drawn, size: canvas, usd: d.usd, facts: f.facts };
+  const scale = Math.max(2, Math.floor(768 / f.size));
+  const big = await sharp(f.png).resize(f.size * scale, f.size * scale, { kernel: "nearest" }).png().toBuffer();
+  return { ok: true, png: f.png, big, raw: d.png, drawn: f.drawn, size: f.size, usd: d.usd, facts: f.facts };
 }
 
