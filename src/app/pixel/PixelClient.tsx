@@ -313,8 +313,7 @@ export default function PixelClient({ en, paid }: { en: boolean; paid: string | 
 const CSS = `
 .px-root{min-height:100vh;background:#121217;color:#e9e9f0;font-family:system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;display:flex;flex-direction:column}
 .px-top{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid #26262f;background:#17171e}
-.px-top b{font-size:17px}.px-top .sp{flex:1}.px-top .bal{color:#b9b9c6;font-size:14px}
-.px-top .go{padding:7px 12px;font-size:14px;width:auto}
+.px-top b{font-size:17px;white-space:nowrap}.px-top .sp{flex:1}.px-top .bal{color:#b9b9c6;font-size:14px;white-space:nowrap}
 .px-note{background:#24324a;border-bottom:1px solid #3b5ea0;padding:8px 16px;font-size:14px}
 .px-app{flex:1;display:grid;grid-template-columns:168px 1fr 300px;min-height:0}
 .px-tools{display:flex;flex-direction:column;gap:4px;padding:10px;border-right:1px solid #26262f;background:#15151b}
@@ -349,6 +348,7 @@ const CSS = `
 .px-opts .seg button.on{background:#ff6f9c;border-color:#ff6f9c;color:#fff;font-weight:700}
 .px-root .go{background:#ff5d8f;border:0;color:#fff;font-weight:700;border-radius:10px;padding:11px 14px;font-size:15px;cursor:pointer;width:100%}
 .px-root .go:disabled{opacity:.5;cursor:default}
+.px-root .px-top .go{width:auto;padding:7px 12px;font-size:14px;white-space:nowrap}
 .px-opts .ref .slot{display:flex;align-items:center;justify-content:center;height:120px;border:2px dashed #45465a;border-radius:10px;cursor:pointer;color:#b9b9c6;text-align:center;font-size:14px;background:repeating-conic-gradient(#24242d 0% 25%,#1d1d25 0% 50%) 50%/16px 16px;margin-top:4px}
 .px-opts .ref .slot.has{border-style:solid;border-color:#3a3a48}
 .px-opts .ref .slot img{max-height:110px;max-width:100%;image-rendering:pixelated}
