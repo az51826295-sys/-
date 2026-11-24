@@ -210,7 +210,7 @@ export default function PixelClient({ en, paid }: { en: boolean; paid: string | 
               )}
             </figure>
           ) : (
-            <div className="empty">{busy ? t("작업 중…", "Working…") : t("왼쪽에서 도구를 고르고 시작해요. 처음이면 ‘만들기’에 캐릭터를 글로 적어 보세요.", "Pick a tool to start. New here? Describe a character in ‘Create’.")}</div>
+            <div className="empty">{busy ? t("작업 중…", "Working…") : t("도구를 고르고 시작해요. 처음이면 ‘만들기’에 캐릭터를 글로 적어 보세요.", "Pick a tool to start. New here? Describe a character in ‘Create’.")}</div>
           )}
           {busy && canvas && <div className="busy">{t("작업 중…", "Working…")}</div>}
         </main>
