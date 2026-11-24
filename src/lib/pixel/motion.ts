@@ -23,6 +23,11 @@ export const MOTIONS = {
     prompt: "walk cycle seen from the front: frame 1 left foot forward, frame 2 feet together passing, frame 3 right foot forward, frame 4 feet together passing; arms swing opposite to legs" },
   wave: { ko: "손 흔들기", en: "Wave", frames: 4, lock: false,
     prompt: "waving hello with the right hand: frame 1 hand down, frame 2 hand raised beside the face, frame 3 hand tilted left, frame 4 hand tilted right" },
+  // 11-25 "픽셀랩 같은 것": 4방향 — 게임 캐릭터의 기본 세트
+  turn: { ko: "4방향(앞·오른쪽·뒤·왼쪽)", en: "4 directions", frames: 4, lock: false,
+    prompt: "the same character seen from 4 directions, standing still: frame 1 front view facing the viewer, frame 2 side view facing right, frame 3 back view (we see the back of the head), frame 4 side view facing left" },
+  // 손님이 글로 쓴 동작 — 프롬프트는 makeMotion 이 손님 글로 채운다
+  custom: { ko: "글로 쓴 동작", en: "Custom action", frames: 4, lock: false, prompt: "" },
 } as const;
 export type MotionKey = keyof typeof MOTIONS;
 export const MOTION_COST = 1; // 장 — 값은 사장님이 정한다(11-24 기본값 1장, 바꾸려면 여기 한 곳)
@@ -102,15 +107,26 @@ async function judgeSame(ref: Buffer, sheet: Buffer): Promise<{ same: boolean; c
   } catch { return null; }
 }
 
-export async function makeMotion(ref: Buffer, motion: MotionKey, o: { colors?: number; maxTries?: number } = {}): Promise<MotionResult> {
+/** 손님이 쓴 동작 글: 한 줄 · 120자 · 제어문자 없음 */
+export const cleanAction = (s: string) => s.replace(/[\u0000-\u001f\u007f]+/g, " ").replace(/\s+/g, " ").trim().slice(0, 120);
+
+export async function makeMotion(ref: Buffer, motion: MotionKey, o: { colors?: number; maxTries?: number; action?: string } = {}): Promise<MotionResult> {
   const M = MOTIONS[motion];
+  const act = motion === "custom" ? cleanAction(o.action ?? "") : "";
+  if (motion === "custom" && !act) return { ok: false, reason: "동작을 글로 적어 주세요.", tries: 0, usd: 0 };
+  const how = motion === "custom" ? `a 4-step animation of this action: ${act}` : M.prompt;
   const draw = process.env.PIXEL_MOTION_MOCK ? mockDrawer(process.env.PIXEL_MOTION_MOCK) : await openaiDrawer();
-  const refPng = await sharp(ref).png().toBuffer();
+  // 작은 도트(예: 글로 만든 32px)는 그림 AI 가 못 알아본다 → 한 색 배경에 얹어 512 언저리로 nearest 확대
+  const meta = await sharp(ref).metadata();
+  const long = Math.max(meta.width ?? 0, meta.height ?? 0);
+  const refPng = long && long < 256
+    ? await sharp(ref).flatten({ background: BG }).resize({ width: Math.round((meta.width ?? 1) * Math.ceil(512 / long)), kernel: "nearest" }).png().toBuffer()
+    : await sharp(ref).png().toBuffer();
   const refUrl = "data:image/png;base64," + refPng.toString("base64");
   const refH = await refHistOf(refPng);
   const prompt = [
     "Use the reference image as the character. Keep EXACTLY the same character: same face, hair, outfit, colors and proportions.",
-    `Draw a pixel-art sprite sheet: ONE horizontal row of ${M.frames} frames, ${M.prompt}.`,
+    `Draw a pixel-art sprite sheet: ONE horizontal row of ${M.frames} frames, ${how}.`,
     "All frames the same scale, same baseline, evenly spaced with a clear empty gap between frames, full body inside each frame.",
     `Flat solid background color ${BG} everywhere — no gradient, no shadow, no ground, no text, no numbers, no borders or boxes.`,
     "Chunky crisp pixel art with a limited palette.",

@@ -28,7 +28,11 @@ function edgeBg(im: Img): [number, number, number] | null {
   return key >= 0 && best >= edge * 0.4 ? [(key >> 16) & 255, (key >> 8) & 255, key & 255] : null; // 가장자리 40% 이상이 한 색일 때만 배경으로 본다
 }
 
-export async function findFrames(small: Buffer, opt: { cols?: number; rows?: number } = {}): Promise<FrameSet> {
+/**
+ * clearBg(11-25): 배경이 **투명**인 그림도 자동으로 받는다 — 글로 만들기(한 명만 있는 그림)에서만 켠다.
+ * 시트에는 켜지 않는다: 투명 시트(taeo-sheet)는 위아래 칸이 붙어 있어 덩어리 3개로 잘못 나뉘었다 → 그때는 "가로·세로를 정하라"가 맞다(frames_check).
+ */
+export async function findFrames(small: Buffer, opt: { cols?: number; rows?: number; clearBg?: boolean } = {}): Promise<FrameSet> {
   const { data, info } = await sharp(small).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
   const im: Img = { d: data, w: info.width, h: info.height };
   const bg = edgeBg(im);
@@ -43,7 +47,10 @@ export async function findFrames(small: Buffer, opt: { cols?: number; rows?: num
       boxes.push({ x: x0, y: y0, w: x1 - x0, h: y1 - y0 });
     }
   } else {
-    if (!bg) throw new Error("배경이 한 색이 아니라 프레임을 자동으로 못 나눠요 — 가로·세로 개수를 정해 주세요.");
+    // clearBg 면: 가장자리 40% 이상이 투명일 때 투명이 곧 배경이다(isFg 가 알파로 가른다)
+    let clear = 0; for (let x = 0; x < im.w; x++) { if (at(im, x, 0)[3] < 128) clear++; if (at(im, x, im.h - 1)[3] < 128) clear++; }
+    for (let y = 0; y < im.h; y++) { if (at(im, 0, y)[3] < 128) clear++; if (at(im, im.w - 1, y)[3] < 128) clear++; }
+    if (!bg && (!opt.clearBg || clear < 2 * (im.w + im.h) * 0.4)) throw new Error("배경이 한 색이 아니라 프레임을 자동으로 못 나눠요 — 가로·세로 개수를 정해 주세요.");
     how = "auto";
     // 1칸 틈까지만 이어 본다(3칸이면 윗줄 캐릭터와 아랫줄 얼굴 조각이 한 덩어리가 됐다 — 11-24 frames_check)
     const R = 1, lab = new Int32Array(im.w * im.h).fill(-1);

@@ -140,13 +140,15 @@ export default function PixelClient({ en, paid }: { en: boolean; paid: string | 
   };
 
   // ── AI 로 동작 만들기(11-24 "생성자"): 그림 AI 값이 들어 미리보기 없이 장을 쓰고, 실패하면 서버가 돌려준다
-  const [aiMotion, setAiMotion] = useState<"idle" | "walk" | "wave">("idle");
+  const [aiMotion, setAiMotion] = useState<"idle" | "walk" | "wave" | "turn" | "custom">("idle");
+  const [aiAction, setAiAction] = useState("");
   const [aiGot, setAiGot] = useState<{ gif: string; sheet: string; count: number; cell: [number, number] } | null>(null);
   const aiMake = async () => {
     if (!file) return;
     setBusy(true); setErr(null); setAiGot(null);
     const fd = new FormData();
     fd.append("image", file); fd.append("motion", aiMotion); fd.append("colors", String(colors)); fd.append("ms", String(mvMs));
+    if (aiMotion === "custom") fd.append("action", aiAction);
     try {
       const r = await fetch("/api/pixel/motion", { method: "POST", body: fd });
       const j = await r.json();
@@ -154,6 +156,29 @@ export default function PixelClient({ en, paid }: { en: boolean; paid: string | 
       else { setAiGot({ gif: j.gif, sheet: j.sheet, count: j.count, cell: j.cell }); setShots(j.left); }
     } catch { setErr(t("인터넷을 확인해 주세요.", "Check your connection.")); }
     setBusy(false);
+  };
+
+  // ── 글로 캐릭터 만들기(11-25 "픽셀랩 같은 것"): 그림 없이 글만으로 시작. 만든 캐릭터는 아래 변환·움직임으로 바로 이어진다
+  const [cDesc, setCDesc] = useState("");
+  const [cSize, setCSize] = useState<32 | 48 | 64 | 96>(48);
+  const [cGot, setCGot] = useState<{ png: string; big: string; size: number; facts: string[] } | null>(null);
+  const create = async () => {
+    setBusy(true); setErr(null); setCGot(null);
+    const fd = new FormData();
+    fd.append("desc", cDesc); fd.append("size", String(cSize)); fd.append("colors", String(colors));
+    try {
+      const r = await fetch("/api/pixel/create", { method: "POST", body: fd });
+      const j = await r.json();
+      if (!r.ok) setErr(j.error ?? t("만들기에 실패했어요.", "Couldn't create."));
+      else { setCGot({ png: j.png, big: j.big, size: j.size, facts: j.facts }); setShots(j.left); }
+    } catch { setErr(t("인터넷을 확인해 주세요.", "Check your connection.")); }
+    setBusy(false);
+  };
+  const useCreated = async () => {
+    if (!cGot) return;
+    const b = await (await fetch(cGot.big)).blob();
+    pick(new File([b], "character.png", { type: "image/png" }));
+    setTimeout(() => document.getElementById("rp-ai")?.scrollIntoView({ behavior: "smooth" }), 300);
   };
 
   const shown = period ?? pv?.period ?? 8;
@@ -173,6 +198,39 @@ export default function PixelClient({ en, paid }: { en: boolean; paid: string | 
         </header>
 
         {paidMsg && <div className="rp-note">{paidMsg}</div>}
+
+        <section className="rp-move rp-create">
+          <h2>{t("글로 캐릭터 만들기", "Create a character from text")}</h2>
+          <p className="hint">{t("그림이 없어도 돼요. 어떤 캐릭터인지 적고 크기를 고르면, AI가 그리고 진짜 도트로 맞춰 정한 크기 캔버스(배경 투명)에 앉혀 드려요. 만든 캐릭터로 바로 4방향·동작까지 이어 만들 수 있어요.",
+            "No image needed. Describe a character and pick a size — AI draws it, we snap it to true pixels on a transparent canvas of that size. Then make 4 directions or motions from it.")}</p>
+          <textarea value={cDesc} maxLength={200} rows={2} onChange={(e) => setCDesc(e.target.value)}
+            placeholder={t("예: 빨간 망토를 두른 꼬마 기사, 은색 투구", "e.g. a small knight in a red cape, silver helmet")} />
+          <div className="row">
+            <span>{t("크기", "Size")}</span>
+            {([32, 48, 64, 96] as const).map((z) => (
+              <label key={z}><input type="radio" checked={cSize === z} onChange={() => setCSize(z)} /> {z}px</label>
+            ))}
+          </div>
+          <div className="row">
+            {shots !== null && shots > 0 ? (
+              <button type="button" className="go" disabled={busy || cDesc.trim().length < 2} onClick={create}>{busy ? t("그리는 중… (20초쯤)", "Drawing… (~20s)") : t("만들기 (1장 사용)", "Create (uses 1)")}</button>
+            ) : (
+              <button type="button" className="go" disabled={busy || !payOpen} onClick={buy}>{payOpen ? t("10장 4,900원", "10 for ₩4,900") : t("결제 준비 중", "Payments opening soon")}</button>
+            )}
+          </div>
+          {cGot && (
+            <figure className="mv">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img className="px chk" src={cGot.big} alt="" style={{ width: Math.min(384, cGot.size * 6) }} />
+              <figcaption>{cGot.facts.join(" · ")}</figcaption>
+              <div className="rp-got">
+                <a href={cGot.png} download={`character-${cGot.size}px.png`}>{t(`게임용 PNG (${cGot.size}×${cGot.size}, 배경 투명)`, `Game PNG (${cGot.size}×${cGot.size}, transparent)`)}</a>
+                <a href={cGot.big} download={`character-${cGot.size}px-x8.png`}>{t("8배 크기 PNG", "8× PNG")}</a>
+              </div>
+              <button type="button" disabled={busy} onClick={useCreated}>{t("이 캐릭터로 4방향·동작 만들기 ↓", "Use this for directions & motion ↓")}</button>
+            </figure>
+          )}
+        </section>
 
         <label
           className={`rp-drop${src ? " has" : ""}`}
@@ -285,20 +343,26 @@ export default function PixelClient({ en, paid }: { en: boolean; paid: string | 
         )}
 
         {src && (
-          <section className="rp-move">
-            <h2>{t("AI로 동작 만들기", "Generate a motion with AI")}</h2>
+          <section className="rp-move" id="rp-ai">
+            <h2>{t("AI로 4방향·동작 만들기", "Generate directions & motion with AI")}</h2>
             <p className="hint">
               {t("캐릭터 그림 한 장이면 돼요. AI가 같은 캐릭터로 4프레임을 그리면, 진짜 도트로 바꿔 잘라서 움직이게 해 줘요. 같은 캐릭터가 아니게 나오면 한 번 더 그리고, 그래도 안 되면 장수를 돌려드려요.",
                  "One character image is enough. AI draws 4 frames of the same character, we convert them to true pixels, cut and animate. If it doesn't look like the same character we retry once, then refund.")}
             </p>
             <div className="row">
-              {(["idle", "walk", "wave"] as const).map((m) => (
-                <label key={m}><input type="radio" checked={aiMotion === m} onChange={() => setAiMotion(m)} /> {m === "idle" ? t("숨쉬기·깜빡임", "Idle") : m === "walk" ? t("걷기", "Walk") : t("손 흔들기", "Wave")}</label>
+              {(["turn", "idle", "walk", "wave", "custom"] as const).map((m) => (
+                <label key={m}><input type="radio" checked={aiMotion === m} onChange={() => setAiMotion(m)} /> {
+                  m === "turn" ? t("4방향(앞·오른쪽·뒤·왼쪽)", "4 directions") : m === "idle" ? t("숨쉬기·깜빡임", "Idle") : m === "walk" ? t("걷기", "Walk") : m === "wave" ? t("손 흔들기", "Wave") : t("글로 적기", "Describe")
+                }</label>
               ))}
             </div>
+            {aiMotion === "custom" && (
+              <input className="act" type="text" maxLength={120} value={aiAction} onChange={(e) => setAiAction(e.target.value)}
+                placeholder={t("예: 칼을 휘두른다, 점프한다, 마법을 쏜다", "e.g. swings a sword, jumps, casts a spell")} />
+            )}
             <div className="row">
               {shots !== null && shots > 0 ? (
-                <button type="button" className="go" disabled={busy} onClick={aiMake}>{busy ? t("그리는 중… (30초쯤)", "Drawing… (~30s)") : t("AI로 그리기 (1장 사용)", "Generate (uses 1)")}</button>
+                <button type="button" className="go" disabled={busy || (aiMotion === "custom" && aiAction.trim().length < 2)} onClick={aiMake}>{busy ? t("그리는 중… (30초쯤)", "Drawing… (~30s)") : t("AI로 그리기 (1장 사용)", "Generate (uses 1)")}</button>
               ) : (
                 <button type="button" className="go" disabled={busy || !payOpen} onClick={buy}>{payOpen ? t("10장 4,900원", "10 for ₩4,900") : t("결제 준비 중", "Payments opening soon")}</button>
               )}
@@ -372,6 +436,9 @@ const CSS = `
 .rp-move .mv img{max-width:100%;image-rendering:pixelated;border-radius:6px;display:block}
 .rp-move .mv figcaption{color:#8d8ea0;font-size:12px;margin-top:6px}
 .rp-move button:disabled{opacity:.5}
+.rp-create{margin:0 0 16px}
+.rp-move textarea,.rp-move input.act{width:100%;box-sizing:border-box;background:#2c2c38;color:#eee;border:1px solid #444;border-radius:8px;padding:8px;font:inherit;margin-top:4px}
+.rp-move img.chk{background:repeating-conic-gradient(#3a3a46 0% 25%,#2a2a33 0% 50%) 50%/16px 16px}
 .rp-foot{margin-top:28px;color:#7d7e90;font-size:12px;line-height:1.6}
 .rp-foot a{color:#9fa0b6}
 `;

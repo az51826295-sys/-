@@ -16,12 +16,13 @@ export async function POST(request: Request) {
   const u = await readUpload(request);
   if ("error" in u) return Response.json({ error: u.error }, { status: u.status });
   if (!(u.motion in MOTIONS)) return Response.json({ error: "동작을 골라 주세요." }, { status: 400 });
+  if (u.motion === "custom" && !u.action.trim()) return Response.json({ error: "동작을 글로 적어 주세요." }, { status: 400 });
   const db = createServiceClient();
   if ((await pixelBalance(db, userId)) < 1) return Response.json({ error: "남은 장수가 없어요.", need: true }, { status: 402 });
   const spent = await spendPixelShot(db, userId, `motion ${u.motion} (그리는 중) ${new Date().toISOString()}`);
   if (!spent) return Response.json({ error: "남은 장수가 없어요.", need: true }, { status: 402 });
 
-  const r = await makeMotion(u.buf, u.motion as MotionKey, { colors: u.colors });
+  const r = await makeMotion(u.buf, u.motion as MotionKey, { colors: u.colors, action: u.action });
   console.log(`[pixel/motion] ${userId.slice(0, 8)} ${u.motion} ok=${r.ok} tries=${r.tries} usd=${r.usd.toFixed(4)} ${r.ok ? r.check.facts.join(" · ") : r.reason}`);
   if (!r.ok) {
     await refundPixelShot(db, userId, spent);

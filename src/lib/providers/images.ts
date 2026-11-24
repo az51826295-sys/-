@@ -60,7 +60,8 @@ export function createImageProvider(model: string = MODEL) {
       return { dataUrl: `data:image/png;base64,${out}`, model: model, inputTokens: res.usage?.input_tokens ?? 0, outputTokens: res.usage?.output_tokens ?? 0 };
     },
 
-    async draw(prompt: string, quality: "low" | "medium" | "high" = "low", size: ImageSize = SIZE): Promise<MadeImage> {
+    /** background: 기본 투명. 도트 변환처럼 "한 색 배경"을 기계가 잘라 내는 곳은 "opaque" 로 받고 프롬프트에 배경색을 적는다. */
+    async draw(prompt: string, quality: "low" | "medium" | "high" = "low", size: ImageSize = SIZE, background: "transparent" | "opaque" = "transparent"): Promise<MadeImage> {
       // 값이 안 매겨진 백엔드는 요청 전에 막는다. 회사 한도가 볼 수 없는 돈을
       // 쓰는 것이 이 규칙이 막는 유일한 실패다.
       if (!isPriced(model)) throw new UnpricedBackendError(model);
@@ -71,7 +72,7 @@ export function createImageProvider(model: string = MODEL) {
         n: 1,
         size,
         quality,
-        background: "transparent",
+        background,
         output_format: "png",
       });
 
