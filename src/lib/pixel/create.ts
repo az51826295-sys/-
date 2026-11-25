@@ -138,7 +138,8 @@ export const canvasFor = (height: number) => SIZES.find((z) => z >= height + 4) 
  *   ④ 15% 넘게 어긋나면 **잰 숫자를 생성자에게 되돌려** 같은 캐릭터를 다시 그리게 한다(지난번 한 칸 p px · 키 h 칸 → u px · H 칸). 1번만.
  *   ⑤ 둘 중 목표에 가까운 것을 쓴다.
  */
-export const unitTarget = (size: number) => { const H = Math.round(size * 0.92); return { H, u: +(820 / H).toFixed(1) }; };
+// 11-25 실패율 자: 목표 92% 면 그림 AI 가 10~15% 넘게 그려 캔버스를 넘쳤다(매 바퀴 1~2개 억지로 줄임) → 88%: 15% 넘쳐도 캔버스 안
+export const unitTarget = (size: number) => { const H = Math.round(size * 0.88); return { H, u: +(820 / H).toFixed(1) }; };
 export async function gridBoard(u: number): Promise<Buffer> {
   const n = Math.ceil(1024 / u);
   const lines: string[] = [];
