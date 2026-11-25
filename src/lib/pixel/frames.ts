@@ -141,20 +141,26 @@ function dropEdgeBits(out: Buffer, w: number, h: number): Buffer {
  */
 export const PIXEL_BG: [number, number, number] = [0xb0, 0xc4, 0xde];
 export function dropBgSpecks(out: Buffer, w: number, h: number, bg: [number, number, number] = PIXEL_BG): number {
-  const near = (i: number) => Math.abs(out[i] - bg[0]) + Math.abs(out[i + 1] - bg[1]) + Math.abs(out[i + 2] - bg[2]) < 48;
-  const kill: number[] = [];
-  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
-    const i = (y * w + x) * 4; if (!out[i + 3] || !near(i)) continue;
-    let clear = false, nearNb = false;
-    for (const [nx, ny] of [[x - 1, y], [x + 1, y], [x, y - 1], [x, y + 1]]) {
-      if (nx < 0 || ny < 0 || nx >= w || ny >= h) { clear = true; continue; }
-      const k = (ny * w + nx) * 4;
-      if (!out[k + 3]) clear = true; else if (near(k)) nearNb = true;
+  // 11-25 둘째 고침: 옆모습 군인에 붙어 있는 **두 칸짜리** 번짐이 남았다(외톨이 한 칸만 지웠다) →
+  // 배경색과 가까운 칸끼리 이은 덩어리 중 **6칸 이하 · 투명과 맞닿은** 것을 지운다. 갑옷처럼 넓은 면(수백 칸)은 남는다.
+  const near = (q: number) => { const i = q * 4; return !!out[i + 3] && Math.abs(out[i] - bg[0]) + Math.abs(out[i + 1] - bg[1]) + Math.abs(out[i + 2] - bg[2]) < 48; };
+  const seen = new Uint8Array(w * h); let killed = 0;
+  for (let s0 = 0; s0 < w * h; s0++) {
+    if (seen[s0] || !near(s0)) continue;
+    const comp: number[] = [], st = [s0]; seen[s0] = 1; let clear = false;
+    while (st.length) {
+      const q = st.pop()!; comp.push(q);
+      const x = q % w, y = (q - x) / w;
+      for (const [nx, ny] of [[x - 1, y], [x + 1, y], [x, y - 1], [x, y + 1]]) {
+        if (nx < 0 || ny < 0 || nx >= w || ny >= h) { clear = true; continue; }
+        const k = ny * w + nx;
+        if (!out[k * 4 + 3]) { clear = true; continue; }
+        if (!seen[k] && near(k)) { seen[k] = 1; st.push(k); }
+      }
     }
-    if (clear && !nearNb) kill.push(i);
+    if (clear && comp.length <= 6) { for (const q of comp) out.fill(0, q * 4, q * 4 + 4); killed += comp.length; }
   }
-  for (const i of kill) out.fill(0, i, i + 4);
-  return kill.length;
+  return killed;
 }
 
 export async function cutFrames(small: Buffer, set: FrameSet, opt: { lockBottom?: number; dropEdgeBits?: boolean } = {}): Promise<Buffer[]> {

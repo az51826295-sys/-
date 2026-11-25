@@ -25,7 +25,7 @@ export const MOTIONS = {
     prompt: "waving hello with the right hand: frame 1 hand down, frame 2 hand raised beside the face, frame 3 hand tilted left, frame 4 hand tilted right" },
   // 11-25 "픽셀랩 같은 것": 4방향 — 게임 캐릭터의 기본 세트
   turn: { ko: "4방향(앞·오른쪽·뒤·왼쪽)", en: "4 directions", frames: 4, lock: false,
-    prompt: "the same character seen from 4 directions, standing still: frame 1 front view facing the viewer, frame 2 side view facing right, frame 3 back view (we see the back of the head), frame 4 side view facing left" },
+    prompt: "the same character seen from 4 directions, standing still: frame 1 front view facing the viewer, frame 2 EXACT side profile facing right (camera at 90 degrees: we see only one eye, the nose points right, the body is narrow), frame 3 back view (we see the back of the head, no face), frame 4 EXACT side profile facing left (mirror of frame 2). Not three-quarter views" },
   // 손님이 글로 쓴 동작 — 프롬프트는 makeMotion 이 손님 글로 채운다
   custom: { ko: "글로 쓴 동작", en: "Custom action", frames: 4, lock: false, prompt: "" },
 } as const;
@@ -129,7 +129,7 @@ async function judgeSame(ref: Buffer, sheet: Buffer): Promise<{ same: boolean; c
  * 판단자가 없으면(목·오류) 기계 판정대로 간다. 값은 한 번에 약 1원(luna).
  */
 const DIRS = ["front (facing the viewer)", "side view facing RIGHT", "back view", "side view facing LEFT"];
-export type CutJudge = { pick: "A" | "B" | "neither"; same: boolean; confidence: number; badFrames: number[]; why: string; usd: number };
+export type CutJudge = { pick: "A" | "B" | "neither"; same: boolean; confidence: number; badFrames: number[]; profileOk: boolean; fix: string; why: string; usd: number };
 async function judgeCut(ref: Buffer, raw: Buffer, a: Buffer | null, b: Buffer | null, motion: MotionKey): Promise<CutJudge | null> {
   if (process.env.PIXEL_MOTION_MOCK && !process.env.PIXEL_JUDGE_LIVE) return null; // 목에서는 안 부른다 — 이미 산 원본으로 판단자만 잴 때 PIXEL_JUDGE_LIVE=1
   try {
@@ -138,18 +138,29 @@ async function judgeCut(ref: Buffer, raw: Buffer, a: Buffer | null, b: Buffer | 
     const ai = createOpenAIProvider({ judgmentModel: "gpt-5.6-luna" });
     const png = async (x: Buffer, w: number) => (await sharp(x).flatten({ background: "#ffffff" }).resize(w, w, { fit: "inside", kernel: "nearest" }).png().toBuffer()).toString("base64");
     const blank = await sharp({ create: { width: 64, height: 64, channels: 3, background: "#ffffff" } }).png().toBuffer();
-    const dirQ = motion === "turn" ? ` Frames should face, in order: ${DIRS.join(", ")}. List in badFrames the 1-based numbers of frames (in the picked sheet) whose facing is wrong.` : " badFrames: 1-based numbers of frames that are broken (missing body parts, extra pieces, or a different character).";
+    const dirQ = motion === "turn"
+      ? ` Frames should face, in order: ${DIRS.join(", ")}. List in badFrames the 1-based numbers of frames (in the picked sheet) whose facing is wrong. ` +
+        "profileOk: are frames 2 and 4 TRUE side profiles (camera at 90 degrees, only one eye visible, narrow body) and not three-quarter views? " +
+        "fix: if anything is wrong, ONE short instruction to the artist for the redraw (e.g. 'frame 2 is a three-quarter view: turn it to an exact side profile facing right'); empty if all good."
+      : " badFrames: 1-based numbers of frames that are broken (missing body parts, extra pieces, or a different character). profileOk: true. fix: one short instruction to the artist if something is wrong, else empty.";
     const r = await ai.generateStructuredOutput({
       systemInstructions: "You check sprite-sheet cutting. Image 1: the reference character. Image 2: the original AI drawing (a row of frames). Image 3: cut result A. Image 4: cut result B (a blank square means that cut failed). " +
         "Pick the cut that keeps every frame whole (no missing horns/wings/tail, no pieces of neighbouring frames, no leftover background) and in the right order; 'neither' if both are bad. " +
         "Also say whether the frames are the SAME character as the reference (pose and facing differences are expected), with confidence 0-1." + dirQ,
       input: "Judge the cuts.",
       images: [await png(ref, 384), await png(raw, 768), await png(a ?? blank, 768), await png(b ?? blank, 768)],
-      schema: z.object({ pick: z.enum(["A", "B", "neither"]), same: z.boolean(), confidence: z.number(), badFrames: z.array(z.number()), why: z.string() }),
+      schema: z.object({ pick: z.enum(["A", "B", "neither"]), same: z.boolean(), confidence: z.number(), badFrames: z.array(z.number()), profileOk: z.boolean(), fix: z.string(), why: z.string() }),
       schemaName: "cut_judge", maxTokens: 16000, tier: "judgment",
     });
     return { ...r.output, usd: costOf({ backend: r.model, inputTokens: r.inputTokens ?? 0, outputTokens: r.outputTokens ?? 0 }) };
   } catch { return null; }
+}
+
+/** 11-25: 그림 AI 거절을 손님 말로 — 안전 거절이면 "유명 캐릭터·실존 인물·위험한 내용" 안내(스파이더맨이 400 으로 막혔다) */
+export function refusedWhy(e: Error): string {
+  const m = e.message ?? "";
+  if (/safety|rejected|content_policy|moderation/i.test(m)) return "유명 캐릭터·실존 인물 이름이나 위험한 내용은 그림 AI 가 그리지 않아요. 직접 지은 캐릭터로 적어 주세요.";
+  return `그림 AI 가 거절했어요 (${m.slice(0, 80)})`;
 }
 
 /** 손님이 쓴 동작 글: 한 줄 · 120자 · 제어문자 없음 */
@@ -186,12 +197,12 @@ export async function makeMotion(ref: Buffer, motion: MotionKey, o: { colors?: n
     "Chunky crisp pixel art with a limited palette.",
     ...(refCells ? [`Keep EXACTLY the same pixel size as the reference: the character is ${refCells} pixels tall in every frame (one reference pixel = one pixel in the sheet). Do not draw it smaller.`] : []),
   ].join(" ");
-  let usd = 0, last: MotionCheck | undefined, reason = "", lastRaw: Buffer | undefined;
+  let usd = 0, last: MotionCheck | undefined, reason = "", lastRaw: Buffer | undefined, feedback = "";
   const tries = Math.max(1, Math.min(2, o.maxTries ?? 2));
   for (let t = 1; t <= tries; t++) {
     let raw: Buffer;
-    try { const d = await draw(refUrl, prompt); raw = d.png; lastRaw = raw; usd += d.usd; }
-    catch (e) { reason = `그림 AI 가 거절했어요 (${(e as Error).message.slice(0, 80)})`; break; } // 돈·열쇠 문제는 다시 해도 같다
+    try { const d = await draw(refUrl, feedback ? `${prompt} FIX FROM THE REVIEWER OF YOUR LAST TRY: ${feedback}` : prompt); raw = d.png; lastRaw = raw; usd += d.usd; }
+    catch (e) { reason = refusedWhy(e as Error); break; } // 돈·열쇠 문제는 다시 해도 같다
     let rd: RealDotResult, set: FrameSet, cuts: Buffer[];
     const fixes: string[] = [];
     // 후보 B: 같은 너비 칸으로 자르기(그림 AI 에게 "고르게 띄워" 라고 시켰다) — 자동이 실패하거나 판단자가 더 낫다고 할 때
@@ -241,7 +252,10 @@ export async function makeMotion(ref: Buffer, motion: MotionKey, o: { colors?: n
       if (j) { usd += j.usd; judge = { same: j.same, confidence: j.confidence, why: j.why }; }
     }
     // 판단자가 확신(≥0.7)하고 "둘 다 못 잘랐다 · 다른 캐릭터 · 방향 틀림" 이면 기계가 통과시켜도 받지 않는다(다시 그리기로)
-    const judgeNo = !!cj && cj.confidence >= 0.7 && (cj.pick === "neither" || !cj.same || cj.badFrames.length > 0);
+    // 옆모습이 비스듬하면(turn) 다시 그릴 거리 — 다만 마지막 판이면 받는다(손님에게 실패보다 낫다)
+    const profileBad = !!cj && motion === "turn" && !cj.profileOk && t < tries;
+    const judgeNo = !!cj && cj.confidence >= 0.7 && (cj.pick === "neither" || !cj.same || cj.badFrames.length > 0 || profileBad);
+    if (cj && judgeNo) feedback = (cj.fix || cj.why).slice(0, 300); // 협업: 판단자의 말이 다음 그림으로 간다
     if (judgeNo) mc.machine = "fail";
     const conf = judge ? (judge.same ? judge.confidence : 0) : undefined;
     const g = checkGate([], { kind: "pixel-motion", seat: "gpt-5.6-luna" }, conf, mc.machine === "unsure" ? undefined : mc.machine);

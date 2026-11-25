@@ -3,6 +3,7 @@ import sharp from "sharp";
 import { realDot } from "./realdot";
 import { PIXEL_BG, cutFrames, dropBgSpecks, findFrames } from "./frames";
 import { profileOf, snapToPalette, styleDistance, type StyleProfile } from "./style";
+import { refusedWhy } from "./motion";
 
 /**
  * **글로 캐릭터 만들기** (11-25 사장님: "픽셀랩 같은 거 만들고 싶어").
@@ -178,7 +179,7 @@ export async function makeCharacter(desc: string, size: CanvasSize, o: { colors?
       : unit ? await draw(unitPrompt(cleanDesc(desc), unit.H, unit.u), await gridBoard(unit.u))
       : await draw(createPrompt(cleanDesc(desc), size));
   }
-  catch (e) { return { ok: false, reason: `그림 AI 가 거절했어요 (${(e as Error).message.slice(0, 80)})`, usd: 0, facts: [] }; }
+  catch (e) { return { ok: false, reason: refusedWhy(e as Error), usd: 0, facts: [] }; }
   let usd = d.usd;
   let f = await fitToCanvas(d.png, canvas, { colors: o.colors ?? 32, height: profile?.height, profile, snap: o.snap });
   if (unit) {
