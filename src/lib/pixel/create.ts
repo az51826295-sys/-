@@ -87,7 +87,7 @@ export async function fitToCanvas(raw: Buffer, size: number, o: FitOpts = {}): P
   try { set = await findFrames(small, { clearBg: true }); } catch (e) { return { ok: false, reason: (e as Error).message, facts: ["② 캐릭터 못 찾음"] }; }
   if (set.frames.length !== 1) return { ok: false, reason: `캐릭터가 ${set.frames.length}개로 그려졌어요`, facts: [`② 덩어리 ${set.frames.length}개(기대 1)`] };
   let [cut] = await cutFrames(small, set);
-  dropBgSpecks(cut, set.cellW, set.cellH, set.bg ?? PIXEL_BG); // 11-25: 배경 번짐 외톨이 점 지우기
+  dropBgSpecks(cut, set.cellW, set.cellH, PIXEL_BG); if (set.bg) dropBgSpecks(cut, set.cellW, set.cellH, set.bg); // 11-25: 배경 번짐 지우기(시킨 색 + 읽은 색)
   let { cellW: w, cellH: h } = set;
   facts.push(`AI 도트 ${w}×${h}칸`);
   // 게임 키가 정해져 있으면: 칸을 늘려 맞추지 않고(정수배가 아니면 칸 크기가 들쭉날쭉) **원본을 게임 키에 맞는 격자로 다시 찍는다**(11-25)
@@ -185,6 +185,8 @@ export async function makeCharacter(desc: string, size: CanvasSize, o: { colors?
   if (unit) {
     const h1 = f.ok ? f.drawn[1] : 0;
     const off = !f.ok || Math.abs(h1 - unit.H) / unit.H > 0.15;
+    // 11-25 실패율 자 2바퀴: 해골 66칸 · 닌자 68칸이 64 캔버스에 억지로 줄었다(목표 59 의 15% 안이라 손대지 않았다) → 캔버스보다 크면 돈 0 다시 읽기만
+    const tooBig = f.ok && !off && Math.max(f.drawn[0], h1) > size;
     const note = `단위 목표: 키 ${unit.H}칸 · 한 칸 ${unit.u}px`;
     if (off && f.ok) {
       // ④ 잰 숫자를 생성자에게 되돌린다 — 같은 캐릭터를 단위만 바꿔 다시
@@ -210,6 +212,11 @@ export async function makeCharacter(desc: string, size: CanvasSize, o: { colors?
       const best = cands.reduce((a, b) => (Math.abs(b.f.drawn[1] - unit.H) < Math.abs(a.f.drawn[1] - unit.H) ? b : a));
       best.f.facts.unshift(note, `후보 ${cands.length}: ${cands.map((c) => c.tag).join(" · ")} → 고름: ${best.tag}`);
       f = best.f; d = best.d;
+    } else if (tooBig && f.ok) {
+      const nearP = (f.period * h1) / unit.H;
+      const r = await fitToCanvas(d.png, canvas, { colors: o.colors ?? 32, near: nearP });
+      if (r.ok && r.period >= f.period * 1.02 && Math.max(r.drawn[0], r.drawn[1]) <= size) { r.facts.unshift(note, `첫 그림 ${h1}칸 — 캔버스보다 커서 조금 굵게 다시 읽음 ${r.drawn[1]}칸(한 칸 ${r.period.toFixed(1)}px)`); f = r; }
+      else f.facts.unshift(note, `첫 그림 ${h1}칸 — 캔버스보다 큼, 다시 읽어도 안 맞아 줄임`);
     } else if (f.ok) f.facts.unshift(note, `첫 그림 ${h1}칸(한 칸 ${f.period.toFixed(1)}px) — 목표 안`);
   }
   if (!f.ok) return { ok: false, reason: f.reason, usd, facts: f.facts };

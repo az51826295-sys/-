@@ -49,4 +49,15 @@ if (r.ok) {
   }
   expect("③ 군인 4방향 외톨이 하늘색 점 0", lone === 0, { lone });
 } else expect("③ 받음", false, r.reason);
+// ④ 악마 걷기(2바퀴): 테두리를 띠처럼 두른 번짐 135칸 + 몸 사이에 갇힌 배경 칸 — 결과 전체에 배경색 칸 0
+{
+  const R2 = "C:/Users/az518/Desktop/두근도트-스레드/realdot/bench/r2";
+  process.env.PIXEL_MOTION_MOCK = `${R2}/demon-walk-raw.png`;
+  const r4 = await makeMotion(readFileSync(`${R2}/demon-1x.png`), "walk", { maxTries: 1 });
+  if (r4.ok) {
+    const { data, info } = await sharp(await sheetOf(r4.cuts, r4.set)).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+    let left = 0; for (let i = 0; i < info.width * info.height * 4; i += 4) if (data[i + 3] && data[i + 2] - data[i] >= 38 && Math.abs(data[i] - PIXEL_BG[0]) + Math.abs(data[i + 1] - PIXEL_BG[1]) + Math.abs(data[i + 2] - PIXEL_BG[2]) < 80) left++;
+    expect("④ 악마 걷기 배경색 칸 0(띠·갇힌 칸 포함)", left === 0, { left });
+  } else expect("④ 받음", false, r4.reason);
+}
 console.log(`\n${ok}/${n}`);

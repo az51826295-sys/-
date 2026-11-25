@@ -98,7 +98,7 @@ async function refHistOf(img: Buffer): Promise<Float64Array> {
  * 문턱은 6명×6명 표에서 잡았다(engine/work/realdot/motion/hist_matrix.mts): 같은 캐릭터 0.85~0.91(soeun 만 0.35), 다른 캐릭터 최대 0.45.
  * 처음 쓴 "참조 색에 가까운 칸 비율"은 haru 를 taeo 로 통과시켰다(피부·외곽선이 겹쳐 90%) — 버렸다.
  */
-export async function machineCheck(set: FrameSet, cuts: Buffer[], want: number, ref: Float64Array): Promise<{ machine: MotionCheck["machine"]; facts: string[]; score: number }> {
+export async function machineCheck(set: FrameSet, cuts: Buffer[], want: number, ref: Float64Array, useMean = false): Promise<{ machine: MotionCheck["machine"]; facts: string[]; score: number }> {
   const facts: string[] = [];
   if (set.frames.length !== want) return { machine: "fail", facts: [`프레임 ${set.frames.length}개(기대 ${want})`], score: 0 };
   const hs = cuts.map((c) => { let top = -1, bot = -1; for (let y = 0; y < set.cellH; y++) for (let x = 0; x < set.cellW; x++) if (c[(y * set.cellW + x) * 4 + 3]) { if (top < 0) top = y; bot = y; } return bot - top + 1; });
@@ -106,7 +106,8 @@ export async function machineCheck(set: FrameSet, cuts: Buffer[], want: number, 
   facts.push(`프레임 높이 ${hs.join("/")} (차 ${(spread * 100).toFixed(0)}%)`);
   if (spread > 0.15) return { machine: "fail", facts, score: 0 };
   const ov = cuts.map((c) => { const px: number[][] = []; for (let i = 0; i < c.length; i += 4) if (c[i + 3]) px.push([c[i], c[i + 1], c[i + 2]]); return overlap(ref, histOf(px)); });
-  const score = Math.min(...ov);
+  // 11-25: 4방향은 뒤 그림 색이 원래 다르다(고양이 요리사 뒤 0.45, 판단자는 같은 캐릭터 0.99) → 평균으로. 다른 동작은 최솟값 그대로
+  const score = useMean ? ov.reduce((a, b) => a + b, 0) / ov.length : Math.min(...ov);
   facts.push(`참조와 색 분포 겹침 ${ov.map((v) => v.toFixed(2)).join("/")}`);
   return { machine: score >= 0.7 ? "pass" : score < 0.5 ? "fail" : "unsure", facts, score };
 }
@@ -259,6 +260,8 @@ export async function makeMotion(ref: Buffer, motion: MotionKey, o: { colors?: n
     // 판단자가 자르는 자리에: A(자동·예측자 고침) vs B(같은 너비) 를 원본과 견줘 고른다
     const aSheet = set.frames.length === M.frames ? await sheetOf(cuts, set) : null, bSheet = candB ? await sheetOf(candB.cuts, candB.set) : null;
     const cj = await judgeCut(refPng, raw, aSheet, bSheet, motion);
+    // 자동 나누기가 프레임 수를 못 맞췄으면(악마 날개가 붙어 3개) 판단자 없이도 같은 너비 칸으로 — 판단자가 오류여도 손님은 결과를 받는다
+    if (!aSheet && candB && (!cj || cj.pick !== "B")) { rd = candB.rd; ({ set, cuts } = trimRows(candB.cuts, candB.set)); fixes.push(`자동 나누기 ${set.frames.length === M.frames ? "" : "프레임 수 어긋남 → "}같은 너비 칸으로`); }
     if (cj) {
       usd += cj.usd;
       if (cj.pick === "B" && candB) { rd = candB.rd; ({ set, cuts } = trimRows(candB.cuts, candB.set)); fixes.push("판단자: 같은 너비 칸이 더 잘 잘렸다"); }
@@ -266,7 +269,7 @@ export async function makeMotion(ref: Buffer, motion: MotionKey, o: { colors?: n
     }
     // 미끄러짐 잡기(돌기·동작 모두): 윗몸 가운데를 1번 프레임에 맞춘다
     { const st = stabilize(cuts, set); if (st.shifts.some((v) => v)) { cuts = st.cuts; set = st.set; fixes.push(`프레임 가로 맞춤 ${st.shifts.join("/")}칸`); } }
-    const mc = await machineCheck(set, cuts, M.frames, refH);
+    const mc = await machineCheck(set, cuts, M.frames, refH, motion === "turn");
     mc.facts.unshift(...fixes);
     let judge: MotionCheck["judge"];
     if (cj) judge = { same: cj.same, confidence: cj.confidence, why: cj.why };

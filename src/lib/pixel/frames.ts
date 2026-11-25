@@ -160,6 +160,30 @@ export function dropBgSpecks(out: Buffer, w: number, h: number, bg: [number, num
     }
     if (clear && comp.length <= 6) { for (const q of comp) out.fill(0, q * 4, q * 4 + 4); killed += comp.length; }
   }
+  // 11-25 실패율 자 2바퀴: 악마 걷기 테두리를 **띠처럼 두른** 번짐(183,208,233)×135 · (152,177,205)×15 — 이어져 있어 위 "작은 덩어리" 에 안 걸렸다.
+  // 번짐은 배경처럼 **파란 기운**이 강하다(파랑−빨강 ≈ 50). 기사 은갑옷(28)·마법사 흰 수염(18)과 갈린다 →
+  // 파란 기운 ≥ 38 · 배경과 거리 < 80 · 투명과 맞닿은 칸을 두 겹까지 벗긴다(외곽선 안쪽까지는 안 들어간다).
+  const halo = (q: number) => { const i = q * 4; if (!out[i + 3]) return false; const dr = out[i + 2] - out[i]; return dr >= 38 && Math.abs(out[i] - bg[0]) + Math.abs(out[i + 1] - bg[1]) + Math.abs(out[i + 2] - bg[2]) < 80; };
+  for (let pass = 0; pass < 2; pass++) {
+    const kill: number[] = [];
+    for (let q = 0; q < w * h; q++) {
+      if (!halo(q)) continue;
+      const x = q % w, y = (q - x) / w;
+      if ([[x - 1, y], [x + 1, y], [x, y - 1], [x, y + 1]].some(([nx, ny]) => nx < 0 || ny < 0 || nx >= w || ny >= h || !out[(ny * w + nx) * 4 + 3])) kill.push(q);
+    }
+    for (const q of kill) out.fill(0, q * 4, q * 4 + 4);
+    killed += kill.length;
+    if (!kill.length) break;
+  }
+  // 갇힌 배경 웅덩이: 팔과 몸 사이처럼 캐릭터에 둘러싸여 투명과 안 닿는 배경색 칸(악마 걷기 14칸). 파란 기운 ≥ 38 · 배경과 거리 < 48 · 40칸 이하 덩어리만
+  const pocket = (q: number) => { const i = q * 4; return !!out[i + 3] && out[i + 2] - out[i] >= 38 && Math.abs(out[i] - bg[0]) + Math.abs(out[i + 1] - bg[1]) + Math.abs(out[i + 2] - bg[2]) < 48; };
+  const seen2 = new Uint8Array(w * h);
+  for (let s0 = 0; s0 < w * h; s0++) {
+    if (seen2[s0] || !pocket(s0)) continue;
+    const comp: number[] = [], st = [s0]; seen2[s0] = 1;
+    while (st.length) { const q = st.pop()!; comp.push(q); const x = q % w, y = (q - x) / w; for (const [nx, ny] of [[x - 1, y], [x + 1, y], [x, y - 1], [x, y + 1]]) { if (nx < 0 || ny < 0 || nx >= w || ny >= h) continue; const k = ny * w + nx; if (!seen2[k] && pocket(k)) { seen2[k] = 1; st.push(k); } } }
+    if (comp.length <= 40) { for (const q of comp) out.fill(0, q * 4, q * 4 + 4); killed += comp.length; }
+  }
   return killed;
 }
 
@@ -174,7 +198,7 @@ export async function cutFrames(small: Buffer, set: FrameSet, opt: { lockBottom?
       const p = at(im, sx, sy); if (p[3] < 128 || (set.bg && near(p, set.bg))) continue;
       out[(y * set.cellW + x) * 4] = p[0]; out[(y * set.cellW + x) * 4 + 1] = p[1]; out[(y * set.cellW + x) * 4 + 2] = p[2]; out[(y * set.cellW + x) * 4 + 3] = 255;
     }
-    if (opt.dropEdgeBits) { if (!process.env.PIXEL_NO_SPECKS) dropBgSpecks(out, set.cellW, set.cellH, set.bg ?? PIXEL_BG); return dropEdgeBits(out, set.cellW, set.cellH); } // PIXEL_NO_SPECKS: 자의 심은 고장 전용
+    if (opt.dropEdgeBits) { if (!process.env.PIXEL_NO_SPECKS) { dropBgSpecks(out, set.cellW, set.cellH, PIXEL_BG); if (set.bg) dropBgSpecks(out, set.cellW, set.cellH, set.bg); } /* 11-25: 가장자리에서 읽은 bg 가 시킨 배경색과 다를 수 있다(악마 걷기 14칸) — 시킨 색으로 늘 한 번 */ return dropEdgeBits(out, set.cellW, set.cellH); } // PIXEL_NO_SPECKS: 자의 심은 고장 전용
     return out;
   }).map((out, f, all) => {
     const lock = Math.min(0.5, Math.max(0, opt.lockBottom ?? 0));
