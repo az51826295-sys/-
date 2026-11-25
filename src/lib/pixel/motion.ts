@@ -36,7 +36,7 @@ const BG = "#B0C4DE"; // 배경 한 색(자동 나누기가 배경으로 갈라 
 
 export type MotionCheck = { machine: "pass" | "fail" | "unsure"; facts: string[]; judge?: { same: boolean; confidence: number; why: string }; action: "accept" | "escalate" };
 export type MotionResult = { ok: true; set: FrameSet; cuts: Buffer[]; rd: RealDotResult; raw: Buffer; tries: number; usd: number; check: MotionCheck }
-  | { ok: false; reason: string; tries: number; usd: number; check?: MotionCheck };
+  | { ok: false; reason: string; tries: number; usd: number; check?: MotionCheck; raw?: Buffer }; // raw: 돈 내고 그렸는데 떨어진 그림(11-25 용 4방향 — 못 봐서 판정을 못 했다)
 
 /** 색 분포(채널당 5단계 → 125칸, 비율). */
 const L = 5;
@@ -131,11 +131,11 @@ export async function makeMotion(ref: Buffer, motion: MotionKey, o: { colors?: n
     `Flat solid background color ${BG} everywhere — no gradient, no shadow, no ground, no text, no numbers, no borders or boxes.`,
     "Chunky crisp pixel art with a limited palette.",
   ].join(" ");
-  let usd = 0, last: MotionCheck | undefined, reason = "";
+  let usd = 0, last: MotionCheck | undefined, reason = "", lastRaw: Buffer | undefined;
   const tries = Math.max(1, Math.min(2, o.maxTries ?? 2));
   for (let t = 1; t <= tries; t++) {
     let raw: Buffer;
-    try { const d = await draw(refUrl, prompt); raw = d.png; usd += d.usd; }
+    try { const d = await draw(refUrl, prompt); raw = d.png; lastRaw = raw; usd += d.usd; }
     catch (e) { reason = `그림 AI 가 거절했어요 (${(e as Error).message.slice(0, 80)})`; break; } // 돈·열쇠 문제는 다시 해도 같다
     let rd: RealDotResult, set: FrameSet, cuts: Buffer[];
     try {
@@ -155,7 +155,7 @@ export async function makeMotion(ref: Buffer, motion: MotionKey, o: { colors?: n
     if (g.action === "accept") return { ok: true, set, cuts, rd, raw, tries: t, usd, check: last };
     reason = mc.facts.join(" · ");
   }
-  return { ok: false, reason: reason || "같은 캐릭터로 못 그렸어요.", tries, usd, check: last };
+  return { ok: false, reason: reason || "같은 캐릭터로 못 그렸어요.", tries, usd, check: last, raw: lastRaw };
 }
 
 export { gifOf, sheetOf, histOf };
