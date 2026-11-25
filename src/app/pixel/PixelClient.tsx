@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FROM_COOKIE, cleanFrom } from "@/lib/dot/from";
 import GoogleGo from "@/app/dot/login/GoogleGo";
+import { PIXEL_COST, PIXEL_PACK } from "@/lib/pixel/credits";
 
 /**
  * 도트 작업실 화면(11-25 사장님: "픽셀랩 따라서 UI 구성해 줘").
@@ -198,16 +199,17 @@ export default function PixelClient({ en, paid }: { en: boolean; paid: string | 
     { k: "split", ko: "시트 자르기", en: "Split sheet", sub: "시트 → 움직임", subEn: "sheet → animation", ai: false },
   ];
   const needRef = tool !== "create" && tool !== "game";
-  const has = shots !== null && shots > 0;
+  const has = shots !== null && shots > 0; // 11-25 토큰: 버튼마다 값이 달라 "모자람" 은 can(값) 으로 본다
+  const can = (n: number) => shots !== null && shots >= n;
   // 11-25 사장님 "계정 연동해야지 · 도트 그림 만들기는 선결제로": 손님은 결제·AI 그림 대신 구글 연결 단추를 본다(무료 장수 없음)
   const connect = (
     <div className="connect">
-      <p>{t("구글 계정을 연결하면 장수를 사서 쓸 수 있어요. 산 장수는 계정에 남아요.", "Connect a Google account to buy and use credits. Credits stay with your account.")}</p>
+      <p>{t("구글 계정을 연결하면 토큰을 사서 쓸 수 있어요. 산 토큰은 계정에 남아요.", "Connect a Google account to buy and use tokens. Tokens stay with your account.")}</p>
       <GoogleGo already={false} en={en} next="/pixel" />
     </div>
   );
-  const buyBtn = !linked ? connect : <button type="button" className="go" disabled={!!busy || !payOpen} onClick={buy}>{payOpen ? t("10장 4,900원", "10 for ₩4,900") : t("결제 준비 중", "Payments opening soon")}</button>;
-  const paidMsg = paid === "10" ? t("10장이 들어왔어요. 고마워요!", "10 credits added. Thank you!")
+  const buyBtn = !linked ? connect : <button type="button" className="go" disabled={!!busy || !payOpen} onClick={buy}>{payOpen ? t(`${PIXEL_PACK.shots}토큰 4,900원`, `${PIXEL_PACK.shots} tokens for ₩4,900`) : t("결제 준비 중", "Payments opening soon")}</button>;
+  const paidMsg = (paid === "100" || paid === "10") ? t(`${PIXEL_PACK.shots}토큰이 들어왔어요. 고마워요!`, `${PIXEL_PACK.shots} tokens added. Thank you!`)
     : paid === "wait" ? t("결제 확인 중이에요. 잠시 뒤 새로고침해 주세요.", "Payment is still processing. Refresh in a moment.")
     : paid === "fail" ? t("결제를 확인하지 못했어요. 돈이 나갔다면 이 화면을 다시 열어 주세요 — 한 번 더 확인해요.", "Couldn't confirm the payment. If you were charged, reopen this page and we'll check again.") : null;
 
@@ -223,7 +225,7 @@ export default function PixelClient({ en, paid }: { en: boolean; paid: string | 
       <header className="px-top">
         <b>{t("도트 작업실", "Pixel Studio")}</b>
         <span className="sp" />
-        <span className="bal">{shots === null ? "…" : t(`남은 ${shots}장`, `${shots} credits`)}</span>
+        <span className="bal">{shots === null ? "…" : t(`남은 ${shots}토큰`, `${shots} tokens`)}</span>
         {!has && linked && buyBtn}
       </header>
       {paidMsg && <div className="px-note">{paidMsg}</div>}
@@ -316,14 +318,14 @@ export default function PixelClient({ en, paid }: { en: boolean; paid: string | 
               <div className="lab">{t("캔버스 (px)", "Canvas (px)")}</div>
               <div className="seg">{([32, 48, 64, 96] as const).map((z) => <button key={z} type="button" className={cSize === z ? "on" : ""} onClick={() => setCSize(z)}>{z}</button>)}</div>
             </>)}
-            <p className="hint">{t("배경 투명 PNG로 받아요. 만든 캐릭터는 바로 참조가 돼서 4방향·동작으로 이어져요. 실패하면 장수를 돌려드려요.", "Transparent PNG. The result becomes your reference for Rotate and Animate. Refunded if it fails.")}</p>
-            {has ? <button type="button" className="go" disabled={!!busy || cDesc.trim().length < 2} onClick={create}>{busy === "create" ? t("그리는 중… (20초쯤)", "Drawing… (~20s)") : t("만들기 · 1장", "Create · 1 credit")}</button> : buyBtn}
+            <p className="hint">{t("배경 투명 PNG로 받아요. 만든 캐릭터는 바로 참조가 돼서 4방향·동작으로 이어져요. 실패하면 토큰을 돌려드려요.", "Transparent PNG. The result becomes your reference for Rotate and Animate. Refunded if it fails.")}</p>
+            {can(PIXEL_COST.create) ? <button type="button" className="go" disabled={!!busy || cDesc.trim().length < 2} onClick={create}>{busy === "create" ? t("그리는 중… (20초쯤)", "Drawing… (~20s)") : t(`만들기 · ${PIXEL_COST.create}토큰`, `Create · ${PIXEL_COST.create} tokens`)}</button> : buyBtn}
           </>)}
 
           {tool === "rotate" && (<>
             <h2>{t("4방향 만들기", "Rotate (4 directions)")}</h2>
-            <p className="hint">{t("참조 캐릭터를 앞 → 오른쪽 → 뒤 → 왼쪽으로 그려요. 게임 캐릭터 기본 세트예요. 같은 캐릭터가 아니게 나오면 한 번 더 그리고, 그래도 안 되면 장수를 돌려드려요.", "Draws the reference facing front → right → back → left. Retries once if it drifts, then refunds.")}</p>
-            {has ? <button type="button" className="go" disabled={!!busy || !ref} onClick={() => void motion("turn")}>{busy === "rotate" ? t("그리는 중… (30초쯤)", "Drawing… (~30s)") : t("4방향 · 1장", "Rotate · 1 credit")}</button> : buyBtn}
+            <p className="hint">{t("참조 캐릭터를 앞 → 오른쪽 → 뒤 → 왼쪽으로 그려요. 게임 캐릭터 기본 세트예요. 같은 캐릭터가 아니게 나오면 한 번 더 그리고, 그래도 안 되면 토큰을 돌려드려요.", "Draws the reference facing front → right → back → left. Retries once if it drifts, then refunds.")}</p>
+            {can(PIXEL_COST.turn) ? <button type="button" className="go" disabled={!!busy || !ref} onClick={() => void motion("turn")}>{busy === "rotate" ? t("그리는 중… (30초쯤)", "Drawing… (~30s)") : t(`4방향 · ${PIXEL_COST.turn}토큰`, `Rotate · ${PIXEL_COST.turn} tokens`)}</button> : buyBtn}
           </>)}
 
           {tool === "animate" && (<>
@@ -339,7 +341,7 @@ export default function PixelClient({ en, paid }: { en: boolean; paid: string | 
             <div className="lab">{t("속도", "Speed")} <b>{ms}ms</b></div>
             <input type="range" min={80} max={800} step={10} value={ms} onChange={(e) => setMs(Number(e.target.value))} />
             <p className="hint">{t("4프레임을 그려 진짜 도트로 맞춰 잘라요. 게임용 1배 시트와 GIF를 줘요.", "Draws 4 frames, snaps to true pixels, gives a 1× sheet and a GIF.")}</p>
-            {has ? <button type="button" className="go" disabled={!!busy || !ref || (aMotion === "custom" && aAction.trim().length < 2)} onClick={() => void motion(aMotion)}>{busy === "animate" ? t("그리는 중… (30초쯤)", "Drawing… (~30s)") : t("동작 · 1장", "Animate · 1 credit")}</button> : buyBtn}
+            {can(PIXEL_COST.motion) ? <button type="button" className="go" disabled={!!busy || !ref || (aMotion === "custom" && aAction.trim().length < 2)} onClick={() => void motion(aMotion)}>{busy === "animate" ? t("그리는 중… (30초쯤)", "Drawing… (~30s)") : t(`동작 · ${PIXEL_COST.motion}토큰`, `Animate · ${PIXEL_COST.motion} tokens`)}</button> : buyBtn}
           </>)}
 
           {tool === "convert" && (<>
@@ -352,7 +354,7 @@ export default function PixelClient({ en, paid }: { en: boolean; paid: string | 
               <div className="lab">{t("색 수", "Colors")} <b>{colors}</b></div>
               <input type="range" min={4} max={64} step={1} value={colors} onChange={(e) => { const v = Number(e.target.value); setColors(v); later(period, v); }} />
             </>)}
-            {has ? <button type="button" className="go" disabled={!!busy || !pv} onClick={convDownload}>{t("PNG 받기 · 1장", "Download · 1 credit")}</button> : buyBtn}
+            {can(PIXEL_COST.convert) ? <button type="button" className="go" disabled={!!busy || !pv} onClick={convDownload}>{t(`PNG 받기 · ${PIXEL_COST.convert}토큰`, `Download · ${PIXEL_COST.convert} tokens`)}</button> : buyBtn}
           </>)}
 
           {tool === "split" && (<>
@@ -364,7 +366,7 @@ export default function PixelClient({ en, paid }: { en: boolean; paid: string | 
             <div className="lab">{t("속도", "Speed")} <b>{ms}ms</b></div>
             <input type="range" min={80} max={800} step={10} value={ms} onChange={(e) => setMs(Number(e.target.value))} />
             <button type="button" disabled={!!busy || !ref} onClick={splitPreview}>{t("미리보기 (무료)", "Preview (free)")}</button>
-            {has ? <button type="button" className="go" disabled={!!busy || !splitPv} onClick={splitDownload}>{t("받기 · 1장", "Download · 1 credit")}</button> : buyBtn}
+            {can(PIXEL_COST.split) ? <button type="button" className="go" disabled={!!busy || !splitPv} onClick={splitDownload}>{t(`받기 · ${PIXEL_COST.split}토큰`, `Download · ${PIXEL_COST.split} tokens`)}</button> : buyBtn}
           </>)}
 
           {err && <p className="err" role="alert">{err}</p>}

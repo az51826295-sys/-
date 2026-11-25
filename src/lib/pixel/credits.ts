@@ -8,7 +8,15 @@ import type { SupabaseClient } from "@supabase/supabase-js";
  *   쓴 것  sku `pixel_use` credits −1   source `pixel`  ref = 받은 시각·크기
  * 남은 장수 = 두 sku 의 credits 합. **하트 지갑(`dot_wallet`)은 건드리지 않는다** — 하트와 장수는 다른 돈이다.
  */
-export const PIXEL_PACK = { key: "pixel_10", shots: 10, krw: 4900 } as const;
+/**
+ * 11-25 사장님 "토큰으로 가자 · 실패는 고치고 비싸게 받자": 4,900원 = 100토큰, 기능마다 값이 다르다.
+ * 원가(11-25 실측): 변환·자르기 0원(서버 계산만) · 만들기 약 9원 · 4방향·동작 약 15원(실패해도 나간다).
+ * 키 이름 `pixel_10` 은 Polar 상품표(POLAR_DOT_PRODUCTS)와 묶여 있어 그대로 둔다 — 산 줄에 적히는 숫자만 100.
+ * 바꾸기 전 장부에 pixel 줄은 0개였다(산 사람 0명) — 옮길 것이 없었다.
+ */
+export const PIXEL_PACK = { key: "pixel_10", shots: 100, krw: 4900 } as const;
+/** 기능별 토큰 값 — 값은 사장님이 정한다. 바꾸려면 여기 한 곳. */
+export const PIXEL_COST = { convert: 2, split: 2, create: 10, turn: 15, motion: 15 } as const;
 
 export async function pixelBalance(db: SupabaseClient, userId: string): Promise<number> {
   const { data, error } = await db
@@ -17,12 +25,12 @@ export async function pixelBalance(db: SupabaseClient, userId: string): Promise<
   return (data ?? []).reduce((s, r) => s + Number(r.credits ?? 0), 0);
 }
 
-/** 한 장 쓴다. 쓴 줄의 id(참)를 돌려준다 — 남은 게 없으면 false. 동시에 두 번 눌러 음수가 되면 내 줄을 지우고 false. */
-export async function spendPixelShot(db: SupabaseClient, userId: string, note: string): Promise<number | false> {
-  if ((await pixelBalance(db, userId)) < 1) return false;
+/** 토큰 n 개를 쓴다. 쓴 줄의 id(참)를 돌려준다 — 모자라면 false. 동시에 두 번 눌러 음수가 되면 내 줄을 지우고 false. */
+export async function spendPixelShot(db: SupabaseClient, userId: string, note: string, n = 1): Promise<number | false> {
+  if ((await pixelBalance(db, userId)) < n) return false;
   const { data, error } = await db
     .from("dot_purchases")
-    .insert({ user_id: userId, sku: "pixel_use", credits: -1, menhera_days: 0, source: "pixel", ref: note.slice(0, 120) })
+    .insert({ user_id: userId, sku: "pixel_use", credits: -n, menhera_days: 0, source: "pixel", ref: note.slice(0, 120) })
     .select("id").single();
   if (error) throw new Error(error.message);
   if ((await pixelBalance(db, userId)) < 0) {

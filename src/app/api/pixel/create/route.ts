@@ -1,6 +1,6 @@
 import { linkedUserFrom } from "@/lib/dot/auth";
 import { createServiceClient } from "@/lib/supabase/service";
-import { pixelBalance, refundPixelShot, spendPixelShot } from "@/lib/pixel/credits";
+import { PIXEL_COST, pixelBalance, refundPixelShot, spendPixelShot } from "@/lib/pixel/credits";
 import { dataUrl } from "@/lib/pixel/serve";
 import { SIZES, cleanDesc, makeCharacter, type CanvasSize } from "@/lib/pixel/create";
 import { gameImages } from "@/lib/pixel/serve";
@@ -29,15 +29,15 @@ export async function POST(request: Request) {
   const snap = form?.get("snap") === "1";
 
   const db = createServiceClient();
-  if ((await pixelBalance(db, userId)) < 1) return Response.json({ error: "남은 장수가 없어요.", need: true }, { status: 402 });
-  const spent = await spendPixelShot(db, userId, `create ${size}${game.bufs.length ? " game" + game.bufs.length : ""} (그리는 중) ${new Date().toISOString()}`);
-  if (!spent) return Response.json({ error: "남은 장수가 없어요.", need: true }, { status: 402 });
+  if ((await pixelBalance(db, userId)) < PIXEL_COST.create) return Response.json({ error: "토큰이 모자라요.", need: true }, { status: 402 });
+  const spent = await spendPixelShot(db, userId, `create ${size}${game.bufs.length ? " game" + game.bufs.length : ""} (그리는 중) ${new Date().toISOString()}`, PIXEL_COST.create);
+  if (!spent) return Response.json({ error: "토큰이 모자라요.", need: true }, { status: 402 });
 
   const r = await makeCharacter(desc, size, { colors, game: game.bufs, snap });
   console.log(`[pixel/create] ${userId.slice(0, 8)} ${size} ok=${r.ok} usd=${r.usd.toFixed(4)} ${r.facts.join(" · ")}${r.ok ? "" : " · " + r.reason}`);
   if (!r.ok) {
     await refundPixelShot(db, userId, spent);
-    return Response.json({ error: `캐릭터를 못 만들었어요 — 장수는 돌려드렸어요. (${r.reason.slice(0, 120)})`, refunded: true }, { status: 422 });
+    return Response.json({ error: `캐릭터를 못 만들었어요 — 토큰은 돌려드렸어요. (${r.reason.slice(0, 120)})`, refunded: true }, { status: 422 });
   }
   await db.from("dot_purchases").update({ ref: `create ${size} $${r.usd.toFixed(4)} ${new Date().toISOString()}`.slice(0, 120) }).eq("id", spent);
   return Response.json({ ok: true, size, drawn: r.drawn, facts: r.facts, png: dataUrl(r.png), big: dataUrl(r.big), raw: dataUrl(r.raw), left: await pixelBalance(db, userId) });

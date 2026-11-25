@@ -1,6 +1,6 @@
 import { userIdFrom } from "@/lib/dot/auth";
 import { createServiceClient } from "@/lib/supabase/service";
-import { pixelBalance, spendPixelShot } from "@/lib/pixel/credits";
+import { PIXEL_COST, pixelBalance, spendPixelShot } from "@/lib/pixel/credits";
 import { convert, dataUrl, readUpload } from "@/lib/pixel/serve";
 import { cutFrames, findFrames, gifOf, sheetOf } from "@/lib/pixel/frames";
 
@@ -11,7 +11,7 @@ export async function POST(request: Request) {
   const userId = await userIdFrom(request);
   if (!userId) return Response.json({ error: "새로고침 후 다시 눌러 주세요." }, { status: 401 });
   const db = createServiceClient();
-  if ((await pixelBalance(db, userId)) < 1) return Response.json({ error: "남은 장수가 없어요.", need: true }, { status: 402 });
+  if ((await pixelBalance(db, userId)) < PIXEL_COST.split) return Response.json({ error: "토큰이 모자라요.", need: true }, { status: 402 });
   const u = await readUpload(request);
   if ("error" in u) return Response.json({ error: u.error }, { status: u.status });
   let out;
@@ -25,7 +25,7 @@ export async function POST(request: Request) {
   } catch (e) {
     return Response.json({ error: (e as Error).message }, { status: 422 });
   }
-  const ok = await spendPixelShot(db, userId, `frames ${out.count}x ${out.cell.join("x")} ${new Date().toISOString()}`);
-  if (!ok) return Response.json({ error: "남은 장수가 없어요.", need: true }, { status: 402 });
+  const ok = await spendPixelShot(db, userId, `frames ${out.count}x ${out.cell.join("x")} ${new Date().toISOString()}`, PIXEL_COST.split);
+  if (!ok) return Response.json({ error: "토큰이 모자라요.", need: true }, { status: 402 });
   return Response.json({ ok: true, count: out.count, cell: out.cell, sheet: dataUrl(out.sheet), gif: "data:image/gif;base64," + out.gif.toString("base64"), left: await pixelBalance(db, userId) });
 }

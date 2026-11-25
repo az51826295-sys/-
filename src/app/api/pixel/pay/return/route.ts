@@ -12,7 +12,7 @@ export async function GET(request: Request) {
   const id = new URL(request.url).searchParams.get("checkout_id") ?? "";
   const r = await claimPixelCheckout(createServiceClient(), userId, id);
   if (r.ok) {
-    const res = go("paid=10");
+    const res = go("paid=100");
     res.cookies.delete("pixel_polar_co");
     return res;
   }
