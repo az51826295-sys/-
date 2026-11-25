@@ -84,7 +84,8 @@ async function openaiDrawer(): Promise<Drawer> {
   const { costOf } = await import("@/lib/costs/pricing");
   const p = createImageProvider("gpt-image-2.5-flare");
   return async (ref, prompt) => {
-    const r = await p.edit(ref, prompt, "1536x1024", "low");
+    // 11-25 "실패는 고치고 비싸게 받자": low 는 선이 흐려 1배로 옮길 때 몸에 검은 점이 박혔다(용 4방향) → medium(값은 재서 적는다)
+    const r = await p.edit(ref, prompt, "1536x1024", (process.env.PIXEL_MOTION_QUALITY as "low" | "medium" | "high" | undefined) ?? "medium");
     return { png: Buffer.from(r.dataUrl.split(",")[1], "base64"), usd: costOf({ backend: r.model, inputTokens: r.inputTokens, outputTokens: r.outputTokens }) };
   };
 }
@@ -124,12 +125,16 @@ export async function makeMotion(ref: Buffer, motion: MotionKey, o: { colors?: n
     : await sharp(ref).png().toBuffer();
   const refUrl = "data:image/png;base64," + refPng.toString("base64");
   const refH = await refHistOf(refPng);
+  // 11-25: 1배 참조(글로 만든 캐릭터)의 키(칸) — 4방향이 63칸 용을 41칸으로 줄여 그렸다 → 같은 칸 크기로 그리라고 숫자로 준다
+  let refCells = 0;
+  if (long && long < 256) { const t = await sharp(ref).trim().metadata().catch(() => null); refCells = t?.height ?? 0; }
   const prompt = [
     "Use the reference image as the character. Keep EXACTLY the same character: same face, hair, outfit, colors and proportions.",
     `Draw a pixel-art sprite sheet: ONE horizontal row of ${M.frames} frames, ${how}.`,
     "All frames the same scale, same baseline, evenly spaced with a clear empty gap between frames, full body inside each frame.",
     `Flat solid background color ${BG} everywhere — no gradient, no shadow, no ground, no text, no numbers, no borders or boxes.`,
     "Chunky crisp pixel art with a limited palette.",
+    ...(refCells ? [`Keep EXACTLY the same pixel size as the reference: the character is ${refCells} pixels tall in every frame (one reference pixel = one pixel in the sheet). Do not draw it smaller.`] : []),
   ].join(" ");
   let usd = 0, last: MotionCheck | undefined, reason = "", lastRaw: Buffer | undefined;
   const tries = Math.max(1, Math.min(2, o.maxTries ?? 2));
