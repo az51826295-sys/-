@@ -8,21 +8,22 @@ import PixelClient from "./PixelClient";
  * `/dot` 밖에 둔다 — 그 아래는 출석 판이 뜨는 앱 화면이다.
  */
 export const metadata: Metadata = {
-  title: "진짜 도트 변환 · Real Pixel",
-  description: "AI가 뽑은 '도트 같은 그림'을 한 칸 = 한 색인 진짜 도트로. 미리보기 무료.",
+  title: "도트 작업실 — 글 한 줄로 게임 도트 캐릭터",
+  description: "글 한 줄이면 게임용 도트 캐릭터. 앞·옆·뒤 4방향과 움직임까지, 내 게임 그림체에 맞춰서.",
+  // 11-25 홍보: 만드는 방식은 쓰지 않는다(사장님) — 무엇을 해 주는지만.
   // 11-24: 링크 카드가 사이트 기본("Dot — Chat with pixel characters")으로 떠서 스레드 글에 엉뚱한 카드가 붙었다 → 이 페이지 것으로 덮는다.
   openGraph: {
     type: "website",
     siteName: "두근도트",
-    title: "진짜 도트 변환",
-    description: "AI가 뽑은 도트 그림을 한 칸 = 한 색인 진짜 도트로. 미리보기 무료.",
+    title: "도트 작업실",
+    description: "글 한 줄이면 게임용 도트 캐릭터. 앞·옆·뒤 4방향과 움직임까지.",
     url: "/pixel",
-    images: [{ url: "/pixel-og.png", width: 1200, height: 630, alt: "AI 원본과 진짜 도트를 확대해 나란히 비교" }],
+    images: [{ url: "/pixel-og.png", width: 1200, height: 630, alt: "도트 작업실에서 만든 용 4방향과 기사·고양이·슬라임·마법사" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "진짜 도트 변환",
-    description: "AI가 뽑은 도트 그림을 한 칸 = 한 색인 진짜 도트로. 미리보기 무료.",
+    title: "도트 작업실",
+    description: "글 한 줄이면 게임용 도트 캐릭터. 앞·옆·뒤 4방향과 움직임까지.",
     images: ["/pixel-og.png"],
   },
 };
