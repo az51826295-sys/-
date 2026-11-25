@@ -107,14 +107,17 @@ export async function findFrames(small: Buffer, opt: { cols?: number; rows?: num
   const px = (x: number, y: number) => (x < 0 || y < 0 || x >= im.w || y >= im.h ? null : isFg(x, y) ? at(im, x, y) : null);
   const frames: Frame[] = base.map((b, f) => {
     if (opt.valleys && opt.rows === 1) return { ...b, dx: 0, dy: 0, clip: [boxes[f].x, boxes[f].x + boxes[f].w] };
-    if (f === 0 || how === "grid") return { ...b, dx: 0, dy: 0 };
+    // 11-25 사장님 "팔이 떼지잖아": 자동 나누기도 칸마다 **제 덩어리의 가로 범위만** 담는다(이웃 날개·팔이 안 들어온다).
+    // 전에는 들어온 조각을 "가장자리에 닿은 작은 덩어리" 로 지웠는데, 그 규칙은 몸에서 1칸 떨어진 진짜 팔·무기 끝도 지울 수 있었다.
+    const own: [number, number] | undefined = how === "auto" ? [boxes[f].x - 1, boxes[f].x + boxes[f].w + 1] : undefined;
+    if (f === 0 || how === "grid") return { ...b, dx: 0, dy: 0, clip: own };
     let best = { s: -1, dx: 0, dy: 0 };
     for (let dy = -3; dy <= 3; dy++) for (let dx = -3; dx <= 3; dx++) {
       let s = 0;
       for (let y = 0; y < cellH; y++) for (let x = 0; x < cellW; x++) { const p = px(base[0].x + x, base[0].y + y), q = px(b.x + x + dx, b.y + y + dy); if (p && q && p[0] === q[0] && p[1] === q[1] && p[2] === q[2]) s++; }
       if (s > best.s || (s === best.s && Math.abs(dx) + Math.abs(dy) < Math.abs(best.dx) + Math.abs(best.dy))) best = { s, dx, dy };
     }
-    return { ...b, dx: best.dx, dy: best.dy };
+    return { ...b, dx: best.dx, dy: best.dy, clip: own };
   });
   return { frames, cellW, cellH, bg, how };
 }
@@ -124,32 +127,6 @@ export async function findFrames(small: Buffer, opt: { cols?: number; rows?: num
  * lockBottom(0~0.5): **몸통 고정** — 아래쪽 이 비율의 줄을 첫 프레임 것으로 모든 프레임에 쓴다. AI 는 표정마다 몸통을 조금씩 다르게
  * 그려서(11-24 시험: 같게 그린 칸 76%) 그대로 움직이면 몸이 떨린다. 표정 시트는 켜는 게 맞고, 동작 시트(걷기 등)는 끄는 게 맞다.
  */
-/**
- * 11-25: 옆 프레임의 날개 끝처럼 **칸 옆 가장자리에 붙은 작은 조각**을 지운다(용 4방향 1번 칸에 2번 날개 조각이 들어왔다).
- * 본체(가장 큰 덩어리)의 10% 미만이고 왼쪽·오른쪽 가장자리에 닿은 덩어리만 — 떠 있는 작은 장식(가장자리에 안 닿음)은 남긴다.
- */
-function dropEdgeBits(out: Buffer, w: number, h: number): Buffer {
-  const lab = new Int32Array(w * h).fill(-1), sizes: number[] = [], edge: boolean[] = [];
-  for (let i = 0; i < w * h; i++) {
-    if (!out[i * 4 + 3] || lab[i] >= 0) continue;
-    const id = sizes.length; sizes.push(0); edge.push(false);
-    const st = [i]; lab[i] = id;
-    while (st.length) {
-      const q = st.pop()!; sizes[id]++;
-      const x = q % w, y = (q - x) / w;
-      if (x === 0 || x === w - 1) edge[id] = true;
-      for (const [nx, ny] of [[x - 1, y], [x + 1, y], [x, y - 1], [x, y + 1]]) {
-        if (nx < 0 || ny < 0 || nx >= w || ny >= h) continue;
-        const k = ny * w + nx; if (lab[k] >= 0 || !out[k * 4 + 3]) continue;
-        lab[k] = id; st.push(k);
-      }
-    }
-  }
-  if (sizes.length < 2) return out;
-  const big = Math.max(...sizes);
-  for (let i = 0; i < w * h; i++) { const id = lab[i]; if (id >= 0 && edge[id] && sizes[id] < big * 0.1) out.fill(0, i * 4, i * 4 + 4); }
-  return out;
-}
 
 /**
  * 11-25 사장님 "왜 안 지워진 거야?": 군인 4방향 테두리에 하늘색 점 11개가 남았다. 그림 AI 가 배경(#B0C4DE)과 캐릭터 사이에
@@ -217,7 +194,7 @@ export async function cutFrames(small: Buffer, set: FrameSet, opt: { lockBottom?
       const p = at(im, sx, sy); if (p[3] < 128 || (set.bg && near(p, set.bg))) continue;
       out[(y * set.cellW + x) * 4] = p[0]; out[(y * set.cellW + x) * 4 + 1] = p[1]; out[(y * set.cellW + x) * 4 + 2] = p[2]; out[(y * set.cellW + x) * 4 + 3] = 255;
     }
-    if (opt.dropEdgeBits) { if (!process.env.PIXEL_NO_SPECKS) { dropBgSpecks(out, set.cellW, set.cellH, PIXEL_BG); if (set.bg) dropBgSpecks(out, set.cellW, set.cellH, set.bg); } /* 11-25: 가장자리에서 읽은 bg 가 시킨 배경색과 다를 수 있다(악마 걷기 14칸) — 시킨 색으로 늘 한 번 */ return dropEdgeBits(out, set.cellW, set.cellH); } // PIXEL_NO_SPECKS: 자의 심은 고장 전용
+    if (opt.dropEdgeBits) { if (!process.env.PIXEL_NO_SPECKS) { dropBgSpecks(out, set.cellW, set.cellH, PIXEL_BG); if (set.bg) dropBgSpecks(out, set.cellW, set.cellH, set.bg); } /* 11-25: 가장자리에서 읽은 bg 가 시킨 배경색과 다를 수 있다(악마 걷기 14칸) — 시킨 색으로 늘 한 번 */ return out; } // PIXEL_NO_SPECKS: 자의 심은 고장 전용
     return out;
   }).map((out, f, all) => {
     const lock = Math.min(0.5, Math.max(0, opt.lockBottom ?? 0));

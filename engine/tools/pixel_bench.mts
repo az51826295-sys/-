@@ -26,7 +26,7 @@ const SET: [string, string, 32 | 48 | 64 | 96][] = [
   ["demon", "a giant red demon with horns and bat wings", 96],
 ];
 const { makeCharacter } = await import("../../src/lib/pixel/create");
-const { makeMotion, sheetOf } = await import("../../src/lib/pixel/motion");
+const { makeMotion, sheetOf, headFlicker } = await import("../../src/lib/pixel/motion");
 const { PIXEL_BG } = await import("../../src/lib/pixel/frames");
 async function specks(png: Buffer) {
   const { data, info } = await sharp(png).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
@@ -59,7 +59,7 @@ for (const [name, desc, size] of SET) {
     usd += m.usd;
     row[mv] = m.ok; row[`${mv}Tries`] = m.tries; row[`${mv}Usd`] = +m.usd.toFixed(4); row[`${mv}Facts`] = m.check?.facts; row[`${mv}Judge`] = m.check?.judge?.why;
     if ("raw" in m && m.raw) writeFileSync(`${OUT}/${name}-${mv}-raw.png`, m.raw);
-    if (m.ok) { const s = await sheetOf(m.cuts, m.set); writeFileSync(`${OUT}/${name}-${mv}-1x.png`, s); row[`${mv}Specks`] = await specks(s); row[`${mv}Cell`] = [m.set.cellW, m.set.cellH]; row[`${mv}Drift`] = await drift(s); }
+    if (m.ok) { const s = await sheetOf(m.cuts, m.set); writeFileSync(`${OUT}/${name}-${mv}-1x.png`, s); row[`${mv}Specks`] = await specks(s); row[`${mv}Cell`] = [m.set.cellW, m.set.cellH]; row[`${mv}Drift`] = await drift(s); if (mv === "walk") row.walkHead = +(headFlicker(m.cuts, m.set) * 100).toFixed(0); }
     else row[`${mv}Why`] = m.reason;
   }
   row.sec = ((Date.now() - t0) / 1000).toFixed(0);
@@ -68,9 +68,10 @@ for (const [name, desc, size] of SET) {
 }
 const fail = rows.filter((r) => !r.create || !r.turn || !r.walk).length;
 const slid = rows.filter((r) => Number(r.walkDrift ?? 0) > 1.5).map((r) => r.name);
+const flick = rows.filter((r) => Number(r.walkHead ?? 0) > 25).map((r) => `${r.name}(${r.walkHead}%)`);
 const shrunk = rows.filter((r) => ((r.createFacts as string[]) ?? []).some((f) => f.includes("줄임"))).map((r) => r.name);
 const spk = rows.reduce((s, r) => s + Number(r.createSpecks ?? 0) + Number(r.turnSpecks ?? 0) + Number(r.walkSpecks ?? 0), 0);
-console.log(`\n기계 실패(결과 없음) 캐릭터 ${fail}/${rows.length} · 하늘색 점 합 ${spk} · 걷기 미끄러짐(>1.5칸) ${slid.length ? slid.join(",") : "없음"} · 캔버스에 억지로 줄임 ${shrunk.length ? shrunk.join(",") : "없음"} · 합계 $${usd.toFixed(4)}`);
+console.log(`\n기계 실패(결과 없음) 캐릭터 ${fail}/${rows.length} · 하늘색 점 합 ${spk} · 걷기 미끄러짐(>1.5칸) ${slid.length ? slid.join(",") : "없음"} · 캔버스에 억지로 줄임 ${shrunk.length ? shrunk.join(",") : "없음"} · 걷기 머리 깜빡임(>25%) ${flick.length ? flick.join(",") : "없음"} · 합계 $${usd.toFixed(4)}`);
 // 사람 눈 확인용 한 장: 줄마다 [만들기 | 4방향 | 걷기]
 const S = 2, comp: sharp.OverlayOptions[] = []; let y = 0, W = 0;
 for (const r of rows) {

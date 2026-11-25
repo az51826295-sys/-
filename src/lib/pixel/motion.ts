@@ -63,6 +63,75 @@ export function stabilize(cuts: Buffer[], set: FrameSet): { cuts: Buffer[]; set:
   return { cuts: out, set: { ...set, cellW: NW }, shifts };
 }
 
+/**
+ * 11-25 사장님 "동작일 때 어색함이 없어야 돼": 그림 AI 는 프레임마다 캐릭터를 **새로 그린다** → 드워프 걷기에서 수염 결·투구 장식·도끼날이
+ * 프레임마다 달라 재생하면 머리가 번쩍였다(어색함 자: 머리 깜빡임 72%). 움직임(다리·팔·무기의 이동)은 덩어리째 옮겨 가고,
+ * 다시 그리며 생긴 잡음은 제자리에서 칸 몇 개만 바뀐다 → **둘레 5×5 가 1번 프레임과 거의 같은데 혼자 다른 칸**만 1번 것으로 맞춘다.
+ * 위아래 1칸 흔들림(걸음의 출렁임)은 먼저 맞춰 비교한다. 1번 프레임은 건드리지 않는다.
+ */
+export function calmFrames(cuts: Buffer[], set: FrameSet): { cuts: Buffer[]; changed: number[] } {
+  const W = set.cellW, H = set.cellH, base = cuts[0];
+  const same = (a: Buffer, i: number, b: Buffer, j: number) => (a[i + 3] > 0) === (b[j + 3] > 0) && (a[i + 3] === 0 || Math.abs(a[i] - b[j]) + Math.abs(a[i + 1] - b[j + 1]) + Math.abs(a[i + 2] - b[j + 2]) <= 60);
+  const changed: number[] = [0];
+  const out = [base, ...cuts.slice(1).map((c) => {
+    // 걸음 출렁임: 위 절반이 가장 잘 맞는 dy(−1·0·+1)
+    let dy = 0, bestS = -1;
+    for (const t of [-1, 0, 1]) { let sc = 0; for (let y = 0; y < H / 2; y++) { const yb = y + t; if (yb < 0 || yb >= H) continue; for (let x = 0; x < W; x++) if (same(base, (yb * W + x) * 4, c, (y * W + x) * 4)) sc++; } if (sc > bestS) { bestS = sc; dy = t; } }
+    const o = Buffer.from(c); let k = 0;
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+      const i = (y * W + x) * 4, yb = y + dy; if (yb < 0 || yb >= H) continue; const j = (yb * W + x) * 4;
+      if (same(base, j, c, i)) continue;
+      let n = 0, eq = 0;
+      for (let v = -2; v <= 2; v++) for (let u = -2; u <= 2; u++) {
+        if (!u && !v) continue; const xx = x + u, yy = y + v, yy2 = yb + v; if (xx < 0 || yy < 0 || xx >= W || yy >= H || yy2 < 0 || yy2 >= H) continue;
+        n++; if (same(base, (yy2 * W + xx) * 4, c, (yy * W + xx) * 4)) eq++;
+      }
+      if (n && eq / n >= 0.75) { base.copy(o, i, j, j + 4); k++; }
+    }
+    changed.push(k);
+    return o;
+  })];
+  return { cuts: out, changed };
+}
+
+/** 위 35%(머리)가 이웃 프레임과 바뀐 칸 비율의 최댓값 — 위아래 1칸 출렁임은 빼고. 어색함 자(engine/tools/motion_feel.mts)와 같은 셈 */
+export function headFlicker(cuts: Buffer[], set: FrameSet): number {
+  const W = set.cellW, H = set.cellH, top = Math.max(1, Math.floor(H * 0.35));
+  const d = (a: Buffer, b: Buffer) => { let best = 1; for (const sh of [-1, 0, 1]) { let n = 0, k = 0; for (let y = 0; y < top; y++) { const yb = y + sh; if (yb < 0 || yb >= H) continue; for (let x = 0; x < W; x++) { const i = (y * W + x) * 4, j = (yb * W + x) * 4; const ua = a[i + 3] > 0, ub = b[j + 3] > 0; if (!ua && !ub) continue; n++; if (ua !== ub || Math.abs(a[i] - b[j]) + Math.abs(a[i + 1] - b[j + 1]) + Math.abs(a[i + 2] - b[j + 2]) > 60) k++; } } if (n) best = Math.min(best, k / n); } return best; };
+  let m = 0; for (let f = 0; f < cuts.length; f++) m = Math.max(m, d(cuts[f], cuts[(f + 1) % cuts.length]));
+  return m;
+}
+
+/**
+ * 걷기 **윗몸 고정**(11-25): 드워프 걷기는 수염·투구·도끼를 프레임마다 통째로 다르게 그려 잡음 맞춤(calmFrames)으로도 72% 깜빡였다.
+ * 걷기에서 움직여야 하는 건 다리다 → 머리 깜빡임이 25% 를 넘으면 윗몸은 1번 프레임 것, 다리는 각 프레임 것.
+ * 잇는 줄: 키의 45~65% 사이에서 두 프레임이 가장 비슷한 줄(허리). 위아래 출렁임(−1·0·+1)은 그 프레임 다리에 맞춘다.
+ */
+export function lockUpper(cuts: Buffer[], set: FrameSet): { cuts: Buffer[]; seams: number[] } {
+  const W = set.cellW, H = set.cellH, base = cuts[0], row = W * 4;
+  const rowDiff = (a: Buffer, ya: number, b: Buffer, yb: number) => { let k = 0; for (let x = 0; x < W; x++) { const i = ya * row + x * 4, j = yb * row + x * 4; if ((a[i + 3] > 0) !== (b[j + 3] > 0) || (a[i + 3] && Math.abs(a[i] - b[j]) + Math.abs(a[i + 1] - b[j + 1]) + Math.abs(a[i + 2] - b[j + 2]) > 60)) k++; } return k; };
+  const seams: number[] = [0];
+  const out = [base, ...cuts.slice(1).map((c) => {
+    // 11-25: 0.45~0.65 에서 가장 비슷한 줄을 고르니 드워프 허리띠·앞치마가 프레임마다 바뀐 채 남았다 →
+    // 0.5~0.75 에서 후보를 모으고, 가장 싼 값에 가까운(+W×10%) 줄 중 **가장 아래** 줄로 잇는다(윗몸을 최대한 고정)
+    const cand: { cost: number; y: number; dy: number }[] = [];
+    for (const dy of [-1, 0, 1]) for (let y = Math.floor(H * 0.5); y <= Math.floor(H * 0.75); y++) {
+      const yb = y - dy; if (yb < 0 || yb >= H) continue;
+      cand.push({ cost: rowDiff(base, yb, c, y) + rowDiff(base, Math.min(H - 1, yb + 1), c, Math.min(H - 1, y + 1)), y, dy });
+    }
+    const minC = Math.min(...cand.map((v) => v.cost));
+    const best = cand.filter((v) => v.cost <= minC + Math.max(2, W * 0.1)).reduce((a, b) => (b.y > a.y || (b.y === a.y && b.cost < a.cost) ? b : a), { cost: Infinity, y: Math.floor(H * 0.55), dy: 0 });
+    const o = Buffer.alloc(W * H * 4);
+    for (let y = 0; y < H; y++) {
+      if (y < best.y) { const yb = y - best.dy; if (yb >= 0 && yb < H) base.copy(o, y * row, yb * row, (yb + 1) * row); }
+      else c.copy(o, y * row, y * row, (y + 1) * row);
+    }
+    seams.push(best.y);
+    return o;
+  })];
+  return { cuts: out, seams };
+}
+
 /** 모든 프레임에서 빈 위·아래 줄을 같이 잘라 낸다(같은 너비 칸 자르기는 그림 높이 전체를 칸으로 쓴다 — 둘째 판 40×107). */
 function trimRows(cuts: Buffer[], set: FrameSet): { cuts: Buffer[]; set: FrameSet } {
   const row = set.cellW * 4;
@@ -216,6 +285,7 @@ export async function makeMotion(ref: Buffer, motion: MotionKey, o: { colors?: n
     "All frames the same scale, same baseline, evenly spaced with a clear empty gap between frames, full body inside each frame.",
     `Flat solid background color ${BG} everywhere — no gradient, no shadow, no ground, no text, no numbers, no borders or boxes.`,
     "Chunky crisp pixel art with a limited palette.",
+    ...(motion !== "turn" ? ["The head, face, hair, headwear and any held item must be pixel-identical in every frame (copy them exactly); only the moving body parts change between frames."] : []),
     ...(refCells ? [`Keep EXACTLY the same pixel size as the reference: the character is ${refCells} pixels tall in every frame (one reference pixel = one pixel in the sheet). Do not draw it smaller.`] : []),
   ].join(" ");
   let usd = 0, last: MotionCheck | undefined, reason = "", lastRaw: Buffer | undefined, feedback = "";
@@ -269,6 +339,12 @@ export async function makeMotion(ref: Buffer, motion: MotionKey, o: { colors?: n
     }
     // 미끄러짐 잡기(돌기·동작 모두): 윗몸 가운데를 1번 프레임에 맞춘다
     { const st = stabilize(cuts, set); if (st.shifts.some((v) => v)) { cuts = st.cuts; set = st.set; fixes.push(`프레임 가로 맞춤 ${st.shifts.join("/")}칸`); } }
+    // 번쩍임 잡기: 동작(걷기·숨쉬기·글로 쓴 동작)만 — 4방향은 프레임마다 다른 모습이 맞다
+    if (motion !== "turn" && !process.env.PIXEL_NO_CALM) { const cf = calmFrames(cuts, set); cuts = cf.cuts; if (cf.changed.some((v) => v)) fixes.push(`잡음 칸 맞춤 ${cf.changed.join("/")}칸`); }
+    if (motion === "walk" && !process.env.PIXEL_NO_CALM) {
+      const hf = headFlicker(cuts, set);
+      if (hf > 0.25) { const lu = lockUpper(cuts, set); cuts = lu.cuts; fixes.push(`머리 깜빡임 ${(hf * 100).toFixed(0)}% → 윗몸 고정(잇는 줄 ${lu.seams.slice(1).join("/")}) → ${(headFlicker(cuts, set) * 100).toFixed(0)}%`); }
+    }
     const mc = await machineCheck(set, cuts, M.frames, refH, motion === "turn");
     mc.facts.unshift(...fixes);
     let judge: MotionCheck["judge"];
