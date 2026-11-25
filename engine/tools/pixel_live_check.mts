@@ -60,8 +60,8 @@ const pay = await go("/api/pixel/pay", { method: "POST" });
 const pyj = await pay.json();
 check("손님이면 결제창 대신 403 · 연결하라는 표시", pay.status === 403 && pyj.needLogin === true, { status: pay.status, needLogin: pyj.needLogin });
 // 연결 여부를 화면에 알린다
-const me = await (await go("/api/pixel/me")).json().catch(() => ({}));
-check("me 가 손님을 linked:false 로", me.linked === false && me.signedIn === true, me);
+const me2 = await (await go("/api/pixel/me")).json().catch(() => ({}));
+check("me 가 손님을 linked:false 로", me2.linked === false && me2.signedIn === true, me2);
 
 // 만든 손님 정리
 const tok = [...jar].find(([k]) => /auth-token/.test(k));
