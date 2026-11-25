@@ -30,7 +30,8 @@ const { makeMotion, sheetOf, headFlicker } = await import("../../src/lib/pixel/m
 const { PIXEL_BG } = await import("../../src/lib/pixel/frames");
 async function specks(png: Buffer) {
   const { data, info } = await sharp(png).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
-  const near = (i: number) => Math.abs(data[i] - PIXEL_BG[0]) + Math.abs(data[i + 1] - PIXEL_BG[1]) + Math.abs(data[i + 2] - PIXEL_BG[2]) < 48;
+  // 11-25 5바퀴: 로봇 회색·요리사 모자·투구 반짝임(파랑−빨강 ≤ 30)을 점으로 셌다(거짓 경보) → 지우는 쪽과 같은 기준: 파란 기운 ≥ 38 · 배경과 거리 < 80
+  const near = (i: number) => data[i + 2] - data[i] >= 38 && Math.abs(data[i] - PIXEL_BG[0]) + Math.abs(data[i + 1] - PIXEL_BG[1]) + Math.abs(data[i + 2] - PIXEL_BG[2]) < 80;
   let n = 0;
   for (let y = 0; y < info.height; y++) for (let x = 0; x < info.width; x++) {
     const i = (y * info.width + x) * 4; if (!data[i + 3] || !near(i)) continue;
