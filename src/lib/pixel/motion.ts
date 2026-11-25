@@ -43,6 +43,15 @@ function heightOf(cuts: Buffer[], set: FrameSet): number {
   return Math.max(...cuts.map((c) => { let top = -1, bot = -1; for (let y = 0; y < set.cellH; y++) for (let x = 0; x < set.cellW; x++) if (c[(y * set.cellW + x) * 4 + 3]) { if (top < 0) top = y; bot = y; } return top < 0 ? 0 : bot - top + 1; }));
 }
 
+/** 모든 프레임에서 빈 위·아래 줄을 같이 잘라 낸다(같은 너비 칸 자르기는 그림 높이 전체를 칸으로 쓴다 — 둘째 판 40×107). */
+function trimRows(cuts: Buffer[], set: FrameSet): { cuts: Buffer[]; set: FrameSet } {
+  const row = set.cellW * 4;
+  let top = set.cellH, bot = -1;
+  for (const c of cuts) for (let y = 0; y < set.cellH; y++) for (let x = 0; x < set.cellW; x++) if (c[y * row + x * 4 + 3]) { top = Math.min(top, y); bot = Math.max(bot, y); }
+  if (bot < 0 || (top === 0 && bot === set.cellH - 1)) return { cuts, set };
+  return { cuts: cuts.map((c) => Buffer.from(c.subarray(top * row, (bot + 1) * row))), set: { ...set, cellH: bot - top + 1 } };
+}
+
 /** 색 분포(채널당 5단계 → 125칸, 비율). */
 const L = 5;
 function histOf(px: number[][]): Float64Array {
@@ -113,6 +122,36 @@ async function judgeSame(ref: Buffer, sheet: Buffer): Promise<{ same: boolean; c
   } catch { return null; }
 }
 
+/**
+ * 11-25 사장님 "판단자가 자를 때 생성자랑 협업하면 자를 때 좋아지지": 판단자가 **자르는 자리에 들어온다.**
+ * 기계가 자른 후보 둘(A = 덩어리로 자동, B = 같은 너비 칸)과 AI 원본을 보고 더 잘 자른 쪽을 고른다.
+ * 같은 캐릭터인지, (4방향이면) 프레임마다 방향이 맞는지도 같이 본다. 판단자는 **문이 아니라 고르는 자리** —
+ * 판단자가 없으면(목·오류) 기계 판정대로 간다. 값은 한 번에 약 1원(luna).
+ */
+const DIRS = ["front (facing the viewer)", "side view facing RIGHT", "back view", "side view facing LEFT"];
+export type CutJudge = { pick: "A" | "B" | "neither"; same: boolean; confidence: number; badFrames: number[]; why: string; usd: number };
+async function judgeCut(ref: Buffer, raw: Buffer, a: Buffer | null, b: Buffer | null, motion: MotionKey): Promise<CutJudge | null> {
+  if (process.env.PIXEL_MOTION_MOCK && !process.env.PIXEL_JUDGE_LIVE) return null; // 목에서는 안 부른다 — 이미 산 원본으로 판단자만 잴 때 PIXEL_JUDGE_LIVE=1
+  try {
+    const { createOpenAIProvider } = await import("@/lib/providers/openai");
+    const { costOf } = await import("@/lib/costs/pricing");
+    const ai = createOpenAIProvider({ judgmentModel: "gpt-5.6-luna" });
+    const png = async (x: Buffer, w: number) => (await sharp(x).flatten({ background: "#ffffff" }).resize(w, w, { fit: "inside", kernel: "nearest" }).png().toBuffer()).toString("base64");
+    const blank = await sharp({ create: { width: 64, height: 64, channels: 3, background: "#ffffff" } }).png().toBuffer();
+    const dirQ = motion === "turn" ? ` Frames should face, in order: ${DIRS.join(", ")}. List in badFrames the 1-based numbers of frames (in the picked sheet) whose facing is wrong.` : " badFrames: 1-based numbers of frames that are broken (missing body parts, extra pieces, or a different character).";
+    const r = await ai.generateStructuredOutput({
+      systemInstructions: "You check sprite-sheet cutting. Image 1: the reference character. Image 2: the original AI drawing (a row of frames). Image 3: cut result A. Image 4: cut result B (a blank square means that cut failed). " +
+        "Pick the cut that keeps every frame whole (no missing horns/wings/tail, no pieces of neighbouring frames, no leftover background) and in the right order; 'neither' if both are bad. " +
+        "Also say whether the frames are the SAME character as the reference (pose and facing differences are expected), with confidence 0-1." + dirQ,
+      input: "Judge the cuts.",
+      images: [await png(ref, 384), await png(raw, 768), await png(a ?? blank, 768), await png(b ?? blank, 768)],
+      schema: z.object({ pick: z.enum(["A", "B", "neither"]), same: z.boolean(), confidence: z.number(), badFrames: z.array(z.number()), why: z.string() }),
+      schemaName: "cut_judge", maxTokens: 16000, tier: "judgment",
+    });
+    return { ...r.output, usd: costOf({ backend: r.model, inputTokens: r.inputTokens ?? 0, outputTokens: r.outputTokens ?? 0 }) };
+  } catch { return null; }
+}
+
 /** 손님이 쓴 동작 글: 한 줄 · 120자 · 제어문자 없음 */
 export const cleanAction = (s: string) => s.replace(/[\u0000-\u001f\u007f]+/g, " ").replace(/\s+/g, " ").trim().slice(0, 120);
 
@@ -149,9 +188,14 @@ export async function makeMotion(ref: Buffer, motion: MotionKey, o: { colors?: n
     catch (e) { reason = `그림 AI 가 거절했어요 (${(e as Error).message.slice(0, 80)})`; break; } // 돈·열쇠 문제는 다시 해도 같다
     let rd: RealDotResult, set: FrameSet, cuts: Buffer[];
     const fixes: string[] = [];
+    // 후보 B: 같은 너비 칸으로 자르기(그림 AI 에게 "고르게 띄워" 라고 시켰다) — 자동이 실패하거나 판단자가 더 낫다고 할 때
+    let candB: { rd: RealDotResult; set: FrameSet; cuts: Buffer[] } | null = null;
     try {
+      // 11-25: 그림 AI 가 배경을 투명으로 돌려줄 때가 있다(둘째 판) — 투명도 배경으로 받는다
       rd = await realDot(raw, { colors: o.colors ?? 32 });
-      set = await findFrames(rd.small);
+      try { const sb = await findFrames(rd.small, { cols: M.frames, rows: 1 }); candB = { rd, set: sb, cuts: await cutFrames(rd.small, sb, { lockBottom: M.lock ? 0.25 : 0, dropEdgeBits: true }) }; } catch { /* B 없음 */ }
+      try { set = await findFrames(rd.small, { clearBg: true }); }
+      catch (e) { if (!candB) throw e; set = candB.set; fixes.push("자동 나누기 실패 → 같은 너비 칸으로"); }
       cuts = await cutFrames(rd.small, set, { lockBottom: M.lock ? 0.25 : 0, dropEdgeBits: true });
       // 11-25 예측자 → 판단자 → 고치기(돈 0): 참조 키(refCells)를 미리 안다 = 예측. 읽힌 키가 15% 넘게 다르면
       // 칸 크기를 잘못 읽은 것(용 4방향: 63칸 → 41칸, 몸에 검은 점) → 예측 주기 근처에서 **진짜 봉우리를 다시 찾는다**(강제 아님).
@@ -161,7 +205,7 @@ export async function makeMotion(ref: Buffer, motion: MotionKey, o: { colors?: n
         const pred = (rd.period[0] * hNow) / refCells;
         try {
           const rd2 = await realDot(raw, { colors: o.colors ?? 32, near: pred });
-          const set2 = await findFrames(rd2.small);
+          const set2 = await findFrames(rd2.small, { clearBg: true });
           const cuts2 = await cutFrames(rd2.small, set2, { lockBottom: M.lock ? 0.25 : 0, dropEdgeBits: true });
           const h2 = heightOf(cuts2, set2);
           if (set2.frames.length === M.frames && Math.abs(h2 - refCells) < Math.abs(hNow - refCells)) {
@@ -170,14 +214,29 @@ export async function makeMotion(ref: Buffer, motion: MotionKey, o: { colors?: n
           } else fixes.push(`예측 키 ${refCells}칸 · 읽힌 키 ${hNow}칸 — 다시 읽어도 안 나아짐(${h2}칸)`);
         } catch { fixes.push(`예측 키 ${refCells}칸 · 읽힌 키 ${hNow}칸 — 다시 읽기 실패`); }
       }
+      // 예측자가 칸 크기를 고쳤으면 후보 B 도 고친 칸으로 다시 자른다(둘째 판: 판단자가 B 를 골랐는데 B 가 고치기 전 46칸이었다)
+      if (candB && candB.rd !== rd) {
+        try { const sb = await findFrames(rd.small, { cols: M.frames, rows: 1 }); candB = { rd, set: sb, cuts: await cutFrames(rd.small, sb, { lockBottom: M.lock ? 0.25 : 0, dropEdgeBits: true }) }; } catch { /* 옛 B 그대로 */ }
+      }
     } catch (e) { reason = (e as Error).message; last = { machine: "fail", facts: [reason], action: "escalate" }; continue; }
+    // 판단자가 자르는 자리에: A(자동·예측자 고침) vs B(같은 너비) 를 원본과 견줘 고른다
+    const cj = await judgeCut(refPng, raw, set.frames.length === M.frames ? await sheetOf(cuts, set) : null, candB ? await sheetOf(candB.cuts, candB.set) : null, motion);
+    if (cj) {
+      usd += cj.usd;
+      if (cj.pick === "B" && candB) { rd = candB.rd; ({ set, cuts } = trimRows(candB.cuts, candB.set)); fixes.push("판단자: 같은 너비 칸이 더 잘 잘렸다"); }
+      fixes.push(`판단자: ${cj.pick} · 같은 캐릭터 ${cj.same ? "예" : "아니오"}(${cj.confidence.toFixed(2)})${cj.badFrames.length ? ` · 틀린 프레임 ${cj.badFrames.join(",")}` : ""}`);
+    }
     const mc = await machineCheck(set, cuts, M.frames, refH);
     mc.facts.unshift(...fixes);
     let judge: MotionCheck["judge"];
-    if (mc.machine === "unsure") {
+    if (cj) judge = { same: cj.same, confidence: cj.confidence, why: cj.why };
+    else if (mc.machine === "unsure") {
       const j = await judgeSame(refPng, await sheetOf(cuts, set));
       if (j) { usd += j.usd; judge = { same: j.same, confidence: j.confidence, why: j.why }; }
     }
+    // 판단자가 확신(≥0.7)하고 "둘 다 못 잘랐다 · 다른 캐릭터 · 방향 틀림" 이면 기계가 통과시켜도 받지 않는다(다시 그리기로)
+    const judgeNo = !!cj && cj.confidence >= 0.7 && (cj.pick === "neither" || !cj.same || cj.badFrames.length > 0);
+    if (judgeNo) mc.machine = "fail";
     const conf = judge ? (judge.same ? judge.confidence : 0) : undefined;
     const g = checkGate([], { kind: "pixel-motion", seat: "gpt-5.6-luna" }, conf, mc.machine === "unsure" ? undefined : mc.machine);
     last = { machine: mc.machine, facts: mc.facts, judge, action: g.action };
