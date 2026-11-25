@@ -78,7 +78,7 @@ async function openaiDrawer(): Promise<Drawer> {
 export type FitOpts = { colors?: number; height?: number; profile?: StyleProfile; snap?: boolean };
 
 /** 이미 그려 온 그림(raw)을 캔버스에 앉힌다 — AI 를 안 부르는 순수 기계 부분(시험이 이것을 직접 잰다). */
-export async function fitToCanvas(raw: Buffer, size: number, o: FitOpts = {}): Promise<{ ok: true; png: Buffer; drawn: [number, number]; facts: string[]; size: number } | { ok: false; reason: string; facts: string[] }> {
+export async function fitToCanvas(raw: Buffer, size: number, o: FitOpts = {}): Promise<{ ok: true; png: Buffer; drawn: [number, number]; facts: string[]; size: number; period: number } | { ok: false; reason: string; facts: string[]; period?: number }> {
   const facts: string[] = [];
   let small: Buffer, period: number;
   try { const rd = await realDot(raw, { colors: o.colors ?? 32 }); small = rd.small; period = rd.period[0]; } catch (e) { return { ok: false, reason: (e as Error).message, facts: ["① 격자 못 찾음"] }; }
@@ -121,11 +121,45 @@ export async function fitToCanvas(raw: Buffer, size: number, o: FitOpts = {}): P
   const png = await sharp({ create: { width: size, height: size, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })
     .composite([{ input: piece, left, top }]).png().toBuffer();
   facts.push(`캔버스 ${size}×${size} · 키 ${fh}px`);
-  return { ok: true, png, drawn: [w, h], facts, size };
+  return { ok: true, png, drawn: [w, h], facts, size, period };
 }
 
 /** 게임 키에 맞는 캔버스: 키 + 4 이상인 가장 작은 기본 크기, 없으면 키 + 4 */
 export const canvasFor = (height: number) => SIZES.find((z) => z >= height + 4) ?? height + 4;
+
+/**
+ * 11-25 사장님 "협업해서 픽셀의 단위를 어떻게 맞출지 · 생성만 고퀄로 하면 고퀄이 된다":
+ * **도트 한 칸 크기(단위)를 예측자·생성자·잰 값이 같이 맞춘다.**
+ *   ① 예측: 목표 키 H = 캔버스의 92% 칸, 그림(1024)에서 캐릭터가 약 80% → 한 칸 u = 820/H px
+ *   ② 생성자에게 **격자 판**(u px 간격의 연한 줄)을 주고 "한 칸 = 그 격자 한 칸, 키 H 칸" 으로 그리게 한다
+ *   ③ 기계가 실제 한 칸 크기와 키를 잰다
+ *   ④ 15% 넘게 어긋나면 **잰 숫자를 생성자에게 되돌려** 같은 캐릭터를 다시 그리게 한다(지난번 한 칸 p px · 키 h 칸 → u px · H 칸). 1번만.
+ *   ⑤ 둘 중 목표에 가까운 것을 쓴다.
+ */
+export const unitTarget = (size: number) => { const H = Math.round(size * 0.92); return { H, u: +(820 / H).toFixed(1) }; };
+export async function gridBoard(u: number): Promise<Buffer> {
+  const n = Math.ceil(1024 / u);
+  const lines: string[] = [];
+  for (let i = 1; i < n; i++) { const v = (i * u).toFixed(1); lines.push(`<line x1="${v}" y1="0" x2="${v}" y2="1024"/><line x1="0" y1="${v}" x2="1024" y2="${v}"/>`); }
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024"><rect width="1024" height="1024" fill="${BG}"/><g stroke="#9fb3cd" stroke-width="1">${lines.join("")}</g></svg>`;
+  return sharp(Buffer.from(svg)).png().toBuffer();
+}
+export function unitPrompt(desc: string, H: number, u: number): string {
+  return [
+    `The reference image is an EMPTY PIXEL GRID: every grid cell is ${u}x${u} screen pixels and stands for ONE pixel of a pixel-art sprite.`,
+    `Paint on this grid a pixel art game sprite: ${desc}. Every sprite pixel must fill exactly one whole grid cell (solid color, square, aligned to the grid) — never half cells, never finer detail than one cell.`,
+    `The character is exactly ${H} cells tall from head to feet (about 80% of the image height), full body, front view facing the viewer, standing, centered, exactly ONE character.`,
+    `Crisp hard edges, no anti-aliasing, no gradients inside a cell, limited palette, dark outline. Outside the character keep the flat background color ${BG}; the faint grid lines may stay or vanish.`,
+  ].join(" ");
+}
+function feedbackPrompt(H: number, u: number, h: number, p: number): string {
+  const dir = h < H ? "SMALLER pixels (more, finer cells)" : "BIGGER pixels (fewer cells)";
+  return [
+    "Redraw EXACTLY this same character — same design, colors, pose, outfit, proportions — as pixel art with " + dir + ".",
+    `Last time each sprite pixel was about ${p.toFixed(0)} screen pixels and the character was ${h} pixels tall. Now each sprite pixel must be ${u} screen pixels and the character exactly ${H} pixels tall (about 80% of the image height).`,
+    `Square solid pixels aligned to a regular grid, crisp hard edges, no anti-aliasing. Flat solid background color ${BG}, nothing else.`,
+  ].join(" ");
+}
 
 export async function makeCharacter(desc: string, size: CanvasSize, o: { colors?: number; game?: Buffer[]; snap?: boolean } = {}): Promise<CreateResult> {
   const draw: Drawer = process.env.PIXEL_CREATE_MOCK ? async () => ({ png: readFileSync(process.env.PIXEL_CREATE_MOCK!), usd: 0 }) : await openaiDrawer();
@@ -136,12 +170,36 @@ export async function makeCharacter(desc: string, size: CanvasSize, o: { colors?
   }
   const canvas = profile ? canvasFor(profile.height) : size;
   let d: { png: Buffer; usd: number };
-  try { d = await draw(profile ? stylePrompt(cleanDesc(desc), profile.height) : createPrompt(cleanDesc(desc), size), board); }
+  // 기본 그림체: 단위 맞추기 협업(위 ①~⑤). 게임 그림체는 게임 그림이 단위를 정한다(그대로).
+  const unit = profile || process.env.PIXEL_UNIT_OFF ? null : unitTarget(size);
+  try {
+    d = profile ? await draw(stylePrompt(cleanDesc(desc), profile.height), board)
+      : unit ? await draw(unitPrompt(cleanDesc(desc), unit.H, unit.u), await gridBoard(unit.u))
+      : await draw(createPrompt(cleanDesc(desc), size));
+  }
   catch (e) { return { ok: false, reason: `그림 AI 가 거절했어요 (${(e as Error).message.slice(0, 80)})`, usd: 0, facts: [] }; }
-  const f = await fitToCanvas(d.png, canvas, { colors: o.colors ?? 32, height: profile?.height, profile, snap: o.snap });
-  if (!f.ok) return { ok: false, reason: f.reason, usd: d.usd, facts: f.facts };
+  let usd = d.usd;
+  let f = await fitToCanvas(d.png, canvas, { colors: o.colors ?? 32, height: profile?.height, profile, snap: o.snap });
+  if (unit) {
+    const h1 = f.ok ? f.drawn[1] : 0;
+    const off = !f.ok || Math.abs(h1 - unit.H) / unit.H > 0.15;
+    const note = `단위 목표: 키 ${unit.H}칸 · 한 칸 ${unit.u}px`;
+    if (off && f.ok) {
+      // ④ 잰 숫자를 생성자에게 되돌린다 — 같은 캐릭터를 단위만 바꿔 다시
+      try {
+        const d2 = await draw(feedbackPrompt(unit.H, unit.u, h1, f.period), d.png);
+        usd += d2.usd;
+        const f2 = await fitToCanvas(d2.png, canvas, { colors: o.colors ?? 32 });
+        if (f2.ok && Math.abs(f2.drawn[1] - unit.H) < Math.abs(h1 - unit.H)) {
+          f2.facts.unshift(note, `첫 그림 ${h1}칸(한 칸 ${f.period.toFixed(1)}px) → 숫자를 되돌려 다시: ${f2.drawn[1]}칸(한 칸 ${f2.period.toFixed(1)}px)`);
+          f = f2; d = d2;
+        } else f.facts.unshift(note, `첫 그림 ${h1}칸 — 다시 그려도 안 나아짐(${f2.ok ? f2.drawn[1] + "칸" : "실패"})`);
+      } catch { f.facts.unshift(note, `첫 그림 ${h1}칸 — 다시 그리기 실패`); }
+    } else if (f.ok) f.facts.unshift(note, `첫 그림 ${h1}칸(한 칸 ${f.period.toFixed(1)}px) — 목표 안`);
+  }
+  if (!f.ok) return { ok: false, reason: f.reason, usd, facts: f.facts };
   const scale = Math.max(2, Math.floor(768 / f.size));
   const big = await sharp(f.png).resize(f.size * scale, f.size * scale, { kernel: "nearest" }).png().toBuffer();
-  return { ok: true, png: f.png, big, raw: d.png, drawn: f.drawn, size: f.size, usd: d.usd, facts: f.facts };
+  return { ok: true, png: f.png, big, raw: d.png, drawn: f.drawn, size: f.size, usd, facts: f.facts };
 }
 
