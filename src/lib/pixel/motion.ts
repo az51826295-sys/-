@@ -99,7 +99,7 @@ async function openaiDrawer(): Promise<Drawer> {
   const p = createImageProvider("gpt-image-2.5-flare");
   return async (ref, prompt) => {
     // 11-25 "실패는 고치고 비싸게 받자": low 는 선이 흐려 1배로 옮길 때 몸에 검은 점이 박혔다(용 4방향) → medium(값은 재서 적는다)
-    const r = await p.edit(ref, prompt, "1536x1024", (process.env.PIXEL_MOTION_QUALITY as "low" | "medium" | "high" | undefined) ?? "medium");
+    const r = await p.edit(ref, prompt, "1536x1024", (process.env.PIXEL_MOTION_QUALITY as "low" | "medium" | "high" | undefined) ?? "high"); // 11-25 "고품질로 하자"
     return { png: Buffer.from(r.dataUrl.split(",")[1], "base64"), usd: costOf({ backend: r.model, inputTokens: r.inputTokens, outputTokens: r.outputTokens }) };
   };
 }
@@ -171,7 +171,13 @@ export async function makeMotion(ref: Buffer, motion: MotionKey, o: { colors?: n
   const refH = await refHistOf(refPng);
   // 11-25: 1배 참조(글로 만든 캐릭터)의 키(칸) — 4방향이 63칸 용을 41칸으로 줄여 그렸다 → 같은 칸 크기로 그리라고 숫자로 준다
   let refCells = 0;
-  if (long && long < 256) { const t = await sharp(ref).trim().metadata().catch(() => null); refCells = t?.height ?? 0; }
+  // 투명 칸을 빼고 직접 센다 — sharp trim().metadata() 는 잘라 낸 크기가 아니라 원래 크기(64)를 돌려줬다(11-25 마법사: 46칸인데 "예측 64")
+  if (long && long < 256) {
+    const { data, info } = await sharp(ref).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+    let top = -1, bot = -1;
+    for (let y = 0; y < info.height; y++) for (let x = 0; x < info.width; x++) if (data[(y * info.width + x) * 4 + 3] >= 128) { if (top < 0) top = y; bot = y; }
+    refCells = top < 0 ? 0 : bot - top + 1;
+  }
   const prompt = [
     "Use the reference image as the character. Keep EXACTLY the same character: same face, hair, outfit, colors and proportions.",
     `Draw a pixel-art sprite sheet: ONE horizontal row of ${M.frames} frames, ${how}.`,

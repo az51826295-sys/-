@@ -57,7 +57,7 @@ export function createPrompt(desc: string, size: number): string {
   return [
     `Pixel art game sprite: ${desc}.`,
     "Exactly ONE character, full body from head to feet, front view facing the viewer, standing, centered, nothing else in the picture.",
-    `Low resolution sprite about ${Math.round(size * 0.85)} pixels tall, drawn with big chunky square pixels (every pixel clearly visible), crisp hard edges, no anti-aliasing, no gradients, limited palette, dark outline.`,
+    `Low resolution sprite about ${Math.round(size * 0.92)} pixels tall, drawn with big chunky square pixels (every pixel clearly visible), crisp hard edges, no anti-aliasing, no gradients, limited palette, dark outline.`,
     `Flat solid background color ${BG} everywhere — no shadow, no ground, no text, no border, no frame.`,
   ].join(" ");
 }
@@ -68,7 +68,9 @@ async function openaiDrawer(): Promise<Drawer> {
   const { costOf } = await import("@/lib/costs/pricing");
   const p = createImageProvider("gpt-image-2.5-flare");
   return async (prompt, ref) => {
-    const r = ref ? await p.edit("data:image/png;base64," + ref.toString("base64"), prompt, "1024x1024", "low") : await p.draw(prompt, "low", "1024x1024", "opaque");
+    // 11-25 사장님 "고품질로 하자 가격을 올리더라도": 첫 그림이 low 면 4방향·동작이 전부 그 흐린 그림을 따라간다 → high(환경변수로 내릴 수 있다)
+    const q = (process.env.PIXEL_CREATE_QUALITY as "low" | "medium" | "high" | undefined) ?? "high";
+    const r = ref ? await p.edit("data:image/png;base64," + ref.toString("base64"), prompt, "1024x1024", q) : await p.draw(prompt, q, "1024x1024", "opaque");
     return { png: Buffer.from(r.dataUrl.split(",")[1], "base64"), usd: costOf({ backend: r.model, inputTokens: r.inputTokens, outputTokens: r.outputTokens }) };
   };
 }
