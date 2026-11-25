@@ -5,5 +5,5 @@ const [ref, raw, out, mv = "turn"] = process.argv.slice(2);
 process.env.PIXEL_MOTION_MOCK = raw;
 const { makeMotion, sheetOf } = await import("../../../../src/lib/pixel/motion");
 const r = await makeMotion(readFileSync(ref), mv as "turn", { maxTries: 1 });
-console.log(r.ok, r.ok ? [r.set.cellW, r.set.cellH] : r.reason, "| 판단자:", r.check?.judge?.why);
+console.log(r.ok, r.ok ? [r.set.cellW, r.set.cellH] : r.reason, "| 사실:", JSON.stringify(r.check?.facts));
 if (r.ok) writeFileSync(out, await sheetOf(r.cuts, r.set));

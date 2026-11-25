@@ -219,7 +219,7 @@ async function judgeSame(ref: Buffer, sheet: Buffer): Promise<{ same: boolean; c
  * 판단자가 없으면(목·오류) 기계 판정대로 간다. 값은 한 번에 약 1원(luna).
  */
 const DIRS = ["front (facing the viewer)", "side view facing RIGHT", "back view", "side view facing LEFT"];
-export type CutJudge = { pick: "A" | "B" | "neither"; same: boolean; confidence: number; badFrames: number[]; profileOk: boolean; fix: string; why: string; usd: number };
+export type CutJudge = { pick: "A" | "B" | "neither"; same: boolean; confidence: number; badFrames: number[]; profileOk: boolean; missing: string[]; fix: string; why: string; usd: number };
 async function judgeCut(ref: Buffer, raw: Buffer, a: Buffer | null, b: Buffer | null, motion: MotionKey): Promise<CutJudge | null> {
   if (process.env.PIXEL_MOTION_MOCK && !process.env.PIXEL_JUDGE_LIVE) return null; // 목에서는 안 부른다 — 이미 산 원본으로 판단자만 잴 때 PIXEL_JUDGE_LIVE=1
   try {
@@ -236,10 +236,11 @@ async function judgeCut(ref: Buffer, raw: Buffer, a: Buffer | null, b: Buffer | 
     const r = await ai.generateStructuredOutput({
       systemInstructions: "You check sprite-sheet cutting. Image 1: the reference character. Image 2: the original AI drawing (a row of frames). Image 3: cut result A. Image 4: cut result B (a blank square means that cut failed). " +
         "Pick the cut that keeps every frame whole (no missing horns/wings/tail, no pieces of neighbouring frames, no leftover background) and in the right order; 'neither' if both are bad. " +
-        "Also say whether the frames are the SAME character as the reference (pose and facing differences are expected), with confidence 0-1." + dirQ,
+        "Also say whether the frames are the SAME character as the reference (pose and facing differences are expected), with confidence 0-1. " +
+        "missing: items the reference holds or wears (weapon, tool, staff, hat, cape, bag...) that are ABSENT from any frame of the picked sheet (an item hidden behind the body in a back or side view is NOT missing); empty list if none." + dirQ,
       input: "Judge the cuts.",
       images: [await png(ref, 384), await png(raw, 768), await png(a ?? blank, 768), await png(b ?? blank, 768)],
-      schema: z.object({ pick: z.enum(["A", "B", "neither"]), same: z.boolean(), confidence: z.number(), badFrames: z.array(z.number()), profileOk: z.boolean(), fix: z.string(), why: z.string() }),
+      schema: z.object({ pick: z.enum(["A", "B", "neither"]), same: z.boolean(), confidence: z.number(), badFrames: z.array(z.number()), profileOk: z.boolean(), missing: z.array(z.string()), fix: z.string(), why: z.string() }),
       schemaName: "cut_judge", maxTokens: 16000, tier: "judgment",
     });
     return { ...r.output, usd: costOf({ backend: r.model, inputTokens: r.inputTokens ?? 0, outputTokens: r.outputTokens ?? 0 }) };
@@ -328,6 +329,14 @@ export async function makeMotion(ref: Buffer, motion: MotionKey, o: { colors?: n
       }
     } catch (e) { reason = (e as Error).message; last = { machine: "fail", facts: [reason], action: "escalate" }; continue; }
     // 판단자가 자르는 자리에: A(자동·예측자 고침) vs B(같은 너비) 를 원본과 견줘 고른다
+    if (candB && (candB.set.sliced ?? 0) > 0 && set.frames.length === M.frames) { fixes.push(`같은 너비 후보가 자른 줄에 그림 ${candB.set.sliced}칸이 걸침 → 후보에서 뺌`); candB = null; }
+    // 프레임끼리 겹쳐 그려졌으면(자동 나누기가 수를 못 맞추고, 같은 너비 후보도 자른 줄에 그림이 걸침 — 악마 걷기 날개) 어디를 잘라도 벤다 → 생성자에게 되돌린다
+    if (set.frames.length !== M.frames && candB && (candB.set.sliced ?? 0) > 0 && t < tries) {
+      feedback = "Last time neighbouring frames overlapped (wings/arms touched the next frame): leave a WIDE empty gap between frames so no part of one frame touches another, and keep each figure narrower than a quarter of the image width.";
+      reason = `프레임끼리 겹쳐 그려짐(자른 줄에 그림 ${candB.set.sliced}칸)`; last = { machine: "fail", facts: [...fixes, reason], action: "escalate" }; continue;
+    }
+    // 캐릭터가 그림 테두리에 닿아 잘려 그려졌으면 다시 그리기로(마지막 판이면 받는다)
+    if (set.touchesBorder && t < tries) { feedback = "Some character was cut off by the image border last time: keep every frame completely inside the image with an empty margin on all sides."; reason = "그림 테두리에 캐릭터가 잘려 그려짐"; last = { machine: "fail", facts: [...fixes, reason], action: "escalate" }; continue; }
     const aSheet = set.frames.length === M.frames ? await sheetOf(cuts, set) : null, bSheet = candB ? await sheetOf(candB.cuts, candB.set) : null;
     const cj = await judgeCut(refPng, raw, aSheet, bSheet, motion);
     // 자동 나누기가 프레임 수를 못 맞췄으면(악마 날개가 붙어 3개) 판단자 없이도 같은 너비 칸으로 — 판단자가 오류여도 손님은 결과를 받는다
@@ -335,7 +344,7 @@ export async function makeMotion(ref: Buffer, motion: MotionKey, o: { colors?: n
     if (cj) {
       usd += cj.usd;
       if (cj.pick === "B" && candB) { rd = candB.rd; ({ set, cuts } = trimRows(candB.cuts, candB.set)); fixes.push("판단자: 같은 너비 칸이 더 잘 잘렸다"); }
-      fixes.push(`판단자: ${cj.pick} · 같은 캐릭터 ${cj.same ? "예" : "아니오"}(${cj.confidence.toFixed(2)})${cj.badFrames.length ? ` · 틀린 프레임 ${cj.badFrames.join(",")}` : ""}`);
+      fixes.push(`판단자: ${cj.pick} · 같은 캐릭터 ${cj.same ? "예" : "아니오"}(${cj.confidence.toFixed(2)})${cj.badFrames.length ? ` · 틀린 프레임 ${cj.badFrames.join(",")}` : ""}${cj.missing.length ? ` · 빠진 소품 ${cj.missing.join(",")}` : ""}`);
     }
     // 미끄러짐 잡기(돌기·동작 모두): 윗몸 가운데를 1번 프레임에 맞춘다
     { const st = stabilize(cuts, set); if (st.shifts.some((v) => v)) { cuts = st.cuts; set = st.set; fixes.push(`프레임 가로 맞춤 ${st.shifts.join("/")}칸`); } }
@@ -355,14 +364,15 @@ export async function makeMotion(ref: Buffer, motion: MotionKey, o: { colors?: n
     }
     // 판단자가 확신(≥0.7)하고 "둘 다 못 잘랐다 · 다른 캐릭터 · 방향 틀림" 이면 기계가 통과시켜도 받지 않는다(다시 그리기로)
     // 옆모습이 비스듬하면(turn) 다시 그릴 거리 — 다만 마지막 판이면 받는다(손님에게 실패보다 낫다)
-    const says = (c: CutJudge) => c.confidence >= 0.7 && (c.pick === "neither" || !c.same || c.badFrames.length > 0 || (motion === "turn" && !c.profileOk && t < tries));
+    // 11-25 실패율 자 4바퀴: 드워프 4방향에서 도끼가 네 장 다 빠졌는데 "같은 캐릭터" 로 통과 → 빠진 소품도 다시 그릴 거리(마지막 판이면 받는다)
+    const says = (c: CutJudge) => c.confidence >= 0.7 && (c.pick === "neither" || !c.same || c.badFrames.length > 0 || (motion === "turn" && !c.profileOk && t < tries) || (c.missing.length > 0 && t < tries));
     let judgeNo = !!cj && says(cj);
     // 11-25 실패율 자: 같은 그림을 세 번 보여 주니 판단자가 한 번만 "4장 다 틀림" 이라 했다(고양이 요리사 걷기) → 막기 전에 **한 번 더 묻고 둘 다 막자고 할 때만** 막는다
     if (cj && judgeNo) {
       const cj2 = await judgeCut(refPng, raw, aSheet, bSheet, motion);
       if (cj2) { usd += cj2.usd; if (!says(cj2)) { judgeNo = false; mc.facts.push("판단자 두 번째 의견: 괜찮다 → 받음"); } else mc.facts.push("판단자 두 번째 의견도: 다시"); }
     }
-    if (cj && judgeNo) feedback = (cj.fix || cj.why).slice(0, 300); // 협업: 판단자의 말이 다음 그림으로 간다
+    if (cj && judgeNo) feedback = ((cj.missing.length ? `Keep these items from the reference in EVERY frame: ${cj.missing.join(", ")}. ` : "") + (cj.fix || cj.why)).slice(0, 300); // 협업: 판단자의 말이 다음 그림으로 간다
     if (judgeNo) mc.machine = "fail";
     const conf = judge ? (judge.same ? judge.confidence : 0) : undefined;
     const g = checkGate([], { kind: "pixel-motion", seat: "gpt-5.6-luna" }, conf, mc.machine === "unsure" ? undefined : mc.machine);

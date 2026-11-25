@@ -13,7 +13,7 @@ import sharp from "sharp";
  * 맞추는 법: 첫 프레임을 기준으로, 각 프레임을 ±3칸 안 정수 이동 중 **배경 아닌 칸이 가장 많이 같은 색인 자리**에 둔다.
  */
 export type Frame = { x: number; y: number; w: number; h: number; dx: number; dy: number; clip?: [number, number] }; // clip: 골짜기 자르기의 원래 가로 범위 — 칸을 넓혀도 이웃 프레임 칸은 안 가져온다
-export type FrameSet = { frames: Frame[]; cellW: number; cellH: number; bg: [number, number, number] | null; how: "auto" | "grid" };
+export type FrameSet = { frames: Frame[]; cellW: number; cellH: number; bg: [number, number, number] | null; how: "auto" | "grid"; sliced?: number; touchesBorder?: boolean }; // sliced: 골짜기 자르기 줄에 걸친 칠한 칸 수(>0 = 뭔가를 베었다) · touchesBorder: 캐릭터가 그림 테두리에 닿음(잘려 그려짐)
 
 type Img = { d: Buffer; w: number; h: number };
 const at = (im: Img, x: number, y: number) => { const i = (y * im.w + x) * 4; return [im.d[i], im.d[i + 1], im.d[i + 2], im.d[i + 3]]; };
@@ -40,6 +40,13 @@ export async function findFrames(small: Buffer, opt: { cols?: number; rows?: num
 
   let boxes: { x: number; y: number; w: number; h: number }[];
   let how: FrameSet["how"] = "grid";
+  let sliced: number | undefined;
+  // 캐릭터가 그림 테두리에 닿았나(위·아래·왼쪽·오른쪽 줄에 칠한 칸) — 그림 AI 가 머리·발을 그림 밖으로 내보내 잘린 것
+  // 위·아래는 3칸만 닿아도(머리·발이 잘림), 왼쪽·오른쪽은 8칸 넘게 닿을 때만 — 드워프 도끼날 끝이 왼쪽 줄에 6칸 닿았지만 잘리지 않았다(거짓 경보)
+  let tb = 0, lr0 = 0, lr1 = 0;
+  for (let x = 0; x < im.w; x++) { if (isFg(x, 0)) tb++; if (isFg(x, im.h - 1)) tb++; }
+  for (let y = 0; y < im.h; y++) { if (isFg(0, y)) lr0++; if (isFg(im.w - 1, y)) lr1++; }
+  const border = tb > 2 || lr0 >= 8 || lr1 >= 8 ? 3 : 0;
   if (opt.cols && opt.rows === 1 && opt.valleys && opt.cols > 1) {
     // 11-25 실패율 자 2바퀴: 같은 너비 4등분이 드워프 1번(도끼 들어 넓다)의 오른팔을 잘라 2번 칸으로 넘겼다(판단자도 통과시켰다).
     // → 경계마다 "균등 자리 ± 칸 너비 40%" 안에서 **칠한 칸이 가장 적은 세로줄(골짜기)** 을 찾고, 0 인 줄이 이어지면 그 가운데에서 자른다.
@@ -55,6 +62,7 @@ export async function findFrames(small: Buffer, opt: { cols?: number; rows?: num
       cuts.push(best);
     }
     cuts.push(im.w);
+    sliced = cuts.slice(1, -1).reduce((a, x) => a + occ[x], 0); // 11-25 "자르기 잘해야 돼": 자른 줄에 그림이 걸쳐 있으면 벤 것
     boxes = [];
     for (let i = 0; i < opt.cols; i++) boxes.push({ x: cuts[i], y: 0, w: cuts[i + 1] - cuts[i], h: im.h });
   } else if (opt.cols && opt.rows) {
@@ -119,7 +127,7 @@ export async function findFrames(small: Buffer, opt: { cols?: number; rows?: num
     }
     return { ...b, dx: best.dx, dy: best.dy, clip: own };
   });
-  return { frames, cellW, cellH, bg, how };
+  return { frames, cellW, cellH, bg, how, sliced, touchesBorder: border > 2 };
 }
 
 /**
