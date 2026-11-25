@@ -231,7 +231,7 @@ export async function makeMotion(ref: Buffer, motion: MotionKey, o: { colors?: n
     try {
       // 11-25: 그림 AI 가 배경을 투명으로 돌려줄 때가 있다(둘째 판) — 투명도 배경으로 받는다
       rd = await realDot(raw, { colors: o.colors ?? 32 });
-      try { const sb = await findFrames(rd.small, { cols: M.frames, rows: 1 }); candB = { rd, set: sb, cuts: await cutFrames(rd.small, sb, { lockBottom: M.lock ? 0.25 : 0, dropEdgeBits: true }) }; } catch { /* B 없음 */ }
+      try { const sb = await findFrames(rd.small, { cols: M.frames, rows: 1, valleys: true }); candB = { rd, set: sb, cuts: await cutFrames(rd.small, sb, { lockBottom: M.lock ? 0.25 : 0, dropEdgeBits: true }) }; } catch { /* B 없음 */ }
       try { set = await findFrames(rd.small, { clearBg: true }); }
       catch (e) { if (!candB) throw e; set = candB.set; fixes.push("자동 나누기 실패 → 같은 너비 칸으로"); }
       cuts = await cutFrames(rd.small, set, { lockBottom: M.lock ? 0.25 : 0, dropEdgeBits: true });
@@ -254,7 +254,7 @@ export async function makeMotion(ref: Buffer, motion: MotionKey, o: { colors?: n
       }
       // 예측자가 칸 크기를 고쳤으면 후보 B 도 고친 칸으로 다시 자른다(둘째 판: 판단자가 B 를 골랐는데 B 가 고치기 전 46칸이었다)
       if (candB && candB.rd !== rd) {
-        try { const sb = await findFrames(rd.small, { cols: M.frames, rows: 1 }); candB = { rd, set: sb, cuts: await cutFrames(rd.small, sb, { lockBottom: M.lock ? 0.25 : 0, dropEdgeBits: true }) }; } catch { /* 옛 B 그대로 */ }
+        try { const sb = await findFrames(rd.small, { cols: M.frames, rows: 1, valleys: true }); candB = { rd, set: sb, cuts: await cutFrames(rd.small, sb, { lockBottom: M.lock ? 0.25 : 0, dropEdgeBits: true }) }; } catch { /* 옛 B 그대로 */ }
       }
     } catch (e) { reason = (e as Error).message; last = { machine: "fail", facts: [reason], action: "escalate" }; continue; }
     // 판단자가 자르는 자리에: A(자동·예측자 고침) vs B(같은 너비) 를 원본과 견줘 고른다

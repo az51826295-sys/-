@@ -12,7 +12,7 @@ import sharp from "sharp";
  *    1칸 틈까지는 같은 덩어리, 아주 작은 덩어리(가장 큰 것의 3% 미만)는 가장 가까운 큰 덩어리에 붙인다.
  * 맞추는 법: 첫 프레임을 기준으로, 각 프레임을 ±3칸 안 정수 이동 중 **배경 아닌 칸이 가장 많이 같은 색인 자리**에 둔다.
  */
-export type Frame = { x: number; y: number; w: number; h: number; dx: number; dy: number };
+export type Frame = { x: number; y: number; w: number; h: number; dx: number; dy: number; clip?: [number, number] }; // clip: 골짜기 자르기의 원래 가로 범위 — 칸을 넓혀도 이웃 프레임 칸은 안 가져온다
 export type FrameSet = { frames: Frame[]; cellW: number; cellH: number; bg: [number, number, number] | null; how: "auto" | "grid" };
 
 type Img = { d: Buffer; w: number; h: number };
@@ -32,7 +32,7 @@ function edgeBg(im: Img): [number, number, number] | null {
  * clearBg(11-25): 배경이 **투명**인 그림도 자동으로 받는다 — 글로 만들기(한 명만 있는 그림)에서만 켠다.
  * 시트에는 켜지 않는다: 투명 시트(taeo-sheet)는 위아래 칸이 붙어 있어 덩어리 3개로 잘못 나뉘었다 → 그때는 "가로·세로를 정하라"가 맞다(frames_check).
  */
-export async function findFrames(small: Buffer, opt: { cols?: number; rows?: number; clearBg?: boolean } = {}): Promise<FrameSet> {
+export async function findFrames(small: Buffer, opt: { cols?: number; rows?: number; clearBg?: boolean; valleys?: boolean } = {}): Promise<FrameSet> {
   const { data, info } = await sharp(small).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
   const im: Img = { d: data, w: info.width, h: info.height };
   const bg = edgeBg(im);
@@ -40,7 +40,24 @@ export async function findFrames(small: Buffer, opt: { cols?: number; rows?: num
 
   let boxes: { x: number; y: number; w: number; h: number }[];
   let how: FrameSet["how"] = "grid";
-  if (opt.cols && opt.rows) {
+  if (opt.cols && opt.rows === 1 && opt.valleys && opt.cols > 1) {
+    // 11-25 실패율 자 2바퀴: 같은 너비 4등분이 드워프 1번(도끼 들어 넓다)의 오른팔을 잘라 2번 칸으로 넘겼다(판단자도 통과시켰다).
+    // → 경계마다 "균등 자리 ± 칸 너비 40%" 안에서 **칠한 칸이 가장 적은 세로줄(골짜기)** 을 찾고, 0 인 줄이 이어지면 그 가운데에서 자른다.
+    const occ = new Array<number>(im.w).fill(0);
+    for (let x = 0; x < im.w; x++) for (let y = 0; y < im.h; y++) if (isFg(x, y)) occ[x]++;
+    const cuts = [0];
+    for (let k = 1; k < opt.cols; k++) {
+      const c = (k * im.w) / opt.cols, r = (0.4 * im.w) / opt.cols;
+      const lo = Math.max(cuts[k - 1] + 1, Math.floor(c - r)), hi = Math.min(im.w - 1, Math.ceil(c + r));
+      let best = Math.round(c), bv = Infinity;
+      for (let x = lo; x <= hi; x++) if (occ[x] < bv || (occ[x] === bv && Math.abs(x - c) < Math.abs(best - c))) { bv = occ[x]; best = x; }
+      if (bv === 0) { let a = best, b = best; while (a - 1 >= lo && occ[a - 1] === 0) a--; while (b + 1 <= hi && occ[b + 1] === 0) b++; best = Math.round((a + b) / 2); }
+      cuts.push(best);
+    }
+    cuts.push(im.w);
+    boxes = [];
+    for (let i = 0; i < opt.cols; i++) boxes.push({ x: cuts[i], y: 0, w: cuts[i + 1] - cuts[i], h: im.h });
+  } else if (opt.cols && opt.rows) {
     boxes = [];
     for (let j = 0; j < opt.rows; j++) for (let i = 0; i < opt.cols; i++) {
       const x0 = Math.round((i * im.w) / opt.cols), x1 = Math.round(((i + 1) * im.w) / opt.cols), y0 = Math.round((j * im.h) / opt.rows), y1 = Math.round(((j + 1) * im.h) / opt.rows);
@@ -89,6 +106,7 @@ export async function findFrames(small: Buffer, opt: { cols?: number; rows?: num
   const base = boxes.map((b) => ({ x: b.x - Math.floor((cellW - b.w) / 2), y: b.y - (cellH - b.h), w: cellW, h: cellH }));
   const px = (x: number, y: number) => (x < 0 || y < 0 || x >= im.w || y >= im.h ? null : isFg(x, y) ? at(im, x, y) : null);
   const frames: Frame[] = base.map((b, f) => {
+    if (opt.valleys && opt.rows === 1) return { ...b, dx: 0, dy: 0, clip: [boxes[f].x, boxes[f].x + boxes[f].w] };
     if (f === 0 || how === "grid") return { ...b, dx: 0, dy: 0 };
     let best = { s: -1, dx: 0, dy: 0 };
     for (let dy = -3; dy <= 3; dy++) for (let dx = -3; dx <= 3; dx++) {
@@ -194,6 +212,7 @@ export async function cutFrames(small: Buffer, set: FrameSet, opt: { lockBottom?
     const out = Buffer.alloc(set.cellW * set.cellH * 4);
     for (let y = 0; y < set.cellH; y++) for (let x = 0; x < set.cellW; x++) {
       const sx = f.x + f.dx + x, sy = f.y + f.dy + y;
+      if (f.clip && (sx < f.clip[0] || sx >= f.clip[1])) continue;
       if (sx < 0 || sy < 0 || sx >= im.w || sy >= im.h) continue;
       const p = at(im, sx, sy); if (p[3] < 128 || (set.bg && near(p, set.bg))) continue;
       out[(y * set.cellW + x) * 4] = p[0]; out[(y * set.cellW + x) * 4 + 1] = p[1]; out[(y * set.cellW + x) * 4 + 2] = p[2]; out[(y * set.cellW + x) * 4 + 3] = 255;
