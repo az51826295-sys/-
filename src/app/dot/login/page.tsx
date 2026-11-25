@@ -25,7 +25,9 @@ export default async function DotLogin({ searchParams }: { searchParams: Promise
   const 계정 = user && !user.is_anonymous ? user : null;
   const 구글 = process.env.GOOGLE_LOGIN === "1" && (await 구글켜졌나()).켜짐;
   /* 이 구글 계정이 이미 다른 두근도트 계정에 붙어 있다 → 그 계정으로 로그인을 이어 간다(단추가 알아서). */
-  const 이미있음 = error_code === "identity_already_exists";
+  // 11-25 사장님 폰 "로그인이 막힘": 그 구글 메일로 **이미 가입한 계정**(이메일 가입 등)이 있으면 구글이 identity_already_exists 가 아니라
+  // email_exists("A user with this email address has already been registered")로 돌려보낸다 → 같은 일: 그 계정으로 로그인을 잇는다.
+  const 이미있음 = error_code === "identity_already_exists" || error_code === "email_exists" || /already been registered/i.test(error ?? "");
 
   return (
     <div className="lg-root">
