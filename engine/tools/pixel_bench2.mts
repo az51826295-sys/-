@@ -48,7 +48,7 @@ async function motion(name: string, ref: Buffer, mv: "idle" | "wave" | "custom" 
   else row.why = m.reason;
   rows.push(row); console.log(JSON.stringify({ ...row, facts: undefined, judge: undefined }));
 }
-for (const [name, desc, size, act] of CHARS) {
+for (const [name, desc, size, act] of process.env.BENCH2_ONLY === "game" ? [] : CHARS) {
   const t0 = Date.now();
   const c = await makeCharacter(desc, size); usd += c.usd;
   rows.push({ name, mv: "create", ok: c.ok, size, usd: +c.usd.toFixed(4), sec: +((Date.now() - t0) / 1000).toFixed(0), facts: c.facts, why: c.ok ? undefined : c.reason, specks: c.ok ? await specks(c.png) : undefined });

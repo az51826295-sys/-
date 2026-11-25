@@ -183,14 +183,15 @@ export async function makeCharacter(desc: string, size: CanvasSize, o: { colors?
   catch (e) { return { ok: false, reason: refusedWhy(e as Error), usd: 0, facts: [] }; }
   let usd = d.usd;
   let f = await fitToCanvas(d.png, canvas, { colors: o.colors ?? 32, height: profile?.height, profile, snap: o.snap });
+  if (process.env.PIXEL_SABOTAGE_FIRST_FIT && profile) f = { ...f, ok: false, reason: "격자 못 찾음(심은 고장)", facts: ["격자 못 찾음(심은 고장)"] } as typeof f; // 다시 그리기 길을 실제로 돌려 보는 스위치
   // 11-25 실패율 자 6바퀴 확인 판: 게임 그림체 남학생이 "격자 못 찾음" 으로 바로 실패(게임 그림체 길엔 다시 그리기가 없었다) → 1번만 다시, 이유를 붙여서
   if (!f.ok && profile && !process.env.PIXEL_CREATE_MOCK) {
     try {
-      const why = f.facts.some((x) => x.includes("격자")) ? "Last time the picture had no clear pixel grid: draw with big clean square pixels exactly like the reference sprites, no blur, no anti-aliasing." : `Last time: ${f.reason}. Draw exactly ONE character, whole body, centered.`;
+      const why = f.facts.some((x) => x.includes("격자")) ? "" /* 격자 실패는 운 — 이유 문장을 붙이면 도트가 굵어져 키가 41~43칸(게임 58)으로 줄었다(11-25 심은 고장 4판) → 같은 주문으로 새로 */ : `Last time: ${f.reason}. Draw exactly ONE character, whole body, centered.`;
       const d2 = await draw(`${stylePrompt(cleanDesc(desc), profile.height)} ${why}`, board);
       usd += d2.usd;
       const f2 = await fitToCanvas(d2.png, canvas, { colors: o.colors ?? 32, height: profile.height, profile, snap: o.snap });
-      if (f2.ok) { f2.facts.unshift(`첫 그림 실패(${f.facts.join(" · ")}) → 이유를 붙여 다시 그림`); f = f2; d = d2; }
+      if (f2.ok) { f2.facts.unshift(`첫 그림 실패(${f.facts.join(" · ")}) → 다시 그림`); f = f2; d = d2; }
     } catch { /* 다시 그리기 실패 — 아래에서 실패로 */ }
   }
   if (unit) {
