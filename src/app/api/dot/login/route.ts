@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { 구글켜졌나, 구글꺼짐말 } from "@/lib/auth/googleEnabled";
 import { publicOrigin } from "@/lib/http/origin";
-import { AUTH_NEXT_COOKIE } from "@/lib/dot/authNext";
+import { AUTH_NEXT_COOKIE, safeNext } from "@/lib/dot/authNext";
 
 /**
  * **두근도트 로그인 — 구글 한 단추** (11-22 사장님 "로그인창도 따로").
@@ -18,7 +18,10 @@ export async function POST(request: Request) {
   const { 켜짐 } = await 구글켜졌나();
   if (!켜짐) return Response.json({ error: 구글꺼짐말 }, { status: 503 });
 
-  const body = (await request.json().catch(() => ({}))) as { mode?: string };
+  const body = (await request.json().catch(() => ({}))) as { mode?: string; next?: string };
+  // 11-25: 부른 화면이 돌아갈 곳을 줄 수 있다(/pixel). "이미 있는 계정" 으로 다시 부를 때(mode signin)는 앞서 남긴 쿠키를 잇는다.
+  const jarNext = request.headers.get("cookie")?.split("; ").find((c) => c.startsWith(`${AUTH_NEXT_COOKIE}=`))?.slice(AUTH_NEXT_COOKIE.length + 1);
+  const asked = safeNext(body.next) ?? (body.mode === "signin" ? safeNext(jarNext) : null);
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   const redirectTo = `${publicOrigin(request)}/auth/callback`;
@@ -31,7 +34,7 @@ export async function POST(request: Request) {
     return Response.json({ error: r.error?.message ?? "구글 로그인 주소를 못 받았어요." }, { status: 400 });
   }
   const res = Response.json({ url: r.data.url });
-  const next = 붙이기 ? "/dot/login?linked=1" : "/dot/feed";
+  const next = asked ?? (붙이기 ? "/dot/login?linked=1" : "/dot/feed");
   res.headers.append("set-cookie", `${AUTH_NEXT_COOKIE}=${encodeURIComponent(next)}; Path=/; Max-Age=900; SameSite=Lax; Secure`);
   return res;
 }

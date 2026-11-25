@@ -48,3 +48,15 @@ export async function clientAs(request: Request) {
   const { data } = await c.auth.getUser();
   return { client: c, user: data.user ?? null };
 }
+
+/**
+ * **계정을 연결한 사람인가** (11-25 사장님: "계정 연동해야지 들어갈수 있게 · 도트 그림 만들기는 선결제로").
+ * 손님(익명)은 브라우저를 지우면 사라진다 — 산 장수도 같이 사라진다. 그래서 돈이 오가는 자리(AI 그림·결제)는
+ * 구글 등으로 연결한 계정만 받는다. 없음 = 401, 손님 = 403(화면이 "구글로 연결" 단추를 띄운다).
+ */
+export async function linkedUserFrom(request: Request): Promise<{ id: string } | { error: string; status: 401 | 403; needLogin: true }> {
+  const { user } = await clientAs(request);
+  if (!user) return { error: "새로고침 후 다시 눌러 주세요.", status: 401, needLogin: true };
+  if (user.is_anonymous) return { error: "구글 계정을 연결해야 쓸 수 있어요.", status: 403, needLogin: true };
+  return { id: user.id };
+}

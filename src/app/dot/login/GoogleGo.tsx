@@ -18,7 +18,7 @@ function 앱안브라우저(): "android" | "kakao" | "ios" | null {
  * **누르지 않아도 그 계정으로 로그인을 이어 간다** — 같은 단추를 두 번 누르게 하지 않는다.
  * 오류는 삼키지 않는다(삼키면 눌러도 말없이 아무 일도 안 일어난다).
  */
-export default function GoogleGo({ already, en }: { already: boolean; en: boolean }) {
+export default function GoogleGo({ already, en, next }: { already: boolean; en: boolean; next?: string }) {
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const 한번 = useRef(false);
@@ -33,7 +33,7 @@ export default function GoogleGo({ already, en }: { already: boolean; en: boolea
     if (앱안 === "ios") { setErr(en ? "Google sign-in doesn't work inside this app. Tap ··· and choose \"Open in browser\"." : "이 앱 안에선 구글이 로그인을 막아요. 오른쪽 위 ··· → \"브라우저로 열기\" 후 다시 눌러 주세요."); return; }
     setBusy(true); setErr(null);
     try {
-      const r = await fetch("/api/dot/login", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ mode }) });
+      const r = await fetch("/api/dot/login", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ mode, next }) });
       const j = (await r.json().catch(() => ({}))) as { url?: string; error?: string };
       if (j.url) { window.location.href = j.url; return; }
       setErr(j.error ?? (en ? "Couldn't open Google sign-in." : "구글 로그인을 못 열었어요."));

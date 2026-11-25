@@ -25,9 +25,10 @@ export async function GET(request: Request) {
   const home = dot ? (next ?? "/dot") : "/ask";
   const loginPage = dot ? "/dot/login" : "/login";
 
-  const go = (path: string) => {
+  // 실패로 로그인 화면에 갈 때는 갈 곳 쿠키를 남긴다(11-25) — "이미 있는 계정" 으로 다시 로그인한 뒤 원래 화면(/pixel)으로 돌아가게
+  const go = (path: string, keep = false) => {
     const res = NextResponse.redirect(new URL(path, origin));
-    if (next) res.cookies.delete(AUTH_NEXT_COOKIE);
+    if (next && !keep) res.cookies.delete(AUTH_NEXT_COOKIE);
     return res;
   };
 
@@ -35,7 +36,7 @@ export async function GET(request: Request) {
   if (!code) {
     const errCode = url.searchParams.get("error_code") ?? "";
     const why = url.searchParams.get("error_description") ?? "구글에서 돌아온 값이 없어요.";
-    return go(`${loginPage}?${errCode ? `error_code=${encodeURIComponent(errCode)}&` : ""}error=${encodeURIComponent(why)}`);
+    return go(`${loginPage}?${errCode ? `error_code=${encodeURIComponent(errCode)}&` : ""}error=${encodeURIComponent(why)}`, true);
   }
   const supabase = await createClient();
   const { error } = await supabase.auth.exchangeCodeForSession(code);

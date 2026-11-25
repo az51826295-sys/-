@@ -42,22 +42,26 @@ check("장수 없으면 움직임 받기 402", mvd.status === 402, mvd.status);
 // 11-24 AI 동작 생성: 장수 없으면 그리기 전에 402(그림 AI 를 안 부른다 = 돈 0)
 const mf = new FormData(); mf.append("image", new Blob([readFileSync("C:/Users/az518/Desktop/두근도트-시트/taeo-neutral.png")], { type: "image/png" }), "c.png"); mf.append("motion", "idle");
 const ai = await go("/api/pixel/motion", { method: "POST", body: mf });
-check("장수 없으면 AI 동작 402", ai.status === 402, ai.status);
+// 11-25 선결제·계정 연결: 손님은 장수와 상관없이 AI 그림 전에 403(그림 AI 를 안 부른다)
+check("손님이면 AI 동작 403", ai.status === 403, ai.status);
 const cf = new FormData(); cf.append("desc", "a small knight"); cf.append("size", "48");
 const cr = await go("/api/pixel/create", { method: "POST", body: cf });
-check("장수 없으면 글로 만들기 402", cr.status === 402, cr.status);
+check("손님이면 글로 만들기 403", cr.status === 403, cr.status);
 const cb = new FormData(); cb.append("desc", "x"); cb.append("size", "48");
 const cbr = await go("/api/pixel/create", { method: "POST", body: cb });
-check("빈 글이면 그리기 전에 400", cbr.status === 400, cbr.status);
+check("손님이면 빈 글도 403(문이 먼저)", cbr.status === 403, cbr.status);
 const sf = new FormData(); for (const n of ["taeo", "haru"]) sf.append("game", new Blob([readFileSync(`C:/Users/az518/Desktop/두근도트-시트/${n}-strip.png`)], { type: "image/png" }), `${n}.png`);
 const st = await go("/api/pixel/style", { method: "POST", body: sf }); const sj = await st.json().catch(() => ({}));
 check("게임 그림체 분석(무료) — 키·팔레트", st.status === 200 && sj.height > 0 && sj.palette?.length > 0, { status: st.status, height: sj.height, colors: sj.palette?.length });
 const gf = new FormData(); gf.append("desc", "a small knight"); gf.append("size", "48"); gf.append("game", new Blob([readFileSync("C:/Users/az518/Desktop/두근도트-시트/taeo-strip.png")], { type: "image/png" }), "g.png");
 const gr = await go("/api/pixel/create", { method: "POST", body: gf });
-check("장수 없으면 게임 그림체 만들기 402", gr.status === 402, gr.status);
+check("손님이면 게임 그림체 만들기 403", gr.status === 403, gr.status);
 const pay = await go("/api/pixel/pay", { method: "POST" });
 const pyj = await pay.json();
-check("결제창 주소", pay.ok && /polar\.sh/.test(pyj.url ?? ""), pay.ok ? String(pyj.url).replace(/[?#].*/, "").slice(0, 60) + "…" : pyj);
+check("손님이면 결제창 대신 403 · 연결하라는 표시", pay.status === 403 && pyj.needLogin === true, { status: pay.status, needLogin: pyj.needLogin });
+// 연결 여부를 화면에 알린다
+const me = await (await go("/api/pixel/me")).json().catch(() => ({}));
+check("me 가 손님을 linked:false 로", me.linked === false && me.signedIn === true, me);
 
 // 만든 손님 정리
 const tok = [...jar].find(([k]) => /auth-token/.test(k));

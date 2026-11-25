@@ -6,5 +6,6 @@
 export const AUTH_NEXT_COOKIE = "dot_auth_next";
 export function safeNext(v: string | undefined | null): string | null {
   const s = decodeURIComponent(v ?? "");
-  return /^\/dot(\/|\?|$)/.test(s) && !s.includes("//") ? s : null;
+  // 11-25: `/pixel`(도트 작업실)도 받는다 — AI 그림은 계정 연결 뒤에만 쓸 수 있어서 거기로 돌아와야 한다
+  return /^\/(dot|pixel)(\/|\?|$)/.test(s) && !s.includes("//") ? s : null;
 }

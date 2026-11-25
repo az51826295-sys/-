@@ -1,4 +1,4 @@
-import { userIdFrom } from "@/lib/dot/auth";
+import { linkedUserFrom } from "@/lib/dot/auth";
 import { createServiceClient } from "@/lib/supabase/service";
 import { pixelBalance, refundPixelShot, spendPixelShot } from "@/lib/pixel/credits";
 import { dataUrl, readUpload } from "@/lib/pixel/serve";
@@ -11,8 +11,10 @@ import { MOTIONS, makeMotion, gifOf, sheetOf, type MotionKey } from "@/lib/pixel
 export const maxDuration = 180;
 
 export async function POST(request: Request) {
-  const userId = await userIdFrom(request);
-  if (!userId) return Response.json({ error: "새로고침 후 다시 눌러 주세요." }, { status: 401 });
+  // 11-25 선결제 + 계정 연결: 손님(익명)은 AI 그림을 못 쓴다
+  const who = await linkedUserFrom(request);
+  if ("error" in who) return Response.json({ error: who.error, needLogin: true }, { status: who.status });
+  const userId = who.id;
   const u = await readUpload(request);
   if ("error" in u) return Response.json({ error: u.error }, { status: u.status });
   if (!(u.motion in MOTIONS)) return Response.json({ error: "동작을 골라 주세요." }, { status: 400 });

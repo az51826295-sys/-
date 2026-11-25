@@ -1,4 +1,4 @@
-import { userIdFrom } from "@/lib/dot/auth";
+import { linkedUserFrom } from "@/lib/dot/auth";
 import { createServiceClient } from "@/lib/supabase/service";
 import { pixelBalance, refundPixelShot, spendPixelShot } from "@/lib/pixel/credits";
 import { dataUrl } from "@/lib/pixel/serve";
@@ -12,8 +12,10 @@ import { gameImages } from "@/lib/pixel/serve";
 export const maxDuration = 120;
 
 export async function POST(request: Request) {
-  const userId = await userIdFrom(request);
-  if (!userId) return Response.json({ error: "새로고침 후 다시 눌러 주세요." }, { status: 401 });
+  // 11-25 선결제 + 계정 연결: 손님(익명)은 AI 그림을 못 쓴다
+  const who = await linkedUserFrom(request);
+  if ("error" in who) return Response.json({ error: who.error, needLogin: true }, { status: who.status });
+  const userId = who.id;
   const form = await request.formData().catch(() => null);
   const desc = cleanDesc(String(form?.get("desc") ?? ""));
   if (desc.length < 2) return Response.json({ error: "어떤 캐릭터인지 글로 적어 주세요." }, { status: 400 });

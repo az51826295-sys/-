@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FROM_COOKIE, cleanFrom } from "@/lib/dot/from";
+import GoogleGo from "@/app/dot/login/GoogleGo";
 
 /**
  * 도트 작업실 화면(11-25 사장님: "픽셀랩 따라서 UI 구성해 줘").
@@ -22,6 +23,7 @@ export default function PixelClient({ en, paid }: { en: boolean; paid: string | 
   const [busy, setBusy] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const [shots, setShots] = useState<number | null>(null);
+  const [linked, setLinked] = useState(false); // 11-25: AI 그림·결제는 구글 등으로 연결한 계정만(선결제)
   const [payOpen, setPayOpen] = useState(true);
   const [items, setItems] = useState<Item[]>([]);
   const [cur, setCur] = useState<number | null>(null);
@@ -42,7 +44,7 @@ export default function PixelClient({ en, paid }: { en: boolean; paid: string | 
         } catch { /* 쿠키를 막은 브라우저 — 세지 못할 뿐 */ }
         await fetch("/api/dot/guest", { method: "POST" });
         const j = await (await fetch("/api/pixel/me", { cache: "no-store" })).json();
-        if (alive) { setShots(Number(j.shots ?? 0)); setPayOpen(!!j.payOpen); }
+        if (alive) { setShots(Number(j.shots ?? 0)); setPayOpen(!!j.payOpen); setLinked(!!j.linked); }
         // 저장해 둔 내 게임(브라우저에만)
         try { const xs = JSON.parse(localStorage.getItem("px-games") ?? "[]"); if (alive && Array.isArray(xs) && xs.length) setGames(xs); } catch { /* 없음 */ }
       } catch { if (alive) setShots(0); }
@@ -82,7 +84,7 @@ export default function PixelClient({ en, paid }: { en: boolean; paid: string | 
     try {
       const r = await fetch(url, { method: "POST", body: fd });
       const j = await r.json();
-      if (!r.ok) { setErr(j.error ?? t("실패했어요.", "Failed.")); return null; }
+      if (!r.ok) { if (j.needLogin) setLinked(false); setErr(j.error ?? t("실패했어요.", "Failed.")); return null; }
       if (typeof j.left === "number") setShots(j.left);
       return j;
     } catch { net(); return null; } finally { setBusy(null); }
@@ -197,7 +199,14 @@ export default function PixelClient({ en, paid }: { en: boolean; paid: string | 
   ];
   const needRef = tool !== "create" && tool !== "game";
   const has = shots !== null && shots > 0;
-  const buyBtn = <button type="button" className="go" disabled={!!busy || !payOpen} onClick={buy}>{payOpen ? t("10장 4,900원", "10 for ₩4,900") : t("결제 준비 중", "Payments opening soon")}</button>;
+  // 11-25 사장님 "계정 연동해야지 · 도트 그림 만들기는 선결제로": 손님은 결제·AI 그림 대신 구글 연결 단추를 본다(무료 장수 없음)
+  const connect = (
+    <div className="connect">
+      <p>{t("구글 계정을 연결하면 장수를 사서 쓸 수 있어요. 산 장수는 계정에 남아요.", "Connect a Google account to buy and use credits. Credits stay with your account.")}</p>
+      <GoogleGo already={false} en={en} next="/pixel" />
+    </div>
+  );
+  const buyBtn = !linked ? connect : <button type="button" className="go" disabled={!!busy || !payOpen} onClick={buy}>{payOpen ? t("10장 4,900원", "10 for ₩4,900") : t("결제 준비 중", "Payments opening soon")}</button>;
   const paidMsg = paid === "10" ? t("10장이 들어왔어요. 고마워요!", "10 credits added. Thank you!")
     : paid === "wait" ? t("결제 확인 중이에요. 잠시 뒤 새로고침해 주세요.", "Payment is still processing. Refresh in a moment.")
     : paid === "fail" ? t("결제를 확인하지 못했어요. 돈이 나갔다면 이 화면을 다시 열어 주세요 — 한 번 더 확인해요.", "Couldn't confirm the payment. If you were charged, reopen this page and we'll check again.") : null;
@@ -215,7 +224,7 @@ export default function PixelClient({ en, paid }: { en: boolean; paid: string | 
         <b>{t("도트 작업실", "Pixel Studio")}</b>
         <span className="sp" />
         <span className="bal">{shots === null ? "…" : t(`남은 ${shots}장`, `${shots} credits`)}</span>
-        {!has && buyBtn}
+        {!has && linked && buyBtn}
       </header>
       {paidMsg && <div className="px-note">{paidMsg}</div>}
 
@@ -433,6 +442,9 @@ const CSS = `
 .px-opts .grow .thumbs img{height:32px;max-width:48px}
 .px-opts .pal{display:flex;flex-wrap:wrap;gap:3px}.px-opts .pal i{width:18px;height:18px;border-radius:3px;border:1px solid #0006}
 .px-opts .grow{display:flex;align-items:center;gap:6px;font-size:14px}.px-opts .grow b{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.px-opts .grow small{color:#7f8094}
+.px-root .connect{display:flex;flex-direction:column;gap:8px}.px-root .connect p{margin:0;font-size:13px;color:#b9b9c6;line-height:1.5}
+.px-root .lg-google{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:12px;border-radius:10px;border:0;background:#fff;color:#222;font-weight:700;font-size:15px;cursor:pointer}
+.px-root .lg-google:disabled{opacity:.6}.px-root .lg-err{color:#ff8fa8;font-size:13px;margin:0}
 .px-opts .err{color:#ff8fa8;font-size:14px;margin:0}
 .px-hist{border-top:1px solid #26262f;background:#15151b;padding:8px 16px}
 .px-hist .lab{font-size:12px;color:#7f8094;margin-bottom:6px}

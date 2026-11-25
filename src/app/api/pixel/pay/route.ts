@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import { userIdFrom } from "@/lib/dot/auth";
+import { linkedUserFrom } from "@/lib/dot/auth";
 import { publicOrigin } from "@/lib/http/origin";
 import { createPixelCheckout, pixelPayOpen } from "@/lib/dot/polar";
 import { langFromCookie } from "@/lib/dot/langServer";
@@ -7,8 +7,10 @@ import { langFromCookie } from "@/lib/dot/langServer";
 /** 10장 4,900원 결제창 주소. 장수는 여기서 안 준다 — 돌아올 때 Polar 에 물어보고 준다. */
 export async function POST(request: Request) {
   const en = (await langFromCookie()) === "en";
-  const userId = await userIdFrom(request);
-  if (!userId) return Response.json({ error: en ? "Refresh the page and try again." : "새로고침 후 다시 눌러 주세요." }, { status: 401 });
+  // 11-25: 결제는 계정을 연결한 사람만 — 손님 계정에 산 장수는 브라우저를 지우면 사라진다
+  const who = await linkedUserFrom(request);
+  if ("error" in who) return Response.json({ error: en ? (who.status === 403 ? "Connect a Google account first." : "Refresh the page and try again.") : who.error, needLogin: true }, { status: who.status });
+  const userId = who.id;
   if (!pixelPayOpen()) return Response.json({ error: en ? "Payments are not open yet." : "결제가 아직 안 열렸어요." }, { status: 503 });
   const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || null;
   const r = await createPixelCheckout({ userId, origin: publicOrigin(request), ip, en });
