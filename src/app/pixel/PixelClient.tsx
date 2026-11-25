@@ -470,7 +470,7 @@ export default function PixelClient({ en, paid }: { en: boolean; paid: string | 
 const CSS = `
 .px-root{--bg:#121022;--pan:#1c1a30;--pan2:#26233f;--line:#3e3a63;--ink:#07060d;--tx:#f3f0ff;--mu:#a6a1c8;--pk:#ff5c8a;--yl:#ffd23f;--bl:#5ec8ff;
   min-height:100vh;display:flex;flex-direction:column;color:var(--tx);
-  background:var(--bg) repeating-linear-gradient(0deg,transparent 0 15px,#ffffff06 15px 16px),repeating-linear-gradient(90deg,transparent 0 15px,#ffffff06 15px 16px);
+  background-color:var(--bg);background-image:repeating-linear-gradient(0deg,transparent 0 15px,#ffffff08 15px 16px),repeating-linear-gradient(90deg,transparent 0 15px,#ffffff08 15px 16px);
   font-family:Galmuri14,Galmuri11,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-size:14px;-webkit-font-smoothing:none;word-break:keep-all;overflow-wrap:anywhere}
 .px-root *{border-radius:0!important;letter-spacing:0}
 .px-root button,.px-root input,.px-root textarea,.px-root summary{font-family:inherit;font-size:14px}
