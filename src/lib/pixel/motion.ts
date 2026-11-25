@@ -43,6 +43,26 @@ function heightOf(cuts: Buffer[], set: FrameSet): number {
   return Math.max(...cuts.map((c) => { let top = -1, bot = -1; for (let y = 0; y < set.cellH; y++) for (let x = 0; x < set.cellW; x++) if (c[(y * set.cellW + x) * 4 + 3]) { if (top < 0) top = y; bot = y; } return top < 0 ? 0 : bot - top + 1; }));
 }
 
+/**
+ * 11-25 실패율 자 1바퀴에서 사람 눈이 잡은 것: 걷기에서 캐릭터가 **옆으로 미끄러진다**(토끼 몸 가운데 18.5→12.4칸, 슬라임 5칸).
+ * 같은 너비 칸으로 자르면 그림 AI 가 프레임을 고르게 안 띄운 만큼 칸마다 위치가 어긋난다. 판단자·기계 검사 둘 다 못 잡았다.
+ * → **윗몸(위 절반) 무게중심**을 1번 프레임에 맞춰 가로로 옮긴다(다리는 걸으며 움직이니 윗몸으로). 칸은 옮긴 만큼 넓힌다.
+ */
+export function stabilize(cuts: Buffer[], set: FrameSet): { cuts: Buffer[]; set: FrameSet; shifts: number[] } {
+  const W = set.cellW, H = set.cellH, half = Math.floor(H / 2);
+  const cx = cuts.map((c) => { let sx = 0, n = 0; for (let y = 0; y < half; y++) for (let x = 0; x < W; x++) if (c[(y * W + x) * 4 + 3]) { sx += x; n++; } return n ? sx / n : W / 2; });
+  const shifts = cx.map((v) => Math.round(cx[0] - v));
+  const pad = Math.max(0, ...shifts.map((v) => Math.abs(v)));
+  if (!pad) return { cuts, set, shifts };
+  const NW = W + 2 * pad;
+  const out = cuts.map((c, f) => {
+    const o = Buffer.alloc(NW * H * 4);
+    for (let y = 0; y < H; y++) c.copy(o, (y * NW + pad + shifts[f]) * 4, y * W * 4, (y + 1) * W * 4);
+    return o;
+  });
+  return { cuts: out, set: { ...set, cellW: NW }, shifts };
+}
+
 /** 모든 프레임에서 빈 위·아래 줄을 같이 잘라 낸다(같은 너비 칸 자르기는 그림 높이 전체를 칸으로 쓴다 — 둘째 판 40×107). */
 function trimRows(cuts: Buffer[], set: FrameSet): { cuts: Buffer[]; set: FrameSet } {
   const row = set.cellW * 4;
@@ -237,12 +257,15 @@ export async function makeMotion(ref: Buffer, motion: MotionKey, o: { colors?: n
       }
     } catch (e) { reason = (e as Error).message; last = { machine: "fail", facts: [reason], action: "escalate" }; continue; }
     // 판단자가 자르는 자리에: A(자동·예측자 고침) vs B(같은 너비) 를 원본과 견줘 고른다
-    const cj = await judgeCut(refPng, raw, set.frames.length === M.frames ? await sheetOf(cuts, set) : null, candB ? await sheetOf(candB.cuts, candB.set) : null, motion);
+    const aSheet = set.frames.length === M.frames ? await sheetOf(cuts, set) : null, bSheet = candB ? await sheetOf(candB.cuts, candB.set) : null;
+    const cj = await judgeCut(refPng, raw, aSheet, bSheet, motion);
     if (cj) {
       usd += cj.usd;
       if (cj.pick === "B" && candB) { rd = candB.rd; ({ set, cuts } = trimRows(candB.cuts, candB.set)); fixes.push("판단자: 같은 너비 칸이 더 잘 잘렸다"); }
       fixes.push(`판단자: ${cj.pick} · 같은 캐릭터 ${cj.same ? "예" : "아니오"}(${cj.confidence.toFixed(2)})${cj.badFrames.length ? ` · 틀린 프레임 ${cj.badFrames.join(",")}` : ""}`);
     }
+    // 미끄러짐 잡기(돌기·동작 모두): 윗몸 가운데를 1번 프레임에 맞춘다
+    { const st = stabilize(cuts, set); if (st.shifts.some((v) => v)) { cuts = st.cuts; set = st.set; fixes.push(`프레임 가로 맞춤 ${st.shifts.join("/")}칸`); } }
     const mc = await machineCheck(set, cuts, M.frames, refH);
     mc.facts.unshift(...fixes);
     let judge: MotionCheck["judge"];
@@ -253,8 +276,13 @@ export async function makeMotion(ref: Buffer, motion: MotionKey, o: { colors?: n
     }
     // 판단자가 확신(≥0.7)하고 "둘 다 못 잘랐다 · 다른 캐릭터 · 방향 틀림" 이면 기계가 통과시켜도 받지 않는다(다시 그리기로)
     // 옆모습이 비스듬하면(turn) 다시 그릴 거리 — 다만 마지막 판이면 받는다(손님에게 실패보다 낫다)
-    const profileBad = !!cj && motion === "turn" && !cj.profileOk && t < tries;
-    const judgeNo = !!cj && cj.confidence >= 0.7 && (cj.pick === "neither" || !cj.same || cj.badFrames.length > 0 || profileBad);
+    const says = (c: CutJudge) => c.confidence >= 0.7 && (c.pick === "neither" || !c.same || c.badFrames.length > 0 || (motion === "turn" && !c.profileOk && t < tries));
+    let judgeNo = !!cj && says(cj);
+    // 11-25 실패율 자: 같은 그림을 세 번 보여 주니 판단자가 한 번만 "4장 다 틀림" 이라 했다(고양이 요리사 걷기) → 막기 전에 **한 번 더 묻고 둘 다 막자고 할 때만** 막는다
+    if (cj && judgeNo) {
+      const cj2 = await judgeCut(refPng, raw, aSheet, bSheet, motion);
+      if (cj2) { usd += cj2.usd; if (!says(cj2)) { judgeNo = false; mc.facts.push("판단자 두 번째 의견: 괜찮다 → 받음"); } else mc.facts.push("판단자 두 번째 의견도: 다시"); }
+    }
     if (cj && judgeNo) feedback = (cj.fix || cj.why).slice(0, 300); // 협업: 판단자의 말이 다음 그림으로 간다
     if (judgeNo) mc.machine = "fail";
     const conf = judge ? (judge.same ? judge.confidence : 0) : undefined;

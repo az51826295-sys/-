@@ -76,13 +76,13 @@ async function openaiDrawer(): Promise<Drawer> {
   };
 }
 
-export type FitOpts = { colors?: number; height?: number; profile?: StyleProfile; snap?: boolean };
+export type FitOpts = { colors?: number; height?: number; profile?: StyleProfile; snap?: boolean; near?: number };
 
 /** 이미 그려 온 그림(raw)을 캔버스에 앉힌다 — AI 를 안 부르는 순수 기계 부분(시험이 이것을 직접 잰다). */
 export async function fitToCanvas(raw: Buffer, size: number, o: FitOpts = {}): Promise<{ ok: true; png: Buffer; drawn: [number, number]; facts: string[]; size: number; period: number } | { ok: false; reason: string; facts: string[]; period?: number }> {
   const facts: string[] = [];
   let small: Buffer, period: number;
-  try { const rd = await realDot(raw, { colors: o.colors ?? 32 }); small = rd.small; period = rd.period[0]; } catch (e) { return { ok: false, reason: (e as Error).message, facts: ["① 격자 못 찾음"] }; }
+  try { const rd = await realDot(raw, { colors: o.colors ?? 32, near: o.near }); small = rd.small; period = rd.period[0]; } catch (e) { return { ok: false, reason: (e as Error).message, facts: ["① 격자 못 찾음"] }; }
   let set;
   try { set = await findFrames(small, { clearBg: true }); } catch (e) { return { ok: false, reason: (e as Error).message, facts: ["② 캐릭터 못 찾음"] }; }
   if (set.frames.length !== 1) return { ok: false, reason: `캐릭터가 ${set.frames.length}개로 그려졌어요`, facts: [`② 덩어리 ${set.frames.length}개(기대 1)`] };
@@ -188,15 +188,28 @@ export async function makeCharacter(desc: string, size: CanvasSize, o: { colors?
     const note = `단위 목표: 키 ${unit.H}칸 · 한 칸 ${unit.u}px`;
     if (off && f.ok) {
       // ④ 잰 숫자를 생성자에게 되돌린다 — 같은 캐릭터를 단위만 바꿔 다시
+      // 11-25 실패율 자 1바퀴: 되돌린 숫자가 지나치게 먹혀 로봇 104칸 → 37칸(목표 59), 토끼는 58칸 그대로라 48 캔버스에 억지로 줄었다
+      // → 후보를 넷으로: 첫 그림 · 다시 그린 그림 · 둘 각각을 **목표 칸 크기 근처에서 다시 읽기**(돈 0, 강제 아님). 목표 키에 가장 가까운 것.
+      type Cand = { f: Extract<typeof f, { ok: true }>; d: typeof d; tag: string };
+      const cands: Cand[] = [{ f, d, tag: `첫 그림 ${h1}칸(한 칸 ${f.period.toFixed(1)}px)` }];
+      const reread = async (src: typeof d, from: string) => {
+        const nearP = (await fitToCanvas(src.png, canvas, { colors: o.colors ?? 32 }));
+        const p0 = nearP.ok ? (nearP.period * nearP.drawn[1]) / unit.H : unit.u;
+        // 더 잘게 읽기는 없는 칸을 지어낸다(로봇: 한 칸 23px 그림을 15px 로 읽어 57칸 — 사장님이 "도트 이상" 이라 한 그 모양) → 더 굵게 합칠 때만
+        if (!nearP.ok || p0 < nearP.period * 1.05) return;
+        const r = await fitToCanvas(src.png, canvas, { colors: o.colors ?? 32, near: p0 });
+        if (r.ok) cands.push({ f: r, d: src, tag: `${from}를 목표 칸 크기 근처에서 다시 읽음 ${r.drawn[1]}칸(한 칸 ${r.period.toFixed(1)}px)` });
+      };
+      await reread(d, "첫 그림");
       try {
         const d2 = await draw(feedbackPrompt(unit.H, unit.u, h1, f.period), d.png);
         usd += d2.usd;
         const f2 = await fitToCanvas(d2.png, canvas, { colors: o.colors ?? 32 });
-        if (f2.ok && Math.abs(f2.drawn[1] - unit.H) < Math.abs(h1 - unit.H)) {
-          f2.facts.unshift(note, `첫 그림 ${h1}칸(한 칸 ${f.period.toFixed(1)}px) → 숫자를 되돌려 다시: ${f2.drawn[1]}칸(한 칸 ${f2.period.toFixed(1)}px)`);
-          f = f2; d = d2;
-        } else f.facts.unshift(note, `첫 그림 ${h1}칸 — 다시 그려도 안 나아짐(${f2.ok ? f2.drawn[1] + "칸" : "실패"})`);
-      } catch { f.facts.unshift(note, `첫 그림 ${h1}칸 — 다시 그리기 실패`); }
+        if (f2.ok) { cands.push({ f: f2, d: d2, tag: `숫자를 되돌려 다시 그림 ${f2.drawn[1]}칸(한 칸 ${f2.period.toFixed(1)}px)` }); await reread(d2, "다시 그린 그림"); }
+      } catch { /* 다시 그리기 실패 — 남은 후보에서 고른다 */ }
+      const best = cands.reduce((a, b) => (Math.abs(b.f.drawn[1] - unit.H) < Math.abs(a.f.drawn[1] - unit.H) ? b : a));
+      best.f.facts.unshift(note, `후보 ${cands.length}: ${cands.map((c) => c.tag).join(" · ")} → 고름: ${best.tag}`);
+      f = best.f; d = best.d;
     } else if (f.ok) f.facts.unshift(note, `첫 그림 ${h1}칸(한 칸 ${f.period.toFixed(1)}px) — 목표 안`);
   }
   if (!f.ok) return { ok: false, reason: f.reason, usd, facts: f.facts };
