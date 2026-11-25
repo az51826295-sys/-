@@ -312,9 +312,11 @@ export default function PixelClient({ en, paid }: { en: boolean; paid: string | 
               <button type="button" onClick={() => setTool("game")}>{t("+ 내 게임", "+ My game")}</button>
             </div>
             <textarea value={cDesc} maxLength={200} rows={3} onChange={(e) => setCDesc(e.target.value)} placeholder={t("예: 빨간 망토를 두른 꼬마 기사, 은색 투구", "e.g. a small knight in a red cape, silver helmet")} />
-            {games[gPick] ? (
+            {games[gPick] ? (<>
               <label className="row"><input type="checkbox" checked={snap} onChange={(e) => setSnap(e.target.checked)} /> {t(`게임 색만 쓰기 (${games[gPick].palette.length}색) · 키 ${games[gPick].height}칸으로 맞춤`, `Only the game's ${games[gPick].palette.length} colors · ${games[gPick].height}px tall`)}</label>
-            ) : (<>
+              {/* 11-25 실패율 자 6바퀴: "빨간 머리" 가 게임 팔레트에 없어 갈색으로 나왔다 — 설계대로지만 손님이 놀라지 않게 */}
+              {snap && <p className="hint">{t("게임에 없는 색(예: 빨간 머리)은 게임 색 중 가장 가까운 색으로 바뀌어요. 원하는 색을 꼭 쓰려면 체크를 끄세요.", "Colors the game doesn't have (e.g. red hair) become the closest game color. Uncheck to keep any color.")}</p>}
+            </>) : (<>
               <div className="lab">{t("캔버스 (px)", "Canvas (px)")}</div>
               <div className="seg">{([32, 48, 64, 96] as const).map((z) => <button key={z} type="button" className={cSize === z ? "on" : ""} onClick={() => setCSize(z)}>{z}</button>)}</div>
             </>)}

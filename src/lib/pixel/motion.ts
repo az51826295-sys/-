@@ -132,6 +132,29 @@ export function lockUpper(cuts: Buffer[], set: FrameSet): { cuts: Buffer[]; seam
   return { cuts: out, seams };
 }
 
+/**
+ * 11-25 실패율 자 6바퀴: 내 게임 그림체 여학생(게임 색 15개로 맞춘 캐릭터)의 4방향이 게임 색이 아닌 색으로 그려져
+ * 기계가 "다른 색"(겹침 0.28~0.46)으로 떨어뜨렸다(판단자는 같은 캐릭터 0.99). → 동작 프레임을 **참조 캐릭터의 색**으로 맞춘다.
+ * 가까운 색(거리 ≤ 60)만 — 화살·마법 불꽃처럼 새로 생긴 색은 그대로 둔다. 참조가 1배 작은 도트(색 64개 이하)일 때만.
+ */
+export async function refPalette(ref: Buffer): Promise<number[][] | null> {
+  const { data, info } = await sharp(ref).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+  if (Math.max(info.width, info.height) >= 256) return null;
+  const set = new Map<number, number[]>();
+  for (let i = 0; i < data.length; i += 4) if (data[i + 3] >= 128) set.set((data[i] << 16) | (data[i + 1] << 8) | data[i + 2], [data[i], data[i + 1], data[i + 2]]);
+  return set.size && set.size <= 64 ? [...set.values()] : null;
+}
+export function snapFrames(cuts: Buffer[], pal: number[][]): number {
+  let k = 0;
+  for (const c of cuts) for (let i = 0; i < c.length; i += 4) {
+    if (!c[i + 3]) continue;
+    let best = pal[0], bd = Infinity;
+    for (const p of pal) { const d = Math.abs(c[i] - p[0]) + Math.abs(c[i + 1] - p[1]) + Math.abs(c[i + 2] - p[2]); if (d < bd) { bd = d; best = p; } }
+    if (bd > 0 && bd <= 60) { c[i] = best[0]; c[i + 1] = best[1]; c[i + 2] = best[2]; k++; }
+  }
+  return k;
+}
+
 /** 모든 프레임에서 빈 위·아래 줄을 같이 잘라 낸다(같은 너비 칸 자르기는 그림 높이 전체를 칸으로 쓴다 — 둘째 판 40×107). */
 function trimRows(cuts: Buffer[], set: FrameSet): { cuts: Buffer[]; set: FrameSet } {
   const row = set.cellW * 4;
@@ -271,6 +294,7 @@ export async function makeMotion(ref: Buffer, motion: MotionKey, o: { colors?: n
     : await sharp(ref).png().toBuffer();
   const refUrl = "data:image/png;base64," + refPng.toString("base64");
   const refH = await refHistOf(refPng);
+  const refPal = await refPalette(ref);
   // 11-25: 1배 참조(글로 만든 캐릭터)의 키(칸) — 4방향이 63칸 용을 41칸으로 줄여 그렸다 → 같은 칸 크기로 그리라고 숫자로 준다
   let refCells = 0;
   // 투명 칸을 빼고 직접 센다 — sharp trim().metadata() 는 잘라 낸 크기가 아니라 원래 크기(64)를 돌려줬다(11-25 마법사: 46칸인데 "예측 64")
@@ -346,6 +370,8 @@ export async function makeMotion(ref: Buffer, motion: MotionKey, o: { colors?: n
       if (cj.pick === "B" && candB) { rd = candB.rd; ({ set, cuts } = trimRows(candB.cuts, candB.set)); fixes.push("판단자: 같은 너비 칸이 더 잘 잘렸다"); }
       fixes.push(`판단자: ${cj.pick} · 같은 캐릭터 ${cj.same ? "예" : "아니오"}(${cj.confidence.toFixed(2)})${cj.badFrames.length ? ` · 틀린 프레임 ${cj.badFrames.join(",")}` : ""}${cj.missing.length ? ` · 빠진 소품 ${cj.missing.join(",")}` : ""}`);
     }
+    // 참조 색으로 맞추기(색이 프레임마다 흔들리지 않게 · 게임 팔레트 캐릭터는 게임 색 그대로)
+    if (refPal && !process.env.PIXEL_NO_SNAP) { const k = snapFrames(cuts, refPal); if (k) fixes.push(`참조 색 ${refPal.length}개로 맞춤 ${k}칸`); }
     // 미끄러짐 잡기(돌기·동작 모두): 윗몸 가운데를 1번 프레임에 맞춘다
     { const st = stabilize(cuts, set); if (st.shifts.some((v) => v)) { cuts = st.cuts; set = st.set; fixes.push(`프레임 가로 맞춤 ${st.shifts.join("/")}칸`); } }
     // 번쩍임 잡기: 동작(걷기·숨쉬기·글로 쓴 동작)만 — 4방향은 프레임마다 다른 모습이 맞다
