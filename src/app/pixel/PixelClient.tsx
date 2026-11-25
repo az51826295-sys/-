@@ -321,13 +321,13 @@ export default function PixelClient({ en, paid }: { en: boolean; paid: string | 
               <div className="seg">{([32, 48, 64, 96] as const).map((z) => <button key={z} type="button" className={cSize === z ? "on" : ""} onClick={() => setCSize(z)}>{z}</button>)}</div>
             </>)}
             <p className="hint">{t("배경 투명 PNG로 받아요. 만든 캐릭터는 바로 참조가 돼서 4방향·동작으로 이어져요. 실패하면 토큰을 돌려드려요.", "Transparent PNG. The result becomes your reference for Rotate and Animate. Refunded if it fails.")}</p>
-            {can(PIXEL_COST.create) ? <button type="button" className="go" disabled={!!busy || cDesc.trim().length < 2} onClick={create}>{busy === "create" ? t("그리는 중… (20초쯤)", "Drawing… (~20s)") : t(`만들기 · ${PIXEL_COST.create}토큰`, `Create · ${PIXEL_COST.create} tokens`)}</button> : buyBtn}
+            {can(PIXEL_COST.create) ? <button type="button" className="go" disabled={!!busy || cDesc.trim().length < 2} onClick={create}>{busy === "create" ? t("그리는 중… (20~60초)", "Drawing… (20-60s)") : t(`만들기 · ${PIXEL_COST.create}토큰`, `Create · ${PIXEL_COST.create} tokens`)}</button> : buyBtn}
           </>)}
 
           {tool === "rotate" && (<>
             <h2>{t("4방향 만들기", "Rotate (4 directions)")}</h2>
             <p className="hint">{t("참조 캐릭터를 앞 → 오른쪽 → 뒤 → 왼쪽으로 그려요. 게임 캐릭터 기본 세트예요. 같은 캐릭터가 아니게 나오면 한 번 더 그리고, 그래도 안 되면 토큰을 돌려드려요.", "Draws the reference facing front → right → back → left. Retries once if it drifts, then refunds.")}</p>
-            {can(PIXEL_COST.turn) ? <button type="button" className="go" disabled={!!busy || !ref} onClick={() => void motion("turn")}>{busy === "rotate" ? t("그리는 중… (30초쯤)", "Drawing… (~30s)") : t(`4방향 · ${PIXEL_COST.turn}토큰`, `Rotate · ${PIXEL_COST.turn} tokens`)}</button> : buyBtn}
+            {can(PIXEL_COST.turn) ? <button type="button" className="go" disabled={!!busy || !ref} onClick={() => void motion("turn")}>{busy === "rotate" ? t("그리는 중… (30~70초)", "Drawing… (30-70s)") : t(`4방향 · ${PIXEL_COST.turn}토큰`, `Rotate · ${PIXEL_COST.turn} tokens`)}</button> : buyBtn}
           </>)}
 
           {tool === "animate" && (<>
@@ -343,7 +343,7 @@ export default function PixelClient({ en, paid }: { en: boolean; paid: string | 
             <div className="lab">{t("속도", "Speed")} <b>{ms}ms</b></div>
             <input type="range" min={80} max={800} step={10} value={ms} onChange={(e) => setMs(Number(e.target.value))} />
             <p className="hint">{t("4프레임을 그려 진짜 도트로 맞춰 잘라요. 게임용 1배 시트와 GIF를 줘요.", "Draws 4 frames, snaps to true pixels, gives a 1× sheet and a GIF.")}</p>
-            {can(PIXEL_COST.motion) ? <button type="button" className="go" disabled={!!busy || !ref || (aMotion === "custom" && aAction.trim().length < 2)} onClick={() => void motion(aMotion)}>{busy === "animate" ? t("그리는 중… (30초쯤)", "Drawing… (~30s)") : t(`동작 · ${PIXEL_COST.motion}토큰`, `Animate · ${PIXEL_COST.motion} tokens`)}</button> : buyBtn}
+            {can(PIXEL_COST.motion) ? <button type="button" className="go" disabled={!!busy || !ref || (aMotion === "custom" && aAction.trim().length < 2)} onClick={() => void motion(aMotion)}>{busy === "animate" ? t("그리는 중… (30~70초)", "Drawing… (30-70s)") : t(`동작 · ${PIXEL_COST.motion}토큰`, `Animate · ${PIXEL_COST.motion} tokens`)}</button> : buyBtn}
           </>)}
 
           {tool === "convert" && (<>

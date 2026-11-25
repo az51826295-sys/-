@@ -183,6 +183,16 @@ export async function makeCharacter(desc: string, size: CanvasSize, o: { colors?
   catch (e) { return { ok: false, reason: refusedWhy(e as Error), usd: 0, facts: [] }; }
   let usd = d.usd;
   let f = await fitToCanvas(d.png, canvas, { colors: o.colors ?? 32, height: profile?.height, profile, snap: o.snap });
+  // 11-25 실패율 자 6바퀴 확인 판: 게임 그림체 남학생이 "격자 못 찾음" 으로 바로 실패(게임 그림체 길엔 다시 그리기가 없었다) → 1번만 다시, 이유를 붙여서
+  if (!f.ok && profile && !process.env.PIXEL_CREATE_MOCK) {
+    try {
+      const why = f.facts.some((x) => x.includes("격자")) ? "Last time the picture had no clear pixel grid: draw with big clean square pixels exactly like the reference sprites, no blur, no anti-aliasing." : `Last time: ${f.reason}. Draw exactly ONE character, whole body, centered.`;
+      const d2 = await draw(`${stylePrompt(cleanDesc(desc), profile.height)} ${why}`, board);
+      usd += d2.usd;
+      const f2 = await fitToCanvas(d2.png, canvas, { colors: o.colors ?? 32, height: profile.height, profile, snap: o.snap });
+      if (f2.ok) { f2.facts.unshift(`첫 그림 실패(${f.facts.join(" · ")}) → 이유를 붙여 다시 그림`); f = f2; d = d2; }
+    } catch { /* 다시 그리기 실패 — 아래에서 실패로 */ }
+  }
   if (unit) {
     const h1 = f.ok ? f.drawn[1] : 0;
     const off = !f.ok || Math.abs(h1 - unit.H) / unit.H > 0.15;
