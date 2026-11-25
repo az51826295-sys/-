@@ -18,6 +18,37 @@ type Game = { name: string; imgs: string[]; palette: string[]; height: number };
 type Item = { id: number; kind: Tool; title: string; view: string; info: string; downloads: { href: string; name: string; label: string }[]; refable?: string };
 type Preview = { period: number; logical: [number, number]; colors: number; preview: string };
 
+const ICON: Record<Tool, string[]> = {
+  game: ["........", ".######.", "#.#....#", "###.#.##", "#.#..#.#", "#......#", ".##..##.", "........"],
+  create: ["......##", ".....###", "....###.", "...###..", "..###...", ".###....", ".##.....", "#......."],
+  rotate: ["..####..", ".#....#.", "#......#", "#....###", "#.....#.", "#.......", ".#....#.", "..####.."],
+  animate: [".#......", ".##.....", ".###....", ".####...", ".####...", ".###....", ".##.....", ".#......"],
+  convert: ["##..##..", "##..##..", "..##..##", "..##..##", "##..##..", "##..##..", "..##..##", "..##..##"],
+  split: ["#.....#.", ".#...#..", "..#.#...", "...#....", "..#.#...", "##...##.", "##...##.", "........"],
+};
+/** 8x8 도트 아이콘(화면 장식) */
+function Ico({ k }: { k: Tool }) {
+  return (
+    <svg className="ico" viewBox="0 0 8 8" width="16" height="16" shapeRendering="crispEdges" aria-hidden>
+      {ICON[k].flatMap((row, y) => [...row].map((c, x) => (c === "#" ? <rect key={`${x}-${y}`} x={x} y={y} width="1" height="1" fill="currentColor" /> : null)))}
+    </svg>
+  );
+}
+/** 기다림: 걸린 초를 센다(11-25 - 그리기는 20~70초라 멈춘 것처럼 보였다). 바깥에 둬야 부모가 다시 그려도 초가 0으로 안 돌아간다. */
+function Busy({ kind, en, small }: { kind: string | null; en: boolean; small?: boolean }) {
+  const t = (ko: string, e: string) => (en ? e : ko);
+  const [sec, setSec] = useState(0);
+  useEffect(() => { const id = setInterval(() => setSec((x) => x + 1), 1000); return () => clearInterval(id); }, []);
+  const long = kind === "create" || kind === "rotate" || kind === "animate";
+  return (
+    <div className={`wait${small ? " sm" : ""}`} role="status">
+      <div className="blocks">{[0, 1, 2, 3, 4].map((i) => <i key={i} style={{ animationDelay: `${i * 0.15}s` }} />)}</div>
+      <span>{long ? t(`그리는 중 · ${sec}초`, `Drawing · ${sec}s`) : t("작업 중…", "Working…")}</span>
+      {long && !small && <small>{t("보통 20~70초 걸려요. 창을 닫지 마세요.", "Usually 20-70s. Keep this tab open.")}</small>}
+    </div>
+  );
+}
+
 export default function PixelClient({ en, paid }: { en: boolean; paid: string | null }) {
   const t = (ko: string, e: string) => (en ? e : ko);
   const [tool, setTool] = useState<Tool>("create");
@@ -199,7 +230,6 @@ export default function PixelClient({ en, paid }: { en: boolean; paid: string | 
     { k: "split", ko: "시트 자르기", en: "Split sheet", sub: "시트 → 움직임", subEn: "sheet → animation", ai: false },
   ];
   const needRef = tool !== "create" && tool !== "game";
-  const has = shots !== null && shots > 0; // 11-25 토큰: 버튼마다 값이 달라 "모자람" 은 can(값) 으로 본다
   const can = (n: number) => shots !== null && shots >= n;
   // 11-25 사장님 "계정 연동해야지 · 도트 그림 만들기는 선결제로": 손님은 결제·AI 그림 대신 구글 연결 단추를 본다(무료 장수 없음)
   const connect = (
@@ -208,9 +238,26 @@ export default function PixelClient({ en, paid }: { en: boolean; paid: string | 
       <GoogleGo already={false} en={en} next="/pixel" />
     </div>
   );
-  const buyBtn = !linked ? connect : <button type="button" className="go" disabled={!!busy || !payOpen} onClick={buy}>{payOpen ? t(`${PIXEL_PACK.shots}토큰 4,900원`, `${PIXEL_PACK.shots} tokens for ₩4,900`) : t("결제 준비 중", "Payments opening soon")}</button>;
+  // 11-25 사장님 하나카드: PC 에서 카드사 "보안프로그램 설치" 창에서 멈춤(Polar 는 해외 결제 - 한국 카드는 카드사 해외 인증을 거친다)
+  const payHelp = en ? null : (
+    <details className="payhelp">
+      <summary>한국 카드로 결제가 안 넘어가면</summary>
+      <ul>
+        <li>해외 결제 대행(Polar)이라 <b>카드 앱에서 해외결제를 켜 주세요</b>.</li>
+        <li>PC에서 카드사 <b>‘보안프로그램 설치’</b> 창이 뜨고 멈추면, <b>폰에서</b> 결제하고 카드 앱으로 인증해 보세요.</li>
+        <li>그래도 멈추면 다른 카드(Visa·Master)로 해 주세요. 결제가 안 끝나면 돈은 나가지 않아요.</li>
+      </ul>
+    </details>
+  );
+  const buyBtn = !linked ? connect : (
+    <div className="buy">
+      <button type="button" className="go" disabled={!!busy || !payOpen} onClick={buy}>{busy === "pay" ? t("결제창 여는 중…", "Opening checkout…") : payOpen ? t(`${PIXEL_PACK.shots}토큰 4,900원`, `${PIXEL_PACK.shots} tokens for ₩4,900`) : t("결제 준비 중", "Payments opening soon")}</button>
+      {payOpen && payHelp}
+    </div>
+  );
+  const topBuy = <button type="button" className="go" disabled={!!busy || !payOpen} onClick={buy}>{t("토큰 사기", "Buy tokens")}</button>;
   const paidMsg = (paid === "100" || paid === "10") ? t(`${PIXEL_PACK.shots}토큰이 들어왔어요. 고마워요!`, `${PIXEL_PACK.shots} tokens added. Thank you!`)
-    : paid === "wait" ? t("결제 확인 중이에요. 잠시 뒤 새로고침해 주세요.", "Payment is still processing. Refresh in a moment.")
+    : paid === "wait" ? t("카드사 확인을 기다리는 중이에요. 1~2분 뒤 새로고침하면 토큰이 들어와요.", "Waiting for your bank to confirm. Refresh in a minute or two.")
     : paid === "fail" ? t("결제를 확인하지 못했어요. 돈이 나갔다면 이 화면을 다시 열어 주세요 — 한 번 더 확인해요.", "Couldn't confirm the payment. If you were charged, reopen this page and we'll check again.") : null;
 
   // 캔버스: 지금 도구의 무료 미리보기가 있으면 그걸, 아니면 고른 기록을
@@ -221,12 +268,14 @@ export default function PixelClient({ en, paid }: { en: boolean; paid: string | 
 
   return (
     <div className="px-root">
+      {/* eslint-disable-next-line @next/next/no-css-tags */}
+      <link rel="stylesheet" href="/fonts/galmuri.css" />
       <style>{CSS}</style>
       <header className="px-top">
-        <b>{t("도트 작업실", "Pixel Studio")}</b>
+        <b className="logo"><Ico k="create" />{t("도트 작업실", "Pixel Studio")}</b>
         <span className="sp" />
         <span className="bal">{shots === null ? "…" : t(`남은 ${shots}토큰`, `${shots} tokens`)}</span>
-        {!has && linked && buyBtn}
+        {linked && payOpen && topBuy}
       </header>
       {paidMsg && <div className="px-note">{paidMsg}</div>}
 
@@ -234,7 +283,7 @@ export default function PixelClient({ en, paid }: { en: boolean; paid: string | 
         <nav className="px-tools" aria-label={t("도구", "Tools")}>
           {TOOLS.map((x) => (
             <button key={x.k} type="button" className={tool === x.k ? "on" : ""} onClick={() => goTool(x.k)}>
-              <span>{t(x.ko, x.en)}{x.ai && <i>AI</i>}</span><small>{t(x.sub, x.subEn)}</small>
+              <span><Ico k={x.k} />{t(x.ko, x.en)}{x.ai && <i>AI</i>}</span><small>{t(x.sub, x.subEn)}</small>
             </button>
           ))}
         </nav>
@@ -253,9 +302,26 @@ export default function PixelClient({ en, paid }: { en: boolean; paid: string | 
               )}
             </figure>
           ) : (
-            <div className="empty">{busy ? t("작업 중…", "Working…") : t("도구를 고르고 시작해요. 처음이면 ‘만들기’에 캐릭터를 글로 적어 보세요.", "Pick a tool to start. New here? Describe a character in ‘Create’.")}</div>
+            busy ? <Busy kind={busy} en={en} /> : items.length ? (
+              <div className="empty">{t("아래 기록에서 하나를 고르거나 새로 만들어 보세요.", "Pick one from history or make a new one.")}</div>
+            ) : (
+              <div className="intro">
+                <h1>{t("글 한 줄로 게임 도트 캐릭터", "Game pixel characters from one line")}</h1>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/pixel-og.png" alt={t("도트 작업실에서 만든 용 4방향과 기사·고양이·슬라임·마법사", "A dragon in 4 directions, a knight, a cat, a slime and a wizard made here")} />
+                <ol>
+                  <li><b>1</b>{t("캐릭터를 글로 적어요", "Describe a character")}</li>
+                  <li><b>2</b>{t("앞·옆·뒤 4방향, 걷기·동작", "Rotate 4 ways, walk, animate")}</li>
+                  <li><b>3</b>{t("투명 PNG·GIF로 받아 게임에 넣어요", "Download transparent PNG / GIF")}</li>
+                </ol>
+                <div className="price">
+                  <span>{t(`${PIXEL_PACK.shots}토큰 4,900원`, `${PIXEL_PACK.shots} tokens ₩4,900`)}</span>
+                  <small>{t(`만들기 ${PIXEL_COST.create} · 4방향 ${PIXEL_COST.turn} · 동작 ${PIXEL_COST.motion} · 변환·자르기 ${PIXEL_COST.convert} · 실패하면 돌려드려요`, `Create ${PIXEL_COST.create} · Rotate ${PIXEL_COST.turn} · Animate ${PIXEL_COST.motion} · Pixelate/Split ${PIXEL_COST.convert} · refunded on failure`)}</small>
+                </div>
+              </div>
+            )
           )}
-          {busy && canvas && <div className="busy">{t("작업 중…", "Working…")}</div>}
+          {busy && canvas && <div className="busy"><Busy kind={busy} en={en} small /></div>}
         </main>
 
         <aside className="px-opts">
@@ -396,75 +462,146 @@ export default function PixelClient({ en, paid }: { en: boolean; paid: string | 
   );
 }
 
+/*
+ * 11-25 사장님 "화면 구성 도트로 예쁘게": 두근도트 도트 껍데기(src/app/dot/pixel-skin.ts)와 같은 규칙.
+ * 2px 단위 · 둥근 모서리 없음 · 2px 테두리 + 3px 그림자 · 누르면 2px 내려앉음 · 갈무리 비트맵 글꼴은 11/14/28px 정수 배만.
+ * 색은 적게: 밤(바탕) · 판(칸) · 선 · 분홍(주 단추) · 노랑(토큰) · 하늘(받기).
+ */
 const CSS = `
-.px-root{min-height:100vh;background:#121217;color:#e9e9f0;font-family:system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;display:flex;flex-direction:column}
-.px-top{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid #26262f;background:#17171e}
-.px-top b{font-size:17px;white-space:nowrap}.px-top .sp{flex:1}.px-top .bal{color:#b9b9c6;font-size:14px;white-space:nowrap}
-.px-note{background:#24324a;border-bottom:1px solid #3b5ea0;padding:8px 16px;font-size:14px}
-.px-app{flex:1;display:grid;grid-template-columns:168px 1fr 300px;min-height:0}
-.px-tools{display:flex;flex-direction:column;gap:4px;padding:10px;border-right:1px solid #26262f;background:#15151b}
-.px-tools button{text-align:left;background:none;border:1px solid transparent;color:#cfd0dc;border-radius:10px;padding:9px 10px;cursor:pointer}
-.px-tools button span{display:flex;align-items:center;gap:6px;font-size:15px;font-weight:600}
-.px-tools button i{font-style:normal;font-size:10px;background:#3a2740;color:#ff9fc0;border-radius:5px;padding:1px 5px}
-.px-tools button small{display:block;color:#7f8094;font-size:12px;margin-top:2px}
-.px-tools button.on{background:#232330;border-color:#3a3a4a;color:#fff}
-.px-tools button:hover{background:#1e1e28}
-.px-canvas{position:relative;display:flex;align-items:center;justify-content:center;padding:16px;min-height:420px;background:#101015}
-.px-canvas figure{margin:0;display:flex;flex-direction:column;align-items:center;gap:10px;max-width:100%}
-.px-canvas img{max-width:100%;max-height:62vh;min-width:min(320px,100%);image-rendering:pixelated;object-fit:contain;border-radius:8px;background:repeating-conic-gradient(#2e2e39 0% 25%,#23232c 0% 50%) 50%/20px 20px}
-.px-canvas figcaption{color:#8d8ea0;font-size:13px;text-align:center}
-.px-canvas .dl{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
-.px-canvas .dl a,.px-canvas .dl button{background:#24324a;color:#cfe0ff;border:0;padding:8px 12px;border-radius:9px;text-decoration:none;font-size:14px;cursor:pointer}
-.px-canvas .empty{color:#7f8094;max-width:340px;text-align:center;line-height:1.6}
-.px-canvas .busy{position:absolute;top:12px;right:12px;background:#2a2a36;padding:5px 10px;border-radius:8px;font-size:13px}
-.px-opts{border-left:1px solid #26262f;background:#17171e;padding:14px;display:flex;flex-direction:column;gap:9px}
-.px-opts h2{font-size:16px;margin:4px 0 0}
-.px-opts .lab{font-size:13px;color:#b9b9c6;display:flex;align-items:center;gap:6px}
-.px-opts .lab em{color:#7f8094;font-style:normal}
-.px-opts .hint{margin:0;color:#8d8ea0;font-size:12.5px;line-height:1.55}
-.px-opts textarea,.px-opts .txt{width:100%;box-sizing:border-box;background:#22222c;color:#eee;border:1px solid #3a3a48;border-radius:9px;padding:9px;font:inherit;resize:vertical}
-.px-opts input[type=range]{width:100%;accent-color:#ff6f9c}
-.px-opts input[type=number]{width:56px;background:#22222c;color:#eee;border:1px solid #3a3a48;border-radius:6px;padding:4px}
-.px-opts .row{display:flex;align-items:center;gap:8px;font-size:14px}
-.px-opts button{background:#262632;color:#eee;border:1px solid #3a3a48;border-radius:9px;padding:9px 12px;cursor:pointer;font-size:14px}
+.px-root{--bg:#121022;--pan:#1c1a30;--pan2:#26233f;--line:#3e3a63;--ink:#07060d;--tx:#f3f0ff;--mu:#a6a1c8;--pk:#ff5c8a;--yl:#ffd23f;--bl:#5ec8ff;
+  min-height:100vh;display:flex;flex-direction:column;color:var(--tx);
+  background:var(--bg) repeating-linear-gradient(0deg,transparent 0 15px,#ffffff06 15px 16px),repeating-linear-gradient(90deg,transparent 0 15px,#ffffff06 15px 16px);
+  font-family:Galmuri14,Galmuri11,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-size:14px;-webkit-font-smoothing:none;word-break:keep-all;overflow-wrap:anywhere}
+.px-root *{border-radius:0!important;letter-spacing:0}
+.px-root button,.px-root input,.px-root textarea,.px-root summary{font-family:inherit;font-size:14px}
+.px-root small,.px-root .hint,.px-root figcaption,.px-root .lab{font-family:Galmuri11,Galmuri14,sans-serif;font-size:11px}
+.ico{flex:0 0 auto;image-rendering:pixelated}
+
+/* 머리띠 */
+.px-top{display:flex;align-items:center;gap:10px;padding:10px 16px;background:var(--pan);border-bottom:2px solid var(--ink);box-shadow:0 2px 0 var(--line)}
+.px-top .logo{display:flex;align-items:center;gap:8px;font-weight:400;font-size:14px;white-space:nowrap;color:var(--pk)}
+.px-top .logo .ico{width:24px;height:24px}
+.px-top .sp{flex:1}
+.px-top .bal{display:flex;align-items:center;gap:6px;white-space:nowrap;color:var(--yl);background:var(--ink);padding:5px 10px;box-shadow:inset 0 0 0 2px var(--line)}
+.px-top .bal::before{content:"";width:10px;height:10px;background:var(--yl);box-shadow:inset -2px -2px 0 #c99a00,inset 2px 2px 0 #fff3b0}
+.px-note{background:#203a2e;color:#c9ffe0;border-bottom:2px solid var(--ink);padding:9px 16px}
+
+/* 세 칸 */
+.px-app{flex:1;display:grid;grid-template-columns:176px 1fr 312px;min-height:0}
+.px-tools{display:flex;flex-direction:column;gap:6px;padding:12px 10px;background:var(--pan);border-right:2px solid var(--ink)}
+.px-tools button{text-align:left;background:transparent;border:0;color:var(--mu);padding:9px 10px;cursor:pointer;box-shadow:inset 0 0 0 2px transparent}
+.px-tools button span{display:flex;align-items:center;gap:8px;color:var(--tx)}
+.px-tools button i{font-style:normal;font-family:Galmuri11,sans-serif;font-size:11px;background:var(--pk);color:var(--ink);padding:1px 4px;margin-left:auto}
+.px-tools button small{display:block;color:var(--mu);margin:3px 0 0 24px}
+.px-tools button:hover{background:var(--pan2)}
+.px-tools button.on{background:var(--pan2);box-shadow:inset 0 0 0 2px var(--pk),3px 3px 0 var(--ink)}
+.px-tools button.on .ico{color:var(--pk)}
+
+.px-canvas{position:relative;display:flex;align-items:center;justify-content:center;padding:20px;min-height:440px}
+.px-canvas figure{margin:0;display:flex;flex-direction:column;align-items:center;gap:12px;max-width:100%}
+.px-canvas figure img{max-width:100%;max-height:60vh;min-width:min(320px,100%);image-rendering:pixelated;object-fit:contain;
+  background:repeating-conic-gradient(#2c2946 0% 25%,#221f38 0% 50%) 50%/16px 16px;box-shadow:0 0 0 2px var(--ink),0 0 0 4px var(--line),6px 6px 0 4px var(--ink)}
+.px-canvas figcaption{color:var(--mu);text-align:center}
+.px-canvas .dl{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.px-canvas .dl a,.px-canvas .dl button{background:var(--bl);color:var(--ink);border:0;padding:9px 12px;text-decoration:none;cursor:pointer;box-shadow:inset 0 0 0 2px var(--ink),3px 3px 0 var(--ink)}
+.px-canvas .dl button{background:var(--pan2);color:var(--tx);box-shadow:inset 0 0 0 2px var(--line),3px 3px 0 var(--ink)}
+.px-canvas .dl a:active,.px-canvas .dl button:active{transform:translate(2px,2px);box-shadow:inset 0 0 0 2px var(--ink)}
+.px-canvas .empty{color:var(--mu);max-width:340px;text-align:center;line-height:1.7}
+.px-canvas .busy{position:absolute;top:14px;right:14px}
+
+/* 처음 화면 */
+.intro{max-width:560px;width:100%;display:flex;flex-direction:column;gap:16px;align-items:center;text-align:center}
+.intro h1{font-family:Galmuri14,sans-serif;font-weight:400;font-size:28px;line-height:1.3;margin:0;color:var(--tx);text-shadow:2px 2px 0 var(--ink)}
+.intro img{width:100%;image-rendering:pixelated;box-shadow:0 0 0 2px var(--ink),0 0 0 4px var(--line),6px 6px 0 4px var(--ink)}
+.intro ol{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%}
+.intro li{background:var(--pan);padding:12px 10px;box-shadow:inset 0 0 0 2px var(--line),3px 3px 0 var(--ink);line-height:1.5;display:flex;flex-direction:column;align-items:center;gap:8px}
+.intro li b{font-weight:400;background:var(--pk);color:var(--ink);width:24px;height:24px;display:flex;align-items:center;justify-content:center}
+.intro .price{display:flex;flex-direction:column;gap:6px;align-items:center}
+.intro .price span{color:var(--yl);font-size:14px}
+.intro .price small{color:var(--mu);line-height:1.6}
+
+/* 기다림 */
+.wait{display:flex;flex-direction:column;align-items:center;gap:10px;color:var(--tx);text-align:center}
+.wait .blocks{display:flex;gap:4px}
+.wait .blocks i{width:12px;height:12px;background:var(--pk);animation:pxblink 1s steps(2,end) infinite}
+.wait small{color:var(--mu)}
+.wait.sm{flex-direction:row;background:var(--pan);padding:6px 10px;box-shadow:inset 0 0 0 2px var(--line),3px 3px 0 var(--ink)}
+.wait.sm .blocks i{width:6px;height:6px}
+@keyframes pxblink{0%{opacity:1}50%{opacity:.15}100%{opacity:1}}
+
+/* 옵션 칸 */
+.px-opts{background:var(--pan);border-left:2px solid var(--ink);padding:16px 14px;display:flex;flex-direction:column;gap:10px}
+.px-opts h2{font-family:Galmuri14,sans-serif;font-weight:400;font-size:14px;margin:2px 0 4px;color:var(--pk);display:flex;align-items:center;gap:8px}
+.px-opts h2::before{content:"";width:8px;height:8px;background:var(--pk)}
+.px-opts .lab{color:var(--mu);display:flex;align-items:center;gap:6px}
+.px-opts .lab b{color:var(--tx);font-weight:400}
+.px-opts .lab em{color:var(--mu);font-style:normal}
+.px-opts .hint{margin:0;color:var(--mu);line-height:1.7}
+.px-opts textarea,.px-opts .txt{width:100%;box-sizing:border-box;background:var(--ink);color:var(--tx);border:0;padding:10px;resize:vertical;box-shadow:inset 0 0 0 2px var(--line);line-height:1.6;outline:none}
+.px-opts textarea:focus,.px-opts .txt:focus{box-shadow:inset 0 0 0 2px var(--pk)}
+.px-opts input[type=range]{width:100%;accent-color:var(--pk)}
+.px-opts input[type=number]{width:56px;background:var(--ink);color:var(--tx);border:0;padding:5px;box-shadow:inset 0 0 0 2px var(--line)}
+.px-opts input[type=checkbox]{accent-color:var(--pk);width:16px;height:16px}
+.px-opts .row{display:flex;align-items:center;gap:8px;line-height:1.5}
+.px-opts button{background:var(--pan2);color:var(--tx);border:0;padding:9px 12px;cursor:pointer;box-shadow:inset 0 0 0 2px var(--line),3px 3px 0 var(--ink)}
+.px-opts button:active:not(:disabled){transform:translate(2px,2px);box-shadow:inset 0 0 0 2px var(--line)}
 .px-opts button:disabled{opacity:.45;cursor:default}
-.px-opts .mini{padding:2px 8px;font-size:12px;margin-left:auto}
-.px-opts .seg{display:flex;gap:4px}.px-opts .seg.wrap{flex-wrap:wrap}
-.px-opts .seg button{flex:1;padding:7px 6px}
-.px-opts .seg button.on{background:#ff6f9c;border-color:#ff6f9c;color:#fff;font-weight:700}
-.px-root .go{background:#ff5d8f;border:0;color:#fff;font-weight:700;border-radius:10px;padding:11px 14px;font-size:15px;cursor:pointer;width:100%}
+.px-opts .mini{padding:3px 8px;font-size:11px;font-family:Galmuri11,sans-serif;margin-left:auto;box-shadow:inset 0 0 0 2px var(--line)}
+.px-opts .seg{display:flex;gap:6px}.px-opts .seg.wrap{flex-wrap:wrap}
+.px-opts .seg button{flex:1;padding:8px 6px}
+.px-opts .seg button.on{background:var(--pk);color:var(--ink);box-shadow:inset 0 0 0 2px var(--ink),3px 3px 0 var(--ink)}
+.px-root .go{background:var(--pk);border:0;color:var(--ink);padding:12px 14px;cursor:pointer;width:100%;box-shadow:inset 0 0 0 2px var(--ink),inset -4px -4px 0 #c23a64,inset 4px 4px 0 #ff9cb8,4px 4px 0 var(--ink)}
+.px-root .go:active:not(:disabled){transform:translate(2px,2px);box-shadow:inset 0 0 0 2px var(--ink),inset -4px -4px 0 #c23a64,inset 4px 4px 0 #ff9cb8}
 .px-root .go:disabled{opacity:.5;cursor:default}
-.px-root .px-top .go{width:auto;padding:7px 12px;font-size:14px;white-space:nowrap}
-.px-opts .ref .slot{display:flex;align-items:center;justify-content:center;height:120px;border:2px dashed #45465a;border-radius:10px;cursor:pointer;color:#b9b9c6;text-align:center;font-size:14px;background:repeating-conic-gradient(#24242d 0% 25%,#1d1d25 0% 50%) 50%/16px 16px;margin-top:4px}
-.px-opts .ref .slot.has{border-style:solid;border-color:#3a3a48}
-.px-opts .ref .slot img{max-height:110px;max-width:100%;image-rendering:pixelated}
-.px-opts .ref .slot:hover{border-color:#ff6f9c}
-.px-opts .gslot{display:flex;align-items:center;justify-content:center;min-height:90px;border:2px dashed #45465a;border-radius:10px;cursor:pointer;color:#b9b9c6;font-size:14px;padding:6px}
-.px-opts .gslot:hover{border-color:#ff6f9c}
+.px-root .px-top .go{width:auto;padding:7px 12px;white-space:nowrap}
+.px-opts .ref .slot{display:flex;align-items:center;justify-content:center;height:128px;cursor:pointer;color:var(--mu);text-align:center;line-height:1.6;
+  background:repeating-conic-gradient(#2c2946 0% 25%,#221f38 0% 50%) 50%/16px 16px;box-shadow:inset 0 0 0 2px var(--line);outline:2px dashed var(--line);outline-offset:-8px;margin-top:2px}
+.px-opts .ref .slot.has{outline:0}
+.px-opts .ref .slot img{max-height:116px;max-width:100%;image-rendering:pixelated}
+.px-opts .ref .slot:hover{box-shadow:inset 0 0 0 2px var(--pk)}
+.px-opts .gslot{display:flex;align-items:center;justify-content:center;min-height:92px;cursor:pointer;color:var(--mu);padding:8px;box-shadow:inset 0 0 0 2px var(--line);outline:2px dashed var(--line);outline-offset:-8px}
+.px-opts .gslot:hover{box-shadow:inset 0 0 0 2px var(--pk)}
 .px-opts .thumbs{display:flex;gap:4px;flex-wrap:wrap;justify-content:center}
-.px-opts .thumbs img{height:64px;max-width:120px;object-fit:contain;image-rendering:pixelated;background:#22222c;border-radius:4px}
+.px-opts .thumbs img{height:64px;max-width:120px;object-fit:contain;image-rendering:pixelated;background:var(--ink)}
 .px-opts .grow .thumbs img{height:32px;max-width:48px}
-.px-opts .pal{display:flex;flex-wrap:wrap;gap:3px}.px-opts .pal i{width:18px;height:18px;border-radius:3px;border:1px solid #0006}
-.px-opts .grow{display:flex;align-items:center;gap:6px;font-size:14px}.px-opts .grow b{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.px-opts .grow small{color:#7f8094}
-.px-root .connect{display:flex;flex-direction:column;gap:8px}.px-root .connect p{margin:0;font-size:13px;color:#b9b9c6;line-height:1.5}
-.px-root .lg-google{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:12px;border-radius:10px;border:0;background:#fff;color:#222;font-weight:700;font-size:15px;cursor:pointer}
-.px-root .lg-google:disabled{opacity:.6}.px-root .lg-err{color:#ff8fa8;font-size:13px;margin:0}
-.px-opts .err{color:#ff8fa8;font-size:14px;margin:0}
-.px-hist{border-top:1px solid #26262f;background:#15151b;padding:8px 16px}
-.px-hist .lab{font-size:12px;color:#7f8094;margin-bottom:6px}
-.px-hist .strip{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}
-.px-hist .none{color:#5f6072;font-size:13px}
-.px-hist button{flex:0 0 auto;width:84px;background:#1d1d25;border:1px solid #2c2c38;border-radius:9px;padding:4px;cursor:pointer;color:#b9b9c6}
-.px-hist button.on{border-color:#ff6f9c}
-.px-hist img{width:74px;height:74px;object-fit:contain;image-rendering:pixelated;display:block;background:repeating-conic-gradient(#2e2e39 0% 25%,#23232c 0% 50%) 50%/12px 12px;border-radius:6px}
-.px-hist small{display:block;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px}
-.px-foot{padding:12px 16px 20px;color:#6f7083;font-size:12px}.px-foot a{color:#9fa0b6}
+.px-opts .pal{display:flex;flex-wrap:wrap;gap:4px}.px-opts .pal i{width:16px;height:16px;box-shadow:inset 0 0 0 2px #0008}
+.px-opts .grow{display:flex;align-items:center;gap:6px}.px-opts .grow b{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:400}.px-opts .grow small{color:var(--mu)}
+.px-root .buy{display:flex;flex-direction:column;gap:8px}
+.px-root .payhelp{background:var(--ink);padding:8px 10px;box-shadow:inset 0 0 0 2px var(--line)}
+.px-root .payhelp summary{cursor:pointer;color:var(--yl);font-family:Galmuri11,sans-serif;font-size:11px}
+.px-root .payhelp ul{margin:8px 0 2px;padding-left:16px;color:var(--mu);font-family:Galmuri11,sans-serif;font-size:11px;line-height:1.8}
+.px-root .payhelp b{color:var(--tx);font-weight:400}
+.px-root .connect{display:flex;flex-direction:column;gap:8px}.px-root .connect p{margin:0;color:var(--mu);line-height:1.7;font-family:Galmuri11,sans-serif;font-size:11px}
+.px-root .lg-google{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:12px;border:0;background:#fff;color:#222;cursor:pointer;box-shadow:inset 0 0 0 2px var(--ink),4px 4px 0 var(--ink)}
+.px-root .lg-google:active{transform:translate(2px,2px);box-shadow:inset 0 0 0 2px var(--ink)}
+.px-root .lg-google:disabled{opacity:.6}.px-root .lg-err{color:#ff8fa8;margin:0}
+.px-opts .err{color:#ff8fa8;margin:0;line-height:1.6;background:#3a1626;padding:8px 10px;box-shadow:inset 0 0 0 2px #7a2a48}
+
+/* 기록 줄 */
+.px-hist{background:var(--pan);border-top:2px solid var(--ink);padding:10px 16px}
+.px-hist .lab{color:var(--mu);margin-bottom:8px}
+.px-hist .strip{display:flex;gap:10px;overflow-x:auto;padding:2px 2px 6px}
+.px-hist .none{color:var(--mu)}
+.px-hist button{flex:0 0 auto;width:84px;background:var(--pan2);border:0;padding:4px;cursor:pointer;color:var(--mu);box-shadow:inset 0 0 0 2px var(--line)}
+.px-hist button.on{box-shadow:inset 0 0 0 2px var(--pk),3px 3px 0 var(--ink)}
+.px-hist img{width:76px;height:76px;object-fit:contain;image-rendering:pixelated;display:block;background:repeating-conic-gradient(#2c2946 0% 25%,#221f38 0% 50%) 50%/12px 12px}
+.px-hist small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:4px}
+.px-foot{padding:14px 16px 24px;color:var(--mu);font-family:Galmuri11,sans-serif;font-size:11px;line-height:1.7}.px-foot a{color:var(--tx)}
+
+/* 폰: 도구는 위 가로 줄(아이콘+이름), 옵션은 캔버스 아래 */
 @media (max-width:860px){
   .px-app{grid-template-columns:1fr}
-  .px-tools{flex-direction:row;overflow-x:auto;border-right:0;border-bottom:1px solid #26262f;padding:8px}
-  .px-tools button{flex:0 0 auto;padding:7px 10px}
+  .px-top{padding:8px 12px}
+  .px-tools{flex-direction:row;overflow-x:auto;border-right:0;border-bottom:2px solid var(--ink);padding:8px;gap:6px}
+  .px-tools button{flex:0 0 auto;padding:8px 10px}
   .px-tools button small{display:none}
-  .px-canvas{min-height:260px;padding:12px}
-  .px-opts{border-left:0;border-top:1px solid #26262f}
+  .px-tools button i{margin-left:2px}
+  .px-canvas{min-height:240px;padding:16px 12px}
+  .px-canvas figure img{min-width:min(260px,100%);max-height:48vh}
+  .px-opts{border-left:0;border-top:2px solid var(--ink);padding:14px 12px}
+  .intro h1{font-size:14px;line-height:1.6}
+  .intro ol{grid-template-columns:1fr}
+  .intro li{flex-direction:row;justify-content:flex-start;text-align:left;padding:10px}
+  .px-opts .go{position:sticky;bottom:10px;z-index:2}
 }
 `;
