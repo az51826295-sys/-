@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import sharp from "sharp";
 import { realDot } from "./realdot";
-import { cutFrames, findFrames } from "./frames";
+import { PIXEL_BG, cutFrames, dropBgSpecks, findFrames } from "./frames";
 import { profileOf, snapToPalette, styleDistance, type StyleProfile } from "./style";
 
 /**
@@ -69,7 +69,7 @@ async function openaiDrawer(): Promise<Drawer> {
   const p = createImageProvider("gpt-image-2.5-flare");
   return async (prompt, ref) => {
     // 11-25 사장님 "고품질로 하자 가격을 올리더라도": 첫 그림이 low 면 4방향·동작이 전부 그 흐린 그림을 따라간다 → high(환경변수로 내릴 수 있다)
-    const q = (process.env.PIXEL_CREATE_QUALITY as "low" | "medium" | "high" | undefined) ?? "high";
+    const q = (process.env.PIXEL_CREATE_QUALITY as "low" | "medium" | "high" | undefined) ?? "medium"; // 11-25 사장님 "미디움이 제일 좋고" — 크기·디테일은 단위 맞추기가 냈다
     const r = ref ? await p.edit("data:image/png;base64," + ref.toString("base64"), prompt, "1024x1024", q) : await p.draw(prompt, q, "1024x1024", "opaque");
     return { png: Buffer.from(r.dataUrl.split(",")[1], "base64"), usd: costOf({ backend: r.model, inputTokens: r.inputTokens, outputTokens: r.outputTokens }) };
   };
@@ -86,6 +86,7 @@ export async function fitToCanvas(raw: Buffer, size: number, o: FitOpts = {}): P
   try { set = await findFrames(small, { clearBg: true }); } catch (e) { return { ok: false, reason: (e as Error).message, facts: ["② 캐릭터 못 찾음"] }; }
   if (set.frames.length !== 1) return { ok: false, reason: `캐릭터가 ${set.frames.length}개로 그려졌어요`, facts: [`② 덩어리 ${set.frames.length}개(기대 1)`] };
   let [cut] = await cutFrames(small, set);
+  dropBgSpecks(cut, set.cellW, set.cellH, set.bg ?? PIXEL_BG); // 11-25: 배경 번짐 외톨이 점 지우기
   let { cellW: w, cellH: h } = set;
   facts.push(`AI 도트 ${w}×${h}칸`);
   // 게임 키가 정해져 있으면: 칸을 늘려 맞추지 않고(정수배가 아니면 칸 크기가 들쭉날쭉) **원본을 게임 키에 맞는 격자로 다시 찍는다**(11-25)

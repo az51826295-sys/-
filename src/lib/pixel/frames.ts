@@ -133,6 +133,30 @@ function dropEdgeBits(out: Buffer, w: number, h: number): Buffer {
   return out;
 }
 
+/**
+ * 11-25 사장님 "왜 안 지워진 거야?": 군인 4방향 테두리에 하늘색 점 11개가 남았다. 그림 AI 가 배경(#B0C4DE)과 캐릭터 사이에
+ * 조금 밝은 번짐(185,208,234 — 배경과 거리 33)을 그렸는데, 배경 지우기 문턱이 30 이라 1 차이로 살아남았다.
+ * 문턱만 올리면 기사 은색 갑옷(배경과 거리 20, 393칸)이 같이 지워진다 → **외톨이만** 지운다:
+ * 배경색과 가깝고(거리 < 48) · 투명과 맞닿고 · 붙은 칠한 이웃 중 배경색과 가까운 칸이 하나도 없는 칸(갑옷처럼 넓은 밝은 면의 가장자리는 남는다).
+ */
+export const PIXEL_BG: [number, number, number] = [0xb0, 0xc4, 0xde];
+export function dropBgSpecks(out: Buffer, w: number, h: number, bg: [number, number, number] = PIXEL_BG): number {
+  const near = (i: number) => Math.abs(out[i] - bg[0]) + Math.abs(out[i + 1] - bg[1]) + Math.abs(out[i + 2] - bg[2]) < 48;
+  const kill: number[] = [];
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    const i = (y * w + x) * 4; if (!out[i + 3] || !near(i)) continue;
+    let clear = false, nearNb = false;
+    for (const [nx, ny] of [[x - 1, y], [x + 1, y], [x, y - 1], [x, y + 1]]) {
+      if (nx < 0 || ny < 0 || nx >= w || ny >= h) { clear = true; continue; }
+      const k = (ny * w + nx) * 4;
+      if (!out[k + 3]) clear = true; else if (near(k)) nearNb = true;
+    }
+    if (clear && !nearNb) kill.push(i);
+  }
+  for (const i of kill) out.fill(0, i, i + 4);
+  return kill.length;
+}
+
 export async function cutFrames(small: Buffer, set: FrameSet, opt: { lockBottom?: number; dropEdgeBits?: boolean } = {}): Promise<Buffer[]> {
   const { data, info } = await sharp(small).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
   const im: Img = { d: data, w: info.width, h: info.height };
@@ -144,7 +168,8 @@ export async function cutFrames(small: Buffer, set: FrameSet, opt: { lockBottom?
       const p = at(im, sx, sy); if (p[3] < 128 || (set.bg && near(p, set.bg))) continue;
       out[(y * set.cellW + x) * 4] = p[0]; out[(y * set.cellW + x) * 4 + 1] = p[1]; out[(y * set.cellW + x) * 4 + 2] = p[2]; out[(y * set.cellW + x) * 4 + 3] = 255;
     }
-    return opt.dropEdgeBits ? dropEdgeBits(out, set.cellW, set.cellH) : out;
+    if (opt.dropEdgeBits) { if (!process.env.PIXEL_NO_SPECKS) dropBgSpecks(out, set.cellW, set.cellH, set.bg ?? PIXEL_BG); return dropEdgeBits(out, set.cellW, set.cellH); } // PIXEL_NO_SPECKS: 자의 심은 고장 전용
+    return out;
   }).map((out, f, all) => {
     const lock = Math.min(0.5, Math.max(0, opt.lockBottom ?? 0));
     if (!lock || f === 0) return out;
