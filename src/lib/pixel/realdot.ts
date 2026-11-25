@@ -29,6 +29,8 @@ export type RealDotOptions = {
   cell?: "mode" | "median";
   /** 색 묶음끼리 이 거리(가중 RGB, 대략 밝기 단위)보다 가까우면 합친다. 0 = 끔. 기본은 MERGE_DEFAULT. */
   merge?: number;
+  /** 11-25 예측자: 칸 크기가 대략 이쯤일 것이다(px) — 푸리에를 그 근처(×0.8~×1.25)에서만 찾는다. 강제(period)와 달리 진짜 봉우리를 찾는다. */
+  near?: number;
 };
 
 export type RealDotResult = {
@@ -245,7 +247,7 @@ export async function realDot(input: Buffer, opt: RealDotOptions = {}): Promise<
   const r = await raw(src);
 
   const px = edgeProfile(r, 0), py = edgeProfile(r, 1);
-  const f = opt.period ? { p: opt.period, ox: 0, oy: 0, score: 0 } : findPeriod(px, py);
+  const f = opt.period ? { p: opt.period, ox: 0, oy: 0, score: 0 } : opt.near ? findPeriod(px, py, Math.max(3, opt.near * 0.8), opt.near * 1.25) : findPeriod(px, py);
   if (!f.p) throw new Error("도트 격자를 못 찾았어요 — 도트 그림이 아니거나 너무 작아요.");
   const fx = { p: f.p }, fy = { p: f.p };
   const cx = snapCuts(px, f.p, f.ox), cy = snapCuts(py, f.p, f.oy);

@@ -106,7 +106,34 @@ export async function findFrames(small: Buffer, opt: { cols?: number; rows?: num
  * lockBottom(0~0.5): **몸통 고정** — 아래쪽 이 비율의 줄을 첫 프레임 것으로 모든 프레임에 쓴다. AI 는 표정마다 몸통을 조금씩 다르게
  * 그려서(11-24 시험: 같게 그린 칸 76%) 그대로 움직이면 몸이 떨린다. 표정 시트는 켜는 게 맞고, 동작 시트(걷기 등)는 끄는 게 맞다.
  */
-export async function cutFrames(small: Buffer, set: FrameSet, opt: { lockBottom?: number } = {}): Promise<Buffer[]> {
+/**
+ * 11-25: 옆 프레임의 날개 끝처럼 **칸 옆 가장자리에 붙은 작은 조각**을 지운다(용 4방향 1번 칸에 2번 날개 조각이 들어왔다).
+ * 본체(가장 큰 덩어리)의 10% 미만이고 왼쪽·오른쪽 가장자리에 닿은 덩어리만 — 떠 있는 작은 장식(가장자리에 안 닿음)은 남긴다.
+ */
+function dropEdgeBits(out: Buffer, w: number, h: number): Buffer {
+  const lab = new Int32Array(w * h).fill(-1), sizes: number[] = [], edge: boolean[] = [];
+  for (let i = 0; i < w * h; i++) {
+    if (!out[i * 4 + 3] || lab[i] >= 0) continue;
+    const id = sizes.length; sizes.push(0); edge.push(false);
+    const st = [i]; lab[i] = id;
+    while (st.length) {
+      const q = st.pop()!; sizes[id]++;
+      const x = q % w, y = (q - x) / w;
+      if (x === 0 || x === w - 1) edge[id] = true;
+      for (const [nx, ny] of [[x - 1, y], [x + 1, y], [x, y - 1], [x, y + 1]]) {
+        if (nx < 0 || ny < 0 || nx >= w || ny >= h) continue;
+        const k = ny * w + nx; if (lab[k] >= 0 || !out[k * 4 + 3]) continue;
+        lab[k] = id; st.push(k);
+      }
+    }
+  }
+  if (sizes.length < 2) return out;
+  const big = Math.max(...sizes);
+  for (let i = 0; i < w * h; i++) { const id = lab[i]; if (id >= 0 && edge[id] && sizes[id] < big * 0.1) out.fill(0, i * 4, i * 4 + 4); }
+  return out;
+}
+
+export async function cutFrames(small: Buffer, set: FrameSet, opt: { lockBottom?: number; dropEdgeBits?: boolean } = {}): Promise<Buffer[]> {
   const { data, info } = await sharp(small).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
   const im: Img = { d: data, w: info.width, h: info.height };
   return set.frames.map((f) => {
@@ -117,7 +144,7 @@ export async function cutFrames(small: Buffer, set: FrameSet, opt: { lockBottom?
       const p = at(im, sx, sy); if (p[3] < 128 || (set.bg && near(p, set.bg))) continue;
       out[(y * set.cellW + x) * 4] = p[0]; out[(y * set.cellW + x) * 4 + 1] = p[1]; out[(y * set.cellW + x) * 4 + 2] = p[2]; out[(y * set.cellW + x) * 4 + 3] = 255;
     }
-    return out;
+    return opt.dropEdgeBits ? dropEdgeBits(out, set.cellW, set.cellH) : out;
   }).map((out, f, all) => {
     const lock = Math.min(0.5, Math.max(0, opt.lockBottom ?? 0));
     if (!lock || f === 0) return out;

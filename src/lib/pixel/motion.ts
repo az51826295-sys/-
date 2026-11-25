@@ -38,6 +38,11 @@ export type MotionCheck = { machine: "pass" | "fail" | "unsure"; facts: string[]
 export type MotionResult = { ok: true; set: FrameSet; cuts: Buffer[]; rd: RealDotResult; raw: Buffer; tries: number; usd: number; check: MotionCheck }
   | { ok: false; reason: string; tries: number; usd: number; check?: MotionCheck; raw?: Buffer }; // raw: 돈 내고 그렸는데 떨어진 그림(11-25 용 4방향 — 못 봐서 판정을 못 했다)
 
+/** 프레임들 중 가장 큰 키(칸) — 예측(참조 키)과 견준다. */
+function heightOf(cuts: Buffer[], set: FrameSet): number {
+  return Math.max(...cuts.map((c) => { let top = -1, bot = -1; for (let y = 0; y < set.cellH; y++) for (let x = 0; x < set.cellW; x++) if (c[(y * set.cellW + x) * 4 + 3]) { if (top < 0) top = y; bot = y; } return top < 0 ? 0 : bot - top + 1; }));
+}
+
 /** 색 분포(채널당 5단계 → 125칸, 비율). */
 const L = 5;
 function histOf(px: number[][]): Float64Array {
@@ -143,12 +148,31 @@ export async function makeMotion(ref: Buffer, motion: MotionKey, o: { colors?: n
     try { const d = await draw(refUrl, prompt); raw = d.png; lastRaw = raw; usd += d.usd; }
     catch (e) { reason = `그림 AI 가 거절했어요 (${(e as Error).message.slice(0, 80)})`; break; } // 돈·열쇠 문제는 다시 해도 같다
     let rd: RealDotResult, set: FrameSet, cuts: Buffer[];
+    const fixes: string[] = [];
     try {
       rd = await realDot(raw, { colors: o.colors ?? 32 });
       set = await findFrames(rd.small);
-      cuts = await cutFrames(rd.small, set, { lockBottom: M.lock ? 0.25 : 0 });
+      cuts = await cutFrames(rd.small, set, { lockBottom: M.lock ? 0.25 : 0, dropEdgeBits: true });
+      // 11-25 예측자 → 판단자 → 고치기(돈 0): 참조 키(refCells)를 미리 안다 = 예측. 읽힌 키가 15% 넘게 다르면
+      // 칸 크기를 잘못 읽은 것(용 4방향: 63칸 → 41칸, 몸에 검은 점) → 예측 주기 근처에서 **진짜 봉우리를 다시 찾는다**(강제 아님).
+      // 다시 읽은 쪽이 예측에 더 가깝고 프레임 수가 맞을 때만 바꾼다.
+      const hNow = heightOf(cuts, set);
+      if (refCells && Math.abs(hNow - refCells) / refCells > 0.15) {
+        const pred = (rd.period[0] * hNow) / refCells;
+        try {
+          const rd2 = await realDot(raw, { colors: o.colors ?? 32, near: pred });
+          const set2 = await findFrames(rd2.small);
+          const cuts2 = await cutFrames(rd2.small, set2, { lockBottom: M.lock ? 0.25 : 0, dropEdgeBits: true });
+          const h2 = heightOf(cuts2, set2);
+          if (set2.frames.length === M.frames && Math.abs(h2 - refCells) < Math.abs(hNow - refCells)) {
+            fixes.push(`예측 키 ${refCells}칸 · 처음 ${hNow}칸(주기 ${rd.period[0]}) → 다시 읽어 ${h2}칸(주기 ${rd2.period[0]})`);
+            rd = rd2; set = set2; cuts = cuts2;
+          } else fixes.push(`예측 키 ${refCells}칸 · 읽힌 키 ${hNow}칸 — 다시 읽어도 안 나아짐(${h2}칸)`);
+        } catch { fixes.push(`예측 키 ${refCells}칸 · 읽힌 키 ${hNow}칸 — 다시 읽기 실패`); }
+      }
     } catch (e) { reason = (e as Error).message; last = { machine: "fail", facts: [reason], action: "escalate" }; continue; }
     const mc = await machineCheck(set, cuts, M.frames, refH);
+    mc.facts.unshift(...fixes);
     let judge: MotionCheck["judge"];
     if (mc.machine === "unsure") {
       const j = await judgeSame(refPng, await sheetOf(cuts, set));
