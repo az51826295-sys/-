@@ -162,10 +162,10 @@ export default function PixelClient({ en, paid }: { en: boolean; paid: string | 
   };
 
   // ── 4방향 · 동작(그림 AI)
-  const [aMotion, setAMotion] = useState<"idle" | "walk" | "wave" | "custom">("idle");
+  const [aMotion, setAMotion] = useState<"idle" | "walk" | "fly" | "wave" | "custom">("idle");
   const [aAction, setAAction] = useState("");
   const [ms, setMs] = useState(250);
-  const motion = async (m: "turn" | "idle" | "walk" | "wave" | "custom") => {
+  const motion = async (m: "turn" | "idle" | "walk" | "fly" | "wave" | "custom") => {
     if (!ref) return;
     const fd = new FormData(); fd.append("image", ref.file); fd.append("motion", m); fd.append("ms", String(m === "turn" ? 600 : ms));
     if (m === "custom") fd.append("action", aAction);
@@ -399,9 +399,9 @@ export default function PixelClient({ en, paid }: { en: boolean; paid: string | 
           {tool === "animate" && (<>
             <h2>{t("동작 만들기", "Animate")}</h2>
             <div className="seg wrap">
-              {(["idle", "walk", "wave", "custom"] as const).map((m) => (
+              {(["idle", "walk", "fly", "wave", "custom"] as const).map((m) => (
                 <button key={m} type="button" className={aMotion === m ? "on" : ""} onClick={() => setAMotion(m)}>
-                  {m === "idle" ? t("숨쉬기", "Idle") : m === "walk" ? t("걷기", "Walk") : m === "wave" ? t("손 흔들기", "Wave") : t("글로 적기", "Text")}
+                  {m === "idle" ? t("숨쉬기", "Idle") : m === "walk" ? t("걷기", "Walk") : m === "fly" ? t("날갯짓", "Fly") : m === "wave" ? t("손 흔들기", "Wave") : t("글로 적기", "Text")}
                 </button>
               ))}
             </div>

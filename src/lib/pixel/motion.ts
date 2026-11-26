@@ -26,6 +26,8 @@ export const MOTIONS = {
   // 11-25 "픽셀랩 같은 것": 4방향 — 게임 캐릭터의 기본 세트
   turn: { ko: "4방향(앞·오른쪽·뒤·왼쪽)", en: "4 directions", frames: 4, lock: false,
     prompt: "the same character seen from 4 directions, standing still: frame 1 front view facing the viewer, frame 2 EXACT side profile facing right (camera at 90 degrees: we see only one eye, the nose points right, the body is narrow), frame 3 back view (we see the back of the head, no face), frame 4 EXACT side profile facing left (mirror of frame 2). Not three-quarter views" },
+  // 11-26 날갯짓: 그림 AI 를 안 부르고 기본 그림의 날개를 코드가 움직인다(라우트가 makeMotion 전에 가로챈다 — rigWalk bob)
+  fly: { ko: "날갯짓", en: "Fly", frames: 6, lock: false, prompt: "flying in place, flapping the wings: wings up, wings level, wings down" },
   // 손님이 글로 쓴 동작 — 프롬프트는 makeMotion 이 손님 글로 채운다
   custom: { ko: "글로 쓴 동작", en: "Custom action", frames: 4, lock: false, prompt: "" },
 } as const;
