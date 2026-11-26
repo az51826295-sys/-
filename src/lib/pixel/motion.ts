@@ -25,7 +25,8 @@ export const MOTIONS = {
     prompt: "waving hello with the right hand: frame 1 hand down, frame 2 hand raised beside the face, frame 3 hand tilted left, frame 4 hand tilted right" },
   // 11-25 "픽셀랩 같은 것": 4방향 — 게임 캐릭터의 기본 세트
   turn: { ko: "4방향(앞·오른쪽·뒤·왼쪽)", en: "4 directions", frames: 4, lock: false,
-    prompt: "the same character seen from 4 directions, standing still: frame 1 front view facing the viewer, frame 2 EXACT side profile facing right (camera at 90 degrees: we see only one eye, the nose points right, the body is narrow), frame 3 back view (we see the back of the head, no face), frame 4 EXACT side profile facing left (mirror of frame 2). Not three-quarter views" },
+    prompt: "the same character seen from 4 directions, standing still: frame 1 front view facing the viewer, frame 2 EXACT side profile facing right (camera at 90 degrees: we see only one eye, the nose points right, the body is narrow), frame 3 back view (we see the back of the head, no face), frame 4 EXACT side profile facing left. Not three-quarter views. Frame 4 is NOT a mirror image of frame 2: the character keeps each item in the same hand as in the reference, so in frame 2 the items held in the character's RIGHT hand are on the near side, and in frame 4 the items held in the character's LEFT hand (e.g. a shield) are on the near side and clearly visible" },
+  // 11-27: "(mirror of frame 2)" 라고 시켰더니 왼쪽 모습이 오른쪽을 뒤집은 그림이 돼 기사 방패가 양옆에서 사라졌다(prop_ruler: 금색 1/6 양옆 다 사라짐, 픽셀랩은 왼쪽에서 지킴)
   // 11-26 날갯짓: 그림 AI 를 안 부르고 기본 그림의 날개를 코드가 움직인다(라우트가 makeMotion 전에 가로챈다 — rigWalk bob)
   fly: { ko: "날갯짓", en: "Fly", frames: 6, lock: false, prompt: "flying in place, flapping the wings: wings up, wings level, wings down" },
   // 손님이 글로 쓴 동작 — 프롬프트는 makeMotion 이 손님 글로 채운다
@@ -348,6 +349,21 @@ export async function makeMotion(ref: Buffer, motion: MotionKey, o: { colors?: n
             rd = rd2; set = set2; cuts = cuts2;
           } else fixes.push(`예측 키 ${refCells}칸 · 읽힌 키 ${hNow}칸 — 다시 읽어도 안 나아짐(${h2}칸)`);
         } catch { fixes.push(`예측 키 ${refCells}칸 · 읽힌 키 ${hNow}칸 — 다시 읽기 실패`); }
+      }
+      // 11-27 4방향 키: 그림 AI 가 정말로 작게 그렸으면(기사 43칸 vs 기본 54칸 — 진짜 봉우리를 찾아도 43) 원본을 **더 촘촘한 격자로 다시 읽는다**.
+      // 다 읽은 뒤 nearest 로 키우면(fitTurn 1.26배) 줄·칸이 두 번 찍혀 울퉁불퉁하다. 키가 기본에 ±2칸으로 맞고 프레임 수가 같을 때만 바꾼다. 돈 0.
+      if (motion === "turn" && refCells) {
+        const hN = heightOf(cuts, set);
+        if (hN && Math.abs(hN - refCells) / refCells > 0.05) {
+          try {
+            const rd3 = await realDot(raw, { colors: o.colors ?? 32, period: (rd.period[0] * hN) / refCells });
+            const set3 = await findFrames(rd3.small, { clearBg: true }).catch(() => findFrames(rd3.small, { cols: M.frames, rows: 1, valleys: true }));
+            const cuts3 = await cutFrames(rd3.small, set3, { dropEdgeBits: true });
+            const h3 = heightOf(cuts3, set3);
+            if (set3.frames.length === M.frames && Math.abs(h3 - refCells) <= 2) { fixes.push(`그려진 키 ${hN}칸 → 촘촘한 격자(주기 ${rd.period[0]}→${rd3.period[0]})로 다시 읽어 ${h3}칸(기본 ${refCells}칸)`); rd = rd3; set = set3; cuts = cuts3; }
+            else fixes.push(`그려진 키 ${hN}칸 — 촘촘히 다시 읽기 안 맞음(${set3.frames.length}장 · ${h3}칸)`);
+          } catch { fixes.push(`그려진 키 ${hN}칸 — 촘촘히 다시 읽기 실패`); }
+        }
       }
       // 예측자가 칸 크기를 고쳤으면 후보 B 도 고친 칸으로 다시 자른다(둘째 판: 판단자가 B 를 골랐는데 B 가 고치기 전 46칸이었다)
       if (candB && candB.rd !== rd) {
