@@ -280,7 +280,7 @@ export function refusedWhy(e: Error): string {
 /** 손님이 쓴 동작 글: 한 줄 · 120자 · 제어문자 없음 */
 export const cleanAction = (s: string) => s.replace(/[\u0000-\u001f\u007f]+/g, " ").replace(/\s+/g, " ").trim().slice(0, 120);
 
-export async function makeMotion(ref: Buffer, motion: MotionKey, o: { colors?: number; maxTries?: number; action?: string; frames?: number } = {}): Promise<MotionResult> {
+export async function makeMotion(ref: Buffer, motion: MotionKey, o: { colors?: number; maxTries?: number; action?: string; frames?: number; noCalm?: boolean } = {}): Promise<MotionResult> {
   const M = { ...MOTIONS[motion], frames: o.frames ?? MOTIONS[motion].frames }; // 11-26: 섞어 걷기는 반 바퀴 3장만 그린다(나머지는 좌우 뒤집기)
   const act = motion === "custom" ? cleanAction(o.action ?? "") : "";
   if (motion === "custom" && !act) return { ok: false, reason: "동작을 글로 적어 주세요.", tries: 0, usd: 0 };
@@ -375,8 +375,8 @@ export async function makeMotion(ref: Buffer, motion: MotionKey, o: { colors?: n
     // 미끄러짐 잡기(돌기·동작 모두): 윗몸 가운데를 1번 프레임에 맞춘다
     { const st = stabilize(cuts, set); if (st.shifts.some((v) => v)) { cuts = st.cuts; set = st.set; fixes.push(`프레임 가로 맞춤 ${st.shifts.join("/")}칸`); } }
     // 번쩍임 잡기: 동작(걷기·숨쉬기·글로 쓴 동작)만 — 4방향은 프레임마다 다른 모습이 맞다
-    if (motion !== "turn" && !process.env.PIXEL_NO_CALM) { const cf = calmFrames(cuts, set); cuts = cf.cuts; if (cf.changed.some((v) => v)) fixes.push(`잡음 칸 맞춤 ${cf.changed.join("/")}칸`); }
-    if (motion === "walk" && !process.env.PIXEL_NO_CALM) {
+    if (motion !== "turn" && !(o.noCalm || process.env.PIXEL_NO_CALM)) { const cf = calmFrames(cuts, set); cuts = cf.cuts; if (cf.changed.some((v) => v)) fixes.push(`잡음 칸 맞춤 ${cf.changed.join("/")}칸`); }
+    if (motion === "walk" && !(o.noCalm || process.env.PIXEL_NO_CALM)) {
       const hf = headFlicker(cuts, set);
       if (hf > 0.25) { const lu = lockUpper(cuts, set); cuts = lu.cuts; fixes.push(`머리 깜빡임 ${(hf * 100).toFixed(0)}% → 윗몸 고정(잇는 줄 ${lu.seams.slice(1).join("/")}) → ${(headFlicker(cuts, set) * 100).toFixed(0)}%`); }
     }

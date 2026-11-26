@@ -120,7 +120,7 @@ export function hybridWalk(base: { data: Buffer; w: number; h: number }, ai: Buf
   return { frames, cellW: W, cellH: H, mode: "hybrid", facts };
 }
 
-export async function rigWalk(png: Buffer): Promise<RigWalk> {
+export async function rigWalk(png: Buffer, o: { bob?: boolean } = {}): Promise<RigWalk> {
   const { data: src0, info } = await sharp(png).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
   let W = info.width, H = info.height;
   const on = (d: Buffer, w: number, x: number, y: number) => d[(y * w + x) * 4 + 3] > 0;
@@ -162,7 +162,7 @@ export async function rigWalk(png: Buffer): Promise<RigWalk> {
   const blank = () => Buffer.alloc(W * H * 4);
   const put = (o: Buffer, x: number, y: number, i: number) => { if (x < 0 || y < 0 || x >= W || y >= H) return; src.copy(o, (y * W + x) * 4, i, i + 4); };
 
-  if (rows.length < 2) {
+  if (rows.length < 2 || o.bob) { // bob: 박쥐처럼 날거나 다리가 없는 캐릭터는 다리가 보여도 몸 전체로
     // 다리 틈 없음 → 몸 전체 위아래 1칸
     for (const dy of [0, -1, 0, -1]) {
       const o = blank();
