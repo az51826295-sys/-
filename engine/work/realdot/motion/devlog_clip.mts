@@ -11,15 +11,17 @@ const clips = await Promise.all(specs.map(async (s) => {
   const frames = await Promise.all([...Array(n).keys()].map((f) => sharp(p).extract({ left: f * cw, top, width: cw, height: h }).png().toBuffer()));
   return { label, frames, cw, h };
 }));
-const S = Math.max(2, Math.floor(420 / Math.max(...clips.map((c) => c.h)))), CW = Math.max(...clips.map((c) => c.cw)) * S + 40, CH = Math.max(...clips.map((c) => c.h)) * S;
-const W = CW * clips.length, H = CH + 70, T = 12;
+const S = Math.max(2, Math.floor(Number(process.env.CLIP_H || 420) / Math.max(...clips.map((c) => c.h)))), CW = Math.max(...clips.map((c) => c.cw)) * S + 40, CH = Math.max(...clips.map((c) => c.h)) * S;
+const COLS = Number(process.env.COLS || clips.length), ROWS = Math.ceil(clips.length / COLS);
+const W = CW * COLS, H = (CH + 70) * ROWS, T = 12;
 const out2: Buffer[] = [];
 for (let t = 0; t < T; t++) {
   const comp: sharp.OverlayOptions[] = [];
   for (const [i, c] of clips.entries()) {
     const f = await sharp(c.frames[t % c.frames.length]).resize(c.cw * S, c.h * S, { kernel: "nearest" }).png().toBuffer();
-    comp.push({ input: f, left: i * CW + Math.round((CW - c.cw * S) / 2), top: 10 + CH - c.h * S });
-    comp.push({ input: Buffer.from(`<svg width="${CW}" height="50"><text x="${CW / 2}" y="38" text-anchor="middle" font-size="34" font-weight="bold" font-family="sans-serif" fill="${i ? "#8fe" : "#bbb"}">${c.label}</text></svg>`), left: i * CW, top: CH + 16 });
+    const cx = (i % COLS) * CW, cy = Math.floor(i / COLS) * (CH + 70);
+    comp.push({ input: f, left: cx + Math.round((CW - c.cw * S) / 2), top: cy + 10 + CH - c.h * S });
+    comp.push({ input: Buffer.from(`<svg width="${CW}" height="50"><text x="${CW / 2}" y="38" text-anchor="middle" font-size="34" font-weight="bold" font-family="sans-serif" fill="${i ? "#8fe" : "#bbb"}">${c.label}</text></svg>`), left: cx, top: cy + CH + 16 });
   }
   out2.push(await sharp({ create: { width: W, height: H, channels: 4, background: { r: 46, g: 49, b: 58, alpha: 1 } } }).composite(comp).png().toBuffer());
 }
