@@ -39,8 +39,32 @@ export function stylePrompt(desc: string, height: number): string {
     `Draw ONE NEW character for the same game in exactly the same pixel-art style: same pixel size (the new character is about ${height} pixels tall, like the sprites in the reference), same head-to-body proportions, same outline style and thickness, same shading style, same color palette, same camera view.`,
     `The new character: ${desc}.`,
     "Exactly ONE character, full body, standing, centered, nothing else in the picture — do NOT copy the reference characters.",
+    // 11-26 사장님 "궁수는 정면이고 나머지 왜 사선": 이 주문엔 '정면' 이 없었다("same camera view" 뿐) → 10종 중 4종이 비스듬히 나왔고 걷기도 따라갔다
+    "Straight FRONT view: the character faces the viewer head-on, both eyes visible, shoulders and feet level and left-right balanced — NOT a three-quarter view, not turned to either side.",
     `Flat solid background color ${BG} everywhere — no shadow, no ground, no text, no border.`,
   ].join(" ");
+}
+
+/**
+ * 정면인가(11-26): 만든 그림이 비스듬하면(사선·옆) 4방향·걷기가 전부 비스듬해진다 → 판단자에게 한 번 묻는다(약 1원).
+ * 판단자는 문이 아니라 다시 그릴지 고르는 자리 — 오류·목이면 null(그대로 간다).
+ */
+export async function judgeFront(png: Buffer): Promise<{ front: boolean; confidence: number; why: string; usd: number } | null> {
+  if (process.env.PIXEL_CREATE_MOCK && !process.env.PIXEL_JUDGE_LIVE) return null;
+  try {
+    const { z } = await import("zod");
+    const { createOpenAIProvider } = await import("@/lib/providers/openai");
+    const { costOf } = await import("@/lib/costs/pricing");
+    const ai = createOpenAIProvider({ judgmentModel: "gpt-5.6-luna" });
+    const img = (await sharp(png).flatten({ background: "#ffffff" }).resize(512, 512, { fit: "inside", kernel: "nearest" }).png().toBuffer()).toString("base64");
+    const r = await ai.generateStructuredOutput({
+      systemInstructions: "You look at one pixel-art character sprite. Is it drawn in a straight FRONT view (facing the viewer head-on, both eyes visible, body roughly left-right symmetric) — or turned (three-quarter view, side view, looking or stepping to one side)? Holding an item on one side is fine; judge the head, torso and feet. Give confidence 0-1.",
+      input: "Judge the view.",
+      images: [img],
+      schema: z.object({ front: z.boolean(), confidence: z.number(), why: z.string() }), schemaName: "front_view", maxTokens: 16000, tier: "judgment",
+    });
+    return { ...r.output, usd: costOf({ backend: r.model, inputTokens: r.inputTokens ?? 0, outputTokens: r.outputTokens ?? 0 }) };
+  } catch { return null; }
 }
 
 /** 게임 그림(최대 4장)을 한 장의 참조판으로: 2×2 칸에 nearest 로 키워 한 색 배경에 */
@@ -232,6 +256,25 @@ export async function makeCharacter(desc: string, size: CanvasSize, o: { colors?
     } else if (f.ok) f.facts.unshift(note, `첫 그림 ${h1}칸(한 칸 ${f.period.toFixed(1)}px) — 목표 안`);
   }
   if (!f.ok) return { ok: false, reason: f.reason, usd, facts: f.facts };
+  // 11-26: 정면 확인 → 비스듬하면 판단자의 말을 붙여 한 번만 다시(게임 그림체 길만 — 기본 길은 단위 맞추기가 이미 다시 그린다)
+  if (profile && !process.env.PIXEL_NO_FRONT) {
+    const j = await judgeFront(f.png);
+    if (j) {
+      usd += j.usd;
+      if (!j.front && j.confidence >= 0.7) {
+        try {
+          const d2 = await draw(`${stylePrompt(cleanDesc(desc), profile.height)} Last time the character was turned (${j.why.slice(0, 160)}). Draw it facing the viewer straight on.`, board);
+          usd += d2.usd;
+          const f2 = await fitToCanvas(d2.png, canvas, { colors: o.colors ?? 32, height: profile.height, profile, snap: o.snap });
+          const j2 = f2.ok ? await judgeFront(f2.png) : null;
+          if (j2) usd += j2.usd;
+          if (f2.ok && (!j2 || j2.front || j2.confidence < 0.7)) { f2.facts.unshift(`정면 확인: 비스듬함(${j.confidence.toFixed(2)}) → 다시 그림 → ${j2 ? (j2.front ? "정면" : "판단 애매") : "판단 없음"}`); f = f2; d = d2; }
+          else f.facts.unshift(`정면 확인: 비스듬함(${j.confidence.toFixed(2)}) → 다시 그려도 비스듬 — 첫 그림 유지`);
+        } catch { f.facts.unshift(`정면 확인: 비스듬함 — 다시 그리기 실패`); }
+      } else f.facts.unshift(`정면 확인: ${j.front ? "정면" : "애매"}(${j.confidence.toFixed(2)})`);
+    }
+  }
+  if (!f.ok) return { ok: false, reason: "정면 다시 그리기 뒤 실패", usd, facts: [] };
   const scale = Math.max(2, Math.floor(768 / f.size));
   const big = await sharp(f.png).resize(f.size * scale, f.size * scale, { kernel: "nearest" }).png().toBuffer();
   return { ok: true, png: f.png, big, raw: d.png, drawn: f.drawn, size: f.size, usd, facts: f.facts };
