@@ -4,6 +4,7 @@ import { PIXEL_COST, pixelBalance, refundPixelShot, spendPixelShot } from "@/lib
 import { dataUrl, readUpload } from "@/lib/pixel/serve";
 import { MOTIONS, makeMotion, gifOf, sheetOf, type MotionKey } from "@/lib/pixel/motion";
 import { makeWalk, spriteOf } from "@/lib/pixel/walk";
+import { fitTurn } from "@/lib/pixel/fitturn";
 
 /**
  * AI 동작 생성 — 그림 AI 값이 드니 **미리보기가 없다**(무료로 그리면 우리 돈이 샌다). 장을 먼저 쓰고 그린다.
@@ -46,6 +47,14 @@ export async function POST(request: Request) {
     return Response.json({ error: `같은 캐릭터로 움직임을 못 그렸어요 — 토큰은 돌려드렸어요. (${r.reason.slice(0, 120)})`, refunded: true }, { status: 422 });
   }
   await db.from("dot_purchases").update({ ref: `motion ${u.motion} ${r.set.frames.length}f tries${r.tries} $${r.usd.toFixed(4)} ${new Date().toISOString()}`.slice(0, 120) }).eq("id", spent);
+  // 11-26 4방향 키 맞추기: 그림 AI 가 4방향을 기본 그림보다 8~19% 작게 그린다(10종 중 8종) → 정면 = 기본 그림, 나머지는 기본 키로(1배 투명 도트일 때만)
+  if (u.motion === "turn") {
+    const sprite = await spriteOf(u.buf).catch(() => null);
+    if (sprite) {
+      const ft = await fitTurn(sprite, await sheetOf(r.cuts, r.set), r.set.frames.length).catch(() => null);
+      if (ft) { r.cuts = ft.frames; r.set = { ...r.set, cellW: ft.cellW, cellH: ft.cellH }; r.check.facts.push(...ft.facts); }
+    }
+  }
   const scale = Math.max(1, Math.min(8, Math.floor(512 / Math.max(r.set.cellW, r.set.cellH))));
   const [gif, sheet] = await Promise.all([gifOf(r.cuts, r.set, { scale, ms: u.ms }), sheetOf(r.cuts, r.set)]);
   return Response.json({
