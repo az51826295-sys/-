@@ -17,10 +17,16 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 export const PIXEL_PACK = { key: "pixel_10", shots: 100, krw: 4900 } as const;
 /** 기능별 토큰 값 — 값은 사장님이 정한다. 바꾸려면 여기 한 곳. */
 export const PIXEL_COST = { convert: 2, split: 2, create: 10, turn: 15, motion: 15 } as const;
+/**
+ * 11-26 사장님 "무료 한번 체험 하나만": 구글 등으로 연결한 계정에 **만들기 1번 몫**을 한 번만 준다.
+ * 스레드로 4명이 들어와 0명이 그렸다 — 결제 전엔 한 장도 못 그려 봐서. 손님(익명)은 안 준다(창마다 새 손님이라 끝없이 받는다).
+ * sku `pixel_free` credits +만들기값  source `pixel`  ref `free:<user>` — 사람마다 한 줄.
+ */
+export const PIXEL_FREE = { key: "pixel_free", shots: PIXEL_COST.create } as const;
 
 export async function pixelBalance(db: SupabaseClient, userId: string): Promise<number> {
   const { data, error } = await db
-    .from("dot_purchases").select("credits").eq("user_id", userId).in("sku", [PIXEL_PACK.key, "pixel_use"]);
+    .from("dot_purchases").select("credits").eq("user_id", userId).in("sku", [PIXEL_PACK.key, PIXEL_FREE.key, "pixel_use"]);
   if (error) throw new Error(error.message);
   return (data ?? []).reduce((s, r) => s + Number(r.credits ?? 0), 0);
 }
@@ -59,4 +65,21 @@ export async function grantPixelPack(db: SupabaseClient, userId: string, checkou
   const ids = (뒤.data ?? []).map((r) => r.id as number);
   if (ids.length > 1 && ids[0] !== data.id) { await db.from("dot_purchases").delete().eq("id", data.id); return { already: true }; }
   return { already: false };
+}
+
+/** 체험 1번을 넣는다(연결한 계정만 부를 것). 이미 받았으면 아무것도 안 한다. 동시에 두 번 불려 두 줄이 생기면 늦은 줄을 지운다. */
+export async function grantPixelFree(db: SupabaseClient, userId: string): Promise<{ granted: boolean }> {
+  const ref = `free:${userId}`;
+  const 있던 = await db.from("dot_purchases").select("id").eq("user_id", userId).eq("sku", PIXEL_FREE.key);
+  if (있던.error) throw new Error(있던.error.message);
+  if ((있던.data?.length ?? 0) > 0) return { granted: false };
+  const { data, error } = await db
+    .from("dot_purchases")
+    .insert({ user_id: userId, sku: PIXEL_FREE.key, credits: PIXEL_FREE.shots, menhera_days: 0, source: "pixel", ref })
+    .select("id").single();
+  if (error) throw new Error(error.message);
+  const 뒤 = await db.from("dot_purchases").select("id").eq("user_id", userId).eq("sku", PIXEL_FREE.key).order("id");
+  const ids = (뒤.data ?? []).map((r) => r.id as number);
+  if (ids.length > 1 && ids[0] !== data.id) { await db.from("dot_purchases").delete().eq("id", data.id); return { granted: false }; }
+  return { granted: true };
 }

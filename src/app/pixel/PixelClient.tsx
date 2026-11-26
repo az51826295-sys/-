@@ -234,7 +234,7 @@ export default function PixelClient({ en, paid }: { en: boolean; paid: string | 
   // 11-25 사장님 "계정 연동해야지 · 도트 그림 만들기는 선결제로": 손님은 결제·AI 그림 대신 구글 연결 단추를 본다(무료 장수 없음)
   const connect = (
     <div className="connect">
-      <p>{t("구글 계정을 연결하면 토큰을 사서 쓸 수 있어요. 산 토큰은 계정에 남아요.", "Connect a Google account to buy and use tokens. Tokens stay with your account.")}</p>
+      <p>{t("구글 계정을 연결하면 캐릭터 만들기 1번이 무료예요. 토큰은 계정에 남아요.", "Connect a Google account and your first character is free. Tokens stay with your account.")}</p>
       <GoogleGo already={false} en={en} next="/pixel" />
     </div>
   );
@@ -315,7 +315,7 @@ export default function PixelClient({ en, paid }: { en: boolean; paid: string | 
                   <li><b>3</b>{t("투명 PNG·GIF로 받아 게임에 넣어요", "Download transparent PNG / GIF")}</li>
                 </ol>
                 <div className="price">
-                  <span>{t(`${PIXEL_PACK.shots}토큰 4,900원`, `${PIXEL_PACK.shots} tokens ₩4,900`)}</span>
+                  <span>{t("첫 캐릭터 1번 무료", "First character free")} · {t(`${PIXEL_PACK.shots}토큰 4,900원`, `${PIXEL_PACK.shots} tokens ₩4,900`)}</span>
                   <small>{t(`만들기 ${PIXEL_COST.create} · 4방향 ${PIXEL_COST.turn} · 동작 ${PIXEL_COST.motion} · 변환·자르기 ${PIXEL_COST.convert} · 실패하면 돌려드려요`, `Create ${PIXEL_COST.create} · Rotate ${PIXEL_COST.turn} · Animate ${PIXEL_COST.motion} · Pixelate/Split ${PIXEL_COST.convert} · refunded on failure`)}</small>
                 </div>
               </div>
