@@ -13,7 +13,102 @@
  */
 import sharp from "sharp";
 
-export type RigWalk = { frames: Buffer[]; cellW: number; cellH: number; mode: "legs" | "bob"; facts: string[] };
+export type RigWalk = { frames: Buffer[]; cellW: number; cellH: number; mode: "legs" | "bob" | "hybrid"; facts: string[] };
+
+type Legs = { top: number; bot: number; hip: number; legTop: number; Lx: [number, number]; Rx: [number, number] } | null;
+/** 기본 그림에서 다리 자리 찾기(아래에서 위로, 발 가운데 근처 빈 틈을 따라) — rigWalk·hybridWalk 공용 */
+function findLegs(src: Buffer, W: number, H: number): Legs {
+  const on = (x: number, y: number) => src[(y * W + x) * 4 + 3] > 0;
+  let top = -1, bot = -1, left = W, right = -1;
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (on(x, y)) { if (top < 0) top = y; bot = y; left = Math.min(left, x); right = Math.max(right, x); }
+  if (top < 0) return null;
+  let sx = 0, n = 0;
+  for (let y = bot - 2; y <= bot; y++) for (let x = 0; x < W; x++) if (on(x, y)) { sx += x; n++; }
+  let prevMid = n ? sx / n : (left + right) / 2;
+  const reach = Math.max(4, Math.round((right - left + 1) * 0.3));
+  const rows: { y: number; L: [number, number]; R: [number, number] }[] = [];
+  for (let y = bot; y >= top + Math.floor((bot - top + 1) * 0.4); y--) {
+    const runs: [number, number][] = [];
+    for (let x = 0; x < W; x++) if (on(x, y)) { let e = x; while (e + 1 < W && on(e + 1, y)) e++; runs.push([x, e]); x = e; }
+    let best: (typeof rows)[0] | null = null, bestD = Infinity, mid = prevMid;
+    for (let i = 0; i + 1 < runs.length; i++) {
+      const m = (runs[i][1] + 1 + runs[i + 1][0] - 1) / 2, d = Math.abs(m - prevMid);
+      if (d <= (rows.length ? 2 : reach) && d < bestD) { bestD = d; best = { y, L: runs[i], R: runs[i + 1] }; mid = m; }
+    }
+    if (!best) break;
+    rows.push(best); prevMid = mid;
+  }
+  if (rows.length < 2) return null;
+  const hip = rows[rows.length - 1].y;
+  return { top, bot, hip, legTop: Math.max(top, hip - Math.max(1, Math.round((bot - hip + 1) / 4))),
+    Lx: [Math.min(...rows.map((r) => r.L[0])), Math.max(...rows.map((r) => r.L[1]))], Rx: [Math.min(...rows.map((r) => r.R[0])), Math.max(...rows.map((r) => r.R[1]))] };
+}
+
+/**
+ * 섞어 걷기(11-26 라이벌 측정 뒤): 픽셀랩 걷기는 다리가 진짜 걷는다(발 폭 차 10칸) — 대신 얼굴이 34~72% 바뀌고 검·방패를 지웠다.
+ * 우리 코드 걷기는 반대(얼굴 0%, 소품 유지, 다리는 제자리). → **다리 띠만 그림 AI 프레임에서, 나머지는 전부 기본 그림에서.**
+ *   - 다리 띠: 기본 그림 다리 x 범위 ±여유, 엉덩이 줄 아래. AI 프레임은 발끝을 기본 그림 바닥에, 엉덩이 가운데를 기본 그림 가운데에 맞춰 붙인다.
+ *   - 다리 띠 밖(땅에 닿은 지팡이 끝·방패 아래)은 기본 그림 그대로.
+ *   - 윗몸은 기본 그림 그대로 — 발이 가장 벌어진 프레임에서 1칸 내려앉는다.
+ * AI 프레임 키가 기본 그림과 15% 넘게 다르면 다리 길이가 안 맞으니 쓰지 않는다(null).
+ */
+export function hybridWalk(base: { data: Buffer; w: number; h: number }, ai: Buffer[], aiW: number, aiH: number): RigWalk | null {
+  const { data: src, w: W, h: H } = base;
+  const legs = findLegs(src, W, H);
+  if (!legs) return null;
+  const facts: string[] = [];
+  const bh = legs.bot - legs.top + 1, legLen = legs.bot - legs.hip + 1;
+  const pad = Math.max(2, Math.round(bh / 12));
+  const band: [number, number] = [Math.max(0, legs.Lx[0] - pad), Math.min(W - 1, legs.Rx[1] + pad)];
+  const cx = (legs.Lx[0] + legs.Rx[1]) / 2;
+  const frames: Buffer[] = [], spreads: number[] = [];
+  const legImgs: { o: Buffer }[] = [];
+  // 11-26 첫 판: AI 가 45칸으로 그렸다(기본 54) → 다리 띠만 쓰니 **모든 프레임을 같은 배율로** nearest 로 맞춘다(30% 넘게 다르면 포기)
+  const hOf = (c: Buffer, w: number, hh: number) => { let t = -1, b = -1; for (let y = 0; y < hh; y++) for (let x = 0; x < w; x++) if (c[(y * w + x) * 4 + 3]) { if (t < 0) t = y; b = y; } return t < 0 ? 0 : b - t + 1; };
+  const hs = ai.map((c) => hOf(c, aiW, aiH)).sort((a, b) => a - b), medH = hs[hs.length >> 1];
+  if (!medH || Math.abs(medH - bh) / bh > 0.3) { facts.push(`AI 프레임 키 ${medH}칸 · 기본 ${bh}칸 — 30% 넘게 달라 못 씀`); return { frames: [], cellW: W, cellH: H, mode: "hybrid", facts }; }
+  if (medH !== bh) {
+    const r = bh / medH, nw = Math.round(aiW * r), nh = Math.round(aiH * r);
+    ai = ai.map((c0) => { const o = Buffer.alloc(nw * nh * 4); for (let y = 0; y < nh; y++) for (let x = 0; x < nw; x++) { const sy = Math.min(aiH - 1, Math.floor(y / r)), sx = Math.min(aiW - 1, Math.floor(x / r)); c0.copy(o, (y * nw + x) * 4, (sy * aiW + sx) * 4, (sy * aiW + sx) * 4 + 4); } return o; });
+    facts.push(`AI 키 ${medH}칸 → 기본 ${bh}칸에 맞춰 ${r.toFixed(2)}배`);
+    aiW = nw; aiH = nh;
+  }
+  for (const c of ai) {
+    let top = -1, bot = -1;
+    for (let y = 0; y < aiH; y++) for (let x = 0; x < aiW; x++) if (c[(y * aiW + x) * 4 + 3]) { if (top < 0) top = y; bot = y; }
+    if (top < 0) return null;
+    const h = bot - top + 1;
+    // AI 프레임의 엉덩이 줄: 같은 비율 자리
+    const aHip = bot - Math.round(legLen * (h / bh)) + 1;
+    // AI 엉덩이 줄 근처(아래로 3줄)의 칠한 가운데 → 기본 그림 다리 가운데에 맞춘다
+    let sx = 0, n = 0;
+    for (let y = aHip; y < Math.min(aHip + 3, aiH); y++) for (let x = 0; x < aiW; x++) if (c[(y * aiW + x) * 4 + 3]) { sx += x; n++; }
+    const dx = Math.round(cx - (n ? sx / n : aiW / 2)), dy = legs.bot - bot;
+    const o = Buffer.alloc(W * H * 4);
+    let fl = 1e9, fr = -1;
+    for (let y = aHip; y <= bot; y++) for (let x = 0; x < aiW; x++) {
+      const i = (y * aiW + x) * 4; if (!c[i + 3]) continue;
+      const X = x + dx, Y = y + dy; if (X < band[0] || X > band[1] || Y < 0 || Y >= H) continue;
+      c.copy(o, (Y * W + X) * 4, i, i + 4);
+      if (Y >= legs.bot - 2) { fl = Math.min(fl, X); fr = Math.max(fr, X); }
+    }
+    legImgs.push({ o }); spreads.push(fr - fl + 1);
+  }
+  const maxS = Math.max(...spreads);
+  for (const [f, { o }] of legImgs.entries()) {
+    const dip = spreads[f] >= maxS - 1 && maxS - Math.min(...spreads) >= 2 ? 1 : 0;
+    const out = Buffer.alloc(W * H * 4);
+    // ① 다리 띠 밖의 아래쪽(소품)은 기본 그림
+    for (let y = legs.hip; y < H; y++) for (let x = 0; x < W; x++) { const i = (y * W + x) * 4; if (src[i + 3] && (x < band[0] || x > band[1])) src.copy(out, i, i, i + 4); }
+    // ② AI 다리
+    for (let i = 0; i < o.length; i += 4) if (o[i + 3]) o.copy(out, i, i, i + 4);
+    // ③ 윗몸(엉덩이 줄 위) 기본 그림 — 다리와 이음매를 덮도록 1줄 겹친다
+    for (let y = 0; y <= legs.hip; y++) for (let x = 0; x < W; x++) { const i = (y * W + x) * 4; const Y = y + dip; if (Y >= H) continue; if (src[i + 3]) src.copy(out, (Y * W + x) * 4, i, i + 4); }
+    frames.push(out);
+  }
+  facts.push(`다리 띠 x${band[0]}~${band[1]} · 엉덩이 ${legs.hip} · 발 폭 ${spreads.join("/")} · 내려앉기 ${spreads.map((s) => (s >= maxS - 1 && maxS - Math.min(...spreads) >= 2 ? 1 : 0)).join("/")}`);
+  return { frames, cellW: W, cellH: H, mode: "hybrid", facts };
+}
 
 export async function rigWalk(png: Buffer): Promise<RigWalk> {
   const { data: src0, info } = await sharp(png).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
