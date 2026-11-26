@@ -12,7 +12,8 @@ async function fromDir(d: string) { return Promise.all(readdirSync(d).filter((f)
 const clips: Clip[] = [
   { label: "우리: 그림AI 걷기", color: "#aaa", frames: await fromSheet(`${OURS}/${name}/walk-1x.png`) },
   { label: "우리: 코드 걷기", color: "#8fe", frames: await fromSheet(`${OURS}/rig/${name}-walk-1x.png`) },
-  ...(existsSync(`${OURS}/rig/${name}-hybrid-walk-1x.png`) ? [{ label: "우리: 섞어 걷기", color: "#7f7", frames: await fromSheet(`${OURS}/rig/${name}-hybrid-walk-1x.png`) }] : []),
+  ...(existsSync(`${OURS}/rig/${name}-hybrid-walk-1x.png`) ? [{ label: "우리: 섞어 4장", color: "#7f7", frames: await fromSheet(`${OURS}/rig/${name}-hybrid-walk-1x.png`) }] : []),
+  ...(existsSync(`${OURS}/rig/${name}-hybrid6-walk-1x.png`) ? [{ label: "우리: 섞어 6장", color: "#7f7", frames: await fromSheet(`${OURS}/rig/${name}-hybrid6-walk-1x.png`, 6) }] : []),
   { label: "픽셀랩: 정면", color: "#fc8", frames: await fromDir(`${RIV}/animations/walking/south`) },
   { label: "픽셀랩: 옆", color: "#fc8", frames: await fromDir(`${RIV}/animations/walking/east`) },
 ];

@@ -52,7 +52,7 @@ function findLegs(src: Buffer, W: number, H: number): Legs {
  *   - 윗몸은 기본 그림 그대로 — 발이 가장 벌어진 프레임에서 1칸 내려앉는다.
  * AI 프레임 키가 기본 그림과 15% 넘게 다르면 다리 길이가 안 맞으니 쓰지 않는다(null).
  */
-export function hybridWalk(base: { data: Buffer; w: number; h: number }, ai: Buffer[], aiW: number, aiH: number): RigWalk | null {
+export function hybridWalk(base: { data: Buffer; w: number; h: number }, ai: Buffer[], aiW: number, aiH: number, opt: { mirrorHalf?: boolean } = {}): RigWalk | null {
   const { data: src, w: W, h: H } = base;
   const legs = findLegs(src, W, H);
   if (!legs) return null;
@@ -93,6 +93,16 @@ export function hybridWalk(base: { data: Buffer; w: number; h: number }, ai: Buf
       if (Y >= legs.bot - 2) { fl = Math.min(fl, X); fr = Math.max(fr, X); }
     }
     legImgs.push({ o }); spreads.push(fr - fl + 1);
+  }
+  // 11-26 "좌우 걸음이 안 고르다": 반 바퀴(왼발)만 AI 가 그리고 나머지 반 바퀴는 다리 띠를 다리 가운데 기준으로 좌우 뒤집어 만든다 → 왼발·오른발이 칸 단위로 같다
+  if (opt.mirrorHalf) {
+    const n = legImgs.length;
+    for (let k = 0; k < n; k++) {
+      const src2 = legImgs[k].o, o = Buffer.alloc(W * H * 4);
+      for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { const i = (y * W + x) * 4; if (!src2[i + 3]) continue; const X = Math.round(2 * cx - x); if (X < band[0] || X > band[1]) continue; src2.copy(o, (y * W + X) * 4, i, i + 4); }
+      legImgs.push({ o }); spreads.push(spreads[k]);
+    }
+    facts.push(`반 바퀴 ${n}장 + 좌우 뒤집기 ${n}장`);
   }
   const maxS = Math.max(...spreads);
   for (const [f, { o }] of legImgs.entries()) {

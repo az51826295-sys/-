@@ -280,11 +280,11 @@ export function refusedWhy(e: Error): string {
 /** 손님이 쓴 동작 글: 한 줄 · 120자 · 제어문자 없음 */
 export const cleanAction = (s: string) => s.replace(/[\u0000-\u001f\u007f]+/g, " ").replace(/\s+/g, " ").trim().slice(0, 120);
 
-export async function makeMotion(ref: Buffer, motion: MotionKey, o: { colors?: number; maxTries?: number; action?: string } = {}): Promise<MotionResult> {
-  const M = MOTIONS[motion];
+export async function makeMotion(ref: Buffer, motion: MotionKey, o: { colors?: number; maxTries?: number; action?: string; frames?: number } = {}): Promise<MotionResult> {
+  const M = { ...MOTIONS[motion], frames: o.frames ?? MOTIONS[motion].frames }; // 11-26: 섞어 걷기는 반 바퀴 3장만 그린다(나머지는 좌우 뒤집기)
   const act = motion === "custom" ? cleanAction(o.action ?? "") : "";
   if (motion === "custom" && !act) return { ok: false, reason: "동작을 글로 적어 주세요.", tries: 0, usd: 0 };
-  const how = motion === "custom" ? `a 4-step animation of this action: ${act}` : M.prompt;
+  const how = motion === "custom" ? `a ${M.frames}-step animation of this action: ${act}` : M.prompt;
   const draw = process.env.PIXEL_MOTION_MOCK ? mockDrawer(process.env.PIXEL_MOTION_MOCK) : await openaiDrawer();
   // 작은 도트(예: 글로 만든 32px)는 그림 AI 가 못 알아본다 → 한 색 배경에 얹어 512 언저리로 nearest 확대
   const meta = await sharp(ref).metadata();
