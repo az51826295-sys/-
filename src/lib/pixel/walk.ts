@@ -12,6 +12,12 @@ import sharp from "sharp";
 import { makeMotion } from "./motion";
 import { hybridWalk, rigWalk, type RigWalk } from "./rigwalk";
 
+/**
+ * 바깥 기준: 픽셀랩 정면 걷기(기사, 11-26 체험) — 키 52칸 · 발 폭 7/17/8/7/7/7 → 변화 10칸 = 키 × 0.192 (engine/work/realdot/motion/rival_gate.mts).
+ * 문(키/9)은 "안 움직임(0~1칸)"과 "걸음(10칸↑)" 사이 빈 구간에 있어 그대로 두고, 라이벌 대비는 **자로만** 보고한다 —
+ * 문을 라이벌 숫자로 올리면 사장님이 통과시킨 8종 중 4종(0.84~0.91배)이 다시 그려진다(판마다 약 25원).
+ */
+const RIVAL_STEP = 10 / 52;
 export type WalkResult = RigWalk & { usd: number; tries: number; how: "hybrid" | "code"; spreadDiff: number };
 
 export async function makeWalk(basePng: Buffer, o: { maxTries?: number; bob?: boolean } = {}): Promise<WalkResult> {
@@ -43,7 +49,7 @@ export async function makeWalk(basePng: Buffer, o: { maxTries?: number; bob?: bo
     const h = hybridWalk(base, half.map((i) => m.cuts[i]), m.set.cellW, m.set.cellH, { mirrorHalf: true });
     if (!h || !h.frames.length) { facts.push(`${t}판 반 바퀴 섞기 실패`); continue; }
     const hs = half.map((i) => sp[i]), diff = Math.max(...hs) - Math.min(...hs);
-    facts.push(`${t}판 발 폭 ${sp.join("/")} → 반 바퀴 ${half.map((i) => i + 1).join(",")} 변화 ${diff}칸(문 ${need}칸) · $${m.usd.toFixed(4)}`);
+    facts.push(`${t}판 발 폭 ${sp.join("/")} → 반 바퀴 ${half.map((i) => i + 1).join(",")} 변화 ${diff}칸(문 ${need}칸 · 픽셀랩 대비 ${(diff / ((bot - top + 1) * RIVAL_STEP)).toFixed(2)}배) · $${m.usd.toFixed(4)}`);
     const r: WalkResult = { ...h, facts: [...facts, ...h.facts], usd, tries: t, how: "hybrid", spreadDiff: diff };
     if (!best || diff > best.spreadDiff) best = r;
     if (diff >= need) return { ...r, usd, tries: t };
