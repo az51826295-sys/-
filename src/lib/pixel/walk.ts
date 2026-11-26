@@ -52,6 +52,28 @@ export async function makeWalk(basePng: Buffer, o: { maxTries?: number; bob?: bo
   return code(`그림 ${tries}판 모두 실패 — 코드 걷기`);
 }
 
+/**
+ * 사이트에서 넘어오는 그림은 8배로 키운 것(만들기 결과 big)이다 → 정수배 확대면 1배로 되돌린다(칸마다 한 색인지 확인).
+ * 1배 도트(긴 변 ≤ 256)이고 **투명 배경**이 있을 때만 걷기 섞기를 쓸 수 있다 — 아니면 null(옛 길로).
+ */
+export async function spriteOf(img: Buffer): Promise<Buffer | null> {
+  const { data, info } = await sharp(img).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+  const W = info.width, H = info.height;
+  let k = 1;
+  for (let s = 32; s >= 2; s--) { // 만들기 결과 big 은 768/크기 배(32px → 24배)
+    if (W % s || H % s) continue;
+    let ok = true;
+    for (let y = 0; y < H && ok; y++) for (let x = 0; x < W; x++) { const i = (y * W + x) * 4, j = ((y - (y % s)) * W + (x - (x % s))) * 4; if (data.readUInt32LE(i) !== data.readUInt32LE(j)) { ok = false; break; } }
+    if (ok) { k = s; break; }
+  }
+  const w = W / k, h = H / k;
+  if (Math.max(w, h) > 256) return null;
+  const o = Buffer.alloc(w * h * 4); let clear = 0;
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const i = (y * k * W + x * k) * 4; data.copy(o, (y * w + x) * 4, i, i + 4); if (data[i + 3] === 0) clear++; }
+  if (clear < w * h * 0.2) return null; // 배경이 투명하지 않다
+  return sharp(o, { raw: { width: w, height: h, channels: 4 } }).png().toBuffer();
+}
+
 function spreadsOf(frames: Buffer[], W: number, H: number): number[] {
   return frames.map((f) => {
     let bot = -1; for (let y = H - 1; y >= 0 && bot < 0; y--) for (let x = 0; x < W; x++) if (f[(y * W + x) * 4 + 3]) { bot = y; break; }
