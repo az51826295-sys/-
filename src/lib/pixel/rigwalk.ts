@@ -162,7 +162,43 @@ export async function rigWalk(png: Buffer, o: { bob?: boolean } = {}): Promise<R
   const blank = () => Buffer.alloc(W * H * 4);
   const put = (o: Buffer, x: number, y: number, i: number) => { if (x < 0 || y < 0 || x >= W || y >= H) return; src.copy(o, (y * W + x) * 4, i, i + 4); };
 
-  if (rows.length < 2 || o.bob) { // bob: 박쥐처럼 날거나 다리가 없는 캐릭터는 다리가 보여도 몸 전체로
+  if (o.bob) {
+    // 11-26 사장님 "박쥐가 애매해": 날개가 그대로라 둥둥 뜨기만 했다 → **날갯짓**.
+    // 몸 띠 = 위쪽 20%(머리·귀)의 가로 범위. 그 밖으로 뻗은 칸이 날개다(가운데 가로 폭이 몸 띠의 1.6배 넘을 때만).
+    // 날개는 기둥(세로줄)째 옮긴다: 몸에서 멀수록 많이 — 끝이 위로 k칸(올림) / 아래로 k칸(내림). 날개를 내릴 때 몸은 1칸 뜬다.
+    let bL = W, bR = -1;
+    for (let y = top; y < top + Math.ceil(h * 0.2); y++) for (let x = 0; x < W; x++) if (on(src, W, x, y)) { bL = Math.min(bL, x); bR = Math.max(bR, x); } // 위 20%: 박쥐는 30% 아래부터 날개가 귀 높이까지 올라온다
+    const span = right - left + 1, band = bR - bL + 1;
+    if (bR >= 0 && span > band * 1.6) {
+      const maxD = Math.max(left < bL ? bL - left : 0, right > bR ? right - bR : 0) || 1;
+      const k = Math.max(2, Math.round(h / 12));
+      // 기둥 옮기기로 위·아래가 잘리지 않게 위아래 여유를 둔다
+      // 실제로 옮겨질 칸의 위·아래 끝을 먼저 잰다 — 캔버스 안에 들면 4방향과 같은 캔버스 그대로(발은 날개만큼 안 움직이니 bot+k 로 재면 안 된다)
+      let minY = H, maxY = -1;
+      for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+        if (!on(src, W, x, y)) continue;
+        const d = x < bL ? bL - x : x > bR ? x - bR : 0, r = d ? Math.round((k * d) / maxD) : 1;
+        minY = Math.min(minY, y - r); maxY = Math.max(maxY, y + (d ? r : 0));
+      }
+      const pad = minY < 0 || maxY >= H ? k + 1 : 0, H2 = H + 2 * pad;
+      const mk = (wing: number, body: number) => {
+        const out = Buffer.alloc(W * H2 * 4);
+        for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+          const i = (y * W + x) * 4; if (!src[i + 3]) continue;
+          const d = x < bL ? bL - x : x > bR ? x - bR : 0;
+          const dy = d ? Math.round((wing * d) / maxD) : body;
+          const Y = y + pad + dy; if (Y < 0 || Y >= H2) continue;
+          src.copy(out, (Y * W + x) * 4, i, i + 4);
+        }
+        return out;
+      };
+      // 1 중간 · 2 올림 · 3 중간 · 4 내림(몸 1칸 뜸) — 6장: 올림·내림 사이에 반쯤
+      for (const [wing, body] of [[0, 0], [-Math.ceil(k / 2), 0], [-k, 0], [-Math.ceil(k / 2), 0], [0, -1], [k, -1]] as const) frames.push(mk(wing, body));
+      facts.push(`날갯짓: 몸 띠 x${bL}~${bR} · 날개 끝 위아래 ${k}칸 · 6장`);
+      return { frames, cellW, cellH: H2, mode: "bob", facts };
+    }
+  }
+  if (rows.length < 2 || o.bob) { // bob: 다리가 없거나(슬라임) 날개를 못 찾은 나는 캐릭터
     // 다리 틈 없음 → 몸 전체 위아래 1칸
     for (const dy of [0, -1, 0, -1]) {
       const o = blank();
