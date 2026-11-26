@@ -316,7 +316,7 @@ export default function PixelClient({ en, paid }: { en: boolean; paid: string | 
                 </ol>
                 <div className="price">
                   <span>{t("첫 캐릭터 1번 무료", "First character free")} · {t(`${PIXEL_PACK.shots}토큰 4,900원`, `${PIXEL_PACK.shots} tokens ₩4,900`)}</span>
-                  <small>{t(`만들기 ${PIXEL_COST.create} · 4방향 ${PIXEL_COST.turn} · 동작 ${PIXEL_COST.motion} · 변환·자르기 ${PIXEL_COST.convert} · 실패하면 돌려드려요`, `Create ${PIXEL_COST.create} · Rotate ${PIXEL_COST.turn} · Animate ${PIXEL_COST.motion} · Pixelate/Split ${PIXEL_COST.convert} · refunded on failure`)}</small>
+                  <small>{t(`만들기 ${PIXEL_COST.create} · 4방향 ${PIXEL_COST.turn} · 동작 ${PIXEL_COST.motion}(날갯짓 ${PIXEL_COST.fly}) · 변환·자르기 ${PIXEL_COST.convert} · 실패하면 돌려드려요`, `Create ${PIXEL_COST.create} · Rotate ${PIXEL_COST.turn} · Animate ${PIXEL_COST.motion} (Fly ${PIXEL_COST.fly}) · Pixelate/Split ${PIXEL_COST.convert} · refunded on failure`)}</small>
                 </div>
               </div>
             )
@@ -409,7 +409,7 @@ export default function PixelClient({ en, paid }: { en: boolean; paid: string | 
             <div className="lab">{t("속도", "Speed")} <b>{ms}ms</b></div>
             <input type="range" min={80} max={800} step={10} value={ms} onChange={(e) => setMs(Number(e.target.value))} />
             <p className="hint">{t("4프레임을 그려 진짜 도트로 맞춰 잘라요. 게임용 1배 시트와 GIF를 줘요.", "Draws 4 frames, snaps to true pixels, gives a 1× sheet and a GIF.")}</p>
-            {can(PIXEL_COST.motion) ? <button type="button" className="go" disabled={!!busy || !ref || (aMotion === "custom" && aAction.trim().length < 2)} onClick={() => void motion(aMotion)}>{busy === "animate" ? t("그리는 중… (30~70초)", "Drawing… (30-70s)") : t(`동작 · ${PIXEL_COST.motion}토큰`, `Animate · ${PIXEL_COST.motion} tokens`)}</button> : buyBtn}
+            {can(aMotion === "fly" ? PIXEL_COST.fly : PIXEL_COST.motion) ? <button type="button" className="go" disabled={!!busy || !ref || (aMotion === "custom" && aAction.trim().length < 2)} onClick={() => void motion(aMotion)}>{busy === "animate" ? t("그리는 중… (30~70초)", "Drawing… (30-70s)") : t(`동작 · ${aMotion === "fly" ? PIXEL_COST.fly : PIXEL_COST.motion}토큰`, `Animate · ${aMotion === "fly" ? PIXEL_COST.fly : PIXEL_COST.motion} tokens`)}</button> : buyBtn}
           </>)}
 
           {tool === "convert" && (<>

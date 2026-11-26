@@ -22,7 +22,7 @@ export async function POST(request: Request) {
   if ("error" in u) return Response.json({ error: u.error }, { status: u.status });
   if (!(u.motion in MOTIONS)) return Response.json({ error: "동작을 골라 주세요." }, { status: 400 });
   if (u.motion === "custom" && !u.action.trim()) return Response.json({ error: "동작을 글로 적어 주세요." }, { status: 400 });
-  const cost = u.motion === "turn" ? PIXEL_COST.turn : PIXEL_COST.motion;
+  const cost = u.motion === "turn" ? PIXEL_COST.turn : u.motion === "fly" ? PIXEL_COST.fly : PIXEL_COST.motion;
   const db = createServiceClient();
   if ((await pixelBalance(db, userId)) < cost) return Response.json({ error: "토큰이 모자라요.", need: true }, { status: 402 });
   const spent = await spendPixelShot(db, userId, `motion ${u.motion} (그리는 중) ${new Date().toISOString()}`, cost);

@@ -16,7 +16,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
  */
 export const PIXEL_PACK = { key: "pixel_10", shots: 100, krw: 4900 } as const;
 /** 기능별 토큰 값 — 값은 사장님이 정한다. 바꾸려면 여기 한 곳. */
-export const PIXEL_COST = { convert: 2, split: 2, create: 10, turn: 15, motion: 15 } as const;
+export const PIXEL_COST = { convert: 2, split: 2, create: 10, turn: 15, motion: 15, fly: 2 } as const; // fly(11-27): 그림 AI 없이 코드만 — 변환·자르기와 같은 값(사장님 "니가 정해")
 /**
  * 11-26 사장님 "무료 한번 체험 하나만": 구글 등으로 연결한 계정에 **만들기 1번 몫**을 한 번만 준다.
  * 스레드로 4명이 들어와 0명이 그렸다 — 결제 전엔 한 장도 못 그려 봐서. 손님(익명)은 안 준다(창마다 새 손님이라 끝없이 받는다).
