@@ -179,18 +179,39 @@ export function hybridWalk(base: { data: Buffer; w: number; h: number }, ai: Buf
   if (opt.mirrorHalf && covered) {
     // 11-27 일곱째: 사장님 "절뚝거려" — AI 는 4장 중 한 발 장 둘을 같은 발로 그리곤 한다(마법사·기사 6판 중 4판). 다시 그려도 잘 안 고쳐진다
     // → 반 바퀴만 AI 에서 쓰고 나머지 반 바퀴는 **다리 자리만** 뒤집는다(무릎 아래 · 다리 x 범위). 몸·지팡이·망토 위쪽은 안 뒤집으니 소품이 반대로 안 넘어간다.
+    // 11-27 여덟째: 사장님 "마법사 중간에 몸이 사라짐" — 고정 상자(무릎 아래 · 다리 가운데 ±반폭)에 지팡이 아랫대·망토 끝이 같이 들어가
+    // 뒤집힌 장에서 지팡이가 끊기고 망토가 찢겼다. → 상자 대신 **보이는 두 다리 덩어리만** 고른다:
+    // 맨 아래 줄부터 위로, 그 줄의 칠한 덩어리 중 다리 가운데 쪽 틈 바로 왼쪽·오른쪽 덩어리(한 발만 남은 줄은 가운데에 가장 가까운 덩어리)를 다리로 보고,
+    // 두 다리가 붙어 버리는 줄(가랑이·망토 단)에서 멈춘다. 지팡이처럼 빈칸으로 떨어진 덩어리는 안 건드린다.
     const n = legImgs.length;
     const legCx = (legs.Lx[0] + legs.Rx[1]) / 2;
-    const half = Math.max(Math.round((lb1 - lb0) / 2), Math.round(bh / 6));
-    const m0 = Math.max(0, Math.round(legCx - half)), m1 = Math.min(W - 1, Math.round(legCx + half));
-    const knee = legs.bot - Math.round(bh * 0.25);
+    const maxRun = Math.max(3, Math.round(bh / 5));
+    let rowsUsed = 0;
     for (let k = 0; k < n; k++) {
       const src2 = legImgs[k].o, o = Buffer.from(src2);
-      for (let y = knee; y < H; y++) for (let x = m0; x <= m1; x++) o.fill(0, (y * W + x) * 4, (y * W + x) * 4 + 4);
-      for (let y = knee; y < H; y++) for (let x = m0; x <= m1; x++) { const i = (y * W + x) * 4; if (!src2[i + 3]) continue; const X = Math.round(2 * legCx - x); if (X < m0 || X > m1) continue; src2.copy(o, (y * W + X) * 4, i, i + 4); }
+      let bot = -1; for (let y = H - 1; y >= 0 && bot < 0; y--) for (let x = 0; x < W; x++) if (src2[(y * W + x) * 4 + 3]) { bot = y; break; }
+      const pick: [number, number, number][] = []; // y, x0, x1
+      let sawGap = false;
+      for (let y = bot; y >= 0 && bot - y < bh * 0.5; y--) {
+        const runs: [number, number][] = []; let s = -1;
+        for (let x = 0; x <= W; x++) { const on = x < W && src2[(y * W + x) * 4 + 3] > 0; if (on && s < 0) s = x; if (!on && s >= 0) { runs.push([s, x - 1]); s = -1; } }
+        if (!runs.length) break;
+        let li = -1; for (let i = 0; i < runs.length; i++) if (runs[i][1] < legCx) li = i;
+        const L = li >= 0 ? runs[li] : null, R = runs[li + 1] && runs[li + 1][0] > legCx ? runs[li + 1] : null;
+        if (L && R && R[0] - L[1] > 1 && L[1] - L[0] < maxRun && R[1] - R[0] < maxRun) { pick.push([y, L[0], L[1]], [y, R[0], R[1]]); sawGap = true; continue; }
+        // 한 발만 남은 줄(맨 아래 몇 줄): 다리 가운데에 가장 가까운 덩어리 하나, 아직 틈을 못 봤을 때만
+        if (!sawGap) { const near = runs.reduce((a, r) => (Math.abs((r[0] + r[1]) / 2 - legCx) < Math.abs((a[0] + a[1]) / 2 - legCx) ? r : a)); if (near[1] - near[0] < maxRun && Math.abs((near[0] + near[1]) / 2 - legCx) < bh / 4) { pick.push([y, near[0], near[1]]); continue; } }
+        break;
+      }
+      if (!sawGap) { legImgs.push({ o: Buffer.from(src2) }); spreads.push(spreads[k]); continue; }
+      rowsUsed = Math.max(rowsUsed, new Set(pick.map((p) => p[0])).size);
+      // 뒤집는 기준 = 그 장의 두 다리 바깥 끝 가운데(발 자리가 옆으로 밀리지 않게)
+      const fc = (Math.min(...pick.map((p) => p[1])) + Math.max(...pick.map((p) => p[2]))) / 2;
+      for (const [y, x0, x1] of pick) for (let x = x0; x <= x1; x++) o.fill(0, (y * W + x) * 4, (y * W + x) * 4 + 4);
+      for (const [y, x0, x1] of pick) for (let x = x0; x <= x1; x++) { const X = Math.round(2 * fc - x); if (X < 0 || X >= W) continue; src2.copy(o, (y * W + X) * 4, (y * W + x) * 4, (y * W + x) * 4 + 4); }
       legImgs.push({ o }); spreads.push(spreads[k]);
     }
-    facts.push(`반 바퀴 ${n}장 + 다리만 좌우 뒤집기 ${n}장(무릎 ${knee}줄 아래 · x${m0}~${m1})`);
+    facts.push(`반 바퀴 ${n}장 + 보이는 다리만 좌우 뒤집기 ${n}장(아래 ${rowsUsed}줄 · 가운데 ${legCx.toFixed(1)})`);
   } else if (opt.mirrorHalf) {
     const n = legImgs.length;
     for (let k = 0; k < n; k++) {
