@@ -52,6 +52,30 @@ export function findLegs(src: Buffer, W: number, H: number): Legs {
  *   - 윗몸은 기본 그림 그대로 — 발이 가장 벌어진 프레임에서 1칸 내려앉는다.
  * AI 프레임 키가 기본 그림과 15% 넘게 다르면 다리 길이가 안 맞으니 쓰지 않는다(null).
  */
+/**
+ * 11-27 사장님 "걷기가 일정하지 않아 한쪽이 너무 치우쳐져 있어": 덮인 다리는 AI 4장을 그대로 써서 왼걸음·오른걸음 크기가 달랐다.
+ * 아랫몸(몸 아래 45%)이 좌우 대칭이면(망토·가운데 칼) 뒤집어도 소품이 반대로 안 넘어간다 → 반 바퀴 + 뒤집기 6장으로 걸음을 고르게.
+ * 대칭 = 아랫몸 무게중심 기준 좌우를 뒤집어 같은 색끼리 겹치는 비율(IoU). 지팡이 든 마법사처럼 한쪽에 소품이 있으면 낮다.
+ */
+export function lowerSymmetry(src: Buffer, W: number, H: number): number {
+  let top = -1, bot = -1;
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (src[(y * W + x) * 4 + 3]) { if (top < 0) top = y; bot = y; }
+  if (top < 0) return 0;
+  const y0 = bot - Math.round((bot - top + 1) * 0.45);
+  let sx = 0, k = 0;
+  for (let y = y0; y <= bot; y++) for (let x = 0; x < W; x++) if (src[(y * W + x) * 4 + 3]) { sx += x; k++; }
+  const c = sx / Math.max(1, k);
+  let both = 0, any = 0;
+  for (let y = y0; y <= bot; y++) for (let x = 0; x < W; x++) {
+    const m = Math.round(2 * c - x); const i = (y * W + x) * 4, j = (y * W + m) * 4;
+    const a = src[i + 3] > 0, b = m >= 0 && m < W && src[j + 3] > 0;
+    if (a || b) any++;
+    // 색까지 같아야 겹친 것(윤곽만 보면 마법사 지팡이 같은 가는 소품을 못 본다 — 0.91)
+    if (a && b && Math.abs(src[i] - src[j]) + Math.abs(src[i + 1] - src[j + 1]) + Math.abs(src[i + 2] - src[j + 2]) <= 60) both++;
+  }
+  return any ? both / any : 0;
+}
+
 export function hybridWalk(base: { data: Buffer; w: number; h: number }, ai: Buffer[], aiW: number, aiH: number, opt: { mirrorHalf?: boolean } = {}): RigWalk | null {
   const { data: src, w: W, h: H } = base;
   // 11-27 셋째: 사장님 기사왕 셋째 판은 망토가 다리를 다 덮어 다리 틈이 0줄 → null → 코드 걷기(몸 위아래만)로 빠졌다.

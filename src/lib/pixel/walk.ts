@@ -10,7 +10,7 @@
  */
 import sharp from "sharp";
 import { makeMotion } from "./motion";
-import { hybridWalk, rigWalk, type RigWalk } from "./rigwalk";
+import { hybridWalk, lowerSymmetry, rigWalk, type RigWalk } from "./rigwalk";
 
 /**
  * 바깥 기준: 픽셀랩 정면 걷기(기사, 11-26 체험) — 키 52칸 · 발 폭 7/17/8/7/7/7 → 변화 10칸 = 키 × 0.192 (engine/work/realdot/motion/rival_gate.mts).
@@ -46,9 +46,11 @@ export async function makeWalk(basePng: Buffer, o: { maxTries?: number; bob?: bo
     const sp = spreadsOf(full.frames, info.width, info.height);
     // 11-27 덮인 다리(망토·긴 옷): 허리 아래를 통째로 가져오므로 좌우 뒤집기를 하면 지팡이 아랫부분만 반대쪽으로 넘어간다(마법사 4번 장)
     // → 뒤집지 않고 AI 가 그린 한 바퀴 4장을 그대로 쓴다
-    if (full.facts.some((f) => f.startsWith("덮인 다리"))) {
+    // 11-27 다섯째: 아랫몸이 좌우 대칭(같은 색 겹침 ≥ 0.8 — 기사왕 0.94, 지팡이 마법사 0.44)이면 뒤집어도 소품이 안 넘어간다 → 아래 반 바퀴+뒤집기 6장으로(걸음이 고르게)
+    const sym = lowerSymmetry(base.data, base.w, base.h);
+    if (full.facts.some((f) => f.startsWith("덮인 다리")) && sym < 0.8) {
       const diff = Math.max(...sp) - Math.min(...sp);
-      facts.push(`${t}판 발 폭 ${sp.join("/")} → 한 바퀴 4장 그대로(덮인 다리 — 뒤집기 안 함) 변화 ${diff}칸(문 ${need}칸 · 픽셀랩 대비 ${(diff / ((bot - top + 1) * RIVAL_STEP)).toFixed(2)}배) · $${m.usd.toFixed(4)}`);
+      facts.push(`${t}판 발 폭 ${sp.join("/")} → 한 바퀴 4장 그대로(덮인 다리 · 대칭 ${sym.toFixed(2)} < 0.8 — 뒤집기 안 함) 변화 ${diff}칸(문 ${need}칸 · 픽셀랩 대비 ${(diff / ((bot - top + 1) * RIVAL_STEP)).toFixed(2)}배) · $${m.usd.toFixed(4)}`);
       const r: WalkResult = { ...full, facts: [...facts, ...full.facts], usd, tries: t, how: "hybrid", spreadDiff: diff, ai: { cuts: m.cuts, w: m.set.cellW, h: m.set.cellH } };
       if (!best || diff > best.spreadDiff) best = r;
       if (diff >= need) return { ...r, usd, tries: t };
