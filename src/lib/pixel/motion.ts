@@ -277,7 +277,9 @@ async function judgeCut(ref: Buffer, raw: Buffer, a: Buffer | null, b: Buffer | 
 export function refusedWhy(e: Error): string {
   const m = e.message ?? "";
   if (/safety|rejected|content_policy|moderation/i.test(m)) return "유명 캐릭터·실존 인물 이름이나 위험한 내용은 그림 AI 가 그리지 않아요. 직접 지은 캐릭터로 적어 주세요.";
-  return `그림 AI 가 거절했어요 (${m.slice(0, 80)})`;
+  // 11-27: 서버 열쇠가 틀렸을 때(401) 손님 화면에 "Incorrect API key provided: sk-proj-***" 가 그대로 떴다 — 우리 쪽 고장은 손님 탓처럼 보이면 안 되고 열쇠 모양도 내보내지 않는다
+  if (/\b40[123]\b|\b429\b|api[ _-]?key|quota|billing|insufficient|unauthori[sz]ed|authentication/i.test(m)) { console.error(`[pixel] 그림 AI 서버 쪽 막힘: ${m.slice(0, 200)}`); return "지금 그림 AI 쪽에 문제가 있어 못 그렸어요 — 저희 쪽 문제예요. 곧 고칠게요."; }
+  return `그림 AI 가 거절했어요 (${m.replace(/sk-[\w*-]+/g, "").slice(0, 80)})`;
 }
 
 /** 손님이 쓴 동작 글: 한 줄 · 120자 · 제어문자 없음 */

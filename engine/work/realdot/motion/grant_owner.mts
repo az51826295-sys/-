@@ -5,17 +5,17 @@ for (const l of readFileSync(".env.local", "utf8").split(/\r?\n/)) { const i = l
 const { createClient } = await import("@supabase/supabase-js");
 const { pixelBalance } = await import("../../../../src/lib/pixel/credits");
 const db = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SECRET_KEY!, { auth: { persistSession: false } });
-const [email, n, go] = process.argv.slice(2);
+const [email, n, go] = process.argv.slice(2); // email 자리에 id 앞자리(8)도 받는다
 const hits: { id: string; created_at: string; last_sign_in_at?: string; providers: string }[] = [];
 for (let page = 1; ; page++) {
   const { data, error } = await db.auth.admin.listUsers({ page, perPage: 1000 });
   if (error) throw error;
-  for (const u of data.users) if ((u.email ?? "").toLowerCase() === email.toLowerCase()) hits.push({ id: u.id, created_at: u.created_at, last_sign_in_at: u.last_sign_in_at, providers: (u.identities ?? []).map((i) => i.provider).join(",") });
+  for (const u of data.users) if ((u.email ?? "").toLowerCase() === email.toLowerCase() || u.id.startsWith(email)) hits.push({ id: u.id, created_at: u.created_at, last_sign_in_at: u.last_sign_in_at, providers: (u.identities ?? []).map((i) => i.provider).join(",") });
   if (data.users.length < 1000) break;
 }
 for (const h of hits) console.log(`${h.id.slice(0, 8)} 만든 ${h.created_at.slice(0, 10)} 마지막 로그인 ${h.last_sign_in_at?.slice(0, 16) ?? "-"} ${h.providers} · 토큰 ${await pixelBalance(db as never, h.id)}`);
 if (hits.length !== 1) { console.log(`계정 ${hits.length}개 — 하나가 아니라 멈춤`); process.exit(1); }
 if (go !== "--go") process.exit(0);
 const id = hits[0].id;
-const { error } = await db.from("dot_purchases").insert({ user_id: id, sku: "pixel_free", credits: Number(n), menhera_days: 0, source: "pixel", ref: `grant:${id}:1127` });
+const { error } = await db.from("dot_purchases").insert({ user_id: id, sku: "pixel_free", credits: Number(n), menhera_days: 0, source: "pixel", ref: `grant:${id}:1127${process.env.TAG ?? ""}` });
 console.log(error ? `실패 ${error.code} ${error.message}` : `넣음 +${n} → 토큰 ${await pixelBalance(db as never, id)}`);
