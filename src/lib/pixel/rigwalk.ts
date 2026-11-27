@@ -54,8 +54,16 @@ export function findLegs(src: Buffer, W: number, H: number): Legs {
  */
 export function hybridWalk(base: { data: Buffer; w: number; h: number }, ai: Buffer[], aiW: number, aiH: number, opt: { mirrorHalf?: boolean } = {}): RigWalk | null {
   const { data: src, w: W, h: H } = base;
-  const legs = findLegs(src, W, H);
-  if (!legs) return null;
+  // 11-27 셋째: 사장님 기사왕 셋째 판은 망토가 다리를 다 덮어 다리 틈이 0줄 → null → 코드 걷기(몸 위아래만)로 빠졌다.
+  // 다리 틈이 없어도 칠한 몸이 있으면 "덮인 다리"로 본다(엉덩이 = 맨 아래 줄 → 다리 틈 1줄 < 15%). 슬라임처럼 다리 없는 것도 AI 가 그린 아랫몸을 쓴다.
+  let legs = findLegs(src, W, H);
+  if (!legs) {
+    let t = -1, b = -1, l = W, r = -1;
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (src[(y * W + x) * 4 + 3]) { if (t < 0) t = y; b = y; l = Math.min(l, x); r = Math.max(r, x); }
+    if (t < 0) return null;
+    const c = Math.round((l + r) / 2);
+    legs = { top: t, bot: b, hip: b, legTop: b, Lx: [c, c], Rx: [c, c] };
+  }
   const facts: string[] = [];
   const bh = legs.bot - legs.top + 1;
   // 11-27 사장님 "발만 움직이고 다른 데는 멈춰 있다"(망토 두른 기사왕): 망토·긴 옷이 다리를 덮으면 다리 틈이 맨 아래(발)에만 보여
