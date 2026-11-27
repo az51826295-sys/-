@@ -57,10 +57,17 @@ export function hybridWalk(base: { data: Buffer; w: number; h: number }, ai: Buf
   const legs = findLegs(src, W, H);
   if (!legs) return null;
   const facts: string[] = [];
-  const bh = legs.bot - legs.top + 1, legLen = legs.bot - legs.hip + 1;
+  const bh = legs.bot - legs.top + 1;
+  // 11-27 사장님 "발만 움직이고 다른 데는 멈춰 있다"(망토 두른 기사왕): 망토·긴 옷이 다리를 덮으면 다리 틈이 맨 아래(발)에만 보여
+  // 발 몇 줄만 바뀌었다. 다리 틈이 키의 15% 안 되면(팩: 사제 9%·마법사 11% 걸림, 기사 20%·궁수 21%·상인 19% 안 걸림) **덮인 다리** → 허리(키의 55%) 아래를 통째로(가로 전부) AI 프레임에서 가져온다 —
+  // 망토·치마가 걸음 따라 흔들린다. 머리·가슴은 그대로 기본 그림(얼굴 0% 유지). 허리 밑에 찬 소품은 AI 그림을 따른다.
+  const covered = legs.bot - legs.hip + 1 < bh * 0.15;
+  const hip = covered ? legs.top + Math.round(bh * 0.55) : legs.hip;
+  const legLen = legs.bot - hip + 1;
   const pad = Math.max(2, Math.round(bh / 12));
-  const band: [number, number] = [Math.max(0, legs.Lx[0] - pad), Math.min(W - 1, legs.Rx[1] + pad)];
-  const cx = (legs.Lx[0] + legs.Rx[1]) / 2;
+  const band: [number, number] = covered ? [0, W - 1] : [Math.max(0, legs.Lx[0] - pad), Math.min(W - 1, legs.Rx[1] + pad)];
+  let cx = (legs.Lx[0] + legs.Rx[1]) / 2;
+  if (covered) { let s = 0, k = 0; for (let y = hip; y < Math.min(hip + 3, H); y++) for (let x = 0; x < W; x++) if (src[(y * W + x) * 4 + 3]) { s += x; k++; } if (k) cx = s / k; facts.push(`덮인 다리(다리 틈 ${legs.bot - legs.hip + 1}칸 < 키 ${bh}의 15%) → 허리 ${hip}줄 아래 통째로`); }
   const frames: Buffer[] = [], spreads: number[] = [];
   const legImgs: { o: Buffer }[] = [];
   // 11-26 첫 판: AI 가 45칸으로 그렸다(기본 54) → 다리 띠만 쓰니 **모든 프레임을 같은 배율로** nearest 로 맞춘다(30% 넘게 다르면 포기)
@@ -109,14 +116,14 @@ export function hybridWalk(base: { data: Buffer; w: number; h: number }, ai: Buf
     const dip = spreads[f] >= maxS - 1 && maxS - Math.min(...spreads) >= 2 ? 1 : 0;
     const out = Buffer.alloc(W * H * 4);
     // ① 다리 띠 밖의 아래쪽(소품)은 기본 그림
-    for (let y = legs.hip; y < H; y++) for (let x = 0; x < W; x++) { const i = (y * W + x) * 4; if (src[i + 3] && (x < band[0] || x > band[1])) src.copy(out, i, i, i + 4); }
+    for (let y = hip; y < H; y++) for (let x = 0; x < W; x++) { const i = (y * W + x) * 4; if (src[i + 3] && (x < band[0] || x > band[1])) src.copy(out, i, i, i + 4); }
     // ② AI 다리
     for (let i = 0; i < o.length; i += 4) if (o[i + 3]) o.copy(out, i, i, i + 4);
     // ③ 윗몸(엉덩이 줄 위) 기본 그림 — 다리와 이음매를 덮도록 1줄 겹친다
-    for (let y = 0; y <= legs.hip; y++) for (let x = 0; x < W; x++) { const i = (y * W + x) * 4; const Y = y + dip; if (Y >= H) continue; if (src[i + 3]) src.copy(out, (Y * W + x) * 4, i, i + 4); }
+    for (let y = 0; y <= hip; y++) for (let x = 0; x < W; x++) { const i = (y * W + x) * 4; const Y = y + dip; if (Y >= H) continue; if (src[i + 3]) src.copy(out, (Y * W + x) * 4, i, i + 4); }
     frames.push(out);
   }
-  facts.push(`다리 띠 x${band[0]}~${band[1]} · 엉덩이 ${legs.hip} · 발 폭 ${spreads.join("/")} · 내려앉기 ${spreads.map((s) => (s >= maxS - 1 && maxS - Math.min(...spreads) >= 2 ? 1 : 0)).join("/")}`);
+  facts.push(`다리 띠 x${band[0]}~${band[1]} · 엉덩이 ${hip} · 발 폭 ${spreads.join("/")} · 내려앉기 ${spreads.map((s) => (s >= maxS - 1 && maxS - Math.min(...spreads) >= 2 ? 1 : 0)).join("/")}`);
   return { frames, cellW: W, cellH: H, mode: "hybrid", facts };
 }
 

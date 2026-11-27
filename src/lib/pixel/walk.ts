@@ -44,6 +44,16 @@ export async function makeWalk(basePng: Buffer, o: { maxTries?: number; bob?: bo
     const full = hybridWalk(base, m.cuts, m.set.cellW, m.set.cellH);
     if (!full || !full.frames.length) { facts.push(`${t}판 섞기 실패: ${full?.facts.join(" · ") ?? ""}`); continue; }
     const sp = spreadsOf(full.frames, info.width, info.height);
+    // 11-27 덮인 다리(망토·긴 옷): 허리 아래를 통째로 가져오므로 좌우 뒤집기를 하면 지팡이 아랫부분만 반대쪽으로 넘어간다(마법사 4번 장)
+    // → 뒤집지 않고 AI 가 그린 한 바퀴 4장을 그대로 쓴다
+    if (full.facts.some((f) => f.startsWith("덮인 다리"))) {
+      const diff = Math.max(...sp) - Math.min(...sp);
+      facts.push(`${t}판 발 폭 ${sp.join("/")} → 한 바퀴 4장 그대로(덮인 다리 — 뒤집기 안 함) 변화 ${diff}칸(문 ${need}칸 · 픽셀랩 대비 ${(diff / ((bot - top + 1) * RIVAL_STEP)).toFixed(2)}배) · $${m.usd.toFixed(4)}`);
+      const r: WalkResult = { ...full, facts: [...facts, ...full.facts], usd, tries: t, how: "hybrid", spreadDiff: diff };
+      if (!best || diff > best.spreadDiff) best = r;
+      if (diff >= need) return { ...r, usd, tries: t };
+      continue;
+    }
     const w = sp.indexOf(Math.max(...sp));
     const half = [w, (w + 1) % 4, (w + 3) % 4];
     const h = hybridWalk(base, half.map((i) => m.cuts[i]), m.set.cellW, m.set.cellH, { mirrorHalf: true });
