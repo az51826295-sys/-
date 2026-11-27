@@ -47,6 +47,8 @@ export async function makeVeoClip(opts: {
   aspect?: "16:9" | "9:16";
   /** 소리까지 만들면 값이 오른다(30~100%). 우리 영상은 TTS 를 따로 얹으니 기본 무음. */
   audio?: boolean;
+  /** 11-27 첫 장면 그림(그림→영상). 도트 걷기 시험(B 방식)용. */
+  image?: { b64: string; mime: string };
   signal?: AbortSignal;
 }): Promise<VeoClip> {
   const key = process.env.GEMINI_API_KEY;
@@ -57,7 +59,7 @@ export async function makeVeoClip(opts: {
   const headers = { "x-goog-api-key": key, "content-type": "application/json" };
 
   const body = JSON.stringify({
-    instances: [{ prompt: opts.prompt }],
+    instances: [{ prompt: opts.prompt, ...(opts.image ? { image: { bytesBase64Encoded: opts.image.b64, mimeType: opts.image.mime } } : {}) }],
     // lite 는 generateAudio 를 받지 않는다(넣으면 400). 소리를 켤 때만 보낸다.
     parameters: { aspectRatio: opts.aspect ?? "16:9", durationSeconds: seconds, resolution: "720p", ...(opts.audio ? { generateAudio: true } : {}) },
   });
