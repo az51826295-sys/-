@@ -78,8 +78,8 @@ export function hybridWalk(base: { data: Buffer; w: number; h: number }, ai: Buf
   const capeRatio = capeOut / Math.max(1, capeIn);
   const shortGap = legs.bot - legs.hip + 1 < bh * 0.15;
   const covered = shortGap || capeRatio >= 0.15;
-  const hip = covered ? legs.top + Math.round(bh * 0.55) : legs.hip;
-  const legLen = legs.bot - hip + 1;
+  let hip = covered ? legs.top + Math.round(bh * 0.55) : legs.hip;
+  let legLen = legs.bot - hip + 1;
   const band: [number, number] = covered ? [0, W - 1] : [lb0, lb1];
   let cx = (legs.Lx[0] + legs.Rx[1]) / 2;
   if (covered) { let s = 0, k = 0; for (let y = hip; y < Math.min(hip + 3, H); y++) for (let x = 0; x < W; x++) if (src[(y * W + x) * 4 + 3]) { s += x; k++; } if (k) cx = s / k; facts.push(`덮인 다리(${shortGap ? `다리 틈 ${legs.bot - legs.hip + 1}칸 < 키 ${bh}의 15%` : ""}${shortGap && capeRatio >= 0.15 ? " · " : ""}${capeRatio >= 0.15 ? `망토 자 ${capeRatio.toFixed(2)} ≥ 0.15` : ""}) → 허리 ${hip}줄 아래 통째로`); }
@@ -95,17 +95,44 @@ export function hybridWalk(base: { data: Buffer; w: number; h: number }, ai: Buf
     facts.push(`AI 키 ${medH}칸 → 기본 ${bh}칸에 맞춰 ${r.toFixed(2)}배`);
     aiW = nw; aiH = nh;
   }
-  for (const c of ai) {
-    let top = -1, bot = -1;
-    for (let y = 0; y < aiH; y++) for (let x = 0; x < aiW; x++) if (c[(y * aiW + x) * 4 + 3]) { if (top < 0) top = y; bot = y; }
-    if (top < 0) return null;
+  const bots = ai.map((c) => { let b = -1; for (let y = aiH - 1; y >= 0 && b < 0; y--) for (let x = 0; x < aiW; x++) if (c[(y * aiW + x) * 4 + 3]) { b = y; break; } return b; });
+  if (bots.some((b) => b < 0)) return null;
+  // 11-27 넷째: 사장님 "반이 똑 떨어져 있다" — 허리를 키의 55% 로 못 박으니 위(기본 그림)와 아래(AI)가 이음 줄에서 모양·너비가 안 맞았다.
+  // 덮인 다리면 **이음 줄을 찾는다**: 키의 25~65% 줄마다, 프레임마다 가로 −4~+4칸 밀어 보며 기본 그림 두 줄과 AI 두 줄이 가장 덜 어긋나는 자리.
+  // 모든 프레임 어긋남 합이 가장 작은 줄 하나를 쓰고(장마다 이음 줄이 다르면 허리가 출렁인다), 가로는 장마다 가장 잘 맞은 만큼 민다.
+  let seamDx: number[] | null = null;
+  if (covered && !process.env.PIXEL_SEAM_FIXED) { // PIXEL_SEAM_FIXED=1: 옛 55% 줄(시험 비교용)
+    const px = (d: Buffer, w: number, hh: number, x: number, y: number) => (x < 0 || y < 0 || x >= w || y >= hh ? -1 : d[(y * w + x) * 4 + 3] ? (d[(y * w + x) * 4] >> 4 << 8) | (d[(y * w + x) * 4 + 1] >> 4 << 4) | (d[(y * w + x) * 4 + 2] >> 4) : -1);
+    const miss = (c: Buffer, y: number, dy: number, dx: number) => { let m = 0, t = 0; for (const yy of [y - 1, y]) for (let x = 0; x < W; x++) { const a = px(src, W, H, x, yy), b = px(c, aiW, aiH, x - dx, yy - dy); if (a < 0 && b < 0) continue; t++; if ((a < 0) !== (b < 0)) m += 1; else if (a !== b) m += 0.35; } return t ? m / t : 1; };
+    let best = { y: hip, cost: Infinity, dxs: [] as number[] };
+    for (let y = legs.top + Math.round(bh * 0.25); y <= legs.top + Math.round(bh * 0.65); y++) {
+      let cost = 0; const dxs: number[] = [];
+      for (const [f, c] of ai.entries()) {
+        const dy = legs.bot - bots[f];
+        // 가로 기준: 그 줄 근처 칠한 가운데를 맞춘 뒤 ±4칸
+        let s1 = 0, k1 = 0, s2 = 0, k2 = 0;
+        for (let x = 0; x < W; x++) if (src[(y * W + x) * 4 + 3]) { s1 += x; k1++; }
+        for (let x = 0; x < aiW; x++) { const yy = y - dy; if (yy >= 0 && yy < aiH && c[(yy * aiW + x) * 4 + 3]) { s2 += x; k2++; } }
+        const d0 = k1 && k2 ? Math.round(s1 / k1 - s2 / k2) : 0;
+        let bm = Infinity, bd = d0;
+        for (let d = d0 - 4; d <= d0 + 4; d++) { const m = miss(c, y, dy, d); if (m < bm) { bm = m; bd = d; } }
+        cost += bm; dxs.push(bd);
+      }
+      if (cost < best.cost) best = { y, cost, dxs };
+    }
+    facts.push(`이음 줄 ${hip} → ${best.y}(어긋남 ${(best.cost / ai.length * 100).toFixed(0)}% · 가로 ${best.dxs.join("/")})`);
+    hip = best.y; legLen = legs.bot - hip + 1; seamDx = best.dxs;
+  }
+  for (const [f, c] of ai.entries()) {
+    let top = -1; const bot = bots[f];
+    for (let y = 0; y < aiH && top < 0; y++) for (let x = 0; x < aiW; x++) if (c[(y * aiW + x) * 4 + 3]) { top = y; break; }
     const h = bot - top + 1;
-    // AI 프레임의 엉덩이 줄: 같은 비율 자리
-    const aHip = bot - Math.round(legLen * (h / bh)) + 1;
+    // AI 프레임의 엉덩이 줄: 같은 비율 자리(덮인 다리면 바닥을 맞춘 뒤 같은 줄)
+    const aHip = seamDx ? hip - (legs.bot - bot) : bot - Math.round(legLen * (h / bh)) + 1;
     // AI 엉덩이 줄 근처(아래로 3줄)의 칠한 가운데 → 기본 그림 다리 가운데에 맞춘다
     let sx = 0, n = 0;
     for (let y = aHip; y < Math.min(aHip + 3, aiH); y++) for (let x = 0; x < aiW; x++) if (c[(y * aiW + x) * 4 + 3]) { sx += x; n++; }
-    const dx = Math.round(cx - (n ? sx / n : aiW / 2)), dy = legs.bot - bot;
+    const dx = seamDx ? seamDx[f] : Math.round(cx - (n ? sx / n : aiW / 2)), dy = legs.bot - bot;
     const o = Buffer.alloc(W * H * 4);
     let fl = 1e9, fr = -1;
     for (let y = aHip; y <= bot; y++) for (let x = 0; x < aiW; x++) {

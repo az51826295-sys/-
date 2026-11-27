@@ -16,4 +16,5 @@ const out = `${D}/rival/${name}`; mkdirSync(out, { recursive: true });
 const set = { frames: [], cellW: w.cellW, cellH: w.cellH, bg: null, how: "grid" } as never;
 writeFileSync(`${out}/walk-${tag}-1x.png`, await sheetOf(w.frames, set));
 writeFileSync(`${out}/walk-${tag}.gif`, await gifOf(w.frames, set, { scale: 6, ms: 180 }));
+if (w.ai) writeFileSync(`${out}/walk-${tag}-ai.json`, JSON.stringify({ w: w.ai.w, h: w.ai.h, cuts: w.ai.cuts.map((c) => c.toString("base64")) }));
 console.log(`${name} 걷기 ${w.how} ${w.frames.length}장 판${w.tries} $${w.usd.toFixed(4)} ${((Date.now() - t0) / 1000).toFixed(0)}초\n${w.facts.join("\n")}`);

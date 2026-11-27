@@ -18,7 +18,7 @@ import { hybridWalk, rigWalk, type RigWalk } from "./rigwalk";
  * 문을 라이벌 숫자로 올리면 사장님이 통과시킨 8종 중 4종(0.84~0.91배)이 다시 그려진다(판마다 약 25원).
  */
 const RIVAL_STEP = 10 / 52;
-export type WalkResult = RigWalk & { usd: number; tries: number; how: "hybrid" | "code"; spreadDiff: number };
+export type WalkResult = RigWalk & { usd: number; tries: number; how: "hybrid" | "code"; spreadDiff: number; ai?: { cuts: Buffer[]; w: number; h: number } }; // ai: 고른 판의 AI 4장(시험 도구가 이음 줄을 공짜로 다시 재려고)
 
 export async function makeWalk(basePng: Buffer, o: { maxTries?: number; bob?: boolean } = {}): Promise<WalkResult> {
   const { data, info } = await sharp(basePng).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
@@ -49,7 +49,7 @@ export async function makeWalk(basePng: Buffer, o: { maxTries?: number; bob?: bo
     if (full.facts.some((f) => f.startsWith("덮인 다리"))) {
       const diff = Math.max(...sp) - Math.min(...sp);
       facts.push(`${t}판 발 폭 ${sp.join("/")} → 한 바퀴 4장 그대로(덮인 다리 — 뒤집기 안 함) 변화 ${diff}칸(문 ${need}칸 · 픽셀랩 대비 ${(diff / ((bot - top + 1) * RIVAL_STEP)).toFixed(2)}배) · $${m.usd.toFixed(4)}`);
-      const r: WalkResult = { ...full, facts: [...facts, ...full.facts], usd, tries: t, how: "hybrid", spreadDiff: diff };
+      const r: WalkResult = { ...full, facts: [...facts, ...full.facts], usd, tries: t, how: "hybrid", spreadDiff: diff, ai: { cuts: m.cuts, w: m.set.cellW, h: m.set.cellH } };
       if (!best || diff > best.spreadDiff) best = r;
       if (diff >= need) return { ...r, usd, tries: t };
       continue;
@@ -60,7 +60,7 @@ export async function makeWalk(basePng: Buffer, o: { maxTries?: number; bob?: bo
     if (!h || !h.frames.length) { facts.push(`${t}판 반 바퀴 섞기 실패`); continue; }
     const hs = half.map((i) => sp[i]), diff = Math.max(...hs) - Math.min(...hs);
     facts.push(`${t}판 발 폭 ${sp.join("/")} → 반 바퀴 ${half.map((i) => i + 1).join(",")} 변화 ${diff}칸(문 ${need}칸 · 픽셀랩 대비 ${(diff / ((bot - top + 1) * RIVAL_STEP)).toFixed(2)}배) · $${m.usd.toFixed(4)}`);
-    const r: WalkResult = { ...h, facts: [...facts, ...h.facts], usd, tries: t, how: "hybrid", spreadDiff: diff };
+    const r: WalkResult = { ...h, facts: [...facts, ...h.facts], usd, tries: t, how: "hybrid", spreadDiff: diff, ai: { cuts: m.cuts, w: m.set.cellW, h: m.set.cellH } };
     if (!best || diff > best.spreadDiff) best = r;
     if (diff >= need) return { ...r, usd, tries: t };
   }
