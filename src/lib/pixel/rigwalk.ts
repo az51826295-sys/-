@@ -231,10 +231,35 @@ export function hybridWalk(base: { data: Buffer; w: number; h: number }, ai: Buf
     for (let i = 0; i < o.length; i += 4) if (o[i + 3]) o.copy(out, i, i, i + 4);
     // ③ 윗몸(엉덩이 줄 위) 기본 그림 — 다리와 이음매를 덮도록 1줄 겹친다
     for (let y = 0; y <= hip; y++) for (let x = 0; x < W; x++) { const i = (y * W + x) * 4; const Y = y + dip; if (Y >= H) continue; if (src[i + 3]) src.copy(out, (Y * W + x) * 4, i, i + 4); }
+    if (!process.env.PIXEL_WALK_RAW) stabilize(out, src, W, H, hip + dip);
     frames.push(out);
   }
   facts.push(`다리 띠 x${band[0]}~${band[1]} · 엉덩이 ${hip} · 발 폭 ${spreads.join("/")} · 내려앉기 ${spreads.map((s) => (s >= maxS - 1 && maxS - Math.min(...spreads) >= 2 ? 1 : 0)).join("/")}`);
   return { frames, cellW: W, cellH: H, mode: "hybrid", facts };
+}
+
+// 11-27 사장님 "기사·왕은 약간 미완성 느낌" — AI 가 그린 아랫몸은 ① 기본 그림에 없는 색이 섞이고(갑옷 무늬가 장마다 반짝인다)
+// ② 몸과 떨어진 점(발밑 1~3칸)이 남는다. → 이음 줄 아래 칸은 기본 그림 색 중 가장 가까운 색으로 바꾸고(PIXEL_WALK_RAW=1 이면 끔),
+// 몸에서 떨어진 3칸 이하 덩어리는 지운다.
+function stabilize(out: Buffer, src: Buffer, W: number, H: number, fromY: number) {
+  const pal = new Map<number, [number, number, number]>();
+  for (let i = 0; i < src.length; i += 4) if (src[i + 3]) pal.set((src[i] << 16) | (src[i + 1] << 8) | src[i + 2], [src[i], src[i + 1], src[i + 2]]);
+  const cols = [...pal.values()];
+  const near = (r: number, g: number, b: number) => { let best = cols[0], bd = Infinity; for (const c of cols) { const d = (c[0] - r) ** 2 * 0.3 + (c[1] - g) ** 2 * 0.59 + (c[2] - b) ** 2 * 0.11; if (d < bd) { bd = d; best = c; } } return best; };
+  for (let y = Math.max(0, fromY); y < H; y++) for (let x = 0; x < W; x++) {
+    const i = (y * W + x) * 4; if (!out[i + 3]) continue;
+    const c = near(out[i], out[i + 1], out[i + 2]); out[i] = c[0]; out[i + 1] = c[1]; out[i + 2] = c[2]; out[i + 3] = 255;
+  }
+  // 떨어진 점 지우기(8방향 이웃 덩어리)
+  const seen = new Int32Array(W * H).fill(-1); const comps: number[][] = [];
+  for (let p = 0; p < W * H; p++) {
+    if (seen[p] >= 0 || !out[p * 4 + 3]) continue;
+    const id = comps.length, list: number[] = [p]; seen[p] = id;
+    for (let q = 0; q < list.length; q++) { const x = list[q] % W, y = (list[q] / W) | 0; for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const X = x + dx, Y = y + dy; if (X < 0 || Y < 0 || X >= W || Y >= H) continue; const r = Y * W + X; if (seen[r] < 0 && out[r * 4 + 3]) { seen[r] = id; list.push(r); } } }
+    comps.push(list);
+  }
+  const big = Math.max(...comps.map((c) => c.length));
+  for (const c of comps) if (c.length <= 3 && c.length < big) for (const p of c) out.fill(0, p * 4, p * 4 + 4);
 }
 
 export async function rigWalk(png: Buffer, o: { bob?: boolean } = {}): Promise<RigWalk> {
