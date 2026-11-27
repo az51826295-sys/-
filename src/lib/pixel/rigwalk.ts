@@ -101,12 +101,15 @@ export function hybridWalk(base: { data: Buffer; w: number; h: number }, ai: Buf
   for (let y = legs.bot - Math.round(bh * 0.3); y <= legs.bot; y++) for (let x = 0; x < W; x++) if (src[(y * W + x) * 4 + 3]) { if (x < lb0 || x > lb1) capeOut++; else capeIn++; }
   const capeRatio = capeOut / Math.max(1, capeIn);
   const shortGap = legs.bot - legs.hip + 1 < bh * 0.15;
-  const covered = shortGap || capeRatio >= 0.15;
+  // 11-27 여섯째: 사장님 "머리만 따로 뽑고 몸에 붙이자" → 기본은 **머리만 기본 그림, 몸 전체는 AI 걸음**(이음 줄을 목 근처에서 찾는다).
+  // 옛 다리 띠 방식은 PIXEL_WALK_LEGS=1 일 때만(비교용).
+  const headOnly = !process.env.PIXEL_WALK_LEGS;
+  const covered = headOnly || shortGap || capeRatio >= 0.15;
   let hip = covered ? legs.top + Math.round(bh * 0.55) : legs.hip;
   let legLen = legs.bot - hip + 1;
   const band: [number, number] = covered ? [0, W - 1] : [lb0, lb1];
   let cx = (legs.Lx[0] + legs.Rx[1]) / 2;
-  if (covered) { let s = 0, k = 0; for (let y = hip; y < Math.min(hip + 3, H); y++) for (let x = 0; x < W; x++) if (src[(y * W + x) * 4 + 3]) { s += x; k++; } if (k) cx = s / k; facts.push(`덮인 다리(${shortGap ? `다리 틈 ${legs.bot - legs.hip + 1}칸 < 키 ${bh}의 15%` : ""}${shortGap && capeRatio >= 0.15 ? " · " : ""}${capeRatio >= 0.15 ? `망토 자 ${capeRatio.toFixed(2)} ≥ 0.15` : ""}) → 허리 ${hip}줄 아래 통째로`); }
+  if (covered) { let s = 0, k = 0; for (let y = hip; y < Math.min(hip + 3, H); y++) for (let x = 0; x < W; x++) if (src[(y * W + x) * 4 + 3]) { s += x; k++; } if (k) cx = s / k; facts.push(headOnly ? "머리만 기본 그림 · 몸은 AI 걸음" : `덮인 다리(${shortGap ? `다리 틈 ${legs.bot - legs.hip + 1}칸 < 키 ${bh}의 15%` : ""}${shortGap && capeRatio >= 0.15 ? " · " : ""}${capeRatio >= 0.15 ? `망토 자 ${capeRatio.toFixed(2)} ≥ 0.15` : ""}) → 허리 ${hip}줄 아래 통째로`); }
   const frames: Buffer[] = [], spreads: number[] = [];
   const legImgs: { o: Buffer }[] = [];
   // 11-26 첫 판: AI 가 45칸으로 그렸다(기본 54) → 다리 띠만 쓰니 **모든 프레임을 같은 배율로** nearest 로 맞춘다(30% 넘게 다르면 포기)
@@ -129,7 +132,11 @@ export function hybridWalk(base: { data: Buffer; w: number; h: number }, ai: Buf
     const px = (d: Buffer, w: number, hh: number, x: number, y: number) => (x < 0 || y < 0 || x >= w || y >= hh ? -1 : d[(y * w + x) * 4 + 3] ? (d[(y * w + x) * 4] >> 4 << 8) | (d[(y * w + x) * 4 + 1] >> 4 << 4) | (d[(y * w + x) * 4 + 2] >> 4) : -1);
     const miss = (c: Buffer, y: number, dy: number, dx: number) => { let m = 0, t = 0; for (const yy of [y - 1, y]) for (let x = 0; x < W; x++) { const a = px(src, W, H, x, yy), b = px(c, aiW, aiH, x - dx, yy - dy); if (a < 0 && b < 0) continue; t++; if ((a < 0) !== (b < 0)) m += 1; else if (a !== b) m += 0.35; } return t ? m / t : 1; };
     let best = { y: hip, cost: Infinity, dxs: [] as number[] };
-    for (let y = legs.top + Math.round(bh * 0.25); y <= legs.top + Math.round(bh * 0.65); y++) {
+    // 머리만: 목 근처(키 15~50%)에서, 폭이 좁은 줄일수록 싸게(목은 좁다 — 어깨·모자 챙에서 자르지 않게)
+    const rowW = (y: number) => { let l = W, r = -1; for (let x = 0; x < W; x++) if (src[(y * W + x) * 4 + 3]) { l = Math.min(l, x); r = Math.max(r, x); } return r < 0 ? 0 : r - l + 1; };
+    const y0s = legs.top + Math.round(bh * (headOnly ? 0.15 : 0.25)), y1s = legs.top + Math.round(bh * (headOnly ? 0.5 : 0.65));
+    let maxW = 1; for (let y = y0s; y <= y1s; y++) maxW = Math.max(maxW, rowW(y));
+    for (let y = y0s; y <= y1s; y++) {
       let cost = 0; const dxs: number[] = [];
       for (const [f, c] of ai.entries()) {
         const dy = legs.bot - bots[f];
@@ -142,6 +149,7 @@ export function hybridWalk(base: { data: Buffer; w: number; h: number }, ai: Buf
         for (let d = d0 - 4; d <= d0 + 4; d++) { const m = miss(c, y, dy, d); if (m < bm) { bm = m; bd = d; } }
         cost += bm; dxs.push(bd);
       }
+      if (headOnly) cost *= 0.5 + (0.5 * rowW(y)) / maxW;
       if (cost < best.cost) best = { y, cost, dxs };
     }
     facts.push(`이음 줄 ${hip} → ${best.y}(어긋남 ${(best.cost / ai.length * 100).toFixed(0)}% · 가로 ${best.dxs.join("/")})`);
@@ -168,7 +176,22 @@ export function hybridWalk(base: { data: Buffer; w: number; h: number }, ai: Buf
     legImgs.push({ o }); spreads.push(fr - fl + 1);
   }
   // 11-26 "좌우 걸음이 안 고르다": 반 바퀴(왼발)만 AI 가 그리고 나머지 반 바퀴는 다리 띠를 다리 가운데 기준으로 좌우 뒤집어 만든다 → 왼발·오른발이 칸 단위로 같다
-  if (opt.mirrorHalf) {
+  if (opt.mirrorHalf && covered) {
+    // 11-27 일곱째: 사장님 "절뚝거려" — AI 는 4장 중 한 발 장 둘을 같은 발로 그리곤 한다(마법사·기사 6판 중 4판). 다시 그려도 잘 안 고쳐진다
+    // → 반 바퀴만 AI 에서 쓰고 나머지 반 바퀴는 **다리 자리만** 뒤집는다(무릎 아래 · 다리 x 범위). 몸·지팡이·망토 위쪽은 안 뒤집으니 소품이 반대로 안 넘어간다.
+    const n = legImgs.length;
+    const legCx = (legs.Lx[0] + legs.Rx[1]) / 2;
+    const half = Math.max(Math.round((lb1 - lb0) / 2), Math.round(bh / 6));
+    const m0 = Math.max(0, Math.round(legCx - half)), m1 = Math.min(W - 1, Math.round(legCx + half));
+    const knee = legs.bot - Math.round(bh * 0.25);
+    for (let k = 0; k < n; k++) {
+      const src2 = legImgs[k].o, o = Buffer.from(src2);
+      for (let y = knee; y < H; y++) for (let x = m0; x <= m1; x++) o.fill(0, (y * W + x) * 4, (y * W + x) * 4 + 4);
+      for (let y = knee; y < H; y++) for (let x = m0; x <= m1; x++) { const i = (y * W + x) * 4; if (!src2[i + 3]) continue; const X = Math.round(2 * legCx - x); if (X < m0 || X > m1) continue; src2.copy(o, (y * W + X) * 4, i, i + 4); }
+      legImgs.push({ o }); spreads.push(spreads[k]);
+    }
+    facts.push(`반 바퀴 ${n}장 + 다리만 좌우 뒤집기 ${n}장(무릎 ${knee}줄 아래 · x${m0}~${m1})`);
+  } else if (opt.mirrorHalf) {
     const n = legImgs.length;
     for (let k = 0; k < n; k++) {
       const src2 = legImgs[k].o, o = Buffer.alloc(W * H * 4);

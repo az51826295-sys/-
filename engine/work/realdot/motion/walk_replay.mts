@@ -14,7 +14,7 @@ const W = info.width, H = info.height;
 const sp = full.frames.map((f) => { let bot = -1; for (let y = H - 1; y >= 0 && bot < 0; y--) for (let x = 0; x < W; x++) if (f[(y * W + x) * 4 + 3]) { bot = y; break; } let l = 1e9, r = -1; for (let y = bot - 2; y <= bot; y++) for (let x = 0; x < W; x++) if (f[(y * W + x) * 4 + 3]) { l = Math.min(l, x); r = Math.max(r, x); } return r - l + 1; });
 const sym = lowerSymmetry(data, W, H);
 const w = sp.indexOf(Math.max(...sp)), half = [w, (w + 1) % 4, (w + 3) % 4];
-const h = sym >= 0.8 ? hybridWalk(base, half.map((i) => cuts[i]), j.w, j.h, { mirrorHalf: true })! : full;
+const h = !process.env.PIXEL_WALK_FOUR ? hybridWalk(base, half.map((i) => cuts[i]), j.w, j.h, { mirrorHalf: true })! : full;
 const set = { frames: [], cellW: h.cellW, cellH: h.cellH, bg: null, how: "grid" } as never;
 writeFileSync(`${outP}-1x.png`, await sheetOf(h.frames, set));
 writeFileSync(`${outP}.gif`, await gifOf(h.frames, set, { scale: 6, ms: 180 }));

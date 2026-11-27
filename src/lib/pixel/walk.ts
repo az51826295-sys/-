@@ -23,6 +23,7 @@ export type WalkResult = RigWalk & { usd: number; tries: number; how: "hybrid" |
 export async function makeWalk(basePng: Buffer, o: { maxTries?: number; bob?: boolean } = {}): Promise<WalkResult> {
   const { data, info } = await sharp(basePng).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
   const base = { data, w: info.width, h: info.height };
+  const baseFeet = feetCenters([data], info.width, info.height)[0];
   let usd = 0, tries = 0;
   const facts: string[] = [];
   const code = async (why: string): Promise<WalkResult> => { const r = await rigWalk(basePng, { bob: o.bob }); return { ...r, facts: [...facts, why, ...r.facts], usd, tries, how: "code", spreadDiff: 0 }; };
@@ -48,12 +49,18 @@ export async function makeWalk(basePng: Buffer, o: { maxTries?: number; bob?: bo
     // → 뒤집지 않고 AI 가 그린 한 바퀴 4장을 그대로 쓴다
     // 11-27 다섯째: 아랫몸이 좌우 대칭(같은 색 겹침 ≥ 0.8 — 기사왕 0.94, 지팡이 마법사 0.44)이면 뒤집어도 소품이 안 넘어간다 → 아래 반 바퀴+뒤집기 6장으로(걸음이 고르게)
     const sym = lowerSymmetry(base.data, base.w, base.h);
-    if (full.facts.some((f) => f.startsWith("덮인 다리")) && sym < 0.8) {
+    // 11-27 일곱째: 절뚝 자를 문으로 썼더니 6판 중 4판이 걸리고 다시 그려도 안 풀렸다 → 이제는 다리만 뒤집는 6장(rigwalk mirrorHalf)이 기본, 4장 그대로는 PIXEL_WALK_FOUR=1 일 때만(비교용)
+    if (process.env.PIXEL_WALK_FOUR && full.facts.some((f) => f.startsWith("덮인 다리") || f.startsWith("머리만")) && sym < 0.8) {
       const diff = Math.max(...sp) - Math.min(...sp);
-      facts.push(`${t}판 발 폭 ${sp.join("/")} → 한 바퀴 4장 그대로(덮인 다리 · 대칭 ${sym.toFixed(2)} < 0.8 — 뒤집기 안 함) 변화 ${diff}칸(문 ${need}칸 · 픽셀랩 대비 ${(diff / ((bot - top + 1) * RIVAL_STEP)).toFixed(2)}배) · $${m.usd.toFixed(4)}`);
-      const r: WalkResult = { ...full, facts: [...facts, ...full.facts], usd, tries: t, how: "hybrid", spreadDiff: diff, ai: { cuts: m.cuts, w: m.set.cellW, h: m.set.cellH } };
-      if (!best || diff > best.spreadDiff) best = r;
-      if (diff >= need) return { ...r, usd, tries: t };
+      // 11-27 사장님 "절뚝거려"(마법사): 4장 중 한 발로 선 두 장이 둘 다 왼발이었다(발 중심 43.5·43 / 몸 48.3) — 같은 걸음을 두 번 그린 것.
+      // **절뚝 자**: 발 폭이 가장 좁은 두 장의 발 중심이 몸 가운데의 서로 다른 쪽(각각 1칸 이상)이어야 한다. 아니면 다시 그린다.
+      const fc = feetCenters(full.frames, info.width, info.height), narrow = [...sp.keys()].sort((a, b) => sp[a] - sp[b]).slice(0, 2);
+      const sides = narrow.map((i) => fc[i] - baseFeet);
+      const limp = !(sides[0] * sides[1] < 0 && Math.min(Math.abs(sides[0]), Math.abs(sides[1])) >= 1);
+      facts.push(`${t}판 발 폭 ${sp.join("/")} → 한 바퀴 4장 그대로(대칭 ${sym.toFixed(2)} < 0.8 — 뒤집기 안 함) 변화 ${diff}칸(문 ${need}칸 · 픽셀랩 대비 ${(diff / ((bot - top + 1) * RIVAL_STEP)).toFixed(2)}배) · 한 발 장 ${narrow.map((i) => i + 1).join(",")} 발 중심 ${sides.map((v) => (v > 0 ? "+" : "") + v.toFixed(1)).join("/")}칸${limp ? " → 절뚝(같은 발)" : " → 번갈아"} · $${m.usd.toFixed(4)}`);
+      const r: WalkResult = { ...full, facts: [...facts, ...full.facts], usd, tries: t, how: "hybrid", spreadDiff: limp ? Math.min(diff, need - 1) : diff, ai: { cuts: m.cuts, w: m.set.cellW, h: m.set.cellH } };
+      if (!best || r.spreadDiff > best.spreadDiff) best = r;
+      if (!limp && diff >= need) return { ...r, usd, tries: t };
       continue;
     }
     const w = sp.indexOf(Math.max(...sp));
@@ -90,6 +97,15 @@ export async function spriteOf(img: Buffer): Promise<Buffer | null> {
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const i = (y * k * W + x * k) * 4; data.copy(o, (y * w + x) * 4, i, i + 4); if (data[i + 3] === 0) clear++; }
   if (clear < w * h * 0.2) return null; // 배경이 투명하지 않다
   return sharp(o, { raw: { width: w, height: h, channels: 4 } }).png().toBuffer();
+}
+
+/** 장마다 맨 아래 3줄 칠한 칸의 가운데 x(한 발로 선 장이면 그 발 자리) */
+function feetCenters(frames: Buffer[], W: number, H: number): number[] {
+  return frames.map((f) => {
+    let bot = -1; for (let y = H - 1; y >= 0 && bot < 0; y--) for (let x = 0; x < W; x++) if (f[(y * W + x) * 4 + 3]) { bot = y; break; }
+    let s = 0, k = 0; for (let y = Math.max(0, bot - 2); y <= bot; y++) for (let x = 0; x < W; x++) if (f[(y * W + x) * 4 + 3]) { s += x; k++; }
+    return k ? s / k : W / 2;
+  });
 }
 
 function spreadsOf(frames: Buffer[], W: number, H: number): number[] {
