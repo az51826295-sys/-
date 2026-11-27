@@ -20,7 +20,7 @@ import { hybridWalk, lowerSymmetry, rigWalk, type RigWalk } from "./rigwalk";
 const RIVAL_STEP = 10 / 52;
 export type WalkResult = RigWalk & { usd: number; tries: number; how: "hybrid" | "code"; spreadDiff: number; ai?: { cuts: Buffer[]; w: number; h: number } }; // ai: 고른 판의 AI 4장(시험 도구가 이음 줄을 공짜로 다시 재려고)
 
-export async function makeWalk(basePng: Buffer, o: { maxTries?: number; bob?: boolean } = {}): Promise<WalkResult> {
+export async function makeWalk(basePng: Buffer, o: { maxTries?: number; bob?: boolean; aiFrames?: 4 | 8 } = {}): Promise<WalkResult> {
   const { data, info } = await sharp(basePng).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
   const base = { data, w: info.width, h: info.height };
   const baseFeet = feetCenters([data], info.width, info.height)[0];
@@ -34,11 +34,15 @@ export async function makeWalk(basePng: Buffer, o: { maxTries?: number; bob?: bo
   let top = -1, bot = -1;
   for (let y = 0; y < info.height; y++) for (let x = 0; x < info.width; x++) if (data[(y * info.width + x) * 4 + 3]) { if (top < 0) top = y; bot = y; }
   const need = Math.max(4, Math.round((bot - top + 1) / 9));
-  const ACTION = "walking toward the viewer with big, clearly visible steps — frame 1: left foot stepping forward and outward, knee bent; frame 2: legs passing together, one foot lifted; frame 3: right foot stepping forward and outward, knee bent; frame 4: legs passing together, other foot lifted. The legs must visibly change in every frame.";
+  // 11-27 사장님 "프레임도 늘리자": AI 8장 한 바퀴 → 반 바퀴 4장 + 다리만 뒤집기 4장 = 8장(PIXEL_WALK_AI_FRAMES=8 로 시험 중, 기본 4 → 6장)
+  const AIN = Number(o.aiFrames ?? process.env.PIXEL_WALK_AI_FRAMES ?? 4) === 8 ? 8 : 4;
+  const ACTION = AIN === 8
+    ? "walking toward the viewer with big, clearly visible steps, 8 evenly spaced phases — frame 1: left foot planted forward and outward; frame 2: body lowers, weight on the left foot; frame 3: right foot lifts and swings past; frame 4: right foot reaching forward; frame 5: right foot planted forward and outward; frame 6: body lowers, weight on the right foot; frame 7: left foot lifts and swings past; frame 8: left foot reaching forward. The legs must visibly change in every frame."
+    : "walking toward the viewer with big, clearly visible steps — frame 1: left foot stepping forward and outward, knee bent; frame 2: legs passing together, one foot lifted; frame 3: right foot stepping forward and outward, knee bent; frame 4: legs passing together, other foot lifted. The legs must visibly change in every frame.";
   let best: WalkResult | null = null;
   for (let t = 1; t <= Math.max(1, Math.min(3, o.maxTries ?? 3)); t++) {
     tries = t;
-    const m = await makeMotion(basePng, "custom", { action: ACTION, frames: 4, noCalm: true, maxTries: 1 });
+    const m = await makeMotion(basePng, "custom", { action: ACTION, frames: AIN, noCalm: true, maxTries: 1 });
     usd += m.usd;
     if (!m.ok) { facts.push(`${t}판 그림 실패: ${m.reason.slice(0, 80)}`); continue; }
     // 4장 각각의 발 폭(기본 그림에 붙인 뒤)으로 가장 크게 벌린 장을 찾는다
@@ -64,7 +68,7 @@ export async function makeWalk(basePng: Buffer, o: { maxTries?: number; bob?: bo
       continue;
     }
     const w = sp.indexOf(Math.max(...sp));
-    const half = [w, (w + 1) % 4, (w + 3) % 4];
+    const half = AIN === 8 ? [7, 0, 1, 2].map((d) => (w + d) % 8) : [w, (w + 1) % 4, (w + 3) % 4];
     const h = hybridWalk(base, half.map((i) => m.cuts[i]), m.set.cellW, m.set.cellH, { mirrorHalf: true });
     if (!h || !h.frames.length) { facts.push(`${t}판 반 바퀴 섞기 실패`); continue; }
     const hs = half.map((i) => sp[i]), diff = Math.max(...hs) - Math.min(...hs);
