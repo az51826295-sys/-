@@ -18,6 +18,22 @@ type Game = { name: string; imgs: string[]; palette: string[]; height: number };
 type Item = { id: number; kind: Tool; title: string; view: string; info: string; downloads: { href: string; name: string; label: string }[]; refable?: string };
 type Preview = { period: number; logical: [number, number]; colors: number; preview: string };
 
+/**
+ * 11-27 사장님 "새로고침 때문에 사라짐… 다운 눌렀는데 어디 있는지 모르겠다": 기록을 **이 기기(IndexedDB)** 에 둔다.
+ * 기록은 전부 data: 주소라 그대로 담긴다. 한 칸이 수백 KB 라 localStorage(약 5MB)는 모자라다. 서버에는 여전히 안 남긴다.
+ * 막힌 브라우저(사생활 모드 등)는 조용히 예전처럼(이 창에서만).
+ */
+const HIST_MAX = 30;
+function histDb(): Promise<IDBDatabase> {
+  return new Promise((res, rej) => { const r = indexedDB.open("px-hist", 1); r.onupgradeneeded = () => r.result.createObjectStore("kv"); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); });
+}
+async function histLoad(): Promise<Item[]> {
+  try { const db = await histDb(); return await new Promise((res) => { const q = db.transaction("kv").objectStore("kv").get("items"); q.onsuccess = () => res(Array.isArray(q.result) ? (q.result as Item[]) : []); q.onerror = () => res([]); }); } catch { return []; }
+}
+async function histSave(xs: Item[]) {
+  try { const db = await histDb(); db.transaction("kv", "readwrite").objectStore("kv").put(xs.slice(0, HIST_MAX), "items"); } catch { /* 못 담으면 이 창에서만 */ }
+}
+
 const ICON: Record<Tool, string[]> = {
   game: ["........", ".######.", "#.#....#", "###.#.##", "#.#..#.#", "#......#", ".##..##.", "........"],
   create: ["......##", ".....###", "....###.", "...###..", "..###...", ".###....", ".##.....", "#......."],
@@ -60,8 +76,25 @@ export default function PixelClient({ en, paid }: { en: boolean; paid: string | 
   const [items, setItems] = useState<Item[]>([]);
   const [cur, setCur] = useState<number | null>(null);
   const [ref, setRef] = useState<{ file: File; url: string } | null>(null);
-  const nextId = useRef(1);
+  const nextId = useRef(1); // 11-27 기록이 기기에 남으니 처음 그릴 때 시각으로 다시 잡는다(아래 불러오기) — 1부터 세면 옛 기록과 id 가 겹친다
   const [games, setGames] = useState<Game[]>([]); // 내 게임(아래 "게임 추가" 참고) — 처음 불러오기 때문에 위에 둔다
+  // 기록 불러오기 → 그 뒤부터 바뀔 때마다 담기(불러오기 전에 빈 목록으로 덮어쓰지 않게 histReady)
+  const [histReady, setHistReady] = useState(false);
+  useEffect(() => {
+    let alive = true;
+    nextId.current = Date.now();
+    histLoad().then((saved) => {
+      if (!alive) return;
+      if (saved.length) {
+        nextId.current = Math.max(nextId.current, ...saved.map((x) => x.id)) + 1;
+        setItems((xs) => [...xs, ...saved].slice(0, HIST_MAX));
+        setCur((c) => c ?? saved[0].id);
+      }
+      setHistReady(true);
+    });
+    return () => { alive = false; };
+  }, []);
+  useEffect(() => { if (histReady) histSave(items); }, [items, histReady]);
 
   useEffect(() => {
     let alive = true;
@@ -84,7 +117,7 @@ export default function PixelClient({ en, paid }: { en: boolean; paid: string | 
     return () => { alive = false; };
   }, []);
 
-  const add = (it: Omit<Item, "id">) => { const id = nextId.current++; setItems((xs) => [{ ...it, id }, ...xs].slice(0, 30)); setCur(id); return id; };
+  const add = (it: Omit<Item, "id">) => { const id = nextId.current++; setItems((xs) => [{ ...it, id }, ...xs].slice(0, HIST_MAX)); setCur(id); return id; };
   const shown = items.find((x) => x.id === cur) ?? null;
   const net = () => setErr(t("인터넷을 확인해 주세요.", "Check your connection."));
 
@@ -442,7 +475,7 @@ export default function PixelClient({ en, paid }: { en: boolean; paid: string | 
       </div>
 
       <section className="px-hist" aria-label={t("기록", "History")}>
-        <div className="lab">{t("기록 (이 창에서만 · 새로고침하면 사라져요 — 필요한 건 받아 두세요)", "History (this tab only — download what you need)")}</div>
+        <div className="lab">{t(`기록 (이 기기에 최근 ${HIST_MAX}개 · 새로고침해도 남아요)`, `History (last ${HIST_MAX} on this device · survives refresh)`)}</div>
         <div className="strip">
           {items.length === 0 && <span className="none">{t("아직 없어요", "Nothing yet")}</span>}
           {items.map((x) => (
