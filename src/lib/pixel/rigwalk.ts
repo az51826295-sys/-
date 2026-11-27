@@ -17,7 +17,7 @@ export type RigWalk = { frames: Buffer[]; cellW: number; cellH: number; mode: "l
 
 type Legs = { top: number; bot: number; hip: number; legTop: number; Lx: [number, number]; Rx: [number, number] } | null;
 /** 기본 그림에서 다리 자리 찾기(아래에서 위로, 발 가운데 근처 빈 틈을 따라) — rigWalk·hybridWalk 공용 */
-function findLegs(src: Buffer, W: number, H: number): Legs {
+export function findLegs(src: Buffer, W: number, H: number): Legs {
   const on = (x: number, y: number) => src[(y * W + x) * 4 + 3] > 0;
   let top = -1, bot = -1, left = W, right = -1;
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (on(x, y)) { if (top < 0) top = y; bot = y; left = Math.min(left, x); right = Math.max(right, x); }
@@ -61,13 +61,20 @@ export function hybridWalk(base: { data: Buffer; w: number; h: number }, ai: Buf
   // 11-27 사장님 "발만 움직이고 다른 데는 멈춰 있다"(망토 두른 기사왕): 망토·긴 옷이 다리를 덮으면 다리 틈이 맨 아래(발)에만 보여
   // 발 몇 줄만 바뀌었다. 다리 틈이 키의 15% 안 되면(팩: 사제 9%·마법사 11% 걸림, 기사 20%·궁수 21%·상인 19% 안 걸림) **덮인 다리** → 허리(키의 55%) 아래를 통째로(가로 전부) AI 프레임에서 가져온다 —
   // 망토·치마가 걸음 따라 흔들린다. 머리·가슴은 그대로 기본 그림(얼굴 0% 유지). 허리 밑에 찬 소품은 AI 그림을 따른다.
-  const covered = legs.bot - legs.hip + 1 < bh * 0.15;
+  const pad = Math.max(2, Math.round(bh / 12));
+  // 11-27 둘째: 사장님 기사왕은 다리 틈이 길게 잡혀(6장 = 덮인 다리 안 걸림) 망토가 그대로 멈춰 있었다 → 다리 틈 길이만으로는 못 가린다.
+  // **망토 자**: 몸 아래 30% 줄에서 다리 띠 밖에 칠한 칸 / 띠 안 칸. 팩 8종 0.00~0.05, 망토 기사왕 0.31 → 0.15 이상이면 망토가 다리 옆으로 바닥까지 늘어진 것.
+  const lb0 = Math.max(0, legs.Lx[0] - pad), lb1 = Math.min(W - 1, legs.Rx[1] + pad);
+  let capeOut = 0, capeIn = 0;
+  for (let y = legs.bot - Math.round(bh * 0.3); y <= legs.bot; y++) for (let x = 0; x < W; x++) if (src[(y * W + x) * 4 + 3]) { if (x < lb0 || x > lb1) capeOut++; else capeIn++; }
+  const capeRatio = capeOut / Math.max(1, capeIn);
+  const shortGap = legs.bot - legs.hip + 1 < bh * 0.15;
+  const covered = shortGap || capeRatio >= 0.15;
   const hip = covered ? legs.top + Math.round(bh * 0.55) : legs.hip;
   const legLen = legs.bot - hip + 1;
-  const pad = Math.max(2, Math.round(bh / 12));
-  const band: [number, number] = covered ? [0, W - 1] : [Math.max(0, legs.Lx[0] - pad), Math.min(W - 1, legs.Rx[1] + pad)];
+  const band: [number, number] = covered ? [0, W - 1] : [lb0, lb1];
   let cx = (legs.Lx[0] + legs.Rx[1]) / 2;
-  if (covered) { let s = 0, k = 0; for (let y = hip; y < Math.min(hip + 3, H); y++) for (let x = 0; x < W; x++) if (src[(y * W + x) * 4 + 3]) { s += x; k++; } if (k) cx = s / k; facts.push(`덮인 다리(다리 틈 ${legs.bot - legs.hip + 1}칸 < 키 ${bh}의 15%) → 허리 ${hip}줄 아래 통째로`); }
+  if (covered) { let s = 0, k = 0; for (let y = hip; y < Math.min(hip + 3, H); y++) for (let x = 0; x < W; x++) if (src[(y * W + x) * 4 + 3]) { s += x; k++; } if (k) cx = s / k; facts.push(`덮인 다리(${shortGap ? `다리 틈 ${legs.bot - legs.hip + 1}칸 < 키 ${bh}의 15%` : ""}${shortGap && capeRatio >= 0.15 ? " · " : ""}${capeRatio >= 0.15 ? `망토 자 ${capeRatio.toFixed(2)} ≥ 0.15` : ""}) → 허리 ${hip}줄 아래 통째로`); }
   const frames: Buffer[] = [], spreads: number[] = [];
   const legImgs: { o: Buffer }[] = [];
   // 11-26 첫 판: AI 가 45칸으로 그렸다(기본 54) → 다리 띠만 쓰니 **모든 프레임을 같은 배율로** nearest 로 맞춘다(30% 넘게 다르면 포기)
